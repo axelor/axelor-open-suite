@@ -17,6 +17,7 @@
 - CARD VIEWS : Display images with the right proportions of square images.
 - InvoiceLine : filter on taxLine.
 - BANK PAYMENT : Update code using try-with-resources in IOUtils.
+- ADMIN : Update code using try-with-resources in MetaGroupMenuAssistantService.
 - ADMIN : Update code using try-with-resources in DataBackupRestoreService.
 
 ## Bug Fixes
@@ -34,6 +35,7 @@
 - FIXED ASSET: set Deprecation Date in Move generated from FixedAsset and fix last Day Of Month FixedAsset
 - Invoice : Fix wrong attribute name used in grid views.
 - Ebics Partner : set editable for bo services list.
+- INVOICE : Fixed invoice refund ventilation issue.
 
 ## [5.2.2] - 2020-01-09
 ## Features
