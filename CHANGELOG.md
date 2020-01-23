@@ -1,4 +1,9 @@
 # Changelog
+
+## [Unreleased 5.2.4]
+## Improvements
+## Bug Fixes
+
 ## [5.2.3] - 2020-01-23
 ## Features
 - INVOICING PROJECT: consolidation of invoicing project.
@@ -371,6 +376,7 @@ In this case, the file is correctly retrieved from the bank server, but not save
 - LEAVE REQUEST: Add error when leave reason has no unit.
 - LEAVE REQUEST: Set duration value 0 if day planning of selected weekly planning is empty
 
+[Unreleased 5.2.4]: https://github.com/axelor/axelor-open-suite/compare/v5.2.3...dev
 [5.2.3]: https://github.com/axelor/axelor-open-suite/compare/v5.2.2...v5.2.3
 [5.2.2]: https://github.com/axelor/axelor-open-suite/compare/v5.2.1...v5.2.2
 [5.2.1]: https://github.com/axelor/axelor-open-suite/compare/v5.2.0...v5.2.1
