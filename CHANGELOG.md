@@ -1,6 +1,9 @@
 # Changelog
 
 ## [Unreleased 5.2.4]
+## Features
+- BankOrder : Display of Signatory ebics user and Sending date time in report.
+
 ## Improvements
 ## Bug Fixes
 - INVOICE : Fixed payment mode on mass invoicing refund.
