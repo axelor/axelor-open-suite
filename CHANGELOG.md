@@ -43,6 +43,7 @@ In this case, the file is correctly get from the bank server, but not saved in d
 - Ebics Partner : set editable for bo services list.
 - INVOICE : Fixed invoice refund ventilation issue.
 - EBICS BANK : Fixed typo issue on form view on the X509 fields
+- DataBackup : DataBackup non-persistable class issue Fix.
 
 ## [5.2.2] - 2020-01-09
 ## Features
