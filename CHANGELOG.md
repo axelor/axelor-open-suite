@@ -39,6 +39,7 @@
 - Studio: Added restriction for model and model field names, allowed only alphanumberic characters
 - Studio: Disable 'Visible in grid' option for spacer
 - STOCK MOVE LINE : display invoiced status at same place as avalable tag
+- DMS Import : Improvement in code
 
 ## Bug Fixes
 - Fix injection error during test
