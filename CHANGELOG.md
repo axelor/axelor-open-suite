@@ -42,12 +42,6 @@ In this case, the file is correctly retrieved from the bank server, but not save
 - INVOICE PAYMENT: fix an issue where an invoice payment is taken into account twice.
 - GEONAME: fix city import.
 
-## [Unreleased 5.2.3]
-## Features
-
-## Improvements
-- Theme : set modern theme as default
-
 ## [5.2.2] - 2020-01-09
 ## Features
 - TOOLS: added utility class for interacting with SFTP.
