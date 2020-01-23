@@ -39,6 +39,7 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -291,6 +292,30 @@ public class MoveController {
         }
       }
       response.setAttr("$reconcileTags", "hidden", isHidden);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkRemoveLines(ActionRequest request, ActionResponse response) {
+    try {
+      Move moveView = request.getContext().asType(Move.class);
+      Move moveBD = Beans.get(MoveRepository.class).find(moveView.getId());
+      List<String> moveLineReconciledAndRemovedNameList = new ArrayList<>();
+      for (MoveLine moveLineBD : moveBD.getMoveLineList()) {
+        if (!moveView.getMoveLineList().contains(moveLineBD)) {
+          if (moveLineBD.getReconcileGroup() != null) {
+            moveLineReconciledAndRemovedNameList.add(moveLineBD.getName());
+          }
+        }
+      }
+      if (moveLineReconciledAndRemovedNameList != null
+          && !moveLineReconciledAndRemovedNameList.isEmpty()) {
+        response.setError(
+            String.format(
+                I18n.get(IExceptionMessage.MOVE_LINE_RECONCILE_LINE_CANNOT_BE_REMOVED),
+                moveLineReconciledAndRemovedNameList.toString()));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
