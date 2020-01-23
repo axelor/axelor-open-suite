@@ -181,6 +181,7 @@
 	<input file="bpm_workflow.xml" root="wkfs" >
 		<bind node="wkf" type="com.axelor.studio.db.Wkf">
 			<bind node="@appBuilder" to="appBuilder" search="self.code = :appBuilder"  />
+			<bind node="@code" to="code"/>
 			<bind node="@name" to="name" />
 			<bind node="@isJson" to="isJson" />
 			<bind node="@model" to="model" />
@@ -191,16 +192,16 @@
 		<bind node="wkfNode" type="com.axelor.studio.db.WkfNode">
 			<bind node="@name" to="name" />
 			<bind node="@title" to="title" />
-			<bind node="@wkf" to="wkf" search="self.name = :wkf" update="true"/>
+			<bind node="@wkf" to="wkf" search="self.code = :wkf" update="true"/>
 			<bind node="@sequence" to="sequence" />
 			<bind node="@nodeType" to="nodeType" />
 			<bind node="@xmlId" to="xmlId" />
 		</bind>
 		<bind node="transition" type="com.axelor.studio.db.WkfTransition">
 			<bind node="@name" to="name" />
-			<bind node="@wkf" to="wkf" search="self.name = :wkf" update="true"/>
-			<bind node="@source" to="source" search="self.name = :source and self.wkf.name = :wkf" update="true"/>
-			<bind node="@target" to="target" search="self.name = :target and self.wkf.name = :wkf" update="true"/>
+			<bind node="@wkf" to="wkf" search="self.code = :wkf" update="true"/>
+			<bind node="@source" to="source" search="self.name = :source and self.wkf.code = :wkf" update="true"/>
+			<bind node="@target" to="target" search="self.name = :target and self.wkf.code = :wkf" update="true"/>
 			<bind node="@isButton" to="isButton" />
 			<bind node="@buttonTitle" to="buttonTitle" />
 			<bind node="@alertTypeSelect" to="alertTypeSelect" />
@@ -208,21 +209,21 @@
 			<bind node="@successMsg" to="successMsg" />
 			<bind node="@xmlId" to="xmlId" />
 		</bind>
-		<bind node="node" type="com.axelor.studio.db.WkfNode" search="self.name = :nodeName and self.wkf.name = :wkf" update="true">
-			<bind node="@wkf" to="wkf" search="self.name = :wkf" update="true" />
+		<bind node="node" type="com.axelor.studio.db.WkfNode" search="self.name = :nodeName and self.wkf.code = :wkf" update="true">
+			<bind node="@wkf" to="wkf" search="self.code = :wkf" update="true" />
 			<bind node="@name" to="name" alias="nodeName" />
-			<bind node="incomings/incoming" to="incoming" search="self.name = :name and self.wkf.name = :wkf" update="true">
+			<bind node="incomings/incoming" to="incoming" search="self.name = :name and self.wkf.code = :wkf" update="true">
 				<bind node="@name" to="name" />
 			</bind>
-			<bind node="outgoings/outgoing" to="outgoings" search="self.name = :name and self.wkf.name = :wkf" update="true">
+			<bind node="outgoings/outgoing" to="outgoings" search="self.name = :name and self.wkf.code = :wkf" update="true">
 				<bind node="@name" to="name" />
 			</bind>
 		</bind>
 	</input>
 	
 	<input file="bpm_workflow.xml" root="wkfs" >
-		<bind node="workflow" type="com.axelor.studio.db.Wkf" search="self.name = :name" update="true" call="com.axelor.studio.service.ImportService:importWkf">
-			<bind node="@name" to="name" />
+		<bind node="workflow" type="com.axelor.studio.db.Wkf" search="self.code = :code" update="true" call="com.axelor.studio.service.ImportService:importWkf">
+			<bind node="@code" to="code" />
 		</bind>
 	</input>
 	

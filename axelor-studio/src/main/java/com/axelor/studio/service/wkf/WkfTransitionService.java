@@ -21,6 +21,7 @@ import com.axelor.auth.db.Role;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaPermission;
 import com.axelor.meta.db.MetaPermissionRule;
+import com.axelor.meta.db.repo.MetaJsonFieldRepository;
 import com.axelor.meta.db.repo.MetaPermissionRepository;
 import com.axelor.meta.loader.XMLViews;
 import com.axelor.meta.schema.actions.ActionAttrs;
@@ -65,6 +66,8 @@ class WkfTransitionService {
 
   @Inject private StudioMetaService metaService;
 
+  @Inject private MetaJsonFieldRepository jsonFieldRepo;
+
   @Inject
   protected WkfTransitionService(WkfService wkfService) {
     this.wkfService = wkfService;
@@ -80,7 +83,7 @@ class WkfTransitionService {
     log.debug("Processing transitions");
     List<String[]> actions = new ArrayList<String[]>();
 
-    String action = "action-" + wkfService.wkfId;
+    String action = "action-" + wkfService.wkfCode;
     wkfButtonNames = new ArrayList<String>();
 
     List<ActionAttrs.Attribute> fields = proccessTransitions();
@@ -111,12 +114,22 @@ class WkfTransitionService {
     List<ActionAttrs.Attribute> fields = new ArrayList<ActionAttrs.Attribute>();
 
     Integer buttonSeq = wkfService.wkfSequence - 46;
+    Integer buttonSeqPreview = wkfService.wkfSequencePreview - 46;
 
     for (WkfTransition transition : wkfService.workflow.getTransitions()) {
 
       MetaJsonField status = wkfService.workflow.getStatusField();
+
+      MetaJsonField statusPreview =
+          jsonFieldRepo.findByName(
+              wkfService.wkfCode + wkfService.workflow.getStatusField().getName());
+
       String condition =
           status.getName() + " == " + getTyped(transition.getSource().getSequence(), status);
+      String conditionPreview =
+          statusPreview.getName()
+              + " == "
+              + getTyped(transition.getSource().getSequence(), statusPreview);
 
       log.debug(
           "Processing transition : {}, isButton: {}",
@@ -134,7 +147,8 @@ class WkfTransitionService {
 
       if (transition.getIsButton()) {
         buttonSeq++;
-        addButton(transition, condition, buttonSeq);
+        buttonSeqPreview++;
+        addButton(transition, condition, conditionPreview, buttonSeq, buttonSeqPreview);
         continue;
       }
 
@@ -184,17 +198,23 @@ class WkfTransitionService {
    * @param condition Condition to show button
    * @param sequence Sequence of button to add in toolbar.
    */
-  private void addButton(WkfTransition transition, String condition, Integer sequence) {
+  private void addButton(
+      WkfTransition transition,
+      String condition,
+      String conditionPreview,
+      Integer sequence,
+      Integer sequencePreview) {
 
     //    String source = transition.getSource().getName();
-    String title = transition.getButtonTitle();
+    String title = transition.getName();
     //    String name = wkfService.inflector.camelize(source + "-" + title, true);
     // FIXME:Have to check if its working with import export of workflow.
-    String name = wkfService.wkfId + "Transition" + transition.getId();
+    String name = wkfService.wkfCode + "Transition" + transition.getId();
     if (name.equals("save") || name.equals("cancel") || name.equals("back")) {
       name = "wkf" + name;
     }
     wkfButtonNames.add(name);
+    wkfButtonNames.add(name + "Button");
 
     MetaJsonField button = wkfService.getJsonField(name, "button");
     button.setTitle(title);
@@ -203,7 +223,7 @@ class WkfTransitionService {
     button.setVisibleInGrid(false);
     button.setIsWkf(true);
     button.setWidgetAttrs("{\"colSpan\": \"" + transition.getColSpan() + "\"}");
-    button.setOnClick(addButtonActions(transition, name));
+    button.setOnClick(addButtonActions(transition, name, false));
 
     if (transition.getRoleSet() != null) {
       Set<Role> buttonRoles = new HashSet<>();
@@ -214,6 +234,26 @@ class WkfTransitionService {
     log.debug("Adding button : {}", button.getName());
     wkfService.saveJsonField(button);
 
+    MetaJsonField buttonPreview = wkfService.findJsonField(name + "Button");
+    if (buttonPreview == null) {
+      buttonPreview = jsonFieldRepo.copy(button, true);
+      buttonPreview.setName(name + "Button");
+      buttonPreview.setSequence(sequencePreview);
+      buttonPreview.setJsonModel(null);
+      buttonPreview.setModel("com.axelor.studio.db.Wkf");
+      buttonPreview.setModelField("attrs");
+      buttonPreview.setShowIf(
+          conditionPreview
+              + " && $record.code == '"
+              + wkfService.workflow.getCode()
+              + "' && $record.id != null");
+      buttonPreview.setOnClick(
+          addButtonActions(transition, name + wkfService.workflow.getCode() + "button", true));
+
+    } else {
+      buttonPreview.setTitle(title);
+    }
+    wkfService.saveJsonField(buttonPreview);
     //		String permName = this.wkfService.moduleName + "."
     //				+ wkfService.dasherizeModel.replace("-", ".") + name;
     //		clearOldMetaPermissions(permName);
@@ -229,10 +269,12 @@ class WkfTransitionService {
    * @param transition WkfTransition from where action created.
    * @param buttonName Name of button used in creation of action name.
    */
-  private String addButtonActions(WkfTransition transition, String buttonName) {
+  private String addButtonActions(
+      WkfTransition transition, String buttonName, boolean isPreviewButton) {
 
     String actionName = buttonName.toLowerCase().replace(" ", "-");
-    actionName = "action-" + wkfService.wkfId + "-" + actionName;
+    MetaJsonField wkfField = new MetaJsonField();
+    actionName = "action-" + wkfService.wkfCode + "-" + actionName;
     List<String> actions = new ArrayList<String>();
     String xml = "";
     Integer alterType = transition.getAlertTypeSelect();
@@ -250,7 +292,15 @@ class WkfTransitionService {
 
     List<Attribute> attrs = new ArrayList<Attribute>();
     Attribute attr = new Attribute();
-    MetaJsonField wkfField = wkfService.workflow.getStatusField();
+
+    if (isPreviewButton) {
+      wkfField =
+          jsonFieldRepo.findByName(
+              wkfService.wkfCode + wkfService.workflow.getStatusField().getName());
+    } else {
+      wkfField = wkfService.workflow.getStatusField();
+    }
+
     attr.setName("value");
     attr.setFieldName(wkfField.getName());
     attr.setExpression("eval:" + getTyped(transition.getTarget().getSequence(), wkfField));
@@ -269,7 +319,13 @@ class WkfTransitionService {
       actions.add(sucessAction);
     }
     actions.add("save");
-    actions.add("action-group-" + wkfService.wkfId);
+
+    if (isPreviewButton) {
+      actions.add("action-group-" + wkfService.workflow.getCode());
+    } else {
+      actions.add("action-group-" + wkfService.wkfCode);
+    }
+
     //    actions.add("save");
     //    actions.add(wkfService.trackingAction);
 

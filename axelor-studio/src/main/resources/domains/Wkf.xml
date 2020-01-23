@@ -25,6 +25,7 @@
       <one-to-many name="conditions" ref="Filter" title="Apply if" mappedBy="wkf"/>
       <integer name="wkfSequence" title="Wkf sequence" />
       <boolean name="isTrackFlow" title="Track flow"/>
+      <string name="code" title="Code" unique="true" required="true"/>
   </entity>
     
  </domain-models>

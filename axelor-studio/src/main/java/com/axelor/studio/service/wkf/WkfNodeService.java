@@ -173,7 +173,7 @@ class WkfNodeService {
         metaSelect.addItem(metaSelectItem);
       }
 
-      metaSelectItem.setTitle(node.getTitle());
+      metaSelectItem.setTitle(node.getName());
       metaSelectItem.setOrder(node.getSequence());
 
       if (defaultValue == null) {
@@ -211,7 +211,7 @@ class WkfNodeService {
 
     String name = wkfService.inflector.simplify(node);
     name = name.toLowerCase().replace(" ", "-");
-    name = "action-group-" + wkfService.wkfId + "-" + name;
+    name = "action-group-" + wkfService.wkfCode + "-" + name;
 
     return name;
   }

@@ -4,15 +4,17 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
   
   <grid name="wkf-grid" title="Process studio" model="com.axelor.studio.db.Wkf">
+      <field name="code"/>
       <field name="name"/>
       <field name="model"/>
       <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
   </grid>
     
   <form name="wkf-form" title="Process studio" model="com.axelor.studio.db.Wkf" width="large" 
-  	onSave="action-wkf-group-on-save" onNew="action-wkf-set-default">
+     onSave="action-wkf-group-on-save" onNew="action-wkf-set-default" onLoad="action-wkf-group-on-load">
      <panel name="mainPanel">
-        <field name="name"/>
+        <field name="code" colSpan="3" x-bind="{{code|unaccent|uppercase}}" x-pattern="[a-zA-Z][a-zA-Z0-9_\\$]+"/>
+        <field name="name" colSpan="3"/>
         <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form" onChange="action-wkf-reset-model" />
         <field name="isJson" colSpan="1" onChange="action-wkf-reset-model"/>
         <panel name="modelPanel" colSpan="5">
@@ -26,6 +28,9 @@
           onSelect="action-wkf-attrs-set-status-field-domain" onChange="action-wkf-validate-status-field,action-wkf-method-set-default-nodes" />
       	<field name="displayTypeSelect" colSpan="4" />
       	<button name="openDashboardBtn" title="Dashboard" onClick="open.wkf.dashboard" colSpan="4" />
+        <panel title="Process result" colSpan="12">
+          <field name="attrs"/>
+        </panel>
       </panel>
       <panel-tabs>
       	<panel title="Process">
@@ -54,6 +59,11 @@
       <action name="action-wfk-method-process-wkf" />
   </action-group>
   
+   <action-group name="action-wkf-group-on-load">
+      <action name="action-wkf-attrs-set-status-field-value"/>
+      <action name="save" if="bpmnXml != null"/>
+   </action-group>
+
   <action-record name="action-wkf-set-default" model="com.axelor.studio.db.Wkf">
   	<field name="name" expr="eval:_jsonModel + ' workflow'" if="_jsonModel != null"/>
   	<field name="model" expr="eval:_jsonModel"/>
@@ -100,7 +110,7 @@
   </action-attrs>
   
   <action-attrs name="action-wkf-filter-meta-json-field-domain">
-  	<attribute for="metaJsonField" name="domain" expr="eval:&quot;(self.jsonModel.name = '${_parent.model}' OR self.model = '${_parent.model}' ) AND (self.type != 'json-one-to-many' OR self.type != 'one-to-many' OR self.type != 'many-to-many' OR self.type != 'json-many-to-many') AND self.isWkf = false &quot;"/>
+	<attribute for="metaJsonField"  name="domain" expr="eval:&quot;(self.jsonModel.name = '${_parent.model}' OR self.model = '${_parent.model}' ) AND (self.type != 'json-one-to-many' OR self.type != 'one-to-many' OR self.type != 'many-to-many' OR self.type != 'json-many-to-many') AND self.isWkf = false &quot;"/>
   </action-attrs>
   
   <action-view name="open.wkf.dashboard" title="Workflow dashboard">

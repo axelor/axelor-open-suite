@@ -23,6 +23,7 @@ import com.axelor.meta.CallMethod;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaJsonRecord;
+import com.axelor.meta.db.repo.MetaJsonFieldRepository;
 import com.axelor.meta.schema.views.Selection.Option;
 import com.axelor.rpc.Context;
 import com.axelor.rpc.JsonContext;
@@ -71,6 +72,8 @@ public class WkfTrackingService {
 
   @Inject private WkfTrackingTimeRepository trackingTimeRepo;
 
+  @Inject private MetaJsonFieldRepository jsonFieldRepo;
+
   private BigDecimal durationHrs;
 
   private String oldStatus;
@@ -85,11 +88,12 @@ public class WkfTrackingService {
    * @throws ClassNotFoundException
    */
   @CallMethod
-  public void track(Long wkfId, Object object) {
+  public void track(Long wkfId, Object object, boolean isPreview) {
 
     if (object != null) {
 
       SimpleBindings ctx = null;
+      MetaJsonField wkfField = new MetaJsonField();
 
       object = EntityHelper.getEntity(object);
       Model model = (Model) object;
@@ -112,7 +116,16 @@ public class WkfTrackingService {
         return;
       }
 
-      MetaJsonField wkfField = wkfTracking.getWkf().getStatusField();
+      if (isPreview) {
+        wkfField =
+            jsonFieldRepo.findByName(
+                "wkf"
+                    + wkfTracking.getWkf().getCode()
+                    + "wkf"
+                    + wkfTracking.getWkf().getStatusField().getName());
+      } else {
+        wkfField = wkfTracking.getWkf().getStatusField();
+      }
 
       Object status = null;
       status = ctx.get(wkfField.getName());
