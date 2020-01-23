@@ -111,13 +111,13 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
 
     if (accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment()
         && !paymentMode.getGenerateBankOrder()) {
-      this.createMoveForInvoicePayment(invoicePayment);
+      invoicePayment = this.createMoveForInvoicePayment(invoicePayment);
     } else {
       Beans.get(AccountingSituationService.class)
           .updateCustomerCredit(invoicePayment.getInvoice().getPartner());
+      invoicePayment = invoicePaymentRepository.save(invoicePayment);
     }
     if (paymentMode.getGenerateBankOrder()) {
-      invoicePayment = invoicePaymentRepository.save(invoicePayment);
       this.createBankOrder(invoicePayment);
     }
 
@@ -139,14 +139,14 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
     Company company = invoicePayment.getInvoice().getCompany();
 
     if (accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment()) {
-      this.createMoveForInvoicePayment(invoicePayment);
+      invoicePayment = this.createMoveForInvoicePayment(invoicePayment);
     } else {
       Beans.get(AccountingSituationService.class)
           .updateCustomerCredit(invoicePayment.getInvoice().getPartner());
+      invoicePayment = invoicePaymentRepository.save(invoicePayment);
     }
 
     invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
-    invoicePaymentRepository.save(invoicePayment);
   }
 
   /**

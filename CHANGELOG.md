@@ -46,6 +46,7 @@ In this case, the file is correctly get from the bank server, but not saved in d
 - DataBackup : DataBackup non-persistable class issue Fix.
 - FIXED ASSET : correction of prorata temporis
 - MULTI INVOICING : add control on generateMultiInvoiceBtn when invoice has already been created
+- INVOICE PAYMENT : fix invoice amount remaining
 
 ## [5.2.2] - 2020-01-09
 ## Features
