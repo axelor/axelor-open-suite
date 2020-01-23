@@ -49,6 +49,10 @@
 		public static final int STATUS_DEPRECIATED = 3;
 		public static final int STATUS_TRANSFERRED = 4;
 		
+		// COMPUTATION METHOD 
+		public static final String COMPUTATION_METHOD_LINEAR = "linear";
+		public static final String COMPUTATION_METHOD_DEGRESSIVE = "degressive";
+		
 	]]></extra-code>
     
   </entity>
