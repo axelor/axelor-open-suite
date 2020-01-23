@@ -45,6 +45,7 @@ In this case, the file is correctly get from the bank server, but not saved in d
 - EBICS BANK : Fixed typo issue on form view on the X509 fields
 - DataBackup : DataBackup non-persistable class issue Fix.
 - FIXED ASSET : correction of prorata temporis
+- MULTI INVOICING : add control on generateMultiInvoiceBtn when invoice has already been created
 
 ## [5.2.2] - 2020-01-09
 ## Features
