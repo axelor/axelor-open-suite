@@ -1,52 +1,46 @@
 # Changelog
-## [Unreleased 5.2.3]
+## [5.2.3] - 2020-01-23
 ## Features
-- Invoice : Removal of companyBankDetails comment in invoice form.
-- INVOICING PROJECT : consolidation of invoicing project
-- INVOICING BATCH : consolidation of phases
-- GEONAME : import city form zip
-- Modify all service code according to app configuration
+- INVOICING PROJECT: consolidation of invoicing project.
+- INVOICING BATCH: consolidation of phases.
 
 ## Improvements
-- BANKSTATEMENT : import multiple records in a single line.
-- Opportunity : Set sale order defaults on new.
-- Typos on PurchaseRequestLine
-- PurchaseRequestLine : cacheable removed for this entity
-- BANKSTATEMENT : on copy reset statusSelect.
-- STOCK: fromAddress in stock-move supplier arrival should be required
-- CARD VIEWS : Display images with the right proportions of square images.
-- InvoiceLine : filter on taxLine.
-- BANK PAYMENT : Update code using try-with-resources in IOUtils.
-- ADMIN : Update code using try-with-resources in MetaGroupMenuAssistantService.
-- ADMIN : Update code using try-with-resources in DataBackupRestoreService.
-- EBICS : Support of ARKEA bank
-Defined the KeyUsage attribute as critical on self-signed certificate .
+- Invoice: Removal of companyBankDetails comment in invoice form.
+- BANKSTATEMENT: import multiple records in a single line.
+- Opportunity: set sale order defaults on new.
+- Typos in PurchaseRequestLine domain file.
+- PurchaseRequestLine: cacheable removed for this entity.
+- BANKSTATEMENT: on copy reset statusSelect.
+- STOCK: fromAddress in stock-move supplier arrival is now required.
+- CARD VIEWS: Display non square images with the right proportions.
+- InvoiceLine: filter on taxLine.
+- EBICS : Support of ARKEA bank:
+Defined the KeyUsage attribute as critical on self-signed certificate.
 Defined the KeyUsage attribute with KeyEncipherment on Encryption certificate.
-- EBICS : Support bank statements of LA BANQUE POSTALE bank
-This bank return the code "EBICS_OK" instead of the correct code "EBICS_DOWNLOAD_POSTPROCESS_DONE" when we fetch a file (HPD, FDL...)
-In this case, the file is correctly get from the bank server, but not saved in database. Now we don't throw an exception when the return code is "EBICS_OK"
+- EBICS : Support bank statements of LA BANQUE POSTALE bank:
+This bank return the code `EBICS_OK` instead of the correct code `EBICS_DOWNLOAD_POSTPROCESS_DONE` when we fetch a file (HPD, FDL...)
+In this case, the file is correctly retrieved from the bank server, but not saved in database. Now we don't throw an exception when the return code is `EBICS_OK`.
+- Add checks in services on app configuration, now more services are only called if the corresponding app is enabled.
 
 ## Bug Fixes
-- INVOICE PARTIAL: take in consideration refund
+- Sale Order Invoicing: take in consideration refund invoice when checking the invoiced amount.
 - LEAVE REQUEST: Updated calendar filter.
 - Forecast recap: Displaying selected value's title instead of value on error message.
-- MOVE REMOVE SERVICE : corrected error that occurred when several lines were found.
-- BANK ORDER : the date field is now again read-only on bank order generated automatically.
-- ExportDbObjectService : Use of try-with-resources for "FileWritter".
-- DataImportServiceImpl : Use of try-with-resources for "ZipInputStream" and "FileOutputStream".
-- Importer : Use of try-with-resources for "FileOutputStream".
-- Advanced Import : Fix config line import
-- MOVE LINE : removed the possibility to delete a move line in a move when the move line is reconcile.
-- SUBROGATION RELEASE / INVOICE : corrected npe.
-- FIXED ASSET: set Deprecation Date in Move generated from FixedAsset and fix last Day Of Month FixedAsset
-- Invoice : Fix wrong attribute name used in grid views.
-- Ebics Partner : set editable for bo services list.
-- INVOICE : Fixed invoice refund ventilation issue.
-- EBICS BANK : Fixed typo issue on form view on the X509 fields
-- DataBackup : DataBackup non-persistable class issue Fix.
-- FIXED ASSET : correction of prorata temporis
-- MULTI INVOICING : add control on generateMultiInvoiceBtn when invoice has already been created
-- INVOICE PAYMENT : fix invoice amount remaining
+- MOVE REMOVE SERVICE: corrected error that occurred when several lines were found.
+- BANK ORDER: the date field is now again read-only on bank order generated automatically.
+- Advanced Import: Fix config line import.
+- MOVE LINE: removed the possibility to delete a move line in a move when the move line is reconciled.
+- SUBROGATION RELEASE / INVOICE: corrected npe apearring in log when opening a new subrogation release.
+- FIXED ASSET: set Deprecation Date in Move generated from FixedAsset and fix last Day Of Month FixedAsset.
+- Invoice: Fix wrong attribute name used in grid views.
+- Ebics Partner: set editable for bank order services list.
+- INVOICE: Fixed invoice refund ventilation issue.
+- EBICS BANK: Fixed typo issue on form view on the X509 fields.
+- DataBackup: DataBackup non-persistable class issue Fix.
+- FIXED ASSET: correction of prorata temporis.
+- MULTI INVOICING: add control on generateMultiInvoiceBtn when invoice has already been created.
+- INVOICE PAYMENT: fix an issue where an invoice payment is taken into account twice.
+- GEONAME: fix city import.
 
 ## [5.2.2] - 2020-01-09
 ## Features
@@ -377,7 +371,7 @@ In this case, the file is correctly get from the bank server, but not saved in d
 - LEAVE REQUEST: Add error when leave reason has no unit.
 - LEAVE REQUEST: Set duration value 0 if day planning of selected weekly planning is empty
 
-[Unreleased 5.2.3]: https://github.com/axelor/axelor-open-suite/compare/v5.2.2...dev
+[5.2.3]: https://github.com/axelor/axelor-open-suite/compare/v5.2.2...v5.2.3
 [5.2.2]: https://github.com/axelor/axelor-open-suite/compare/v5.2.1...v5.2.2
 [5.2.1]: https://github.com/axelor/axelor-open-suite/compare/v5.2.0...v5.2.1
 [5.2.0]: https://github.com/axelor/axelor-open-suite/compare/v5.1.13...v5.2.0
