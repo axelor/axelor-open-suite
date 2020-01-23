@@ -26,6 +26,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.LogisticalFormServiceImpl;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 
@@ -34,6 +35,9 @@ public class LogisticalFormSupplychainServiceImpl extends LogisticalFormServiceI
 
   @Override
   protected boolean testForDetailLine(StockMoveLine stockMoveLine) {
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return super.testForDetailLine(stockMoveLine);
+    }
     SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
     return saleOrderLine == null
         || saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL;
@@ -44,6 +48,10 @@ public class LogisticalFormSupplychainServiceImpl extends LogisticalFormServiceI
       LogisticalForm logisticalForm, StockMoveLine stockMoveLine, BigDecimal qty) {
     LogisticalFormLine logisticalFormLine =
         super.createLogisticalFormLine(logisticalForm, stockMoveLine, qty);
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return logisticalFormLine;
+    }
 
     StockMove stockMove =
         logisticalFormLine.getStockMoveLine() != null

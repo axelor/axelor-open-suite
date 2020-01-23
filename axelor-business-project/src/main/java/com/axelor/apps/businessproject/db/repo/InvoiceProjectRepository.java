@@ -19,6 +19,7 @@ package com.axelor.apps.businessproject.db.repo;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
+import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.inject.Beans;
 
 public class InvoiceProjectRepository extends InvoiceManagementRepository {
@@ -26,10 +27,12 @@ public class InvoiceProjectRepository extends InvoiceManagementRepository {
   @Override
   public void remove(Invoice entity) {
 
-    Beans.get(InvoicingProjectRepository.class)
-        .all()
-        .filter("self.invoice.id = ?", entity.getId())
-        .remove();
+    if (Beans.get(AppBusinessProjectService.class).isApp("business-project")) {
+      Beans.get(InvoicingProjectRepository.class)
+          .all()
+          .filter("self.invoice.id = ?", entity.getId())
+          .remove();
+    }
 
     super.remove(entity);
   }

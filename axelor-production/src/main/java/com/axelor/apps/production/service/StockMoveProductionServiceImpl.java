@@ -32,6 +32,7 @@ import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class StockMoveProductionServiceImpl extends StockMoveServiceSupplychainImpl {
@@ -67,7 +68,8 @@ public class StockMoveProductionServiceImpl extends StockMoveServiceSupplychainI
 
   @Override
   public void checkExpirationDates(StockMove stockMove) throws AxelorException {
-    if (stockMove.getInManufOrder() != null) {
+    if (stockMove.getInManufOrder() != null
+        && Beans.get(AppBaseService.class).isApp("production")) {
       stockMoveLineService.checkExpirationDates(stockMove);
     } else {
       super.checkExpirationDates(stockMove);
