@@ -2,6 +2,8 @@
 
 ## [Unreleased 5.2.4]
 ## Improvements
+- ACCOUNTING CUT OFF : display advise message when batch has been already launch with the same move date
+
 ## Bug Fixes
 - INVOICE : Fixed payment mode on mass invoicing refund.
 - MESSAGE : correction of sending a message and update status of message

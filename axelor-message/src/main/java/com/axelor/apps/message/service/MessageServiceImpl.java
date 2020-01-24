@@ -53,7 +53,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeoutException;
 import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.LockModeType;
@@ -332,13 +331,13 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
             try {
               inTransaction(
                   () -> {
-						final Message updateMessage = findMessage(messageId);
-	                    getEntityManager().lock(updateMessage, LockModeType.PESSIMISTIC_WRITE);
-	                    updateMessage.setSentByEmail(true);
-	                    updateMessage.setStatusSelect(MessageRepository.STATUS_SENT);
-	                    updateMessage.setSentDateT(LocalDateTime.now());
-	                    updateMessage.setSenderUser(AuthUtils.getUser());
-	                    messageRepository.save(updateMessage);
+                    final Message updateMessage = findMessage(messageId);
+                    getEntityManager().lock(updateMessage, LockModeType.PESSIMISTIC_WRITE);
+                    updateMessage.setSentByEmail(true);
+                    updateMessage.setStatusSelect(MessageRepository.STATUS_SENT);
+                    updateMessage.setSentDateT(LocalDateTime.now());
+                    updateMessage.setSenderUser(AuthUtils.getUser());
+                    messageRepository.save(updateMessage);
                   });
               done = true;
             } catch (PersistenceException e) {
@@ -346,8 +345,8 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
               sleep();
             }
           } while (!done && System.currentTimeMillis() - startTime < ENTITY_FIND_TIMEOUT);
-          if(!done) {
-        	  throw persistenceException;
+          if (!done) {
+            throw persistenceException;
           }
           return true;
         });
@@ -355,28 +354,29 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
     return message;
   }
 
-  private Message findMessage(Long messageId)  {
+  private Message findMessage(Long messageId) {
     Message foundMessage;
     final long startTime = System.currentTimeMillis();
 
-    while ((foundMessage = messageRepository.find(messageId)) == null && System.currentTimeMillis() - startTime < ENTITY_FIND_TIMEOUT) {
+    while ((foundMessage = messageRepository.find(messageId)) == null
+        && System.currentTimeMillis() - startTime < ENTITY_FIND_TIMEOUT) {
       sleep();
     }
-    
+
     if (foundMessage == null) {
-    	throw new EntityNotFoundException(messageId.toString());
+      throw new EntityNotFoundException(messageId.toString());
     }
 
     return foundMessage;
   }
-  
+
   private void sleep() {
-	    try {
-	      Thread.sleep(ENTITY_FIND_INTERVAL);
-	    } catch (InterruptedException e) {
-	      Thread.currentThread().interrupt();
-	    }
-	  }
+    try {
+      Thread.sleep(ENTITY_FIND_INTERVAL);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+    }
+  }
 
   public Set<MetaAttachment> getMetaAttachments(Message message) {
 
