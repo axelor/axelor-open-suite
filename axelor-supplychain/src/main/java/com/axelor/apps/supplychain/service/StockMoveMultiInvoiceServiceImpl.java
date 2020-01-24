@@ -613,7 +613,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
    * This method will throw an exception if a stock move has already been invoiced. The exception
    * message will give every already invoiced stock move.
    */
-  protected void checkForAlreadyInvoicedStockMove(List<StockMove> stockMoveList)
+  @Override
+  public void checkForAlreadyInvoicedStockMove(List<StockMove> stockMoveList)
       throws AxelorException {
     StringBuilder invoiceAlreadyGeneratedMessage = new StringBuilder();
 
