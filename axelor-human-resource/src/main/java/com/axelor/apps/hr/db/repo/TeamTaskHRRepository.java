@@ -31,9 +31,10 @@ public class TeamTaskHRRepository extends TeamTaskProjectRepository {
 
   @Override
   public TeamTask save(TeamTask teamTask) {
+    teamTask = super.save(teamTask);
 
     if (!Beans.get(AppHumanResourceService.class).isApp("employee")) {
-      return super.save(teamTask);
+      return teamTask;
     }
 
     teamTask.setTotalPlannedHrs(projectPlanningTimeService.getTaskPlannedHrs(teamTask));
