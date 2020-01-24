@@ -6,6 +6,7 @@
 ## Bug Fixes
 - EBICS USER : fix for strange import - log
 - LEAVE REQUEST: Updated calendar filter
+- STOCK MOVE : Fix link between sale order and backorder stockmove
 
 ## [5.0.11] - 2019-12-19
 ## Improvements
