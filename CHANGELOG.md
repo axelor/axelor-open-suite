@@ -3,6 +3,7 @@
 ## [Unreleased 5.2.4]
 ## Improvements
 ## Bug Fixes
+- INVOICE : Fixed payment mode on mass invoicing refund.
 
 ## [5.2.3] - 2020-01-23
 ## Features
