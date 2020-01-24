@@ -755,6 +755,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
       if (stockMoveLine.getQty().compareTo(stockMoveLine.getRealQty()) > 0) {
         StockMoveLine newStockMoveLine = stockMoveLineRepo.copy(stockMoveLine, false);
+        newStockMoveLine.setArchived(false);
 
         newStockMoveLine.setQty(stockMoveLine.getQty().subtract(stockMoveLine.getRealQty()));
         newStockMoveLine.setRealQty(newStockMoveLine.getQty());
