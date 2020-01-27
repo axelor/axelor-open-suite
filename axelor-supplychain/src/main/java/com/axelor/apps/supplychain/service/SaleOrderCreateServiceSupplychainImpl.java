@@ -81,6 +81,21 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       Partner clientPartner,
       Team team)
       throws AxelorException {
+
+    if (!Beans.get(AppSaleService.class).isApp("supplychain")) {
+      return super.createSaleOrder(
+          salespersonUser,
+          company,
+          contactPartner,
+          currency,
+          deliveryDate,
+          internalReference,
+          externalReference,
+          orderDate,
+          priceList,
+          clientPartner,
+          team);
+    }
     return createSaleOrder(
         salespersonUser,
         company,

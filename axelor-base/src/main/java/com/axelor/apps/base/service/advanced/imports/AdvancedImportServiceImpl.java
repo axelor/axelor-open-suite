@@ -410,7 +410,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     }
     fileFieldList.add(fileField);
     fileField = fileFieldRepository.save(fileField);
-    fileField.setFileTab(fileTab);
+    fileTab.addFileFieldListItem(fileField);
   }
 
   private boolean checkFields(Mapper mapper, String importField, String subImportField)

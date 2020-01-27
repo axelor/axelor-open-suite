@@ -25,9 +25,11 @@ import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.tool.service.ArchivingToolService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 
@@ -54,7 +56,8 @@ public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveService {
   protected String checkDaybookMoveLine(MoveLine moveLine) throws AxelorException {
     String errorMessage = super.checkDaybookMoveLine(moveLine);
 
-    if (moveLine.getBankReconciledAmount().compareTo(BigDecimal.ZERO) > 0) {
+    if (Beans.get(AppBankPaymentService.class).isApp("bank-payment")
+        && moveLine.getBankReconciledAmount().compareTo(BigDecimal.ZERO) > 0) {
       errorMessage +=
           String.format(
               I18n.get(

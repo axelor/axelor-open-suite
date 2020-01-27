@@ -60,7 +60,8 @@ public class ReceiptResponseElement extends DefaultResponseElement {
 
     log(rootElements);
 
-    if (!returnCode.equals(ReturnCode.EBICS_DOWNLOAD_POSTPROCESS_DONE)) {
+    if (!returnCode.equals(ReturnCode.EBICS_DOWNLOAD_POSTPROCESS_DONE)
+        && !returnCode.equals(ReturnCode.EBICS_OK)) {
       returnCode.throwException();
     }
   }

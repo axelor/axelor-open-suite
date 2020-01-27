@@ -18,7 +18,6 @@
 package com.axelor.apps.account.service.payment.invoice.payment;
 
 import com.axelor.apps.account.db.InvoicePayment;
-import com.axelor.apps.account.db.Move;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -35,5 +34,6 @@ public interface InvoicePaymentValidateService {
       throws AxelorException, JAXBException, IOException, DatatypeConfigurationException;
 
   @Transactional(rollbackOn = {Exception.class})
-  public Move createMoveForInvoicePayment(InvoicePayment invoicePayment) throws AxelorException;
+  public InvoicePayment createMoveForInvoicePayment(InvoicePayment invoicePayment)
+      throws AxelorException;
 }
