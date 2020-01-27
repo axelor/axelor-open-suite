@@ -53,6 +53,7 @@ In this case, the file is correctly retrieved from the bank server, but not save
 - MULTI INVOICING: add control on generateMultiInvoiceBtn when invoice has already been created.
 - INVOICE PAYMENT: fix an issue where an invoice payment is taken into account twice.
 - GEONAME: fix city import.
+- LEAVEREQUEST : "Cannot get property 'id' on null object"
 
 ## [5.2.2] - 2020-01-09
 ## Features
