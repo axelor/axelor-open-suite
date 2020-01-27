@@ -8,7 +8,8 @@
 ## Bug Fixes
 - INVOICE : Fixed payment mode on mass invoicing refund.
 - MESSAGE : correction of sending a message and update status of message
-- Account : missing translations.
+- BankOrder : change in translation of partnerTypeSelect field.
+- Account : missing translations
 
 ## [5.2.3] - 2020-01-23
 ## Features
