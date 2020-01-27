@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
@@ -72,6 +73,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       UnitConversionService unitConversionService,
       WeightedAveragePriceService weightedAveragePriceService,
       TrackingNumberRepository trackingNumberRepo,
+      ShippingCoefService shippingCoefService,
       AccountManagementService accountManagementService,
       PriceListService priceListService) {
     super(
@@ -83,7 +85,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         stockLocationLineService,
         unitConversionService,
         weightedAveragePriceService,
-        trackingNumberRepo);
+        trackingNumberRepo,
+        shippingCoefService);
     this.accountManagementService = accountManagementService;
     this.priceListService = priceListService;
   }
@@ -97,6 +100,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       BigDecimal requestedReservedQty,
       BigDecimal unitPrice,
       BigDecimal companyUnitPriceUntaxed,
+      BigDecimal companyPurchasePrice,
       Unit unit,
       StockMove stockMove,
       int type,
@@ -115,6 +119,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
               quantity,
               unitPrice,
               companyUnitPriceUntaxed,
+              companyPurchasePrice,
               unit,
               stockMove,
               taxed,
@@ -136,6 +141,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
           BigDecimal.ZERO,
           BigDecimal.ZERO,
           companyUnitPriceUntaxed,
+          BigDecimal.ZERO,
           unit,
           stockMove,
           null);
@@ -361,6 +367,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
             productName,
             description,
             quantity,
+            BigDecimal.ZERO,
             BigDecimal.ZERO,
             BigDecimal.ZERO,
             BigDecimal.ZERO,

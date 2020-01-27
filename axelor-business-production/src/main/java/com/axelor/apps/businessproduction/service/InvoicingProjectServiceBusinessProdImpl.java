@@ -31,7 +31,6 @@ import com.google.inject.persist.Transactional;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
-
 import org.apache.commons.collections.CollectionUtils;
 
 public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectService {

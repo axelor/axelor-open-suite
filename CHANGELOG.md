@@ -5,6 +5,7 @@
 - BankOrder : Display of Signatory ebics user and Sending date time in report.
 
 ## Improvements
+- Stock Move Line: store purchase price in stock move line to use this information in the declaration of exchanges.
 ## Bug Fixes
 - INVOICE : Fixed payment mode on mass invoicing refund.
 - MESSAGE : correction of sending a message and update status of message

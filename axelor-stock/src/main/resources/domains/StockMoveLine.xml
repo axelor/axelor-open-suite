@@ -44,6 +44,7 @@
     <decimal name="companyUnitPriceUntaxed" precision="20" scale="10" title="Company Unit price W.T."/>
 
     <decimal name="wapPrice" precision="20" scale="10" readonly="true" nullable="true" title="Price used for WAP"/>
+    <decimal name="companyPurchasePrice" help="Purchase price in company currency, used for declaration of exchange." precision="20" scale="10" title="Purchase price"/>
 
     <string name="productTypeSelect" title="Product type" selection="product.product.type.select"/>
     <integer name="sequence" title="Seq."/>
