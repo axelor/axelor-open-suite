@@ -72,7 +72,7 @@
 	  		</panel>
 	    	<panel name="bankDetailsPanel" title="Bank details">
                 <field name="defaultBankDetails" onSelect="action-company-attrs-default-bank-details-domain" form-view="bank-details-form" grid-view="bank-details-grid"/>
-	      		<panel-related name="bankDetailsSetPanel" field="bankDetailsSet" showTitle="false" colSpan="12" form-view="bank-details-form" grid-view="bank-details-grid"/>
+	      		<panel-related name="bankDetailsListPanel" field="bankDetailsList" showTitle="false" colSpan="12" form-view="bank-details-form" grid-view="bank-details-grid"/>
 	    	</panel>
 	    	<panel name="orderBloquedMessagePanel" title="Order Bloqued Message" if-module="axelor-sale" if="__config__.app.isApp('sale')">
 	      		<field name="orderBloquedMessage"/>
@@ -107,9 +107,9 @@
     </action-view>
 	
 	<action-attrs name="action-company-attrs-default-bank-details-domain">
-		<attribute name="domain" for="defaultBankDetails" if="bankDetailsSet &amp;&amp; !bankDetailsSet.isEmpty()"
-				   expr="eval: &quot;self.id IN (${bankDetailsSet.collect{it.id}.join(',')})&quot;"/>
-		<attribute name="domain" for="defaultBankDetails" if="!bankDetailsSet || bankDetailsSet.isEmpty()"
+		<attribute name="domain" for="defaultBankDetails" if="bankDetailsList &amp;&amp; !bankDetailsList.isEmpty()"
+				   expr="eval: &quot;self.id IN (${bankDetailsList.collect{it.id}.join(',')})&quot;"/>
+		<attribute name="domain" for="defaultBankDetails" if="!bankDetailsList || bankDetailsList.isEmpty()"
 				   expr="self.id IN (0)"/>
 	</action-attrs>
 

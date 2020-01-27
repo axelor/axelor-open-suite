@@ -40,6 +40,7 @@
 - Studio: Disable 'Visible in grid' option for spacer
 - STOCK MOVE LINE : display invoiced status at same place as avalable tag
 - DMS Import : Improvement in code
+- Company : Replace the M2M bankDetailsSet with O2M
 
 ## Bug Fixes
 - Fix injection error during test
