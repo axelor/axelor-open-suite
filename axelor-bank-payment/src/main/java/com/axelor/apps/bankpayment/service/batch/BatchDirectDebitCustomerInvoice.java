@@ -89,7 +89,7 @@ public class BatchDirectDebitCustomerInvoice extends BatchDirectDebit {
 
       if (accountingBatch.getIncludeOtherBankAccounts()
           && appBaseService.getAppBase().getManageMultiBanks()) {
-        bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsSet());
+        bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsList());
       }
 
       filterList.add("self.companyBankDetails IN (:bankDetailsSet)");

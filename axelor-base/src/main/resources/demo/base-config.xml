@@ -115,7 +115,7 @@
 	</input>
 	
 	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId" call="com.axelor.csv.script.ImportCompany:importCompany">
-		<bind column="bankDetailsSet_id" to="bankDetailsSet" search="self.importId in :bankDetailsSet_id" update="true" />
+		<bind column="bankDetailsList_id" to="bankDetailsList" search="self.importId in :bankDetailsList_id" update="true" />
 	</input>
 	
 	<input file="base_year.csv" separator=";" type="com.axelor.apps.base.db.Year" search="self.importId = :importId"/>
