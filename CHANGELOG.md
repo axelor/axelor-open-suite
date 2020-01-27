@@ -10,6 +10,7 @@
 - MESSAGE : correction of sending a message and update status of message
 - BankOrder : change in translation of partnerTypeSelect field.
 - Account : missing translations
+- BankOrder : Fix domain issue of signatoryEbicsUser field.
 
 ## [5.2.3] - 2020-01-23
 ## Features
