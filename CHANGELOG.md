@@ -15,6 +15,7 @@
 - Account : missing translations
 - BankOrder : Fix domain issue of signatoryEbicsUser field.
 - INVENTORY : Fix issue of realQty when copy inventory.
+- TIMESHEET : Remove leave days and holidays when changing end date.
 
 ## [5.2.3] - 2020-01-23
 ## Features

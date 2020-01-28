@@ -168,6 +168,7 @@
 
 	<action-group name="action-timesheet-group-onsave">
 		<action name="action-timesheet-validate-toDate"/>
+		<action name="action-timesheet-method-remove-after-to-date-timesheetlines" if="id &amp;&amp; toDate != null"/>
 		<action name="action-timesheet-method-timesheet-compute-period-total"/>
 		<action name="action-timesheet-method-update-operation-order" if="__config__.app.getApp('production')?.getManageBusinessProduction()"/>
 	</action-group>
@@ -232,7 +233,7 @@
 		<action name="action-timesheet-attrs-from-date-on-new"/>
 		<action name="action-timesheet-attrs-panels"/>
 	</action-group>
-
+	
 	<action-method name="action-timesheet-prefill-lines">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="prefillLines" />
 	</action-method>
@@ -416,6 +417,10 @@
     	<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="openTimesheetEditor"/>
     </action-method>
 
+	<action-method name="action-timesheet-method-remove-after-to-date-timesheetlines">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="removeAfterToDateTimesheetLines"/>
+	</action-method>
+	
 	<action-view name="action-timesheet-view-total-hours-per-day" title="">
   		<view name="chart.total.hours.per.day" type="chart"/>
     	<context name="timesheet_id" expr="eval: id"/>
