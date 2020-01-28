@@ -3,6 +3,7 @@
 ## [Unreleased 5.2.4]
 ## Features
 - BankOrder : Display of Signatory ebics user and Sending date time in report.
+- ACCOUNTING REPORT : new filter for analytic distribution.
 
 ## Improvements
 ## Bug Fixes
