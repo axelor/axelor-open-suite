@@ -62,7 +62,10 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
   @Override
   public FixedAsset generateAndcomputeLines(FixedAsset fixedAsset) {
-    boolean isLinear = fixedAsset.getComputationMethodSelect().equals("linear");
+    boolean isLinear =
+        fixedAsset
+            .getComputationMethodSelect()
+            .equals(FixedAssetRepository.COMPUTATION_METHOD_LINEAR);
     BigDecimal depreciationValue = this.computeDepreciationValue(fixedAsset, isLinear);
     BigDecimal cumulativeValue = depreciationValue;
     LocalDate depreciationDate = fixedAsset.getFirstDepreciationDate();
@@ -120,7 +123,9 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         continue;
       }
 
-      if (fixedAsset.getComputationMethodSelect().equals("degressive")) {
+      if (fixedAsset
+          .getComputationMethodSelect()
+          .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
         if (counter > 2 && fixedAsset.getNumberOfDepreciation() > 3) {
           if (counter == 3) {
             int remainingYear = fixedAsset.getNumberOfDepreciation() - 3;
@@ -203,7 +208,9 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     float depreciationRate = numberOfDepreciation == 0 ? 0 : 1f / numberOfDepreciation * 100f;
     BigDecimal ddRate = BigDecimal.ONE;
     BigDecimal prorataTemporis = this.computeProrataTemporis(fixedAsset, isFirstYear);
-    if (fixedAsset.getComputationMethodSelect().equals("degressive")) {
+    if (fixedAsset
+        .getComputationMethodSelect()
+        .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
       ddRate = fixedAsset.getDegressiveCoef();
     }
     return residualValue
@@ -361,7 +368,9 @@ public class FixedAssetServiceImpl implements FixedAssetService {
             : fixedAsset.getNumberOfDepreciation();
     float depreciationRate = 1f / numberOfDepreciation * 100f;
     BigDecimal ddRate = BigDecimal.ONE;
-    if (fixedAsset.getComputationMethodSelect().equals("degressive")) {
+    if (fixedAsset
+        .getComputationMethodSelect()
+        .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
       ddRate = fixedAsset.getDegressiveCoef();
     }
     BigDecimal deprecationValue =
