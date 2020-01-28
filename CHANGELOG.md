@@ -6,6 +6,8 @@
 - ACCOUNTING REPORT : new filter for analytic distribution.
 
 ## Improvements
+- PaymentMode : Add sequence field on account settings grid view.
+
 ## Bug Fixes
 - INVOICE : Fixed payment mode on mass invoicing refund.
 - MESSAGE : correction of sending a message and update status of message
@@ -13,6 +15,7 @@
 - Account : missing translations
 - BankOrder : Fix domain issue of signatoryEbicsUser field.
 - INVENTORY : Fix issue of realQty when copy inventory.
+- TIMESHEET : Remove leave days and holidays when changing end date.
 - CAMPAIGN : Fix filter value each time changes while Generating targets from TargetList
 
 ## [5.2.3] - 2020-01-23
