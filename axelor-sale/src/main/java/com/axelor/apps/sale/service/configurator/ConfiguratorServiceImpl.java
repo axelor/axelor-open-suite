@@ -193,7 +193,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       // generate sale order line from product
       saleOrderLine = new SaleOrderLine();
       saleOrderLine.setSaleOrder(saleOrder);
-      generateProduct(configurator, jsonAttributes, jsonIndicators);
+      generate(configurator, jsonAttributes, jsonIndicators);
 
       saleOrderLine.setProduct(configurator.getProduct());
       this.fillSaleOrderWithProduct(saleOrderLine);
