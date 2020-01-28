@@ -199,9 +199,9 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       this.fillSaleOrderWithProduct(saleOrderLine);
       Beans.get(SaleOrderLineService.class)
           .computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
+      Beans.get(SaleOrderLineRepository.class).save(saleOrderLine);
     } else {
-      saleOrderLine =
-          generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
+      generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
     }
     Beans.get(SaleOrderComputeService.class).computeSaleOrder(saleOrder);
 

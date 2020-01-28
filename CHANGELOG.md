@@ -17,6 +17,7 @@
 - INVENTORY : Fix issue of realQty when copy inventory.
 - TIMESHEET : Remove leave days and holidays when changing end date.
 - CAMPAIGN : Fix filter value each time changes while Generating targets from TargetList
+- Configurator: Fix sale order line not being created from a configurator.
 
 ## [5.2.3] - 2020-01-23
 ## Features
