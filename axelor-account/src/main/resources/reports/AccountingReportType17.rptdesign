@@ -451,6 +451,7 @@ WHERE
     AND (AccountingReport.date_to IS NULL OR Asset.disposal_date <= AccountingReport.date_to)
    ))
    AND Asset.company = AccountingReport.company
+   AND (AccountingReport.analytic_distribution_template IS NULL OR Asset.analytic_distribution_template = AccountingReport.analytic_distribution_template)
 ORDER BY Account.code]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
