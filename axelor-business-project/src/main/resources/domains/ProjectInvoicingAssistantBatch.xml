@@ -11,6 +11,7 @@
   	<string name="code" title="Code" namecolumn="true" unique="true"/>
     <integer name="actionSelect" title="Action" required="true" selection="project.invoicing.assistant.batch.action.select"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" />
+    <integer name="consolidatePhaseSelect" title="Consolidate the phases" selection="project.invoicing.assistant.batch.consolidate.phase.select"/>
     
     <!-- OTHERS INFORMATIONS -->
     <string name="description" title="Description" large="true" />
@@ -21,6 +22,11 @@
 	   	// ACTION TYPE
 		public static final int ACTION_UPDATE_TASKS = 1;
 		public static final int ACTION_GENERATE_INVOICING_PROJECT = 2;
+
+		//CONSOLIDATE PHASE SELECT
+		public static final int CONSOLIDATE_PHASE_CONSOLIDATE_ALL = 1;
+		public static final int CONSOLIDATE_PHASE_DONT_CONSOLIDATE = 2;
+		public static final int CONSOLIDATE_PHASE_DEFAULT_VALUE = 3;
 	
 	]]></extra-code>
 	

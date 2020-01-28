@@ -46,6 +46,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -146,7 +147,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       throws AxelorException {
 
     // the case when stockMove is null is made in super.
-    if (stockMove == null) {
+    if (stockMove == null || !Beans.get(AppBaseService.class).isApp("supplychain")) {
       return super.compute(stockMoveLine, null);
     }
 
@@ -241,6 +242,9 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
 
     StockMoveLine newStockMoveLine = super.splitStockMoveLine(stockMoveLine, qty, trackingNumber);
 
+    if (!Beans.get(AppBaseService.class).isApp("supplychain")) {
+      return newStockMoveLine;
+    }
     BigDecimal reservedQtyAfterSplit =
         BigDecimal.ZERO.max(stockMoveLine.getRequestedReservedQty().subtract(qty));
     BigDecimal reservedQtyInNewLine = stockMoveLine.getRequestedReservedQty().min(qty);
@@ -253,6 +257,12 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
 
   @Override
   public void updateAvailableQty(StockMoveLine stockMoveLine, StockLocation stockLocation) {
+
+    if (!Beans.get(AppBaseService.class).isApp("supplychain")) {
+      super.updateAvailableQty(stockMoveLine, stockLocation);
+      return;
+    }
+
     BigDecimal availableQty = BigDecimal.ZERO;
     BigDecimal availableQtyForProduct = BigDecimal.ZERO;
 
@@ -374,6 +384,12 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
   @Override
   public void setProductInfo(StockMove stockMove, StockMoveLine stockMoveLine, Company company)
       throws AxelorException {
+
+    if (!Beans.get(AppBaseService.class).isApp("supplychain")) {
+      super.setProductInfo(stockMove, stockMoveLine, company);
+      return;
+    }
+
     Preconditions.checkNotNull(stockMoveLine);
     Preconditions.checkNotNull(company);
 

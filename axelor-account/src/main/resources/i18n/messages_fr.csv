@@ -1,5 +1,5 @@
 "key","message","comment","context"
-"${label} move lines",,,
+"${label} move lines","Lignes d'écritures : ${label}",,
 "%",,,
 "%d account treated successfully,",,,
 "%d accounts treated successfully,",,,
@@ -1700,7 +1700,7 @@
 "Short term debt duration (month)","Nbre de mois (créance + 3 mois)",,
 "Show invoices","Voir factures associées",,
 "Show mail","Voir mails associés",,
-"Show move lines",,,
+"Show move lines","Voir les lignes d'écriture",,
 "Situation","État",,
 "Skip ventilation","Sauter la ventilation",,
 "So many accounting operations are used on this move, so move can't be canceled","Trop d'opérations comptables ont été réalisées sur cette écriture, elle ne peut donc être annulée",,

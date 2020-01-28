@@ -122,6 +122,12 @@ public class DataBackupCreateService {
     Map<String, List<String>> subClassesMap = getSubClassesMap();
 
     for (MetaModel metaModel : metaModelList) {
+
+      /*Checking and ByPassing non-persistable Classes MetaModel*/
+      if (metaModel.getTableName() == null) {
+        continue;
+      }
+
       try {
         List<String> subClasses = subClassesMap.get(metaModel.getFullName());
         long totalRecord = getMetaModelDataCount(metaModel, subClasses);
