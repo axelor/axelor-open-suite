@@ -5,6 +5,8 @@
 - BankOrder : Display of Signatory ebics user and Sending date time in report.
 
 ## Improvements
+- PaymentMode : Add sequence field on account settings grid view.
+
 ## Bug Fixes
 - INVOICE : Fixed payment mode on mass invoicing refund.
 - MESSAGE : correction of sending a message and update status of message
