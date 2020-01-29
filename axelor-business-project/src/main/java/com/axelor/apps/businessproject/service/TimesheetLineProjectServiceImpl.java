@@ -18,6 +18,7 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
@@ -26,6 +27,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
@@ -52,7 +54,8 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
     TimesheetLine timesheetLine =
         super.createTimesheetLine(project, product, user, date, timesheet, hours, comments);
 
-    if (project != null
+    if (Beans.get(AppBusinessProjectService.class).isApp("business-project")
+        && project != null
         && (project.getIsInvoicingTimesheet()
             || (project.getParentProject() != null
                 && project.getParentProject().getIsInvoicingTimesheet())))

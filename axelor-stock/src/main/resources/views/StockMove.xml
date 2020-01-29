@@ -661,6 +661,7 @@
     	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Internal move lines')" if="typeSelect == 1"/>
     	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Outgoing move lines')" if="typeSelect == 2"/>
     	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Incoming move lines')" if="typeSelect == 3"/>
+    	<attribute name="required" for="fromAddress" expr="eval: typeSelect == __repo__(StockMove).TYPE_INCOMING &amp;&amp; !isReversion"/>
     </action-attrs>
 	
 	<action-attrs name="action-stock-move-attrs-set-values-typeselect-onchange">
