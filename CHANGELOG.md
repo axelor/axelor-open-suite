@@ -54,4 +54,6 @@
 - MRP : Fix error while generating all proposals.
 - UI : Addition of onClick attributes in buttons.
 - ImportCityServiceImpl : Use of try-with-resource for ZipFile and FileWriter.
+- SaleOrderLine : Hide qty column in SaleOrder report when only saleOrderLine with typeSelect 'title' is present.
+
 

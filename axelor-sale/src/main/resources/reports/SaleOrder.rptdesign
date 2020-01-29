@@ -1544,6 +1544,12 @@ where SaleOrder.id = ?]]></xml-property>
                     <text-property name="displayName">hideUnitAmounts</text-property>
                     <text-property name="heading">hideUnitAmounts</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">typeSelect</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">typeSelect</text-property>
+                    <text-property name="heading">typeSelect</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -1677,6 +1683,11 @@ where SaleOrder.id = ?]]></xml-property>
                     <structure>
                         <property name="position">24</property>
                         <property name="name">hideUnitAmounts</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">25</property>
+                        <property name="name">typeSelect</property>
                         <property name="dataType">integer</property>
                     </structure>
                 </list-property>
@@ -1827,6 +1838,12 @@ where SaleOrder.id = ?]]></xml-property>
                     <property name="nativeName">hideUnitAmounts</property>
                     <property name="dataType">integer</property>
                 </structure>
+                <structure>
+                    <property name="position">25</property>
+                    <property name="name">typeSelect</property>
+                    <property name="nativeName">typeSelect</property>
+                    <property name="dataType">integer</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
 	SOLine.id, 
@@ -1860,8 +1877,8 @@ where SaleOrder.id = ?]]></xml-property>
 	SOLine.estimated_deliv_date as "EstimatedDeliveryDate",
 	SOLine.price_discounted as "price_discounted",
 	SOLine.is_show_total as "showTotal",
-	SOLine.is_hide_unit_amounts as "hideUnitAmounts"
-	
+	SOLine.is_hide_unit_amounts as "hideUnitAmounts",
+	SOLine.type_select as "typeSelect"
 from sale_sale_order as SaleOrder
 left outer join sale_sale_order_line as SOLine on (SOLine.sale_order = SaleOrder.id)
 left outer join base_product as Product on (SOLine.product = Product.id)
@@ -4337,6 +4354,12 @@ row["ex_tax_total"] - row["totalDiscountAmount"]
                                 </list-property>
                                 <property name="allowExport">true</property>
                             </structure>
+                            <structure>
+                                <property name="name">typeSelect</property>
+                                <text-property name="displayName">typeSelect</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["typeSelect"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
                         </list-property>
                         <column id="4611">
                             <list-property name="visibility">
@@ -4369,6 +4392,12 @@ row["ex_tax_total"] - row["totalDiscountAmount"]
                             <property name="width">10%</property>
                         </column>
                         <column id="4615">
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row["typeSelect"] == 1</expression>
+                                </structure>
+                            </list-property>
                             <property name="width">10%</property>
                         </column>
                         <column id="4616">
