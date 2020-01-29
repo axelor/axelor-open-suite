@@ -535,6 +535,8 @@
 "Provision","Mise à disposition",,
 "Purchase Qty by tracking","Qté par lot à l'achat",,
 "Purchase order",,,
+"Purchase price","Prix d'achat",,
+"Purchase price in company currency, used for declaration of exchange.","Prix d'achat dans la devise société, utilisé pour la DEB.",,
 "Purchase tracking management","Suivi Achats",,
 "Qty","Qté",,
 "Quality control default stock location","Emplacement contrôle qualité",,

@@ -411,6 +411,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
               requestedReservedQty,
               priceDiscounted,
               companyUnitPriceUntaxed,
+              null,
               unit,
               stockMove,
               StockMoveLineService.TYPE_SALES,
