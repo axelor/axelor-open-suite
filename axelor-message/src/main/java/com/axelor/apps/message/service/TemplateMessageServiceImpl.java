@@ -177,7 +177,6 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 
     mediaTypeSelect = this.getMediaTypeSelect(template);
     log.debug("Media ::: {}", mediaTypeSelect);
-    log.debug("Content ::: {}", content);
 
     Message message =
         messageService.createMessage(
@@ -320,7 +319,6 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
     EmailAccount mailAccount = Beans.get(MailAccountService.class).getDefaultSender();
 
     if (mailAccount != null) {
-      log.debug("Email account ::: {}", mailAccount);
       return mailAccount;
     }
 

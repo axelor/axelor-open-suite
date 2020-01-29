@@ -9,6 +9,7 @@
 - PaymentMode : Add sequence field on account settings grid view.
 - Stock Move Line: store purchase price in stock move line to use this information in the declaration of exchanges.
 - INVOICE : add specific note of company bank details on invoice report.
+- Message : Improved performance when generating mail messages from templates. 
 
 ## Bug Fixes
 - INVOICE : Fixed payment mode on mass invoicing refund.
