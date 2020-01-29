@@ -7,6 +7,7 @@
 
 ## Improvements
 - PaymentMode : Add sequence field on account settings grid view.
+- PARTNER : Deleting partner will not remove linked employee.
 
 ## Bug Fixes
 - INVOICE : Fixed payment mode on mass invoicing refund.
