@@ -3,14 +3,23 @@
 ## [Unreleased 5.2.4]
 ## Features
 - BankOrder : Display of Signatory ebics user and Sending date time in report.
+- ACCOUNTING REPORT : new filter for analytic distribution.
 
 ## Improvements
+- PaymentMode : Add sequence field on account settings grid view.
 - Stock Move Line: store purchase price in stock move line to use this information in the declaration of exchanges.
+
 ## Bug Fixes
 - INVOICE : Fixed payment mode on mass invoicing refund.
 - MESSAGE : correction of sending a message and update status of message
 - BankOrder : change in translation of partnerTypeSelect field.
 - Account : missing translations
+- BankOrder : Fix domain issue of signatoryEbicsUser field.
+- INVENTORY : Fix issue of realQty when copy inventory.
+- TIMESHEET : Remove leave days and holidays when changing end date.
+- CAMPAIGN : Fix filter value each time changes while Generating targets from TargetList
+- Configurator: Fix sale order line not being created from a configurator.
+- Configurator: Generate bill of material on generating a sale order line from a configurator.
 
 ## [5.2.3] - 2020-01-23
 ## Features
