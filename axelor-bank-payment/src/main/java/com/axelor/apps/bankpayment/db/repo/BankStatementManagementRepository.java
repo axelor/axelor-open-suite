@@ -15,25 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.businessproject.db.repo;
+package com.axelor.apps.bankpayment.db.repo;
 
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
-import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
-import com.axelor.inject.Beans;
+import com.axelor.apps.bankpayment.db.BankStatement;
 
-public class InvoiceProjectRepository extends InvoiceManagementRepository {
+public class BankStatementManagementRepository extends BankStatementRepository {
 
   @Override
-  public void remove(Invoice entity) {
-
-    if (Beans.get(AppBusinessProjectService.class).isApp("business-project")) {
-      Beans.get(InvoicingProjectRepository.class)
-          .all()
-          .filter("self.invoice.id = ?", entity.getId())
-          .remove();
-    }
-
-    super.remove(entity);
+  public BankStatement copy(BankStatement entity, boolean deep) {
+    BankStatement bankStatement = super.copy(entity, deep);
+    bankStatement.setStatusSelect(this.STATUS_RECEIVED);
+    return bankStatement;
   }
 }

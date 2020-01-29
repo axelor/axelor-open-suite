@@ -332,7 +332,7 @@
 				<field name="companyCurrencyTotalAmount" colSpan="8"/>
 				<field name="companyCurrency" canView="false" grid-view="currency-grid" form-view="currency-form" colSpan="4"/>
 			</panel>
-    		<field name="signatoryEbicsUser" title="Ebics User" widget="SuggestBox" colOffset="1" canEdit="false" colSpan="6" required="true" grid-view="ebics-user-grid" form-view="ebics-user-form" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet AND self.statusSelect = 3"/>
+    		<field name="signatoryEbicsUser" title="Ebics User" widget="SuggestBox" colOffset="1" canEdit="false" colSpan="6" required="true" grid-view="ebics-user-grid" form-view="ebics-user-form" domain=":senderBankDetails MEMBER OF self.ebicsPartner.bankDetailsSet AND self.statusSelect = 3"/>
     		<field name="$password" title="Password" widget="password" colOffset="1"  colSpan="6" required="true"/>
     		<button name="validateBtn" title="Validate" colOffset="1"  colSpan="6" onClick="save,action-bank-order-method-validate,close"/>
     		<field name="isMultiCurrency" hidden="true"/>

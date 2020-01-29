@@ -17,6 +17,7 @@
 		    <field name="actionSelect" onChange="action-base-batch-attrs-action-select"/>
 		    <field name="code" x-bind="{{code|unaccent|uppercase}}" onChange="action-base-batch-condition-check-unique-code"/>
 		    <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+		    <field name="consolidatePhaseSelect" showIf="actionSelect == 2" validIf="actionSelect != 2 || consolidatePhaseSelect"/>
 		</panel>
     	<panel name="informationPanel" title="Information">
 			<field name="createdOn" title="Created on"/>
@@ -26,7 +27,7 @@
 	    </panel>
   		<panel name="actionPanel" sidebar="true">
   			<button name="updateTaskBtn" title="Update tasks" onClick="save,action-project-invoicing-assistant-batch-method-update-task" showIf="actionSelect == 1"/>
-  			<button name="generateInvoicingProjectBtn" title="Generate invoicing projects" onClick="save,action-project-invoicing-assistant-batch-method-generate-inv-project" showIf="actionSelect == 2"/>
+            <button name="generateInvoicingProjectBtn" title="Generate invoicing projects" onClick="save,action-project-invoicing-assistant-batch-method-generate-inv-project" showIf="actionSelect == 2"/>
   		</panel>
     </form>
 
@@ -56,5 +57,5 @@
 	<action-method name="action-project-invoicing-assistant-batch-method-show-inv-project">
 		<call class="com.axelor.apps.businessproject.web.ProjectInvoicingAssistantBatchController" method="showGeneratedInvoicingProject"/>
 	</action-method>
-	
+
 </object-views>

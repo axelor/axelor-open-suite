@@ -21,17 +21,12 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingReportServiceImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.bankpayment.report.IReport;
-import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.BankDetailsService;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
@@ -66,28 +61,6 @@ public class AccountingReportBankPaymentServiceImpl extends AccountingReportServ
           .getFileLink();
     } else {
       return super.getReportFileLink(accountingReport, name);
-    }
-  }
-
-  @Override
-  public String getSequence(AccountingReport accountingReport) throws AxelorException {
-    SequenceService sequenceService = Beans.get(SequenceService.class);
-    int accountingReportTypeSelect = accountingReport.getTypeSelect();
-
-    if (accountingReportTypeSelect >= 3000) {
-      String seq =
-          sequenceService.getSequenceNumber(
-              SequenceRepository.ACCOUNTING_REPORT, accountingReport.getCompany());
-      if (seq == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.ACCOUNTING_REPORT_1),
-            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
-            accountingReport.getCompany().getName());
-      }
-      return seq;
-    } else {
-      return super.getSequence(accountingReport);
     }
   }
 }

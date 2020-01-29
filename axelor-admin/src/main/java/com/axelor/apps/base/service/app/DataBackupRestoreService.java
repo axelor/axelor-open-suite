@@ -112,21 +112,22 @@ public class DataBackupRestoreService {
 
   private boolean unZip(MetaFile zipMetaFile, String destinationDirectoryPath) throws IOException {
     File zipFile = MetaFiles.getPath(zipMetaFile).toFile();
-    ZipInputStream zis = new ZipInputStream(new BufferedInputStream(new FileInputStream(zipFile)));
-    ZipEntry ze;
-    byte[] buffer = new byte[1024];
-    int count;
-    while ((ze = zis.getNextEntry()) != null) {
-      FileOutputStream fout =
-          new FileOutputStream(new File(destinationDirectoryPath, ze.getName()));
-      while ((count = zis.read(buffer)) != -1) {
-        fout.write(buffer, 0, count);
+    try (ZipInputStream zis =
+        new ZipInputStream(new BufferedInputStream(new FileInputStream(zipFile)))) {
+      ZipEntry ze;
+      byte[] buffer = new byte[1024];
+      int count;
+      while ((ze = zis.getNextEntry()) != null) {
+        try (FileOutputStream fout =
+            new FileOutputStream(new File(destinationDirectoryPath, ze.getName()))) {
+          while ((count = zis.read(buffer)) != -1) {
+            fout.write(buffer, 0, count);
+          }
+        }
+        zis.closeEntry();
       }
-      fout.close();
-      zis.closeEntry();
+      return true;
     }
-    zis.close();
-    return true;
   }
 
   public boolean SeuencesExist() {

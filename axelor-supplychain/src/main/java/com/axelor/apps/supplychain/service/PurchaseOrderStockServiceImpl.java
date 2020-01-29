@@ -397,6 +397,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     BigDecimal shippingCoef =
         shippingCoefService.getShippingCoef(
             product, purchaseOrder.getSupplierPartner(), purchaseOrder.getCompany(), qty);
+    BigDecimal companyPurchasePrice = priceDiscounted;
     priceDiscounted = priceDiscounted.multiply(shippingCoef);
     companyUnitPriceUntaxed = companyUnitPriceUntaxed.multiply(shippingCoef);
 
@@ -414,6 +415,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         BigDecimal.ZERO,
         priceDiscounted,
         companyUnitPriceUntaxed,
+        companyPurchasePrice,
         unit,
         stockMove,
         StockMoveLineService.TYPE_PURCHASES,
@@ -430,6 +432,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         purchaseOrderLine.getProduct(),
         purchaseOrderLine.getProductName(),
         purchaseOrderLine.getDescription(),
+        BigDecimal.ZERO,
         BigDecimal.ZERO,
         BigDecimal.ZERO,
         BigDecimal.ZERO,
