@@ -5,6 +5,7 @@
 - BANKSTATEMENT : on copy reset statusSelect
 - GEONAME : import city form zip
 - Check and modify all service code according to app configuration
+- BANKPAYMENT : Update condition to display field ics number.
 
 ## Bug Fixes
 - STOCKMOVE : display qty per tracking number and not total available qty for tracking number
