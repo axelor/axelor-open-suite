@@ -4,6 +4,7 @@
 ## Features
 - BankOrder : Display of Signatory ebics user and Sending date time in report.
 - ACCOUNTING REPORT : new filter for analytic distribution.
+- Timesheet : alert to check manufOrder is finished or not on timesheetLine. 
 
 ## Improvements
 - PaymentMode : Add sequence field on account settings grid view.
