@@ -10,6 +10,7 @@
 - STOCKMOVE : display qty per tracking number and not total available qty for tracking number
 - MOVE LINE : removed the possibility to delete a move line in a move when the move line is reconcile.
 - FIXED ASSET : correction of prorata temporis
+- INVOICE : now the date verification of the ventilation process depends of invoices of the same company.
 
 ## [5.1.14] - 2020-01-17
 ## Improvements
