@@ -9,6 +9,7 @@
 - EBICS USER : fix for strange import - log
 - LEAVE REQUEST: Updated calendar filter
 - STOCK MOVE : Fix link between sale order and backorder stockmove
+- MOVE : corrected sequence generation, now use correctly the date of the move and not the date of validation.
 
 ## [5.0.11] - 2019-12-19
 ## Improvements
