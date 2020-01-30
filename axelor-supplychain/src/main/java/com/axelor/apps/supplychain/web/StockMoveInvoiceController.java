@@ -491,13 +491,7 @@ public class StockMoveInvoiceController {
       StockMove stockMove = Beans.get(StockMoveRepository.class).find(id);
       StockMoveInvoiceService stockMoveInvoiceService = Beans.get(StockMoveInvoiceService.class);
 
-      BigDecimal totalInvoicedQty =
-          stockMove
-              .getStockMoveLineList()
-              .stream()
-              .map(stockMoveInvoiceService::getNonCanceledInvoiceQty)
-              .reduce(BigDecimal::add)
-              .orElse(BigDecimal.ZERO);
+      BigDecimal totalInvoicedQty = stockMoveInvoiceService.computeNonCanceledInvoiceQty(stockMove);
       if (totalInvoicedQty.compareTo(BigDecimal.ZERO) == 0) {
         response.setValue("operationSelect", StockMoveRepository.INVOICE_ALL);
       } else {
