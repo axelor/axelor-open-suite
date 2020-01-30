@@ -1,12 +1,32 @@
 # Changelog
 
 ## [Unreleased 5.2.4]
+## Features
+- BankOrder : Display of Signatory ebics user and Sending date time in report.
+- ACCOUNTING REPORT : new filter for analytic distribution.
+
 ## Improvements
-- ACCOUNTING CUT OFF : display advise message when batch has been already launch with the same move date
+- PaymentMode : Add sequence field on account settings grid view.
+- Stock Move Line: store purchase price in stock move line to use this information in the declaration of exchanges.
+- INVOICE : add specific note of company bank details on invoice report.
+- Message : Improved performance when generating mail messages from templates. 
+- ACCOUNTING CUT OFF : display warning message when batch has been already launched with the same move date.
 
 ## Bug Fixes
 - INVOICE : Fixed payment mode on mass invoicing refund.
 - MESSAGE : correction of sending a message and update status of message
+- BankOrder : change in translation of partnerTypeSelect field.
+- Account : missing translations
+- BankOrder : Fix domain issue of signatoryEbicsUser field.
+- INVENTORY : Fix issue of realQty when copy inventory.
+- TIMESHEET : Remove leave days and holidays when changing end date.
+- CAMPAIGN : Fix filter value each time changes while Generating targets from TargetList
+- Configurator: Fix sale order line not being created from a configurator.
+- Configurator: Generate bill of material on generating a sale order line from a configurator.
+- SaleOrderLine : Hide qty cell in SaleOrder report when saleOrderLine contain typeSelect equal to 'title'.
+- INVOICE : now the date verification of the ventilation process depends of invoices of the same company.
+- MOVE : corrected sequence generation, now use correctly the date of the move and not the date of validation.
+- Stock Move partial invoicing: manage correctly the invoicing status when we refund the invoice.
 
 ## [5.2.3] - 2020-01-23
 ## Features

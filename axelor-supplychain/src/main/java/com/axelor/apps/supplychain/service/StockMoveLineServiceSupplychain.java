@@ -40,6 +40,7 @@ public interface StockMoveLineServiceSupplychain {
    * @param quantity
    * @param requestedReservedQty
    * @param unitPrice
+   * @param purchasePrice
    * @param unit
    * @param stockMove
    * @param type
@@ -58,6 +59,7 @@ public interface StockMoveLineServiceSupplychain {
       BigDecimal requestedReservedQty,
       BigDecimal unitPrice,
       BigDecimal companyUnitPriceUntaxed,
+      BigDecimal purchasePrice,
       Unit unit,
       StockMove stockMove,
       int type,
