@@ -24,7 +24,7 @@
 		<panel name="mainPanel">
 		  <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="12" readonly="true"/>
 			<field name="project" form-view="project-form" grid-view="project-grid" onChange="action-invoicing-project-record-set-consolidate-phase-when-invoicing,action-invoicing-project-method-fill-in"/>
-			<field name="deadlineDate" readonlyIf="invoice" onChange="action-invoicing-project-method-fill-in"/>
+			<field name="deadlineDate" readonlyIf="invoice" />
 			<field name="attachAnnexToInvoice" widget="boolean-switch"  readonlyIf="invoice"/>
 			<button name="generateInvoiceBtn" title="Generate Invoice" onClick="save,action-invoicing-project-method-generate-invoice" hideIf="invoice != null"/>
 			<field name="invoice" readonly="true" form-view="invoice-form" grid-view="invoice-grid" edit-window="blank"/>
