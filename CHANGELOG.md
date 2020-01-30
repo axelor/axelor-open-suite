@@ -10,6 +10,7 @@
 - Stock Move Line: store purchase price in stock move line to use this information in the declaration of exchanges.
 - INVOICE : add specific note of company bank details on invoice report.
 - Message : Improved performance when generating mail messages from templates. 
+- ACCOUNTING CUT OFF : display warning message when batch has been already launched with the same move date.
 
 ## Bug Fixes
 - INVOICE : Fixed payment mode on mass invoicing refund.
