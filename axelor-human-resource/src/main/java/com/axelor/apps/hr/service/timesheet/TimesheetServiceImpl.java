@@ -1094,6 +1094,17 @@ public class TimesheetServiceImpl implements TimesheetService {
             ? employee.getPublicHolidayEventsPlanning()
             : config.getPublicHolidayEventsPlanning();
 
+    if (timesheet.getTimesheetLineList() != null && !timesheet.getTimesheetLineList().isEmpty()) {
+      fromDate =
+          timesheet
+              .getTimesheetLineList()
+              .stream()
+              .map(TimesheetLine::getDate)
+              .max(LocalDate::compareTo)
+              .get()
+              .plusDays(1);
+    }
+
     for (LocalDate date = fromDate; !date.isAfter(toDate); date = date.plusDays(1)) {
       BigDecimal dayValueInHours =
           weeklyPlanningService.getWorkingDayValueInHours(
@@ -1140,10 +1151,16 @@ public class TimesheetServiceImpl implements TimesheetService {
   @Transactional
   public void removeAfterToDateTimesheetLines(Timesheet timesheet) {
 
+    List<TimesheetLine> removedTimesheetLines = new ArrayList<>();
+
     for (TimesheetLine timesheetLine : ListUtils.emptyIfNull(timesheet.getTimesheetLineList())) {
       if (timesheetLine.getDate().isAfter(timesheet.getToDate())) {
-        timesheetlineRepo.remove(timesheetLine);
+        removedTimesheetLines.add(timesheetLine);
+        if (timesheetLine.getId() != null) {
+          timesheetlineRepo.remove(timesheetLine);
+        }
       }
     }
+    timesheet.getTimesheetLineList().removeAll(removedTimesheetLines);
   }
 }

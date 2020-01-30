@@ -613,5 +613,6 @@ public class TimesheetController {
     if (timesheet.getTimesheetLineList() != null && !timesheet.getTimesheetLineList().isEmpty()) {
       Beans.get(TimesheetService.class).removeAfterToDateTimesheetLines(timesheet);
     }
+    response.setValues(timesheet);
   }
 }
