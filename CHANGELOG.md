@@ -3,7 +3,9 @@
 ## [Unreleased 5.0.12]
 ## Improvements
 - ACCOUNTING REPORT : display popup message on click of 'exportBtn'.
+
 ## Bug Fixes
+- INVOICE : now the date verification of the ventilation process depends of invoices of the same company.
 - EBICS USER : fix for strange import - log
 - LEAVE REQUEST: Updated calendar filter
 - STOCK MOVE : Fix link between sale order and backorder stockmove

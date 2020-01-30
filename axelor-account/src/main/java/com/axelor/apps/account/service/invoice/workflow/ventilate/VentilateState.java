@@ -161,27 +161,27 @@ public class VentilateState extends WorkflowInvoice {
    * on ventilated invoice on the same month. - With year reset : determine the sequence using the
    * Max number stored on ventilated invoice on the same year.
    *
+   * @param sequence
    * @throws AxelorException
    */
   protected void checkInvoiceDate(Sequence sequence) throws AxelorException {
 
     String query =
-        "self.statusSelect = ?1 AND self.invoiceDate > ?2 AND self.operationTypeSelect = ?3 ";
+        "self.statusSelect = ?1 AND self.invoiceDate > ?2 AND self.operationTypeSelect = ?3 AND self.company = ?4 ";
     List<Object> params = Lists.newArrayList();
     params.add(InvoiceRepository.STATUS_VENTILATED);
     params.add(invoice.getInvoiceDate());
     params.add(invoice.getOperationTypeSelect());
-
-    int i = 4;
+    params.add(invoice.getCompany());
 
     if (sequence.getMonthlyResetOk()) {
 
-      query += String.format("AND EXTRACT (month from self.invoiceDate) = ?%d ", i++);
+      query += "AND EXTRACT (month from self.invoiceDate) = ?5 ";
       params.add(invoice.getInvoiceDate().getMonthValue());
     }
     if (sequence.getYearlyResetOk()) {
 
-      query += String.format("AND EXTRACT (year from self.invoiceDate) = ?%d ", i++);
+      query += "AND EXTRACT (year from self.invoiceDate) = ?6 ";
       params.add(invoice.getInvoiceDate().getYear());
     }
 
