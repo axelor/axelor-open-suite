@@ -95,7 +95,7 @@
 				<field name="user.employee" hidden="true" />
 				<field if-module="axelor-business-production" if=" __config__.app.getApp('production')?.getManageBusinessProduction()" name="user.employee.timesheetImputationSelect" hidden="true"/>
 				<field name="fromDate" onChange="action-timesheet-validate-fromDate,action-timesheet-record-to-date" colSpan="5" />
-				<field name="toDate" onChange="action-timesheet-validate-toDate" colSpan="5" />
+				<field name="toDate" onChange="action-timesheet-group-to-date-onchange" colSpan="5" />
 				<button name="createBtn" title="Create" colSpan="2" hideIf="id" if="__config__.app.getApp('timesheet').getTimesheetEditor()"  onClick="save,action-timesheet-set-show-editor,action-timesheet-attrs-refresh-editor,action-timesheet-attrs-panels,save" />
 			</panel>
 			
@@ -168,7 +168,6 @@
 
 	<action-group name="action-timesheet-group-onsave">
 		<action name="action-timesheet-validate-toDate"/>
-		<action name="action-timesheet-method-remove-after-to-date-timesheetlines" if="id &amp;&amp; toDate != null"/>
 		<action name="action-timesheet-method-timesheet-compute-period-total"/>
 		<action name="action-timesheet-method-update-operation-order" if="__config__.app.getApp('production')?.getManageBusinessProduction()"/>
 	</action-group>
@@ -232,6 +231,13 @@
 		<action name="action-timesheet-attrs-title-project"/>
 		<action name="action-timesheet-attrs-from-date-on-new"/>
 		<action name="action-timesheet-attrs-panels"/>
+	</action-group>
+	
+	<action-group name="action-timesheet-group-to-date-onchange">
+		<action name="action-timesheet-validate-toDate"/>
+		<action name="action-timesheet-method-remove-after-to-date-timesheetlines" if="id &amp;&amp; toDate != null"/>
+		<action name="action-timesheet-prefill-lines" if="toDate != null &amp;&amp; (__config__.app.getApp('timesheet').getCreateLinesForLeaves() || __config__.app.getApp('timesheet').getCreateLinesForHolidays())"/>
+		<action name="action-timesheet-attrs-refresh-editor" if="showEditor"/>
 	</action-group>
 	
 	<action-method name="action-timesheet-prefill-lines">
