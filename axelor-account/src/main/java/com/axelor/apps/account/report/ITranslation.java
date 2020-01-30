@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -507,6 +507,6 @@ public interface ITranslation {
   public static final String INVOICE_PAYMENT_PAYMENT_MODE = /*$$(*/
       "InvoicePayment.payment_mode"; /*)*/
   public static final String INVOICE_PAYMENT_AMOUNT = /*$$(*/ "InvoicePayment.amount"; /*)*/
-  public static final String ACCOUNTING_REPORT_TYPE_SELECT_INFO =
-      /*$$(*/ "Make sure that all accounting moves are validated."; /*)*/
+  public static final String INVOICE_REPORT_HEAD_OFFICE_ADDR = /*$$(*/
+      "Invoice.headOfficeAddress"; /*)*/
 }

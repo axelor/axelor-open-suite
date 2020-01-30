@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -106,19 +106,20 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     Company company = invoicePayment.getInvoice().getCompany();
 
     if (accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment()) {
-      this.createMoveForInvoicePayment(invoicePayment);
+      invoicePayment = this.createMoveForInvoicePayment(invoicePayment);
     } else {
       Beans.get(AccountingSituationService.class)
           .updateCustomerCredit(invoicePayment.getInvoice().getPartner());
+      invoicePayment = invoicePaymentRepository.save(invoicePayment);
     }
 
+    invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
     if (invoicePayment.getInvoice() != null
         && invoicePayment.getInvoice().getOperationSubTypeSelect()
             == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
       invoicePayment.setTypeSelect(InvoicePaymentRepository.TYPE_ADVANCEPAYMENT);
     }
     invoicePaymentRepository.save(invoicePayment);
-    invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
   }
 
   @Override
@@ -137,7 +138,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
-  public Move createMoveForInvoicePayment(InvoicePayment invoicePayment) throws AxelorException {
+  public InvoicePayment createMoveForInvoicePayment(InvoicePayment invoicePayment)
+      throws AxelorException {
 
     Invoice invoice = invoicePayment.getInvoice();
     Company company = invoice.getCompany();
@@ -238,6 +240,6 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
 
     invoicePaymentRepository.save(invoicePayment);
 
-    return move;
+    return invoicePayment;
   }
 }

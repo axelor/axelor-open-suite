@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -40,6 +40,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -47,6 +48,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -265,18 +267,22 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
 
     teamTask = computeDefaultInformation(teamTask);
 
-    if (teamTask.getInvoicingType() == TeamTaskRepository.INVOICING_TYPE_PACKAGE) {
+    if (teamTask.getInvoicingType() == TeamTaskRepository.INVOICING_TYPE_PACKAGE
+        && !teamTask.getIsTaskRefused()) {
+
       switch (teamTask.getProject().getInvoicingSequenceSelect()) {
         case ProjectRepository.INVOICING_SEQ_INVOICE_PRE_TASK:
           teamTask.setToInvoice(
-              appBusinessProject.getPreTaskStatusSet() != null
-                  && appBusinessProject.getPreTaskStatusSet().contains(teamTask.getStatus()));
+              !Strings.isNullOrEmpty(appBusinessProject.getPreTaskStatusSet())
+                  && Arrays.asList(appBusinessProject.getPreTaskStatusSet().split(","))
+                      .contains(teamTask.getStatus()));
           break;
 
         case ProjectRepository.INVOICING_SEQ_INVOICE_POST_TASK:
           teamTask.setToInvoice(
-              appBusinessProject.getPostTaskStatusSet() != null
-                  && appBusinessProject.getPostTaskStatusSet().contains(teamTask.getStatus()));
+              !Strings.isNullOrEmpty(appBusinessProject.getPostTaskStatusSet())
+                  && Arrays.asList(appBusinessProject.getPostTaskStatusSet().split(","))
+                      .contains(teamTask.getStatus()));
           break;
       }
     } else {

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -47,7 +47,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.CallMethod;
+import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -185,24 +185,12 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       }
 
       invoice.setPartnerTaxNbr(saleOrder.getClientPartner().getTaxNbr());
-      if (ObjectUtils.isEmpty(invoice.getNote())) {
-        if (invoice.getCompanyBankDetails() != null
-            && invoice.getCompanyBankDetails().getSpecificNoteOnInvoice() != null) {
-          invoice.setNote(
-              saleOrder.getInvoiceComments()
-                  + "\n"
-                  + invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
-        } else {
-          invoice.setNote(saleOrder.getInvoiceComments());
-        }
+      if (!Strings.isNullOrEmpty(saleOrder.getInvoiceComments())) {
+        invoice.setNote(saleOrder.getInvoiceComments());
       }
-      if (invoice.getCompanyBankDetails() != null
-          && invoice.getCompanyBankDetails().getSpecificNoteOnInvoice() != null) {
-        invoice.setProformaComments(
-            saleOrder.getProformaComments()
-                + "\n"
-                + invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
-      } else {
+
+      if (ObjectUtils.isEmpty(invoice.getProformaComments())
+          && !Strings.isNullOrEmpty(saleOrder.getProformaComments())) {
         invoice.setProformaComments(saleOrder.getProformaComments());
       }
 
@@ -554,32 +542,32 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
         .orElse(BigDecimal.ZERO);
   }
 
-  @CallMethod
-  public int getStockMoveInvoiceStatus(StockMove stockMove) {
-    Integer invoiceStatus = 0;
-    if (stockMove != null && stockMove.getId() != null) {
-      stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
-
-      if (stockMove.getInvoiceSet() != null && !stockMove.getInvoiceSet().isEmpty()) {
-        Double totalInvoicedQty =
-            stockMove
-                .getStockMoveLineList()
-                .stream()
-                .mapToDouble(sml -> Double.parseDouble(sml.getQtyInvoiced().toString()))
-                .sum();
-        Double totalRealQty =
-            stockMove
-                .getStockMoveLineList()
-                .stream()
-                .mapToDouble(sml -> Double.parseDouble(sml.getRealQty().toString()))
-                .sum();
-        if (totalRealQty.compareTo(totalInvoicedQty) == 1) {
-          invoiceStatus = 1;
-        } else if (totalRealQty.compareTo(totalInvoicedQty) == 0) {
-          invoiceStatus = 2;
-        }
+  @Override
+  public void computeStockMoveInvoicingStatus(StockMove stockMove) {
+    int invoicingStatus = StockMoveRepository.STATUS_NOT_INVOICED;
+    if (stockMove.getStockMoveLineList() != null
+        && stockMove.getInvoiceSet() != null
+        && !stockMove.getInvoiceSet().isEmpty()) {
+      BigDecimal totalInvoicedQty =
+          stockMove
+              .getStockMoveLineList()
+              .stream()
+              .map(StockMoveLine::getQtyInvoiced)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+      BigDecimal totalRealQty =
+          stockMove
+              .getStockMoveLineList()
+              .stream()
+              .map(StockMoveLine::getRealQty)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+      if (totalRealQty.compareTo(totalInvoicedQty) > 0) {
+        invoicingStatus = StockMoveRepository.STATUS_PARTIALLY_INVOICED;
+      } else if (totalRealQty.compareTo(totalInvoicedQty) == 0) {
+        invoicingStatus = StockMoveRepository.STATUS_INVOICED;
       }
     }
-    return invoiceStatus;
+    stockMove.setInvoicingStatusSelect(invoicingStatus);
   }
 }

@@ -230,12 +230,12 @@
 									</h4>
 								]]></viewer>
 							</field>
-							<field name="$invoicingTags" showTitle="false" readonly="true" showIf="statusSelect == 3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()">
-								<viewer depends="$invoiceStatus"><![CDATA[
+							<field name="$invoicingTags" showTitle="false" readonly="true" showIf="statusSelect == 3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+								<viewer depends="invoicingStatusSelect"><![CDATA[
 									<h4 class="text-left">
-										<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.$invoiceStatus == 0"  x-translate>Not invoiced</span>
-										<span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.$invoiceStatus == 1" x-translate>Partially invoiced</span>
-										<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.$invoiceStatus == 2" x-translate>Invoiced</span>
+										<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 0"  x-translate>Not invoiced</span>
+										<span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 1" x-translate>Partially invoiced</span>
+										<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 2" x-translate>Invoiced</span>
 									</h4>
 								]]>
 								</viewer>
@@ -258,7 +258,7 @@
 							]]>
 							</viewer>
 						</field>
-						<field name="$invoiceStatus" hidden="true" colSpan="12"/>
+						<field name="invoicingStatusSelect" hidden="true" colSpan="12"/>
 					</panel>
 				</panel>
 			</panel>
@@ -592,7 +592,6 @@
         <action name="action-stock-move-attrs-hide-avg-price"/>
         <action name="action-stock-move-attrs-set-required-shipment-supplier-details"/>
 		<action name="action-stock-move-attrs-filter-on-available-products"/>
-		<action name="action-supplychain-stock-move-record-set-invoice-status"/>
 		<action name="action-stock-move-attrs-check-delivery-address" if="partner?.partnerAddressList?.size() > 1" />
     </action-group>
     
@@ -662,6 +661,7 @@
     	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Internal move lines')" if="typeSelect == 1"/>
     	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Outgoing move lines')" if="typeSelect == 2"/>
     	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Incoming move lines')" if="typeSelect == 3"/>
+    	<attribute name="required" for="fromAddress" expr="eval: typeSelect == __repo__(StockMove).TYPE_INCOMING &amp;&amp; !isReversion"/>
     </action-attrs>
 	
 	<action-attrs name="action-stock-move-attrs-set-values-typeselect-onchange">

@@ -20,11 +20,29 @@
 		<field name="statusSelect"/>
 	</grid>
 	
+	<grid name="ebics-user-group-grid" title="Ebics user" model="com.axelor.apps.bankpayment.db.EbicsUser" groupBy="ebicsPartner.ebicsBank,ebicsPartner" orderBy="ebicsPartner.ebicsBank,ebicsPartner,userId">
+		<toolbar>
+  			<button name="exportUsersBtn" title="Export" onClick="action-export-ebics-user" />
+    		<button name="importUsersBtn" title="Import" onClick="action-ebics-open-import-ebics-users" />
+  		</toolbar>
+		<hilite if="statusSelect &lt; 3" color="primary"/>
+	    <hilite if="statusSelect == 3" color="success"/>
+	    <hilite if="statusSelect == 4" color="danger"/>
+		<field name="name" />
+		<field name="userId" />
+		<field name="ebicsPartner"/>
+		<field name="ebicsPartner.ebicsTypeSelect"/>
+		<field name="ebicsPartner.ebicsBank"/>
+		<field name="userTypeSelect"/>
+		<field name="statusSelect"/>
+	</grid>
+	
 	<form name="ebics-user-form" title="Ebics user" model="com.axelor.apps.bankpayment.db.EbicsUser" onSave="save,action-ebics-user-method-generate-dn" onLoad="action-ebics-user-attrs-set-change-password">
 		<panel name="generalInformationPanel" title="General information" colSpan="12">
 			<field name="statusSelect" colSpan="12"/>
 			<field name="fullName" colSpan="12" hidden="true"/>
-			<field name="name" onChange="action-ebics-user-record-set-fullname"/>
+			<field name="name" onChange="action-ebics-user-record-set-fullname" colSpan="4"/>
+			<field name="serialNumber" colSpan="2"/>
 			<field name="$changePassword" type="boolean" title="Change password" hideIf="!id" colSpan="2"/>
 			<field name="password" showIf="$changePassword || !id" colSpan="4" requiredIf="$changePassword"/>
 			<field name="userId" help="Name of the user or service" x-bind="{{userId|uppercase}}" pattern='^[A-Z0-9]+$' readonlyIf="statusSelect &gt; 2"/>

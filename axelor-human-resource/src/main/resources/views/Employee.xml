@@ -321,9 +321,10 @@
       <panel name="employeeFileListPanel" title="Files" colSpan="12">
         <field name="employeeFileList" showTitle="false" colSpan="12">
           <editor colSpan="12" x-viewer="true" x-show-on-new="true" x-layout="table">          
-            <field name="fileType" colSpan="4" onChange="action-record-set-expiration-date"/>
-			<field name="metaFile" widget="binary-link" colSpan="4"/>	
-			<field name="expirationDate" showIf="fileType.hasExpirationDate" colSpan="4"/>	
+            <field name="fileType" colSpan="3" onChange="action-record-set-expiration-date"/>
+			<field name="metaFile" widget="binary-link" colSpan="3" onChange="action-record-set-record-date"/>
+			<field name="recordDate" colSpan="3" readonly="true"/>	
+			<field name="expirationDate" showIf="fileType.hasExpirationDate" colSpan="3"/>	
             <field name="fileType.hasExpirationDate" hidden="true" />
           </editor>
         </field>
@@ -385,8 +386,8 @@
 		<field name="hrManager"/>
 		<template><![CDATA[
 			<div>
-			  <div class="span4 card-image">
-			    <img ng-src="{{$image('contactPartner.picture', 'content')}}" />
+			  <div class="span4 card-image" style="width: 128px; height: 64px;">
+			    <img ng-src="{{$image('contactPartner.picture', 'content')}}" style="width: 100%; height: 100%; object-fit: contain;" />
 			  </div>
 			  <div class="span8">
 			  	<span>

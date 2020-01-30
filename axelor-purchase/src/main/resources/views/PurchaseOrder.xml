@@ -160,7 +160,6 @@
 				<field name="priceRequest" hideIf="displayPriceOnQuotationRequest" colSpan="12" x-height="5"/>
 			</panel>
 			<panel name="invoicingPanel" title="Invoicing" hideIf="statusSelect &lt; 3">
-				<field if="__config__.app.isApp('invoice')" if-module="axelor-account" name="invoice" form-view="invoice-form" grid-view="invoice-grid"/>
 				<panel-dashlet name="POInvoicesPanel" action="action-view-show-invoices-from-purchase-order" title="Invoices" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" showIf="statusSelect &gt;= 3" colSpan="12"/>
 			</panel>
 
@@ -170,7 +169,7 @@
 			<field name="attrs" colSpan="12" />
 		</panel>
 
-		<panel sidebar="true" name="actionsPanel" hideIf="statusSelect == 4 || supplierPartner == null">
+		<panel sidebar="true" name="actionsPanel" hideIf="supplierPartner == null">
 			<button name="draftBtn" title="Draft" showIf="statusSelect == 5"   onClick="action-purchase-order-record-draft,save"/>
 			<button name="requestedBtn" title="Requested" showIf="statusSelect == 1"   onClick="save,action-purchase-order-method-requested"/>
 			<button name="newVersionBtn" title="New version" showIf="statusSelect == 2" onClick="save,action-purchase-record-newVersion,save" if="__config__.app.getApp('purchase').getManagePurchaseOrderVersion()"/>
@@ -180,6 +179,7 @@
 			<button name="showInvoiceBtn" title="Show invoice" showIf="statusSelect == 3 || statusSelect == 4"   onClick="action-purchase-order-show-invoice" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
             <button name="finishManuallyPurchaseOrderBtn" title="Finish the order" prompt="Warning, a completed order can't be changed anymore, do you want to continue?" showIf="statusSelect == 3" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowFinishManuallyPurchaseOrder) || (!__config__.app.isApp('supplychain'))" onClick="save,action-purchase-order-method-finish-purchase-order" if-module="axelor-supplychain" />
 			<button name="cancelBtn" title="Cancel" css="btn-danger" icon="fa-times" showIf="statusSelect &lt;= 3  || invoice.statusSelect &lt;= 2"   onClick="save,action-group-purchase-order-cancel"/>
+			<button name="backToValidatedBtn" title="Back to validated order" showIf="statusSelect == 4" if-module="axelor-supplychain" onClick="action-purchase-order-attrs-set-status-to-validated,save" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowFinishManuallyPurchaseOrder"/>
 		</panel>
   
 		<panel name="intaxTotalPanel" sidebar="true"  hideIf="supplierPartner == null">
@@ -444,7 +444,7 @@
     	<attribute name="hidden" for="purchaseOrderLineList.inTaxTotal" expr="!inAti"/>
     	<attribute name="hidden" for="purchaseOrderLineList.inTaxPrice" expr="!inAti"/>
     	<attribute name="hidden" for="inAti" expr=" eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 1
-    									|| __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 2"/>
+    									|| __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 2" if="company"/>
     </action-attrs>
 
     <action-attrs name="action-purchase-order-attrs-stock-location-address">
@@ -453,12 +453,12 @@
 
     <action-record name="action-purchase-order-record-in-ati" model="com.axelor.apps.purchase.db.PurchaseOrder">
     	<field name="inAti" expr="eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 2
-    									|| __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 4"/>
+    									|| __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 4" if="company"/>
     </action-record>
 
     <action-record name="action-purchase-order-dispaly-price" model="com.axelor.apps.purchase.db.PurchaseOrder">
-    	<field name="displayPriceOnQuotationRequest" expr="eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.displayPriceOnQuotationRequest"/>
-    	<field name="priceRequest" expr="eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.priceRequest"/>
+    	<field name="displayPriceOnQuotationRequest" expr="eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.displayPriceOnQuotationRequest" if="company"/>
+    	<field name="priceRequest" expr="eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.priceRequest" if="company"/>
     </action-record>
 
     <action-record name="action-purchase-order-record-new" model="com.axelor.apps.purchase.db.PurchaseOrder">
@@ -695,4 +695,8 @@
   <action-method name="action-purchase-order-method-check-analytic-distribution-template">
     <call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="checkPurchaseOrderAnalyticDistributionTemplate" if="company?.purchaseConfig?.isAnalyticDistributionRequired"/>
   </action-method>
+  	
+  	<action-attrs name="action-purchase-order-attrs-set-status-to-validated">
+  		<attribute name="value" for="statusSelect" expr="eval: __repo__(PurchaseOrder).STATUS_VALIDATED"/>
+  	</action-attrs>
 </object-views>

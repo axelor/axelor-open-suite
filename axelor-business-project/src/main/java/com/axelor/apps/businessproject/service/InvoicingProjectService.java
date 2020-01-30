@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -36,6 +36,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
+import com.axelor.apps.businessproject.db.repo.ProjectInvoicingAssistantBatchRepository;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.report.IReport;
 import com.axelor.apps.hr.db.ExpenseLine;
@@ -99,6 +100,29 @@ public class InvoicingProjectService {
     Project project = invoicingProject.getProject();
     Partner customer = project.getClientPartner();
     Partner customerContact = project.getContactPartner();
+    if (invoicingProject.getSaleOrderLineSet().isEmpty()
+        && invoicingProject.getPurchaseOrderLineSet().isEmpty()
+        && invoicingProject.getLogTimesSet().isEmpty()
+        && invoicingProject.getExpenseLineSet().isEmpty()
+        && invoicingProject.getProjectSet().isEmpty()
+        && invoicingProject.getTeamTaskSet().isEmpty()) {
+      throw new AxelorException(
+          invoicingProject,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.INVOICING_PROJECT_EMPTY));
+    }
+    if (invoicingProject.getProject() == null) {
+      throw new AxelorException(
+          invoicingProject,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT));
+    }
+    if (invoicingProject.getProject().getClientPartner() == null) {
+      throw new AxelorException(
+          invoicingProject,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.INVOICING_PROJECT_PROJECT_PARTNER));
+    }
     if (customerContact == null && customer.getContactPartnerSet().size() == 1) {
       customerContact = customer.getContactPartnerSet().iterator().next();
     }
@@ -297,6 +321,10 @@ public class InvoicingProjectService {
 
     this.fillLines(invoicingProject, project);
 
+    if (!invoicingProject.getConsolidatePhaseWhenInvoicing()) {
+      return;
+    }
+
     List<Project> projectChildrenList =
         Beans.get(ProjectRepository.class).all().filter("self.parentProject = ?1", project).fetch();
 
@@ -349,19 +377,19 @@ public class InvoicingProjectService {
     taskQueryMap.put("invoicingTypePackage", TeamTaskRepository.INVOICING_TYPE_PACKAGE);
 
     if (invoicingProject.getDeadlineDate() != null) {
-      solQueryBuilder.append(" AND self.saleOrder.creationDate < :deadlineDate");
+      solQueryBuilder.append(" AND self.saleOrder.creationDate <= :deadlineDate");
       solQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
 
-      polQueryBuilder.append(" AND self.purchaseOrder.orderDate < :deadlineDate");
+      polQueryBuilder.append(" AND self.purchaseOrder.orderDate <= :deadlineDate");
       polQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
 
-      logTimesQueryBuilder.append(" AND self.date < :deadlineDate");
+      logTimesQueryBuilder.append(" AND self.date <= :deadlineDate");
       logTimesQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
 
-      expenseLineQueryBuilder.append(" AND self.expenseDate < :deadlineDate");
+      expenseLineQueryBuilder.append(" AND self.expenseDate <= :deadlineDate");
       expenseLineQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
 
-      taskQueryBuilder.append(" AND self.taskDeadline < :deadlineDate");
+      taskQueryBuilder.append(" AND self.taskDeadline <= :deadlineDate");
       taskQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
     }
 
@@ -486,12 +514,25 @@ public class InvoicingProjectService {
   }
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public InvoicingProject generateInvoicingProject(Project project) {
+  public InvoicingProject generateInvoicingProject(Project project, int consolidatePhaseSelect) {
     if (project == null) {
       return null;
     }
     InvoicingProject invoicingProject = new InvoicingProject();
     invoicingProject.setProject(project);
+
+    if (consolidatePhaseSelect
+        == ProjectInvoicingAssistantBatchRepository.CONSOLIDATE_PHASE_CONSOLIDATE_ALL) {
+      invoicingProject.setConsolidatePhaseWhenInvoicing(true);
+    } else if (consolidatePhaseSelect
+        == ProjectInvoicingAssistantBatchRepository.CONSOLIDATE_PHASE_DONT_CONSOLIDATE) {
+      invoicingProject.setConsolidatePhaseWhenInvoicing(false);
+    } else if (consolidatePhaseSelect
+        == ProjectInvoicingAssistantBatchRepository.CONSOLIDATE_PHASE_DEFAULT_VALUE) {
+      invoicingProject.setConsolidatePhaseWhenInvoicing(
+          invoicingProject.getProject().getConsolidatePhaseWhenInvoicing());
+    }
+
     clearLines(invoicingProject);
     setLines(invoicingProject, project, 0);
 

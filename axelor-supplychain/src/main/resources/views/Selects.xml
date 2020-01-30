@@ -104,6 +104,12 @@
 	<selection name="supplychain.stock.move.invoicing.wizard.select">
       <option value="1">Invoice all</option>
       <option value="2">Invoice partially stock move</option>
-    </selection>
+	</selection>
+
+	<selection name="supplychain.stock.move.invoicing.status.select">
+		<option value="0">Not invoiced</option>
+		<option value="1">Partially invoiced</option>
+		<option value="2">Invoiced</option>
+	</selection>
 
 </object-views>

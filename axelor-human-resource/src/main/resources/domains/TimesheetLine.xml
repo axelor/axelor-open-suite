@@ -15,7 +15,7 @@
       <many-to-one name="timesheet" ref="com.axelor.apps.hr.db.Timesheet" title="Time Sheet" readonly="true"/>
 	  <decimal name="hoursDuration" title="Duration"/>
 	  <decimal name="duration" title="Duration"/>
-	  <decimal name="durationForCustomer" title="Duration adjust for customer"/>
+	  <decimal name="durationForCustomer" title="Duration adjust for customer" nullable="true"/>
       <string name="comments" large="true"/>
       <boolean name="toInvoice"/>
       <boolean name="invoiced" title="Invoiced" readonly="true"/>

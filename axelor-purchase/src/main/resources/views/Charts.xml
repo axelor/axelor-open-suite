@@ -207,7 +207,7 @@
 	<chart onInit="action.purchase.chart.set.date" name="chart.total.purchase.amount" title="Total Purchased Amount by month">
 		<search-fields>
 			<field type="date" name="fromDate" title="From Date" x-required="true"/>
-			<field name="monthSelect" selection="account.year.period.duration.select" title="Historical Period" x-required="true"/>
+			<field name="monthSelect" selection="base.year.period.duration.select" title="Historical Period" x-required="true"/>
 		</search-fields>
 		<dataset type="sql">
 			SELECT
@@ -236,7 +236,7 @@
 	<chart onInit="action.purchase.chart.set.date" name="chart.total.purchase.qty" title="Total Purchased Qty by month">
 		<search-fields>
 			<field type="date" name="fromDate" title="From Date" x-required="true"/>
-			<field name="monthSelect" selection="account.year.period.duration.select" title="Historical Period" x-required="true"/>
+			<field name="monthSelect" selection="base.year.period.duration.select" title="Historical Period" x-required="true"/>
 		</search-fields>
 		<dataset type="sql">
 			SELECT
@@ -268,7 +268,7 @@
 	<chart onInit="action.purchase.chart.set.date.6m" name="chart.nbr.of.po.per.month" title="Nbr of PO by month">
 		<search-fields>
 			<field type="date" name="fromDate" title="From Date" x-required="true"/>
-			<field name="monthSelect" selection="account.year.period.duration.select" title="Historical Period" x-required="true"/>
+			<field name="monthSelect" selection="base.year.period.duration.select" title="Historical Period" x-required="true"/>
 		</search-fields>
 		<dataset type="sql">
 			SELECT

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -93,7 +93,10 @@ public class X509Generator {
       String issuer,
       Date notBefore,
       Date notAfter,
-      boolean useX509ExtentionForAutoSignedCert)
+      boolean useX509ExtensionsBasicConstraints,
+      boolean useX509ExtensionsSubjectKeyIdentifier,
+      boolean useX509ExtensionsAuthorityKeyIdentifier,
+      boolean useX509ExtensionsExtendedKeyUsage)
       throws GeneralSecurityException, IOException {
     return generate(
         keypair,
@@ -101,7 +104,10 @@ public class X509Generator {
         notBefore,
         notAfter,
         X509Constants.SIGNATURE_KEY_USAGE,
-        useX509ExtentionForAutoSignedCert);
+        useX509ExtensionsBasicConstraints,
+        useX509ExtensionsSubjectKeyIdentifier,
+        useX509ExtensionsAuthorityKeyIdentifier,
+        useX509ExtensionsExtendedKeyUsage);
   }
 
   /**
@@ -120,7 +126,10 @@ public class X509Generator {
       String issuer,
       Date notBefore,
       Date notAfter,
-      boolean useX509ExtentionForAutoSignedCert)
+      boolean useX509ExtensionsBasicConstraints,
+      boolean useX509ExtensionsSubjectKeyIdentifier,
+      boolean useX509ExtensionsAuthorityKeyIdentifier,
+      boolean useX509ExtensionsExtendedKeyUsage)
       throws GeneralSecurityException, IOException {
     return generate(
         keypair,
@@ -128,7 +137,10 @@ public class X509Generator {
         notBefore,
         notAfter,
         X509Constants.AUTHENTICATION_KEY_USAGE,
-        useX509ExtentionForAutoSignedCert);
+        useX509ExtensionsBasicConstraints,
+        useX509ExtensionsSubjectKeyIdentifier,
+        useX509ExtensionsAuthorityKeyIdentifier,
+        useX509ExtensionsExtendedKeyUsage);
   }
 
   /**
@@ -147,7 +159,10 @@ public class X509Generator {
       String issuer,
       Date notBefore,
       Date notAfter,
-      boolean useX509ExtentionForAutoSignedCert)
+      boolean useX509ExtensionsBasicConstraints,
+      boolean useX509ExtensionsSubjectKeyIdentifier,
+      boolean useX509ExtensionsAuthorityKeyIdentifier,
+      boolean useX509ExtensionsExtendedKeyUsage)
       throws GeneralSecurityException, IOException {
     return generate(
         keypair,
@@ -155,7 +170,10 @@ public class X509Generator {
         notBefore,
         notAfter,
         X509Constants.ENCRYPTION_KEY_USAGE,
-        useX509ExtentionForAutoSignedCert);
+        useX509ExtensionsBasicConstraints,
+        useX509ExtensionsSubjectKeyIdentifier,
+        useX509ExtensionsAuthorityKeyIdentifier,
+        useX509ExtensionsExtendedKeyUsage);
   }
 
   /**
@@ -177,7 +195,10 @@ public class X509Generator {
       Date notBefore,
       Date notAfter,
       int keyusage,
-      boolean useX509ExtentionForAutoSignedCert)
+      boolean useX509ExtensionsBasicConstraints,
+      boolean useX509ExtensionsSubjectKeyIdentifier,
+      boolean useX509ExtensionsAuthorityKeyIdentifier,
+      boolean useX509ExtensionsExtendedKeyUsage)
       throws GeneralSecurityException, IOException {
     X509V3CertificateGenerator generator;
     BigInteger serial;
@@ -194,14 +215,20 @@ public class X509Generator {
     generator.setPublicKey(keypair.getPublic());
     generator.setSignatureAlgorithm(X509Constants.SIGNATURE_ALGORITHM);
 
-    if (useX509ExtentionForAutoSignedCert) {
+    if (useX509ExtensionsBasicConstraints) {
       generator.addExtension(X509Extensions.BasicConstraints, false, new BasicConstraints(true));
+    }
+    if (useX509ExtensionsSubjectKeyIdentifier) {
       generator.addExtension(
           X509Extensions.SubjectKeyIdentifier, false, getSubjectKeyIdentifier(keypair.getPublic()));
+    }
+    if (useX509ExtensionsAuthorityKeyIdentifier) {
       generator.addExtension(
           X509Extensions.AuthorityKeyIdentifier,
           false,
           getAuthorityKeyIdentifier(keypair.getPublic(), issuer, serial));
+    }
+    if (useX509ExtensionsExtendedKeyUsage) {
 
       vector = new ASN1EncodableVector();
       vector.add(KeyPurposeId.id_kp_emailProtection);
@@ -215,14 +242,18 @@ public class X509Generator {
     switch (keyusage) {
       case X509Constants.SIGNATURE_KEY_USAGE:
         generator.addExtension(
-            X509Extensions.KeyUsage, false, new KeyUsage(KeyUsage.nonRepudiation));
+            X509Extensions.KeyUsage, true, new KeyUsage(KeyUsage.nonRepudiation));
         break;
       case X509Constants.AUTHENTICATION_KEY_USAGE:
         generator.addExtension(
-            X509Extensions.KeyUsage, false, new KeyUsage(KeyUsage.digitalSignature));
+            X509Extensions.KeyUsage, true, new KeyUsage(KeyUsage.digitalSignature));
         break;
       case X509Constants.ENCRYPTION_KEY_USAGE:
-        generator.addExtension(X509Extensions.KeyUsage, false, new KeyUsage(KeyUsage.keyAgreement));
+        generator.addExtension(
+            X509Extensions.KeyUsage,
+            true,
+            new KeyUsage(KeyUsage.keyEncipherment | KeyUsage.keyAgreement));
+
         break;
       default:
         generator.addExtension(

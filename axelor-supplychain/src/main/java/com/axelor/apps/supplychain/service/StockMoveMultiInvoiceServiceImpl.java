@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
 import com.axelor.apps.base.db.Partner;
@@ -528,6 +529,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     refund.setTaxTotal(refund.getTaxTotal().negate());
     refund.setAmountRemaining(refund.getAmountRemaining().negate());
     refund.setCompanyTaxTotal(refund.getCompanyTaxTotal().negate());
+    refund.setPaymentMode(Beans.get(InvoiceToolService.class).getPaymentMode(refund));
     return invoiceRepository.save(refund);
   }
 
@@ -611,7 +613,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
    * This method will throw an exception if a stock move has already been invoiced. The exception
    * message will give every already invoiced stock move.
    */
-  protected void checkForAlreadyInvoicedStockMove(List<StockMove> stockMoveList)
+  @Override
+  public void checkForAlreadyInvoicedStockMove(List<StockMove> stockMoveList)
       throws AxelorException {
     StringBuilder invoiceAlreadyGeneratedMessage = new StringBuilder();
 
