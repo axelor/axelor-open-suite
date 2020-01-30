@@ -57,6 +57,6 @@ public class MoveSequenceService {
           I18n.get(IExceptionMessage.MOVE_5),
           journal.getName());
     }
-    move.setReference(sequenceService.getSequenceNumber(journal.getSequence()));
+    move.setReference(sequenceService.getSequenceNumber(journal.getSequence(), move.getDate()));
   }
 }
