@@ -90,7 +90,6 @@
 - PRICE LIST: get lower price for same qty for same product.
 
 ## Bug Fixes
-<<<<<<< HEAD
 - STOCK : Changed type select french translation
 - ACCOUNTING: generate taxlines translation.
 - AnalyticMoveLine: fix amount calculation.
