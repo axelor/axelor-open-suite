@@ -24,6 +24,8 @@
 - Configurator: Generate bill of material on generating a sale order line from a configurator.
 - SaleOrderLine : Hide qty cell in SaleOrder report when saleOrderLine contain typeSelect equal to 'title'.
 - INVOICE : now the date verification of the ventilation process depends of invoices of the same company.
+- MOVE : corrected sequence generation, now use correctly the date of the move and not the date of validation.
+
 
 ## [5.2.3] - 2020-01-23
 ## Features
