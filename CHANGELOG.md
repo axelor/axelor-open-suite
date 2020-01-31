@@ -14,6 +14,7 @@
 - ACCOUNTING CUT OFF : display warning message when batch has been already launched with the same move date.
 - BANKPAYMENT : Update condition to display field ics number.
 - PURCHASE REQUEST : add new tab for purchaseOrderSet
+- ANALYTIC MOVE LINE : add id and move line to analytic move line grid.
 
 ## Bug Fixes
 - INVOICE : Fixed payment mode on mass invoicing refund.
@@ -30,6 +31,8 @@
 - INVOICE : now the date verification of the ventilation process depends of invoices of the same company.
 - MOVE : corrected sequence generation, now use correctly the date of the move and not the date of validation.
 - Stock Move partial invoicing: manage correctly the invoicing status when we refund the invoice.
+- ANALYTIC REPORT: fix issue where wrong reports were printed.
+- ACCOUNTING REPORT: improved analytic general ledger.
 
 ## [5.2.3] - 2020-01-23
 ## Features
