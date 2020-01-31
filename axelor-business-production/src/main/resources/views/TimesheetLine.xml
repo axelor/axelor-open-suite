@@ -66,6 +66,7 @@
 
 	<action-validate name="action-timesheet-line-validate-manuf-order-onchange">
 		<alert message="Warning, this manuforder is from another company." if="manufOrder &amp;&amp; manufOrder?.company != __parent__.company"/>
+		<alert message="Warning, this manuforder is finished" if="manufOrder &amp;&amp; manufOrder?.statusSelect == __repo__(ManufOrder).STATUS_FINISHED &amp;&amp; __config__.app.getApp('timesheet').getIsAlertManufOrderFinish()"/>
 	</action-validate>
 
 	<action-record name="action-timesheet-line-record-manuf-order-onchange" model="com.axelor.apps.hr.db.TimesheetLine">

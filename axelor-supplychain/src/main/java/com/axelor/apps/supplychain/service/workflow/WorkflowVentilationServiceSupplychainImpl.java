@@ -257,13 +257,11 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
       if (stockMoveLine != null) {
         BigDecimal qty = stockMoveLine.getQtyInvoiced();
         StockMove stockMove = stockMoveLine.getStockMove();
-        Boolean isRefundInvoice = InvoiceToolService.isRefund(invoice);
-        Boolean isReversionStockMove = stockMove.getIsReversion();
 
-        if (isRefundInvoice.equals(isReversionStockMove)) {
-          qty = qty.add(invoiceLine.getQty());
-        } else {
+        if (stockMoveInvoiceService.isInvoiceRefundingStockMove(stockMove, invoice)) {
           qty = qty.subtract(invoiceLine.getQty());
+        } else {
+          qty = qty.add(invoiceLine.getQty());
         }
         if (stockMoveLine.getRealQty().compareTo(qty) >= 0) {
           stockMoveLine.setQtyInvoiced(qty);
