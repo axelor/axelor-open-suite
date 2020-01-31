@@ -1,5 +1,4 @@
 # Changelog
-
 ## [Unreleased 5.2.4]
 ## Features
 - BankOrder : Display of Signatory ebics user and Sending date time in report.
@@ -15,7 +14,8 @@
 - BANKPAYMENT : Update condition to display field ics number.
 - PURCHASE REQUEST : add new tab for purchaseOrderSet
 - ANALYTIC MOVE LINE : add id and move line to analytic move line grid.
-
+- Subrogation release : improved visibility of unpaid invoices.
+ 
 ## Bug Fixes
 - INVOICE : Fixed payment mode on mass invoicing refund.
 - MESSAGE : correction of sending a message and update status of message
@@ -33,6 +33,7 @@
 - Stock Move partial invoicing: manage correctly the invoicing status when we refund the invoice.
 - ANALYTIC REPORT: fix issue where wrong reports were printed.
 - ACCOUNTING REPORT: improved analytic general ledger.
+- Subrogative release : corrected the possibility to create two subrogation transmitted or accounted with the same invoices.
 
 ## [5.2.3] - 2020-01-23
 ## Features
