@@ -30,6 +30,7 @@
 - INVOICE : now the date verification of the ventilation process depends of invoices of the same company.
 - MOVE : corrected sequence generation, now use correctly the date of the move and not the date of validation.
 - Stock Move partial invoicing: manage correctly the invoicing status when we refund the invoice.
+- ACCOUNTING REPORT: corrected wrong printing of bank statement report instead of analytic reports.
 
 ## [5.2.3] - 2020-01-23
 ## Features
