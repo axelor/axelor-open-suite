@@ -45,7 +45,7 @@
 				<field name="moveDescription" requiredIf="actionSelect == 1"/>
 				<panel colSpan="6" itemSpan="12">
 					<field name="moveDate" requiredIf="actionSelect == 1" onChange="action-supplychain-batch-attrs-show-label"/>
-					<label name="adviseUser" title="This batch has already been running this month" hidden="true" css="label-danger" />
+					<label name="adviseUser" title="This batch has already been running for this move date" hidden="true" css="label-danger" />
 				</panel>
 				<panel colSpan="6" itemSpan="12">
 					<field name="reverseMoveDate" requiredIf="actionSelect == 1"/>
@@ -81,12 +81,13 @@
 
 	<!-- ACTION ATTRS -->
 	<action-attrs name="action-supplychain-batch-attrs-show-label">
-		<attribute name="hidden" expr="eval: !(moveDate &amp;&amp; batchList &amp;&amp; batchList?.find{it.startDate.month == __date__.month &amp;&amp; it.startDate.year == __date__.year} != null)" for="adviseUser"/>
+		<attribute name="hidden" expr="eval: !(moveDate &amp;&amp; batchList &amp;&amp; batchList?.find{it.moveDate.equals(moveDate) &amp;&amp; it.accountingCutOffTypeSelect == accountingCutOffTypeSelect} != null)" for="adviseUser"/>
 	</action-attrs>
 	
 	<!-- ACTION VALIDATE -->
 	<action-validate name="action-supplychain-batch-validate-twice-in-a-month">
-   		<alert message="The batch has already been running this month. Are you sure to continue ?" if="eval: moveDate &amp;&amp; batchList &amp;&amp; batchList?.find{it.startDate.month == __date__.month &amp;&amp; it.startDate.year == __date__.year} != null" />
+   		<alert message="The batch has already been running for this move date. Are you sure to continue ?" 
+   		if="eval: moveDate &amp;&amp; batchList &amp;&amp; batchList?.find{it.moveDate.equals(moveDate) &amp;&amp; it.accountingCutOffTypeSelect == accountingCutOffTypeSelect} != null" />
    	</action-validate>
    	
     <!-- ACTION RECORD -->

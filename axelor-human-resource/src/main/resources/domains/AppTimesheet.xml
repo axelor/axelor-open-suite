@@ -22,6 +22,7 @@
 		<boolean name="displayTimesheetLineNumber" title="Display timesheet line number"/>
 		
 		<many-to-one name="timesheetReminderTemplate" ref="com.axelor.apps.message.db.Template" title="Timesheet reminder template"/>
+		<boolean name="isAlertManufOrderFinish" title="Alert if the manuf. order is finish"/>
 
 		<track>
 			<field name="invoicingTypeLogTimesSelect" on="UPDATE"/>
