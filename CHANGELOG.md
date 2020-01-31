@@ -12,6 +12,7 @@
 - INVOICE : add specific note of company bank details on invoice report.
 - Message : Improved performance when generating mail messages from templates. 
 - ACCOUNTING CUT OFF : display warning message when batch has been already launched with the same move date.
+- BANKPAYMENT : Update condition to display field ics number.
 
 ## Bug Fixes
 - INVOICE : Fixed payment mode on mass invoicing refund.
