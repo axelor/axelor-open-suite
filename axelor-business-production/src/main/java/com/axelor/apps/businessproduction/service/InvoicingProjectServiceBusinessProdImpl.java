@@ -21,6 +21,7 @@ import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.ProjectServiceImpl;
@@ -30,11 +31,20 @@ import com.google.inject.persist.Transactional;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectService {
 
   @Override
   public void setLines(InvoicingProject invoicingProject, Project project, int counter) {
+
+    AppProductionService appProductionService = Beans.get(AppProductionService.class);
+
+    if (!appProductionService.isApp("production")
+        || !appProductionService.getAppProduction().getManageBusinessProduction()) {
+      super.setLines(invoicingProject, project, counter);
+      return;
+    }
 
     if (counter > ProjectServiceImpl.MAX_LEVEL_OF_PROJECT) {
       return;
@@ -59,6 +69,13 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
   @Override
   public void fillLines(InvoicingProject invoicingProject, Project project) {
     super.fillLines(invoicingProject, project);
+
+    AppProductionService appProductionService = Beans.get(AppProductionService.class);
+    if (!appProductionService.isApp("production")
+        || !appProductionService.getAppProduction().getManageBusinessProduction()) {
+      return;
+    }
+
     if (invoicingProject.getManufOrderSet() == null) {
       invoicingProject.setManufOrderSet(new HashSet<ManufOrder>());
     }
@@ -89,14 +106,24 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
   @Override
   public void clearLines(InvoicingProject invoicingProject) {
 
+    AppProductionService appProductionService = Beans.get(AppProductionService.class);
     super.clearLines(invoicingProject);
+    if (!appProductionService.isApp("production")
+        || !appProductionService.getAppProduction().getManageBusinessProduction()) {
+      return;
+    }
     invoicingProject.setManufOrderSet(new HashSet<ManufOrder>());
   }
 
   @Override
   public int countToInvoice(Project project) {
 
+    AppProductionService appProductionService = Beans.get(AppProductionService.class);
     int toInvoiceCount = super.countToInvoice(project);
+    if (!appProductionService.isApp("production")
+        || !appProductionService.getAppProduction().getManageBusinessProduction()) {
+      return toInvoiceCount;
+    }
 
     int productionOrderCount =
         (int)
@@ -111,13 +138,14 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   @Override
-  public InvoicingProject generateInvoicingProject(Project project) {
+  public InvoicingProject generateInvoicingProject(Project project, int consolidatePhaseSelect) {
 
-    InvoicingProject invoicingProject = super.generateInvoicingProject(project);
+    InvoicingProject invoicingProject =
+        super.generateInvoicingProject(project, consolidatePhaseSelect);
 
     if (invoicingProject != null
         && invoicingProject.getId() == null
-        && !invoicingProject.getManufOrderSet().isEmpty()) {
+        && !CollectionUtils.isEmpty(invoicingProject.getManufOrderSet())) {
       return invoicingProjectRepo.save(invoicingProject);
     }
 

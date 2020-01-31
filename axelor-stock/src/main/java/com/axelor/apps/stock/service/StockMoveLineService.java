@@ -98,6 +98,7 @@ public interface StockMoveLineService {
       BigDecimal unitPriceUntaxed,
       BigDecimal unitPriceTaxed,
       BigDecimal companyUnitPriceUntaxed,
+      BigDecimal companyPurchasePrice,
       Unit unit,
       StockMove stockMove,
       TrackingNumber trackingNumber)

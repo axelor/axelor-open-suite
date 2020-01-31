@@ -23,6 +23,7 @@ import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -52,7 +53,7 @@ public class AccountCustomerServiceSupplyChain extends AccountCustomerService {
             updateDueCustAccount,
             updateDueDebtRecoveryCustAccount);
 
-    if (updateCustAccount) {
+    if (updateCustAccount && Beans.get(AppBaseService.class).isApp("supplychain")) {
       accountingSituationService.updateCustomerCredit(accountingSituation.getPartner());
     }
 

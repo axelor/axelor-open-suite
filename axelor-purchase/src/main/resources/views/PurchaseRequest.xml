@@ -62,14 +62,16 @@
 		</panel>
 		<panel name="mainPanel" readonlyIf="!$contains([1,2],statusSelect)">
 			<field name="company" form-view="company-form" grid-view="company-grid" canEdit="false" onChange="action-purchase-request-group-company-onchange"/>
-      <panel-related field="purchaseOrderSet" canEdit="false" canNew="false" colSpan="12"/>
-			<field name="$product" hidden="true" />
+      		<field name="$product" hidden="true" />
 		</panel>
 		<panel-related field="purchaseRequestLineList" form-view="purchase-request-line-form" grid-view="purchase-request-line-grid"/>
 		<panel-tabs name="descriptionPanelTab">
 			<panel name="descriptionPanel" title="Description">
 				<field name="description" colSpan="12" widget="html"
 					showTitle="false" />
+			</panel>
+			<panel name="purchaseOrderPanel" title="Purchase orders" showIf="statusSelect >= 4">
+				<panel-related field="purchaseOrderSet" canEdit="false" canNew="false" colSpan="12"/>	
 			</panel>
 		</panel-tabs>
 
