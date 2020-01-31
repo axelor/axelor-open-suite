@@ -606,4 +606,12 @@ public class TimesheetController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void removeAfterToDateTimesheetLines(ActionRequest request, ActionResponse response) {
+
+    Timesheet timesheet = request.getContext().asType(Timesheet.class);
+    if (timesheet.getTimesheetLineList() != null && !timesheet.getTimesheetLineList().isEmpty()) {
+      Beans.get(TimesheetService.class).removeAfterToDateTimesheetLines(timesheet);
+    }
+  }
 }

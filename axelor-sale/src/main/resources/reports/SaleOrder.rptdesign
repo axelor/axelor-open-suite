@@ -5135,6 +5135,12 @@ row["ClientPartFirstName"]
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
                                         <grid id="5370">
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row["is_title_line"]</expression>
+                                                </structure>
+                                            </list-property>
                                             <column id="5371"/>
                                             <column id="5386"/>
                                             <row id="5387">

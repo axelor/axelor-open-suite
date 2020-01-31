@@ -535,6 +535,8 @@
 "Provision",,,
 "Purchase Qty by tracking",,,
 "Purchase order",,,
+"Purchase price",,,
+"Purchase price in company currency, used for declaration of exchange.",,,
 "Purchase tracking management",,,
 "Qty",,,
 "Quality control default stock location",,,

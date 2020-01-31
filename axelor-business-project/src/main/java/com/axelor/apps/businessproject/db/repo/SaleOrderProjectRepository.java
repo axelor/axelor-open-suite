@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.businessproject.db.repo;
 
+import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
+import com.axelor.inject.Beans;
 
 public class SaleOrderProjectRepository extends SaleOrderSupplychainRepository {
   @Override
@@ -26,7 +28,9 @@ public class SaleOrderProjectRepository extends SaleOrderSupplychainRepository {
 
     SaleOrder copy = super.copy(entity, deep);
 
-    copy.setProject(null);
+    if (Beans.get(AppBusinessProjectService.class).isApp("business-project")) {
+      copy.setProject(null);
+    }
 
     return copy;
   }

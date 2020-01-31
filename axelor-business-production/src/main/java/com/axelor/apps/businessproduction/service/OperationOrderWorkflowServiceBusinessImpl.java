@@ -55,7 +55,11 @@ public class OperationOrderWorkflowServiceBusinessImpl extends OperationOrderWor
    */
   @Override
   public Duration computeRealDuration(OperationOrder operationOrder) {
-    if (appProductionService.getAppProduction().getEnableTimesheetOnManufOrder()) {
+    AppProductionService appProductionService = Beans.get(AppProductionService.class);
+
+    if (appProductionService.isApp("production")
+        && appProductionService.getAppProduction().getManageBusinessProduction()
+        && appProductionService.getAppProduction().getEnableTimesheetOnManufOrder()) {
       List<TimesheetLine> timesheetLineList = operationOrder.getTimesheetLineList();
       return Beans.get(TimesheetLineService.class).computeTotalDuration(timesheetLineList);
     } else {

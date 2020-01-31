@@ -264,7 +264,7 @@
             <field name="currency" colSpan="3" canEdit="false" onChange="action-invoice-group-currency-onchange" readonlyIf="statusSelect != 1 || (invoiceLineList &amp;&amp; invoiceLineList.length != 0)" form-view="currency-form" grid-view="currency-grid"/>
             <field name="priceList" colSpan="3" canEdit="false" onChange="action-invoice-record-hide-discount" readonlyIf="statusSelect != 1" onSelect="action-invoice-method-domain-priceList" form-view="price-list-form" grid-view="price-list-grid"/>
             <field name="tradingName" canEdit="false" grid-view="trading-name-grid" form-view="trading-name-form" if="__config__.app.getApp('base').enableTradingNamesManagement" readonlyIf="statusSelect != 1" domain=":company MEMBER OF self.companySet" onChange="action-invoice-method-printing-settings-default-values"/>
-            <field name="companyBankDetails" canEdit="false" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain" form-view="bank-details-form" grid-view="bank-details-grid" onChange="action-invoice-record-specific-note-on-invoice"/>
+            <field name="companyBankDetails" canEdit="false" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain" form-view="bank-details-form" grid-view="bank-details-grid" />
             <field name="interco" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
             <field name="createdByInterco" showIf="createdByInterco" readonly="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
             <field name="inAti" onChange="action-invoice-attrs-in-ati" readonlyIf="statusSelect != 1 || invoiceLineList.length > 0"/>
@@ -377,6 +377,9 @@ InvoiceSet.length > 0))"
 				</panel>
 				<panel name="descriptionToDisplayOnProformaPanel" title="Comment to display on proforma" colSpan="12">
 				  <field name="proformaComments" widget="html" colSpan="12" showTitle="false"/>
+				</panel>
+				<panel name="specificNoteOnInvoiceToDisplayPanel" title="Bank details specific note" colSpan="12" hidden="true" showIf="companyBankDetails.specificNoteOnInvoice">
+					<field name="companyBankDetails.specificNoteOnInvoice" widget="html" colSpan="12" showTitle="false"/>
 				</panel>
 			</panel>
       <panel name="automaticMailPanel" title="Automatic mail" hideIf="statusSelect == 3 &amp;&amp; !invoiceAutomaticMail &amp;&amp; !invoiceAutomaticMailOnValidate">
@@ -847,7 +850,6 @@ InvoiceSet.length > 0))"
 
     <action-group name="action-group-account-invoice-company-onchange">
     	<action name="action-invoice-method-fill-company-bank-details"/>
-        <action name="action-invoice-record-specific-note-on-invoice"/>
     	<action name="action-invoice-attrs-hide-cancel-button"/>
         <action name="action-invoice-record-update-info-company"/>
         <action name="action-invoice-record-set-dummy-field-language"/>
@@ -975,7 +977,6 @@ InvoiceSet.length > 0))"
     	<field name="purchaseOrder" expr="eval: null"/>
     	<field name="partnerTaxNbr" expr="eval: partner?.taxNbr"/>
     	<field name="proformaComments" expr="eval: partner?.proformaComments"/>
-    	<field name="note" expr="eval: partner?.invoiceComments"/>
       <field name="headOfficeAddress" expr="eval: partner?.headOfficeAddress"/>
     </action-record>
 

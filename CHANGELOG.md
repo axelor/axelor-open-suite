@@ -1,30 +1,81 @@
 # Changelog
-## [Unreleased 5.2.3]
+
+## [Unreleased 5.2.4]
 ## Features
-- Invoice : Removal of companyBankDetails comment in invoice form.
-- INVOICING PROJECT : consolidation of invoicing project
+- BankOrder : Display of Signatory ebics user and Sending date time in report.
+- ACCOUNTING REPORT : new filter for analytic distribution.
+- Timesheet : alert to check manufOrder is finished or not on timesheetLine. 
 
 ## Improvements
-- BANKSTATEMENT : import multiple records in a single line.
-- Opportunity : Set sale order defaults on new.
-- Typos on PurchaseRequestLine
+- PaymentMode : Add sequence field on account settings grid view.
+- Stock Move Line: store purchase price in stock move line to use this information in the declaration of exchanges.
+- INVOICE : add specific note of company bank details on invoice report.
+- Message : Improved performance when generating mail messages from templates. 
+- ACCOUNTING CUT OFF : display warning message when batch has been already launched with the same move date.
+- BANKPAYMENT : Update condition to display field ics number.
+- PURCHASE REQUEST : add new tab for purchaseOrderSet
 - ANALYTIC MOVE LINE : add id and move line to analytic move line grid.
 
 ## Bug Fixes
-- INVOICE PARTIAL: take in consideration refund
+- INVOICE : Fixed payment mode on mass invoicing refund.
+- MESSAGE : correction of sending a message and update status of message
+- BankOrder : change in translation of partnerTypeSelect field.
+- Account : missing translations
+- BankOrder : Fix domain issue of signatoryEbicsUser field.
+- INVENTORY : Fix issue of realQty when copy inventory.
+- TIMESHEET : Remove leave days and holidays when changing end date.
+- CAMPAIGN : Fix filter value each time changes while Generating targets from TargetList
+- Configurator: Fix sale order line not being created from a configurator.
+- Configurator: Generate bill of material on generating a sale order line from a configurator.
+- SaleOrderLine : Hide qty cell in SaleOrder report when saleOrderLine contain typeSelect equal to 'title'.
+- INVOICE : now the date verification of the ventilation process depends of invoices of the same company.
+- MOVE : corrected sequence generation, now use correctly the date of the move and not the date of validation.
+- Stock Move partial invoicing: manage correctly the invoicing status when we refund the invoice.
+- ANALYTIC REPORT: fix issue where wrong reports were printed.
+- ACCOUNTING REPORT: improved analytic general ledger.
+
+## [5.2.3] - 2020-01-23
+## Features
+- INVOICING PROJECT: consolidation of invoicing project.
+- INVOICING BATCH: consolidation of phases.
+
+## Improvements
+- Invoice: Removal of companyBankDetails comment in invoice form.
+- BANKSTATEMENT: import multiple records in a single line.
+- Opportunity: set sale order defaults on new.
+- Typos in PurchaseRequestLine domain file.
+- PurchaseRequestLine: cacheable removed for this entity.
+- BANKSTATEMENT: on copy reset statusSelect.
+- STOCK: fromAddress in stock-move supplier arrival is now required.
+- CARD VIEWS: Display non square images with the right proportions.
+- InvoiceLine: filter on taxLine.
+- EBICS : Support of ARKEA bank:
+Defined the KeyUsage attribute as critical on self-signed certificate.
+Defined the KeyUsage attribute with KeyEncipherment on Encryption certificate.
+- EBICS : Support bank statements of LA BANQUE POSTALE bank:
+This bank return the code `EBICS_OK` instead of the correct code `EBICS_DOWNLOAD_POSTPROCESS_DONE` when we fetch a file (HPD, FDL...)
+In this case, the file is correctly retrieved from the bank server, but not saved in database. Now we don't throw an exception when the return code is `EBICS_OK`.
+- Add checks in services on app configuration, now more services are only called if the corresponding app is enabled.
+
+## Bug Fixes
+- Sale Order Invoicing: take in consideration refund invoice when checking the invoiced amount.
 - LEAVE REQUEST: Updated calendar filter.
 - Forecast recap: Displaying selected value's title instead of value on error message.
-- MOVE REMOVE SERVICE : corrected error that occurred when several lines were found.
-- BANK ORDER : the date field is now again read-only on bank order generated automatically.
-- ExportDbObjectService : Use of try-with-resources for "FileWritter".
-- DataImportServiceImpl : Use of try-with-resources for "ZipInputStream" and "FileOutputStream".
-- Importer : Use of try-with-resources for "FileOutputStream".
-- Advanced Import : Fix config line import
-- MOVE LINE : removed the possibility to delete a move line in a move when the move line is reconcile.
-- SUBROGATION RELEASE / INVOICE : corrected npe.
-- FIXED ASSET: set Deprecation Date in Move generated from FixedAsset and fix last Day Of Month FixedAsset
-- Invoice : Fix wrong attribute name used in grid views.
-- ACCOUNTING REPORT: improved analytic general ledger.
+- MOVE REMOVE SERVICE: corrected error that occurred when several lines were found.
+- BANK ORDER: the date field is now again read-only on bank order generated automatically.
+- Advanced Import: Fix config line import.
+- MOVE LINE: removed the possibility to delete a move line in a move when the move line is reconciled.
+- SUBROGATION RELEASE / INVOICE: corrected npe apearring in log when opening a new subrogation release.
+- FIXED ASSET: set Deprecation Date in Move generated from FixedAsset and fix last Day Of Month FixedAsset.
+- Invoice: Fix wrong attribute name used in grid views.
+- Ebics Partner: set editable for bank order services list.
+- INVOICE: Fixed invoice refund ventilation issue.
+- EBICS BANK: Fixed typo issue on form view on the X509 fields.
+- DataBackup: DataBackup non-persistable class issue Fix.
+- FIXED ASSET: correction of prorata temporis.
+- MULTI INVOICING: add control on generateMultiInvoiceBtn when invoice has already been created.
+- INVOICE PAYMENT: fix an issue where an invoice payment is taken into account twice.
+- GEONAME: fix city import.
 
 ## [5.2.2] - 2020-01-09
 ## Features
@@ -73,7 +124,7 @@
 - SALE ORDER: Fixed accounting situation not being set from the partner when generating the order from a partner form.
 - USER: fix NPE on user creation when active team is null.
 - Purchase Order: Fix NPE on copy of purchaseOrder when it has an empty purchaseOrderLineList.
-- Contract: correct the translation of 'Fiscal positon'.
+- Contract: correct the translation of 'Fiscal position'.
 - MRP: Do not show mrp lines from other MRPs when not displaying products without proposals.
 - LEAVE REQUEST: No longer displays an error message when saving a leave request.
 - EBICSUSER EXPORT: Fix for "Cannot get property 'code' on null object" error.
@@ -99,7 +150,7 @@
 - ACCOUNTING REPORT: add new report, bank reconciliation statement.
 
 ## Improvements
-- INVOICE: new mandatory labelling: Head office address.
+- INVOICE: new mandatory labeling: Head office address.
 - Company: Add tree view for companies.
 - AdvancedExportLine: Add translation for field orderByType.
 - PURCHASE REQUEST: add new columns in purchase request grid view.
@@ -355,7 +406,8 @@
 - LEAVE REQUEST: Add error when leave reason has no unit.
 - LEAVE REQUEST: Set duration value 0 if day planning of selected weekly planning is empty
 
-[Unreleased 5.2.3]: https://github.com/axelor/axelor-open-suite/compare/v5.2.2...dev
+[Unreleased 5.2.4]: https://github.com/axelor/axelor-open-suite/compare/v5.2.3...dev
+[5.2.3]: https://github.com/axelor/axelor-open-suite/compare/v5.2.2...v5.2.3
 [5.2.2]: https://github.com/axelor/axelor-open-suite/compare/v5.2.1...v5.2.2
 [5.2.1]: https://github.com/axelor/axelor-open-suite/compare/v5.2.0...v5.2.1
 [5.2.0]: https://github.com/axelor/axelor-open-suite/compare/v5.1.13...v5.2.0
