@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -34,10 +34,9 @@ import com.axelor.apps.bankpayment.ebics.service.EbicsCertificateService;
 import com.axelor.apps.bankpayment.ebics.service.EbicsService;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.report.IReport;
+import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.data.Listener;
 import com.axelor.data.xml.XMLImporter;
-import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -364,6 +363,7 @@ public class EbicsController {
     response.setReload(true);
   }
 
+  @SuppressWarnings("rawtypes")
   @Transactional
   public void importEbicsUsers(ActionRequest request, ActionResponse response) {
 
@@ -383,23 +383,8 @@ public class EbicsController {
 
       XMLImporter importer =
           new XMLImporter(configFile.getAbsolutePath(), tempDir.getAbsolutePath());
-      final StringBuilder log = new StringBuilder();
-      Listener listner =
-          new Listener() {
 
-            @Override
-            public void imported(Integer imported, Integer total) {
-              log.append("Total records: " + total + ", Total imported: " + total);
-            }
-
-            @Override
-            public void imported(Model arg0) {}
-
-            @Override
-            public void handle(Model arg0, Exception err) {
-              log.append("Error in import: " + err.getStackTrace().toString());
-            }
-          };
+      ImporterListener listner = new ImporterListener("EbicsUser");
 
       importer.addListener(listner);
 
@@ -409,7 +394,7 @@ public class EbicsController {
 
       FileUtils.forceDelete(tempDir);
 
-      response.setValue("importLog", log.toString());
+      response.setValue("importLog", listner.getImportLog());
 
     } catch (IOException e) {
       e.printStackTrace();

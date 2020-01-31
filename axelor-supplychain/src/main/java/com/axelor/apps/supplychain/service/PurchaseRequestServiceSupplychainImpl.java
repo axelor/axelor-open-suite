@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,7 +22,9 @@ import com.axelor.apps.purchase.db.PurchaseRequest;
 import com.axelor.apps.purchase.service.PurchaseRequestServiceImpl;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 
 public class PurchaseRequestServiceSupplychainImpl extends PurchaseRequestServiceImpl {
@@ -34,13 +36,21 @@ public class PurchaseRequestServiceSupplychainImpl extends PurchaseRequestServic
       throws AxelorException {
 
     PurchaseOrder purchaseOrder = super.createPurchaseOrder(purchaseRequest);
-    purchaseOrder.setStockLocation(purchaseRequest.getStockLocation());
+
+    if (Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      purchaseOrder.setStockLocation(purchaseRequest.getStockLocation());
+    }
     return purchaseOrder;
   }
 
   @Override
   protected String getPurchaseOrderGroupBySupplierKey(PurchaseRequest purchaseRequest) {
     String key = super.getPurchaseOrderGroupBySupplierKey(purchaseRequest);
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return key;
+    }
+
     StockLocation stockLocation = purchaseRequest.getStockLocation();
     if (stockLocation != null) {
       key = key + "_" + stockLocation.getId().toString();
