@@ -12,6 +12,7 @@
 
 ## Improvements
 - Production : Change in reference of machineWorkCenter from workCenter to machine.
+- MANUF ORDER : Print residual products on report and add panel of residual products
 
 ## Bug Fixes
 - Production : Fix Java Heap Error.

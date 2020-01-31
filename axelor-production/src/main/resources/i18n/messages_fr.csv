@@ -29,6 +29,7 @@
 "BOM.hasNoManageStock","Ne pas gérer le stock",,
 "BOM.priority","Priorité",,
 "BOM.qty","Qté",,
+"BOM.residualProducts","Produits résiduels",,
 "BOM.title","Nomenclatures",,
 "BOM.unit","Unité",,
 "BOM.versionNumber","Numéro de version",,
