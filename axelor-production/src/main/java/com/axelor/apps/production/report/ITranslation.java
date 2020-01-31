@@ -143,6 +143,8 @@ public interface ITranslation {
       "BOM.defineSubBillOfMaterial"; /*)*/
   public static final String BILL_OF_MATERIAL_HAS_NO_MANAGE_STOCK = /*$$(*/
       "BOM.hasNoManageStock"; /*)*/
+  public static final String BILL_OF_MATERIAL_RESIDUAL_PRODUCTS = /*$$(*/
+      "BOM.residualProducts"; /*)*/
 
   String RAW_MATERIAL_REQUIREMENT_TITLE = /*$$(*/ "RawMaterialRequirement.title"; /*)*/
   String RAW_MATERIAL_REQUIREMENT_COMPANY = /*$$(*/ "RawMaterialRequirement.company"; /*)*/

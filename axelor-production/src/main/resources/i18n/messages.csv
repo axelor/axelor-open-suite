@@ -29,6 +29,7 @@
 "BOM.hasNoManageStock",,,
 "BOM.priority",,,
 "BOM.qty",,,
+"BOM.residualProducts",,,
 "BOM.title",,,
 "BOM.unit",,,
 "BOM.versionNumber",,,
