@@ -34,6 +34,7 @@
 - ANALYTIC REPORT: fix issue where wrong reports were printed.
 - ACCOUNTING REPORT: improved analytic general ledger.
 - Subrogative release : corrected the possibility to create two subrogation transmitted or accounted with the same invoices.
+- Configurators: fix issue in configurator menu with latest AOP version.
 
 ## [5.2.3] - 2020-01-23
 ## Features
