@@ -41,7 +41,7 @@
 				</panel>
 			</panel>
 			<panel name="accountingCutOffConfigPanel" title="Accounting cut-off configuration" showIf="actionSelect == 1" colSpan="12">
-				<field name="accountingCutOffTypeSelect"/>
+				<field name="accountingCutOffTypeSelect" onChange="action-supplychain-batch-attrs-show-label"/>
 				<field name="moveDescription" requiredIf="actionSelect == 1"/>
 				<panel colSpan="6" itemSpan="12">
 					<field name="moveDate" requiredIf="actionSelect == 1" onChange="action-supplychain-batch-attrs-show-label"/>
