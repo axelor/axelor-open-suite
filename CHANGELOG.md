@@ -6,6 +6,7 @@
 - GEONAME : import city form zip
 - Check and modify all service code according to app configuration
 - BANKPAYMENT : Update condition to display field ics number.
+- Subrogation release : improved visibility of unpaid invoices.
 
 ## Bug Fixes
 - STOCKMOVE : display qty per tracking number and not total available qty for tracking number
@@ -13,6 +14,7 @@
 - FIXED ASSET : correction of prorata temporis
 - INVOICE : now the date verification of the ventilation process depends of invoices of the same company.
 - MOVE : corrected sequence generation, now use correctly the date of the move and not the date of validation.
+- Subrogative release : corrected the possibility to create two subrogation transmitted or accounted with the same invoices.
 
 ## [5.1.14] - 2020-01-17
 ## Improvements
