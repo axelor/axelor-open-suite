@@ -75,6 +75,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
       throws AxelorException, IOException {
     File file = getPrintedInvoice(invoice, forceRefresh, reportType, format, locale);
     int copyNumber = invoice.getInvoicesCopySelect();
+    copyNumber = copyNumber == 0 ? 1 : copyNumber;
     return format.equals(ReportSettings.FORMAT_PDF)
         ? PdfTool.printCopiesToFile(file, copyNumber)
         : file;

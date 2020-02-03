@@ -15,7 +15,8 @@
 - PURCHASE REQUEST : add new tab for purchaseOrderSet
 - ANALYTIC MOVE LINE : add id and move line to analytic move line grid.
 - Subrogation release : improved visibility of unpaid invoices.
- 
+- INVOICE : Remove error message on empty invoicesCopySelect field and required if empty.
+
 ## Bug Fixes
 - INVOICE : Fixed payment mode on mass invoicing refund.
 - MESSAGE : correction of sending a message and update status of message
