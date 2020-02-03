@@ -41,6 +41,7 @@
 - STOCK MOVE LINE : display invoiced status at same place as avalable tag
 - DMS Import : Improvement in code
 - Company : Replace the M2M bankDetailsSet with O2M
+- BANKDETAILS : Add tree and card view for bank details and balance viewer on company bank details
 
 ## Bug Fixes
 - Fix injection error during test
