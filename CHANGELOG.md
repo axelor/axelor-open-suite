@@ -36,6 +36,7 @@
 - ACCOUNTING REPORT: improved analytic general ledger.
 - Subrogative release : corrected the possibility to create two subrogation transmitted or accounted with the same invoices.
 - Configurators: fix issue in configurator menu with latest AOP version.
+- Stock Move: Do not modify wap when generating customer return.
 
 ## [5.2.3] - 2020-01-23
 ## Features

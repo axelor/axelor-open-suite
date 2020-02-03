@@ -800,9 +800,20 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     BigDecimal unitPriceUntaxed = BigDecimal.ZERO;
     BigDecimal companyPurchasePrice = BigDecimal.ZERO;
     if (stockMoveLine.getProduct() != null && stockMove != null) {
-      if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
+      if ((stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+              && stockMove.getIsReversion())
+          || (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+              && !stockMove.getIsReversion())) {
+        // customer delivery or customer return
         unitPriceUntaxed = stockMoveLine.getProduct().getSalePrice();
-      } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
+        BigDecimal wapPrice =
+            computeFromStockLocation(stockMoveLine, stockMove.getToStockLocation());
+        stockMoveLine.setWapPrice(wapPrice);
+      } else if ((stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+              && stockMove.getIsReversion())
+          || (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+              && !stockMove.getIsReversion())) {
+        // supplier return or supplier delivery
         BigDecimal shippingCoef =
             shippingCoefService.getShippingCoef(
                 stockMoveLine.getProduct(),
