@@ -172,22 +172,13 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
 
     if ((int) structuredContentLine.get("lineType")
         == BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE) {
-      this.updateBankDetailsBalance(
-          bankDetails,
+      bankDetails.setBalance(
           ((BigDecimal) structuredContentLine.get("credit"))
-              .subtract((BigDecimal) structuredContentLine.get("debit")),
-          (LocalDate) structuredContentLine.get("operationDate"));
+              .subtract((BigDecimal) structuredContentLine.get("debit")));
+      bankDetails.setBalanceUpdatedDate((LocalDate) structuredContentLine.get("operationDate"));
     }
 
     bankStatementLineAFB120Repository.save(bankStatementLineAFB120);
-  }
-
-  @Transactional
-  protected void updateBankDetailsBalance(
-      BankDetails bankDetails, BigDecimal balance, LocalDate updatedDate) {
-    bankDetails.setBalance(balance);
-    bankDetails.setBalanceUpdatedDate(updatedDate);
-    bankDetailsRepository.save(bankDetails);
   }
 
   protected List<Map<String, Object>> readFile() throws IOException, AxelorException {
