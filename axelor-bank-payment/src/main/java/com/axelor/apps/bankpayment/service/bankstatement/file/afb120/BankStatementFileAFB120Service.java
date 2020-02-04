@@ -174,8 +174,8 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
         == BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE) {
       this.updateBankDetailsBalance(
           bankDetails,
-          ((BigDecimal) structuredContentLine.get("debit"))
-              .subtract((BigDecimal) structuredContentLine.get("credit")),
+          ((BigDecimal) structuredContentLine.get("credit"))
+              .subtract((BigDecimal) structuredContentLine.get("debit")),
           (LocalDate) structuredContentLine.get("operationDate"));
     }
 
