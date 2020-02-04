@@ -170,7 +170,24 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
             (String) structuredContentLine.get("unavailabilityIndexSelect"),
             (String) structuredContentLine.get("commissionExemptionIndexSelect"));
 
+    if ((int) structuredContentLine.get("lineType")
+        == BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE) {
+      this.updateBankDetailsBalance(
+          bankDetails,
+          ((BigDecimal) structuredContentLine.get("debit"))
+              .subtract((BigDecimal) structuredContentLine.get("credit")),
+          (LocalDate) structuredContentLine.get("operationDate"));
+    }
+
     bankStatementLineAFB120Repository.save(bankStatementLineAFB120);
+  }
+
+  @Transactional
+  protected void updateBankDetailsBalance(
+      BankDetails bankDetails, BigDecimal balance, LocalDate updatedDate) {
+    bankDetails.setBalance(balance);
+    bankDetails.setBalanceUpdatedDate(updatedDate);
+    bankDetailsRepository.save(bankDetails);
   }
 
   protected List<Map<String, Object>> readFile() throws IOException, AxelorException {
