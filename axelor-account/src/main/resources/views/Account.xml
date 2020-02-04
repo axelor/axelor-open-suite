@@ -93,14 +93,14 @@
     
 	<form name="account-move-lines-to-complete-form" model="com.axelor.apps.account.db.Account" title="Move lines without analytic to complete" >
     	<panel name="mainPanel" itemSpan="12">
-    		<label title="Please note that the following invoice lines do not have an analytic distribution template. Please fill them in so as not to be blocked."/>
+    		<label title="Please note that the following invoice lines do not have an analytic distribution template. Please fill them in not to be blocked."/>
     		<panel-dashlet action="action-account-view-show-move-lines-analytic" />
     	</panel>
     </form>
     
     <form name="account-invoice-lines-to-complete-form" model="com.axelor.apps.account.db.Account" title="Invoice lines without analytic to complete" >
     	<panel name="mainPanel" itemSpan="12">
-    		<label title="Please note that the following entry lines do not have an analytical distribution template. Please fill them in so as not to be blocked in accounting."/>
+    		<label title="Please note that the following entry lines do not have an analytical distribution template. Please fill them in not to be blocked in accounting."/>
     		<panel-dashlet action="action-account-view-show-invoice-lines" />
     	</panel>
     </form>

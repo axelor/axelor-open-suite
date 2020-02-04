@@ -421,7 +421,7 @@
 	</search-filters>
 	
 	<action-view name="action-account-view-show-invoice-lines" title="${label} invoice lines" model="com.axelor.apps.account.db.InvoiceLine">
-		<view type="grid" name="invoice-line-grid"/>
+		<view type="grid" name="invoice-line-menu-grid"/>
 		<view type="form" name="invoice-line-form"/>
 		<domain>self.id in (:_idInvoiceLineList)</domain>
 	</action-view>

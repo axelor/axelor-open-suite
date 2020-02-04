@@ -25,7 +25,8 @@
     	<field name="taxLine" domain="self.endDate > :date OR self.endDate IS NULL"/>
         <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
         grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution"
-        requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"/>
+        requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"
+        canView="account.analyticDistributionAuthorized" canRemove="true" canEdit="account.analyticDistributionAuthorized" canNew="account.analyticDistributionAuthorized"/>
         <field name="move.statusSelect" width="90"/>
         <field name="reconcileGroup" width="120"/>
         <field name="origin" width="120"/>
@@ -49,9 +50,10 @@
 		<field name="amountRemaining" hidden="true" width="150" readonlyIf="move.statusSelect &gt; 2"/>
 		<field name="amountPaid" hidden="true" readonlyIf="move.statusSelect &gt; 2"/>
     	<field name="taxLine" readonlyIf="!account.isTaxAuthorizedOnMoveLine || move.statusSelect &gt; 2" requiredIf="account.isTaxRequiredOnMoveLine || account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'" domain="self.endDate > :date OR self.endDate IS NULL"/>
-        <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting() || analyticDistributionTemplate != null"
+        <field  name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting() || analyticDistributionTemplate != null"
         grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution" onSelect="action-move-line-attrs-set-domain-analytic-distribution-template" readonlyIf="!account.analyticDistributionAuthorized &amp;&amp; analyticDistributionTemplate == null"
-        requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"/>
+        requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"
+        canView="account.analyticDistributionAuthorized" canRemove="true" canEdit="account.analyticDistributionAuthorized" canNew="account.analyticDistributionAuthorized"/>
         <field name="origin" width="120" readonlyIf="move.statusSelect &gt; 2"/>
         <field name="description" readonlyIf="move.statusSelect &gt; 2"/>
         <field name="analyticMoveLineList" hidden="true" readonlyIf="move.statusSelect &gt; 2"/>
@@ -76,7 +78,8 @@
        	<field name="taxLine" requiredIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'" domain="self.endDate > :date OR self.endDate IS NULL"/>
         <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
         grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution"
-        requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"/>
+        requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"
+        canView="account.analyticDistributionAuthorized" canRemove="true" canEdit="account.analyticDistributionAuthorized" canNew="account.analyticDistributionAuthorized"/>
         <field name="move.statusSelect"/>
         <field name="reconcileGroup" width="120"/>
         <field name="origin" width="120"/>
@@ -101,7 +104,8 @@
        	<field name="taxLine" requiredIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'" domain="self.endDate > :date OR self.endDate IS NULL"/>
         <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
         grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution"
-        requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"/>
+        requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"
+        canView="account.analyticDistributionAuthorized" canRemove="true" canEdit="account.analyticDistributionAuthorized" canNew="account.analyticDistributionAuthorized"/>
         <field name="move.statusSelect"/>
        	<field name="reconcileGroup" width="120"/>
         <field name="origin" width="120"/>
@@ -113,7 +117,8 @@
     <form name="incl-analytic-distribution-move-line-form" model="com.axelor.apps.account.db.MoveLine" title="Move line" canArchive="false">
     	<panel name="analyticDistributionPanel" title="Analytic distribution" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" showIf="account.analyticDistributionAuthorized || analyticDistributionTemplate != null  || (analyticMoveLineList != null &amp;&amp; analyticMoveLineList.length > 0)">
 			<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" onChange="action-move-line-method-create-analytic-distribution" onSelect="action-move-line-attrs-set-domain-analytic-distribution-template" readonlyIf="!account.analyticDistributionAuthorized &amp;&amp; analyticDistributionTemplate == null"
-              requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"/>
+              requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines"
+              canView="account.analyticDistributionAuthorized" canRemove="true" canEdit="account.analyticDistributionAuthorized" canNew="account.analyticDistributionAuthorized"/>
 			<panel-related name="analyticMoveLineListPanel" canNew="account.analyticDistributionAuthorized" canEdit="account.analyticDistributionAuthorized" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
             <panel colSpan="12" hidden="true">
               <field name="account.analyticDistributionAuthorized"/>
@@ -394,7 +399,7 @@
 	</action-attrs>
 
 	<action-attrs name="action-move-line-attrs-set-domain-analytic-distribution-template">
-		<attribute name="domain" for="analyticDistributionTemplate" expr="eval: &quot; self.company.id = ${__parent__?.company.id} &quot;"/>
+		<attribute name="domain" for="analyticDistributionTemplate" expr="eval:&quot; self.company.id = CASE WHEN true is ${__self__?.account.analyticDistributionAuthorized} then  ${__parent__?.company.id} else -1 END &quot;"/>
 	</action-attrs>
 
     <action-record name="action-account-move-line-record-calculate-balance" model="com.axelor.apps.base.db.Wizard">
@@ -492,7 +497,7 @@
 	</search-filters>
 	
 	<action-view name="action-account-view-show-move-lines-analytic" title="${label} move lines" model="com.axelor.apps.account.db.MoveLine">
-		<view type="grid" name="move-line-move-grid"/>
+		<view type="grid" name="move-line-grid"/>
 		<view type="form" name="move-line-move-form"/>
 		<domain>self.id in (:_idMoveLineList)</domain>
 	</action-view>
