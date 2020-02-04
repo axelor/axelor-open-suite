@@ -155,6 +155,7 @@
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">id</property>
+                    <property name="alias">id</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">id</text-property>
                     <property name="onColumnLayout">false</property>
@@ -162,6 +163,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">logo_path</property>
+                    <property name="alias">logo_path</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">logo_path</text-property>
                     <property name="onColumnLayout">false</property>
@@ -169,12 +171,14 @@
                 </structure>
                 <structure>
                     <property name="columnName">logo_height</property>
+                    <property name="alias">logo_height</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">logo_height</text-property>
                     <text-property name="heading">logo_height</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">logo_width</property>
+                    <property name="alias">logo_width</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">logo_width</text-property>
                     <text-property name="heading">logo_width</text-property>
@@ -188,6 +192,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">user_name</property>
+                    <property name="alias">user_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">user_name</text-property>
                     <property name="onColumnLayout">false</property>
@@ -195,6 +200,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">payment_period_name</property>
+                    <property name="alias">payment_period_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">payment_period_name</text-property>
                     <property name="onColumnLayout">false</property>
@@ -202,6 +208,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">total_amount</property>
+                    <property name="alias">total_amount</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">total_amount</text-property>
                     <property name="onColumnLayout">false</property>
@@ -209,6 +216,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">validated_user_name</property>
+                    <property name="alias">validated_user_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">validated_user_name</text-property>
                     <property name="onColumnLayout">false</property>
@@ -216,6 +224,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">validation_date</property>
+                    <property name="alias">validation_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">validation_date</text-property>
                     <property name="onColumnLayout">false</property>
@@ -223,6 +232,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">advance_amount</property>
+                    <property name="alias">advance_amount</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">advance_amount</text-property>
                     <property name="onColumnLayout">false</property>
@@ -230,6 +240,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">withdrawn_cash</property>
+                    <property name="alias">withdrawn_cash</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">withdrawn_cash</text-property>
                     <property name="onColumnLayout">false</property>
@@ -237,6 +248,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">personal_expense_amount</property>
+                    <property name="alias">personal_expense_amount</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">personal_expense_amount</text-property>
                     <property name="onColumnLayout">false</property>
@@ -244,6 +256,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">company_cb_select</property>
+                    <property name="alias">company_cb_select</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">company_cb_select</text-property>
                     <property name="onColumnLayout">false</property>
@@ -251,21 +264,31 @@
                 </structure>
                 <structure>
                     <property name="columnName">multiple_users</property>
+                    <property name="alias">multiple_users</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">multiple_users</text-property>
                     <text-property name="heading">multiple_users</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">sent_date</property>
+                    <property name="alias">sent_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">sent_date</text-property>
                     <text-property name="heading">sent_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">currency</property>
+                    <property name="alias">currency</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">currency</text-property>
                     <text-property name="heading">currency</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">payment_amount</property>
+                    <property name="alias">payment_amount</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">payment_amount</text-property>
+                    <text-property name="heading">payment_amount</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -315,58 +338,58 @@
                     </structure>
                     <structure>
                         <property name="position">7</property>
-                        <property name="name">payment_period_name</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">8</property>
                         <property name="name">total_amount</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">9</property>
+                        <property name="position">8</property>
                         <property name="name">validated_user_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">10</property>
+                        <property name="position">9</property>
                         <property name="name">validation_date</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
-                        <property name="position">11</property>
+                        <property name="position">10</property>
                         <property name="name">advance_amount</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">12</property>
+                        <property name="position">11</property>
                         <property name="name">withdrawn_cash</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">13</property>
+                        <property name="position">12</property>
                         <property name="name">personal_expense_amount</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">13</property>
                         <property name="name">company_cb_select</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">15</property>
+                        <property name="position">14</property>
                         <property name="name">multiple_users</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">16</property>
+                        <property name="position">15</property>
                         <property name="name">sent_date</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
-                        <property name="position">17</property>
+                        <property name="position">16</property>
                         <property name="name">currency</property>
                         <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">17</property>
+                        <property name="name">payment_amount</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                 </list-property>
             </structure>
@@ -377,119 +400,102 @@
                     <property name="name">id</property>
                     <property name="nativeName">id</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">logo_height</property>
                     <property name="nativeName">logo_height</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">logo_width</property>
                     <property name="nativeName">logo_width</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
-                    <property name="name">pdf_header</property>
-                    <property name="nativeName">pdf_header</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">6</property>
                     <property name="name">user_name</property>
                     <property name="nativeName">user_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">7</property>
+                    <property name="position">6</property>
                     <property name="name">payment_period_name</property>
                     <property name="nativeName">payment_period_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">8</property>
+                    <property name="position">7</property>
                     <property name="name">total_amount</property>
                     <property name="nativeName">total_amount</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">9</property>
+                    <property name="position">8</property>
                     <property name="name">validated_user_name</property>
                     <property name="nativeName">validated_user_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">10</property>
+                    <property name="position">9</property>
                     <property name="name">validation_date</property>
                     <property name="nativeName">validation_date</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
-                    <property name="position">11</property>
+                    <property name="position">10</property>
                     <property name="name">advance_amount</property>
                     <property name="nativeName">advance_amount</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">12</property>
+                    <property name="position">11</property>
                     <property name="name">withdrawn_cash</property>
                     <property name="nativeName">withdrawn_cash</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">13</property>
+                    <property name="position">12</property>
                     <property name="name">personal_expense_amount</property>
                     <property name="nativeName">personal_expense_amount</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">14</property>
+                    <property name="position">13</property>
                     <property name="name">company_cb_select</property>
                     <property name="nativeName">company_cb_select</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">15</property>
+                    <property name="position">14</property>
                     <property name="name">multiple_users</property>
                     <property name="nativeName">multiple_users</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">16</property>
+                    <property name="position">15</property>
                     <property name="name">sent_date</property>
                     <property name="nativeName">sent_date</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
-                    <property name="position">17</property>
+                    <property name="position">16</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">17</property>
+                    <property name="name">payment_amount</property>
+                    <property name="nativeName">payment_amount</property>
+                    <property name="dataType">decimal</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT Expense.id, 
@@ -507,7 +513,8 @@
 	select_item.title  AS company_cb_select,
 	Expense.multiple_users,
 	Expense.sent_date,
-	Currency.code AS currency
+	Currency.code AS currency,
+	Expense.payment_amount
 FROM hr_expense AS Expense
 LEFT JOIN auth_user AS AuthUser ON (Expense.user_id = AuthUser.id)
 LEFT JOIN base_company AS Company ON (Expense.company = Company.id)
@@ -4413,7 +4420,7 @@ WHERE ExpenseLine.kilometric_expense = ?
                                 </structure>
                             </list-property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF> if (row["translation"] != null){ row["translation"]} else { row._outer["kilometric_expense_type"] }</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF> if (row["translation"] != null &amp;&amp; row["translation"] != ""){ row["translation"]} else { row._outer["kilometric_expense_type"] }</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="4090">
@@ -4688,6 +4695,66 @@ WHERE ExpenseLine.kilometric_expense = ?
                     <expression name="expression" type="javascript">dataSetRow["validation_date"]</expression>
                     <property name="dataType">date</property>
                 </structure>
+                <structure>
+                    <property name="name">logo_height</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_height"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">logo_width</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_width"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">advance_amount</property>
+                    <text-property name="displayName">advance_amount</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["advance_amount"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">withdrawn_cash</property>
+                    <text-property name="displayName">withdrawn_cash</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["withdrawn_cash"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">personal_expense_amount</property>
+                    <text-property name="displayName">personal_expense_amount</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["personal_expense_amount"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">company_cb_select</property>
+                    <text-property name="displayName">company_cb_select</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["company_cb_select"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">multiple_users</property>
+                    <text-property name="displayName">multiple_users</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["multiple_users"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">sent_date</property>
+                    <text-property name="displayName">sent_date</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["sent_date"]</expression>
+                    <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="name">currency</property>
+                    <text-property name="displayName">currency</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">payment_amount</property>
+                    <text-property name="displayName">payment_amount</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["payment_amount"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
             </list-property>
             <column id="4000"/>
             <column id="4001">
@@ -4703,7 +4770,52 @@ WHERE ExpenseLine.kilometric_expense = ?
                 <property name="width">0.8541666666666666in</property>
             </column>
             <row id="4003">
-                <cell id="4004"/>
+                <cell id="4004">
+                    <grid id="5066">
+                        <column id="5067">
+                            <property name="width">20%</property>
+                        </column>
+                        <column id="5068"/>
+                        <row id="5069">
+                            <cell id="5070">
+                                <text id="5074">
+                                    <property name="fontWeight">bold</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'Expense.totalA.T.I'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">message_key</property>
+                                            <text-property name="displayName">message_key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                            <cell id="5071">
+                                <text id="5083">
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[: <VALUE-OF>row["total_amount"]</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                        </row>
+                    </grid>
+                </cell>
                 <cell id="4005">
                     <text id="4014">
                         <property name="fontWeight">bold</property>
@@ -4770,7 +4882,52 @@ WHERE ExpenseLine.kilometric_expense = ?
                 </cell>
             </row>
             <row id="4007">
-                <cell id="4008"/>
+                <cell id="4008">
+                    <grid id="5075">
+                        <column id="5076">
+                            <property name="width">20%</property>
+                        </column>
+                        <column id="5077"/>
+                        <row id="5078">
+                            <cell id="5079">
+                                <text id="5080">
+                                    <property name="fontWeight">bold</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'Expense.totalToRefund'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">message_key</property>
+                                            <text-property name="displayName">message_key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                            <cell id="5081">
+                                <text id="5084">
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[: <VALUE-OF>row["total_amount"] - row["advance_amount"] - row["withdrawn_cash"] - row["personal_expense_amount"] - row["payment_amount"]</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                        </row>
+                    </grid>
+                </cell>
                 <cell id="4009"/>
                 <cell id="4010"/>
                 <cell id="4012">
