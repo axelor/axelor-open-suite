@@ -388,9 +388,6 @@ public class InvoicingProjectService {
 
       expenseLineQueryBuilder.append(" AND self.expenseDate <= :deadlineDate");
       expenseLineQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
-
-      taskQueryBuilder.append(" AND self.taskDeadline <= :deadlineDate");
-      taskQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
     }
 
     invoicingProject
