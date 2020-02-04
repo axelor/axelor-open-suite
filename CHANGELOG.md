@@ -18,6 +18,7 @@
 - INVOICE : Remove error message on empty invoicesCopySelect field and required if empty.
 - Stock Move: stock reservation management without sale order.
 - Manuf Order: manage stock reservation from stock move.
+- BALANCE TRANSLATION : Translate "Balance" in french by "Solde"
 
 ## Bug Fixes
 - INVOICE : Fixed payment mode on mass invoicing refund.
