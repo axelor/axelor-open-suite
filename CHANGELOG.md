@@ -21,6 +21,7 @@
 - Invoice : Add control to avoid cancelation of ventilated invoice.
 - BALANCE TRANSLATION : Translate "Balance" in french by "Solde"
 - EXPENSE : add new printing design.
+- Invoice printing: remove space between invoice lines without description.
 
 ## Bug Fixes
 - INVOICE : Fixed payment mode on mass invoicing refund.
