@@ -102,6 +102,7 @@
 		<column name="active" type="boolean"/>
 		<column name="balance" type="decimal"/>
 		<column name="balanceUpdatedDate" type="date"/>
+		<column name="balanceBtn" type="button"/>
 
 		<node model="com.axelor.apps.base.db.Company" onClick="action-company-form-view">
 			<field name="name" as="company"/>
@@ -112,6 +113,7 @@
 			<field name="active" as="active"/>
 			<field name="balance" as="balance"/>
 			<field name="balanceUpdatedDate" as="balanceUpdatedDate"/>
+			<button name="balanceBtn" icon="fa-search" onClick="action-bank-details-view-show-bank-statement-lines"/>
 		</node>
 	</tree>
 
