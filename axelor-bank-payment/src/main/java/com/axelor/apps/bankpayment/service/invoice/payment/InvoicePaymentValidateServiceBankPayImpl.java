@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -111,13 +111,13 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
 
     if (accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment()
         && !paymentMode.getGenerateBankOrder()) {
-      this.createMoveForInvoicePayment(invoicePayment);
+      invoicePayment = this.createMoveForInvoicePayment(invoicePayment);
     } else {
       Beans.get(AccountingSituationService.class)
           .updateCustomerCredit(invoicePayment.getInvoice().getPartner());
+      invoicePayment = invoicePaymentRepository.save(invoicePayment);
     }
     if (paymentMode.getGenerateBankOrder()) {
-      invoicePayment = invoicePaymentRepository.save(invoicePayment);
       this.createBankOrder(invoicePayment);
     }
 
@@ -139,14 +139,14 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
     Company company = invoicePayment.getInvoice().getCompany();
 
     if (accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment()) {
-      this.createMoveForInvoicePayment(invoicePayment);
+      invoicePayment = this.createMoveForInvoicePayment(invoicePayment);
     } else {
       Beans.get(AccountingSituationService.class)
           .updateCustomerCredit(invoicePayment.getInvoice().getPartner());
+      invoicePayment = invoicePaymentRepository.save(invoicePayment);
     }
 
     invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
-    invoicePaymentRepository.save(invoicePayment);
   }
 
   /**

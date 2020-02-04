@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -59,6 +59,8 @@ public interface IExceptionMessage {
   static final String BATCH_TASK_UPDATION_1 = /*$$(*/ "Task %s" /*)*/;
 
   static final String BATCH_TASK_UPDATION_2 = /*$$(*/ "Tasks updation completed : " /*)*/;
+
+  static final String BATCH_TIMESHEETLINE_UPDATION_1 = /*$$(*/ "Timesheet line %s" /*)*/;
 
   static final String BATCH_INVOICING_PROJECT_1 = /*$$(*/ "Project %s" /*)*/;
 

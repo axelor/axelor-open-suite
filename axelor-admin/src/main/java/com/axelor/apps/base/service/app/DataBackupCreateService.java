@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -122,6 +122,12 @@ public class DataBackupCreateService {
     Map<String, List<String>> subClassesMap = getSubClassesMap();
 
     for (MetaModel metaModel : metaModelList) {
+
+      /*Checking and ByPassing non-persistable Classes MetaModel*/
+      if (metaModel.getTableName() == null) {
+        continue;
+      }
+
       try {
         List<String> subClasses = subClassesMap.get(metaModel.getFullName());
         long totalRecord = getMetaModelDataCount(metaModel, subClasses);

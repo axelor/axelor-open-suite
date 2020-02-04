@@ -254,7 +254,7 @@
           				</editor>
 					</field>
 					<spacer/>
-					<field name="headOfficeAddress" if="__user__.activeCompany?.accountConfig?.displayHeadOfficeAddrOnInvoicePrinting"/>
+					<field name="headOfficeAddress" if="__user__.activeCompany?.accountConfig?.displayHeadOfficeAddrOnInvoicePrinting" colSpan="12"/>
 				</panel>
 				<panel name="generalContactDetailsPanel" title="General contact details" colSpan="12">
 					<field name="fixedPhone" colSpan="3" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fixedPhone"/>
@@ -578,8 +578,8 @@
 				<div class="span12"><strong>{{fullName}}</strong></div>
 		 	</div>
 			<div>
-			  <div class="span4 card-image">
-                <img ng-show="picture" ng-src="{{$image('picture', 'content')}}" />
+			  <div class="span4 card-image" style="width: 128px; height: 64px;">
+                <img ng-show="picture" ng-src="{{$image('picture', 'content')}}" style="width: 100%; height: 100%; object-fit: contain;"/>
                 <img ng-show="!picture && partnerTypeSelect != 2" src="img/company-default.jpg" />
                 <img ng-show="!picture && partnerTypeSelect == 2 && titleSelect == 1" src="img/partner-m-default.png" />
                 <img ng-show="!picture && partnerTypeSelect == 2 && titleSelect == 2" src="img/partner-w-default.png" />
@@ -620,8 +620,8 @@
 				<div class="span12"><strong>{{fullName}}</strong></div>
 		 	</div>
 			<div>
-			  <div class="span4 card-image">
-			    <img ng-show="picture" ng-src="{{$image('picture', 'content')}}" />
+			  <div class="span4 card-image" style="width: 128px; height: 64px;">
+			    <img ng-show="picture" ng-src="{{$image('picture', 'content')}}"  style="width: 100%; height: 100%; object-fit: contain;"/>
                 <img ng-show="!picture && titleSelect == 1" src="img/partner-m-default.png" />
                 <img ng-show="!picture && titleSelect == 2" src="img/partner-w-default.png" />
                 <img ng-show="!picture && (titleSelect > 2 || !titleSelect)" src="img/partner-default.png" />

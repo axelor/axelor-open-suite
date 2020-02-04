@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -97,6 +97,10 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
   public boolean enableEditOrder(SaleOrder saleOrder) throws AxelorException {
     boolean checkAvailabiltyRequest = super.enableEditOrder(saleOrder);
 
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return checkAvailabiltyRequest;
+    }
+
     List<StockMove> allStockMoves =
         Beans.get(StockMoveRepository.class)
             .findAllBySaleOrderAndStatus(
@@ -142,6 +146,11 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
   public void checkModifiedConfirmedOrder(SaleOrder saleOrder, SaleOrder saleOrderView)
       throws AxelorException {
 
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      super.checkModifiedConfirmedOrder(saleOrder, saleOrderView);
+      return;
+    }
+
     List<SaleOrderLine> saleOrderLineList =
         MoreObjects.firstNonNull(saleOrder.getSaleOrderLineList(), Collections.emptyList());
     List<SaleOrderLine> saleOrderViewLineList =
@@ -180,6 +189,10 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
   @Transactional(rollbackOn = {Exception.class})
   public void validateChanges(SaleOrder saleOrder) throws AxelorException {
     super.validateChanges(saleOrder);
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return;
+    }
 
     saleOrderStockService.fullyUpdateDeliveryState(saleOrder);
     saleOrder.setOrderBeingEdited(false);

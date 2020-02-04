@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -55,7 +55,10 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
       Invoice invoice, List<InvoiceLine> invoiceLineList, PurchaseOrderLine purchaseOrderLine)
       throws AxelorException {
     super.processPurchaseOrderLine(invoice, invoiceLineList, purchaseOrderLine);
-    invoiceLineList.get(invoiceLineList.size() - 1).setProject(purchaseOrderLine.getProject());
+
+    if (Beans.get(AppBusinessProjectService.class).isApp("business-project")) {
+      invoiceLineList.get(invoiceLineList.size() - 1).setProject(purchaseOrderLine.getProject());
+    }
   }
 
   @Override

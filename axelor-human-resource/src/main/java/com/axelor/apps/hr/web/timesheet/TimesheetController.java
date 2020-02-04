@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -605,5 +605,14 @@ public class TimesheetController {
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void removeAfterToDateTimesheetLines(ActionRequest request, ActionResponse response) {
+
+    Timesheet timesheet = request.getContext().asType(Timesheet.class);
+    if (timesheet.getTimesheetLineList() != null && !timesheet.getTimesheetLineList().isEmpty()) {
+      Beans.get(TimesheetService.class).removeAfterToDateTimesheetLines(timesheet);
+    }
+    response.setValues(timesheet);
   }
 }

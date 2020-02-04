@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -39,6 +39,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -198,6 +199,11 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
   protected InvoiceLine createInvoiceLine() throws AxelorException {
 
     InvoiceLine invoiceLine = super.createInvoiceLine();
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return invoiceLine;
+    }
+
     InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
 
     this.assignOriginElements(invoiceLine);
@@ -353,6 +359,10 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
   @Override
   public boolean isAccountRequired() {
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return super.isAccountRequired();
+    }
 
     if (Beans.get(AppSaleService.class).getAppSale().getProductPackMgt()) {
 

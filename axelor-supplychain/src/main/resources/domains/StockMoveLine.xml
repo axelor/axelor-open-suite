@@ -21,6 +21,10 @@
 		<one-to-many name="subLineList" ref="com.axelor.apps.stock.db.StockMoveLine"
 			mappedBy="parentLine" title="Pack lines" />
 
+		<boolean name="isQtyRequested" readonly="true" title="Quantity requested"/>
+
+		<datetime name="reservationDateTime" readonly="true"/>
+
 		<finder-method name="findAllBySaleOrder"
 			using="com.axelor.apps.sale.db.SaleOrder:saleOrder" all="true"
 			filter="self.stockMove.originTypeSelect LIKE 'com.axelor.apps.sale.db.SaleOrder' AND self.stockMove.originId = :saleOrder.id" />
