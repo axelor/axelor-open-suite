@@ -170,14 +170,6 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
             (String) structuredContentLine.get("unavailabilityIndexSelect"),
             (String) structuredContentLine.get("commissionExemptionIndexSelect"));
 
-    if ((int) structuredContentLine.get("lineType")
-        == BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE) {
-      bankDetails.setBalance(
-          ((BigDecimal) structuredContentLine.get("credit"))
-              .subtract((BigDecimal) structuredContentLine.get("debit")));
-      bankDetails.setBalanceUpdatedDate((LocalDate) structuredContentLine.get("operationDate"));
-    }
-
     bankStatementLineAFB120Repository.save(bankStatementLineAFB120);
   }
 
