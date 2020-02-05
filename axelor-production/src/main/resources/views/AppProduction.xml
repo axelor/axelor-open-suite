@@ -14,13 +14,13 @@
 			<panel name="configuratorPanel" title="Configurator">
 				<field name="enableConfigurator" widget="boolean-switch"/>
 			</panel>
-			<panel name="billOfMaterialPanel" title="Bill of material">
+			<panel name="billOfMaterialPanel" title="Bill of materials">
 				<field name="manageBillOfMaterialVersion" widget="boolean-switch"/>
 			    <field name="manageResidualProductOnBom" widget="boolean-switch"/>
 			    <field name="nbDecimalDigitForBomQty"/>
 			</panel>
 			<panel name="manufacturingProcessPanel" title="Manufacturing process">
-   				<field name="workCenterProduct" domain="self.productTypeSelect = 'service'" form-view="product-form" grid-view="product-grid" canEdit="false" colSpan="12"/>
+   				<field name="workCenterProduct" domain="self.productTypeSelect = 'service' AND dtype = 'Product'" form-view="product-form" grid-view="product-grid" canEdit="false" colSpan="12"/>
 			</panel>
 			<panel name="prodProcessPanel" title="Production process">
  				<field name="manageProdProcessVersion" widget="boolean-switch"/>

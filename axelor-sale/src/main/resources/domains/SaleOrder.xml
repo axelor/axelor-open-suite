@@ -30,7 +30,6 @@
     <many-to-one name="deliveryAddress" ref="com.axelor.apps.base.db.Address" title="Delivery address"/>
 	<string name="deliveryAddressStr" title="Delivery address" large="true" multiline="true"/>
   	<boolean name="isToPrintLineSubTotal" title="Print subtotal per line"/>
-  	<boolean name="hasSubLineDefaultValue" title="Default value for sublines"/>
   	<boolean name="inAti" title="In ATI"/>
   	<many-to-one name="duration" ref="com.axelor.apps.base.db.Duration" title="Validity duration"/>
   	<date name="endOfValidityDate" title="End of validity"/>
@@ -60,7 +59,7 @@
 	<decimal name="markup" title="Markup (%)"/>
   	
 <!--   	Onglet Autres informations -->
-	<many-to-one name="salemanUser" ref="com.axelor.auth.db.User" title="Salesman" massUpdate="true"/>
+	<many-to-one name="salespersonUser" ref="com.axelor.auth.db.User" title="Salesperson" massUpdate="true"/>
 	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team" massUpdate="true"/>
 	
 <!-- 	Onglet description -->

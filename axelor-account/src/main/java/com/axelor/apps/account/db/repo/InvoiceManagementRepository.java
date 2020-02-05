@@ -45,7 +45,6 @@ public class InvoiceManagementRepository extends InvoiceRepository {
     copy.setAmountRejected(BigDecimal.ZERO);
     copy.clearBatchSet();
     copy.setDebitNumber(null);
-    copy.setDirectDebitManagement(null);
     copy.setDoubtfulCustomerOk(false);
     copy.setMove(null);
     copy.setInterbankCodeLine(null);

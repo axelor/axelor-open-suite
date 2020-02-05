@@ -241,7 +241,7 @@ public class MoveLineService {
   }
 
   /**
-   * Creating accounting move line method using all currency informations (amount in specific move
+   * Creating accounting move line method using all currency information (amount in specific move
    * currency, amount in company currency, currency rate)
    *
    * @param move

@@ -18,8 +18,9 @@
 package com.axelor.apps.production.service.manuforder;
 
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcess;
@@ -62,12 +63,19 @@ public class ManufOrderStockMoveService {
   private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected StockMoveService stockMoveService;
   protected StockMoveLineService stockMoveLineService;
-
+  protected AppBaseService appBaseService;
+  protected ProductCompanyService productCompanyService;
+  
   @Inject
   public ManufOrderStockMoveService(
-      StockMoveService stockMoveService, StockMoveLineService stockMoveLineService) {
+      StockMoveService stockMoveService,
+      StockMoveLineService stockMoveLineService,
+      AppBaseService appBaseService,
+      ProductCompanyService productCompanyService) {
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
+    this.appBaseService = appBaseService;
+    this.productCompanyService = productCompanyService;
   }
 
   public void createToConsumeStockMove(ManufOrder manufOrder) throws AxelorException {
@@ -190,12 +198,13 @@ public class ManufOrderStockMoveService {
 
       for (ProdProduct prodProduct : manufOrder.getToProduceProdProductList()) {
 
+	    BigDecimal productCostPrice = prodProduct.getProduct() != null ? (BigDecimal) productCompanyService.get(prodProduct.getProduct(), "costPrice", manufOrder.getCompany()) : BigDecimal.ZERO; 
         this._createStockMoveLine(
             prodProduct,
             stockMove,
             StockMoveLineService.TYPE_OUT_PRODUCTIONS,
             prodProduct.getQty(),
-            getCostPriceFromProduct(prodProduct));
+            productCostPrice);
       }
 
       if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
@@ -222,17 +231,6 @@ public class ManufOrderStockMoveService {
     for (StockMove stockMove : manufOrder.getInStockMoveList()) {
       finishStockMove(stockMove);
     }
-  }
-
-  /**
-   * A null safe method to get costPrice from the product in the prod product.
-   *
-   * @param prodProduct a nullable prodProduct.
-   * @return the cost price or 0 if the product is null.
-   */
-  protected BigDecimal getCostPriceFromProduct(ProdProduct prodProduct) {
-    Optional<Product> product = Optional.ofNullable(prodProduct.getProduct());
-    return product.map(Product::getCostPrice).orElse(BigDecimal.ZERO);
   }
 
   protected StockMove _createToProduceStockMove(ManufOrder manufOrder, Company company)
@@ -279,8 +277,9 @@ public class ManufOrderStockMoveService {
   public StockMoveLine _createStockMoveLine(
       ProdProduct prodProduct, StockMove stockMove, int inOrOutType, BigDecimal qty)
       throws AxelorException {
+	  BigDecimal productCostPrice = prodProduct.getProduct() != null ? (BigDecimal) productCompanyService.get(prodProduct.getProduct(), "costPrice", stockMove.getCompany()) : BigDecimal.ZERO; 
     return _createStockMoveLine(
-        prodProduct, stockMove, inOrOutType, qty, getCostPriceFromProduct(prodProduct));
+        prodProduct, stockMove, inOrOutType, qty, productCostPrice);
   }
 
   protected StockMoveLine _createStockMoveLine(
@@ -293,8 +292,8 @@ public class ManufOrderStockMoveService {
 
     return stockMoveLineService.createStockMoveLine(
         prodProduct.getProduct(),
-        prodProduct.getProduct().getName(),
-        prodProduct.getProduct().getDescription(),
+        (String) productCompanyService.get(prodProduct.getProduct(), "name", stockMove.getCompany()),
+        (String) productCompanyService.get(prodProduct.getProduct(), "description", stockMove.getCompany()),
         qty,
         costPrice,
         costPrice,
@@ -608,12 +607,13 @@ public class ManufOrderStockMoveService {
     // create a new list
     for (ProdProduct prodProduct : manufOrder.getToProduceProdProductList()) {
       BigDecimal qty = getFractionQty(manufOrder, prodProduct, qtyToUpdate);
+      BigDecimal productCostPrice = prodProduct.getProduct() != null ? (BigDecimal) productCompanyService.get(prodProduct.getProduct(), "costPrice", manufOrder.getCompany()) : BigDecimal.ZERO; 
       _createStockMoveLine(
           prodProduct,
           stockMove,
           StockMoveLineService.TYPE_OUT_PRODUCTIONS,
           qty,
-          getCostPriceFromProduct(prodProduct));
+          productCostPrice);
 
       // Update produced StockMoveLineList with created stock move lines
       stockMove
@@ -639,6 +639,11 @@ public class ManufOrderStockMoveService {
     BigDecimal manufOrderQty = manufOrder.getQty();
     BigDecimal prodProductQty = prodProduct.getQty();
 
-    return qtyToUpdate.multiply(prodProductQty).divide(manufOrderQty, 2, RoundingMode.HALF_EVEN);
+    int scale = appBaseService.getNbDecimalDigitForQty();
+
+    return qtyToUpdate
+        .multiply(prodProductQty)
+        .setScale(scale, RoundingMode.HALF_EVEN)
+        .divide(manufOrderQty, scale, RoundingMode.HALF_EVEN);
   }
 }

@@ -54,9 +54,9 @@
 				<field name="partnerSet" hideIf="typeSelect == 2000 || typeSelect == 2001 || typeSelect == 16 || typeSelect == 17 || typeSelect == 12 || typeSelect == 18" colSpan="12" form-view="partner-form" grid-view="partner-grid" widget="TagSelect" canNew="false" domain=":company member of self.companySet AND self.isContact = false"/>
 				<field name="analyticJournal" showIf="typeSelect == 2000 || typeSelect == 2001"  domain="self.company = :company" form-view="analytic-journal-form" grid-view="analytic-journal-grid"/>
 				<field name="bankDetailsSet"   if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')" requiredIf="typeSelect == 18" showIf="typeSelect == 18" colSpan="12" form-view="bank-details-form" grid-view="bank-details-grid" widget="TagSelect" canNew="false" onSelect="action-accounting-report-method-set-bank-details-domain"/>
-			
+
 			</panel>
-			<panel name="printingInformationsPanel" title="Printing informations" hideIf="!typeSelect || [16,17,18].indexOf(typeSelect) != -1">
+			<panel name="printingInformationsPanel" title="Printing information" hideIf="!typeSelect || [16,17,18].indexOf(typeSelect) != -1">
 				<field name="global" hideIf="!typeSelect || [0,3,4,10,12,13,15,16,17].indexOf(typeSelect) != -1"	onChange="action-accounting-report-record-global" />
 				<field name="globalByDate" hideIf="!typeSelect || [3,4,5,10,11,12,13,14,15,16,17].indexOf(typeSelect) != -1" onChange="action-accounting-report-record-global-by-date" />
 				<field name="globalByPartner" hideIf="typeSelect != 3 &amp;&amp; typeSelect != 7" onChange="action-accounting-report-record-global-by-partner" />
@@ -274,7 +274,7 @@
    <action-method name="action-accounting-report-method-set-bank-details-domain">
      <call class="com.axelor.apps.bankpayment.web.AccountingReportController" method="setBankDetailsDomain"/>
    </action-method>
-   
+
    <action-validate name="action-accounting-report-date-change-validate">
    		<info message="The closing date is earlier than the current date: moves recorded after that date will not be taken into account in the report." if="date &lt; __date__"/>
    </action-validate>

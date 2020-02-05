@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	
+	<form model="com.axelor.meta.db.MetaModel" title="Model" name="meta-model-form" id="studio-meta-model-form" extension="true">
+		<extend target="panel-related[@field='metaFields']">
+			<insert position="after">
+				<panel-mail name="mailPanel">
+					<mail-messages limit="4"/>
+				</panel-mail>
+			</insert>
+		</extend>
+	</form>
+
+</object-views>	

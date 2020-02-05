@@ -32,6 +32,7 @@ public interface MrpService {
 
   public void reset(Mrp mrp);
 
+  public void undoManualChanges(Mrp mrp);
   /**
    * Search for the end date of the mrp. If the end date field in mrp is blank, search in the lines
    * the last date.

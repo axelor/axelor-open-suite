@@ -20,6 +20,7 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
@@ -29,6 +30,7 @@ import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
@@ -49,6 +51,8 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
   @Inject private PurchaseOrderLineServiceImpl purchaseOrderLineServiceImpl;
 
   @Inject protected AppBusinessProjectService appBusinessProjectService;
+  
+  @Inject protected ProductCompanyService productCompanyService;
 
   @Override
   protected void processPurchaseOrderLine(
@@ -66,8 +70,9 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
       throws AxelorException {
 
     Product product = purchaseOrderLine.getProduct();
-    BigDecimal price = product.getCostPrice();
-    BigDecimal discountAmount = product.getCostPrice();
+    Company company = purchaseOrderLine.getPurchaseOrder() != null ? purchaseOrderLine.getPurchaseOrder().getCompany() : null;
+    BigDecimal price = (BigDecimal) productCompanyService.get(product, "costPrice", company);
+    BigDecimal discountAmount = price;
     int discountTypeSelect = 1;
     if (invoice.getPartner().getChargeBackPurchaseSelect()
         == PartnerRepository.CHARGING_BACK_TYPE_PRICE_LIST) {
@@ -110,7 +115,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
           new InvoiceLineGenerator(
               invoice,
               product,
-              product.getName(),
+              (String) productCompanyService.get(product, "name", company),
               price,
               price,
               price,
@@ -123,9 +128,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
               discountTypeSelect,
               null,
               null,
-              false,
-              false,
-              0) {
+              false) {
             @Override
             public List<InvoiceLine> creates() throws AxelorException {
 
@@ -158,7 +161,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
           new InvoiceLineGenerator(
               invoice,
               product,
-              product.getName(),
+              (String) productCompanyService.get(product, "name", company),
               price,
               price,
               price,
@@ -171,9 +174,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
               discountTypeSelect,
               null,
               null,
-              false,
-              false,
-              0) {
+              false) {
             @Override
             public List<InvoiceLine> creates() throws AxelorException {
 
@@ -200,9 +201,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
               false,
               null,
               purchaseOrderLine,
-              null,
-              false,
-              0) {
+              null) {
             @Override
             public List<InvoiceLine> creates() throws AxelorException {
 

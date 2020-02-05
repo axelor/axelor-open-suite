@@ -27,12 +27,14 @@ import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
@@ -102,6 +104,7 @@ public class TimesheetServiceImpl implements TimesheetService {
   protected TimesheetLineService timesheetLineService;
   protected ProjectPlanningTimeRepository projectPlanningTimeRepository;
   protected TeamTaskRepository teamTaskRepository;
+  protected ProductCompanyService productCompanyService;
 
   @Inject
   public TimesheetServiceImpl(
@@ -114,7 +117,8 @@ public class TimesheetServiceImpl implements TimesheetService {
       UserHrService userHrService,
       TimesheetLineService timesheetLineService,
       ProjectPlanningTimeRepository projectPlanningTimeRepository,
-      TeamTaskRepository teamTaskRepository) {
+      TeamTaskRepository teamTaskRepository,
+      ProductCompanyService productCompanyService) {
     this.priceListService = priceListService;
     this.appHumanResourceService = appHumanResourceService;
     this.hrConfigService = hrConfigService;
@@ -125,6 +129,7 @@ public class TimesheetServiceImpl implements TimesheetService {
     this.timesheetLineService = timesheetLineService;
     this.projectPlanningTimeRepository = projectPlanningTimeRepository;
     this.teamTaskRepository = teamTaskRepository;
+    this.productCompanyService = productCompanyService;
   }
 
   @Override
@@ -594,7 +599,7 @@ public class TimesheetServiceImpl implements TimesheetService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.TIMESHEET_PRODUCT));
     }
-    BigDecimal price = product.getSalePrice();
+    BigDecimal price = (BigDecimal) productCompanyService.get(product, "salePrice", invoice.getCompany());
     BigDecimal discountAmount = BigDecimal.ZERO;
     BigDecimal priceDiscounted = price;
 
@@ -602,7 +607,7 @@ public class TimesheetServiceImpl implements TimesheetService {
         Beans.get(UnitConversionService.class)
             .convert(
                 appHumanResourceService.getAppBase().getUnitHours(),
-                product.getUnit(),
+                (Unit) productCompanyService.get(product, "unit", invoice.getCompany()),
                 hoursDuration,
                 AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
                 product);
@@ -635,7 +640,7 @@ public class TimesheetServiceImpl implements TimesheetService {
     }
 
     String description = user.getFullName();
-    String productName = product.getName();
+    String productName = (String) productCompanyService.get(product, "name", invoice.getCompany());
     if (date != null) {
       productName += " " + "(" + date + ")";
     }
@@ -650,16 +655,14 @@ public class TimesheetServiceImpl implements TimesheetService {
             priceDiscounted,
             description,
             qtyConverted,
-            product.getUnit(),
+            (Unit) productCompanyService.get(product, "unit", invoice.getCompany()),
             null,
             priority,
             discountAmount,
             discountTypeSelect,
             price.multiply(qtyConverted),
             null,
-            false,
-            false,
-            0) {
+            false) {
 
           @Override
           public List<InvoiceLine> creates() throws AxelorException {

@@ -9,7 +9,7 @@
         <field name="productSupplierName"/>
 		<field name="supplierPartner.currency" form-view="currency-form" grid-view="currency-grid"/>
         <field name="updateDate"/>
-        <field name="minQty"/>
+        <field name="minQty" x-scale="2"/>
         <field name="price" x-scale="2" />
     </grid>
 
@@ -20,7 +20,7 @@
 		<field name="productSupplierName"/>
 		<field name="supplierPartner.currency" form-view="currency-form" grid-view="currency-grid"/>
 		<field name="updateDate"/>
-		<field name="minQty"/>
+		<field name="minQty" x-scale="2"/>
 		<field name="price" x-scale="2" />
 	</grid>
     
@@ -44,7 +44,7 @@
 	<form name="supplier-catalog-partner-form" title="Supplier Catalog" model="com.axelor.apps.purchase.db.SupplierCatalog"
 		  onNew="action-supplier-catalog-attrs-init" onLoad="action-supplier-catalog-attrs-init" width="large">
 		<panel name="mainPanel" colSpan="12">
-			<field name="product" form-view="product-form" grid-view="product-grid" onChange="action-supplier-catalog-attrs-update"/>
+			<field name="product" form-view="product-form" grid-view="product-grid" onChange="action-supplier-catalog-attrs-update" domain="dtype = 'Product'"/>
 			<field name="supplierPartner.currency" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="updateDate"/>
 			<field name="productSupplierCode"/>
@@ -60,6 +60,7 @@
 
     <action-attrs name="action-supplier-catalog-attrs-init">
 		<attribute name="scale" for="price" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="minQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
 		<attribute name="hidden" for="shippingCoefList"
 				   expr="eval: __parent__ &amp;&amp; !__parent__.defShipCoefByPartner" if="eval: __parent__._model == 'com.axelor.apps.base.db.Product'"/>
 		<attribute name="hidden" for="shippingCoefList"

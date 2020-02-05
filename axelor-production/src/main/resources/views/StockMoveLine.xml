@@ -7,10 +7,10 @@
     orderBy="stockMove.statusSelect,product.code,trackingNumber.trackingNumberSeq" model="com.axelor.apps.stock.db.StockMoveLine"
     canNew="false" canDelete="false">
     <hilite if="$get('stockMove.statusSelect') == 3" background="success" />
-    <field name="product" form-view="product-form" grid-view="product-grid" readonlyIf="id" />
+    <field name="product" form-view="product-form" grid-view="product-grid" readonlyIf="id" domain="dtype = 'Product'"/>
     <field name="productModel" form-view="product-form" grid-view="product-grid"
       if="__config__.app.getApp('base').manageProductVariants" readonlyIf="product || id" />
-    <field name="qty" title="Consumed quantity" />
+    <field name="qty" title="Consumed quantity" x-scale="2"/>
     <field name="unitPriceUntaxed" x-scale="2" />
     <field name="unitPriceTaxed" x-scale="2" hidden="true" />
     <field name="unit" form-view="unit-form" grid-view="unit-grid" />
@@ -25,17 +25,17 @@
 	<field name="product.trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
     <field name="stockMove.statusSelect" />
     <button name="trackNumberWizardBtn" title="Split by tracking numbers" readonlyIf="$get('stockMove.statusSelect') > 2 || (!$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged'))" icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard"/>
-    <field name="realQty" hidden="true"/>
+    <field name="realQty" hidden="true" x-scale="2"/>
   </grid>
 
   <grid name="stock-move-line-produced-production-grid" title="Stock move lines"
     orderBy="stockMove.statusSelect,product.code,trackingNumber.trackingNumberSeq" model="com.axelor.apps.stock.db.StockMoveLine"
     canNew="false" canDelete="false">
     <hilite if="$get('stockMove.statusSelect') == 3" background="success" />
-    <field name="product" form-view="product-form" grid-view="product-grid" readonlyIf="id" />
+    <field name="product" form-view="product-form" grid-view="product-grid" readonlyIf="id" domain="dtype = 'Product'"/>
     <field name="productModel" form-view="product-form" grid-view="product-grid"
       if="__config__.app.getApp('base').manageProductVariants" readonlyIf="product || id" />
-    <field name="qty" title="Produced quantity" />
+    <field name="qty" title="Produced quantity" x-scale="2"/>
     <field name="unitPriceUntaxed" x-scale="2" />
     <field name="unitPriceTaxed" x-scale="2" hidden="true" />
     <field name="unit" form-view="unit-form" grid-view="unit-grid" />
@@ -50,7 +50,7 @@
 	<field name="product.trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
     <field name="stockMove.statusSelect" />
     <button name="trackNumberWizardBtn" title="Split by tracking numbers" readonlyIf="$get('stockMove.statusSelect') > 2 || (!$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged'))" icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard"/>
-    <field name="realQty" hidden="true"/>
+    <field name="realQty" hidden="true" x-scale="2"/>
   </grid>
 
   <form name="stock-move-line-production-form" title="Stock move line"
@@ -59,11 +59,11 @@
     onNew="action-group-stock-stockmoveline-production-onnew"
     onLoad="action-stock-move-line-attrs-scale-and-precision" width="large">
     <panel name="mainPanel" readonlyIf="stockMove.statusSelect == 3">
-      <field name="product" canEdit="false" domain="self.expense = false"
+      <field name="product" canEdit="false" domain="self.expense = false AND dtype = 'Product'"
         onChange="action-group-stock-stockmoveline-product-onchange"
         onSelect="action-stock-move-line-attrs-product-domain" form-view="product-form"
         grid-view="product-grid" readonlyIf="id" />
-      <field name="productModel" canEdit="false" domain="self.isModel = true"
+      <field name="productModel" canEdit="false" domain="self.isModel = true AND dtype = 'Product'"
         form-view="product-form" grid-view="product-grid"
         if="__config__.app.getApp('base').manageProductVariants" readonlyIf="product || id" />
       <field name="productName" required="true" />

@@ -22,9 +22,9 @@
     		<field name="toDate" required="true"/>
     		<field name="company" canEdit="false" required="true"/>
     		<field name="partnerSet" colSpan="12" widget="TagSelect" title="Customers" domain="self.isContact = false AND self.isCustomer = true AND :company member of self.companySet"/>
-    		<field name="productSet" canEdit="false" colSpan="12" widget="TagSelect"/>
+    		<field name="productSet" canEdit="false" colSpan="12" widget="TagSelect" domain="dtype = 'Product'"/>
     		<label name="orLabel" title="OR"/>
-    		<field name="productCategorySet" colSpan="12" widget="TagSelect"/>
+    		<field name="productCategorySet" colSpan="12" widget="TagSelect" domain="dtype = 'Product'"/>
     	</panel>
     	<panel name="optionsPanel" title="Options" sidebar="true">
     		<field name="graphTypeSelect" widget="RadioSelect"/>
@@ -43,9 +43,9 @@
     		<field name="toDate" required="true"/>
     		<field name="company" canEdit="false" required="true"/>
     		<field name="partnerSet" colSpan="12" widget="TagSelect" title="Suppliers" domain="self.isContact = false AND self.isSupplier = true AND :company member of self.companySet"/>
-    		<field name="productSet" canEdit="false" colSpan="12" widget="TagSelect"/>
+    		<field name="productSet" canEdit="false" colSpan="12" widget="TagSelect" domain="dtype = 'Product'"/>
     		<label name="orLabel" title="OR"/>
-    		<field name="productCategorySet" colSpan="12" widget="TagSelect"/>
+    		<field name="productCategorySet" colSpan="12" widget="TagSelect" domain="dtype = 'Product'"/>
     	</panel>
     	<panel name="optionsPanel" title="Options" sidebar="true">
             <field name="graphTypeSelect" widget="RadioSelect"/>

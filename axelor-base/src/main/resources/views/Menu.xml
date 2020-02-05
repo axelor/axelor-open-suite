@@ -187,7 +187,7 @@
 		<view type="form" name="product-form" />
 	  	<view-param name="limit" value="39"/>
 		<view-param name="search-filters" value="products-filters"/>
-		<domain>self.isModel = :_isModel AND self.productTypeSelect = :_productTypeSelect </domain>
+		<domain>self.isModel = :_isModel AND self.productTypeSelect = :_productTypeSelect AND dtype = 'Product'</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_isModel" expr="false"/>
 		<context name="_productTypeSelect" expr="storable"/>
@@ -204,7 +204,7 @@
 		<view type="form" name="product-form" />
 	  	<view-param name="limit" value="39"/>
 		<view-param name="search-filters" value="products-filters"/>
-		<domain>self.isModel = :_isModel AND self.productTypeSelect = :_productTypeSelect </domain>
+		<domain>self.isModel = :_isModel AND self.productTypeSelect = :_productTypeSelect AND dtype = 'Product'</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_isModel" expr="false"/>
 		<context name="_productTypeSelect" expr="service"/>
@@ -220,7 +220,7 @@
 		<view type="form" name="product-form" />
 	  	<view-param name="limit" value="39"/>
 		<view-param name="search-filters" value="products-filters"/>
-		<domain>self.isModel = :_isModel</domain>
+		<domain>self.isModel = :_isModel AND dtype = 'Product'</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_isModel" expr="true"/>
 	</action-view>
@@ -530,6 +530,21 @@
 	    <view type="form" name="company-department-form"/>
 	</action-view>
 
+	<menuitem name="company-bank-details" parent="admin-root-user-configuration" title="Bank details" action="company.bank.details"/>
+
+	<action-view name="company.bank.details" title="Company.bankDetails" model="com.axelor.apps.base.db.BankDetails">
+    	<view type="cards" name="bank-details-cards"/>
+    	<view type="grid" name="bank-details-grid"/>
+	    <view type="form" name="bank-details-form"/>
+	    <domain>self.company != null</domain>
+	</action-view>
+
+	<menuitem name="company-bank-details-tree" parent="admin-root-user-configuration" title="Bank details tree" action="company.bank.details.tree"/>
+
+	<action-view name="company.bank.details.tree" title="Bank details tree" model="com.axelor.apps.base.db.BankDetails">
+    	<view type="tree" name="bank-details-tree"/>
+	</action-view>
+
 	<menuitem title="Trading names" name="admin-root-trading-name" parent="admin-root-user-configuration" action="action-view-trading-name" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
 
 	<action-view name="action-view-trading-name" title="Trading names" model="com.axelor.apps.base.db.TradingName">
@@ -686,7 +701,17 @@
 		<view type="grid" name="printing-setting-grid"/>
 		<view type="form" name="printing-setting-form"/>
 	</action-view>
-	
+
+	<menuitem title="DMS Import" name="menu-dms-import-wizard"
+		parent="admin-root-maintenance" action="menu.dms.import.wizard" />
+
+	<action-view name="menu.dms.import.wizard" model="com.axelor.apps.base.db.Wizard"
+		title="DMS Import">
+		<view name="dms-import-wizard-form" type="form" />
+		<view-param name="show-confirm" value="false" />
+		<view-param name="show-toolbar" value="false" />
+	</action-view>
+
 	<menuitem name="admin-root-calendars" parent="admin-root" if="__config__.app.isApp('base')"
 			  title="Calendars" order="50"/>
 

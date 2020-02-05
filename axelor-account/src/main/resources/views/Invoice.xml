@@ -270,7 +270,7 @@
             <field name="inAti" onChange="action-invoice-attrs-in-ati" readonlyIf="statusSelect != 1 || invoiceLineList.length > 0"/>
         </panel>
 
-        <panel name="invoicingInfoPanel" title="Invoicing informations" hideIf="company == null">
+        <panel name="invoicingInfoPanel" title="Invoicing information" hideIf="company == null">
             <field name="partner" colSpan="3" canEdit="false" readonlyIf="((operationTypeSelect == 3 || operationTypeSelect == 4) &amp;&amp; statusSelect != 1) || ((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; (statusSelect != 1 || invoiceLineList.length > 0))"  onChange="action-group-account-invoice-partner-onchange,action-method-invoice-address-str" onSelect="action-invoice-method-set-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
             <field name="contactPartner" colSpan="3" canEdit="false" onSelect="action-set-partner-domain" domain="self.isContact = true AND :company member of self.companySet" readonlyIf="partner != null &amp;&amp; partner.partnerTypeSelect == 2" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
             <field name="paymentMode" colSpan="3" canEdit="false" widget="SuggestBox" onSelect="action-set-payment-mode-domain" onChange="action-invoice-method-fill-company-bank-details,action-invoice-method-check-partner-bank-details-list" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
@@ -311,7 +311,7 @@
 
 		<panel-tabs name="mainPanelTab" hideIf="partner == null">
 			<panel name="invoiceContentPanel" title="Content" showTitle="false">
-				<panel-related name="invoiceLineListPanel" field="invoiceLineList" canNew="statusSelect == 1" canRemove="statusSelect == 1" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-grid" onChange="action-invoice-group-invoice-line-onchange" canMove="true" orderBy="sequence" height="30"/>
+				<panel-related name="invoiceLineListPanel" field="invoiceLineList" canNew="statusSelect == 1" canRemove="statusSelect == 1" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-grid" onChange="action-invoice-method-compute" canMove="true" orderBy="sequence"  height="30" />
 			</panel>
 			<panel name="invoiceTaxPanel" title="Tax" showTitle="false">
 				<panel-related name="invoiceLineTaxListPanel" field="invoiceLineTaxList" colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
@@ -378,7 +378,7 @@ InvoiceSet.length > 0))"
 				<panel name="descriptionToDisplayOnProformaPanel" title="Comment to display on proforma" colSpan="12">
 				  <field name="proformaComments" widget="html" colSpan="12" showTitle="false"/>
 				</panel>
-				<panel name="specificNoteOnInvoiceToDisplayPanel" title="Bank details specific note" colSpan="12">
+				<panel name="specificNoteOnInvoiceToDisplayPanel" title="Bank details specific note" colSpan="12" hidden="true" showIf="companyBankDetails.specificNoteOnInvoice">
 					<field name="companyBankDetails.specificNoteOnInvoice" widget="html" colSpan="12" showTitle="false"/>
 				</panel>
 			</panel>
@@ -607,7 +607,7 @@ InvoiceSet.length > 0))"
 			<field name="inAti" onChange="action-invoice-attrs-in-ati"/>
 		</panel>
 
-		<panel name="invoicingInfoPanel" title="Invoicing informations">
+		<panel name="invoicingInfoPanel" title="Invoicing information">
 			<field name="partner" canEdit="false" form-view="partner-form" grid-view="partner-grid" readonlyIf="((operationTypeSelect == 3 || operationTypeSelect == 4) &amp;&amp; statusSelect != 1) || ((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; (statusSelect !=1 || invoiceLineList.length > 0))" onChange="action-group-account-invoice-partner-onchange,action-method-invoice-address-str" onSelect="action-invoice-method-set-partner-domain" canView="false"/>
 			<field name="contactPartner" canEdit="false" onSelect="action-set-partner-domain" domain="self.isContact = true AND :company member of self.companySet" form-view="partner-contact-form" grid-view="partner-contact-grid"
 				   readonlyIf="partner != null &amp;&amp; partner.partnerTypeSelect == 2" canView="false"/>
@@ -743,13 +743,8 @@ InvoiceSet.length > 0))"
     </grid>
 
 	<!-- VIEW LITE  -->
-    <grid name="invoice-lite-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice">
-    	<toolbar>
-        	<button name="newBtn" title="" hidden="true"/>
-    		<button name="saveBtn" title="" hidden="true"/>
-    		<button name="copyBtn" title="" hidden="true"/>
-    		<button name="deleteBtn" title="" hidden="true"/>
-		</toolbar>
+    <grid name="invoice-lite-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" 
+    	canNew="false" canDelete="false" canSave="false">
         <field name="invoiceId"/>
         <field name="invoiceDate"/>
 		<field name="operationTypeSelect"/>
@@ -881,14 +876,6 @@ InvoiceSet.length > 0))"
 	<action-group name="action-invoice-group-saleorder-onchange">
 		<action name="action-invoice-method-fill-in-lines"/>
 		<action name="action-invoice-method-fill-advance-payment-set"/>
-	</action-group>
-
-	<action-group name="action-invoice-group-invoice-line-onchange">
-		<action name="action-invoice-method-remove-subline"/> 
-		<action name="save" if="invoiceLineList.find{it->it.typeSelect == 2 &amp;&amp; (it.version != null || it.id == null)} != null" />
-		<action name="action-invoice-method-add-subline"/>
-		<action name="action-invoice-method-compute"/>
-		<action name="save" if="invoiceLineList.find{it->it.typeSelect == 2 &amp;&amp; (it.version != null || it.id == null)} != null" />
 	</action-group>
 
 	<action-group name="action-invoice-group-report-print">
@@ -1199,14 +1186,6 @@ InvoiceSet.length > 0))"
 
 	<action-method name="action-invoice-method-create-refund">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="createRefund"/>
-	</action-method>
-	
-	<action-method name="action-invoice-method-add-subline">
-		<call class="com.axelor.apps.supplychain.web.InvoiceController" method="addSubLines"/>
-	</action-method>
-	
-	<action-method name="action-invoice-method-remove-subline">
-		<call class="com.axelor.apps.supplychain.web.InvoiceController" method="removeSubLines"/>
 	</action-method>
 
 	<action-method name="action-invoice-method-compute">

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+    
+    <grid name="product-company-grid" title="Product per company" model="com.axelor.apps.base.db.ProductCompany">
+	    <field name="company"/>
+	    <field name="salePrice" x-scale="2"/>
+		<field name="saleCurrency"/>
+		<field name="purchasePrice" x-scale="2"/>
+		<field name="purchaseCurrency"/>
+		<field name="costPrice" x-scale="2"/>
+	</grid>
+	
+	<form name="product-company-form" title="Product per company" model="com.axelor.apps.base.db.ProductCompany" 
+		  onNew="action-product-company-record-init-product" onLoad="action-product-attrs-scale-and-precision,action-product-company-attrs-change-title-based-on-inAti">
+		<panel name="mainPanel" colSpan="12">
+			<field name="product" readonly="true"/>
+			<field name="company"/>
+		</panel>
+		<panel name="overridePanel" title="Company-specific information">	
+			<field name="salePrice"/>
+			<field name="saleCurrency"/>
+			<field name="purchasePrice"/>
+			<field name="purchaseCurrency"/>
+			<field name="costPrice"/>
+		</panel>
+	</form> 
+	
+	<action-record name="action-product-company-record-init-product" model="com.axelor.apps.base.db.ProductCompany">
+		<field name="product" expr="eval: __parent__" if="__parent__?._model == 'com.axelor.apps.base.db.Product'"/>
+	</action-record>
+	
+    <action-attrs name="action-product-company-attrs-change-title-based-on-inAti">
+    	<attribute name="title" for="salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale price A.T.I.')" if="product?.inAti"/>
+    	<attribute name="title" for="salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale price W.T.')" if="!product?.inAti"/>
+    	<attribute name="title" for="purchasePrice" expr="eval: com.axelor.i18n.I18n.get('Purchase price A.T.I.')" if="product?.inAti"/>
+    	<attribute name="title" for="purchasePrice" expr="eval: com.axelor.i18n.I18n.get('Purchase price W.T.')" if="!product?.inAti"/>
+    </action-attrs>
+	
+</object-views>

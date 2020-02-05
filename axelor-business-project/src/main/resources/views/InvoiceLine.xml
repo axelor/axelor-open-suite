@@ -8,7 +8,7 @@
 		<field name="invoice" width="120"/>
 		<field name="product.code" width="120"/>
 		<field name="productName"/>
-		<field name="qty" aggregate="sum"/>
+		<field name="qty" aggregate="sum" x-scale="2"/>
 		<field name="price" x-scale="2"/>
 		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
 		<field name="exTaxTotal" aggregate="sum"/>

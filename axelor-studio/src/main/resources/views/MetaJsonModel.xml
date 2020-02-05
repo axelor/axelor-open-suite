@@ -3,18 +3,66 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
   
-  <form id="studio-json-model-form" name="json-model-form" title="Custom model" model="com.axelor.meta.db.MetaJsonModel">
+	<grid id="studio-json-model-grid" name="json-model-grid" title="Custom models" model="com.axelor.meta.db.MetaJsonModel" groupBy="appBuilder">
+		<field name="title"/>
+		<field name="name"/>
+		<field name="appBuilder" hidden="true"/>
+  	</grid>
+  
+  <form id="studio-json-model-form" name="json-model-form" title="Custom model" model="com.axelor.meta.db.MetaJsonModel" onSave="action-studio-json-model-onsave-group">
+    <!-- Studio changes -->
     <toolbar>
     	<button name="openWorkflowBtn" title="Open workflow" onClick="save,action-studio-json-model-method-open-workflow"/>
     </toolbar>
     <panel name="appBuilderPanel">
       <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
     </panel>
-    <panel-include view="json-model-form" from="axelor-core"/>
+    <!-- /Studio changes -->
+
+    <panel title="Overview">
+      <field name="name" readonlyIf="id" x-pattern="[a-zA-Z][a-zA-Z0-9_\\$]+"/>
+      <field name="title" />
+      <field name="onNew" />
+      <field name="onSave" />
+      <field name="formWidth" />
+      <field name="orderBy" />
+    </panel>
+
+    <!-- Menu panel removed -->
+
+    <panel-tabs>
+      <panel-related field="fields" form-view="json-field-form-2" orderBy="sequence" canMove="true" onChange="action-studio-json-model-method-set-json-field-tracking">
+        <field name="name"/>
+        <field name="type"/>
+        <field name="title"/>
+      </panel-related>
+      <panel-related field="roles">
+        <field name="name" />
+      </panel-related>
+    </panel-tabs>
+    <panel hidden="true" colSpan="12">
+     <field name="$jsonFieldTracking" type="string" title="Field tracking"/>
+    </panel>
+    <panel-mail name="mailPanel">
+		<mail-messages limit="4"/>
+	</panel-mail>
   </form>
 
   <action-method name="action-studio-json-model-method-open-workflow">
 	<call class="com.axelor.studio.web.MetaJsonModelController" method="openWorkflow"/>  
   </action-method>
   
+  <action-method name="action-studio-json-model-method-json-field-tracking">
+	<call class="com.axelor.studio.web.MetaJsonModelController" method="trackJsonField"/>
+  </action-method>
+
+  <action-method name="action-studio-json-model-method-set-json-field-tracking">
+    <call class="com.axelor.studio.web.MetaJsonModelController" method="setJsonFieldTracking"/>
+  </action-method>
+
+  <action-group name="action-studio-json-model-onsave-group">
+     <action name="save" if="!id"/>
+     <action name="action-studio-json-model-method-json-field-tracking"/>
+  </action-group>
+
 </object-views>

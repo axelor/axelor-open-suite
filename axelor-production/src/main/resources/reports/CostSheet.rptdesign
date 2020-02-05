@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaDriverClass</property>
@@ -168,7 +168,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -1781,20 +1781,13 @@ where CostSheet.id = ?
   </design:ResultSets>
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
-        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AppProduction" id="5246">
-            <list-property name="columnHints">
-                <structure>
-                    <property name="columnName">nb_decimal_digit_for_bom_qty</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">nb_decimal_digit_for_bom_qty</text-property>
-                    <text-property name="heading">nb_decimal_digit_for_bom_qty</text-property>
-                </structure>
-            </list-property>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AppBase" id="5246">
+            <list-property name="parameters"/>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
                     <structure>
                         <property name="position">1</property>
-                        <property name="name">nb_decimal_digit_for_bom_qty</property>
+                        <property name="name">nb_decimal_digit_for_qty</property>
                         <property name="dataType">integer</property>
                     </structure>
                 </list-property>
@@ -1803,14 +1796,13 @@ where CostSheet.id = ?
             <list-property name="resultSet">
                 <structure>
                     <property name="position">1</property>
-                    <property name="name">nb_decimal_digit_for_bom_qty</property>
-                    <property name="nativeName">nb_decimal_digit_for_bom_qty</property>
+                    <property name="name">nb_decimal_digit_for_qty</property>
+                    <property name="nativeName">nb_decimal_digit_for_qty</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select nb_decimal_digit_for_bom_qty 
-from BASE_APP_PRODUCTION]]></xml-property>
+            <xml-property name="queryText"><![CDATA[select nb_decimal_digit_for_qty 
+from BASE_APP_BASE]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -1820,7 +1812,7 @@ from BASE_APP_PRODUCTION]]></xml-property>
         <design:resultColumnDefinitions>
           <design:attributes>
             <design:identifier>
-              <design:name>nb_decimal_digit_for_bom_qty</design:name>
+              <design:name>nb_decimal_digit_for_qty</design:name>
               <design:position>1</design:position>
             </design:identifier>
             <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
@@ -1828,11 +1820,11 @@ from BASE_APP_PRODUCTION]]></xml-property>
             <design:scale>0</design:scale>
             <design:nullability>Nullable</design:nullability>
             <design:uiHints>
-              <design:displayName>nb_decimal_digit_for_bom_qty</design:displayName>
+              <design:displayName>nb_decimal_digit_for_qty</design:displayName>
             </design:uiHints>
           </design:attributes>
           <design:usageHints>
-            <design:label>nb_decimal_digit_for_bom_qty</design:label>
+            <design:label>nb_decimal_digit_for_qty</design:label>
             <design:formattingHints>
               <design:displaySize>11</design:displaySize>
             </design:formattingHints>
@@ -2995,17 +2987,17 @@ str+['produceProduct.png','consumeProduct.png','workCenter.png','indirectCost.pn
                         <text id="389">
                             <property name="fontWeight">bold</property>
                             <property name="textAlign">center</property>
-                            <property name="dataSet">AppProduction</property>
+                            <property name="dataSet">AppBase</property>
                             <list-property name="boundDataColumns">
                                 <structure>
-                                    <property name="name">nb_decimal_digit_for_bom_qty</property>
-                                    <text-property name="displayName">nb_decimal_digit_for_bom_qty</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["nb_decimal_digit_for_bom_qty"]</expression>
+                                    <property name="name">nb_decimal_digit_for_qty</property>
+                                    <text-property name="displayName">nb_decimal_digit_for_qty</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["nb_decimal_digit_for_qty"]</expression>
                                     <property name="dataType">integer</property>
                                 </structure>
                             </list-property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["ConsumptionQty"],"#,##0."+Array(row["nb_decimal_digit_for_bom_qty"]+1).join("0"))</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["ConsumptionQty"],"#,##0."+Array(row["nb_decimal_digit_for_qty"]+1).join("0"))</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="390">
@@ -3246,17 +3238,17 @@ str+['produceProduct.png','consumeProduct.png','workCenter.png','indirectCost.pn
                         <property name="paddingTop">7pt</property>
                         <text id="480">
                             <property name="textAlign">center</property>
-                            <property name="dataSet">AppProduction</property>
+                            <property name="dataSet">AppBase</property>
                             <list-property name="boundDataColumns">
                                 <structure>
-                                    <property name="name">nb_decimal_digit_for_bom_qty</property>
-                                    <text-property name="displayName">nb_decimal_digit_for_bom_qty</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["nb_decimal_digit_for_bom_qty"]</expression>
+                                    <property name="name">nb_decimal_digit_for_qty</property>
+                                    <text-property name="displayName">nb_decimal_digit_for_qty</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["nb_decimal_digit_for_qty"]</expression>
                                     <property name="dataType">integer</property>
                                 </structure>
                             </list-property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["ConsumptionQty"],"#,##0."+Array(row["nb_decimal_digit_for_bom_qty"]+1).join("0"))</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["ConsumptionQty"],"#,##0."+Array(row["nb_decimal_digit_for_qty"]+1).join("0"))</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="481">

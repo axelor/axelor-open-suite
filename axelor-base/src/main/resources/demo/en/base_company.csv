@@ -1,2 +1,2 @@
-"importId";"name";"code";"address.importId";"partner.importId";"logo_fileName";"currency.code";"defaultBankDetails.importId";"bankDetailsSet_id";"generatedMailFilePath";"generatedEmailFilePath";"generatedMailFileName";"generatedEmailFileName";"printingSettings.importId"
+"importId";"name";"code";"address.importId";"partner.importId";"logo_fileName";"currency.code";"defaultBankDetails.importId";"bankDetailsList_id";"generatedMailFilePath";"generatedEmailFilePath";"generatedMailFileName";"generatedEmailFileName";"printingSettings.importId"
 "1";"Axelor";"AXE";90000;90000;"img/axelor.png";"EUR";90000;90000;"/home/axelor/mail/";"/home/axelor/email/";"mail";"email";1

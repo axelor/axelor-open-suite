@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -81,9 +82,11 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   protected OperationOrderService operationOrderService;
   protected ManufOrderWorkflowService manufOrderWorkflowService;
   protected ProductVariantService productVariantService;
+  protected AppBaseService appBaseService;
   protected AppProductionService appProductionService;
   protected ManufOrderRepository manufOrderRepo;
   protected ProdProductRepository prodProductRepo;
+  protected ProductCompanyService productCompanyService;
 
   @Inject
   public ManufOrderServiceImpl(
@@ -91,16 +94,20 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       OperationOrderService operationOrderService,
       ManufOrderWorkflowService manufOrderWorkflowService,
       ProductVariantService productVariantService,
+      AppBaseService appBaseService,
       AppProductionService appProductionService,
       ManufOrderRepository manufOrderRepo,
-      ProdProductRepository prodProductRepo) {
+      ProdProductRepository prodProductRepo,
+      ProductCompanyService productCompanyService) {
     this.sequenceService = sequenceService;
     this.operationOrderService = operationOrderService;
     this.manufOrderWorkflowService = manufOrderWorkflowService;
     this.productVariantService = productVariantService;
+    this.appBaseService = appBaseService;
     this.appProductionService = appProductionService;
     this.manufOrderRepo = manufOrderRepo;
     this.prodProductRepo = prodProductRepo;
+    this.productCompanyService = productCompanyService;
   }
 
   @Override
@@ -122,7 +129,11 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
     Company company = billOfMaterial.getCompany();
 
-    BigDecimal qty = qtyRequested.divide(billOfMaterial.getQty(), 2, RoundingMode.HALF_EVEN);
+    BigDecimal qty =
+        qtyRequested.divide(
+            billOfMaterial.getQty(),
+            appBaseService.getNbDecimalDigitForQty(),
+            RoundingMode.HALF_EVEN);
 
     ManufOrder manufOrder =
         this.createManufOrder(
@@ -186,10 +197,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       qty =
           manufOrderQty
               .multiply(lineQty)
-              .divide(
-                  bomQty,
-                  Beans.get(AppProductionService.class).getNbDecimalDigitForBomQty(),
-                  RoundingMode.HALF_EVEN);
+              .divide(bomQty, appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN);
     }
     return qty;
   }
@@ -235,9 +243,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
                     .getQty()
                     .multiply(manufOrderQty)
                     .divide(
-                        bomQty,
-                        appProductionService.getNbDecimalDigitForBomQty(),
-                        RoundingMode.HALF_EVEN)
+                        bomQty, appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN)
                 : BigDecimal.ZERO;
 
         manufOrder.addToProduceProdProductListItem(
@@ -421,7 +427,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         || company == null
         || manufOrder.getWasteProdProductList().isEmpty()) {
       return wasteStockMove;
-    }
+    } 
 
     StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
     StockMoveService stockMoveService = Beans.get(StockMoveService.class);
@@ -448,11 +454,11 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     for (ProdProduct prodProduct : manufOrder.getWasteProdProductList()) {
       stockMoveLineService.createStockMoveLine(
           prodProduct.getProduct(),
-          prodProduct.getProduct().getName(),
-          prodProduct.getProduct().getDescription(),
+          (String) productCompanyService.get(prodProduct.getProduct(), "name", company),
+          (String) productCompanyService.get(prodProduct.getProduct(), "description", company),
           prodProduct.getQty(),
-          prodProduct.getProduct().getCostPrice(),
-          prodProduct.getProduct().getCostPrice(),
+          (BigDecimal) productCompanyService.get(prodProduct.getProduct(), "costPrice", company),
+          (BigDecimal) productCompanyService.get(prodProduct.getProduct(), "costPrice", company),
           prodProduct.getUnit(),
           wasteStockMove,
           StockMoveLineService.TYPE_WASTE_PRODUCTIONS,

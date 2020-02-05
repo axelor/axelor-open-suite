@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
     <grid name="prod-residual-product-grid" title="Residual products" model="com.axelor.apps.production.db.ProdResidualProduct" editable="true">
-        <field name="product" form-view="product-form" grid-view="product-grid" onChange="action-prod-residual-product-record-product" domain="self.productTypeSelect = 'storable'"/>
+        <field name="product" form-view="product-form" grid-view="product-grid" onChange="action-prod-residual-product-record-product" domain="self.productTypeSelect = 'storable' AND dtype = 'Product'"/>
         <field name="qty" aggregate="sum" x-scale="2"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     </grid>
@@ -13,7 +13,7 @@
      onNew="action-prod-residual-product-attrs-qty-digits"
      onLoad="action-prod-residual-product-attrs-qty-digits">
 		<panel name="mainPanel">        
-	        <field name="product" canEdit="false" form-view="product-form" grid-view="product-grid" onChange="action-prod-residual-product-record-product" domain="self.productTypeSelect = 'storable'"/>
+	        <field name="product" canEdit="false" form-view="product-form" grid-view="product-grid" onChange="action-prod-residual-product-record-product" domain="self.productTypeSelect = 'storable' AND dtype = 'Product'"/>
 	        <field name="qty"/>
 	        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         </panel>

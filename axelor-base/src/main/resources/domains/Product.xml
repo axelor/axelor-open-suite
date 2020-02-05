@@ -7,7 +7,7 @@
 
 	<entity name="Product" lang="java">
 
-		<string name="name" title="Name" required="true" initParam="true"
+		<string name="name" title="Name" initParam="true"
 			translatable="true" />
 		<string name="serialNumber" title="Serial Nbr"/>
 		<string name="code" title="Code" initParam="true" unique="true"/>
@@ -28,7 +28,7 @@
 		<integer name="saleSupplySelect" title="Sale supply default method on sale order"
 			selection="product.sale.supply.select" initParam="true" massUpdate="true"/>
 
-		<string name="productTypeSelect" title="Type" required="true"
+		<string name="productTypeSelect" title="Type"
 			selection="product.product.type.select" initParam="true" massUpdate="true"/>
 		<string name="procurementMethodSelect" title="Procurement method"
 			selection="product.procurement.method.select" initParam="true" />
@@ -113,7 +113,7 @@
 		<decimal name="height" title="Height" default="0" />
 		<decimal name="diameter" title="Diameter" />
 		<decimal name="articleVolume" title="Article volume" />
-		<decimal name="economicManufOrderQty" title="Economic manuf. qty"/>
+		<decimal name="economicManufOrderQty" title="Economic manuf. qty" precision="20" scale="10"/>
 		
 		<boolean name="isShippingCostsProduct" title="Is shipping costs product"/>
 
@@ -129,12 +129,14 @@
 			
 		<boolean name="allowToForcePurchaseQty" title="Allow to force purchases quantities"/>
 		
+		<one-to-many name="productCompanyList" ref="com.axelor.apps.base.db.ProductCompany" title="Products per companies" 
+			mappedBy="product"/>
+		
 		<extra-code>
 	   		<![CDATA[
 				// PRODUCT TYPE SELECT
 				public static final String PRODUCT_TYPE_SERVICE = "service";
 				public static final String PRODUCT_TYPE_STORABLE = "storable";
-				public static final String PRODUCT_TYPE_PACK = "pack";
 				
 				// SALE SUPPLY SELECT
 				public static final int SALE_SUPPLY_FROM_STOCK = 1;

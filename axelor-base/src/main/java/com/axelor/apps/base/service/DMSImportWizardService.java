@@ -15,14 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service.invoice;
+package com.axelor.apps.base.service;
 
-import com.axelor.apps.account.db.InvoiceLine;
-import java.util.List;
+import com.axelor.exception.AxelorException;
+import com.axelor.meta.db.MetaFile;
 
-public interface InvoiceServiceSupplychain {
+public interface DMSImportWizardService {
 
-  public List<InvoiceLine> addSubLines(List<InvoiceLine> lines);
-
-  public List<InvoiceLine> removeSubLines(List<InvoiceLine> lines);
+  public void importDMS(MetaFile metaFile) throws AxelorException;
 }

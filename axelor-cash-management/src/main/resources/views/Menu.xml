@@ -53,6 +53,13 @@
 		<view type="grid" name="forecast-reason-grid" />
 		<view type="form" name="forecast-reason-form" />
 	</action-view>
+  
+    <menuitem name="forecast-conf-forecast-recap-line-type" parent="forecast-conf" title="Forecast Recap line Types" action="forecast.conf.forecast.recap.line.type"/>
+  
+    <action-view name="forecast.conf.forecast.recap.line.type" title="Forecast Recap line Types" model="com.axelor.apps.cash.management.db.ForecastRecapLineType">
+      <view type="grid" name="forecast-recap-line-type-grid"/>
+      <view type="form" name="forecast-recap-line-type-form"/>
+    </action-view>
 	
 	
 </object-views>

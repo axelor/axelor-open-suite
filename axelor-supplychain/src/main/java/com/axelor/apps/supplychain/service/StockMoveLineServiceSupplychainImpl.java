@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
@@ -73,7 +74,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       WeightedAveragePriceService weightedAveragePriceService,
       TrackingNumberRepository trackingNumberRepo,
       AccountManagementService accountManagementService,
-      PriceListService priceListService) {
+      PriceListService priceListService,
+      ProductCompanyService productCompanyService) {
     super(
         trackingNumberService,
         appBaseService,
@@ -83,7 +85,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         stockLocationLineService,
         unitConversionService,
         weightedAveragePriceService,
-        trackingNumberRepo);
+        trackingNumberRepo,
+        productCompanyService);
     this.accountManagementService = accountManagementService;
     this.priceListService = priceListService;
   }
@@ -149,13 +152,6 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     // the case when stockMove is null is made in super.
     if (stockMove == null || !Beans.get(AppBaseService.class).isApp("supplychain")) {
       return super.compute(stockMoveLine, null);
-    }
-
-    // if this is a pack do not compute price
-    if (stockMoveLine.getProduct() == null
-        || (stockMoveLine.getLineTypeSelect() != null
-            && stockMoveLine.getLineTypeSelect() == StockMoveLineRepository.TYPE_PACK)) {
-      return stockMoveLine;
     }
 
     if (stockMove.getOriginId() != null && stockMove.getOriginId() != 0L) {

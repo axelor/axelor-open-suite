@@ -89,7 +89,7 @@
       <panel colSpan="12">
         <field name="managerUser" canEdit="false" canNew="false" canView="false" colSpan="4" form-view="user-form" grid-view="user-grid"/>
         <field name="exportCode" colSpan="4"/>
-        <field name="bankDetails" colSpan="4" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.getApp('base').getManageMultiBanks()" if-module="axelor-cash-management" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain"/>
+        <field name="bankDetails" colSpan="4" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.getApp('base').getManageMultiBanks()" if-module="axelor-cash-management" widget="SuggestBox" onSelect="action-employee-attrs-bank-details-on-select"/>
       </panel>
 
       <panel colSpan="12">
@@ -140,7 +140,7 @@
 
     <panel name="timesheetsSBSPanel" title="Timesheets" if="__config__.app.isApp('timesheet')" showIf="stepByStepSelect == 3">
       <field name="timeLoggingPreferenceSelect" colSpan="3"/>
-      <field name="product" canEdit="false" colSpan="3" domain="self.isActivity = true" form-view="product-form" grid-view="product-grid"/>
+      <field name="product" canEdit="false" colSpan="3" domain="self.isActivity = true AND dtype = 'Product'" form-view="product-form" grid-view="product-grid"/>
       <field name="timesheetReminder" colSpan="3"/>
       <field name="timesheetImputationSelect" colSpan="3" if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()" if-module="axelor-business-production"/>
     </panel>
@@ -216,7 +216,7 @@
           <panel colSpan="12">
             <field name="managerUser" canEdit="false" canNew="false" canView="false" colSpan="4" form-view="user-form" grid-view="user-grid"/>
             <field name="exportCode" colSpan="4"/>
-            <field name="bankDetails" colSpan="4" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.getApp('base').getManageMultiBanks()" if-module="axelor-cash-management" widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain"/>
+            <field name="bankDetails" colSpan="4" form-view="bank-details-form" grid-view="bank-details-grid" if="__config__.app.getApp('base').getManageMultiBanks()" if-module="axelor-cash-management" widget="SuggestBox" onSelect="action-employee-attrs-bank-details-on-select"/>
           </panel>
 
           <panel colSpan="12">
@@ -266,7 +266,7 @@
 
       <panel name="timesheetsPanel" title="Timesheets" if="__config__.app.isApp('timesheet')">
         <field name="timeLoggingPreferenceSelect" colSpan="3"/>
-        <field name="product" canEdit="false" colSpan="3" domain="self.isActivity = true" form-view="product-form" grid-view="product-grid"/>
+        <field name="product" canEdit="false" colSpan="3" domain="self.isActivity = true AND dtype = 'Product'" form-view="product-form" grid-view="product-grid"/>
         <field name="timesheetReminder" colSpan="3"/>
         <field name="timesheetImputationSelect" colSpan="3" if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()" if-module="axelor-business-production"/>
 
@@ -367,6 +367,11 @@
   
   <action-attrs name="action-employee-attrs-department-of-birth-on-change">
   	<attribute name="value" for="cityOfBirth" expr="eval: null"/>
+  </action-attrs>
+
+  <action-attrs name="action-employee-attrs-bank-details-on-select">
+    <attribute name="domain" expr="eval: &quot;self = null&quot;" for="bankDetails"/>
+    <attribute if="!mainEmploymentContract?.payCompany?.bankDetailsList?.isEmpty()" name="domain" expr="eval: &quot;self.id IN (${mainEmploymentContract?.payCompany?.bankDetailsList?.collect{it.id}.join(',')}) AND self.active = true&quot;" for="bankDetails"/>
   </action-attrs>
 
   <form name="employee-annual-report-form" title="Annual report" model="com.axelor.apps.hr.db.Employee">

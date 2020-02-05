@@ -18,6 +18,7 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -34,13 +35,16 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
 
   protected TeamTaskBusinessProjectService teamTaskBusinessProjectService;
   protected TeamTaskRepository teamTaskRepository;
+  protected ProductCompanyService productCompanyService;
 
   @Inject
   public ProductTaskTemplateServiceImpl(
       TeamTaskBusinessProjectService teamTaskBusinessProjectService,
-      TeamTaskRepository teamTaskRepository) {
+      TeamTaskRepository teamTaskRepository,
+      ProductCompanyService productCompanyService) {
     this.teamTaskBusinessProjectService = teamTaskBusinessProjectService;
     this.teamTaskRepository = teamTaskRepository;
+    this.productCompanyService = productCompanyService;
   }
 
   @Override
@@ -67,7 +71,7 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
         task.setProduct(product);
         task.setQuantity(!template.getIsUniqueTaskForMultipleQuantity() ? BigDecimal.ONE : qty);
         task.setUnit(product.getUnit());
-        task.setUnitPrice(product.getSalePrice());
+        task.setUnitPrice((BigDecimal) productCompanyService.get(product, "salePrice", project.getCompany()));
         task.setExTaxTotal(task.getUnitPrice().multiply(task.getQuantity()));
         if (saleOrderLine.getSaleOrder().getToInvoiceViaTask()) {
           task.setToInvoice(true);

@@ -23,6 +23,19 @@
 	    <panel-include view="json-field-form-base" />
     </form>
     
+    <form name="json-field-form" title="Custom field" model="com.axelor.meta.db.MetaJsonField" id="studio-json-field-form" extension="true">
+		<extend target="panel-include[last()]">
+			<insert position="after">
+				<panel-mail name="mailPanel">
+					<mail-messages limit="4"/>
+				</panel-mail>
+			</insert>
+		</extend>
+		<extend target="/">
+			<attribute name="onSave" value="action-studio-json-field-method-json-field-tracking"/>
+		</extend>
+    </form>
+
 	<grid name="studio-meta-json-field-grid" title="Custom fields" model="com.axelor.meta.db.MetaJsonField" edit-icon="true">
 	  <field name="name"/>
 	  <field name="title" />
@@ -60,4 +73,8 @@
     	<attribute name="readonly" for="appBuilder" expr="eval: _parent?._model == 'com.axelor.studio.db.Wkf'"/>
     </action-attrs>
     
+    <action-method name="action-studio-json-field-method-json-field-tracking">
+       <call class="com.axelor.studio.web.MetaJsonFieldController" method="trackJsonField"/>
+    </action-method>
+
 </object-views>

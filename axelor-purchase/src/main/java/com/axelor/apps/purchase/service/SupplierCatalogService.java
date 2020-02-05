@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.purchase.service;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
@@ -29,8 +30,8 @@ import java.util.Map;
 public interface SupplierCatalogService {
 
   public Map<String, Object> updateInfoFromCatalog(
-      Product product, BigDecimal qty, Partner partner, Currency currency, LocalDate date)
+      Product product, BigDecimal qty, Partner partner, Currency currency, LocalDate date, Company company)
       throws AxelorException;
 
-  public SupplierCatalog getSupplierCatalog(Product product, Partner supplierPartner);
+  public SupplierCatalog getSupplierCatalog(Product product, Partner supplierPartner, Company company);
 }

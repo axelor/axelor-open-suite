@@ -5,42 +5,40 @@
 
   <grid name="prod-product-consume-manuf-order-grid" title="Products" model="com.axelor.apps.production.db.ProdProduct">
     <hilite if="$missingQty &gt; 0" color="danger"/>
-    <field name="product" domain="self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid" required="true"/>
-    <field name="qty" aggregate="sum" required="true"/>
+    <field name="product" domain="self.productTypeSelect = 'storable' AND dtype = 'Product'" form-view="product-form" grid-view="product-grid" required="true"/>
+    <field name="qty" aggregate="sum" required="true" x-scale="2"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid" required="true"/>
     <field name="$missingQty" title="Missing quantity"/>
     <field name="toConsumeManufOrder" width="120" hidden="true"/>
   </grid>
 
   <grid name="prod-product-diff-manuf-order-grid" title="Products" model="com.axelor.apps.production.db.ProdProduct">
-    <field name="product" domain="self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid" required="true"/>
-    <field name="plannedQty"/>
-    <field name="realQty"/>
-    <field name="qty" title="Diff" aggregate="sum" required="true"/>
+    <field name="product" domain="self.productTypeSelect = 'storable' AND dtype = 'Product'" form-view="product-form" grid-view="product-grid" required="true"/>
+    <field name="plannedQty" x-scale="2"/>
+    <field name="realQty" x-scale="2"/>
+    <field name="qty" title="Diff" aggregate="sum" required="true" x-scale="2"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid" required="true"/>
   </grid>
 
     <grid name="prod-product-grid" title="Products" model="com.axelor.apps.production.db.ProdProduct" orderBy="product.code">
-    	<field name="product" domain="self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid" required="true"/>
-    	<field name="qty" aggregate="sum" required="true"/>
+    	<field name="product" domain="self.productTypeSelect = 'storable' AND dtype = 'Product'" form-view="product-form" grid-view="product-grid" required="true"/>
+    	<field name="qty" aggregate="sum" required="true" x-scale="2"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid" required="true"/>
     </grid>
     
     <grid name="prod-product-detailed-grid" title="Products" model="com.axelor.apps.production.db.ProdProduct" groupBy="product">
-    	<field name="product" domain="self.productTypeSelect = 'storable'" form-view="product-form" grid-view="product-grid" required="true"/>
+    	<field name="product" domain="self.productTypeSelect = 'storable' AND dtype = 'Product'" form-view="product-form" grid-view="product-grid" required="true"/>
     	<field name="wasteManufOrder" width="120"/>
         <field name="wasteManufOrder.billOfMaterial"/>
         <field name="wasteManufOrder.prodProcess"/>
-    	<field name="qty" aggregate="sum" required="true"/>
+    	<field name="qty" aggregate="sum" required="true" x-scale="2"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid" required="true"/>
-       
-        
     </grid>
     
     <form name="prod-product-form" title="Product" model="com.axelor.apps.production.db.ProdProduct"
-    onNew="action-product-record-default" onLoad="action-prod-product-attrs-on-load">
+    onNew="action-product-record-default,action-prod-product-attrs-scale-and-precision" onLoad="action-prod-product-attrs-on-load,action-prod-product-attrs-scale-and-precision">
     	<panel name="mainPanel">
-	    	<field name="product" canEdit="false" domain="self.productTypeSelect = 'storable'" onChange="action-product-record-product-information" form-view="product-form" grid-view="product-grid" required="true"/>
+	    	<field name="product" canEdit="false" domain="self.productTypeSelect = 'storable' AND dtype = 'Product'" onChange="action-product-record-product-information" form-view="product-form" grid-view="product-grid" required="true"/>
 	    	<field name="qty" required="true"/>
 	        <field name="unit" form-view="unit-form" grid-view="unit-grid" required="true"/>
         </panel>
@@ -63,8 +61,12 @@
     	<field name="unit" expr="eval: product?.unit"/>
     </action-record>
 
-  <action-attrs name="action-prod-product-attrs-on-load" model="com.axelor.apps.production.db.ProdProduct">
-    <attribute name="hidden" for="showStockPanel" expr="!companyIdFromParent &amp;&amp; (!__parent__ || __parent__._model != 'com.axelor.apps.production.db.ManufOrder')"/>
-  </action-attrs>
+	<action-attrs name="action-prod-product-attrs-on-load" model="com.axelor.apps.production.db.ProdProduct">
+		<attribute name="hidden" for="showStockPanel" expr="!companyIdFromParent &amp;&amp; (!__parent__ || __parent__._model != 'com.axelor.apps.production.db.ManufOrder')"/>
+	</action-attrs>
+  
+	<action-attrs name="action-prod-product-attrs-scale-and-precision">
+		<attribute name="scale" for="qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+	</action-attrs>
     
 </object-views>

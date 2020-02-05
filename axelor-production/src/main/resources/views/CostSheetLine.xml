@@ -17,7 +17,7 @@
 	<form name="cost-sheet-line-form" title="Cost sheet line" model="com.axelor.apps.production.db.CostSheetLine" width="large" onLoad="action-cost-sheet-line-attrs-price-and-qty-digits">
 	  	<panel name="mainPanel">
 	    	<field name="typeSelect"/>
-			<field name="product" domain="self.productTypeSelect = 'storable'" canEdit="false" form-view="product-form" grid-view="product-grid" showIf="typeSelect == 1 || typeSelect == 2"/>
+			<field name="product" domain="self.productTypeSelect = 'storable' AND dtype = 'Product'" canEdit="false" form-view="product-form" grid-view="product-grid" showIf="typeSelect == 1 || typeSelect == 2"/>
 			<field name="workCenter" form-view="work-center-form" grid-view="work-center-grid" showIf="typeSelect == 3"/>
 			<field name="bomLevel"/>
 			<field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" if="__config__.app.getApp('production').getManageCostSheetGroup()"/>
@@ -111,7 +111,7 @@
     </action-view>
 	
     <action-attrs name="action-cost-sheet-line-attrs-price-and-qty-digits">
-    	<attribute name="scale" for="consumptionQty" expr="eval: __config__.app.getApp('production').nbDecimalDigitForBomQty"/>
+    	<attribute name="scale" for="consumptionQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
         <attribute name="scale" for="costPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
     </action-attrs>
 	

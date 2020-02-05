@@ -14,21 +14,21 @@
 		<field name="statusSelect"/>
   </grid>
 
-	<form name="bill-of-material-form" title="Bill of material" model="com.axelor.apps.production.db.BillOfMaterial" width="large"
+	<form name="bill-of-material-form" title="Bill of materials" model="com.axelor.apps.production.db.BillOfMaterial" width="large"
           onSave="save,action-bill-of-material-method-name,action-bill-of-material-method-validate-prod-process"
           onNew="action-bill-of-material-default-record,action-bill-of-material-attrs-price-and-qty-digits,action-bill-of-material-record-count-number-of-components"
           onLoad="action-bill-of-material-attrs-price-and-qty-digits,action-bill-of-material-record-count-number-of-components">
 
 		<menubar>
 			<menu name="bomReportsMenu" title="Reports">
-				<item name="printItem" title="Print" action="action-bill-of-material-method-print"/>				
+				<item name="printItem" title="Print" action="action-bill-of-material-method-print"/>
 			</menu>
 
             <menu name="bomOptionsMenu" title="Options">
                 <item name="generateNewVersionItem" title="Generate new version"
                     action="action-bill-of-material-check-other-version,action-bill-of-material-generate-new-version"
                     if="__config__.app.getApp('production').manageBillOfMaterialVersion"/>
-                <item name="defineDefaultBomProductItem" title="Define as default bill of material of product"
+                <item name="defineDefaultBomProductItem" title="Define as default bill of materials of product"
                     action="save,action-bill-of-material-method-set-bill-of-material-as-default-on-product"
                     hideIf="product.defaultBillOfMaterial.id == id"/>
             </menu>
@@ -40,8 +40,8 @@
                 <viewer depends="$defaultBOMOnProduct, product.defaultBillOfMaterial">
                     <![CDATA[
                         <h4 class="text-right">
-                            <span class="label label-default" style="background-color: #009900; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.product.defaultBillOfMaterial.id == record.id" x-translate>Default Bill of material</span>
-                            <span class="label label-default" style="background-color: #B6473F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.product.defaultBillOfMaterial.id != record.id" x-translate>Alternative Bill of material</span>
+                            <span class="label label-default" style="background-color: #009900; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.product.defaultBillOfMaterial.id == record.id" x-translate>Default Bill of materials</span>
+                            <span class="label label-default" style="background-color: #B6473F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.product.defaultBillOfMaterial.id != record.id" x-translate>Alternative Bill of materials</span>
                         </h4>
                 ]]></viewer>
             </field>
@@ -60,7 +60,7 @@
 			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="workshopStockLocation" canEdit="false" domain="self.company = :company and self.typeSelect = 1 and self.isWorkshop = true" if="__config__.app.getApp('production').getManageWorkshop()"/>
 			<field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form" canNew="true" onChange="action-bill-of-material-method-validate-prod-process" domain="(self.product = :product OR self.isEnabledForAllProducts = true) AND self.company = :company AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation)"/>
-			<field name="product" canEdit="false" onChange="action-bill-of-material-record-product-unit" domain="self.productTypeSelect = 'storable' AND self.productSubTypeSelect != 3" form-view="product-form" grid-view="product-grid"/>
+			<field name="product" canEdit="false" onChange="action-bill-of-material-record-product-unit" domain="self.productTypeSelect = 'storable' AND self.productSubTypeSelect != 3 AND dtype = 'Product'" form-view="product-form" grid-view="product-grid"/>
             <field name="qty" colSpan="3"/>
 			<field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid" canEdit="false" required="true"/>
             <field name="product.defaultBillOfMaterial" hidden="true" colSpan="1"/>
@@ -104,7 +104,7 @@
 				<field name="note" showTitle="false" colSpan="12"/>
 			</panel>
 		</panel-tabs>
-		
+
 		<panel-mail name="mailPanel">
 			<mail-messages limit="4"/>
 			<mail-followers/>
@@ -123,13 +123,13 @@
     </grid>
 
 
-	<form name="bill-of-material-line-form" title="Bill of material"
+	<form name="bill-of-material-line-form" title="Bill of materials"
 		model="com.axelor.apps.production.db.BillOfMaterial"
 		onNew="action-bill-of-material-line-default-record,action-bill-of-material-attrs-price-and-qty-digits" 
 		onLoad="action-bill-of-material-attrs-product-def-sub-bom,action-bill-of-material-attrs-price-and-qty-digits"
 		onSave="save,action-bill-of-material-method-name" width="large">
 		<panel name="mainPanel">
-			<field name="product" canEdit="false" onChange="action-bill-of-material-group-product" domain="self.productTypeSelect = 'storable'"  form-view="product-form" grid-view="product-grid"/>
+			<field name="product" canEdit="false" onChange="action-bill-of-material-group-product" domain="self.productTypeSelect = 'storable' AND dtype = 'Product'"  form-view="product-form" grid-view="product-grid"/>
 			<field name="defineSubBillOfMaterial" colSpan="3" hidden="true"/>
 			<field name="hasNoManageStock" colSpan="3"/>
 			<field name="qty" colSpan="3"/>

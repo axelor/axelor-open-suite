@@ -12,7 +12,7 @@
 		<hilite color="warning" if="prioritySelect == 3"/>
 		<hilite color="primary" if="prioritySelect == 2"/>
 		<hilite color="info" if="prioritySelect == 1"/>
-    <field name="prioritySelect" hidden="true"/>
+    	<field name="prioritySelect" hidden="true"/>
 		<field name="manufOrderSeq" width="120"/>
 		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="workshopStockLocation" if="__config__.app.getApp('production').getManageWorkshop()"/>
@@ -82,9 +82,9 @@
 	  </field>
   </grid>
 
-	<form onNew="action-manuf-order-default-record,action-manuf-order-attrs-price-digits"
+	<form onNew="action-manuf-order-default-record,action-manuf-order-attrs-price-digits,action-manuf-order-attrs-scale-and-precision"
 	      name="manuf-order-form" title="Manufacturing order" model="com.axelor.apps.production.db.ManufOrder"
-	      onLoad="action-manuf-order-attrs-isConsProOnOperation,action-manuf-order-attrs-price-digits" width="large">
+	      onLoad="action-manuf-order-attrs-isConsProOnOperation,action-manuf-order-attrs-price-digits,action-manuf-order-attrs-scale-and-precision" width="large">
 <!--     TODO avec propagation -->
 		<menubar>
             <menu name="manufOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
@@ -212,14 +212,16 @@
 		
 	</form>
 	
-	<form title="Update planned quantities (Components and FP)" name="popup-manuf-order-form-update-planned-qty" model="com.axelor.apps.production.db.ManufOrder">
+	<form title="Update planned quantities (Components and FP)" name="popup-manuf-order-form-update-planned-qty" model="com.axelor.apps.production.db.ManufOrder"
+		  onNew="action-manuf-order-attrs-scale-and-precision" onLoad="action-manuf-order-attrs-scale-and-precision">
 		<panel name="mainPanel">
 			<field name="qty" min="1" colSpan="8"/>
 			<button name="okBtn" colSpan="4" title="OK" onClick="save,action-manuf-order-method-update-planned-qty,close"/>
 		</panel>
 	</form>
 
-	<form title="Update real quantities (Components and FP)" name="popup-manuf-order-form-update-real-qty" model="com.axelor.apps.production.db.ManufOrder">
+	<form title="Update real quantities (Components and FP)" name="popup-manuf-order-form-update-real-qty" model="com.axelor.apps.production.db.ManufOrder"
+		  onNew="action-manuf-order-attrs-scale-and-precision" onLoad="action-manuf-order-attrs-scale-and-precision">
 		<panel name="mainPanel">
 			<field name="$qtyToUpdate" title="Qty" min="0" type="decimal" colSpan="8"/>
 			<button name="okBtn" colSpan="4" title="OK" onClick="save,action-manuf-order-method-update-real-qty,close"/>
@@ -304,6 +306,12 @@
 	
 	<action-attrs name="action-manuf-order-atts-sale-order-onchange-client-partner">
 	  <attribute name="value" expr="eval:null" for="saleOrder" if="saleOrder?.clientPartner != clientPartner"/>
+	</action-attrs>
+	
+    <action-attrs name="action-manuf-order-attrs-scale-and-precision">
+    	<attribute name="scale" for="qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+		<attribute name="scale" for="$qtyToUpdate" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+		<attribute name="scale" for="product.economicManufOrderQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
 	</action-attrs>
 
     <action-record name="action-manuf-order-record-client-partner-onchange-sale-order" model="com.axelor.apps.production.db.ManufOrder">
@@ -467,10 +475,10 @@
 	</action-attrs>
 
 	<action-attrs name="action-manuf-order-attrs-filter-product">
-		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.product.id = '${billOfMaterial?.product?.id}' AND self.defaultBillOfMaterial.prodProcess.id = '${prodProcess?.id}' &quot;" if="billOfMaterial?.product != null &amp;&amp; prodProcess != null"/>
-		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.product.id = '${billOfMaterial?.product?.id}' &quot;" if="billOfMaterial?.product != null &amp;&amp; prodProcess == null"/>
-		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.prodProcess.id = '${prodProcess?.id}' &quot;" if="billOfMaterial?.product == null &amp;&amp; prodProcess != null"/>
-		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) &quot;" if="billOfMaterial?.product == null &amp;&amp; prodProcess == null"/>
+		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.product.id = '${billOfMaterial?.product?.id}' AND self.defaultBillOfMaterial.prodProcess.id = '${prodProcess?.id}' AND dtype = 'Product'&quot;" if="billOfMaterial?.product != null &amp;&amp; prodProcess != null"/>
+		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.product.id = '${billOfMaterial?.product?.id}' AND dtype = 'Product'&quot;" if="billOfMaterial?.product != null &amp;&amp; prodProcess == null"/>
+		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.prodProcess.id = '${prodProcess?.id}' AND dtype = 'Product'&quot;" if="billOfMaterial?.product == null &amp;&amp; prodProcess != null"/>
+		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND dtype = 'Product'&quot;" if="billOfMaterial?.product == null &amp;&amp; prodProcess == null"/>
 	</action-attrs>
 
 	<action-attrs name="action-manuf-order-attrs-filter-bill-of-material">

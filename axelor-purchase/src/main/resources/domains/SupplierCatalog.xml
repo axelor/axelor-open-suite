@@ -18,7 +18,7 @@
 	<one-to-many name="shippingCoefList" mappedBy="supplierCatalog"
 				 title="Shipping Coefficients"
 				 ref="com.axelor.apps.base.db.ShippingCoef"/>
-	<decimal name="minQty" title="Quantity min"/>
+	<decimal name="minQty" title="Quantity min" precision="20" scale="10"/>
   </entity>
 
 </domain-models>

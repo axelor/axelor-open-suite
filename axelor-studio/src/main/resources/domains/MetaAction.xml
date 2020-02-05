@@ -7,6 +7,8 @@
   
   <entity name="MetaAction" cacheable="true">
     <integer name="sequence" title="Sequence" />
+    <many-to-one name="appBuilder" ref="com.axelor.studio.db.AppBuilder" title="App builder"/>
+    <boolean name="isCustom" title="Custom"/>
   </entity>
     
     

@@ -31,6 +31,7 @@ import com.google.inject.persist.Transactional;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectService {
 
@@ -144,7 +145,7 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
 
     if (invoicingProject != null
         && invoicingProject.getId() == null
-        && !invoicingProject.getManufOrderSet().isEmpty()) {
+        && !CollectionUtils.isEmpty(invoicingProject.getManufOrderSet())) {
       return invoicingProjectRepo.save(invoicingProject);
     }
 

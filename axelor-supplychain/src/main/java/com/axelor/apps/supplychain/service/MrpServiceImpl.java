@@ -165,7 +165,10 @@ public class MrpServiceImpl implements MrpService {
   @Transactional
   public void reset(Mrp mrp) {
 
-    mrpLineRepository.all().filter("self.mrp.id = ?1", mrp.getId()).remove();
+    mrpLineRepository
+        .all()
+        .filter("self.mrp.id = ?1 AND self.isEditedByUser = ?2", mrp.getId(), false)
+        .remove();
 
     mrp.setStatusSelect(MrpRepository.STATUS_DRAFT);
 
@@ -350,6 +353,21 @@ public class MrpServiceImpl implements MrpService {
       }
 
       MrpLineType mrpLineTypeProposal = this.getMrpLineTypeForProposal(stockRules, product);
+
+      long duplicateCount =
+          mrpLineRepository
+              .all()
+              .filter(
+                  "self.mrp.id = ?1  AND self.isEditedByUser = ?2 AND self.product = ?3 AND self.relatedToSelectName = ?4",
+                  mrp.getId(),
+                  true,
+                  product,
+                  mrpLine.getRelatedToSelectName())
+              .count();
+
+      if (duplicateCount != 0) {
+        return false;
+      }
 
       this.createProposalMrpLine(
           mrpLine.getMrp(),
@@ -908,7 +926,7 @@ public class MrpServiceImpl implements MrpService {
           productRepository
               .all()
               .filter(
-                  "self.productCategory in (?1) AND self.productTypeSelect = ?2 AND self.excludeFromMrp = false AND self.stockManaged = true",
+                  "self.productCategory in (?1) AND self.productTypeSelect = ?2 AND self.excludeFromMrp = false AND self.stockManaged = true AND dtype = 'Product'",
                   mrp.getProductCategorySet(),
                   ProductRepository.PRODUCT_TYPE_STORABLE)
               .fetch());
@@ -920,7 +938,7 @@ public class MrpServiceImpl implements MrpService {
           productRepository
               .all()
               .filter(
-                  "self.productFamily in (?1) AND self.productTypeSelect = ?2 AND self.excludeFromMrp = false AND self.stockManaged = true",
+                  "self.productFamily in (?1) AND self.productTypeSelect = ?2 AND self.excludeFromMrp = false AND self.stockManaged = true AND dtype = 'Product'",
                   mrp.getProductFamilySet(),
                   ProductRepository.PRODUCT_TYPE_STORABLE)
               .fetch());
@@ -1097,5 +1115,11 @@ public class MrpServiceImpl implements MrpService {
     this.createSaleOrderMrpLines();
 
     return mrp;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void undoManualChanges(Mrp mrp) {
+    mrpLineRepository.all().filter("self.mrp.id = ?1", mrp.getId()).update("isEditedByUser", false);
   }
 }

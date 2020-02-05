@@ -76,7 +76,7 @@
                         <field name="defProductAsFormula" colSpan="6" showIf="!defProductFromConfigurator"/>
                         <field name="product" colSpan="12"
                                showIf="!defProductAsFormula &amp;&amp; !defProductFromConfigurator"
-                               form-view="product-form" grid-view="product-grid"/>
+                               form-view="product-form" grid-view="product-grid" domain="dtype = 'Product'"/>
                         <field name="productFormula" colSpan="12" height="120" widget="CodeEditor"
                                x-code-syntax="groovy" showTitle="false" showIf="defProductAsFormula"/>
                     </panel>
