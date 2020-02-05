@@ -70,7 +70,8 @@
 	<action-attrs name="action-unit-cost-calculation-attrs-domain-on-product">
 	  <attribute name="domain" for="productSet" expr="eval: &quot;self.productTypeSelect = 'storable' and self.productSubTypeSelect in (&quot;+productSubTypeSelect+&quot;) 
 	  and self.defaultBillOfMaterial.company in (&quot;+com.axelor.apps.tool.StringTool.getIdListString(companySet)+&quot;) 
-	  and self.procurementMethodSelect in ('produce', 'buyAndProduce')&quot;"/>
+	  and self.procurementMethodSelect in ('produce', 'buyAndProduce')
+	  and dtype = 'Product'&quot;"/>
 	</action-attrs>
 
 	<action-method name="action-unit-cost-calculation-method-run-calculation">

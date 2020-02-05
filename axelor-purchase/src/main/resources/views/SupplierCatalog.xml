@@ -44,7 +44,7 @@
 	<form name="supplier-catalog-partner-form" title="Supplier Catalog" model="com.axelor.apps.purchase.db.SupplierCatalog"
 		  onNew="action-supplier-catalog-attrs-init" onLoad="action-supplier-catalog-attrs-init" width="large">
 		<panel name="mainPanel" colSpan="12">
-			<field name="product" form-view="product-form" grid-view="product-grid" onChange="action-supplier-catalog-attrs-update"/>
+			<field name="product" form-view="product-form" grid-view="product-grid" onChange="action-supplier-catalog-attrs-update" domain="dtype = 'Product'"/>
 			<field name="supplierPartner.currency" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="updateDate"/>
 			<field name="productSupplierCode"/>

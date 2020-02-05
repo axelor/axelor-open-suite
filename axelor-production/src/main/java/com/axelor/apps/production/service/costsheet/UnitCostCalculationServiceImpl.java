@@ -281,7 +281,8 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
               .all()
               .filter(
                   "self.productCategory in (?1) AND self.productTypeSelect = ?2 AND self.productSubTypeSelect in (?3)"
-                      + " AND self.defaultBillOfMaterial.company in (?4) AND self.procurementMethodSelect in (?5, ?6)",
+                      + " AND self.defaultBillOfMaterial.company in (?4) AND self.procurementMethodSelect in (?5, ?6)"
+                      + " AND dtype = 'Product'",
                   unitCostCalculation.getProductCategorySet(),
                   ProductRepository.PRODUCT_TYPE_STORABLE,
                   productSubTypeSelects,
@@ -298,7 +299,8 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
               .all()
               .filter(
                   "self.productFamily in (?1) AND self.productTypeSelect = ?2 AND self.productSubTypeSelect in (?3)"
-                      + " AND self.defaultBillOfMaterial.company in (?4) AND self.procurementMethodSelect in (?5, ?6)",
+                      + " AND self.defaultBillOfMaterial.company in (?4) AND self.procurementMethodSelect in (?5, ?6)" 
+                      + " AND dtype = 'Product'",
                   unitCostCalculation.getProductFamilySet(),
                   ProductRepository.PRODUCT_TYPE_STORABLE,
                   productSubTypeSelects,

@@ -22,8 +22,12 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.contract.db.Contract;
@@ -42,15 +46,18 @@ public class ContractLineServiceImpl implements ContractLineService {
   protected AppBaseService appBaseService;
   protected AccountManagementService accountManagementService;
   protected CurrencyService currencyService;
+  protected ProductCompanyService productCompanyService;
 
   @Inject
   public ContractLineServiceImpl(
       AppBaseService appBaseService,
       AccountManagementService accountManagementService,
-      CurrencyService currencyService) {
+      CurrencyService currencyService,
+      ProductCompanyService productCompanyService) {
     this.appBaseService = appBaseService;
     this.accountManagementService = accountManagementService;
     this.currencyService = currencyService;
+    this.productCompanyService = productCompanyService;
   }
 
   @Override
@@ -69,16 +76,18 @@ public class ContractLineServiceImpl implements ContractLineService {
   }
 
   @Override
-  public ContractLine fill(ContractLine contractLine, Product product) {
+  public ContractLine fill(ContractLine contractLine, Product product) throws AxelorException {
     Preconditions.checkNotNull(product, I18n.get(IExceptionMessage.CONTRACT_EMPTY_PRODUCT));
-    contractLine.setProductName(product.getName());
-    if (product.getSalesUnit() != null) {
-      contractLine.setUnit(product.getSalesUnit());
+    Company company = contractLine.getContractVersion() != null ? contractLine.getContractVersion().getContract() != null ? contractLine.getContractVersion().getContract().getCompany() : null : null;
+    contractLine.setProductName((String) productCompanyService.get(product, "name", company));
+    Unit unit = (Unit) productCompanyService.get(product, "salesUnit", company);
+    if (unit != null) {
+      contractLine.setUnit(unit);
     } else {
-      contractLine.setUnit(product.getUnit());
+      contractLine.setUnit((Unit) productCompanyService.get(product, "unit", company));
     }
-    contractLine.setPrice(product.getSalePrice());
-    contractLine.setDescription(product.getDescription());
+    contractLine.setPrice((BigDecimal) productCompanyService.get(product, "salePrice", company));
+    contractLine.setDescription((String) productCompanyService.get(product, "description", company));
     return contractLine;
   }
 
@@ -102,7 +111,7 @@ public class ContractLineServiceImpl implements ContractLineService {
             false);
     contractLine.setTaxLine(taxLine);
 
-    if (taxLine != null && product.getInAti()) {
+    if (taxLine != null && (Boolean) productCompanyService.get(product, "inAti", contract.getCompany())) {
       BigDecimal price = contractLine.getPrice();
       price = price.divide(taxLine.getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
       contractLine.setPrice(price);
@@ -111,7 +120,7 @@ public class ContractLineServiceImpl implements ContractLineService {
     BigDecimal price = contractLine.getPrice();
     BigDecimal convert =
         currencyService.getCurrencyConversionRate(
-            product.getSaleCurrency(), contract.getCurrency(), appBaseService.getTodayDate());
+            (Currency) productCompanyService.get(product, "saleCurrency", contract.getCompany()), contract.getCurrency(), appBaseService.getTodayDate());
     contractLine.setPrice(price.multiply(convert));
 
     return contractLine;

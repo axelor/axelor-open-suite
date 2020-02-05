@@ -140,7 +140,7 @@
 
     <panel name="timesheetsSBSPanel" title="Timesheets" if="__config__.app.isApp('timesheet')" showIf="stepByStepSelect == 3">
       <field name="timeLoggingPreferenceSelect" colSpan="3"/>
-      <field name="product" canEdit="false" colSpan="3" domain="self.isActivity = true" form-view="product-form" grid-view="product-grid"/>
+      <field name="product" canEdit="false" colSpan="3" domain="self.isActivity = true AND dtype = 'Product'" form-view="product-form" grid-view="product-grid"/>
       <field name="timesheetReminder" colSpan="3"/>
       <field name="timesheetImputationSelect" colSpan="3" if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()" if-module="axelor-business-production"/>
     </panel>
@@ -266,7 +266,7 @@
 
       <panel name="timesheetsPanel" title="Timesheets" if="__config__.app.isApp('timesheet')">
         <field name="timeLoggingPreferenceSelect" colSpan="3"/>
-        <field name="product" canEdit="false" colSpan="3" domain="self.isActivity = true" form-view="product-form" grid-view="product-grid"/>
+        <field name="product" canEdit="false" colSpan="3" domain="self.isActivity = true AND dtype = 'Product'" form-view="product-form" grid-view="product-grid"/>
         <field name="timesheetReminder" colSpan="3"/>
         <field name="timesheetImputationSelect" colSpan="3" if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()" if-module="axelor-business-production"/>
 

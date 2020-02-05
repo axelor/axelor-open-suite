@@ -119,8 +119,8 @@
 				</panel>
 
 				<panel name="productsPanel" title="Products" colSpan="12">
-					<field name="invoicingProduct"/>
-					<field name="advancePaymentProduct"/>
+					<field name="invoicingProduct" domain="dtype = 'Product'"/>
+					<field name="advancePaymentProduct" domain="dtype = 'Product'"/>
 				</panel>
 
 				<panel name="printingSettingsPanel" title="Printing settings" colSpan="12">

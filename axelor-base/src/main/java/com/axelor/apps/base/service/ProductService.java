@@ -32,15 +32,6 @@ public interface ProductService {
 
   public String getSequence() throws AxelorException;
 
-  /**
-   * Retourne le prix d'un produit à une date t.
-   *
-   * @param product
-   * @param date
-   * @return
-   */
-  public BigDecimal getPrice(Product product, boolean isPurchase);
-
   public void updateSalePrice(Product product);
 
   @Transactional

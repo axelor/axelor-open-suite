@@ -86,23 +86,6 @@ public class ProductServiceImpl implements ProductService {
     return seq;
   }
 
-  /**
-   * Retourne le prix d'un produit à une date t.
-   *
-   * @param product
-   * @param date
-   * @return
-   */
-  @Override
-  public BigDecimal getPrice(Product product, boolean isPurchase) {
-
-    if (isPurchase) {
-      return product.getPurchasePrice();
-    } else {
-      return product.getSalePrice();
-    }
-  }
-
   @Override
   public void updateSalePrice(Product product) {
 
@@ -149,7 +132,7 @@ public class ProductServiceImpl implements ProductService {
   private void updateSalePriceOfVariant(Product product) {
 
     List<? extends Product> productVariantList =
-        productRepo.all().filter("self.parentProduct = ?1", product).fetch();
+        productRepo.all().filter("self.parentProduct = ?1 AND dtype = 'Product'", product).fetch();
 
     for (Product productVariant : productVariantList) {
 

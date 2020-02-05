@@ -7,7 +7,7 @@
     canSave="false" width="large" canNew="false" canCopy="false"
     onNew="action-stock-history-line-group-onnew">
     <panel name="parameterPanel">
-      <field name="$product" colSpan="4" title="Product" type="many-to-one" target="com.axelor.apps.base.db.Product" readonly="true"/>
+      <field name="$product" colSpan="4" title="Product" type="many-to-one" target="com.axelor.apps.base.db.Product" readonly="true" domain="dtype = 'Product'"/>
       <field name="$company" colSpan="4" title="Company" type="many-to-one" target="com.axelor.apps.base.db.Company" readonly="true"/>
       <field name="$stockLocation" colSpan="4" title="Stock location" type="many-to-one" readonly="true"
         target="com.axelor.apps.stock.db.StockLocation"/>

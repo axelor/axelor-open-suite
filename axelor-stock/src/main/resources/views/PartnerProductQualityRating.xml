@@ -11,7 +11,7 @@
     
     <form name="partner-product-quality-rating-form" title="Partner product quality rating" model="com.axelor.apps.stock.db.PartnerProductQualityRating">
     	<panel name="mainPanel">
-    		<field name="product" colSpan="6"/>
+    		<field name="product" colSpan="6" domain="dtype = 'Product'"/>
     		<field name="qualityRatingSelect" widget="ImageSelect" x-labels="false" colSpan="3"/>
     		<field name="arrivalProductQty" colSpan="3"/>
     	</panel>

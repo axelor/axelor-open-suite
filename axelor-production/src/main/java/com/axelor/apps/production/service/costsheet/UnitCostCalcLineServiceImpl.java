@@ -20,12 +20,16 @@ package com.axelor.apps.production.service.costsheet;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.UnitCostCalcLine;
 import com.axelor.apps.production.db.UnitCostCalculation;
 import com.axelor.apps.production.db.repo.UnitCostCalcLineRepository;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,19 +39,23 @@ public class UnitCostCalcLineServiceImpl implements UnitCostCalcLineService {
 
   protected ProductRepository productRepository;
   protected UnitCostCalcLineRepository unitCostCalcLineRepository;
+  protected ProductCompanyService productCompanyService;
 
   @Inject
-  public UnitCostCalcLineServiceImpl(UnitCostCalcLineRepository unitCostCalcLineRepository) {
+  public UnitCostCalcLineServiceImpl(
+		  UnitCostCalcLineRepository unitCostCalcLineRepository,
+		  ProductCompanyService productCompanyService) {
     this.unitCostCalcLineRepository = unitCostCalcLineRepository;
+    this.productCompanyService = productCompanyService;
   }
 
   public UnitCostCalcLine createUnitCostCalcLine(
-      Product product, Company company, int maxLevel, CostSheet costSheet) {
+      Product product, Company company, int maxLevel, CostSheet costSheet) throws AxelorException {
 
     UnitCostCalcLine unitCostCalcLine = new UnitCostCalcLine();
     unitCostCalcLine.setProduct(product);
     unitCostCalcLine.setCompany(company);
-    unitCostCalcLine.setPreviousCost(product.getCostPrice());
+    unitCostCalcLine.setPreviousCost((BigDecimal) productCompanyService.get(product, "costPrice", company));
     unitCostCalcLine.setCostSheet(costSheet);
     unitCostCalcLine.setComputedCost(costSheet.getCostPrice());
     unitCostCalcLine.setCostToApply(costSheet.getCostPrice());

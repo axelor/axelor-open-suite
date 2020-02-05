@@ -17,10 +17,12 @@
  */
 package com.axelor.apps.purchase.service;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.SupplierCatalogRepository;
@@ -42,17 +44,20 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
   @Inject protected AppPurchaseService appPurchaseService;
 
   @Inject protected CurrencyService currencyService;
+  
+  @Inject protected ProductCompanyService productCompanyService;
 
+  @SuppressWarnings("unchecked")
   @Override
   public Map<String, Object> updateInfoFromCatalog(
-      Product product, BigDecimal qty, Partner partner, Currency currency, LocalDate date)
+      Product product, BigDecimal qty, Partner partner, Currency currency, LocalDate date, Company company)
       throws AxelorException {
 
     Map<String, Object> info = null;
     List<SupplierCatalog> supplierCatalogList = null;
 
     if (appPurchaseService.getAppPurchase().getManageSupplierCatalog()) {
-      supplierCatalogList = product.getSupplierCatalogList();
+      supplierCatalogList = (List<SupplierCatalog>) productCompanyService.get(product, "supplierCatalogList", company);
     }
     if (supplierCatalogList != null && !supplierCatalogList.isEmpty()) {
       SupplierCatalog supplierCatalog =
@@ -78,13 +83,13 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
                 .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
         info.put("productName", supplierCatalog.getProductSupplierName());
         info.put("productCode", supplierCatalog.getProductSupplierCode());
-      } else if (this.getSupplierCatalog(product, partner) != null) {
+      } else if (this.getSupplierCatalog(product, partner, company) != null) {
         info = new HashMap<>();
         info.put(
             "price",
             currencyService
                 .getAmountCurrencyConvertedAtDate(
-                    product.getPurchaseCurrency(), currency, product.getPurchasePrice(), date)
+            		(Currency) productCompanyService.get(product, "purchaseCurrency", company), currency, (BigDecimal) productCompanyService.get(product, "purchasePrice", company), date)
                 .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
         info.put("productName", null);
         info.put("productCode", null);
@@ -95,14 +100,17 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
   }
 
   @Override
-  public SupplierCatalog getSupplierCatalog(Product product, Partner supplierPartner) {
+  public SupplierCatalog getSupplierCatalog(Product product, Partner supplierPartner, Company company) throws AxelorException {
 
+	@SuppressWarnings("unchecked")
+	List<SupplierCatalog> supplierCatalogList = (List<SupplierCatalog>) productCompanyService.get(product, "supplierCatalogList", company);
+	  
     if (appPurchaseService.getAppPurchase().getManageSupplierCatalog()
         && product != null
-        && product.getSupplierCatalogList() != null) {
+        && supplierCatalogList != null) {
       SupplierCatalog resSupplierCatalog = null;
 
-      for (SupplierCatalog supplierCatalog : product.getSupplierCatalogList()) {
+      for (SupplierCatalog supplierCatalog : supplierCatalogList) {
         if (supplierCatalog.getSupplierPartner().equals(supplierPartner)) {
           resSupplierCatalog =
               (resSupplierCatalog == null

@@ -181,11 +181,11 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
   }
 
   protected String getProductCategoryQuery() {
-    return "self.productCategory in (?1) AND self.productTypeSelect = ?2";
+    return "self.productCategory in (?1) AND self.productTypeSelect = ?2 AND dtype = 'Product'";
   }
 
   protected String getProductFamilyQuery() {
-    return "self.productFamily in (?1) AND self.productTypeSelect = ?2";
+    return "self.productFamily in (?1) AND self.productTypeSelect = ?2 AND dtype = 'Product'";
   }
 
   protected void createAllABCAnalysisLine(ABCAnalysis abcAnalysis) throws AxelorException {

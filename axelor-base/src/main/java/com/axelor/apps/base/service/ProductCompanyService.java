@@ -15,16 +15,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.service.costsheet;
+package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.production.db.CostSheet;
-import com.axelor.apps.production.db.UnitCostCalcLine;
 import com.axelor.exception.AxelorException;
 
-public interface UnitCostCalcLineService {
+public interface ProductCompanyService {
 
-  public UnitCostCalcLine createUnitCostCalcLine(
-      Product product, Company company, int maxLevel, CostSheet costSheet) throws AxelorException ;
+  /**
+	 * A generic get method. Serves as a getter for any field of a product, which might or
+	 * might not be overridden by a company-specific version of the product.
+	 * @param originalProduct the product which field we want to get
+	 * @param fieldName the field we want to obtain from the product
+	 * @param company the company to search for a company-specific version of the product
+	 * @return the value of the field, either the value specified for the company, or the default value
+	*/
+  public Object get(Product originalProduct, String fieldName, Company company) throws AxelorException;
+  
 }

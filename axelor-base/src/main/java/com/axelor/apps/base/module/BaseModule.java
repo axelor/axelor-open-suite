@@ -79,6 +79,8 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.PartnerServiceImpl;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.PeriodServiceImpl;
+import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.ProductCompanyServiceImpl;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.ProductMultipleQtyServiceImpl;
 import com.axelor.apps.base.service.ProductService;
@@ -192,5 +194,6 @@ public class BaseModule extends AxelorModule {
     bind(FileFieldService.class).to(FileFieldServiceImpl.class);
     bind(ActionService.class).to(ActionServiceImpl.class);
     bind(PartnerService.class).to(PartnerServiceImpl.class);
+    bind(ProductCompanyService.class).to(ProductCompanyServiceImpl.class);
   }
 }

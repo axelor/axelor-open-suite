@@ -17,8 +17,11 @@
  */
 package com.axelor.apps.businessproject.service.projectgenerator.factory;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.service.ProductTaskTemplateService;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
@@ -38,6 +41,8 @@ import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +57,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
   private TeamTaskBusinessProjectService teamTaskService;
   private TeamTaskRepository teamTaskRepository;
   private ProductTaskTemplateService productTaskTemplateService;
+  private ProductCompanyService productCompanyService;
 
   @Inject
   public ProjectGeneratorFactoryTaskTemplate(
@@ -59,12 +65,14 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
       ProjectRepository projectRepository,
       TeamTaskBusinessProjectService teamTaskService,
       TeamTaskRepository teamTaskRepository,
-      ProductTaskTemplateService productTaskTemplateService) {
+      ProductTaskTemplateService productTaskTemplateService,
+      ProductCompanyService productCompanyService) {
     this.projectBusinessService = projectBusinessService;
     this.projectRepository = projectRepository;
     this.teamTaskService = teamTaskService;
     this.teamTaskRepository = teamTaskRepository;
     this.productTaskTemplateService = productTaskTemplateService;
+    this.productCompanyService = productCompanyService;
   }
 
   @Override
@@ -150,14 +158,15 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
         .domain("self.parentTask = " + root.getId());
   }
 
-  private void updateTask(TeamTask root, TeamTask childTask, SaleOrderLine orderLine) {
+  private void updateTask(TeamTask root, TeamTask childTask, SaleOrderLine orderLine) throws AxelorException {
     childTask.setParentTask(root);
     childTask.setQuantity(orderLine.getQty());
     Product product = orderLine.getProduct();
     childTask.setProduct(product);
     childTask.setExTaxTotal(orderLine.getExTaxTotal());
-    childTask.setUnitPrice(product != null ? product.getSalePrice() : null);
-    childTask.setUnit(product != null ? product.getUnit() : null);
+    Company company = orderLine.getSaleOrder() != null ? orderLine.getSaleOrder().getCompany() : null;
+    childTask.setUnitPrice(product != null ? (BigDecimal) productCompanyService.get(product, "salePrice", company) : null);
+    childTask.setUnit(product != null ? (Unit) productCompanyService.get(product, "unit", company) : null);
     childTask.setSaleOrderLine(orderLine);
     if (orderLine.getSaleOrder().getToInvoiceViaTask()) {
       childTask.setToInvoice(true);
