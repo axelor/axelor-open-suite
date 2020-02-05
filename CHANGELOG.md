@@ -46,6 +46,7 @@
 - Configurators: fix issue in configurator menu with latest AOP version.
 - Stock Move: Do not modify wap when generating customer return.
 - ADDRESS: Fix error message when clicking on ViewMap Btn of a new address
+- Configurator BOM: Correctly make the difference between components and sub bill of material.
 
 ## [5.2.3] - 2020-01-23
 ## Features

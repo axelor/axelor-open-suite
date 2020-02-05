@@ -228,6 +228,17 @@
 				 model="com.axelor.apps.production.db.ConfiguratorBOM" >
 		<view type="grid" name="configurator-bom-grid" />
 		<view type="form" name="configurator-bom-form" />
+		<domain>self.defineSubBillOfMaterial IS TRUE</domain>
+	</action-view>
+
+	<menuitem name="manufacturing-conf-configurators-bom-components" parent="manufacturing-conf-configurators" order="31"
+		title="Configurator BOM components" action="manufacturing.conf.configurator.bom.components"/>
+
+	<action-view name="manufacturing.conf.configurator.bom.components" title="Configurator BOM"
+		model="com.axelor.apps.production.db.ConfiguratorBOM" >
+		<view type="grid" name="configurator-bom-grid" />
+		<view type="form" name="configurator-bom-form" />
+		<domain>self.defineSubBillOfMaterial IS FALSE or self.defineSubBillOfMaterial IS NULL</domain>
 	</action-view>
 
 	<menuitem name="manufacturing-conf-configurators-prodprocess" parent="manufacturing-conf-configurators" order="40"

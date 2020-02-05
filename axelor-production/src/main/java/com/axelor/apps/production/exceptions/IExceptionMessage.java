@@ -118,7 +118,7 @@ public interface IExceptionMessage {
       "Error while generating bill of material: the product of the bill of material is supposed to be computed from a script but the script did not return a product." /*)*/;
 
   String CONFIGURATOR_BOM_IMPORT_FILLED_PRODUCT_NULL = /*$$(*/
-      "Error while generating bill of material: the product of the bill of material is supposed to filled in the configurator BOM but it was empty." /*)*/;
+      "Error while generating bill of material: the product of the bill of material is supposed to be filled in the configurator BOM but it was empty." /*)*/;
 
   /** Stock move line production controller */
   String STOCK_MOVE_LINE_UNKNOWN_PARENT_CONTEXT = /*$$(*/ "Unknown parent context class." /*)*/;

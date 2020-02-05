@@ -149,6 +149,7 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
     billOfMaterial.setUnit(unit);
     billOfMaterial.setProdProcess(prodProcess);
     billOfMaterial.setStatusSelect(configuratorBOM.getStatusSelect());
+    billOfMaterial.setDefineSubBillOfMaterial(configuratorBOM.getDefineSubBillOfMaterial());
 
     if (configuratorBOM.getConfiguratorBomList() != null) {
       for (ConfiguratorBOM confBomChild : configuratorBOM.getConfiguratorBomList()) {
