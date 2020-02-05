@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -64,6 +65,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
   protected UnitCostCalcLineServiceImpl unitCostCalcLineServiceImpl;
   protected CurrencyService currencyService;
   protected ShippingCoefService shippingCoefService;
+  protected ProductCompanyService productCompanyService;
 
   @Inject
   public CostSheetLineServiceImpl(
@@ -75,7 +77,8 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       WeightedAveragePriceService weightedAveragePriceService,
       UnitCostCalcLineServiceImpl unitCostCalcLineServiceImpl,
       CurrencyService currencyService,
-      ShippingCoefService shippingCoefService) {
+      ShippingCoefService shippingCoefService,
+      ProductCompanyService productCompanyService) {
     this.appBaseService = appBaseService;
     this.appProductionService = appProductionService;
     this.costSheetGroupRepository = costSheetGroupRepository;
@@ -85,6 +88,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
     this.unitCostCalcLineServiceImpl = unitCostCalcLineServiceImpl;
     this.currencyService = currencyService;
     this.shippingCoefService = shippingCoefService;
+    this.productCompanyService = productCompanyService;
   }
 
   public CostSheetLine createCostSheetLine(
@@ -287,10 +291,10 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       price = weightedAveragePriceService.computeAvgPriceForCompany(product, company);
 
       if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
-        price = product.getCostPrice();
+        price = (BigDecimal) productCompanyService.get(product, "costPrice", company);
       }
     } else if (componentsValuationMethod == ProductRepository.COMPONENTS_VALUATION_METHOD_COST) {
-      price = product.getCostPrice();
+      price = (BigDecimal) productCompanyService.get(product, "costPrice", company);
 
       if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
         price = weightedAveragePriceService.computeAvgPriceForCompany(product, company);
@@ -298,23 +302,25 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
     }
 
     if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
-      price = product.getPurchasePrice();
+      price = (BigDecimal) productCompanyService.get(product, "purchasePrice", company);
 
       BigDecimal shippingCoef =
           shippingCoefService.getShippingCoef(
-              product, product.getDefaultSupplierPartner(), company, new BigDecimal(9999999));
+              product, (Partner) productCompanyService.get(product, "defaultSupplierPartner", company), company, new BigDecimal(9999999));
 
-      price = product.getPurchasePrice().multiply(shippingCoef);
+      price = ((BigDecimal) productCompanyService.get(product, "purchasePrice", company)).multiply(shippingCoef);
 
       price =
           currencyService.getAmountCurrencyConvertedAtDate(
-              product.getPurchaseCurrency(),
+        		  (Currency) productCompanyService.get(product, "purchaseCurrency", company),
               companyCurrency,
               price,
               appProductionService.getTodayDate());
 
       if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
-        for (SupplierCatalog supplierCatalog : product.getSupplierCatalogList()) {
+    	@SuppressWarnings("unchecked")
+		List<SupplierCatalog> supplierCatalogList = (List<SupplierCatalog>) productCompanyService.get(product, "supplierCatalogList", company);
+        for (SupplierCatalog supplierCatalog : supplierCatalogList) {
           if (BigDecimal.ZERO.compareTo(supplierCatalog.getPrice()) < 0) {
             price = supplierCatalog.getPrice();
             Partner supplierPartner = supplierCatalog.getSupplierPartner();

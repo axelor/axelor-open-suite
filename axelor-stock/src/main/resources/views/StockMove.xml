@@ -505,7 +505,7 @@
     		<field name="stockFromDate" title="From Date" type="date" required="true"/>
     		<field name="stockToDate" title="To Date" type="date" required="true"/>
 	        <field name="stockLocation" title="Stock location" type="many-to-one" target="com.axelor.apps.stock.db.StockLocation" required="true" />
-	        <field name="productSet" title="Products" type="many-to-many" target="com.axelor.apps.base.db.Product" colSpan="12" canEdit="false"/>
+	        <field name="productSet" title="Products" type="many-to-many" target="com.axelor.apps.base.db.Product" colSpan="12" canEdit="false" domain="dtype = 'Product'"/>
         </panel>
     </form>
     

@@ -56,7 +56,7 @@
 		<view type="grid" name="product-grid" />
 		<view type="form" name="product-form" />
 		<view-param name="search-filters" value="products-filters"/>
-		<domain>self.isModel = false AND self.sellable = true AND self.isShippingCostsProduct = false</domain>
+		<domain>self.isModel = false AND self.sellable = true AND self.isShippingCostsProduct = false AND dtype = 'Product'</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_fromSale" expr="eval:true" />
 	</action-view>
@@ -174,7 +174,7 @@
 		title="Shipping costs" model="com.axelor.apps.base.db.Product">
 		<view type="grid" name="product-grid"/>
 		<view type="form" name="product-form"/>
-		<domain>self.isShippingCostsProduct = true</domain>
+		<domain>self.isShippingCostsProduct = true AND dtype = 'Product'</domain>
 		<context name="_isShippingCostsProduct" expr="true"/>
 	</action-view>
 

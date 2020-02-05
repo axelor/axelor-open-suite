@@ -19,6 +19,7 @@ package com.axelor.apps.businessproject.service.projectgenerator.factory;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.businessproject.service.TeamTaskBusinessProjectService;
@@ -38,6 +39,8 @@ import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,17 +51,20 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
   private ProjectRepository projectRepository;
   private TeamTaskBusinessProjectService teamTaskBusinessProjectService;
   private TeamTaskRepository teamTaskRepository;
+  private ProductCompanyService productCompanyService;
 
   @Inject
   public ProjectGeneratorFactoryTask(
       ProjectBusinessService projectBusinessService,
       ProjectRepository projectRepository,
       TeamTaskBusinessProjectService teamTaskBusinessProjectService,
-      TeamTaskRepository teamTaskRepository) {
+      TeamTaskRepository teamTaskRepository,
+      ProductCompanyService productCompanyService) {
     this.projectBusinessService = projectBusinessService;
     this.projectRepository = projectRepository;
     this.teamTaskBusinessProjectService = teamTaskBusinessProjectService;
     this.teamTaskRepository = teamTaskRepository;
+    this.productCompanyService = productCompanyService;
   }
 
   @Override
@@ -84,7 +90,7 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
                   .fetch()
                   .size()
               > 0;
-      if (ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect())
+      if (ProductRepository.PRODUCT_TYPE_SERVICE.equals((String) productCompanyService.get(product, "productTypeSelect", saleOrder.getCompany()))
           && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE
           && !(isTaskGenerated)) {
 
@@ -96,7 +102,7 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
         }
 
         task.setTaskDate(startDate.toLocalDate());
-        task.setUnitPrice(product.getSalePrice());
+        task.setUnitPrice((BigDecimal) productCompanyService.get(product, "salePrice", saleOrder.getCompany()));
         task.setExTaxTotal(saleOrderLine.getExTaxTotal());
         if (project.getIsInvoicingTimesheet()) {
           task.setToInvoice(true);

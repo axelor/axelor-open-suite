@@ -54,7 +54,7 @@
 					onChange="action-group-account-account-management-onchange-common"
 					form-view="company-form" grid-view="company-grid" canEdit="false"/>
 				<field name="product" canEdit="false" form-view="product-form"
-					grid-view="product-grid" showIf="typeSelect == 1"/>
+					grid-view="product-grid" showIf="typeSelect == 1" domain="dtype = 'Product'"/>
 				<field name="productFamily" canEdit="false" form-view="product-family-form" grid-view="product-family-grid" showIf="typeSelect == 1"/>
 			</panel>
 

@@ -390,8 +390,8 @@
 	<action-attrs name="action-purchase-order-line-attrs-product-domain">
 		<attribute name="domain" for="product"
 		expr="eval: isFilterOnSupplier &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog()
-		? &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true and self.id IN (SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = ${_parent?.supplierPartner?.id}) &quot; 
-		: &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true &quot;" />
+		? &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true and self.id IN (SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = ${_parent?.supplierPartner?.id}) and dtype = 'Product'&quot; 
+		: &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true and dtype = 'Product'&quot;" />
 	</action-attrs>
 	
     <action-attrs name="action-purchase-order-line-attrs-discountamount-title">

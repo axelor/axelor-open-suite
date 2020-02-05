@@ -30,6 +30,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
@@ -56,14 +57,16 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
       AccountManagementAccountService accountManagementAccountService,
-      PurchaseProductService purchaseProductService) {
+      PurchaseProductService purchaseProductService,
+      ProductCompanyService productCompanyService) {
 
     super(
         currencyService,
         priceListService,
         appAccountService,
         analyticMoveLineService,
-        accountManagementAccountService);
+        accountManagementAccountService,
+        productCompanyService);
     this.purchaseProductService = purchaseProductService;
   }
 
@@ -122,7 +125,8 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
         invoiceLine.getQty(),
         invoice.getPartner(),
         invoice.getCurrency(),
-        invoice.getInvoiceDate());
+        invoice.getInvoiceDate(),
+        invoice.getCompany());
   }
 
   @Override

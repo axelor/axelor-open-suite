@@ -33,7 +33,7 @@
     	onNew="action-stock-rules-record-new,action-stock-rules-attrs-scale-and-precision" onLoad="action-stock-rules-attrs-scale-and-precision" width="large">
 		<panel name="mainPanel" >
         	<field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" canEdit="false" colSpan="3"/>
-	    	<field name="product" canEdit="false" onChange="action-stock-rules-record-product-change" domain="self.productTypeSelect = 'storable' and self.stockManaged = true " form-view="product-form" grid-view="product-grid" colSpan="3"/>
+	    	<field name="product" canEdit="false" onChange="action-stock-rules-record-product-change" domain="self.productTypeSelect = 'storable' and self.stockManaged = true and dtype = 'Product'" form-view="product-form" grid-view="product-grid" colSpan="3"/>
         	<field name="useCaseSelect" colSpan="3" onChange="action-stock-rules-record-useCaseSelect-change"/>
         	<field name="typeSelect" showIf="useCaseSelect == 2" colSpan="3" requiredIf="useCaseSelect == 2"/>
 	    	<field name="orderAlertSelect" selection-in="[1 * (useCaseSelect != 1), 2 * (product.procurementMethodSelect != 'produce'), 3 * (product.procurementMethodSelect != 'buy')]" colSpan="3"/>

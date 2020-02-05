@@ -19,6 +19,7 @@ package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockCorrection;
 import com.axelor.apps.stock.db.StockLocation;
@@ -43,6 +44,8 @@ import java.util.Map;
 public class StockCorrectionServiceImpl implements StockCorrectionService {
 
   @Inject private StockConfigService stockConfigService;
+  
+  @Inject private ProductCompanyService productCompanyService;
 
   @Override
   public Map<String, Object> fillDefaultValues(StockLocationLine stockLocationLine) {
@@ -144,14 +147,16 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
     stockMove.setOriginId(stockCorrection.getId());
     stockMove.setStockCorrectionReason(stockCorrection.getStockCorrectionReason());
 
+    BigDecimal productCostPrice = (BigDecimal) productCompanyService.get(product, "costPrice", company);
+    
     StockMoveLine stockMoveLine =
         stockMoveLineService.createStockMoveLine(
             product,
             product.getName(),
             product.getDescription(),
             diff.abs(),
-            product.getCostPrice(),
-            product.getCostPrice(),
+            productCostPrice,
+            productCostPrice,
             product.getUnit(),
             stockMove,
             StockMoveLineService.TYPE_NULL,

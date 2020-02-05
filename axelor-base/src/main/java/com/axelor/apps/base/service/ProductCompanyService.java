@@ -15,23 +15,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.purchase.service;
+package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.purchase.db.SupplierCatalog;
-import com.axelor.exception.AxelorException;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Map;
 
-public interface SupplierCatalogService {
+public interface ProductCompanyService {
 
-  public Map<String, Object> updateInfoFromCatalog(
-      Product product, BigDecimal qty, Partner partner, Currency currency, LocalDate date, Company company)
-      throws AxelorException;
-
-  public SupplierCatalog getSupplierCatalog(Product product, Partner supplierPartner, Company company);
+  /**
+	 * A generic get method. Serves as a getter for any field of a product, which might or
+	 * might not be overridden by a company-specific version of the product.
+	 * @param originalProduct the product which field we want to get
+	 * @param fieldName the field we want to obtain from the product
+	 * @param company the company to search for a company-specific version of the product
+	 * @return the value of the field, either the value specified for the company, or the default value
+	*/
+  public Object get(Product originalProduct, String fieldName, Company company);
+  
 }

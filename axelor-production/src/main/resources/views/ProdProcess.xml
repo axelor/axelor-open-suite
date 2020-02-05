@@ -39,7 +39,7 @@
                 </viewer>
             </field>
 	    	<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-            <field name="product" requiredIf="!isEnabledForAllProducts" canEdit="false" grid-view="product-grid" form-view="product-form" domain="self.productTypeSelect = 'storable'"/>
+            <field name="product" requiredIf="!isEnabledForAllProducts" canEdit="false" grid-view="product-grid" form-view="product-form" domain="self.productTypeSelect = 'storable' AND dtype = 'Product'"/>
             <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
             <field name="workshopStockLocation" canEdit="false" domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect = 1 and self.isWorkshop = true" if="__config__.app.getApp('production').getManageWorkshop()"/>
         </panel>

@@ -27,7 +27,7 @@
 	
 	<chart name="chart.wastes.by.product" title="Products Wastes">
 		<search-fields>
-			<field name="name" title="Product" type="reference" target="com.axelor.apps.base.db.Product" x-required="true"/>
+			<field name="name" title="Product" type="reference" target="com.axelor.apps.base.db.Product" x-required="true" domain="dtype = 'Product'"/>
 		</search-fields>
 		<dataset type="jpql">
 			<![CDATA[

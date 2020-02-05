@@ -6,7 +6,7 @@
 	onNew="action-hr-ts-timer-record-default" canNew="false">
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
 		<field name="project" form-view="project-form" grid-view="project-grid"/>
-		<field name="product" domain="self.isActivity = true AND EXISTS(SELECT p FROM Project p WHERE p = :project AND self MEMBER OF p.productSet)" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
+		<field name="product" domain="self.isActivity = true AND EXISTS(SELECT p FROM Project p WHERE p = :project AND self MEMBER OF p.productSet) AND dtype = 'Product'" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
 		<field name="startDateTime"/>
 		<field name="duration"/>
 		<field name="timesheetLine" grid-view="timesheet-line-timesheet-project-grid" form-view="timesheet-line-timesheet-project-form" showIf="timesheetLine != null"/>
@@ -37,7 +37,7 @@
 	</form>
 	
 	<action-attrs name="action-hr-timesheet-timer-attrs-domain-product">
-		<attribute name="domain" for="product" expr="eval:project == null || project?.productSet.empty ? &quot;self.isActivity = true&quot; : &quot;self.isActivity = true AND EXISTS(SELECT p FROM Project p WHERE p = :project AND self MEMBER OF p.productSet)&quot;"/>
+		<attribute name="domain" for="product" expr="eval:project == null || project?.productSet.empty ? &quot;self.isActivity = true AND dtype = 'Product'&quot; : &quot;self.isActivity = true AND EXISTS(SELECT p FROM Project p WHERE p = :project AND self MEMBER OF p.productSet) AND dtype = 'Product'&quot;"/>
 	</action-attrs>
 	
 	<action-record name="action-hr-ts-timer-record-default" model="com.axelor.apps.hr.db.TSTimer">

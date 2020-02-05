@@ -103,11 +103,11 @@
 
     <action-attrs name="action-abc-analysis-attrs-product-set-domain">
         <attribute name="domain" for="productSet" if="typeSelect == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl'"
-                   expr="eval: &quot; self.productTypeSelect = 'storable' and self.purchasable = true&quot; "/>
+                   expr="eval: &quot; self.productTypeSelect = 'storable' and self.purchasable = true and dtype = 'Product'&quot; "/>
         <attribute name="domain" for="productSet" if="typeSelect == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'"
-                   expr="eval: &quot; self.productTypeSelect = 'storable' and self.sellable = true&quot; "/>
+                   expr="eval: &quot; self.productTypeSelect = 'storable' and self.sellable = true and dtype = 'Product'&quot; "/>
         <attribute name="domain" for="productSet" if="typeSelect == 'com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl'"
-                   expr="eval: &quot; self.productTypeSelect = 'storable' and self.stockManaged = true&quot; "/>
+                   expr="eval: &quot; self.productTypeSelect = 'storable' and self.stockManaged = true and dtype = 'Product'&quot; "/>
     </action-attrs>
 
     <action-method name="action-abc-analysis-method-init-abc-classes">

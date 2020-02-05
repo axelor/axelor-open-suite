@@ -30,7 +30,7 @@
 	</action-record>
 	
 	<action-attrs name="action-purchase-request-line-attrs-product-domain">
-		<attribute name="domain" for="product" expr="eval: &quot; self.id IN (SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = ${_parent?.supplierUser?.id}) &quot;"/>
+		<attribute name="domain" for="product" expr="eval: &quot; self.id IN (SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = ${_parent?.supplierUser?.id}) AND dtype = 'Product'&quot;"/>
 	</action-attrs>
 	
     <action-attrs name="action-purchase-request-line-attrs-set-scale">

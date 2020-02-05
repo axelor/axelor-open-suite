@@ -42,7 +42,7 @@
           					if="__config__.app.getApp('base').getGenerateProductSequence()"/>
           				<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="5" css="label-bold bold large" placeholder="Code" 
           					if="!__config__.app.getApp('base').getGenerateProductSequence()" required="true"/>
-                  <field name="name" showTitle="false" colSpan="7" css="label-bold bold large" placeholder="Name" width="400"/>
+                  <field name="name" required="true" showTitle="false" colSpan="7" css="label-bold bold large" placeholder="Name" width="400"/>
         			</editor>
       			</field>
     		</panel>
@@ -80,7 +80,7 @@
     		<panel name="productInfoPanel" colSpan="10" >
       
       			<panel name="productTypologyPanel" title="Product typology" colSpan="6" colWidths="30%,70%">
-			        <field name="productTypeSelect" colSpan="12" onChange="action-group-base-product-producttype-onchange" />
+			        <field name="productTypeSelect" required="true" colSpan="12" onChange="action-group-base-product-producttype-onchange" />
 			        <field name="productSubTypeSelect" colSpan="12"  showIf="productTypeSelect == 'storable'" if="__config__.app.isApp('production')" onChange="action-product-record-product-sub-type-select-onchange"/>
                     <field name="isShippingCostsProduct" colSpan="4" hideIf="productTypeSelect != 'storable' || productSubTypeSelect || _fromProduction || _fromStock || _fromSale || _fromPurchase"/>
 			        <field name="isActivity" showIf="productTypeSelect == 'service' &amp;&amp; !isShippingCostsProduct" if-module="axelor-human-resource" if="__config__.app.isApp('employee')" />
@@ -101,6 +101,7 @@
       				<field name="serialNumber" />
 					<field name="barcodeTypeConfig" if="__config__.app.getApp('base').getEditProductBarcodeType()"/>
       			</panel>
+      			<panel-related name="productCompanyListPanel" field="productCompanyList" grid-view="product-company-grid" form-view="product-company-form" colSpan="12"/>
     		</panel>
   		</panel>
   		<panel-tabs name="productSpecificAttributes" title="Product specific attributes">
@@ -422,10 +423,10 @@
     </action-attrs>
     
     <action-attrs name="action-product-attrs-change-title-based-on-inAti">
-    	<attribute name="title" for="salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale price A.T.I.')" if="inAti"/>
-    	<attribute name="title" for="salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale price W.T.')" if="!inAti"/>
-    	<attribute name="title" for="purchasePrice" expr="eval: com.axelor.i18n.I18n.get('Purchase price A.T.I.')" if="inAti"/>
-    	<attribute name="title" for="purchasePrice" expr="eval: com.axelor.i18n.I18n.get('Purchase price W.T.')" if="!inAti"/>
+    	<attribute name="title" for="salePrice,productCompanyList.salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale price A.T.I.')" if="inAti"/>
+    	<attribute name="title" for="salePrice,productCompanyList.salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale price W.T.')" if="!inAti"/>
+    	<attribute name="title" for="purchasePrice,productCompanyList.purchasePrice" expr="eval: com.axelor.i18n.I18n.get('Purchase price A.T.I.')" if="inAti"/>
+    	<attribute name="title" for="purchasePrice,productCompanyList.purchasePrice" expr="eval: com.axelor.i18n.I18n.get('Purchase price W.T.')" if="!inAti"/>
     </action-attrs>
 
     <action-attrs name="action-product-attrs-scale-and-precision">

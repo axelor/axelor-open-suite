@@ -26,7 +26,7 @@
     <action-view name="action-view-product-by-family" title="Products (${ name })" model="com.axelor.apps.base.db.Product">
 		<view type="grid" name="product-grid"/>
 		<view type="form" name="product-form"/>
-		<domain>self.productFamily.id = :_productFamilyId</domain>
+		<domain>self.productFamily.id = :_productFamilyId AND dtype = 'Product'</domain>
 		<context name="_productFamilyId" expr="eval: __this__.id"/>
 	</action-view>
 	

@@ -89,7 +89,7 @@
 	</action-view>
   
 	<action-attrs name="action-project-planning-time-attrs-domain-product">
-		<attribute name="domain" expr="eval:project == null || __repo__(Project).find(project.id).productSet?.empty ? &quot;self.isActivity = true&quot; : &quot;self.isActivity = true AND EXISTS(SELECT p FROM Project p WHERE p = :project AND self MEMBER OF p.productSet)&quot;" for="product"/>
+		<attribute name="domain" expr="eval:project == null || __repo__(Project).find(project.id).productSet?.empty ? &quot;self.isActivity = true AND dtype = 'Product'&quot; : &quot;self.isActivity = true AND EXISTS(SELECT p FROM Project p WHERE p = :project AND self MEMBER OF p.productSet) AND dtype = 'Product'&quot;" for="product"/>
 	</action-attrs>
 	
 	<action-attrs name="action-project-planning-time-attrs-project-domain">

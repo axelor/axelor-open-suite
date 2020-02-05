@@ -25,7 +25,7 @@
 
 	<form name="customer-catalog-partner-form" title="Customer Catalog" model="com.axelor.apps.sale.db.CustomerCatalog">
 		<panel name="mainPanel" colSpan="12">
-			<field name="product" form-view="product-form" grid-view="product-grid"/>
+			<field name="product" form-view="product-form" grid-view="product-grid" domain="dtype = 'Product'"/>
 			<field name="productCustomerCode"/>
 			<field name="productCustomerName"/>
 		</panel>

@@ -25,7 +25,7 @@
 			<statusSelect>2</statusSelect>
 			<name>Conception de l&apos;ordinateur</name>
 			<code></code>
-			<codeFormula>&quot;ORD&quot;+&quot;-&quot;+ (__repo__(Product).all().filter(&quot;self.name = &apos;Ordinateur personnalisé&apos;&quot;).count() + 1)</codeFormula>
+			<codeFormula>&quot;ORD&quot;+&quot;-&quot;+ (__repo__(Product).all().filter(&quot;self.name = &apos;Ordinateur personnalisé&apos; AND dtype = &apos;Product&apos;&quot;).count() + 1)</codeFormula>
 			<defCodeAsFormula>true</defCodeAsFormula>
 			<companyCode>AXE</companyCode>
 			<stockLocation>1</stockLocation>
@@ -315,7 +315,7 @@
 				<enumType></enumType>
 				<formView></formView>
 				<gridView></gridView>
-				<domain>self.productCategory.code = &apos;CARTM&apos;</domain>
+				<domain>self.productCategory.code = &apos;CARTM&apos; AND dtype = &apos;Product&apos;</domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>6</sequence>
 				<onChange>save,action-configurator-update-indicators,save</onChange>
@@ -353,7 +353,7 @@
 				<enumType></enumType>
 				<formView></formView>
 				<gridView></gridView>
-				<domain>self.productCategory.code = &apos;DD&apos;</domain>
+				<domain>self.productCategory.code = &apos;DD&apos; AND dtype = &apos;Product&apos;</domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>7</sequence>
 				<onChange>save,action-configurator-update-indicators,save</onChange>
@@ -391,7 +391,7 @@
 				<enumType></enumType>
 				<formView></formView>
 				<gridView></gridView>
-				<domain>self.productCategory.code = &apos;MEM&apos;</domain>
+				<domain>self.productCategory.code = &apos;MEM&apos; AND dtype = &apos;Product&apos;</domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>10</sequence>
 				<onChange>save,action-configurator-update-indicators,save</onChange>
@@ -429,7 +429,7 @@
 				<enumType></enumType>
 				<formView></formView>
 				<gridView></gridView>
-				<domain>self.productCategory.code = &apos;BOIT&apos;</domain>
+				<domain>self.productCategory.code = &apos;BOIT&apos; AND dtype = &apos;Product&apos;</domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>5</sequence>
 				<onChange>save,action-configurator-update-indicators,save</onChange>
@@ -467,7 +467,7 @@
 				<enumType></enumType>
 				<formView></formView>
 				<gridView></gridView>
-				<domain>self.productCategory.code = &apos;ECR&apos;</domain>
+				<domain>self.productCategory.code = &apos;ECR&apos; AND dtype = &apos;Product&apos;</domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>8</sequence>
 				<onChange>save,action-configurator-update-indicators,save</onChange>
@@ -809,7 +809,7 @@
 				<enumType></enumType>
 				<formView></formView>
 				<gridView></gridView>
-				<domain>self.productCategory.code = &apos;PROC&apos;</domain>
+				<domain>self.productCategory.code = &apos;PROC&apos; AND dtype = &apos;Product&apos;</domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>9</sequence>
 				<onChange>save,action-configurator-update-indicators,save</onChange>
@@ -920,7 +920,7 @@ return cp*nbOrdi_1</formula>
 		
 			<configuratorProductFormula>
 				<metaField>code</metaField>
-				<formula>&quot;ORD&quot;+&quot;-&quot;+ (__repo__(Product).all().filter(&quot;self.name = &apos;Ordinateur personnalisé&apos;&quot;).count() + 1)</formula>
+				<formula>&quot;ORD&quot;+&quot;-&quot;+ (__repo__(Product).all().filter(&quot;self.name = &apos;Ordinateur personnalisé&apos; AND dtype = &apos;Product&apos;&quot;).count() + 1)</formula>
 				<showOnConfigurator>true</showOnConfigurator>
 				<configuratorCreatorImportId>1</configuratorCreatorImportId>
 			</configuratorProductFormula>
@@ -1077,7 +1077,7 @@ return cp*nbOrdi_1</formula>
 				<enumType></enumType>
 				<formView></formView>
 				<gridView></gridView>
-				<domain>self.productCategory.code=&apos;IMP&apos;</domain>
+				<domain>self.productCategory.code=&apos;IMP&apos; AND dtype = &apos;Product&apos;</domain>
 				<targetJsonModelCode></targetJsonModelCode>
 				<sequence>4</sequence>
 				<onChange>save,action-configurator-update-indicators,save</onChange>
@@ -1419,7 +1419,7 @@ return cp*nbOrdi_1</formula>
 		
 			<configuratorProductFormula>
 				<metaField>code</metaField>
-				<formula>&quot;PUB&quot;+&quot;-&quot;+ (__repo__(Product).all().filter(&quot;self.name = &apos;Campagne publicitaire&apos;&quot;).count() + 1)</formula>
+				<formula>&quot;PUB&quot;+&quot;-&quot;+ (__repo__(Product).all().filter(&quot;self.name = &apos;Campagne publicitaire&apos; AND dtype = &apos;Product&apos;&quot;).count() + 1)</formula>
 				<showOnConfigurator>true</showOnConfigurator>
 				<configuratorCreatorImportId>2</configuratorCreatorImportId>
 			</configuratorProductFormula>

@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.CustomsCodeNomenclature;
@@ -76,6 +77,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   protected TrackingNumberService trackingNumberService;
   protected WeightedAveragePriceService weightedAveragePriceService;
   protected TrackingNumberRepository trackingNumberRepo;
+  protected ProductCompanyService productCompanyService;
 
   @Inject
   public StockMoveLineServiceImpl(
@@ -87,7 +89,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       StockLocationLineService stockLocationLineService,
       UnitConversionService unitConversionService,
       WeightedAveragePriceService weightedAveragePriceService,
-      TrackingNumberRepository trackingNumberRepo) {
+      TrackingNumberRepository trackingNumberRepo,
+      ProductCompanyService productCompanyService) {
     this.trackingNumberService = trackingNumberService;
     this.appBaseService = appBaseService;
     this.appStockService = appStockService;
@@ -97,6 +100,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     this.unitConversionService = unitConversionService;
     this.weightedAveragePriceService = weightedAveragePriceService;
     this.trackingNumberRepo = trackingNumberRepo;
+    this.productCompanyService = productCompanyService;
   }
 
   @Override
@@ -579,11 +583,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       Product product = stockMoveLine.getProduct();
 
       if (product != null
-          && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
+          && ((String) productCompanyService.get(product, "productTypeSelect", stockMove.getCompany())).equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
         try {
           checkConformitySelection(stockMoveLine, stockMove);
         } catch (Exception e) {
-          productsWithErrors.add(product.getName());
+          productsWithErrors.add((String) productCompanyService.get(product, "name", stockMove.getCompany()));
         }
       }
     }
@@ -800,9 +804,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     BigDecimal unitPriceUntaxed = BigDecimal.ZERO;
     if (stockMoveLine.getProduct() != null && stockMove != null) {
       if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
-        unitPriceUntaxed = stockMoveLine.getProduct().getSalePrice();
+        unitPriceUntaxed = (BigDecimal) productCompanyService.get(stockMoveLine.getProduct(), "salePrice", stockMove.getCompany());
       } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
-        unitPriceUntaxed = stockMoveLine.getProduct().getPurchasePrice();
+        unitPriceUntaxed = (BigDecimal) productCompanyService.get(stockMoveLine.getProduct(), "purchasePrice", stockMove.getCompany());
       } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL
           && stockMove.getFromStockLocation() != null
           && stockMove.getFromStockLocation().getTypeSelect()
@@ -810,7 +814,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         unitPriceUntaxed =
             computeFromStockLocation(stockMoveLine, stockMove.getFromStockLocation());
       } else {
-        unitPriceUntaxed = stockMoveLine.getProduct().getCostPrice();
+        unitPriceUntaxed = (BigDecimal) productCompanyService.get(stockMoveLine.getProduct(), "costPrice", stockMove.getCompany());
       }
     }
     stockMoveLine.setUnitPriceUntaxed(unitPriceUntaxed);
@@ -1140,7 +1144,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
               + stockMove.getFromStockLocation().getId()
               + " AND sll.currentQty > 0)";
     }
-    return domain;
+    return domain + " AND dtype = 'Product'";
   }
 
   @Override
