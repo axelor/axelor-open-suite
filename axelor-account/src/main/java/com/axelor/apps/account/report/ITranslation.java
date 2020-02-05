@@ -333,6 +333,10 @@ public interface ITranslation {
       "AccountingReportType2001.AnalyticMoveLineID"; /*)*/
   public static final String ACCOUNTING_REPORT_2001_MOVE_LINE_NAME = /*$$(*/
       "AccountingReportType2001.moveLineName"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_ORIGIN = /*$$(*/
+      "AccountingReportType2001.origin"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_DESCRIPTION = /*$$(*/
+      "AccountingReportType2001.description"; /*)*/
 
   public static final String SALE_INVOICE_DETAILS_REPORT_TITLE = /*$$(*/
       "SaleInvoicesDetails.title"; /*)*/

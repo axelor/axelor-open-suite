@@ -372,6 +372,8 @@
 "AccountingReportType2001.totalPerAnalyticAccount","Total par compte analytique",,
 "AccountingReportType2001.totalPerAnalyticAxis","Total par axe analytique",,
 "AccountingReportType2001.totalPerAnalyticJournal","Total par journal analytique",,
+"AccountingReportType2001.origin","Origine",,
+"AccountingReportType2001.description","Description",,
 "AccountingReportType6.title","Balance Auxiliaire des comptes",,
 "AccountingReportType7.dueDate","Echéance",,
 "AccountingReportType7.journalCode","Journal",,

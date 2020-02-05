@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -131,7 +131,9 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-open-suite</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/abs52-wip</property>
+            <property name="odaUser">axelor</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsYWE=</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -359,6 +361,12 @@ left outer join public.account_account_type as AccountType on (AnalyticMoveLine.
 
 left outer join public.base_company as Company on (AccountingReport.company = Company.id) 
 
+left outer join public.account_accounting_report_account_type_set as AccountTypeSet on (AccountTypeSet.account_accounting_report = AccountingReport.id)
+left outer join public.account_accounting_report_analytic_account_set as AnalyticAccountSet on (AnalyticAccountSet.account_accounting_report = AccountingReport.id)
+left outer join public.account_accounting_report_analytic_axis_set as AnalyticAxisSet on (AnalyticAxisSet.account_accounting_report = AccountingReport.id)
+
+
+
 where
 (Move.company_currency = AccountingReport.currency) AND
 (AccountingReport.journal IS NULL OR AccountingReport.journal  = Move.journal) AND
@@ -370,6 +378,10 @@ AND (AccountingReport.analytic_journal IS NULL OR AccountingReport.analytic_jour
 AND AnalyticMoveLine.type_select = 3
 AND  Move.ignore_in_accounting_ok = false 
 AND (Move.status_select = 3 OR Move.status_select = 2)
+
+AND (AccountTypeSet.account_type_set IS NULL OR AccountTypeSet.account_type_set = AccountType.id)
+AND (AnalyticAccountSet.analytic_account_set IS NULL OR AnalyticAccountSet.analytic_account_set = AnalyticAccount.id)
+AND (AnalyticAxisSet.analytic_axis_set IS NULL OR AnalyticAxisSet.analytic_axis_set = AnalyticAxis.id)
 
 group by AnalyticJournal.id, AnalyticAxis.id, AnalyticAccount.id, AccountType.id 
 order by AnalyticJournal.name, AnalyticAxis.code, AnalyticAccount.code, AccountType.id]]></xml-property>

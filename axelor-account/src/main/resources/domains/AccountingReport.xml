@@ -25,7 +25,6 @@
     <boolean name="global" title="Global" default="false"/>
     <boolean name="globalByPartner" title="Subtotal by partner" default="false"/>
     <boolean name="globalByDate" title="Subtotal by date" default="false"/>
-    <many-to-one name="analyticJournal" ref="com.axelor.apps.account.db.AnalyticJournal" title="Analytic Journal"/>
     
     <boolean name="detailed" title="Detailed" default="false"/>
     <integer name="statusSelect" title="Status" selection="iaccount.accounting.report.status.select" readonly="true" default="1"/>
@@ -47,6 +46,12 @@
     <boolean name="displayCodeAccountColumnOnPrinting" title="Display column with accounting number"/>
     <boolean name="displayNameAccountColumnOnPrinting" title="Display column with accounting name"/>
     <boolean name="displayMoveLineSequenceOnPrinting" title="Display moveline sequence"/>
+    
+    <!-- Analytic report -->
+    <many-to-one name="analyticJournal" ref="com.axelor.apps.account.db.AnalyticJournal" title="Analytic Journal"/>
+    <many-to-many name="analyticAxisSet" ref="com.axelor.apps.account.db.AnalyticAxis" title="Analytic axis"/>
+    <many-to-many name="analyticAccountSet" ref="com.axelor.apps.account.db.AnalyticAccount" title="Analytic accounts"/>
+    <many-to-many name="accountTypeSet" ref="com.axelor.apps.account.db.AccountType" title="Account types"/>
 
 	<unique-constraint columns="ref,company"/>
     

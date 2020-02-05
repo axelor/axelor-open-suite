@@ -372,6 +372,8 @@
 "AccountingReportType2001.totalPerAnalyticAccount","Total per analytic account",,
 "AccountingReportType2001.totalPerAnalyticAxis","Total per analytic axis",,
 "AccountingReportType2001.totalPerAnalyticJournal","Total per analytic journal",,
+"AccountingReportType2001.origin","Origin",,
+"AccountingReportType2001.description","Description",,
 "AccountingReportType6.title","Partner Balance",,
 "AccountingReportType7.dueDate","Due date",,
 "AccountingReportType7.journalCode","Journal",,
