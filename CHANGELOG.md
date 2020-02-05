@@ -22,6 +22,7 @@
 - BALANCE TRANSLATION : Translate "Balance" in french by "Solde"
 - EXPENSE : add new printing design.
 - Invoice printing: remove space between invoice lines without description.
+- INVOICE :  Add translation for "Canceled payment on" and "Pending payment" and update invoicePaymentList viewer in invoice form.
 
 ## Bug Fixes
 - INVOICE : Fixed payment mode on mass invoicing refund.
