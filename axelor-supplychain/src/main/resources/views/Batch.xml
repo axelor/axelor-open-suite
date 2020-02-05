@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+    
+    <grid id="supplychain-batch-grid" name="batch-grid" title="Batches" model="com.axelor.apps.base.db.Batch" orderBy="-id"
+    canEdit="false" canDelete="false" canNew="false" canSave="false">
+    	<field name="id" />
+		<field name="createdBy" form-view="user-form" grid-view="user-grid"/>
+		<field name="duration" widget="duration" x-big="true"/>
+		<field name="startDate" />
+		<field name="endDate" />
+		<field name="done" />
+		<field name="anomaly" />
+		<field name="moveDate" showIf="moveDate" />
+		<field name="accountingCutOffTypeSelect" showIf="accountingCutOffTypeSelect" />
+    </grid>
+    
+    <form id="supplychain-batch-form" name="batch-form" title="Batch" model="com.axelor.apps.base.db.Batch" extension="true">
+    
+	    <extend target="//field[@name='anomaly']">
+	    <insert position="after">
+	      <field name="moveDate" />
+	      <field name="accountingCutOffTypeSelect" />
+	    </insert>
+	  </extend>
+    </form>
+    
+</object-views>

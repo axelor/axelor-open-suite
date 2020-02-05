@@ -35,10 +35,12 @@ public class StockMoveSupplychainRepository extends StockMoveManagementRepositor
     if (copy.getStockMoveLineList() != null) {
       for (StockMoveLine stockMoveLine : copy.getStockMoveLineList()) {
         stockMoveLine.setReservedQty(BigDecimal.ZERO);
+        stockMoveLine.setRequestedReservedQty(BigDecimal.ZERO);
+        stockMoveLine.setIsQtyRequested(false);
+        stockMoveLine.setReservationDateTime(null);
         stockMoveLine.setQtyInvoiced(null);
       }
     }
-    copy.setReservationDateTime(null);
     copy.setInvoicingStatusSelect(StockMoveRepository.STATUS_NOT_INVOICED);
 
     return copy;

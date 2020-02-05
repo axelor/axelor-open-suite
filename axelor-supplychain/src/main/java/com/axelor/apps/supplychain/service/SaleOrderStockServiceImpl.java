@@ -199,6 +199,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
           appBaseService.getTodayDate().plusDays(supplychainConfig.getNumberOfDays().longValue()));
     }
 
+    setReservationDateTime(stockMove, saleOrder);
     stockMoveService.plan(stockMove);
 
     if (Beans.get(AppSaleService.class).getAppSale().getProductPackMgt()) {
@@ -305,7 +306,6 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     stockMove.setStockMoveLineList(new ArrayList<>());
     stockMove.setTradingName(saleOrder.getTradingName());
     stockMove.setSpecificPackage(saleOrder.getSpecificPackage());
-    setReservationDateTime(stockMove, saleOrder);
     stockMove.setNote(saleOrder.getDeliveryComments());
     stockMove.setPickingOrderComments(saleOrder.getPickingOrderComments());
     if (stockMove.getPartner() != null) {
@@ -315,7 +315,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   }
 
   /**
-   * Fill reservation date time in stock move with sale order confirmation date time.
+   * Fill reservation date time in stock move lines with sale order confirmation date time.
    *
    * @param stockMove
    * @param saleOrder
@@ -325,7 +325,12 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     if (reservationDateTime == null) {
       reservationDateTime = Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime();
     }
-    stockMove.setReservationDateTime(reservationDateTime);
+    List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+    if (stockMoveLineList != null) {
+      for (StockMoveLine stockMoveLine : stockMoveLineList) {
+        stockMoveLine.setReservationDateTime(reservationDateTime);
+      }
+    }
   }
 
   /**
@@ -411,6 +416,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
               requestedReservedQty,
               priceDiscounted,
               companyUnitPriceUntaxed,
+              null,
               unit,
               stockMove,
               StockMoveLineService.TYPE_SALES,

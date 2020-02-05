@@ -53,6 +53,8 @@
     <many-to-many name="analyticAccountSet" ref="com.axelor.apps.account.db.AnalyticAccount" title="Analytic accounts"/>
     <many-to-many name="accountTypeSet" ref="com.axelor.apps.account.db.AccountType" title="Account types"/>
 
+    <many-to-one name="analyticDistributionTemplate" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate" title="Analytic Distribution Template"/>
+
 	<unique-constraint columns="ref,company"/>
     
     <extra-code><![CDATA[

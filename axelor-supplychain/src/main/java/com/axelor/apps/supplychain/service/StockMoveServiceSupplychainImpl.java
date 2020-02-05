@@ -53,6 +53,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
@@ -456,5 +457,20 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
                 notAvailableProducts.toString()));
       }
     }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public Optional<StockMove> generateReversion(StockMove stockMove) throws AxelorException {
+
+    Optional<StockMove> newStockMove = super.generateReversion(stockMove);
+    List<StockMoveLine> stockMoveLineList =
+        newStockMove.isPresent() ? newStockMove.get().getStockMoveLineList() : null;
+    if (stockMoveLineList != null && !stockMoveLineList.isEmpty()) {
+      for (StockMoveLine stockMoveLine : stockMoveLineList) {
+        stockMoveLine.setQtyInvoiced(BigDecimal.ZERO);
+      }
+    }
+    return newStockMove;
   }
 }
