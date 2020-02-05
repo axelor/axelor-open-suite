@@ -1,4 +1,8 @@
 # Changelog
+## [Unreleased 5.2.5]
+## Improvements
+## Bug Fixes
+
 ## [5.2.4] - 2020-02-05
 ## Improvements
 - BankOrder: Display of Signatory ebics user and Sending date time in report.
@@ -418,6 +422,7 @@ In this case, the file is correctly retrieved from the bank server, but not save
 - LEAVE REQUEST: Add error when leave reason has no unit.
 - LEAVE REQUEST: Set duration value 0 if day planning of selected weekly planning is empty
 
+[Unreleased 5.2.5]: https://github.com/axelor/axelor-open-suite/compare/v5.2.4...dev
 [5.2.4]: https://github.com/axelor/axelor-open-suite/compare/v5.2.3...v5.2.4
 [5.2.3]: https://github.com/axelor/axelor-open-suite/compare/v5.2.2...v5.2.3
 [5.2.2]: https://github.com/axelor/axelor-open-suite/compare/v5.2.1...v5.2.2
