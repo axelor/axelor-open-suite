@@ -23,6 +23,7 @@
 - EXPENSE : add new printing design.
 - Invoice printing: remove space between invoice lines without description.
 - INVOICE :  Add translation for "Canceled payment on" and "Pending payment" and update invoicePaymentList viewer in invoice form.
+- Configurator: generate bill of material when creating a sale order line from a configurator.
 
 ## Bug Fixes
 - INVOICE : Fixed payment mode on mass invoicing refund.
