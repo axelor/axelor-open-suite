@@ -1,51 +1,49 @@
 # Changelog
-## [Unreleased 5.2.4]
-## Features
-- BankOrder : Display of Signatory ebics user and Sending date time in report.
-- ACCOUNTING REPORT : new filter for analytic distribution.
-- Timesheet : alert to check manufOrder is finished or not on timesheetLine. 
-
+## [5.2.4] - 2020-02-05
 ## Improvements
-- PaymentMode : Add sequence field on account settings grid view.
+- BankOrder: Display of Signatory ebics user and Sending date time in report.
+- ACCOUNTING REPORT: new filter for analytic distribution.
+- Timesheet: alert to check manufOrder is finished or not on timesheetLine.
+- PaymentMode: Add sequence field on account settings grid view.
 - Stock Move Line: store purchase price in stock move line to use this information in the declaration of exchanges.
-- INVOICE : add specific note of company bank details on invoice report.
-- Message : Improved performance when generating mail messages from templates. 
-- ACCOUNTING CUT OFF : display warning message when batch has been already launched with the same move date.
-- BANKPAYMENT : Update condition to display field ics number.
-- PURCHASE REQUEST : add new tab for purchaseOrderSet
-- ANALYTIC MOVE LINE : add id and move line to analytic move line grid.
-- Subrogation release : improved visibility of unpaid invoices.
-- INVOICE : Remove error message on empty invoicesCopySelect field and required if empty.
+- INVOICE: add specific note of company bank details on invoice report.
+- Message: Improved performance when generating mail messages from templates.
+- ACCOUNTING CUT OFF: display warning message when batch has been already launched with the same move date.
+- BANKPAYMENT: Update condition to display field ics number.
+- PURCHASE REQUEST: add new tab to see related purchase orders.
+- ANALYTIC MOVE LINE: add id and move line to analytic move line grid.
+- Subrogation release: improved visibility of unpaid invoices.
+- INVOICE: Filling number of copies for invoice printing is now required.
 - Stock Move: stock reservation management without sale order.
 - Manuf Order: manage stock reservation from stock move.
-- Invoice : Add control to avoid cancelation of ventilated invoice.
-- BALANCE TRANSLATION : Translate "Balance" in french by "Solde"
-- EXPENSE : add new printing design.
+- Invoice: Add control to avoid cancelation of ventilated invoice.
+- BALANCE TRANSLATION: Translate "Balance" in french by "Solde".
+- EXPENSE: add new printing design.
 - Invoice printing: remove space between invoice lines without description.
-- INVOICE :  Add translation for "Canceled payment on" and "Pending payment" and update invoicePaymentList viewer in invoice form.
+- INVOICE: Add translation for "Canceled payment on" and "Pending payment" and update list of payment viewer in invoice form.
 - Configurator: generate bill of material when creating a sale order line from a configurator.
 
 ## Bug Fixes
-- INVOICE : Fixed payment mode on mass invoicing refund.
-- MESSAGE : correction of sending a message and update status of message
-- BankOrder : change in translation of partnerTypeSelect field.
-- Account : missing translations
-- BankOrder : Fix domain issue of signatoryEbicsUser field.
-- INVENTORY : Fix issue of realQty when copy inventory.
-- TIMESHEET : Remove leave days and holidays when changing end date.
-- CAMPAIGN : Fix filter value each time changes while Generating targets from TargetList
+- INVOICE: Fixed payment mode on mass invoicing refund.
+- MESSAGE: correction of sending a message and correctly update status of message.
+- BankOrder: change translation of partnerTypeSelect field.
+- Account: Add missing translations.
+- BankOrder: Fix domain issue of signatoryEbicsUser field.
+- INVENTORY: Fix issue of realQty when copying inventory.
+- TIMESHEET: Remove leave days and holidays when changing end date.
+- CAMPAIGN: Fix filter value each time changes while Generating targets from TargetList.
 - Configurator: Fix sale order line not being created from a configurator.
 - Configurator: Generate bill of material on generating a sale order line from a configurator.
-- SaleOrderLine : Hide qty cell in SaleOrder report when saleOrderLine contain typeSelect equal to 'title'.
-- INVOICE : now the date verification of the ventilation process depends of invoices of the same company.
-- MOVE : corrected sequence generation, now use correctly the date of the move and not the date of validation.
+- SaleOrderLine: Hide qty cell in SaleOrder report when the sale order line is a title line.
+- INVOICE: now the date verification of the ventilation process depends of invoices of the same company.
+- MOVE: corrected sequence generation, now use correctly the date of the move and not the date of validation.
 - Stock Move partial invoicing: manage correctly the invoicing status when we refund the invoice.
 - ANALYTIC REPORT: fix issue where wrong reports were printed.
 - ACCOUNTING REPORT: improved analytic general ledger.
-- Subrogative release : corrected the possibility to create two subrogation transmitted or accounted with the same invoices.
+- Subrogative release: corrected the possibility to create two subrogation transmitted or accounted with the same invoices.
 - Configurators: fix issue in configurator menu with latest AOP version.
 - Stock Move: Do not modify wap when generating customer return.
-- ADDRESS: Fix error message when clicking on ViewMap Btn of a new address
+- ADDRESS: Fix error message when clicking on ViewMap Btn of a new address.
 - Configurator BOM: Correctly make the difference between components and sub bill of material.
 
 ## [5.2.3] - 2020-01-23
@@ -420,7 +418,7 @@ In this case, the file is correctly retrieved from the bank server, but not save
 - LEAVE REQUEST: Add error when leave reason has no unit.
 - LEAVE REQUEST: Set duration value 0 if day planning of selected weekly planning is empty
 
-[Unreleased 5.2.4]: https://github.com/axelor/axelor-open-suite/compare/v5.2.3...dev
+[5.2.4]: https://github.com/axelor/axelor-open-suite/compare/v5.2.3...v5.2.4
 [5.2.3]: https://github.com/axelor/axelor-open-suite/compare/v5.2.2...v5.2.3
 [5.2.2]: https://github.com/axelor/axelor-open-suite/compare/v5.2.1...v5.2.2
 [5.2.1]: https://github.com/axelor/axelor-open-suite/compare/v5.2.0...v5.2.1
