@@ -55,7 +55,7 @@
 				<field name="analyticJournal" showIf="typeSelect == 2000 || typeSelect == 2001" canNew="false" domain="self.company = :company" form-view="analytic-journal-form" grid-view="analytic-journal-grid"/>
 				<field name="analyticAxisSet" showIf="typeSelect == 2000 || typeSelect == 2001" colSpan="12" widget="TagSelect" canNew="false" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
 				<field name="analyticAccountSet" showIf="typeSelect == 2000 || typeSelect == 2001" colSpan="12" widget="TagSelect" canNew="false" form-view="analytic-account-form" grid-view="analytic-account-grid"/>
-				<field name=" " showIf="typeSelect == 2000 || typeSelect == 2001" colSpan="12" widget="TagSelect" canNew="false" form-view="account-type-form" grid-view="account-type-grid"/>
+				<field name="accountTypeSet" showIf="typeSelect == 2000 || typeSelect == 2001" colSpan="12" widget="TagSelect" canNew="false" form-view="account-type-form" grid-view="account-type-grid"/>
 				<field name="bankDetailsSet"   if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')" requiredIf="typeSelect == 18" showIf="typeSelect == 18" colSpan="12" form-view="bank-details-form" grid-view="bank-details-grid" widget="TagSelect" canNew="false" onSelect="action-accounting-report-method-set-bank-details-domain"/>
 				<field name="analyticDistributionTemplate" showIf="typeSelect == 17" form-view="analytic-distribution-template-form" grid-view="analytic-distribution-template-grid"/>
 			
