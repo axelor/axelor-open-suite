@@ -245,7 +245,14 @@ public class DataBackupCreateService {
   private List<Model> getMetaModelDataList(
       MetaModel metaModel, int start, Integer fetchLimit, List<String> subClasses)
       throws ClassNotFoundException {
-    return getQuery(metaModel, subClasses).fetch(fetchLimit, start);
+
+    Query<Model> query = getQuery(metaModel, subClasses);
+
+    if (query != null) {
+      return query.fetch(fetchLimit, start);
+    }
+    
+    return null;
   }
 
   private long getMetaModelDataCount(MetaModel metaModel, List<String> subClasses)
@@ -618,40 +625,42 @@ public class DataBackupCreateService {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmSS");
     String backupZipFileName = "DataBackup_" + LocalDateTime.now().format(formatter) + ".zip";
     File zipFile = new File(dirPath, backupZipFileName);
-    try {
-      ZipOutputStream out = null;
-      out = new ZipOutputStream(new FileOutputStream(zipFile));
+    try (ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFile))) {
+
       for (String fileName : fileNameList) {
         ZipEntry e = new ZipEntry(fileName);
         out.putNextEntry(e);
         File file = new File(dirPath, fileName);
-        BufferedInputStream bin = new BufferedInputStream(new FileInputStream(file));
-        byte[] data;
-        while (bin.available() > 0) {
-          if (bin.available() < BUFFER_SIZE) {
-            data = new byte[bin.available()];
-          } else {
-            data = new byte[BUFFER_SIZE];
+        try (BufferedInputStream bin = new BufferedInputStream(new FileInputStream(file))) {
+          byte[] data;
+          while (bin.available() > 0) {
+            if (bin.available() < BUFFER_SIZE) {
+              data = new byte[bin.available()];
+            } else {
+              data = new byte[BUFFER_SIZE];
+            }
+            bin.read(data, 0, data.length);
+            out.write(data, 0, data.length);
           }
-          bin.read(data, 0, data.length);
-          out.write(data, 0, data.length);
+          bin.close();
+          out.closeEntry();
+          
+          file.delete();
         }
-        bin.close();
-        out.closeEntry();
-        file.delete();
       }
       out.close();
     } catch (IOException e) {
       TraceBackService.trace(e, "Error From DataBackupCreateService - generateZIP()");
     }
+    
     return zipFile;
   }
 
   /* Generate XML File from CSVConfig */
   private void generateConfig(String dirPath, CSVConfig csvConfig) {
-    try {
-      File file = new File(dirPath, DataBackupServiceImpl.CONFIG_FILE_NAME);
-      FileWriter fileWriter = new FileWriter(file, true);
+
+    File file = new File(dirPath, DataBackupServiceImpl.CONFIG_FILE_NAME);
+    try (FileWriter fileWriter = new FileWriter(file, true)) {
 
       XStream xStream = new XStream();
       xStream.processAnnotations(CSVConfig.class);

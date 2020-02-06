@@ -3,6 +3,7 @@
 ## Improvements
 ## Bug Fixes
 - MANUF ORDER : Display sale order comment in manufacturing order printing.
+- DataBackupCreateService - BLOCKER : line 623 & line 628 & line 654.
 
 ## [5.2.4] - 2020-02-05
 ## Improvements
