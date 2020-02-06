@@ -96,7 +96,7 @@
 		</template>
 	</cards>
 
-	<tree name="bank-details-tree" title="Bank details">
+	<tree name="bank-details-tree" title="Bank details tree">
 		<column name="company" type="string"/>
 		<column name="bankDetails" type="string"/>
 		<column name="active" type="boolean"/>
