@@ -64,6 +64,8 @@
 - Stock Move: Do not modify wap when generating customer return.
 - ADDRESS: Fix error message when clicking on ViewMap Btn of a new address.
 - Configurator BOM: Correctly make the difference between components and sub bill of material.
+- ACCOUNTING REPORT : corrected several issues with values on the summary of gross values and depreciation report.
+- ACCOUNTING REPORT : in the summary of gross values and depreciation report corrected the problem of the apparition of line with an acquisition date after the report dates.
 
 ## [5.2.3] - 2020-01-23
 ## Features
