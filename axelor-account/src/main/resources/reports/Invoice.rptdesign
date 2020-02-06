@@ -4824,7 +4824,7 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">row["is_title_line"]</expression>
+                                                <expression name="valueExpr" type="javascript">row["is_title_line"] || row["description"] == null</expression>
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
