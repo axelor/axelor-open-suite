@@ -2,6 +2,7 @@
 ## [Unreleased 5.2.5]
 ## Improvements
 ## Bug Fixes
+- MANUF ORDER : Display sale order comment in manufacturing order printing.
 
 ## [5.2.4] - 2020-02-05
 ## Improvements
