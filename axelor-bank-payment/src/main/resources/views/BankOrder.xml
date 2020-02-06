@@ -118,7 +118,7 @@
 	        </panel>
 	        <panel name="mainPanel" colSpan="12" readonlyIf="statusSelect &gt;= 3" >  
 		        <field name="signatoryUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid" hidden="true"/>
-		        <field name="signatoryEbicsUser" form-view="ebics-user-form" grid-view="ebics-user-grid" canView="false" onChange="action-bank-order-record-fill-signatory-user" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet AND self.userTypeSelect = 1 AND self.statusSelect = 3" showIf="senderBankDetails" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
+		        <field name="signatoryEbicsUser" form-view="ebics-user-form" grid-view="ebics-user-grid" canView="false" onChange="action-bank-order-record-fill-signatory-user" domain=":senderBankDetails MEMBER OF self.ebicsPartner.bankDetailsSet AND self.userTypeSelect = 1 AND self.statusSelect = 3" showIf="senderBankDetails" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
 		        <field name="signatoryEbicsUser.ebicsPartner.testMode" hidden="true"/>
 		        <field name="$viewerPartnerTestMode" readonly="true" showTitle="false" hideIf="!signatoryEbicsUser.ebicsPartner.testMode || statusSelect >= 4">
 		        	<viewer depends="signatoryEbicsUser.ebicsPartner.testMode">
@@ -284,7 +284,7 @@
 				<field name="orderTypeSelect" hidden="true"/>
 			</panel>
 	        <panel name="signatoryPanel" colSpan="12" readonlyIf="statusSelect &gt;= 3">  	
-				<field name="signatoryEbicsUser" form-view="ebics-user-form" grid-view="ebics-user-grid" requiredIf="statusSelect == 2" onChange="action-bank-order-record-fill-signatory-user" colSpan="6" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet AND self.statusSelect = 3" showIf="senderBankDetails" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
+				<field name="signatoryEbicsUser" form-view="ebics-user-form" grid-view="ebics-user-grid" requiredIf="statusSelect == 2" onChange="action-bank-order-record-fill-signatory-user" colSpan="6" domain=":senderBankDetails MEMBER OF self.ebicsPartner.bankDetailsSet AND self.statusSelect = 3" showIf="senderBankDetails" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
 				<field name="signatoryUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid" hidden="true"/>
 				<field name="signatoryEbicsUser.ebicsPartner.testMode" hidden="true"/>
 				<field name="$viewerPartnerTestMode" readonly="true" showTitle="false" hideIf="!signatoryEbicsUser.ebicsPartner.testMode || statusSelect >= 4">
@@ -332,7 +332,7 @@
 				<field name="companyCurrencyTotalAmount" colSpan="8"/>
 				<field name="companyCurrency" canView="false" grid-view="currency-grid" form-view="currency-form" colSpan="4"/>
 			</panel>
-    		<field name="signatoryEbicsUser" title="Ebics User" widget="SuggestBox" colOffset="1" canEdit="false" colSpan="6" required="true" grid-view="ebics-user-grid" form-view="ebics-user-form" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet AND self.statusSelect = 3"/>
+    		<field name="signatoryEbicsUser" title="Ebics User" widget="SuggestBox" colOffset="1" canEdit="false" colSpan="6" required="true" grid-view="ebics-user-grid" form-view="ebics-user-form" domain=":senderBankDetails MEMBER OF self.ebicsPartner.bankDetailsSet AND self.statusSelect = 3"/>
     		<field name="$password" title="Password" widget="password" colOffset="1"  colSpan="6" required="true"/>
     		<button name="validateBtn" title="Validate" colOffset="1"  colSpan="6" onClick="save,action-bank-order-method-validate,close"/>
     		<field name="isMultiCurrency" hidden="true"/>

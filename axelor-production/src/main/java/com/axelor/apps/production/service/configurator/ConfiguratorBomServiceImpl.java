@@ -83,15 +83,28 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
       name = configuratorBOM.getName();
     }
     if (configuratorBOM.getDefProductFromConfigurator()) {
+      if (generatedProduct == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.CONFIGURATOR_BOM_IMPORT_GENERATED_PRODUCT_NULL));
+      }
       product = generatedProduct;
     } else if (configuratorBOM.getDefProductAsFormula()) {
       product =
           (Product)
               configuratorService.computeFormula(configuratorBOM.getProductFormula(), attributes);
-      if (product != null) {
-        product = Beans.get(ProductRepository.class).find(product.getId());
+      if (product == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.CONFIGURATOR_BOM_IMPORT_FORMULA_PRODUCT_NULL));
       }
+      product = Beans.get(ProductRepository.class).find(product.getId());
     } else {
+      if (configuratorBOM.getProduct() == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.CONFIGURATOR_BOM_IMPORT_FILLED_PRODUCT_NULL));
+      }
       product = configuratorBOM.getProduct();
     }
     if (configuratorBOM.getDefQtyAsFormula()) {
@@ -136,6 +149,7 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
     billOfMaterial.setUnit(unit);
     billOfMaterial.setProdProcess(prodProcess);
     billOfMaterial.setStatusSelect(configuratorBOM.getStatusSelect());
+    billOfMaterial.setDefineSubBillOfMaterial(configuratorBOM.getDefineSubBillOfMaterial());
 
     if (configuratorBOM.getConfiguratorBomList() != null) {
       for (ConfiguratorBOM confBomChild : configuratorBOM.getConfiguratorBomList()) {

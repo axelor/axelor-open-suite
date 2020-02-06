@@ -365,7 +365,7 @@ InvoiceSet.length > 0))"
 			</panel>
 			<panel title="Printing" name="printingPanel" colSpan="12">
 				<field name="printingSettings" onSelect="action-invoice-method-filter-printing-settings" canEdit="false"/>
-				<field name="invoicesCopySelect" colSpan="6" title="Invoices copy"/>
+				<field name="invoicesCopySelect" colSpan="6" title="Invoices copy" validIf="invoicesCopySelect > 0"/>
 				<field name="hideDiscount" colSpan="6"/>
         		<field name="headOfficeAddress" if="__user__.activeCompany?.accountConfig?.displayHeadOfficeAddrOnInvoicePrinting"/>
         		<field name="specificNotes" colSpan="12" readonly="true" showIf="specificNotes"/>
@@ -486,7 +486,9 @@ InvoiceSet.length > 0))"
                         <a href="#/ds/action-invoice-view-register-payment{{record.$paymentVouchersOnInvoice ? '-voucher':''}}/edit/{{record.id}}">
                           <i class="fa fa-link" ng-class="{'font-black': record.statusSelect == 1, 'hilite-danger-text': record.statusSelect == 2, 'hilite-info-text': record.statusSelect == 3}"></i>
                         </a>
-                        <font x-translate ng-if="record.typeSelect == 1 || record.typeSelect == 2">Paid on</font>
+                        <font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect != 2 && record.statusSelect != 3">Paid on</font>
+                        <font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 2">Canceled payment on</font>
+                        <font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 3">Pending payment</font>
                         <font x-translate ng-if="record.typeSelect == 3">Ref. on</font>
                         <font x-translate ng-if="record.typeSelect == 4">Inv. on</font>
                         <font x-translate ng-if="record.typeSelect == 5">Other on</font>
@@ -687,7 +689,9 @@ InvoiceSet.length > 0))"
                         <a href="#/ds/action-invoice-view-register-payment{{record.$paymentVouchersOnInvoice ? '-voucher':''}}/edit/{{record.id}}">
                           <i class="fa fa-link" ng-class="{'font-black': record.statusSelect == 1, 'hilite-danger-text': record.statusSelect == 2, 'hilite-info-text': record.statusSelect == 3}"></i>
                         </a>
-                        <font x-translate ng-if="record.typeSelect == 1 || record.typeSelect == 2">Paid on</font>
+                        <font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect != 2 && record.statusSelect != 3">Paid on</font>
+                        <font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 2">Canceled payment on</font>
+                        <font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 3">Pending payment</font>
                         <font x-translate ng-if="record.typeSelect == 3">Ref. on</font>
                         <font x-translate ng-if="record.typeSelect == 4">Inv. on</font>
                         <font x-translate ng-if="record.typeSelect == 5">Other on</font>
@@ -754,7 +758,7 @@ InvoiceSet.length > 0))"
 
 	<grid model="com.axelor.apps.account.db.Invoice" title="Release details"
 		name="invoice-release-details-grid" orderBy="invoiceDate, dueDate, invoiceId">
-		<hilite background="danger" if="$subrogationStatusSelect == 3 &amp;&amp; amountRemaining &gt; 0"/>
+		
 		<field name="invoiceId" width="120"/>
 		<field name="partner.partnerSeq" width="120"/>
 		<field name="partner.name" />
@@ -763,7 +767,9 @@ InvoiceSet.length > 0))"
 		<field name="inTaxTotal" />
 		<field name="currency" />
 		<field name="$subrogationStatusSelect" hidden="true"/>
-		<field name="amountRemaining" hidden="true"/>
+		<field name="amountRemaining" >
+			<hilite background="danger" if="$subrogationStatusSelect == 3 &amp;&amp; amountRemaining &gt; 0"/>
+		</field>
 	</grid>
 
     <!-- CUSTOMER INVOICES MERGE  -->
