@@ -4,6 +4,7 @@
 ## Bug Fixes
 - MANUF ORDER : Display sale order comment in manufacturing order printing.
 - Invoice payment: fix issue in invoice payment form when invoice due date is empty.
+- AppServiceImpl - BLOCKER : line 214
 
 ## [5.2.4] - 2020-02-05
 ## Improvements
