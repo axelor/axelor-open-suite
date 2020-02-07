@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+
+  <module name="admin" package="com.axelor.apps.admin.db"/>
+
+  <entity name="GlobalTrackingLog" cacheable="true">
+  
+    <many-to-one name="user" column="user_id" title="User" ref="com.axelor.auth.db.User" readonly="true" />
+    <many-to-one name="metaModel" title="Meta model" ref="com.axelor.meta.db.MetaModel" readonly="true" />
+    <long name="relatedId" title="Related id" readonly="true" nullable="true" />
+    <datetime name="dateT" title="Date time" readonly="true" />
+    <integer name="typeSelect" title="Type" selection="global.tracking.log.type.select" readonly="true" />
+    <one-to-many name="globalTrackingLogLineList" title="Global tracking log line list" ref="com.axelor.apps.admin.db.GlobalTrackingLogLine" mappedBy="globalTrackingLog"  readonly="true" />
+    
+    <string name="metaModelName" transient="true" />
+    
+    <extra-code>
+    	<![CDATA[
+    	
+	   	// TYPE SELECT
+	   	public static final int TYPE_CREATE = 1;
+		public static final int TYPE_READ   = 2;
+		public static final int TYPE_UPDATE = 3;
+		public static final int TYPE_DELETE = 4;
+		public static final int TYPE_EXPORT = 5;
+		
+    	]]>
+    </extra-code>
+  </entity>
+
+</domain-models>
