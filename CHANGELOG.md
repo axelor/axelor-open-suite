@@ -28,6 +28,7 @@
 - Invoice printing: remove space between invoice lines without description.
 - INVOICE: Add translation for "Canceled payment on" and "Pending payment" and update list of payment viewer in invoice form.
 - Configurator: generate bill of material when creating a sale order line from a configurator.
+- DEMO DATA : add analytic journals to demo data.
 
 ## Bug Fixes
 - INVOICE: Fixed payment mode on mass invoicing refund.
