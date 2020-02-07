@@ -6,6 +6,7 @@
 - Invoice payment: fix issue in invoice payment form when invoice due date is empty.
 - AppServiceImpl: Fix open resource with try-with-resources
 - ObjectDataExportServiceImpl: Fix open resource with try-with-resources
+- ImportAccountChart: Fix open resource with try-with-resources
 
 ## [5.2.4] - 2020-02-05
 ## Improvements
