@@ -4369,6 +4369,12 @@ row["ex_tax_total"] - row["totalDiscountAmount"]
                             <property name="width">10%</property>
                         </column>
                         <column id="4615">
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row["is_title_line"]</expression>
+                                </structure>
+                            </list-property>
                             <property name="width">10%</property>
                         </column>
                         <column id="4616">
