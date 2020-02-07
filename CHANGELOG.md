@@ -1,6 +1,8 @@
 # Changelog
 ## [Unreleased 5.2.5]
 ## Improvements
+- STOCK RULE : add comment field
+
 ## Bug Fixes
 - MANUF ORDER : Display sale order comment in manufacturing order printing.
 - Invoice payment: fix issue in invoice payment form when invoice due date is empty.
