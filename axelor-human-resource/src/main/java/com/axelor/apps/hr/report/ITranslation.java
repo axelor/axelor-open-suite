@@ -96,4 +96,7 @@ public class ITranslation {
   public static final String EMPLOYEE_TIMESHEET_USER = /*$$(*/ "EmployeeTimesheet.user"; /*)*/
   public static final String EMPLOYEE_TIMESHEET_WEEK_TOTAL = /*$$(*/
       "EmployeeTimesheet.weekTotal"; /*)*/
+
+  public static final String EXPENSE_TOTAL_ATI = /*$$(*/ "Expense.totalA.T.I"; /*)*/
+  public static final String EXPENSE_TOTAL_TO_REFUND = /*$$(*/ "Expense.totalToRefund"; /*)*/
 }
