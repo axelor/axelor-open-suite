@@ -251,7 +251,7 @@ public class DataBackupCreateService {
     if (query != null) {
       return query.fetch(fetchLimit, start);
     }
-    
+
     return null;
   }
 
@@ -644,7 +644,7 @@ public class DataBackupCreateService {
           }
           bin.close();
           out.closeEntry();
-          
+
           file.delete();
         }
       }
@@ -652,7 +652,7 @@ public class DataBackupCreateService {
     } catch (IOException e) {
       TraceBackService.trace(e, "Error From DataBackupCreateService - generateZIP()");
     }
-    
+
     return zipFile;
   }
 
