@@ -2,6 +2,7 @@
 ## [Unreleased 5.2.5]
 ## Improvements
 - STOCK RULE : add comment field
+TEST
 
 ## Bug Fixes
 - MANUF ORDER : Display sale order comment in manufacturing order printing.
