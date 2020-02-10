@@ -22,8 +22,13 @@ import java.util.Set;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCompany;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
+import com.axelor.meta.CallMethod;
 import com.axelor.meta.db.MetaField;
 import com.google.inject.Inject;
 
@@ -32,11 +37,18 @@ public class ProductCompanyServiceImpl implements ProductCompanyService {
   @Inject protected AppBaseService appBaseService;
 	
   @Override
-  public Object get(Product originalProduct, String fieldName, Company company) {
+  @CallMethod
+  public Object get(Product originalProduct, String fieldName, Company company) throws AxelorException {
 	  if (originalProduct == null) {
-		  System.out.println("Message d'insulte générique pour dire que tu as pas passé de produit dans la fonction pour récupérer le champ d'un produit");
+		  throw new AxelorException(
+			TraceBackRepository.CATEGORY_MISSING_FIELD,
+			I18n.get(IExceptionMessage.PRODUCT_COMPANY_NO_PRODUCT),
+			fieldName);
 	  } else if (fieldName == null || fieldName.trim().equals("")) {
-		  System.out.println("Message d'insulte générique pour dire que tu as pas passé le nom du champ dans la fonction pour récupérer le champ d'un produit");
+		  throw new AxelorException(
+			TraceBackRepository.CATEGORY_MISSING_FIELD,
+			I18n.get(IExceptionMessage.PRODUCT_COMPANY_NO_FIELD),
+			originalProduct.getFullName());
 	  }
 	  
 	  Product product = originalProduct;

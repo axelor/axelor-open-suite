@@ -25,6 +25,7 @@ import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.UnitCostCalcLine;
 import com.axelor.apps.production.db.UnitCostCalculation;
 import com.axelor.apps.production.db.repo.UnitCostCalcLineRepository;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -49,7 +50,7 @@ public class UnitCostCalcLineServiceImpl implements UnitCostCalcLineService {
   }
 
   public UnitCostCalcLine createUnitCostCalcLine(
-      Product product, Company company, int maxLevel, CostSheet costSheet) {
+      Product product, Company company, int maxLevel, CostSheet costSheet) throws AxelorException {
 
     UnitCostCalcLine unitCostCalcLine = new UnitCostCalcLine();
     unitCostCalcLine.setProduct(product);

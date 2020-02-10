@@ -22,6 +22,7 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.exception.AxelorException;
 import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
@@ -55,7 +56,7 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
       TeamTask parent,
       LocalDateTime startDate,
       BigDecimal qty,
-      SaleOrderLine saleOrderLine) {
+      SaleOrderLine saleOrderLine) throws AxelorException {
     List<TeamTask> tasks = new ArrayList<>();
     Product product = saleOrderLine.getProduct();
 

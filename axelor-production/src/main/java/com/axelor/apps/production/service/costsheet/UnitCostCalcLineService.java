@@ -21,9 +21,10 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.UnitCostCalcLine;
+import com.axelor.exception.AxelorException;
 
 public interface UnitCostCalcLineService {
 
   public UnitCostCalcLine createUnitCostCalcLine(
-      Product product, Company company, int maxLevel, CostSheet costSheet);
+      Product product, Company company, int maxLevel, CostSheet costSheet) throws AxelorException ;
 }

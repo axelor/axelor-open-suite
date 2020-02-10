@@ -589,7 +589,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   }
 
   @Override
-  public BigDecimal getQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) {
+  public BigDecimal getQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException {
 
     SupplierCatalog supplierCatalog = this.getSupplierCatalog(purchaseOrder, purchaseOrderLine);
 
@@ -603,7 +603,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
   @Override
   public SupplierCatalog getSupplierCatalog(
-      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) {
+      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException {
 
     Product product = purchaseOrderLine.getProduct();
 
@@ -685,7 +685,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   }
 
   @Override
-  public BigDecimal getMinQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) {
+  public BigDecimal getMinQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException {
     SupplierCatalog supplierCatalog = getSupplierCatalog(purchaseOrder, purchaseOrderLine);
     return supplierCatalog != null ? supplierCatalog.getMinQty() : BigDecimal.ONE;
   }
@@ -695,7 +695,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
       PurchaseOrder purchaseOrder,
       PurchaseOrderLine purchaseOrderLine,
       ActionRequest request,
-      ActionResponse response) {
+      ActionResponse response) throws AxelorException {
 
     BigDecimal minQty = this.getMinQty(purchaseOrder, purchaseOrderLine);
 

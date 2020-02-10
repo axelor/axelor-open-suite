@@ -100,7 +100,7 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
   }
 
   @Override
-  public SupplierCatalog getSupplierCatalog(Product product, Partner supplierPartner, Company company) {
+  public SupplierCatalog getSupplierCatalog(Product product, Partner supplierPartner, Company company) throws AxelorException {
 
 	@SuppressWarnings("unchecked")
 	List<SupplierCatalog> supplierCatalogList = (List<SupplierCatalog>) productCompanyService.get(product, "supplierCatalogList", company);

@@ -19,6 +19,7 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.exception.AxelorException;
 
 public interface ProductCompanyService {
 
@@ -30,6 +31,6 @@ public interface ProductCompanyService {
 	 * @param company the company to search for a company-specific version of the product
 	 * @return the value of the field, either the value specified for the company, or the default value
 	*/
-  public Object get(Product originalProduct, String fieldName, Company company);
+  public Object get(Product originalProduct, String fieldName, Company company) throws AxelorException;
   
 }

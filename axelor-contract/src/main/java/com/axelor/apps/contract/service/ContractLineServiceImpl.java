@@ -76,7 +76,7 @@ public class ContractLineServiceImpl implements ContractLineService {
   }
 
   @Override
-  public ContractLine fill(ContractLine contractLine, Product product) {
+  public ContractLine fill(ContractLine contractLine, Product product) throws AxelorException {
     Preconditions.checkNotNull(product, I18n.get(IExceptionMessage.CONTRACT_EMPTY_PRODUCT));
     Company company = contractLine.getContractVersion() != null ? contractLine.getContractVersion().getContract() != null ? contractLine.getContractVersion().getContract().getCompany() : null : null;
     contractLine.setProductName((String) productCompanyService.get(product, "name", company));

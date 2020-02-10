@@ -33,5 +33,5 @@ public interface SupplierCatalogService {
       Product product, BigDecimal qty, Partner partner, Currency currency, LocalDate date, Company company)
       throws AxelorException;
 
-  public SupplierCatalog getSupplierCatalog(Product product, Partner supplierPartner, Company company);
+  public SupplierCatalog getSupplierCatalog(Product product, Partner supplierPartner, Company company) throws AxelorException ;
 }

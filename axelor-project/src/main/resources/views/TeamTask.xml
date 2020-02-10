@@ -455,10 +455,10 @@
 	</action-record>
 
 	<action-record name="action-team-task-record-product-selected" model="com.axelor.team.db.TeamTask">
-		<field name="quantity" expr="1"/>
-		<field name="unit" expr="eval: product?.salesUnit ?: product?.unit"/>
-		<field name="unitPrice" expr="eval: product?.salePrice"/>
-		<field name="currency" expr="eval: product?.saleCurrency"/>
+	  <field name="quantity" expr="1"/>
+	  <field name="unit" expr="eval: (Unit) com.axelor.inject.Beans.get(com.axelor.apps.base.service.ProductCompanyService.class).get(product, 'salesUnit', project?.company) ?: (Unit) com.axelor.inject.Beans.get(com.axelor.apps.base.service.ProductCompanyService.class).get(product, 'unit', project?.company)"/>
+	  <field name="unitPrice" expr="call: com.axelor.apps.base.service.ProductCompanyServiceImpl:get(product, 'salePrice', project.company)"/>
+	  <field name="currency" expr="call: com.axelor.apps.base.service.ProductCompanyServiceImpl:get(product, 'saleCurrency', project.company)"/>
 	</action-record>
 	
 	<action-method name="action-team-task-method-manage-timer-buttons">

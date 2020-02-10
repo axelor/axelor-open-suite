@@ -7,7 +7,7 @@
 
 	<entity name="ProductCompany" lang="java" extends="com.axelor.apps.base.db.Product">
 		<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Generic product" required="true"/>
-		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
+		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
 	</entity>
 
 </domain-models>
