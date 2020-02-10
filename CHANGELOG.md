@@ -11,6 +11,7 @@
 - ImportAccountChart: Fix open resource with try-with-resources
 - DataBackupCreateService: Fix open resource with try-with-resources
 - MRP: Desired delivery date in sale/purchase orders is used when estimated date is empty.
+- EMPLOYEESERVICE: Fix computation of working days.
 
 ## [5.2.4] - 2020-02-05
 ## Improvements
