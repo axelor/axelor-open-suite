@@ -223,6 +223,12 @@
                     <text-property name="heading">disposal_date</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">analytic_distribution_template</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">analytic_distribution_template</text-property>
+                    <text-property name="heading">analytic_distribution_template</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">date_from</property>
                     <property name="alias">date_from</property>
                     <property name="analysis">dimension</property>
@@ -235,6 +241,18 @@
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">date_to</text-property>
                     <text-property name="heading">date_to</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">subtotal_by_analytic_distribution</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">subtotal_by_analytic_distribution</text-property>
+                    <text-property name="heading">subtotal_by_analytic_distribution</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">analytic_distribution_template_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">analytic_distribution_template_name</text-property>
+                    <text-property name="heading">analytic_distribution_template_name</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -313,13 +331,28 @@
                     </structure>
                     <structure>
                         <property name="position">13</property>
+                        <property name="name">analytic_distribution_template</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
                         <property name="name">date_from</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">15</property>
                         <property name="name">date_to</property>
                         <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">16</property>
+                        <property name="name">subtotal_by_analytic_distribution</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">17</property>
+                        <property name="name">analytic_distribution_template_name</property>
+                        <property name="dataType">string</property>
                     </structure>
                 </list-property>
             </structure>
@@ -411,17 +444,38 @@
                 </structure>
                 <structure>
                     <property name="position">13</property>
+                    <property name="name">analytic_distribution_template</property>
+                    <property name="nativeName">analytic_distribution_template</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                </structure>
+                <structure>
+                    <property name="position">14</property>
                     <property name="name">date_from</property>
                     <property name="nativeName">date_from</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
-                    <property name="position">14</property>
+                    <property name="position">15</property>
                     <property name="name">date_to</property>
                     <property name="nativeName">date_to</property>
                     <property name="dataType">date</property>
                     <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">16</property>
+                    <property name="name">subtotal_by_analytic_distribution</property>
+                    <property name="nativeName">subtotal_by_analytic_distribution</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">17</property>
+                    <property name="name">analytic_distribution_template_name</property>
+                    <property name="nativeName">analytic_distribution_template_name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 
@@ -436,12 +490,16 @@ Account.code AS account_code ,
 Asset.gross_value AS gross_value , 
 Asset.residual_value AS residual_value , 
 Asset.disposal_value AS disposal_value , 
-Asset.disposal_date AS disposal_date , 
+Asset.disposal_date AS disposal_date ,
+Asset.analytic_distribution_template AS analytic_distribution_template, 
 AccountingReport.date_from AS date_from , 
-AccountingReport.date_to AS date_to 
+AccountingReport.date_to AS date_to ,
+AccountingReport.subtotal_by_analytic_distribution AS subtotal_by_analytic_distribution ,
+AnalyticDistributionTemplate.name AS analytic_distribution_template_name
 FROM public.account_accounting_report as AccountingReport
 LEFT JOIN public.account_fixed_asset AS Asset ON (AccountingReport.id = ?)
 LEFT JOIN public.account_account AS Account ON asset.purchase_account = account.id 
+LEFT JOIN public.account_analytic_distribution_template AS AnalyticDistributionTemplate ON Asset.analytic_distribution_template = AnalyticDistributionTemplate.id
 WHERE 
    (Asset.status_select in (2,3) 
    OR 
@@ -2388,6 +2446,24 @@ row["disposal_value"];
                     </list-property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">subtotal_by_analytic_distribution</property>
+                    <text-property name="displayName">subtotal_by_analytic_distribution</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["subtotal_by_analytic_distribution"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">analytic_distribution_template</property>
+                    <text-property name="displayName">analytic_distribution_template</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["analytic_distribution_template"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">analytic_distribution_template_name</property>
+                    <text-property name="displayName">analytic_distribution_template_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["analytic_distribution_template_name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <column id="5409">
                 <property name="width">0.28125in</property>
@@ -3077,10 +3153,12 @@ row["disposal_value"];
             </header>
             <group id="5346">
                 <property name="groupName">TableGroup</property>
-                <expression name="keyExpr" type="javascript">row["account_code"]</expression>
-                <structure name="toc">
-                    <expression name="expressionValue" type="javascript">row["account_code"]</expression>
-                </structure>
+                <expression name="keyExpr" type="javascript">if(row["subtotal_by_analytic_distribution"]){
+	row["account_code"]+row["analytic_distribution_template"]
+}
+else {
+	row["account_code"]
+}</expression>
                 <property name="hideDetail">false</property>
                 <header>
                     <row id="5347">
@@ -3098,7 +3176,12 @@ row["disposal_value"];
                                 <property name="fontWeight">bold</property>
                                 <property name="paddingTop">2pt</property>
                                 <property name="paddingBottom">2pt</property>
-                                <expression name="valueExpr">row["account_code"] + " - "+ row["account_name"]</expression>
+                                <expression name="valueExpr">if(row["subtotal_by_analytic_distribution"]) {
+	row["account_code"] + " - "+ row["account_name"] + " - " + row["analytic_distribution_template_name"]
+}
+else {
+	row["account_code"] + " - "+ row["account_name"]
+}</expression>
                                 <property name="contentType">html</property>
                             </text-data>
                         </cell>

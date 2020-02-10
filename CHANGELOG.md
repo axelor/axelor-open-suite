@@ -1,5 +1,8 @@
 # Changelog
 ## [Unreleased 5.2.5]
+## Features
+ACCOUNTING REPORT : group by and subtotal of analyticDistributionTemplate.
+
 ## Improvements
 - STOCK RULE : add comment field
 
