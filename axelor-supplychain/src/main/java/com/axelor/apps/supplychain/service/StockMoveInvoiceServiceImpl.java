@@ -336,12 +336,10 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
       List<InvoiceLine> invoiceLineListCreated = null;
       Long id = stockMoveLine.getId();
-      if (qtyToInvoiceMap != null) {
-        if (qtyToInvoiceMap.containsKey(id)) {
-          invoiceLineListCreated =
-              this.createInvoiceLine(invoice, stockMoveLine, qtyToInvoiceMap.get(id));
-        }
-      } else {
+      if (qtyToInvoiceMap != null && qtyToInvoiceMap.containsKey(id)) {
+        invoiceLineListCreated =
+            this.createInvoiceLine(invoice, stockMoveLine, qtyToInvoiceMap.get(id));
+      } else if (id == null) {
         invoiceLineListCreated =
             this.createInvoiceLine(
                 invoice,

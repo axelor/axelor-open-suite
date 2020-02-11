@@ -12,6 +12,7 @@
 - DataBackupCreateService: Fix open resource with try-with-resources
 - MRP: Desired delivery date in sale/purchase orders is used when estimated date is empty.
 - EMPLOYEESERVICE: Fix computation of working days.
+- StockMove : Fix issue of generated invoice with empty invoiceLines
 
 ## [5.2.4] - 2020-02-05
 ## Improvements
