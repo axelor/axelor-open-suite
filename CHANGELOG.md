@@ -26,6 +26,7 @@
 - ExtraHoursLine : Add new field 'Type' referencing new domain ExtraHoursType.
 - Added a global configuration to base app to define number of digits for quantity fields.
 - Address: Addition of boolean 'isSharedAddress' in base config to check addresses are shared or not.
+- Add global tracking log feature.
 
 ## Improvements
 - Remove Pack Feature from Product.
