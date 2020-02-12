@@ -43,6 +43,7 @@
 - Company : Replace the M2M bankDetailsSet with O2M
 - BANKDETAILS : Add tree and card view for bank details and balance viewer on company bank details
 - BANK STATEMENT: update automatically balance and date of bank details concerned by the bank statement when imported.
+- MetaJsonField : show sequence and appBuilder field in json-field-grid
 
 ## Bug Fixes
 - Fix injection error during test
