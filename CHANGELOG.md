@@ -1,3 +1,4 @@
+
 # Changelog
 ## [Unreleased 5.2.5]
 ## Improvements
@@ -15,6 +16,7 @@
 - EMPLOYEESERVICE: Fix computation of working days.
 - StockMove : Fix issue of generated invoice with empty invoiceLines
 - DEBT RECOVERY : Don't create debt recovery line if no email address in debtRecovery.
+- SaleOrderInvoicing : impossible to InvoiceAll if one invoice has been already generated
 
 ## [5.2.4] - 2020-02-05
 ## Improvements
