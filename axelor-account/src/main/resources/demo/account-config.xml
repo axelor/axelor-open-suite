@@ -113,9 +113,7 @@
 		<bind to="language" search="self.code = :languageCode"/>
 	</input>
 	
-	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId" update="true">
-		<bind column="bankDetailsList_id" to="bankDetailsList" search="self.importId in :bankDetailsList_id" update="true" />
-	</input> 
+	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId" update="true" /> 
  	
  	<input file="base_appAccount.csv" separator=";" search="self.code = :code" update="true" type="com.axelor.apps.base.db.AppAccount" />
  	

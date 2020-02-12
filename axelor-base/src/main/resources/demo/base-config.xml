@@ -114,9 +114,7 @@
 		<bind to="isDefault" eval="true" />
 	</input>
 	
-	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId" call="com.axelor.csv.script.ImportCompany:importCompany">
-		<bind column="bankDetailsList_id" to="bankDetailsList" search="self.importId in :bankDetailsList_id" update="true" />
-	</input>
+	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId" call="com.axelor.csv.script.ImportCompany:importCompany" />
 	
 	<input file="base_year.csv" separator=";" type="com.axelor.apps.base.db.Year" search="self.importId = :importId"/>
 	
