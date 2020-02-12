@@ -116,6 +116,12 @@ public class DebtRecoveryActionService {
           debtRecoveryMethodLine.getDebtRecoveryMethod().getName(),
           debtRecoveryMethodLine.getDebtRecoveryLevel().getName());
 
+    } else if (partner.getEmailAddress() == null
+        || partner.getEmailAddress().getAddress() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_5),
+          debtRecoveryMethodLine.getDebtRecoveryLevelLabel());
     } else {
 
       // On enregistre la date de la relance
@@ -210,6 +216,12 @@ public class DebtRecoveryActionService {
           debtRecoveryMethodLine.getDebtRecoveryMethod().getName(),
           debtRecoveryMethodLine.getDebtRecoveryLevel().getName());
 
+    } else if (partner.getEmailAddress() == null
+        || partner.getEmailAddress().getAddress() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_5),
+          debtRecoveryMethodLine.getDebtRecoveryLevelLabel());
     } else {
 
       // On enregistre la date de la relance
