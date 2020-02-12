@@ -978,7 +978,7 @@ InvoiceSet.length > 0))"
     	<field name="currency" expr="eval: partner?.currency"/>
 		<field name="bankDetails" expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} ? partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} : null" />
     	<field name="contactPartner" expr="eval: partner?.contactPartnerSet?.size() == 1 ? partner?.contactPartnerSet[0] : null" />
-    	<field name="invoicesCopySelect" expr="eval: partner?.invoicesCopySelect"/>
+    	<field name="invoicesCopySelect" expr="eval: partner?.invoicesCopySelect != 0 ? partner?.invoicesCopySelect :1"/>
     	<field name="project" expr="eval: null"/>
     	<field name="purchaseOrder" expr="eval: null"/>
     	<field name="partnerTaxNbr" expr="eval: partner?.taxNbr"/>
