@@ -3,6 +3,7 @@
 ## Improvements
 - STOCK RULE : add comment field
 - Sale Order: Desired delivery date is used to generate stock move if estimated date is empty.
+- Timesheet : synchronize time computation method of project when multi user triggers validation of timesheet.
 
 ## Bug Fixes
 - MANUF ORDER : Display sale order comment in manufacturing order printing.
