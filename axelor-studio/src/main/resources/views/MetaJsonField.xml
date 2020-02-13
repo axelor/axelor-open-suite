@@ -43,6 +43,26 @@
 	  <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
 	</grid>
 
+    <grid id="studio-json-field-grid" name="json-field-grid" title="Custom fields" model="com.axelor.meta.db.MetaJsonField" extension="true">
+  
+      <extend target="/">
+        <attribute name="orderBy" value="model,sequence"/>
+      </extend>  
+  
+      <extend target="//field[@name='name']">
+        <insert position="before">
+          <field name="sequence"/>
+        </insert>
+      </extend>
+      
+      <extend target="//field[@name='modelField']">
+         <insert position="after">
+           <field name="appBuilder"/>
+         </insert>
+      </extend>
+      
+    </grid>
+    
     <action-group name="action-studio-set-meta-json-field-defaults">
       <action name="action-studio-record-set-meta-json-field-defaults" />
       <action name="action-studio-attrs-set-meta-json-field-defaults" />
