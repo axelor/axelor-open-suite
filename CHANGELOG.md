@@ -21,6 +21,7 @@
 - SaleOrderInvoicing : impossible to InvoiceAll if one invoice has been already generated
 - Invoice: fix error on ventilation when sequence reset is per year.
 - PROJECT : Replace required attribute on code field with readOnly if generateProjectSequence is true
+- Stock Move: Do not modify wap when generating a new line in customer return linked to an order.
 
 ## [5.2.4] - 2020-02-05
 ## Improvements

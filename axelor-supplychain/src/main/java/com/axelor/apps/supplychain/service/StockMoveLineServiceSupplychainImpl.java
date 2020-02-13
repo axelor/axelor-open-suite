@@ -164,7 +164,10 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       return stockMoveLine;
     }
 
-    if (stockMove.getOriginId() != null && stockMove.getOriginId() != 0L) {
+    if (stockMove.getOriginId() != null
+        && stockMove.getOriginId() != 0L
+        && (stockMoveLine.getSaleOrderLine() != null
+            || stockMoveLine.getPurchaseOrderLine() != null)) {
       // the stock move comes from a sale or purchase order, we take the price from the order.
       stockMoveLine = computeFromOrder(stockMoveLine, stockMove);
     } else {
