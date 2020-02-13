@@ -4,6 +4,7 @@
 ## Improvements
 - STOCK RULE : add comment field
 - Sale Order: Desired delivery date is used to generate stock move if estimated date is empty.
+- BILL OF MATERIAL : display product field before the production process field.
 
 ## Bug Fixes
 - MANUF ORDER : Display sale order comment in manufacturing order printing.
@@ -17,6 +18,7 @@
 - StockMove : Fix issue of generated invoice with empty invoiceLines
 - DEBT RECOVERY : Don't create debt recovery line if no email address in debtRecovery.
 - SaleOrderInvoicing : impossible to InvoiceAll if one invoice has been already generated
+- Invoice: fix error on ventilation when sequence reset is per year.
 - PROJECT : Replace required attribute on code field with readOnly if generateProjectSequence is true
 
 ## [5.2.4] - 2020-02-05
