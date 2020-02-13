@@ -76,7 +76,7 @@
 					css="label-bold bold large">
 					<editor x-show-titles="false">
 						<panel name="seq" colSpan="3">
-						<field name="code" showTitle="false" colSpan="12" required="true" if="__config__.app.getApp('project')?.generateProjectSequence"
+						<field name="code" showTitle="false" colSpan="12" readonly="true" if="__config__.app.getApp('project')?.generateProjectSequence"
 							css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}" />
 						<field name="code" showTitle="false" colSpan="12" required="true" if="!__config__.app.getApp('project')?.generateProjectSequence"
 							css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}" />
