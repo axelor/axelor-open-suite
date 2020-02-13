@@ -594,9 +594,12 @@ public class SaleOrderController {
    */
   public void changeWizardOperationDomain(ActionRequest request, ActionResponse response) {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    Map<String, Integer> contextValues =
+    List<Integer> operationSelectValues =
         Beans.get(SaleOrderInvoiceService.class).getInvoicingWizardOperationDomain(saleOrder);
-    response.setValues(contextValues);
+    if (operationSelectValues.contains(Integer.valueOf(SaleOrderRepository.INVOICE_ALL))) {
+      response.setAttr("operationSelect", "value", SaleOrderRepository.INVOICE_ALL);
+    }
+    response.setAttr("operationSelect", "selection-in", operationSelectValues);
   }
 
   /**

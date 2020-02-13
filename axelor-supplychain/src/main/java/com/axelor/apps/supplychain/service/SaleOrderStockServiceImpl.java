@@ -217,6 +217,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       if (dateKey == null) {
         dateKey = saleOrderLine.getSaleOrder().getDeliveryDate();
       }
+      if (dateKey == null) {
+        dateKey = saleOrderLine.getDesiredDelivDate();
+      }
 
       List<SaleOrderLine> saleOrderLineLists = saleOrderLinePerDateMap.get(dateKey);
 

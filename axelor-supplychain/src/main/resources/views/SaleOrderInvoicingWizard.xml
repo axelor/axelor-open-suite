@@ -77,17 +77,9 @@
 		<action name="action-attrs-sale-order-invoicing-wizard-amount-invoiced"/>
 		<action name="action-attrs-sale-order-invoicing-wizard-hide-advance-payment"/>
 		<action name="action-method-sale-order-invoicing-wizard-operation-select-domain"/>
-		<action name="action-attrs-sale-order-invoicing-wizard-operation-select-in"/>
 		<action name="action-record-sale-order-invoicing-wizard-set-uninvoiced-timetables-list"/>
 	</action-group>
 	
-	<action-attrs name="action-attrs-sale-order-invoicing-wizard-operation-select-in">
-		<attribute name="selection-in" for="operationSelect" expr="eval: [1,2,3]"
-			if="!__config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
-		<attribute name="selection-in" for="operationSelect" expr="eval: [1,2,3,4]"
-			if="__config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
-	</action-attrs>
-
 	<action-attrs name="action-attrs-sale-order-line-invoicing-wizard-fill-qty">
 		<attribute for="qtyToInvoice" name="value" if="invoiceAll &amp;&amp; !__parent__?.isPercent"
 				   expr="eval: qty"/>
@@ -96,8 +88,6 @@
 	</action-attrs>
 
 	<action-attrs name="action-attrs-sale-order-invoicing-wizard-amount-invoiced">
-		<attribute for="operationSelect" name="value" expr="eval: 1"
-				   if="amountInvoiced == 0"/>
 		<attribute for="amountToInvoice" name="value" if="amountInvoiced > 0"
 				   expr="eval: exTaxTotal - amountInvoiced"/>
 	</action-attrs>

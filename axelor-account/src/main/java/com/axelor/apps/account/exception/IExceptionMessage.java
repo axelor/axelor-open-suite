@@ -536,6 +536,8 @@ public interface IExceptionMessage {
       "%s : Letter template missing for debt recovery matrix %s (Partner %s, Level %s)." /*)*/;
   static final String DEBT_RECOVERY_ACTION_4 = /*$$(*/
       "Email is not sent. Please check email account configuration." /*)*/;
+  static final String DEBT_RECOVERY_ACTION_5 = /*$$(*/
+      "No email address in debt recovery %s. Please set one." /*)*/;
 
   /** Debt recovery service */
   static final String DEBT_RECOVERY_1 = /*$$(*/ "There's no accounting situation." /*)*/;
