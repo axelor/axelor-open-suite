@@ -16,7 +16,6 @@
 - MOVE : corrected sequence generation, now use correctly the date of the move and not the date of validation.
 - Subrogative release : corrected the possibility to create two subrogation transmitted or accounted with the same invoices.
 - Invoice payment: fix issue in invoice payment form when invoice due date is empty.
-- Invoice: fix error on ventilation when sequence reset is per year.
 
 ## [5.1.14] - 2020-01-17
 ## Improvements
