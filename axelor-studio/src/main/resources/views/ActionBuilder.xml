@@ -45,6 +45,7 @@
       	  		<field name="viewConditionToCheck" colSpan="4"/>
       	  	</editor>
       	  </field>
+          <field name="conditionText" showIf="typeSelect &lt; 2" />
       	  <field name="lines" title="Context"  hideIf="typeSelect != 3" colSpan="12">
       	  	<editor>
       	  		<field name="name" title="Name" colSpan="4" />

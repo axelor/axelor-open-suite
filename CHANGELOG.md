@@ -46,6 +46,7 @@
 - BANK STATEMENT: update automatically balance and date of bank details concerned by the bank statement when imported.
 - ACTIONBUILDER : Update filter on valueJson and metaJsonField fields
 - MetaJsonField : show sequence and appBuilder field in json-field-grid
+- ACTIONBUILDER : Allow to add a condition at start in generated action-script
 
 ## Bug Fixes
 - Fix injection error during test
