@@ -6,6 +6,7 @@
 - Sale Order: Desired delivery date is used to generate stock move if estimated date is empty.
 - BILL OF MATERIAL : display product field before the production process field.
 - UNIT CONVERSION : used large width for unit conversion form view.
+- LEAVE REQUEST : change in email template.
 
 ## Bug Fixes
 - MANUF ORDER : Display sale order comment in manufacturing order printing.
