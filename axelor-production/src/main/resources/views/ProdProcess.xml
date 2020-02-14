@@ -78,6 +78,7 @@
 	</action-attrs>
 
 	<action-group name="action-prod-process-group-on-new">
+		<action name="action-prod-process-default-record" if="_product"/>
 		<action name="action-prod-process-record-set-default-company"/>
 		<action name="action-prod-process-record-set-realize-order-select"/>
 		<action name="action-prod-process-attrs-scale-and-precision"/>
@@ -91,6 +92,12 @@
     	<error message="You can't manage the consumed products on phases because this production process is related to several bills of material"
 			   if="isConsProOnOperation == true &amp;&amp; __repo__(BillOfMaterial).all().filter('self.prodProcess.id = ?1', __self__ ? __self__.id : 0).fetch().size &gt; 1" action="action-prod-process-record-false"/>
     </action-validate>
+    
+    <action-record name="action-prod-process-default-record" model="com.axelor.apps.production.db.ProdProcess">
+     	<field name="product" expr="eval:_product"/>
+  		<field name="name" expr="eval:_product?.name"/>
+  		<field name="code" expr="eval:_product?.code"/>
+    </action-record>
     
     <action-record name="action-prod-process-record-false" model="com.axelor.apps.production.db.ProdProcess">
     	<field name="isConsProOnOperation" expr="false"/>
