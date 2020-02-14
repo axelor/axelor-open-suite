@@ -16,7 +16,7 @@
 
 	<form name="bill-of-material-form" title="Bill of materials" model="com.axelor.apps.production.db.BillOfMaterial" width="large"
           onSave="save,action-bill-of-material-method-name,action-bill-of-material-method-validate-prod-process"
-          onNew="action-bill-of-material-default-record,action-bill-of-material-attrs-price-and-qty-digits,action-bill-of-material-record-count-number-of-components"
+          onNew="action-bill-of-material-group-on-new"
           onLoad="action-bill-of-material-attrs-price-and-qty-digits,action-bill-of-material-record-count-number-of-components">
 
 		<menubar>
@@ -160,6 +160,13 @@
         <action name="action-bill-of-material-record-product"/>
         <action name="action-bill-of-material-record-product-unit"/>
 	</action-group>
+	
+	<action-group name="action-bill-of-material-group-on-new">
+		<action name="action-bill-of-material-default-record"/>
+		<action name="action-bill-of-material-attrs-price-and-qty-digits"/>
+		<action name="action-bill-of-material-record-count-number-of-components"/>
+		<action name="action-bill-of-material-group-product" if="_product"/>
+	</action-group>
     
     <action-record name="action-bill-of-material-default-record" model="com.axelor.apps.production.db.BillOfMaterial">
     	<field name="qty" expr="1"/>
@@ -167,6 +174,8 @@
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
     	<field name="workshopStockLocation" expr="eval:__user__.workshopStockLocation" if="__config__.app.getApp('production').getManageWorkshop() &amp;&amp; __user__.workshopStockLocation != null"/>
+    	<field name="product" expr="eval:_product"/>
+    	<field name="name" expr="eval:_product?.name"/>
     </action-record>
     
      <action-record name="action-bill-of-material-line-default-record" model="com.axelor.apps.production.db.BillOfMaterial">

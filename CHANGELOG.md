@@ -8,6 +8,7 @@
 - Partner : Added a new partner type 'Subcontractor' and added field related to outsourcing in manufacturing
 - PRODUCTION : Creation of a new object MPS Charge
 - MACHINE : Tool management
+- PRODUCTION : created buttons in product to create new bill of material and production process.
 
 
 ## Improvements

@@ -13,7 +13,10 @@
 		   	<field name="realOrEstimatedPriceSelect" onChange="action-product-group-cost-type-select-onchange"/>
 		   	<field name="manufOrderCompValuMethodSelect" showIf="productSubTypeSelect == 1 || productSubTypeSelect == 2"/>
 		   	<field name="bomCompValuMethodSelect" showIf="productSubTypeSelect == 1 || productSubTypeSelect == 2"/>
-			<button name="createProductionOrderBtn" title="Create production order"  onClick="save,action-product-view-create-production-order"/>
+			<spacer name="productionBtnSpacer" colSpan="6"/>
+			<button name="createProductionOrderBtn" title="Create production order" colSpan="4" onClick="save,action-product-view-create-production-order"/>
+			<button name="createBillOfMaterialBtn" title="Create a bill of material" colSpan="4" onClick="save,action-product-view-create-bill-of-material"/>
+			<button name="createProductionProcessBtn" title="Create a production process" colSpan="4" onClick="save,aciton-product-view-create-production-process"/>
 			<panel-dashlet name="showBOMPanel" action="action-product-view-show-bill-of-material" colSpan="12"/>
        </panel>
 	</form>    
@@ -30,6 +33,18 @@
 		<view type="grid" name="bill-of-material-grid"/>
 		<view type="form" name="bill-of-material-form"/>
 		<domain>self.billOfMaterialSet.product.id = :id</domain>
+	</action-view>
+	
+	<action-view name="action-product-view-create-bill-of-material" title="Bill of materials"
+		model="com.axelor.apps.production.db.BillOfMaterial">
+		<view type="form" name="bill-of-material-form"/>
+		<context name="_product" expr="eval: __this__"/>
+	</action-view>
+	
+	<action-view name="aciton-product-view-create-production-process" title="Production process"
+		model="com.axelor.apps.production.db.ProdProcess">
+		<view type="form" name="prod-process-form"/>
+		<context name="_product" expr="eval: __this__"/>
 	</action-view>
 	
 	<action-attrs name="action-product-attrs-bill-of-material-domain">
