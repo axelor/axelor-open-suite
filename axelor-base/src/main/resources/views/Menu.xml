@@ -543,7 +543,7 @@
 
 	<action-view name="company.bank.details.tree" title="Bank details tree" model="com.axelor.apps.base.db.BankDetails">
     	<view type="tree" name="bank-details-tree" if="!__config__.app.isApp('bank-payment')"/>
-    	<view type="tree" name="bank-payment-bank-details-tree" if="__config__.app.isApp('bank-payment')"/>
+    	<view type="tree" name="bank-details-bank-payment-tree" if="__config__.app.isApp('bank-payment')"/>
 	</action-view>
 
 	<menuitem title="Trading names" name="admin-root-trading-name" parent="admin-root-user-configuration" action="action-view-trading-name" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
