@@ -804,6 +804,18 @@ public class MrpServiceImpl implements MrpService {
     }
   }
 
+  /**
+   * retrieve the maturityDate of some MrpLineType. 
+   *  - PurchaseOrderLine : estimatedDelivDate or purchaseOrder.deliveryDate if estimatedDelivDate is null
+   *  - MrpForecast : forecastDate
+   *  - SaleOrderLine : estimatedDelivDate or saleOrder.deliveryDate if estimatedDelivDate is null
+   *  
+   *  select maturityDays + NbDays if mrpLineType.selet is CURRENT_DATE_PLUS_DAYS with selecting a NbDays
+   *  else maturityDate is todayDate
+   * @param maturityDate
+   * @param mrpLineType
+   * @return maturityDate
+   */
   protected LocalDate computeMaturityDate(LocalDate maturityDate, MrpLineType mrpLineType) {
     if ((maturityDate != null && maturityDate.isBefore(today))
         || (maturityDate == null
