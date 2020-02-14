@@ -154,10 +154,10 @@
     <!-- ACTION ATTRS -->
     
     <action-attrs name="action-accounting-batch-attrs-bank-details-domain">
-        <attribute name="domain" expr="eval: &quot;self.id IN (${company?.bankDetailsSet?.collect{it.id}.join(',')},${company?.defaultBankDetails?.id}) AND self.active = true&quot;" for="bankDetails"
-        	if="!company.bankDetailsSet.isEmpty()"/>
+        <attribute name="domain" expr="eval: &quot;self.id IN (${company?.bankDetailsList?.collect{it.id}.join(',')},${company?.defaultBankDetails?.id}) AND self.active = true&quot;" for="bankDetails"
+        	if="!company.bankDetailsList.isEmpty()"/>
        	<attribute name="domain" expr="eval: &quot;self.id = ${company?.defaultBankDetails?.id} AND self.active = true&quot;" for="bankDetails"
-        	if="company.bankDetailsSet.isEmpty()"/>
+        	if="company.bankDetailsList.isEmpty()"/>
     </action-attrs>
     
     <action-attrs name="action-accounting-batch-attrs-set-empty-year-and-accountset-value">

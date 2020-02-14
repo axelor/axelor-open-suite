@@ -205,6 +205,9 @@
 			</panel>
 			<panel name="notePanel" title="Note">
 				<field name="note" colSpan="12" showTitle="false"/>
+				<panel name="moCommentFromSaleOrderPanel" title="MO's comment from sale order" colSpan="12">
+        			<field name="moCommentFromSaleOrder" showTitle="false" colSpan="12" widget="Html"/>
+      			</panel>
 			</panel> 
 			<panel name="residualProductsPanel" title="Residual products" showIf="billOfMaterial != null &amp;&amp; billOfMaterial.prodResidualProductList.length > 0" if="__config__.app.getApp('production').getManageResidualProductOnBom()">
 				<field name="billOfMaterial.prodResidualProductList" title="Residual products" colSpan="12" grid-view="prod-residual-product-grid" form-view="prod-residual-product-form"/>
@@ -322,6 +325,7 @@
 
     <action-record name="action-manuf-order-record-client-partner-onchange-sale-order" model="com.axelor.apps.production.db.ManufOrder">
 	  <field name="clientPartner" expr="eval: saleOrder?.clientPartner"/>
+	  <field name="moCommentFromSaleOrder" expr="eval: saleOrder?.productionNote"/>
 	</action-record>
     
     <action-record name="action-manuf-order-default-record" model="com.axelor.apps.production.db.ManufOrder">

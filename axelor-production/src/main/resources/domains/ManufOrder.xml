@@ -66,6 +66,8 @@
     <many-to-one name="cancelReason" title="Cancel reason" ref="com.axelor.apps.base.db.CancelReason"/>
     <string name="cancelReasonStr" title="Cancel Reason" large="true"/>
     
+    <string name="moCommentFromSaleOrder" title="MO's comment from sale order" large="true"/>
+    
     <unique-constraint columns="manufOrderSeq,company"/>
 
 	<extra-code><![CDATA[

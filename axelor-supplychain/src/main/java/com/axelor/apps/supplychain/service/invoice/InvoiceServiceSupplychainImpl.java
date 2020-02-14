@@ -35,6 +35,7 @@ import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -90,6 +91,11 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl {
 
   @Override
   public Set<Invoice> getDefaultAdvancePaymentInvoice(Invoice invoice) throws AxelorException {
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return super.getDefaultAdvancePaymentInvoice(invoice);
+    }
+
     SaleOrder saleOrder = invoice.getSaleOrder();
     Company company = invoice.getCompany();
     Currency currency = invoice.getCurrency();
@@ -129,6 +135,11 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl {
 
   @Override
   public List<MoveLine> getMoveLinesFromSOAdvancePayments(Invoice invoice) {
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return super.getMoveLinesFromSOAdvancePayments(invoice);
+    }
+
     // search sale order in the invoice
     SaleOrder saleOrder = invoice.getSaleOrder();
     // search sale order in invoice lines

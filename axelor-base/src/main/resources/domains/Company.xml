@@ -23,7 +23,7 @@
 
 	<!--  Onglet Bank Details -->
 	<many-to-one name="defaultBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Default Bank Account"/>
-	<many-to-many name="bankDetailsSet" ref="com.axelor.apps.base.db.BankDetails" title="Bank accounts"/>
+	<one-to-many name="bankDetailsList" ref="com.axelor.apps.base.db.BankDetails" title="Bank accounts" mappedBy="company"/>
 
   	<many-to-one name="printingSettings" ref="PrintingSettings" title="Printing Settings" massUpdate="true"/>
   	

@@ -802,7 +802,7 @@ public class BankOrderServiceImpl implements BankOrderService {
       Collection<BankDetails> bankDetailsCollection;
 
       if (bankOrderLine.getReceiverCompany() != null) {
-        bankDetailsCollection = bankOrderLine.getReceiverCompany().getBankDetailsSet();
+        bankDetailsCollection = bankOrderLine.getReceiverCompany().getBankDetailsList();
       } else if (bankOrderLine.getPartner() != null) {
         bankDetailsCollection = bankOrderLine.getPartner().getBankDetailsList();
       } else {

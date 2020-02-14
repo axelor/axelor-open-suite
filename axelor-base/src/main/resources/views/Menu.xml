@@ -530,6 +530,22 @@
 	    <view type="form" name="company-department-form"/>
 	</action-view>
 
+	<menuitem name="company-bank-details" parent="admin-root-user-configuration" title="Bank details" action="company.bank.details"/>
+
+	<action-view name="company.bank.details" title="Company.bankDetails" model="com.axelor.apps.base.db.BankDetails">
+    	<view type="cards" name="bank-details-cards"/>
+    	<view type="grid" name="bank-details-bank-order-company-grid"/>
+	    <view type="form" name="bank-details-form"/>
+	    <domain>self.company != null</domain>
+	</action-view>
+
+	<menuitem name="company-bank-details-tree" parent="admin-root-user-configuration" title="Bank details tree" action="company.bank.details.tree"/>
+
+	<action-view name="company.bank.details.tree" title="Bank details tree" model="com.axelor.apps.base.db.BankDetails">
+    	<view type="tree" name="bank-details-tree" if="!__config__.app.isApp('bank-payment')"/>
+    	<view type="tree" name="bank-details-bank-payment-tree" if="__config__.app.isApp('bank-payment')"/>
+	</action-view>
+
 	<menuitem title="Trading names" name="admin-root-trading-name" parent="admin-root-user-configuration" action="action-view-trading-name" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
 
 	<action-view name="action-view-trading-name" title="Trading names" model="com.axelor.apps.base.db.TradingName">

@@ -11,6 +11,7 @@
   	<bind node="configurator-boms/configurator-bom" type="com.axelor.apps.production.db.ConfiguratorBOM" update="true" search="self.importId = :importId">
        <bind node="name" to="name"/>
        <bind node="importId" to="importId"/>
+      <bind node="defineSubBillOfMaterial" to="defineSubBillOfMaterial"/>
        <bind node="companyCode" to="company" search="self.code = :companyCode" if="companyCode">
          <bind node="text()" to="code" alias="companyCode"/>
        </bind>

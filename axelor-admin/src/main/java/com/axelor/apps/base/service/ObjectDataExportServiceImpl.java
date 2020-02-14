@@ -227,19 +227,19 @@ public class ObjectDataExportServiceImpl implements ObjectDataExportService {
   private MetaFile writeCSV(Map<String, List<String[]>> data) throws IOException {
 
     File zipFile = MetaFiles.createTempFile("Data", ".zip").toFile();
-    ZipOutputStream zout = new ZipOutputStream(new FileOutputStream(zipFile));
+    try (ZipOutputStream zout = new ZipOutputStream(new FileOutputStream(zipFile))) {
 
-    for (String model : data.keySet()) {
-      File modelFile = MetaFiles.createTempFile(model, ".csv").toFile();
-      CSVWriter writer = new CSVWriter(new FileWriter(modelFile), ';');
-      writer.writeAll(data.get(model));
-      writer.close();
-      zout.putNextEntry(new ZipEntry(model + ".csv"));
-      zout.write(IOUtils.toByteArray(new FileInputStream(modelFile)));
-      zout.closeEntry();
+      for (String model : data.keySet()) {
+        File modelFile = MetaFiles.createTempFile(model, ".csv").toFile();
+        CSVWriter writer = new CSVWriter(new FileWriter(modelFile), ';');
+        writer.writeAll(data.get(model));
+        writer.close();
+        zout.putNextEntry(new ZipEntry(model + ".csv"));
+        zout.write(IOUtils.toByteArray(new FileInputStream(modelFile)));
+        zout.closeEntry();
+      }
+      zout.close();
     }
-    zout.close();
-
     return metaFiles.upload(zipFile);
   }
 

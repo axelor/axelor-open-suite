@@ -54,4 +54,10 @@
 		<option value="2">Generate invoicing projects</option>
 	</selection>
 
+	<selection name="project.invoicing.assistant.batch.consolidate.phase.select">
+		<option value="1">Consolidate all</option>
+		<option value="2">Don't consolidate</option>
+		<option value="3">Default value</option>
+	</selection>
+
 </object-views>

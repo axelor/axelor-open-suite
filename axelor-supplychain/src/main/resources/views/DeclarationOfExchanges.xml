@@ -19,7 +19,7 @@
   </grid>
 
   <form model="com.axelor.apps.supplychain.db.DeclarationOfExchanges" title="Declaration of exchanges"
-    name="declaration-of-exchanges-form" onNew="action-declaration-of-exchanges-onnew" width="large">
+    name="declaration-of-exchanges-form" onNew="action-declaration-of-exchanges-onnew" onLoad="action-declaration-of-exchanges-attrs-show-price" width="large">
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print" onClick="action-declaration-of-exchanges-export"/>
     </toolbar>
@@ -39,6 +39,7 @@
       <field name="productTypeSelect" onChange="action-declaration-of-exchanges-product-type-select-onchange" selection-in="['service','storable']"/>
       <field name="stockMoveTypeSelect"
         selection-in="[STOCK_MOVE_TYPE_OUTGOING, STOCK_MOVE_TYPE_INCOMING * (productTypeSelect != 'service')]"
+        onChange="action-declaration-of-exchanges-attrs-show-price"
         readonlyIf="productTypeSelect == 'service'"/>
       <field name="formatSelect" selection-in="['pdf', 'csv']"/>
       <field name="createdOn" showIf="createdOn"/>
@@ -76,7 +77,7 @@
   
   <action-view name="action-stock-move-line-declaration-of-exchanges" title="Stock move lines"
       model="com.axelor.apps.stock.db.StockMoveLine">
-      <view type="grid" name="stock-move-line-all-grid"/>
+      <view type="grid" name="stock-move-line-declaration-exchanges-grid"/>
       <view type="form" name="stock-move-line-all-form"/>
       <domain>
         self.stockMove.realDate BETWEEN :fromDate AND :toDate
@@ -98,6 +99,11 @@
       <context name="stockMoveTypeSelect" expr="eval: stockMoveTypeSelect"/>
       <context name="country" expr="eval: country"/>
       <context name="company" expr="eval: company"/>
-    </action-view>
+  </action-view>
+
+  <action-attrs name="action-declaration-of-exchanges-attrs-show-price">
+    <attribute for="declarationOfExchangesPanel.companyPurchasePrice" name="hidden" expr="eval: stockMoveTypeSelect != 3"/>
+    <attribute for="declarationOfExchangesPanel.unitPriceUntaxed" name="hidden" expr="eval: stockMoveTypeSelect == 3"/>
+  </action-attrs>
 
 </object-views>

@@ -88,6 +88,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.mail.MessagingException;
+import org.apache.commons.collections4.ListUtils;
 
 /** @author axelor */
 public class TimesheetServiceImpl implements TimesheetService {
@@ -102,6 +103,7 @@ public class TimesheetServiceImpl implements TimesheetService {
   protected TimesheetLineService timesheetLineService;
   protected ProjectPlanningTimeRepository projectPlanningTimeRepository;
   protected TeamTaskRepository teamTaskRepository;
+  protected TimesheetLineRepository timesheetlineRepo;
 
   @Inject
   public TimesheetServiceImpl(
@@ -114,7 +116,8 @@ public class TimesheetServiceImpl implements TimesheetService {
       UserHrService userHrService,
       TimesheetLineService timesheetLineService,
       ProjectPlanningTimeRepository projectPlanningTimeRepository,
-      TeamTaskRepository teamTaskRepository) {
+      TeamTaskRepository teamTaskRepository,
+      TimesheetLineRepository timesheetlineRepo) {
     this.priceListService = priceListService;
     this.appHumanResourceService = appHumanResourceService;
     this.hrConfigService = hrConfigService;
@@ -125,6 +128,7 @@ public class TimesheetServiceImpl implements TimesheetService {
     this.timesheetLineService = timesheetLineService;
     this.projectPlanningTimeRepository = projectPlanningTimeRepository;
     this.teamTaskRepository = teamTaskRepository;
+    this.timesheetlineRepo = timesheetlineRepo;
   }
 
   @Override
@@ -1088,6 +1092,17 @@ public class TimesheetServiceImpl implements TimesheetService {
             ? employee.getPublicHolidayEventsPlanning()
             : config.getPublicHolidayEventsPlanning();
 
+    if (timesheet.getTimesheetLineList() != null && !timesheet.getTimesheetLineList().isEmpty()) {
+      fromDate =
+          timesheet
+              .getTimesheetLineList()
+              .stream()
+              .map(TimesheetLine::getDate)
+              .max(LocalDate::compareTo)
+              .get()
+              .plusDays(1);
+    }
+
     for (LocalDate date = fromDate; !date.isAfter(toDate); date = date.plusDays(1)) {
       BigDecimal dayValueInHours =
           weeklyPlanningService.getWorkingDayValueInHours(
@@ -1128,5 +1143,22 @@ public class TimesheetServiceImpl implements TimesheetService {
         teamTaskRepository.save(teamTask);
       }
     }
+  }
+
+  @Override
+  @Transactional
+  public void removeAfterToDateTimesheetLines(Timesheet timesheet) {
+
+    List<TimesheetLine> removedTimesheetLines = new ArrayList<>();
+
+    for (TimesheetLine timesheetLine : ListUtils.emptyIfNull(timesheet.getTimesheetLineList())) {
+      if (timesheetLine.getDate().isAfter(timesheet.getToDate())) {
+        removedTimesheetLines.add(timesheetLine);
+        if (timesheetLine.getId() != null) {
+          timesheetlineRepo.remove(timesheetLine);
+        }
+      }
+    }
+    timesheet.getTimesheetLineList().removeAll(removedTimesheetLines);
   }
 }

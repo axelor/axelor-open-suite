@@ -343,7 +343,9 @@
 				</panel>
 	    </panel>
 	    <panel if="__config__.app.isApp('production')" if-module="axelor-production" name="productionPanel" title="Production" colSpan="12">
-		  	<field name="productionNote" widget="Html" colSpan="12"/>
+	    	<panel name="productionNotePanel" title="Production note" colSpan="12">
+        		<field name="productionNote" showTitle="false" colSpan="12" widget="Html"/>
+      		</panel>
 		  	<panel-dashlet name="manufOrdersPanel" action="action-sale-order-view-manuf-orders" colSpan="12"/>
 	    </panel>
 
@@ -930,11 +932,16 @@
 	<action-group name="action-sale-order-group-set-defualts-from-opportunity">
 		 <action name="action-sale-order-record-set-clientPartner-from-opportunity"/>
 		 <action name="action-sale-order-group-client-partner-change" if="clientPartner != null"/>
+		 <action name="action-sale-order-record-set-salemanuser-from-opportunity"/>
 	</action-group>
 
     <action-record name="action-sale-order-record-set-clientPartner-from-opportunity" model="com.axelor.apps.sale.db.SaleOrder">
-    	<field name="clientPartner" expr="eval:_parent?.partner"/>
+    	<field name="clientPartner" expr="eval: _parent?.partner ? __repo__(Partner).find(_parent?.partner?.id) : null"/>
     </action-record>
+
+   <action-record name="action-sale-order-record-set-salemanuser-from-opportunity" model="com.axelor.apps.sale.db.SaleOrder">
+      <field name="salemanUser" expr="eval: _parent?.user"/>
+   </action-record>
 
     <action-group name="action-group-sale-saleorder-onload">
     	<action name="action-sale-order-attrs-collapse-specific-settings-group"/>

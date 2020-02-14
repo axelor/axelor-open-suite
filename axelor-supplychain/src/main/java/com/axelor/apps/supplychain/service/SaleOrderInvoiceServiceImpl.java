@@ -175,42 +175,14 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         return null;
     }
     invoice.setSaleOrder(saleOrder);
-    if (ObjectUtils.isEmpty(invoice.getNote())) {
-      if (!Strings.isNullOrEmpty(saleOrder.getInvoiceComments())
-          && invoice.getCompanyBankDetails() != null
-          && !Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
-        invoice.setNote(
-            saleOrder.getInvoiceComments()
-                + "\n"
-                + invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
-      } else if (Strings.isNullOrEmpty(saleOrder.getInvoiceComments())
-          && invoice.getCompanyBankDetails() != null
-          && !Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
-        invoice.setNote(saleOrder.getInvoiceComments());
-      } else if (!Strings.isNullOrEmpty(saleOrder.getInvoiceComments())
-          && invoice.getCompanyBankDetails() != null
-          && Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
-        invoice.setNote(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
-      }
+
+    if (!Strings.isNullOrEmpty(saleOrder.getInvoiceComments())) {
+      invoice.setNote(saleOrder.getInvoiceComments());
     }
 
-    if (ObjectUtils.isEmpty(invoice.getProformaComments())) {
-      if (!Strings.isNullOrEmpty(saleOrder.getProformaComments())
-          && invoice.getCompanyBankDetails() != null
-          && !Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
-        invoice.setProformaComments(
-            saleOrder.getProformaComments()
-                + "\n"
-                + invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
-      } else if (Strings.isNullOrEmpty(saleOrder.getProformaComments())
-          && invoice.getCompanyBankDetails() != null
-          && !Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
-        invoice.setProformaComments(saleOrder.getProformaComments());
-      } else if (!Strings.isNullOrEmpty(saleOrder.getProformaComments())
-          && invoice.getCompanyBankDetails() != null
-          && Strings.isNullOrEmpty(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice())) {
-        invoice.setProformaComments(invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
-      }
+    if (ObjectUtils.isEmpty(invoice.getProformaComments())
+        && !Strings.isNullOrEmpty(saleOrder.getProformaComments())) {
+      invoice.setProformaComments(saleOrder.getProformaComments());
     }
 
     // fill default advance payment invoice
@@ -931,28 +903,36 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   }
 
   @Override
-  public Map<String, Integer> getInvoicingWizardOperationDomain(SaleOrder saleOrder) {
+  public List<Integer> getInvoicingWizardOperationDomain(SaleOrder saleOrder) {
     boolean manageAdvanceInvoice =
         Beans.get(AppAccountService.class).getAppAccount().getManageAdvancePaymentInvoice();
+    boolean allowTimetableInvoicing =
+        Beans.get(AppSupplychainService.class).getAppSupplychain().getAllowTimetableInvoicing();
     BigDecimal amountInvoiced = saleOrder.getAmountInvoiced();
     BigDecimal exTaxTotal = saleOrder.getExTaxTotal();
+    Invoice invoice =
+        Query.of(Invoice.class)
+            .filter(" self.saleOrder.id = :saleOrderId AND self.statusSelect != :invoiceStatus")
+            .bind("saleOrderId", saleOrder.getId())
+            .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
+            .fetchOne();
+    List<Integer> operationSelectList = new ArrayList<>();
+    operationSelectList.add(0);
+    if (exTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
+      operationSelectList.add(Integer.valueOf(SaleOrderRepository.INVOICE_LINES));
+    }
+    if (manageAdvanceInvoice && exTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
+      operationSelectList.add(Integer.valueOf(SaleOrderRepository.INVOICE_ADVANCE_PAYMENT));
+    }
+    if (allowTimetableInvoicing) {
+      operationSelectList.add(Integer.valueOf(SaleOrderRepository.INVOICE_TIMETABLES));
+    }
+    if (invoice == null && amountInvoiced.compareTo(BigDecimal.ZERO) == 0
+        || exTaxTotal.compareTo(BigDecimal.ZERO) == 0) {
+      operationSelectList.add(Integer.valueOf(SaleOrderRepository.INVOICE_ALL));
+    }
 
-    Map<String, Integer> contextValues = new HashMap<>();
-    contextValues.put(
-        "invoiceAll",
-        amountInvoiced.compareTo(BigDecimal.ZERO) == 0 || exTaxTotal.compareTo(BigDecimal.ZERO) == 0
-            ? SaleOrderRepository.INVOICE_ALL
-            : 0);
-
-    contextValues.put(
-        "invoiceLines",
-        exTaxTotal.compareTo(BigDecimal.ZERO) == 0 ? 0 : SaleOrderRepository.INVOICE_LINES);
-    contextValues.put(
-        "invoiceAdvPayment",
-        manageAdvanceInvoice && exTaxTotal.compareTo(BigDecimal.ZERO) != 0
-            ? SaleOrderRepository.INVOICE_ADVANCE_PAYMENT
-            : 0);
-    return contextValues;
+    return operationSelectList;
   }
 
   @Override

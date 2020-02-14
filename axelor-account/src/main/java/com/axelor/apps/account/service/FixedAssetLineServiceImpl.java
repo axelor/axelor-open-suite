@@ -94,7 +94,7 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
     Journal journal = fixedAsset.getJournal();
     Company company = fixedAsset.getCompany();
     Partner partner = fixedAsset.getPartner();
-    LocalDate date = fixedAsset.getAcquisitionDate();
+    LocalDate date = fixedAssetLine.getDepreciationDate();
 
     log.debug(
         "Creating an fixed asset line specific accounting entry {} (Company : {}, Journal : {})",
@@ -175,7 +175,7 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
     Journal journal = fixedAsset.getJournal();
     Company company = fixedAsset.getCompany();
     Partner partner = fixedAsset.getPartner();
-    LocalDate date = fixedAsset.getAcquisitionDate();
+    LocalDate date = fixedAssetLine.getDepreciationDate();
 
     // Creating move
     Move move =
