@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
-    <grid name="debt-recovery-history-line-grid" title="Debt recovery history" model="com.axelor.apps.account.db.DebtRecoveryHistory">
+    <grid name="debt-recovery-history-grid" title="Debt recovery history" model="com.axelor.apps.account.db.DebtRecoveryHistory">
     	<field name="debtRecovery" form-view="debt-recovery-form" grid-view="debt-recovery-grid"/>
     	<field name="debtRecovery.accountingSituation.partner" title="Partner" form-view="partner-form" grid-view="partner-grid"/>
     	<field name="debtRecoveryMethod" grid-view="debt-recovery-method-grid" form-view="debt-recovery-method-form"/>

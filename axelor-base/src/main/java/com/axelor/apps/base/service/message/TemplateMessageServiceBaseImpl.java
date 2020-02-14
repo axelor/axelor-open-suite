@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.BirtTemplateParameter;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.MessageService;
+import com.axelor.apps.message.service.TemplateContextService;
 import com.axelor.apps.message.service.TemplateMessageServiceImpl;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
@@ -53,10 +54,12 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
-  public TemplateMessageServiceBaseImpl(MessageService messageService) {
-    super(messageService);
+  public TemplateMessageServiceBaseImpl(
+      MessageService messageService, TemplateContextService templateContextService) {
+    super(messageService, templateContextService);
   }
 
+  @Override
   public Set<MetaFile> getMetaFiles(Template template) throws AxelorException, IOException {
 
     Set<MetaFile> metaFiles = super.getMetaFiles(template);

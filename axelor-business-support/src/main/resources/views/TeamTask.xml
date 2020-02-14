@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+    
+    <grid model="com.axelor.team.db.TeamTask" title="Tasks" name="business-support-version-team-task-grid" orderBy="-taskDate">
+		<field name="name"/>
+		<field name="taskDate"/>
+		<field name="status"/>
+		<field name="progressSelect" widget="SelectProgress"/>
+		<field name="projInvTypeSelect"/>
+		<button name="updateToInvoiceBtn" title="Update to invoice" readonlyIf="invoiced" icon="fa-check-circle" onClick="action-team-task-method-update-to-invoice"/>
+	</grid>
+	
+	<grid name="team-task-client-grid" title="Tasks" model="com.axelor.team.db.TeamTask" edit-icon="true" orderBy="taskDate">
+		<hilite if="status == 'closed'" color="success"/>
+		<hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
+		<hilite if="priority == 'urgent'" color="warning"/>
+		<field name="name"/>
+		<field name="taskDate"/>
+		<field name="taskEndDate" hidden="true"/>
+		<field name="status"/>
+		<field name="teamTaskCategory"/>
+		<field name="customerReferral"/>
+		<field name="targetVersion"/>
+	</grid>
+
+	<form name="team-task-client-form" title="Ticket" model="com.axelor.team.db.TeamTask"
+		onNew="action-team-task-group-onnew" onLoad="action-team-task-group-timer-process" width="large">
+		<panel name="mainPanel">
+			<panel name="statusSelectPanel" colSpan="8">
+				<field name="status" colSpan="12" required="true" widget="NavSelect" readonly="true" showTitle="false"/>
+			</panel>
+			<field name="$viewerTags" showTitle="false" readonly="true" showIf="typeSelect == 'ticket' &amp;&amp; $readonly()" colSpan="4" hidden="true">
+				<viewer>
+					<![CDATA[
+						<h4 class="text-right">
+							<span class="label label-important" ng-show="record.assignment == 1" x-translate>Task assigned to the client</span>
+							<span class="label label-success" ng-show="record.assignment == 2 && record.$provider == null" x-translate>Task assigned to the provider</span>
+							<span class="label label-success" style="background-color: #5cb85c; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.3em;" ng-show="record.assignment == 2 && record.$provider != null" x-translate>Task assigned to</span><span class="label label-success" style="background-color: #5cb85c; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0; padding-left: 0.0em;" ng-show="record.assignment == 2 && record.$provider != null">{{record.$provider}}</span>
+							
+							<span class="label label-important" ng-show="(!record.isOrderAccepted && record.invoicingType == 2 && record.exTaxTotal != 0) || (!record.isOrderAccepted && record.invoicingType == 1)" x-translate>Order Proposed</span>
+							<span class="label label-success" ng-show="record.isOrderAccepted" x-translate>Order Accepted</span>
+						</h4>
+					]]>
+				</viewer>
+			</field>
+			<field name="$provider" hidden="true" type="string"/>
+			<panel name="detailsPanel" colSpan="8" readonlyIf="id">
+				<field name="fullName" showTitle="false" colSpan="12">
+					<viewer depends="name">
+					<![CDATA[
+						<h3>
+							<span style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.name}}</span>
+						</h3>
+					]]>
+					</viewer>
+					<editor>
+						<field name="name" title="Subject" colSpan="12" css="label-bold bold large" required="true"/>
+					</editor>
+				</field>
+				<field name="project" canEdit="false" onChange="action-team-task-group-project-onchange" required="true"/>
+				<field name="parentTask" readonlyIf="project == null" onSelect="action-task-attrs-project-parent-task-configurations"/>
+				<field name="isOrderAccepted" hidden="true" showIf="typeSelect == 'ticket'"/>
+				<field name="isOrderProposed" hidden="true"/>
+			</panel>
+			<panel name="actionsPanel" colSpan="4">
+				<button name="acceptOrderBtn" title="Accept Order" hidden="true" showIf="typeSelect == 'ticket'" hideIf="!invoicingType || isOrderAccepted" onClick="action-task-attrs-onclick-order-accepted,save" colSpan="12"/>
+				<button name="assigningProviderBtn" colSpan="12" title="Assigning to the provider" hidden="true" onClick="action-team-task-attrs-assginment-provider,save" showIf="assignment == 1 &amp;&amp; typeSelect == 'ticket'"/>
+				<button name="assigningCustomerBtn" colSpan="12" title="Assigning to the customer" hidden="true" onClick="action-team-task-attrs-assginment-customer,save" showIf="assignment == 2 &amp;&amp; typeSelect == 'ticket'"/>
+			</panel>
+			<panel name="characteristicsPanel" title="Characteristics" colSpan="12">
+				<field name="taskDate" title="Task date" onChange="action-task-attrs-set-task-duration" required="true" readonlyIf="id"/>
+				<field name="teamTaskCategory" onSelect="action-task-attrs-team-task-category-configurations" readonlyIf="id"/>
+				<field name="targetVersion" domain="self.project = :project OR self.project.parentProject = :project" form-view="project-version-form" grid-view="project-version-grid" readonlyIf="id"/>
+				<field name="customerReferral" hidden="true" showIf="typeSelect == 'ticket'" onSelect="action-task-attrs-customer-referral-domain" if="__config__.app.isApp('business-project')"/>
+				<field name="progressSelect" colSpan="6" widget="SelectProgress" onChange="action-task-update-planned-progress" readonlyIf="id"/>
+				<field name="assignment" hidden="true" readonlyIf="id" showIf="typeSelect == 'ticket'"/>
+			</panel>
+		</panel>
+		<panel-tabs name="mainPanelTab" readonlyIf="id">
+			<panel name="contentPanel" title="Content" colSpan="12">
+				<field name="description" showTitle="false" colSpan="12" widget="html"/>
+			</panel>
+			<panel name="treeViewPanel" title="Tree view" colSpan="12">
+				<panel-dashlet name="taskTreePanel" title="Task Tree" colSpan="12" action="action-view-show-task-tree"/>
+				<panel-related name="finishToStartSetPanel" field="finishToStartSet" colSpan="12">
+				<field name="name"/>
+				</panel-related>
+			</panel>
+			<panel name="financialDataPanel" title="Financial Data" colSpan="12">				
+				<field name="invoicingType" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" />
+				<panel name="pricingPanel" showIf="invoicingType == 2" colSpan="12">
+					<field name="quantity" colSpan="4" onChange="action-team-task-group-qty-onchange"/>
+					<field name="unit" colSpan="4" domain="self.unitTypeSelect=3" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
+					<field name="unitPrice" colSpan="4" onChange="action-team-task-group-unit-price-onchange"/>
+					<field name="exTaxTotal" readonly="true" colSpan="4"/>
+				</panel>
+				<panel-dashlet name="validatedTimesheetLinesPanel" showIf="invoicingType == 1" action="action-teamtask-dashlet-validated-timeshet-lines" title="Validated Timesheet lines" colSpan="12" canSearch="true" readonly="true"/>
+			</panel>
+		</panel-tabs>
+		<panel-mail name="mailPanel">
+			<mail-messages/>
+			<mail-followers/>
+		</panel-mail>
+	</form>
+
+	<action-view name="action-dashlet-version-view-show-task" title="Ticket associated" model="com.axelor.team.db.TeamTask">
+		<view type="grid" name="business-support-version-team-task-grid"/>
+		<view type="form" name="team-task-form"/>
+		<view-param name="popup" value="true"/>
+		<domain>self.targetVersion.id = :id</domain>
+	</action-view>
+
+</object-views>

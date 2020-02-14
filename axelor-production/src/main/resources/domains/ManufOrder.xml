@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
@@ -43,7 +43,7 @@
     <many-to-one name="prodProcess" ref="com.axelor.apps.production.db.ProdProcess" title="Production process" initParam="true" required="true"/> 
   
     <datetime name="plannedStartDateT" title="Planned start date" initParam="true"/>
-  	<datetime name="plannedEndDateT" title="Planned end date"/>
+  	<datetime name="plannedEndDateT" title="Planned end date" initParam="true"/>
 
     <many-to-one name="workshopStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Workshop"/>
 
@@ -63,6 +63,8 @@
     <string name="note" large="true"/>
     <many-to-one name="cancelReason" title="Cancel reason" ref="com.axelor.apps.base.db.CancelReason"/>
     <string name="cancelReasonStr" title="Cancel Reason" large="true"/>
+    
+    <string name="moCommentFromSaleOrder" title="MO's comment from sale order" large="true"/>
     
     <unique-constraint columns="manufOrderSeq,company"/>
 

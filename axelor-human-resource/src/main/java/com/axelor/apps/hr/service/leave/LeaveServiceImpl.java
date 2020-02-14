@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -363,7 +363,7 @@ public class LeaveServiceImpl implements LeaveService {
     return publicHolidayPlanning;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void manageSentLeaves(LeaveRequest leave) throws AxelorException {
     Employee employee = leave.getUser().getEmployee();
     if (employee == null) {
@@ -396,7 +396,7 @@ public class LeaveServiceImpl implements LeaveService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void manageValidateLeaves(LeaveRequest leave) throws AxelorException {
     Employee employee = leave.getUser().getEmployee();
     if (employee == null) {
@@ -447,7 +447,7 @@ public class LeaveServiceImpl implements LeaveService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void manageRefuseLeaves(LeaveRequest leave) throws AxelorException {
     Employee employee = leave.getUser().getEmployee();
     if (employee == null) {
@@ -480,7 +480,7 @@ public class LeaveServiceImpl implements LeaveService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void manageCancelLeaves(LeaveRequest leave) throws AxelorException {
     Employee employee = leave.getUser().getEmployee();
     if (employee == null) {
@@ -554,7 +554,7 @@ public class LeaveServiceImpl implements LeaveService {
     return value;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public LeaveRequest createEvents(LeaveRequest leave) throws AxelorException {
     Employee employee = leave.getUser().getEmployee();
     if (employee == null) {
@@ -708,7 +708,7 @@ public class LeaveServiceImpl implements LeaveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void cancel(LeaveRequest leaveRequest) throws AxelorException {
 
     if (leaveRequest.getLeaveLine().getLeaveReason().getManageAccumulation()) {
@@ -739,7 +739,7 @@ public class LeaveServiceImpl implements LeaveService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void confirm(LeaveRequest leaveRequest) throws AxelorException {
 
     if (leaveRequest.getLeaveLine().getLeaveReason().getManageAccumulation()) {
@@ -767,7 +767,7 @@ public class LeaveServiceImpl implements LeaveService {
     return null;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validate(LeaveRequest leaveRequest) throws AxelorException {
 
     LeaveLine leaveLine = leaveRequest.getLeaveLine();
@@ -800,7 +800,7 @@ public class LeaveServiceImpl implements LeaveService {
     return null;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void refuse(LeaveRequest leaveRequest) throws AxelorException {
 
     if (leaveRequest.getLeaveLine().getLeaveReason().getManageAccumulation()) {
@@ -868,7 +868,7 @@ public class LeaveServiceImpl implements LeaveService {
     return leaveLineBase;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public LeaveLine createLeaveReasonToJustify(Employee employee, LeaveReason leaveReason)
       throws AxelorException {
     LeaveLine leaveLineEmployee = new LeaveLine();
@@ -879,7 +879,7 @@ public class LeaveServiceImpl implements LeaveService {
     return leaveLineEmployee;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public LeaveLine addLeaveReasonOrCreateIt(Employee employee, LeaveReason leaveReason)
       throws AxelorException {
     LeaveLine leaveLine = getLeaveReasonToJustify(employee, leaveReason);

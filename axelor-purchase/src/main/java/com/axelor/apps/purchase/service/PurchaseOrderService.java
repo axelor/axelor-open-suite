@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,7 +33,7 @@ public interface PurchaseOrderService {
 
   PurchaseOrder _computePurchaseOrderLines(PurchaseOrder purchaseOrder) throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   PurchaseOrder computePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException;
 
   /**
@@ -82,7 +82,7 @@ public interface PurchaseOrderService {
 
   public void setDraftSequence(PurchaseOrder purchaseOrder) throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public Partner validateSupplier(PurchaseOrder purchaseOrder);
 
   public void savePurchaseOrderPDFAsAttachment(PurchaseOrder purchaseOrder) throws AxelorException;

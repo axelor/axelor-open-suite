@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 
     <grid name="partner-price-list-grid" title="Price lists"
@@ -26,6 +26,7 @@
                    domain="self.typeSelect = 1"
                    colSpan="12"/>
         </panel>
+        <panel-dashlet name="partnersDashletPanel" title="Partners" action="action-partner-price-list-view-dashlet-partners" colSpan="12"/>
     </form>
 
     <form name="purchase-partner-price-list-form" title="Price lists"
@@ -43,6 +44,7 @@
                    domain="self.typeSelect = 2"
                    colSpan="12"/>
         </panel>
+        <panel-dashlet name="partnersDashletPanel" title="Partners" action="action-partner-price-list-view-dashlet-partners" colSpan="12"/>
     </form>
 
     <action-record name="action-record-partner-price-list-record-sale-type"
@@ -59,4 +61,15 @@
         <call class="com.axelor.apps.base.web.PartnerPriceListController"
               method="checkDates"/>
     </action-method>
+
+   <action-view name="action-partner-price-list-view-dashlet-partners" title="Partners" model="com.axelor.apps.base.db.Partner">
+		<view type="grid" name="partner-customer-grid" if="typeSelect == 1"/>
+		<view type="form" name="partner-customer-form" if="typeSelect == 1"/>
+		<view type="grid" name="partner-supplier-grid" if="typeSelect == 2"/>
+		<view type="form" name="partner-supplier-form" if="typeSelect == 2"/>
+		<domain>(self.purchasePartnerPriceList = :partnerPriceListId AND self.purchasePartnerPriceList.typeSelect = :typeSelect) OR (self.salePartnerPriceList = :partnerPriceListId AND self.salePartnerPriceList.typeSelect = :typeSelect)</domain>
+		<context name="partnerPriceListId" expr="eval: id" />
+		<context name="typeSelect" expr="eval: typeSelect"/>
+   </action-view>
+
 </object-views>

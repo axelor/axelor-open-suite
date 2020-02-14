@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
@@ -19,7 +19,11 @@
 		<boolean name="createLinesForHolidays" title="Create lines for public holidays"/>
 		
 		<boolean name="timesheetEditor" title="Timesheet editor"/>
+		<boolean name="displayTimesheetLineNumber" title="Display timesheet line number"/>
 		
+		<many-to-one name="timesheetReminderTemplate" ref="com.axelor.apps.message.db.Template" title="Timesheet reminder template"/>
+		<boolean name="isAlertManufOrderFinish" title="Alert if the manuf. order is finish"/>
+
 		<track>
 			<field name="invoicingTypeLogTimesSelect" on="UPDATE"/>
 			<field name="consolidateTSLine" on="UPDATE"/>

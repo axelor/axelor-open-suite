@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -36,7 +36,6 @@ import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
@@ -95,7 +94,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public PurchaseOrder computePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
 
     this.initPurchaseOrderLineTax(purchaseOrder);
@@ -223,7 +222,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         Beans.get(TradingNameService.class).getDefaultPrintingSettings(null, company));
 
     purchaseOrder.setPurchaseOrderSeq(this.getSequence(company));
-    purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_DRAFT);
+    purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_DRAFT);
     purchaseOrder.setSupplierPartner(supplierPartner);
 
     return purchaseOrder;
@@ -243,7 +242,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public Partner validateSupplier(PurchaseOrder purchaseOrder) {
 
     Partner supplierPartner = partnerRepo.find(purchaseOrder.getSupplierPartner().getId());
@@ -274,15 +273,17 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     ReportFactory.createReport(IReport.PURCHASE_ORDER, title + "-${date}")
         .addParam("PurchaseOrderId", purchaseOrder.getId())
         .addParam("Locale", language)
+        .addParam("HeaderHeight", purchaseOrder.getPrintingSettings().getPdfHeaderHeight())
+        .addParam("FooterHeight", purchaseOrder.getPrintingSettings().getPdfFooterHeight())
         .toAttach(purchaseOrder)
         .generate()
         .getFileLink();
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
-    purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_REQUESTED);
+    purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_REQUESTED);
     Partner partner = purchaseOrder.getSupplierPartner();
     Company company = purchaseOrder.getCompany();
     Blocking blocking =
@@ -308,7 +309,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public PurchaseOrder mergePurchaseOrders(
       List<PurchaseOrder> purchaseOrderList,
       Currency currency,
@@ -390,7 +391,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateCostPrice(PurchaseOrder purchaseOrder) throws AxelorException {
     if (purchaseOrder.getPurchaseOrderLineList() != null) {
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
@@ -441,16 +442,16 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   @Transactional
   public void draftPurchaseOrder(PurchaseOrder purchaseOrder) {
 
-    purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_DRAFT);
+    purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_DRAFT);
     purchaseOrderRepo.save(purchaseOrder);
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
     computePurchaseOrder(purchaseOrder);
 
-    purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_VALIDATED);
+    purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_VALIDATED);
     purchaseOrder.setValidationDate(appPurchaseService.getTodayDate());
     purchaseOrder.setValidatedByUser(AuthUtils.getUser());
 
@@ -462,14 +463,14 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   @Override
   @Transactional
   public void finishPurchaseOrder(PurchaseOrder purchaseOrder) {
-    purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_FINISHED);
+    purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_FINISHED);
     purchaseOrderRepo.save(purchaseOrder);
   }
 
   @Override
   @Transactional
   public void cancelPurchaseOrder(PurchaseOrder purchaseOrder) {
-    purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_CANCELED);
+    purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_CANCELED);
     purchaseOrderRepo.save(purchaseOrder);
   }
 }

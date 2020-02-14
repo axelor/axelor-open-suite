@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -77,7 +77,7 @@ public class ManufOrderWorkflowService {
     this.manufOrderRepo = manufOrderRepo;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public ManufOrder plan(ManufOrder manufOrder) throws AxelorException {
     ManufOrderService manufOrderService = Beans.get(ManufOrderService.class);
 
@@ -108,17 +108,26 @@ public class ManufOrderWorkflowService {
       manufOrderService.createToProduceProdProductList(manufOrder);
     }
 
-    if (manufOrder.getPlannedStartDateT() == null) {
+    if (manufOrder.getPlannedStartDateT() == null && manufOrder.getPlannedEndDateT() == null) {
       manufOrder.setPlannedStartDateT(
           Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
+    } else if (manufOrder.getPlannedStartDateT() == null
+        && manufOrder.getPlannedEndDateT() != null) {
+      long duration = 0;
+      for (OperationOrder order : manufOrder.getOperationOrderList()) {
+        duration +=
+            operationOrderWorkflowService.computeEntireCycleDuration(
+                order, order.getManufOrder().getQty()); // in seconds
+      }
+      manufOrder.setPlannedStartDateT(manufOrder.getPlannedEndDateT().minusSeconds(duration));
     }
 
     for (OperationOrder operationOrder : getSortedOperationOrderList(manufOrder)) {
       operationOrderWorkflowService.plan(operationOrder);
     }
-
-    manufOrder.setPlannedEndDateT(this.computePlannedEndDateT(manufOrder));
-
+    if (manufOrder.getPlannedEndDateT() == null) {
+      manufOrder.setPlannedEndDateT(this.computePlannedEndDateT(manufOrder));
+    }
     if (manufOrder.getBillOfMaterial() != null) {
       manufOrder.setUnit(manufOrder.getBillOfMaterial().getUnit());
     }
@@ -135,7 +144,7 @@ public class ManufOrderWorkflowService {
     return manufOrderRepo.save(manufOrder);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void start(ManufOrder manufOrder) throws AxelorException {
 
     manufOrder.setRealStartDateT(
@@ -151,7 +160,7 @@ public class ManufOrderWorkflowService {
     manufOrderRepo.save(manufOrder);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional
   public void pause(ManufOrder manufOrder) {
     if (manufOrder.getOperationOrderList() != null) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
@@ -165,7 +174,7 @@ public class ManufOrderWorkflowService {
     manufOrderRepo.save(manufOrder);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional
   public void resume(ManufOrder manufOrder) {
     if (manufOrder.getOperationOrderList() != null) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
@@ -179,7 +188,7 @@ public class ManufOrderWorkflowService {
     manufOrderRepo.save(manufOrder);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public boolean finish(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getOperationOrderList() != null) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
@@ -261,7 +270,7 @@ public class ManufOrderWorkflowService {
    * @param manufOrder
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public boolean partialFinish(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getIsConsProOnOperation()) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
@@ -286,7 +295,7 @@ public class ManufOrderWorkflowService {
     return true;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void cancel(ManufOrder manufOrder, CancelReason cancelReason, String cancelReasonStr)
       throws AxelorException {
     if (cancelReason == null
@@ -344,7 +353,7 @@ public class ManufOrderWorkflowService {
     return manufOrder.getPlannedStartDateT();
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void allOpFinished(ManufOrder manufOrder) throws AxelorException {
     int count = 0;
     List<OperationOrder> operationOrderList = manufOrder.getOperationOrderList();
@@ -379,7 +388,7 @@ public class ManufOrderWorkflowService {
    * @param manufOrder
    * @param plannedStartDateT
    */
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updatePlannedDates(ManufOrder manufOrder, LocalDateTime plannedStartDateT)
       throws AxelorException {
     manufOrder.setPlannedStartDateT(plannedStartDateT);
@@ -403,7 +412,7 @@ public class ManufOrderWorkflowService {
    * @param manufOrder
    * @return
    */
-  private List<OperationOrder> getSortedOperationOrderList(ManufOrder manufOrder) {
+  protected List<OperationOrder> getSortedOperationOrderList(ManufOrder manufOrder) {
     List<OperationOrder> operationOrderList =
         MoreObjects.firstNonNull(manufOrder.getOperationOrderList(), Collections.emptyList());
     Comparator<OperationOrder> byPriority =

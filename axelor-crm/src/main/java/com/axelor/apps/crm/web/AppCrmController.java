@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,17 +18,15 @@
 package com.axelor.apps.crm.web;
 
 import com.axelor.apps.crm.service.app.AppCrmService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 
 public class AppCrmController {
 
-  @Inject private AppCrmService appCrmService;
-
   public void generateCrmConfigurations(ActionRequest request, ActionResponse response) {
 
-    appCrmService.generateCrmConfigurations();
+    Beans.get(AppCrmService.class).generateCrmConfigurations();
 
     response.setReload(true);
   }

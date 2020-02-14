@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,12 +23,16 @@ import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.team.db.TeamTask;
+import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 
 public class ProjectPlanningTimeHRRepository extends ProjectPlanningTimeRepository {
 
   @Inject private ProjectPlanningTimeService planningTimeService;
+
   @Inject private ProjectRepository projectRepo;
+
+  @Inject private TeamTaskRepository taskRepo;
 
   @Override
   public ProjectPlanningTime save(ProjectPlanningTime projectPlanningTime) {
@@ -37,12 +41,15 @@ public class ProjectPlanningTimeHRRepository extends ProjectPlanningTimeReposito
 
     Project project = projectPlanningTime.getProject();
     project.setTotalPlannedHrs(planningTimeService.getProjectPlannedHrs(project));
-    project.setTotalRealHrs(planningTimeService.getProjectRealHrs(project));
+
+    Project parentProject = project.getParentProject();
+    if (parentProject != null) {
+      parentProject.setTotalPlannedHrs(planningTimeService.getProjectPlannedHrs(parentProject));
+    }
 
     TeamTask task = projectPlanningTime.getTask();
     if (task != null) {
       task.setTotalPlannedHrs(planningTimeService.getTaskPlannedHrs(task));
-      task.setTotalRealHrs(planningTimeService.getTaskRealHrs(task));
     }
 
     return projectPlanningTime;
@@ -52,9 +59,14 @@ public class ProjectPlanningTimeHRRepository extends ProjectPlanningTimeReposito
   public void remove(ProjectPlanningTime projectPlanningTime) {
 
     Project project = projectPlanningTime.getProject();
+    TeamTask task = projectPlanningTime.getTask();
 
     super.remove(projectPlanningTime);
 
-    projectRepo.save(project);
+    if (task != null) {
+      taskRepo.save(task);
+    } else {
+      projectRepo.save(project);
+    }
   }
 }

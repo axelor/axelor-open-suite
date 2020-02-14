@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
     <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -9,5 +9,7 @@
         <!--  Customer Credit -->
         <decimal name="acceptedCredit" title="Accepted Credit" precision="20" scale="2"/>
         <decimal name="usedCredit" title="Used Credit" precision="20" scale="2" readonly="true"/>
+        <date name="insurCreditDate" title="Insurance date credit"/>
+        <string name="description" title="Comment" large="true"/>
     </entity>
 </domain-models>

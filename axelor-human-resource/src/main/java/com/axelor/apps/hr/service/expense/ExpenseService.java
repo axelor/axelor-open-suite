@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -46,38 +46,38 @@ public interface ExpenseService {
 
   public Expense compute(Expense expense);
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void confirm(Expense expense) throws AxelorException;
 
   public Message sendConfirmationEmail(Expense expense)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validate(Expense expense) throws AxelorException;
 
   public Message sendValidationEmail(Expense expense)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void refuse(Expense expense) throws AxelorException;
 
   public Message sendRefusalEmail(Expense expense)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Move ventilate(Expense expense) throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void cancel(Expense expense) throws AxelorException;
 
   public Message sendCancellationEmail(Expense expense)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void addPayment(Expense expense, BankDetails bankDetails) throws AxelorException;
 
   public void addPayment(Expense expense) throws AxelorException;
@@ -89,7 +89,7 @@ public interface ExpenseService {
    * @param expense
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void cancelPayment(Expense expense) throws AxelorException;
 
   public List<InvoiceLine> createInvoiceLines(
@@ -131,4 +131,6 @@ public interface ExpenseService {
       ExpenseLine expenseLine, Expense expense) throws AxelorException;
 
   public Move createMoveForExpensePayment(Expense expense) throws AxelorException;
+
+  public Expense updateMoveDateAndPeriod(Expense expense);
 }

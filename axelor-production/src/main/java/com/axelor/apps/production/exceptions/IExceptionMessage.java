@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -54,6 +54,7 @@ public interface IExceptionMessage {
       "Error during production's order's creation" /*)*/;
   static final String PRODUCTION_ORDER_3 = /*$$(*/ "You must add a positive quantity" /*)*/;
   static final String PRODUCTION_ORDER_4 = /*$$(*/ "You must select a nomenclature" /*)*/;
+  static final String PRODUCTION_ORDER_5 = /*$$(*/ "Invalid date" /*)*/;
 
   /** Production Config Service */
   static final String PRODUCTION_CONFIG_1 = /*$$(*/
@@ -110,6 +111,15 @@ public interface IExceptionMessage {
   String CONFIGURATOR_BOM_IMPORT_TOO_MANY_CALLS = /*$$(*/
       "Too many recursive calls to import the bill of material configurator." /*)*/;
 
+  String CONFIGURATOR_BOM_IMPORT_GENERATED_PRODUCT_NULL = /*$$(*/
+      "Error while generating bill of material: the product of the bill of material is supposed to be generated from the configurator but the configurator did not generate a product." /*)*/;
+
+  String CONFIGURATOR_BOM_IMPORT_FORMULA_PRODUCT_NULL = /*$$(*/
+      "Error while generating bill of material: the product of the bill of material is supposed to be computed from a script but the script did not return a product." /*)*/;
+
+  String CONFIGURATOR_BOM_IMPORT_FILLED_PRODUCT_NULL = /*$$(*/
+      "Error while generating bill of material: the product of the bill of material is supposed to be filled in the configurator BOM but it was empty." /*)*/;
+
   /** Stock move line production controller */
   String STOCK_MOVE_LINE_UNKNOWN_PARENT_CONTEXT = /*$$(*/ "Unknown parent context class." /*)*/;
 
@@ -136,4 +146,14 @@ public interface IExceptionMessage {
 
   static final String MANUF_ORDER_EMAIL_NOT_SENT = /*$$(*/
       "Automatic email was not sent because no default email account and/or no valid email account was found : please create one." /*)*/;
+
+  static final String MANUF_STOCK_MOVE_ERROR_1 = /*$$(*/ "All products has been consumed" /*)*/;
+
+  static final String UNIT_COST_CALCULATION_IMPORT_FAIL_ERROR = /*$$(*/ "Data import failed" /*)*/;
+
+  static final String UNIT_COST_CALCULATION_IMPORT_CSV_ERROR = /*$$(*/
+      "Uploaded file is not a CSV file" /*)*/;
+
+  static final String UNIT_COST_CALCULATION_NO_PRODUCT = /*$$(*/
+      "Please select an element (a product, a product category or a product family) to run calculation" /*)*/;
 }

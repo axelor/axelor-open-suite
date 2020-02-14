@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,12 +29,14 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 /** InvoiceService est une classe implémentant l'ensemble des services de facturations. */
 public class InvoiceToolService {
 
+  @CallMethod
   public static LocalDate getDueDate(PaymentCondition paymentCondition, LocalDate invoiceDate) {
 
     if (paymentCondition == null) {

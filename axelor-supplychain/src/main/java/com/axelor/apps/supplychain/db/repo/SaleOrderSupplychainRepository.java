@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -43,14 +43,16 @@ public class SaleOrderSupplychainRepository extends SaleOrderManagementRepositor
     copy.setAmountInvoiced(null);
     copy.setStockMoveList(null);
 
-    for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {
-      saleOrderLine.setDeliveryState(null);
-      saleOrderLine.setDeliveredQty(null);
-      saleOrderLine.setAmountInvoiced(null);
-      saleOrderLine.setInvoiced(null);
-      saleOrderLine.setInvoicingDate(null);
-      saleOrderLine.setIsInvoiceControlled(null);
-      saleOrderLine.setReservedQty(BigDecimal.ZERO);
+    if (copy.getSaleOrderLineList() != null) {
+      for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {
+        saleOrderLine.setDeliveryState(null);
+        saleOrderLine.setDeliveredQty(null);
+        saleOrderLine.setAmountInvoiced(null);
+        saleOrderLine.setInvoiced(null);
+        saleOrderLine.setInvoicingDate(null);
+        saleOrderLine.setIsInvoiceControlled(null);
+        saleOrderLine.setReservedQty(BigDecimal.ZERO);
+      }
     }
 
     return copy;

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -69,6 +69,8 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
+import com.axelor.team.db.TeamTask;
+import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -82,10 +84,11 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import javax.mail.MessagingException;
+import org.apache.commons.collections4.ListUtils;
 
 /** @author axelor */
 public class TimesheetServiceImpl implements TimesheetService {
@@ -98,8 +101,9 @@ public class TimesheetServiceImpl implements TimesheetService {
   protected UserRepository userRepo;
   protected UserHrService userHrService;
   protected TimesheetLineService timesheetLineService;
-
   protected ProjectPlanningTimeRepository projectPlanningTimeRepository;
+  protected TeamTaskRepository teamTaskRepository;
+  protected TimesheetLineRepository timesheetlineRepo;
 
   @Inject
   public TimesheetServiceImpl(
@@ -111,7 +115,9 @@ public class TimesheetServiceImpl implements TimesheetService {
       UserRepository userRepo,
       UserHrService userHrService,
       TimesheetLineService timesheetLineService,
-      ProjectPlanningTimeRepository projectPlanningTimeRepository) {
+      ProjectPlanningTimeRepository projectPlanningTimeRepository,
+      TeamTaskRepository teamTaskRepository,
+      TimesheetLineRepository timesheetlineRepo) {
     this.priceListService = priceListService;
     this.appHumanResourceService = appHumanResourceService;
     this.hrConfigService = hrConfigService;
@@ -121,10 +127,12 @@ public class TimesheetServiceImpl implements TimesheetService {
     this.userHrService = userHrService;
     this.timesheetLineService = timesheetLineService;
     this.projectPlanningTimeRepository = projectPlanningTimeRepository;
+    this.teamTaskRepository = teamTaskRepository;
+    this.timesheetlineRepo = timesheetlineRepo;
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void confirm(Timesheet timesheet) throws AxelorException {
     this.fillToDate(timesheet);
     this.validateDates(timesheet);
@@ -134,7 +142,7 @@ public class TimesheetServiceImpl implements TimesheetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Message sendConfirmationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException {
@@ -155,6 +163,9 @@ public class TimesheetServiceImpl implements TimesheetService {
 
     User user = timesheet.getUser();
     Employee employee = user.getEmployee();
+    if (employee == null) {
+      return;
+    }
     if (employee.getPublicHolidayEventsPlanning() == null) {
       throw new AxelorException(
           timesheet,
@@ -199,7 +210,7 @@ public class TimesheetServiceImpl implements TimesheetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Message confirmAndSendConfirmationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException {
@@ -217,7 +228,7 @@ public class TimesheetServiceImpl implements TimesheetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Message sendValidationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException {
@@ -234,7 +245,7 @@ public class TimesheetServiceImpl implements TimesheetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Message validateAndSendValidationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException {
@@ -252,7 +263,7 @@ public class TimesheetServiceImpl implements TimesheetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Message sendRefusalEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException {
@@ -269,7 +280,7 @@ public class TimesheetServiceImpl implements TimesheetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Message refuseAndSendRefusalEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException {
@@ -278,7 +289,7 @@ public class TimesheetServiceImpl implements TimesheetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void cancel(Timesheet timesheet) {
     timesheet.setStatusSelect(TimesheetRepository.STATUS_CANCELED);
   }
@@ -290,7 +301,7 @@ public class TimesheetServiceImpl implements TimesheetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Message sendCancellationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException {
@@ -307,7 +318,7 @@ public class TimesheetServiceImpl implements TimesheetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Message cancelAndSendCancellationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException {
@@ -400,7 +411,7 @@ public class TimesheetServiceImpl implements TimesheetService {
     return timesheet;
   }
 
-  private Map<Integer, String> getCorresMap() {
+  protected Map<Integer, String> getCorresMap() {
     Map<Integer, String> correspMap = new HashMap<>();
     correspMap.put(1, "monday");
     correspMap.put(2, "tuesday");
@@ -412,7 +423,7 @@ public class TimesheetServiceImpl implements TimesheetService {
     return correspMap;
   }
 
-  private boolean isWorkedDay(
+  protected boolean isWorkedDay(
       LocalDate date, Map<Integer, String> correspMap, List<DayPlanning> dayPlanningList) {
     DayPlanning dayPlanningCurr = new DayPlanning();
     for (DayPlanning dayPlanning : dayPlanningList) {
@@ -477,9 +488,16 @@ public class TimesheetServiceImpl implements TimesheetService {
 
     timesheet.setUser(user);
     Company company = null;
-    if (user.getEmployee() != null && user.getEmployee().getMainEmploymentContract() != null) {
-      company = user.getEmployee().getMainEmploymentContract().getPayCompany();
+    Employee employee = user.getEmployee();
+    if (employee != null && employee.getMainEmploymentContract() != null) {
+      company = employee.getMainEmploymentContract().getPayCompany();
+    } else {
+      company = user.getActiveCompany();
     }
+
+    String timeLoggingPreferenceSelect =
+        employee == null ? null : employee.getTimeLoggingPreferenceSelect();
+    timesheet.setTimeLoggingPreferenceSelect(timeLoggingPreferenceSelect);
     timesheet.setCompany(company);
     timesheet.setFromDate(fromDate);
     timesheet.setStatusSelect(TimesheetRepository.STATUS_DRAFT);
@@ -595,7 +613,7 @@ public class TimesheetServiceImpl implements TimesheetService {
 
     if (priceList != null) {
       PriceListLine priceListLine =
-          priceListService.getPriceListLine(product, qtyConverted, priceList);
+          priceListService.getPriceListLine(product, qtyConverted, priceList, price);
       if (priceListLine != null) {
         discountMethodTypeSelect = priceListLine.getTypeSelect();
       }
@@ -621,7 +639,10 @@ public class TimesheetServiceImpl implements TimesheetService {
     }
 
     String description = user.getFullName();
-    String productName = product.getName() + " " + "(" + date + ")";
+    String productName = product.getName();
+    if (date != null) {
+      productName += " " + "(" + date + ")";
+    }
 
     InvoiceLineGenerator invoiceLineGenerator =
         new InvoiceLineGenerator(
@@ -663,14 +684,24 @@ public class TimesheetServiceImpl implements TimesheetService {
   @Transactional
   public void computeTimeSpent(Timesheet timesheet) {
     List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
-    for (TimesheetLine timesheetLine : timesheetLineList) {
-      Project project = timesheetLine.getProject();
-      if (project != null) {
-        project.setTimeSpent(
-            timesheetLine.getHoursDuration().add(this.computeSubTimeSpent(project)));
+
+    if (timesheetLineList != null) {
+      Map<Project, BigDecimal> projectTimeSpentMap =
+          timesheetLineService.getProjectTimeSpentMap(timesheetLineList);
+
+      Iterator<Project> projectIterator = projectTimeSpentMap.keySet().iterator();
+
+      while (projectIterator.hasNext()) {
+        Project project = projectIterator.next();
+
+        BigDecimal timeSpent =
+            projectTimeSpentMap.get(project).add(this.computeSubTimeSpent(project));
+        project.setTimeSpent(timeSpent);
+
         this.computeParentTimeSpent(project);
       }
     }
+    this.setTeamTaskTotalRealHrs(timesheet.getTimesheetLineList(), true);
   }
 
   @Override
@@ -679,7 +710,7 @@ public class TimesheetServiceImpl implements TimesheetService {
     List<Project> subProjectList =
         Beans.get(ProjectRepository.class).all().filter("self.parentProject = ?1", project).fetch();
     if (subProjectList == null || subProjectList.isEmpty()) {
-      return project.getTimeSpent();
+      return this.computeTimeSpent(project);
     }
     for (Project projectIt : subProjectList) {
       sum = sum.add(this.computeSubTimeSpent(projectIt));
@@ -777,7 +808,6 @@ public class TimesheetServiceImpl implements TimesheetService {
           I18n.get(IExceptionMessage.TIMESHEET_TIMESHEET_LINE_LIST_IS_EMPTY));
 
     } else {
-      List<Integer> timesheetLineIndexes = new ArrayList<>();
 
       for (TimesheetLine timesheetLine : timesheetLineList) {
         LocalDate timesheetLineDate = timesheetLine.getDate();
@@ -788,17 +818,6 @@ public class TimesheetServiceImpl implements TimesheetService {
               I18n.get(IExceptionMessage.TIMESHEET_LINE_NULL_DATE),
               timesheetLineList.indexOf(timesheetLine) + 1);
         }
-        if (timesheetLineDate.isAfter(toDate) || timesheetLineDate.isBefore(fromDate)) {
-          timesheetLineIndexes.add(timesheetLineList.indexOf(timesheetLine) + 1);
-        }
-      }
-
-      if (!timesheetLineIndexes.isEmpty()) {
-        throw new AxelorException(
-            timesheet,
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.TIMESHEET_DATE_CONFLICT),
-            timesheetLineIndexes.stream().map(i -> i.toString()).collect(Collectors.joining(", ")));
       }
     }
   }
@@ -993,29 +1012,21 @@ public class TimesheetServiceImpl implements TimesheetService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
-  public void generateLinesFromProjectPlanning(Timesheet timesheet, Boolean realHours)
-      throws AxelorException {
+  public void generateLinesFromExpectedProjectPlanning(Timesheet timesheet) throws AxelorException {
     User user = timesheet.getUser();
-    List<ProjectPlanningTime> planningList = getProjectPlanningTimeList(timesheet);
+    List<ProjectPlanningTime> planningList = getExpectedProjectPlanningTimeList(timesheet);
     for (ProjectPlanningTime projectPlanningTime : planningList) {
       TimesheetLine timesheetLine = new TimesheetLine();
-      if (realHours) {
-        timesheetLine.setHoursDuration(projectPlanningTime.getRealHours());
-        timesheetLine.setDuration(
-            timesheetLineService.computeHoursDuration(
-                timesheet, projectPlanningTime.getRealHours(), false));
-      } else {
-        timesheetLine.setHoursDuration(projectPlanningTime.getPlannedHours());
-        timesheetLine.setDuration(
-            timesheetLineService.computeHoursDuration(
-                timesheet, projectPlanningTime.getPlannedHours(), false));
-      }
-
+      timesheetLine.setHoursDuration(projectPlanningTime.getPlannedHours());
+      timesheetLine.setDuration(
+          timesheetLineService.computeHoursDuration(
+              timesheet, projectPlanningTime.getPlannedHours(), false));
       timesheetLine.setTimesheet(timesheet);
       timesheetLine.setUser(user);
       timesheetLine.setProduct(projectPlanningTime.getProduct());
+      timesheetLine.setTeamTask(projectPlanningTime.getTask());
       timesheetLine.setProject(projectPlanningTime.getProject());
       timesheetLine.setDate(projectPlanningTime.getDate());
       timesheetLine.setProjectPlanningTime(projectPlanningTime);
@@ -1023,8 +1034,9 @@ public class TimesheetServiceImpl implements TimesheetService {
     }
   }
 
-  private List<ProjectPlanningTime> getProjectPlanningTimeList(Timesheet timesheet) {
+  private List<ProjectPlanningTime> getExpectedProjectPlanningTimeList(Timesheet timesheet) {
     List<ProjectPlanningTime> planningList;
+
     if (timesheet.getToDate() == null) {
       planningList =
           projectPlanningTimeRepository
@@ -1035,7 +1047,8 @@ public class TimesheetServiceImpl implements TimesheetService {
                       + "AND self.id NOT IN "
                       + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
                       + "WHERE timesheetLine.projectPlanningTime != null "
-                      + "AND timesheetLine.timesheet = ?3)",
+                      + "AND timesheetLine.timesheet = ?3) "
+                      + "AND self.task != null ",
                   timesheet.getUser().getId(),
                   timesheet.getFromDate(),
                   timesheet)
@@ -1050,7 +1063,8 @@ public class TimesheetServiceImpl implements TimesheetService {
                       + "AND self.id NOT IN "
                       + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
                       + "WHERE timesheetLine.projectPlanningTime != null "
-                      + "AND timesheetLine.timesheet = ?4)",
+                      + "AND timesheetLine.timesheet = ?4) "
+                      + "AND self.task != null ",
                   timesheet.getUser().getId(),
                   timesheet.getFromDate(),
                   timesheet.getToDate(),
@@ -1080,6 +1094,17 @@ public class TimesheetServiceImpl implements TimesheetService {
             ? employee.getPublicHolidayEventsPlanning()
             : config.getPublicHolidayEventsPlanning();
 
+    if (timesheet.getTimesheetLineList() != null && !timesheet.getTimesheetLineList().isEmpty()) {
+      fromDate =
+          timesheet
+              .getTimesheetLineList()
+              .stream()
+              .map(TimesheetLine::getDate)
+              .max(LocalDate::compareTo)
+              .get()
+              .plusDays(1);
+    }
+
     for (LocalDate date = fromDate; !date.isAfter(toDate); date = date.plusDays(1)) {
       BigDecimal dayValueInHours =
           weeklyPlanningService.getWorkingDayValueInHours(
@@ -1093,7 +1118,7 @@ public class TimesheetServiceImpl implements TimesheetService {
       } else if (appTimesheet.getCreateLinesForLeaves()) {
         LeaveRequest leave = leaveService.getLeave(user, date);
         if (leave != null) {
-          BigDecimal hours = leaveService.computeDuration(leave);
+          BigDecimal hours = leaveService.computeDuration(leave, date, date);
           if (leave.getLeaveLine().getLeaveReason().getUnitSelect()
               == LeaveReasonRepository.UNIT_SELECT_DAYS) {
             hours = hours.multiply(dayValueInHours);
@@ -1103,5 +1128,39 @@ public class TimesheetServiceImpl implements TimesheetService {
         }
       }
     }
+  }
+
+  @Override
+  @Transactional
+  public void setTeamTaskTotalRealHrs(List<TimesheetLine> timesheetLines, boolean isAdd) {
+    for (TimesheetLine timesheetLine : timesheetLines) {
+      TeamTask teamTask = timesheetLine.getTeamTask();
+      if (teamTask != null) {
+        teamTask = teamTaskRepository.find(teamTask.getId());
+        BigDecimal totalrealhrs =
+            isAdd
+                ? teamTask.getTotalRealHrs().add(timesheetLine.getHoursDuration())
+                : teamTask.getTotalRealHrs().subtract(timesheetLine.getHoursDuration());
+        teamTask.setTotalRealHrs(totalrealhrs);
+        teamTaskRepository.save(teamTask);
+      }
+    }
+  }
+
+  @Override
+  @Transactional
+  public void removeAfterToDateTimesheetLines(Timesheet timesheet) {
+
+    List<TimesheetLine> removedTimesheetLines = new ArrayList<>();
+
+    for (TimesheetLine timesheetLine : ListUtils.emptyIfNull(timesheet.getTimesheetLineList())) {
+      if (timesheetLine.getDate().isAfter(timesheet.getToDate())) {
+        removedTimesheetLines.add(timesheetLine);
+        if (timesheetLine.getId() != null) {
+          timesheetlineRepo.remove(timesheetLine);
+        }
+      }
+    }
+    timesheet.getTimesheetLineList().removeAll(removedTimesheetLines);
   }
 }

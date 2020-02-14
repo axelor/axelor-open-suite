@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -98,7 +98,7 @@ public class NotificationServiceImpl implements NotificationService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validate(Notification notification) throws AxelorException {
 
     for (NotificationItem notificationItem : notification.getNotificationItemList()) {
@@ -121,7 +121,7 @@ public class NotificationServiceImpl implements NotificationService {
     return account;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected Move createPaymentMove(NotificationItem notificationItem) throws AxelorException {
 
     Notification notification = notificationItem.getNotification();
@@ -192,9 +192,15 @@ public class NotificationServiceImpl implements NotificationService {
     moveService.getMoveValidateService().validate(paymentMove);
 
     MoveLine invoiceMoveLine = findInvoiceAccountMoveLine(invoice);
+    MoveLine subrogationReleaseMoveLine = findSubrogationReleaseAccountMoveLine(invoice);
 
     if (invoiceMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1) {
       reconcileService.reconcile(invoiceMoveLine, creditMoveLine, true, true);
+      if (subrogationReleaseMoveLine != null
+          && notificationItem.getTypeSelect()
+              == NotificationRepository.TYPE_PAYMENT_TO_THE_FACTORE) {
+        reconcileService.reconcile(debitMoveLine, subrogationReleaseMoveLine, true, false);
+      }
     }
 
     notificationItem.setMove(paymentMove);
@@ -241,5 +247,16 @@ public class NotificationServiceImpl implements NotificationService {
       }
     }
     throw new NoSuchElementException();
+  }
+
+  protected MoveLine findSubrogationReleaseAccountMoveLine(Invoice invoice) throws AxelorException {
+    if (invoice.getSubrogationReleaseMove() != null) {
+      for (MoveLine moveLine : invoice.getSubrogationReleaseMove().getMoveLineList()) {
+        if (moveLine.getCredit().compareTo(BigDecimal.ZERO) == 1) {
+          return moveLine;
+        }
+      }
+    }
+    return null;
   }
 }

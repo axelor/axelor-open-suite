@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,6 +23,7 @@ import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -37,9 +38,13 @@ public class InvoicePaymentToolServiceSupplychainImpl extends InvoicePaymentTool
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateAmountPaid(Invoice invoice) throws AxelorException {
     super.updateAmountPaid(invoice);
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return;
+    }
     SaleOrder saleOrder = invoice.getSaleOrder();
     if (saleOrder != null) {
       // compute sale order totals

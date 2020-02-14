@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
   
   <module name="account" package="com.axelor.apps.account.db"/>
   
@@ -33,16 +35,20 @@
     <decimal name="balance" title="Balance" readonly="true"/>
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
     
-
+	<boolean name="displayClosingAccountingMoves" title="Display closing accounting moves" default="false"/>
+    <boolean name="displayOpeningAccountingMoves" title="Display opening accounting moves" default="true"/>
     
     <!--Report 7 : Partner genereal ledger  --> 
     <boolean name="displayOnlyNotCompletelyLetteredMoveLines" title="Display only not completely lettered move lines" default="false"/>
+    <boolean name="displayCumulativeBalance" title="Display cumulative balance on printing"/>
     
     
-	<!--Report 1 : genereal ledger  --> 
-    <boolean name="displayCodeAccountOnPrinting" title="Display code account on printing"/>
-    <boolean name="displayNameAccountOnPrinting" title="Display name account on printing"/>
-    <boolean name="displayMoveSequenceOnPrinting" title="Display move sequence on printing"/>
+	<!--Report 1 : general ledger  --> 
+    <boolean name="displayCodeAccountColumnOnPrinting" title="Display column with accounting number"/>
+    <boolean name="displayNameAccountColumnOnPrinting" title="Display column with accounting name"/>
+    <boolean name="displayMoveLineSequenceOnPrinting" title="Display moveline sequence"/>
+    
+    <many-to-one name="analyticDistributionTemplate" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate" title="Analytic Distribution Template"/>
 
 	<unique-constraint columns="ref,company"/>
     
@@ -63,6 +69,7 @@
 		public static final int REPORT_GENERAL_LEDGER2 = 14;
 		public static final int REPORT_VAT_STATEMENT_RECEIVED = 15;
 		public static final int REPORT_ANALYTIC_BALANCE = 2000;
+		public static final int REPORT_ANALYTIC_GENERAL_LEDGER = 2001;
 		public static final int REPORT_ACQUISITIONS = 16;
 		public static final int REPORT_GROSS_VALUES_AND_DEPRECIATION = 17;
 		

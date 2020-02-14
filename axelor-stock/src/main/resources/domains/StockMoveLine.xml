@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -17,7 +17,7 @@
 	<decimal name="oldQty" hidden="true"/>
 	<decimal name="availableQty" title="Available qty" transient="true"/>
 	<decimal name="availableQtyForProduct" title="Available qty for product" transient="true"/>
-	<string name="availableStatus" title="Status" transient="true"/>
+	<string name="availableStatus" title="Availability" transient="true"/>
 	<integer name="availableStatusSelect" title="Status" transient="true" selection="stock.move.line.available.status.select"/>
 	<boolean name="isSubLine" title="Sub line" readonly="true"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
@@ -44,14 +44,26 @@
     <decimal name="companyUnitPriceUntaxed" precision="20" scale="10" title="Company Unit price W.T."/>
 
     <decimal name="wapPrice" precision="20" scale="10" readonly="true" nullable="true" title="Price used for WAP"/>
+    <decimal name="companyPurchasePrice" help="Purchase price in company currency, used for declaration of exchange." precision="20" scale="10" title="Purchase price"/>
 
     <string name="productTypeSelect" title="Product type" selection="product.product.type.select"/>
     <integer name="sequence" title="Seq."/>
-
+  
+    <string name="name" title="Ref.">
+    	<![CDATA[
+    	if (stockMove != null && stockMove.getStockMoveSeq() != null){
+    		return stockMove.getStockMoveSeq()+ "-" +Integer.toString(sequence);
+    	}
+		else {
+			return Integer.toString(sequence);
+		 }
+	    ]]>
+    </string>
+	
     <many-to-one name="customsCodeNomenclature" ref="com.axelor.apps.stock.db.CustomsCodeNomenclature"/>
     <string name="customsCode"/>
     <one-to-many name="logisticalFormLineList" ref="com.axelor.apps.stock.db.LogisticalFormLine" mappedBy="stockMoveLine" title="Logistical form lines" />
-    <integer name="lineTypeSelect" title="Type" selection="sale.order.line.type.select"/>
+    <integer name="lineTypeSelect" title="Type" selection="line.type.select"/>
     <integer name="packPriceSelect" title="Pack price select" selection="product.pack.price.select"/>
 
     <enum name="regime" ref="com.axelor.apps.stock.db.Regime"/>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,20 +22,16 @@ import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.FixedAssetService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Singleton
 public class FixedAssetController {
-
-  @Inject private FixedAssetService fixedAssetService;
-
-  @Inject private FixedAssetRepository fixedAssetRepo;
 
   public void computeDepreciation(ActionRequest request, ActionResponse response) {
 
@@ -46,7 +42,7 @@ public class FixedAssetController {
         if (!fixedAsset.getFixedAssetLineList().isEmpty()) {
           fixedAsset.getFixedAssetLineList().clear();
         }
-        fixedAsset = fixedAssetService.generateAndcomputeLines(fixedAsset);
+        fixedAsset = Beans.get(FixedAssetService.class).generateAndcomputeLines(fixedAsset);
 
       } else {
         fixedAsset.getFixedAssetLineList().clear();
@@ -66,10 +62,23 @@ public class FixedAssetController {
     LocalDate disposalDate = (LocalDate) context.get("disposalDate");
     BigDecimal disposalAmount = new BigDecimal(context.get("disposalAmount").toString());
     Long fixedAssetId = Long.valueOf(context.get("_id").toString());
-    FixedAsset fixedAsset = fixedAssetRepo.find(fixedAssetId);
+    FixedAsset fixedAsset = Beans.get(FixedAssetRepository.class).find(fixedAssetId);
 
-    fixedAssetService.disposal(disposalDate, disposalAmount, fixedAsset);
+    Beans.get(FixedAssetService.class).disposal(disposalDate, disposalAmount, fixedAsset);
 
     response.setCanClose(true);
+  }
+
+  public void createAnalyticDistributionWithTemplate(
+      ActionRequest request, ActionResponse response) {
+
+    try {
+      FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+
+      Beans.get(FixedAssetService.class).updateAnalytic(fixedAsset);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

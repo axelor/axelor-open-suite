@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -50,18 +50,19 @@ public class PeriodServiceImpl implements PeriodService {
   }
 
   /**
-   * Fetches the right period with the date in parameter
+   * Fetches the active period with the date, company and type in parameter
    *
    * @param date
    * @param company
+   * @param typeSelect
    * @return
    * @throws AxelorException
    */
-  public Period rightPeriod(LocalDate date, Company company, int typeSelect)
+  public Period getActivePeriod(LocalDate date, Company company, int typeSelect)
       throws AxelorException {
 
     Period period = this.getPeriod(date, company, typeSelect);
-    if (period == null || period.getStatusSelect() == PeriodRepository.STATUS_CLOSED) {
+    if (period == null || (period.getStatusSelect() == PeriodRepository.STATUS_CLOSED)) {
       String dateStr = date != null ? date.toString() : "";
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -117,19 +118,22 @@ public class PeriodServiceImpl implements PeriodService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void close(Period period) {
-
+  public void close(Period period) throws AxelorException {
     if (period.getStatusSelect() == PeriodRepository.STATUS_ADJUSTING) {
       adjustHistoryService.setEndDate(period);
     }
-
-    period.setStatusSelect(PeriodRepository.STATUS_CLOSED);
-    period.setClosureDateTime(LocalDateTime.now());
-    periodRepo.save(period);
+    this.updateClosePeriod(period);
   }
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  protected void updateClosePeriod(Period period) {
+    period.setStatusSelect(PeriodRepository.STATUS_CLOSED);
+    period.setClosureDateTime(LocalDateTime.now());
+
+    periodRepo.save(period);
+  }
+
+  @Transactional
   public void adjust(Period period) {
     period = periodRepo.find(period.getId());
 

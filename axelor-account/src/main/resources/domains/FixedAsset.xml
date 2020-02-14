@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="FixedAsset" lang="java" cachable="true">
+  <entity name="FixedAsset" lang="java" cacheable="true">
   
   	<string name="reference" title="Reference" readonly="true"/>
   	<string name="name" title="Name" required="true"/>
@@ -40,6 +40,7 @@
 	<one-to-many name="fixedAssetLineList" ref="com.axelor.apps.account.db.FixedAssetLine" title="Depreciation board" mappedBy="fixedAsset"/>
 	<many-to-one name="disposalMove" ref="com.axelor.apps.account.db.Move" title="Disposal move"/>
 	
+	<many-to-one name="analyticDistributionTemplate" title="Analytic distribution template" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
 	<extra-code><![CDATA[
 	
 	   	// STATUS SELECT
@@ -47,6 +48,10 @@
 		public static final int STATUS_VALIDATED = 2;
 		public static final int STATUS_DEPRECIATED = 3;
 		public static final int STATUS_TRANSFERRED = 4;
+		
+		// COMPUTATION METHOD 
+		public static final String COMPUTATION_METHOD_LINEAR = "linear";
+		public static final String COMPUTATION_METHOD_DEGRESSIVE = "degressive";
 		
 	]]></extra-code>
     

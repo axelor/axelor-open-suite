@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
@@ -10,7 +10,7 @@
   	<integer name="orderTypeSelect" title="Order Type" selection="bankpayment.bank.order.type.select"/>
   	<integer name="rejectStatusSelect" title="Rejection Status" selection="bankpayment.bank.order.reject.status.select"/>
   	<string name="bankOrderSeq" title="Sequence" namecolumn="true" readonly="true"/>
-  	<integer name="partnerTypeSelect" title="Partner Type" selection="bankpayment.bank.order.partner.type.select" required="true"/>
+  	<integer name="partnerTypeSelect" title="BankOrder.partnerTypeSelect" selection="bankpayment.bank.order.partner.type.select" required="true"/>
   	<integer name="statusSelect" title="Status" default="1" readonly="true" selection="bankpayment.bank.order.status.select"/>
 	<date name="bankOrderDate" title="Bank order due Date"/>
 	<many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode"/>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,6 +23,7 @@ import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -37,7 +38,7 @@ public class AccountCustomerServiceSupplyChain extends AccountCustomerService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public AccountingSituation updateAccountingSituationCustomerAccount(
       AccountingSituation accountingSituation,
       boolean updateCustAccount,
@@ -52,7 +53,7 @@ public class AccountCustomerServiceSupplyChain extends AccountCustomerService {
             updateDueCustAccount,
             updateDueDebtRecoveryCustAccount);
 
-    if (updateCustAccount) {
+    if (updateCustAccount && Beans.get(AppBaseService.class).isApp("supplychain")) {
       accountingSituationService.updateCustomerCredit(accountingSituation.getPartner());
     }
 

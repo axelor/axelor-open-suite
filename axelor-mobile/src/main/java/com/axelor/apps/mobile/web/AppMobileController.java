@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,15 +33,26 @@ public class AppMobileController {
   public void getAppMobile(ActionRequest request, ActionResponse response) {
 
     Map<String, Object> data = new HashMap<>();
+    AppService appService = Beans.get(AppService.class);
 
-    AppMobile appMobile = (AppMobile) Beans.get(AppService.class).getApp("mobile");
+    AppMobile appMobile = (AppMobile) appService.getApp("mobile");
 
     data.put("isAppMobileEnable", appMobile.getActive());
-    data.put("isSaleAppEnable", appMobile.getIsSaleAppEnable());
-    data.put("isCrmAppEnable", appMobile.getIsCrmAppEnable());
-    data.put("isTimesheetAppEnable", appMobile.getIsTimesheetAppEnable());
-    data.put("isLeaveAppEnable", appMobile.getIsLeaveAppEnable());
-    data.put("isExpenseAppEnable", appMobile.getIsExpenseAppEnable());
+    data.put("isSaleAppEnable", appService.isApp("sale") ? appMobile.getIsSaleAppEnable() : false);
+    data.put("isCrmAppEnable", appService.isApp("crm") ? appMobile.getIsCrmAppEnable() : false);
+    data.put(
+        "isTimesheetAppEnable",
+        appService.isApp("timesheet") ? appMobile.getIsTimesheetAppEnable() : false);
+    data.put(
+        "isLeaveAppEnable", appService.isApp("leave") ? appMobile.getIsLeaveAppEnable() : false);
+    data.put(
+        "isExpenseAppEnable",
+        appService.isApp("expense") ? appMobile.getIsExpenseAppEnable() : false);
+    data.put(
+        "isTaskAppEnable", appService.isApp("project") ? appMobile.getIsTaskAppEnable() : false);
+    data.put(
+        "isQualityAppEnable",
+        appService.isApp("quality") ? appMobile.getIsQualityAppEnable() : false);
 
     data.put("offlineRecordLimit", appMobile.getOfflineRecordLimit());
 

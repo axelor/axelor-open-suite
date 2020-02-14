@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.businessproject.web;
 
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectGeneratorType;
@@ -25,7 +26,9 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
@@ -33,7 +36,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -44,18 +46,27 @@ public class SaleOrderProjectController {
 
   private static final String CONTEXT_SHOW_RECORD = "_showRecord";
 
-  @Inject private SaleOrderRepository saleOrderRepo;
-
   public void generateProject(ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+      if (saleOrder.getSaleOrderLineList() == null || saleOrder.getSaleOrderLineList().isEmpty()) {
+        response.setAlert(I18n.get(IExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_2));
+        return;
+      }
       String generatorType = (String) request.getContext().get("_projectGeneratorType");
       LocalDateTime startDate = getElementStartDate(request.getContext());
 
-      ProjectGeneratorFactory factory =
-          ProjectGeneratorFactory.getFactory(ProjectGeneratorType.valueOf(generatorType));
-      Project project = factory.generate(saleOrder, startDate);
+      ProjectGeneratorType projectGeneratorType = ProjectGeneratorType.valueOf(generatorType);
+
+      ProjectGeneratorFactory factory = ProjectGeneratorFactory.getFactory(projectGeneratorType);
+
+      Project project;
+      if (projectGeneratorType.equals(ProjectGeneratorType.PROJECT_ALONE)) {
+        project = factory.create(saleOrder);
+      } else {
+        project = factory.generate(saleOrder, startDate);
+      }
 
       response.setReload(true);
       response.setView(
@@ -67,7 +78,8 @@ public class SaleOrderProjectController {
               .map());
 
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+      response.setReload(true);
     }
   }
 
@@ -75,6 +87,12 @@ public class SaleOrderProjectController {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+      if (saleOrder.getSaleOrderLineList() == null
+          || (saleOrder.getSaleOrderLineList() != null
+              && saleOrder.getSaleOrderLineList().isEmpty())) {
+        response.setAlert(I18n.get(IExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_2));
+        return;
+      }
       String generatorType = (String) request.getContext().get("_projectGeneratorType");
       LocalDateTime startDate = getElementStartDate(request.getContext());
 
@@ -87,12 +105,13 @@ public class SaleOrderProjectController {
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+      response.setReload(true);
     }
   }
 
   public void updateLines(ActionRequest request, ActionResponse response) throws AxelorException {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    saleOrder = saleOrderRepo.find(saleOrder.getId());
+    saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
 
     for (SaleOrderLine orderLine : saleOrder.getSaleOrderLineList()) {
       orderLine.setProject(saleOrder.getProject());

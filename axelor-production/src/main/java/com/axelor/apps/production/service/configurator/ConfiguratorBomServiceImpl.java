@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -60,7 +60,7 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class, AxelorException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public BillOfMaterial generateBillOfMaterial(
       ConfiguratorBOM configuratorBOM, JsonContext attributes, int level, Product generatedProduct)
       throws AxelorException {
@@ -83,15 +83,28 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
       name = configuratorBOM.getName();
     }
     if (configuratorBOM.getDefProductFromConfigurator()) {
+      if (generatedProduct == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.CONFIGURATOR_BOM_IMPORT_GENERATED_PRODUCT_NULL));
+      }
       product = generatedProduct;
     } else if (configuratorBOM.getDefProductAsFormula()) {
       product =
           (Product)
               configuratorService.computeFormula(configuratorBOM.getProductFormula(), attributes);
-      if (product != null) {
-        product = Beans.get(ProductRepository.class).find(product.getId());
+      if (product == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.CONFIGURATOR_BOM_IMPORT_FORMULA_PRODUCT_NULL));
       }
+      product = Beans.get(ProductRepository.class).find(product.getId());
     } else {
+      if (configuratorBOM.getProduct() == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.CONFIGURATOR_BOM_IMPORT_FILLED_PRODUCT_NULL));
+      }
       product = configuratorBOM.getProduct();
     }
     if (configuratorBOM.getDefQtyAsFormula()) {
@@ -136,6 +149,7 @@ public class ConfiguratorBomServiceImpl implements ConfiguratorBomService {
     billOfMaterial.setUnit(unit);
     billOfMaterial.setProdProcess(prodProcess);
     billOfMaterial.setStatusSelect(configuratorBOM.getStatusSelect());
+    billOfMaterial.setDefineSubBillOfMaterial(configuratorBOM.getDefineSubBillOfMaterial());
 
     if (configuratorBOM.getConfiguratorBomList() != null) {
       for (ConfiguratorBOM confBomChild : configuratorBOM.getConfiguratorBomList()) {

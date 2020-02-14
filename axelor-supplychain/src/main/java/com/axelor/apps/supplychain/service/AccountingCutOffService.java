@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.CallMethod;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.List;
@@ -36,7 +37,7 @@ public interface AccountingCutOffService {
       Integer limit,
       Integer offset);
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public List<Move> generateCutOffMoves(
       StockMove stockMove,
       LocalDate moveDate,
@@ -61,5 +62,6 @@ public interface AccountingCutOffService {
       boolean isReverse)
       throws AxelorException;
 
+  @CallMethod
   List<Long> getStockMoveLines(Batch batch);
 }

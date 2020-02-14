@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,13 +20,13 @@ package com.axelor.studio.web;
 import com.axelor.data.Listener;
 import com.axelor.data.xml.XMLImporter;
 import com.axelor.db.Model;
+import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.io.Files;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -38,8 +38,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.xmlbeans.impl.common.IOUtil;
 
 public class AppBuilderController {
-
-  @Inject private MetaFileRepository metaFileRepo;
 
   @Transactional
   public void importBpm(ActionRequest request, ActionResponse response) {
@@ -92,11 +90,11 @@ public class AppBuilderController {
 
       @SuppressWarnings("unchecked")
       Object metaFileId = ((Map<String, Object>) request.getContext().get("dataFile")).get("id");
-
+      MetaFileRepository metaFileRepository = Beans.get(MetaFileRepository.class);
       if (metaFileId != null) {
-        MetaFile metaFile = metaFileRepo.find(Long.parseLong(metaFileId.toString()));
+        MetaFile metaFile = metaFileRepository.find(Long.parseLong(metaFileId.toString()));
         if (metaFile != null) {
-          metaFileRepo.remove(metaFile);
+          metaFileRepository.remove(metaFile);
         }
       }
 

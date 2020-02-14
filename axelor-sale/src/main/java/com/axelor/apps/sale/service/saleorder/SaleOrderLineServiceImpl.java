@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -184,6 +184,9 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
         saleOrderLine.setDiscountAmount((BigDecimal) discounts.get("discountAmount"));
       }
       saleOrderLine.setDiscountTypeSelect((Integer) discounts.get("discountTypeSelect"));
+    } else if (!saleOrder.getTemplate()) {
+      saleOrderLine.setDiscountAmount(BigDecimal.ZERO);
+      saleOrderLine.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_NONE);
     }
 
     return price;
@@ -192,18 +195,23 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   protected void fillTaxInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
 
-    TaxLine taxLine = this.getTaxLine(saleOrder, saleOrderLine);
-    saleOrderLine.setTaxLine(taxLine);
+    if (saleOrder.getClientPartner() != null) {
+      TaxLine taxLine = this.getTaxLine(saleOrder, saleOrderLine);
+      saleOrderLine.setTaxLine(taxLine);
 
-    FiscalPosition fiscalPosition = saleOrder.getClientPartner().getFiscalPosition();
+      FiscalPosition fiscalPosition = saleOrder.getClientPartner().getFiscalPosition();
 
-    Tax tax =
-        accountManagementService.getProductTax(
-            saleOrderLine.getProduct(), saleOrder.getCompany(), fiscalPosition, false);
+      Tax tax =
+          accountManagementService.getProductTax(
+              saleOrderLine.getProduct(), saleOrder.getCompany(), fiscalPosition, false);
 
-    TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(fiscalPosition, tax);
+      TaxEquiv taxEquiv = Beans.get(FiscalPositionService.class).getTaxEquiv(fiscalPosition, tax);
 
-    saleOrderLine.setTaxEquiv(taxEquiv);
+      saleOrderLine.setTaxEquiv(taxEquiv);
+    } else {
+      saleOrderLine.setTaxLine(null);
+      saleOrderLine.setTaxEquiv(null);
+    }
   }
 
   @Override
@@ -418,10 +426,11 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   }
 
   @Override
-  public PriceListLine getPriceListLine(SaleOrderLine saleOrderLine, PriceList priceList) {
+  public PriceListLine getPriceListLine(
+      SaleOrderLine saleOrderLine, PriceList priceList, BigDecimal price) {
 
     return priceListService.getPriceListLine(
-        saleOrderLine.getProduct(), saleOrderLine.getQty(), priceList);
+        saleOrderLine.getProduct(), saleOrderLine.getQty(), priceList, price);
   }
 
   @Override
@@ -457,18 +466,47 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     PriceList priceList = saleOrder.getPriceList();
 
     if (priceList != null) {
-      PriceListLine priceListLine = this.getPriceListLine(saleOrderLine, priceList);
+      PriceListLine priceListLine = this.getPriceListLine(saleOrderLine, priceList, price);
       discounts = priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, price);
+
+      if (saleOrder.getTemplate()) {
+        Integer manualDiscountAmountType = saleOrderLine.getDiscountTypeSelect();
+        BigDecimal manualDiscountAmount = saleOrderLine.getDiscountAmount();
+        Integer priceListDiscountAmountType = (Integer) discounts.get("discountTypeSelect");
+        BigDecimal priceListDiscountAmount = (BigDecimal) discounts.get("discountAmount");
+
+        if (!manualDiscountAmountType.equals(priceListDiscountAmountType)
+            && manualDiscountAmountType.equals(PriceListLineRepository.AMOUNT_TYPE_PERCENT)
+            && priceListDiscountAmountType.equals(PriceListLineRepository.AMOUNT_TYPE_FIXED)) {
+          priceListDiscountAmount =
+              priceListDiscountAmount
+                  .multiply(new BigDecimal(100))
+                  .divide(price, 2, RoundingMode.HALF_UP);
+        } else if (!manualDiscountAmountType.equals(priceListDiscountAmountType)
+            && manualDiscountAmountType.equals(PriceListLineRepository.AMOUNT_TYPE_FIXED)
+            && priceListDiscountAmountType.equals(PriceListLineRepository.AMOUNT_TYPE_PERCENT)) {
+          priceListDiscountAmount =
+              priceListDiscountAmount
+                  .multiply(price)
+                  .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
+        }
+
+        if (manualDiscountAmount.compareTo(priceListDiscountAmount) > 0) {
+          discounts.put("discountAmount", manualDiscountAmount);
+          discounts.put("discountTypeSelect", manualDiscountAmountType);
+        }
+      }
     }
 
     return discounts;
   }
 
   @Override
-  public int getDiscountTypeSelect(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+  public int getDiscountTypeSelect(
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal price) {
     PriceList priceList = saleOrder.getPriceList();
     if (priceList != null) {
-      PriceListLine priceListLine = this.getPriceListLine(saleOrderLine, priceList);
+      PriceListLine priceListLine = this.getPriceListLine(saleOrderLine, priceList, price);
 
       return priceListLine.getTypeSelect();
     }

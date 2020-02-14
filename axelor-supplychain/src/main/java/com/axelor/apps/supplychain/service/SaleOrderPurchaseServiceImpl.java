@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -105,7 +105,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public PurchaseOrder createPurchaseOrder(
       Partner supplierPartner, List<SaleOrderLine> saleOrderLineList, SaleOrder saleOrder)
       throws AxelorException {
@@ -155,6 +155,8 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
     }
 
     purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
+
+    purchaseOrder.setNotes(supplierPartner.getPurchaseOrderComments());
 
     Beans.get(PurchaseOrderRepository.class).save(purchaseOrder);
 

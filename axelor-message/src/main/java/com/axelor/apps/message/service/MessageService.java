@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,14 +24,13 @@ import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaAttachment;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.persist.Transactional;
-import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import javax.mail.MessagingException;
 
 public interface MessageService {
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public Message createMessage(
       String model,
       int id,
@@ -47,21 +46,20 @@ public interface MessageService {
       int mediaTypeSelect,
       EmailAccount emailAccount);
 
-  @Transactional(rollbackOn = Exception.class)
+  @Transactional
   public void attachMetaFiles(Message message, Set<MetaFile> metaFiles);
 
   public Set<MetaAttachment> getMetaAttachments(Message message);
 
   public Message sendMessage(Message message) throws AxelorException;
 
-  @Transactional(rollbackOn = {MessagingException.class, IOException.class, Exception.class})
-  public Message sendByEmail(Message message)
-      throws MessagingException, IOException, AxelorException;
+  @Transactional(rollbackOn = {Exception.class})
+  public Message sendByEmail(Message message) throws MessagingException, AxelorException;
 
-  @Transactional(rollbackOn = Exception.class)
+  @Transactional
   public Message sendToUser(Message message);
 
-  @Transactional(rollbackOn = Exception.class)
+  @Transactional
   public Message sendByMail(Message message);
 
   public String printMessage(Message message) throws AxelorException;

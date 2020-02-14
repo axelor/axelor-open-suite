@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
 	<grid name="job-position-grid" title="Job positions" model="com.axelor.apps.talent.db.JobPosition">
 		<field name="jobReference" width="120"/>
@@ -37,7 +37,7 @@
 		</panel>
 		<panel name="buttonPanel" sidebar="true">
 			<button name="statusDraftBtn" title="Draft" onClick="save,action-job-position-record-status-draft,save" showIf="statusSelect == 4" colSpan="12"/>
-			<button name="statusOpenBtn" title="Open" onClick="save,action-job-position-record-status-open,save" showIf="statusSelect == 0 || statusSelect == 2" colSpan="12"/>
+			<button name="statusOpenBtn" title="Open" onClick="save,action-job-position-record-status-open,save" showIf="statusSelect == 0" colSpan="12"/>
 			<button name="statusOnHoldBtn" title="On hold" onClick="save,action-job-position-record-status-onhold,save" showIf="statusSelect == 1" colSpan="12"/>
 			<button name="statusClosedBtn" title="Close" onClick="save,action-job-position-record-status-closed,save" showIf="statusSelect == 1 || statusSelect == 2" colSpan="12"/>
 			<button name="cancelBtn" title="Cancel" onClick="save,action-job-position-record-status-cancel,save" hideIf="statusSelect == 4" colSpan="12" icon="fa-times-circle" css="btn-danger"/>
@@ -100,5 +100,14 @@
 	<action-record name="action-job-position-record-status-cancel" model="com.axelor.apps.talent.db.JobPosition">
 		<field name="statusSelect" expr="eval: 4"/>
 	</action-record>
+	
+	<search-filters name="job-position-filters" model="com.axelor.apps.talent.db.JobPosition" title="Job Position Filters">
+		<filter title="Current job offers">
+			<domain>self.statusSelect &lt; 3</domain>
+		</filter>
+		<filter title="Closed job offers">
+			<domain>self.statusSelect &gt; 2</domain>
+		</filter>
+	</search-filters>
 	
 </object-views>

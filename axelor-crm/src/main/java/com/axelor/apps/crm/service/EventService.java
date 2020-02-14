@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,6 +23,7 @@ import com.axelor.apps.crm.db.RecurrenceConfiguration;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.CallMethod;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -39,6 +40,7 @@ public interface EventService {
       int type,
       String subject);
 
+  @CallMethod
   String getInvoicingAddressFullName(Partner partner);
 
   void manageFollowers(Event event);

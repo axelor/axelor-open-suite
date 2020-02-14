@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -199,6 +199,11 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
   protected InvoiceLine createInvoiceLine() throws AxelorException {
 
     InvoiceLine invoiceLine = super.createInvoiceLine();
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return invoiceLine;
+    }
+
     InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
 
     this.assignOriginElements(invoiceLine);
@@ -233,6 +238,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
       this.copyBudgetDistributionList(purchaseOrderLine.getBudgetDistributionList(), invoiceLine);
       invoiceLine.setBudget(purchaseOrderLine.getBudget());
+      invoiceLine.setBudgetDistributionSumAmount(
+          purchaseOrderLine.getBudgetDistributionSumAmount());
       invoiceLine.setFixedAssets(purchaseOrderLine.getFixedAssets());
 
       if (product != null && isAccountRequired()) {
@@ -286,12 +293,6 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
   public void assignOriginElements(InvoiceLine invoiceLine) throws AxelorException {
 
-    if (!Beans.get(AppSupplychainService.class)
-        .getAppSupplychain()
-        .getManageInvoicedAmountByLine()) {
-      return;
-    }
-
     StockMove stockMove = null;
     if (stockMoveLine != null) {
       stockMove = stockMoveLine.getStockMove();
@@ -342,6 +343,7 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       BudgetDistribution budgetDistribution = new BudgetDistribution();
       budgetDistribution.setBudget(budgetDistributionIt.getBudget());
       budgetDistribution.setAmount(budgetDistributionIt.getAmount());
+      budgetDistribution.setBudgetAmountAvailable(budgetDistributionIt.getBudgetAmountAvailable());
       invoiceLine.addBudgetDistributionListItem(budgetDistribution);
     }
   }
@@ -357,6 +359,10 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
   @Override
   public boolean isAccountRequired() {
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return super.isAccountRequired();
+    }
 
     if (Beans.get(AppSaleService.class).getAppSale().getProductPackMgt()) {
 

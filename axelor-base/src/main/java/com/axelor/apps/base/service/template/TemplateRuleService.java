@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,15 +31,17 @@ import com.axelor.meta.schema.actions.Action;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.Resource;
 import com.google.common.collect.Maps;
-import com.google.inject.Inject;
+import java.lang.invoke.MethodHandles;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TemplateRuleService {
 
-  @Inject private TemplateBaseService ts;
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public Map<String, Object> getContext(TemplateRule templateRule, Model bean) {
     Template template = this.getTemplate(bean, templateRule);
@@ -47,7 +49,8 @@ public class TemplateRuleService {
     if (template == null) {
       return null;
     }
-    return ts.getContext(template, bean);
+    //    return ts.getContext(template, bean);
+    return null;
   }
 
   public Template getTemplate(Model bean, TemplateRule templateRule) {
@@ -56,19 +59,20 @@ public class TemplateRuleService {
     }
 
     Class<?> klass = this.getTemplateClass(templateRule.getMetaModel());
-    if (!klass.isInstance(bean)) {
-      throw new IllegalArgumentException(
-          I18n.get(IExceptionMessage.TEMPLATE_RULE_1) + " " + klass.getSimpleName());
-    }
+    if (klass != null) {
+      if (!klass.isInstance(bean)) {
+        throw new IllegalArgumentException(
+            I18n.get(IExceptionMessage.TEMPLATE_RULE_1) + " " + klass.getSimpleName());
+      }
 
-    List<TemplateRuleLine> lines = _sortRuleLine(templateRule.getTemplateRuleLineList());
-    for (TemplateRuleLine line : lines) {
-      Boolean isValid = this.runAction(bean, line.getMetaAction(), klass.getName());
-      if (isValid) {
-        return line.getTemplate();
+      List<TemplateRuleLine> lines = _sortRuleLine(templateRule.getTemplateRuleLineList());
+      for (TemplateRuleLine line : lines) {
+        Boolean isValid = this.runAction(bean, line.getMetaAction(), klass.getName());
+        if (Boolean.TRUE.equals(isValid)) {
+          return line.getTemplate();
+        }
       }
     }
-
     return null;
   }
 
@@ -77,8 +81,8 @@ public class TemplateRuleService {
 
     try {
       return Class.forName(model);
-    } catch (NullPointerException e) {
     } catch (ClassNotFoundException e) {
+      LOG.error(e.getMessage());
     }
     return null;
   }
@@ -105,6 +109,7 @@ public class TemplateRuleService {
 
   @SuppressWarnings({"rawtypes", "unchecked"})
   public Boolean runAction(Model bean, MetaAction metaAction, String klassName) {
+
     if (metaAction == null) {
       return true;
     }
@@ -115,14 +120,16 @@ public class TemplateRuleService {
 
     if (result instanceof Map) {
       Map<Object, Object> data = (Map<Object, Object>) result;
-      if (data.containsKey("errors")
-          && data.get("errors") != null
-          && !((Map) data.get("errors")).isEmpty()) {
-        return true;
+      final String ERRORS = "errors";
+      if (data.containsKey(ERRORS)
+          && data.get(ERRORS) != null
+          && !((Map) data.get(ERRORS)).isEmpty()) {
+        return Boolean.TRUE;
       } else {
-        return false;
+        return Boolean.FALSE;
       }
     }
+
     return (Boolean) result;
   }
 

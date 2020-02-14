@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -40,6 +40,7 @@ public interface StockMoveLineServiceSupplychain {
    * @param quantity
    * @param requestedReservedQty
    * @param unitPrice
+   * @param purchasePrice
    * @param unit
    * @param stockMove
    * @param type
@@ -58,6 +59,7 @@ public interface StockMoveLineServiceSupplychain {
       BigDecimal requestedReservedQty,
       BigDecimal unitPrice,
       BigDecimal companyUnitPriceUntaxed,
+      BigDecimal purchasePrice,
       Unit unit,
       StockMove stockMove,
       int type,
@@ -78,4 +80,6 @@ public interface StockMoveLineServiceSupplychain {
       throws AxelorException;
 
   boolean isAvailableProduct(StockMove stockMove, StockMoveLine stockMoveLine);
+
+  void setInvoiceStatus(StockMoveLine stockMoveLine);
 }

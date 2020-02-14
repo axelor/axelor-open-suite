@@ -1,11 +1,11 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
-  <entity name="ProjectPlanningTime" cachable="true">
+  <entity name="ProjectPlanningTime" cacheable="true">
     
       <date name="date" column="date_val" title="Date" required="true" />  
       <decimal name="plannedHours" title="Planned hours" />
@@ -17,7 +17,8 @@
       <string name="description" title="Description" large="true" />
       <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Activity"/>
 	  <boolean name="isIncludeInTurnoverForecast" title="Include in turnover forecast"/>
-	  <decimal name="realHours" title="Real hours"/>
+	  <time name="startTime" title="Start time"/>
+	  <time name="endTime" title="End time"/>
 	  
 	  <string name="fullName" namecolumn="true">
 			<![CDATA[
@@ -42,7 +43,7 @@
 	  		return fullName;
 	  	]]>
 	  </string>
-		
+	  
   </entity>
   
 </domain-models>

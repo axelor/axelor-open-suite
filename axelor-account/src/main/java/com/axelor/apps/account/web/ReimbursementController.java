@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,20 +22,18 @@ import com.axelor.apps.account.db.repo.ReimbursementRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.ReimbursementService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class ReimbursementController {
 
-  @Inject private ReimbursementService reimbursementService;
-
   public void validateReimbursement(ActionRequest request, ActionResponse response) {
 
     Reimbursement reimbursement = request.getContext().asType(Reimbursement.class);
-    reimbursementService.updatePartnerCurrentRIB(reimbursement);
+    Beans.get(ReimbursementService.class).updatePartnerCurrentRIB(reimbursement);
 
     if (reimbursement.getBankDetails() != null) {
       response.setValue("statusSelect", ReimbursementRepository.STATUS_VALIDATED);

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,13 +19,17 @@ package com.axelor.apps.hr.service.employee;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.EventsPlanning;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserServiceImpl;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
+import com.axelor.apps.hr.db.DPAE;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LeaveRequest;
+import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.leave.LeaveService;
@@ -35,6 +39,7 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
@@ -147,7 +152,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
         Beans.get(LeaveRequestRepository.class)
             .all()
             .filter(
-                "self.user = ?1 AND self.duration >= 1 AND self.statusSelect = ?2 AND (self.fromDateT BETWEEN ?3 AND ?4 OR self.toDateT BETWEEN ?3 AND ?4)",
+                "self.user = ?1 AND self.duration >= 1 AND self.statusSelect = ?2 AND (self.fromDateT BETWEEN ?3 AND ?4 OR self.toDateT BETWEEN ?3 AND ?4 OR ?3 BETWEEN self.fromDateT AND self.toDateT OR ?4 BETWEEN self.fromDateT AND self.toDateT)",
                 employee.getUser(),
                 LeaveRequestRepository.STATUS_VALIDATED,
                 fromDate,
@@ -172,11 +177,6 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
             : name == null ? firstName : name;
     name = name == null ? "" : name;
     urlMap.put(
-        "google",
-        "<a class='fa fa-google-plus' href='https://www.google.com/?gws_rd=cr#q="
-            + name
-            + "' target='_blank' />");
-    urlMap.put(
         "facebook",
         "<a class='fa fa-facebook' href='https://www.facebook.com/search/more/?q="
             + name
@@ -199,5 +199,55 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
             + "' target='_blank' />");
 
     return urlMap;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public Long generateNewDPAE(Employee employee) throws AxelorException {
+    EmploymentContract mainEmploymentContract = employee.getMainEmploymentContract();
+    if (mainEmploymentContract == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.EMPLOYEE_CONTRACT_OF_EMPLOYMENT),
+          employee.getName());
+    }
+
+    Company payCompany = mainEmploymentContract.getPayCompany();
+    Partner employer = payCompany.getPartner();
+
+    DPAE newDPAE = new DPAE();
+
+    // Employer
+    newDPAE.setRegistrationCode(employer.getRegistrationCode());
+    newDPAE.setMainActivityCode(employer.getMainActivityCode());
+    newDPAE.setCompany(payCompany);
+    newDPAE.setCompanyAddress(employer.getMainAddress());
+    newDPAE.setCompanyFixedPhone(employer.getFixedPhone());
+    if (payCompany.getHrConfig() != null) {
+      newDPAE.setHealthService(payCompany.getHrConfig().getHealthService());
+      newDPAE.setHealthServiceAddress(payCompany.getHrConfig().getHealthServiceAddress());
+    }
+
+    // Employee
+    newDPAE.setLastName(employee.getContactPartner().getName());
+    newDPAE.setFirstName(employee.getContactPartner().getFirstName());
+    newDPAE.setSocialSecurityNumber(employee.getSocialSecurityNumber());
+    newDPAE.setSexSelect(employee.getSexSelect());
+    newDPAE.setDateOfBirth(employee.getBirthDate());
+    newDPAE.setDepartmentOfBirth(employee.getDepartmentOfBirth());
+    newDPAE.setCityOfBirth(employee.getCityOfBirth());
+    newDPAE.setCountryOfBirth(employee.getCountryOfBirth());
+
+    // Contract
+    newDPAE.setDateOfHire(mainEmploymentContract.getStartDate());
+    newDPAE.setTimeOfHire(mainEmploymentContract.getStartTime());
+    newDPAE.setTrialPeriodDuration(mainEmploymentContract.getTrialPeriodDuration());
+    newDPAE.setContractType(mainEmploymentContract.getContractType());
+    newDPAE.setEndDateOfContract(mainEmploymentContract.getEndDate());
+
+    employee.addDpaeListItem(newDPAE);
+
+    Beans.get(EmployeeRepository.class).save(employee);
+    return newDPAE.getId();
   }
 }

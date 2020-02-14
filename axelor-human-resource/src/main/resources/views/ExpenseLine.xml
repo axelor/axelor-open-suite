@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
-	<grid name="general-expense-line-grid"
+	<grid name="expense-line-grid"
 		  title="Expense lines"
 		  model="com.axelor.apps.hr.db.ExpenseLine" orderBy="-expenseDate"
 		  onNew="action-expense-line-default, action-kilometric-allowance-record-default">
-		<field name="project" requiredIf="toInvoice" canView="false" onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox" width="150"/>
+		<hilite if="untaxedAmount == 0" color="danger"/>
+		<field name="project" requiredIf="toInvoice" canView="false" onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox" width="150" onChange="action-expense-line-attrs-project-on-change"/>
 		<field name="expenseProduct" canView="false" onSelect="action-expense-line-attrs-set-product-domain" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid" width="200"/>
 		<field name="expenseDate" onChange="action-expense-line-validate-expenseDate" width="120"/>
 		<field name="user" hidden="true" form-view="user-form" grid-view="user-grid" onSelect="action-expense-line-attrs-company"/>
@@ -22,6 +23,7 @@
 	
 	<grid name="expense-line-kilometric-grid" title="Kilometric Allowances" model="com.axelor.apps.hr.db.ExpenseLine" orderBy="-expenseDate"
 		  onNew="action-expense-line-default, action-expense-line-method-fill-kilometric-expense-product">
+		<hilite if="untaxedAmount == 0" color="danger"/>
   		<field name="project" requiredIf="toInvoice" canView="false" onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox" grid-view="project-grid" width="120"/>
         <field name="expenseDate" title="Date" width="95"
         	onChange="action-kilometric-allowance-method-compute, action-kilometric-allowance-method-update-kap"/>
@@ -37,13 +39,14 @@
    	    <field name="user" hidden="true" form-view="user-form" grid-view="user-grid" onSelect="action-expense-line-attrs-company" canNew="false" canEdit="false" canView="false"/>
   		<field name="untaxedAmount" hidden="true" />
    		<field name="expenseProduct" hidden="true"/>
+   		<field name="toInvoice" />
 	</grid>
 
     <form name="expense-line-project-form" title="Expense line" model="com.axelor.apps.hr.db.ExpenseLine" readonlyIf="true" canEdit="false">
-        <panel-include view="general-expense-line-form"/>
+        <panel-include view="expense-line-form"/>
     </form>
 
-	<form name="general-expense-line-form" title="Expense line" model="com.axelor.apps.hr.db.ExpenseLine"
+	<form name="expense-line-form" title="Expense line" model="com.axelor.apps.hr.db.ExpenseLine"
 		onNew="action-expense-line-default"
 		onSave="action-expense-line-validate-expenseDate" width="large">
 		
@@ -177,5 +180,9 @@
 		<attribute name="domain" for="expenseProduct" expr="eval: &quot;self.expense = true AND self.unavailableToUsers = false&quot;"  if="!__user__.employee?.hrManager &amp;&amp; !__parent__.multipleUsers &amp;&amp; __parent__.companyCbSelect != 1"/>
 		<attribute name="domain" for="expenseProduct" expr="eval: &quot;self.expense = true AND self.personalExpense = false&quot;" if="__user__.employee?.hrManager &amp;&amp; (__parent__.companyCbSelect == 1 || __parent__.multipleUsers)"/>
 		<attribute name="domain" for="expenseProduct" expr="eval: &quot;self.expense = true AND self.unavailableToUsers = false AND self.personalExpense = false&quot;"  if="!__user__.employee?.hrManager &amp;&amp; (__parent__.companyCbSelect == 1 || __parent__.multipleUsers)"/>
+	</action-attrs>
+
+	<action-attrs name="action-expense-line-attrs-project-on-change">
+		<attribute name="value" for="toInvoice" expr="eval: project?.isInvoicingExpenses" if="__config__.app.isApp('business-project')"/>
 	</action-attrs>
 </object-views>

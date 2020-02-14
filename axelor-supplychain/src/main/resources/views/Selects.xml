@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -66,9 +66,9 @@
 
 	<selection name="supplychain.sale.order.invoicing.wizard.select">
 		<option value="1">Invoice all</option>
-		<option value="2">Invoice a fraction</option>
-		<option value="3">Invoice selected lines</option>
-		<option value="4">Invoice an advance payment</option>
+		<option value="2">Invoice selected lines</option>
+		<option value="3">Invoice an advance payment</option>
+		<option value="4">Invoice on timetable</option>
 	</selection>
 
 	<selection name="supplychain.sale.order.type.select">
@@ -91,6 +91,10 @@
 		<option value="3">Cancelled</option>
 	</selection>
 	
+	<selection name="sequence.generic.code.select" id="supplychain.sequence.generic.code.select">
+		<option value="mrp">MRP</option>
+	</selection>	
+	
 	<selection name="supplychain.estimated.date.select">
 		<option value="0">Current date</option>
 		<option value="1">Left empty</option>
@@ -100,6 +104,17 @@
 	<selection name="supplychain.mrplinetype.set.element.to.select">
 		<option value="1">Current date</option>
 		<option value="2">Current date + days</option>
+	</selection>
+
+	<selection name="supplychain.stock.move.invoicing.wizard.select">
+      <option value="1">Invoice all</option>
+      <option value="2">Invoice partially stock move</option>
+	</selection>
+
+	<selection name="supplychain.stock.move.invoicing.status.select">
+		<option value="0">Not invoiced</option>
+		<option value="1">Partially invoiced</option>
+		<option value="2">Invoiced</option>
 	</selection>
 
 </object-views>

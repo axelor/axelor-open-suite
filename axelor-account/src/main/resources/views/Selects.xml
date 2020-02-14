@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -79,10 +79,11 @@
 		<option order="12" value="12">VAT Statement on invoices</option>
 		<option order="13" value="15">VAT Statement on amount received</option>
 		<option order="14" value="13">Payment differences</option>
-		<option order="15" value="14">General ledger 2</option>
-		<option value="16" order="16">Acquisitions</option>
-		<option value="17" order="17">Summary of gross values and depreciation</option>
+		<option order="15" value="14">General ledger (old presentation)</option>
+		<option order="17" value="16" >Acquisitions</option>
+		<option order="18" value="17" >Summary of gross values and depreciation</option>
 		<option order="2000" value="2000">Analytic balance</option>
+		<option order="2001" value="2001">Analytic general ledger</option>
 	</selection>
 	
 	<selection name='accounting.report.type.select.export'>
@@ -165,6 +166,8 @@
 		<option value="18">Move export</option>
 		<option value="19">Credit Transfer</option>
 		<option value="20">Realize fixed asset lines</option>
+		<option value="21">Close the annual accounts of the past year</option>
+		<option value="22">Open the annual accounts of the next year</option>
 	</selection>
 	
 	<selection name="iaccount.account.batch.transfer.type.select">
@@ -380,6 +383,29 @@
 		<option value="2">Amount</option>
 	</selection>
 
+	<selection name="account.move.date.of.reversion.type.select">
+		<option value="1">Today</option>
+		<option value="2">Date of original move</option>
+		<option value="3">Choose date</option>
+	</selection>
+
+	<selection name="invoice.report.type">
+		<option value="1">Proforma</option>
+		<option value="2">Original invoice</option>
+		<option value="3">Invoice with payments details</option>
+		<option value="4">Updated copy</option>
+	</selection>
+
+	<selection name="invoice.report.format">
+		<option value="xls">Excel</option>
+		<option value="doc">Word</option>
+		<option value="pdf">PDF</option>
+	</selection>
+	<selection name="invoice.pfp.validate.status.select">
+		<option value="1">Awaiting</option>
+		<option value="2">PFP validated</option>
+		<option value="3">Litigation</option>
+	</selection>
 	<selection name="account.tax.type.select">
 		<option value="1">Collection</option>
 		<option value="2">Debit</option>
@@ -403,5 +429,19 @@
 		<option value="isCarrier">Carrier</option>
 		<option value="isFactor">Factor</option>
 	</selection>
+	
+	<selection name='iaccount.move.functional.origin.select'>
+		<option value='1'>Opening</option>
+		<option value='2'>Closure</option>
+	</selection>
+
+   <selection name="account.year.period.duration.select">
+      <option value="0">One time global period</option>
+      <option value="1">1 Month</option>
+      <option value="2">2 Months</option>
+      <option value="3">3 Months</option>
+      <option value="6">6 Months</option>
+      <option value="12">1 Year</option>
+   </selection>
 
 </object-views>

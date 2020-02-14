@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
@@ -16,12 +16,14 @@
         <date name="shipmentDate" title="Date of shipment" />
         <decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"/>
         <integer name="saleOrderTypeSelect" title="Type" required="true" default="1" selection="supplychain.sale.order.type.select"/>
-        <!-- 	Onglet échéancier -->
+        <!-- Onglet échéancier -->
         <one-to-many name="saleOrderScheduleLineList" ref="com.axelor.apps.sale.db.SaleOrderScheduleLine" mappedBy="saleOrder" title="Schedule line list"/>
-        <one-to-many name="timetableList" ref="com.axelor.apps.supplychain.db.Timetable" title="Timetable" mappedBy="saleOrder"/>
+        <one-to-many name="timetableList" ref="com.axelor.apps.supplychain.db.Timetable" title="Timetable" mappedBy="saleOrder" copy="false"/>
         <boolean name="interco" title="Interco"/>
         <boolean name="createdByInterco" default="false"/>
-        <date name="expectedRealisationDate" title="Expected realisation date"/>
+        <date name="expectedRealisationDate" title="Expected realisation date" copy="false"/>
+        <date name="computationDate" title="Timetable computation date" copy="false"/>
+        <many-to-one name="timetableTemplate" title="Timetable template" ref="com.axelor.apps.supplychain.db.TimetableTemplate" copy="false"/>
         <integer name="standardDelay" title="Standard delay (days)" default="0"  />
         <one-to-many name="stockMoveList" ref="com.axelor.apps.stock.db.StockMove" title="Stock moves" />
 
@@ -39,9 +41,9 @@
             <![CDATA[
                 // INVOICE
                 public static final int INVOICE_ALL = 1;
-                public static final int INVOICE_PART = 2;
-                public static final int INVOICE_LINES = 3;
-                public static final int INVOICE_ADVANCE_PAYMENT = 4;
+                public static final int INVOICE_LINES = 2;
+                public static final int INVOICE_ADVANCE_PAYMENT = 3;
+                public static final int INVOICE_TIMETABLES = 4;
 
                 // SALE ORDER TYPE
                 public static final int SALE_ORDER_TYPE_NORMAL = 1;

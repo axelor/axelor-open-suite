@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
@@ -45,6 +46,8 @@ import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -70,6 +73,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       UnitConversionService unitConversionService,
       WeightedAveragePriceService weightedAveragePriceService,
       TrackingNumberRepository trackingNumberRepo,
+      ShippingCoefService shippingCoefService,
       AccountManagementService accountManagementService,
       PriceListService priceListService) {
     super(
@@ -81,7 +85,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         stockLocationLineService,
         unitConversionService,
         weightedAveragePriceService,
-        trackingNumberRepo);
+        trackingNumberRepo,
+        shippingCoefService);
     this.accountManagementService = accountManagementService;
     this.priceListService = priceListService;
   }
@@ -95,6 +100,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       BigDecimal requestedReservedQty,
       BigDecimal unitPrice,
       BigDecimal companyUnitPriceUntaxed,
+      BigDecimal companyPurchasePrice,
       Unit unit,
       StockMove stockMove,
       int type,
@@ -113,6 +119,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
               quantity,
               unitPrice,
               companyUnitPriceUntaxed,
+              companyPurchasePrice,
               unit,
               stockMove,
               taxed,
@@ -134,6 +141,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
           BigDecimal.ZERO,
           BigDecimal.ZERO,
           companyUnitPriceUntaxed,
+          BigDecimal.ZERO,
           unit,
           stockMove,
           null);
@@ -145,7 +153,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       throws AxelorException {
 
     // the case when stockMove is null is made in super.
-    if (stockMove == null) {
+    if (stockMove == null || !Beans.get(AppBaseService.class).isApp("supplychain")) {
       return super.compute(stockMoveLine, null);
     }
 
@@ -156,7 +164,10 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       return stockMoveLine;
     }
 
-    if (stockMove.getOriginId() != null && stockMove.getOriginId() != 0L) {
+    if (stockMove.getOriginId() != null
+        && stockMove.getOriginId() != 0L
+        && (stockMoveLine.getSaleOrderLine() != null
+            || stockMoveLine.getPurchaseOrderLine() != null)) {
       // the stock move comes from a sale or purchase order, we take the price from the order.
       stockMoveLine = computeFromOrder(stockMoveLine, stockMove);
     } else {
@@ -240,6 +251,9 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
 
     StockMoveLine newStockMoveLine = super.splitStockMoveLine(stockMoveLine, qty, trackingNumber);
 
+    if (!Beans.get(AppBaseService.class).isApp("supplychain")) {
+      return newStockMoveLine;
+    }
     BigDecimal reservedQtyAfterSplit =
         BigDecimal.ZERO.max(stockMoveLine.getRequestedReservedQty().subtract(qty));
     BigDecimal reservedQtyInNewLine = stockMoveLine.getRequestedReservedQty().min(qty);
@@ -252,6 +266,12 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
 
   @Override
   public void updateAvailableQty(StockMoveLine stockMoveLine, StockLocation stockLocation) {
+
+    if (!Beans.get(AppBaseService.class).isApp("supplychain")) {
+      super.updateAvailableQty(stockMoveLine, stockLocation);
+      return;
+    }
+
     BigDecimal availableQty = BigDecimal.ZERO;
     BigDecimal availableQtyForProduct = BigDecimal.ZERO;
 
@@ -353,6 +373,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
             BigDecimal.ZERO,
             BigDecimal.ZERO,
             BigDecimal.ZERO,
+            BigDecimal.ZERO,
             unit,
             null,
             null);
@@ -373,6 +394,12 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
   @Override
   public void setProductInfo(StockMove stockMove, StockMoveLine stockMoveLine, Company company)
       throws AxelorException {
+
+    if (!Beans.get(AppBaseService.class).isApp("supplychain")) {
+      super.setProductInfo(stockMove, stockMoveLine, company);
+      return;
+    }
+
     Preconditions.checkNotNull(stockMoveLine);
     Preconditions.checkNotNull(company);
 
@@ -433,5 +460,19 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       return false;
     }
     return true;
+  }
+
+  @Override
+  public void setInvoiceStatus(StockMoveLine stockMoveLine) {
+    if (stockMoveLine.getQtyInvoiced().compareTo(BigDecimal.ZERO) == 0) {
+      stockMoveLine.setAvailableStatus(I18n.get("Not invoiced"));
+      stockMoveLine.setAvailableStatusSelect(3);
+    } else if (stockMoveLine.getQtyInvoiced().compareTo(stockMoveLine.getRealQty()) == -1) {
+      stockMoveLine.setAvailableStatus(I18n.get("Partially invoiced"));
+      stockMoveLine.setAvailableStatusSelect(4);
+    } else if (stockMoveLine.getQtyInvoiced().compareTo(stockMoveLine.getRealQty()) == 0) {
+      stockMoveLine.setAvailableStatus(I18n.get("Invoiced"));
+      stockMoveLine.setAvailableStatusSelect(1);
+    }
   }
 }

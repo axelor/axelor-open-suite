@@ -1,20 +1,20 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
   <entity name="Project">
 
-		<string name="name" required="true" unique="true"/>
+		<string name="name"/>
 		<string name="description" multiline="true" large="true"/>
 		<many-to-one name="team" ref="com.axelor.team.db.Team"/>
 		<many-to-many name="projectFolderSet" ref="com.axelor.apps.project.db.ProjectFolder" title="Project Folders"/>
 		<one-to-many name="childProjectList" ref="com.axelor.apps.project.db.Project" title="Child Projects" mappedBy="parentProject"/>
 		<many-to-one name="assignedTo" ref="com.axelor.auth.db.User" title="Assigned to"/>
 		<integer name="statusSelect" selection="project.status.select" title="Status" default="1"/>
-		<many-to-many name="projectCategorySet" ref="com.axelor.apps.project.db.ProjectCategory" title="Type of authorized categories"/>
+		<many-to-many name="teamTaskCategorySet" ref="com.axelor.apps.project.db.TeamTaskCategory" title="Type of authorized categories"/>
 		<one-to-many name="teamTaskList" ref="com.axelor.team.db.TeamTask" title="Tasks" mappedBy="project"/>
 		<boolean name="synchronize"/>
 	  	<boolean name="extendsMembersFromParent" default="false"/>
@@ -22,7 +22,7 @@
 		<one-to-many name="wikiList" ref="com.axelor.apps.project.db.Wiki" title="Wiki" mappedBy="project"/>
 		<one-to-many name="resourceBookingList" ref="com.axelor.apps.project.db.ResourceBooking" title="Resource booking" mappedBy="project"/>
 		
-		<string name="code" title="Code" />
+		<string name="code" title="Code" unique="true"/>
 		<many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Membres"/>
 		<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
 		<many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner" title="Customer Contact"/>
@@ -30,6 +30,9 @@
 		<datetime name="fromDate" title="From Date"/>
 		<datetime name="toDate" title="To Date"/>
 		<datetime name="dueDate" title="Due Date"/>
+      
+        <decimal name="estimatedTimeDays" title="Estimated time (in days)" />
+        <decimal name="estimatedTimeHrs" title="Estimated time (in hours)" />
 		
 		<decimal name="timeSpent" title="Time Spent"/>
 		
@@ -57,7 +60,7 @@
 	 	
         <integer name="projectTypeSelect" selection="project.project.project.type.select" default="1"/>
       	<enum name="genProjTypePerOrderLine" ref="GenProjTypePerOrderLine" default="BUSINESS_PROJECT"/>
-
+      	
       	<finder-method name="findAllByParentProject" using="parentProject" all="true"/>
         <finder-method name="findByName" using="name"/>
 

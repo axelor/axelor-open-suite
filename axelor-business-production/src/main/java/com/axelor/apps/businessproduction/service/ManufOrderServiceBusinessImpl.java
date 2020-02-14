@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,6 +31,7 @@ import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -66,7 +67,7 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
     this.operationOrderServiceBusinessImpl = operationOrderServiceBusinessImpl;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void propagateIsToInvoice(ManufOrder manufOrder) {
 
     logger.debug(
@@ -92,13 +93,26 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
       boolean isToInvoice,
       Company company,
       BillOfMaterial billOfMaterial,
-      LocalDateTime plannedStartDateT)
+      LocalDateTime plannedStartDateT,
+      LocalDateTime plannedEndDateT)
       throws AxelorException {
 
     ManufOrder manufOrder =
         super.createManufOrder(
-            product, qty, priority, isToInvoice, company, billOfMaterial, plannedStartDateT);
+            product,
+            qty,
+            priority,
+            isToInvoice,
+            company,
+            billOfMaterial,
+            plannedStartDateT,
+            plannedEndDateT);
 
+    AppProductionService appProductionService = Beans.get(AppProductionService.class);
+    if (!appProductionService.isApp("production")
+        || !appProductionService.getAppProduction().getManageBusinessProduction()) {
+      return manufOrder;
+    }
     manufOrder.setIsToInvoice(isToInvoice);
 
     return manufOrder;

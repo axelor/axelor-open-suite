@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -115,7 +115,7 @@ public class ReimbursementExportService {
    * @param reimbursementExport
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public Reimbursement runCreateReimbursement(
       List<MoveLine> moveLineList, Company company, Partner partner) throws AxelorException {
 
@@ -277,7 +277,7 @@ public class ReimbursementExportService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void reimburse(Reimbursement reimbursement, Company company) throws AxelorException {
     reimbursement.setAmountReimbursed(reimbursement.getAmountToReimburse());
     this.createReimbursementMove(reimbursement, company);
@@ -326,7 +326,7 @@ public class ReimbursementExportService {
    *
    * @param reimbursement Un remboursement
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void updatePartnerCurrentRIB(Reimbursement reimbursement) {
     BankDetails bankDetails = reimbursement.getBankDetails();
     Partner partner = reimbursement.getPartner();
@@ -512,7 +512,7 @@ public class ReimbursementExportService {
    * @throws AxelorException
    */
   @SuppressWarnings("unchecked")
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void createReimbursementInvoice(
       Partner partner, Company company, List<? extends MoveLine> moveLineList)
       throws AxelorException {
@@ -546,7 +546,7 @@ public class ReimbursementExportService {
    * @param invoice Une facture
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void createReimbursementInvoice(Invoice invoice) throws AxelorException {
     Company company = invoice.getCompany();
     Partner partner = invoice.getPartner();

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -163,6 +163,28 @@ public interface ReservedQtyService {
       throws AxelorException;
 
   /**
+   * Update allocated quantity in stock move line with a new quantity, updating location. If the
+   * allocated quantity become bigger than the requested quantity, we also change the requested
+   * quantity to match the allocated quantity.
+   *
+   * @param stockMoveLine
+   * @param newReservedQty
+   * @throws AxelorException
+   */
+  void updateReservedQty(StockMoveLine stockMoveLine, BigDecimal newReservedQty)
+      throws AxelorException;
+
+  /**
+   * Update requested quantity in stock move line. If the requested quantity become lower than the
+   * allocated quantity, we also change the allocated quantity to match the requested quantity.
+   *
+   * @param stockMoveLine
+   * @param newReservedQty
+   */
+  void updateRequestedReservedQty(StockMoveLine stockMoveLine, BigDecimal newReservedQty)
+      throws AxelorException;
+
+  /**
    * Update reserved quantity in stock move lines and sale order lines from stock move lines.
    *
    * @param stockMoveLine
@@ -227,12 +249,28 @@ public interface ReservedQtyService {
   void requestQty(SaleOrderLine saleOrderLine) throws AxelorException;
 
   /**
+   * Request quantity for a stock move line.
+   *
+   * @param stockMoveLine
+   * @throws AxelorException
+   */
+  void requestQty(StockMoveLine stockMoveLine) throws AxelorException;
+
+  /**
    * Cancel the reservation for a sale order line.
    *
    * @param saleOrderLine
    * @throws AxelorException
    */
   void cancelReservation(SaleOrderLine saleOrderLine) throws AxelorException;
+
+  /**
+   * Cancel the reservation for a stock move line.
+   *
+   * @param stockMoveLine
+   * @throws AxelorException
+   */
+  void cancelReservation(StockMoveLine stockMoveLine) throws AxelorException;
 
   /**
    * Update reserved qty for sale order line from already updated stock move.
@@ -256,4 +294,11 @@ public interface ReservedQtyService {
    * @param saleOrderLine
    */
   void allocateAll(SaleOrderLine saleOrderLine) throws AxelorException;
+
+  /**
+   * Create a reservation and allocate as much quantity as we can.
+   *
+   * @param stockMoveLine
+   */
+  void allocateAll(StockMoveLine stockMoveLine) throws AxelorException;
 }

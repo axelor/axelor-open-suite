@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     <grid name="unit-conversion-grid" title="Unit conversions" model="com.axelor.apps.base.db.UnitConversion">
       <toolbar>
       <button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-base-method-show-duplicate"/>
@@ -12,7 +12,7 @@
         <field name="endUnit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="typeSelect"/>
     </grid>
-    <form name="unit-conversion-form" title="Unit conversion" model="com.axelor.apps.base.db.UnitConversion">
+    <form name="unit-conversion-form" title="Unit conversion" model="com.axelor.apps.base.db.UnitConversion" width="large">
     	<panel name="mainPanel" colSpan="10">
     		<field name="typeSelect" colSpan="12" width="50%"/>
     		
@@ -22,11 +22,11 @@
 			<label name="X1Label" title="X" colSpan="1" hideIf="typeSelect == 2"/>
 			<field name="endUnit" colSpan="3" form-view="unit-form" grid-view="unit-grid" hideIf="typeSelect == 2"/>
 			
-			<field name="startUnit" colSpan="3" form-view="unit-form" grid-view="unit-grid" hideIf="typeSelect == 1"/>
+			<field name="startUnit" colSpan="2" form-view="unit-form" grid-view="unit-grid" hideIf="typeSelect == 1"/>
 			<label name="equalTo2Label" title="=" colSpan="1" hideIf="typeSelect == 1"/>
-			<field name="formula" colSpan="3" hideIf="typeSelect == 1" widget="CodeEditor" x-code-syntax="groovy"/>
+			<field name="formula" colSpan="6" hideIf="typeSelect == 1" widget="CodeEditor" x-code-syntax="groovy"/>
 			<label name="X2Label" title="X" colSpan="1" hideIf="typeSelect == 1"/>
-			<field name="endUnit" colSpan="3" form-view="unit-form" grid-view="unit-grid" hideIf="typeSelect == 1"/>
+			<field name="endUnit" colSpan="2" form-view="unit-form" grid-view="unit-grid" hideIf="typeSelect == 1"/>
 		</panel>
     </form>
 </object-views>

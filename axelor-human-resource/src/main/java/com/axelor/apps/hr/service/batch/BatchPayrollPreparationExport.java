@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -30,7 +30,7 @@ import com.axelor.apps.hr.service.PayrollPreparationService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -40,16 +40,11 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.IOException;
-import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class BatchPayrollPreparationExport extends BatchStrategy {
-
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected int total;
   protected HrBatch hrBatch;
@@ -71,7 +66,7 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
   }
 
   @Override
-  protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
+  protected void start() throws IllegalAccessException {
 
     super.start();
 
@@ -104,7 +99,7 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
           batch.setMetaFile(standardExport(payrollPreparationList));
         } catch (IOException e) {
           incrementAnomaly();
-          TraceBackService.trace(e, IException.LEAVE_MANAGEMENT, batch.getId());
+          TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
         }
         break;
       case HrBatchRepository.EXPORT_TYPE_NIBELIS:
@@ -112,7 +107,7 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
           batch.setMetaFile(nibelisExport(payrollPreparationList));
         } catch (Exception e) {
           incrementAnomaly();
-          TraceBackService.trace(e, IException.LEAVE_MANAGEMENT, batch.getId());
+          TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
         }
         break;
       default:
@@ -120,15 +115,15 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public MetaFile standardExport(List<PayrollPreparation> payrollPreparationList)
       throws IOException {
 
-    List<String[]> list = new ArrayList<String[]>();
+    List<String[]> list = new ArrayList<>();
     LocalDate today = Beans.get(AppBaseService.class).getTodayDate();
 
     for (PayrollPreparation payrollPreparation : payrollPreparationList) {
-      String item[] = new String[5];
+      String[] item = new String[5];
       item[0] = payrollPreparation.getEmployee().getName();
       item[1] = payrollPreparation.getDuration().toString();
       item[2] = payrollPreparation.getLunchVoucherNumber().toString();
@@ -164,11 +159,11 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
     return metaFile;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public MetaFile nibelisExport(List<PayrollPreparation> payrollPreparationList)
       throws IOException, AxelorException {
 
-    List<String[]> list = new ArrayList<String[]>();
+    List<String[]> list = new ArrayList<>();
 
     for (PayrollPreparation payrollPreparation : payrollPreparationList) {
 

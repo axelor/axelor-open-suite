@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,9 +29,9 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -157,7 +157,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public PurchaseOrder mergePurchaseOrders(
       List<PurchaseOrder> purchaseOrderList,
       Currency currency,
@@ -231,12 +231,19 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       newBudgetDistribution.setBudget(purchaseOrder.getBudget());
       newBudgetDistribution.setPurchaseOrderLine(purchaseOrderLine);
       Beans.get(BudgetDistributionRepository.class).save(newBudgetDistribution);
+      Beans.get(PurchaseOrderLineServiceSupplychainImpl.class)
+          .computeBudgetDistributionSumAmount(purchaseOrderLine, purchaseOrder);
     }
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void requestPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      super.requestPurchaseOrder(purchaseOrder);
+      return;
+    }
+
     // budget control
     if (appAccountService.isApp("budget")
         && appAccountService.getAppBudget().getCheckAvailableBudget()) {
@@ -280,7 +287,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
             .getAppSupplychain()
             .getIntercoPurchaseCreatingStatusSelect();
     if (purchaseOrder.getInterco()
-        && intercoPurchaseCreatingStatus == IPurchaseOrder.STATUS_REQUESTED) {
+        && intercoPurchaseCreatingStatus == PurchaseOrderRepository.STATUS_REQUESTED) {
       Beans.get(IntercoService.class).generateIntercoSaleFromPurchase(purchaseOrder);
     }
     if (purchaseOrder.getCreatedByInterco()) {
@@ -333,9 +340,13 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
     super.validatePurchaseOrder(purchaseOrder);
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return;
+    }
 
     if (appSupplychainService.getAppSupplychain().getSupplierStockMoveGenerationAuto()
         && !purchaseOrderStockService.existActiveStockMoveForPurchaseOrder(purchaseOrder.getId())) {
@@ -351,7 +362,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
             .getAppSupplychain()
             .getIntercoPurchaseCreatingStatusSelect();
     if (purchaseOrder.getInterco()
-        && intercoPurchaseCreatingStatus == IPurchaseOrder.STATUS_VALIDATED) {
+        && intercoPurchaseCreatingStatus == PurchaseOrderRepository.STATUS_VALIDATED) {
       Beans.get(IntercoService.class).generateIntercoSaleFromPurchase(purchaseOrder);
     }
 
@@ -362,7 +373,10 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   @Transactional
   public void cancelPurchaseOrder(PurchaseOrder purchaseOrder) {
     super.cancelPurchaseOrder(purchaseOrder);
-    budgetSupplychainService.updateBudgetLinesFromPurchaseOrder(purchaseOrder);
+
+    if (Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      budgetSupplychainService.updateBudgetLinesFromPurchaseOrder(purchaseOrder);
+    }
   }
 
   @SuppressWarnings("unused")

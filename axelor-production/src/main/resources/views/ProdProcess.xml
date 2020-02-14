@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
-    <grid name="prod-process-grid" title="Production process" model="com.axelor.apps.production.db.ProdProcess">
-    	<field name="name"/>
-    	<field name="company"/>
-      <field name="workshopStockLocation"/>
-    	<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-        <field name="stockLocation" grid-view="stock-location-grid" form-view="stock-location-form"/>
-        <field name="product"/>
-        <field name="statusSelect"/>
-    </grid>
+  <grid name="prod-process-grid" title="Production process" model="com.axelor.apps.production.db.ProdProcess">
+		<field name="name"/>
+		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="workshopStockLocation"/>
+		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="stockLocation" grid-view="stock-location-grid" form-view="stock-location-form"/>
+    <field name="product"/>
+    <field name="statusSelect"/>
+  </grid>
     
     <form name="prod-process-form" title="Production process" model="com.axelor.apps.production.db.ProdProcess"
           onNew="action-prod-process-group-on-new"
@@ -66,6 +66,11 @@
             <field name="versionNumber" colSpan="3" />
             <field name="originalProdProcess" grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3" readonly="true"/>
  		</panel>            
+    
+    	<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail> 
     </form>
 
   <action-group name="action-prod-process-group-on-new">

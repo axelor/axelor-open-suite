@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,12 +18,13 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.ObjectDataConfig;
+import com.axelor.apps.base.db.ObjectDataConfigExport;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaFile;
 
 public interface ObjectDataExportService {
 
   public MetaFile export(
-      ObjectDataConfig objectDataConfig, Long recorId, String language, String format)
+      ObjectDataConfig objectDataConfig, ObjectDataConfigExport objDataConfigExport)
       throws AxelorException;
 }

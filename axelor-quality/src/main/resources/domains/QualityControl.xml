@@ -1,38 +1,39 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
 	<module name="quality" package="com.axelor.apps.quality.db"/>
 	
 	<entity name="QualityControl">
-		<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="true"/>
-	    <many-to-one name="qualityProcess" ref="QualityProcess" title="Quality process" required="true"/>
-	    <many-to-one name="team" ref="com.axelor.team.db.Team" title="Team" required="true" />
+	    <many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
 	    <many-to-one name="responsible" ref="com.axelor.apps.hr.db.Employee" title="quality.responsible" />
-	    <string name="reference" readonly="true"/> 
-    	<string name="fullName" title="Full name" namecolumn="true">
-    		<![CDATA[
-                     String fullName = "";
-    				if (reference != null && reference != "")
-                      {
-                            if(product.getCode() != null)
-    						fullName +=  reference + "[" + product.getCode() + "]";
-                            else
-                              fullName += reference;
-
-    				  }
-                        else if(product.getCode() != null)
-    					fullName += "[" + product.getCode() + "]";
-                        return fullName;
-    		]]>
-    	</string>
+	    <string name="reference" readonly="true" namecolumn="true"/>
 	    <integer name="statusSelect" title="Status" selection="quality.control.status.select" readonly="true"/>
 	    <one-to-many name="controlPointList" ref="ControlPoint" mappedBy="qualityControl"/>
 	    <date name="startDate" title="Start date" />
 	    <date name="endDate" title="End date" />
 	    <date name="deadLineDate" title="Deadline"/>
 	    <integer name="sequence" title="Sequence"/>
+	    <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
+	    <one-to-many name="optionalControlPointList" title="Optional control point list" ref="ControlPoint" mappedBy="optionalQualityControl"/>
+	    <one-to-many name="qualityCorrectiveActionList" title="Corrective actions list" ref="QualityCorrectiveAction" mappedBy="qualityControl"/>
+	    <many-to-one name="inspectorSignature" title="Inspector signature" ref="com.axelor.meta.db.MetaFile"/>
+	    <many-to-one name="customerSignature" title="Customer signature" ref="com.axelor.meta.db.MetaFile"/>
+	    <string name="name" title="Name"/>
+	    <many-to-one name="printingSettings" ref="com.axelor.apps.base.db.PrintingSettings" title="Printing settings"/>
+
+	    <extra-code><![CDATA[
+
+	    //STATUS SELECT
+	    public static final int STATUS_DRAFT = 1;
+	    public static final int STATUS_CANCELED = 2;
+	    public static final int STATUS_PLANNED = 3;
+	    public static final int STATUS_IN_PROGRESS = 4;
+	    public static final int STATUS_STANDBY = 5;
+	    public static final int STATUS_FINISHED = 6;
+
+	    ]]></extra-code>
 	</entity>
   
 </domain-models>

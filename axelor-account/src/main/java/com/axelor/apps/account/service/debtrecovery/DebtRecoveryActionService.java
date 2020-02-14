@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -77,15 +77,9 @@ public class DebtRecoveryActionService {
    *
    * @param debtRecovery Une relance
    * @throws AxelorException
-   * @throws IllegalAccessException
-   * @throws InstantiationException
-   * @throws ClassNotFoundException
-   * @throws IOException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public void runAction(DebtRecovery debtRecovery)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, IOException {
+  @Transactional(rollbackOn = {Exception.class})
+  public void runAction(DebtRecovery debtRecovery) throws AxelorException {
 
     DebtRecoveryMethodLine debtRecoveryMethodLine = debtRecovery.getDebtRecoveryMethodLine();
     Partner partner = debtRecovery.getAccountingSituation().getPartner();
@@ -122,6 +116,12 @@ public class DebtRecoveryActionService {
           debtRecoveryMethodLine.getDebtRecoveryMethod().getName(),
           debtRecoveryMethodLine.getDebtRecoveryLevel().getName());
 
+    } else if (partner.getEmailAddress() == null
+        || partner.getEmailAddress().getAddress() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_5),
+          debtRecoveryMethodLine.getDebtRecoveryLevelLabel());
     } else {
 
       // On enregistre la date de la relance
@@ -176,15 +176,11 @@ public class DebtRecoveryActionService {
    *
    * @param debtRecovery Une relance
    * @throws AxelorException
-   * @throws IllegalAccessException
-   * @throws InstantiationException
-   * @throws ClassNotFoundException
-   * @throws IOException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void runManualAction(DebtRecovery debtRecovery)
-      throws AxelorException, ClassNotFoundException, InstantiationException,
-          IllegalAccessException, IOException {
+      throws AxelorException, ClassNotFoundException, IOException, InstantiationException,
+          IllegalAccessException {
 
     log.debug("Begin runManualAction service ...");
     DebtRecoveryMethodLine debtRecoveryMethodLine = debtRecovery.getWaitDebtRecoveryMethodLine();
@@ -220,6 +216,12 @@ public class DebtRecoveryActionService {
           debtRecoveryMethodLine.getDebtRecoveryMethod().getName(),
           debtRecoveryMethodLine.getDebtRecoveryLevel().getName());
 
+    } else if (partner.getEmailAddress() == null
+        || partner.getEmailAddress().getAddress() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_5),
+          debtRecoveryMethodLine.getDebtRecoveryLevelLabel());
     } else {
 
       // On enregistre la date de la relance
@@ -246,7 +248,7 @@ public class DebtRecoveryActionService {
    * @throws InstantiationException
    * @throws IllegalAccessException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void runMessage(DebtRecovery debtRecovery)
       throws AxelorException, ClassNotFoundException, IOException, InstantiationException,
           IllegalAccessException {
@@ -272,10 +274,9 @@ public class DebtRecoveryActionService {
    * @param debtRecoveryMethodLine La ligne de relance que l'on souhaite déplacer
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void moveDebtRecoveryMethodLine(
-      DebtRecovery debtRecovery, DebtRecoveryMethodLine debtRecoveryMethodLine)
-      throws AxelorException {
+      DebtRecovery debtRecovery, DebtRecoveryMethodLine debtRecoveryMethodLine) {
 
     debtRecovery.setWaitDebtRecoveryMethodLine(debtRecoveryMethodLine);
 

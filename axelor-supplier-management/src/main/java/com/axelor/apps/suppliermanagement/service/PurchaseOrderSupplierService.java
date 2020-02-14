@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,7 +26,6 @@ import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
@@ -64,7 +63,7 @@ public class PurchaseOrderSupplierService {
 
   @Inject protected PurchaseOrderRepository poRepo;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void generateAllSuppliersRequests(PurchaseOrder purchaseOrder) {
 
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
@@ -82,12 +81,12 @@ public class PurchaseOrderSupplierService {
    *
    * @param purchaseOrderLine
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void generateSuppliersRequests(PurchaseOrderLine purchaseOrderLine) {
     this.generateSuppliersRequests(purchaseOrderLine, purchaseOrderLine.getPurchaseOrder());
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void generateSuppliersRequests(
       PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) {
 
@@ -117,7 +116,7 @@ public class PurchaseOrderSupplierService {
     Beans.get(PurchaseOrderLineRepository.class).save(purchaseOrderLine);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void generateSuppliersPurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
 
     if (purchaseOrder.getPurchaseOrderLineList() == null) {
@@ -164,7 +163,7 @@ public class PurchaseOrderSupplierService {
     return purchaseOrderLinesBySupplierPartner;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void createPurchaseOrder(
       Partner supplierPartner,
       List<PurchaseOrderLine> purchaseOrderLineList,
@@ -203,8 +202,8 @@ public class PurchaseOrderSupplierService {
 
     purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
 
-    purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_REQUESTED);
-    purchaseOrder.setReceiptState(IPurchaseOrder.STATE_NOT_RECEIVED);
+    purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_REQUESTED);
+    purchaseOrder.setReceiptState(PurchaseOrderRepository.STATE_NOT_RECEIVED);
 
     poRepo.save(purchaseOrder);
   }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
 	<grid name="job-application-grid" title="Job applications" model="com.axelor.apps.talent.db.JobApplication">
 		<field name="lastName" />
@@ -16,8 +16,8 @@
 	<form name="job-application-form" title="Job application" model="com.axelor.apps.talent.db.JobApplication" width="large"
 		onNew="action-job-application-defaults" onLoad="action-talent-method-set-social-network-url">
 		<menubar>
-	        <menu title="Tools" icon="fa-wrench" showTitle="true">
-	            <item title="Schedule Event" action="save,action-job-application-schedule-event" readonlyIf="id == null"/>
+	        <menu name="jobApplicationToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+	            <item name="scheduleEventItem" title="Schedule Event" action="save,action-job-application-schedule-event" readonlyIf="id == null"/>
 	        </menu>
 	    </menubar>
 		<panel name="mainPanel" readonlyIf="statusSelect == 3">
@@ -146,4 +146,10 @@
     	<call class="com.axelor.apps.talent.web.JobApplicationController" method="setSocialNetworkUrl"/>
     </action-method>
     
+    <search-filters name="job-application-filters" model="com.axelor.apps.talent.db.JobApplication" title="Job Application Filters">
+		<filter title="Current applications">
+			<domain>self.statusSelect = 0</domain>
+		</filter>
+	</search-filters>
+	
 </object-views>

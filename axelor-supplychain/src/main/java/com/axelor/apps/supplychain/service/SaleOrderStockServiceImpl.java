@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -97,7 +97,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public List<Long> createStocksMovesFromSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
     if (!this.isSaleOrderWithProductsToDeliver(saleOrder)) {
@@ -187,7 +187,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
     SupplyChainConfig supplychainConfig =
         Beans.get(SupplyChainConfigService.class).getSupplyChainConfig(saleOrder.getCompany());
-    if (supplychainConfig.getDefaultEstimatedDate() == SupplyChainConfigRepository.CURRENT_DATE
+
+    if (supplychainConfig.getDefaultEstimatedDate() != null
+        && supplychainConfig.getDefaultEstimatedDate() == SupplyChainConfigRepository.CURRENT_DATE
         && stockMove.getEstimatedDate() == null) {
       stockMove.setEstimatedDate(appBaseService.getTodayDate());
     } else if (supplychainConfig.getDefaultEstimatedDate()
@@ -197,6 +199,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
           appBaseService.getTodayDate().plusDays(supplychainConfig.getNumberOfDays().longValue()));
     }
 
+    setReservationDateTime(stockMove, saleOrder);
     stockMoveService.plan(stockMove);
 
     if (Beans.get(AppSaleService.class).getAppSale().getProductPackMgt()) {
@@ -220,6 +223,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
       if (dateKey == null) {
         dateKey = saleOrderLine.getSaleOrder().getDeliveryDate();
+      }
+      if (dateKey == null) {
+        dateKey = saleOrderLine.getDesiredDelivDate();
       }
 
       List<SaleOrderLine> saleOrderLineLists = saleOrderLinePerDateMap.get(dateKey);
@@ -303,8 +309,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     stockMove.setStockMoveLineList(new ArrayList<>());
     stockMove.setTradingName(saleOrder.getTradingName());
     stockMove.setSpecificPackage(saleOrder.getSpecificPackage());
-    setReservationDateTime(stockMove, saleOrder);
-
+    stockMove.setNote(saleOrder.getDeliveryComments());
+    stockMove.setPickingOrderComments(saleOrder.getPickingOrderComments());
     if (stockMove.getPartner() != null) {
       setDefaultAutoMailSettings(stockMove);
     }
@@ -312,7 +318,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   }
 
   /**
-   * Fill reservation date time in stock move with sale order confirmation date time.
+   * Fill reservation date time in stock move lines with sale order confirmation date time.
    *
    * @param stockMove
    * @param saleOrder
@@ -322,7 +328,12 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     if (reservationDateTime == null) {
       reservationDateTime = Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime();
     }
-    stockMove.setReservationDateTime(reservationDateTime);
+    List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+    if (stockMoveLineList != null) {
+      for (StockMoveLine stockMoveLine : stockMoveLineList) {
+        stockMoveLine.setReservationDateTime(reservationDateTime);
+      }
+    }
   }
 
   /**
@@ -408,6 +419,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
               requestedReservedQty,
               priceDiscounted,
               companyUnitPriceUntaxed,
+              null,
               unit,
               stockMove,
               StockMoveLineService.TYPE_SALES,

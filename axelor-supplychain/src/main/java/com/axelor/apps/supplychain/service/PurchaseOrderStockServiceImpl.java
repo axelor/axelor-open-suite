@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,9 +28,10 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
@@ -38,12 +39,17 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
+import com.axelor.apps.supplychain.db.repo.SupplyChainConfigRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
+import com.axelor.apps.tool.StringTool;
+import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -214,6 +220,21 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     qualityStockMove.setOrigin(purchaseOrder.getPurchaseOrderSeq());
     qualityStockMove.setTradingName(purchaseOrder.getTradingName());
 
+    SupplyChainConfig supplychainConfig =
+        Beans.get(SupplyChainConfigService.class).getSupplyChainConfig(purchaseOrder.getCompany());
+    if (supplychainConfig.getDefaultEstimatedDateForPurchaseOrder()
+            == SupplyChainConfigRepository.CURRENT_DATE
+        && stockMove.getEstimatedDate() == null) {
+      stockMove.setEstimatedDate(appBaseService.getTodayDate());
+    } else if (supplychainConfig.getDefaultEstimatedDateForPurchaseOrder()
+            == SupplyChainConfigRepository.CURRENT_DATE_PLUS_DAYS
+        && stockMove.getEstimatedDate() == null) {
+      stockMove.setEstimatedDate(
+          appBaseService
+              .getTodayDate()
+              .plusDays(supplychainConfig.getNumberOfDaysForPurchaseOrder().longValue()));
+    }
+
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
       BigDecimal qty =
           purchaseOrderLineServiceSupplychainImpl.computeUndeliveredQty(purchaseOrderLine);
@@ -376,6 +397,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     BigDecimal shippingCoef =
         shippingCoefService.getShippingCoef(
             product, purchaseOrder.getSupplierPartner(), purchaseOrder.getCompany(), qty);
+    BigDecimal companyPurchasePrice = priceDiscounted;
     priceDiscounted = priceDiscounted.multiply(shippingCoef);
     companyUnitPriceUntaxed = companyUnitPriceUntaxed.multiply(shippingCoef);
 
@@ -393,6 +415,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         BigDecimal.ZERO,
         priceDiscounted,
         companyUnitPriceUntaxed,
+        companyPurchasePrice,
         unit,
         stockMove,
         StockMoveLineService.TYPE_PURCHASES,
@@ -409,6 +432,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         purchaseOrderLine.getProduct(),
         purchaseOrderLine.getProductName(),
         purchaseOrderLine.getDescription(),
+        BigDecimal.ZERO,
         BigDecimal.ZERO,
         BigDecimal.ZERO,
         BigDecimal.ZERO,
@@ -498,7 +522,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
 
     if (purchaseOrder.getPurchaseOrderLineList() == null
         || purchaseOrder.getPurchaseOrderLineList().isEmpty()) {
-      return IPurchaseOrder.STATE_NOT_RECEIVED;
+      return PurchaseOrderRepository.STATE_NOT_RECEIVED;
     }
 
     int receiptState = -1;
@@ -507,25 +531,68 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
 
       if (this.isStockMoveProduct(purchaseOrderLine, purchaseOrder)) {
 
-        if (purchaseOrderLine.getReceiptState() == IPurchaseOrder.STATE_RECEIVED) {
-          if (receiptState == IPurchaseOrder.STATE_NOT_RECEIVED
-              || receiptState == IPurchaseOrder.STATE_PARTIALLY_RECEIVED) {
-            return IPurchaseOrder.STATE_PARTIALLY_RECEIVED;
+        if (purchaseOrderLine.getReceiptState() == PurchaseOrderRepository.STATE_RECEIVED) {
+          if (receiptState == PurchaseOrderRepository.STATE_NOT_RECEIVED
+              || receiptState == PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED) {
+            return PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED;
           } else {
-            receiptState = IPurchaseOrder.STATE_RECEIVED;
+            receiptState = PurchaseOrderRepository.STATE_RECEIVED;
           }
-        } else if (purchaseOrderLine.getReceiptState() == IPurchaseOrder.STATE_NOT_RECEIVED) {
-          if (receiptState == IPurchaseOrder.STATE_RECEIVED
-              || receiptState == IPurchaseOrder.STATE_PARTIALLY_RECEIVED) {
-            return IPurchaseOrder.STATE_PARTIALLY_RECEIVED;
+        } else if (purchaseOrderLine.getReceiptState()
+            == PurchaseOrderRepository.STATE_NOT_RECEIVED) {
+          if (receiptState == PurchaseOrderRepository.STATE_RECEIVED
+              || receiptState == PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED) {
+            return PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED;
           } else {
-            receiptState = IPurchaseOrder.STATE_NOT_RECEIVED;
+            receiptState = PurchaseOrderRepository.STATE_NOT_RECEIVED;
           }
-        } else if (purchaseOrderLine.getReceiptState() == IPurchaseOrder.STATE_PARTIALLY_RECEIVED) {
-          return IPurchaseOrder.STATE_PARTIALLY_RECEIVED;
+        } else if (purchaseOrderLine.getReceiptState()
+            == PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED) {
+          return PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED;
         }
       }
     }
     return receiptState;
+  }
+
+  @Override
+  public String getPurchaseOrderLineListForAProduct(
+      Long productId, Long companyId, Long stockLocationId) {
+    List<Integer> statusList = new ArrayList<>();
+    statusList.add(PurchaseOrderRepository.STATUS_VALIDATED);
+    String status =
+        Beans.get(AppSupplychainService.class)
+            .getAppSupplychain()
+            .getpOFilterOnStockDetailStatusSelect();
+    if (!StringUtils.isBlank(status)) {
+      statusList = StringTool.getIntegerList(status);
+    }
+    String statusListQuery =
+        statusList.stream().map(String::valueOf).collect(Collectors.joining(","));
+    String query =
+        "self.product.id = "
+            + productId
+            + " AND self.receiptState != "
+            + PurchaseOrderLineRepository.RECEIPT_STATE_RECEIVED
+            + " AND self.purchaseOrder.statusSelect IN ("
+            + statusListQuery
+            + ")";
+    if (companyId != 0L) {
+      query += " AND self.purchaseOrder.company.id = " + companyId;
+      if (stockLocationId != 0L) {
+        StockLocation stockLocation =
+            Beans.get(StockLocationRepository.class).find(stockLocationId);
+        List<StockLocation> stockLocationList =
+            Beans.get(StockLocationService.class)
+                .getAllLocationAndSubLocation(stockLocation, false);
+        if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId() == companyId) {
+          query +=
+              " AND self.purchaseOrder.stockLocation.id IN ("
+                  + StringTool.getIdListString(stockLocationList)
+                  + ") ";
+        }
+      }
+    }
+    return query;
   }
 }

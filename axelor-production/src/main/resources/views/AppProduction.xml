@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
 	<form name="app-production-config-form" title="App production" model="com.axelor.apps.base.db.AppProduction" canDelete="false" canNew="false" width="large">
 		<panel name="productionConfigurationPanel" colSpan="12">
@@ -31,9 +31,10 @@
 				<field name="barcodeTypeConfig" title="Barcode Type"/>
 			</panel>
 			<panel name="costSheetPanel" title="Cost sheet">
-			    <field name="productCostSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 1"/>
-  				<field name="workCenterCostSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2"/>
-  				<field name="cycleUnit" form-view="unit-form" grid-view="unit-grid"/>
+				<field name="cycleUnit" form-view="unit-form" grid-view="unit-grid"/>
+				<field name="manageCostSheetGroup" widget="boolean-switch"/>
+			    <field name="productCostSheetGroup" showIf="manageCostSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 1"/>
+  				<field name="workCenterCostSheetGroup" showIf="manageCostSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2"/>
 				<field name="subtractProdResidualOnCostSheet" showIf="manageResidualProductOnBom" widget="boolean-switch"/>
 			</panel>
 			<panel name="printingPanel" title="Printings">
@@ -41,6 +42,7 @@
 			</panel>
 			<panel name="stockLocationPanel" title="Stock Location">
 				<field name="manageWorkshop" widget="boolean-switch"/>
+                <field name="mOFilterOnStockDetailStatusSelect" widget="MultiSelect" colSpan="4" selection="production.manuf.order.status.select"/>
 			</panel>
 		</panel>
 		<panel name="actionsPanel">

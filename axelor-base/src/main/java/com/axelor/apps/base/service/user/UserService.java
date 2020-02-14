@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,10 +22,12 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.CallMethod;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.team.db.Team;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.mail.MessagingException;
@@ -52,6 +54,7 @@ public interface UserService {
    *
    * @return Company the active company
    */
+  @CallMethod
   public Company getUserActiveCompany();
 
   /**
@@ -69,10 +72,18 @@ public interface UserService {
   public MetaFile getUserActiveCompanyLogo();
 
   /**
+   * Method that return company logo link
+   *
+   * @return the logo Link
+   */
+  public String getUserActiveCompanyLogoLink();
+
+  /**
    * Method that return the active team of the current connected user
    *
    * @return Team the active team
    */
+  @CallMethod
   public Team getUserActiveTeam();
 
   /**
@@ -80,6 +91,7 @@ public interface UserService {
    *
    * @return Team the active team id
    */
+  @CallMethod
   public Long getUserActiveTeamId();
 
   /**
@@ -87,6 +99,7 @@ public interface UserService {
    *
    * @return Partner the user partner
    */
+  @CallMethod
   public Partner getUserPartner();
 
   @Transactional
@@ -153,5 +166,17 @@ public interface UserService {
    *
    * @return
    */
+  @CallMethod
   String getPasswordPatternDescription();
+
+  /**
+   * Verify current connected user's password
+   *
+   * @param password
+   * @return
+   */
+  boolean verifyCurrentUserPassword(String password);
+
+  @Transactional
+  public void generateRandomPasswordForUsers(List<Long> userIds);
 }

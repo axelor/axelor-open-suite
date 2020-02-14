@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
@@ -34,6 +35,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.sale.db.PackLine;
@@ -41,9 +43,11 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -79,6 +83,10 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
 
   @Override
   public Unit getUnit(Product product, boolean isPurchase) {
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return super.getUnit(product, isPurchase);
+    }
+
     if (isPurchase) {
       if (product.getPurchasesUnit() != null) {
         return product.getPurchasesUnit();
@@ -97,6 +105,10 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
   @Override
   public Map<String, Object> getDiscount(Invoice invoice, InvoiceLine invoiceLine, BigDecimal price)
       throws AxelorException {
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return super.getDiscount(invoice, invoiceLine, price);
+    }
 
     Map<String, Object> discounts = new HashMap<>();
 
@@ -130,6 +142,10 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
   @Override
   public Map<String, Object> fillPriceAndAccount(
       Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase) throws AxelorException {
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return super.fillPriceAndAccount(invoice, invoiceLine, isPurchase);
+    }
 
     try {
       return super.fillPriceAndAccount(invoice, invoiceLine, isPurchase);
@@ -171,6 +187,10 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
   @Override
   public Map<String, Object> fillProductInformation(Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException {
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return super.fillProductInformation(invoice, invoiceLine);
+    }
 
     Map<String, Object> productInformation = new HashMap<>();
 
@@ -306,5 +326,27 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
     }
 
     return true;
+  }
+
+  public void computeBudgetDistributionSumAmount(InvoiceLine invoiceLine, Invoice invoice) {
+    List<BudgetDistribution> budgetDistributionList = invoiceLine.getBudgetDistributionList();
+    PurchaseOrderLine purchaseOrderLine = invoiceLine.getPurchaseOrderLine();
+    BigDecimal budgetDistributionSumAmount = BigDecimal.ZERO;
+    LocalDate computeDate = invoice.getInvoiceDate();
+
+    if (purchaseOrderLine != null && purchaseOrderLine.getPurchaseOrder().getOrderDate() != null) {
+      computeDate = purchaseOrderLine.getPurchaseOrder().getOrderDate();
+    }
+
+    if (budgetDistributionList != null && !budgetDistributionList.isEmpty()) {
+
+      for (BudgetDistribution budgetDistribution : budgetDistributionList) {
+        budgetDistributionSumAmount =
+            budgetDistributionSumAmount.add(budgetDistribution.getAmount());
+        Beans.get(BudgetSupplychainService.class)
+            .computeBudgetDistributionSumAmount(budgetDistribution, computeDate);
+      }
+    }
+    invoiceLine.setBudgetDistributionSumAmount(budgetDistributionSumAmount);
   }
 }

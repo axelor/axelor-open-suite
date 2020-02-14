@@ -1,14 +1,14 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
-	<entity name="Project" cachable="true">
+	<entity name="Project" cacheable="true">
         
   		<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" massUpdate="true"/>
-		<integer name="projInvTypeSelect" selection="project.invoicing.type.select" title="Invoicing Type" default="1"/>
+		<integer name="invoicingSequenceSelect" title="Invoicing sequence" selection="business.project.invoicing.sequence.select"/>
 		<string name="invoicingComment" title="Invoicing comment" large="true" />
 		<decimal name="totalSaleOrdersFinalized" title="Finalized Orders Total" readonly="true"/>
 		<decimal name="totalSaleOrdersConfirmed" title="Confirmed Orders Total" readonly="true"/>
@@ -42,15 +42,21 @@
 	  	<one-to-many name="expensesLineList" ref="com.axelor.apps.hr.db.ExpenseLine" title="Expense lines" mappedBy="project" orphanRemoval="false"/>
 		<one-to-many name="invoiceLineList" ref="com.axelor.apps.account.db.InvoiceLine" title="Invoice lines" mappedBy="project" orphanRemoval="false"/>
 		
-		
 		<boolean name="isBusinessProject" title="Business project" />
 
+		<boolean name="toInvoice" title="To invoice"/>
+		<boolean name="isInvoicingTimesheet" title="Invoicing timesheet"/>
+		<boolean name="isInvoicingExpenses" title="Invoicing Expenses"/>
+		<boolean name="isInvoicingPurchases" title="Invoicing Purchases"/>
+		<boolean name="consolidatePhaseWhenInvoicing" title="Consolidate phase invoicing" default="true"/>
+
+		<many-to-one name="customerAddress" title="Address" ref="com.axelor.apps.base.db.Address"/>
 	 	<extra-code><![CDATA[
 		
 		   	// TYPE SELECT
-			public static final int INVOICING_TYPE_NONE = 1;
-			public static final int INVOICING_TYPE_TIME_BASED = 2;
-			public static final int INVOICING_TYPE_FLAT_RATE = 3;
+		   	public static final int INVOICING_SEQ_EMPTY = 0;
+			public static final int INVOICING_SEQ_INVOICE_PRE_TASK = 1;
+			public static final int INVOICING_SEQ_INVOICE_POST_TASK = 2;
 		
    			public static final int TASK_PER_LINE_ALONE = 1;
    			public static final int TASK_PER_LINE_PHASE = 2;

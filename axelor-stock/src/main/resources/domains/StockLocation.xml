@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -26,6 +26,10 @@
 		public static final int TYPE_INTERNAL = 1;
 		public static final int TYPE_EXTERNAL = 2;
 		public static final int TYPE_VIRTUAL = 3;
+    
+        // PRINT TYPE SELECT
+        public static final int PRINT_TYPE_LOCATION_FINANCIAL_DATA = 1;
+        public static final int PRINT_TYPE_STOCK_LOCATION_CONTENT = 2;
 
 	
 	]]></extra-code>

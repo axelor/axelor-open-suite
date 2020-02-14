@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
-    <grid name="hr-config-grid" title="Human Resources configurations" model="com.axelor.apps.hr.db.HRConfig">
-        <field name="company" form-view="company-form" grid-view="company-grid"/>
-    </grid>
+  <grid name="hr-config-grid" title="Human Resources configurations" model="com.axelor.apps.hr.db.HRConfig">
+    <field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+  </grid>
 
 	<form name="hr-config-form" title="Human Resources configuration" model="com.axelor.apps.hr.db.HRConfig" onNew="action-hr-config-record-default" width="large">
 	  	<panel name="mainPanel">
@@ -14,6 +14,8 @@
 	  	<panel name="generalPanel" title="General">
 	  		<field name="publicHolidayEventsPlanning" canNew="true"/>
 	  		<field name="weeklyPlanning" canNew="true"/>
+			<field name="healthService"/>
+			<field name="healthServiceAddress"/>
 	  	</panel>
 	  	<panel-tabs name="mainPanelTab">
 			<panel name="timesheetPanel" title="Timesheet" if="__config__.app.isApp('timesheet')">
@@ -67,7 +69,7 @@
 				<field name="workingDaysVariableName" />
 		        <field name="totalWorkingDaysVariableName"/>
 			</panel>
-		  	<panel name="lunchVoucherPanel" title="Lunch Vouchers" if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getLunchVoucher()">
+        <panel name="lunchVoucherPanel" title="Lunch vouchers" if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getLunchVoucher()">
 		  		<field name="lunchVoucherWageShare"/>
 		  		<field name="lunchVoucherEmployersShare"/>
 		  		<field name="minStockLunchVoucher"/>
@@ -78,7 +80,11 @@
 		  	<panel name="exportsPanel" title="Exports" >
 		  		<field name="exportCodeForLunchVoucherManagement" />
 		  		<field name="exportCodeForExtraHours" />
+		  		<field name="exportCodeForDuration"/>
 		  	</panel>
+        <panel name="dpaePanel" title="DPAE">
+          <field name="enableDPAE" widget="BooleanSwitch"/>
+        </panel>
 		</panel-tabs>
 				        
         <panel-mail name="mailPanel">
@@ -98,7 +104,5 @@
     	<context name="_showRecord" expr="eval: __self__.hrConfig?.id"/>
     	<context name="_company" expr="eval: __this__"/>
     </action-view>
-
-
 
 </object-views>

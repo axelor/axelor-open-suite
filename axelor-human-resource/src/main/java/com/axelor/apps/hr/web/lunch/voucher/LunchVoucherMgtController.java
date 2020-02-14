@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,8 +32,6 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -43,15 +41,13 @@ import java.util.List;
 @Singleton
 public class LunchVoucherMgtController {
 
-  @Inject private Provider<LunchVoucherMgtService> lunchVoucherMgtProvider;
-
   public void calculate(ActionRequest request, ActionResponse response) {
 
     try {
       LunchVoucherMgt lunchVoucherMgt =
           Beans.get(LunchVoucherMgtRepository.class)
               .find(request.getContext().asType(LunchVoucherMgt.class).getId());
-      lunchVoucherMgtProvider.get().calculate(lunchVoucherMgt);
+      Beans.get(LunchVoucherMgtService.class).calculate(lunchVoucherMgt);
 
       response.setReload(true);
     } catch (Exception e) {
@@ -64,7 +60,7 @@ public class LunchVoucherMgtController {
         Beans.get(LunchVoucherMgtRepository.class)
             .find(request.getContext().asType(LunchVoucherMgt.class).getId());
     try {
-      lunchVoucherMgtProvider.get().validate(lunchVoucherMgt);
+      Beans.get(LunchVoucherMgtService.class).validate(lunchVoucherMgt);
 
       response.setReload(true);
 
@@ -82,9 +78,8 @@ public class LunchVoucherMgtController {
   }
 
   public void updateTotal(ActionRequest request, ActionResponse response) {
-    LunchVoucherMgtService lunchVoucherMgtService = lunchVoucherMgtProvider.get();
     LunchVoucherMgt lunchVoucherMgt = request.getContext().asType(LunchVoucherMgt.class);
-    lunchVoucherMgtService.calculateTotal(lunchVoucherMgt);
+    Beans.get(LunchVoucherMgtService.class).calculateTotal(lunchVoucherMgt);
 
     response.setValue("totalLunchVouchers", lunchVoucherMgt.getTotalLunchVouchers());
     response.setValue("requestedLunchVouchers", lunchVoucherMgt.getRequestedLunchVouchers());
@@ -97,7 +92,7 @@ public class LunchVoucherMgtController {
             .find(request.getContext().asType(LunchVoucherMgt.class).getId());
 
     try {
-      lunchVoucherMgtProvider.get().export(lunchVoucherMgt);
+      Beans.get(LunchVoucherMgtService.class).export(lunchVoucherMgt);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -130,7 +125,6 @@ public class LunchVoucherMgtController {
 
   public void updateStock(ActionRequest request, ActionResponse response) {
     try {
-      LunchVoucherMgtService lunchVoucherMgtService = lunchVoucherMgtProvider.get();
       LunchVoucherMgt lunchVoucherMgt = request.getContext().asType(LunchVoucherMgt.class);
       if (lunchVoucherMgt.getId() == null) {
         return;
@@ -141,10 +135,11 @@ public class LunchVoucherMgtController {
               .filter("self.lunchVoucherMgt.id = ?", lunchVoucherMgt.getId())
               .fetch();
       int stockQuantityStatus =
-          lunchVoucherMgtService.updateStock(
-              lunchVoucherMgt.getLunchVoucherMgtLineList(),
-              oldLunchVoucherLines,
-              lunchVoucherMgt.getCompany());
+          Beans.get(LunchVoucherMgtService.class)
+              .updateStock(
+                  lunchVoucherMgt.getLunchVoucherMgtLineList(),
+                  oldLunchVoucherLines,
+                  lunchVoucherMgt.getCompany());
       response.setValue("stockQuantityStatus", stockQuantityStatus);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

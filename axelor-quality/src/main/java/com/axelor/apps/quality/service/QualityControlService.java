@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,12 +17,26 @@
  */
 package com.axelor.apps.quality.service;
 
+import com.axelor.apps.quality.db.ControlPoint;
 import com.axelor.apps.quality.db.QualityControl;
+import com.axelor.apps.quality.db.QualityProcess;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
+import java.io.IOException;
+import java.util.List;
+import javax.mail.MessagingException;
 
 public interface QualityControlService {
 
+  @Transactional(rollbackOn = {Exception.class})
+  public void preFillOperations(QualityControl control, QualityProcess qualityProcess)
+      throws AxelorException;
+
   @Transactional
-  public void preFillOperations(QualityControl control) throws AxelorException;
+  public void preFillOperationsFromOptionals(
+      QualityControl qualityControl, List<ControlPoint> optionalControlPointList);
+
+  void sendEmail(QualityControl qualityControl)
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+          MessagingException, IOException, AxelorException;
 }

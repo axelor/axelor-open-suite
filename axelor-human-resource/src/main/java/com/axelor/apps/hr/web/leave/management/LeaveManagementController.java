@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,19 +19,17 @@ package com.axelor.apps.hr.web.leave.management;
 
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class LeaveManagementController {
 
-  @Inject protected LeaveManagementService leaveManagementService;
-
   public void computeQuantityAvailable(ActionRequest request, ActionResponse response) {
     LeaveLine leaveLine = request.getContext().asType(LeaveLine.class);
-    leaveLine = leaveManagementService.computeQuantityAvailable(leaveLine);
+    leaveLine = Beans.get(LeaveManagementService.class).computeQuantityAvailable(leaveLine);
     response.setValue("quantity", leaveLine.getQuantity());
     response.setValue("totalQuantity", leaveLine.getTotalQuantity());
     response.setValue("leaveManagementList", leaveLine.getLeaveManagementList());

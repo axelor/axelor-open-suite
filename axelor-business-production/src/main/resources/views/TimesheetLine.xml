@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<grid name="timesheet-line-timesheet-manuf-order-grid" title="Timesheet Lines" model="com.axelor.apps.hr.db.TimesheetLine" editable="true"
 		  onNew="action-hr-default-timesheet-line-timesheet" orderBy="date" >
@@ -66,6 +66,7 @@
 
 	<action-validate name="action-timesheet-line-validate-manuf-order-onchange">
 		<alert message="Warning, this manuforder is from another company." if="manufOrder &amp;&amp; manufOrder?.company != __parent__.company"/>
+		<alert message="Warning, this manuforder is finished" if="manufOrder &amp;&amp; manufOrder?.statusSelect == __repo__(ManufOrder).STATUS_FINISHED &amp;&amp; __config__.app.getApp('timesheet').getIsAlertManufOrderFinish()"/>
 	</action-validate>
 
 	<action-record name="action-timesheet-line-record-manuf-order-onchange" model="com.axelor.apps.hr.db.TimesheetLine">

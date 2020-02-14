@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
 	<grid name="address-grid" title="Address list" model="com.axelor.apps.base.db.Address">
 		<toolbar>
@@ -11,25 +11,27 @@
 		<button name="mapBtn" icon="fa-map-marker" onClick="action-base-address-method-view-map" />
 		<button name="directionsBtn" icon="fa-location-arrow" onClick="action-base-address-method-view-direction" />
 	</grid>
-	
+
 	<form name="address-form" title="Address" model="com.axelor.apps.base.db.Address" 
 	onSave="action-group-base-address-onsave,save,action-base-address-method-update-lat-long"  onNew="default-address-record" width="large" >
 		<panel name="mainPanel" title="Address details" colSpan="12">
 			<field name="addressL7Country" onChange="action-address-record-clear-fields" required="true" canEdit="false" form-view="country-form" grid-view="country-grid" colSpan="12"/>
 			<field name="addressL2" x-bind="{{addressL2|uppercase}}" placeholder="e.g. Financial department, CEO"/>
 			<field name="addressL3" x-bind="{{addressL3|uppercase}}" placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>
-			<field name="addressL4" x-bind="{{addressL4|uppercase}}"/>
+            <field name="streetNumber" x-bind="{{streetNumber|uppercase}}" onChange="action-address-record-change-addressL4" if="__config__.app.getApp('base').getStoreStreets()" />
+            <field name="street" onSelect="action-address-attrs-update-domain-street" onChange="action-address-record-change-addressL4" form-view="street-form" grid-view="street-grid" canNew="true" if="__config__.app.getApp('base').getStoreStreets()" />
+            <field name="addressL4" x-bind="{{addressL4|uppercase}}" if="!__config__.app.getApp('base').getStoreStreets()" />
 			<field name="addressL5" x-bind="{{addressL5|uppercase}}" placeholder="e.g. POB 254"/>
-			<field name="zip"/>
+            <field name="zip" onChange="action-address-method-autocomplete-address" />
 			<field name="city" onSelect="action-address-attrs-update-domain-city" canEdit="false" canNew="true" onChange="action-address-change-city" form-view="city-form" grid-view="city-grid"/>
 			<field name="addressL6" x-bind="{{addressL6|uppercase}}" required="true" colSpan="12"/>
 			<static name="addressL6Text" colSpan="12">Notice: The Zip/City field is automatically filled when the city is selected. You can change it when the Zip/City pair is missing or in case of minor change.</static>
-			<button-group name="map1BtnGroup" colSpan="6" hideIf="$popup()">
+			<button-group name="map1BtnGroup" colSpan="6" hideIf="$popup()" readonlyIf="!id" >
 				<button name="mapBtn" title="View map" icon="fa-map-marker" onClick="action-base-address-method-view-map"/>
 				<button name="directionsBtn" title="Get direction" icon="fa-location-arrow" onClick="action-base-address-method-view-direction"/>
 			</button-group>
             <spacer name="btnGrpSpacer" colSpan="6"/>
-            <button-group name="map2BtnGroup" colSpan="6" showIf="$popup()">
+            <button-group name="map2BtnGroup" colSpan="6" showIf="$popup()" readonlyIf="!id" >
                 <button name="mapBtn" title="View map" icon="fa-map-marker" onClick="action-base-address-method-view-map,close"/>
                 <button name="directionsBtn" title="Get direction" icon="fa-location-arrow" onClick="action-base-address-method-view-direction,close"/>
             </button-group>
@@ -52,21 +54,23 @@
 			<field name="addressL7Country" onChange="action-address-record-clear-fields" required="true" canEdit="false" form-view="country-form" grid-view="country-grid" colSpan="12"/>
 			<field name="addressL2" x-bind="{{addressL2|uppercase}}" placeholder="e.g. Financial department, CEO"/>
 			<field name="addressL3" x-bind="{{addressL3|uppercase}}" placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>
-			<field name="addressL4" x-bind="{{addressL4|uppercase}}"/>
-			<field name="addressL5" x-bind="{{addressL5|uppercase}}" placeholder="e.g. POB 254"/>
-            <field name="zip" />
-			<field name="city" onSelect="action-address-attrs-update-domain-city" canEdit="false" canNew="true" onChange="action-address-change-city" form-view="city-form" grid-view="city-grid"/>
+            <field name="streetNumber" x-bind="{{streetNumber|uppercase}}" onChange="action-address-record-change-addressL4" if="__config__.app.getApp('base').getStoreStreets()" />
+            <field name="street" onSelect="action-address-attrs-update-domain-street" onChange="action-address-record-change-addressL4" form-view="street-form" grid-view="street-grid" canNew="true" if="__config__.app.getApp('base').getStoreStreets()" />
+            <field name="addressL4" x-bind="{{addressL4|uppercase}}" if="!__config__.app.getApp('base').getStoreStreets()" />
+   			<field name="addressL5" x-bind="{{addressL5|uppercase}}" placeholder="e.g. POB 254"/>
+            <field name="zip" onChange="action-address-method-autocomplete-address" />
+            <field name="city" onSelect="action-address-attrs-update-domain-city" canEdit="false" canNew="true" onChange="action-address-change-city" form-view="city-form" grid-view="city-grid"/>
 			<field name="addressL6" x-bind="{{addressL6|uppercase}}" required="true" colSpan="12"/>
 			<static name="addressL6Text" colSpan="12">Notice: The Zip/City field is automatically filled when the city is selected. You can change it when the Zip/City pair is missing or in case of minor change.</static>
 			<field name="isInvoicingAddr" type="boolean" showIf="$popup() &amp;&amp; id == null" title="Invoicing address" />
 			<field name="isDeliveryAddr" type="boolean" showIf="$popup() &amp;&amp; id == null" title="Delivery address" />
 			<field name="isDefault" type="boolean" showIf="$popup() &amp;&amp; id == null" title="Default" />
-			<button-group colSpan="6" hideIf="$popup()">
+			<button-group colSpan="6" hideIf="$popup()" readonlyIf="!id">
 				<button name="mapBtn" title="View map" icon="fa-map-marker" onClick="action-base-address-method-view-map"/>
 				<button name="directionsBtn" title="Get direction" icon="fa-location-arrow" onClick="action-base-address-method-view-direction"/>
 			</button-group>
             <spacer name="btnGrpSpacer" colSpan="6"/>
-            <button-group colSpan="6" showIf="$popup()">
+            <button-group colSpan="6" showIf="$popup()" readonlyIf="!id">
                 <button name="mapBtn" title="View map" icon="fa-map-marker" onClick="action-base-address-method-view-map,close"/>
                 <button name="directionsBtn" title="Get direction" icon="fa-location-arrow" onClick="action-base-address-method-view-direction,close"/>
             </button-group>
@@ -93,10 +97,13 @@
 	</action-record>
 	
 	<action-record name="action-address-change-city" model="com.axelor.apps.base.db.Address">
-		<field name="addressL6" if="city" expr="eval:city.hasZipOnRight ? city.name+' '+city.zip :city.zip+' '+city.name"/>
+		<field name="addressL6" if="city &amp;&amp; city.zip" expr="eval:city.hasZipOnRight ? city.name+' '+city.zip :city.zip+' '+city.name"/>
+        <field name="addressL6" if="city &amp;&amp; !city.zip" expr="eval: city.name"/>
+        <field name="addressL6" if="!city" expr="eval: null"/>
 <!--   		<field name="addressL7Country" expr="eval:city.department==null?addressL7Country:city.department.region!=null?city.department.region.country:addressL7Country"/> -->
-  		<field name="addressL7Country" expr="eval:city?.country"/>
+  		<field name="addressL7Country" expr="eval: city?.country" if="city" />
 		<field name="zip" expr="eval: city?.zip"/>
+        <field name="street" expr="eval: null"/>
 	</action-record>
 	
 	<action-record name="default-address-country-record"
@@ -133,11 +140,36 @@
 		<attribute name="domain" if="addressL7Country || zip" expr="eval: (addressL7Country ? &quot;self.country = :addressL7Country&quot; : &quot;&quot;) +        (addressL7Country &amp;&amp; zip ? &quot; AND &quot; : &quot;&quot;) + (zip ? &quot;self.zip LIKE '${zip + '%'}' &quot; : &quot;&quot;)" for="city"/>
 		<attribute name="domain" if="!addressL7Country &amp;&amp; !zip" expr="eval: null" for="city"/>
 	</action-attrs>
+    
+    <action-attrs name="action-address-attrs-update-domain-street">
+        <attribute name="domain" for="street" if="addressL7Country &amp;&amp; zip" expr="eval: &quot;self.city IN (SELECT id FROM City WHERE zip LIKE '${zip + '%'}' AND country = ${addressL7Country.id})&quot;" />
+        <attribute name="domain" for="street" if="!addressL7Country &amp;&amp; zip" expr="eval: &quot;self.city IN (SELECT id FROM City WHERE zip LIKE '${zip + '%'}')&quot;" />
+        <attribute name="domain" for="street" if="addressL7Country &amp;&amp; !zip" expr="eval: &quot;self.city IN (SELECT id FROM City WHERE country = ${addressL7Country.id})&quot;" />
+        <attribute name="domain" for="street" if="!addressL7Country &amp;&amp; !zip" expr="eval: null" />
+    </action-attrs>
 
 	<action-record name="action-address-record-clear-fields" model="com.axelor.apps.base.db.Address">
 		<field name="city" expr="eval: null"/>
-		<field name="zip" expr="eval: null"/>
+        <field name="zip" expr="eval: null"/>
         <field name="addressL6" expr="eval: null"/>
+        <field name="streetNumber" expr="eval: null"/>
+        <field name="street" expr="eval: null"/>
+        <field name="addressL4" expr="eval: null"/>
 	</action-record>
+    
+    <action-method name="action-address-method-autocomplete-address">
+		<call class="com.axelor.apps.base.web.AddressController" method="autocompleteAddress" />
+    </action-method>
+
+    <action-record name="action-address-record-change-addressL4" model="com.axelor.apps.base.db.Address">
+        <field name="addressL4" expr="eval: streetNumber + ' ' + street?.name" if="streetNumber &amp;&amp; street" />
+        <field name="addressL4" expr="eval: street?.name" if="!streetNumber &amp;&amp; street" />
+        <field name="addressL4" expr="eval: null" if="!street" />
+        <field name="city" expr="eval: street.city" if="street" />
+        <field name="zip" expr="eval: street.city.zip" if="street" />
+        <field name="addressL6" if="street &amp;&amp; street.city.zip" expr="eval: street.city.hasZipOnRight ? street.city.name+' '+street.city.zip :street.city.zip+' '+street.city.name"/>
+        <field name="addressL6" if="street &amp;&amp; !street.city.zip" expr="eval: street.city.name"/>
+        <field name="addressL7Country" expr="eval: street.city.country" if="street" />
+    </action-record>
 
 </object-views>

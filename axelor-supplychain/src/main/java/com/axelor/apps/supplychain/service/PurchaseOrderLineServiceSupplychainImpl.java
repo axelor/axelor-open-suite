@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -32,6 +33,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -187,5 +189,23 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
       return undeliveryQty;
     }
     return BigDecimal.ZERO;
+  }
+
+  public void computeBudgetDistributionSumAmount(
+      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) {
+    List<BudgetDistribution> budgetDistributionList = purchaseOrderLine.getBudgetDistributionList();
+    BigDecimal budgetDistributionSumAmount = BigDecimal.ZERO;
+    LocalDate computeDate = purchaseOrder.getOrderDate();
+
+    if (budgetDistributionList != null && !budgetDistributionList.isEmpty()) {
+
+      for (BudgetDistribution budgetDistribution : budgetDistributionList) {
+        budgetDistributionSumAmount =
+            budgetDistributionSumAmount.add(budgetDistribution.getAmount());
+        Beans.get(BudgetSupplychainService.class)
+            .computeBudgetDistributionSumAmount(budgetDistribution, computeDate);
+      }
+    }
+    purchaseOrderLine.setBudgetDistributionSumAmount(budgetDistributionSumAmount);
   }
 }

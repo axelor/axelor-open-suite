@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,13 +21,11 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
-import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCancelService;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -68,7 +66,7 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
    * @param invoicePayment An invoice payment
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void cancel(InvoicePayment invoicePayment) throws AxelorException {
 
     Move paymentMove = invoicePayment.getMove();
@@ -78,14 +76,6 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
 
     if (reconcile != null && reconcile.getStatusSelect() == ReconcileRepository.STATUS_CONFIRMED) {
       reconcileService.unreconcile(reconcile);
-      if (paymentMove.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
-          || (paymentMove.getStatusSelect() == MoveRepository.STATUS_VALIDATED
-              && accountConfigService
-                  .getAccountConfig(invoicePayment.getInvoice().getCompany())
-                  .getAllowRemovalValidatedMove())) {
-        invoicePayment.setReconcile(null);
-        Beans.get(ReconcileRepository.class).remove(reconcile);
-      }
     }
 
     if (paymentMove != null
@@ -97,7 +87,7 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateCancelStatus(InvoicePayment invoicePayment) throws AxelorException {
 
     invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_CANCELED);

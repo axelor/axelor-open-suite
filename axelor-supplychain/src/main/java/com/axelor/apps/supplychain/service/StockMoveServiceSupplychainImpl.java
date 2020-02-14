@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,7 +21,6 @@ import com.axelor.apps.base.db.AppSupplychain;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -54,6 +53,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
@@ -104,8 +104,13 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public String realize(StockMove stockMove, boolean check) throws AxelorException {
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return super.realize(stockMove, check);
+    }
+
     LOG.debug("Réalisation du mouvement de stock : {} ", stockMove.getStockMoveSeq());
     String newStockSeq = super.realize(stockMove, check);
     AppSupplychain appSupplychain = appSupplyChainService.getAppSupplychain();
@@ -130,7 +135,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       // Update linked purchaseOrder receipt state depending on BackOrder's existence
       PurchaseOrder purchaseOrder = purchaseOrderRepo.find(stockMove.getOriginId());
       if (newStockSeq != null) {
-        purchaseOrder.setReceiptState(IPurchaseOrder.STATE_PARTIALLY_RECEIVED);
+        purchaseOrder.setReceiptState(PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED);
       } else {
         Beans.get(PurchaseOrderStockService.class).updateReceiptState(purchaseOrder);
 
@@ -184,8 +189,14 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void cancel(StockMove stockMove) throws AxelorException {
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      super.cancel(stockMove);
+      return;
+    }
+
     if (stockMove.getStatusSelect() == StockMoveRepository.STATUS_REALIZED) {
       if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
         updateSaleOrderOnCancel(stockMove);
@@ -202,16 +213,19 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void plan(StockMove stockMove) throws AxelorException {
     super.plan(stockMove);
-    if (appSupplyChainService.getAppSupplychain().getManageStockReservation()) {
+    AppSupplychainService appSupplychainService = Beans.get(AppSupplychainService.class);
+
+    if (appSupplychainService.getAppSupplychain().getManageStockReservation()
+        && appSupplychainService.isApp("supplychain")) {
       Beans.get(ReservedQtyService.class)
           .updateReservedQuantity(stockMove, StockMoveRepository.STATUS_PLANNED);
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updateSaleOrderOnCancel(StockMove stockMove) throws AxelorException {
     SaleOrder so = saleOrderRepo.find(stockMove.getOriginId());
 
@@ -272,7 +286,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void updatePurchaseOrderOnCancel(StockMove stockMove) throws AxelorException {
     PurchaseOrder po = purchaseOrderRepo.find(stockMove.getOriginId());
 
@@ -293,10 +307,10 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
    */
   protected void finishOrValidatePurchaseOrderStatus(PurchaseOrder purchaseOrder) {
 
-    if (purchaseOrder.getReceiptState() == IPurchaseOrder.STATE_RECEIVED) {
-      purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_FINISHED);
+    if (purchaseOrder.getReceiptState() == PurchaseOrderRepository.STATE_RECEIVED) {
+      purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_FINISHED);
     } else {
-      purchaseOrder.setStatusSelect(IPurchaseOrder.STATUS_VALIDATED);
+      purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_VALIDATED);
     }
   }
 
@@ -320,11 +334,11 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
           purchaseOrderLine.setReceivedQty(purchaseOrderLine.getReceivedQty().subtract(realQty));
         }
         if (purchaseOrderLine.getReceivedQty().signum() == 0) {
-          purchaseOrderLine.setReceiptState(IPurchaseOrder.STATE_NOT_RECEIVED);
+          purchaseOrderLine.setReceiptState(PurchaseOrderRepository.STATE_NOT_RECEIVED);
         } else if (purchaseOrderLine.getReceivedQty().compareTo(purchaseOrderLine.getQty()) < 0) {
-          purchaseOrderLine.setReceiptState(IPurchaseOrder.STATE_PARTIALLY_RECEIVED);
+          purchaseOrderLine.setReceiptState(PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED);
         } else {
-          purchaseOrderLine.setReceiptState(IPurchaseOrder.STATE_RECEIVED);
+          purchaseOrderLine.setReceiptState(PurchaseOrderRepository.STATE_RECEIVED);
         }
       }
     }
@@ -398,7 +412,10 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       throws AxelorException {
     StockMoveLine newStockMoveLine = super.copySplittedStockMoveLine(stockMoveLine);
 
-    if (appSupplyChainService.getAppSupplychain().getManageStockReservation()) {
+    AppSupplychainService appSupplychainService = Beans.get(AppSupplychainService.class);
+
+    if (appSupplychainService.getAppSupplychain().getManageStockReservation()
+        && appSupplychainService.isApp("supplychain")) {
       BigDecimal requestedReservedQty =
           stockMoveLine
               .getRequestedReservedQty()
@@ -440,5 +457,20 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
                 notAvailableProducts.toString()));
       }
     }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public Optional<StockMove> generateReversion(StockMove stockMove) throws AxelorException {
+
+    Optional<StockMove> newStockMove = super.generateReversion(stockMove);
+    List<StockMoveLine> stockMoveLineList =
+        newStockMove.isPresent() ? newStockMove.get().getStockMoveLineList() : null;
+    if (stockMoveLineList != null && !stockMoveLineList.isEmpty()) {
+      for (StockMoveLine stockMoveLine : stockMoveLineList) {
+        stockMoveLine.setQtyInvoiced(BigDecimal.ZERO);
+      }
+    }
+    return newStockMove;
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.db.repo;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import java.math.BigDecimal;
 
 public class StockMoveSupplychainRepository extends StockMoveManagementRepository {
@@ -29,11 +30,18 @@ public class StockMoveSupplychainRepository extends StockMoveManagementRepositor
 
     StockMove copy = super.copy(entity, deep);
 
+    copy.setInvoiceSet(null);
+    copy.setOriginTypeSelect(null);
     if (copy.getStockMoveLineList() != null) {
       for (StockMoveLine stockMoveLine : copy.getStockMoveLineList()) {
         stockMoveLine.setReservedQty(BigDecimal.ZERO);
+        stockMoveLine.setRequestedReservedQty(BigDecimal.ZERO);
+        stockMoveLine.setIsQtyRequested(false);
+        stockMoveLine.setReservationDateTime(null);
+        stockMoveLine.setQtyInvoiced(null);
       }
     }
+    copy.setInvoicingStatusSelect(StockMoveRepository.STATUS_NOT_INVOICED);
 
     return copy;
   }

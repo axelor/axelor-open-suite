@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -93,7 +93,7 @@ public abstract class AbstractTimerService implements TimerService {
     timer.setStatusSelect(TimerRepository.TIMER_STOPPED);
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected Timer tryStartOrCreate(Timer timer) throws AxelorException {
     if (timer == null) {
       timer = new Timer();
@@ -107,7 +107,7 @@ public abstract class AbstractTimerService implements TimerService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public TimerHistory stop(Model model, Timer timer, LocalDateTime dateTime)
       throws AxelorException {
     Preconditions.checkNotNull(timer, I18n.get(IExceptionMessage.TIMER_IS_NOT_STARTED));

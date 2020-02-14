@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,20 +27,20 @@ import java.util.List;
 
 public interface LunchVoucherMgtService {
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void calculate(LunchVoucherMgt lunchVoucherMgt) throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validate(LunchVoucherMgt lunchVoucherMgt) throws AxelorException;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public int updateStock(
       List<LunchVoucherMgtLine> newLunchVoucherMgtLines,
       List<LunchVoucherMgtLine> oldLunchVoucherMgtLines,
       Company company)
       throws AxelorException;
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void export(LunchVoucherMgt lunchVoucherMgt) throws IOException;
 
   public int checkStock(Company company, int numberToUse) throws AxelorException;

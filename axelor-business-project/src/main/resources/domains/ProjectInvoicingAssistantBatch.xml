@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+
+  <module name="business-project" package="com.axelor.apps.businessproject.db"/>
+
+  <entity name="ProjectInvoicingAssistantBatch" cacheable="true">
+      
+    <!-- HEADER -->
+  	<string name="code" title="Code" namecolumn="true" unique="true"/>
+    <integer name="actionSelect" title="Action" required="true" selection="project.invoicing.assistant.batch.action.select"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" />
+    <integer name="consolidatePhaseSelect" title="Consolidate the phases" selection="project.invoicing.assistant.batch.consolidate.phase.select"/>
+    
+    <!-- OTHERS INFORMATIONS -->
+    <string name="description" title="Description" large="true" />
+    <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch" mappedBy="projectInvoicingAssistantBatch" title="Batches" />
+    
+    <extra-code><![CDATA[
+	
+	   	// ACTION TYPE
+		public static final int ACTION_UPDATE_TASKS = 1;
+		public static final int ACTION_GENERATE_INVOICING_PROJECT = 2;
+
+		//CONSOLIDATE PHASE SELECT
+		public static final int CONSOLIDATE_PHASE_CONSOLIDATE_ALL = 1;
+		public static final int CONSOLIDATE_PHASE_DONT_CONSOLIDATE = 2;
+		public static final int CONSOLIDATE_PHASE_DEFAULT_VALUE = 3;
+	
+	]]></extra-code>
+	
+  </entity>
+  
+</domain-models>

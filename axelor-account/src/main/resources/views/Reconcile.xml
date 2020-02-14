@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
-    <grid name="reconcile-grid" title="Reconcile" model="com.axelor.apps.account.db.Reconcile">
-    	<field name="reconcileSeq" width="120"/>
-    	<field name="company"/>
-        <field name="debitMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
-        <field name="debitMoveLine.amountRemaining" title="Debit remaining"/>
-        <field name="creditMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
-        <field name="creditMoveLine.amountRemaining" title="Credit remaining"/>
-        <field name="amount" aggregate="sum"/>
-        <field name="reconciliationDate"/>
-        <field name="statusSelect"/>
-    </grid>
+	<grid name="reconcile-grid" title="Reconcile" model="com.axelor.apps.account.db.Reconcile">
+		<field name="reconcileSeq" width="120"/>
+		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+	  <field name="debitMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
+	  <field name="debitMoveLine.amountRemaining" title="Debit remaining"/>
+	  <field name="creditMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
+	  <field name="creditMoveLine.amountRemaining" title="Credit remaining"/>
+	  <field name="amount" aggregate="sum"/>
+	  <field name="reconciliationDate"/>
+	  <field name="statusSelect"/>
+	</grid>
 
 	<grid name="move-line-reconcile-grid" title="Reconcile" model="com.axelor.apps.account.db.Reconcile">
 		<field name="reconcileSeq" width="120"/>
@@ -24,7 +24,7 @@
         <field name="statusSelect"/>
     </grid>
 
-    <form name="reconcile-form" title="Reconcile" model="com.axelor.apps.account.db.Reconcile"  >
+    <form name="reconcile-form" title="Reconcile" model="com.axelor.apps.account.db.Reconcile" canDelete="statusSelect == 1" >
 		<panel name="companyPanel" showTitle="false">
 			<field name="company" canEdit="false"/>
 		</panel>
@@ -35,7 +35,7 @@
 			<field name="creditMoveLine.amountRemaining" title="Credit remaining"/>
 		</panel>
 		<panel sidebar="true" name="actionsPanel" title="Actions">
-    		<button name="reconcileBtn" title="Btn.Reconcile" showIf="statusSelect == 1 || statusSelect == 3 " onClick="save,action-reconcile-method-reconcile"/>
+    		<button name="reconcileBtn" title="Btn.Reconcile" showIf="statusSelect == 1" onClick="save,action-reconcile-method-reconcile"/>
 			<button name="unreconcileBtn" title="Unreconcile" showIf="statusSelect == 2"   onClick="save,action-reconcile-method-unreconcile"/>
 		</panel>
 		<panel sidebar="true" name="infoPanel" title="Info">

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.bankpayment.service.batch;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
+import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
@@ -31,6 +32,10 @@ public class AccountingBatchBankPaymentService extends AccountingBatchService {
   public Batch run(Model batchModel) throws AxelorException {
     Batch batch;
     AccountingBatch accountingBatch = (AccountingBatch) batchModel;
+
+    if (!Beans.get(AppBankPaymentService.class).isApp("bank-payment")) {
+      return super.run(accountingBatch);
+    }
 
     switch (accountingBatch.getActionSelect()) {
       case AccountingBatchRepository.ACTION_DIRECT_DEBIT:

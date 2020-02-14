@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -46,7 +46,7 @@ public interface SaleOrderInvoiceService {
    * @return the generated invoice
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   Invoice generateInvoice(SaleOrder saleOrder) throws AxelorException;
 
   /**
@@ -58,7 +58,7 @@ public interface SaleOrderInvoiceService {
    * @return the generated invoice
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   Invoice generateInvoice(SaleOrder saleOrder, List<SaleOrderLine> saleOrderLinesSelected)
       throws AxelorException;
 
@@ -72,7 +72,7 @@ public interface SaleOrderInvoiceService {
    * @return the generated invoice
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   Invoice generateInvoice(
       SaleOrder saleOrder,
       List<SaleOrderLine> saleOrderLinesSelected,
@@ -95,7 +95,8 @@ public interface SaleOrderInvoiceService {
       int operationSelect,
       BigDecimal amount,
       boolean isPercent,
-      Map<Long, BigDecimal> qtyToInvoiceMap)
+      Map<Long, BigDecimal> qtyToInvoiceMap,
+      List<Long> timetableIdList)
       throws AxelorException;
 
   SaleOrder fillSaleOrder(SaleOrder saleOrder, Invoice invoice);
@@ -132,19 +133,6 @@ public interface SaleOrderInvoiceService {
       SaleOrder saleOrder,
       List<SaleOrderLine> saleOrderLineList,
       Map<Long, BigDecimal> qtyToInvoiceMap)
-      throws AxelorException;
-
-  /**
-   * Allows to partially invoice a {@link SaleOrder} by creating an {@link Invoice} with one line
-   * per different tax lines in the {@link SaleOrder}.
-   *
-   * @param saleOrder
-   * @param amountToInvoice
-   * @param isPercent
-   * @return the generated invoice
-   * @throws AxelorException
-   */
-  Invoice generatePartialInvoice(SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent)
       throws AxelorException;
 
   /**
@@ -224,6 +212,17 @@ public interface SaleOrderInvoiceService {
       throws AxelorException;
 
   /**
+   * Check if a sale order line is a pack line and add all its sublines to qtyToInvoiceMap with
+   * amount qtyToInvoiceItem.
+   *
+   * @param qtyToInvoiceMap
+   * @param qtyToInvoiceItem
+   * @param soLineId
+   */
+  public void addSubLineQty(
+      Map<Long, BigDecimal> qtyToInvoiceMap, BigDecimal qtyToInvoiceItem, Long soLineId);
+
+  /**
    * Use the different parameters to have the price in % of the created invoice.
    *
    * @param saleOrder the sale order used to get the total price
@@ -234,18 +233,6 @@ public interface SaleOrderInvoiceService {
    */
   BigDecimal computeAmountToInvoicePercent(
       SaleOrder saleOrder, BigDecimal amount, boolean isPercent) throws AxelorException;
-
-  /**
-   * Try to set the updated sale order amount invoiced.
-   *
-   * @param saleOrder
-   * @param currentInvoiceId
-   * @param excludeCurrentInvoice
-   * @throws AxelorException if the invoiced amount would be greater than the exTaxTotal
-   */
-  void updateAndCheckInvoicedAmount(
-      SaleOrder saleOrder, Long currentInvoiceId, boolean excludeCurrentInvoice)
-      throws AxelorException;
 
   /**
    * Set the updated sale order amount invoiced without checking.
@@ -272,9 +259,7 @@ public interface SaleOrderInvoiceService {
    */
   List<Invoice> getInvoices(SaleOrder saleOrder);
 
-  void fillInLines(Invoice invoice);
-
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   Invoice mergeInvoice(
       List<Invoice> invoiceList,
       Company cmpany,
@@ -299,7 +284,7 @@ public interface SaleOrderInvoiceService {
    * @param saleOrder the sale order from context
    * @return the domain for the operation select field in the invoicing wizard form
    */
-  Map<String, Integer> getInvoicingWizardOperationDomain(SaleOrder saleOrder);
+  List<Integer> getInvoicingWizardOperationDomain(SaleOrder saleOrder);
 
   /**
    * throw exception if all invoices amount generated from the sale order and amountToInvoice is

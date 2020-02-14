@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -12,7 +12,7 @@
 	<many-to-one name="analyticAxis" ref="com.axelor.apps.account.db.AnalyticAxis" title="Axis"/>
 	<many-to-one name="analyticAccount" ref="com.axelor.apps.account.db.AnalyticAccount" title="Analytic Acc."/>
     <decimal name="percentage" title="%"/>
-    <many-to-one name="analyticJournal" ref="com.axelor.apps.account.db.AnalyticJournal" title="Analytic Journal"/>
+    <many-to-one name="analyticJournal" ref="com.axelor.apps.account.db.AnalyticJournal" title="Analytic Journal" required="true"/>
     
   </entity>
 

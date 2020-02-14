@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -115,4 +115,49 @@ public interface ITranslation {
       "BankReconciliation.unreconciled_move_lines"; /*)*/;
   public static final String BANK_RECONCILIATION_MOVES_UNACCOUNTED = /*$$(*/
       "BankReconciliation.moves_unaccounted"; /*)*/;
+
+  public static final String BANK_RECONCILIATION_STATEMENT_COMPANY = /*$$(*/
+      "BankReconciliationStatement.company"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_CURRENCY = /*$$(*/
+      "BankReconciliationStatement.currency"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_JOURNAL = /*$$(*/
+      "BankReconciliationStatement.journal"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_DATE = /*$$(*/
+      "BankReconciliationStatement.date"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_PAGE1TITLE = /*$$(*/
+      "BankReconciliationStatement.page1Title"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_PAGE2TITLE = /*$$(*/
+      "BankReconciliationStatement.page2Title"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_CODE = /*$$(*/
+      "BankReconciliationStatement.code"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_REFERENCE = /*$$(*/
+      "BankReconciliationStatement.reference"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_DESCRIPTION = /*$$(*/
+      "BankReconciliationStatement.description"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_DEBIT = /*$$(*/
+      "BankReconciliationStatement.debit"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_CREDIT = /*$$(*/
+      "BankReconciliationStatement.credit"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_AMOUNT_REMAINING = /*$$(*/
+      "BankReconciliationStatement.amountRemaining"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_NAME = /*$$(*/
+      "BankReconciliationStatement.name"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_ACCOUNT_CODE = /*$$(*/
+      "BankReconciliationStatement.accountCode"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_JOURNAL_CODE = /*$$(*/
+      "BankReconciliationStatement.journalCode"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_LINE = /*$$(*/
+      "BankReconciliationStatement.line"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_AMOUNT_TO_RECONCILE = /*$$(*/
+      "BankReconciliationStatement.amountToReconcile"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_NO_LINE_FOUND_MESSAGE = /*$$(*/
+      "BankReconciliationStatement.noLineFoundMessage"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_ACCOUNT = /*$$(*/
+      "BankReconciliationStatement.account"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_BANK_DETAILS = /*$$(*/
+      "BankReconciliationStatement.bankDetails"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_ACTUAL_BALANCE = /*$$(*/
+      "BankReconciliationStatement.actualBalance"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_MAIN_TITLE = /*$$(*/
+      "BankReconciliationStatement.mainTitle"; /*)*/;
 }

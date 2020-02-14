@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,9 +24,11 @@ import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
+import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.ExpenseHRRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.Collection;
@@ -57,6 +59,10 @@ public class BankOrderMergeHRServiceImpl extends BankOrderMergeServiceImpl {
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   @Override
   public BankOrder mergeBankOrders(Collection<BankOrder> bankOrders) throws AxelorException {
+    if (!Beans.get(AppService.class).isApp("employee")) {
+      return super.mergeBankOrders(bankOrders);
+    }
+
     List<Expense> expenseList =
         expenseHRRepository
             .all()

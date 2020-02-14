@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="stock" package="com.axelor.apps.supplychain.db"/>
 
@@ -23,6 +23,10 @@
     
     <decimal name="numberOfDays" title="Number of days" min="0" />
 
+    <integer name="defaultEstimatedDateForPurchaseOrder" title="Default estimated date in stock move from purchase order" selection="supplychain.estimated.date.select" default="1" />
+    
+    <decimal name="numberOfDaysForPurchaseOrder" title="Number of days" min="0" />
+
     <extra-code><![CDATA[
 
       // Default estimated Date
@@ -33,6 +37,8 @@
     ]]></extra-code>
 
     <track>
+    	<field name="company" on="UPDATE"/>
+    	
     	<field name="hasOutSmForStorableProduct" on="UPDATE"/>
     	<field name="hasOutSmForNonStorableProduct" on="UPDATE"/>
     	<field name="hasInSmForStorableProduct" on="UPDATE"/>
@@ -41,6 +47,15 @@
     	<field name="autoAllocateOnReceipt" on="UPDATE"/>
     	<field name="autoAllocateOnAllocation" on="UPDATE"/>
     	<field name="autoRequestReservedQty" on="UPDATE"/>
+    	<field name="autoAllocateOnAvailabilityRequest" on="UPDATE"/>
+    	
+    	<field name="defaultEstimatedDate" on="UPDATE"/>
+    
+    	<field name="numberOfDays" on="UPDATE"/>
+
+    	<field name="defaultEstimatedDateForPurchaseOrder" on="UPDATE"/>
+    
+    	<field name="numberOfDaysForPurchaseOrder" on="UPDATE"/>
     </track>
     
   </entity>

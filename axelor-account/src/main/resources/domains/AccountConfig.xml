@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                xmlns="http://axelor.com/xml/ns/domain-models"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
 	<module name="account" package="com.axelor.apps.account.db"/>
 
-	<entity name="AccountConfig" lang="java" cachable="true">
+	<entity name="AccountConfig" lang="java" cacheable="true">
 
 		<one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
 
@@ -20,6 +20,7 @@
 		<many-to-one name="irrecoverableJournal" ref="com.axelor.apps.account.db.Journal" title="Irrecoverable Journal"/>
 		<many-to-one name="autoMiscOpeJournal" ref="com.axelor.apps.account.db.Journal" title="Auto Misc. Operation Journal"/>
 		<many-to-one name="manualMiscOpeJournal" ref="com.axelor.apps.account.db.Journal" title="Manual Misc. Operation Journal"/>
+		<many-to-one name="reportedBalanceJournal" ref="com.axelor.apps.account.db.Journal" title="Reported Balance Journal"/>
 
 		<many-to-one name="saleJournalType" ref="com.axelor.apps.account.db.JournalType" title="Sales journal type"/>
 		<many-to-one name="purchaseJournalType" ref="com.axelor.apps.account.db.JournalType" title="Purchase journal type"/>
@@ -37,6 +38,9 @@
 		<many-to-one name="advancePaymentAccount" ref="com.axelor.apps.account.db.Account" title="Advance Payment Account"/>
 		<many-to-one name="factorDebitAccount" ref="com.axelor.apps.account.db.Account"/>
 		<many-to-one name="factorCreditAccount" ref="com.axelor.apps.account.db.Account"/>
+		<many-to-one name="yearOpeningAccount" ref="com.axelor.apps.account.db.Account" title="Year opening account"/>
+		<many-to-one name="yearClosureAccount" ref="com.axelor.apps.account.db.Account" title="Year closure account"/>
+		
 
         <!-- Automatic account creation for partners -->
         <integer name="partnerAccountGenerationModeSelect" selection="account.create.mode.select" default="0" title="Automatic partner account creation mode"/>
@@ -108,8 +112,6 @@
 		<string name="irrecoverableReasonPassage" title="Irrecoverable shifting reason" default="Manual shift into irrecoverable receivables"/>
 		<many-to-one name="irrecoverableStandardRateTax" ref="com.axelor.apps.account.db.Tax" title="Tax standard rate for irrecoverables"/>
 
-		<!-- Onglet Paybox -->
-		<many-to-one name="payboxConfig" ref="com.axelor.apps.account.db.PayboxConfig" title="Paybox configuration"/>
 
 		<!-- Invoice page -->
 		<boolean name="allowCancelVentilatedInvoice" title="Allow cancelation of ventilated invoice"/>
@@ -117,6 +119,7 @@
 		<boolean name="generateMoveForInvoicePayment" title="Generate move for payment on invoice" default="true"/>
 		<boolean name="generateMoveForAdvancePayment" title="Generate move for advance payment" default="true"/>
 		<boolean name="fixedAssetCatReqOnInvoice" title="Fixed asset category required on invoices"/>
+		<boolean name="isPrintInvoicesInCompanyLanguage" title="Print invoices in company language" default="true"/>
 
 		<!-- Account chart template -->
 		<many-to-one name="accountChart" ref="com.axelor.apps.account.db.AccountChart" title="Account chart"/>
@@ -142,6 +145,7 @@
 		<boolean name="displayProductCodeOnPrinting" title="Display product code on printing"/>
 		<boolean name="displayTaxDetailOnPrinting" title="Display tax detail on printing"/>
 		<boolean name="displayPartnerSeqOnPrinting" title="Display partner sequence on printing"/>
+		<boolean name="displayHeadOfficeAddrOnInvoicePrinting" title="Display head office address on invoice printing"/>
 		<string name="invoiceClientBox" large="true" multiline="true" title="Client box in invoice"/>
 		<string name="saleInvoiceLegalNote" large="true" multiline="true" title="Legal note on sale invoices" help="Short legal note to be displayed on sale invoices"/>
 
@@ -150,8 +154,15 @@
 		<!-- Invoice mail -->
 		<boolean name="invoiceAutomaticMail" title="Send email on invoice ventilation" default="false"/>
 		<many-to-one name="invoiceMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
+		
+		<boolean name="isManagePassedForPayment" title="Passed for payment"/>
+		<boolean name="isManagePFPInRefund" title="Manage PFP on supplier refunds"/>
 
-		<finder-method name="findByCompany" using="company"/>
+		<!-- Account Report -->
+		<integer name="lineMinBeforeLongReportGenerationMessageNumber" title="Number of line minimum before long report generation message appear" min="0" help="value 0 is equal to no message"  default="10000"/>
+
+
+    <finder-method name="findByCompany" using="company"/>
 
 		<extra-code><![CDATA[
 	
@@ -256,7 +267,6 @@
 		<field name="irrecoverableReasonPassage" on="UPDATE"/>
 		<field name="irrecoverableStandardRateTax" on="UPDATE"/>
 		
-		<field name="payboxConfig" on="UPDATE"/>
 
 		<field name="allowCancelVentilatedInvoice" on="UPDATE"/>
 		<field name="allowRemovalValidatedMove" on="UPDATE"/>
@@ -289,6 +299,8 @@
 
 		<field name="invoiceAutomaticMail" on="UPDATE"/>
 		<field name="invoiceMessageTemplate" on="UPDATE"/>
+		
+		<field name="lineMinBeforeLongReportGenerationMessageNumber" on="UPDATE"/>
 	</track>
 
 	</entity>

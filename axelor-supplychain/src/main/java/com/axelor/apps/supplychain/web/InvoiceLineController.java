@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,20 +22,17 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
+import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
 public class InvoiceLineController {
-
-  @Inject private InvoiceLineRepository invoiceLineRepo;
-
-  @Inject private InvoiceLineService invoiceLineService;
 
   public void getProductPrice(ActionRequest request, ActionResponse response) {
 
@@ -69,6 +66,8 @@ public class InvoiceLineController {
     BigDecimal companyInTaxTotal = BigDecimal.ZERO;
     BigDecimal priceDiscounted = BigDecimal.ZERO;
     BigDecimal taxRate = BigDecimal.ZERO;
+
+    InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
 
     if (invoiceLines != null) {
       if (newKitQty.compareTo(BigDecimal.ZERO) != 0) {
@@ -128,7 +127,7 @@ public class InvoiceLineController {
 
     if (packLine.getOldQty() == null || packLine.getOldQty().compareTo(BigDecimal.ZERO) == 0) {
       if (packLine.getId() != null) {
-        InvoiceLine line = invoiceLineRepo.find(packLine.getId());
+        InvoiceLine line = Beans.get(InvoiceLineRepository.class).find(packLine.getId());
         if (line.getQty().compareTo(BigDecimal.ZERO) != 0) {
           oldKitQty = line.getQty();
         }
@@ -192,5 +191,16 @@ public class InvoiceLineController {
     }
 
     return invoice;
+  }
+
+  public void computeBudgetDistributionSumAmount(ActionRequest request, ActionResponse response) {
+    InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+    Invoice invoice = request.getContext().getParent().asType(Invoice.class);
+
+    Beans.get(InvoiceLineSupplychainService.class)
+        .computeBudgetDistributionSumAmount(invoiceLine, invoice);
+
+    response.setValue("budgetDistributionSumAmount", invoiceLine.getBudgetDistributionSumAmount());
+    response.setValue("budgetDistributionList", invoiceLine.getBudgetDistributionList());
   }
 }

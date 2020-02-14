@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,15 +26,12 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.HashMap;
 import java.util.Map;
 
 @Singleton
 public class BaseBatchController {
-
-  @Inject private BaseBatchService baseBatchService;
 
   // WS
 
@@ -47,7 +44,7 @@ public class BaseBatchController {
    */
   public void run(ActionRequest request, ActionResponse response) throws AxelorException {
 
-    Batch batch = baseBatchService.run((String) request.getContext().get("code"));
+    Batch batch = Beans.get(BaseBatchService.class).run((String) request.getContext().get("code"));
     Map<String, Object> mapData = new HashMap<String, Object>();
     mapData.put("anomaly", batch.getAnomaly());
     response.setData(mapData);
@@ -57,7 +54,7 @@ public class BaseBatchController {
     try {
       BaseBatch baseBatch = request.getContext().asType(BaseBatch.class);
       baseBatch = Beans.get(BaseBatchRepository.class).find(baseBatch.getId());
-      Batch batch = baseBatchService.synchronizeCalendars(baseBatch);
+      Batch batch = Beans.get(BaseBatchService.class).synchronizeCalendars(baseBatch);
       response.setFlash(batch.getComments());
     } catch (Exception e) {
       TraceBackService.trace(response, e);

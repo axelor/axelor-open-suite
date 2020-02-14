@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,8 +18,10 @@
 package com.axelor.apps.hr.service.employee;
 
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.hr.db.DPAE;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.exception.AxelorException;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Map;
@@ -37,4 +39,8 @@ public interface EmployeeService extends UserService {
       throws AxelorException;
 
   public Map<String, String> getSocialNetworkUrl(String name, String firstName);
+
+  /** Generates a new {@link DPAE} for given {@link Employee} and returns its id. */
+  @Transactional(rollbackOn = {Exception.class})
+  Long generateNewDPAE(Employee employee) throws AxelorException;
 }

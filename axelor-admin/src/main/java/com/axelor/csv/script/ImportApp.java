@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,6 +21,7 @@ import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.App;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.io.File;
 import java.nio.file.Path;
@@ -43,13 +44,16 @@ public class ImportApp {
     final Path path = (Path) values.get("__path__");
     String fileName = (String) values.get("imagePath");
 
-    try {
-      final File image = path.resolve("img" + File.separator + fileName).toFile();
-      final MetaFile metaFile = metaFiles.upload(image);
-      app.setImage(metaFile);
-
-    } catch (Exception e) {
-      LOG.warn("Can't load image {} for app {}", fileName, app.getName());
+    if (!Strings.isNullOrEmpty(fileName)) {
+      try {
+        final File image = path.resolve("img" + File.separator + fileName).toFile();
+        if (image.exists()) {
+          final MetaFile metaFile = metaFiles.upload(image);
+          app.setImage(metaFile);
+        }
+      } catch (Exception e) {
+        LOG.warn("Can't load image {} for app {}", fileName, app.getName());
+      }
     }
 
     if (app.getLanguageSelect() == null) {

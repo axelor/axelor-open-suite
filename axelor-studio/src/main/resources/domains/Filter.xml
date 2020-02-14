@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
   
   <module name="studio" package="com.axelor.studio.db" />
   
-  <entity name="Filter" cachable="true">
+  <entity name="Filter" cacheable="true">
   	<![CDATA[
      Filter represents a condition to evaluate.  It stores condition components like operand, operator and value. 
      A sql or groovy condition will be created by using this. 
@@ -15,6 +15,7 @@
   	<many-to-one name="metaField" title="Field" ref="com.axelor.meta.db.MetaField"/>
   	<many-to-one name="metaJsonField" title="Json Field" ref="com.axelor.meta.db.MetaJsonField"/>
   	<many-to-one name="wkfTransition" ref="com.axelor.studio.db.WkfTransition" />
+  	<many-to-one name="wkf" ref="com.axelor.studio.db.Wkf" />
   	<string name="operator" title="Operator" selection="studio.filter.operator" required="true" />
   	<many-to-one name="actionBuilder" ref="com.axelor.studio.db.ActionBuilder" />
   	<string name="targetField" title="Target field"/>

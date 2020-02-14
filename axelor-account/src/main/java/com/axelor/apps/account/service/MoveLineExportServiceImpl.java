@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -139,7 +139,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public Move updateMove(
       Move move, AccountingReport accountingReport, LocalDate localDate, String exportNumber) {
 
@@ -309,7 +309,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
    * @throws IOException
    */
   @SuppressWarnings("unchecked")
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void exportMoveLineTypeSelect1006FILE1(AccountingReport accountingReport, boolean replay)
       throws AxelorException, IOException {
 
@@ -499,7 +499,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
    * @throws IOException
    */
   @SuppressWarnings("unchecked")
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void exportMoveLineTypeSelect1007FILE1(AccountingReport accountingReport, boolean replay)
       throws AxelorException, IOException {
 
@@ -690,7 +690,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
    * @throws IOException
    */
   @SuppressWarnings("unchecked")
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void exportMoveLineTypeSelect1008FILE1(AccountingReport accountingReport, boolean replay)
       throws AxelorException, IOException {
 
@@ -881,7 +881,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
    * @throws IOException
    */
   @SuppressWarnings("unchecked")
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void exportMoveLineTypeSelect1009FILE1(AccountingReport accountingReport, boolean replay)
       throws AxelorException, IOException {
 
@@ -1067,7 +1067,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void exportMoveLineTypeSelect1010(AccountingReport accountingReport)
       throws AxelorException, IOException {
     log.info("In Export type 1010 service:");
@@ -1117,7 +1117,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
    * @throws AxelorException
    * @throws IOException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public MetaFile exportMoveLineTypeSelect1000(
       AccountingReport accountingReport, boolean administration, boolean replay)
       throws AxelorException, IOException {
@@ -1481,7 +1481,9 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     for (String[] iteams : allMoveData) {
       for (String iteam : iteams) {
-        iteam.replaceAll("(\r\n|\n\r|\r|\n|\\|)", " ");
+        if (iteam != null) {
+          iteam.replaceAll("(\r\n|\n\r|\r|\n|\\|)", " ");
+        }
       }
     }
 
@@ -1699,7 +1701,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public AccountingReport createAccountingReport(
       Company company, int exportTypeSelect, LocalDate startDate, LocalDate endDate)
       throws AxelorException {
@@ -1727,8 +1729,8 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     return accountingReport;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public String setFileName(AccountingReport accountingReport) throws AxelorException, IOException {
+  @Transactional(rollbackOn = {Exception.class})
+  public String setFileName(AccountingReport accountingReport) throws AxelorException {
     Company company = accountingReport.getCompany();
     Partner partner = company.getPartner();
 

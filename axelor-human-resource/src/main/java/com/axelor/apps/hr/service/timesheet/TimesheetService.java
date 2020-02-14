@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -39,7 +39,7 @@ import javax.mail.MessagingException;
 
 public interface TimesheetService {
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void confirm(Timesheet timesheet) throws AxelorException;
 
   public Message sendConfirmationEmail(Timesheet timesheet)
@@ -58,7 +58,7 @@ public interface TimesheetService {
    */
   public void checkEmptyPeriod(Timesheet timesheet) throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void validate(Timesheet timesheet) throws AxelorException;
 
   public Message sendValidationEmail(Timesheet timesheet)
@@ -69,7 +69,7 @@ public interface TimesheetService {
       throws AxelorException, ClassNotFoundException, InstantiationException,
           IllegalAccessException, MessagingException, IOException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void refuse(Timesheet timesheet) throws AxelorException;
 
   public Message sendRefusalEmail(Timesheet timesheet)
@@ -158,9 +158,12 @@ public interface TimesheetService {
    */
   void updateTimeLoggingPreference(Timesheet timesheet) throws AxelorException;
 
-  @Transactional
-  public void generateLinesFromProjectPlanning(Timesheet timesheet, Boolean realHours)
-      throws AxelorException;
+  @Transactional(rollbackOn = {Exception.class})
+  public void generateLinesFromExpectedProjectPlanning(Timesheet timesheet) throws AxelorException;
 
   public void prefillLines(Timesheet timesheet) throws AxelorException;
+
+  public void setTeamTaskTotalRealHrs(List<TimesheetLine> timesheetLines, boolean isAdd);
+
+  public void removeAfterToDateTimesheetLines(Timesheet timesheet);
 }

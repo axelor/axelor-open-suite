@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
 	<menuitem name="stock-root" title="Stock management"  order="-85"  if="__config__.app.isApp('stock')"
 	icon="fa-cubes"  icon-background="#b6473f" />
@@ -21,6 +21,7 @@
 		<view-param name="search-filters" value="customer-deliveries-filters"/>
         <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE</domain>
 		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
+		<context name="_isReversion" expr="eval: false"/>
 	</action-view>
 
     <menuitem name="stock-root-custreturns" parent="stock-root-stock-moves"
@@ -51,6 +52,7 @@
         <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE</domain>
 		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_INCOMING"/>
 		<context name="_newDate" expr="eval: __date__.plusWeeks(1)"/>
+		<context name="_isReversion" expr="eval: false"/>
 	</action-view>
 
     <menuitem name="stock-root-supreturns" parent="stock-root-stock-moves"
@@ -185,6 +187,7 @@
 	<action-view name="stock.root.inventories.draft" title="Inventories"
 		model="com.axelor.apps.stock.db.Inventory" >
 		<view type="grid" name="inventory-grid" />
+		<view type="calendar" name="inventory-calendar"/>
 		<view type="form" name="inventory-form"/>
 		<view-param name="search-filters" value="inventories-filters"/>
 	</action-view>	
@@ -236,6 +239,26 @@
 	<action-view name="stock.root.stock.location.tree" title="Stock Location Tree"
 		model="com.axelor.apps.stock.db.StockLocation" >
 		<view type="tree" name="stock-location-tree"/>
+	</action-view>
+
+	<menuitem name="stock-root-stock-correction" parent="stock-root"
+		title="Stock Corrections" action="stock.root.stock.correction" order="43"/>
+
+	<action-view name="stock.root.stock.correction" title="Stock Corrections"
+		model="com.axelor.apps.stock.db.StockCorrection">
+		<view type="grid" name="stock-correction-grid"/>
+		<view type="form" name="stock-correction-form"/>
+	</action-view>
+
+	<menuitem name="stock-root-abc-analysis" title="ABC analysis" order="27"
+		action="stock.root.abc.analysis" parent="stock-root"/>
+
+	<action-view name="stock.root.abc.analysis" title="ABC analysis"
+		model="com.axelor.apps.base.db.ABCAnalysis">
+		<view type="grid" name="abc-analysis-grid"/>
+		<view type="form" name="abc-analysis-form"/>
+		<domain>self.typeSelect = :_type</domain>
+		<context name="_type" expr="com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl"/>
 	</action-view>
 		
 	<menuitem name="stock-root-report" parent="stock-root" title="Reportings" order="45" icon="fa-bar-chart"/>
@@ -366,6 +389,14 @@
 		<view type="form" name="cancel-reason-form"/>
 		<domain>self.applicationType = :_xApplicationType</domain>
 		<context name="_xApplicationType" expr="eval: com.axelor.apps.stock.db.StockMove"/>
+	</action-view>
+
+	<menuitem name="stock-root-conf-stock-correction-reason" title="Stock Correction Reason" parent="stock-root-conf"
+		action="stock.root.conf.stock.correction.reason"/>
+
+	<action-view name="stock.root.conf.stock.correction.reason" title="Stock Correction Reason" model="com.axelor.apps.stock.db.StockCorrectionReason">
+		<view type="grid" name="stock-correction-reason-grid"/>
+		<view type="form" name="stock-correction-reason-form"/>
 	</action-view>
 
 </object-views>
