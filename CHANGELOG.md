@@ -27,6 +27,7 @@
 - Added a global configuration to base app to define number of digits for quantity fields.
 - Address: Addition of boolean 'isSharedAddress' in base config to check addresses are shared or not.
 - BANK STATEMENT LINE : Change orderBy attribute on bank-statement-line-afb-120-grid.
+- BANK DETAILS : add search button on bank-details-bank-order-company-grid.
 
 ## Improvements
 - Remove Pack Feature from Product.
