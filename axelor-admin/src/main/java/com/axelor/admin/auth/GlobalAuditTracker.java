@@ -12,6 +12,7 @@ import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -79,6 +80,9 @@ public class GlobalAuditTracker {
   }
 
   protected void addLog(GlobalTrackingLog log) {
+    if (LOGS.get() == null) {
+      this.init();
+    }
     LOGS.get().add(log);
   }
 
@@ -91,7 +95,7 @@ public class GlobalAuditTracker {
     log.setUser(AuthUtils.getUser());
     log.setRelatedId((Long) entity.getId());
     log.setGlobalTrackingLogLineList(new ArrayList<>());
-    LOGS.get().add(log);
+    this.addLog(log);
     return log;
   }
 
@@ -113,7 +117,16 @@ public class GlobalAuditTracker {
         oldValues = (Collection<AuditableModel>) newValues.getStoredSnapshot();
       }
 
+      if (newValues == null) {
+        return;
+      }
+
       Object owner = newValues.getOwner();
+
+      if (owner == null
+          || Arrays.asList(GlobalAuditInterceptor.BACKLISTED_CLASSES).contains(owner.getClass())) {
+        return;
+      }
 
       String fieldName = newValues.getRole().replace(owner.getClass().getCanonicalName() + ".", "");
 
