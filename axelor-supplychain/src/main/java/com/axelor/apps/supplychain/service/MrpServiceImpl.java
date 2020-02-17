@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -59,6 +59,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaStore;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -605,6 +606,9 @@ public class MrpServiceImpl implements MrpService {
     if (maturityDate == null) {
       maturityDate = purchaseOrder.getDeliveryDate();
     }
+    if (maturityDate == null) {
+      maturityDate = purchaseOrderLine.getDesiredDelivDate();
+    }
 
     maturityDate = this.computeMaturityDate(maturityDate, purchaseOrderMrpLineType);
 
@@ -702,6 +706,9 @@ public class MrpServiceImpl implements MrpService {
 
     if (maturityDate == null) {
       maturityDate = saleOrder.getDeliveryDate();
+    }
+    if (maturityDate == null) {
+      maturityDate = saleOrderLine.getDesiredDelivDate();
     }
     maturityDate = this.computeMaturityDate(maturityDate, saleOrderMrpLineType);
 
@@ -871,13 +878,14 @@ public class MrpServiceImpl implements MrpService {
       return mrpLineType;
     }
 
+    // for ticket-24571 finded the corresponding title of the value selected from selection.
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
         I18n.get(IExceptionMessage.MRP_MISSING_MRP_LINE_TYPE),
-        elementSelect);
-
-    // TODO get the right label in fact of integer value
-
+        I18n.get(
+            MetaStore.getSelectionItem(
+                    "supplychain.mrp.line.element.select", Integer.toString(elementSelect))
+                .getTitle()));
   }
 
   protected StockLocationLine getStockLocationLine(Product product, StockLocation stockLocation) {

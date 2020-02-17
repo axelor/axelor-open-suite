@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,6 +28,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderMoveService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderServiceImpl;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.service.expense.ExpenseService;
@@ -70,6 +71,9 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
   @Transactional(rollbackOn = {Exception.class})
   public void validatePayment(BankOrder bankOrder) throws AxelorException {
     super.validatePayment(bankOrder);
+    if (!Beans.get(AppService.class).isApp("employee")) {
+      return;
+    }
     List<Expense> expenseList =
         Beans.get(ExpenseRepository.class)
             .all()
@@ -88,6 +92,9 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
   @Transactional(rollbackOn = {Exception.class})
   public void cancelPayment(BankOrder bankOrder) throws AxelorException {
     super.cancelPayment(bankOrder);
+    if (!Beans.get(AppService.class).isApp("employee")) {
+      return;
+    }
     List<Expense> expenseList =
         Beans.get(ExpenseRepository.class)
             .all()

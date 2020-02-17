@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
@@ -35,6 +36,7 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -58,7 +60,8 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
       UserHrService userHrService,
       TimesheetLineService timesheetLineService,
       ProjectPlanningTimeRepository projectPlanningTimeRepository,
-      TeamTaskRepository teamTaskRepository) {
+      TeamTaskRepository teamTaskRepository,
+      TimesheetLineRepository timesheetLineRepo) {
     super(
         priceListService,
         appHumanResourceService,
@@ -69,12 +72,17 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
         userHrService,
         timesheetLineService,
         projectPlanningTimeRepository,
-        teamTaskRepository);
+        teamTaskRepository,
+        timesheetLineRepo);
   }
 
   @Override
   public List<InvoiceLine> createInvoiceLines(
       Invoice invoice, List<TimesheetLine> timesheetLineList, int priority) throws AxelorException {
+
+    if (!Beans.get(AppHumanResourceService.class).isApp("business-project")) {
+      return super.createInvoiceLines(invoice, timesheetLineList, priority);
+    }
 
     List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
     int count = 0;
@@ -92,7 +100,7 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
       // End date, useful only for consolidation
       tabInformations[3] = timesheetLine.getDate();
       tabInformations[4] =
-          timesheetLine.getDurationForCustomer().compareTo(BigDecimal.ZERO) != 0
+          timesheetLine.getDurationForCustomer() != null
               ? this.computeDurationForCustomer(timesheetLine)
               : timesheetLine.getHoursDuration();
       tabInformations[5] = timesheetLine.getProject();
@@ -118,7 +126,7 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
           tabInformations[4] =
               ((BigDecimal) tabInformations[4])
                   .add(
-                      timesheetLine.getDurationForCustomer().compareTo(BigDecimal.ZERO) != 0
+                      timesheetLine.getDurationForCustomer() != null
                           ? this.computeDurationForCustomer(timesheetLine)
                           : timesheetLine.getHoursDuration());
         } else {

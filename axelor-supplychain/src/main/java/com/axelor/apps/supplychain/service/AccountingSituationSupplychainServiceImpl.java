@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -67,7 +67,9 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
 
     AccountingSituation accountingSituation = super.createAccountingSituation(partner, company);
 
-    if (appAccountService.getAppAccount().getManageCustomerCredit()) {
+    AppAccountService appAccountService = Beans.get(AppAccountService.class);
+    if (appAccountService.getAppAccount().getManageCustomerCredit()
+        && appAccountService.isApp("supplychain")) {
       SaleConfig config = saleConfigService.getSaleConfig(accountingSituation.getCompany());
       if (config != null) {
         accountingSituation.setAcceptedCredit(config.getAcceptedCredit());
@@ -92,6 +94,10 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void updateCustomerCredit(Partner partner) throws AxelorException {
+    if (!Beans.get(AppAccountService.class).isApp("supplychain")) {
+      super.updateCustomerCredit(partner);
+      return;
+    }
     if (!appAccountService.getAppAccount().getManageCustomerCredit()
         || partner.getIsContact()
         || !partner.getIsCustomer()) {

@@ -2686,6 +2686,7 @@ else -row[&quot;sum&quot;]</Definition>
                                 <property name="dataType">decimal</property>
                             </structure>
                         </list-property>
+                        <property name="pageBreakInterval">0</property>
                         <list-property name="sort">
                             <structure>
                                 <expression name="key" type="javascript">row["estimateddate"]</expression>

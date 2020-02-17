@@ -43,7 +43,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -450,7 +450,9 @@ WHERE
     AND (AccountingReport.date_from IS NULL OR Asset.disposal_date >= AccountingReport.date_from) 
     AND (AccountingReport.date_to IS NULL OR Asset.disposal_date <= AccountingReport.date_to)
    ))
+   AND (AccountingReport.date_to IS NULL OR Asset.acquisition_date <= AccountingReport.date_to)
    AND Asset.company = AccountingReport.company
+   AND (AccountingReport.analytic_distribution_template IS NULL OR Asset.analytic_distribution_template = AccountingReport.analytic_distribution_template)
 ORDER BY Account.code]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -1308,6 +1310,12 @@ AND Asset.company = AccountingReport.company]]></xml-property>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="YearEndDS" id="4975">
             <list-property name="columnHints">
                 <structure>
+                    <property name="columnName">cumulative_depreciation</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">cumulative_depreciation</text-property>
+                    <text-property name="heading">cumulative_depreciation</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">residual_value</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">residual_value</text-property>
@@ -1338,6 +1346,11 @@ AND Asset.company = AccountingReport.company]]></xml-property>
                 <list-property name="resultSet">
                     <structure>
                         <property name="position">1</property>
+                        <property name="name">cumulative_depreciation</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
                         <property name="name">residual_value</property>
                         <property name="dataType">decimal</property>
                     </structure>
@@ -1347,13 +1360,21 @@ AND Asset.company = AccountingReport.company]]></xml-property>
             <list-property name="resultSet">
                 <structure>
                     <property name="position">1</property>
+                    <property name="name">cumulative_depreciation</property>
+                    <property name="nativeName">cumulative_depreciation</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
                     <property name="name">residual_value</property>
                     <property name="nativeName">residual_value</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT AssetLine.residual_value AS residual_value
+            <xml-property name="queryText"><![CDATA[SELECT AssetLine.cumulative_depreciation AS cumulative_depreciation,
+AssetLine.residual_value AS residual_value
 FROM public.account_fixed_asset AS Asset
 LEFT JOIN public.account_fixed_asset_line AS AssetLine ON AssetLine.fixed_asset = Asset.id 
 LEFT JOIN public.account_accounting_report as AccountingReport ON (AccountingReport.id = ?)
@@ -2388,6 +2409,7 @@ row["disposal_value"];
                     <property name="allowExport">true</property>
                 </structure>
             </list-property>
+            <property name="pageBreakInterval">0</property>
             <column id="5409">
                 <property name="width">0.28125in</property>
             </column>
@@ -3232,6 +3254,18 @@ row["disposal_value"];
                             </text>
                         </cell>
                         <cell id="5363">
+                            <text id="5574">
+                                <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">9pt</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="borderBottomStyle">none</property>
+                                <property name="borderLeftStyle">none</property>
+                                <property name="borderRightStyle">none</property>
+                                <property name="borderTopStyle">none</property>
+                                <property name="textAlign">right</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">vars["total_residual_year_value"]</VALUE-OF>]]></text-property>
+                            </text>
                             <label id="5497">
                                 <property name="fontSize">9pt</property>
                                 <list-property name="visibility">
@@ -3242,20 +3276,10 @@ row["disposal_value"];
                                 </list-property>
                                 <method name="onRender"><![CDATA[vars["total_year_start_value"] = 0 ;
 vars["total_year_end_value"] = 0 ;
+vars["total_residual_year_value"] = 0 ;
 vars["total_depreciation_charges"] = 0 ;]]></method>
                                 <text-property name="text">ResetVariableHidden</text-property>
                             </label>
-                            <data id="5564">
-                                <property name="fontFamily">sans-serif</property>
-                                <property name="fontSize">9pt</property>
-                                <property name="fontWeight">bold</property>
-                                <structure name="numberFormat">
-                                    <property name="category">Custom</property>
-                                    <property name="pattern">#,##0.00</property>
-                                </structure>
-                                <property name="textAlign">right</property>
-                                <property name="resultSetColumn">sum_residual_values</property>
-                            </data>
                         </cell>
                     </row>
                 </footer>
@@ -3493,7 +3517,6 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
                                     <property name="allowExport">true</property>
                                 </structure>
                             </list-property>
-                            <method name="onCreate"><![CDATA[vars["total_year_start_value"] += parseInt(dataSetRow["year_start_total"]);]]></method>
                             <property name="resultSetColumn">depreciation_charges</property>
                         </data>
                     </cell>
@@ -3521,25 +3544,25 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
                             </list-property>
                             <list-property name="boundDataColumns">
                                 <structure>
-                                    <property name="name">residual_value</property>
-                                    <text-property name="displayName">residual_value</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["residual_value"]</expression>
-                                    <property name="dataType">decimal</property>
-                                </structure>
-                                <structure>
                                     <property name="name">year_end_value</property>
-                                    <expression name="expression" type="javascript">if(dataSetRow["residual_value"]){
-	vars["total_year_end_value"] += parseFloat(dataSetRow["residual_value"]);
-	vars["final_total_year_end_value"] += parseFloat(dataSetRow["residual_value"]);
-	dataSetRow["residual_value"];
+                                    <expression name="expression" type="javascript">if(dataSetRow["cumulative_depreciation"]){
+	vars["total_year_end_value"] += parseFloat(dataSetRow["cumulative_depreciation"]);
+	vars["final_total_year_end_value"] += parseFloat(dataSetRow["cumulative_depreciation"]);
+	dataSetRow["cumulative_depreciation"];
 }else{ 
  	0
 }</expression>
                                     <property name="dataType">decimal</property>
                                     <property name="allowExport">true</property>
                                 </structure>
+                                <structure>
+                                    <property name="name">cumulative_depreciation</property>
+                                    <text-property name="displayName">cumulative_depreciation</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["cumulative_depreciation"]</expression>
+                                    <property name="dataType">decimal</property>
+                                </structure>
                             </list-property>
-                            <method name="onCreate"><![CDATA[vars["total_year_start_value"] += parseInt(dataSetRow["year_start_total"]);]]></method>
+                            <structure name="toc"/>
                             <property name="resultSetColumn">year_end_value</property>
                         </data>
                     </cell>
@@ -3548,7 +3571,7 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
                         <property name="borderLeftStyle">none</property>
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
-                        <data id="5479">
+                        <data id="5573">
                             <property name="fontFamily">sans-serif</property>
                             <property name="fontSize">9pt</property>
                             <structure name="numberFormat">
@@ -3556,7 +3579,36 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
                                 <property name="pattern">#,##0.00</property>
                             </structure>
                             <property name="textAlign">right</property>
-                            <property name="resultSetColumn">residual_value</property>
+                            <property name="dataSet">YearEndDS</property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_2</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">row["asset_id"]</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">residual_year_value</property>
+                                    <expression name="expression" type="javascript">if(dataSetRow["residual_value"]){
+	vars["total_residual_year_value"] += parseFloat(dataSetRow["residual_value"]);
+	vars["final_total_residual_year_value"] += parseFloat(dataSetRow["residual_value"]);
+	dataSetRow["residual_value"];
+}else{ 
+ 	0
+}</expression>
+                                    <property name="dataType">decimal</property>
+                                    <property name="allowExport">true</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">residual_value</property>
+                                    <text-property name="displayName">residual_value</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["residual_value"]</expression>
+                                    <property name="dataType">decimal</property>
+                                </structure>
+                            </list-property>
+                            <property name="resultSetColumn">residual_year_value</property>
                         </data>
                     </cell>
                 </row>
@@ -3674,17 +3726,18 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
                         </text>
                     </cell>
                     <cell id="5407">
-                        <data id="5566">
+                        <text id="5575">
                             <property name="fontFamily">sans-serif</property>
                             <property name="fontSize">9pt</property>
                             <property name="fontWeight">bold</property>
-                            <structure name="numberFormat">
-                                <property name="category">Custom</property>
-                                <property name="pattern">0.00</property>
-                            </structure>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
                             <property name="textAlign">right</property>
-                            <property name="resultSetColumn">final_sum_residual_value</property>
-                        </data>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">vars["final_total_residual_year_value"]</VALUE-OF>]]></text-property>
+                        </text>
                     </cell>
                 </row>
             </footer>
@@ -3712,6 +3765,14 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
             <property name="type">report</property>
         </variable-element>
         <variable-element name="final_total_depreciation_charges">
+            <expression name="value" type="javascript">0</expression>
+            <property name="type">report</property>
+        </variable-element>
+        <variable-element name="total_residual_year_value">
+            <expression name="value" type="javascript">0</expression>
+            <property name="type">report</property>
+        </variable-element>
+        <variable-element name="final_total_residual_year_value">
             <expression name="value" type="javascript">0</expression>
             <property name="type">report</property>
         </variable-element>

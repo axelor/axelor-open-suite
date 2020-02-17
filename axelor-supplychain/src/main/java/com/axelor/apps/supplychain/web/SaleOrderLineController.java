@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -121,6 +121,13 @@ public class SaleOrderLineController {
     }
   }
 
+  /**
+   * Called from sale order line request quantity wizard view. Call {@link
+   * ReservedQtyService#updateReservedQty(SaleOrderLine, BigDecimal)}.
+   *
+   * @param request
+   * @param response
+   */
   public void changeReservedQty(ActionRequest request, ActionResponse response) {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
     BigDecimal newReservedQty = saleOrderLine.getReservedQty();

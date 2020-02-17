@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -36,6 +36,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
+import com.axelor.apps.businessproject.db.repo.ProjectInvoicingAssistantBatchRepository;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.report.IReport;
 import com.axelor.apps.hr.db.ExpenseLine;
@@ -320,6 +321,10 @@ public class InvoicingProjectService {
 
     this.fillLines(invoicingProject, project);
 
+    if (!invoicingProject.getConsolidatePhaseWhenInvoicing()) {
+      return;
+    }
+
     List<Project> projectChildrenList =
         Beans.get(ProjectRepository.class).all().filter("self.parentProject = ?1", project).fetch();
 
@@ -383,9 +388,6 @@ public class InvoicingProjectService {
 
       expenseLineQueryBuilder.append(" AND self.expenseDate <= :deadlineDate");
       expenseLineQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
-
-      taskQueryBuilder.append(" AND self.taskDeadline <= :deadlineDate");
-      taskQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
     }
 
     invoicingProject
@@ -509,12 +511,25 @@ public class InvoicingProjectService {
   }
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public InvoicingProject generateInvoicingProject(Project project) {
+  public InvoicingProject generateInvoicingProject(Project project, int consolidatePhaseSelect) {
     if (project == null) {
       return null;
     }
     InvoicingProject invoicingProject = new InvoicingProject();
     invoicingProject.setProject(project);
+
+    if (consolidatePhaseSelect
+        == ProjectInvoicingAssistantBatchRepository.CONSOLIDATE_PHASE_CONSOLIDATE_ALL) {
+      invoicingProject.setConsolidatePhaseWhenInvoicing(true);
+    } else if (consolidatePhaseSelect
+        == ProjectInvoicingAssistantBatchRepository.CONSOLIDATE_PHASE_DONT_CONSOLIDATE) {
+      invoicingProject.setConsolidatePhaseWhenInvoicing(false);
+    } else if (consolidatePhaseSelect
+        == ProjectInvoicingAssistantBatchRepository.CONSOLIDATE_PHASE_DEFAULT_VALUE) {
+      invoicingProject.setConsolidatePhaseWhenInvoicing(
+          invoicingProject.getProject().getConsolidatePhaseWhenInvoicing());
+    }
+
     clearLines(invoicingProject);
     setLines(invoicingProject, project, 0);
 

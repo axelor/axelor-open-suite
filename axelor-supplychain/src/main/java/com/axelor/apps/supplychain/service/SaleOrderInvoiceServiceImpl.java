@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -62,6 +62,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -172,25 +173,13 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         return null;
     }
     invoice.setSaleOrder(saleOrder);
-    if (ObjectUtils.isEmpty(invoice.getNote())) {
-      if (invoice.getCompanyBankDetails() != null
-          && invoice.getCompanyBankDetails().getSpecificNoteOnInvoice() != null) {
-        invoice.setNote(
-            saleOrder.getInvoiceComments()
-                + "\n"
-                + invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
-      } else {
-        invoice.setNote(saleOrder.getInvoiceComments());
-      }
+
+    if (!Strings.isNullOrEmpty(saleOrder.getInvoiceComments())) {
+      invoice.setNote(saleOrder.getInvoiceComments());
     }
 
-    if (invoice.getCompanyBankDetails() != null
-        && invoice.getCompanyBankDetails().getSpecificNoteOnInvoice() != null) {
-      invoice.setProformaComments(
-          saleOrder.getProformaComments()
-              + "\n"
-              + invoice.getCompanyBankDetails().getSpecificNoteOnInvoice());
-    } else {
+    if (ObjectUtils.isEmpty(invoice.getProformaComments())
+        && !Strings.isNullOrEmpty(saleOrder.getProformaComments())) {
       invoice.setProformaComments(saleOrder.getProformaComments());
     }
 
@@ -971,28 +960,36 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   }
 
   @Override
-  public Map<String, Integer> getInvoicingWizardOperationDomain(SaleOrder saleOrder) {
+  public List<Integer> getInvoicingWizardOperationDomain(SaleOrder saleOrder) {
     boolean manageAdvanceInvoice =
         Beans.get(AppAccountService.class).getAppAccount().getManageAdvancePaymentInvoice();
+    boolean allowTimetableInvoicing =
+        Beans.get(AppSupplychainService.class).getAppSupplychain().getAllowTimetableInvoicing();
     BigDecimal amountInvoiced = saleOrder.getAmountInvoiced();
     BigDecimal exTaxTotal = saleOrder.getExTaxTotal();
+    Invoice invoice =
+        Query.of(Invoice.class)
+            .filter(" self.saleOrder.id = :saleOrderId AND self.statusSelect != :invoiceStatus")
+            .bind("saleOrderId", saleOrder.getId())
+            .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
+            .fetchOne();
+    List<Integer> operationSelectList = new ArrayList<>();
+    operationSelectList.add(0);
+    if (exTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
+      operationSelectList.add(Integer.valueOf(SaleOrderRepository.INVOICE_LINES));
+    }
+    if (manageAdvanceInvoice && exTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
+      operationSelectList.add(Integer.valueOf(SaleOrderRepository.INVOICE_ADVANCE_PAYMENT));
+    }
+    if (allowTimetableInvoicing) {
+      operationSelectList.add(Integer.valueOf(SaleOrderRepository.INVOICE_TIMETABLES));
+    }
+    if (invoice == null && amountInvoiced.compareTo(BigDecimal.ZERO) == 0
+        || exTaxTotal.compareTo(BigDecimal.ZERO) == 0) {
+      operationSelectList.add(Integer.valueOf(SaleOrderRepository.INVOICE_ALL));
+    }
 
-    Map<String, Integer> contextValues = new HashMap<>();
-    contextValues.put(
-        "invoiceAll",
-        amountInvoiced.compareTo(BigDecimal.ZERO) == 0 || exTaxTotal.compareTo(BigDecimal.ZERO) == 0
-            ? SaleOrderRepository.INVOICE_ALL
-            : 0);
-
-    contextValues.put(
-        "invoiceLines",
-        exTaxTotal.compareTo(BigDecimal.ZERO) == 0 ? 0 : SaleOrderRepository.INVOICE_LINES);
-    contextValues.put(
-        "invoiceAdvPayment",
-        manageAdvanceInvoice && exTaxTotal.compareTo(BigDecimal.ZERO) != 0
-            ? SaleOrderRepository.INVOICE_ADVANCE_PAYMENT
-            : 0);
-    return contextValues;
+    return operationSelectList;
   }
 
   @Override
@@ -1000,9 +997,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent) throws AxelorException {
     List<Invoice> invoices =
         Query.of(Invoice.class)
-            .filter(
-                " self.saleOrder.id = :saleOrderId AND self.statusSelect != :invoiceStatus AND "
-                    + "(self.archived = NULL OR self.archived = false)")
+            .filter(" self.saleOrder.id = :saleOrderId AND self.statusSelect != :invoiceStatus")
             .bind("saleOrderId", saleOrder.getId())
             .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
             .fetch();
@@ -1011,13 +1006,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
           (amountToInvoice.multiply(saleOrder.getExTaxTotal()))
               .divide(new BigDecimal("100"), 2, BigDecimal.ROUND_HALF_EVEN);
     }
-    BigDecimal sumInvoices =
-        invoices
-            .stream()
-            .map(Invoice::getExTaxTotal)
-            .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO)
-            .add(amountToInvoice);
+    BigDecimal sumInvoices = computeSumInvoices(invoices);
+    sumInvoices = sumInvoices.add(amountToInvoice);
     if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) > 0) {
       throw new AxelorException(
           saleOrder,
@@ -1032,23 +1022,31 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     List<Invoice> invoices =
         Query.of(Invoice.class)
             .filter(
-                " self.saleOrder.id = :saleOrderId AND self.operationSubTypeSelect = :operationSubTypeSelect AND self.statusSelect != :invoiceStatus AND "
-                    + "(self.archived = NULL OR self.archived = false)")
+                " self.saleOrder.id = :saleOrderId AND self.operationSubTypeSelect = :operationSubTypeSelect"
+                    + " AND self.statusSelect != :invoiceStatus")
             .bind("saleOrderId", saleOrder.getId())
             .bind("operationSubTypeSelect", InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT)
             .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
             .fetch();
-    BigDecimal sumInvoices =
-        invoices
-            .stream()
-            .map(Invoice::getExTaxTotal)
-            .reduce((x, y) -> x.add(y))
-            .orElse(BigDecimal.ZERO);
+    BigDecimal sumInvoices = computeSumInvoices(invoices);
     if (sumInvoices.compareTo(saleOrder.getExTaxTotal()) > 0) {
       throw new AxelorException(
           saleOrder,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.SO_INVOICE_GENERATE_ALL_INVOICES));
     }
+  }
+
+  protected BigDecimal computeSumInvoices(List<Invoice> invoices) {
+    BigDecimal sumInvoices = BigDecimal.ZERO;
+    for (Invoice invoice : invoices) {
+      if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND
+          || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+        sumInvoices = sumInvoices.subtract(invoice.getExTaxTotal());
+      } else {
+        sumInvoices = sumInvoices.add(invoice.getExTaxTotal());
+      }
+    }
+    return sumInvoices;
   }
 }

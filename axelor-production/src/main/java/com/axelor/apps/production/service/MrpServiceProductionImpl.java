@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -48,6 +48,7 @@ import com.axelor.apps.supplychain.service.MrpServiceImpl;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -103,7 +104,9 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
     super.completeMrp(mrp);
 
-    this.createManufOrderMrpLines();
+    if (Beans.get(AppProductionService.class).isApp("production")) {
+      this.createManufOrderMrpLines();
+    }
   }
 
   // Manufacturing order AND manufacturing order need
@@ -275,6 +278,9 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         mrpLineOriginList,
         relatedToSelectName);
 
+    if (!Beans.get(AppProductionService.class).isApp("production")) {
+      return;
+    }
     BillOfMaterial defaultBillOfMaterial = product.getDefaultBillOfMaterial();
 
     if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL
@@ -314,6 +320,10 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
   protected MrpLineType getMrpLineTypeForProposal(StockRules stockRules, Product product)
       throws AxelorException {
 
+    if (!Beans.get(AppProductionService.class).isApp("production")) {
+      return super.getMrpLineTypeForProposal(stockRules, product);
+    }
+
     if (stockRules != null) {
       if (stockRules.getOrderAlertSelect() == StockRulesRepository.ORDER_ALERT_PRODUCTION_ORDER) {
         return this.getMrpLineType(MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL);
@@ -332,6 +342,10 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
   @Override
   protected boolean isProposalElement(MrpLineType mrpLineType) {
 
+    if (!Beans.get(AppProductionService.class).isApp("production")) {
+      return super.isProposalElement(mrpLineType);
+    }
+
     if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL
         || mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL
         || mrpLineType.getElementSelect()
@@ -345,6 +359,11 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
   @Override
   protected void assignProductAndLevel(Product product) {
+
+    if (!Beans.get(AppProductionService.class).isApp("production")) {
+      super.assignProductAndLevel(product);
+      return;
+    }
 
     log.debug("Add of the product : {}", product.getFullName());
     this.productMap.put(product.getId(), this.getMaxLevel(product, 0));

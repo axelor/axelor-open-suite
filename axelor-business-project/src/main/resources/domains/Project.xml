@@ -48,6 +48,7 @@
 		<boolean name="isInvoicingTimesheet" title="Invoicing timesheet"/>
 		<boolean name="isInvoicingExpenses" title="Invoicing Expenses"/>
 		<boolean name="isInvoicingPurchases" title="Invoicing Purchases"/>
+		<boolean name="consolidatePhaseWhenInvoicing" title="Consolidate phase invoicing" default="true"/>
 
 		<many-to-one name="customerAddress" title="Address" ref="com.axelor.apps.base.db.Address"/>
 	 	<extra-code><![CDATA[

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -72,13 +72,14 @@ public class ImportAccountChart {
         continue;
       }
 
-      FileOutputStream outputStream = new FileOutputStream(resourceFile);
-      int read = 0;
-      byte[] bytes = new byte[1024];
-      while ((read = inputStream.read(bytes)) != -1) {
-        outputStream.write(bytes, 0, read);
+      try (FileOutputStream outputStream = new FileOutputStream(resourceFile)) {
+        int read = 0;
+        byte[] bytes = new byte[1024];
+        while ((read = inputStream.read(bytes)) != -1) {
+          outputStream.write(bytes, 0, read);
+        }
+        outputStream.close();
       }
-      outputStream.close();
     }
     return tempDir;
   }
@@ -98,24 +99,28 @@ public class ImportAccountChart {
   private void zipIt(File directory, File zipFile) throws IOException {
 
     byte[] buffer = new byte[1024];
-    FileOutputStream fos = new FileOutputStream(zipFile);
-    ZipOutputStream zos = new ZipOutputStream(fos);
 
-    for (File file : directory.listFiles()) {
+    try (FileOutputStream fos = new FileOutputStream(zipFile);
+        ZipOutputStream zos = new ZipOutputStream(fos)) {
 
-      ZipEntry ze = new ZipEntry(file.getName());
-      zos.putNextEntry(ze);
+      for (File file : directory.listFiles()) {
 
-      FileInputStream in = new FileInputStream(file);
+        ZipEntry ze = new ZipEntry(file.getName());
+        zos.putNextEntry(ze);
 
-      int len;
-      while ((len = in.read(buffer)) > 0) {
-        zos.write(buffer, 0, len);
+        try (FileInputStream in = new FileInputStream(file)) {
+
+          int len;
+          while ((len = in.read(buffer)) > 0) {
+            zos.write(buffer, 0, len);
+          }
+          in.close();
+        }
+        zos.closeEntry();
       }
-      in.close();
+      zos.close();
+      fos.close();
     }
-    zos.closeEntry();
-    zos.close();
   }
 
   public Object importAccountChart(Object bean, Map<String, Object> values) throws IOException {

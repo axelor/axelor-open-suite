@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -410,7 +410,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     }
     fileFieldList.add(fileField);
     fileField = fileFieldRepository.save(fileField);
-    fileField.setFileTab(fileTab);
+    fileTab.addFileFieldListItem(fileField);
   }
 
   private boolean checkFields(Mapper mapper, String importField, String subImportField)

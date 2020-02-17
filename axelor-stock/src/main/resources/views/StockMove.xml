@@ -207,7 +207,7 @@
 												<span class="label label-success" style="margin: 5px 0 0 10px !important; display: inline-table; line-height: initial;" ng-show="record.conformitySelect == 2 && record.statusSelect != 1" x-translate>Compliant</span>
 												<span class="label label-important" style="margin: 5px 0 0 10px !important; display: inline-table; line-height: initial;" ng-show="record.conformitySelect == 3 && record.statusSelect != 1" x-translate>Non-compliant</span>
 											</h4>
-			
+
 										]]></viewer>
 							</field>
 			            </panel>
@@ -230,12 +230,12 @@
 									</h4>
 								]]></viewer>
 							</field>
-							<field name="$invoicingTags" showTitle="false" readonly="true" showIf="statusSelect == 3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()">
-								<viewer depends="$invoiceStatus"><![CDATA[
+							<field name="$invoicingTags" showTitle="false" readonly="true" showIf="statusSelect == 3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+								<viewer depends="invoicingStatusSelect"><![CDATA[
 									<h4 class="text-left">
-										<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.$invoiceStatus == 0"  x-translate>Not invoiced</span>
-										<span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.$invoiceStatus == 1" x-translate>Partially invoiced</span>
-										<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.$invoiceStatus == 2" x-translate>Invoiced</span>
+										<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 0"  x-translate>Not invoiced</span>
+										<span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 1" x-translate>Partially invoiced</span>
+										<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 2" x-translate>Invoiced</span>
 									</h4>
 								]]>
 								</viewer>
@@ -258,7 +258,7 @@
 							]]>
 							</viewer>
 						</field>
-						<field name="$invoiceStatus" hidden="true" colSpan="12"/>
+						<field name="invoicingStatusSelect" hidden="true" colSpan="12"/>
 					</panel>
 				</panel>
 			</panel>
@@ -449,7 +449,7 @@
                     <field name="realStockMoveMessageTemplate" requiredIf="realStockMoveAutomaticMail" showIf="realStockMoveAutomaticMail" grid-view="template-grid" form-view="template-form"/>
                 </panel>
             </panel>
-            
+
         </panel-tabs>
         <panel-mail name="mailPanel">
 			<mail-messages limit="4"/>
@@ -592,7 +592,6 @@
         <action name="action-stock-move-attrs-hide-avg-price"/>
         <action name="action-stock-move-attrs-set-required-shipment-supplier-details"/>
 		<action name="action-stock-move-attrs-filter-on-available-products"/>
-		<action name="action-supplychain-stock-move-record-set-invoice-status"/>
 		<action name="action-stock-move-attrs-check-delivery-address" if="partner?.partnerAddressList?.size() > 1" />
     </action-group>
     
@@ -662,6 +661,7 @@
     	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Internal move lines')" if="typeSelect == 1"/>
     	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Outgoing move lines')" if="typeSelect == 2"/>
     	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Incoming move lines')" if="typeSelect == 3"/>
+    	<attribute name="required" for="fromAddress" expr="eval: typeSelect == __repo__(StockMove).TYPE_INCOMING &amp;&amp; !isReversion"/>
     </action-attrs>
 	
 	<action-attrs name="action-stock-move-attrs-set-values-typeselect-onchange">
@@ -692,7 +692,10 @@
     </action-attrs>
 	
 	<action-attrs name="action-stock-move-hide-reserved-qty">
-        <attribute for="stockMoveLineList.reservedQty" name="hidden" expr="eval: typeSelect != 2"/>
+        <attribute for="stockMoveLineList.reservedQty" name="hidden" expr="eval: typeSelect == 3"/>
+        <attribute for="stockMoveLineList.requestedReservedQty" name="hidden" expr="eval: typeSelect == 3"/>
+        <attribute for="stockMoveLineList.allocateAll" name="hidden" expr="eval: typeSelect == 3"/>
+        <attribute for="stockMoveLineList.deallocate" name="hidden" expr="eval: typeSelect == 3"/>
         <attribute for="stockMoveLineList.requestedReservedQty,reservationDateTime" name="hidden" expr="eval: typeSelect == 3"/>
         <attribute name="hidden" for="stockMoveLineList.availableStatus" expr="eval: typeSelect == 3"/>
 	</action-attrs>
@@ -786,7 +789,7 @@
         <field if="company == null" name="plannedStockMoveMessageTemplate" expr="eval: null"/>
         <field if="company == null" name="realStockMoveMessageTemplate" expr="eval: null"/>
     </action-record>
-    
+
     <action-record name="action-stock-move-record-set-stock-locations-company-onchange" model="com.axelor.apps.stock.db.StockMove">
 	    <field if="typeSelect == __repo__(StockMove).TYPE_OUTGOING &amp;&amp; company != null" name="fromStockLocation" expr="eval: company?.getStockConfig()?.getPickupDefaultStockLocation()"/>
 	    <field if="typeSelect == __repo__(StockMove).TYPE_OUTGOING &amp;&amp; company != null" name="toStockLocation" expr="eval:company?.getStockConfig()?.getCustomerVirtualStockLocation()"/>
@@ -794,7 +797,7 @@
 	    <field if="typeSelect == __repo__(StockMove).TYPE_INCOMING &amp;&amp; company != null" name="fromStockLocation" expr="eval:company?.getStockConfig()?.getSupplierVirtualStockLocation()"/>
 	    <field name="fromStockLocation,toStockLocation" expr="eval: null" if="company == null"/>
 	</action-record>
-	
+
 	<action-method name="action-stock-move-method-plan">
 		<call class="com.axelor.apps.stock.web.StockMoveController" method="plan"/>
 	</action-method>

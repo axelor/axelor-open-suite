@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -242,14 +242,18 @@ public class X509Generator {
     switch (keyusage) {
       case X509Constants.SIGNATURE_KEY_USAGE:
         generator.addExtension(
-            X509Extensions.KeyUsage, false, new KeyUsage(KeyUsage.nonRepudiation));
+            X509Extensions.KeyUsage, true, new KeyUsage(KeyUsage.nonRepudiation));
         break;
       case X509Constants.AUTHENTICATION_KEY_USAGE:
         generator.addExtension(
-            X509Extensions.KeyUsage, false, new KeyUsage(KeyUsage.digitalSignature));
+            X509Extensions.KeyUsage, true, new KeyUsage(KeyUsage.digitalSignature));
         break;
       case X509Constants.ENCRYPTION_KEY_USAGE:
-        generator.addExtension(X509Extensions.KeyUsage, false, new KeyUsage(KeyUsage.keyAgreement));
+        generator.addExtension(
+            X509Extensions.KeyUsage,
+            true,
+            new KeyUsage(KeyUsage.keyEncipherment | KeyUsage.keyAgreement));
+
         break;
       default:
         generator.addExtension(

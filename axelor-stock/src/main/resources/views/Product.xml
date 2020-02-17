@@ -23,10 +23,10 @@
 		<template><![CDATA[
 		   <div class="span12"><strong>{{fullName}}</strong></div>
 		   <div>
-			  <div class="span4 card-image">
-			    <img ng-src="{{$image('picture', 'content')}}" />
+			  <div class="span4 card-image" style="width: 128px; height: 64px;">
+			    <img ng-src="{{$image('picture', 'content')}}" style="width: 100%; height: 100%; object-fit: contain;" />
 			  </div>
-			  <div class="span8">
+			  <div class="span8" style="width: 60%;">
 			   <strong><span x-translate>Min stock</span>(<span>{{$fmt('$stockMinDate')}}</span>):</strong> <span>{{$fmt('$stockMin')}}</span>
 				 <br/>
 			    <strong><span x-translate>Max stock</span>(<span>{{$fmt('$stockMaxDate')}}</span>):</strong> <span>{{$fmt('$stockMax')}}</span>

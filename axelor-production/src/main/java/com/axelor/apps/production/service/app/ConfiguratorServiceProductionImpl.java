@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,6 +22,8 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ConfiguratorBOM;
 import com.axelor.apps.production.service.configurator.ConfiguratorBomService;
 import com.axelor.apps.sale.db.Configurator;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.exception.AxelorException;
@@ -53,6 +55,22 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
               .generateBillOfMaterial(configuratorBOM, jsonAttributes, 0, generatedProduct);
       generatedProduct.setDefaultBillOfMaterial(generatedBom);
     }
+  }
+
+  /** In this implementation, we also create a bill of material. */
+  @Override
+  protected SaleOrderLine generateSaleOrderLine(
+      Configurator configurator,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators,
+      SaleOrder saleOrder)
+      throws AxelorException {
+    ConfiguratorBOM configuratorBOM = configurator.getConfiguratorCreator().getConfiguratorBom();
+    if (configuratorBOM != null && checkConditions(configuratorBOM, jsonAttributes)) {
+      Beans.get(ConfiguratorBomService.class)
+          .generateBillOfMaterial(configuratorBOM, jsonAttributes, 0, null);
+    }
+    return super.generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
   }
 
   protected boolean checkConditions(ConfiguratorBOM configuratorBOM, JsonContext jsonAttributes)
