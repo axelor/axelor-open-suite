@@ -6,8 +6,11 @@ import com.axelor.apps.admin.db.repo.GlobalTrackingLogRepository;
 import com.axelor.auth.AuditInterceptor;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.AuditableModel;
+import com.axelor.exception.db.TraceBack;
+import com.axelor.mail.db.MailMessage;
 import com.axelor.meta.db.MetaModel;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
@@ -24,6 +27,14 @@ public class GlobalAuditInterceptor extends AuditInterceptor {
   private static final String UPDATED_ON = "updatedOn";
   private static final String CREATED_BY = "createdBy";
   private static final String CREATED_ON = "createdOn";
+
+  protected static final Class[] BACKLISTED_CLASSES = {
+    GlobalTrackingLogLine.class,
+    GlobalTrackingLog.class,
+    MailMessage.class,
+    MetaModel.class,
+    TraceBack.class
+  };
 
   private final ThreadLocal<GlobalAuditTracker> globalTracker = new ThreadLocal<>();
 
@@ -53,9 +64,7 @@ public class GlobalAuditInterceptor extends AuditInterceptor {
       Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
 
     if (!super.onSave(entity, id, state, propertyNames, types)
-        || entity.getClass().equals(GlobalTrackingLogLine.class)
-        || entity.getClass().equals(GlobalTrackingLog.class)
-        || entity.getClass().equals(MetaModel.class)) {
+        || Arrays.asList(BACKLISTED_CLASSES).contains(entity.getClass())) {
       return false;
     }
 
@@ -114,10 +123,13 @@ public class GlobalAuditInterceptor extends AuditInterceptor {
       Type[] types) {
 
     if (!super.onFlushDirty(entity, id, currentState, previousState, propertyNames, types)
-        || entity.getClass().equals(GlobalTrackingLogLine.class)
-        || entity.getClass().equals(GlobalTrackingLog.class)
-        || entity.getClass().equals(MetaModel.class)) {
+        || Arrays.asList(BACKLISTED_CLASSES).contains(entity.getClass())) {
       return false;
+    }
+
+    if (globalTracker.get() == null) {
+      globalTracker.set(new GlobalAuditTracker());
+      globalTracker.get().init();
     }
 
     GlobalTrackingLog log =
@@ -186,8 +198,9 @@ public class GlobalAuditInterceptor extends AuditInterceptor {
   public void onDelete(
       Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
     super.onDelete(entity, id, state, propertyNames, types);
-
-    globalTracker.get().addLog((AuditableModel) entity, GlobalTrackingLogRepository.TYPE_DELETE);
+    if (!Arrays.asList(BACKLISTED_CLASSES).contains(entity.getClass())) {
+      globalTracker.get().addLog((AuditableModel) entity, GlobalTrackingLogRepository.TYPE_DELETE);
+    }
   }
 
   @Override
