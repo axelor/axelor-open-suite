@@ -29,6 +29,7 @@
 - EBICS BANK : now X509 Extensions for auto signed certification are managed independently
 - STOCK CORRECTION : change error message on validate
 - EBICS USER : replacing Listener object with ImporterListener for EbicsUser Import.
+- ACCOUNTING REPORT: improved bank statement report.
 
 ## Bug Fixes
 - Ebics User : resolve error getting on export & Modify import config and export template to include BankOrderList and BankStatementList of EbicsPartner
@@ -59,6 +60,7 @@
 - MRP calculation: NPE on calculation
 - MOVE LINE : Bank reconciliation amount is now read-only.
 - MRP forecast : Reset status on copy.
+- BANKRECONCILIATION : corrected error with bank statement load where no other statement was loaded.
 
 ## [5.2.1] - 2019-12-16
 ## Features
