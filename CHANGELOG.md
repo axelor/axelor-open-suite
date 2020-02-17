@@ -24,6 +24,7 @@
 - PROJECT : Replace required attribute on code field with readOnly if generateProjectSequence is true
 - Stock Move: Do not modify wap when generating a new line in customer return linked to an order.
 - REPORTS: Fix issue for reports which split the report on many tab on excel.
+- STOCK MOVE/INVOICE : corrected invoice without lines made from stock move.
 
 ## [5.2.4] - 2020-02-05
 ## Improvements
