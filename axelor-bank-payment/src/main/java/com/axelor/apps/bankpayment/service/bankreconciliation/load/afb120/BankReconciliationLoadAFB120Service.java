@@ -104,7 +104,6 @@ public class BankReconciliationLoadAFB120Service extends BankReconciliationLoadS
       BankReconciliation bankReconciliation, boolean includeBankStatement) {
 
     BankStatement bankStatement = bankReconciliation.getBankStatement();
-
     return JPA.all(BankStatementLineAFB120.class)
         .filter(
             getBankStatementLinesFilter(
