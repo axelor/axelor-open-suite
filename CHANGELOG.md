@@ -27,6 +27,7 @@
 - Added a global configuration to base app to define number of digits for quantity fields.
 - Address: Addition of boolean 'isSharedAddress' in base config to check addresses are shared or not.
 - Add global tracking log feature.
+- BANK STATEMENT LINE : Change orderBy attribute on bank-statement-line-afb-120-grid.
 
 ## Improvements
 - Remove Pack Feature from Product.
@@ -44,6 +45,9 @@
 - Company : Replace the M2M bankDetailsSet with O2M
 - BANKDETAILS : Add tree and card view for bank details and balance viewer on company bank details
 - BANK STATEMENT: update automatically balance and date of bank details concerned by the bank statement when imported.
+- ACTIONBUILDER : Update filter on valueJson and metaJsonField fields
+- MetaJsonField : show sequence and appBuilder field in json-field-grid
+- ACTIONBUILDER : Allow to add a condition at start in generated action-script
 
 ## Bug Fixes
 - Fix injection error during test

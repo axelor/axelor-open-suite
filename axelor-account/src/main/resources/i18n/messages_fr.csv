@@ -1287,6 +1287,7 @@
 "New supplier account",,,
 "No Accounting Situation related to %s.",,,
 "No Lines selected","Aucune ligne sélectionnée",,
+"No email address in debt recovery %s. Please set one.","La méthode de recouvrement %s n'a pas d'adresse email à qui envoyer le message. Veuillez en configurer une.",,
 "No invoice to pay","Aucune facture à payer",,
 "No items have been selected. Do you want to continue?","Aucun élément n’a été sélectionné. Voulez-vous continuer ?",,
 "No of Units","Nbre d'unités",,
