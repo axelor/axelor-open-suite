@@ -1129,7 +1129,7 @@ AND Move.ignore_in_accounting_ok in (false,null)]]></xml-property>
                     <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT BankStatementLine.debit - BankStatementLine.credit as initialAmount
+            <xml-property name="queryText"><![CDATA[SELECT BankStatementLine.credit - BankStatementLine.debit as initialAmount
 FROM public.account_accounting_report as AccountingReport
 LEFT JOIN base_bank_details as BankDetails on (AccountingReport.id = ?)
 LEFT JOIN bankpayment_bank_statement_line_afb120 as BankStatementLine on BankDetails.id = BankStatementLine.bank_details
@@ -1280,18 +1280,6 @@ GROUP by Account.id,BankDetails.id,bankdetailsfullname,concatAccount
                             <property name="dataType">string</property>
                         </structure>
                         <structure>
-                            <property name="name">date_from</property>
-                            <text-property name="displayName">date_from</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["date_from"]</expression>
-                            <property name="dataType">date</property>
-                        </structure>
-                        <structure>
-                            <property name="name">date_to</property>
-                            <text-property name="displayName">date_to</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["date_to"]</expression>
-                            <property name="dataType">date</property>
-                        </structure>
-                        <structure>
                             <property name="name">report_date</property>
                             <text-property name="displayName">report_date</text-property>
                             <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
@@ -1335,18 +1323,6 @@ GROUP by Account.id,BankDetails.id,bankdetailsfullname,concatAccount
                         </structure>
                         <structure>
                             <property name="name">logo_width</property>
-                            <text-property name="displayName">logo_width</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["logo_width"]</expression>
-                            <property name="dataType">integer</property>
-                        </structure>
-                        <structure>
-                            <property name="name">logo_height_1</property>
-                            <text-property name="displayName">logo_height</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["logo_height"]</expression>
-                            <property name="dataType">integer</property>
-                        </structure>
-                        <structure>
-                            <property name="name">logo_width_1</property>
                             <text-property name="displayName">logo_width</text-property>
                             <expression name="expression" type="javascript">dataSetRow["logo_width"]</expression>
                             <property name="dataType">integer</property>
@@ -2251,9 +2227,9 @@ GROUP by Account.id,BankDetails.id,bankdetailsfullname,concatAccount
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
-                                <property name="name">currencycode</property>
-                                <text-property name="displayName">currencycode</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["currencycode"]</expression>
+                                <property name="name">currency</property>
+                                <text-property name="displayName">currency</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
