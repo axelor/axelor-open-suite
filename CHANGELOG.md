@@ -48,6 +48,7 @@
 - ACTIONBUILDER : Update filter on valueJson and metaJsonField fields
 - MetaJsonField : show sequence and appBuilder field in json-field-grid
 - ACTIONBUILDER : Allow to add a condition at start in generated action-script
+- BANK ORDER : replace action record with action method for reject and correct button.
 
 ## Bug Fixes
 - Fix injection error during test
