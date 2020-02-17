@@ -9,11 +9,8 @@ public class GlobalTrackingLogController {
   public void showGlobalTrackingLogsInWizard(ActionRequest request, ActionResponse response) {
 
     Context context = request.getContext();
-    boolean showLines = false;
+    boolean showLines = context.get("metaModel") != null && context.get("metaField") != null;
 
-    if (context.get("metaModel") != null && context.get("metaField") != null) {
-      showLines = true;
-    }
     response.setAttr("globalTrackingLogDashlet", "hidden", showLines);
     response.setAttr("globalTrackingLogLineDashlet", "hidden", !showLines);
 
