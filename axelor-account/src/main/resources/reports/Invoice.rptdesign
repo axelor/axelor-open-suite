@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -7663,8 +7663,8 @@ if(row["is_pack_line"] &amp;&amp; row["translation"] != null)
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">(params["ReportType"].value == 1 &amp;&amp; (row._outer["proforma_comments"] == null || row._outer["proforma_comments"] == "")) || 
-(params["ReportType"].value != 1 &amp;&amp; (row._outer["note"] == null || row._outer["note"] == "") &amp;&amp; (row._outer["invoice_comments"] == null || row._outer["invoice_comments"] == "" ) )</expression>
+                                                <expression name="valueExpr" type="javascript">((row._outer["status_select"] == 1 || row._outer["status_select"] == 2 ) &amp;&amp; (row._outer["proforma_comments"] == null || row._outer["proforma_comments"] == "")) || 
+((row._outer["status_select"] == 3 || (row._outer["status_select"] == 2 &amp;&amp; row._outer["operation_sub_type_select"] == 2)) &amp;&amp; (row._outer["note"] == null || row._outer["note"] == "") &amp;&amp; (row._outer["invoice_comments"] == null || row._outer["invoice_comments"] == "" ) )</expression>
                                             </structure>
                                         </list-property>
                                         <list-property name="paramBindings">
@@ -7711,7 +7711,7 @@ if(row["is_pack_line"] &amp;&amp; row["translation"] != null)
                                         <property name="pageBreakAfter">avoid</property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="HTML">
-if(params["ReportType"].value == 1) 
+if(row["status_select"] == 1 || (row["status_select"] == 2 &amp;&amp; row["operation_sub_type_select"] != 2) )
 	row["proforma_comments"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")
 else
 	if(row["note"] != null ) row["note"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"") + "<br>";
