@@ -63,4 +63,5 @@
 - UI : Addition of onClick attributes in buttons.
 - ImportCityServiceImpl : Use of try-with-resource for ZipFile and FileWriter.
 - Sales dashboard : chart not displayed
+- PRODUCT : economicManufOrderQty displayed twice
 
