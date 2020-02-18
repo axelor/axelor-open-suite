@@ -24,7 +24,7 @@
 - PROJECT : Replace required attribute on code field with readOnly if generateProjectSequence is true
 - Stock Move: Do not modify wap when generating a new line in customer return linked to an order.
 - REPORTS: Fix issue for reports which split the report on many tab on excel.
-- PRODUCT : button 'Update stock location'.
+- PRODUCT : display button 'Update stock location' only for storable and stock managed products.
 
 ## [5.2.4] - 2020-02-05
 ## Improvements
