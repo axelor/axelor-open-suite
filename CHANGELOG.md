@@ -7,6 +7,7 @@
 - Check and modify all service code according to app configuration
 - BANKPAYMENT : Update condition to display field ics number.
 - Subrogation release : improved visibility of unpaid invoices.
+- PRODUCT : display button 'Update stock location' only for storable and stock managed products.
 
 ## Bug Fixes
 - STOCKMOVE : display qty per tracking number and not total available qty for tracking number
