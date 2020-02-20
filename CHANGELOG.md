@@ -2,7 +2,8 @@
 # Changelog
 ## [Unreleased 5.2.5]
 ## Features
-ACCOUNTING REPORT : group by and subtotal of analyticDistributionTemplate.
+- ACCOUNTING REPORT : group by and subtotal of analyticDistributionTemplate.
+- INVOICE : created new field payment date in invoice in order to use it in advance search.
 
 ## Improvements
 - STOCK RULE : add comment field
