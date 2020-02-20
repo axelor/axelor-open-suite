@@ -40,6 +40,7 @@ import com.axelor.apps.base.db.repo.MailBatchBaseRepository;
 import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.db.repo.MailingListMessageBaseRepository;
 import com.axelor.apps.base.db.repo.MailingListMessageRepository;
+import com.axelor.apps.base.db.repo.MetaScheduleBaseRepository;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -127,6 +128,7 @@ import com.axelor.apps.message.service.TemplateMessageServiceImpl;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.base.service.ical.ICalendarEventService;
 import com.axelor.base.service.ical.ICalendarEventServiceImpl;
+import com.axelor.meta.db.repo.MetaScheduleRepository;
 import com.axelor.team.db.repo.TeamTaskRepository;
 
 public class BaseModule extends AxelorModule {
@@ -189,5 +191,6 @@ public class BaseModule extends AxelorModule {
     bind(FileFieldService.class).to(FileFieldServiceImpl.class);
     bind(ActionService.class).to(ActionServiceImpl.class);
     bind(PartnerService.class).to(PartnerServiceImpl.class);
+    bind(MetaScheduleRepository.class).to(MetaScheduleBaseRepository.class);
   }
 }
