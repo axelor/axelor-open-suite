@@ -11,6 +11,8 @@
 - BILL OF MATERIAL : display product field before the production process field.
 - UNIT CONVERSION : used large width for unit conversion form view.
 - LEAVE REQUEST : change in email template.
+- Timesheet : synchronize time computation method of project when multi user triggers validation of timesheet.
+- ACCOUNT CONFIG : change the place of invoice automatic mail and invoice message template in account config.
 - SALE ORDER/PURCHASE ORDER : changed action type for buttons "Back to confirmed order" and "Back to validated order"
 
 ## Bug Fixes
