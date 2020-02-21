@@ -21,8 +21,12 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.db.repo.EmployeeRepository;
+import com.axelor.apps.hr.db.repo.TimesheetHRRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
+import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
+import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.db.User;
@@ -38,9 +42,25 @@ import java.time.LocalDate;
 public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
     implements TimesheetLineBusinessService {
 
-  @Inject private ProjectRepository projectRepo;
-  @Inject private TeamTaskRepository teamTaskaRepo;
-  @Inject private TimesheetLineRepository timesheetLineRepo;
+  protected ProjectRepository projectRepo;
+  protected TeamTaskRepository teamTaskaRepo;
+  protected TimesheetLineRepository timesheetLineRepo;
+
+  @Inject
+  public TimesheetLineProjectServiceImpl(
+      TimesheetService timesheetService,
+      TimesheetHRRepository timesheetHRRepository,
+      TimesheetRepository timesheetRepository,
+      EmployeeRepository employeeRepository,
+      ProjectRepository projectRepo,
+      TeamTaskRepository teamTaskaRepo,
+      TimesheetLineRepository timesheetLineRepo) {
+    super(timesheetService, timesheetHRRepository, timesheetRepository, employeeRepository);
+
+    this.projectRepo = projectRepo;
+    this.teamTaskaRepo = teamTaskaRepo;
+    this.timesheetLineRepo = timesheetLineRepo;
+  }
 
   @Override
   public TimesheetLine createTimesheetLine(
