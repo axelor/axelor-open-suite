@@ -266,15 +266,19 @@ public class StockMoveLineController {
           detailStockLocationLine != null
               ? detailStockLocationLine.getCurrentQty()
               : BigDecimal.ZERO;
-      Map<String, Object> map = new HashMap<String, Object>();
-      map.put("trackingNumber", trackingNumber);
-      map.put("trackingNumberSeq", trackingNumber.getTrackingNumberSeq());
-      map.put("counter", BigDecimal.ZERO);
-      map.put("warrantyExpirationDate", trackingNumber.getWarrantyExpirationDate());
-      map.put("perishableExpirationDate", trackingNumber.getPerishableExpirationDate());
-      map.put("$availableQty", availableQty);
-      map.put("$moveTypeSelect", stockMove.getTypeSelect());
-      trackingNumbers.add(map);
+      if (!(availableQty.intValue() == 0))
+      {
+          Map<String, Object> map = new HashMap<String, Object>();
+          map.put("trackingNumber", trackingNumber);
+          map.put("trackingNumberSeq", trackingNumber.getTrackingNumberSeq());
+          map.put("counter", BigDecimal.ZERO);
+          map.put("warrantyExpirationDate", trackingNumber.getWarrantyExpirationDate());
+          map.put("perishableExpirationDate", trackingNumber.getPerishableExpirationDate());
+          map.put("$availableQty", availableQty);
+          map.put("$moveTypeSelect", stockMove.getTypeSelect());
+          trackingNumbers.add(map);
+      }
+
     }
     response.setValue("$trackingNumbers", trackingNumbers);
   }
