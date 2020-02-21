@@ -1,8 +1,16 @@
+
 # Changelog
 ## [Unreleased 5.2.5]
+## Features
+- ACCOUNTING REPORT : group by and subtotal of analyticDistributionTemplate.
+- INVOICE : created new field payment date in invoice in order to use it in advance search.
+
 ## Improvements
 - STOCK RULE : add comment field
 - Sale Order: Desired delivery date is used to generate stock move if estimated date is empty.
+- BILL OF MATERIAL : display product field before the production process field.
+- UNIT CONVERSION : used large width for unit conversion form view.
+- LEAVE REQUEST : change in email template.
 - Timesheet : synchronize time computation method of project when multi user triggers validation of timesheet.
 
 ## Bug Fixes
@@ -15,6 +23,15 @@
 - MRP: Desired delivery date in sale/purchase orders is used when estimated date is empty.
 - EMPLOYEESERVICE: Fix computation of working days.
 - StockMove : Fix issue of generated invoice with empty invoiceLines
+- DEBT RECOVERY : Don't create debt recovery line if no email address in debtRecovery.
+- SaleOrderInvoicing : impossible to InvoiceAll if one invoice has been already generated
+- Invoice: fix error on ventilation when sequence reset is per year.
+- PROJECT : Replace required attribute on code field with readOnly if generateProjectSequence is true
+- Stock Move: Do not modify wap when generating a new line in customer return linked to an order.
+- REPORTS: Fix issue for reports which split the report on many tab on excel.
+- PRODUCT : display button 'Update stock location' only for storable and stock managed products.
+- ADDRESS : addressL4 is emptied when zip is filled
+- INVOICE Report : Fixed issue in displaying proforma invoice comment from grid button
 
 ## [5.2.4] - 2020-02-05
 ## Improvements
@@ -62,6 +79,8 @@
 - Stock Move: Do not modify wap when generating customer return.
 - ADDRESS: Fix error message when clicking on ViewMap Btn of a new address.
 - Configurator BOM: Correctly make the difference between components and sub bill of material.
+- ACCOUNTING REPORT : corrected several issues with values on the summary of gross values and depreciation report.
+- ACCOUNTING REPORT : in the summary of gross values and depreciation report corrected the problem of the apparition of line with an acquisition date after the report dates.
 
 ## [5.2.3] - 2020-01-23
 ## Features

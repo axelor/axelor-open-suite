@@ -39,13 +39,13 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -194,25 +194,25 @@ public class VentilateState extends WorkflowInvoice {
   protected void checkInvoiceDate(Sequence sequence) throws AxelorException {
 
     String query =
-        "self.statusSelect = ?1 AND self.invoiceDate > ?2 AND self.operationTypeSelect = ?3 AND self.company = ?4 ";
-    List<Object> params = Lists.newArrayList();
-    params.add(InvoiceRepository.STATUS_VENTILATED);
-    params.add(invoice.getInvoiceDate());
-    params.add(invoice.getOperationTypeSelect());
-    params.add(invoice.getCompany());
+        "self.statusSelect = :ventilated AND self.invoiceDate > :invoiceDate AND self.operationTypeSelect = :operationTypeSelect AND self.company = :company ";
+    Map<String, Object> params = new HashMap<>();
+    params.put("ventilated", InvoiceRepository.STATUS_VENTILATED);
+    params.put("invoiceDate", invoice.getInvoiceDate());
+    params.put("operationTypeSelect", invoice.getOperationTypeSelect());
+    params.put("company", invoice.getCompany());
 
     if (sequence.getMonthlyResetOk()) {
 
-      query += "AND EXTRACT (month from self.invoiceDate) = ?5 ";
-      params.add(invoice.getInvoiceDate().getMonthValue());
+      query += "AND EXTRACT (month from self.invoiceDate) = :month ";
+      params.put("month", invoice.getInvoiceDate().getMonthValue());
     }
     if (sequence.getYearlyResetOk()) {
 
-      query += "AND EXTRACT (year from self.invoiceDate) = ?6 ";
-      params.add(invoice.getInvoiceDate().getYear());
+      query += "AND EXTRACT (year from self.invoiceDate) = :year ";
+      params.put("year", invoice.getInvoiceDate().getYear());
     }
 
-    if (invoiceRepo.all().filter(query, params.toArray()).count() > 0) {
+    if (invoiceRepo.all().filter(query).bind(params).count() > 0) {
       if (sequence.getMonthlyResetOk()) {
         throw new AxelorException(
             sequence,

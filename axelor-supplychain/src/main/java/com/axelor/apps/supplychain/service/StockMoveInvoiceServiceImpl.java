@@ -339,7 +339,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       if (qtyToInvoiceMap != null && qtyToInvoiceMap.containsKey(id)) {
         invoiceLineListCreated =
             this.createInvoiceLine(invoice, stockMoveLine, qtyToInvoiceMap.get(id));
-      } else if (id == null) {
+      } else {
         invoiceLineListCreated =
             this.createInvoiceLine(
                 invoice,
