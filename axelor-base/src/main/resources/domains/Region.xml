@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Region" lang="java" cacheable="true">
+  <entity name="Region" lang="java">
 
     <string name="name" title="Region name" required="true" unique="true"/>
     <string name="code" title="Region code" required="true" unique="true" />
