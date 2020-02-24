@@ -34,6 +34,7 @@
 - PRODUCT : display button 'Update stock location' only for storable and stock managed products.
 - ADDRESS : addressL4 is emptied when zip is filled
 - INVOICE Report : Fixed issue in displaying proforma invoice comment from grid button
+- INVOICE : fix the NPE when payment mode is null in invoice
 
 ## [5.2.4] - 2020-02-05
 ## Improvements
