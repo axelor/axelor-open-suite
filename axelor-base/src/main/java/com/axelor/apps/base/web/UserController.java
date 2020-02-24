@@ -177,4 +177,9 @@ public class UserController {
       TraceBackService.trace(response, e);
     }
   }
+  
+  public void setDefaultUserRecord(ActionRequest request, ActionResponse response) {
+	  AppSettings appSettings = AppSettings.get();
+	  response.setValue("language",appSettings.get("application.locale"));
+  }
 }

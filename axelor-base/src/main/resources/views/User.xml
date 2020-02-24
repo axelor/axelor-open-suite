@@ -263,9 +263,10 @@
       <attribute name="selection-in" for="stepStatusSelect" expr="eval: __config__.app.isApp('employee') ? [0,1,2,3,4,5] : [0,1,2,4,5]"/>
     </action-attrs>
 
-    <action-record name="action-user-default-record" model="com.axelor.auth.db.User">
-    	<field name="language" expr="fr"/>
-    </action-record>
+	<action-method name="action-user-default-record" model="com.axelor.auth.db.User">
+    	<call class="com.axelor.apps.base.web.UserController" method="setDefaultUserRecord"/>
+    </action-method>
+
 
     <action-record name="action-user-record-step-status-next" model="com.axelor.auth.db.User">
     	<field name="stepStatusSelect" expr="eval: stepStatusSelect + 2" if="stepStatusSelect == 2 &amp;&amp; ((partner?.isCustomer || partner?.isEmployee || partner?.isSupplier) || !__config__.app.isApp('employee'))"/>
