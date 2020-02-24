@@ -112,7 +112,6 @@ public class StockLocationServiceImpl implements StockLocationService {
       Unit productUnit = product.getUnit();
       UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
       int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForQty();
-      System.out.println(scale);
       if (locationId == null || locationId == 0L) {
         List<StockLocation> stockLocations = getNonVirtualStockLocations(companyId);
         if (!stockLocations.isEmpty()) {
