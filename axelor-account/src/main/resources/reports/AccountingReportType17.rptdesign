@@ -3198,10 +3198,10 @@ else {
                                 <property name="paddingTop">2pt</property>
                                 <property name="paddingBottom">2pt</property>
                                 <expression name="valueExpr">if(row["subtotal_by_analytic_distribution"]) {
-	row["account_code"] + " - "+ row["account_name"] + " - " + row["analytic_distribution_template_name"]
+	row["account_name"] + " - " + row["analytic_distribution_template_name"]
 }
 else {
-	row["account_code"] + " - "+ row["account_name"]
+	row["account_name"]
 }</expression>
                                 <property name="contentType">html</property>
                             </text-data>
