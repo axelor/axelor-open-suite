@@ -51,6 +51,7 @@
 - BANK ORDER : replace action record with action method for reject and correct button.
 - SEQUENCE : change tracking
 - BANK ORDER : Bank order workflow pass from darft to validated when automatic transmission is not activated in payment mode.
+- INVOICE : add specific note of company bank details on invoice report.
 
 ## Bug Fixes
 - Fix injection error during test
