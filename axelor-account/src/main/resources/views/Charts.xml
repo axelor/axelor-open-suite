@@ -37,7 +37,7 @@
 				account_invoice AS _invoice	
 			WHERE
 				_invoice.status_select != 1
-				AND _invoice.operation_type_select=3
+				AND (_invoice.operation_type_select=3 OR _invoice.operation_type_select=4)
 				AND DATE_PART('year',_invoice.invoice_date) 
 				IN (DATE_PART('year',CURRENT_DATE) - 1, DATE_PART('year',CURRENT_DATE) )
 			GROUP BY
@@ -59,7 +59,6 @@
 	 	    </search-fields>	 
 	
 		 <dataset type="sql">
-		  
 		 SELECT 
 		    to_char(_invoice.invoice_date,'yyyy-MM') AS _month_no,
 		    coalesce(_product._product_type,'other') AS product,
@@ -83,7 +82,7 @@
 		    WHERE
 		      _invoice.status_select != 1
 		      AND _invoice.invoice_date BETWEEN DATE(:fromDate) AND  DATE(:fromDate) + CAST(:monthSelect as int) * INTERVAL '1 month' 
-		      AND _invoice.operation_type_select=3
+		      AND (_invoice.operation_type_select=3 OR _invoice.operation_type_select=4)
 		      
 		    GROUP BY 
 		      _invoice_id, _line_product, _turn_over, _month) AS _invoice
@@ -140,7 +139,7 @@
 	     WHERE
 	      _invoice.status_select != 1
 	      AND _invoice.invoice_date BETWEEN DATE(:fromDate) AND  DATE(:fromDate) + CAST(:monthSelect as int) * INTERVAL '1 month' 
-	      AND _invoice.operation_type_select=3
+	      AND (_invoice.operation_type_select=3 OR _invoice.operation_type_select=4)
 	      
 	    GROUP BY 
 	      _invoice_id, _line_product, _turn_over
@@ -182,7 +181,7 @@
 			account_invoice_line AS _line
 		JOIN
 			account_invoice AS _invoice ON _invoice.id = _line.invoice 
-			AND _invoice.operation_type_select=3
+			AND (_invoice.operation_type_select=3 OR _invoice.operation_type_select=4)
 			AND _invoice.invoice_date BETWEEN DATE(:fromDate) AND  DATE(:toDate) 
 		JOIN
 			auth_user AS _user
@@ -212,7 +211,7 @@
 		FROM
 			account_invoice_line AS _line
 		JOIN
-			account_invoice AS _invoice ON _invoice.id = _line.invoice AND _invoice.operation_type_select=3
+			account_invoice AS _invoice ON _invoice.id = _line.invoice AND (_invoice.operation_type_select=3 OR _invoice.operation_type_select=4)
 		LEFT JOIN
 			base_address AS _address ON _address.id = _invoice.address
 		LEFT JOIN
