@@ -49,6 +49,8 @@
 - MetaJsonField : show sequence and appBuilder field in json-field-grid
 - ACTIONBUILDER : Allow to add a condition at start in generated action-script
 - BANK ORDER : replace action record with action method for reject and correct button.
+- SEQUENCE : change tracking
+- BANK ORDER : Bank order workflow pass from darft to validated when automatic transmission is not activated in payment mode.
 - INVOICE : add specific note of company bank details on invoice report.
 
 ## Bug Fixes
@@ -64,4 +66,5 @@
 - UI : Addition of onClick attributes in buttons.
 - ImportCityServiceImpl : Use of try-with-resource for ZipFile and FileWriter.
 - Sales dashboard : chart not displayed
+- PRODUCT : economicManufOrderQty displayed twice
 

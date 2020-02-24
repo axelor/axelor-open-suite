@@ -315,9 +315,13 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEbicsModule()) {
 
+      PaymentMode paymentMode = bankOrder.getPaymentMode();
       bankOrder.setConfirmationDateTime(
           Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
-      bankOrder.setStatusSelect(BankOrderRepository.STATUS_AWAITING_SIGNATURE);
+      bankOrder.setStatusSelect(
+          paymentMode != null && paymentMode.getAutomaticTransmission()
+              ? BankOrderRepository.STATUS_AWAITING_SIGNATURE
+              : BankOrderRepository.STATUS_VALIDATED);
       makeEbicsUserFollow(bankOrder);
 
       bankOrderRepo.save(bankOrder);
