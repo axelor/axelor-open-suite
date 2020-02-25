@@ -1,4 +1,36 @@
 # Changelog
+## [5.2.5] - 2020-02-25
+## Improvements
+- STOCK RULE: add comment field.
+- Sale Order: Desired delivery date is used to generate stock move if estimated date is empty.
+- BILL OF MATERIAL: display product field before the production process field.
+- UNIT CONVERSION: used large width for unit conversion form view.
+- LEAVE REQUEST: display unit in email template.
+- Timesheet: synchronize time computation method of project when multi user triggers validation of timesheet.
+- ACCOUNT CONFIG: change the place of invoice automatic mail and invoice message template in account config.
+- ACCOUNTING REPORT: group by and subtotal of analyticDistributionTemplate.
+- INVOICE: created new field payment date in invoice in order to use it in advance search.
+
+## Bug Fixes
+- MANUF ORDER: Display sale order comment in manufacturing order printing.
+- Invoice payment: fix issue in invoice payment form when invoice due date is empty.
+- MRP: Desired delivery date in sale/purchase orders is used when estimated date is empty.
+- EMPLOYEESERVICE: Fix computation of working days.
+- StockMove: Fix issue of generated invoice with no lines.
+- DEBT RECOVERY: Do not create debt recovery line if there are no email addresses in debtRecovery.
+- SaleOrderInvoicing: impossible to InvoiceAll if one invoice has been already generated.
+- Invoice: fix error on ventilation when sequence reset is per year.
+- PROJECT: Replace required attribute on code field with readOnly if generateProjectSequence is true.
+- Stock Move: Do not modify wap when generating a new line in customer return linked to an order.
+- REPORTS: Fix issue for reports which split the report on many tab on excel.
+- PRODUCT: display button 'Update stock location' only for storable and stock managed products.
+- ADDRESS: addressL4 is emptied when zip is filled.
+- INVOICE Report: Fixed issue when displaying proforma invoice comment from grid button.
+- INVOICE: fix the NPE when payment mode is null in invoice.
+- TASK: fix translation issue caused by "Package" entitled field.
+- ACCOUNTING REPORT : corrected several issues with values on the summary of gross values and depreciation report.
+- ACCOUNTING REPORT : in the summary of gross values and depreciation report corrected the problem of the apparition of line with an acquisition date after the report dates.
+
 ## [5.2.4] - 2020-02-05
 ## Improvements
 - BankOrder: Display of Signatory ebics user and Sending date time in report.
@@ -418,6 +450,7 @@ In this case, the file is correctly retrieved from the bank server, but not save
 - LEAVE REQUEST: Add error when leave reason has no unit.
 - LEAVE REQUEST: Set duration value 0 if day planning of selected weekly planning is empty
 
+[5.2.5]: https://github.com/axelor/axelor-open-suite/compare/v5.2.4...v5.2.5
 [5.2.4]: https://github.com/axelor/axelor-open-suite/compare/v5.2.3...v5.2.4
 [5.2.3]: https://github.com/axelor/axelor-open-suite/compare/v5.2.2...v5.2.3
 [5.2.2]: https://github.com/axelor/axelor-open-suite/compare/v5.2.1...v5.2.2
