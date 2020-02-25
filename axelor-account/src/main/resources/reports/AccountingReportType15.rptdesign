@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">Data Cube.MoveLineDS.x</property>
@@ -1797,6 +1797,7 @@ balance
                                 <property name="allowExport">true</property>
                             </structure>
                         </list-property>
+                        <property name="pageBreakInterval">0</property>
                         <column id="4012">
                             <property name="fontSize">10pt</property>
                             <property name="width">10%</property>
@@ -2530,6 +2531,7 @@ balance
                                 <property name="dataType">decimal</property>
                             </structure>
                         </list-property>
+                        <property name="pageBreakInterval">0</property>
                         <column id="4090">
                             <property name="width">15%</property>
                         </column>
