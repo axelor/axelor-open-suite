@@ -1,4 +1,8 @@
 # Changelog
+## [Unreleased 5.3.1]
+## Improvements
+## Bug Fixes
+
 ## [5.3.0] - 2020-02-25
 ## Features
 - Add Pack Feature in sale order.
@@ -63,4 +67,5 @@
 - Sales dashboard: Fix chart not displayed.
 - PRODUCT: Fix economicManufOrderQty displayed twice.
 
+[Unreleased 5.3.1]: https://github.com/axelor/axelor-open-suite/compare/v5.3.0...dev
 [5.3.0]: https://github.com/axelor/axelor-open-suite/compare/v5.2.5...v5.3.0
