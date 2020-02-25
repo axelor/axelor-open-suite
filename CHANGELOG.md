@@ -4,6 +4,7 @@
 ## Features
 - ACCOUNTING REPORT : group by and subtotal of analyticDistributionTemplate.
 - INVOICE : created new field payment date in invoice in order to use it in advance search.
+- STOCK CONFIG : add three fields in stock move printing setting
 
 ## Improvements
 - STOCK RULE : add comment field

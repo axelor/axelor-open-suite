@@ -70,6 +70,7 @@
 			<field name="signatoryUser"/>
 		</panel>
 		<panel name="stockMovePrintSettingsPanel" title="Stock move printing settings">
+			<field name="displayOrderReferenceAndOrderDate" widget="boolean-switch"/>
 			<field name="displayTrackNbrOnPickingPrinting" widget="boolean-switch"/>
 			<field name="displayBarcodeOnPickingPrinting" widget="boolean-switch"/>
 			<field name="displayCustomerCodeOnPickingPrinting" widget="boolean-switch"/>
@@ -81,6 +82,8 @@
 			<field name="isDisplayAgPriceInPrinting" widget="boolean-switch"></field>
 			<field name="displayTrackNbrOnCertificateOfConformityPrinting" widget="boolean-switch"/>
 			<field name="displayExtRefOnCertificateOfConformityPrinting" widget="boolean-switch"/>
+			<field name="displayProductCodeOnPrinting" widget="boolean-switch"/>
+			<field name="displayPriceOnPrinting" widget="boolean-switch"/>
 		</panel>
 				
 		<panel-mail name="mailPanel">
