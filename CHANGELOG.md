@@ -1,40 +1,30 @@
 # Changelog
-## [Unreleased 5.2.6]
+## [Unreleased 5.3.1]
 ## Improvements
 ## Bug Fixes
 -LEAVEREQUEST : Fix the NPE when no leaveRequest is selected to be edited
 
-## [5.2.5] - 2020-02-25
-## Improvements
-- STOCK RULE: add comment field.
-- Sale Order: Desired delivery date is used to generate stock move if estimated date is empty.
-- BILL OF MATERIAL: display product field before the production process field.
-- UNIT CONVERSION: used large width for unit conversion form view.
-- LEAVE REQUEST: display unit in email template.
-- Timesheet: synchronize time computation method of project when multi user triggers validation of timesheet.
-- ACCOUNT CONFIG: change the place of invoice automatic mail and invoice message template in account config.
-- ACCOUNTING REPORT: group by and subtotal of analyticDistributionTemplate.
-- INVOICE: created new field payment date in invoice in order to use it in advance search.
-
-## Bug Fixes
-- MANUF ORDER: Display sale order comment in manufacturing order printing.
-- Invoice payment: fix issue in invoice payment form when invoice due date is empty.
-- MRP: Desired delivery date in sale/purchase orders is used when estimated date is empty.
-- EMPLOYEESERVICE: Fix computation of working days.
-- StockMove: Fix issue of generated invoice with no lines.
-- DEBT RECOVERY: Do not create debt recovery line if there are no email addresses in debtRecovery.
-- SaleOrderInvoicing: impossible to InvoiceAll if one invoice has been already generated.
-- Invoice: fix error on ventilation when sequence reset is per year.
-- PROJECT: Replace required attribute on code field with readOnly if generateProjectSequence is true.
-- Stock Move: Do not modify wap when generating a new line in customer return linked to an order.
-- REPORTS: Fix issue for reports which split the report on many tab on excel.
-- PRODUCT: display button 'Update stock location' only for storable and stock managed products.
-- ADDRESS: addressL4 is emptied when zip is filled.
-- INVOICE Report: Fixed issue when displaying proforma invoice comment from grid button.
-- INVOICE: fix the NPE when payment mode is null in invoice.
-- TASK: fix translation issue caused by "Package" entitled field.
-- ACCOUNTING REPORT : corrected several issues with values on the summary of gross values and depreciation report.
-- ACCOUNTING REPORT : in the summary of gross values and depreciation report corrected the problem of the apparition of line with an acquisition date after the report dates.
+## [5.3.0] - 2020-02-25
+## Features
+- Add Pack Feature in sale order.
+- Remove Pack Feature from Product.
+- FLEET: Manage rental cars and minor fixes.
+- Studio: New features - Label with color, multiline string, grid column sequence, form width, spacer and order by properties.
+- Add DMS Import.
+- FORECAST RECAP LINE TYPE : create new object ForecastRecapLineType
+- JSON-MODEL-FORM : add tracking on json fields
+- Export studio app: email action - email template
+- Export Studio app: export actions created with meta-action-from
+- STOCK RULE: New boolean alert when orderAlertSelect is not alert and stockRuleMessageTemplate added.
+- Studio : Added validIf property for custom field.
+- Studio: MetaAction and MetaSelect menus with group by on app.
+- META-MODEL-FORM: add tracking on json fields.
+- CITY: Import automatically from Geonames files.
+- MRP: Freeze proposals after manually modifying them.
+- Added a global configuration to base app to define number of digits for quantity fields.
+- Address: Addition of boolean 'isSharedAddress' in base config to check addresses are shared or not.
+- BANK STATEMENT LINE: order by operation date and sequence in AFB120 grid view.
+- BANK DETAILS: add search button on bank-details-bank-order-company-grid.
 
 ## [5.2.4] - 2020-02-05
 ## Improvements
@@ -411,54 +401,17 @@ In this case, the file is correctly retrieved from the bank server, but not save
 - BoM: added a menu showing personalized bills of materials.
 
 ## Bug Fixes
-- Studio: Fix import app without image.
-- Generation of Project/Phase from SaleOrder.
-- Contract: Fix issue of not saving currentContractVersion fields in form view.
-- ProductTaskTemplate: fix button display issue for edit and remove buttons on tree view.
-- Employee: Fix issue of not saving each phase of creation process.
-- Marketing: Fix error when trying to generate an event per target.
-- Contract: Fix import error in data-init.
-- BUSINESS PROJECT: Report printing Division by zero.
-- UnitCostCalculation: Fixed the date format in the csv export name file.
-- BONUS MGT: Fix formula variable error of human resource when computing amounts.
-- INVOICE: Hide Due amount in report while printing "Original invoice / Updated copy".
-- PurchaseOrder: Fill order date with sale order creation date when generating puchase order from sale order with interco.
-- Purchase Order: Rename field 'priceDisplay' to 'displayPriceOnQuotationRequest'.
-- INVOICE: Reduce font size of tax table in Invoice printing.
-- PURCHASE ORDER PRINTING: display buyer email and phone as in sale order printing.
-- ACCOUNT MOVE REVERSE: add translation.
-- Transactionnal: correction and standardisation of rollback.
-- CONFIGURATOR BOM: product, qty and unit are displayed in the grid-view.
-- SALE ORDER LINE: fixed error when selecting a product.
-- Studio: Fix readonly fields are enabled when imported an application.
-- Studio: Fix error when click on wkf buttons.
-- Studio: Fix export app.
-- Advance Data Import: Fix indexOutOfBound Exception.
-- Advanced Data Import: Specify truncated value to sampleLines for large string.
-- REPORTED BALANCE: corrected abnormal amount in reported balance move lines if there was no partner associated to it.
-- REPORTED BALANCE BATCH: the case where reported balance date on fiscal year is missing is now correctly managed.
-- PURCHASE ORDER: fix issue in 'discountTypeSelect' of Purchase Order Line Form.
-- Advanced Data import:  fix issue of not generating info in log file when error occurred on import.
-- Studio: fix m2o to metafile's widget property, display image,binarylink option.
-- Advance data import: fix search issue, changed default import type of relational field to New and add import if condition for required Fields.
-- Advance data import: Fix Data import error when there is same object in two different sheets.
-- INVOICE: fix issue of invoice copy.
-- TEAMTASK: Add fullname in demo data.
-- Timesheet line: Duration label issue when created from mobile app.
-- Purchase: Corrected translation of purchase not configured.
-- SALEORDERLINE: Issue when Production module isn't installed.
-- Invoice: replace field "irrecoverablestatusSelect" to "irrecoverableStatusSelect".
-- SALE ORDER: fix error generating project without salemanUser.
-- Advance Import: Resolve ArrayIndexOutOfBound exception.
-- STOCK: Link back order with saleOrder or purchaseOrder.
-- ADDRESS: when there is one address on partner it is treated as a default address.
-- LEAVE REQUEST: Add error when leave reason has no unit.
-- LEAVE REQUEST: Set duration value 0 if day planning of selected weekly planning is empty
+- Studio: Fix access to json fields of base model in chart builder form.
+- Fix "could not extract ResultSet" Exception on finalizing a sale order.
+- Studio: Fixed display blank when you click on a field which is out of a panel.
+- Studio: Fixed selection filter issue and sequence issue.
+- StockMoveLine: Fixed empty popup issue while viewing stock move line record in form view.
+- STOCK MOVE LINE: fix $invoiced tag displayed twice.
+- LEAVE TEMPLATE: changed field fromDate and toDate name to fromDateT and toDateT.
+- MRP: Fix error while generating all proposals.
+- UI: Addition of onClick attributes in buttons.
+- Sales dashboard: Fix chart not displayed.
+- PRODUCT: Fix economicManufOrderQty displayed twice.
 
-[Unreleased 5.2.6]: https://github.com/axelor/axelor-open-suite/compare/v5.2.5...dev
-[5.2.5]: https://github.com/axelor/axelor-open-suite/compare/v5.2.4...v5.2.5
-[5.2.4]: https://github.com/axelor/axelor-open-suite/compare/v5.2.3...v5.2.4
-[5.2.3]: https://github.com/axelor/axelor-open-suite/compare/v5.2.2...v5.2.3
-[5.2.2]: https://github.com/axelor/axelor-open-suite/compare/v5.2.1...v5.2.2
-[5.2.1]: https://github.com/axelor/axelor-open-suite/compare/v5.2.0...v5.2.1
-[5.2.0]: https://github.com/axelor/axelor-open-suite/compare/v5.1.13...v5.2.0
+[Unreleased 5.3.1]: https://github.com/axelor/axelor-open-suite/compare/v5.3.0...dev
+[5.3.0]: https://github.com/axelor/axelor-open-suite/compare/v5.2.5...v5.3.0
