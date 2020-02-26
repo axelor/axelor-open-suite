@@ -1,6 +1,8 @@
 # Changelog
 ## [Unreleased 5.2.6]
 ## Improvements
+- Block the creation of duplicate accounts
+
 ## Bug Fixes
 
 ## [5.2.5] - 2020-02-25
