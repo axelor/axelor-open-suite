@@ -210,6 +210,12 @@
 	    <view type="form" name="leave-reason-form"/>
 	</action-view>
 
+	<menuitem name="leave-line-all" parent="leave-request-conf" title="Leave line" action="action.leane.line.view.conf" />
+
+	<action-view name="action.leane.line.view.conf" title="Leave line" model="com.axelor.apps.hr.db.LeaveLine">
+    	<view type="grid" name="leave-line-grid"/>
+	    <view type="form" name="leave-line-form"/>
+	</action-view>
 
 	<!-- Expense app -->
 	<menuitem name="expense-root" parent="hr-root" if="__config__.app.isApp('expense')" icon="fa-credit-card" icon-background="#84429f" title="Expenses" order="10"/>
