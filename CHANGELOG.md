@@ -1,6 +1,7 @@
 # Changelog
 ## [Unreleased 5.3.1]
 ## Improvements
+- InvoiceLine: add fields in advanced search.
 ## Bug Fixes
 
 ## [5.3.0] - 2020-02-25
