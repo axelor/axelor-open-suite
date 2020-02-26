@@ -2,6 +2,7 @@
 ## [Unreleased 5.2.6]
 ## Improvements
 ## Bug Fixes
+-LEAVEREQUEST : Fix the NPE when no leaveRequest is selected to be edited
 
 ## [5.2.5] - 2020-02-25
 ## Improvements
