@@ -1,7 +1,9 @@
 # Changelog
 ## [Unreleased 5.3.1]
 ## Improvements
+- CLIENT-PORTAL : Chart now only shows invoices corresponding the client partner.
 ## Bug Fixes
+- CLIENT-PORTAL : fixed the NPE when the user does not correspond to any partner.
 
 ## [5.3.0] - 2020-02-25
 ## Features
