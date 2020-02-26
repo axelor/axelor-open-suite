@@ -7,6 +7,7 @@
 - Block the creation of duplicate accounts
 
 ## Bug Fixes
+- Fix Timesheet Reminder Batch sendReminder method
 
 ## [5.2.5] - 2020-02-25
 ## Improvements
