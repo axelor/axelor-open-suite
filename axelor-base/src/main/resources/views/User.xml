@@ -18,7 +18,7 @@
     
     
     <form name="user-form" id="user-form-base" title="User" model="com.axelor.auth.db.User" 
-    onNew="action-user-attrs,action-user-apply-applicaton-mode,action-user-default-record,action-user-check-company,action-attrs-select-in-step-status-select" onSave="com.axelor.apps.base.web.UserController:validate" onLoad="action-user-attrs,action-user-apply-applicaton-mode,action-attrs-select-in-step-status-select">
+    onNew="action-user-attrs,action-user-apply-applicaton-mode,action-user-default-method,action-user-check-company,action-attrs-select-in-step-status-select" onSave="com.axelor.apps.base.web.UserController:validate" onLoad="action-user-attrs,action-user-apply-applicaton-mode,action-attrs-select-in-step-status-select">
     	<panel name="stepUserPanel" showIf="[0,1,2,3,4].indexOf(stepStatusSelect) > -1" >
 	    	<panel name="stepStatusPanel" colSpan="12">
 	    		<field name="stepStatusSelect" showTitle="false" widget="NavSelect" colSpan="12" readonly="true"/>
@@ -263,8 +263,8 @@
       <attribute name="selection-in" for="stepStatusSelect" expr="eval: __config__.app.isApp('employee') ? [0,1,2,3,4,5] : [0,1,2,4,5]"/>
     </action-attrs>
 
-	<action-method name="action-user-default-record" model="com.axelor.auth.db.User">
-    	<call class="com.axelor.apps.base.web.UserController" method="setDefaultUserRecord"/>
+	<action-method name="action-user-default-method" model="com.axelor.auth.db.User">
+    	<call class="com.axelor.apps.base.web.UserController" method="setDefaultUserMethod"/>
     </action-method>
 
 
