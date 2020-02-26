@@ -4,6 +4,8 @@
 - Workflow : Add support to select real status fields.
 
 ## Improvements
+- Block the creation of duplicate accounts
+
 ## Bug Fixes
 
 ## [5.2.5] - 2020-02-25
