@@ -376,6 +376,8 @@
 	<search-filters name="invoice-line-filters" model="com.axelor.apps.account.db.InvoiceLine" title="Invoice line filters">
 		<field name="invoice.invoiceDate" title="Invoice Date"/>
 		<field name="invoice.paymentDate" title="Payment date"/>
+		<field name="invoice.company" title="Company"/>
+		<field name="invoice.statusSelect" title="Status select"/>
 	</search-filters>
 
 </object-views>
