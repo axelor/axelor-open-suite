@@ -107,9 +107,9 @@ public class LeaveController {
       Map<String, Object> leaveMap = (Map<String, Object>) request.getContext().get("leaveSelect");
       Long leaveId;
       try {
-    	  leaveId = Long.valueOf((long) leaveMap.get("id"));
-      } catch(ClassCastException e) {
-    	  leaveId = Long.valueOf((long) (int) leaveMap.get("id"));
+        leaveId = Long.valueOf((long) leaveMap.get("id"));
+      } catch (ClassCastException e) {
+        leaveId = Long.valueOf((long) (int) leaveMap.get("id"));
       }
       response.setView(
           ActionView.define(I18n.get("LeaveRequest"))
@@ -120,7 +120,7 @@ public class LeaveController {
               .context("_showRecord", leaveId)
               .map());
     } catch (NullPointerException e) {
-    	response.setError("Please select a Leave request to edit");
+      response.setError("Please select a Leave request to edit");
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
