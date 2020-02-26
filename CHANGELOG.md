@@ -1,5 +1,8 @@
 # Changelog
 ## [Unreleased 5.2.6]
+## Feature
+- Workflow : Add support to select real status fields.
+
 ## Improvements
 ## Bug Fixes
 
