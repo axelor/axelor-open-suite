@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,14 +31,11 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.Map;
 
 @Singleton
 public class StockCorrectionController {
-
-  @Inject private StockCorrectionService stockCorrectionService;
 
   public void setDefaultDetails(ActionRequest request, ActionResponse response) {
     try {
@@ -49,7 +46,8 @@ public class StockCorrectionController {
       Map<String, Object> stockCorrectionDetails;
 
       if (stockLocationLine != null) {
-        stockCorrectionDetails = stockCorrectionService.fillDefaultValues(stockLocationLine);
+        stockCorrectionDetails =
+            Beans.get(StockCorrectionService.class).fillDefaultValues(stockLocationLine);
         response.setValues(stockCorrectionDetails);
       }
     } catch (Exception e) {
@@ -62,7 +60,7 @@ public class StockCorrectionController {
       StockCorrection stockCorrection = request.getContext().asType(StockCorrection.class);
 
       Map<String, Object> stockCorrectionQtys =
-          stockCorrectionService.fillDeafultQtys(stockCorrection);
+          Beans.get(StockCorrectionService.class).fillDeafultQtys(stockCorrection);
       response.setValues(stockCorrectionQtys);
 
     } catch (Exception e) {
@@ -74,7 +72,7 @@ public class StockCorrectionController {
     try {
       Long id = request.getContext().asType(StockCorrection.class).getId();
       StockCorrection stockCorrection = Beans.get(StockCorrectionRepository.class).find(id);
-      boolean success = stockCorrectionService.validate(stockCorrection);
+      boolean success = Beans.get(StockCorrectionService.class).validate(stockCorrection);
       if (success) {
         response.setReload(true);
       } else {

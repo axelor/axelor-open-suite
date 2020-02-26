@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.bankpayment.ebics.certificate;
 
+import com.axelor.apps.bankpayment.db.EbicsBank;
 import com.axelor.apps.bankpayment.db.EbicsCertificate;
 import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.EbicsUser;
@@ -141,16 +142,20 @@ public class CertificateManager {
    * @throws IOException
    */
   public void createA005Certificate(Date end) throws GeneralSecurityException, IOException {
-    KeyPair keypair;
+    KeyPair keypair = KeyUtil.makeKeyPair(X509Constants.EBICS_KEY_SIZE);
 
-    keypair = KeyUtil.makeKeyPair(X509Constants.EBICS_KEY_SIZE);
+    EbicsBank ebicsBank = user.getEbicsPartner().getEbicsBank();
+
     a005Certificate =
         generator.generateA005Certificate(
             keypair,
             user.getDn(),
             new Date(),
             end,
-            user.getEbicsPartner().getEbicsBank().getUseX509ExtentionForAutoSignedCert());
+            ebicsBank.getUseX509ExtensionBasicConstraints(),
+            ebicsBank.getUseX509ExtensionSubjectKeyIdentifier(),
+            ebicsBank.getUseX509ExtensionAuthorityKeyIdentifier(),
+            ebicsBank.getUseX509ExtensionExtendedKeyUsage());
     a005PrivateKey = keypair.getPrivate();
   }
 
@@ -162,16 +167,20 @@ public class CertificateManager {
    * @throws IOException
    */
   public void createX002Certificate(Date end) throws GeneralSecurityException, IOException {
-    KeyPair keypair;
+    KeyPair keypair = KeyUtil.makeKeyPair(X509Constants.EBICS_KEY_SIZE);
 
-    keypair = KeyUtil.makeKeyPair(X509Constants.EBICS_KEY_SIZE);
+    EbicsBank ebicsBank = user.getEbicsPartner().getEbicsBank();
+
     x002Certificate =
         generator.generateX002Certificate(
             keypair,
             user.getDn(),
             new Date(),
             end,
-            user.getEbicsPartner().getEbicsBank().getUseX509ExtentionForAutoSignedCert());
+            ebicsBank.getUseX509ExtensionBasicConstraints(),
+            ebicsBank.getUseX509ExtensionSubjectKeyIdentifier(),
+            ebicsBank.getUseX509ExtensionAuthorityKeyIdentifier(),
+            ebicsBank.getUseX509ExtensionExtendedKeyUsage());
     x002PrivateKey = keypair.getPrivate();
   }
 
@@ -183,16 +192,20 @@ public class CertificateManager {
    * @throws IOException
    */
   public void createE002Certificate(Date end) throws GeneralSecurityException, IOException {
-    KeyPair keypair;
+    KeyPair keypair = KeyUtil.makeKeyPair(X509Constants.EBICS_KEY_SIZE);
 
-    keypair = KeyUtil.makeKeyPair(X509Constants.EBICS_KEY_SIZE);
+    EbicsBank ebicsBank = user.getEbicsPartner().getEbicsBank();
+
     e002Certificate =
         generator.generateE002Certificate(
             keypair,
             user.getDn(),
             new Date(),
             end,
-            user.getEbicsPartner().getEbicsBank().getUseX509ExtentionForAutoSignedCert());
+            ebicsBank.getUseX509ExtensionBasicConstraints(),
+            ebicsBank.getUseX509ExtensionSubjectKeyIdentifier(),
+            ebicsBank.getUseX509ExtensionAuthorityKeyIdentifier(),
+            ebicsBank.getUseX509ExtensionExtendedKeyUsage());
     e002PrivateKey = keypair.getPrivate();
   }
 

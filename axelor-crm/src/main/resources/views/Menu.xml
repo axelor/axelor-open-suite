@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<menuitem name="crm-root" title="CRM" order="-108" if="__config__.app.isApp('crm')"
 		icon="fa-user" icon-background="#2fa042"/>
@@ -29,10 +29,10 @@
 		<view type="form" name="partner-customer-form" />
 	  	<view-param name="limit" value="39"/>
 		<view-param name="search-filters" value="partner-filters"/>
-		<domain>self.isContact = false AND self.isCustomer = true OR self.isProspect = true</domain>
+		<domain>self.isContact = false AND (self.isCustomer = true OR self.isProspect = true)</domain>
 		<context name="user_id" expr="eval:__user__" />
 		<context name="_isCustomer" expr="true"/>
-		<context name="_domain" expr="self.isContact = false AND self.isCustomer = true OR self.isProspect = true"/>
+		<context name="_domain" expr="self.isContact = false AND (self.isCustomer = true OR self.isProspect = true)"/>
 		<context name="json-enhance" expr="eval:true" />
 	</action-view>
 	
@@ -45,6 +45,7 @@
 		<view type="grid" name="partner-contact-grid" />
 		<view type="form" name="partner-contact-form" />
 	  	<view-param name="limit" value="39"/>
+		<view-param name="search-filters" value="partner-filters"/>
 		<domain>self.isContact = true AND self.mainPartner.isCustomer = true</domain>
 		<context name="_domain" expr="self.isContact = true AND self.mainPartner.isCustomer = true"/>
 	</action-view>
@@ -56,7 +57,7 @@
 		model="com.axelor.apps.crm.db.Event" >
 		<view type="grid" name="event-grid"/>
 		<view type="form" name="event-form"/>
-		<view type="calendar" name="event-calendar"/>
+		<view type="calendar" name="event-calendar-color-by-calendar"/>
 		<view-param name="search-filters" value="event-filters"/>
 		<context name="_currentDate" expr="eval:  __date__"/>
 		<context name="_internalUserId" expr="eval: __user__.id"/>
@@ -135,6 +136,15 @@
 		<view type="grid" name="lost-reason-grid"/>
 		<view type="form" name="lost-reason-form"/>
 	</action-view>
+	
+	<menuitem name="crm-conf-contact-function" parent="crm-conf"
+		title="Contact function" action="crm.conf.contact.function" />
+		
+	<action-view name="crm.conf.contact.function" title="Contact function"
+		model="com.axelor.apps.base.db.Function" >
+		<view type="grid" name="function-grid"/>
+		<view type="form" name="function-form"/>
+	</action-view>
 		
 	<menuitem name="admin-root-batch-crm" parent="admin-root-batch"
 		title="CRM batches" action="admin.root.batch.crm" if="__config__.app.isApp('crm')" />
@@ -156,7 +166,7 @@
 		model="com.axelor.apps.crm.db.Event" >
 		<view type="grid" name="event-grid"/>
 		<view type="form" name="event-form"/>
-		<view type="calendar" name="event-calendar"/>
+		<view type="calendar" name="event-calendar-color-by-calendar"/>
 		<domain>self.typeSelect = 2</domain>
 		<context name="_internalUserId" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
@@ -171,7 +181,7 @@
 		model="com.axelor.apps.crm.db.Event" >
 		<view type="grid" name="event-grid"/>
 		<view type="form" name="event-form"/>
-		<view type="calendar" name="event-calendar"/>
+		<view type="calendar" name="event-calendar-color-by-calendar"/>
 		<domain>self.typeSelect = 1</domain>
 		<context name="_internalUserId" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
@@ -186,7 +196,7 @@
 		model="com.axelor.apps.crm.db.Event" >
 		<view type="grid" name="event-grid"/>
 		<view type="form" name="event-form"/>
-		<view type="calendar" name="event-calendar"/>
+		<view type="calendar" name="event-calendar-color-by-calendar"/>
 		<domain>self.typeSelect = 3</domain>
 		<context name="_internalUserId" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>

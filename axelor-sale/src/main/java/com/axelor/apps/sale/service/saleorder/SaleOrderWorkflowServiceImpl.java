@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -176,7 +176,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
   }
 
   @Transactional
-  public void completeSaleOrder(SaleOrder saleOrder) {
+  public void completeSaleOrder(SaleOrder saleOrder) throws AxelorException {
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_COMPLETED);
     saleOrder.setOrderBeingEdited(false);
 
@@ -185,9 +185,25 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 
   @Override
   public void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException {
+
+    if (saleOrder.getPrintingSettings() == null) {
+      if (saleOrder.getCompany().getPrintingSettings() != null) {
+        saleOrder.setPrintingSettings(saleOrder.getCompany().getPrintingSettings());
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            String.format(
+                I18n.get(IExceptionMessage.SALE_ORDER_MISSING_PRINTING_SETTINGS),
+                saleOrder.getSaleOrderSeq()),
+            saleOrder);
+      }
+    }
+
     ReportFactory.createReport(IReport.SALES_ORDER, this.getFileName(saleOrder) + "-${date}")
         .addParam("Locale", ReportSettings.getPrintingLocale(saleOrder.getClientPartner()))
         .addParam("SaleOrderId", saleOrder.getId())
+        .addParam("HeaderHeight", saleOrder.getPrintingSettings().getPdfHeaderHeight())
+        .addParam("FooterHeight", saleOrder.getPrintingSettings().getPdfFooterHeight())
         .toAttach(saleOrder)
         .generate()
         .getFileLink();

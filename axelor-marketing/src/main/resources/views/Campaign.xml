@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
     <grid name="campaign-grid" title="Campaigns" model="com.axelor.apps.marketing.db.Campaign">
         <field name="name"/>
@@ -12,8 +12,8 @@
 	<form name="campaign-form" title="Campaign" model="com.axelor.apps.marketing.db.Campaign" width="large"
 		onNew="action-campaign-attrs-on-new-on-load" onLoad="action-campaign-attrs-on-new-on-load">
 		<menubar>
-			<menu title="Tools" icon="fa-wrench" showTitle="true">
-				<item title="Launch emailing" action="save,action-campaign-validate-send-email,action-campaign-method-send-email" showIf="emailing"/>
+			<menu name="campaignToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+				<item name="launchEmailingItem" title="Launch emailing" action="save,action-campaign-validate-send-email,action-campaign-method-send-email" showIf="emailing"/>
 			</menu>
 		</menubar>
 		<panel name="mainPanel" >
@@ -33,7 +33,6 @@
 				<field name="campaignType" canEdit="false" colSpan="4"/>
 				<field name="eventStartDateT" colSpan="4"/>
 				<field name="eventEndDateT" colSpan="4"/>
-				<spacer name="campaignTypeSpacer"/>
 				<field name="emailing" colSpan="4" widget="boolean-switch" />
 				<field name="manageAnEventPerTarget" colSpan="4" widget="boolean-switch"/>
 				<field name="manageAttendees" colSpan="4" widget="boolean-switch"/>

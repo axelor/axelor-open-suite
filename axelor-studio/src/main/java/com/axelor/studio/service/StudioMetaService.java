@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,14 +17,28 @@
  */
 package com.axelor.studio.service;
 
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.AuditableModel;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.Role;
+import com.axelor.auth.db.User;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
+import com.axelor.db.mapper.Mapper;
+import com.axelor.inject.Beans;
+import com.axelor.mail.MailConstants;
+import com.axelor.mail.db.MailMessage;
+import com.axelor.mail.db.repo.MailMessageRepository;
 import com.axelor.meta.db.MetaAction;
+import com.axelor.meta.db.MetaJsonField;
+import com.axelor.meta.db.MetaJsonModel;
 import com.axelor.meta.db.MetaMenu;
+import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.MetaView;
 import com.axelor.meta.db.repo.MetaActionRepository;
+import com.axelor.meta.db.repo.MetaJsonModelRepository;
 import com.axelor.meta.db.repo.MetaMenuRepository;
+import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaViewRepository;
 import com.axelor.meta.loader.XMLViews;
 import com.axelor.meta.schema.views.AbstractView;
@@ -34,11 +48,13 @@ import com.axelor.studio.service.wkf.WkfTrackingService;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.persistence.NoResultException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,6 +73,8 @@ public class StudioMetaService {
 
   @Inject private MenuBuilderRepository menuBuilderRepo;
 
+  @Inject private MetaModelRepository metaModelRepo;
+
   /**
    * Removes MetaActions from comma separated names in string.
    *
@@ -71,7 +89,7 @@ public class StudioMetaService {
     }
 
     actionNames = actionNames.replaceAll(WkfTrackingService.ACTION_OPEN_TRACK, "");
-    //            .replaceAll(WkfTrackingService.ACTION_TRACK, "");
+    // .replaceAll(WkfTrackingService.ACTION_TRACK, "");
     List<MetaAction> metaActions =
         metaActionRepo
             .all()
@@ -286,5 +304,66 @@ public class StudioMetaService {
     } catch (NoResultException e) {
       return 0;
     }
+  }
+
+  @Transactional
+  public void trackJsonField(MetaJsonModel jsonModel) {
+
+    String messageBody = "";
+
+    List<MetaJsonField> metaJsonFieldList = jsonModel.getFields();
+
+    jsonModel = Beans.get(MetaJsonModelRepository.class).find(jsonModel.getId());
+
+    List<MetaJsonField> jsonFieldList = new ArrayList<MetaJsonField>(jsonModel.getFields());
+
+    if (metaJsonFieldList.equals(jsonFieldList)) {
+      return;
+    }
+
+    List<MetaJsonField> commonJsonFieldList = new ArrayList<>(jsonFieldList);
+    commonJsonFieldList.retainAll(metaJsonFieldList);
+
+    metaJsonFieldList.removeAll(jsonFieldList);
+    if (!metaJsonFieldList.isEmpty()) {
+      messageBody =
+          metaJsonFieldList.stream().map(list -> list.getName()).collect(Collectors.joining(", "));
+      trackingFields(jsonModel, messageBody, "Field added");
+    }
+
+    jsonFieldList.removeAll(commonJsonFieldList);
+    if (!jsonFieldList.isEmpty()) {
+      messageBody =
+          jsonFieldList.stream().map(list -> list.getName()).collect(Collectors.joining(", "));
+      trackingFields(jsonModel, messageBody, "Field removed");
+    }
+  }
+
+  @Transactional
+  public void trackingFields(
+      AuditableModel auditableModel, String messageBody, String messageSubject) {
+
+    User user = AuthUtils.getUser();
+    MailMessage message = new MailMessage();
+    Mapper mapper = Mapper.of(auditableModel.getClass());
+
+    message.setSubject(messageSubject);
+    message.setAuthor(user);
+    message.setBody(messageBody);
+    message.setRelatedId(auditableModel.getId());
+    message.setRelatedModel(EntityHelper.getEntityClass(auditableModel).getName());
+    message.setType(MailConstants.MESSAGE_TYPE_NOTIFICATION);
+    message.setRelatedName(mapper.getNameField().get(auditableModel).toString());
+
+    Beans.get(MailMessageRepository.class).save(message);
+  }
+
+  @Transactional
+  public void trackJsonField(MetaJsonField metaJsonField) {
+
+    MetaModel metaModel =
+        metaModelRepo.all().filter("self.fullName = ?1", metaJsonField.getModel()).fetchOne();
+
+    trackingFields(metaModel, metaJsonField.getName(), "Field added");
   }
 }

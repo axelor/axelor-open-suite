@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,6 +25,7 @@ import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.service.config.AccountConfigHRService;
@@ -32,6 +33,7 @@ import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.expense.ExpenseServiceImpl;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +51,8 @@ public class ExpenseServiceProjectImpl extends ExpenseServiceImpl {
       AccountingSituationService accountingSituationService,
       AnalyticMoveLineService analyticMoveLineService,
       HRConfigService hrConfigService,
-      TemplateMessageService templateMessageService) {
+      TemplateMessageService templateMessageService,
+      PaymentModeService paymentModeService) {
 
     super(
         moveService,
@@ -61,12 +64,17 @@ public class ExpenseServiceProjectImpl extends ExpenseServiceImpl {
         accountingSituationService,
         analyticMoveLineService,
         hrConfigService,
-        templateMessageService);
+        templateMessageService,
+        paymentModeService);
   }
 
   @Override
   public List<InvoiceLine> createInvoiceLines(
       Invoice invoice, List<ExpenseLine> expenseLineList, int priority) throws AxelorException {
+
+    if (!Beans.get(AppAccountService.class).isApp("business-project")) {
+      return super.createInvoiceLines(invoice, expenseLineList, priority);
+    }
 
     List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
     int count = 0;

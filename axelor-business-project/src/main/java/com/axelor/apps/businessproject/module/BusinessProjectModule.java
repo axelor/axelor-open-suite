@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,9 @@ package com.axelor.apps.businessproject.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
+import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidateServiceBankPayImpl;
+import com.axelor.apps.base.db.repo.AppBusinessProjectRepository;
+import com.axelor.apps.businessproject.db.repo.AppBusinessProjectManagementRepository;
 import com.axelor.apps.businessproject.db.repo.InvoiceProjectRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectManagementRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
@@ -30,12 +33,15 @@ import com.axelor.apps.businessproject.service.ExpenseLineProjectServiceImpl;
 import com.axelor.apps.businessproject.service.ExpenseServiceProjectImpl;
 import com.axelor.apps.businessproject.service.InvoiceLineProjectService;
 import com.axelor.apps.businessproject.service.InvoiceLineProjectServiceImpl;
+import com.axelor.apps.businessproject.service.InvoicePaymentValidateProjectServiceImpl;
 import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
 import com.axelor.apps.businessproject.service.ProductTaskTemplateService;
 import com.axelor.apps.businessproject.service.ProductTaskTemplateServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.businessproject.service.ProjectBusinessServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectContractServiceImpl;
+import com.axelor.apps.businessproject.service.ProjectFolderService;
+import com.axelor.apps.businessproject.service.ProjectFolderServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectPurchaseServiceImpl;
 import com.axelor.apps.businessproject.service.ProjectStockMoveInvoiceServiceImpl;
 import com.axelor.apps.businessproject.service.PurchaseOrderInvoiceProjectServiceImpl;
@@ -48,6 +54,7 @@ import com.axelor.apps.businessproject.service.TeamTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.TeamTaskBusinessProjectServiceImpl;
 import com.axelor.apps.businessproject.service.TimesheetLineBusinessService;
 import com.axelor.apps.businessproject.service.TimesheetLineProjectServiceImpl;
+import com.axelor.apps.businessproject.service.TimesheetProjectService;
 import com.axelor.apps.businessproject.service.TimesheetProjectServiceImpl;
 import com.axelor.apps.businessproject.service.WorkflowCancelServiceProjectImpl;
 import com.axelor.apps.businessproject.service.WorkflowValidationServiceProjectImpl;
@@ -82,6 +89,7 @@ public class BusinessProjectModule extends AxelorModule {
     bind(SaleOrderInvoiceServiceImpl.class).to(SaleOrderInvoiceProjectServiceImpl.class);
     bind(PurchaseOrderInvoiceServiceImpl.class).to(PurchaseOrderInvoiceProjectServiceImpl.class);
     bind(TimesheetServiceImpl.class).to(TimesheetProjectServiceImpl.class);
+    bind(TimesheetProjectService.class).to(TimesheetProjectServiceImpl.class);
     bind(TimesheetLineServiceImpl.class).to(TimesheetLineProjectServiceImpl.class);
     bind(ExpenseServiceImpl.class).to(ExpenseServiceProjectImpl.class);
     bind(ProjectServiceImpl.class).to(ProjectBusinessServiceImpl.class);
@@ -113,5 +121,9 @@ public class BusinessProjectModule extends AxelorModule {
     bind(InvoiceLineSupplychainService.class).to(InvoiceLineProjectServiceImpl.class);
     bind(ContractServiceImpl.class).to(ProjectContractServiceImpl.class);
     bind(ContractLineServiceImpl.class).to(ContractLineServiceProjectImpl.class);
+    bind(AppBusinessProjectRepository.class).to(AppBusinessProjectManagementRepository.class);
+    bind(InvoicePaymentValidateServiceBankPayImpl.class)
+        .to(InvoicePaymentValidateProjectServiceImpl.class);
+    bind(ProjectFolderService.class).to(ProjectFolderServiceImpl.class);
   }
 }

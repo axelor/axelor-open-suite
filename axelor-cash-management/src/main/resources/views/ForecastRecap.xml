@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
 	<grid name="forecast-recap-grid" title="Forecast Recaps" model="com.axelor.apps.cash.management.db.ForecastRecap">
 		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
@@ -13,7 +13,7 @@
 	 <form name="forecast-recap-form" title="Forecast Recap" model="com.axelor.apps.cash.management.db.ForecastRecap"
 	 	onNew="action-forecast-recap-record-default-on-new" width="large">
 	 	<toolbar>
-	 		<button name="printBtn" title="Print" icon="fa-print" onClick="save,action-forecast-recap-method-show-report"/>
+			<button name="printBtn" title="Print" icon="fa-print" onClick="save,action-forecast-recap-view-reports-wizard"/>
 	 	</toolbar>
 	 	<panel name="mainPanel" >
 	 	   <panel name="seqPanel" colSpan="12">
@@ -34,6 +34,13 @@
 	 	</panel>
 	 </form>
 	 
+	 <form model="com.axelor.apps.base.db.Wizard" title="Reports" name="forecast-recap-print-wizard-form">
+		<panel name="mainPanel">
+			<field name="$reportTypeSelect" title="Format" selection="forecast.recap.report.type.select" colSpan="3" type="string"/>
+			<button name="printBtn" title="Print" onClick="action-forecast-recap-method-print" readonlyIf="$reportTypeSelect == null" colSpan="3"/>
+		</panel>
+	</form>
+
 	 <grid name="forecast-report-grid" title="Forecast Reports" model="com.axelor.apps.cash.management.db.ForecastRecap">
        <field name="company"/>
        <field name="bankDetails" if="__config__.app.getApp('base').getManageMultiBanks()"/>
@@ -118,8 +125,18 @@
 		<call class="com.axelor.apps.cash.management.web.ForecastRecapController" method="populate"/>
 	</action-method>
 	
-	<action-method name="action-forecast-recap-method-show-report">
-		<call class="com.axelor.apps.cash.management.web.ForecastRecapController" method="showReport"/>
-	</action-method>
-    
+	<action-view name="action-forecast-recap-view-reports-wizard" title="Reports"
+		model="com.axelor.apps.cash.management.db.ForecastRecap" >
+		<view type="form" name="forecast-recap-print-wizard-form" />
+		<view-param name="popup" value="true"/>
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="show-confirm" value="false" />
+		<view-param name="popup-save" value="false"/>
+		<context name="_forecastRecapId" expr="eval: id"/>
+	</action-view>
+
+    <action-method name="action-forecast-recap-method-print">
+		<call class="com.axelor.apps.cash.management.web.ForecastRecapController" method="print"/>
+    </action-method>
+
 </object-views>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
@@ -18,6 +18,9 @@
 		<!-- Mapping API -->
 		<integer name="mapApiSelect" title="Mapping service provider" selection="base.app.base.map.api.select" default="1" />
 		
+		<!-- Routing service API for Open Street Map> -->
+		<integer name="osmRoutingServiceApiSelect" title="Routing service provider for Open Street Map" selection="base.app.base.osm.routing.api.select" default="1" />
+		
 		<string name="googleMapsApiKey" title="Google Maps API key"/>
 		
 		<!-- Currency Conversion Webservice URL -->
@@ -28,7 +31,8 @@
 		<boolean name="hasQasValidation" title="Use QAS Validation"/>
 		
 		<integer name="productInAtiSelect" title="Products ATI/WT" selection="base.in.ati.select" default="1"/>
-		<integer name="nbDecimalDigitForUnitPrice" title="Nb of digits for unit prices" max="10" default="2"/>
+		<integer name="nbDecimalDigitForUnitPrice" title="Nb of digits for unit prices" min="0" max="10" default="2"/>
+		<integer name="nbDecimalDigitForQty" title="Nb of digits for quantities" min="0" max="10" default="2"/>
 		
 		<integer name="computeMethodDiscountSelect" title="Compute Method for Discounts" selection="base.compute.method.discount.select" default="1"/>
 
@@ -68,6 +72,7 @@
     
         <integer name="limitNumberTasksGenerated" title="Number of tasks generated at most at once" min="1" default="100"/>
     
+		<boolean name="isSharedAddress" title="Shared address" default="false"/>
 		<extra-code>
 	   		<![CDATA[
 	   			public static final int DISCOUNT_SEPARATE = 1;
@@ -76,6 +81,9 @@
 	   			
 	   			public static final int MAP_API_GOOGLE = 1;
 	   			public static final int MAP_API_OPEN_STREET_MAP = 2;
+	   			
+	   			public static final int ROUTING_API_YOURS = 1;
+	   			public static final int ROUTING_API_OSRM = 2;
 	   		]]>
 	   	</extra-code>
 	   	
@@ -115,6 +123,7 @@
 		   	<field name="enableTradingNamesManagement" on="UPDATE"/>
 		   	<field name="enableCalendars" on="UPDATE"/>
 		   	<field name="passwordChangedTemplate" on="UPDATE"/>
+		   	<field name="generatePartnerSequence" on="UPDATE"/>
 <!-- 		   	31 fields -->
 	   	</track>
 	   	

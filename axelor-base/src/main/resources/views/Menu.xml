@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<menuitem id="abs-menu-mail" name="menu-mail" if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base').getEnterpriseCommunication()" hidden="false" order="-110"
     title="Messaging" icon="fa-users" icon-background="#84429f" />
 	
-	<menuitem title="Mailinig lists" name="menu-mail-mailing-list" parent="menu-mail" order="-75"/>
+	<menuitem title="Mailing lists" name="menu-mail-mailing-list" parent="menu-mail" order="-75"/>
 
-	<menuitem title="My Mailing lists" name="menu-mail-my-mailing-list" parent="menu-mail-mailing-list" action="menu.mail.my.mailinig.list"/>
-	<menuitem title="All Mailing lists" name="menu-mail-all-mailing-list" parent="menu-mail-mailing-list" action="menu.mail.all.mailinig.list"/>
+	<menuitem title="My Mailing lists" name="menu-mail-my-mailing-list" parent="menu-mail-mailing-list" action="menu.mail.my.mailing.list"/>
+	<menuitem title="All Mailing lists" name="menu-mail-all-mailing-list" parent="menu-mail-mailing-list" action="menu.mail.all.mailing.list"/>
 
-	<action-view name="menu.mail.my.mailinig.list" title="My Mailing lists" model="com.axelor.apps.base.db.MailingListMessage">
+	<action-view name="menu.mail.my.mailing.list" title="My Mailing lists" model="com.axelor.apps.base.db.MailingListMessage">
 		<view type="cards" name="mailing-list-message-cards"/>
 		<view type="form" name="mailing-list-message-form"/>
 		<view type="grid" name="mailing-list-message-grid"/>
 		<domain>self IN (SELECT mf.relatedId FROM MailFollower mf where mf.archived = false)</domain>
 	</action-view>
-	<action-view name="menu.mail.all.mailinig.list" title="All Mailing lists" model="com.axelor.apps.base.db.MailingListMessage">
+	<action-view name="menu.mail.all.mailing.list" title="All Mailing lists" model="com.axelor.apps.base.db.MailingListMessage">
 		<view type="cards" name="mailing-list-message-cards"/>
 		<view type="form" name="mailing-list-message-form"/>
 		<view type="grid" name="mailing-list-message-grid"/>
@@ -54,7 +54,7 @@
     <menuitem id="calendar.root.menu.configuration.calendars" name="menu-calendar-configuration-calendars" title="My calendars" parent="menu-calendar-configuration" action="calendar.root.menu.my.calendars"/>
 
 	<action-view name="calendar.root.menu.my.calendars" title="My calendars" model="com.axelor.apps.base.db.ICalendar">
-		<view type="grid" name="calendar-user-calendars-grid"/>
+		<view type="grid" name="calendar-user-grid"/>
 		<view type="form" name="calendar-form"/>
 		<domain>self.user = :__user__</domain>
 	</action-view>
@@ -170,6 +170,7 @@
 		<view type="grid" name="partner-contact-grid" />
 		<view type="form" name="partner-contact-form" />
 	  	<view-param name="limit" value="39"/>
+		<view-param name="search-filters" value="partner-filters"/>
 		<domain>self.isContact = true</domain>
 		<context name="_domain" expr="self.isContact = true"/>
 	</action-view>
@@ -235,6 +236,15 @@
 	</action-view>
 
 	<menuitem name="referential-conf" title="Configuration" order="100" parent="referential-root" icon="fa-cog"/>
+	
+	<menuitem name="referential-conf-contact-function" parent="referential-conf"
+		title="Contact function" action="referential.conf.contact.function" />
+		
+	<action-view name="referential.conf.contact.function" title="Contact function"
+		model="com.axelor.apps.base.db.Function" >
+		<view type="grid" name="function-grid"/>
+		<view type="form" name="function-form"/>
+	</action-view>
 	
 	<menuitem name="referential-conf-address" parent="referential-conf"
 		title="Addresses" action="referential.conf.address" order="110"/>
@@ -466,12 +476,22 @@
       <view type="grid" name="economic-area-grid"/>
       <view type="form" name="economic-area-form"/>
     </action-view>
+    
+    <menuitem name="admin-root-organisation-territory-citizenship"
+      parent="admin-root-organisation-territory" title="Citizenship"
+      action="admin.root.organisation.territory.citizenship" />
+  
+    <action-view name="admin.root.organisation.territory.citizenship"
+      title="Citizenship" model="com.axelor.apps.base.db.Citizenship">
+      <view type="grid" name="citizenship-grid"/>
+      <view type="form" name="citizenship-form"/>
+    </action-view>
 
 	<menuitem name="admin-root-user" parent="admin-root" if="__config__.app.isApp('base')"
 		title="Users/Companies" order="25" />
 
 	<menuitem name="admin-root-user-user" parent="admin-root-user"
-		title="Users" action="action-auth-users" />
+		title="Users" action="action-auth-users" order="1"/>
 
 	<action-view id="base-action-auth-users" name="action-auth-users" title="Users" model="com.axelor.auth.db.User">
 		<view type="grid" name="user-grid" />
@@ -481,7 +501,14 @@
 	</action-view>
 
 	<menuitem name="admin-root-user-company" parent="admin-root-user"
-		title="Companies" action="admin.root.base.company" />
+		title="Companies" action="admin.root.base.company" order="2"/>
+		
+    <menuitem title="Company tree" name="admin-root-user-company-tree"
+        parent="admin-root-user" action="action-company-view-tree" order="3"/>
+        
+    <action-view name="action-company-view-tree" title="Company tree">
+        <view type="tree" name="company-tree"/>
+    </action-view>
 
 	<action-view name="admin.root.base.company" title="Companies"
 		model="com.axelor.apps.base.db.Company" >
@@ -492,7 +519,7 @@
 	</action-view>
 
 	<menuitem name="admin-root-user-configuration" parent="admin-root-user"
-		title="Configuration" icon="fa-cog"/>
+		title="Configuration" icon="fa-cog" order="4"/>
 
 	<menuitem name="company-department-all" parent="admin-root-user-configuration"
     	title="Departments"
@@ -501,6 +528,22 @@
 	<action-view name="company.department.all" title="Company departments" model="com.axelor.apps.base.db.CompanyDepartment">
     	<view type="grid" name="company-department-grid"/>
 	    <view type="form" name="company-department-form"/>
+	</action-view>
+
+	<menuitem name="company-bank-details" parent="admin-root-user-configuration" title="Bank details" action="company.bank.details"/>
+
+	<action-view name="company.bank.details" title="Company.bankDetails" model="com.axelor.apps.base.db.BankDetails">
+    	<view type="cards" name="bank-details-cards"/>
+    	<view type="grid" name="bank-details-bank-order-company-grid"/>
+	    <view type="form" name="bank-details-form"/>
+	    <domain>self.company != null</domain>
+	</action-view>
+
+	<menuitem name="company-bank-details-tree" parent="admin-root-user-configuration" title="Bank details tree" action="company.bank.details.tree"/>
+
+	<action-view name="company.bank.details.tree" title="Bank details tree" model="com.axelor.apps.base.db.BankDetails">
+    	<view type="tree" name="bank-details-tree" if="!__config__.app.isApp('bank-payment')"/>
+    	<view type="tree" name="bank-details-bank-payment-tree" if="__config__.app.isApp('bank-payment')"/>
 	</action-view>
 
 	<menuitem title="Trading names" name="admin-root-trading-name" parent="admin-root-user-configuration" action="action-view-trading-name" if="__config__.app.getApp('base').enableTradingNamesManagement"/>

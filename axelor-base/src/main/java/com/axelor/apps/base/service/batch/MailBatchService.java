@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,6 @@ package com.axelor.apps.base.service.batch;
 
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.MailBatch;
-import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatchService;
 import com.axelor.db.Model;
@@ -39,14 +38,9 @@ public class MailBatchService extends AbstractBatchService {
 
   @Override
   public Batch run(Model batchModel) throws AxelorException {
-
-    Batch batch;
     MailBatch mailBatch = (MailBatch) batchModel;
 
     switch (mailBatch.getActionSelect()) {
-      case MailBatchRepository.ACTION_REMIN_TIMESHEET:
-        batch = null;
-        break;
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -54,8 +48,6 @@ public class MailBatchService extends AbstractBatchService {
             mailBatch.getActionSelect(),
             mailBatch.getCode());
     }
-
-    return batch;
   }
 
   public Batch remindMail(MailBatch mailBatch) throws AxelorException {

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
   <grid name="purchase-order-quotation-grid" title="Sale quotations" model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
     <menubar>
-      <menu title="Reports" icon="fa-files-o" showTitle="true">
-        <item title="Print" action="action-purchase-order-method-show-purchase-order"/>
+      <menu name="purchaseOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+        <item name="printItem" title="Print" action="action-purchase-order-method-show-purchase-order"/>
       </menu>
-      <menu title="Tools" icon="fa-wrench" showTitle="true">
-				<item title="Merge quotations"  action="purchase.order.merge"/>
-				<item title="See quotation lines" action="purchase-order-see-quotation-lines" />
+      <menu name="purchaseOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+				<item name="mergeQuotationsItem" title="Merge quotations"  action="purchase.order.merge"/>
+				<item name="seeQuotationLinesItem" title="See quotation lines" action="purchase-order-see-quotation-lines" />
       </menu>
     </menubar>
 		<field name="purchaseOrderSeq" width="120"/>
@@ -26,14 +26,15 @@
 		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
   </grid>
 
-  <grid name="purchase-order-grid" title="Purchase orders" model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
-		<menubar>
-	    <menu title="Reports" icon="fa-files-o" showTitle="true">
-        <item title="Print" action="action-purchase-order-method-show-purchase-order"/>
-	    </menu>
-	    <menu title="Tools" icon="fa-wrench" showTitle="true">
-        <item title="See purchase order lines" action="purchase-order-see-purchase-order-lines" />
-	    </menu>
+    <grid name="purchase-order-grid" title="Purchase orders" model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
+        <menubar>
+            <menu name="purchaseOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+                <item name="printItem" title="Print" action="action-purchase-order-method-show-purchase-order"/>
+            </menu>
+            <menu name="purchaseOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+                <item name="seePurchaseOrderLinesItem" title="See purchase order lines" action="purchase-order-see-purchase-order-lines" />
+                <item title="See budget distribution lines" action="action-purchase-order-see-budget-distribution-lines"/>
+            </menu>
 		</menubar>
 		<field name="purchaseOrderSeq" width="120"/>
 		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
@@ -78,12 +79,12 @@
 	<form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" onLoad="action-group-purchase-order-on-load-actions"
 	  onNew="action-group-purchase-order-on-new-actions" >
 		<menubar>
-            <menu title="Reports" icon="fa-files-o" showTitle="true">
-			  <item title="Print" action="save,action-purchase-order-method-show-purchase-order" hideIf="supplierPartner == null"/>
+            <menu name="purchaseOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+			  <item name="printItem" title="Print" action="save,action-purchase-order-method-show-purchase-order" hideIf="supplierPartner == null"/>
 			</menu>
-			<menu title="Tools" icon="fa-wrench" showTitle="true">
-			  <item name="sendEmailBtn"  title="Send email" action="save,action-send-by-email-with-template" hideIf="supplierPartner == null"/>
-			  <item name="cancelReceiptBtn" title="Cancel receipt" showIf="statusSelect &gt;= 3" action="save,action-purchase-order-method-cancel-receipt" hideIf="supplierPartner == null"/>
+			<menu name="purchaseOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+			  <item name="sendEmailItem"  title="Send email" action="save,action-send-by-email-with-template" hideIf="supplierPartner == null"/>
+			  <item name="cancelReceiptItem" title="Cancel receipt" showIf="statusSelect &gt;= 3" action="save,action-purchase-order-method-cancel-receipt" hideIf="supplierPartner == null"/>
 			</menu>
 		</menubar>
 		<panel name="overviewPanel">
@@ -121,7 +122,7 @@
 		</panel>
 		<panel-tabs name="mainPanelTab" hideIf="supplierPartner == null">
 			<panel name="contentPanel" title="Content" colSpan="12">
-				<panel-related name="purchaseOrderLineListPanel" field="purchaseOrderLineList" canNew="statusSelect &lt; 3" canRemove="statusSelect &lt; 3" x-can-copy="statusSelect &lt; 3" grid-view="purchase-order-line-purchase-order-grid" title="PO lines detail" colSpan="12" onChange="action-purchase-order-method-compute" form-view="purchase-order-line-form" canMove="true" orderBy="sequence" height="30"/>
+				<panel-related name="purchaseOrderLineListPanel" field="purchaseOrderLineList" canNew="statusSelect &lt; 3" canRemove="statusSelect &lt; 3" grid-view="purchase-order-line-purchase-order-grid" title="PO lines detail" colSpan="12" onChange="action-purchase-order-method-compute" form-view="purchase-order-line-form" canMove="true" orderBy="sequence" height="30"/>
 				<field name="notes" colSpan="12" x-lite="true" widget="html"/>
 			</panel>
 			<panel name="taxPanel" title="Tax" colSpan="12">
@@ -146,11 +147,12 @@
 				<field name="expectedRealisationDate" colSpan="12" width="50%"/>
 				<label name="orLabel" title="OR"/>
 				<field name="amountToBeSpreadOverTheTimetable" colSpan="12"/>
-				<panel-related name="timetableListPanel" field="timetableList" colSpan="12" grid-view="timetable-grid" form-view="timetable-form" onChange="action-purchase-order-method-update-amount-to-be-spread-over-the-timetable" if-module="axelor-supplychain"/>
+				<panel-related name="timetableListPanel" field="timetableList" colSpan="12" grid-view="timetable-grid-purchase" form-view="timetable-form-purchase" onChange="action-purchase-order-method-update-amount-to-be-spread-over-the-timetable" if-module="axelor-supplychain"/>
 			</panel>
-			<panel name="budgetDistributionPanel" title="Budget distribution" if="__config__.app.isApp('budget')" showIf="statusSelect &lt;= 2" if-module="axelor-supplychain">
-				<field name="budget"/>
-				<button name="applyToAllBtn" title="Apply to all" onClick="save,action-purchase-order-budget-distribution-apply-to-all" readonlyIf="!budget"/>
+			<panel name="budgetDistributionPanel" title="Budget distribution" if="__config__.app.isApp('budget')" if-module="axelor-supplychain" showIf="statusSelect &lt;= 4">
+				<field name="budget" showIf="statusSelect &lt;= 2"/>
+				<button name="applyToAllBtn" title="Apply to all" onClick="save,action-purchase-order-budget-distribution-apply-to-all,save" readonlyIf="!budget" showIf="statusSelect &lt;= 2"/>
+			    <panel-dashlet name="budgetDistributionPanel" action="action-supplychain-budget-distribuion-view-budget-distribution" colSpan="12" showIf="statusSelect &gt;= 3 &amp;&amp; statusSelect &lt;= 4" readonly="true"/>
 			</panel>
 			<panel name="printingPanel" title="Printing">
 				<field name="printingSettings" onSelect="action-purchase-order-method-filter-printing-settings" canEdit="false"/>
@@ -158,7 +160,6 @@
 				<field name="priceRequest" hideIf="displayPriceOnQuotationRequest" colSpan="12" x-height="5"/>
 			</panel>
 			<panel name="invoicingPanel" title="Invoicing" hideIf="statusSelect &lt; 3">
-				<field if="__config__.app.isApp('invoice')" if-module="axelor-account" name="invoice" form-view="invoice-form" grid-view="invoice-grid"/>
 				<panel-dashlet name="POInvoicesPanel" action="action-view-show-invoices-from-purchase-order" title="Invoices" if-module="axelor-supplychain"  if="__config__.app.isApp('supplychain')" showIf="statusSelect &gt;= 3" colSpan="12"/>
 			</panel>
 
@@ -168,7 +169,7 @@
 			<field name="attrs" colSpan="12" />
 		</panel>
 
-		<panel sidebar="true" name="actionsPanel" hideIf="statusSelect == 4 || supplierPartner == null">
+		<panel sidebar="true" name="actionsPanel" hideIf="supplierPartner == null">
 			<button name="draftBtn" title="Draft" showIf="statusSelect == 5"   onClick="action-purchase-order-record-draft,save"/>
 			<button name="requestedBtn" title="Requested" showIf="statusSelect == 1"   onClick="save,action-purchase-order-method-requested"/>
 			<button name="newVersionBtn" title="New version" showIf="statusSelect == 2" onClick="save,action-purchase-record-newVersion,save" if="__config__.app.getApp('purchase').getManagePurchaseOrderVersion()"/>
@@ -177,8 +178,8 @@
 			<button name="generateInvoiceBtn" title="Generate control invoice" showIf="statusSelect == 3" onClick="save,action-purchase-order-method-generate-control-invoice" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').generateInvoiceFromPurchaseOrder" if-module="axelor-supplychain"/>
 			<button name="showInvoiceBtn" title="Show invoice" showIf="statusSelect == 3 || statusSelect == 4"   onClick="action-purchase-order-show-invoice" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
             <button name="finishManuallyPurchaseOrderBtn" title="Finish the order" prompt="Warning, a completed order can't be changed anymore, do you want to continue?" showIf="statusSelect == 3" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowFinishManuallyPurchaseOrder) || (!__config__.app.isApp('supplychain'))" onClick="save,action-purchase-order-method-finish-purchase-order" if-module="axelor-supplychain" />
-			<spacer name="btnSpacer"/>
 			<button name="cancelBtn" title="Cancel" css="btn-danger" icon="fa-times" showIf="statusSelect &lt;= 3  || invoice.statusSelect &lt;= 2"   onClick="save,action-group-purchase-order-cancel"/>
+			<button name="backToValidatedBtn" title="Back to validated order" showIf="statusSelect == 4" if-module="axelor-supplychain" onClick="save,action-purchase-order-method-set-status-to-validated" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowFinishManuallyPurchaseOrder"/>
 		</panel>
   
 		<panel name="intaxTotalPanel" sidebar="true"  hideIf="supplierPartner == null">
@@ -302,6 +303,7 @@
 	<cards name="purchase-order-cards" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" width="300px" css="rect-image" orderBy="-orderDate">
 		<toolbar>
     			<button name="seePurchaseOrderLinesBtn" title="See purchase orders lines" onClick="purchase-order-see-purchase-order-lines"/>
+    			<button name="seeBudgetDistributionLinesBtn" title="See budget distribution lines" onClick="action-purchase-order-see-budget-distribution-lines"/>
 		</toolbar>
 		<field name="purchaseOrderSeq"/>
 		<field name="externalReference"/>
@@ -361,10 +363,6 @@
 		]]>
 		</template>
 	</cards>
-
-	<action-method name="action-purchase-order-method-update-timetable" if-module="axelor-supplychain">
-		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="updateTimetable" if="__config__.app.isApp('supplychain')" />
-	</action-method>
 
     <action-group name="action-group-purchase-order-on-new-actions">
     	<action name="action-purchase-order-record-new"/>
@@ -446,7 +444,7 @@
     	<attribute name="hidden" for="purchaseOrderLineList.inTaxTotal" expr="!inAti"/>
     	<attribute name="hidden" for="purchaseOrderLineList.inTaxPrice" expr="!inAti"/>
     	<attribute name="hidden" for="inAti" expr=" eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 1
-    									|| __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 2"/>
+    									|| __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 2" if="company"/>
     </action-attrs>
 
     <action-attrs name="action-purchase-order-attrs-stock-location-address">
@@ -455,12 +453,12 @@
 
     <action-record name="action-purchase-order-record-in-ati" model="com.axelor.apps.purchase.db.PurchaseOrder">
     	<field name="inAti" expr="eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 2
-    									|| __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 4"/>
+    									|| __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 4" if="company"/>
     </action-record>
 
     <action-record name="action-purchase-order-dispaly-price" model="com.axelor.apps.purchase.db.PurchaseOrder">
-    	<field name="displayPriceOnQuotationRequest" expr="eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.displayPriceOnQuotationRequest"/>
-    	<field name="priceRequest" expr="eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.priceRequest"/>
+    	<field name="displayPriceOnQuotationRequest" expr="eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.displayPriceOnQuotationRequest" if="company"/>
+    	<field name="priceRequest" expr="eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.priceRequest" if="company"/>
     </action-record>
 
     <action-record name="action-purchase-order-record-new" model="com.axelor.apps.purchase.db.PurchaseOrder">
@@ -697,4 +695,9 @@
   <action-method name="action-purchase-order-method-check-analytic-distribution-template">
     <call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="checkPurchaseOrderAnalyticDistributionTemplate" if="company?.purchaseConfig?.isAnalyticDistributionRequired"/>
   </action-method>
+
+	<action-method name="action-purchase-order-method-set-status-to-validated">
+		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="backToValidatedStatus" />
+	</action-method>
+	
 </object-views>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,29 +26,21 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.lang.invoke.MethodHandles;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Singleton
 public class MessageController {
-
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  @Inject private MessageRepository messageRepo;
-
-  @Inject private MessageService messageService;
 
   public void sendMessage(ActionRequest request, ActionResponse response) {
     Message message = request.getContext().asType(Message.class);
 
     try {
-      messageService.sendMessage(messageRepo.find(message.getId()));
+      Beans.get(MessageService.class)
+          .sendMessage(Beans.get(MessageRepository.class).find(message.getId()));
       response.setReload(true);
       response.setFlash(I18n.get(IExceptionMessage.MESSAGE_4));
     } catch (AxelorException e) {
@@ -65,7 +57,10 @@ public class MessageController {
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(IExceptionMessage.MESSAGE_MISSING_SELECTED_MESSAGES));
       }
-      ModelTool.apply(Message.class, idList, model -> messageService.sendMessage((Message) model));
+      ModelTool.apply(
+          Message.class,
+          idList,
+          model -> Beans.get(MessageService.class).sendMessage((Message) model));
       response.setFlash(
           String.format(I18n.get(IExceptionMessage.MESSAGES_SEND_IN_PROGRESS), idList.size()));
       response.setReload(true);
@@ -85,7 +80,9 @@ public class MessageController {
       }
       int error =
           ModelTool.apply(
-              Message.class, idList, model -> messageService.regenerateMessage((Message) model));
+              Message.class,
+              idList,
+              model -> Beans.get(MessageService.class).regenerateMessage((Message) model));
       response.setFlash(
           String.format(
               I18n.get(IExceptionMessage.MESSAGES_REGENERATED), idList.size() - error, error));

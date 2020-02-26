@@ -198,4 +198,5 @@
 "You cannot remove a line which has been already invoiced.",,,
 "You cannot terminate a contract before version activation date.",,,
 "You need to save your contract for add lines.",,,
+"com.axelor.apps.contract.batch.service.BatchContractService",,,
 "value:Contract",,,

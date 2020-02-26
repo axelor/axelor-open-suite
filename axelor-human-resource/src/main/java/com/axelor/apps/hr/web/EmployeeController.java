@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -35,7 +35,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.util.Map;
@@ -46,8 +45,6 @@ import wslite.json.JSONObject;
 
 @Singleton
 public class EmployeeController {
-
-  @Inject private EmployeeService employeeService;
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -80,21 +77,25 @@ public class EmployeeController {
   public void setEmployeeSocialNetworkUrl(ActionRequest request, ActionResponse response) {
 
     Employee employee = request.getContext().asType(Employee.class);
-    Map<String, String> urlMap =
-        employeeService.getSocialNetworkUrl(
-            employee.getContactPartner().getName(), employee.getContactPartner().getFirstName());
-    response.setAttr("contactPartner.facebookLabel", "title", urlMap.get("facebook"));
-    response.setAttr("contactPartner.twitterLabel", "title", urlMap.get("twitter"));
-    response.setAttr("contactPartner.linkedinLabel", "title", urlMap.get("linkedin"));
-    response.setAttr("contactPartner.youtubeLabel", "title", urlMap.get("youtube"));
+    if (employee.getContactPartner() != null) {
+      Map<String, String> urlMap =
+          Beans.get(EmployeeService.class)
+              .getSocialNetworkUrl(
+                  employee.getContactPartner().getName(),
+                  employee.getContactPartner().getFirstName());
+      response.setAttr("contactPartner.facebookLabel", "title", urlMap.get("facebook"));
+      response.setAttr("contactPartner.twitterLabel", "title", urlMap.get("twitter"));
+      response.setAttr("contactPartner.linkedinLabel", "title", urlMap.get("linkedin"));
+      response.setAttr("contactPartner.youtubeLabel", "title", urlMap.get("youtube"));
+    }
   }
 
   public void setContactSocialNetworkUrl(ActionRequest request, ActionResponse response) {
 
     Partner partnerContact = request.getContext().asType(Partner.class);
     Map<String, String> urlMap =
-        employeeService.getSocialNetworkUrl(
-            partnerContact.getName(), partnerContact.getFirstName());
+        Beans.get(EmployeeService.class)
+            .getSocialNetworkUrl(partnerContact.getName(), partnerContact.getFirstName());
     response.setAttr("facebookLabel", "title", urlMap.get("facebook"));
     response.setAttr("twitterLabel", "title", urlMap.get("twitter"));
     response.setAttr("linkedinLabel", "title", urlMap.get("linkedin"));
@@ -125,7 +126,7 @@ public class EmployeeController {
     employee = Beans.get(EmployeeRepository.class).find(employee.getId());
 
     try {
-      Long dpaeId = employeeService.generateNewDPAE(employee);
+      Long dpaeId = Beans.get(EmployeeService.class).generateNewDPAE(employee);
 
       ActionViewBuilder builder =
           ActionView.define(I18n.get("DPAE"))

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
    
 	<grid name="advanced-import-grid" title="Advanced imports" model="com.axelor.apps.base.db.AdvancedImport">
 		<field name="name"/>
@@ -36,7 +36,8 @@
 			<button name="applyBtn" title="Apply" onClick="action-advanced-import-validate-filetab,save,action-advanced-import-method-apply" hideIf="statusSelect == 1"/>
 			<button name="validateBtn" title="Validate" onClick="save,action-advanced-import-method-validate,save" showIf="fileTabList.length &gt; 0 &amp;&amp; statusSelect == 0"/>
 			<button name="importBtn" title="Import" onClick="save,action-advanced-import-method-import,save" showIf="statusSelect == 1"/>
-			<button name="draftBtn" title="Reset to draft" onClick="action-advanced-import-record-set-values" showIf="statusSelect == 1"/>
+			<button name="resetImportBtn" title="Reset import" onClick="save,action-advanced-import-method-reset-import" showIf="statusSelect == 1"/>
+			<button name="draftBtn" title="Reset to draft" onClick="action-advanced-import-record-set-values,save" showIf="statusSelect == 1"/>
 	  	</panel>
 	</form>
 	
@@ -50,6 +51,10 @@
 	
 	<action-method name="action-advanced-import-method-import">
 		<call class="com.axelor.apps.base.web.AdvancedImportController" method="importData"/>
+	</action-method>
+	
+	<action-method name="action-advanced-import-method-reset-import">
+		<call class="com.axelor.apps.base.web.AdvancedImportController" method="resetImport"/>
 	</action-method>
 	
 	<action-validate name="action-advanced-import-validate-filetab">

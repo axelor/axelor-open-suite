@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -59,6 +59,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
     super(messageService, templateContextService);
   }
 
+  @Override
   public Set<MetaFile> getMetaFiles(Template template) throws AxelorException, IOException {
 
     Set<MetaFile> metaFiles = super.getMetaFiles(template);
@@ -157,9 +158,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
         reportSettings.addParam(
             birtTemplateParameter.getName(),
             convertValue(birtTemplateParameter.getType(), maker.make()));
-
-        reportSettings.generate();
-      } catch (AxelorException | BirtException e) {
+      } catch (BirtException e) {
         throw new AxelorException(
             e.getCause(),
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -167,6 +166,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
       }
     }
 
+    reportSettings.generate();
     return reportSettings;
   }
 

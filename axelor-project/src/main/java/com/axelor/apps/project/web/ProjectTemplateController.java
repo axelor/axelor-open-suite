@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,32 +29,28 @@ import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.LinkedHashMap;
 
 @Singleton
 public class ProjectTemplateController {
 
-  @Inject ProjectTemplateRepository projectTemplateRepo;
-  @Inject ProjectService projectService;
-  @Inject AppProjectService appProjectService;
-  @Inject PartnerRepository partnerRepo;
-
   public void createProjectFromTemplate(ActionRequest request, ActionResponse response) {
 
     ProjectTemplate projectTemplate = request.getContext().asType(ProjectTemplate.class);
-    AppProject appProject = appProjectService.getAppProject();
+    AppProject appProject = Beans.get(AppProjectService.class).getAppProject();
 
     if (appProject.getGenerateProjectSequence() && !projectTemplate.getIsBusinessProject()) {
 
       Project project;
       try {
-        project = projectService.createProjectFromTemplate(projectTemplate, null, null);
+        project =
+            Beans.get(ProjectService.class).createProjectFromTemplate(projectTemplate, null, null);
         response.setView(
             ActionView.define(I18n.get("Project"))
                 .model(Project.class.getName())
@@ -90,7 +86,8 @@ public class ProjectTemplateController {
 
     String projectTemplateId =
         ((LinkedHashMap<String, Object>) context.get("_projectTemplate")).get("id").toString();
-    ProjectTemplate projectTemplate = projectTemplateRepo.find(Long.parseLong(projectTemplateId));
+    ProjectTemplate projectTemplate =
+        Beans.get(ProjectTemplateRepository.class).find(Long.parseLong(projectTemplateId));
 
     String projectCode = (String) context.get("code");
 
@@ -100,13 +97,14 @@ public class ProjectTemplateController {
     if (clientPartnerContext != null) {
       String clientPartnerId =
           ((LinkedHashMap<String, Object>) clientPartnerContext).get("id").toString();
-      clientPartner = partnerRepo.find(Long.parseLong(clientPartnerId));
+      clientPartner = Beans.get(PartnerRepository.class).find(Long.parseLong(clientPartnerId));
     }
 
     Project project;
     try {
       project =
-          projectService.createProjectFromTemplate(projectTemplate, projectCode, clientPartner);
+          Beans.get(ProjectService.class)
+              .createProjectFromTemplate(projectTemplate, projectCode, clientPartner);
       response.setCanClose(true);
 
       response.setView(

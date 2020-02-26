@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -106,8 +106,15 @@ public class ActionScriptBuilderService {
     fbuilder = new ArrayList<>();
     varCount = 1;
     int level = 1;
+    String condition = builder.getConditionText();
 
-    stb.append(format("var ctx = $request.context;", level));
+    stb.append(
+        condition == null
+            ? format("var ctx = $request.context;", level)
+            : format("var ctx = $request.context;", level)
+                + "\n"
+                + format("if(" + condition.replaceAll("\\$.", "ctx.") + "){", level));
+
     String targetModel;
     if (builder.getTypeSelect() == ActionBuilderRepository.TYPE_SELECT_CREATE) {
       targetModel = builder.getTargetModel();
@@ -126,7 +133,7 @@ public class ActionScriptBuilderService {
       addUpdateCode(builder.getIsJson(), stb, level, targetModel);
     }
 
-    stb.append("\n");
+    stb.append(condition == null ? "\n" : format("}", level) + "\n");
 
     addRootFunction(builder, stb, level);
 
@@ -527,9 +534,9 @@ public class ActionScriptBuilderService {
       stb.append(format("if (!val) {", 2));
       stb.append(format("val = $json.create('" + model + "');", 3));
       stb.append(format("}", 2));
-      // stb.append(format("if($ instanceof MetaJsonRecord){$ =
-      // $json.create($json.find($.id))};",
-      // 2));
+      stb.append(format("else {", 2));
+      stb.append(format("val = $json.create(val);", 3));
+      stb.append(format("}", 2));
       stb.append(addFieldsBinding("val", lines, 2));
       stb.append(format("val = $json.save(val);", 2));
     }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,7 +21,7 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.data.Listener;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -84,7 +84,7 @@ public class ImporterListener implements Listener {
             TraceBackRepository.TYPE_FUNCTIONNAL,
             I18n.get(IExceptionMessage.IMPORTER_LISTERNER_4),
             name),
-        IException.IMPORT);
+        ExceptionOriginRepository.IMPORT);
   }
 
   public boolean isImported() {

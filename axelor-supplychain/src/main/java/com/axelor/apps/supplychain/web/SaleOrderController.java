@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -42,6 +42,7 @@ import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderReservedQtyService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
+import com.axelor.apps.supplychain.service.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
@@ -59,7 +60,6 @@ import com.axelor.rpc.Context;
 import com.axelor.team.db.Team;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -67,6 +67,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -74,10 +75,6 @@ import java.util.Map;
 public class SaleOrderController {
 
   private final String SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD = "qtyToInvoice";
-
-  @Inject private SaleOrderServiceSupplychainImpl saleOrderServiceSupplychain;
-
-  @Inject private SaleOrderRepository saleOrderRepo;
 
   public void createStockMove(ActionRequest request, ActionResponse response) {
 
@@ -89,7 +86,7 @@ public class SaleOrderController {
         SaleOrderStockService saleOrderStockService = Beans.get(SaleOrderStockService.class);
         List<Long> stockMoveList =
             saleOrderStockService.createStocksMovesFromSaleOrder(
-                saleOrderRepo.find(saleOrder.getId()));
+                Beans.get(SaleOrderRepository.class).find(saleOrder.getId()));
 
         if (stockMoveList != null && stockMoveList.size() == 1) {
           response.setView(
@@ -136,7 +133,7 @@ public class SaleOrderController {
     }
   }
 
-  @SuppressWarnings("rawtypes")
+  @SuppressWarnings({"unchecked"})
   public void generatePurchaseOrdersFromSelectedSOLines(
       ActionRequest request, ActionResponse response) {
 
@@ -145,53 +142,20 @@ public class SaleOrderController {
     try {
       if (saleOrder.getId() != null) {
 
-        if (request.getContext().get("supplierPartnerSelect") != null) {
-          Partner partner =
-              JPA.em()
-                  .find(
-                      Partner.class,
-                      new Long(
-                          (Integer)
-                              ((Map) request.getContext().get("supplierPartnerSelect")).get("id")));
-          List<Long> saleOrderLineIdSelected = new ArrayList<>();
-          String saleOrderLineIdSelectedStr =
-              (String) request.getContext().get("saleOrderLineIdSelected");
-          for (String saleOrderId : saleOrderLineIdSelectedStr.split(",")) {
-            saleOrderLineIdSelected.add(new Long(saleOrderId));
-          }
-          List<SaleOrderLine> saleOrderLinesSelected =
-              JPA.all(SaleOrderLine.class)
-                  .filter("self.id IN (:saleOderLineIdList)")
-                  .bind("saleOderLineIdList", saleOrderLineIdSelected)
-                  .fetch();
-          PurchaseOrder purchaseOrder =
-              Beans.get(SaleOrderPurchaseService.class)
-                  .createPurchaseOrder(
-                      partner, saleOrderLinesSelected, saleOrderRepo.find(saleOrder.getId()));
-          response.setView(
-              ActionView.define(I18n.get("Purchase order"))
-                  .model(PurchaseOrder.class.getName())
-                  .add("form", "purchase-order-form")
-                  .param("forceEdit", "true")
-                  .context("_showRecord", String.valueOf(purchaseOrder.getId()))
-                  .map());
-          response.setCanClose(true);
-        } else {
-          Partner supplierPartner = null;
-          List<Long> saleOrderLineIdSelected = new ArrayList<>();
+        Partner supplierPartner = null;
+        List<Long> saleOrderLineIdSelected = new ArrayList<>();
+        Boolean isDirectOrderLocation = false;
+        Map<String, Object> values = getSelectedId(request, response, saleOrder);
+        supplierPartner = (Partner) values.get("supplierPartner");
+        saleOrderLineIdSelected = (List<Long>) values.get("saleOrderLineIdSelected");
+        isDirectOrderLocation = (Boolean) values.get("isDirectOrderLocation");
 
-          // Check if supplier partners of each sale order line are the same. If it is,
-          // send the
-          // partner id to view to load this partner by default into select
+        if (supplierPartner == null) {
+          saleOrderLineIdSelected = new ArrayList<>();
           for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
             if (saleOrderLine.isSelected()) {
               if (supplierPartner == null) {
                 supplierPartner = saleOrderLine.getSupplierPartner();
-              } else {
-                if (!supplierPartner.equals(saleOrderLine.getSupplierPartner())) {
-                  supplierPartner = null;
-                  break;
-                }
               }
               saleOrderLineIdSelected.add(saleOrderLine.getId());
             }
@@ -217,11 +181,82 @@ public class SaleOrderController {
                         "saleOrderLineIdSelected", Joiner.on(",").join(saleOrderLineIdSelected))
                     .map());
           }
+        } else {
+          List<SaleOrderLine> saleOrderLinesSelected =
+              JPA.all(SaleOrderLine.class)
+                  .filter("self.id IN (:saleOderLineIdList)")
+                  .bind("saleOderLineIdList", saleOrderLineIdSelected)
+                  .fetch();
+          PurchaseOrder purchaseOrder =
+              Beans.get(SaleOrderPurchaseService.class)
+                  .createPurchaseOrder(
+                      supplierPartner,
+                      saleOrderLinesSelected,
+                      Beans.get(SaleOrderRepository.class).find(saleOrder.getId()));
+          response.setView(
+              ActionView.define(I18n.get("Purchase order"))
+                  .model(PurchaseOrder.class.getName())
+                  .add("form", "purchase-order-form")
+                  .param("forceEdit", "true")
+                  .context("_showRecord", String.valueOf(purchaseOrder.getId()))
+                  .map());
+
+          if (isDirectOrderLocation == false) {
+            response.setCanClose(true);
+          }
         }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  @SuppressWarnings("rawtypes")
+  private Map<String, Object> getSelectedId(
+      ActionRequest request, ActionResponse response, SaleOrder saleOrder) throws AxelorException {
+    Partner supplierPartner = null;
+    List<Long> saleOrderLineIdSelected = new ArrayList<>();
+    Map<String, Object> values = new HashMap<String, Object>();
+    Boolean isDirectOrderLocation = false;
+
+    if (saleOrder.getDirectOrderLocation()
+        && saleOrder.getStockLocation() != null
+        && saleOrder.getStockLocation().getPartner() != null
+        && saleOrder.getStockLocation().getPartner().getIsSupplier()) {
+      values.put("supplierPartner", saleOrder.getStockLocation().getPartner());
+
+      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+        if (saleOrderLine.isSelected()) {
+          saleOrderLineIdSelected.add(saleOrderLine.getId());
+        }
+      }
+      values.put("saleOrderLineIdSelected", saleOrderLineIdSelected);
+      isDirectOrderLocation = true;
+      values.put("isDirectOrderLocation", isDirectOrderLocation);
+
+      if (saleOrderLineIdSelected.isEmpty()) {
+        throw new AxelorException(3, I18n.get(IExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
+      }
+    } else if (request.getContext().get("supplierPartnerSelect") != null) {
+      supplierPartner =
+          JPA.em()
+              .find(
+                  Partner.class,
+                  new Long(
+                      (Integer)
+                          ((Map) request.getContext().get("supplierPartnerSelect")).get("id")));
+      values.put("supplierPartner", supplierPartner);
+      String saleOrderLineIdSelectedStr =
+          (String) request.getContext().get("saleOrderLineIdSelected");
+
+      for (String saleOrderId : saleOrderLineIdSelectedStr.split(",")) {
+        saleOrderLineIdSelected.add(new Long(saleOrderId));
+      }
+      values.put("saleOrderLineIdSelected", saleOrderLineIdSelected);
+      values.put("isDirectOrderLocation", isDirectOrderLocation);
+    }
+
+    return values;
   }
 
   /**
@@ -234,7 +269,6 @@ public class SaleOrderController {
    */
   @SuppressWarnings(value = "unchecked")
   public void generateInvoice(ActionRequest request, ActionResponse response) {
-
     Context context = request.getContext();
     try {
       SaleOrder saleOrder = context.asType(SaleOrder.class);
@@ -243,8 +277,10 @@ public class SaleOrderController {
       BigDecimal amountToInvoice =
           new BigDecimal(context.getOrDefault("amountToInvoice", "0").toString());
 
-      Beans.get(SaleOrderInvoiceService.class)
-          .displayErrorMessageIfSaleOrderIsInvoiceable(saleOrder, amountToInvoice, isPercent);
+      SaleOrderInvoiceService saleOrderInvoiceService = Beans.get(SaleOrderInvoiceService.class);
+
+      saleOrderInvoiceService.displayErrorMessageIfSaleOrderIsInvoiceable(
+          saleOrder, amountToInvoice, isPercent);
       Map<Long, BigDecimal> qtyToInvoiceMap = new HashMap<>();
 
       List<Map<String, Object>> saleOrderLineListContext;
@@ -261,13 +297,31 @@ public class SaleOrderController {
         }
       }
 
-      saleOrder = saleOrderRepo.find(saleOrder.getId());
+      // Information to send to the service to handle an invoicing on timetables
+      List<Long> timetableIdList = new ArrayList<>();
+      ArrayList<LinkedHashMap<String, Object>> uninvoicedTimetablesList =
+          (context.get("uninvoicedTimetablesList") != null)
+              ? (ArrayList<LinkedHashMap<String, Object>>) context.get("uninvoicedTimetablesList")
+              : null;
+      if (uninvoicedTimetablesList != null && !uninvoicedTimetablesList.isEmpty()) {
 
-      SaleOrderInvoiceService saleOrderInvoiceService = Beans.get(SaleOrderInvoiceService.class);
+        for (LinkedHashMap<String, Object> timetable : uninvoicedTimetablesList) {
+          if (timetable.get("toInvoice") != null && (boolean) timetable.get("toInvoice")) {
+            timetableIdList.add(Long.parseLong(timetable.get("id").toString()));
+          }
+        }
+      }
+
+      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
 
       Invoice invoice =
           saleOrderInvoiceService.generateInvoice(
-              saleOrder, operationSelect, amountToInvoice, isPercent, qtyToInvoiceMap);
+              saleOrder,
+              operationSelect,
+              amountToInvoice,
+              isPercent,
+              qtyToInvoiceMap,
+              timetableIdList);
 
       if (invoice != null) {
         response.setCanClose(true);
@@ -505,7 +559,8 @@ public class SaleOrderController {
   public void updateAmountToBeSpreadOverTheTimetable(
       ActionRequest request, ActionResponse response) {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    saleOrderServiceSupplychain.updateAmountToBeSpreadOverTheTimetable(saleOrder);
+    Beans.get(SaleOrderServiceSupplychainImpl.class)
+        .updateAmountToBeSpreadOverTheTimetable(saleOrder);
     response.setValue(
         "amountToBeSpreadOverTheTimetable", saleOrder.getAmountToBeSpreadOverTheTimetable());
   }
@@ -521,8 +576,9 @@ public class SaleOrderController {
     try {
       SaleOrder saleOrderView = request.getContext().asType(SaleOrder.class);
       if (saleOrderView.getOrderBeingEdited()) {
-        SaleOrder saleOrder = saleOrderRepo.find(saleOrderView.getId());
-        saleOrderServiceSupplychain.checkModifiedConfirmedOrder(saleOrder, saleOrderView);
+        SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrderView.getId());
+        Beans.get(SaleOrderServiceSupplychainImpl.class)
+            .checkModifiedConfirmedOrder(saleOrder, saleOrderView);
         response.setValues(saleOrderView);
       }
     } catch (Exception e) {
@@ -539,9 +595,12 @@ public class SaleOrderController {
    */
   public void changeWizardOperationDomain(ActionRequest request, ActionResponse response) {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    Map<String, Integer> contextValues =
+    List<Integer> operationSelectValues =
         Beans.get(SaleOrderInvoiceService.class).getInvoicingWizardOperationDomain(saleOrder);
-    response.setValues(contextValues);
+    if (operationSelectValues.contains(Integer.valueOf(SaleOrderRepository.INVOICE_ALL))) {
+      response.setAttr("operationSelect", "value", SaleOrderRepository.INVOICE_ALL);
+    }
+    response.setAttr("operationSelect", "selection-in", operationSelectValues);
   }
 
   /**
@@ -657,7 +716,7 @@ public class SaleOrderController {
   public void allocateAll(ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-      saleOrder = saleOrderRepo.find(saleOrder.getId());
+      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
       Beans.get(SaleOrderReservedQtyService.class).allocateAll(saleOrder);
       response.setReload(true);
     } catch (Exception e) {
@@ -675,7 +734,7 @@ public class SaleOrderController {
   public void deallocateAll(ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-      saleOrder = saleOrderRepo.find(saleOrder.getId());
+      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
       Beans.get(SaleOrderReservedQtyService.class).deallocateAll(saleOrder);
       response.setReload(true);
     } catch (Exception e) {
@@ -693,7 +752,7 @@ public class SaleOrderController {
   public void reserveAll(ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-      saleOrder = saleOrderRepo.find(saleOrder.getId());
+      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
       Beans.get(SaleOrderReservedQtyService.class).reserveAll(saleOrder);
       response.setReload(true);
     } catch (Exception e) {
@@ -711,7 +770,7 @@ public class SaleOrderController {
   public void cancelReservation(ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-      saleOrder = saleOrderRepo.find(saleOrder.getId());
+      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
       Beans.get(SaleOrderReservedQtyService.class).cancelReservation(saleOrder);
       response.setReload(true);
     } catch (Exception e) {
@@ -722,7 +781,7 @@ public class SaleOrderController {
   public void showPopUpInvoicingWizard(ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-      saleOrder = saleOrderRepo.find(saleOrder.getId());
+      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
       Beans.get(SaleOrderInvoiceService.class).displayErrorMessageBtnGenerateInvoice(saleOrder);
       response.setView(
           ActionView.define("Invoicing")
@@ -765,6 +824,52 @@ public class SaleOrderController {
       }
     } catch (AxelorException e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void generateAdvancePaymentInvoice(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    try {
+      SaleOrder saleOrder = context.asType(SaleOrder.class);
+      Beans.get(SaleOrderInvoiceService.class).displayErrorMessageBtnGenerateInvoice(saleOrder);
+      Boolean isPercent = (Boolean) context.getOrDefault("isPercent", false);
+      BigDecimal amountToInvoice =
+          new BigDecimal(context.getOrDefault("amountToInvoice", "0").toString());
+      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+
+      Invoice invoice =
+          Beans.get(SaleOrderInvoiceService.class)
+              .generateInvoice(
+                  saleOrder,
+                  SaleOrderRepository.INVOICE_ADVANCE_PAYMENT,
+                  amountToInvoice,
+                  isPercent,
+                  null,
+                  null);
+
+      if (invoice != null) {
+        response.setCanClose(true);
+        response.setView(
+            ActionView.define(I18n.get("Invoice generated"))
+                .model(Invoice.class.getName())
+                .add("form", "invoice-form")
+                .add("grid", "invoice-grid")
+                .context("_showRecord", String.valueOf(invoice.getId()))
+                .map());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void backToConfirmedStatus(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+      Beans.get(SaleOrderSupplychainService.class).updateToConfirmedStatus(saleOrder);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

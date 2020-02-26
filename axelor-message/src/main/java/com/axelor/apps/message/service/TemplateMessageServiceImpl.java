@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -117,14 +117,14 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
     log.debug("object id : {}", objectId);
     log.debug("template : {}", template);
 
-    String content = "",
-        subject = "",
-        from = "",
-        replyToRecipients = "",
-        toRecipients = "",
-        ccRecipients = "",
-        bccRecipients = "",
-        addressBlock = "";
+    String content = "";
+    String subject = "";
+    String from = "";
+    String replyToRecipients = "";
+    String toRecipients = "";
+    String ccRecipients = "";
+    String bccRecipients = "";
+    String addressBlock = "";
     int mediaTypeSelect;
 
     if (!Strings.isNullOrEmpty(template.getContent())) {
@@ -177,12 +177,11 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 
     mediaTypeSelect = this.getMediaTypeSelect(template);
     log.debug("Media ::: {}", mediaTypeSelect);
-    log.debug("Content ::: {}", content);
 
     Message message =
         messageService.createMessage(
             model,
-            Long.valueOf(objectId).intValue(),
+            Math.toIntExact(objectId),
             subject,
             content,
             getEmailAddress(from),
@@ -302,7 +301,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
     EmailAddress emailAddress = emailAddressRepo.findByAddress(recipient);
 
     if (emailAddress == null) {
-      Map<String, Object> values = new HashMap<String, Object>();
+      Map<String, Object> values = new HashMap<>();
       values.put("address", recipient);
       emailAddress = emailAddressRepo.create(values);
     }
@@ -320,7 +319,6 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
     EmailAccount mailAccount = Beans.get(MailAccountService.class).getDefaultSender();
 
     if (mailAccount != null) {
-      log.debug("Email account ::: {}", mailAccount);
       return mailAccount;
     }
 

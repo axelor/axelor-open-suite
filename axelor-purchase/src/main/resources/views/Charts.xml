@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	  
 	<action-record model="com.axelor.apps.purchase.db.PurchaseOrder" name="action.purchase.chart.set.date.6m">
 	  <field name="toDate" expr="eval:LocalDate.parse(todayDate)"/>
@@ -207,7 +207,7 @@
 	<chart onInit="action.purchase.chart.set.date" name="chart.total.purchase.amount" title="Total Purchased Amount by month">
 		<search-fields>
 			<field type="date" name="fromDate" title="From Date" x-required="true"/>
-			<field name="monthSelect" selection="account.year.period.duration.select" title="Historical Period" x-required="true"/>
+			<field name="monthSelect" selection="base.year.period.duration.select" title="Historical Period" x-required="true"/>
 		</search-fields>
 		<dataset type="sql">
 			SELECT
@@ -236,7 +236,7 @@
 	<chart onInit="action.purchase.chart.set.date" name="chart.total.purchase.qty" title="Total Purchased Qty by month">
 		<search-fields>
 			<field type="date" name="fromDate" title="From Date" x-required="true"/>
-			<field name="monthSelect" selection="account.year.period.duration.select" title="Historical Period" x-required="true"/>
+			<field name="monthSelect" selection="base.year.period.duration.select" title="Historical Period" x-required="true"/>
 		</search-fields>
 		<dataset type="sql">
 			SELECT
@@ -268,7 +268,7 @@
 	<chart onInit="action.purchase.chart.set.date.6m" name="chart.nbr.of.po.per.month" title="Nbr of PO by month">
 		<search-fields>
 			<field type="date" name="fromDate" title="From Date" x-required="true"/>
-			<field name="monthSelect" selection="account.year.period.duration.select" title="Historical Period" x-required="true"/>
+			<field name="monthSelect" selection="base.year.period.duration.select" title="Historical Period" x-required="true"/>
 		</search-fields>
 		<dataset type="sql">
 			SELECT

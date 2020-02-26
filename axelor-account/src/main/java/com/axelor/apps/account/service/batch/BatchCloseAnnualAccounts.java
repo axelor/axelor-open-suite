@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -30,7 +30,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -62,14 +62,16 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
   }
 
   @Override
-  protected void start() throws IllegalArgumentException, IllegalAccessException, AxelorException {
+  protected void start() throws IllegalAccessException {
     super.start();
     try {
       Beans.get(AccountingReportService.class)
           .testReportedDateField(batch.getAccountingBatch().getYear().getReportedBalanceDate());
     } catch (AxelorException e) {
       TraceBackService.trace(
-          new AxelorException(e, e.getCategory(), ""), IException.REPORTED_BALANCE, batch.getId());
+          new AxelorException(e, e.getCategory(), ""),
+          ExceptionOriginRepository.REPORTED_BALANCE,
+          batch.getId());
       incrementAnomaly();
       stop = true;
     }
@@ -116,7 +118,8 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
                   origin,
                   moveDescription,
                   closeYear,
-                  openYear);
+                  openYear,
+                  allocatePerPartner);
 
           if (generateMoves != null && !generateMoves.isEmpty()) {
             updateAccount(account);

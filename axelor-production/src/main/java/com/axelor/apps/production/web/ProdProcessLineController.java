@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,19 +19,14 @@ package com.axelor.apps.production.web;
 
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
-import com.axelor.apps.production.db.repo.ProdProcessLineRepository;
 import com.axelor.apps.production.service.ProdProcessLineServiceImpl;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class ProdProcessLineController {
-
-  @Inject protected ProdProcessLineServiceImpl prodProcessLineService;
-
-  @Inject ProdProcessLineRepository prodProcessLineRepo;
 
   public void updateDuration(ActionRequest request, ActionResponse response) {
     ProdProcessLine prodProcess = request.getContext().asType(ProdProcessLine.class);
@@ -39,7 +34,8 @@ public class ProdProcessLineController {
     if (workCenter != null) {
       response.setValue(
           "durationPerCycle",
-          prodProcessLineService.getProdProcessLineDurationFromWorkCenter(workCenter));
+          Beans.get(ProdProcessLineServiceImpl.class)
+              .getProdProcessLineDurationFromWorkCenter(workCenter));
     }
   }
 
@@ -49,10 +45,12 @@ public class ProdProcessLineController {
     if (workCenter != null) {
       response.setValue(
           "minCapacityPerCycle",
-          prodProcessLineService.getProdProcessLineMinCapacityPerCycleFromWorkCenter(workCenter));
+          Beans.get(ProdProcessLineServiceImpl.class)
+              .getProdProcessLineMinCapacityPerCycleFromWorkCenter(workCenter));
       response.setValue(
           "maxCapacityPerCycle",
-          prodProcessLineService.getProdProcessLineMaxCapacityPerCycleFromWorkCenter(workCenter));
+          Beans.get(ProdProcessLineServiceImpl.class)
+              .getProdProcessLineMaxCapacityPerCycleFromWorkCenter(workCenter));
     }
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -34,9 +34,12 @@ public class ITranslation {
   public static final String EXPENSE_ADVANCE_AMOUNT = /*$$(*/ "Expense.advanceAmount"; /*)*/
   public static final String EXPENSE_MULTIPLE_USERS = /*$$(*/ "Expense.multipleUsers"; /*)*/
   public static final String EXPENSE_TOTAL_LABEL = /*$$(*/ "Expense.total"; /*)*/
+  public static final String EXPENSE_CURRENCY = /*$$(*/ "Expense.currency"; /*)*/
+  public static final String EXPENSE_GENERAL_EXPENSES = /*$$(*/ "General Expenses"; /*)*/
 
   public static final String EXPENSE_LINE_EXPENSE_DATE = /*$$(*/ "ExpenseLine.expenseDate"; /*)*/
   public static final String EXPENSE_LINE_CLIENT = /*$$(*/ "ExpenseLine.client"; /*)*/
+  public static final String EXPENSE_LINE_PROJECT = /*$$(*/ "ExpenseLine.project"; /*)*/
   public static final String EXPENSE_LINE_EXPENSE_TYPE = /*$$(*/ "ExpenseLine.expenseType"; /*)*/
   public static final String EXPENSE_LINE_AMOUNT = /*$$(*/ "ExpenseLine.amount"; /*)*/
   public static final String EXPENSE_LINE_UNTAXED_AMOUNT = /*$$(*/
@@ -49,6 +52,9 @@ public class ITranslation {
       "ExpenseLine.kilometricAllowParam"; /*)*/
   public static final String EXPENSE_LINE_KILOMETRIC_EXPENSE_TYPE = /*$$(*/
       "ExpenseLine.kilometricExpenseType"; /*)*/
+  public static final String EXPENSE_LINE_TO_INVOICE = /*$$(*/ "ExpenseLine.toInvoice"; /*)*/
+  public static final String EXPENSE_LINE_YES = /*$$(*/ "ExpenseLine.yes"; /*)*/
+  public static final String EXPENSE_LINE_NO = /*$$(*/ "ExpenseLine.no"; /*)*/
 
   public static final String TIMESHEET_OF = /*$$(*/ "Timesheet.timesheetOf"; /*)*/
   public static final String TIMESHEET_PROJECT = /*$$(*/ "TimesheetLine.project"; /*)*/
@@ -83,4 +89,14 @@ public class ITranslation {
 
   public static final String PHONE_BOOK_COMPANY_PHONE_BOOK = /*$$(*/
       "Phonebook.employeePhonebook"; /*)*/
+
+  public static final String EMPLOYEE_TIMESHEET_FROM_DATE = /*$$(*/
+      "EmployeeTimesheet.fromDate"; /*)*/
+  public static final String EMPLOYEE_TIMESHEET_TO_DATE = /*$$(*/ "EmployeeTimesheet.toDate"; /*)*/
+  public static final String EMPLOYEE_TIMESHEET_USER = /*$$(*/ "EmployeeTimesheet.user"; /*)*/
+  public static final String EMPLOYEE_TIMESHEET_WEEK_TOTAL = /*$$(*/
+      "EmployeeTimesheet.weekTotal"; /*)*/
+
+  public static final String EXPENSE_TOTAL_ATI = /*$$(*/ "Expense.totalA.T.I"; /*)*/
+  public static final String EXPENSE_TOTAL_TO_REFUND = /*$$(*/ "Expense.totalToRefund"; /*)*/
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_4.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<grid name="bank-details-bank-order-grid" title="Bank details" model="com.axelor.apps.base.db.BankDetails">
 		<field name="ownerName"/>
@@ -10,12 +10,37 @@
 		<field name="bank.code"/>
 	</grid>
 
-    <grid name="bank-details-bank-order-company-grid" title="Bank details" model="com.axelor.apps.base.db.BankDetails">
+    <grid name="bank-details-bank-order-company-grid" title="Bank details" model="com.axelor.apps.base.db.BankDetails" groupBy="company">
         <field name="ownerName"/>
         <field name="bankAddress"/>
         <field name="iban"/>
         <field name="code"/>
         <field name="bank.code"/>
+        <field name="company" hidden="true" />
+		<field name="balanceUpdatedDate" if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')"/>
+		<field name="balance" aggregate="sum" if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')"/>
+		<button name="showBalanceBtn" icon="fa-search" if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')" onClick="action-bank-details-view-show-bank-statement-lines"/>
     </grid>
+    
+    <tree name="bank-details-bank-payment-tree" title="Bank details tree">
+		<column name="company" type="string"/>
+		<column name="bankDetails" type="string"/>
+		<column name="active" type="boolean"/>
+		<column name="balanceUpdatedDate" type="date"/>
+		<column name="balance" type="decimal"/>
+		<column name="balanceBtn" type="button"/>
+
+		<node model="com.axelor.apps.base.db.Company" onClick="action-company-form-view">
+			<field name="name" as="company"/>
+		</node>
+
+		<node model="com.axelor.apps.base.db.BankDetails" onClick="action-bank-details-form-view" parent="company">
+			<field name="fullName" as="bankDetails"/>
+			<field name="active" as="active"/>
+			<field name="balanceUpdatedDate" as="balanceUpdatedDate"/>
+			<field name="balance" as="balance"/>
+			<button name="balanceBtn" icon="fa-search" onClick="action-bank-details-view-show-bank-statement-lines"/>
+		</node>
+	</tree>
 
 </object-views>

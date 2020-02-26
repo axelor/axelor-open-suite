@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
     <grid name="move-template-grid" title="Move template" model="com.axelor.apps.account.db.MoveTemplate">
 		<field name="name"/>
@@ -16,7 +17,7 @@
 		    <field name="name"/>
 		    <field name="code" x-bind="{{code|unaccent|uppercase}}" required="true" colSpan="3"/>
 		    <field name="company" canEdit="false" readonlyIf="journal" colSpan="3" canNew="false" form-view="company-form" grid-view="company-grid"/>
-		    <field name="journal" canEdit="false" readonlyIf="moveTemplateLineList.length > 0" onSelect="action-move-template-set-journal-domain" grid-view="journal-grid" form-view="journal-form"/>
+		    <field name="journal" canEdit="false" readonlyIf="moveTemplateLineList.length > 0" onSelect="action-move-template-set-journal-domain" grid-view="journal-grid" form-view="journal-form" required="true"/>
    		    <field name="moveTemplateType" canEdit="false" readonlyIf="moveTemplateLineList.length > 0" required="true" grid-view="move-template-type-grid" form-view="move-template-type-form"/>
    		    <field name="moveTemplateType.typeSelect"/>
    		    <field name="endOfValidityDate"/>
@@ -44,7 +45,7 @@
         	<field name="moveTemplateType.typeSelect" hidden="true"/>
         </panel>
     	<panel sidebar="true" name="actionsPanel" title="Actions">
-    		<button name="generateMovesBtn" readonlyIf="(dataInputList == null || dataInputList.isEmpty()) &amp;&amp; (moveTemplateSet == null || moveTemplateSet.isEmpty())" title="Generate Moves" onClick="action-move-template-wizard-method-generate-move" colSpan="12" />
+    		<button name="generateMovesBtn" readonlyIf="(dataInputList == null || dataInputList.isEmpty()) &amp;&amp; (moveTemplateSet == null || moveTemplateSet.isEmpty()) || (moveTemplateType == null)" title="Generate Moves" onClick="save,action-move-template-wizard-method-generate-move" colSpan="12" />
     	</panel>
     </form>
     

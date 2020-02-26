@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,7 +28,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import org.slf4j.Logger;
@@ -39,15 +38,14 @@ public class ManufOrderBusinessController {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject private ManufOrderRepository manufOrderRepo;
-
   public void propagateIsToInvoice(ActionRequest request, ActionResponse response) {
 
     ManufOrderServiceBusinessImpl manufOrderService =
         Beans.get(ManufOrderServiceBusinessImpl.class);
     ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
 
-    manufOrderService.propagateIsToInvoice(manufOrderRepo.find(manufOrder.getId()));
+    manufOrderService.propagateIsToInvoice(
+        Beans.get(ManufOrderRepository.class).find(manufOrder.getId()));
 
     response.setReload(true);
   }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
     <grid name="product-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="code,name" x-row-height="80">
    		<toolbar>
@@ -116,7 +116,7 @@
                         hideIf="isShippingCostsProduct || !sellable"/>
 					<panel name="unitsPanel" title="Units" colSpan="12">
 						<field name="unit" canEdit="false" colSpan="6" form-view="unit-form" grid-view="unit-grid"/>
-						<button name="updateUnitBtn" title="Update stock location" colSpan="6" showIf="id" onClick="save,action-product-method-update-stock-location" if-module="axelor-stock" if="__config__.app.isApp('stock')"/>
+						<button name="updateUnitBtn" title="Update stock location" colSpan="6" showIf="id &amp;&amp; productTypeSelect == 'storable' &amp;&amp; stockManaged" onClick="save,action-product-method-update-stock-location" if-module="axelor-stock" if="__config__.app.isApp('stock')"/>
 						<field name="salesUnit" canEdit="false" hideIf="!sellable" colSpan="6" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('sale')?.getManageSalesUnits()"/>
 						<spacer colSpan="6"/>
 						<field name="purchasesUnit" canEdit="false" hideIf="!purchasable" colSpan="6" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('purchase')?.getManagePurchasesUnits()"/>
@@ -194,6 +194,7 @@
 				        <panel-dashlet name="productStockPanel" colSpan="12" action="action-product-view-stock" showIf="id &amp;&amp; stockManaged"  />
 				        <panel-dashlet name="stockReportPanel" colSpan="12" action="action-stock-report-for-product" showIf="id &amp;&amp; stockManaged"  />
 				        <panel-dashlet name="stockHistoryReportPanel" colSpan="12" action="action-stock-history-report-for-product" showIf="id &amp;&amp; stockManaged"  />
+				        <panel-dashlet action="action-stock-view-stock-rule" name="stockRulePanel" colSpan="12"/>
 	      			</panel>
 	    		</panel>
                 <panel name="productionInformationsPanel"
@@ -203,7 +204,7 @@
                     if-module="axelor-production"
                     if="__config__.app.isApp('production')">
                     <field name="costSheetGroup" showIf="productSubTypeSelect == 3" if="__config__.app.getApp('production').getManageCostSheetGroup()"/>
-                    <field name="economicManufOrderQty"/>
+                    <field name="economicManufOrderQty" showIf="productSubTypeSelect == 3 || (productSubTypeSelect == 2 &amp;&amp; procurementMethodSelect == 'buy')"/>
                     <panel name="productionPanel" colSpan="12" showIf="procurementMethodSelect == 'produce' || procurementMethodSelect == 'buyAndProduce'">
                     	<panel-include view="product-production-form"/>
                     </panel>
@@ -317,11 +318,11 @@
 		<template><![CDATA[
 		    <div class="span12"><strong>{{fullName}}</strong></div>
 			<div>
-			  <div class="span4 card-image">
-			    <img ng-show="picture" ng-src="{{$image('picture', 'content')}}" />
+			  <div class="span4 card-image" style="width: 128px; height: 64px;">
+			    <img ng-show="picture" ng-src="{{$image('picture', 'content')}}" style="width: 100%; height: 100%; object-fit: contain;"/>
 			    <img ng-show="!picture" src="img/product-default.png" />
 			  </div>
-			  <div class="span8">
+			  <div class="span8" style="width: 60%;">
 			    <span>{{$fmt('salePrice')}} {{saleCurrency.symbol}}<br/>
 			    {{productFamily.name}}<br/>
 			    {{productCategory.name}}</span>
@@ -431,6 +432,8 @@
 		<attribute name="scale" for="salePrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="purchasePrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="costPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+		
+		<attribute name="scale" for="economicManufOrderQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
 	</action-attrs>
 
 	<action-attrs name="action-product-attrs-set-cost-type-select">

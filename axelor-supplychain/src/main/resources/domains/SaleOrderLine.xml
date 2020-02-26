@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
@@ -26,8 +26,8 @@
 	<string name="availableStatus" title="Available status" transient="true"/>
   	<integer name="availableStatusSelect" title="Available status" transient="true" selection="supplychain.sale.order.line.available.status.select"/>
 
-	<decimal name="reservedQty" title="Allocated qty" min="0"/>
-	<decimal name="requestedReservedQty" title="Requested reserved qty" min="0"/>
+	<decimal name="reservedQty" title="Allocated qty" precision="20" scale="10" min="0"/>
+	<decimal name="requestedReservedQty" title="Requested reserved qty" precision="20" scale="10" min="0"/>
   <boolean name="isQtyRequested" readonly="true" title="Quantity requested"/>
 
   	<integer name="deliveryState" title="Delivery state" selection="sale.order.delivery.state" readonly="true" default="0"/>

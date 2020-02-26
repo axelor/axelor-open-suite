@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
   <grid name="supplychain-batch-grid" title="Supplychain batches" model="com.axelor.apps.supplychain.db.SupplychainBatch">
     <field name="actionSelect" if="!__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()" />
@@ -41,11 +41,11 @@
 				</panel>
 			</panel>
 			<panel name="accountingCutOffConfigPanel" title="Accounting cut-off configuration" showIf="actionSelect == 1" colSpan="12">
-				<field name="accountingCutOffTypeSelect"/>
+				<field name="accountingCutOffTypeSelect" onChange="action-supplychain-batch-attrs-show-label"/>
 				<field name="moveDescription" requiredIf="actionSelect == 1"/>
 				<panel colSpan="6" itemSpan="12">
 					<field name="moveDate" requiredIf="actionSelect == 1" onChange="action-supplychain-batch-attrs-show-label"/>
-					<label name="adviseUser" title="This batch has already been running this month" hidden="true" css="label-danger" />
+					<label name="adviseUser" title="This batch has already been running for this move date" hidden="true" css="label-danger" />
 				</panel>
 				<panel colSpan="6" itemSpan="12">
 					<field name="reverseMoveDate" requiredIf="actionSelect == 1"/>
@@ -81,12 +81,13 @@
 
 	<!-- ACTION ATTRS -->
 	<action-attrs name="action-supplychain-batch-attrs-show-label">
-		<attribute name="hidden" expr="eval: !(moveDate &amp;&amp; batchList &amp;&amp; batchList?.find{it.startDate.month == __date__.month &amp;&amp; it.startDate.year == __date__.year} != null)" for="adviseUser"/>
+		<attribute name="hidden" expr="eval: !(moveDate &amp;&amp; batchList &amp;&amp; batchList?.find{it.moveDate.equals(moveDate) &amp;&amp; it.accountingCutOffTypeSelect == accountingCutOffTypeSelect} != null)" for="adviseUser"/>
 	</action-attrs>
 	
 	<!-- ACTION VALIDATE -->
 	<action-validate name="action-supplychain-batch-validate-twice-in-a-month">
-   		<alert message="The batch has already been running this month. Are you sure to continue ?" if="eval: moveDate &amp;&amp; batchList &amp;&amp; batchList?.find{it.startDate.month == __date__.month &amp;&amp; it.startDate.year == __date__.year} != null" />
+   		<alert message="The batch has already been running for this move date. Are you sure to continue ?" 
+   		if="eval: moveDate &amp;&amp; batchList &amp;&amp; batchList?.find{it.moveDate.equals(moveDate) &amp;&amp; it.accountingCutOffTypeSelect == accountingCutOffTypeSelect} != null" />
    	</action-validate>
    	
     <!-- ACTION RECORD -->

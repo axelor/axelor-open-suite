@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                xmlns="http://axelor.com/xml/ns/domain-models"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
 	<module name="account" package="com.axelor.apps.account.db"/>
 
@@ -112,8 +112,6 @@
 		<string name="irrecoverableReasonPassage" title="Irrecoverable shifting reason" default="Manual shift into irrecoverable receivables"/>
 		<many-to-one name="irrecoverableStandardRateTax" ref="com.axelor.apps.account.db.Tax" title="Tax standard rate for irrecoverables"/>
 
-		<!-- Onglet Paybox -->
-		<many-to-one name="payboxConfig" ref="com.axelor.apps.account.db.PayboxConfig" title="Paybox configuration"/>
 
 		<!-- Invoice page -->
 		<boolean name="allowCancelVentilatedInvoice" title="Allow cancelation of ventilated invoice"/>
@@ -121,6 +119,7 @@
 		<boolean name="generateMoveForInvoicePayment" title="Generate move for payment on invoice" default="true"/>
 		<boolean name="generateMoveForAdvancePayment" title="Generate move for advance payment" default="true"/>
 		<boolean name="fixedAssetCatReqOnInvoice" title="Fixed asset category required on invoices"/>
+		<boolean name="isPrintInvoicesInCompanyLanguage" title="Print invoices in company language" default="true"/>
 
 		<!-- Account chart template -->
 		<many-to-one name="accountChart" ref="com.axelor.apps.account.db.AccountChart" title="Account chart"/>
@@ -146,6 +145,7 @@
 		<boolean name="displayProductCodeOnPrinting" title="Display product code on printing"/>
 		<boolean name="displayTaxDetailOnPrinting" title="Display tax detail on printing"/>
 		<boolean name="displayPartnerSeqOnPrinting" title="Display partner sequence on printing"/>
+		<boolean name="displayHeadOfficeAddrOnInvoicePrinting" title="Display head office address on invoice printing"/>
 		<string name="invoiceClientBox" large="true" multiline="true" title="Client box in invoice"/>
 		<string name="saleInvoiceLegalNote" large="true" multiline="true" title="Legal note on sale invoices" help="Short legal note to be displayed on sale invoices"/>
 
@@ -156,8 +156,13 @@
 		<many-to-one name="invoiceMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
 		
 		<boolean name="isManagePassedForPayment" title="Passed for payment"/>
+		<boolean name="isManagePFPInRefund" title="Manage PFP on supplier refunds"/>
 
-		<finder-method name="findByCompany" using="company"/>
+		<!-- Account Report -->
+		<integer name="lineMinBeforeLongReportGenerationMessageNumber" title="Number of line minimum before long report generation message appear" min="0" help="value 0 is equal to no message"  default="10000"/>
+
+
+    <finder-method name="findByCompany" using="company"/>
 
 		<extra-code><![CDATA[
 	
@@ -262,7 +267,6 @@
 		<field name="irrecoverableReasonPassage" on="UPDATE"/>
 		<field name="irrecoverableStandardRateTax" on="UPDATE"/>
 		
-		<field name="payboxConfig" on="UPDATE"/>
 
 		<field name="allowCancelVentilatedInvoice" on="UPDATE"/>
 		<field name="allowRemovalValidatedMove" on="UPDATE"/>
@@ -295,6 +299,8 @@
 
 		<field name="invoiceAutomaticMail" on="UPDATE"/>
 		<field name="invoiceMessageTemplate" on="UPDATE"/>
+		
+		<field name="lineMinBeforeLongReportGenerationMessageNumber" on="UPDATE"/>
 	</track>
 
 	</entity>

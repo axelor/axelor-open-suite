@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,13 +26,10 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
 public class UserController {
-
-  @Inject UserServiceAccountImpl userServiceAccountImpl;
 
   @SuppressWarnings("unchecked")
   public void changePfpValidator(ActionRequest request, ActionResponse response) {
@@ -50,7 +47,8 @@ public class UserController {
     User pfpValidatorUser = userRepository.find(pfpValidatorUserId.longValue());
 
     int updateCount =
-        userServiceAccountImpl.changePfpValidator(pfpValidatorUser, newPfpValidatorUser);
+        Beans.get(UserServiceAccountImpl.class)
+            .changePfpValidator(pfpValidatorUser, newPfpValidatorUser);
     if (updateCount >= 1) {
       response.setFlash(I18n.get(IExceptionMessage.USER_PFP_VALIDATOR_UPDATED));
       response.setCanClose(true);

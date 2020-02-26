@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
     <grid name="product-expense-grid" title="Expense types" model="com.axelor.apps.base.db.Product" orderBy="name">
 	    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
@@ -157,11 +157,11 @@
 		<template><![CDATA[
 			<div class="span12"><strong>{{fullName}}</strong></div>
 			<div>
-			  <div class="span4 card-image">
-				<img ng-show="picture" ng-src="{{$image('picture', 'content')}}" />
+			  <div class="span4 card-image" style="width: 128px; height: 64px;">
+				<img ng-show="picture" ng-src="{{$image('picture', 'content')}}" style="width: 100%; height: 100%; object-fit: contain;" />
 				<img ng-show="!picture" src="img/product-default.png" />
 			  </div>
-			  <div class="span8">
+			  <div class="span8" style="width: 60%;">
 				<span>{{$fmt('salePrice')}} {{saleCurrency.symbol}}<br/>
 				{{unit.name}}<br/>
 				{{productFamily.name}}<br/>

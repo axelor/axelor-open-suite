@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
 	<grid name="fixed-asset-grid" title="Fixed assets" model="com.axelor.apps.account.db.FixedAsset" orderBy="-createdOn,company">
 		<field name="name"/>
@@ -25,7 +25,7 @@
 	    		<field name="company.currency" title="Currency" form-view="currency-form" grid-view="currency-grid"/>
 	    		<field name="fixedAssetCategory" canEdit="false" form-view="fixed-asset-category-form" grid-view="fixed-asset-category-grid" onChange="action-fixed-asset-record-onchange-set-values" readonlyIf="statusSelect &gt; 1"/>
 	    		<field name="stockLocation" canEdit="false" canNew="false" domain="self.company = :company" if-module="axelor-supplychain" form-view="stock-location-form" grid-view="stock-location-grid" />
-	    		<field name="trackingNumber" canEdit="false" canNew="false" if-module="axelor-supplychain" form-view="trackink-number-form" grid-view="tracking-number-grid" />
+	    		<field name="trackingNumber" canEdit="false" canNew="false" if-module="axelor-supplychain" form-view="tracking-number-form" grid-view="tracking-number-grid" />
 	    	</panel>
 	    </panel>
     	<panel name="otherDetailsPanel">
@@ -33,6 +33,7 @@
 			<field name="invoiceLine" domain="self.invoice.company = :company AND self.invoice.partner = :partner AND (self.invoice.operationTypeSelect = 1 OR self.invoice.operationTypeSelect = 2)" form-view="invoice-line-form" grid-view="invoice-line-grid"/>
 			<field name="purchaseAccount" canEdit="false" form-view="account-form" grid-view="account-grid" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"/>
 			<field name="journal" canEdit="false" domain="self.company = :company" form-view="journal-form" grid-view="journal-grid" readonlyIf="statusSelect &gt; 1"/>
+    		<field name="analyticDistributionTemplate" domain="self.company = :company" canEdit="false" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form"  onChange="action-fixed-asset-method-create-analytic-distribution"/>
     	</panel>
     	
     	<panel-tabs name="mainPanelTab">
@@ -93,6 +94,7 @@
     	<field name="periodicityInMonth" expr="eval: fixedAssetCategory?.periodicityInMonth"/>
     	<field name="numberOfDepreciation" expr="eval: fixedAssetCategory?.numberOfDepreciation"/>
     	<field name="durationInMonth" expr="eval: fixedAssetCategory?.durationInMonth"/>
+    	<field name="analyticDistributionTemplate" expr="eval: fixedAssetCategory?.analyticDistributionTemplate"/>
     </action-record>
     
     <action-record name="action-fixed-asset-record-set-residual-value" model="com.axelor.apps.account.db.FixedAsset">
@@ -123,7 +125,7 @@
     
     <action-validate name="action-fixed-asset-validate-check-first-depreciation-date">
     	<error if="acquisitionDate &amp;&amp; firstDepreciationDate &amp;&amp; firstDepreciationDate.isBefore(acquisitionDate)" message="First depreciation date cannot be before Acquisition date."/>
-    	<error if="java.time.temporal.ChronoUnit.MONTHS.between(acquisitionDate.withDayOfMonth(1), firstDepreciationDate.withDayOfMonth(1)) &gt;= periodicityInMonth" message="Acquisition date and first depreciation date should not be more than one depreciation period apart."/>
+    	<error if="java.time.temporal.ChronoUnit.MONTHS.between(acquisitionDate, firstDepreciationDate) &gt;= periodicityInMonth" message="Acquisition date and first depreciation date should not be more than one depreciation period apart."/>
     </action-validate>
     
     <action-validate name="action-fixed-asset-validate-check-puchase-account">
@@ -141,5 +143,10 @@
     	<action name="action-fixed-asset-method-compute-depreciation"/>
     	<action name="save"/>
     </action-group>
+	
+	<action-method name="action-fixed-asset-method-create-analytic-distribution">
+		<call class="com.axelor.apps.account.web.FixedAssetController" method="createAnalyticDistributionWithTemplate"/>
+	</action-method>
+    
 
 </object-views>

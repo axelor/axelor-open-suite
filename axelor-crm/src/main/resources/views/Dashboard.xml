@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<action-view name="dashlet.closed.opportunities" title="Closed Opportunities"
 		model="com.axelor.apps.crm.db.Opportunity">
@@ -239,6 +239,9 @@
 		<dashlet action="dashlet.team.leads" height="350"/>		
 		<dashlet action="dashlet.created.leads.per.month" height="350" />
 		<dashlet action="dashlet.created.leads.by.industry.sector" height="350" />
+		<dashlet action="dashlet.created.leads.with.opportunity" height="350" />
+		<dashlet action="dashlet.created.leads.by.industry.sector" height="350" />
+		<dashlet action="dashlet.created.leads.average.duration.first.opportunity" height="350" />
 	</dashboard>
 
 	<action-view name="dashlet.salesman.dashboard.leads" title="My Current Leads" model="com.axelor.apps.crm.db.Lead">
@@ -302,6 +305,16 @@
 	
 	<action-view name="dashlet.created.leads.by.industry.sector" title="Created leads by industry sector" model="com.axelor.apps.crm.db.Lead">
 	  <view type="chart" name="chart.created.leads.by.industry.sector"/>
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+	</action-view>
+	
+	<action-view name="dashlet.created.leads.with.opportunity" title="Created leads with at least one opportunity" model="com.axelor.apps.crm.db.Lead">
+	  <view type="chart" name="chart.created.leads.with.opportunity"/>
+    <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+	</action-view>
+	
+	<action-view name="dashlet.created.leads.average.duration.first.opportunity" title="Average duration between lead and first opportunity (days)" model="com.axelor.apps.crm.db.Lead">
+	  <view type="chart" name="chart.created.leads.average.duration.first.opportunity"/>
 	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
 	</action-view>
 

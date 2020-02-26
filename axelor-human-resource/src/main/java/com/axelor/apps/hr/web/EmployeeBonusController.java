@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,25 +31,20 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class EmployeeBonusController {
 
-  @Inject EmployeeBonusMgtRepository employeeBonusMgtRepo;
-
-  @Inject EmployeeBonusService employeeBonusService;
-
   public void compute(ActionRequest request, ActionResponse response) {
     EmployeeBonusMgt employeeBonusMgt = request.getContext().asType(EmployeeBonusMgt.class);
-
+    PeriodService periodService = Beans.get(PeriodService.class);
     try {
-      employeeBonusMgt = employeeBonusMgtRepo.find(employeeBonusMgt.getId());
-      employeeBonusService.compute(employeeBonusMgt);
+      employeeBonusMgt = Beans.get(EmployeeBonusMgtRepository.class).find(employeeBonusMgt.getId());
+      Beans.get(EmployeeBonusService.class).compute(employeeBonusMgt);
       response.setReload(true);
-      Beans.get(PeriodService.class).checkPeriod(employeeBonusMgt.getPayPeriod());
-      Beans.get(PeriodService.class).checkPeriod(employeeBonusMgt.getLeavePeriod());
+      periodService.checkPeriod(employeeBonusMgt.getPayPeriod());
+      periodService.checkPeriod(employeeBonusMgt.getLeavePeriod());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -58,7 +53,8 @@ public class EmployeeBonusController {
   public void print(ActionRequest request, ActionResponse response) throws AxelorException {
 
     EmployeeBonusMgt bonus =
-        employeeBonusMgtRepo.find(request.getContext().asType(EmployeeBonusMgt.class).getId());
+        Beans.get(EmployeeBonusMgtRepository.class)
+            .find(request.getContext().asType(EmployeeBonusMgt.class).getId());
 
     String name =
         I18n.get("Employee bonus management") + " :  " + bonus.getEmployeeBonusType().getLabel();

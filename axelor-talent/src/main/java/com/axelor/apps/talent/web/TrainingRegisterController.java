@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,24 +23,20 @@ import com.axelor.apps.talent.db.TrainingRegister;
 import com.axelor.apps.talent.db.TrainingSession;
 import com.axelor.apps.talent.db.repo.TrainingRegisterRepository;
 import com.axelor.apps.talent.service.TrainingRegisterService;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class TrainingRegisterController {
 
-  @Inject private TrainingRegisterRepository trainingRegisterRepo;
-
-  @Inject private TrainingRegisterService trainingRegisterService;
-
   public void plan(ActionRequest request, ActionResponse response) {
 
     TrainingRegister trainingRegister = request.getContext().asType(TrainingRegister.class);
-    trainingRegister = trainingRegisterRepo.find(trainingRegister.getId());
-    Event event = trainingRegisterService.plan(trainingRegister);
+    trainingRegister = Beans.get(TrainingRegisterRepository.class).find(trainingRegister.getId());
+    Event event = Beans.get(TrainingRegisterService.class).plan(trainingRegister);
 
     response.setReload(true);
 
@@ -58,15 +54,15 @@ public class TrainingRegisterController {
 
     TrainingRegister trainingRegister = request.getContext().asType(TrainingRegister.class);
 
-    trainingRegisterService.updateEventCalendar(trainingRegister);
+    Beans.get(TrainingRegisterService.class).updateEventCalendar(trainingRegister);
   }
 
   public void complete(ActionRequest request, ActionResponse response) {
 
     TrainingRegister trainingRegister = request.getContext().asType(TrainingRegister.class);
-    trainingRegister = trainingRegisterRepo.find(trainingRegister.getId());
+    trainingRegister = Beans.get(TrainingRegisterRepository.class).find(trainingRegister.getId());
 
-    trainingRegisterService.complete(trainingRegister);
+    Beans.get(TrainingRegisterService.class).complete(trainingRegister);
 
     response.setReload(true);
   }
@@ -74,9 +70,9 @@ public class TrainingRegisterController {
   public void cancel(ActionRequest request, ActionResponse response) {
 
     TrainingRegister trainingRegister = request.getContext().asType(TrainingRegister.class);
-    trainingRegister = trainingRegisterRepo.find(trainingRegister.getId());
+    trainingRegister = Beans.get(TrainingRegisterRepository.class).find(trainingRegister.getId());
 
-    trainingRegisterService.cancel(trainingRegister);
+    Beans.get(TrainingRegisterService.class).cancel(trainingRegister);
 
     response.setReload(true);
   }
@@ -84,11 +80,13 @@ public class TrainingRegisterController {
   public void updateOldRating(ActionRequest request, ActionResponse response) {
 
     TrainingRegister trainingRegister = request.getContext().asType(TrainingRegister.class);
+    TrainingRegisterService trainingRegisterService = Beans.get(TrainingRegisterService.class);
 
     Training trainingSaved = null;
     TrainingSession trainingSessionSaved = null;
     if (trainingRegister.getId() != null) {
-      TrainingRegister trainingRegisterSaved = trainingRegisterRepo.find(trainingRegister.getId());
+      TrainingRegister trainingRegisterSaved =
+          Beans.get(TrainingRegisterRepository.class).find(trainingRegister.getId());
       trainingSessionSaved = trainingRegisterSaved.getTrainingSession();
       trainingSaved = trainingRegisterSaved.getTraining();
     }

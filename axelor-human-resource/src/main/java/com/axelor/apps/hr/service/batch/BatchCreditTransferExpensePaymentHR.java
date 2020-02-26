@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,7 +31,7 @@ import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Lists;
@@ -136,7 +136,7 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
       Set<BankDetails> bankDetailsSet = Sets.newHashSet(accountingBatch.getBankDetails());
 
       if (accountingBatch.getIncludeOtherBankAccounts()) {
-        bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsSet());
+        bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsList());
       }
 
       query.bind("bankDetailsSet", bankDetailsSet);
@@ -154,7 +154,7 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
           incrementAnomaly();
           anomalyList.add(expense.getId());
           query.bind("anomalyList", anomalyList);
-          TraceBackService.trace(ex, IException.CREDIT_TRANSFER, batch.getId());
+          TraceBackService.trace(ex, ExceptionOriginRepository.CREDIT_TRANSFER, batch.getId());
           ex.printStackTrace();
           log.error(
               String.format(

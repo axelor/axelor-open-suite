@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.2.xsd">
   	
   	<input file="account_accountType.csv" separator=";" type="com.axelor.apps.account.db.AccountType"/>
   	
@@ -95,9 +95,7 @@
  		<bind search="self.importId = :sequence_importId and self.company.importId = :company_id" to="sequence" update="true" if="sequence_importId"/>
  		<bind search="self.importId = :journal_importId and self.company.importId = :company_id" to="journal" update="true" if="journal_importId"/>
   		<bind search="self.importId = :bankDetails_importId" to="bankDetails" update="true" if="bankDetails_importId"/>
-	</input>
-		
-	<input file="account_payboxConfig.csv" separator=";" type="com.axelor.apps.account.db.PayboxConfig" search="self.importId = :importId" />
+	</input>	
 	
 	<input file="account_cfonbConfig.csv" separator=";" type="com.axelor.apps.account.db.CfonbConfig" search="self.importId = :importId" />
 	
@@ -115,9 +113,7 @@
 		<bind to="language" search="self.code = :languageCode"/>
 	</input>
 	
-	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId" update="true">
-		<bind column="bankDetailsSet_id" to="bankDetailsSet" search="self.importId in :bankDetailsSet_id" update="true" />
-	</input> 
+	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId" update="true" /> 
  	
  	<input file="base_appAccount.csv" separator=";" search="self.code = :code" update="true" type="com.axelor.apps.base.db.AppAccount" />
  	
@@ -138,5 +134,7 @@
 		<bind to="partner" column="partner_importId" search="self.importId =:partner_importId" update="true" />
 		<bind to="isDefault" eval="true" />
 	</input>
+	
+	 <input file="meta_schedule.csv" separator=";" type="com.axelor.meta.db.MetaSchedule"/>
     
 </csv-inputs>

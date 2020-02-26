@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,6 +32,7 @@ public interface MrpService {
 
   public void reset(Mrp mrp);
 
+  public void undoManualChanges(Mrp mrp);
   /**
    * Search for the end date of the mrp. If the end date field in mrp is blank, search in the lines
    * the last date.

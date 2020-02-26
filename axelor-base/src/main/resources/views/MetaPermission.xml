@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
   
    <form title="Permissions" id="base-meta-permission-form" name="meta-permission-form" model="com.axelor.meta.db.MetaPermission">
     	<panel-include view="meta-permission-form" from="axelor-core"/>
@@ -13,15 +13,15 @@
    </form>
     
   <action-view name="action-dashlet-metapermission-group" title="Group" model="com.axelor.auth.db.Group">
-		<view type="grid" name="base-group-grid"/>
-		<view type="form" name="base-group-form"/>
+		<view type="grid" name="group-grid"/>
+		<view type="form" name="group-form"/>
 		<domain>self.metaPermissions.id = :metaPermission</domain>
   		<context name="metaPermission" expr="eval: id"/>
    </action-view>
    
    <action-view name="action-dashlet-metapermission-user" title="User" model="com.axelor.auth.db.User">
-		<view type="grid" name="user-grid-base"/>
-		<view type="form" name="user-form-base"/>
+		<view type="grid" name="user-grid"/>
+		<view type="form" name="user-form"/>
 		<domain>self.metaPermissions.id = :metaPermission</domain>
   		<context name="metaPermission" expr="eval: id"/>
    </action-view>

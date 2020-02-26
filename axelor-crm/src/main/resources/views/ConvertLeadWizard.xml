@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
 	<form name="convert-lead-wizard-form" title="Convert lead" model="com.axelor.apps.base.db.Wizard" width="large" onNew="action-convert-lead-wizard-method-set-defaults" canSave="false">
 	  	<toolbar>
@@ -72,14 +72,14 @@
    			</panel>
 		</panel>
 		<panel  name="createContactPanel" title="Contact" showIf="$leadToContactSelect == 1 &amp;&amp; ($leadToPartnerSelect == 1 &amp;&amp; $partner.partnerTypeSelect == 1 || $leadToPartnerSelect == 2 &amp;&amp; $selectPartner.partnerTypeSelect != 2)">
-			<field name="$contactPartner" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="contact-lead-converted-form" target="com.axelor.apps.base.db.Partner" type="many-to-one">
+			<field name="$contactPartner" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="contact-form" target="com.axelor.apps.base.db.Partner" type="many-to-one">
 				<editor x-show-titles="false" onNew="action-convert-lead-wizard-record-default-contact" >
 					<field name="picture" colSpan="2" widget="Image" showTitle="false"/>
 					<field name="titleSelect"  showTitle="false" placeholder="Civility" colSpan="2"/>
 					<field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="4" onChange="action-group-base-partner-contact-name-onchange"/>
 					<field name="firstName" showTitle="false" css="highlight" placeholder="First name" colSpan="4" onChange="action-group-base-partner-contact-name-onchange"/>
 					<label name="contactLabel" title="Contact"/>
-					<field name="jobTitle"/>
+					<field name="jobTitleFunction"/>
 					<field name="reportsTo" domain="self.isContact = true"/>
 					<field name="fixedPhone"/>
 					<field name="mobilePhone"/>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,6 +26,8 @@ import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.LogisticalFormRepository;
 import com.axelor.apps.stock.db.repo.LogisticalFormStockRepository;
 import com.axelor.apps.stock.db.repo.ProductStockRepository;
+import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
+import com.axelor.apps.stock.db.repo.StockCorrectionStockRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineStockRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
@@ -47,6 +49,8 @@ import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.PartnerStockSettingsServiceImpl;
 import com.axelor.apps.stock.service.StockCorrectionService;
 import com.axelor.apps.stock.service.StockCorrectionServiceImpl;
+import com.axelor.apps.stock.service.StockHistoryService;
+import com.axelor.apps.stock.service.StockHistoryServiceImpl;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationLineServiceImpl;
 import com.axelor.apps.stock.service.StockLocationService;
@@ -100,5 +104,7 @@ public class StockModule extends AxelorModule {
     bind(StockLocationLineRepository.class).to(StockLocationLineStockRepository.class);
     bind(StockCorrectionService.class).to(StockCorrectionServiceImpl.class);
     bind(WeightedAveragePriceService.class).to(WeightedAveragePriceServiceImpl.class);
+    bind(StockHistoryService.class).to(StockHistoryServiceImpl.class);
+    bind(StockCorrectionRepository.class).to(StockCorrectionStockRepository.class);
   }
 }

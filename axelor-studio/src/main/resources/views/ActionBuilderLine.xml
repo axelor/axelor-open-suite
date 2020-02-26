@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
   
   <grid name="action-builder-line-grid" title="Fields" model="com.axelor.studio.db.ActionBuilderLine" >
       <field name="name" />
@@ -55,19 +55,19 @@
   </form>
   
   <action-attrs name="action-action-builder-line-meta-json-field-domain">
-  	<attribute name="domain" for="metaJsonField" expr="eval:&quot;self.model = '${_parent.model}'&quot;" if="_parent.typeSelect == 1 &amp;&amp; !_parent.isJson"/>
-  	<attribute name="domain" for="metaJsonField" expr="eval:&quot;self.model = '${_parent.targetModel}'&quot;" if="_parent.typeSelect == 0 &amp;&amp; !_parent.isJson"/>
-  	<attribute name="domain" for="metaJsonField" expr="eval:&quot;self.jsonModel.name = '${_parent.model}'&quot;" if="_parent.typeSelect == 1 &amp;&amp; _parent.isJson"/>
-  	<attribute name="domain" for="metaJsonField" expr="eval:&quot;self.jsonModel.name = '${_parent.targetModel}'&quot;" if="_parent.typeSelect == 0 &amp;&amp; _parent.isJson"/>
-  	<attribute name="domain" for="metaJsonField" expr="eval:&quot;self.jsonModel.id = ${_parent.metaJsonField?.targetJsonModel?.id} &quot;" if="_parent.isTargetJson &amp;&amp; _parent._model == 'com.axelor.studio.db.ActionBuilderLine'"/>
-  	<attribute name="domain" for="metaJsonField" expr="eval:&quot;self.model LIKE '%.${_parent?.metaField.typeName}' &quot;" if="!_parent.isTargetJson &amp;&amp; _parent._model == 'com.axelor.studio.db.ActionBuilderLine'"/>
+  	<attribute name="domain" for="metaJsonField" expr="eval:&quot;self.type not in ('panel','button','separator','label','spacer') and self.model = '${_parent.model}'&quot;" if="_parent.typeSelect == 1 &amp;&amp; !_parent.isJson"/>
+  	<attribute name="domain" for="metaJsonField" expr="eval:&quot;self.type not in ('panel','button','separator','label','spacer') and self.model = '${_parent.targetModel}'&quot;" if="_parent.typeSelect == 0 &amp;&amp; !_parent.isJson"/>
+  	<attribute name="domain" for="metaJsonField" expr="eval:&quot;self.type not in ('panel','button','separator','label','spacer') and self.jsonModel.name = '${_parent.model}'&quot;" if="_parent.typeSelect == 1 &amp;&amp; _parent.isJson"/>
+  	<attribute name="domain" for="metaJsonField" expr="eval:&quot;self.type not in ('panel','button','separator','label','spacer') and self.jsonModel.name = '${_parent.targetModel}'&quot;" if="_parent.typeSelect == 0 &amp;&amp; _parent.isJson"/>
+  	<attribute name="domain" for="metaJsonField" expr="eval:&quot;self.type not in ('panel','button','separator','label','spacer') and self.jsonModel.id = ${_parent.metaJsonField?.targetJsonModel?.id} &quot;" if="_parent.isTargetJson &amp;&amp; _parent._model == 'com.axelor.studio.db.ActionBuilderLine'"/>
+  	<attribute name="domain" for="metaJsonField" expr="eval:&quot;self.type not in ('panel','button','separator','label','spacer') and self.model LIKE '%.${_parent?.metaField.typeName}' &quot;" if="!_parent.isTargetJson &amp;&amp; _parent._model == 'com.axelor.studio.db.ActionBuilderLine'"/>
   </action-attrs>
   
   <action-attrs name="action-action-builder-line-value-json-domain">
-  	<attribute name="domain" for="valueJson" expr="eval:&quot;self.jsonModel.name = '${_parent.model}' &quot;" if="_parent.isJson &amp;&amp; _parent._model == 'com.axelor.studio.db.ActionBuilder'"/>
-  	<attribute name="domain" for="valueJson" expr="eval:&quot;self.model = '${_parent.model}' &quot;" if="!_parent.isJson &amp;&amp; _parent._model == 'com.axelor.studio.db.ActionBuilder' "/>
-  	<attribute name="domain" for="valueJson" expr="eval:&quot;self.jsonModel.id = ${_parent.valueJson?.targetJsonModel?.id} &quot;" if="_parent.isSourceJson &amp;&amp; _parent._model == 'com.axelor.studio.db.ActionBuilderLine'"/>
-  	<attribute name="domain" for="valueJson" expr="eval:&quot;self.model LIKE '%.${_parent?.valueField.typeName}' &quot;" if="!_parent.isSourceJson &amp;&amp; _parent._model == 'com.axelor.studio.db.ActionBuilderLine'"/>
+  	<attribute name="domain" for="valueJson" expr="eval:&quot;self.type not in ('panel','button','separator','label','spacer') and self.jsonModel.name = '${_parent.model}' &quot;" if="_parent.isJson &amp;&amp; _parent._model == 'com.axelor.studio.db.ActionBuilder'"/>
+  	<attribute name="domain" for="valueJson" expr="eval:&quot;self.type not in ('panel','button','separator','label','spacer') and self.model = '${_parent.model}' &quot;" if="!_parent.isJson &amp;&amp; _parent._model == 'com.axelor.studio.db.ActionBuilder' "/>
+  	<attribute name="domain" for="valueJson" expr="eval:&quot;self.type not in ('panel','button','separator','label','spacer') and self.jsonModel.id = ${_parent.valueJson?.targetJsonModel?.id} &quot;" if="_parent.isSourceJson &amp;&amp; _parent._model == 'com.axelor.studio.db.ActionBuilderLine'"/>
+  	<attribute name="domain" for="valueJson" expr="eval:&quot;self.type not in ('panel','button','separator','label','spacer') and self.model LIKE '%.${_parent?.valueField.typeName}' &quot;" if="!_parent.isSourceJson &amp;&amp; _parent._model == 'com.axelor.studio.db.ActionBuilderLine'"/>
   </action-attrs>
   
   <action-attrs name="action-action-builder-line-meta-field-domain">

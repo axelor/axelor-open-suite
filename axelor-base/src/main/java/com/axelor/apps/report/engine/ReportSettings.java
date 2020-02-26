@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,7 @@ package com.axelor.apps.report.engine;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.PartnerServiceImpl;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.Model;
@@ -242,7 +242,7 @@ public class ReportSettings {
   public static String getPrintingLocale(Partner partner) {
 
     if (partner != null) {
-      return Beans.get(PartnerService.class).getPartnerLanguageCode(partner);
+      return Beans.get(PartnerServiceImpl.class).getPartnerLanguageCode(partner);
     } else {
       return Beans.get(UserService.class).getLanguage();
     }

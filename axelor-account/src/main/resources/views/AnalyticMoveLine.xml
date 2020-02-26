@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
     <grid name="analytic-move-line-grid" title="Analytic Move Lines" model="com.axelor.apps.account.db.AnalyticMoveLine">
     	<hilite if="typeSelect == 1" color="warning"/>
     	<hilite if="typeSelect == 2" color="info"/>
     	<hilite if="typeSelect == 3" color="success"/>
     	<hilite if="typeSelect == 4" color="primary"/>
+    	<field name="id" title="ID" hidden="false" width="60"/>
+    	<field name="moveLine" width="160"/>
         <field name="analyticJournal" form-view="analytic-journal-form" grid-view="analytic-journal-grid"/>
-        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
+        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid" width="150"/>
         <field name="analyticAccount" form-view="analytic-account-form" grid-view="analytic-account-grid"/>
         <field name="accountType" />
-        <field name="date"/>
+        <field name="date" width="120"/>
         <field name="originalPieceAmount" aggregate="sum"/>
-        <field name="amount" aggregate="sum"/>
+        <field name="amount" aggregate="sum" width="120"/>
         <field name="typeSelect"/>
     </grid>
     
@@ -26,7 +28,7 @@
         <field name="percentage"/>
         <field name="originalPieceAmount" aggregate="sum"/>
         <field name="amount"/>
-        <field name="date"/>
+        <field name="date" />
         <field name="project" if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
         <field name="typeSelect"/>
     </grid>
@@ -51,7 +53,7 @@
 
     </form>
     
-    <form name="analytic-move-line-distribution-form" title="Analytic move line" model="com.axelor.apps.account.db.AnalyticMoveLine"  >
+    <form name="analytic-move-line-distribution-form" title="Analytic move line" model="com.axelor.apps.account.db.AnalyticMoveLine" onNew="action-analytic-move-line-attrs-set-original-piece-amount">
         <panel name="mainPanel" >
    	        <field name="analyticJournal" grid-view="analytic-journal-grid" form-view="analytic-journal-form"/>
 	        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
@@ -90,5 +92,9 @@
     <action-attrs if-module="axelor-business-project"  name="action-analytic-move-line-attrs-title-project">
 		<attribute name="title" for="project" expr="eval: __config__.app.getApp('project').getProjectLabel()" if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
 	</action-attrs>
+  
+    <action-attrs if-module="axelor-supplychain" name="action-analytic-move-line-attrs-set-original-piece-amount">
+         <attribute for="originalPieceAmount" name="value" expr="eval: __parent__.exTaxTotal" if="__parent__ &amp;&amp; (__parent__._model == 'com.axelor.apps.purchase.db.PurchaseOrderLine' || __parent__._model == 'com.axelor.apps.sale.db.SaleOrderLine' || __parent__._model == 'com.axelor.apps.account.db.InvoiceLine')"/>
+    </action-attrs>
 	
 </object-views>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -150,6 +150,9 @@ public interface IExceptionMessage {
   static final String MISSING_PRODUCT_MASS_UNIT = /*$$(*/
       "Please configure mass units for this product packing : %s" /*)*/;
 
+  static final String STOCK_CONFIGURATION_MISSING = /*$$(*/
+      "Configuration is missing in stock configuration to see financial data" /*)*/;
+
   /** Partner Product Quality Rating Service */
   String PARTNER_PRODUCT_QUALITY_RATING_MISSING_PARTNER = /*$$(*/ "Partner is missing." /*)*/;
 
@@ -200,5 +203,5 @@ public interface IExceptionMessage {
       "Incorrect product for stock correction" /*)*/;
 
   public static final String STOCK_CORRECTION_2 = /*$$(*/
-      "No stock move generated.Please verify stock correction details." /*)*/;
+      "No stock correction needed, current quantity in stock equals real quantity." /*)*/;
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -37,7 +37,6 @@ import com.axelor.studio.exception.IExceptionMessage;
 import com.axelor.studio.service.wkf.WkfDesignerService;
 import com.axelor.studio.service.wkf.WkfService;
 import com.axelor.studio.translation.ITranslation;
-import com.google.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -47,15 +46,11 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class WkfController {
 
-  @Inject private WkfRepository wkfRepo;
-  @Inject private WkfDesignerService wkfDesignerService;
-  @Inject private WkfService wkfService;
-
   public void processXml(ActionRequest request, ActionResponse response) {
     try {
       Wkf workflow = request.getContext().asType(Wkf.class);
-      workflow = wkfRepo.find(workflow.getId());
-      wkfDesignerService.processXml(workflow);
+      workflow = Beans.get(WkfRepository.class).find(workflow.getId());
+      Beans.get(WkfDesignerService.class).processXml(workflow);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -64,8 +59,8 @@ public class WkfController {
   public void processWkf(ActionRequest request, ActionResponse response) {
     try {
       Wkf workflow = request.getContext().asType(Wkf.class);
-      workflow = wkfRepo.find(workflow.getId());
-      wkfService.process(workflow);
+      workflow = Beans.get(WkfRepository.class).find(workflow.getId());
+      Beans.get(WkfService.class).process(workflow);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

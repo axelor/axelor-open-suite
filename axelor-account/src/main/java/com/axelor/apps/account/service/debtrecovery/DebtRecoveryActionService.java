@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -116,6 +116,12 @@ public class DebtRecoveryActionService {
           debtRecoveryMethodLine.getDebtRecoveryMethod().getName(),
           debtRecoveryMethodLine.getDebtRecoveryLevel().getName());
 
+    } else if (partner.getEmailAddress() == null
+        || partner.getEmailAddress().getAddress() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_5),
+          debtRecoveryMethodLine.getDebtRecoveryLevelLabel());
     } else {
 
       // On enregistre la date de la relance
@@ -210,6 +216,12 @@ public class DebtRecoveryActionService {
           debtRecoveryMethodLine.getDebtRecoveryMethod().getName(),
           debtRecoveryMethodLine.getDebtRecoveryLevel().getName());
 
+    } else if (partner.getEmailAddress() == null
+        || partner.getEmailAddress().getAddress() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_5),
+          debtRecoveryMethodLine.getDebtRecoveryLevelLabel());
     } else {
 
       // On enregistre la date de la relance

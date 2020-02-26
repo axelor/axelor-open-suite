@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<menuitem name="account-root-bank-orders" parent="account-root"
 		title="Bank Orders" order="26" if="__config__.app.isApp('bank-payment')"/>
@@ -203,7 +203,7 @@
 		title="Ebics certificates" action="account.conf.ebics.ebics.certificate" />
 		
 	<menuitem name="admin-root-batch-bank-payment" parent="admin-root-batch"
-		title="Bank payment batches" action="admin.root.batch.bank.payment" />
+		title="Bank payment batches" action="admin.root.batch.bank.payment" if="__config__.app.isApp('bank-payment')"/>
 
 	<action-view name="admin.root.batch.bank.payment" title="Bank payment batches"
 		model="com.axelor.apps.bankpayment.db.BankPaymentBatch" >
@@ -213,7 +213,7 @@
 		
 	<action-view name="account.conf.ebics.ebics.user" title="Ebics users"
 		model="com.axelor.apps.bankpayment.db.EbicsUser" >
-		<view type="grid" name="ebics-user-grid" />
+		<view type="grid" name="ebics-user-group-grid" />
 		<view type="form" name="ebics-user-form"/>
 	</action-view>
 	

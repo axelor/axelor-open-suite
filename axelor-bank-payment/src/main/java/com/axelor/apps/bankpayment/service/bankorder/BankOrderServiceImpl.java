@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -89,6 +89,7 @@ public class BankOrderServiceImpl implements BankOrderService {
   protected BankPaymentConfigService bankPaymentConfigService;
   protected SequenceService sequenceService;
   protected BankOrderLineOriginService bankOrderLineOriginService;
+  protected BankOrderMoveService bankOrderMoveService;
 
   @Inject
   public BankOrderServiceImpl(
@@ -99,7 +100,8 @@ public class BankOrderServiceImpl implements BankOrderService {
       InvoicePaymentCancelService invoicePaymentCancelService,
       BankPaymentConfigService bankPaymentConfigService,
       SequenceService sequenceService,
-      BankOrderLineOriginService bankOrderLineOriginService) {
+      BankOrderLineOriginService bankOrderLineOriginService,
+      BankOrderMoveService bankOrderMoveService) {
 
     this.bankOrderRepo = bankOrderRepo;
     this.invoicePaymentRepo = invoicePaymentRepo;
@@ -109,6 +111,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     this.bankPaymentConfigService = bankPaymentConfigService;
     this.sequenceService = sequenceService;
     this.bankOrderLineOriginService = bankOrderLineOriginService;
+    this.bankOrderMoveService = bankOrderMoveService;
   }
 
   public void checkPreconditions(BankOrder bankOrder) throws AxelorException {
@@ -312,9 +315,13 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEbicsModule()) {
 
+      PaymentMode paymentMode = bankOrder.getPaymentMode();
       bankOrder.setConfirmationDateTime(
           Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
-      bankOrder.setStatusSelect(BankOrderRepository.STATUS_AWAITING_SIGNATURE);
+      bankOrder.setStatusSelect(
+          paymentMode != null && paymentMode.getAutomaticTransmission()
+              ? BankOrderRepository.STATUS_AWAITING_SIGNATURE
+              : BankOrderRepository.STATUS_VALIDATED);
       makeEbicsUserFollow(bankOrder);
 
       bankOrderRepo.save(bankOrder);
@@ -342,6 +349,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     if (bankPaymentConfigService
         .getBankPaymentConfig(bankOrder.getSenderCompany())
         .getGenerateMoveOnBankOrderValidation()) {
+      bankOrderMoveService.generateMoves(bankOrder);
       validatePayment(bankOrder);
     }
 
@@ -368,7 +376,6 @@ public class BankOrderServiceImpl implements BankOrderService {
       sendBankOrderFile(bankOrder);
     }
     realizeBankOrder(bankOrder);
-    validatePayment(bankOrder);
   }
 
   protected void sendBankOrderFile(BankOrder bankOrder) throws AxelorException {
@@ -395,7 +402,13 @@ public class BankOrderServiceImpl implements BankOrderService {
   protected void realizeBankOrder(BankOrder bankOrder) throws AxelorException {
 
     AppBaseService appBaseService = Beans.get(AppBaseService.class);
-    Beans.get(BankOrderMoveService.class).generateMoves(bankOrder);
+
+    if (!bankPaymentConfigService
+        .getBankPaymentConfig(bankOrder.getSenderCompany())
+        .getGenerateMoveOnBankOrderValidation()) {
+      bankOrderMoveService.generateMoves(bankOrder);
+      validatePayment(bankOrder);
+    }
 
     bankOrder.setSendingDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_CARRIED_OUT);
@@ -793,7 +806,7 @@ public class BankOrderServiceImpl implements BankOrderService {
       Collection<BankDetails> bankDetailsCollection;
 
       if (bankOrderLine.getReceiverCompany() != null) {
-        bankDetailsCollection = bankOrderLine.getReceiverCompany().getBankDetailsSet();
+        bankDetailsCollection = bankOrderLine.getReceiverCompany().getBankDetailsList();
       } else if (bankOrderLine.getPartner() != null) {
         bankDetailsCollection = bankOrderLine.getPartner().getBankDetailsList();
       } else {
@@ -817,5 +830,20 @@ public class BankOrderServiceImpl implements BankOrderService {
             .add("form", formViewName)
             .domain(viewDomain);
     return actionViewBuilder;
+  }
+
+  @Transactional
+  @Override
+  public void setStatusToDraft(BankOrder bankOrder) {
+    bankOrder.setStatusSelect(BankOrderRepository.STATUS_DRAFT);
+    bankOrderRepo.save(bankOrder);
+  }
+
+  @Transactional
+  @Override
+  public void setStatusToRejected(BankOrder bankOrder) {
+    bankOrder.setRejectStatusSelect(BankOrderRepository.REJECT_STATUS_TOTALLY_REJECTED);
+    bankOrder.setStatusSelect(BankOrderRepository.STATUS_REJECTED);
+    bankOrderRepo.save(bankOrder);
   }
 }

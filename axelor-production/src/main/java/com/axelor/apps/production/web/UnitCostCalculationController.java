@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,8 +32,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.io.Files;
-import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import java.io.File;
 import java.io.IOException;
@@ -43,18 +41,15 @@ import java.util.LinkedHashMap;
 @Singleton
 public class UnitCostCalculationController {
 
-  @Inject protected Provider<UnitCostCalculationRepository> unitCostCalculationRepoProvider;
-
-  @Inject protected Provider<UnitCostCalculationService> unitCostCalculationServiceProvider;
-
   public void runUnitCostCalc(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
     try {
       UnitCostCalculation unitCostCalculation =
           request.getContext().asType(UnitCostCalculation.class);
-      unitCostCalculation = unitCostCalculationRepoProvider.get().find(unitCostCalculation.getId());
-      unitCostCalculationServiceProvider.get().runUnitCostCalc(unitCostCalculation);
+      unitCostCalculation =
+          Beans.get(UnitCostCalculationRepository.class).find(unitCostCalculation.getId());
+      Beans.get(UnitCostCalculationService.class).runUnitCostCalc(unitCostCalculation);
 
       response.setReload(true);
     } catch (Exception e) {
@@ -68,8 +63,9 @@ public class UnitCostCalculationController {
     try {
       UnitCostCalculation unitCostCalculation =
           request.getContext().asType(UnitCostCalculation.class);
-      unitCostCalculation = unitCostCalculationRepoProvider.get().find(unitCostCalculation.getId());
-      unitCostCalculationServiceProvider.get().updateUnitCosts(unitCostCalculation);
+      unitCostCalculation =
+          Beans.get(UnitCostCalculationRepository.class).find(unitCostCalculation.getId());
+      Beans.get(UnitCostCalculationService.class).updateUnitCosts(unitCostCalculation);
 
       response.setReload(true);
     } catch (Exception e) {
@@ -83,7 +79,8 @@ public class UnitCostCalculationController {
     try {
       UnitCostCalculation unitCostCalculation =
           request.getContext().asType(UnitCostCalculation.class);
-      unitCostCalculation = unitCostCalculationRepoProvider.get().find(unitCostCalculation.getId());
+      unitCostCalculation =
+          Beans.get(UnitCostCalculationRepository.class).find(unitCostCalculation.getId());
       String fileName =
           unitCostCalculation.getUnitCostCalcSeq()
               + "-"
@@ -92,8 +89,7 @@ public class UnitCostCalculationController {
                   .format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"))
               + ".csv";
       MetaFile metaFile =
-          unitCostCalculationServiceProvider
-              .get()
+          Beans.get(UnitCostCalculationService.class)
               .exportUnitCostCalc(unitCostCalculation, fileName);
 
       response.setView(
@@ -123,10 +119,11 @@ public class UnitCostCalculationController {
       File csvFile = MetaFiles.getPath(dataFile).toFile();
       Long unitCostCalculationId = Long.valueOf(request.getContext().get("_id").toString());
       UnitCostCalculation unitCostCalculation =
-          unitCostCalculationRepoProvider.get().find(unitCostCalculationId);
+          Beans.get(UnitCostCalculationRepository.class).find(unitCostCalculationId);
 
       if (Files.getFileExtension(csvFile.getName()).equals("csv")) {
-        unitCostCalculationServiceProvider.get().importUnitCostCalc(dataFile, unitCostCalculation);
+        Beans.get(UnitCostCalculationService.class)
+            .importUnitCostCalc(dataFile, unitCostCalculation);
         response.setCanClose(true);
       } else {
         response.setError(IExceptionMessage.UNIT_COST_CALCULATION_IMPORT_CSV_ERROR);

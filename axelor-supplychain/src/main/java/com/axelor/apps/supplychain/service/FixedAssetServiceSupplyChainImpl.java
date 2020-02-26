@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,21 +20,34 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.FixedAssetServiceImpl;
+import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
 public class FixedAssetServiceSupplyChainImpl extends FixedAssetServiceImpl {
 
+  @Inject
+  public FixedAssetServiceSupplyChainImpl(MoveLineService moveLineService) {
+    super(moveLineService);
+  }
+
   @Transactional
   @Override
   public List<FixedAsset> createFixedAssets(Invoice invoice) throws AxelorException {
 
     List<FixedAsset> fixedAssetList = super.createFixedAssets(invoice);
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return fixedAssetList;
+    }
 
     if (CollectionUtils.isEmpty(fixedAssetList)) {
       return null;
@@ -50,7 +63,7 @@ public class FixedAssetServiceSupplyChainImpl extends FixedAssetServiceImpl {
       fixedAsset.setStockLocation(stockLocation);
 
       if (fixedAsset.getInvoiceLine().getIncomingStockMove() != null
-          || CollectionUtils.isNotEmpty(
+          && CollectionUtils.isNotEmpty(
               fixedAsset.getInvoiceLine().getIncomingStockMove().getStockMoveLineList())) {
         fixedAsset.setTrackingNumber(
             fixedAsset

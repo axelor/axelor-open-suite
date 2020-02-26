@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xmlns="http://axelor.com/xml/ns/object-views"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<grid name="account-config-grid" title="Account configurations" model="com.axelor.apps.account.db.AccountConfig">
 		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
@@ -21,7 +21,7 @@
 			<field name="allowRemovalValidatedMove"/>
 			<field name="generateMoveForAdvancePayment"/>
 			<field name="accountingDaybook"/>
-			<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
+			<field name="lineMinBeforeLongReportGenerationMessageNumber"/>
 		</panel>
 
 		<panel-tabs name="mainPanelTab">
@@ -102,11 +102,13 @@
 				<field name="allowCancelVentilatedInvoice" widget="boolean-switch"/>
 				<field name="generateMoveForInvoicePayment" widget="boolean-switch"/>
 				<field name="invoiceInAtiSelect"/>
-				<field name="invoiceAutomaticMail" widget="boolean-switch"/>
 				<field name="fixedAssetCatReqOnInvoice" widget="boolean-switch"/>
+				<field name="invoiceAutomaticMail" widget="boolean-switch"/>
+				<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
 
 				<panel name="passedForPaymentPanel" title="Passed for payment" colSpan="12" if="__config__.app.getApp('account').getActivatePassedForPayment()">
 					<field name="isManagePassedForPayment" widget="boolean-switch"/>
+					<field name="isManagePFPInRefund" widget="boolean-switch" showIf="isManagePassedForPayment"/>
 				</panel>
 
 				<panel name="invoiceSequencesPanel" title="Invoices sequences" colSpan="12">
@@ -128,6 +130,8 @@
 					<field name="displayPartnerSeqOnPrinting" widget="boolean-switch"/>
 					<field name="displayTimesheetOnPrinting" widget="boolean-switch" if-module="axelor-business-project" if="__config__.app.isApp('business-project') &amp;&amp;  __config__.app.isApp('timesheet')"/>
 					<field name="displayExpenseOnPrinting" widget="boolean-switch" if-module="axelor-business-project" if="__config__.app.isApp('business-project') &amp;&amp;  __config__.app.isApp('expense')"/>
+          <field name="isPrintInvoicesInCompanyLanguage" widget="boolean-switch"/>
+          <field name="displayHeadOfficeAddrOnInvoicePrinting" widget="boolean-switch"/>
 					<field name="invoiceClientBox" widget="html" x-lite="true" colSpan="12"/>
 					<field name="saleInvoiceLegalNote" widget="html" x-lite="true" colSpan="12"/>
 					<field name="termsAndConditions" widget="html" colSpan="12"/>
@@ -244,11 +248,7 @@
 					</editor>
 				</field>
 			</panel>
-
-
-			<panel name="payboxPanel" title="Paybox">
-				<field name="payboxConfig" showTitle="false" grid-view="paybox-config-grid" form-view="paybox-config-form"/>
-			</panel>
+			
 		</panel-tabs>
 		
 		<panel-mail name="mailPanel">

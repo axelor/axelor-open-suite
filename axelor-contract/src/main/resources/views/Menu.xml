@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<menuitem title="Contracts" name="contracts-root" order="-104" if="__config__.app.isApp('contract')" icon="fa-briefcase" icon-background="blue"/>
 
@@ -47,7 +47,7 @@
 	</action-view>
 
 	<menuitem name="admin-root-batch-contract" parent="admin-root-batch"
-			  title="Contract batches" action="admin.root.batch.contract" />
+			  title="Contract batches" action="admin.root.batch.contract" if="__config__.app.isApp('contract')"/>
 
 	<action-view name="admin.root.batch.contract" title="Contract batches"
 				 model="com.axelor.apps.contract.db.ContractBatch" >

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 			  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-			  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+			  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<grid name="accounting-situation-partner-grid" title="Accounting situations" model="com.axelor.apps.account.db.AccountingSituation">
 		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
@@ -14,6 +14,16 @@
 		<field name="acceptedCredit"/>
 		<field name="usedCredit"/>
 	</grid>
+	
+	<grid name="accounting-situation-pfp-partner-grid" title="Suppliers" model="com.axelor.apps.account.db.AccountingSituation">
+    		<field name="partner.partnerSeq"/>
+    		<field name="partner.simpleFullName"/>
+		<field name="partner.fixedPhone"/>
+		<field name="partner.emailAddress.address"/>
+		<field name="partner.mainAddress"/>
+		<field name="partner.companyStr"/>
+		<field name="company"/>
+    	</grid>
 
 	<form name="accounting-situation-partner-form" title="Accounting situation" model="com.axelor.apps.account.db.AccountingSituation"
 		  onLoad="action-accounting-situation-group-form-onload"

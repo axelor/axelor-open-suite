@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
 	<grid name="purchase-order-supplier-line-grid" title="suppliers requests" canNew="false" model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine">
 		<hilite if="stateSelect == 1" color="info" />
@@ -11,7 +11,7 @@
 		<hilite if="stateSelect == 5" color="danger" />
 		<field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
 		<field name="purchaseOrderLine.product" form-view="product-form" grid-view="product-grid" />
-		<field name="availableQty" aggregate="sum"/>
+		<field name="availableQty" aggregate="sum" x-scale="2"/>
 		<field name="purchaseOrderLine.unit" form-view="unit-form" grid-view="unit-grid"/>
 		<field name="price"/>
 		<field name="estimatedDelivDate"/>
@@ -21,8 +21,8 @@
 	<form name="purchase-order-supplier-line-form" title="Supplier request" model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine"
 		onNew="action-purchase-order-supplier-line-record-request,action-purchase-order-supplier-line-attrs-new" canNew="false">
 		<menubar>
-			<menu title="Tools">
-				<item title="Write to the supplier" action="save,action-send-by-email-with-template"/>
+			<menu name="purchaseOrderSupplierLineToolsMenu" title="Tools">
+				<item name="writeToSupplierItem" title="Write to the supplier" action="save,action-send-by-email-with-template"/>
 			</menu>		
 		</menubar>
 				
@@ -56,9 +56,9 @@
 	
 	<grid name="purchase-order-supplier-line-supplier-grid" title="Suppliers requests" model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine">
 		<field name="purchaseOrderLine.product" form-view="product-form" grid-view="product-grid"/>
-		<field name="purchaseOrderLine.qty"/>
+		<field name="purchaseOrderLine.qty" x-scale="2"/>
 		<field name="purchaseOrderLine.desiredDelivDate"/>
-		<field name="availableQty" aggregate="sum"/>
+		<field name="availableQty" aggregate="sum" x-scale="2"/>
 		<field name="purchaseOrderLine.unit" form-view="unit-form" grid-view="unit-grid"/>
 		<field name="price"/>
 		<field name="estimatedDelivDate"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
   <grid name="hr-config-grid" title="Human Resources configurations" model="com.axelor.apps.hr.db.HRConfig">
     <field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
@@ -14,6 +14,8 @@
 	  	<panel name="generalPanel" title="General">
 	  		<field name="publicHolidayEventsPlanning" canNew="true"/>
 	  		<field name="weeklyPlanning" canNew="true"/>
+			<field name="healthService"/>
+			<field name="healthServiceAddress"/>
 	  	</panel>
 	  	<panel-tabs name="mainPanelTab">
 			<panel name="timesheetPanel" title="Timesheet" if="__config__.app.isApp('timesheet')">
@@ -78,6 +80,7 @@
 		  	<panel name="exportsPanel" title="Exports" >
 		  		<field name="exportCodeForLunchVoucherManagement" />
 		  		<field name="exportCodeForExtraHours" />
+		  		<field name="exportCodeForDuration"/>
 		  	</panel>
         <panel name="dpaePanel" title="DPAE">
           <field name="enableDPAE" widget="BooleanSwitch"/>

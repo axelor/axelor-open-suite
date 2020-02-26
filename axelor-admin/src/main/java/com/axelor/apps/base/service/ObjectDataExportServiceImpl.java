@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -227,19 +227,19 @@ public class ObjectDataExportServiceImpl implements ObjectDataExportService {
   private MetaFile writeCSV(Map<String, List<String[]>> data) throws IOException {
 
     File zipFile = MetaFiles.createTempFile("Data", ".zip").toFile();
-    ZipOutputStream zout = new ZipOutputStream(new FileOutputStream(zipFile));
+    try (ZipOutputStream zout = new ZipOutputStream(new FileOutputStream(zipFile))) {
 
-    for (String model : data.keySet()) {
-      File modelFile = MetaFiles.createTempFile(model, ".csv").toFile();
-      CSVWriter writer = new CSVWriter(new FileWriter(modelFile), ';');
-      writer.writeAll(data.get(model));
-      writer.close();
-      zout.putNextEntry(new ZipEntry(model + ".csv"));
-      zout.write(IOUtils.toByteArray(new FileInputStream(modelFile)));
-      zout.closeEntry();
+      for (String model : data.keySet()) {
+        File modelFile = MetaFiles.createTempFile(model, ".csv").toFile();
+        CSVWriter writer = new CSVWriter(new FileWriter(modelFile), ';');
+        writer.writeAll(data.get(model));
+        writer.close();
+        zout.putNextEntry(new ZipEntry(model + ".csv"));
+        zout.write(IOUtils.toByteArray(new FileInputStream(modelFile)));
+        zout.closeEntry();
+      }
+      zout.close();
     }
-    zout.close();
-
     return metaFiles.upload(zipFile);
   }
 

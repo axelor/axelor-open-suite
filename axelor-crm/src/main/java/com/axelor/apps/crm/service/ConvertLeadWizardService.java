@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.crm.service;
 
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CountryRepository;
@@ -27,6 +28,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.wizard.ConvertWizardService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.message.db.EmailAddress;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -71,6 +73,14 @@ public class ConvertLeadWizardService {
 
     this.setAddress(partner, primaryAddress);
 
+    Company activeCompany = AuthUtils.getUser().getActiveCompany();
+    if (activeCompany != null) {
+      partner.addCompanySetItem(activeCompany);
+      if (partner.getCurrency() == null) {
+        partner.setCurrency(activeCompany.getCurrency());
+      }
+    }
+
     return partner;
   }
 
@@ -102,9 +112,8 @@ public class ConvertLeadWizardService {
       return null;
     }
     String addressL5 = (String) context.get("primaryState");
-    String addressL6 =
-        (String) context.get("primaryPostalCode") + " " + (String) context.get("primaryCity");
-    ;
+    String addressL6 = context.get("primaryPostalCode") + " " + context.get("primaryCity");
+
     Country addressL7Country = null;
     Map<String, Object> countryContext = (Map<String, Object>) context.get("primaryCountry");
     if (countryContext != null) {

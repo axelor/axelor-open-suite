@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -44,7 +44,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-business-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -131,7 +131,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-open-suite</property>
             <property name="odaUser">axelor</property>
         </oda-data-source>
     </data-sources>
@@ -472,7 +472,12 @@ Move.company = AccountingReport.company AND
 (AccountingReport.payment_mode IS  NULL OR (AccountingReport.payment_mode = Move.payment_mode)) AND
 Move.ignore_in_accounting_ok = false AND (Move.status_select = 3 OR Move.status_select = 2)
 AND (AccountingReport.type_select = 1 OR (AccountingReport.type_select != 1 AND Account.use_for_partner_balance is true))
-
+AND (AccountingReport.display_closing_accounting_moves is true 
+	OR(AccountingReport.display_closing_accounting_moves is false 
+		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
+AND (AccountingReport.display_opening_accounting_moves is true 
+	OR(AccountingReport.display_opening_accounting_moves is false 
+		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
 order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
@@ -586,16 +591,22 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                     <text-property name="heading">display_code_account</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">display_move_sequence</property>
+                    <property name="columnName">display_move_line_sequence</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">display_move_sequence</text-property>
-                    <text-property name="heading">display_move_sequence</text-property>
+                    <text-property name="displayName">display_move_line_sequence</text-property>
+                    <text-property name="heading">display_move_line_sequence</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">display_name_account</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">display_name_account</text-property>
                     <text-property name="heading">display_name_account</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">display_cumulative_balance</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">display_cumulative_balance</text-property>
+                    <text-property name="heading">display_cumulative_balance</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -695,12 +706,17 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">15</property>
-                        <property name="name">display_move_sequence</property>
+                        <property name="name">display_move_line_sequence</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">16</property>
                         <property name="name">display_name_account</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">17</property>
+                        <property name="name">display_cumulative_balance</property>
                         <property name="dataType">integer</property>
                     </structure>
                 </list-property>
@@ -821,8 +837,8 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">15</property>
-                    <property name="name">display_move_sequence</property>
-                    <property name="nativeName">display_move_sequence</property>
+                    <property name="name">display_move_line_sequence</property>
+                    <property name="nativeName">display_move_line_sequence</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
@@ -830,6 +846,13 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                     <property name="position">16</property>
                     <property name="name">display_name_account</property>
                     <property name="nativeName">display_name_account</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">17</property>
+                    <property name="name">display_cumulative_balance</property>
+                    <property name="nativeName">display_cumulative_balance</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
@@ -850,9 +873,10 @@ AccountingReport.global_by_date,
 PaymentMode.name as payment_mode, 
 Currency.code as currency,
 AccountingReport.type_select as report_type,
-AccountingReport.display_code_account_on_printing as display_code_account,
-AccountingReport.display_move_sequence_on_printing as display_move_sequence,
-AccountingReport.display_name_account_on_printing as display_name_account
+AccountingReport.display_code_account_column_on_printing as display_code_account,
+AccountingReport.display_move_line_sequence_on_printing as display_move_line_sequence,
+AccountingReport.display_name_account_column_on_printing as display_name_account,
+AccountingReport.display_cumulative_balance
 from public.account_accounting_report as AccountingReport
 inner join public.base_company as Company on (AccountingReport.company = Company.id)
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
@@ -1310,6 +1334,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="allowExport">true</property>
                 </structure>
                 <structure>
+                    <property name="name">display_cumulative_balance</property>
+                    <text-property name="displayName">display_cumulative_balance</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["display_cumulative_balance"]</expression>
+                    <property name="dataType">integer</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
                     <property name="name">display_name_account</property>
                     <text-property name="displayName">display_name_account</text-property>
                     <expression name="expression" type="javascript">dataSetRow["display_name_account"]</expression>
@@ -1317,9 +1348,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="allowExport">true</property>
                 </structure>
                 <structure>
-                    <property name="name">display_move_sequence</property>
-                    <text-property name="displayName">display_move_sequence</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["display_move_sequence"]</expression>
+                    <property name="name">display_move_line_sequence</property>
+                    <text-property name="displayName">display_move_line_sequence</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["display_move_line_sequence"]</expression>
                     <property name="dataType">integer</property>
                     <property name="allowExport">true</property>
                 </structure>
@@ -1813,7 +1844,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </structure>
                             <structure>
                                 <property name="name">balance</property>
-                                <expression name="expression" type="javascript">dataSetRow["debit"]-dataSetRow["credit"]</expression>
+                                <expression name="expression" type="javascript">if(row._outer["display_cumulative_balance"] == 1){
+	vars["PreviousBalance"]+(dataSetRow["debit"]-dataSetRow["credit"])
+}
+else{
+	dataSetRow["debit"]-dataSetRow["credit"]
+}</expression>
                                 <property name="dataType">float</property>
                                 <property name="allowExport">true</property>
                             </structure>
@@ -2368,6 +2404,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </header>
                             <footer>
                                 <row id="4106">
+                                    <method name="onCreate"><![CDATA[vars["PreviousBalance"]=0]]></method>
                                     <cell id="4145"/>
                                     <cell id="4107">
                                         <property name="colSpan">7</property>
@@ -2428,6 +2465,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         </group>
                         <detail>
                             <row id="4067">
+                                <method name="onCreate"><![CDATA[vars["PreviousBalance"]=row["balance"]]]></method>
                                 <cell id="4144"/>
                                 <cell id="4068">
                                     <data id="4269">
@@ -2435,7 +2473,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">!row._outer["display_move_sequence"]</expression>
+                                                <expression name="valueExpr" type="javascript">row._outer["display_move_line_sequence"]</expression>
                                             </structure>
                                         </list-property>
                                         <property name="resultSetColumn">move_sequence</property>
@@ -2445,7 +2483,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">row._outer["display_move_sequence"]</expression>
+                                                <expression name="valueExpr" type="javascript">!row._outer["display_move_line_sequence"]</expression>
                                             </structure>
                                         </list-property>
                                         <property name="resultSetColumn">move_line_name</property>
@@ -2577,4 +2615,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             </row>
         </grid>
     </body>
+    <property name="pageVariables">
+        <variable-element name="PreviousBalance">
+            <property name="type">report</property>
+        </variable-element>
+    </property>
 </report>

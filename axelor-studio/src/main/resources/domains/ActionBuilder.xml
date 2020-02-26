@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
   
   <module name="studio" package="com.axelor.studio.db" />
   
@@ -23,6 +23,7 @@
      <boolean name="openRecord" title="Open record" />
      <string name="displayMsg" title="Display message" />
      <integer name="emailSendOptionSelect" title="Send option" selection="studio.action.builder.email.send.option.select"/>
+     <string name="conditionText" title="Condition" />
      
      <!-- Action view fields -->
      <one-to-many name="actionBuilderViews" title="Views" ref="ActionBuilderView" mappedBy="actionBuilder" orderBy="sequence"/>

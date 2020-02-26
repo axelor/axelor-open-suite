@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,6 +32,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -52,7 +53,7 @@ public class ProjectedStockServiceImpl implements ProjectedStockService {
     mrp.setStockLocation(findStockLocation(company, stockLocation));
     // If a company has no stockLocation
     if (mrp.getStockLocation() == null) {
-      return null;
+      return Collections.emptyList();
     }
     mrp.addProductSetItem(product);
     mrp = Beans.get(MrpRepository.class).save(mrp);
@@ -67,6 +68,13 @@ public class ProjectedStockServiceImpl implements ProjectedStockService {
             .order("mrpLineType.sequence")
             .order("id")
             .fetch();
+
+    if (mrpLineList.isEmpty()) {
+      List<MrpLine> mrpLineListToDelete =
+          Beans.get(MrpLineRepository.class).all().filter("self.mrp = ?1", mrp).fetch();
+      removeMrpAndMrpLine(mrpLineListToDelete);
+      return Collections.emptyList();
+    }
 
     for (MrpLine mrpLine : mrpLineList) {
       mrpLine.setCompany(mrpLine.getStockLocation().getCompany());

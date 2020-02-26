@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,6 +22,7 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.StringUtils;
+import com.axelor.db.Query;
 import com.axelor.inject.Beans;
 import javax.persistence.PersistenceException;
 
@@ -81,5 +82,30 @@ public class UserBaseRepository extends UserRepository {
       }
     }
     super.remove(user);
+  }
+
+  @Override
+  public User findByEmail(String email) {
+    return Query.of(User.class)
+        .filter(
+            ""
+                + "LOWER(self.partner.emailAddress.address) = LOWER(:email) "
+                + "OR LOWER(self.email) = LOWER(:email)")
+        .bind("email", email)
+        .cacheable()
+        .fetchOne();
+  }
+
+  @Override
+  public User findByCodeOrEmail(String codeOrEmail) {
+    return Query.of(User.class)
+        .filter(
+            ""
+                + "LOWER(self.code) = LOWER(:codeOrEmail) "
+                + "OR LOWER(self.partner.emailAddress.address) = LOWER(:codeOrEmail) "
+                + "OR LOWER(self.email) = LOWER(:codeOrEmail)")
+        .bind("codeOrEmail", codeOrEmail)
+        .cacheable()
+        .fetchOne();
   }
 }

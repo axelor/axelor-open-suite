@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="business-project" package="com.axelor.apps.businessproject.db"/>
 
@@ -25,6 +25,7 @@
     <string name="comments" title="Comments" large="true" />
     <boolean name="attachAnnexToInvoice" title="Attach the Annex to the invoice"/>
     <integer name="statusSelect" title="Status" selection="business.project.invoicing.project.status.select" default="1"/>
+    <boolean name="consolidatePhaseWhenInvoicing" title="Consolidate phase invoicing"/>
     
     <extra-code>
         // STATUS SELECT

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
   
   <module name="account" package="com.axelor.apps.account.db"/>
   
@@ -17,15 +19,15 @@
     <string name="description" title="Description" initParam="true"/>
     <string name="origin" title="Origin" initParam="true"/>
     
-    <one-to-many name="debitReconcileList" ref="Reconcile" title="Debit Reconcile list" mappedBy="debitMoveLine" readonly="false"/>
-    <one-to-many name="creditReconcileList" ref="Reconcile" title="Credit Reconcile List" mappedBy="creditMoveLine" readonly="false"/>
-    <decimal name="amountPaid" title="Amount paid/reconciled" default="0.0" readonly="true"/>
+    <one-to-many name="debitReconcileList" orphanRemoval="false" ref="Reconcile" title="Debit Reconcile list" mappedBy="debitMoveLine" readonly="false"/>
+    <one-to-many name="creditReconcileList" orphanRemoval="false" ref="Reconcile" title="Credit Reconcile List" mappedBy="creditMoveLine" readonly="false"/>
+    <decimal name="amountPaid" title="MoveLine.amountReconciled" default="0.0" readonly="true"/>
     
     <many-to-one name="invoiceReject" ref="com.axelor.apps.account.db.Invoice" title="Invoice rejected"/>
     <boolean name="exportedDirectDebitOk" title="Exported Direct Debit" default="false"/>
     <many-to-one name="interbankCodeLine" ref="com.axelor.apps.account.db.InterbankCodeLine" title="Rejection reason"/>
     
-    <integer name="reimbursementStatusSelect" title="Reimbursement status" default="0"/>
+    <integer name="reimbursementStatusSelect" title="Reimbursement status" default="0" selection="move.line.reimbursement.status.select"/>
     <string name="passageReason" title="Irrecoverable Shift Reason" readonly="true"/>
     <boolean name="usherPassageOk" title="Transfer(ed) to Usher"/>
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax" massUpdate="true"/>
@@ -62,7 +64,8 @@
     <decimal name="taxRate"  scale="3" precision="20" readonly="true"/>
     <string name="taxCode" readonly="true"/>
       
-    <decimal name="taxAmount" title="Tax amount" readonly="true"/>
+    <decimal name="taxAmount" scale="2" precision="20" title="Tax amount" readonly="true"/>
+    <one-to-many name="taxPaymentMoveLineList" mappedBy="moveLine" ref="com.axelor.apps.account.db.TaxPaymentMoveLine"/>
 
     <many-to-one name="reconcileGroup" title="Reconcile Group"
                  ref="com.axelor.apps.account.db.ReconcileGroup"/>

@@ -30,18 +30,6 @@
         </structure>
         <structure>
             <property name="name">queryText</property>
-            <property name="id">3873</property>
-        </structure>
-        <structure>
-            <property name="name">queryTimeOut</property>
-            <property name="id">3873</property>
-        </structure>
-        <structure>
-            <property name="name">rowFetchSize</property>
-            <property name="id">3873</property>
-        </structure>
-        <structure>
-            <property name="name">queryText</property>
             <property name="id">3916</property>
         </structure>
         <structure>
@@ -195,7 +183,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-open-suite</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -662,7 +650,7 @@ ProductCategory.name as "productCategory",
 ProductFamily.name as "productFamily",
 MSelectItem.title as "productTypeSelect",
 Product.sale_price,
-Unit.name as "unit"
+Unit.label_to_printing as "unit"
 from base_product as Product
 left join supplychain_mrp_product_set as MTM on (Product.id = MTM.product_set)
 left join supplychain_mrp as Mrp on (Mrp.id = MTM.supplychain_mrp)
@@ -916,41 +904,47 @@ where Mrp.id = ?]]></xml-property>
                     <property name="name">product_name</property>
                     <property name="nativeName">product_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">qty</property>
                     <property name="nativeName">qty</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">unit</property>
                     <property name="nativeName">unit</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">price</property>
                     <property name="nativeName">price</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">ex_tax_total</property>
                     <property name="nativeName">ex_tax_total</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">in_tax_total</property>
                     <property name="nativeName">in_tax_total</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select SOL.product_name,
 SOL.qty,
-Unit.name as "unit",
+Unit.label_to_printing as "unit",
 SOL.price,
 SOL.ex_tax_total,
 SOL.in_tax_total
@@ -1093,7 +1087,7 @@ where Mrp.id = ?]]></xml-property>
             <xml-property name="queryText"><![CDATA[select MrpForecast.forecast_date,
 Product.full_name as "product",
 MrpForecast.qty,
-Unit.name as "unit",
+Unit.label_to_printing as "unit",
 Location.name as "location",
 Partner.full_name as "partner"
 from supplychain_mrp_forecast as MrpForecast
@@ -1331,7 +1325,7 @@ MrpLineType.name as "mrpLineType",
 MrpLine.qty,
 MrpLine.maturity_date,
 MrpLine.cumulative_qty,
-Unit.name as "unit",
+Unit.label_to_printing as "unit",
 MrpLine.min_qty,
 Location.name as "location",
 MrpLine.max_level,
@@ -2514,11 +2508,35 @@ order by Product.code ASC, MrpLine.maturity_date ASC, MrpLineType.type_select AS
                                     </data>
                                 </cell>
                                 <cell id="4165">
-                                    <data id="4166">
+                                    <text id="4508">
                                         <property name="fontSize">9pt</property>
                                         <property name="textAlign">center</property>
-                                        <property name="resultSetColumn">unit</property>
-                                    </data>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">row["unit"]</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">message_key</property>
+                                                <text-property name="displayName">message_key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                             </row>
                         </detail>
@@ -3514,11 +3532,35 @@ order by Product.code ASC, MrpLine.maturity_date ASC, MrpLineType.type_select AS
                                     </data>
                                 </cell>
                                 <cell id="4025">
-                                    <data id="4026">
+                                    <text id="4509">
                                         <property name="fontSize">9pt</property>
                                         <property name="textAlign">center</property>
-                                        <property name="resultSetColumn">unit</property>
-                                    </data>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">row["unit"]</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">message_key</property>
+                                                <text-property name="displayName">message_key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="4027">
                                     <data id="4028">
@@ -4108,11 +4150,35 @@ order by Product.code ASC, MrpLine.maturity_date ASC, MrpLineType.type_select AS
                                     </data>
                                 </cell>
                                 <cell id="4071">
-                                    <data id="4072">
+                                    <text id="4510">
                                         <property name="fontSize">9pt</property>
                                         <property name="textAlign">center</property>
-                                        <property name="resultSetColumn">unit</property>
-                                    </data>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">row["unit"]</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">message_key</property>
+                                                <text-property name="displayName">message_key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="4073">
                                     <data id="4074">
@@ -4681,11 +4747,35 @@ order by Product.code ASC, MrpLine.maturity_date ASC, MrpLineType.type_select AS
                                     </data>
                                 </cell>
                                 <cell id="4369">
-                                    <data id="4370">
+                                    <text id="4511">
                                         <property name="fontSize">8pt</property>
                                         <property name="textAlign">center</property>
-                                        <property name="resultSetColumn">unit</property>
-                                    </data>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">row["unit"]</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">message_key</property>
+                                                <text-property name="displayName">message_key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
                                 </cell>
                                 <cell id="4371">
                                     <data id="4372">

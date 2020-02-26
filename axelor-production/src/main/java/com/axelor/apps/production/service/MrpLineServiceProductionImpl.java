@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -35,6 +35,7 @@ import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
@@ -76,7 +77,8 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
         mrpLine, purchaseOrders, purchaseOrdersPerSupplier, isProposalsPerSupplier);
 
     if (mrpLine.getMrpLineType().getElementSelect()
-        == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL) {
+            == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL
+        && Beans.get(AppProductionService.class).isApp("production")) {
 
       this.generateManufacturingProposal(mrpLine);
     }
@@ -106,6 +108,11 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
   @Override
   protected String computeRelatedName(Model model) {
 
+    if (!Beans.get(AppProductionService.class).isApp("production")) {
+
+      return super.computeRelatedName(model);
+    }
+
     if (model instanceof ManufOrder) {
 
       return ((ManufOrder) model).getManufOrderSeq();
@@ -122,6 +129,10 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
 
   @Override
   protected Partner getPartner(Model model) {
+
+    if (!Beans.get(AppProductionService.class).isApp("production")) {
+      return super.getPartner(model);
+    }
 
     if (model instanceof ManufOrder) {
 

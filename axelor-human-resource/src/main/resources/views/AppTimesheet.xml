@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
 	<form name="app-timesheet-config-form" title="App Timesheet" model="com.axelor.apps.base.db.AppTimesheet" canDelete="false" canNew="false" width="large">
 		<panel name="mainPanel">
@@ -11,7 +11,12 @@
 			<field name="editModeTSTimer" widget="boolean-switch" showIf="enableTimer"/>
 			<field name="keepProject" widget="boolean-switch" showIf="enableTimer"/>
 			<field name="defaultEndFormat" />
+			<field name="createLinesForLeaves" widget="boolean-switch" />
+			<field name="createLinesForHolidays" widget="boolean-switch" />
 			<field name="timesheetEditor" widget="boolean-switch" />
+			<field name="displayTimesheetLineNumber" widget="boolean-switch" />
+			<field name="timesheetReminderTemplate" domain="self.metaModel.name = 'TimesheetReminder'"/>
+			<field name="isAlertManufOrderFinish" widget="boolean-switch"/>
 		</panel>
 				
 		<panel-mail name="mailPanel">

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,6 +33,7 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -68,6 +69,10 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
 
   @Override
   public Unit getUnit(Product product, boolean isPurchase) {
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return super.getUnit(product, isPurchase);
+    }
+
     if (isPurchase) {
       if (product.getPurchasesUnit() != null) {
         return product.getPurchasesUnit();
@@ -86,6 +91,10 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
   @Override
   public Map<String, Object> getDiscount(Invoice invoice, InvoiceLine invoiceLine, BigDecimal price)
       throws AxelorException {
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return super.getDiscount(invoice, invoiceLine, price);
+    }
 
     Map<String, Object> discounts = new HashMap<>();
 
@@ -125,6 +134,11 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
   @Override
   public Map<String, Object> fillProductInformation(Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException {
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return super.fillProductInformation(invoice, invoiceLine);
+    }
+
     Map<String, Object> productInformation = new HashMap<>();
     Integer sequence = invoiceLine.getSequence();
     if (sequence == null) {
@@ -134,6 +148,7 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       sequence = invoice.getInvoiceLineList().size();
       invoiceLine.setSequence(sequence);
     }
+
     productInformation.put("typeSelect", InvoiceLineRepository.TYPE_NORMAL);
     invoiceLine.setTypeSelect(InvoiceLineRepository.TYPE_NORMAL);
     productInformation.putAll(super.fillProductInformation(invoice, invoiceLine));

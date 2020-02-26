@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -105,14 +105,14 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
     try {
       for (AdvancedExportLine advancedExportLine : advancedExport.getAdvancedExportLineList()) {
         String[] splitField = advancedExportLine.getTargetField().split("\\.");
-        String alias = "Col_" + col + ",";
+        String alias = "Col_" + col;
 
         createQueryParts(splitField, 0, advancedExport.getMetaModel());
 
-        selectFieldBuilder.append(aliasName + selectField + " AS " + alias);
+        selectFieldBuilder.append(aliasName + selectField + " AS " + alias + ",");
 
         if (advancedExportLine.getOrderBy()) {
-          orderByFieldBuilder.append(alias);
+          orderByFieldBuilder.append(alias + " " + advancedExportLine.getOrderByType() + ",");
         }
         selectField = "";
         aliasName = "";
@@ -454,7 +454,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
    *
    * So that all the records are matched even if <code>title</code> field is null.
    */
-  static class JoinHelper {
+  private static class JoinHelper {
 
     private Class<?> beanClass;
 
@@ -476,7 +476,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
      * @param filter the filter expression
      * @return the transformed filter expression
      */
-    public String parse(String filter) {
+    private String parse(String filter) {
 
       String result = "";
       Matcher matcher = pathPattern.matcher(filter);
@@ -552,7 +552,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
                       "No such field '%s' in object '%s'",
                       variable, currentMapper.getBeanClass().getName()));
             }
-            if (property != null && property.getTarget() != null) {
+            if (property.isReference()) {
               joinOn = prefix + "." + variable;
               prefix = prefix + "_" + variable;
               joins.put(joinOn, prefix);
@@ -562,10 +562,14 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
         }
       } else {
         Property property = mapper.getProperty(name);
-        if (property != null && property.getTarget() != null) {
-          if (property.isCollection()) {
-            return null;
-          }
+        if (property == null) {
+          throw new IllegalArgumentException(
+              String.format("No such field '%s' in object '%s'", variable, beanClass.getName()));
+        }
+        if (property.isCollection()) {
+          return null;
+        }
+        if (property.getTarget() != null) {
           prefix = "_" + name;
           joins.put("self." + name, prefix);
           return prefix;

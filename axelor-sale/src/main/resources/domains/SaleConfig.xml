@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
 	<module name="sale" package="com.axelor.apps.sale.db"/>
 
@@ -22,6 +22,22 @@
 		<many-to-one name="defaultValidityDuration" ref="com.axelor.apps.base.db.Duration" title="Validity duration per default"/>
 		<boolean name="isAnalyticDistributionRequired" title="Analytic distribution required on sale order line"/>
 
+		<track>
+			<field name="company" on="UPDATE"/>
+			<field name="saleOrderInAtiSelect" on="UPDATE"/>
+			<field name="defaultValidityDuration" on="UPDATE"/>
+			<field name="acceptedCredit" on="UPDATE"/>
+			<field name="displaySalemanOnPrinting" on="UPDATE"/>
+			<field name="displayDelCondOnPrinting" on="UPDATE"/>
+			<field name="displayProductCodeOnPrinting" on="UPDATE"/>
+			<field name="displayTaxDetailOnPrinting" on="UPDATE"/>
+			<field name="displayEstimDelivDateOnPrinting" on="UPDATE"/>
+			<field name="displayCustomerCodeOnPrinting" on="UPDATE"/>
+			<field name="displayProductPictureOnPrinting" on="UPDATE"/>
+			<field name="saleOrderClientBox" on="UPDATE"/>
+			<field name="saleOrderLegalNote" on="UPDATE"/>
+			<field name="isAnalyticDistributionRequired" on="UPDATE"/>
+		</track>
 	</entity>
 
 </domain-models>

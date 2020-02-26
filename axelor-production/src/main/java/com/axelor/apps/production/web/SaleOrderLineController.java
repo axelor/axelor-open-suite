@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,22 +23,20 @@ import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class SaleOrderLineController {
-
-  @Inject private BillOfMaterialService billOfMaterialService;
 
   public void customizeBillOfMaterial(ActionRequest request, ActionResponse response) {
     try {
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
 
       BillOfMaterial copyBillOfMaterial =
-          billOfMaterialService.customizeBillOfMaterial(saleOrderLine);
+          Beans.get(BillOfMaterialService.class).customizeBillOfMaterial(saleOrderLine);
 
       if (copyBillOfMaterial != null) {
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -46,6 +46,11 @@ public interface IExceptionMessage {
 
   static final String CONVERT_LEAD_MISSING = /*$$(*/ "Parent lead is missing." /*)*/;
   static final String CONVERT_LEAD_ERROR = /*$$(*/ "Error in lead conversion" /*)*/;
+
+  static final String LEAD_PARTNER_MISSING_ADDRESS = /*$$(*/
+      "Please complete the partner address." /*)*/;
+  static final String LEAD_CONTACT_MISSING_ADDRESS = /*$$(*/
+      "Please complete the contact address." /*)*/;
 
   /** Event controller */
   static final String EVENT_1 = /*$$(*/ "Input location please" /*)*/;

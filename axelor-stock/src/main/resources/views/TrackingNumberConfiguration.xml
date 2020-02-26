@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
     <grid name="tracking-number-configuration-grid" title="Tracking Number Configuration" model="com.axelor.apps.stock.db.TrackingNumberConfiguration">
     	<field name="name" width="200"/>
@@ -13,13 +13,13 @@
         <field name="generateSaleAutoTrackingNbr"/>
         <field name="hasSaleAutoSelectTrackingNbr"/>
         <field name="saleAutoTrackingNbrOrderSelect"/>
-        <field name="saleQtyByTracking"/>
-        <field name="purchaseQtyByTracking"/>
-        <field name="productionQtyByTracking"/>
+        <field name="saleQtyByTracking" x-scale="2"/>
+        <field name="purchaseQtyByTracking" x-scale="2"/>
+        <field name="productionQtyByTracking" x-scale="2"/>
     </grid>
     
     <form name="tracking-number-configuration-form" title="Tracking Number Configuration" model="com.axelor.apps.stock.db.TrackingNumberConfiguration"
-          onNew="action-tracking-number-config-record-default" onSave="action-tracking-number-validate-qty" width="large">
+          onNew="action-tracking-number-config-record-default,action-tracking-number-config-attrs-set-scale" onLoad="action-tracking-number-config-attrs-set-scale" onSave="action-tracking-number-validate-qty" width="large">
         <panel name="namePanel">
             <field name="name" onChange="action-tracking-number-config-record-compute-fullname"/>
         </panel>
@@ -77,6 +77,12 @@
         <field name="fullName" expr="eval: name"/>
         <field name="fullName" expr="eval: name + ' / ' + sequence.fullName" if="sequence != null"/>
     </action-record>
+    
+   	<action-attrs name="action-tracking-number-config-attrs-set-scale">
+		<attribute name="scale" for="saleQtyByTracking" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+		<attribute name="scale" for="purchaseQtyByTracking" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+		<attribute name="scale" for="productionQtyByTracking" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+	</action-attrs>
     
     <action-validate name="action-tracking-number-validate-qty">
         <error message="The quantity by lot must be greater than 0" if="purchaseQtyByTracking+productionQtyByTracking+saleQtyByTracking &lt;= 0" />

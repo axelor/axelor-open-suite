@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,9 +22,9 @@ import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -32,37 +32,28 @@ import java.math.BigDecimal;
 @Singleton
 public class PayVoucherElementController {
 
-  private CurrencyService currencyService;
-  private PayVoucherElementToPayRepository elementToPayRepository;
-
-  @Inject
-  PayVoucherElementController(
-      CurrencyService currencyService, PayVoucherElementToPayRepository elementToPayRepository) {
-    this.currencyService = currencyService;
-    this.elementToPayRepository = elementToPayRepository;
-  }
-
   @Transactional
   public void updateAmountToPayCurrency(ActionRequest request, ActionResponse response) {
     PayVoucherElementToPay elementToPayContext =
         request.getContext().asType(PayVoucherElementToPay.class);
     PayVoucherElementToPay elementToPay =
-        this.elementToPayRepository.find(elementToPayContext.getId());
+        Beans.get(PayVoucherElementToPayRepository.class).find(elementToPayContext.getId());
     Currency paymentVoucherCurrency = elementToPay.getPaymentVoucher().getCurrency();
     BigDecimal amountToPayCurrency = null;
     try {
       amountToPayCurrency =
-          currencyService.getAmountCurrencyConvertedAtDate(
-              elementToPay.getCurrency(),
-              paymentVoucherCurrency,
-              elementToPay.getAmountToPay(),
-              elementToPay.getPaymentVoucher().getPaymentDate());
+          Beans.get(CurrencyService.class)
+              .getAmountCurrencyConvertedAtDate(
+                  elementToPay.getCurrency(),
+                  paymentVoucherCurrency,
+                  elementToPay.getAmountToPay(),
+                  elementToPay.getPaymentVoucher().getPaymentDate());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
     if (amountToPayCurrency != null) {
       elementToPay.setAmountToPayCurrency(amountToPayCurrency);
-      elementToPayRepository.save(elementToPay);
+      Beans.get(PayVoucherElementToPayRepository.class).save(elementToPay);
       response.setReload(true);
     }
   }

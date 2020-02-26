@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -68,7 +68,11 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     super.computeProductInformation(saleOrderLine, saleOrder);
     saleOrderLine.setSaleSupplySelect(saleOrderLine.getProduct().getSaleSupplySelect());
 
-    this.getAndComputeAnalyticDistribution(saleOrderLine, saleOrder);
+    if (Beans.get(AppAccountService.class).isApp("supplychain")) {
+      saleOrderLine.setSaleSupplySelect(saleOrderLine.getProduct().getSaleSupplySelect());
+
+      this.getAndComputeAnalyticDistribution(saleOrderLine, saleOrder);
+    }
   }
 
   public SaleOrderLine getAndComputeAnalyticDistribution(
@@ -125,6 +129,11 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
 
   @Override
   public BigDecimal getAvailableStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+
+    if (!Beans.get(AppAccountService.class).isApp("supplychain")) {
+      return super.getAvailableStock(saleOrder, saleOrderLine);
+    }
+
     StockLocationLine stockLocationLine =
         Beans.get(StockLocationLineService.class)
             .getStockLocationLine(saleOrder.getStockLocation(), saleOrderLine.getProduct());
@@ -137,6 +146,11 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
 
   @Override
   public BigDecimal getAllocatedStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+
+    if (!Beans.get(AppAccountService.class).isApp("supplychain")) {
+      return super.getAllocatedStock(saleOrder, saleOrderLine);
+    }
+
     StockLocationLine stockLocationLine =
         Beans.get(StockLocationLineService.class)
             .getStockLocationLine(saleOrder.getStockLocation(), saleOrderLine.getProduct());

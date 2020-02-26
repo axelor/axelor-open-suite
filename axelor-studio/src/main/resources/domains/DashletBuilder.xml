@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="studio" package="com.axelor.studio.db" />
-  
+
   <entity name="DashletBuilder" cacheable="true">
     <![CDATA[
-    	It represents a custom dashlet. It contains fields required to generate a adk supported dashlet xml. 
+    	It represents a custom dashlet. It contains fields required to generate a Axelor Open Platform supported dashlet xml. 
     ]]>
   	<string name="name" title="Name" required="true" />
   	<many-to-one name="metaView" ref="com.axelor.meta.db.MetaView" title="View" />
@@ -20,5 +20,5 @@
   	<many-to-one name="appBuilder" ref="AppBuilder" title="App builder" />
   	<unique-constraint columns="name,dashboardBuilder"/>
   </entity>
-    
+
  </domain-models>

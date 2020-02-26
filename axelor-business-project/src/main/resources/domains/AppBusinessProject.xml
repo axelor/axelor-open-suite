@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
@@ -29,6 +29,10 @@
 		<boolean name="projectInvoiceLines" title="Project in Invoice Lines"/>
 
 		<boolean name="enableTaskTemplatesByProduct" title="Enable task templates by product"/>
+		
+		<string name="preTaskStatusSet" title="Status for invoice pre task tasks" selection="team.task.status"/>
+		<string name="postTaskStatusSet" title="Status for invoice post task tasks" selection="team.task.status"/>
+		<string name="exculdeTaskInvoicing" title="Exculde tasks for invoicing"/>
 		
 		<track>
 			<field name="productInvoicingProject" on="UPDATE"/>

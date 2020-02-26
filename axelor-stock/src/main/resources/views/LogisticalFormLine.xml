@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
     <grid model="com.axelor.apps.stock.db.LogisticalFormLine" title="Packing lines" name="logistical-form-line-grid"
         orderBy="sequence">
@@ -16,7 +16,7 @@
         <field name="saleOrder.externalReference" width="170" title="Customer order ref." if="__config__.app.isApp('supplychain')" />
         <!-- <field name="stockMoveLine.netMass" title="Unit net mass" /> --> <!-- Should be null when stockMoveLine is null -->
         <field name="unitNetMass" width="75" x-scale="3"/>
-        <field name="qty" width="55" readonlyIf="typeSelect != 3" onChange="sync" />
+        <field name="qty" width="55" readonlyIf="typeSelect != 3" onChange="sync" x-scale="2"/>
         <field name="parcelPalletNumber" width="75" readonlyIf="typeSelect == 3" onChange="sync" />
         <field name="grossMass" width="75" readonlyIf="typeSelect == 3" />
         <field name="dimensions" width="130" readonlyIf="typeSelect == 3" />
@@ -25,6 +25,7 @@
     </grid>
 
     <form model="com.axelor.apps.stock.db.LogisticalFormLine" title="Packing line" name="logistical-form-line-form"
+    	onNew="action-logistical-form-attrs-scale-and-precision" onLoad="action-logistical-form-attrs-scale-and-precision"
         width="large" canCopy="true">
         <panel name="mainPanel">
             <field name="typeSelect" onChange="action-logistical-form-line-type-change" />
@@ -69,6 +70,10 @@
     <action-record name="action-logistical-form-line-record-set-unit-net-mass" model="com.axelor.apps.stock.db.LogisticalFormLine">
         <field name="unitNetMass" expr="eval: stockMoveLine?.netMass" />
     </action-record>
+    
+	<action-attrs name="action-logistical-form-attrs-scale-and-precision">
+		<attribute name="scale" for="qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+	</action-attrs>
 
     <action-method name="action-logistical-form-line-method-set-qty">
         <call class="com.axelor.apps.stock.web.LogisticalFormLineController" method="setQty" />

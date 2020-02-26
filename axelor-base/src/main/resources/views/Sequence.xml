@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<grid name="sequence-grid" title="Sequences" model="com.axelor.apps.base.db.Sequence">
 		<field name="name"/>
@@ -42,6 +42,10 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
 			<field name="monthlyResetOk" onChange="action-sequence-monthly-reset" />
 		</panel>
 		<panel-related name="sequenceVersionListPanel" field="sequenceVersionList" grid-view="sequence-version-grid" form-view="sequence-version-form"  />
+		<panel-mail name="mailsPanel">
+	  	 	<mail-messages limit="4"/>
+			<mail-followers/>
+		 </panel-mail>
 	</form>
 	
     <grid editable="true" name="sequence-version-grid" title="Versions" model="com.axelor.apps.base.db.SequenceVersion" orderBy="-startDate">

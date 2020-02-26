@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<grid name="payment-schedule-grid" title="Payment schedule"
 		model="com.axelor.apps.account.db.PaymentSchedule" orderBy="-paymentScheduleSeq">
@@ -145,8 +145,8 @@
 	<action-attrs
 		name="action-payment-schedule-attrs-company-bank-details-domain">
 		<attribute name="domain" for="companyBankDetails"
-			expr="eval: &quot;self.id IN (${company.bankDetailsSet.collect{it.id}.join(',')})&quot;"
-			if="company &amp;&amp; company.bankDetailsSet" />
+			expr="eval: &quot;self.id IN (${company.bankDetailsList.collect{it.id}.join(',')})&quot;"
+			if="company &amp;&amp; company.bankDetailsList" />
 	</action-attrs>
 	
 	<action-attrs

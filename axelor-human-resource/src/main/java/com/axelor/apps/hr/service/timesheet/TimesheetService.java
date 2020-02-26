@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,7 +26,6 @@ import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.schema.actions.ActionView;
@@ -162,9 +161,9 @@ public interface TimesheetService {
   @Transactional(rollbackOn = {Exception.class})
   public void generateLinesFromExpectedProjectPlanning(Timesheet timesheet) throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
-  public void generateLinesFromRealisedProjectPlanning(Timesheet timesheet) throws AxelorException;
+  public void prefillLines(Timesheet timesheet) throws AxelorException;
 
-  public TimesheetLine generateTimesheetLine(
-      Timesheet timesheet, ProjectPlanningTime projectPlanningTime) throws AxelorException;
+  public void setTeamTaskTotalRealHrs(List<TimesheetLine> timesheetLines, boolean isAdd);
+
+  public void removeAfterToDateTimesheetLines(Timesheet timesheet);
 }

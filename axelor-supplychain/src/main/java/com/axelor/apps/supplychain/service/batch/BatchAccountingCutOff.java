@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,10 +26,11 @@ import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.AccountingCutOffService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.List;
@@ -57,15 +58,15 @@ public class BatchAccountingCutOff extends BatchStrategy {
   protected void process() {
 
     int offset = 0;
-
     SupplychainBatch supplychainBatch = batch.getSupplychainBatch();
-
     LocalDate moveDate = supplychainBatch.getMoveDate();
+
     LocalDate reverseMoveDate = supplychainBatch.getReverseMoveDate();
     boolean recoveredTax = supplychainBatch.getRecoveredTax();
     boolean ati = supplychainBatch.getAti();
     String moveDescription = supplychainBatch.getMoveDescription();
     int accountingCutOffTypeSelect = supplychainBatch.getAccountingCutOffTypeSelect();
+    updateBatch(moveDate, accountingCutOffTypeSelect);
     Company company = supplychainBatch.getCompany();
     boolean includeNotStockManagedProduct = supplychainBatch.getIncludeNotStockManagedProduct();
 
@@ -109,7 +110,7 @@ public class BatchAccountingCutOff extends BatchStrategy {
           TraceBackService.trace(
               new AxelorException(
                   e, e.getCategory(), I18n.get("StockMove") + " %s", stockMove.getStockMoveSeq()),
-              IException.INVOICE_ORIGIN,
+              ExceptionOriginRepository.INVOICE_ORIGIN,
               batch.getId());
           incrementAnomaly();
           break;
@@ -117,7 +118,7 @@ public class BatchAccountingCutOff extends BatchStrategy {
           TraceBackService.trace(
               new Exception(
                   String.format(I18n.get("StockMove") + " %s", stockMove.getStockMoveSeq()), e),
-              IException.INVOICE_ORIGIN,
+              ExceptionOriginRepository.INVOICE_ORIGIN,
               batch.getId());
           incrementAnomaly();
           LOG.error("Anomaly generated for the stock move {}", stockMove.getStockMoveSeq());
@@ -127,6 +128,13 @@ public class BatchAccountingCutOff extends BatchStrategy {
 
       JPA.clear();
     }
+  }
+
+  @Transactional
+  public void updateBatch(LocalDate moveDate, int accountingCutOffTypeSelect) {
+    batch.setMoveDate(moveDate);
+    batch.setAccountingCutOffTypeSelect(accountingCutOffTypeSelect);
+    batchRepo.save(batch);
   }
 
   /**

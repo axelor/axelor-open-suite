@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,10 +17,10 @@
  */
 package com.axelor.apps.production.service;
 
-import com.axelor.app.production.db.IWorkCenter;
 import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.ProdProcessLineRepository;
+import com.axelor.apps.production.db.repo.WorkCenterRepository;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -40,13 +40,13 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
   public Long getProdProcessLineDurationFromWorkCenter(WorkCenter workCenter) {
     List<Long> durations = new ArrayList<Long>();
 
-    if (workCenter.getWorkCenterTypeSelect() == IWorkCenter.WORK_CENTER_MACHINE
-        || workCenter.getWorkCenterTypeSelect() == IWorkCenter.WORK_CENTER_BOTH) {
+    if (workCenter.getWorkCenterTypeSelect() == WorkCenterRepository.WORK_CENTER_TYPE_MACHINE
+        || workCenter.getWorkCenterTypeSelect() == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
       durations.add(workCenter.getDurationPerCycle());
     }
 
-    if (workCenter.getWorkCenterTypeSelect() == IWorkCenter.WORK_CENTER_HUMAN
-        || workCenter.getWorkCenterTypeSelect() == IWorkCenter.WORK_CENTER_BOTH) {
+    if (workCenter.getWorkCenterTypeSelect() == WorkCenterRepository.WORK_CENTER_TYPE_HUMAN
+        || workCenter.getWorkCenterTypeSelect() == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
       if (workCenter.getProdHumanResourceList() != null) {
         for (ProdHumanResource prodHumanResource : workCenter.getProdHumanResourceList()) {
           durations.add(prodHumanResource.getDuration());
@@ -58,8 +58,8 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
   }
 
   public BigDecimal getProdProcessLineMinCapacityPerCycleFromWorkCenter(WorkCenter workCenter) {
-    if (workCenter.getWorkCenterTypeSelect() == IWorkCenter.WORK_CENTER_MACHINE
-        || workCenter.getWorkCenterTypeSelect() == IWorkCenter.WORK_CENTER_BOTH) {
+    if (workCenter.getWorkCenterTypeSelect() == WorkCenterRepository.WORK_CENTER_TYPE_MACHINE
+        || workCenter.getWorkCenterTypeSelect() == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
       return workCenter.getMinCapacityPerCycle();
     } else {
       return new BigDecimal(1);
@@ -67,8 +67,8 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
   }
 
   public BigDecimal getProdProcessLineMaxCapacityPerCycleFromWorkCenter(WorkCenter workCenter) {
-    if (workCenter.getWorkCenterTypeSelect() == IWorkCenter.WORK_CENTER_MACHINE
-        || workCenter.getWorkCenterTypeSelect() == IWorkCenter.WORK_CENTER_BOTH) {
+    if (workCenter.getWorkCenterTypeSelect() == WorkCenterRepository.WORK_CENTER_TYPE_MACHINE
+        || workCenter.getWorkCenterTypeSelect() == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
       return workCenter.getMaxCapacityPerCycle();
     } else {
       return new BigDecimal(1);

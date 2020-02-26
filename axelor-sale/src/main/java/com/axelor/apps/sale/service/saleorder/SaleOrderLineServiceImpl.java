@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.sale.db.PackLine;
@@ -59,6 +60,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   @Inject protected PriceListService priceListService;
 
   @Inject protected ProductMultipleQtyService productMultipleQtyService;
+
+  @Inject protected AppBaseService appBaseService;
 
   @Inject protected AppSaleService appSaleService;
 
@@ -340,10 +343,11 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   }
 
   @Override
-  public PriceListLine getPriceListLine(SaleOrderLine saleOrderLine, PriceList priceList) {
+  public PriceListLine getPriceListLine(
+      SaleOrderLine saleOrderLine, PriceList priceList, BigDecimal price) {
 
     return priceListService.getPriceListLine(
-        saleOrderLine.getProduct(), saleOrderLine.getQty(), priceList);
+        saleOrderLine.getProduct(), saleOrderLine.getQty(), priceList, price);
   }
 
   @Override
@@ -379,7 +383,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     PriceList priceList = saleOrder.getPriceList();
 
     if (priceList != null) {
-      PriceListLine priceListLine = this.getPriceListLine(saleOrderLine, priceList);
+      PriceListLine priceListLine = this.getPriceListLine(saleOrderLine, priceList, price);
       discounts = priceListService.getReplacedPriceAndDiscounts(priceList, priceListLine, price);
 
       if (saleOrder.getTemplate()) {
@@ -415,10 +419,11 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   }
 
   @Override
-  public int getDiscountTypeSelect(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+  public int getDiscountTypeSelect(
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, BigDecimal price) {
     PriceList priceList = saleOrder.getPriceList();
     if (priceList != null) {
-      PriceListLine priceListLine = this.getPriceListLine(saleOrderLine, priceList);
+      PriceListLine priceListLine = this.getPriceListLine(saleOrderLine, priceList, price);
 
       return priceListLine.getTypeSelect();
     }
@@ -546,7 +551,11 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       soLine.setProduct(product);
       soLine.setProductName(packLine.getProductName());
       if (packLine.getQuantity() != null) {
-        soLine.setQty(packLine.getQuantity().multiply(packQty));
+        soLine.setQty(
+            packLine
+                .getQuantity()
+                .multiply(packQty)
+                .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN));
       }
       soLine.setUnit(packLine.getUnit());
       soLine.setTypeSelect(packLine.getTypeSelect());

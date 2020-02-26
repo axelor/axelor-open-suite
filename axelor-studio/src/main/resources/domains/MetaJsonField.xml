@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+    xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
     <module name="meta" package="com.axelor.meta.db" />
 
@@ -9,6 +9,50 @@
         <boolean name="isWkf" />
         <many-to-one name="appBuilder" ref="com.axelor.studio.db.AppBuilder"
             title="App builder" />
+		<track>
+			<field name="name" />
+			<field name="title" />
+			<field name="type" />
+			<field name="defaultValue" />
+			<field name="model" />
+			<field name="modelField" />
+			<field name="jsonModel" />
+			<field name="selection" />
+			<field name="widget" />
+			<field name="help" />
+			<field name="showIf" />
+			<field name="hideIf" />
+			<field name="requiredIf" />
+			<field name="readonlyIf" />
+			<field name="includeIf" />
+			<field name="contextField" />
+			<field name="contextFieldTarget" />
+			<field name="contextFieldTargetName" />
+			<field name="contextFieldValue" />
+			<field name="contextFieldTitle" />
+			<field name="hidden" />
+			<field name="required" />
+			<field name="readonly" />
+			<field name="nameField" />
+			<field name="visibleInGrid" />
+			<field name="minSize" />
+			<field name="maxSize" />
+			<field name="precision" />
+			<field name="scale" />
+			<field name="sequence" />
+			<field name="columnSequence" />
+			<field name="regex" />
+			<field name="valueExpr" />
+			<field name="targetModel" />
+			<field name="enumType" />
+			<field name="formView" />
+			<field name="gridView" />
+			<field name="domain" />
+			<field name="targetJsonModel" />
+			<field name="onChange" />
+			<field name="onClick" />
+			<field name="widgetAttrs" />
+		</track>
     </entity>
 
 </domain-models>

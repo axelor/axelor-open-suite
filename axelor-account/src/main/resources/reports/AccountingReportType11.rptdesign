@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -44,7 +44,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-business-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -131,7 +131,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-business-suite</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-open-suite</property>
             <property name="odaUser">axelor</property>
         </oda-data-source>
     </data-sources>
@@ -398,6 +398,12 @@ Move.company = AccountingReport.company  AND
 (AccountingReport.payment_mode IS  NULL OR (AccountingReport.payment_mode = Move.payment_mode)) 
 AND Move.ignore_in_accounting_ok = false 
 AND (Move.status_select = 3 OR Move.status_select = 2)
+AND (AccountingReport.display_closing_accounting_moves is true 
+	OR(AccountingReport.display_closing_accounting_moves is false 
+		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
+AND (AccountingReport.display_opening_accounting_moves is true 
+	OR(AccountingReport.display_opening_accounting_moves is false 
+		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
 ORDER BY MoveLine.date_val, MoveLine.move, Account.code]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">

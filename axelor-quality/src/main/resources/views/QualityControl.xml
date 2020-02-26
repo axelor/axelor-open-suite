@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
 	<grid name="quality-control-grid" title="Quality controls" model="com.axelor.apps.quality.db.QualityControl">
+		<toolbar>
+			<button name="sendEmailBtn" title="Send email" onClick="action-quality-control-method-send-email"/>
+		</toolbar>
 		<field name="reference" width="120"/>
 		<field name="name"/>
 		<field name="project"/>
@@ -19,6 +22,7 @@
 		<menubar>
 			<menu title="Tools">
 				<item title="Print" action="save,action-quality-control-method-print" showIf="statusSelect == 6"/>
+				<item title="Send email" action="save,action-quality-control-method-send-email" showIf="statusSelect == 6"/>
 			</menu>
 		</menubar>
 		<panel name="mainPanel" title="Status" showTitle="false">
@@ -36,7 +40,7 @@
 			<button name="planBtn" title="Plan" showIf="statusSelect == 1 || statusSelect == 2" onClick="save,action-quality-control-record-status-planned,save"/>
 			<button name="startBtn" title="Start" showIf="statusSelect == 3 || statusSelect == 5" onClick="save,action-quality-control-record-status-in-progress,save"/>
 			<button name="pauseBtn" title="Pause" showIf="statusSelect == 4" onClick="save,action-quality-control-record-status-pause,save"/>
-			<button name="finishBtn" title="Finish" showIf="statusSelect == 4" onClick="save,action-quality-control-validate-control-points-on-finish,action-quality-control-record-status-finish,save"/>
+			<button name="finishBtn" title="Finish" showIf="statusSelect == 4" onClick="action-quality-control-group-status-finish"/>
 			<button name="cancelBtn" title="Cancel" showIf="statusSelect == 1 || statusSelect == 3 || statusSelect == 4" onClick="save,action-quality-control-record-status-canceled,save"/>
 		</panel>
 		<panel name="listsPanel">
@@ -46,7 +50,7 @@
 			<field name="inspectorSignature" widget="Image"/>
 			<field name="customerSignature" widget="Image"/>
 		</panel>
-		<panel name="controlPointsPanel" sidebar="true">
+		<panel name="controlPointsPanel" sidebar="true" hideIf="statusSelect == 2 || statusSelect == 6">
 			<button name="chooseQualityProcessBtn" title="Choose quality process" onClick="save,action-quality-control-view-quality-process" showIf="statusSelect == 1"/>
 			<button name="addOptionalControlPointsBtn" title="Add optional control points" onClick="save,action-quality-control-view-optional-control-points"/>
 			<button name="editControlPointsBtn" title="Edit control points" onClick="action-quality-control-method-open-control-points"/>
@@ -95,6 +99,14 @@
 	
 	<action-group name="action-quality-control-group-onload-actions">
 		<action name="action-quality-control-attrs-readonly-plan-button"/>
+	</action-group>
+
+	<action-group name="action-quality-control-group-status-finish">
+		<action name="save"/>
+		<action name="action-quality-control-validate-control-points-on-finish"/>
+		<action name="action-quality-control-record-status-finish"/>
+		<action name="save"/>
+		<action name="action-quality-control-method-send-email" if="__config__.app.getApp('quality').getAutomaticMail()"/>
 	</action-group>
 
 	<action-record name="action-quality-control-record-default" model="com.axelor.apps.quality.db.QualityControl">
@@ -161,6 +173,10 @@
 
     <action-method name="action-quality-control-method-print">
 		<call class="com.axelor.apps.quality.web.QualityControlController" method="printQualityControl"/>
+    </action-method>
+
+    <action-method name="action-quality-control-method-send-email">
+    	<call class="com.axelor.apps.quality.web.QualityControlController" method="sendEmail"/>
     </action-method>
 
 	<action-validate name="action-quality-control-validate-control-points-on-finish">

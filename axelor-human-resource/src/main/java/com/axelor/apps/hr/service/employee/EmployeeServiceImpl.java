@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -152,7 +152,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
         Beans.get(LeaveRequestRepository.class)
             .all()
             .filter(
-                "self.user = ?1 AND self.duration >= 1 AND self.statusSelect = ?2 AND (self.fromDateT BETWEEN ?3 AND ?4 OR self.toDateT BETWEEN ?3 AND ?4)",
+                "self.user = ?1 AND self.duration >= 1 AND self.statusSelect = ?2 AND (self.fromDateT BETWEEN ?3 AND ?4 OR self.toDateT BETWEEN ?3 AND ?4 OR ?3 BETWEEN self.fromDateT AND self.toDateT OR ?4 BETWEEN self.fromDateT AND self.toDateT)",
                 employee.getUser(),
                 LeaveRequestRepository.STATUS_VALIDATED,
                 fromDate,
@@ -223,8 +223,10 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
     newDPAE.setCompany(payCompany);
     newDPAE.setCompanyAddress(employer.getMainAddress());
     newDPAE.setCompanyFixedPhone(employer.getFixedPhone());
-    newDPAE.setHealthService(employer.getHealthService());
-    newDPAE.setHealthServiceAddress(employer.getHealthServiceAddress());
+    if (payCompany.getHrConfig() != null) {
+      newDPAE.setHealthService(payCompany.getHrConfig().getHealthService());
+      newDPAE.setHealthServiceAddress(payCompany.getHrConfig().getHealthServiceAddress());
+    }
 
     // Employee
     newDPAE.setLastName(employee.getContactPartner().getName());

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -42,7 +42,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.List;
@@ -51,14 +50,13 @@ import java.util.stream.Collectors;
 @Singleton
 public class SaleOrderLineController {
 
-  @Inject protected SaleOrderLineServiceSupplyChainImpl saleOrderLineServiceSupplyChainImpl;
-
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response)
       throws AxelorException {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
     if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
       saleOrderLine =
-          saleOrderLineServiceSupplyChainImpl.computeAnalyticDistribution(saleOrderLine);
+          Beans.get(SaleOrderLineServiceSupplyChainImpl.class)
+              .computeAnalyticDistribution(saleOrderLine);
       response.setValue(
           "analyticDistributionTemplate", saleOrderLine.getAnalyticDistributionTemplate());
       response.setValue("analyticMoveLineList", saleOrderLine.getAnalyticMoveLineList());
@@ -69,13 +67,15 @@ public class SaleOrderLineController {
       throws AxelorException {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
     saleOrderLine =
-        saleOrderLineServiceSupplyChainImpl.createAnalyticDistributionWithTemplate(saleOrderLine);
+        Beans.get(SaleOrderLineServiceSupplyChainImpl.class)
+            .createAnalyticDistributionWithTemplate(saleOrderLine);
     response.setValue("analyticMoveLineList", saleOrderLine.getAnalyticMoveLineList());
   }
 
   public void checkStocks(ActionRequest request, ActionResponse response) {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-    SaleOrder saleOrder = saleOrderLineServiceSupplyChainImpl.getSaleOrder(request.getContext());
+    SaleOrder saleOrder =
+        Beans.get(SaleOrderLineServiceSupplyChainImpl.class).getSaleOrder(request.getContext());
     if (saleOrder.getStockLocation() == null) {
       return;
     }
@@ -102,6 +102,8 @@ public class SaleOrderLineController {
 
   public void fillAvailableAndAllocatedStock(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
+    SaleOrderLineServiceSupplyChainImpl saleOrderLineServiceSupplyChainImpl =
+        Beans.get(SaleOrderLineServiceSupplyChainImpl.class);
     SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
     SaleOrder saleOrder = saleOrderLineServiceSupplyChainImpl.getSaleOrder(context);
 
@@ -119,6 +121,13 @@ public class SaleOrderLineController {
     }
   }
 
+  /**
+   * Called from sale order line request quantity wizard view. Call {@link
+   * ReservedQtyService#updateReservedQty(SaleOrderLine, BigDecimal)}.
+   *
+   * @param request
+   * @param response
+   */
   public void changeReservedQty(ActionRequest request, ActionResponse response) {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
     BigDecimal newReservedQty = saleOrderLine.getReservedQty();

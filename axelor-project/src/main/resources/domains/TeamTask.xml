@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
 	<module name="project" package="com.axelor.team.db"/>
 
@@ -12,7 +12,7 @@
         <string name="fullName" namecolumn="true" title="Name" search="id,name"/>
 	  	
 	  	<many-to-one name="parentTask" ref="com.axelor.team.db.TeamTask" title="Parent task"/>
-	 	<many-to-one name="projectCategory" ref="com.axelor.apps.project.db.ProjectCategory" title="Category"/>
+	 	<many-to-one name="teamTaskCategory" ref="com.axelor.apps.project.db.TeamTaskCategory" title="Category"/>
     	<integer name="progressSelect" title="Progress" selection="project.task.progress.select"/>
     	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
     	<one-to-many name="teamTaskList" ref="com.axelor.team.db.TeamTask" mappedBy="parentTask"/>
@@ -36,12 +36,12 @@
 
 		<one-to-many name="timerList" ref="com.axelor.apps.base.db.Timer"/>
 		
-		<decimal name="budgetedTime" title="Budgeted time"/>
+		<decimal name="budgetedTime" title="Estimated time"/>
 		<many-to-one name="metaFile" title="Signature" ref="com.axelor.meta.db.MetaFile" />
 
 	 <track replace="true">
 	 	<field name="status"/>
-	 	<field name="projectCategory"/>
+	 	<field name="teamTaskCategory"/>
 	 	<field name="progressSelect"/>
 	 	<field name="assignedTo"/>
 	 	<message if="true" on="UPDATE">Task updated</message>

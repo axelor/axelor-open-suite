@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -74,8 +74,6 @@ public interface IExceptionMessage {
       "Please, enter the number of daily work hours per employee %s" /*)*/;
   static final String TIMESHEET_DAILY_WORK_HOURS = /*$$(*/
       "Please, configure the number of daily work hours." /*)*/;
-  static final String TIMESHEET_DATE_CONFLICT = /*$$(*/
-      "There is a conflict between the timesheet input dates and the dates of the following lines: %s" /*)*/;
   static final String TIMESHEET_NULL_FROM_DATE = /*$$(*/ "From date can't be empty" /*)*/;
   static final String TIMESHEET_NULL_TO_DATE = /*$$(*/ "To date can't be empty" /*)*/;
   static final String TIMESHEET_LINE_NULL_DATE = /*$$(*/
@@ -86,6 +84,8 @@ public interface IExceptionMessage {
       "Please add an employee's public holiday events planning related to user %s" /*)*/;
   static final String TIMESHEET_TIMESHEET_LINE_LIST_IS_EMPTY = /*$$(*/
       "Timesheet line list is empty, please add a timesheet line list" /*)*/;
+  static final String TIMESHEET_HOLIDAY = /*$$(*/ "Holiday" /*)*/;
+  static final String TIMESHEET_DAY_LEAVE = /*$$(*/ "Day leave" /*)*/;
 
   static final String LEAVE_USER_EMPLOYEE = /*$$(*/
       "Please create an employee for the user %s" /*)*/;
@@ -97,6 +97,8 @@ public interface IExceptionMessage {
       "You are not able to take leave in advance for the reason '%s'." /*)*/;
   static final String LEAVE_ALLOW_NEGATIVE_ALERT = /*$$(*/
       "You now have a negative amount of leave available for the reason %s" /*)*/;
+  static final String LEAVE_REASON_NO_UNIT = /*$$(*/
+      "Please, choose unit in leave reason %s." /*)*/;
 
   static final String EMPLOYEE_PLANNING = /*$$(*/ "Please, add a planning for employee : %s" /*)*/;
   static final String EMPLOYEE_PUBLIC_HOLIDAY = /*$$(*/
@@ -136,6 +138,12 @@ public interface IExceptionMessage {
       "Payroll preparations failed to be generated due to missing data : %s" /*)*/;
   static final String BATCH_PAYROLL_PREPARATION_EXPORT_RECAP = /*$$(*/
       "Payroll preparations exported : %s" /*)*/;
+
+  static final String BATCH_TIMESHEET_MISSING_TEMPLATE = /*$$(*/
+      "You must choose a template." /*)*/;
+  static final String BATCH_TIMESHEET_REMINDER_DONE = /*$$(*/ "Employees computed: %d" /*)*/;
+  static final String BATCH_TIMESHEET_REMINDER_ANOMALY = /*$$(*/
+      "Employees failed to be computed due to anomaly: %d" /*)*/;
 
   static final String BATCH_CREDIT_TRANSFER_EXPENSE_DONE_SINGULAR = /*$$(*/
       "%d expense treated successfully," /*)*/;
@@ -177,6 +185,8 @@ public interface IExceptionMessage {
   /** Kilometric allowance */
   String KILOMETRIC_ALLOWANCE_GOOGLE_MAPS_ERROR = /*$$(*/ "Google Maps error: %s" /*)*/;
 
+  String KILOMETRIC_ALLOWANCE_OSM_ERROR = /*$$(*/ "Open Street Maps error: %s" /*)*/;
+
   static final String EXPENSE_PAYMENT_CANCEL = /*$$(*/
       "The bank order linked to this expense has already been carried out/rejected, and thus can't be canceled" /*)*/;
 
@@ -195,4 +205,7 @@ public interface IExceptionMessage {
 
   static final String UNIT_SELECT_FOR_LEAVE_REASON = /*$$(*/
       "Please configure the unit for this type of absence" /*)*/;
+
+  static final String EMPLOYEE_TIMESHEET_REMINDER_TEMPLATE = /*$$(*/
+      "Please configure the template for email reminder" /*)*/;
 }

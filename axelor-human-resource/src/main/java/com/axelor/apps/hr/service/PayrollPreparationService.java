@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,6 +28,7 @@ import com.axelor.apps.hr.db.EmployeeBonusMgtLine;
 import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExtraHoursLine;
+import com.axelor.apps.hr.db.ExtraHoursType;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.LunchVoucherMgtLine;
@@ -65,6 +66,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class PayrollPreparationService {
 
@@ -142,7 +144,7 @@ public class PayrollPreparationService {
         leaveRequestRepo
             .all()
             .filter(
-                "self.statusSelect = ?4 AND self.user.employee = ?3 AND self.fromDateT <= ?1 AND self.toDateT >= ?2",
+                "self.statusSelect = ?4 AND self.user.employee = ?3 AND ((self.fromDateT BETWEEN ?2 AND ?1 OR self.toDateT BETWEEN ?2 AND ?1) OR (?1 BETWEEN self.fromDateT AND self.toDateT OR ?2 BETWEEN self.fromDateT AND self.toDateT))",
                 toDate,
                 fromDate,
                 employee,
@@ -289,35 +291,43 @@ public class PayrollPreparationService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public String exportSinglePayrollPreparation(PayrollPreparation payrollPreparation)
-      throws IOException {
+  public String exportPayrollPreparation(PayrollPreparation payrollPreparation)
+      throws AxelorException, IOException {
 
     List<String[]> list = new ArrayList<>();
-
-    String[] item = new String[5];
-    item[0] = payrollPreparation.getEmployee().getName();
-    item[1] = payrollPreparation.getDuration().toString();
-    item[2] = payrollPreparation.getLunchVoucherNumber().toString();
-    item[3] = payrollPreparation.getEmployeeBonusAmount().toString();
-    item[4] = payrollPreparation.getExtraHoursNumber().toString();
-    list.add(item);
+    String[] headerLine = {};
+    if (payrollPreparation.getExportTypeSelect() == HrBatchRepository.EXPORT_TYPE_STANDARD) {
+      String[] item = new String[5];
+      item[0] = payrollPreparation.getEmployee().getName();
+      item[1] = payrollPreparation.getDuration().toString();
+      item[2] = payrollPreparation.getLunchVoucherNumber().toString();
+      item[3] = payrollPreparation.getEmployeeBonusAmount().toString();
+      item[4] = payrollPreparation.getExtraHoursNumber().toString();
+      list.add(item);
+      headerLine = this.getPayrollPreparationExportHeader();
+    } else if (payrollPreparation.getExportTypeSelect() == HrBatchRepository.EXPORT_TYPE_NIBELIS) {
+      this.exportNibelis(payrollPreparation, list);
+      headerLine = this.getPayrollPreparationMeilleurGestionExportHeader();
+    } else if (payrollPreparation.getExportTypeSelect() == HrBatchRepository.EXPORT_TYPE_SILAE) {
+      this.exportSilae(payrollPreparation, list);
+      headerLine = this.getPayrollPreparationSilaeExportHeader();
+    }
 
     String fileName = this.getPayrollPreparationExportName();
     String filePath = AppSettings.get().get("file.upload.dir");
 
     new File(filePath).mkdirs();
-    CsvTool.csvWriter(filePath, fileName, ';', getPayrollPreparationExportHeader(), list);
-
-    payrollPreparation.setExported(true);
-    payrollPreparation.setExportDate(Beans.get(AppBaseService.class).getTodayDate());
-
-    payrollPreparationRepo.save(payrollPreparation);
+    CsvTool.csvWriter(filePath, fileName, ';', headerLine, list);
 
     Path path = Paths.get(filePath + System.getProperty("file.separator") + fileName);
 
     try (InputStream is = new FileInputStream(path.toFile())) {
       Beans.get(MetaFiles.class).attach(is, fileName, payrollPreparation);
     }
+
+    payrollPreparation.setExported(true);
+    payrollPreparation.setExportDate(Beans.get(AppBaseService.class).getTodayDate());
+    payrollPreparationRepo.save(payrollPreparation);
 
     return filePath + System.getProperty("file.separator") + fileName;
   }
@@ -331,30 +341,6 @@ public class PayrollPreparationService {
     return item;
   }
 
-  public String exportNibelisPayrollPreparation(PayrollPreparation payrollPreparation)
-      throws AxelorException, IOException {
-
-    List<String[]> list = new ArrayList<>();
-
-    exportNibelis(payrollPreparation, list);
-
-    String fileName = this.getPayrollPreparationExportName();
-    String filePath = AppSettings.get().get("file.upload.dir");
-    new File(filePath).mkdirs();
-
-    CsvTool.csvWriter(
-        filePath, fileName, ';', getPayrollPreparationMeilleurGestionExportHeader(), list);
-
-    Path path = Paths.get(filePath + System.getProperty("file.separator") + fileName);
-
-    try (InputStream is = new FileInputStream(path.toFile())) {
-      Beans.get(MetaFiles.class).attach(is, fileName, payrollPreparation);
-    }
-
-    return filePath + System.getProperty("file.separator") + fileName;
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
   public void exportNibelis(PayrollPreparation payrollPreparation, List<String[]> list)
       throws AxelorException {
 
@@ -414,16 +400,31 @@ public class PayrollPreparationService {
 
     // EXTRA HOURS
     if (payrollPreparation.getExtraHoursNumber().compareTo(BigDecimal.ZERO) > 0) {
-      String[] extraHourLine = createExportFileLine(payrollPreparation);
-      extraHourLine[3] = hrConfig.getExportCodeForLunchVoucherManagement();
-      extraHourLine[6] = payrollPreparation.getExtraHoursNumber().toString();
-      list.add(extraHourLine);
+      List<ExtraHoursLine> extraHourLineList =
+          Beans.get(ExtraHoursLineRepository.class)
+              .all()
+              .filter(
+                  "self.payrollPreparation.id = ?1"
+                      + " AND self.extraHoursType.payrollPreprationExport = ?2",
+                  payrollPreparation.getId(),
+                  true)
+              .fetch();
+      Map<ExtraHoursType, BigDecimal> extraHourLineExportMap =
+          extraHourLineList
+              .stream()
+              .collect(
+                  Collectors.groupingBy(
+                      ExtraHoursLine::getExtraHoursType,
+                      Collectors.reducing(
+                          BigDecimal.ZERO, ExtraHoursLine::getQty, BigDecimal::add)));
+      extraHourLineExportMap.forEach(
+          (extraHoursTypeGroup, totalHours) -> {
+            String[] extraHourLine = createExportFileLine(payrollPreparation);
+            extraHourLine[3] = extraHoursTypeGroup.getExportCode();
+            extraHourLine[6] = totalHours.toString();
+            list.add(extraHourLine);
+          });
     }
-
-    payrollPreparation.setExported(true);
-    payrollPreparation.setExportDate(appBaseService.getTodayDate());
-    payrollPreparation.setExportTypeSelect(HrBatchRepository.EXPORT_TYPE_NIBELIS);
-    payrollPreparationRepo.save(payrollPreparation);
   }
 
   public String getPayrollPreparationExportName() {
@@ -482,5 +483,56 @@ public class PayrollPreparationService {
           Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
     }
     Beans.get(PeriodRepository.class).save(payPeriod);
+  }
+
+  public List<String[]> exportSilae(PayrollPreparation payrollPrep, List<String[]> exportLineList)
+      throws AxelorException {
+    HRConfig hrConfig = hrConfigService.getHRConfig(payrollPrep.getCompany());
+
+    // Payroll leaves
+    if (payrollPrep.getLeaveDuration().compareTo(BigDecimal.ZERO) > 0) {
+      List<PayrollLeave> payrollLeaveList = this.fillInLeaves(payrollPrep);
+      for (PayrollLeave payrollLeave : payrollLeaveList) {
+        if (payrollLeave.getLeaveReason().getPayrollPreprationExport()) {
+          String[] leaveLine = createSilaeExportFileLine(payrollPrep);
+          leaveLine[1] = payrollLeave.getLeaveReason().getExportCode();
+          leaveLine[2] = String.valueOf(payrollLeave.getDuration());
+          leaveLine[3] =
+              payrollLeave.getFromDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+          leaveLine[4] = payrollLeave.getToDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+          exportLineList.add(leaveLine);
+        }
+      }
+    }
+    // Payroll duration
+    String[] durationLine = createSilaeExportFileLine(payrollPrep);
+    durationLine[1] = hrConfig.getExportCodeForDuration();
+    durationLine[2] = String.valueOf(payrollPrep.getDuration());
+    exportLineList.add(durationLine);
+
+    // Payroll extraHoursNumber
+    String[] extraHoursLine = createSilaeExportFileLine(payrollPrep);
+    extraHoursLine[1] = hrConfig.getExportCodeForExtraHours();
+    extraHoursLine[2] = String.valueOf(payrollPrep.getExtraHoursNumber());
+    exportLineList.add(extraHoursLine);
+    return exportLineList;
+  }
+
+  public String[] getPayrollPreparationSilaeExportHeader() {
+    String[] headers = new String[5];
+    headers[0] = I18n.get("Registration number");
+    headers[1] = I18n.get("Code");
+    headers[2] = I18n.get("Value");
+    headers[3] = I18n.get("Start date");
+    headers[4] = I18n.get("End date");
+    return headers;
+  }
+
+  public String[] createSilaeExportFileLine(PayrollPreparation payroll) {
+    String[] item = new String[5];
+    item[0] = payroll.getEmployee().getExportCode();
+    item[3] = payroll.getPeriod().getFromDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+    item[4] = payroll.getPeriod().getToDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+    return item;
   }
 }

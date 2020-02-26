@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,20 +23,16 @@ import com.axelor.apps.account.service.invoice.InvoiceBatchService;
 import com.axelor.apps.account.service.invoice.generator.batch.BatchWkf;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.util.HashMap;
 import java.util.Map;
 
 @Singleton
 public class InvoiceBatchController {
-
-  @Inject private InvoiceBatchService invoiceBatchService;
-
-  @Inject private InvoiceBatchRepository invoiceBatchRepo;
 
   /**
    * Lancer le batch de mise à jour de statut.
@@ -49,7 +45,9 @@ public class InvoiceBatchController {
 
     InvoiceBatch invoiceBatch = request.getContext().asType(InvoiceBatch.class);
 
-    Batch batch = invoiceBatchService.wkf(invoiceBatchRepo.find(invoiceBatch.getId()));
+    Batch batch =
+        Beans.get(InvoiceBatchService.class)
+            .wkf(Beans.get(InvoiceBatchRepository.class).find(invoiceBatch.getId()));
 
     response.setFlash(batch.getComments());
     response.setReload(true);
@@ -66,7 +64,7 @@ public class InvoiceBatchController {
 
     Context context = request.getContext();
 
-    Batch batch = invoiceBatchService.run((String) context.get("code"));
+    Batch batch = Beans.get(InvoiceBatchService.class).run((String) context.get("code"));
 
     Map<String, Object> mapData = new HashMap<String, Object>();
     mapData.put("anomaly", batch.getAnomaly());

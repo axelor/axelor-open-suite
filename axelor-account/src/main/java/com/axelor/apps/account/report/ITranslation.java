@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -217,6 +217,38 @@ public interface ITranslation {
       "AccountingReportType15.vatTotal"; /*)*/
   public static final String ACCOUNTING_REPORT_15_PRINT_DATE = /*$$(*/
       "AccountingReportType15.printDate"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_CURRENCY = /*$$(*/
+      "AccountingReportType15.currency"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_TAX_CODE = /*$$(*/
+      "AccountingReportType15.taxCode"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_NAME = /*$$(*/
+      "AccountingReportType15.name"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_MOVE_LINE = /*$$(*/
+      "AccountingReportType15.moveLine"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_DATE = /*$$(*/
+      "AccountingReportType15.date"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_MOVE_LINE_ACCOUNT = /*$$(*/
+      "AccountingReportType15.moveLineAccount"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_ACCOUNT_NAME = /*$$(*/
+      "AccountingReportType15.accountName"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_BASE = /*$$(*/
+      "AccountingReportType15.base"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_VAT_CASH_ACCOUNTING_SCHEME = /*$$(*/
+      "AccountingReportType15.vatCashAccountingScheme"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_PAYABLE_VAT = /*$$(*/
+      "AccountingReportType15.payableVAT"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_DEDUCTIBLE_VAT = /*$$(*/
+      "AccountingReportType15.deductibleVAT"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_REPORT_DATE_EDITION = /*$$(*/
+      "AccountingReportType15.reportDateEdition"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_TOTAL = /*$$(*/
+      "AccountingReportType15.total"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_BLANCE = /*$$(*/
+      "AccountingReportType15.balance"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_AMOUNT = /*$$(*/
+      "AccountingReportType15.amount"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_TAX_RATE = /*$$(*/
+      "AccountingReportType15.taxRate"; /*)*/
 
   public static final String ACCOUNTING_REPORT_11_JOURNAL = /*$$(*/
       "AccountingReportType11.daySubTotal"; /*)*/
@@ -256,6 +288,51 @@ public interface ITranslation {
       "AccountingReportType2000.totalPerAnalyticAxis"; /*)*/
   public static final String ACCOUNTING_REPORT_2000_TOTAL_PER_ANALYTIC_ACCOUNT = /*$$(*/
       "AccountingReportType2000.totalPerAnalyticAccount"; /*)*/
+
+  public static final String ACCOUNTING_REPORT_2001_ACCOUNT_TYPE = /*$$(*/
+      "AccountingReportType2001.accountType"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_AMOUNT = /*$$(*/
+      "AccountingReportType2001.amount"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_ANALYTIC_ACCOUNT = /*$$(*/
+      "AccountingReportType2001.analyticAccount"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_ANALYTIC_ACCOUNT_CODE = /*$$(*/
+      "AccountingReportType2001.analyticAccountCode"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_ANALYTIC_ACCOUNT_NAME = /*$$(*/
+      "AccountingReportType2001.analyticAccountName"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_ANALYTIC_AXIS = /*$$(*/
+      "AccountingReportType2001.analyticAxis"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_ANALYTIC_AXIS_CODE = /*$$(*/
+      "AccountingReportType2001.analyticAxisCode"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_ANALYTIC_AXIS_NAME = /*$$(*/
+      "AccountingReportType2001.analyticAxisName"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_ANALYTIC_JOURNAL = /*$$(*/
+      "AccountingReportType2001.analyticJournal"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_COMPANY = /*$$(*/
+      "AccountingReportType2001.company"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_END_DATE = /*$$(*/
+      "AccountingReportType2001.endDate"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_FROM = /*$$(*/
+      "AccountingReportType2001.from"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_ACCOUNT = /*$$(*/
+      "AccountingReportType2001.account"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_TITLE = /*$$(*/
+      "AccountingReportType2001.title"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_TO = /*$$(*/
+      "AccountingReportType2001.to"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_TOTAL_PER_ANALYTIC_ACCOUNT = /*$$(*/
+      "AccountingReportType2001.totalPerAnalyticAccount"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_TOTAL_PER_ANALYTIC_AXIS = /*$$(*/
+      "AccountingReportType2001.totalPerAnalyticAxis"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_TOTAL_PER_ANALYTIC_JOURNAL = /*$$(*/
+      "AccountingReportType2001.totalPerAnalyticJournal"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_DATE = /*$$(*/
+      "AccountingReportType2001.date"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_CURRENCY = /*$$(*/
+      "AccountingReportType2001.currency"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_ANALYTIC_MOVE_LINE_ID = /*$$(*/
+      "AccountingReportType2001.AnalyticMoveLineID"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_MOVE_LINE_NAME = /*$$(*/
+      "AccountingReportType2001.moveLineName"; /*)*/
 
   public static final String SALE_INVOICE_DETAILS_REPORT_TITLE = /*$$(*/
       "SaleInvoicesDetails.title"; /*)*/
@@ -417,6 +494,10 @@ public interface ITranslation {
       /*$$(*/ "AccountingReportType16.acquisition_date"; /*)*/
   public static final String ACCOUNTING_REPORT_16_GROSS_VALUE =
       /*$$(*/ "AccountingReportType16.gross_value"; /*)*/
+  public static final String ACCOUNTING_REPORT_ASSET_COMPUTATION_METHOD_LINEAR =
+      /*$$(*/ "linear"; /*)*/
+  public static final String ACCOUNTING_REPORT_ASSET_COMPUTATION_METHOD_DIGRESSIVE =
+      /*$$(*/ "degressive"; /*)*/
 
   public static final String ACCOUNTING_REPORT_17_TITLE =
       /*$$(*/ "AccountingReportType17.title"; /*)*/
@@ -471,4 +552,6 @@ public interface ITranslation {
   public static final String INVOICE_PAYMENT_PAYMENT_MODE = /*$$(*/
       "InvoicePayment.payment_mode"; /*)*/
   public static final String INVOICE_PAYMENT_AMOUNT = /*$$(*/ "InvoicePayment.amount"; /*)*/
+  public static final String INVOICE_REPORT_HEAD_OFFICE_ADDR = /*$$(*/
+      "Invoice.headOfficeAddress"; /*)*/
 }

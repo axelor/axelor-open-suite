@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -38,11 +38,9 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.lang.invoke.MethodHandles;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
@@ -133,33 +131,24 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
             + "-"
             + LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
 
-    String fileLink =
-        Beans.get(TemplateMessageServiceBaseImpl.class)
-            .generateBirtTemplateLink(
-                maker,
-                fileName,
-                birtTemplate.getTemplateLink(),
-                birtTemplate.getFormat(),
-                birtTemplate.getBirtTemplateParameterList());
-
-    return fileLink;
+    return Beans.get(TemplateMessageServiceBaseImpl.class)
+        .generateBirtTemplateLink(
+            maker,
+            fileName,
+            birtTemplate.getTemplateLink(),
+            birtTemplate.getFormat(),
+            birtTemplate.getBirtTemplateParameterList());
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public Message sendByEmail(Message message)
-      throws MessagingException, IOException, AxelorException {
+  public Message sendByEmail(Message message) throws MessagingException, AxelorException {
 
     if (Beans.get(AppBaseService.class).getAppBase().getActivateSendingEmail()) {
+      message.setStatusSelect(MessageRepository.STATUS_IN_PROGRESS);
       return super.sendByEmail(message);
     }
-
-    message.setSentByEmail(true);
-    message.setStatusSelect(MessageRepository.STATUS_SENT);
-    message.setSentDateT(LocalDateTime.now());
-    message.setSenderUser(AuthUtils.getUser());
-
-    return messageRepository.save(message);
+    return message;
   }
 
   public List<String> getEmailAddressNames(Set<EmailAddress> emailAddressSet) {
@@ -191,12 +180,8 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
   public String getFullEmailAddress(EmailAddress emailAddress) {
     String partnerName = "";
     if (emailAddress.getPartner() != null) {
-
-      try {
-        partnerName = new String(emailAddress.getPartner().getName().getBytes(), "ISO-8859-1");
-      } catch (UnsupportedEncodingException e) {
-        e.printStackTrace();
-      }
+      partnerName =
+          new String(emailAddress.getPartner().getName().getBytes(), StandardCharsets.ISO_8859_1);
     }
 
     return "\"" + partnerName + "\" <" + emailAddress.getAddress() + ">";

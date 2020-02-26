@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -112,7 +112,7 @@ public class BankDetailsServiceImpl implements BankDetailsService {
     }
 
     return "self.id IN ("
-        + StringTool.getIdListString(company.getBankDetailsSet())
+        + StringTool.getIdListString(company.getBankDetailsList())
         + ") AND self.active = true";
   }
 
@@ -158,7 +158,7 @@ public class BankDetailsServiceImpl implements BankDetailsService {
 
     if (company != null) {
 
-      String bankDetailsIds = StringTool.getIdListString(company.getBankDetailsSet());
+      String bankDetailsIds = StringTool.getIdListString(company.getBankDetailsList());
 
       if (company.getDefaultBankDetails() != null) {
         bankDetailsIds += bankDetailsIds.equals("") ? "" : ",";

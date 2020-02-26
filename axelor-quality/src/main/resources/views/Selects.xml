@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<selection name="quality.alert.priority.select">
 		<option value="1">Low</option>
@@ -18,12 +18,12 @@
 	</selection>
 	
 	<selection name="quality.control.status.select">
-		<option value="1">Draft</option>
-		<option value="2">Canceled</option>
-		<option value="3">Planned</option>
-		<option value="4">In progress</option>
-		<option value="5">Standby</option>
-		<option value="6">Finished</option>
+		<option order="0" value="1">Draft</option>
+		<option order="4" value="2">Canceled</option>
+		<option order="1" value="3">Planned</option>
+		<option order="2" value="4">In progress</option>
+		<option order="3" value="5">Standby</option>
+		<option order="5" value="6">Finished</option>
 	</selection>
 	
 	<selection name="quality.control.points.status.select">

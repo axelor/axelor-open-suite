@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,10 +33,14 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.supplychain.db.Timetable;
+import com.axelor.apps.supplychain.db.repo.TimetableRepository;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -70,7 +74,28 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl {
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void ventilate(Invoice invoice) throws AxelorException {
+    super.ventilate(invoice);
+
+    TimetableRepository timeTableRepo = Beans.get(TimetableRepository.class);
+
+    List<Timetable> timetableList =
+        timeTableRepo.all().filter("self.invoice.id = ?1", invoice.getId()).fetch();
+
+    for (Timetable timetable : timetableList) {
+      timetable.setInvoiced(true);
+      timeTableRepo.save(timetable);
+    }
+  }
+
+  @Override
   public Set<Invoice> getDefaultAdvancePaymentInvoice(Invoice invoice) throws AxelorException {
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return super.getDefaultAdvancePaymentInvoice(invoice);
+    }
+
     SaleOrder saleOrder = invoice.getSaleOrder();
     Company company = invoice.getCompany();
     Currency currency = invoice.getCurrency();
@@ -110,6 +135,11 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl {
 
   @Override
   public List<MoveLine> getMoveLinesFromSOAdvancePayments(Invoice invoice) {
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return super.getMoveLinesFromSOAdvancePayments(invoice);
+    }
+
     // search sale order in the invoice
     SaleOrder saleOrder = invoice.getSaleOrder();
     // search sale order in invoice lines

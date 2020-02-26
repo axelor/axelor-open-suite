@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -108,9 +108,18 @@ public class ManufOrderWorkflowService {
       manufOrderService.createToProduceProdProductList(manufOrder);
     }
 
-    if (manufOrder.getPlannedStartDateT() == null) {
+    if (manufOrder.getPlannedStartDateT() == null && manufOrder.getPlannedEndDateT() == null) {
       manufOrder.setPlannedStartDateT(
           Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
+    } else if (manufOrder.getPlannedStartDateT() == null
+        && manufOrder.getPlannedEndDateT() != null) {
+      long duration = 0;
+      for (OperationOrder order : manufOrder.getOperationOrderList()) {
+        duration +=
+            operationOrderWorkflowService.computeEntireCycleDuration(
+                order, order.getManufOrder().getQty()); // in seconds
+      }
+      manufOrder.setPlannedStartDateT(manufOrder.getPlannedEndDateT().minusSeconds(duration));
     }
 
     for (OperationOrder operationOrder : getSortedOperationOrderList(manufOrder)) {

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -95,7 +95,8 @@ public interface SaleOrderInvoiceService {
       int operationSelect,
       BigDecimal amount,
       boolean isPercent,
-      Map<Long, BigDecimal> qtyToInvoiceMap)
+      Map<Long, BigDecimal> qtyToInvoiceMap,
+      List<Long> timetableIdList)
       throws AxelorException;
 
   SaleOrder fillSaleOrder(SaleOrder saleOrder, Invoice invoice);
@@ -223,18 +224,6 @@ public interface SaleOrderInvoiceService {
       SaleOrder saleOrder, BigDecimal amount, boolean isPercent) throws AxelorException;
 
   /**
-   * Try to set the updated sale order amount invoiced.
-   *
-   * @param saleOrder
-   * @param currentInvoiceId
-   * @param excludeCurrentInvoice
-   * @throws AxelorException if the invoiced amount would be greater than the exTaxTotal
-   */
-  void updateAndCheckInvoicedAmount(
-      SaleOrder saleOrder, Long currentInvoiceId, boolean excludeCurrentInvoice)
-      throws AxelorException;
-
-  /**
    * Set the updated sale order amount invoiced without checking.
    *
    * @param saleOrder
@@ -284,7 +273,7 @@ public interface SaleOrderInvoiceService {
    * @param saleOrder the sale order from context
    * @return the domain for the operation select field in the invoicing wizard form
    */
-  Map<String, Integer> getInvoicingWizardOperationDomain(SaleOrder saleOrder);
+  List<Integer> getInvoicingWizardOperationDomain(SaleOrder saleOrder);
 
   /**
    * throw exception if all invoices amount generated from the sale order and amountToInvoice is

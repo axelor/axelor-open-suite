@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -44,21 +44,34 @@ import org.slf4j.LoggerFactory;
 
 public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeService {
 
-  private static final Logger log = LoggerFactory.getLogger(ProjectPlanningTimeService.class);
+  protected static final Logger LOG = LoggerFactory.getLogger(ProjectPlanningTimeService.class);
 
-  @Inject private ProjectPlanningTimeRepository planningTimeRepo;
+  protected ProjectPlanningTimeRepository planningTimeRepo;
+  protected ProjectRepository projectRepo;
+  protected TeamTaskRepository teamTaskRepo;
+  protected WeeklyPlanningService weeklyPlanningService;
+  protected PublicHolidayHrService holidayService;
+  protected ProductRepository productRepo;
+  protected UserRepository userRepo;
 
-  @Inject private ProjectRepository projectRepo;
-
-  @Inject private TeamTaskRepository teamTaskRepo;
-
-  @Inject private WeeklyPlanningService weeklyPlanningService;
-
-  @Inject private PublicHolidayHrService holidayService;
-
-  @Inject private ProductRepository productRepo;
-
-  @Inject private UserRepository userRepo;
+  @Inject
+  public ProjectPlanningTimeServiceImpl(
+      ProjectPlanningTimeRepository planningTimeRepo,
+      ProjectRepository projectRepo,
+      TeamTaskRepository teamTaskRepo,
+      WeeklyPlanningService weeklyPlanningService,
+      PublicHolidayHrService holidayService,
+      ProductRepository productRepo,
+      UserRepository userRepo) {
+    super();
+    this.planningTimeRepo = planningTimeRepo;
+    this.projectRepo = projectRepo;
+    this.teamTaskRepo = teamTaskRepo;
+    this.weeklyPlanningService = weeklyPlanningService;
+    this.holidayService = holidayService;
+    this.productRepo = productRepo;
+    this.userRepo = userRepo;
+  }
 
   @Override
   public BigDecimal getTaskPlannedHrs(TeamTask task) {
@@ -66,45 +79,17 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     BigDecimal totalPlanned = BigDecimal.ZERO;
     if (task != null) {
       List<ProjectPlanningTime> plannings =
-          planningTimeRepo
-              .all()
-              .filter(
-                  "self.task = ?1 AND self.typeSelect = ?2",
-                  task,
-                  ProjectPlanningTimeRepository.TYPE_PROJECT_PLANNING_TIME)
-              .fetch();
+          planningTimeRepo.all().filter("self.task = ?1", task).fetch();
       if (plannings != null) {
         totalPlanned =
             plannings
                 .stream()
-                .map(p -> p.getPlannedHours())
+                .map(ProjectPlanningTime::getPlannedHours)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
       }
     }
 
     return totalPlanned;
-  }
-
-  @Override
-  public BigDecimal getTaskRealHrs(TeamTask task) {
-
-    BigDecimal totalRealHrs = BigDecimal.ZERO;
-    if (task != null) {
-      List<ProjectPlanningTime> plannings =
-          planningTimeRepo
-              .all()
-              .filter(
-                  "self.task = ?1 AND self.typeSelect = ?2",
-                  task,
-                  ProjectPlanningTimeRepository.TYPE_PROJECT_PLANNING_TIME_SPENT)
-              .fetch();
-      if (plannings != null) {
-        totalRealHrs =
-            plannings.stream().map(p -> p.getRealHours()).reduce(BigDecimal.ZERO, BigDecimal::add);
-      }
-    }
-
-    return totalRealHrs;
   }
 
   @Override
@@ -116,44 +101,20 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
           planningTimeRepo
               .all()
               .filter(
-                  "(self.project = ?1 OR (self.project.parentProject = ?1 AND self.project.parentProject.isShowPhasesElements = ?2)) AND self.typeSelect = ?3",
+                  "self.project = ?1 OR (self.project.parentProject = ?1 AND self.project.parentProject.isShowPhasesElements = ?2)",
                   project,
-                  true,
-                  ProjectPlanningTimeRepository.TYPE_PROJECT_PLANNING_TIME)
+                  true)
               .fetch();
       if (plannings != null) {
         totalPlanned =
             plannings
                 .stream()
-                .map(p -> p.getPlannedHours())
+                .map(ProjectPlanningTime::getPlannedHours)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
       }
     }
 
     return totalPlanned;
-  }
-
-  @Override
-  public BigDecimal getProjectRealHrs(Project project) {
-
-    BigDecimal totalRealHrs = BigDecimal.ZERO;
-    if (project != null) {
-      List<ProjectPlanningTime> plannings =
-          planningTimeRepo
-              .all()
-              .filter(
-                  "(self.project = ?1 OR (self.project.parentProject = ?1 AND self.project.parentProject.isShowPhasesElements = ?2)) AND self.typeSelect = ?3",
-                  project,
-                  true,
-                  ProjectPlanningTimeRepository.TYPE_PROJECT_PLANNING_TIME_SPENT)
-              .fetch();
-      if (plannings != null) {
-        totalRealHrs =
-            plannings.stream().map(p -> p.getRealHours()).reduce(BigDecimal.ZERO, BigDecimal::add);
-      }
-    }
-
-    return totalRealHrs;
   }
 
   @Override
@@ -167,10 +128,6 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       return;
     }
 
-    boolean isTimeSpent = false;
-    if (datas.get("_timeSpent") != null) {
-      isTimeSpent = (boolean) datas.get("_timeSpent");
-    }
     DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
 
     LocalDateTime fromDate = LocalDateTime.parse(datas.get("fromDate").toString(), formatter);
@@ -211,7 +168,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
 
       LocalDate date = fromDate.toLocalDate();
 
-      log.debug("Create Planning for the date: {}", date);
+      LOG.debug("Create Planning for the date: {}", date);
 
       double dayHrs = 0;
       if (employee.getWeeklyPlanning() != null) {
@@ -230,18 +187,13 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
         planningTime.setProject(project);
         planningTime.setIsIncludeInTurnoverForecast(
             (Boolean) datas.get("isIncludeInTurnoverForecast"));
-        planningTime.setTypeSelect((Integer) datas.get("_typeSelect"));
 
         BigDecimal totalHours = BigDecimal.ZERO;
         if (timePercent > 0) {
           totalHours =
               dailyWorkHrs.multiply(new BigDecimal(timePercent)).divide(new BigDecimal(100));
         }
-        if (isTimeSpent) {
-          planningTime.setRealHours(totalHours);
-        } else {
-          planningTime.setPlannedHours(totalHours);
-        }
+        planningTime.setPlannedHours(totalHours);
         planningTimeRepo.save(planningTime);
       }
 

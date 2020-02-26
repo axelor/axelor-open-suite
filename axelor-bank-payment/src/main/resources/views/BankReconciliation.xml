@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
   
 	<grid name="bank-reconciliation-grid" title="Bank reconciliations" model="com.axelor.apps.bankpayment.db.BankReconciliation" orderBy="-fromDate,-toDate,company.code,bankDetails.iban">
 		<field name="name"/>
@@ -202,7 +202,7 @@
 	</action-method>
 	
 	<action-validate name="action-bank-reconciliation-check-incomplete-bankreconciliation-line">
-   		<alert message="There is at least one incomplete bank reconciliation. Are you sure to continue ?" if="bankReconciliationLineList != null &amp;&amp; bankReconciliationLineList.find{it.moveLine == null} != null" />
+   		<alert message="There is at least one incomplete bank reconciliation. Are you sure you want to continue ?" if="bankReconciliationLineList != null &amp;&amp; bankReconciliationLineList.find{it.moveLine == null} != null" />
    	</action-validate>
     
 </object-views>
