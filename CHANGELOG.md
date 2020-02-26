@@ -13,6 +13,7 @@
 - Stock Move Line : Do not allow user to remove allocated stock move line.
 - CAMPAIGN : add exception message on partner and lead at invalid domain in target list
 - STUDIO: Set default value for form width to large
+- Block the creation of duplicate accounts
 
 ## Bug Fixes
 - SALEORDER : fixed bug causing the margins to be rounded to the unit
