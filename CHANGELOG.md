@@ -50,6 +50,7 @@
 - ACTIONBUILDER : Allow to add a condition at start in generated action-script
 - BANK ORDER : replace action record with action method for reject and correct button.
 - SEQUENCE : change tracking
+- USER : Default User language is based on application.locale from application.properties
 
 ## Bug Fixes
 - Fix injection error during test
