@@ -105,7 +105,12 @@ public class LeaveController {
   public void editLeaveSelected(ActionRequest request, ActionResponse response) {
     try {
       Map<String, Object> leaveMap = (Map<String, Object>) request.getContext().get("leaveSelect");
-      Long leaveId = Long.valueOf((long) leaveMap.get("id"));
+      Long leaveId;
+      try {
+    	  leaveId = Long.valueOf((long) leaveMap.get("id"));
+      } catch(ClassCastException e) {
+    	  leaveId = Long.valueOf((long) (int) leaveMap.get("id"));
+      }
       response.setView(
           ActionView.define(I18n.get("LeaveRequest"))
               .model(LeaveRequest.class.getName())
@@ -114,6 +119,8 @@ public class LeaveController {
               .domain("self.id = " + leaveId)
               .context("_showRecord", leaveId)
               .map());
+    } catch (NullPointerException e) {
+    	response.setError("Please select a Leave request to edit");
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
