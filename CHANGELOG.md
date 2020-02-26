@@ -14,6 +14,7 @@
 - Timesheet : synchronize time computation method of project when multi user triggers validation of timesheet.
 - ACCOUNT CONFIG : change the place of invoice automatic mail and invoice message template in account config.
 - SALE ORDER/PURCHASE ORDER : changed action type for buttons "Back to confirmed order" and "Back to validated order"
+- CLIENT-PORTAL : Chart now only shows invoices corresponding the client partner.
 
 ## Bug Fixes
 - MANUF ORDER : Display sale order comment in manufacturing order printing.
@@ -36,6 +37,7 @@
 - INVOICE Report : Fixed issue in displaying proforma invoice comment from grid button
 - INVOICE : fix the NPE when payment mode is null in invoice
 - TASK : fix translation issue caused by "Package" entitled field
+- CLIENT-PORTAL : fixed the NPE when the user does not correspond to any partner.
 
 ## [5.2.4] - 2020-02-05
 ## Improvements
