@@ -109,6 +109,7 @@
 "QualityControl.customerSignature","CLIENT",,
 "QualityControl.endDate","DATE",,
 "QualityControl.finalNote","Note finale",,
+"QualityControl.generalObservation","générale observation",,
 "QualityControl.inspectorSignature","L'INSPECTEUR",,
 "QualityControl.measuringNote","Note",,
 "QualityControl.observation","Observation",,

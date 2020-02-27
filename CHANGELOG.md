@@ -4,4 +4,6 @@
 - Add global tracking log feature.
 
 ## Improvements
+- QUALITY CONTROL : update the qualitycontrol report
+
 ## Bug Fixes
