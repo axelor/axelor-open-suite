@@ -5,6 +5,7 @@
 
 ## Improvements
 - Block the creation of duplicate accounts
+- MANUF ORDER : missing attribute for workshopStockLocation.
 
 ## Bug Fixes
 
