@@ -105,6 +105,15 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
   }
 
   @Override
+  public int getGlobalTrackingLogPersistence() {
+    AppBase appBase = getAppBase();
+    if (appBase != null) {
+      return appBase.getGlobalTrackingLogPersistence();
+    }
+    return DEFAULT_TRACKING_MONTHS_PERSISTENCE;
+  }
+
+  @Override
   public int getNbDecimalDigitForQty() {
 
     AppBase appBase = getAppBase();

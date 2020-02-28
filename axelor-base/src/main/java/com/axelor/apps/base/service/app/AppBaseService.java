@@ -29,6 +29,8 @@ public interface AppBaseService extends AppService {
 
   public static final int DEFAULT_NB_DECIMAL_DIGITS = 2;
 
+  public static final int DEFAULT_TRACKING_MONTHS_PERSISTENCE = 1;
+
   public AppBase getAppBase();
 
   // Date du jour
@@ -54,6 +56,8 @@ public interface AppBaseService extends AppService {
   public int getNbDecimalDigitForUnitPrice();
 
   public int getNbDecimalDigitForQty();
+
+  public int getGlobalTrackingLogPersistence();
 
   public String getDefaultPartnerLanguageCode();
 
