@@ -25,7 +25,7 @@ apply from: './gradle/style.gradle'
 allprojects {
 
 	configurations {
-   		runtime.exclude group:"org.eclipse.birt.runtime.3_7_1", module:"org.apache.commons.codec"
+   		runtimeClasspath.exclude group:"org.eclipse.birt.runtime.3_7_1", module:"org.apache.commons.codec"
 	}
 
 	apply plugin: 'idea'
@@ -50,11 +50,9 @@ axelor {
 
 dependencies {
 	gradle.appModules.each { dir ->
-		compile project(":modules:$dir.name")
+		implementation project(":modules:$dir.name")
 	}
 }
-
-task wrapper(type: Wrapper) { gradleVersion = "4.4.1" }
 
 task("dataImport", type: JavaExec) {
 	main = "com.axelor.apps.erp.Main"
@@ -75,7 +73,7 @@ task archiveReports(type: Zip) {
 
 	classifier 'reports'
 	includeEmptyDirs = false
-	destinationDir = file("$buildDir/libs")
+	destinationDirectory = file("$buildDir/libs")
 }
 
 build.finalizedBy archiveReports
