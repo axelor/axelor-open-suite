@@ -128,7 +128,7 @@
 					form-view="journal-form" grid-view="journal-grid" canEdit="false"/>
 				<field name="bankDetails" form-view="bank-details-form"
 					grid-view="bank-details-grid" onSelect="action-account-management-attrs-bank-details-domain" />
-				<field name="sequence" domain="self.company = :company  AND self.code='paymentVoucher'" 
+				<field name="sequence" domain="self.company = :company  AND self.codeSelect='paymentVoucher'" 
 					canNew="true" form-view="sequence-form" grid-view="sequence-grid" />
 			</panel>
 

@@ -12,7 +12,7 @@
         canEdit="false"/>
     <field name="journal" form-view="journal-form" grid-view="journal-grid" canEdit="false" domain="self.company = :company AND self.statusSelect = 1"/>
     <field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid" canEdit="false" onSelect="action-account-management-attrs-bank-details-domain"/>
-    <field name="sequence" domain="self.company = :company  AND self.code='paymentVoucher'" form-view="sequence-form" grid-view="sequence-grid"/>
+    <field name="sequence" domain="self.company = :company  AND self.codeSelect ='paymentVoucher'" form-view="sequence-form" grid-view="sequence-grid"/>
   </grid>
  
 	<grid name="account-management-tax-grid" title="Account management list" model="com.axelor.apps.account.db.AccountManagement" editable="true"

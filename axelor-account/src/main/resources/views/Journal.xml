@@ -55,7 +55,7 @@
 		
 			<panel name="configurationsPanel" title="Configurations" hideIf="$popup()">
 				<panel name="moveLinePanel" title="MoveLine" colSpan="12">
-					<field name="sequence" domain="self.code = 'move' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid" canEdit="true" canNew="true"/>
+					<field name="sequence" domain="self.codeSelect = 'move' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid" canEdit="true" canNew="true"/>
 					<field name="isInvoiceMoveConsolidated" widget="Boolean-switch"/>
 					<field name="descriptionModel"/>
 					<field name="descriptionIdentificationOk"/>

@@ -19,19 +19,19 @@
                 <field name="externalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
             </panel>
             <panel name="creditTransferBankOrderSequencesPanel" title="Credit transfer bank orders sequences" colSpan="4" if="eval: __config__.app.getApp('bank-payment').manageCreditTransferPayment">
-                <field name="sepaCreditTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
-                <field name="intCreditTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
+                <field name="sepaCreditTransSequence" colSpan="12" domain="self.codeSelect = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
+                <field name="intCreditTransSequence" colSpan="12" domain="self.codeSelect = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
             </panel>
             <panel name="directDebitBankOrderSequencesPanel" title="Direct debit bank orders sequences" colSpan="4" if="eval: __config__.app.getApp('bank-payment').manageDirectDebitPayment">
-                <field name="sepaDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
-                <field name="intDirectDebitSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
+                <field name="sepaDirectDebitSequence" colSpan="12" domain="self.codeSelect = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
+                <field name="intDirectDebitSequence" colSpan="12" domain="self.codeSelect = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
             </panel>
             <panel name="treasuryTransferBankOrderSequencesPanel" title="Treasury transfer Bank orders sequences" colSpan="4" if="eval: __config__.app.getApp('bank-payment').manageBankToBankTransferPayment">
-                <field name="natTreasuryTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
-                <field name="intTreasuryTransSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
+                <field name="natTreasuryTransSequence" colSpan="12" domain="self.codeSelect = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
+                <field name="intTreasuryTransSequence" colSpan="12" domain="self.codeSelect = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
             </panel>
             <panel name="otherPanel" title="Other" colSpan="12">
-                <field name="otherBankOrderSequence" colSpan="12" domain="self.code = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
+                <field name="otherBankOrderSequence" colSpan="12" domain="self.codeSelect = 'bankOrder' and (self.company = :company or self.company is null)" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
             </panel>
         </panel>
        
