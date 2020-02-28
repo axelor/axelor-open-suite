@@ -1,5 +1,6 @@
 apply plugin: "com.axelor.app-module"
 
+apply from: "../libs.gradle"
 apply from: "../version.gradle"
 
 apply {
@@ -11,14 +12,16 @@ axelor {
 	description "Axelor Account Module"
 }
 
-
 dependencies {
-	compile project(":modules:axelor-base")
+	api project(":modules:axelor-base")
 
-	compile 'xalan:xalan:2.7.2'
+	implementation libs.jdom
+	implementation libs.xalan
+	implementation libs.xmlbeans
 
-	compile group: 'jdom', name: 'jdom', version: '1.1'
-	compile group: 'org.apache.xmlbeans', name: 'xmlbeans', version: '2.5.0'
-    compile "org.bouncycastle:bcprov-jdk15on:1.62"
-    compile "org.bouncycastle:bcpkix-jdk15on:1.62"
+	implementation libs.bcprov_jdk15on
+	implementation libs.bcpkix_jdk15on
+
+	implementation libs.ical4j
+	implementation libs.iban4j
 }
