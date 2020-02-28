@@ -23,7 +23,7 @@
 
   <action-attrs name="action-workshop-sequence-config-line-attrs-seq-domain">
     <attribute for="sequence" name="domain"
-      expr="eval: &quot; self.code = 'manufOrder' and self.company.id = ${__parent__.company.id} &quot;"/>
+      expr="eval: &quot; self.codeSelect = 'manufOrder' and self.company.id = ${__parent__.company.id} &quot;"/>
   </action-attrs>
 
   <action-attrs name="action-workshop-sequence-config-line-attrs-workshop-domain">

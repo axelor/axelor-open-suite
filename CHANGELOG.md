@@ -18,6 +18,6 @@
 ## Bug Fixes
 - Production : Fix Java Heap Error.
 - DEMO DATA : fix issue in BudgetService.
-
+- SEQUENCE : wrong domain on all M2O sequence fields.
 
 [Unreleased 6.0]: https://github.com/axelor/axelor-business-suite/compare/dev...wip
