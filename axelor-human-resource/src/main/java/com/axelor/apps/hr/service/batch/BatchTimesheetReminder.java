@@ -32,6 +32,7 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -42,15 +43,18 @@ public class BatchTimesheetReminder extends BatchStrategy {
 
   protected TimesheetRepository timesheetRepo;
   protected MessageService messageService;
+  protected MessageRepository messageRepo;
 
   @Inject
   public BatchTimesheetReminder(
       LeaveManagementService leaveManagementService,
       TimesheetRepository timesheetRepo,
-      MessageService messageService) {
+      MessageService messageService,
+      MessageRepository messageRepo) {
     super(leaveManagementService);
     this.timesheetRepo = timesheetRepo;
     this.messageService = messageService;
+    this.messageRepo = messageRepo;
   }
 
   @Override
@@ -111,7 +115,8 @@ public class BatchTimesheetReminder extends BatchStrategy {
     return timesheet != null && timesheet.getToDate().plusDays(daysBeforeReminder).isAfter(now);
   }
 
-  private void sendReminder(Employee employee)
+  @Transactional(rollbackOn = {Exception.class})
+  protected void sendReminder(Employee employee)
       throws AxelorException, MessagingException, IOException {
     Message message = new Message();
     message.setMediaTypeSelect(MessageRepository.MEDIA_TYPE_EMAIL);
@@ -125,6 +130,7 @@ public class BatchTimesheetReminder extends BatchStrategy {
     message.setMailAccount(
         Beans.get(EmailAccountRepository.class).all().filter("self.isDefault = true").fetchOne());
 
+    messageRepo.save(message);
     messageService.sendByEmail(message);
   }
 }
