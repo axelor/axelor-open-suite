@@ -2,6 +2,7 @@
 ## [Unreleased 5.2.6]
 ## Feature
 - Workflow : Add support to select real status fields.
+- STOCK CONFIG : add three fields in stock move printing setting
 
 ## Improvements
 - Block the creation of duplicate accounts
