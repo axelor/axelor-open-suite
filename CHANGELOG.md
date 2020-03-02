@@ -8,6 +8,7 @@
 ## Bug Fixes
 - Fix Timesheet Reminder Batch sendReminder method
 - Stock Move Line reservation: correctly set qty requested flag when generated from a sale order line.
+- Stock Move: Delete empty date field in form view.
 
 ## [5.3.0] - 2020-02-25
 ## Features
