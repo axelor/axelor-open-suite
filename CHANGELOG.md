@@ -4,6 +4,7 @@
 - InvoiceLine: add fields in advanced search.
 ## Bug Fixes
 - Fix Timesheet Reminder Batch sendReminder method
+- Advance data import: Fix search issue on main object to import.
 
 ## [5.3.0] - 2020-02-25
 ## Features
