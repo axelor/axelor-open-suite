@@ -17,7 +17,7 @@
 	 </grid>
     
 	<form name="mrp-form" model="com.axelor.apps.supplychain.db.Mrp" title="Mrp" width="large"
-		onLoad="action-attrs-mrp-generate-all-proposals">
+		onLoad="action-attrs-mrp-generate-all-proposals"  onNew="action-mrp-record-onnew">
 	     <menubar>
 	     	<menu title="Tools" showTitle="true" icon="fa-wrench">
 	    		<item name="runCalculationItem" title="Run calculation"  showIf="statusSelect != 1" action="save,action-method-mrp-run-calculation" prompt="Are you sure you want run the calculation ? Calculation can take a long time."/>
@@ -55,6 +55,7 @@
 	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="6" domain="self.typeSelect != 3 AND (self.isNotInMrp = false OR self.isNotInMrp = null)" canEdit="false"/>
 	        <field name="stockLocation.company"/>
 	        <field name="displayProductWithoutProposal" widget="boolean-switch"/>
+	        <field name="mrpType" hidden="true"/>
 	        <panel-related name="productSetPanel" field="productSet" canEdit="false" form-view="product-form" grid-view="product-grid" canNew="false" colSpan="12" domain="self.productTypeSelect = 'storable' AND self.excludeFromMrp = false AND self.stockManaged = true"/>
 	        <panel-related name="productCategorySetPanel" field="productCategorySet" canEdit="false" form-view="product-category-form" grid-view="product-category-grid" canNew="false" colSpan="12"/>
 	        <panel-related name="productFamilySetPanel" field="productFamilySet" canEdit="false" form-view="product-family-form" grid-view="product-family-grid" canNew="false" colSpan="12"/>
@@ -130,6 +131,10 @@
 	<action-method name="action-method-mrp-undo-manual-changes">
 		<call class="com.axelor.apps.supplychain.web.MrpController" method="undoManualChanges"/>
 	</action-method>
+
+	<action-record name="action-mrp-record-onnew" model="com.axelor.apps.supplychain.db.Mrp">
+		<field name="mrpType" expr="eval:1"/>
+	</action-record>
 	
 </object-views>
 

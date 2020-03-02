@@ -13,6 +13,7 @@
 	<string name="note" title="Note" large="true" multiline="true"/>
 	<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
 	<integer name="statusSelect" title="Status" selection="supplychain.mrp.forecast.status.select" readonly="true" default="1"/>
+	<integer name="technicalOrigin" title="Origin" selection="supplychain.mrp.forecast.technical.origin.select"/>
 	
 	<extra-code><![CDATA[
 	
@@ -21,6 +22,10 @@
 		public static final int STATUS_CONFIRMED = 2;
 		public static final int STATUS_CANCELLED = 3;
 	
+		// TECHNICAL ORIGIN
+		public static final int TECHNICAL_ORIGIN_CREATED_MANUALLY = 1;
+		public static final int TECHNICAL_ORIGIN_CREATED_FROM_SOP = 2;
+		
 	]]></extra-code>
 
 	<track on="UPDATE">

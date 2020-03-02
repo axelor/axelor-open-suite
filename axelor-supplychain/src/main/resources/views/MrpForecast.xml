@@ -20,6 +20,16 @@
 		<panel name="mainPanel">
 			<panel name="statusSelectPanel" colSpan="8">
 				<field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="12"/>
+				<field name="technicalOrigin" showTitle="false" colSpan="4" readonly="true" showIf="$readonly()">
+					<viewer>
+						<![CDATA[
+							<h4 class="text-right">
+								<span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOrigin == 1" x-translate>Created manually</span>
+								<span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOrigin == 2" x-translate>Created from SOP</span>
+							</h4>
+						]]>
+					</viewer>
+				</field>
 			</panel>
 			<panel name="actionsPanel" colSpan="4" itemSpan="12">
 				<button name="confirmBtn" title="Confirm" showIf="statusSelect == 1" onClick="save,action-mrp-forecast-attrs-confirm-btn-on-click,save"/>
@@ -51,6 +61,10 @@
  	<action-attrs name="action-mrp-forecast-attrs-scale-and-precision">
 		<attribute name="scale" for="qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
 	</action-attrs>
+
+	 <action-record name="action-mrp-forecast-record-set-technical-origin" model="com.axelor.apps.supplychain.db.MrpForecast">
+	 	<field name="technicalOrigin" expr="eval: 1"/>
+	 </action-record>
 
 	 <action-attrs name="action-mrp-forecast-attrs-confirm-btn-on-click">
 	 	<attribute name="value" for="statusSelect" expr="eval: 2"/>
