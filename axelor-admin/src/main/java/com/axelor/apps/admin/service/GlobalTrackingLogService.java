@@ -8,7 +8,7 @@ public interface GlobalTrackingLogService {
 
   public GlobalTrackingLog createExportLog(MetaModel model);
 
-  public void deleteOldGlobalTrackingLog(int months) throws Exception;
+  public void deleteOldGlobalTrackingLog(int months);
 
   public void removeGlobalTrackingLogs(List<GlobalTrackingLog> globalTrackingLogList);
 }

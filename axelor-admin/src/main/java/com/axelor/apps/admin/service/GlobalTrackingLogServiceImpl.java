@@ -39,7 +39,7 @@ public class GlobalTrackingLogServiceImpl implements GlobalTrackingLogService {
   }
 
   @Override
-  public void deleteOldGlobalTrackingLog(int months) throws Exception {
+  public void deleteOldGlobalTrackingLog(int months) {
     final int FETCH_LIMIT = 5;
     final Query<GlobalTrackingLog> query =
         globalTrackingLogRepo
@@ -55,7 +55,7 @@ public class GlobalTrackingLogServiceImpl implements GlobalTrackingLogService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void removeGlobalTrackingLogs(List<GlobalTrackingLog> globalTrackingLogList) {
     for (GlobalTrackingLog globalTrackingLog : globalTrackingLogList) {
       MetaFile metaFile = globalTrackingLog.getMetaFile();
