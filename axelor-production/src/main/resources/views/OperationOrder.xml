@@ -88,6 +88,7 @@
 				]]>
 				</viewer>
 			</field>
+			<field name="manufOrder.statusSelect" hidden="true"/>
 			<field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect" colSpan="12"/>
 			<field name="manufOrder.statusSelect" hidden="true"/>
 		</panel>
@@ -96,6 +97,7 @@
 				<field name="plannedStartDateT" onChange="save,action-operation-order-method-compute-duration,save"/>
 				<field name="plannedEndDateT" onChange="save,action-operation-order-method-compute-duration,save"/>
 				<field name="plannedDuration" colSpan="12" widget="duration" x-seconds="true" x-big="true"/>
+				<field name="isPinned" />
 			</panel>
 			<panel name="realDatesPanel" title="Real dates" colSpan="6">
 				<field name="realStartDateT" onChange="save,action-operation-order-method-compute-duration,save"/>
@@ -105,7 +107,7 @@
 		</panel>
 		<panel name="resourcesPanel" title="Resources" colSpan="12" readonlyIf="statusSelect == 6">
 			<field name="workCenter" readonly="true" grid-view="work-center-grid" form-view="work-center-form"/>
-			<field name="machineWorkCenter" hidden="true" readonlyIf="statusSelect &gt; 3" onSelect="action-operation-order-attrs-domain-machine" onChange="save,action-operation-order-method-machine-change" grid-view="work-center-machine-grid" form-view="work-center-machine-form"/>
+			<field name="machineWorkCenter" domain="self.machineType = (SELECT machineType FROM Machine WHERE id = :machineWorkCenter)" hidden="true" readonlyIf="statusSelect &gt; 3" onChange="save,action-operation-order-method-machine-change" grid-view="machine-grid" form-view="machine-form"/>
 			<panel-related name="prodHumanResourceListPanel" field="prodHumanResourceList" readonlyIf="statusSelect == 6" colSpan="12" grid-view="prod-human-resource-grid" form-view="prod-human-resource-form"/>
 		</panel>
 
@@ -135,11 +137,6 @@
 
 		<panel-related name="operationOrderDurationListPanel" field="timesheetLineList" grid-view="timesheet-line-timesheet-operation-order-grid" form-view="timesheet-line-timesheet-manuf-order-form" colSpan="12" canNew="false" canEdit="false" canRemove="false" if-module="axelor-business-production" if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"/>
 	</form>
-	
-	<action-attrs name="action-operation-order-attrs-domain-machine">
-		<attribute name="domain" for="machineWorkCenter" expr="eval: &quot; self.id IN (${workCenter?.workCenterList?.collect{it.id}.join(',').isEmpty() ?
-		 workCenter.id : workCenter.id + ',' + workCenter?.workCenterList?.collect{it.id}.join(',')}) &quot;"/>
-	</action-attrs>
 	
 	<action-attrs name="action-operation-order-attrs-domain-prod-process-line">
 		<attribute name="domain" for="prodProcessLine" expr="eval: &quot; self.prodProcess.id = ${_parent?.prodProcess?.id} &quot;" if="_parent != null"/>

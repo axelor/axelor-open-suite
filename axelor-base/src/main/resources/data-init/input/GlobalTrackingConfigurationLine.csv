@@ -1,0 +1,5 @@
+"Model";"field";"Creation";"Deletion";"Update";"Export";"Reading";"Condition";
+"Partner";"firstName";"1";"true";"yes";"o";"y";"partnerCategory != 3";
+"Partner";"name";"y";"y";"y";"y";"y";"partnerCategory != 3";
+"Partner";"fullName";"y";"y";"y";"y";"y";"partnerCategory != 3";
+"Partner";"simpleFullName";"y";"y";"y";"y";"y";"partnerCategory != 3";

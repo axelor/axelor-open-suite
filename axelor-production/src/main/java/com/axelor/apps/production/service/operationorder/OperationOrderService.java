@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.production.service.operationorder;
 
+import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcessLine;
@@ -40,7 +41,7 @@ public interface OperationOrderService {
       ManufOrder manufOrder,
       int priority,
       WorkCenter workCenter,
-      WorkCenter machineWorkCenter,
+      Machine machineWorkCenter,
       ProdProcessLine prodProcessLine)
       throws AxelorException;
 

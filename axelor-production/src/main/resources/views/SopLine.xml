@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+    <grid name="sop-line-grid" title="Sales and Operations Planning Line" model="com.axelor.apps.production.db.SopLine">
+    	<hilite if="status == 1" color="primary" />
+    	<field name="status" hidden="true"/>
+        <field name="year"/>
+        <field name="period"/>
+        <field name="sopSalesForecast"/>
+        <field name="sopRealSales"/>
+        <field name="sopSalesGap"/>
+        <field name="sopManufForecast"/>
+        <field name="sopRealManuf"/>
+        <field name="sopManufGap"/>
+        <field name="sopStockForecast"/>
+        <field name="sopRealStock"/>
+        <field name="sopStockGap"/>
+    </grid>
+    
+	<form name="sop-line-form" title="Sales and Operations Planning Line" model="com.axelor.apps.production.db.SopLine" onNew="action-sop-line-record-set-status">
+		<panel name="mainPanel">
+			<field name="status" showTitle="false" colSpan="8" widget="NavSelect"/>
+			<button name="confirmBtn" title="Confirm" showIf="status == 1" colSpan="4" onClick="action-sop-line-record-set-status"/>
+			<field name="year" required="true" domain="self.typeSelect = 3" canEdit="false"/>
+			<field name="period" required="true" domain="self.year = :year" onChange="action-sop-line-record-set-currency" canEdit="false"/>
+			<field name="currency" required="true" canEdit="false"/>
+			<spacer name="currencySpacer"/>
+			<field name="sopSalesForecast" onChange="action-sop-line-record-compute-sop-sales-gap" colSpan="4"/>
+			<field name="sopRealSales" onChange="action-sop-line-record-compute-sop-sales-gap" colSpan="4"/>
+			<field name="sopSalesGap" readonly="true" colSpan="4"/>
+			<field name="sopManufForecast" onChange="action-sop-line-record-compute-sop-manuf-gap" colSpan="4"/>
+			<field name="sopRealManuf" onChange="action-sop-line-record-compute-sop-manuf-gap" colSpan="4"/>
+			<field name="sopManufGap" readonly="true" colSpan="4"/>
+			<field name="sopStockForecast" onChange="action-sop-line-record-compute-sop-stock-gap" colSpan="4"/>
+			<field name="sopRealStock" onChange="action-sop-line-record-compute-sop-stock-gap" colSpan="4"/>
+			<field name="sopStockGap" readonly="true" colSpan="4"/>
+			<button name="generateMpsForecastsBtn" title="Generate MPS forecasts" onClick="action-sop-line-view-open-wizard"/>
+		</panel>
+	</form>
+	
+	<form name="sop-line-generate-mps-forecasts-wizard-form"  title="Generate MPS forecasts" model="com.axelor.apps.base.db.Wizard" onNew="action-sop-line-wizard-method-fill-mrp-forecasts">
+    	<panel name="wizardPanel" colSpan="12">
+	    	<panel-related name="$mrpForecastPanel" field="$mrpForecasts" canSelect="false" editable="true" type="one-to-many" colSpan="12" target="com.axelor.apps.supplychain.db.MrpForecast" canNew="false">
+	    		<field name="product" readonly="true"/>
+	    		<field name="qty" onChange="action-sop-line-record-compute-total-price"/>
+	    		<field name="$unitPrice" title="Unit price" readonly="true" type="decimal"/>
+	    		<field name="$totalPrice" type="decimal" title="Total price" onChange="action-sop-line-group-total-price-onchange"/>
+	    	</panel-related>
+	    	<button name="setToZeroBtn" colSpan="6" title="Set to zero" onClick="action-mrp-forecast-method-set-qty-totalforecast"/>
+	    	<spacer name="setToZeroBtnSpacer" colSpan="6"/>
+	    	
+	    	<field name="$sopSalesForecast" readonly="true" title="Sales forecast" type="decimal"/>
+	    	<field name="$stockLocation" title="Stock location" type="many-to-one" target="com.axelor.apps.stock.db.StockLocation" required="true" canEdit="false"/>
+	    	<field name="$totalForecast" readonly="true" title="Total forecast" type="decimal"/>
+	    	<field name="$difference" readonly="true" title="Difference" type="decimal"/>
+	    	<field name="$currency" hidden="true" type="many-to-one" target="com.axelor.apps.base.db.Currency" colSpan="12"/>
+	    	<button name="computeTotalForecastBtn" title="Compute total forecast" onClick="action-mrp-forecast-method-compute-total-forecast"/>
+	    	<button name="confirmForecastsBtn" readonlyIf="$stockLocation==null" title="Confirm forecasts" onClick="action-sop-line-group-confirm-forecasts-onclick"/>
+    	</panel>
+    </form>
+    
+    <action-view name="action-sop-line-view-open-wizard" title="Generate MPS forecasts" model="com.axelor.apps.base.db.Wizard">
+    	<view type="form" name="sop-line-generate-mps-forecasts-wizard-form"/>
+    	<view-param name="show-toolbar" value="false"/>
+    	<view-param name="popup" value="true" />
+    	<view-param name="popup-save" value="false" />
+    	<view-param name="show-confirm" value="false" />
+    	<context name="_productFamily" expr="eval: _parent?.productFamily"/>
+    	<context name="_sopLine" expr="eval: __this__"/>
+    </action-view>
+    
+    <action-group name="action-sop-line-group-total-price-onchange">
+    	<action name="action-sop-line-record-compute-qty"/>
+    	<action name="action-sop-line-record-compute-total-price"/>
+    </action-group>
+    
+    <action-group name="action-sop-line-group-confirm-forecasts-onclick">
+    	<action name="action-mrp-forecast-method-compute-total-forecast"/>
+    	<action name="action-mrp-forecast-validate-check-difference" if="new BigDecimal($difference).compareTo(BigDecimal.ZERO) != 0"/>
+    	<action name="action-mrp-forecast-method-generate-mrp-forecasts"/>
+    </action-group>
+	
+	<action-record name="action-sop-line-record-compute-sop-sales-gap" model="com.axelor.apps.production.db.SopLine">
+		<field name="sopSalesGap" expr="eval: (sopRealSales - sopSalesForecast)/sopSalesForecast*100" if="sopSalesForecast &amp;&amp; sopRealSales"/>
+		<field name="sopSalesGap" expr="eval: null" if="!sopSalesForecast || !sopRealSales"/>
+	</action-record>
+	
+	<action-record name="action-sop-line-record-compute-sop-manuf-gap" model="com.axelor.apps.production.db.SopLine">
+		<field name="sopManufGap" expr="eval: (sopRealManuf - sopManufForecast)/sopManufForecast*100" if="sopManufForecast &amp;&amp; sopRealManuf"/>
+		<field name="sopManufGap" expr="eval: null" if="!sopManufForecast || !sopRealManuf"/>
+	</action-record>
+	
+	<action-record name="action-sop-line-record-compute-sop-stock-gap" model="com.axelor.apps.production.db.SopLine">
+		<field name="sopStockGap" expr="eval: (sopRealStock - sopStockForecast)/sopStockForecast*100" if="sopStockForecast &amp;&amp; sopRealStock"/>
+		<field name="sopStockGap" expr="eval: null" if="!sopStockForecast || !sopRealStock"/>
+	</action-record>
+	
+	<action-record name="action-sop-line-record-compute-total-price" model="com.axelor.apps.base.db.Wizard">
+		<field name="$totalPrice" expr="eval: qty.multiply(new BigDecimal(unitPrice))"/>
+	</action-record>
+	
+	<action-record name="action-sop-line-record-compute-qty" model="com.axelor.apps.base.db.Wizard">
+		<field name="qty" expr="eval: new BigDecimal(totalPrice).divide(new BigDecimal(unitPrice),0,java.math.RoundingMode.HALF_EVEN)" 
+			if="new BigDecimal(unitPrice).compareTo(BigDecimal.ZERO) != 0"/>
+		<field name="qty" expr="eval: 0" 
+			if="new BigDecimal(unitPrice).compareTo(BigDecimal.ZERO) == 0"/>
+	</action-record>
+	
+	<action-record name="action-sop-line-record-set-currency" model="com.axelor.apps.production.db.SopLine">
+		<field name="currency" expr="eval: period?.year?.company?.currency"/>
+	</action-record>
+	
+	<action-record name="action-sop-line-record-set-status" model="com.axelor.apps.production.db.SopLine">
+		<field name="status" expr="eval: 1" if="!id"/>
+		<field name="status" expr="eval: 2" if="status == 1"/>
+	</action-record>
+	
+	<action-method name="action-mrp-forecast-method-generate-mrp-forecasts">
+		<call class="com.axelor.apps.production.web.MrpForecastController" method="generateMrpForecast"/>
+	</action-method>
+	
+	<action-method name="action-sop-line-wizard-method-fill-mrp-forecasts">
+		<call class="com.axelor.apps.production.web.SopLineController" method="fillMrpForecast"/>
+	</action-method>
+	
+	<action-method name="action-mrp-forecast-method-compute-total-forecast">
+		<call class="com.axelor.apps.production.web.MrpForecastController" method="computeTotalForecast"/>
+	</action-method>
+	
+	<action-method name="action-mrp-forecast-method-set-qty-totalforecast">
+		<call class="com.axelor.apps.production.web.MrpForecastController" method="resetMrpForecasts"/>
+	</action-method>
+	
+	<action-validate name="action-mrp-forecast-validate-check-difference">
+		<alert message="There currently is a ${$difference} ${currency?.symbol} difference between your total forecast and the S&amp;OP forecast. Proceed?"/>
+	</action-validate>
+    
+</object-views>
+
