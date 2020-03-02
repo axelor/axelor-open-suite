@@ -35,6 +35,7 @@
 - ADDRESS : addressL4 is emptied when zip is filled
 - INVOICE Report : Fixed issue in displaying proforma invoice comment from grid button
 - INVOICE : fix the NPE when payment mode is null in invoice
+- LEAD : removed the persistable field on the form view
 
 ## [5.2.4] - 2020-02-05
 ## Improvements
