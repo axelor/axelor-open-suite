@@ -26,6 +26,7 @@
 - Address: Addition of boolean 'isSharedAddress' in base config to check addresses are shared or not.
 - BANK STATEMENT LINE: order by operation date and sequence in AFB120 grid view.
 - BANK DETAILS: add search button on bank-details-bank-order-company-grid.
+- LEAVE MANAGEMENT : add a new configuration menu with the possibility to add global leave lines (for all employees)
 
 ## Improvements
 - JOURNAL: new viewer to display the balance.

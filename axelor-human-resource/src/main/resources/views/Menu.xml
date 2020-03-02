@@ -209,6 +209,14 @@
     	<view type="grid" name="leave-reason-grid"/>
 	    <view type="form" name="leave-reason-form"/>
 	</action-view>
+	
+	<menuitem name="leave-line-global" parent="leave-request-conf" title="Global leave lines" action="action.leave.line.view.conf" />
+
+	<action-view name="action.leave.line.view.conf" title="Leave line" model="com.axelor.apps.hr.db.LeaveLine">
+    	<view type="grid" name="leave-line-grid-global"/>
+	    <view type="form" name="leave-line-form"/>
+	    <domain> self.employee = null </domain>
+	</action-view>
 
 
 	<!-- Expense app -->
