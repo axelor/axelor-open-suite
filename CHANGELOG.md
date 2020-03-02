@@ -1,7 +1,10 @@
 # Changelog
 ## [Unreleased 5.3.1]
+
 ## Improvements
 - InvoiceLine: add fields in advanced search.
+- LEAVE REQUEST : Allow sending a leave request in the past.
+
 ## Bug Fixes
 - Fix Timesheet Reminder Batch sendReminder method
 - Stock Move Line reservation: correctly set qty requested flag when generated from a sale order line.
@@ -69,6 +72,7 @@
 - UI: Addition of onClick attributes in buttons.
 - Sales dashboard: Fix chart not displayed.
 - PRODUCT: Fix economicManufOrderQty displayed twice.
+
 
 [Unreleased 5.3.1]: https://github.com/axelor/axelor-open-suite/compare/v5.3.0...dev
 [5.3.0]: https://github.com/axelor/axelor-open-suite/compare/v5.2.5...v5.3.0
