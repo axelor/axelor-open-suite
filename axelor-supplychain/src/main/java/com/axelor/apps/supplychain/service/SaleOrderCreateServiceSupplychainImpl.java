@@ -69,7 +69,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
 
   @Override
   public SaleOrder createSaleOrder(
-      User salemanUser,
+      User salespersonUser,
       Company company,
       Partner contactPartner,
       Currency currency,
@@ -84,7 +84,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
 
     if (!Beans.get(AppSaleService.class).isApp("supplychain")) {
       return super.createSaleOrder(
-          salemanUser,
+          salespersonUser,
           company,
           contactPartner,
           currency,
@@ -97,7 +97,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
           team);
     }
     return createSaleOrder(
-        salemanUser,
+        salespersonUser,
         company,
         contactPartner,
         currency,
@@ -112,7 +112,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
   }
 
   public SaleOrder createSaleOrder(
-      User salemanUser,
+      User salespersonUser,
       Company company,
       Partner contactPartner,
       Currency currency,
@@ -134,7 +134,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
 
     SaleOrder saleOrder =
         super.createSaleOrder(
-            salemanUser,
+            salespersonUser,
             company,
             contactPartner,
             currency,

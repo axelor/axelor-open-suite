@@ -12,7 +12,7 @@
         <field name="saleOrder.creationDate"/>
         <field name="product.code" width="120"/>
         <field name="productName" readonly="true"/>
-        <field name="reservedQty" if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum" readonly="true"/>
+        <field name="reservedQty" if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum" readonly="true" x-scale="2"/>
         <field name="exTaxTotal" aggregate="sum" readonly="true"/>
         <field name="amountInvoiced" />
         <field name="saleOrder.currency"/>

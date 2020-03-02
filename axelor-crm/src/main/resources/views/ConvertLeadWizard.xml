@@ -27,7 +27,7 @@
 						<field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" colSpan="5" onChange="action-group-base-partner-contact-name-onchange"/>
 					</panel>
 					
-					<panel name="informationPanel" title="Informations" colSpan="12">
+					<panel name="informationPanel" title="Information" colSpan="12">
 						<field name="isProspect" showTitle="true" colSpan="4"  onChange="action-partner-attrs-unset-customer"/>
 		      			<field name="isCustomer" showTitle="true" colSpan="4"  onChange="action-partner-attrs-unset-prospect"/>
 		      			<field name="isSupplier" showTitle="true" colSpan="4" />

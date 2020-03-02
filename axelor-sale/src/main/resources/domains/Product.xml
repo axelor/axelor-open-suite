@@ -6,11 +6,8 @@
   <entity name="Product" lang="java">
   
     <many-to-one name="salesUnit" ref="com.axelor.apps.base.db.Unit" title="Sales unit" initParam="true" massUpdate="true"/>
-    <boolean name="isFromConfigurator" title="Is pack" />
-  	<one-to-many name="packLines" title="Pack lines" ref="com.axelor.apps.sale.db.PackLine" />
     <one-to-one name="configurator" ref="com.axelor.apps.sale.db.Configurator" orphanRemoval="true" mappedBy="product"/>
-  	<integer name="packPriceSelect" title="Pack price select" selection="product.pack.price.select"/>
-	<one-to-many name="customerCatalogList" ref="com.axelor.apps.sale.db.CustomerCatalog" mappedBy="product" title="Customer catalog lines" />
+  	<one-to-many name="customerCatalogList" ref="com.axelor.apps.sale.db.CustomerCatalog" mappedBy="product" title="Customer catalog lines" />
   	
   </entity>
 

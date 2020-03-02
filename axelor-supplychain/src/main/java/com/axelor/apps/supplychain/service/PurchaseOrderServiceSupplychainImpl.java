@@ -57,7 +57,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImpl {
+public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImpl
+    implements PurchaseOrderSupplychainService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -386,5 +387,12 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
       purchaseOrderLine.setBudget(budget);
     }
+  }
+
+  @Override
+  @Transactional
+  public void updateToValidatedStatus(PurchaseOrder purchaseOrder) {
+    purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_VALIDATED);
+    purchaseOrderRepo.save(purchaseOrder);
   }
 }

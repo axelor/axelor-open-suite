@@ -17,7 +17,7 @@
   	<boolean name="emailing" title="Emailing" />
   	<boolean name="manageAnEventPerTarget" title="Manage an event per target" />
   	<boolean name="manageAttendees" title="Manage attendees" />
-  	<boolean name="generateEventPerPartnerOrLead" title="Generate event to the team and salesman in charge of the partner/leads" />
+  	<boolean name="generateEventPerPartnerOrLead" title="Generate event to the team and salesperson in charge of the partner/leads" />
   	<many-to-many name="leads" ref="com.axelor.apps.crm.db.Lead" title="Leads" />
   	<many-to-many name="partners" ref="com.axelor.apps.base.db.Partner" title="Partners" />
   	<many-to-one name="eventUser" ref="com.axelor.auth.db.User" title="Assigned to"/>

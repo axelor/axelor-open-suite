@@ -398,7 +398,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   }
 
   /**
-   * Update the level of Bill of material. The highest for each product (0: product with parent, 1:
+   * Update the level of Bill of materials. The highest for each product (0: product with parent, 1:
    * product with a parent, 2: product with a parent that have a parent, ...)
    *
    * @param billOfMaterial

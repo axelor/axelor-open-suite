@@ -12,7 +12,7 @@
 	    <integer name="actionSelect" title="Action" required="true" selection="bank.payment.batch.action.select"/>
 	    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" />
 	  
-	  	<!-- OTHERS INFORMATIONS -->
+	  	<!-- OTHERS INFORMATION -->
 	  	<string name="description" title="Description" large="true" />
 	    <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch" mappedBy="bankPaymentBatch" title="Batchs" />
 
