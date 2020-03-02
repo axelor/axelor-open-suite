@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<grid name="vehicle-repair-cause-grid" title="Cause of repair" model="com.axelor.apps.fleet.db.RepairCause">
+		<field name="name"/>
+	</grid>
+
+	<form name="vehicle-repair-cause-form" title="Cause of repair" model="com.axelor.apps.fleet.db.RepairCause" width="large">
+		<panel name="mainPanel">
+			<field name="name"/>
+		</panel>
+	</form>
+
+</object-views>

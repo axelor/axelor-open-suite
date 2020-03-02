@@ -69,11 +69,11 @@ public interface ManufOrderService {
   public void createToConsumeProdProductList(ManufOrder manufOrder);
 
   /**
-   * Compute the quantity on generated prod product line. If the quantity of the bill of material is
-   * equal to the quantity of manuf order then the prod product line will have the same quantity as
-   * configured line.
+   * Compute the quantity on generated prod product line. If the quantity of the bill of materials
+   * is equal to the quantity of manuf order then the prod product line will have the same quantity
+   * as configured line.
    *
-   * @param bomQty quantity of the bill of material.
+   * @param bomQty quantity of the bill of materials.
    * @param manufOrderQty quantity configured of the manuf order.
    * @param lineQty quantity of the line.
    * @return the quantity for the prod product line.

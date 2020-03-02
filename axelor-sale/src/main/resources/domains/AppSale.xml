@@ -6,9 +6,8 @@
 
 	<entity name="AppSale" lang="java" extends="App">
 		<boolean name="manageSaleOrderVersion" title="Manage sale order versions" default="false"/>
-    <boolean name="printingOnSOFinalization" title="Generate the pdf printing during sale order finalization" default="false"/>
+    	<boolean name="printingOnSOFinalization" title="Generate the pdf printing during sale order finalization" default="false"/>
 		<boolean name="manageSalesUnits" title="Manage sales unit on products"/>
-		<boolean name="productPackMgt" title="Product Pack Management" />
 		<boolean name="enableConfigurator" title="Enable business configurator"/>
 		<boolean name="allowPendingOrderModification" />
         <boolean name="manageMultipleSaleQuantity" title="Manage multiple sale quantity"/>
@@ -17,8 +16,9 @@
             title="Close opportunity when one of the linked sale orders is confirmed"/><boolean name="isEnabledProductDescriptionCopy" title="Enable product description copy"/>
         <integer name="salemanSelect" title="User to fill saleman" selection="sale.order.fill.saleman.select" default="1"/>
 		<boolean name="enableCustomerCatalogMgt" title="Enable customer catalog management"/>
+		<boolean name="enablePackManagement" title="Pack Management"/>
 		<boolean name="isDisplaySaleOrderLineNumber" title="Display sale order line number"/>
-		
+
 		<track>
 			<field name="manageSaleOrderVersion" on="UPDATE"/>
 			<field name="printingOnSOFinalization" on="UPDATE"/>
@@ -34,7 +34,6 @@
 			<field name="isDisplaySaleOrderLineNumber" on="UPDATE"/>
 			<field name="isEnabledProductDescriptionCopy" on="UPDATE"/>
 		</track>
-		
 	</entity>
 
 </domain-models>

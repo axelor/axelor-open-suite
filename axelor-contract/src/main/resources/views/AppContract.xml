@@ -3,13 +3,11 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
-	<form name="app-contract-config-form" title="App contract" model="com.axelor.apps.base.db.AppContract" width="large">
+	<form name="app-contract-config-form" title="App contract" model="com.axelor.apps.base.db.AppContract" width="large"
+		canNew="false" canDelete="false" canCopy="false">
 		<toolbar>
-		    <button name="newBtn" title="New" hidden="true"/>
-		    <button name="deleteBtn" title="Delete" hidden="true"/>
-		    <button name="backBtn" title="Back" hidden="true"/>
-		    <button name="copyBtn" title="Copy" hidden="true"/>
-		    <button name="searchBtn" title="Search" hidden="true"/>
+		    <button name="back" title="Back" hidden="true" onClick=""/>
+		    <button name="search" title="Search" hidden="true" onClick=""/>
 		</toolbar>
 		<panel name="mainPanel">
 			<panel name="generalPanel" title="General" colSpan="12">

@@ -21,6 +21,8 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.db.JPA;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,44 +31,33 @@ public class JournalService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  /** Debit balance = debit - credit */
-  public static final Integer BALANCE_TYPE_DEBIT_BALANCE = 1;
-
-  /** Credit balance = credit - debit */
-  public static final Integer BALANCE_TYPE_CREDIT_BALANCE = 1;
-
   /**
    * Compute the balance of the journal, depending of the account type and balance type
    *
    * @param journal Journal
-   * @param accountType Technical type select of AccountType
-   * @param balanceType
-   *     <p>1 : debit balance = debit - credit
-   *     <p>2 : credit balance = credit - debit
    * @return The balance (debit balance or credit balance)
    */
-  public BigDecimal computeBalance(Journal journal, int accountType, int balanceType) {
+  public Map<String, BigDecimal> computeBalance(Journal journal) {
 
-    Query balanceQuery =
-        JPA.em()
-            .createQuery(
-                "select sum(self.debit - self.credit) from MoveLine self where self.move.journal = :journal "
-                    + "and self.move.ignoreInAccountingOk IN ('false', null) and self.move.statusSelect IN (2, 3) and self.account.accountType.technicalTypeSelect = :accountType");
+    Map<String, BigDecimal> resultMap = new HashMap<>();
 
-    balanceQuery.setParameter("journal", journal);
-    balanceQuery.setParameter("accountType", accountType);
+    String query =
+        "select sum(self.debit),sum(self.credit)"
+            + " from MoveLine self where self.move.journal.id = :journal "
+            + "and self.move.ignoreInAccountingOk IN ('false', null) and self.move.statusSelect IN (2, 3) and self.account.accountType.technicalTypeSelect = 'cash'";
 
-    BigDecimal balance = (BigDecimal) balanceQuery.getSingleResult();
+    Query resultQuery = JPA.em().createQuery(query);
 
-    if (balance != null) {
-      if (balanceType == BALANCE_TYPE_CREDIT_BALANCE) {
-        balance = balance.negate();
-      }
-      log.debug("Account balance : {}", balance);
+    resultQuery.setParameter("journal", journal.getId());
 
-      return balance;
-    } else {
-      return BigDecimal.ZERO;
-    }
+    Object[] resultArr = (Object[]) resultQuery.getResultList().get(0);
+
+    resultMap.put(
+        "debit", resultArr[0] != null ? new BigDecimal(resultArr[0].toString()) : BigDecimal.ZERO);
+    resultMap.put(
+        "credit", resultArr[1] != null ? new BigDecimal(resultArr[1].toString()) : BigDecimal.ZERO);
+    resultMap.put("balance", resultMap.get("debit").subtract(resultMap.get("credit")));
+
+    return resultMap;
   }
 }

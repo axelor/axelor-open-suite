@@ -26,7 +26,8 @@ import com.axelor.rpc.JsonContext;
 public interface ConfiguratorBomService {
 
   /**
-   * Generate a bill of material from a configurator BOM and a JsonContext holding the custom values
+   * Generate a bill of materials from a configurator BOM and a JsonContext holding the custom
+   * values
    *
    * @param configuratorBOM
    * @param attributes

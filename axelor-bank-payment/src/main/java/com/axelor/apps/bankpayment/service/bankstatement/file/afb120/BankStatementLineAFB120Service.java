@@ -91,6 +91,11 @@ public class BankStatementLineAFB120Service extends BankStatementLineService {
           Integer.parseInt(commissionExemptionIndexSelect));
     }
 
+    if (lineType == BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE) {
+      bankDetails.setBalance((credit.subtract(debit)));
+      bankDetails.setBalanceUpdatedDate(operationDate);
+    }
+
     return bankStatementLineAFB120;
   }
 }

@@ -4,6 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
     <grid name="mrp-grid" model="com.axelor.apps.supplychain.db.Mrp" title="Mrp">
+   
         <hilite if="statusSelect == 1" strong="true" color="warning"/>
         <hilite if="statusSelect == 2" strong="true" color="success"/>
         <field name="mrpSeq"/>
@@ -17,12 +18,18 @@
     
 	<form name="mrp-form" model="com.axelor.apps.supplychain.db.Mrp" title="Mrp" width="large"
 		onLoad="action-attrs-mrp-generate-all-proposals">
-	    <toolbar>
-	        <button name="runCalculationBtn" title="Run calculation" onClick="save,action-method-mrp-run-calculation" showIf="statusSelect != 1" prompt="Are you sure you want run the calculation ? Calculation can take a long time."/>
-   	        <button name="generateAllProposalsBtn" title="Generate all proposals" onClick="save,action-mrp-view-generate-proposal-wizard" showIf="statusSelect == 2" prompt="Are you sure you want generate all proposals ?"/>
-            <button name="printWeeksBtn" title="Print (weekly breakdown)" icon="fa-print" onClick="save,action-method-mrp-print-weeks" showIf="statusSelect == 2"/>
-            <button name="printListBtn" title="Print (list)" icon="fa-print" onClick="save,action-method-mrp-print-list" showIf="statusSelect == 2"/>
-	    </toolbar>
+	     <menubar>
+	     	<menu title="Tools" showTitle="true" icon="fa-wrench">
+	    		<item name="runCalculationItem" title="Run calculation"  showIf="statusSelect != 1" action="save,action-method-mrp-run-calculation" prompt="Are you sure you want run the calculation ? Calculation can take a long time."/>
+	    		<item name="generateAllProposalsItem" title="Generate all proposals" showIf="statusSelect == 2" action="save,action-mrp-view-generate-proposal-wizard" prompt="Are you sure you want generate all proposals ?"/>
+	    		<item action="save,action-method-mrp-undo-manual-changes" title="Undo manual changes" name="undoManualChangesItem"/>
+	    	</menu>
+	    	<menu title="Reports" showTitle="true" icon="fa-files-o">
+	    	    <item name="printWeeksItem" title="Weekly breakdown" action="save,action-method-mrp-print-weeks" showIf="statusSelect == 2"/>
+	    		<item name="printListItem" title="List"  action="save,action-method-mrp-print-list" showIf="statusSelect == 2"/>
+	    	</menu>
+	    </menubar>
+
 	    <panel name="infoPanel">
 			<field name="mrpSeq" showTitle="false" colSpan="12">
 				<viewer depends="mrpSeq"><![CDATA[
@@ -119,6 +126,10 @@
 	<action-attrs name="action-mrp-attrs-sale-order-domain">
   		<attribute name="domain" for="saleOrderLineSet" expr="eval: &quot;self.product.productTypeSelect = 'storable' AND self.product.excludeFromMrp = false AND self.product.stockManaged = true AND self.deliveryState != 3 AND self.saleOrder.company.id = ${stockLocation?.company?.id} AND self.saleOrder.stockLocation is not null&quot;"/>
 	</action-attrs>
+	
+	<action-method name="action-method-mrp-undo-manual-changes">
+		<call class="com.axelor.apps.supplychain.web.MrpController" method="undoManualChanges"/>
+	</action-method>
 	
 </object-views>
 

@@ -22,6 +22,7 @@
        	   		<field name="image" widget="Image" colSpan="12"/>
        	   </panel>
        	   <panel name="vehicleDetailsPanel" colSpan="6" itemSpan="12">
+       	   		<field name="isRentalCar" widget="boolean-switch"/>
        	   		<field name="vehicleModel" onChange="action-fleet-set-vehicle-name" required="true"/>
 	     		<field name="name" readonly="true"/>
 	    		<field name="plateNo" onChange="action-fleet-set-vehicle-name"/>
@@ -59,6 +60,10 @@
 	       		</panel>
 	       </panel>
        </panel>
+       <panel name="rentalPanel" title="Rental" colSpan="12" hidden="true" showIf="isRentalCar">
+       		<field name="fuelCardNumber"/>
+       		<field name="fuelCardCode"/>
+       </panel>
        <panel-tabs name="mainPanelTab">
     		<panel-related name="vehicleFuelLogListPanel" field="vehicleFuelLogList" title="Vehicle Fuel Log"  colSpan="12">
             	<field name="liter"/>
@@ -81,6 +86,7 @@
             <field name="totalPrice"/>
             <field name="date" />
       		</panel-related>
+			<panel-related name="vehicleRepairListPanel" field="vehicleRepairList" title="Repairs" colSpan="12"/>
     </panel-tabs>
     
        

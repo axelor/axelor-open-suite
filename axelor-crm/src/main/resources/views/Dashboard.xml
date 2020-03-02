@@ -209,7 +209,7 @@
 	</action-view>
 
 	<action-view name="dashlet.opportunities.won.by.saleman"
-		title="Opportunities Won By Salesman">
+		title="Opportunities Won By Salesperson">
 		<view type="chart" name="chart.dashboard.opportunities.won.by.saleman.bar" />
 	</action-view>
 
@@ -266,7 +266,7 @@
 	</action-view>
 
 	<action-view name="dashlet.leads.by.saleman.by.status"
-		title="Leads by Salesman by Status">
+		title="Leads by Salesperson by Status">
 		<view type="chart" name="chart.leads.by.saleman.by.status.bar" />
 		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>

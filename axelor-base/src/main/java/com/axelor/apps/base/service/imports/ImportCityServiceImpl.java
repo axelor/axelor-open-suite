@@ -28,20 +28,36 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.invoke.MethodHandles;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.util.Enumeration;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ImportCityServiceImpl implements ImportCityService {
 
   @Inject private FactoryImporter factoryImporter;
 
   @Inject private MetaFiles metaFiles;
+
+  public static String CITYTEXTFILE = "cityTextFile.txt";
+
+  public static String DOWNLOAD_LINK = "http://download.geonames.org/export/zip/";
+
+  final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   /** {@inheritDoc}} */
   @Override
@@ -158,6 +174,74 @@ public class ImportCityServiceImpl implements ImportCityService {
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  /**
+   * extracting file from the zip
+   *
+   * @param downloadFileName : zip fileName to download from internet
+   * @return
+   * @return
+   * @throws Exception
+   */
+  @Override
+  public MetaFile downloadZip(String downloadFileName) throws Exception {
+
+    File downloadFile = null;
+    File cityTextFile = null;
+    File tempDir = null;
+    MetaFile metaFile = null;
+
+    try {
+      tempDir = Files.createTempDir();
+      downloadFile = new File(tempDir, downloadFileName);
+
+      cityTextFile = new File(tempDir, CITYTEXTFILE);
+
+      URL url = new URL(DOWNLOAD_LINK + downloadFileName);
+
+      FileUtils.copyURLToFile(url, downloadFile);
+
+      LOG.debug("path for downloaded zip file : " + downloadFile.getPath());
+      try (ZipFile zipFile = new ZipFile(downloadFile.getPath());
+          FileWriter writer = new FileWriter(cityTextFile)) {
+
+        Enumeration<? extends ZipEntry> entries = zipFile.entries();
+
+        while (entries.hasMoreElements()) {
+          ZipEntry entry = entries.nextElement();
+
+          if (entry.getName().equals(downloadFileName.replace("zip", "txt"))) {
+            BufferedReader stream =
+                new BufferedReader(new InputStreamReader(zipFile.getInputStream(entry)));
+
+            String line;
+            StringBuffer buffer = new StringBuffer();
+
+            while ((line = stream.readLine()) != null) {
+              buffer.append(line + "\n");
+            }
+
+            cityTextFile.createNewFile();
+
+            writer.flush();
+            writer.write(buffer.toString().replace("\"", ""));
+
+            LOG.debug("Length of file : " + cityTextFile.length());
+            break;
+          }
+        }
+      }
+      metaFile = metaFiles.upload(cityTextFile);
+      FileUtils.forceDelete(tempDir);
+
+    } catch (UnknownHostException hostExp) {
+      throw new Exception(I18n.get(IExceptionMessage.SERVER_CONNECTION_ERROR), hostExp);
+    } catch (Exception e) {
+      throw e;
+    }
+
+    return metaFile;
   }
 
   private MetaFile extractCityZip(MetaFile dataFile) throws Exception {

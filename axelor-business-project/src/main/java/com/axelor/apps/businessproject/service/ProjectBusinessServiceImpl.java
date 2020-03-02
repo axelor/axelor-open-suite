@@ -166,7 +166,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
             ? this.generateProject(
                 null,
                 saleOrder.getFullName() + "_project",
-                saleOrder.getSalemanUser(),
+                saleOrder.getSalespersonUser(),
                 saleOrder.getCompany(),
                 saleOrder.getClientPartner())
             : project;
@@ -206,7 +206,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
         generateProject(
             parent,
             saleOrderLine.getFullName(),
-            saleOrderLine.getSaleOrder().getSalemanUser(),
+            saleOrderLine.getSaleOrder().getSalespersonUser(),
             parent.getCompany(),
             parent.getClientPartner());
     project.setProjectTypeSelect(ProjectRepository.TYPE_PHASE);

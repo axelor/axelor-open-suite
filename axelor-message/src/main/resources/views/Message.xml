@@ -28,7 +28,7 @@
 	        <button name="sendBtn" title="Send" icon="fa-envelope" onClick="action-group-message-message-send-click" showIf="statusSelect == 1 " />
         	<button name="trashBtn" title="Delete" icon="fa-trash" onClick="action-group-message-message-delete-click" showIf="statusSelect != 4 "/>
 		</toolbar>
-    	<panel name="informationsPanel" title="Informations" readonlyIf="statusSelect != 1">
+    	<panel name="informationsPanel" title="Information" readonlyIf="statusSelect != 1">
             <field name="mediaTypeSelect" readonlyIf="statusSelect != 1"/>
 			<field name="statusSelect"/>
 			<field name="senderUser" form-view="user-form" grid-view="user-grid"/>

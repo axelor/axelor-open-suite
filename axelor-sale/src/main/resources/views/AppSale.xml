@@ -8,7 +8,6 @@
 			<field name="manageSalesUnits" widget="boolean-switch"/>
       		<field name="manageSaleOrderVersion" widget="boolean-switch" onChange="action-app-sale-attrs-manage-sale-order-version-onchange"/>
       		<field name="printingOnSOFinalization" widget="boolean-switch" readonlyIf="manageSaleOrderVersion" />
-			<field name="productPackMgt" widget="boolean-switch"/>
 			<field name="enableConfigurator" widget="boolean-switch"/>
 			<field name="allowPendingOrderModification" widget="boolean-switch"/>
             <field name="manageMultipleSaleQuantity" widget="boolean-switch"/>
@@ -16,6 +15,7 @@
             <field name="closeOpportunityUponSaleOrderConfirmation" widget="boolean-switch"/><field name="isEnabledProductDescriptionCopy" widget="boolean-switch"/>
             <field name="salemanSelect"/>
             <field name="enableCustomerCatalogMgt" widget="boolean-switch"/>
+            <field name="enablePackManagement" widget="boolean-switch"/>
             <field name="isDisplaySaleOrderLineNumber" widget="boolean-switch"/>
 		</panel>
 		<panel name="actionsPanel">

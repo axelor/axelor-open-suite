@@ -8,8 +8,8 @@
   <entity name="MenuBuilder" cacheable="true">
      <string name="name" title="Name" unique="true"/>
      <string name="title" title="Title" required="true" />
-     <string name="icon" title="Icon" />
-     <string name="iconBackground" title="Background" />
+     <string name="icon" title="Icon" selection="studio.menu.builder.icon.select"/>
+     <string name="iconBackground" title="Background" selection="studio.menu.builder.icon.background.select"/>
      <integer name="order" title="MenuBuilder.Order" column="order_seq" />
      <string name="tag" title="Tag label"/>
      <string name="tagGet" title="Tag method"/>

@@ -8,7 +8,7 @@
 		<boolean name="isEnabledProductDescriptionCopy" title="Enable product description copy"/>
 		<boolean name="requireToFillConformityOnReceipt" title="Require to fill conformity for products ticked 'Control on Receipt'" default="true"/>
 		<boolean name="isSeparateShipmentOperations" title="Separate the shipment operations"/>
-		<boolean name="isRequiredShipmentSupplierDetails" title="Require to fill the shipment informations"/>
+		<boolean name="isRequiredShipmentSupplierDetails" title="Require to fill the shipment information"/>
         <many-to-one name="economicArea" ref="com.axelor.apps.base.db.EconomicArea"/>
 
         <track>

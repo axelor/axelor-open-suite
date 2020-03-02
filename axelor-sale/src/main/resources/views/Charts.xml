@@ -268,12 +268,12 @@
 		<dataset type="sql">
 			SELECT
 			  sum(self.company_ex_tax_total) as amount,
-			  saleman.full_name as saleman_name
+			  salesperson.full_name as saleman_name
 			FROM
 			  sale_sale_order self
 			JOIN
-			 	auth_user saleman
-			  ON saleman.id=self.saleman_user
+			 	auth_user salesperson
+			  ON salesperson.id=self.salesperson_user
 			JOIN
 			  auth_user _user
 			  ON _user.id = :__user__
@@ -286,7 +286,7 @@
 			HAVING
 			 	sum(self.company_ex_tax_total) > 0
 		</dataset>
-		<category key="saleman_name" type="text" title="Salesman"/>
+		<category key="saleman_name" type="text" title="Salesperson"/>
 		<series key="amount" type="bar" title="Amount"/>
 	</chart>
 	
@@ -407,7 +407,7 @@
               ON _user.id = :__user__
           WHERE
               self.confirmation_date_time BETWEEN DATE(:fromDate) AND DATE(:toDate)
-              AND self.saleman_user = :__user__
+              AND self.salesperson_user = :__user__
               AND self.company = _user.active_company
           GROUP BY
               _month
@@ -576,7 +576,7 @@
 	<chart onInit="action.sale.chart.set.from.date.and.saleman.6m" name="chart.turnover.per.month.per.saleman.over.6mth" title="Turnover per month per saleman (6 month)">
 		<search-fields>
 			<field type="date" name="fromDate" title="From Date" x-required="true"/>
-			<field type="reference" target="com.axelor.auth.db.User" name="salemanUser" title="SalesMan" x-required="true"/>
+			<field type="reference" target="com.axelor.auth.db.User" name="salespersonUser" title="Salesperson" x-required="true"/>
 		</search-fields>
 		<dataset type="jpql">
 			SELECT
@@ -586,7 +586,7 @@
 				SaleOrderLine self
 			WHERE
 				self.saleOrder.statusSelect in (3,4)
-				AND self.saleOrder.salemanUser =:salemanUser
+				AND self.saleOrder.salespersonUser =:salespersonUser
 				AND self.saleOrder.confirmationDateTime BETWEEN DATE(:fromDate) AND DATE(:fromDate) + 180
 				AND self.saleOrder.company = :activeCompany
 			GROUP BY
@@ -601,13 +601,13 @@
 	
 	<action-record model="com.axelor.apps.sale.db.SaleOrder" name="action.sale.chart.set.from.date.and.saleman.6m">
 		<field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusMonths(6)" />
-		<field name="salemanUser" expr="eval:__user__"/>
+		<field name="salespersonUser" expr="eval:__user__"/>
 	</action-record>
 	
 	<chart onInit="action.sale.chart.set.from.date.and.saleman.4m" name="chart.turnover.per.month.per.saleman.over.4mth" title="Turnover per month per saleman (4 month)">
 		<search-fields>
 			<field type="date" name="fromDate" title="From Date" x-required="true"/>
-			<field type="reference" target="com.axelor.auth.db.User" name="salemanUser" title="Salesman" x-required="true"/>
+			<field type="reference" target="com.axelor.auth.db.User" name="salespersonUser" title="Salesperson" x-required="true"/>
 		</search-fields>
 		<dataset type="jpql">
 			SELECT
@@ -617,7 +617,7 @@
 				SaleOrderLine self
 			WHERE
 				self.saleOrder.statusSelect in (3,4)
-				AND self.saleOrder.salemanUser =:salemanUser
+				AND self.saleOrder.salespersonUser =:salespersonUser
 				AND self.saleOrder.confirmationDateTime BETWEEN DATE(:fromDate) AND DATE(:fromDate) + 120
 				AND self.saleOrder.company = :activeCompany
 			GROUP BY
@@ -632,7 +632,7 @@
 
 	<action-record model="com.axelor.apps.sale.db.SaleOrder" name="action.sale.chart.set.from.date.and.saleman.4m">
 		<field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusMonths(4)" />
-		<field name="salemanUser" expr="eval:__user__"/>
+		<field name="salespersonUser" expr="eval:__user__"/>
 	</action-record>
 	
 	<chart onInit="action.sale.chart.set.date" name="chart.sale.turnover.per.customer.type" title="Turnover per customer type">

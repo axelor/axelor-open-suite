@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+    <grid name="pack-grid" title="Pack" model="com.axelor.apps.sale.db.Pack">
+    	<field name="code"/>
+    	<field name="name"/>
+    	<field name="unit"/>
+    	<field name="currency"/>
+    </grid>
+    
+    <form name="pack-form" title="Pack" model="com.axelor.apps.sale.db.Pack" onNew="action-pack-record-onnew">
+    	<panel name="packPanel">
+	    	<field name="code" colSpan="3" required="true" x-bind="{{code|unaccent|uppercase}}"/>
+	    	<field name="name" colSpan="3"/>
+	    	<field name="unit" colSpan="3" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
+	    	<field name="currency" colSpan="3" canEdit="false" />
+	    	<panel-related field="components" form-view="pack-line-form" grid-view="pack-line-grid" canMove="true" orderBy="sequence" colSpan="12"/>
+    	</panel>
+    </form>
+    
+    <form name="sale-order-add-pack" model="com.axelor.apps.base.db.Wizard" title="Add Pack" onNew="action-sale-order-add-pack-attrs-onload">
+    	<panel name="packPanel">
+	    	<field name="$pack" required="true" type="many-to-one" title="Pack" target="com.axelor.apps.sale.db.Pack" form-view="pack-form" grid-view="pack-grid" canNew="true" canEdit="true"/>
+	    	<field name="$qty" type="decimal" title="Qty" min="1"/>
+	    	<button name="addPackBtn" title="Add Pack" onClick="action-sale-order-method-add-pack"/>
+	    	<field name="_id" hidden="true"/>
+    	</panel>
+    </form>
+    
+    <action-view name="action-sale-order-view-add-pack" title="Add Pack" model="com.axelor.apps.base.db.Wizard">
+    	<view type="form" name="sale-order-add-pack"/>
+    	<view-param name="popup" value="reload"/>
+    	<view-param name="show-toolbar" value="false"/>
+  		<view-param name="show-confirm" value="false" />
+ 	  	<view-param name="popup-save" value="false"/>
+ 	  	<context name="_showRecord" expr="eval: _id"/>
+    </action-view>
+    
+    <action-method name="action-sale-order-method-add-pack">
+    	<call class="com.axelor.apps.sale.web.SaleOrderController" method="addPack"/>
+    </action-method>
+    
+    <action-attrs name="action-sale-order-add-pack-attrs-onload">
+    	<attribute name="value" for="$qty" expr="eval: 1.00"/>
+    	<attribute name="value" for="_id" expr="eval: _id"/>
+    </action-attrs>
+    
+    <action-record name="action-pack-record-onnew" model="com.axelor.apps.sale.db.Pack">
+    	<field name="currency" expr="eval: __repo__(SaleOrder).find(__parent__._id)?.currency"/>
+    </action-record>
+
+</object-views>
