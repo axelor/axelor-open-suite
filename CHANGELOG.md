@@ -54,6 +54,7 @@
 - SEQUENCE: enable tracking for most fields.
 - BANK ORDER: Bank order workflow pass from draft to validated when automatic transmission is not activated in payment mode.
 - INVOICE: add specific note of company bank details on invoice report.
+- Accounting Config : clarifying the field lineMinBeforeLongReportGenerationMessageNumber
 
 ## Bug Fixes
 - Studio: Fix access to json fields of base model in chart builder form.
