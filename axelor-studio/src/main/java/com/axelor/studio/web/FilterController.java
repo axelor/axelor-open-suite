@@ -52,7 +52,7 @@ public class FilterController {
           metaField.getLabel() != null && !metaField.getLabel().isEmpty()
               ? metaField.getLabel()
               : metaField.getName());
-    } else if (isJson && metaJson != null) {
+    } else if ((isJson || !isJson) && metaJson != null) {
       response.setValue("targetType", Inflector.getInstance().camelize(metaJson.getType()));
       response.setValue("targetField", metaJson.getName());
     } else {

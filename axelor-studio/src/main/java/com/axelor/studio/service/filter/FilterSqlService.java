@@ -415,7 +415,7 @@ public class FilterSqlService {
     }
   }
 
-  private MetaField findMetaField(String name, String model) {
+  public MetaField findMetaField(String name, String model) {
 
     return metaFieldRepo
         .all()
@@ -423,7 +423,7 @@ public class FilterSqlService {
         .fetchOne();
   }
 
-  private MetaJsonField findJsonField(String name, String model) {
+  public MetaJsonField findJsonField(String name, String model) {
 
     return metaJsonFieldRepo
         .all()
