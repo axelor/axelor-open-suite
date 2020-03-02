@@ -14,14 +14,7 @@
     <decimal name="totalQuantity" title="Acquired" scale="4" precision="8"/>
     <one-to-many name="leaveManagementList" title="Leaves Management" ref="com.axelor.apps.hr.db.LeaveManagement" mappedBy="leaveLine"/>
     
-    <string name="name" namecolumn="true">
-    <![CDATA[
-      		if(this.getLeaveReason() != null)
-	  			return this.getLeaveReason().getLeaveReason();
-	  		else
-	  			return " ";
-	  ]]>
-    </string>
+    <string name="name" namecolumn="true" />
     
   </entity>
   

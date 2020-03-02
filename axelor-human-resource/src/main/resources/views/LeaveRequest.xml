@@ -264,10 +264,10 @@
     </action-attrs>
 	
 	<action-attrs name="action-leave-request-attrs-line-domain">
-		<attribute name="domain" for="leaveLine"  expr="eval: &quot; self.employee.id = ${__this__.user.employee?.id}&quot; "/>
+		<attribute name="domain" for="leaveLine"  expr="eval: &quot; self.employee.id = ${__this__.user.employee?.id} OR self.employee = null &quot;"/>
 		<attribute for="leaveLine" name="domain"
 				   if="!__user__.employee?.hrManager"
-				   expr="eval: &quot; self.employee.id = ${__this__.user.employee?.id} AND (self.leaveReason IS NULL OR self.leaveReason.selectedByMgtOnly = false) &quot;"/>
+				   expr="eval: &quot; self.employee.id = ${__this__.user.employee?.id} AND (self.leaveReason IS NULL OR self.leaveReason.selectedByMgtOnly = false) OR self.employee = null &quot;"/>
 		<attribute name="domain" for="leaveLine" expr="eval: &quot;self.id IN (0)&quot;" if="!user"/>
 	</action-attrs>
 
