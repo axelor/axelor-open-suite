@@ -70,7 +70,9 @@ public class StockRulesServiceProductionImpl extends StockRulesServiceSupplychai
     if (stockRules == null) {
       return;
     }
-    if (stockRules.getOrderAlertSelect() == StockRulesRepository.ORDER_ALERT_PRODUCTION_ORDER) {
+    if (stockRules
+        .getOrderAlertSelect()
+        .equals(StockRulesRepository.ORDER_ALERT_PRODUCTION_ORDER)) {
       this.generateProductionOrder(product, qty, stockLocationLine, type, stockRules);
     } else {
       this.generatePurchaseOrder(product, qty, stockLocationLine, type);
@@ -96,6 +98,9 @@ public class StockRulesServiceProductionImpl extends StockRulesServiceSupplychai
       BigDecimal qtyToProduce = this.getQtyToOrder(qty, stockLocationLine, type, stockRules);
       Beans.get(ProductionOrderService.class)
           .generateProductionOrder(product, null, qtyToProduce, LocalDateTime.now());
+      if (stockRules.getAlert()) {
+        this.generateAndSendMessage(stockRules);
+      }
     }
   }
 }

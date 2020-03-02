@@ -18,7 +18,7 @@
  		
  		<boolean name="manageResidualProductOnBom" title="Manage residual products on BOM"/>
  		<boolean name="subtractProdResidualOnCostSheet" title="Subtract the product residuals cost on Cost sheet"/>
- 		<boolean name="manageBillOfMaterialVersion" title="Manage bill of material versions" />
+ 		<boolean name="manageBillOfMaterialVersion" title="Manage bill of materials versions" />
  		<boolean name="manageProdProcessVersion" title="Manage production process versions" />
  		<boolean name="manageCostSheetGroup" title="Manage cost sheet group"/>
 

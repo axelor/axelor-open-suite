@@ -76,6 +76,11 @@
 		<option value="2">Subscription</option>
 	</selection>
 	
+	<selection name="supplychain.sale.order.line.available.status.select">
+		<option value="1">Available</option>
+		<option value="2">Missing</option>
+	</selection>
+	
 	<selection name='iinvoice.operation.sub.type.select' id="supplychain.iinvoice.operation.sub.type.select">
 		<option value="6">Subscription</option>
 	</selection>

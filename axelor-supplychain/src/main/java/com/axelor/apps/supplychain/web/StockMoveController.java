@@ -36,32 +36,6 @@ import java.util.Optional;
 
 public class StockMoveController {
 
-  public void addSubLines(ActionRequest request, ActionResponse response) {
-    try {
-      StockMove stockMove = request.getContext().asType(StockMove.class);
-      response.setValue(
-          "stockMoveLineList",
-          Beans.get(StockMoveServiceSupplychain.class)
-              .addSubLines(stockMove.getStockMoveLineList()));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-      response.setReload(true);
-    }
-  }
-
-  public void removeSubLines(ActionRequest request, ActionResponse response) {
-    try {
-      StockMove stockMove = request.getContext().asType(StockMove.class);
-      response.setValue(
-          "stockMoveLineList",
-          Beans.get(StockMoveServiceSupplychain.class)
-              .removeSubLines(stockMove.getStockMoveLineList()));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-      response.setReload(true);
-    }
-  }
-
   public void verifyProductStock(ActionRequest request, ActionResponse response) {
     try {
       StockMove stockMove = request.getContext().asType(StockMove.class);

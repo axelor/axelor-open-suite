@@ -2,7 +2,13 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
-  
+
+   <grid model="com.axelor.meta.db.MetaSelect" title="Selection" name="studio-meta-select-grid" groupBy="appBuilder">
+     <field name="name"/>
+     <field name="module"/>
+     <field name="priority"/>
+     <field name="appBuilder" hidden="true"/>
+   </grid>
   	<form id="studio-meta-select-form" name="meta-select-form" title="Selection" model="com.axelor.meta.db.MetaSelect"
   		onNew="action-studio-meta-select-record-onnew,action-studio-meta-select-attrs-onnew-onload" 
   		onLoad="action-studio-meta-select-attrs-onnew-onload">

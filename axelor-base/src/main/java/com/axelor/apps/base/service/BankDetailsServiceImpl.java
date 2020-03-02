@@ -112,7 +112,7 @@ public class BankDetailsServiceImpl implements BankDetailsService {
     }
 
     return "self.id IN ("
-        + StringTool.getIdListString(company.getBankDetailsSet())
+        + StringTool.getIdListString(company.getBankDetailsList())
         + ") AND self.active = true";
   }
 
@@ -158,7 +158,7 @@ public class BankDetailsServiceImpl implements BankDetailsService {
 
     if (company != null) {
 
-      String bankDetailsIds = StringTool.getIdListString(company.getBankDetailsSet());
+      String bankDetailsIds = StringTool.getIdListString(company.getBankDetailsList());
 
       if (company.getDefaultBankDetails() != null) {
         bankDetailsIds += bankDetailsIds.equals("") ? "" : ",";

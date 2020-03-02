@@ -484,12 +484,16 @@
 		<field name="isWithBackorder" expr="true"/>
 	</action-record>
 
-    <form name="stock-move-wizard-special-split-form" title="Special split" model="com.axelor.apps.base.db.Wizard">
+    <form name="stock-move-wizard-special-split-form" title="Special split" model="com.axelor.apps.base.db.Wizard" onNew="action-stock-move-attrs-set-scale" onLoad="action-stock-move-attrs-set-scale">
     	<panel name="mainPanel" colSpan="12">
 	        <field name="splitQty" type="decimal" widget="Decimal" title="Split in Qty of" x-scale="2" x-precision="18" colSpan="6"/>
 	        <button name="splitBtn" title="Split" onClick="action-stock-move-method-split-stock-move-lines-special" colSpan="6"/>
         </panel>
     </form>
+    
+    <action-attrs name="action-stock-move-attrs-set-scale">
+    	<attribute name="scale" for="splitQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    </action-attrs>
     
     <form name="stock-move-wizard-stock-per-day" title="Stock Availability" model="com.axelor.apps.base.db.Wizard" 
     	 canSave="false" canDelete="false" canCopy="false" canAttach="false" canNew="false"
@@ -534,15 +538,7 @@
 	        <button name="splitBtn" title="Split" onClick="action-stock-move-method-split-into-2"/>
         </panel>
     </form>
-    
-    <action-method name="action-stock-move-method-add-subline">
-    	<call class="com.axelor.apps.supplychain.web.StockMoveController" method="addSubLines"/>
-    </action-method>
-    
-    <action-method name="action-stock-move-method-remove-subline">
-    	<call class="com.axelor.apps.supplychain.web.StockMoveController" method="removeSubLines"/>
-    </action-method>
-    
+
     <action-method name="action-stock-move-method-compute">
     	<call class="com.axelor.apps.stock.web.StockMoveController" method="compute"/>
     </action-method>
@@ -566,10 +562,6 @@
 	    <context name="_showRecord" expr="eval: __this__.id" />
 	</action-view>
 
-    <!-- <action-attrs name="action-stock-move-attrs-title-realize-button">
-    	<attribute name="title" for="realize" expr="eval: (fromStockLocation) ? ((fromStockLocation?.typeSelect != 1 &amp;&amp; toStockLocation?.typeSelect == 1) ? 'Receive' : 'Send') : ((toStockLocation?.typeSelect == 1) ? 'Receive' : 'Send')"/>
-    </action-attrs> -->
-    
     <action-attrs name="action-stock-move-attrs-filter-on-available-products">
     	<attribute name="hidden" for="filterOnAvailableProducts" expr="eval: statusSelect &gt; 1 || (fromStockLocation != null &amp;&amp; fromStockLocation.typeSelect == 3)"/>
     </action-attrs>
@@ -596,9 +588,7 @@
     </action-group>
     
     <action-group name="action-stock-move-line-change-group">
-    	<action name="action-stock-move-method-remove-subline"/>
     	<action name="save" if="stockMoveLineList.find{it->it.lineTypeSelect == 2 &amp;&amp; (it.version != null || it.id == null)} != null" />
-    	<action name="action-stock-move-method-add-subline"/>
     	<action name="action-stock-move-method-compute"/>
     	<action name="action-stock-move-line-method-change-conformity"/>
     	<action name="action-stock-move-method-set-available-status"/>

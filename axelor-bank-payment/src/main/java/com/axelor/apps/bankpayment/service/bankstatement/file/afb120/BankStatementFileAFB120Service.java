@@ -607,7 +607,7 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
         structuredLineContent.put(
             "additionalInformation",
             cfonbToolService.readZone(
-                "2b-M : additional informations",
+                "2b-M : additional information",
                 lineContent,
                 cfonbToolService.STATUS_MANDATORY,
                 cfonbToolService.FORMAT_ALPHA_NUMERIC,
@@ -657,7 +657,7 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
         structuredLineContent.put(
             "additionalInformation",
             cfonbToolService.readZone(
-                "2b-M : additional informations",
+                "2b-M : additional information",
                 lineContent,
                 cfonbToolService.STATUS_MANDATORY,
                 cfonbToolService.FORMAT_ALPHA_NUMERIC,

@@ -16,10 +16,7 @@
 	</grid>
 
 	<form name="invoicing-project-form" title="Invoicing business project" model="com.axelor.apps.businessproject.db.InvoicingProject"
-		onNew="action-invoicing-project-group-on-new" onLoad="action-invoicing-project-attrs-title-project" width="large">
-		<toolbar>
-  			<button name="deleteBtn" hidden="true" showIf="invoice == null" title="Delete"/>
-  		</toolbar>
+		onNew="action-invoicing-project-group-on-new" onLoad="action-invoicing-project-attrs-title-project" width="large" canDelete="!invoice">
 
 		<panel name="mainPanel">
 		  <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="12" readonly="true"/>

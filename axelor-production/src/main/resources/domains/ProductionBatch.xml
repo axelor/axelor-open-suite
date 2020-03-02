@@ -12,7 +12,7 @@
     <integer name="actionSelect" title="Action" required="true" selection="production.batch.action.select"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" />
     <many-to-one name="workshopStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Workshop"/>
-    <!-- OTHERS INFORMATIONS -->
+    <!-- OTHERS INFORMATION -->
     <string name="description" title="Description" large="true" />
     <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch" mappedBy="productionBatch" title="Batchs" />
     <date name="valuationDate" title="Valuation date"/>

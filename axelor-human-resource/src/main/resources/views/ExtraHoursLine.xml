@@ -5,6 +5,7 @@
 	<grid name="extra-hours-line-grid" title="Extra Hours" model="com.axelor.apps.hr.db.ExtraHoursLine" editable="true" onNew="action-extra-hours-line-record-default" orderBy="date">
 		<field name="date" width="100"/>
 		<field name="qty" width="100" onChange="action-extra-hours-line-validate-qty" aggregate="sum"/>
+		<field name="extraHoursType" width="200"/>
 		<field name="project" width="200"/>
 		<field name="description" width="400"/>
 		<field name="user" hidden="true"/>
@@ -17,6 +18,7 @@
 		<panel name="headPanel">
 			<field name="date"/>
 			<field name="qty" onChange="action-extra-hours-line-validate-qty"/>
+			<field name="extraHoursType"/>
 			<field name="project"/>
 			<field name="description" colSpan="12"/>
 			<field name="user" hidden="true" form-view="user-form" grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>

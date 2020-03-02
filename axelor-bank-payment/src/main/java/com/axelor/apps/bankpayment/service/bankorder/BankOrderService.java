@@ -88,4 +88,8 @@ public interface BankOrderService {
 
   public ActionViewBuilder buildBankOrderLineView(
       String gridViewName, String formViewName, String viewDomain);
+
+  public void setStatusToDraft(BankOrder bankOrder);
+
+  public void setStatusToRejected(BankOrder bankOrder);
 }

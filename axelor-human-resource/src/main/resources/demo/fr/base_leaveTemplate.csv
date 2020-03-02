@@ -1,7 +1,7 @@
 "importId";"name";"replyToRecipients";"toRecipients";"ccRecipients";"subject";"content";"metaModel.name";"metaModel.packageName";"isSystem";"mediaTypeSelect"
 4;"Demande de congé";"$LeaveRequest.user.partner.emailAddress.address$";"$LeaveRequest.user.employee.managerUser.partner.emailAddress.address$";"$LeaveRequest.user.partner.emailAddress.address$";"Demande d'absence de ($LeaveRequest.user.name$)";"<p>Bonjour $LeaveRequest.user.employee.managerUser.name$,</p>
 <p><br></p>
-<p>$LeaveRequest.user.name$ vous fait part d'une demande d'absence du $LeaveRequest.fromDateT; format=""E. d MMM yyyy""$ au $LeaveRequest.toDateT; format=""E. d MMM yyyy""$ en $LeaveRequest.leaveLine.leaveReason.leaveReason$ ($LeaveRequest.duration$ $LeaveRequest.leaveLine.leaveReason.unitSelect$).</p>
+<p>$LeaveRequest.user.name$ vous fait part d'une demande d'absence du $LeaveRequest.fromDateT; format=""dd/MM/yyyy""$ au $LeaveRequest.toDateT; format=""dd/MM/yyyy""$ en $LeaveRequest.leaveLine.leaveReason.leaveReason$ ($LeaveRequest.duration$ $LeaveRequest.leaveLine.leaveReason.unitSelect$).</p>
 <a href=""http://localhost:8080/open-suite-webapp/#/ds/leave.validate/edit/$LeaveRequest.id$"">Veuillez vous connecter pour la consulter.</a>
 
 <div>
@@ -11,7 +11,7 @@
 </div>";"LeaveRequest";"com.axelor.apps.hr.db";"true";2
 5;"Rejet de demande de congé";"$LeaveRequest.user.employee.managerUser.partner.emailAddress.address$";"$LeaveRequest.user.partner.emailAddress.address$";"$LeaveRequest.user.employee.managerUser.partner.emailAddress.address$";"Rejet de demande de congé";"<p>Bonjour $LeaveRequest.user.name$,</p>
 <p><br></p>
-<p>Malheureusement, votre demande de congé pour la période du $LeaveRequest.fromDateT; format=""E. d MMM yyyy""$ au $LeaveRequest.toDateT; format=""E. d MMM yyyy""$ ne peut être acceptée.</p>
+<p>Malheureusement, votre demande de congé pour la période du $LeaveRequest.fromDateT; format=""dd/MM/yyyy""$ au $LeaveRequest.toDateT; format=""dd/MM/yyyy""$ ne peut être acceptée.</p>
 <a href=""http://localhost:8080/open-suite-webapp/#/ds/leave.validate/edit/$LeaveRequest.id$"">Veuillez vous connecter pour la consulter.</a>
 
 <div>
@@ -23,7 +23,7 @@
 </div>";"LeaveRequest";"com.axelor.apps.hr.db";"true";2
 6;"Validation de congé";"$LeaveRequest.user.employee.managerUser.partner.emailAddress.address$";"$LeaveRequest.user.partner.emailAddress.address$";"$LeaveRequest.user.employee.managerUser.partner.emailAddress.address$";"Validation de congé";"<p>Bonjour $LeaveRequest.user.name$,</p>
 <p><br></p>
-<p>Votre demande de congé pour la période du $LeaveRequest.fromDateT; format=""E. d MMM yyyy""$ au $LeaveRequest.toDateT; format=""E. d MMM yyyy""$ a été validée.</p>
+<p>Votre demande de congé pour la période du $LeaveRequest.fromDateT; format=""dd/MM/yyyy""$ au $LeaveRequest.toDateT; format=""dd/MM/yyyy""$ a été validée.</p>
 <a href=""http://localhost:8080/open-suite-webapp/#/ds/leave.validate/edit/$LeaveRequest.id$"">Veuillez vous connecter pour la consulter.</a>
 
 <div>
