@@ -111,7 +111,6 @@ public class StockLocationServiceImpl implements StockLocationService {
       Product product = productRepo.find(productId);
       Unit productUnit = product.getUnit();
       UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
-      int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForQty();
       if (locationId == null || locationId == 0L) {
         List<StockLocation> stockLocations = getNonVirtualStockLocations(companyId);
         if (!stockLocations.isEmpty()) {
@@ -137,7 +136,7 @@ public class StockLocationServiceImpl implements StockLocationService {
               }
             }
           }
-          return qty.setScale(scale, RoundingMode.DOWN);
+          return qty;
         }
       } else {
         StockLocationLine stockLocationLine =
@@ -158,7 +157,7 @@ public class StockLocationServiceImpl implements StockLocationService {
                 unitConversionService.convert(
                     stockLocationLineUnit, productUnit, qty, qty.scale(), product);
           }
-          return qty.setScale(scale, RoundingMode.DOWN);
+          return qty;
         }
       }
     }
