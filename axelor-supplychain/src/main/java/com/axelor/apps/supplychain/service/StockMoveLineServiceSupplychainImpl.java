@@ -157,13 +157,6 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       return super.compute(stockMoveLine, null);
     }
 
-    // if this is a pack do not compute price
-    if (stockMoveLine.getProduct() == null
-        || (stockMoveLine.getLineTypeSelect() != null
-            && stockMoveLine.getLineTypeSelect() == StockMoveLineRepository.TYPE_PACK)) {
-      return stockMoveLine;
-    }
-
     if (stockMove.getOriginId() != null
         && stockMove.getOriginId() != 0L
         && (stockMoveLine.getSaleOrderLine() != null

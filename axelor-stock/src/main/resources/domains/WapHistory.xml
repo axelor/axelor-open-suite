@@ -9,7 +9,7 @@
     <many-to-one name="stockLocationLine" ref="com.axelor.apps.stock.db.StockLocationLine" readonly="true" required="true" initParam="true"/>
     <date name="date" column="date_val" readonly="true" initParam="true"/>
     <decimal name="wap" title="WAP" precision="20" scale="10" readonly="true" initParam="true"/>
-    <decimal name="qty" title="Quantity" readonly="true" initParam="true"/>
+    <decimal name="qty" title="Quantity" precision="20" scale="10" readonly="true" initParam="true"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit" readonly="true" initParam="true"/>
     <many-to-one name="stockMoveLine" ref="com.axelor.apps.stock.db.StockMoveLine" title="Stock move line" readonly="true" initParam="true"/>
   </entity>

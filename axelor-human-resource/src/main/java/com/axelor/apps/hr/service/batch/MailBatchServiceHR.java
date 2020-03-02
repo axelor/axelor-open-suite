@@ -30,9 +30,9 @@ public class MailBatchServiceHR extends MailBatchService {
 
   @Override
   public Batch run(Model batchModel) throws AxelorException {
-    Batch batch = super.run(batchModel);
+
     if (!Beans.get(AppHumanResourceService.class).isApp("employee")) {
-      return batch;
+      return super.run(batchModel);
     }
 
     MailBatch mailBatch = (MailBatch) batchModel;

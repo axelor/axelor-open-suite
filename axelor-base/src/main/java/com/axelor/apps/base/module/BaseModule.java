@@ -64,6 +64,8 @@ import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.BarcodeGeneratorServiceImpl;
 import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.base.service.CompanyServiceImpl;
+import com.axelor.apps.base.service.DMSImportWizardService;
+import com.axelor.apps.base.service.DMSImportWizardServiceImpl;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.DurationServiceImpl;
 import com.axelor.apps.base.service.FrequencyService;
@@ -183,6 +185,7 @@ public class BaseModule extends AxelorModule {
     bind(MailingListMessageRepository.class).to(MailingListMessageBaseRepository.class);
     bind(ABCAnalysisService.class).to(ABCAnalysisServiceImpl.class);
     bind(ABCAnalysisRepository.class).to(ABCAnalysisBaseRepository.class);
+    bind(DMSImportWizardService.class).to(DMSImportWizardServiceImpl.class);
     bind(AdvancedImportService.class).to(AdvancedImportServiceImpl.class);
     bind(DataImportService.class).to(DataImportServiceImpl.class);
     bind(FileTabService.class).to(FileTabServiceImpl.class);

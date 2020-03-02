@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -964,8 +964,7 @@ BankDetails.id as bankDetailsId
 FROM public.account_accounting_report as AccountingReport
 LEFT JOIN public.bankpayment_bank_statement_line_afb120 as BankStatementLine on (AccountingReport.id = ?)
 LEFT JOIN public.base_bank_details as BankDetails on BankStatementLine.bank_details = BankDetails.id
-LEFT JOIN public.base_company_bank_details_set as CompanyBankDetailsSet on BankDetails.id = CompanyBankDetailsSet.bank_details_set
-LEFT JOIN public.base_company as Company on CompanyBankDetailsSet.base_company = Company.id
+LEFT JOIN public.base_company as Company on BankDetails.company = Company.id
 LEFT JOIN public.bankpayment_bank_statement AS BankStatement ON BankStatementLine.bank_statement = BankStatement.id
 LEFT JOIN public.bankpayment_bank_reconciliation_line as BankReconciliationLine on BankStatementLine.id = BankReconciliationLine.bank_statement_line
 LEFT JOIN public.bankpayment_bank_reconciliation as BankReconciliation on BankReconciliationLine.bank_reconciliation = BankReconciliation.id
@@ -992,8 +991,7 @@ BankDetails.id as bankDetailsId
 FROM public.account_accounting_report as AccountingReport
 LEFT JOIN public.bankpayment_bank_statement_line_afb120 as BankStatementLine on (AccountingReport.id = ?)
 LEFT JOIN public.base_bank_details as BankDetails on BankStatementLine.bank_details = BankDetails.id
-LEFT JOIN public.base_company_bank_details_set as CompanyBankDetailsSet on BankDetails.id = CompanyBankDetailsSet.bank_details_set
-LEFT JOIN public.base_company as Company on CompanyBankDetailsSet.base_company = Company.id
+LEFT JOIN public.base_company as Company on BankDetails.company = Company.id
 LEFT JOIN public.bankpayment_bank_statement AS BankStatement ON BankStatementLine.bank_statement = BankStatement.id
 LEFT JOIN public.bankpayment_bank_reconciliation_line as BankReconciliationLine on BankStatementLine.id = BankReconciliationLine.bank_statement_line
 LEFT JOIN public.bankpayment_bank_reconciliation as BankReconciliation on BankReconciliationLine.bank_reconciliation = BankReconciliation.id
@@ -1133,8 +1131,7 @@ AND Move.ignore_in_accounting_ok in (false,null)]]></xml-property>
 FROM public.account_accounting_report as AccountingReport
 LEFT JOIN base_bank_details as BankDetails on (AccountingReport.id = ?)
 LEFT JOIN bankpayment_bank_statement_line_afb120 as BankStatementLine on BankDetails.id = BankStatementLine.bank_details
-LEFT JOIN public.base_company_bank_details_set as CompanyBankDetailsSet on BankDetails.id = CompanyBankDetailsSet.bank_details_set
-LEFT JOIN public.base_company as Company on CompanyBankDetailsSet.base_company = Company.id
+LEFT JOIN public.base_company as Company on BankDetails.company = Company.id
 WHERE BankDetails.id = ?
 AND BankDetails.id is not null
 AND AccountingReport.company = Company.id

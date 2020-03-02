@@ -113,7 +113,7 @@
 		<decimal name="height" title="Height" default="0" />
 		<decimal name="diameter" title="Diameter" />
 		<decimal name="articleVolume" title="Article volume" />
-		<decimal name="economicManufOrderQty" title="Economic manuf. qty"/>
+		<decimal name="economicManufOrderQty" title="Economic manuf. qty" precision="20" scale="10"/>
 		
 		<boolean name="isShippingCostsProduct" title="Is shipping costs product"/>
 
@@ -134,7 +134,6 @@
 				// PRODUCT TYPE SELECT
 				public static final String PRODUCT_TYPE_SERVICE = "service";
 				public static final String PRODUCT_TYPE_STORABLE = "storable";
-				public static final String PRODUCT_TYPE_PACK = "pack";
 				
 				// SALE SUPPLY SELECT
 				public static final int SALE_SUPPLY_FROM_STOCK = 1;

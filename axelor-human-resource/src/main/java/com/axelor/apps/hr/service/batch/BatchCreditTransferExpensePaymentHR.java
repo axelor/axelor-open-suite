@@ -136,7 +136,7 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
       Set<BankDetails> bankDetailsSet = Sets.newHashSet(accountingBatch.getBankDetails());
 
       if (accountingBatch.getIncludeOtherBankAccounts()) {
-        bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsSet());
+        bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsList());
       }
 
       query.bind("bankDetailsSet", bankDetailsSet);

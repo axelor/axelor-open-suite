@@ -97,7 +97,7 @@ public class OrderType {
   /** Return bank parameters. */
   public static final OrderType HPD;
 
-  /** Fetch user informations. */
+  /** Fetch user information. */
   public static final OrderType HTD;
 
   /** Send the first signature key. */

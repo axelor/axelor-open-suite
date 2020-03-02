@@ -729,9 +729,7 @@ public class ExpenseServiceImpl implements ExpenseService {
               PriceListLineRepository.AMOUNT_TYPE_NONE,
               expenseLine.getUntaxedAmount(),
               expenseLine.getTotalAmount(),
-              false,
-              false,
-              0) {
+              false) {
 
             @Override
             public List<InvoiceLine> creates() throws AxelorException {
@@ -762,9 +760,7 @@ public class ExpenseServiceImpl implements ExpenseService {
               PriceListLineRepository.AMOUNT_TYPE_NONE,
               expenseLine.getUntaxedAmount(),
               expenseLine.getTotalAmount(),
-              false,
-              false,
-              0) {
+              false) {
 
             @Override
             public List<InvoiceLine> creates() throws AxelorException {

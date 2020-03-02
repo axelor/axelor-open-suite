@@ -26,7 +26,7 @@
 				<field name="onSelectOk" onChange="action-invoice-batch-attrs-on-select-ok"/>
     		</panel>
     		<panel-related name="invoiceSetPanel" field="invoiceSet"  onSelect="action-invoice-batch-method-invoice-set-domain" grid-view="invoice-grid" form-view="invoice-form"/>
-    		<panel name="informationsPanel" title="Informations"  >
+    		<panel name="informationsPanel" title="Information"  >
     			<field name="createdOn" title="Created on"/>
 				<field name="createdBy" title="Created by" />
 		    	<field name="description" showTitle="false" colSpan="12"/>

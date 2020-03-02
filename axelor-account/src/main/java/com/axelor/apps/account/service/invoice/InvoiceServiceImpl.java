@@ -289,9 +289,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
       Account account = invoiceLine.getAccount();
 
-      if (account == null
-          && (invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_NORMAL)
-          && invoiceLineService.isAccountRequired(invoiceLine)) {
+      if (invoiceLine.getAccount() == null
+          && (invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_NORMAL)) {
         throw new AxelorException(
             invoice,
             TraceBackRepository.CATEGORY_MISSING_FIELD,

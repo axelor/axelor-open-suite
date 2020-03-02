@@ -87,7 +87,7 @@ public interface IExceptionMessage {
 
   /** Account clearance service and controller */
   static final String ACCOUNT_CLEARANCE_1 = /*$$(*/
-      "%s : You must configure account informations for the company %s" /*)*/;
+      "%s : You must configure account information for the company %s" /*)*/;
 
   static final String ACCOUNT_CLEARANCE_2 = /*$$(*/
       "%s : You must configure a financial account for then company %s" /*)*/;
@@ -392,7 +392,7 @@ public interface IExceptionMessage {
       "%s : Please, configure a currency for the company %s" /*)*/;
 
   static final String ACCOUNT_CONFIG_1 = /*$$(*/
-      "%s : You must configure account's informations for the company %s" /*)*/;
+      "%s : You must configure account's information for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_2 = /*$$(*/
       "%s : You must configure a CFONB format reimbursement's export's folder for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_3 = /*$$(*/

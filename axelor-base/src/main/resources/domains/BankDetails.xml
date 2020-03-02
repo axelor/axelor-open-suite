@@ -47,6 +47,7 @@
     </string>
     <boolean name="active" title="Active" default="true" massUpdate="true"/>
     <string name="code" />
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company"/>
 
 	<finder-method name="findDefaultByPartner" using="partner"
 		filter="self.partner = :partner AND self.isDefault = TRUE" />

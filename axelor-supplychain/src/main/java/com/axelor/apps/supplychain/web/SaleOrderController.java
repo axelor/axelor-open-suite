@@ -42,6 +42,7 @@ import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderReservedQtyService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
+import com.axelor.apps.supplychain.service.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
@@ -291,7 +292,6 @@ public class SaleOrderController {
               new BigDecimal(map.get(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD).toString());
           if (qtyToInvoiceItem.compareTo(BigDecimal.ZERO) != 0) {
             Long soLineId = Long.valueOf((Integer) map.get("id"));
-            saleOrderInvoiceService.addSubLineQty(qtyToInvoiceMap, qtyToInvoiceItem, soLineId);
             qtyToInvoiceMap.put(soLineId, qtyToInvoiceItem);
           }
         }
@@ -658,9 +658,6 @@ public class SaleOrderController {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       List<Map<String, Object>> saleOrderLineList = new ArrayList<>();
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        if (saleOrderLine.getIsSubLine()) {
-          continue;
-        }
         Map<String, Object> saleOrderLineMap = Mapper.toMap(saleOrderLine);
         saleOrderLineMap.put(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD, BigDecimal.ZERO);
         saleOrderLineList.add(saleOrderLineMap);
@@ -862,6 +859,17 @@ public class SaleOrderController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void backToConfirmedStatus(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+      Beans.get(SaleOrderSupplychainService.class).updateToConfirmedStatus(saleOrder);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

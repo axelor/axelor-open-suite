@@ -68,7 +68,7 @@ public class BankReconciliationCreateService {
       Company company =
           companyRepository
               .all()
-              .filter("?1 member of self.bankDetailsSet", bankDetails)
+              .filter("?1 member of self.bankDetailsList", bankDetails)
               .fetchOne();
 
       Currency currency = bankDetails.getCurrency();

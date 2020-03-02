@@ -212,17 +212,6 @@ public interface SaleOrderInvoiceService {
       throws AxelorException;
 
   /**
-   * Check if a sale order line is a pack line and add all its sublines to qtyToInvoiceMap with
-   * amount qtyToInvoiceItem.
-   *
-   * @param qtyToInvoiceMap
-   * @param qtyToInvoiceItem
-   * @param soLineId
-   */
-  public void addSubLineQty(
-      Map<Long, BigDecimal> qtyToInvoiceMap, BigDecimal qtyToInvoiceItem, Long soLineId);
-
-  /**
    * Use the different parameters to have the price in % of the created invoice.
    *
    * @param saleOrder the sale order used to get the total price

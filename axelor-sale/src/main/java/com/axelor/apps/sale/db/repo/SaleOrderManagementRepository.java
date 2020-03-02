@@ -21,6 +21,8 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.exception.AxelorException;
@@ -71,6 +73,9 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
   @Override
   public SaleOrder save(SaleOrder saleOrder) {
     try {
+      if (Beans.get(AppSaleService.class).getAppSale().getEnablePackManagement()) {
+        Beans.get(SaleOrderComputeService.class).computePackTotal(saleOrder);
+      }
       computeSeq(saleOrder);
       computeFullName(saleOrder);
       computeSubMargin(saleOrder);

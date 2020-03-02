@@ -22,6 +22,26 @@
             <property name="id">209</property>
             <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
         </structure>
+        <structure>
+            <property name="name">odaAutoCommit</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">odaIsolationMode</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">odaJndiName</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileName</property>
+            <property name="id">209</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileStorePath</property>
+            <property name="id">209</property>
+        </structure>
     </list-property>
     <property name="units">in</property>
     <property name="iconFile">/templates/blank_report.gif</property>
@@ -578,36 +598,42 @@ where ForecastRecap.id = ?;]]></xml-property>
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">estimateddate</property>
+                    <property name="alias">estimateddate</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">estimateddate</text-property>
                     <text-property name="heading">estimateddate</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">typeselect</property>
+                    <property name="alias">typeselect</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">typeselect</text-property>
                     <text-property name="heading">typeselect</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">relatedtoselectname</property>
+                    <property name="alias">relatedtoselectname</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">relatedtoselectname</text-property>
                     <text-property name="heading">relatedtoselectname</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">amount</property>
+                    <property name="alias">amount</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">amount</text-property>
                     <text-property name="heading">amount</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">balance</property>
+                    <property name="alias">balance</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">balance</text-property>
                     <text-property name="heading">balance</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">id</property>
+                    <property name="alias">id</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">id</text-property>
                     <text-property name="heading">id</text-property>
@@ -657,6 +683,11 @@ where ForecastRecap.id = ?;]]></xml-property>
                         <property name="name">id</property>
                         <property name="dataType">decimal</property>
                     </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">sequence</property>
+                        <property name="dataType">integer</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -666,42 +697,42 @@ where ForecastRecap.id = ?;]]></xml-property>
                     <property name="name">estimateddate</property>
                     <property name="nativeName">estimateddate</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">typeselect</property>
                     <property name="nativeName">typeselect</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">relatedtoselectname</property>
                     <property name="nativeName">relatedtoselectname</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">amount</property>
                     <property name="nativeName">amount</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">balance</property>
                     <property name="nativeName">balance</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">id</property>
                     <property name="nativeName">id</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">sequence</property>
+                    <property name="nativeName">sequence</property>
+                    <property name="dataType">integer</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
@@ -710,8 +741,10 @@ ForecastRecapLine.type_select as typeSelect,
 ForecastRecapLine.related_to_select_name as relatedToSelectName,
 ForecastRecapLine.amount as amount,
 ForecastRecapLine.balance as balance,
-ForecastRecapLine.id as id
+ForecastRecapLine.id as id,
+ForecastRecapLineType.sequence as sequence
 from management_forecast_recap_line as ForecastRecapLine
+left outer join management_forecast_recap_line_type as ForecastRecapLineType on (ForecastRecapLine.forecast_recap_line_type = ForecastRecapLineType.id)
 left outer join management_forecast_recap as ForecastRecap on (ForecastRecapLine.forecast_recap = ForecastRecap.id)
 where ForecastRecap.id = ?
 ]]></xml-property>
@@ -2685,11 +2718,22 @@ else -row[&quot;sum&quot;]</Definition>
                                 <expression name="expression" type="javascript">dataSetRow["id"]</expression>
                                 <property name="dataType">decimal</property>
                             </structure>
+                            <structure>
+                                <property name="name">sequence</property>
+                                <text-property name="displayName">sequence</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["sequence"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
                         </list-property>
                         <property name="pageBreakInterval">0</property>
                         <list-property name="sort">
                             <structure>
                                 <expression name="key" type="javascript">row["estimateddate"]</expression>
+                                <property name="direction">asc</property>
+                                <property name="strength">-1</property>
+                            </structure>
+                            <structure>
+                                <expression name="key" type="javascript">row["sequence"]</expression>
                                 <property name="direction">asc</property>
                                 <property name="strength">-1</property>
                             </structure>

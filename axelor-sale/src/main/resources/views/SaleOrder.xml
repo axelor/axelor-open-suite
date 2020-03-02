@@ -56,7 +56,7 @@
 		<field name="currency" form-view="currency-form" grid-view="currency-grid" />
 		<field name="deliveryState" if="__config__.app.isApp('supplychain')" />
 		<field name="statusSelect" />
-		<field name="salemanUser"/>
+		<field name="salespersonUser"/>
 		<button name="printBtn" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order" />
 		<button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template" />
 	</grid>
@@ -388,6 +388,7 @@
 	    <field name="attrs" colSpan="12"/>
 	  </panel>
 	  <panel name="actionsPanel" hideIf="clientPartner == null" sidebar="true" stacked="true">
+	    <button name="addPackBtn" title="Add a pack" onClick="save,action-sale-order-view-add-pack" if="__config__.app.getApp('sale')?.enablePackManagement" hideIf="clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4"/>
 	    <button name="finalizeBtn" title="Finalize" showIf="statusSelect == 1" colSpan="12" onClick="action-group-sale-order-finalize-quotation"/>
 	    <button if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowCompleteManuallySaleOrder) || (!__config__.app.isApp('supplychain'))" name="completeManuallySaleOrderBtn" title="Complete manually sale order" showIf="statusSelect == 3" prompt="Warning, a completed order can't be changed anymore, do you want to continue?" colSpan="12" onClick="save,action-sale-order-method-complete-sale-order"/>
 	    <button if="__config__.app.getApp('sale').getManageSaleOrderVersion()" name="newVersionBtn" title="New version" showIf="statusSelect == 2" colSpan="12" onClick="save,action-sale-record-newVersion,save"/>
@@ -401,7 +402,7 @@
 	    <button if="__config__.app.getApp('production')?.prodOrderMgtOnSO &amp;&amp; !__config__.app.getApp('production')?.productionOrderGenerationAuto" name="generateProductionOrderBtn" title="Generate production order" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12" onClick="save,action-sale-order-method-create-production-order"/>
 	    <button name="cancelBtn" title="Cancel" css="btn-danger" icon="fa-times" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12" onClick="save,action-sale-order-view-cancel"/>
 	    <button if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('account').getManageAdvancePaymentInvoice()" if-module="axelor-supplychain" name="addAdvancePaymentBtn" title="Register a deposit" showIf="statusSelect == 3 &amp;&amp; amountInvoiced == 0" colSpan="12" onClick="save,action-sale-order-view-register-advance-payment"/>
-	    <button if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowCompleteManuallySaleOrder" name="backToOrderConfirmBtn" title="Back to confirmed order" showIf="statusSelect == 4" if-module="axelor-supplychain" onClick="action-sale-order-attrs-set-status-to-confirmed,save"/>
+	    <button if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowCompleteManuallySaleOrder" name="backToOrderConfirmBtn" title="Back to confirmed order" showIf="statusSelect == 4" if-module="axelor-supplychain" onClick="save,action-sale-order-method-set-status-to-confirmed"/>
 	    <field name="message" hidden="true" type="string"/>
 	    <field name="amountInvoiced" hidden="true"/>
 	    <button if="__config__.app.getApp('sale').getEnableConfigurator()" name="addLineFromConfiguratorBtn" title="Add Line from Configurator" showIf="statusSelect == 1" onClick="save,action-sale-order-view-generate-line"/>
@@ -428,7 +429,7 @@
 	    </field>
 	  </panel>
 	  <panel name="salesFollowUpPanel" title="Sales follow-up" hideIf="clientPartner == null" sidebar="true" itemSpan="6" canCollapse="true" collapseIf="true">
-	    <field name="salemanUser" canNew="false" canView="false" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+	    <field name="salespersonUser" canNew="false" canView="false" canEdit="false" form-view="user-form" grid-view="user-grid"/>
 	    <field if="__config__.app.getApp('base').getTeamManagement()" name="team" canEdit="false" onSelect="action-sale-order-domain-on-team" form-view="team-form" grid-view="team-grid"/>
 	  </panel>
 	  <panel name="characteristicsPanel" title="Characteristics" hideIf="clientPartner == null" sidebar="true" itemSpan="6" canCollapse="true" collapseIf="true">
@@ -557,9 +558,10 @@
 	          </viewer>
 	        </field>
 		</panel>
-	    <panel name="otherInformationsPanel" title="Other informations" showTitle="false">
+
+	    <panel name="otherInformationsPanel" title="Other information" showTitle="false">
 	      <panel name="salesFollowUpPanel" title="Sales follow-up" colSpan="12">
-	        <field name="salemanUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid"/>
+	        <field name="salespersonUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid"/>
 	        <field name="team" onSelect="action-sale-order-domain-on-team" form-view="team-form" grid-view="team-grid"/>
 	      </panel>
 	      <panel name="financialTermsPanel" title="Financial terms" colSpan="12"  if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
@@ -679,7 +681,7 @@
 	        <field name="endOfValidityDate">
 	    		<hilite if="$moment().diff(endOfValidityDate, 'days') &gt; 0 &amp;&amp; statusSelect != 3" color="danger"/>
 	    	</field>
-	        <field name="salemanUser" canNew="false" canEdit="false" colSpan="10" form-view="user-form" grid-view="user-grid" canView="false"/>
+	        <field name="salespersonUser" canNew="false" canEdit="false" colSpan="10" form-view="user-form" grid-view="user-grid" canView="false"/>
 	        <field name="statusSelect" widget="NavSelect" colSpan="12"/>
 	      </panel>
             <panel name="inTaxTotalPanel" readonly="true"  css="order-subtotal" colSpan="4">
@@ -870,7 +872,7 @@
 	</cards>
 
     <action-attrs name="action-sale-order-domain-on-team">
-    	<attribute name="domain" for="team" expr="eval: salemanUser?.teamSet?.collect{it.id}?.size() > 0 ? &quot;self.id IN (${salemanUser?.teamSet?.collect{it.id}?.join(',')})&quot; : null"/>
+    	<attribute name="domain" for="team" expr="eval: salespersonUser?.teamSet?.collect{it.id}?.size() > 0 ? &quot;self.id IN (${salespersonUser?.teamSet?.collect{it.id}?.join(',')})&quot; : null"/>
     </action-attrs>
 
 	<action-attrs name="action-sale-order-attrs-generate-stockmove-readonly">
@@ -923,7 +925,7 @@
         <action name="action-sale-order-attrs-hidden-bank-details"/>
         <action name="action-sale-order-method-fill-company-bank-details"/>
         <action name="action-sale-order-attrs-external-reference"/>
-        <action name="action-sale-order-attrs-availability-request-label"/>
+        <action name="action-sale-order-attrs-availability"/>
         <action name="action-sale-order-group-set-defualts-from-opportunity" if="_parent != null &amp;&amp; _parent?._model=='com.axelor.apps.crm.db.Opportunity'"/>
     </action-group>
 
@@ -948,7 +950,7 @@
 		<action name="action-sale-order-attrs-hidden-bank-details"/>
 		<action name="action-sale-order-record-project-default-fields" if="__config__.app.isApp('business-project')"/>
 		<action name="action-sale-order-attrs-external-reference"/>
-		<action name="action-sale-order-attrs-availability-request-label"/>
+		<action name="action-sale-order-attrs-availability"/>
 		<action name="action-sale-order-attrs-set-required"/>
 	</action-group>
 
@@ -961,8 +963,6 @@
     </action-group>
 
     <action-group name="action-sale-order-line-change-group">
-		<action name="action-sale-order-method-remove-subline"/>
-    	<action name="save" if="saleOrderLineList.find{it->it.typeSelect == 2 &amp;&amp; (it.version != null || it.id == null)} != null" />
     	<action name="action-sale-order-method-compute"/>
     	<action name="action-sale-order-method-compute-margin"/>
     	<action name="action-sale-order-record-set-advance-payment" if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
@@ -1142,8 +1142,8 @@
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
-    	<field name="salemanUser" expr="eval:__user__" if="__config__.app.getApp('sale').getSalemanSelect() == 1"/>
-    	<field name="salemanUser" expr="eval: clientPartner?.getUser()" if="__config__.app.getApp('sale').getSalemanSelect() == 2"/>
+    	<field name="salespersonUser" expr="eval:__user__" if="__config__.app.getApp('sale').getSalemanSelect() == 1"/>
+    	<field name="salespersonUser" expr="eval: clientPartner?.getUser()" if="__config__.app.getApp('sale').getSalemanSelect() == 2"/>
     	<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     	<field name="template" expr="eval:_template" />
 		<field name="printingSettings" expr="eval: __user__.activeCompany?.printingSettings" if="__user__.activeCompany != null"/>
@@ -1164,8 +1164,8 @@
 		<field name="hideDiscount" expr="eval: priceList?.hideDiscount"/>
 		<field name="companyBankDetails" expr="call: com.axelor.apps.account.service.AccountingSituationService:getCompanySalesBankDetails(company, clientPartner)"/>
 			<field name="isNeedingConformityCertificate" expr="eval: clientPartner?.isNeedingConformityCertificate"/>
-		<field name="salemanUser" expr="eval:__user__" if="__config__.app.getApp('sale').getSalemanSelect() == 1"/>
-		<field name="salemanUser" expr="eval: clientPartner?.getUser()" if="__config__.app.getApp('sale').getSalemanSelect() == 2"/>
+		<field name="salespersonUser" expr="eval:__user__" if="__config__.app.getApp('sale').getSalemanSelect() == 1"/>
+		<field name="salespersonUser" expr="eval: clientPartner?.getUser()" if="__config__.app.getApp('sale').getSalemanSelect() == 2"/>
 		<field name="invoiceComments" expr="eval: clientPartner?.invoiceComments"/>
 		<field name="deliveryComments" expr="eval: clientPartner?.deliveryComments"/>
 		<field name="description" expr="eval: clientPartner?.saleOrderComments"/>
@@ -1184,10 +1184,6 @@
     <action-method name="action-sale-order-record-compute-end-of-validity-date">
 		<call class="com.axelor.apps.sale.web.SaleOrderController" method="computeEndOfValidityDate"/>
     </action-method>
-
-    <action-method name="action-sale-order-method-remove-subline">
-        <call class="com.axelor.apps.sale.web.SaleOrderController" method="removeSubLines"/>
-	</action-method>
 
     <action-method name="action-sale-order-method-compute">
         <call class="com.axelor.apps.sale.web.SaleOrderController" method="compute"/>
@@ -1230,10 +1226,10 @@
 		<field name="deliveryAddress" hidden="true"/>
 		<field name="mainInvoicingAddress" hidden="true"/>
 		<filter title="My Proposals">
-			<domain>(self.statusSelect = 1 or self.statusSelect = 2) and self.salemanUser.id = :_internalUser</domain>
+			<domain>(self.statusSelect = 1 or self.statusSelect = 2) and self.salespersonUser.id = :_internalUser</domain>
 		</filter>
 		<filter title="My Sales">
-			<domain>self.statusSelect = 3 and self.salemanUser.id = :_internalUser</domain>
+			<domain>self.statusSelect = 3 and self.salespersonUser.id = :_internalUser</domain>
 		</filter>
 		<filter title="My Team Proposals">
 			<domain>(self.statusSelect = 1 or self.statusSelect = 2) and self.team = :_myActiveTeam</domain>
@@ -1395,8 +1391,9 @@
                  || (externalReference != null &amp;&amp; id == null &amp;&amp; __repo__(SaleOrder).all().filter('self.externalReference = ?', externalReference).count() > 0))"/>
 	</action-attrs>
 	
-	<action-attrs name="action-sale-order-attrs-availability-request-label">
+	<action-attrs name="action-sale-order-attrs-availability">
 		<attribute name="hidden" for="availabilityRequestLabel" expr="eval: !(__repo__(StockMove).all().filter('self.originTypeSelect LIKE ? AND self.originId = ? AND self.availabilityRequest = ? AND self.statusSelect = ?','com.axelor.apps.sale.db.SaleOrder',id,true,__repo__(StockMove).STATUS_PLANNED).count() > 0)"/>
+		<attribute name="hidden" expr="eval: statusSelect != 3" for="saleOrderLineList.availableStatus" if="__config__.app.isApp('supplychain')"/>
 	</action-attrs>
 
 	<action-method name="action-sale-order-method-fill-sale-order-lines-estimated-date">
@@ -1437,7 +1434,8 @@
   	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="generateAdvancePaymentInvoice"/>
   </action-method>
   
-  	<action-attrs name="action-sale-order-attrs-set-status-to-confirmed">
-  		<attribute name="value" for="statusSelect" expr="eval: __repo__(SaleOrder).STATUS_ORDER_CONFIRMED"/>
-  	</action-attrs>
+	<action-method name="action-sale-order-method-set-status-to-confirmed">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="backToConfirmedStatus" />
+	</action-method>
+	
 </object-views>

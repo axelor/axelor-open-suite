@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+  
+  <grid model="com.axelor.meta.db.MetaAction" title="All Action" name="studio-meta-action-grid" groupBy="appBuilder">
+      <field name="name"/>
+      <field name="type"/>
+      <field name="model"/>
+      <field name="module"/>
+      <field name="priority"/>
+      <field name="appBuilder" hidden="true"/>
+  </grid>
+
+  <form model="com.axelor.meta.db.MetaAction" title="All Action" name="meta-action-form" id="studio-meta-action-form" extension="true">
+  
+	<extend target="//panel[@title='Overview']">
+		<insert position="before">
+			<panel name="actionAppBuilderPanel">
+      			<field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
+ 				<field name="isCustom" hidden="true"/>
+    		</panel>
+		</insert>
+	</extend>
+	
+	<extend target="/">
+		<attribute name="onNew" value="action-studio-meta-action-record-onnew,action-studio-meta-action-attrs-onnew-onload"/>
+		<attribute name="onLoad" value="action-studio-meta-action-attrs-onnew-onload"/>
+	</extend>
+	
+  </form>
+  
+  <action-attrs name="action-studio-meta-action-attrs-onnew-onload">
+  		<attribute name="hidden" for="actionAppBuilderPanel" expr="eval: !_fromStudio"/>
+  </action-attrs>
+  
+   <action-record name="action-studio-meta-action-record-onnew" model="com.axelor.meta.db.MetaAction">
+  		<field name="isCustom" expr="eval: true" if="_fromStudio"/>
+   </action-record>
+   
+</object-views>
