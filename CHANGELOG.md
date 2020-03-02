@@ -55,6 +55,7 @@
 - SEQUENCE: enable tracking for most fields.
 - BANK ORDER: Bank order workflow pass from draft to validated when automatic transmission is not activated in payment mode.
 - INVOICE: add specific note of company bank details on invoice report.
+- SUPPLYCHAIN : In stock-detail-by-product menu, company field now autofill with the user's active company.
 
 ## Bug Fixes
 - Studio: Fix access to json fields of base model in chart builder form.
