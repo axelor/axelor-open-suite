@@ -5,6 +5,7 @@
 - STOCK CONFIG : add three fields in stock move printing setting
 
 ## Improvements
+- LEAVE REQUEST : Allow sending a leave request in the past.
 - Block the creation of duplicate accounts
 
 ## Bug Fixes
