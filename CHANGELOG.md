@@ -12,6 +12,7 @@
 - Fix Timesheet Reminder Batch sendReminder method
 - DEBT RECOVERY : rollback debt recovery process if to recipients is empty or not in generated message.
 - Fix the error which is getting when group is empty in user. 
+- Stock Move Line reservation: correctly set qty requested flag when generated from a sale order line.
 
 ## [5.2.5] - 2020-02-25
 ## Improvements
