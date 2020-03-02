@@ -599,11 +599,11 @@
 	</action-attrs>
 
 	<action-attrs name="action-sale-order-line-attrs-hidden-fields-for-client">
-		<attribute name="hidden" for="toInvoice,allPanelTab,marginPanel" if="eval: __user__.group.isClient" expr="true"/>
+		<attribute name="hidden" for="toInvoice,allPanelTab,marginPanel" if="eval: __user__.group?.isClient" expr="true"/>
 	</action-attrs>
 
 	<action-attrs name="action-sale-order-line-template-attrs-hidden-fields-for-client">
-		<attribute name="hidden" for="allPanelTab" if="eval: __user__.group.isClient" expr="true"/>
+		<attribute name="hidden" for="allPanelTab" if="eval: __user__.group?.isClient" expr="true"/>
 	</action-attrs>
 
     <action-attrs name="action-sale-order-line-attrs-show-delivery-panel">

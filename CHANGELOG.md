@@ -32,6 +32,7 @@
 - LEAVE REQUEST : corrected error when trying to change user.
 - Base Batch : Fix the issue when user run calendar synchronization batch.
 - LOGIN : Fixed js code page redirection.
+- Fix the error which is getting when group is empty in user. 
 
 ## [5.3.0] - 2020-02-25
 ## Features
