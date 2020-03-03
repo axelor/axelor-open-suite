@@ -20,6 +20,7 @@
 - Ebics user : Display associated user in list view
 - STOCK CONFIG : add three fields related to stock move printing settings
 - SaleOrderLine/PurchaseOrderLine : Added transient boolean field to freeze price,qty,productName
+- HR BATCH : set email template for batch 'Email reminder for timesheets'
 
 ## Bug Fixes
 - SALEORDER : fixed bug causing the margins to be rounded to the unit
