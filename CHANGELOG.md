@@ -42,6 +42,7 @@
 - LOGIN : Fixed js code page redirection.
 - Fix the error which is getting when group is empty in user.
 - DEBT RECOVERY : rollback debt recovery process if to recipients is empty or not in generated message.
+- PROJECT : Fix NPE when generate Business project with SaleOrderTypeSelect as title. 
 
 ## [5.3.0] - 2020-02-25
 ## Features
