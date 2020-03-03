@@ -3,6 +3,7 @@
 ## Feature
 - Workflow : Add support to select real status fields.
 - STOCK CONFIG : add three fields in stock move printing setting
+- SaleOrderLine/PurchaseOrderLine : Added transient boolean field to freeze price,qty,productName
 
 ## Improvements
 - LEAVE REQUEST : Allow sending a leave request in the past.
