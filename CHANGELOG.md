@@ -18,6 +18,7 @@
 - Subrogative release : corrected the possibility to create two subrogation transmitted or accounted with the same invoices.
 - Invoice payment: fix issue in invoice payment form when invoice due date is empty.
 - INVOICE : fix the NPE when payment mode is null in invoice.
+- SALEORDER : fixed bug causing the margins to be rounded to the unit
 
 ## [5.1.14] - 2020-01-17
 ## Improvements
