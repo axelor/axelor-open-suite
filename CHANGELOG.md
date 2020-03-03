@@ -2,6 +2,7 @@
 ## [Unreleased 5.2.6]
 ## Improvements
 ## Bug Fixes
+- SALE CONFIG : Fixed the issue we had when we try to update customer's accepted credit
 
 ## [5.2.5] - 2020-02-25
 ## Improvements
