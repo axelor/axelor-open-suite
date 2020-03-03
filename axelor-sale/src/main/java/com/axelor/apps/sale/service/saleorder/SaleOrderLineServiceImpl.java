@@ -70,7 +70,9 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   public void computeProductInformation(
       SaleOrderLine saleOrderLine, SaleOrder saleOrder, Integer packPriceSelect)
       throws AxelorException {
-    saleOrderLine.setProductName(saleOrderLine.getProduct().getName());
+    if (!saleOrderLine.getEnableFreezeFields()) {
+      saleOrderLine.setProductName(saleOrderLine.getProduct().getName());
+    }
     saleOrderLine.setUnit(this.getSaleUnit(saleOrderLine));
     if (appSaleService.getAppSale().getIsEnabledProductDescriptionCopy()) {
       saleOrderLine.setDescription(saleOrderLine.getProduct().getDescription());
@@ -110,16 +112,22 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
         inTaxPrice = this.getInTaxUnitPrice(saleOrder, saleOrderLine, saleOrderLine.getTaxLine());
         inTaxPrice = fillDiscount(saleOrderLine, saleOrder, inTaxPrice);
         saleOrderLine.setInTaxPrice(inTaxPrice);
-        saleOrderLine.setPrice(convertUnitPrice(true, saleOrderLine.getTaxLine(), inTaxPrice));
+        if (!saleOrderLine.getEnableFreezeFields()) {
+          saleOrderLine.setPrice(convertUnitPrice(true, saleOrderLine.getTaxLine(), inTaxPrice));
+        }
       } else {
         exTaxPrice = this.getExTaxUnitPrice(saleOrder, saleOrderLine, saleOrderLine.getTaxLine());
         exTaxPrice = fillDiscount(saleOrderLine, saleOrder, exTaxPrice);
-        saleOrderLine.setPrice(exTaxPrice);
+        if (!saleOrderLine.getEnableFreezeFields()) {
+          saleOrderLine.setPrice(exTaxPrice);
+        }
         saleOrderLine.setInTaxPrice(
             convertUnitPrice(false, saleOrderLine.getTaxLine(), exTaxPrice));
       }
     } else {
-      saleOrderLine.setPrice(BigDecimal.ZERO);
+      if (!saleOrderLine.getEnableFreezeFields()) {
+        saleOrderLine.setPrice(BigDecimal.ZERO);
+      }
       saleOrderLine.setInTaxPrice(BigDecimal.ZERO);
       saleOrderLine.setDiscountAmount(BigDecimal.ZERO);
       saleOrderLine.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_NONE);
@@ -236,14 +244,16 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
   @Override
   public SaleOrderLine resetProductInformation(SaleOrderLine line) {
+    if (!line.getEnableFreezeFields()) {
+      line.setProductName(null);
+      line.setPrice(null);
+    }
     line.setTaxLine(null);
     line.setTaxEquiv(null);
-    line.setProductName(null);
     line.setUnit(null);
     line.setCompanyCostPrice(null);
     line.setDiscountAmount(null);
     line.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_NONE);
-    line.setPrice(null);
     line.setInTaxPrice(null);
     line.setExTaxTotal(null);
     line.setInTaxTotal(null);
