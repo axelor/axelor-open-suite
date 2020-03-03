@@ -17,12 +17,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
@@ -44,6 +38,11 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ProductStockLocationServiceImpl implements ProductStockLocationService {
 
@@ -68,7 +67,8 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
       StockLocationService stockLocationService,
       StockLocationServiceSupplychain stockLocationServiceSupplychain,
       StockLocationLineService stockLocationLineService,
-      StockLocationLineRepository stockLocationLineRepository,AppBaseService appBaseService) {
+      StockLocationLineRepository stockLocationLineRepository,
+      AppBaseService appBaseService) {
     super();
     this.appBaseService = appBaseService;
     this.unitConversionService = unitConversionService;
@@ -119,10 +119,13 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
         map.put("$realQty", realQty.setScale(scale, RoundingMode.HALF_UP));
         map.put("$futureQty", futureQty.setScale(scale, RoundingMode.HALF_UP));
         map.put("$reservedQty", reservedQty.setScale(scale, RoundingMode.HALF_UP));
-        map.put("$requestedReservedQty", requestedReservedQty.setScale(scale, RoundingMode.HALF_UP));
+        map.put(
+            "$requestedReservedQty", requestedReservedQty.setScale(scale, RoundingMode.HALF_UP));
         map.put("$saleOrderQty", saleOrderQty.setScale(scale, RoundingMode.HALF_UP));
         map.put("$purchaseOrderQty", purchaseOrderQty.setScale(scale, RoundingMode.HALF_UP));
-        map.put("$availableQty", availableQty.subtract(reservedQty).setScale(scale, RoundingMode.HALF_UP));
+        map.put(
+            "$availableQty",
+            availableQty.subtract(reservedQty).setScale(scale, RoundingMode.HALF_UP));
 
         return map;
       }
@@ -133,18 +136,29 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
             .setScale(scale, RoundingMode.HALF_UP);
     map.put(
         "$realQty",
-        stockLocationService.getRealQty(productId, stockLocationId, companyId).setScale(scale, RoundingMode.HALF_UP));
+        stockLocationService
+            .getRealQty(productId, stockLocationId, companyId)
+            .setScale(scale, RoundingMode.HALF_UP));
     map.put(
         "$futureQty",
-        stockLocationService.getFutureQty(productId, stockLocationId, companyId).setScale(scale, RoundingMode.HALF_UP));
+        stockLocationService
+            .getFutureQty(productId, stockLocationId, companyId)
+            .setScale(scale, RoundingMode.HALF_UP));
     map.put("$reservedQty", reservedQty);
     map.put(
-        "$requestedReservedQty", this.getRequestedReservedQty(product, company, null).setScale(scale, RoundingMode.HALF_UP));
-    map.put("$saleOrderQty", this.getSaleOrderQty(product, company, null).setScale(scale, RoundingMode.HALF_UP));
-    map.put("$purchaseOrderQty", this.getPurchaseOrderQty(product, company, null).setScale(scale, RoundingMode.HALF_UP));
+        "$requestedReservedQty",
+        this.getRequestedReservedQty(product, company, null).setScale(scale, RoundingMode.HALF_UP));
+    map.put(
+        "$saleOrderQty",
+        this.getSaleOrderQty(product, company, null).setScale(scale, RoundingMode.HALF_UP));
+    map.put(
+        "$purchaseOrderQty",
+        this.getPurchaseOrderQty(product, company, null).setScale(scale, RoundingMode.HALF_UP));
     map.put(
         "$availableQty",
-        this.getAvailableQty(product, company, null).subtract(reservedQty).setScale(scale, RoundingMode.HALF_UP));
+        this.getAvailableQty(product, company, null)
+            .subtract(reservedQty)
+            .setScale(scale, RoundingMode.HALF_UP));
     return map;
   }
 

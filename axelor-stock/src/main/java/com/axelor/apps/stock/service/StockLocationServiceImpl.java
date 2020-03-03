@@ -22,7 +22,6 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
@@ -40,7 +39,6 @@ import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -111,11 +109,11 @@ public class StockLocationServiceImpl implements StockLocationService {
       Product product = productRepo.find(productId);
       Unit productUnit = product.getUnit();
       UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
+
       if (locationId == null || locationId == 0L) {
         List<StockLocation> stockLocations = getNonVirtualStockLocations(companyId);
         if (!stockLocations.isEmpty()) {
           BigDecimal qty = BigDecimal.ZERO;
-
           for (StockLocation stockLocation : stockLocations) {
             StockLocationLine stockLocationLine =
                 stockLocationLineService.getOrCreateStockLocationLine(
