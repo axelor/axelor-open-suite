@@ -12,5 +12,5 @@ axelor {
 }
 
 dependencies {
-	compile project(":modules:axelor-business-project")
+	api project(":modules:axelor-business-project")
 }

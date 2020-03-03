@@ -1,5 +1,6 @@
 apply plugin: "com.axelor.app-module"
 
+apply from: "../libs.gradle"
 apply from: "../version.gradle"
 
 apply {
@@ -12,7 +13,8 @@ axelor {
 }
 
 dependencies {
-	compile project(":modules:axelor-crm")
-	compile project(":modules:axelor-studio")
-	compile "com.mandrillapp.wrapper.lutung:lutung:0.0.7"
+	api project(":modules:axelor-crm")
+	api project(":modules:axelor-studio")
+
+	implementation libs.lutung
 }

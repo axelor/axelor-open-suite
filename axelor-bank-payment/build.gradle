@@ -1,5 +1,6 @@
 apply plugin: "com.axelor.app-module"
 
+apply from: "../libs.gradle"
 apply from: "../version.gradle"
 
 apply {
@@ -16,15 +17,25 @@ configurations {
 }
 
 dependencies {
-	compile project(":modules:axelor-account")
-    jaxb 'com.sun.xml.bind:jaxb-xjc:2.2.2',
-         'com.sun.xml.bind:jaxb-impl:2.2.2',
-    	 'javax.xml.bind:jaxb-api:2.2.2'
+	api project(":modules:axelor-account")
 
-	compile files("src/main/lib/ebics-1.0.2.jar")
-	compile "org.bouncycastle:bcprov-jdk15on:1.62"
-	compile "org.apache.santuario:xmlsec:1.4.3"
-	compile "commons-codec:commons-codec:1.11"
+    jaxb libs.jaxb_xjc
+	jaxb libs.jaxb_impl
+	jaxb libs.jaxb_api
+
+	api files("src/main/lib/ebics-1.0.2.jar")
+
+	implementation libs.bcprov_jdk15on
+	implementation libs.bcpkix_jdk15on
+
+	implementation libs.commons_codec
+	implementation libs.commons_httpclient
+
+	implementation libs.xmlsec
+	implementation libs.xalan
+	implementation libs.jdom
+
+	compileOnly libs.jaxb_api
 }
 
 license {
@@ -36,6 +47,9 @@ license {
 task xjc () {
 	def source = "${projectDir}/src/main/resources/xsd/sepa"
 	def target = "${buildDir}/src-gen/java"
+
+	inputs.dir(source)
+	outputs.dir(target)
 
 	def xsdToGenerate = [
 		['package': 'com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02', 'destdir': "$target", 'schema': "$source/pain.001.001.02.xsd"],

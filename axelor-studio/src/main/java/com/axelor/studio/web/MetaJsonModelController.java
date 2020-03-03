@@ -17,6 +17,7 @@
  */
 package com.axelor.studio.web;
 
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaJsonModel;
@@ -27,7 +28,6 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.Wkf;
 import com.axelor.studio.db.repo.WkfRepository;
 import com.axelor.studio.service.StudioMetaService;
-import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 import java.util.stream.Collectors;
 
 public class MetaJsonModelController {
@@ -82,7 +82,7 @@ public class MetaJsonModelController {
     try {
       MetaJsonModel jsonModel = request.getContext().asType(MetaJsonModel.class);
 
-      if (jsonModel.getId() != null || CollectionUtils.isEmpty(jsonModel.getFields())) {
+      if (jsonModel.getId() != null || ObjectUtils.isEmpty(jsonModel.getFields())) {
         response.setValue("$jsonFieldTracking", null);
         return;
       }

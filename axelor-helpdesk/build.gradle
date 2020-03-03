@@ -1,5 +1,6 @@
 apply plugin: "com.axelor.app-module"
 
+apply from: "../libs.gradle"
 apply from: "../version.gradle"
 
 apply {
@@ -12,5 +13,7 @@ axelor {
 }
 
 dependencies {
-	compile project(":modules:axelor-base")
+	api project(":modules:axelor-base")
+
+	implementation libs.jsoup
 }
