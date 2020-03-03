@@ -1206,18 +1206,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="heading">isTitleLine</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">isPackLine</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">isPackLine</text-property>
-                    <text-property name="heading">isPackLine</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">isSubLine</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">isSubLine</text-property>
-                    <text-property name="heading">isSubLine</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">customerProductCode</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">customerProductCode</text-property>
@@ -1309,31 +1297,21 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                     <structure>
                         <property name="position">11</property>
-                        <property name="name">isPackLine</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">12</property>
-                        <property name="name">isSubLine</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">13</property>
                         <property name="name">customerProductCode</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">12</property>
                         <property name="name">customerProductName</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">15</property>
+                        <property name="position">13</property>
                         <property name="name">from_rack</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">16</property>
+                        <property name="position">14</property>
                         <property name="name">to_rack</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -1413,41 +1391,27 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="position">11</property>
-                    <property name="name">isPackLine</property>
-                    <property name="nativeName">isPackLine</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
-                </structure>
-                <structure>
-                    <property name="position">12</property>
-                    <property name="name">isSubLine</property>
-                    <property name="nativeName">isSubLine</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
-                </structure>
-                <structure>
-                    <property name="position">13</property>
                     <property name="name">customerProductCode</property>
                     <property name="nativeName">customerProductCode</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">14</property>
+                    <property name="position">12</property>
                     <property name="name">customerProductName</property>
                     <property name="nativeName">customerProductName</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">15</property>
+                    <property name="position">13</property>
                     <property name="name">from_rack</property>
                     <property name="nativeName">from_rack</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">16</property>
+                    <property name="position">14</property>
                     <property name="name">to_rack</property>
                     <property name="nativeName">to_rack</property>
                     <property name="dataType">string</property>
@@ -1465,8 +1429,6 @@ TrackingNumber.tracking_number_seq,
 StockMoveLine.description,
 StockMoveLine.sequence,
 (SaleOrderLine.type_select = 2 or PurchaseOrderLine.is_title_line) as "isTitleLine",
-SaleOrderLine.type_select = 2 as "isPackLine",
-StockMoveLine.is_sub_line as "isSubLine",
 CustomerCatalog.product_customer_code as "customerProductCode",
 CustomerCatalog.product_customer_name as "customerProductName",
 FromStockLocationLine.rack as from_rack,
@@ -2488,12 +2450,12 @@ row["first_name"]
                     <property name="rowSpan">1</property>
                 </cell>
             </row>
-            <row id="4578">
-                <cell id="4579">
+            <row id="5319">
+                <property name="height">1.031875cm</property>
+                <cell id="5320">
                     <property name="colSpan">6</property>
                     <property name="rowSpan">1</property>
-                    <property name="paddingLeft">0pt</property>
-                    <table id="3427">
+                    <table id="5326">
                         <property name="marginLeft">0pt</property>
                         <property name="marginBottom">1pt</property>
                         <property name="width">100%</property>
@@ -2560,18 +2522,6 @@ row["first_name"]
                                 <property name="dataType">integer</property>
                             </structure>
                             <structure>
-                                <property name="name">isSubLine</property>
-                                <text-property name="displayName">isSubLine</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["isSubLine"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">isPackLine</property>
-                                <text-property name="displayName">isPackLine</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["isPackLine"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
                                 <property name="name">customerProductCode</property>
                                 <text-property name="displayName">customerProductCode</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["customerProductCode"]</expression>
@@ -2584,26 +2534,25 @@ row["first_name"]
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
-                                <property name="name">tracking_no_list</property>
+                                <property name="name">from_rack</property>
+                                <text-property name="displayName">from_rack</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["from_rack"]</expression>
                                 <property name="dataType">string</property>
-                                <simple-property-list name="aggregateOn">
-                                    <value>ProductGroup</value>
-                                </simple-property-list>
-                                <property name="aggregateFunction">CONCATENATE</property>
+                            </structure>
+                            <structure>
+                                <property name="name">to_rack</property>
+                                <text-property name="displayName">to_rack</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["to_rack"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">total_qty_per_product</property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["tracking_number_seq"]</expression>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">Separator</property>
-                                        <expression name="value" type="javascript">" "</expression>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">Maxlength</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">Showallvalues</property>
+                                        <expression name="value" type="javascript">row["qty"]</expression>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
@@ -2611,9 +2560,6 @@ row["first_name"]
                             <structure>
                                 <property name="name">description_list</property>
                                 <property name="dataType">string</property>
-                                <simple-property-list name="aggregateOn">
-                                    <value>ProductGroup</value>
-                                </simple-property-list>
                                 <property name="aggregateFunction">CONCATENATE</property>
                                 <list-property name="arguments">
                                     <structure>
@@ -2634,31 +2580,26 @@ row["first_name"]
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
-                                <property name="name">total_qty_per_product</property>
-                                <property name="dataType">float</property>
-                                <simple-property-list name="aggregateOn">
-                                    <value>ProductGroup</value>
-                                </simple-property-list>
-                                <property name="aggregateFunction">SUM</property>
+                                <property name="name">tracking_no_list</property>
+                                <property name="dataType">string</property>
+                                <property name="aggregateFunction">CONCATENATE</property>
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["qty"]</expression>
+                                        <expression name="value" type="javascript">row["tracking_number_seq"]</expression>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">Separator</property>
+                                        <expression name="value" type="javascript">" "</expression>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">Maxlength</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">Showallvalues</property>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">from_rack</property>
-                                <text-property name="displayName">from_rack</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["from_rack"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">to_rack</property>
-                                <text-property name="displayName">to_rack</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["to_rack"]</expression>
-                                <property name="dataType">string</property>
                             </structure>
                         </list-property>
                         <property name="pageBreakInterval">0</property>
@@ -2672,19 +2613,19 @@ row["first_name"]
                                 <property name="updateAggregation">true</property>
                             </structure>
                         </list-property>
-                        <column id="3446">
+                        <column id="5377">
                             <property name="width">20%</property>
                         </column>
-                        <column id="3447">
+                        <column id="5378">
                             <property name="width">60%</property>
                         </column>
-                        <column id="3449">
+                        <column id="5379">
                             <property name="width">10%</property>
                         </column>
-                        <column id="3826">
+                        <column id="5380">
                             <property name="width">10%</property>
                         </column>
-                        <column id="3450">
+                        <column id="5381">
                             <list-property name="visibility">
                                 <structure>
                                     <property name="format">all</property>
@@ -2693,7 +2634,7 @@ row["first_name"]
                             </list-property>
                             <property name="width">20%</property>
                         </column>
-                        <column id="5263">
+                        <column id="5382">
                             <list-property name="visibility">
                                 <structure>
                                     <property name="format">all</property>
@@ -2702,7 +2643,7 @@ row["first_name"]
                             </list-property>
                             <property name="width">15%</property>
                         </column>
-                        <column id="5270">
+                        <column id="5383">
                             <list-property name="visibility">
                                 <structure>
                                     <property name="format">all</property>
@@ -2712,9 +2653,9 @@ row["first_name"]
                             <property name="width">15%</property>
                         </column>
                         <header>
-                            <row id="3428">
+                            <row id="5327">
                                 <property name="height">0.7672916666666666cm</property>
-                                <cell id="3429">
+                                <cell id="5328">
                                     <property name="backgroundColor">#FFFFFF</property>
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
@@ -2724,7 +2665,7 @@ row["first_name"]
                                     <property name="borderRightWidth">thin</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <text id="3452">
+                                    <text id="5329">
                                         <property name="backgroundColor">#FFFFFF</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="color">#000000</property>
@@ -2759,7 +2700,7 @@ row["first_name"]
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
-                                <cell id="3430">
+                                <cell id="5330">
                                     <property name="backgroundColor">#FFFFFF</property>
                                     <property name="borderBottomColor">#000000</property>
                                     <property name="borderBottomStyle">solid</property>
@@ -2773,7 +2714,7 @@ row["first_name"]
                                     <property name="borderTopColor">#000000</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <text id="3453">
+                                    <text id="5331">
                                         <property name="backgroundColor">#FFFFFF</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="color">#000000</property>
@@ -2808,7 +2749,7 @@ row["first_name"]
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
-                                <cell id="3432">
+                                <cell id="5332">
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
                                     <property name="backgroundColor">#FFFFFF</property>
@@ -2820,7 +2761,7 @@ row["first_name"]
                                     <property name="borderRightWidth">thin</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <text id="3455">
+                                    <text id="5333">
                                         <property name="backgroundColor">#FFFFFF</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="color">#000000</property>
@@ -2855,7 +2796,7 @@ row["first_name"]
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
-                                <cell id="3433">
+                                <cell id="5334">
                                     <property name="colSpan">1</property>
                                     <property name="rowSpan">1</property>
                                     <property name="backgroundColor">#FFFFFF</property>
@@ -2867,7 +2808,7 @@ row["first_name"]
                                     <property name="borderRightWidth">thin</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <text id="3456">
+                                    <text id="5335">
                                         <property name="backgroundColor">#FFFFFF</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="color">#000000</property>
@@ -2902,7 +2843,7 @@ row["first_name"]
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
-                                <cell id="5260">
+                                <cell id="5336">
                                     <property name="backgroundColor">#FFFFFF</property>
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
@@ -2912,7 +2853,7 @@ row["first_name"]
                                     <property name="borderRightWidth">thin</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <text id="5266">
+                                    <text id="5337">
                                         <property name="backgroundColor">#FFFFFF</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="color">#000000</property>
@@ -2924,7 +2865,7 @@ row["first_name"]
                                         <text-property name="content"><![CDATA[<VALUE-OF>row._outer["from_stock_location_name"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
-                                <cell id="5267">
+                                <cell id="5338">
                                     <property name="backgroundColor">#FFFFFF</property>
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
@@ -2934,7 +2875,7 @@ row["first_name"]
                                     <property name="borderRightWidth">thin</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <text id="5271">
+                                    <text id="5339">
                                         <property name="backgroundColor">#FFFFFF</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="color">#000000</property>
@@ -2948,7 +2889,7 @@ row["first_name"]
                                 </cell>
                             </row>
                         </header>
-                        <group id="3805">
+                        <group id="5340">
                             <property name="groupName">ProductGroup</property>
                             <expression name="keyExpr" type="javascript">row["product_code"]+row["product_name"]+row["unit_code"]</expression>
                             <property name="hideDetail">false</property>
@@ -2960,7 +2901,7 @@ row["first_name"]
                                 </structure>
                             </list-property>
                             <header>
-                                <row id="3806">
+                                <row id="5341">
                                     <property name="height">0.6879166666666666cm</property>
                                     <list-property name="visibility">
                                         <structure>
@@ -2968,7 +2909,7 @@ row["first_name"]
                                             <expression name="valueExpr" type="javascript">row._outer["display_line_details_on_printing"]</expression>
                                         </structure>
                                     </list-property>
-                                    <cell id="3807">
+                                    <cell id="5342">
                                         <property name="borderBottomStyle">solid</property>
                                         <property name="borderBottomWidth">thin</property>
                                         <property name="borderLeftStyle">solid</property>
@@ -2977,13 +2918,13 @@ row["first_name"]
                                         <property name="borderRightWidth">thin</property>
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
-                                        <text id="3821">
+                                        <text id="5343">
                                             <property name="textAlign">center</property>
                                             <property name="pageBreakBefore">avoid</property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>if(!row["isSubLine"] &amp;&amp; !row["isPackLine"]){row["product_code"]}</VALUE-OF><I><FONT size="9pt"><VALUE-OF>if(row["isSubLine"]){row["product_code"]}</VALUE-OF></FONT></I><B><VALUE-OF>if(row["isPackLine"]){row["product_code"]}</VALUE-OF></B>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row["product_code"]</VALUE-OF>]]></text-property>
                                         </text>
-                                        <data id="4515">
+                                        <data id="5344">
                                             <property name="fontStyle">italic</property>
                                             <property name="textAlign">right</property>
                                             <list-property name="visibility">
@@ -2995,7 +2936,7 @@ row["first_name"]
                                             <property name="resultSetColumn">customerProductCode</property>
                                         </data>
                                     </cell>
-                                    <cell id="3808">
+                                    <cell id="5345">
                                         <property name="borderBottomStyle">solid</property>
                                         <property name="borderBottomWidth">thin</property>
                                         <property name="borderLeftStyle">solid</property>
@@ -3004,12 +2945,12 @@ row["first_name"]
                                         <property name="borderRightWidth">thin</property>
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
-                                        <text id="3457">
+                                        <text id="5346">
                                             <property name="textAlign">left</property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>if(!row["isSubLine"] &amp;&amp; !row["isPackLine"]){row["product_name"]}</VALUE-OF><I><FONT size="9pt"><VALUE-OF>if(row["isSubLine"]){row["product_name"]}</VALUE-OF></FONT></I><B><VALUE-OF>if(row["isPackLine"]){row["product_name"]}</VALUE-OF></B>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row["product_name"]</VALUE-OF>]]></text-property>
                                         </text>
-                                        <data id="4516">
+                                        <data id="5347">
                                             <property name="fontStyle">italic</property>
                                             <property name="textAlign">right</property>
                                             <list-property name="visibility">
@@ -3020,42 +2961,28 @@ row["first_name"]
                                             </list-property>
                                             <property name="resultSetColumn">customerProductName</property>
                                         </data>
-                                        <text id="4517">
+                                        <text id="5348">
                                             <property name="textAlign">left</property>
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF format="HTML">if(row["description_list"] != null) row["description_list"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
-                                    <cell id="3810">
+                                    <cell id="5349">
                                         <property name="borderBottomStyle">solid</property>
                                         <property name="borderBottomWidth">thin</property>
                                         <property name="borderLeftStyle">solid</property>
                                         <property name="borderLeftWidth">thin</property>
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
-                                        <text id="4120">
+                                        <text id="5350">
                                             <property name="textAlign">right</property>
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF>
-if(!row["isSubLine"] &amp;&amp; !row["isPackLine"]) {
 row["total_qty_per_product"]
-}
-</VALUE-OF>
-
-<I><FONT size="9pt"><VALUE-OF>
-if(row["isSubLine"]) {
-row["total_qty_per_product"]
-}
-</VALUE-OF></FONT></I>
-
-<B><VALUE-OF>
-if(row["isPackLine"]) {
-row["total_qty_per_product"]
-}
-</VALUE-OF></B>]]></text-property>
+</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
-                                    <cell id="3825">
+                                    <cell id="5351">
                                         <property name="borderBottomStyle">solid</property>
                                         <property name="borderBottomWidth">thin</property>
                                         <property name="borderRightStyle">solid</property>
@@ -3063,7 +2990,7 @@ row["total_qty_per_product"]
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
                                         <property name="textAlign">left</property>
-                                        <text id="3827">
+                                        <text id="5352">
                                             <property name="marginLeft">0pt</property>
                                             <property name="textAlign">left</property>
                                             <property name="dataSet">TranslateDS</property>
@@ -3091,19 +3018,11 @@ row["total_qty_per_product"]
                                             </list-property>
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[ <VALUE-OF>
-if(!row["isSubLine"] &amp;&amp; !row["isPackLine"] &amp;&amp; row["translation"]!= null)
-{row["translation"]} else if(!row["isSubLine"] &amp;&amp; !row["isPackLine"] &amp;&amp; row["translation"] == null) {row._outer["unit_code"]}</VALUE-OF>
-
-<I><FONT size="9pt"><VALUE-OF>
-if(row["isSubLine"] &amp;&amp; row["translation"] != null) 
-{row["translation"]} else if(row["isSubLine"] &amp;&amp; row["translation"] != null) {row._outer["unit_code"]}</VALUE-OF></FONT></I>
-
-<B><VALUE-OF>
-if(row["isPackLine"] &amp;&amp; row["translation"] != null) {
-row["translation"]} else if(row["isPackLine"] &amp;&amp; row["translation"] == null) {row._outer["unit_code"]} </VALUE-OF></B>]]></text-property>
+row["unit_code"]
+</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
-                                    <cell id="3811">
+                                    <cell id="5353">
                                         <property name="borderBottomStyle">solid</property>
                                         <property name="borderBottomWidth">thin</property>
                                         <property name="borderLeftStyle">solid</property>
@@ -3112,29 +3031,15 @@ row["translation"]} else if(row["isPackLine"] &amp;&amp; row["translation"] == n
                                         <property name="borderRightWidth">thin</property>
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
-                                        <text id="3460">
+                                        <text id="5354">
                                             <property name="textAlign">center</property>
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF format="HTML">  
-if(!row["isSubLine"] &amp;&amp; !row["isPackLine"]) {
 row["tracking_no_list"]
-}
-</VALUE-OF>
-
-<I><FONT size="9pt"><VALUE-OF format="HTML">
-if(row["isSubLine"]) {
-row["tracking_no_list"]
-}
-</VALUE-OF></FONT></I>
-
-<B><VALUE-OF format="HTML">  
-if(row["isPackLine"]) {
-row["tracking_no_list"]
-}
-</VALUE-OF></B>]]></text-property>
+</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
-                                    <cell id="5261">
+                                    <cell id="5355">
                                         <property name="borderBottomStyle">solid</property>
                                         <property name="borderBottomWidth">thin</property>
                                         <property name="borderLeftStyle">solid</property>
@@ -3143,7 +3048,7 @@ row["tracking_no_list"]
                                         <property name="borderRightWidth">thin</property>
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
-                                        <text id="5265">
+                                        <text id="5356">
                                             <property name="textAlign">center</property>
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF>  
@@ -3151,7 +3056,7 @@ row["from_rack"]
 </VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
-                                    <cell id="5268">
+                                    <cell id="5357">
                                         <property name="borderBottomStyle">solid</property>
                                         <property name="borderBottomWidth">thin</property>
                                         <property name="borderLeftStyle">solid</property>
@@ -3160,7 +3065,7 @@ row["from_rack"]
                                         <property name="borderRightWidth">thin</property>
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
-                                        <text id="5274">
+                                        <text id="5358">
                                             <property name="textAlign">center</property>
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF>  
@@ -3172,14 +3077,14 @@ row["to_rack"]
                             </header>
                         </group>
                         <detail>
-                            <row id="5239">
+                            <row id="5359">
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
                                         <expression name="valueExpr" type="javascript">!row._outer["display_line_details_on_printing"]</expression>
                                     </structure>
                                 </list-property>
-                                <cell id="5240">
+                                <cell id="5360">
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
                                     <property name="borderLeftStyle">solid</property>
@@ -3188,13 +3093,13 @@ row["to_rack"]
                                     <property name="borderRightWidth">thin</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <text id="5245">
+                                    <text id="5361">
                                         <property name="textAlign">center</property>
                                         <property name="pageBreakBefore">avoid</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>if(!row["isSubLine"] &amp;&amp; !row["isPackLine"]){row["product_code"]}</VALUE-OF><I><FONT size="9pt"><VALUE-OF>if(row["isSubLine"]){row["product_code"]}</VALUE-OF></FONT></I><B><VALUE-OF>if(row["isPackLine"]){row["product_code"]}</VALUE-OF></B>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["product_code"]</VALUE-OF>]]></text-property>
                                     </text>
-                                    <data id="5246">
+                                    <data id="5362">
                                         <property name="fontStyle">italic</property>
                                         <property name="textAlign">right</property>
                                         <list-property name="visibility">
@@ -3206,7 +3111,7 @@ row["to_rack"]
                                         <property name="resultSetColumn">customerProductCode</property>
                                     </data>
                                 </cell>
-                                <cell id="5241">
+                                <cell id="5363">
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
                                     <property name="borderLeftStyle">solid</property>
@@ -3215,12 +3120,12 @@ row["to_rack"]
                                     <property name="borderRightWidth">thin</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <text id="5247">
+                                    <text id="5364">
                                         <property name="textAlign">left</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>if(!row["isSubLine"] &amp;&amp; !row["isPackLine"]){row["product_name"]}</VALUE-OF><I><FONT size="9pt"><VALUE-OF>if(row["isSubLine"]){row["product_name"]}</VALUE-OF></FONT></I><B><VALUE-OF>if(row["isPackLine"]){row["product_name"]}</VALUE-OF></B>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["product_name"]</VALUE-OF>]]></text-property>
                                     </text>
-                                    <data id="5248">
+                                    <data id="5365">
                                         <property name="fontStyle">italic</property>
                                         <property name="textAlign">right</property>
                                         <list-property name="visibility">
@@ -3231,49 +3136,35 @@ row["to_rack"]
                                         </list-property>
                                         <property name="resultSetColumn">customerProductName</property>
                                     </data>
-                                    <text id="5259">
+                                    <text id="5366">
                                         <property name="textAlign">left</property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="HTML">if(row["description"] != null) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
-                                <cell id="5242">
+                                <cell id="5367">
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
                                     <property name="borderLeftStyle">solid</property>
                                     <property name="borderLeftWidth">thin</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <text id="5249">
+                                    <text id="5368">
                                         <property name="textAlign">right</property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>
-if(!row["isSubLine"] &amp;&amp; !row["isPackLine"]) {
 row["qty"]
-}
-</VALUE-OF>
-
-<I><FONT size="9pt"><VALUE-OF>
-if(row["isSubLine"]) {
-row["qty"]
-}
-</VALUE-OF></FONT></I>
-
-<B><VALUE-OF>
-if(row["isPackLine"]) {
-row["qty"]
-}
-</VALUE-OF></B>]]></text-property>
+</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
-                                <cell id="5243">
+                                <cell id="5369">
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <text id="5250">
+                                    <text id="5370">
                                         <property name="marginLeft">0pt</property>
                                         <property name="textAlign">left</property>
                                         <property name="dataSet">TranslateDS</property>
@@ -3301,19 +3192,11 @@ row["qty"]
                                         </list-property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[ <VALUE-OF>
-if(!row["isSubLine"] &amp;&amp; !row["isPackLine"] &amp;&amp; row["translation"]!= null)
-{row["translation"]} else if(!row["isSubLine"] &amp;&amp; !row["isPackLine"] &amp;&amp; row["translation"] == null) {row._outer["unit_code"]}</VALUE-OF>
-
-<I><FONT size="9pt"><VALUE-OF>
-if(row["isSubLine"] &amp;&amp; row["translation"] != null) 
-{row["translation"]} else if(row["isSubLine"] &amp;&amp; row["translation"] != null) {row._outer["unit_code"]}</VALUE-OF></FONT></I>
-
-<B><VALUE-OF>
-if(row["isPackLine"] &amp;&amp; row["translation"] != null) {
-row["translation"]} else if(row["isPackLine"] &amp;&amp; row["translation"] == null) {row._outer["unit_code"]} </VALUE-OF></B>]]></text-property>
+row["unit_code"]
+</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
-                                <cell id="5244">
+                                <cell id="5371">
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
                                     <property name="borderLeftStyle">solid</property>
@@ -3322,29 +3205,15 @@ row["translation"]} else if(row["isPackLine"] &amp;&amp; row["translation"] == n
                                     <property name="borderRightWidth">thin</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <text id="5251">
+                                    <text id="5372">
                                         <property name="textAlign">center</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">  
-if(!row["isSubLine"] &amp;&amp; !row["isPackLine"]) {
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">
 row["tracking_number_seq"]
-}
-</VALUE-OF>
-
-<I><FONT size="9pt"><VALUE-OF format="HTML">
-if(row["isSubLine"]) {
-row["tracking_number_seq"]
-}
-</VALUE-OF></FONT></I>
-
-<B><VALUE-OF format="HTML">  
-if(row["isPackLine"]) {
-row["tracking_number_seq"]
-}
-</VALUE-OF></B>]]></text-property>
+</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
-                                <cell id="5262">
+                                <cell id="5373">
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
                                     <property name="borderLeftStyle">solid</property>
@@ -3353,7 +3222,7 @@ row["tracking_number_seq"]
                                     <property name="borderRightWidth">thin</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <text id="5264">
+                                    <text id="5374">
                                         <property name="textAlign">center</property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>  
@@ -3361,7 +3230,7 @@ row["from_rack"]
 </VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
-                                <cell id="5269">
+                                <cell id="5375">
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
                                     <property name="borderLeftStyle">solid</property>
@@ -3370,7 +3239,7 @@ row["from_rack"]
                                     <property name="borderRightWidth">thin</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <text id="5272">
+                                    <text id="5376">
                                         <property name="textAlign">center</property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>  

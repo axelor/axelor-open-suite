@@ -16,7 +16,7 @@
 	<one-to-many name="forecastRecapLineList" ref="com.axelor.apps.cash.management.db.ForecastRecapLine" title="Details" mappedBy="forecastRecap"/>
 	<integer name="opportunitiesTypeSelect" title="Take into account opportunies" selection="forecast.opportunities.type.select"/>
 	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" massUpdate="true"/>
-	<many-to-one name="salesMan" ref="com.axelor.auth.db.User" title="SalesMan"/>
+	<many-to-one name="salesMan" ref="com.axelor.auth.db.User" title="Salesperson"/>
 	<integer name="displayTypeSelect" title="Display" selection="display.type.select" default="3"/>
 	<boolean name="isReport"/>
 	<date name="calculationDate" title="Calculation Date" readonly="true"/>

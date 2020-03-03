@@ -1,9 +1,16 @@
 # Changelog
 ## [Unreleased 5.3.1]
+
 ## Improvements
+- InvoiceLine: add fields in advanced search.
+- LEAVE REQUEST : Allow sending a leave request in the past.
 - INVOICES DASHBOARD: Turnover is now calculated using both sales and assets
 
 ## Bug Fixes
+- Fix Timesheet Reminder Batch sendReminder method
+- Stock Move Line reservation: correctly set qty requested flag when generated from a sale order line.
+- Stock Move: Delete empty date field in form view.
+- Advance data import: Fix search issue on main object to import.
 
 ## [5.3.0] - 2020-02-25
 ## Features
@@ -27,29 +34,35 @@
 - BANK STATEMENT LINE: order by operation date and sequence in AFB120 grid view.
 - BANK DETAILS: add search button on bank-details-bank-order-company-grid.
 
-## [5.2.4] - 2020-02-05
 ## Improvements
-- BankOrder: Display of Signatory ebics user and Sending date time in report.
-- ACCOUNTING REPORT: new filter for analytic distribution.
-- Timesheet: alert to check manufOrder is finished or not on timesheetLine.
-- PaymentMode: Add sequence field on account settings grid view.
-- Stock Move Line: store purchase price in stock move line to use this information in the declaration of exchanges.
+- JOURNAL: new viewer to display the balance.
+- SALE ORDER LINE: Display availability status on sale order line grid view if sale order status is 'Confirmed'.
+- Map: Filter out the data with empty address.
+- Studio: sidebar option for panel.
+- Studio: Tab display for panel tab.
+- Studio: group by application on json model grid view.
+- JSON FIELD FORM: add tracking in form fields.
+- ExtraHoursLine: Add new field 'Type' referencing new domain ExtraHoursType.
+- Account: Remove DirectDebitManagement.
+- MENU BUILDER: Add selection support for icon and iconBackground.
+- Custom Model: Hide menu panel and allows to create menu from menubuilder only.
+- English language: Correction of errors in english words and change gender job word to genderless job word.
+- Action Builder: Added option to update or use json field from real model.
+- STUDIO: add 'attrs' for User.
+- Studio: Added colSpan,title for the label and  visibleInGrid option for button.
+- Studio: Added restriction for model and model field names, allowed only alphanumberic characters.
+- Studio: Disable 'Visible in grid' option for spacer.
+- STOCK MOVE LINE: display invoiced status at same place as available tag.
+- Company: Replace the M2M bankDetailsSet with O2M.
+- BANKDETAILS: Add tree and card view for bank details and balance viewer on company bank details.
+- BANK STATEMENT: update automatically balance and date of bank details concerned by the bank statement when imported.
+- ACTIONBUILDER: Update filter on valueJson and metaJsonField fields.
+- MetaJsonField: show sequence and appBuilder field in json-field-grid.
+- ACTIONBUILDER: Allow to add a condition at start in generated action-script.
+- SEQUENCE: enable tracking for most fields.
+- BANK ORDER: Bank order workflow pass from draft to validated when automatic transmission is not activated in payment mode.
 - INVOICE: add specific note of company bank details on invoice report.
-- Message: Improved performance when generating mail messages from templates.
-- ACCOUNTING CUT OFF: display warning message when batch has been already launched with the same move date.
-- BANKPAYMENT: Update condition to display field ics number.
-- PURCHASE REQUEST: add new tab to see related purchase orders.
-- ANALYTIC MOVE LINE: add id and move line to analytic move line grid.
-- Subrogation release: improved visibility of unpaid invoices.
-- INVOICE: Filling number of copies for invoice printing is now required.
-- Stock Move: stock reservation management without sale order.
-- Manuf Order: manage stock reservation from stock move.
-- Invoice: Add control to avoid cancelation of ventilated invoice.
-- BALANCE TRANSLATION: Translate "Balance" in french by "Solde".
-- EXPENSE: add new printing design.
-- Invoice printing: remove space between invoice lines without description.
-- INVOICE: Add translation for "Canceled payment on" and "Pending payment" and update list of payment viewer in invoice form.
-- Configurator: generate bill of material when creating a sale order line from a configurator.
+- SUPPLYCHAIN : In stock-detail-by-product menu, company field now autofill with the user's active company.
 
 ## Bug Fixes
 - Studio: Fix access to json fields of base model in chart builder form.

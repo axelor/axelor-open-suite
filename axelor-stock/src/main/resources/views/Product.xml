@@ -82,7 +82,8 @@
 		<field name="$qty" title="Qty" type="decimal"/>
 	</grid>
 	
-	<form model="com.axelor.apps.base.db.Wizard" title="Stock per day" name="wizard-stock-perday-form" canEdit="false">
+	<form model="com.axelor.apps.base.db.Wizard" title="Stock per day" name="wizard-stock-perday-form" canEdit="false"
+		  onNew="action-wizard-stock-per-day-attrs-scale">
 		<panel name="mainPanel">
 			<field name="$date" title="Date" type="date"/>
 			<field name="$qty" title="Qty" type="decimal"/>
@@ -105,6 +106,10 @@
 	<action-record name="action-stock-product-record-stock-managed-onchange" model="com.axelor.apps.base.db.Product">
 		<field name="excludeFromMrp" expr="eval: !stockManaged"/>
 	</action-record>
+	
+    <action-attrs name="action-wizard-stock-per-day-attrs-scale">
+		<attribute name="scale" for="$qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+	</action-attrs>
 
 	<action-view name="action-stock-view-stock-rule" title="Stock rule" model="com.axelor.apps.stock.db.StockRules">
 		<view type="grid" name="stock-rule-product-grid"/>

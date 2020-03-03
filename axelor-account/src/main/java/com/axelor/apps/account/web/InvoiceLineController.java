@@ -160,8 +160,7 @@ public class InvoiceLineController {
 
         String errorMsg = (String) productInformation.get("error");
 
-        if (!Strings.isNullOrEmpty(errorMsg)
-            && Beans.get(InvoiceLineService.class).isAccountRequired(invoiceLine)) {
+        if (!Strings.isNullOrEmpty(errorMsg)) {
           response.setFlash(errorMsg);
         }
       } catch (Exception e) {

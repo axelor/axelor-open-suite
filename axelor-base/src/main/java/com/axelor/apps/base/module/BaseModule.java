@@ -64,6 +64,8 @@ import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.BarcodeGeneratorServiceImpl;
 import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.base.service.CompanyServiceImpl;
+import com.axelor.apps.base.service.DMSImportWizardService;
+import com.axelor.apps.base.service.DMSImportWizardServiceImpl;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.DurationServiceImpl;
 import com.axelor.apps.base.service.FrequencyService;
@@ -97,6 +99,8 @@ import com.axelor.apps.base.service.advanced.imports.FileFieldService;
 import com.axelor.apps.base.service.advanced.imports.FileFieldServiceImpl;
 import com.axelor.apps.base.service.advanced.imports.FileTabService;
 import com.axelor.apps.base.service.advanced.imports.FileTabServiceImpl;
+import com.axelor.apps.base.service.advanced.imports.SearchCallService;
+import com.axelor.apps.base.service.advanced.imports.SearchCallServiceImpl;
 import com.axelor.apps.base.service.advancedExport.AdvancedExportService;
 import com.axelor.apps.base.service.advancedExport.AdvancedExportServiceImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -183,11 +187,13 @@ public class BaseModule extends AxelorModule {
     bind(MailingListMessageRepository.class).to(MailingListMessageBaseRepository.class);
     bind(ABCAnalysisService.class).to(ABCAnalysisServiceImpl.class);
     bind(ABCAnalysisRepository.class).to(ABCAnalysisBaseRepository.class);
+    bind(DMSImportWizardService.class).to(DMSImportWizardServiceImpl.class);
     bind(AdvancedImportService.class).to(AdvancedImportServiceImpl.class);
     bind(DataImportService.class).to(DataImportServiceImpl.class);
     bind(FileTabService.class).to(FileTabServiceImpl.class);
     bind(FileFieldService.class).to(FileFieldServiceImpl.class);
     bind(ActionService.class).to(ActionServiceImpl.class);
     bind(PartnerService.class).to(PartnerServiceImpl.class);
+    bind(SearchCallService.class).to(SearchCallServiceImpl.class);
   }
 }

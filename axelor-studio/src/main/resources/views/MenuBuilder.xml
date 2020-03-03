@@ -17,7 +17,7 @@
       	  <field name="$existingMenu" title="Existing menu" type="many-to-one" target="com.axelor.meta.db.MetaMenu" target-name="title" hideIf="id" onChange="action-menubuilder-method-fetch-menu" />
 	      <field name="title" />
 	      <field name="parentMenu" />
-	      <field name="icon" />
+	      <field name="icon" widget="ImageSelect"/>
 	      <field name="iconBackground"/>
 	      <field name="order"/>
 	      <field name="showAction" widget="boolean-switch" onChange="action-menu-builder-show-action" />

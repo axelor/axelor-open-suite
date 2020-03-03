@@ -21,7 +21,8 @@
     </panel>
   </form>
 
-  <form title="Stock history line" name="stock-history-line-form" model="com.axelor.apps.stock.db.StockHistoryLine">
+  <form title="Stock history line" name="stock-history-line-form" model="com.axelor.apps.stock.db.StockHistoryLine"
+  		onNew="action-stock-history-line-attrs-scale" onLoad="action-stock-history-line-attrs-scale">
     <field name="label"/>
     <field name="countIncMvtStockPeriod"/>
     <field name="sumIncQtyPeriod"/>
@@ -62,6 +63,11 @@
 
   <action-attrs name="action-stock-history-line-attrs-compute-nb-of-periods">
     <attribute name="value" for="$nbOfPeriod" expr="eval: java.time.temporal.ChronoUnit.MONTHS.between(LocalDate.parse(beginDate).withDayOfMonth(1), LocalDate.parse(endDate).withDayOfMonth(1)) + 1"/>
+  </action-attrs>
+  
+  <action-attrs name="action-stock-history-line-attrs-scale">
+    <attribute name="scale" for="sumIncQtyPeriod" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    <attribute name="scale" for="sumOutQtyPeriod" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
   </action-attrs>
 
   <action-method name="action-stock-history-line-method-fill-stock-history-line-list">

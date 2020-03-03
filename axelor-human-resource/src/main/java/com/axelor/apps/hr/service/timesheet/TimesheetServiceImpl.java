@@ -673,9 +673,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
             discountTypeSelect,
             price.multiply(qtyConverted),
             null,
-            false,
-            false,
-            0) {
+            false) {
 
           @Override
           public List<InvoiceLine> creates() throws AxelorException {

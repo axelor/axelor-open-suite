@@ -14,7 +14,7 @@
 			<panel name="configuratorPanel" title="Configurator">
 				<field name="enableConfigurator" widget="boolean-switch"/>
 			</panel>
-			<panel name="billOfMaterialPanel" title="Bill of material">
+			<panel name="billOfMaterialPanel" title="Bill of materials">
 				<field name="manageBillOfMaterialVersion" widget="boolean-switch"/>
 			    <field name="manageResidualProductOnBom" widget="boolean-switch"/>
 			    <field name="nbDecimalDigitForBomQty"/>

@@ -125,6 +125,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
               taxed,
               taxRate);
       stockMoveLine.setRequestedReservedQty(requestedReservedQty);
+      stockMoveLine.setIsQtyRequested(
+          requestedReservedQty != null && requestedReservedQty.signum() > 0);
       stockMoveLine.setSaleOrderLine(saleOrderLine);
       stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
       TrackingNumberConfiguration trackingNumberConfiguration =
@@ -155,13 +157,6 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     // the case when stockMove is null is made in super.
     if (stockMove == null || !Beans.get(AppBaseService.class).isApp("supplychain")) {
       return super.compute(stockMoveLine, null);
-    }
-
-    // if this is a pack do not compute price
-    if (stockMoveLine.getProduct() == null
-        || (stockMoveLine.getLineTypeSelect() != null
-            && stockMoveLine.getLineTypeSelect() == StockMoveLineRepository.TYPE_PACK)) {
-      return stockMoveLine;
     }
 
     if (stockMove.getOriginId() != null

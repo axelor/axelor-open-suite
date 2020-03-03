@@ -18,9 +18,7 @@
 package com.axelor.apps.supplychain.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -43,17 +41,14 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
-    implements InvoiceServiceSupplychain {
+public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl {
 
   @Inject
   public InvoiceServiceSupplychainImpl(
@@ -176,62 +171,5 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
           .flatMap(move -> move.getMoveLineList().stream())
           .collect(Collectors.toList());
     }
-  }
-
-  @Override
-  public List<InvoiceLine> addSubLines(List<InvoiceLine> invoiceLine) {
-
-    if (invoiceLine == null) {
-      return invoiceLine;
-    }
-
-    List<InvoiceLine> lines = new ArrayList<InvoiceLine>();
-    lines.addAll(invoiceLine);
-    for (InvoiceLine line : lines) {
-      if (line.getSubLineList() == null) {
-        continue;
-      }
-      for (InvoiceLine subLine : line.getSubLineList()) {
-        if (subLine.getInvoice() == null) {
-          invoiceLine.add(subLine);
-        }
-      }
-    }
-    return invoiceLine;
-  }
-
-  @Override
-  public List<InvoiceLine> removeSubLines(List<InvoiceLine> invoiceLines) {
-
-    if (invoiceLines == null) {
-      return invoiceLines;
-    }
-
-    List<InvoiceLine> subLines = new ArrayList<InvoiceLine>();
-    for (InvoiceLine packLine : invoiceLines) {
-      if (packLine.getTypeSelect() == InvoiceLineRepository.TYPE_PACK
-          && packLine.getSubLineList() != null) {
-        packLine.getSubLineList().removeIf(it -> it.getId() != null && !invoiceLines.contains(it));
-        packLine.setTotalPack(
-            packLine
-                .getSubLineList()
-                .stream()
-                .map(it -> it.getExTaxTotal())
-                .reduce(BigDecimal.ZERO, BigDecimal::add));
-        subLines.addAll(packLine.getSubLineList());
-      }
-    }
-    Iterator<InvoiceLine> lines = invoiceLines.iterator();
-
-    while (lines.hasNext()) {
-      InvoiceLine subLine = lines.next();
-      if (subLine.getId() != null
-          && subLine.getParentLine() != null
-          && !subLines.contains(subLine)) {
-        lines.remove();
-      }
-    }
-
-    return invoiceLines;
   }
 }
