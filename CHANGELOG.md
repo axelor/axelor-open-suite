@@ -52,6 +52,7 @@
 - TASK: fix translation issue caused by "Package" entitled field.
 - ACCOUNTING REPORT : corrected several issues with values on the summary of gross values and depreciation report.
 - ACCOUNTING REPORT : in the summary of gross values and depreciation report corrected the problem of the apparition of line with an acquisition date after the report dates.
+- LEAD : removed the persistable field on the form view
 
 ## [5.2.4] - 2020-02-05
 ## Improvements
