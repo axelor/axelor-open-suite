@@ -24,6 +24,8 @@
     
     <string name="actions" title="Actions" large="true"/>
     
+    <string name="searchCall" title="Search Call" large="true"/>
+    
   </entity>
 
 </domain-models>

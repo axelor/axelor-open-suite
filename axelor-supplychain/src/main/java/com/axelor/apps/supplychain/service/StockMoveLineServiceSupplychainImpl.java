@@ -125,6 +125,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
               taxed,
               taxRate);
       stockMoveLine.setRequestedReservedQty(requestedReservedQty);
+      stockMoveLine.setIsQtyRequested(
+          requestedReservedQty != null && requestedReservedQty.signum() > 0);
       stockMoveLine.setSaleOrderLine(saleOrderLine);
       stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
       TrackingNumberConfiguration trackingNumberConfiguration =

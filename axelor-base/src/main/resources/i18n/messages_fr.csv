@@ -1060,7 +1060,7 @@
 "Payment",,,
 "Payment Mode","Mode de paiement",,
 "Payment Schedule","Echéanciers",,
-"Payment delay (Average)",,,
+"Payment delay (Average in days)","Retard de paiement (moyenne en jours)",,
 "Payment vouchers","Saisies paiements",,
 "Payroll Year","Année de paie",,
 "Period","Période",,
