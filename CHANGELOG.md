@@ -10,6 +10,7 @@
 - Block the creation of duplicate accounts
 - HR BATCH : set email template for batch 'Email reminder for timesheets'
 - CUSTOMER INFORMATIONS : Indicate that Payment delay is in days
+- INVOICES DASHBOARD: Turnover is now calculated using both sales and assets
 
 ## Bug Fixes
 - Fix Timesheet Reminder Batch sendReminder method
@@ -30,6 +31,7 @@
 - ACCOUNT CONFIG: change the place of invoice automatic mail and invoice message template in account config.
 - ACCOUNTING REPORT: group by and subtotal of analyticDistributionTemplate.
 - INVOICE: created new field payment date in invoice in order to use it in advance search.
+
 
 ## Bug Fixes
 - MANUF ORDER: Display sale order comment in manufacturing order printing.
