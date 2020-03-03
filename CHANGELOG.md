@@ -52,6 +52,7 @@
 - SEQUENCE : change tracking
 - BANK ORDER : Bank order workflow pass from darft to validated when automatic transmission is not activated in payment mode.
 - INVOICE : add specific note of company bank details on invoice report.
+- PRODUCT : Quantity field digits length is now based on nbDecimalDigitForQty in Base Config
 
 ## Bug Fixes
 - Fix injection error during test
