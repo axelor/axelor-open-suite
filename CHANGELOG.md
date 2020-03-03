@@ -4,6 +4,7 @@
 ## Improvements
 - InvoiceLine: add fields in advanced search.
 - LEAVE REQUEST : Allow sending a leave request in the past.
+- CUSTOMER INFORMATIONS : Indicate that Payment delay is in days
 - INVOICES DASHBOARD: Turnover is now calculated using both sales and assets
 
 ## Bug Fixes
