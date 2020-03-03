@@ -3,6 +3,7 @@
 ## Improvements
 - InvoiceLine: add fields in advanced search.
 ## Bug Fixes
+- SALEORDER : fixed bug causing the margins to be rounded to the unit
 
 ## [5.3.0] - 2020-02-25
 ## Features
