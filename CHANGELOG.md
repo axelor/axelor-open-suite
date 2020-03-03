@@ -8,6 +8,7 @@
 ## Improvements
 - LEAVE REQUEST : Allow sending a leave request in the past.
 - Block the creation of duplicate accounts
+- HR BATCH : set email template for batch 'Email reminder for timesheets'
 
 ## Bug Fixes
 - Fix Timesheet Reminder Batch sendReminder method
