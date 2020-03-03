@@ -19,6 +19,7 @@
 - PURCHASE REQUEST : translate "Purchase Request Lines" in french "Ligne de demandes d'achat"
 - Ebics user : Display associated user in list view
 - STOCK CONFIG : add three fields related to stock move printing settings
+- SaleOrderLine/PurchaseOrderLine : Added transient boolean field to freeze price,qty,productName
 
 ## Bug Fixes
 - SALEORDER : fixed bug causing the margins to be rounded to the unit
