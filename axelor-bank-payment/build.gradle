@@ -48,6 +48,9 @@ task xjc () {
 	def source = "${projectDir}/src/main/resources/xsd/sepa"
 	def target = "${buildDir}/src-gen/java"
 
+	inputs.dir(source)
+	outputs.dir(target)
+
 	def xsdToGenerate = [
 		['package': 'com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_02', 'destdir': "$target", 'schema': "$source/pain.001.001.02.xsd"],
 		['package': 'com.axelor.apps.bankpayment.xsd.sepa.pain_001_001_03', 'destdir': "$target", 'schema': "$source/pain.001.001.03.xsd"],
