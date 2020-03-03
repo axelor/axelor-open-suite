@@ -79,10 +79,7 @@ public class NotificationServiceImpl implements NotificationService {
     List<Invoice> invoiceList = new ArrayList<Invoice>();
     if (notification.getSubrogationRelease() != null) {
       invoiceList =
-          notification
-              .getSubrogationRelease()
-              .getInvoiceSet()
-              .stream()
+          notification.getSubrogationRelease().getInvoiceSet().stream()
               .sorted(byInvoiceDate.thenComparing(byDueDate).thenComparing(byInvoiceId))
               .collect(Collectors.toList());
     }

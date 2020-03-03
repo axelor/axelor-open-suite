@@ -946,8 +946,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     }
 
     BigDecimal qtySpreadOverLogisticalMoveLines =
-        logisticalFormLineList
-            .stream()
+        logisticalFormLineList.stream()
             .map(
                 logisticalFormLine ->
                     logisticalFormLine.getQty() != null

@@ -182,9 +182,7 @@ public class MrpServiceImpl implements MrpService {
     // Initialize
     this.mrp = mrp;
     List<StockLocation> slList =
-        stockLocationService
-            .getAllLocationAndSubLocation(mrp.getStockLocation(), false)
-            .stream()
+        stockLocationService.getAllLocationAndSubLocation(mrp.getStockLocation(), false).stream()
             .filter(x -> !x.getIsNotInMrp())
             .collect(Collectors.toList());
     this.stockLocationList = slList;

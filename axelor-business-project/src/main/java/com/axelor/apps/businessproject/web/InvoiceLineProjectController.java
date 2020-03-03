@@ -59,8 +59,7 @@ public class InvoiceLineProjectController {
       response.setFlash(IExceptionMessage.LINES_NOT_SELECTED);
     } else {
       List<Long> lineIds =
-          customerInvoiceLineSet
-              .stream()
+          customerInvoiceLineSet.stream()
               .map(it -> Long.parseLong(it.get("id").toString()))
               .collect(Collectors.toList());
       Beans.get(InvoiceLineProjectService.class).setProject(lineIds, project);
@@ -119,8 +118,7 @@ public class InvoiceLineProjectController {
       response.setFlash(IExceptionMessage.LINES_NOT_SELECTED);
     } else {
       List<Long> lineIds =
-          supplierInvoiceLineSet
-              .stream()
+          supplierInvoiceLineSet.stream()
               .map(it -> Long.parseLong(it.get("id").toString()))
               .collect(Collectors.toList());
       Beans.get(InvoiceLineProjectService.class).setProject(lineIds, project);

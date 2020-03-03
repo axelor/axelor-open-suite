@@ -45,9 +45,8 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(
-  name = "PromptLine",
-  propOrder = {"prompt", "suggestedInputLength", "example"}
-)
+    name = "PromptLine",
+    propOrder = {"prompt", "suggestedInputLength", "example"})
 public class PromptLine {
 
   @XmlElement(name = "Prompt", required = true)

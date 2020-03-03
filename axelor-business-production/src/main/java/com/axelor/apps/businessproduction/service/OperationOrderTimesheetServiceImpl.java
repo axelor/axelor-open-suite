@@ -47,8 +47,7 @@ public class OperationOrderTimesheetServiceImpl implements OperationOrderTimeshe
 
     operationOrderTsLineList.removeAll(oldTimesheetLineList);
     operationOrderTsLineList.addAll(
-        newTimesheetLineList
-            .stream()
+        newTimesheetLineList.stream()
             .filter(timesheetLine -> operationOrder.equals(timesheetLine.getOperationOrder()))
             .collect(Collectors.toList()));
     long durationLong =
@@ -89,8 +88,7 @@ public class OperationOrderTimesheetServiceImpl implements OperationOrderTimeshe
     allTimesheetLineList.addAll(newTimesheetLineList);
 
     List<OperationOrder> operationOrdersToUpdate =
-        allTimesheetLineList
-            .stream()
+        allTimesheetLineList.stream()
             .map(TimesheetLine::getOperationOrder)
             .filter(Objects::nonNull)
             .distinct()
@@ -107,8 +105,7 @@ public class OperationOrderTimesheetServiceImpl implements OperationOrderTimeshe
       return;
     }
     List<OperationOrder> operationOrderList =
-        timesheetLineList
-            .stream()
+        timesheetLineList.stream()
             .map(TimesheetLine::getOperationOrder)
             .filter(Objects::nonNull)
             .distinct()

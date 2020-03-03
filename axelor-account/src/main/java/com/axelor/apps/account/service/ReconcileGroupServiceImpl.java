@@ -84,41 +84,35 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
   @Override
   public boolean isBalanced(List<Reconcile> reconcileList) {
     List<MoveLine> debitMoveLineList =
-        reconcileList
-            .stream()
+        reconcileList.stream()
             .map(Reconcile::getDebitMoveLine)
             .distinct()
             .collect(Collectors.toList());
     List<MoveLine> creditMoveLineList =
-        reconcileList
-            .stream()
+        reconcileList.stream()
             .map(Reconcile::getCreditMoveLine)
             .distinct()
             .collect(Collectors.toList());
     List<Account> accountList =
-        debitMoveLineList
-            .stream()
+        debitMoveLineList.stream()
             .map(MoveLine::getAccount)
             .distinct()
             .collect(Collectors.toList());
     accountList.addAll(
-        creditMoveLineList
-            .stream()
+        creditMoveLineList.stream()
             .map(MoveLine::getAccount)
             .distinct()
             .collect(Collectors.toList()));
 
     for (Account account : accountList) {
       BigDecimal totalDebit =
-          debitMoveLineList
-              .stream()
+          debitMoveLineList.stream()
               .filter(moveLine -> moveLine.getAccount().equals(account))
               .map(MoveLine::getDebit)
               .reduce(BigDecimal::add)
               .orElse(BigDecimal.ZERO);
       BigDecimal totalCredit =
-          creditMoveLineList
-              .stream()
+          creditMoveLineList.stream()
               .filter(moveLine -> moveLine.getAccount().equals(account))
               .map(MoveLine::getCredit)
               .reduce(BigDecimal::add)
@@ -219,12 +213,10 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
     moveLineToRemoveList.forEach(moveLine -> moveLine.setReconcileGroup(null));
 
     List<Reconcile> reconcileList = this.getReconcileList(reconcileGroup);
-    reconcileList
-        .stream()
+    reconcileList.stream()
         .map(Reconcile::getDebitMoveLine)
         .forEach(moveLine -> moveLine.setReconcileGroup(reconcileGroup));
-    reconcileList
-        .stream()
+    reconcileList.stream()
         .map(Reconcile::getCreditMoveLine)
         .forEach(moveLine -> moveLine.setReconcileGroup(reconcileGroup));
 

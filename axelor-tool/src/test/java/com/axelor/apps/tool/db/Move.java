@@ -33,17 +33,15 @@ import javax.persistence.Table;
 public class Move extends JpaModel {
 
   @OneToMany(
-    fetch = FetchType.LAZY,
-    mappedBy = "move",
-    cascade = CascadeType.ALL,
-    orphanRemoval = true
-  )
+      fetch = FetchType.LAZY,
+      mappedBy = "move",
+      cascade = CascadeType.ALL,
+      orphanRemoval = true)
   private List<MoveLine> moveLines;
 
   @ManyToOne(
-    fetch = FetchType.LAZY,
-    cascade = {CascadeType.PERSIST, CascadeType.MERGE}
-  )
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   private Invoice invoice;
 
   public List<MoveLine> getMoveLines() {
