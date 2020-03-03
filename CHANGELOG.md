@@ -4,6 +4,7 @@
 ## Improvements
 - InvoiceLine: add fields in advanced search.
 - LEAVE REQUEST : Allow sending a leave request in the past.
+- INVOICES DASHBOARD: Turnover is now calculated using both sales and assets
 
 ## Bug Fixes
 - Fix Timesheet Reminder Batch sendReminder method
