@@ -7,6 +7,7 @@
 - Check and modify all service code according to app configuration
 - BANKPAYMENT : Update condition to display field ics number.
 - Subrogation release : improved visibility of unpaid invoices.
+- PRODUCT : display button 'Update stock location' only for storable and stock managed products.
 
 ## Bug Fixes
 - STOCKMOVE : display qty per tracking number and not total available qty for tracking number
@@ -17,7 +18,7 @@
 - Subrogative release : corrected the possibility to create two subrogation transmitted or accounted with the same invoices.
 - Invoice payment: fix issue in invoice payment form when invoice due date is empty.
 - SALE CONFIG : Fixed the issue we had when we try to update customer's accepted credit
-
+- INVOICE : fix the NPE when payment mode is null in invoice.
 
 ## [5.1.14] - 2020-01-17
 ## Improvements
