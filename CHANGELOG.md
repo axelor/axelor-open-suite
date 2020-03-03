@@ -1,5 +1,7 @@
 # Changelog
 ## [Unreleased 5.3.1]
+## Features
+- BankDetails : Add new field bankAccount.
 
 ## Improvements
 - InvoiceLine: add fields in advanced search.

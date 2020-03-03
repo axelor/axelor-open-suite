@@ -8,6 +8,7 @@
   <entity name="BankDetails" lang="java">
 
     <string name="specificNoteOnInvoice" title="Specific note on invoice" large="true"/>
+    <many-to-one name="bankAccount" ref="com.axelor.apps.account.db.Account" title="Bank Accounting Code"/>
   
   </entity>
 

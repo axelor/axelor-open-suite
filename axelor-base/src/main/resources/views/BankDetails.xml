@@ -32,6 +32,7 @@
         <panel name="currencyPanel">
 			<field name="label"/>
 			<field name="currency"/>
+			<field name="bankAccount" showIf="company != null" domain="self.code LIKE '512%'"/>
             <field name="code" x-bind="{{code|uppercase}}" hidden="true" />
 		</panel>
 		<panel name="activePanel" sidebar="true">
