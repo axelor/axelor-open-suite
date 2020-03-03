@@ -1,8 +1,20 @@
 # Changelog
 ## [Unreleased 5.2.6]
+## Feature
+- Workflow : Add support to select real status fields.
+- STOCK CONFIG : add three fields in stock move printing setting
+
 ## Improvements
+- LEAVE REQUEST : Allow sending a leave request in the past.
+- Block the creation of duplicate accounts
+
 ## Bug Fixes
 - SALE CONFIG : Fixed the issue we had when we try to update customer's accepted credit
+- Fix Timesheet Reminder Batch sendReminder method
+- DEBT RECOVERY : rollback debt recovery process if to recipients is empty or not in generated message.
+- Fix the error which is getting when group is empty in user. 
+- Stock Move Line reservation: correctly set qty requested flag when generated from a sale order line.
+- Stock Move: Delete empty date field in form view.
 
 ## [5.2.5] - 2020-02-25
 ## Improvements
