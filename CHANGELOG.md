@@ -1,11 +1,16 @@
 # Changelog
 ## [Unreleased 5.3.1]
+
 ## Improvements
 - InvoiceLine: add fields in advanced search.
+- LEAVE REQUEST : Allow sending a leave request in the past.
 - CUSTOMER INFORMATIONS : Indicate that Payment delay is in days
 
 ## Bug Fixes
 - Fix Timesheet Reminder Batch sendReminder method
+- Stock Move Line reservation: correctly set qty requested flag when generated from a sale order line.
+- Stock Move: Delete empty date field in form view.
+- Advance data import: Fix search issue on main object to import.
 
 ## [5.3.0] - 2020-02-25
 ## Features
@@ -57,6 +62,7 @@
 - SEQUENCE: enable tracking for most fields.
 - BANK ORDER: Bank order workflow pass from draft to validated when automatic transmission is not activated in payment mode.
 - INVOICE: add specific note of company bank details on invoice report.
+- SUPPLYCHAIN : In stock-detail-by-product menu, company field now autofill with the user's active company.
 
 ## Bug Fixes
 - Studio: Fix access to json fields of base model in chart builder form.
@@ -70,6 +76,7 @@
 - UI: Addition of onClick attributes in buttons.
 - Sales dashboard: Fix chart not displayed.
 - PRODUCT: Fix economicManufOrderQty displayed twice.
+
 
 [Unreleased 5.3.1]: https://github.com/axelor/axelor-open-suite/compare/v5.3.0...dev
 [5.3.0]: https://github.com/axelor/axelor-open-suite/compare/v5.2.5...v5.3.0
