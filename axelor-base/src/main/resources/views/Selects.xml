@@ -223,7 +223,6 @@
 		<option value="0">Civil Year</option>
 		<option value="1">Fiscal Year</option>
 		<option value="2">Payroll Year</option>
-		<option value="3">Manufacturing Year</option>
 	</selection>
 	
 	<selection name="base.year.status.select">

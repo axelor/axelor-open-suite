@@ -6,8 +6,7 @@
   <grid name="manuf-order-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq">
 		<toolbar>
 			<button name="printBtn" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
-			<button name="quickPlanBtn" title="Quick Plan" onClick="action-manuf-order-method-quick-plan"/>
-    		<button name="slowPlanBtn" title="Slow Plan" onClick="action-manuf-order-method-slow-plan"/>
+			<button name="planBtn" title="Plan" onClick="action-manuf-order-method-plan"/>
 		</toolbar>
 		<hilite color="danger" if="prioritySelect == 4"/>
 		<hilite color="warning" if="prioritySelect == 3"/>
@@ -134,7 +133,7 @@
 			<field name="product.isModel" hidden="true"/>
 		</panel>
 		<panel name="actionsPanel" title="Actions" colSpan="4">
-			<button name="planBtn" icon="fa-calendar" title="Plan" colSpan="12" showIf="statusSelect == 1 || statusSelect == 2" onClick="save,action-manuf-order-method-quick-plan" />
+			<button name="planBtn" icon="fa-calendar" title="Plan" colSpan="12" showIf="statusSelect == 1 || statusSelect == 2" onClick="save,action-manuf-order-method-plan" />
 			<button name="startBtn" icon="fa-play" title="Start" colSpan="12" showIf="statusSelect == 3" onClick="save,action-manuf-order-method-start"/>
 			<button name="pauseBtn" icon="fa-pause" title="Pause" colSpan="12" showIf="statusSelect == 4" onClick="save,action-manuf-order-method-pause"/>
 			<button name="resumeBtn" icon="fa-step-forward" title="Resume" colSpan="12" showIf="statusSelect == 5" onClick="save,action-manuf-order-method-resume"/>
@@ -147,10 +146,6 @@
 		<panel-tabs name="mainPanelTab" colSpan="4" >
 			<panel-related name="operationOrderListPanel" field="operationOrderList" readonlyIf="statusSelect == 6" colSpan="12" height="15" form-view="operation-order-form" grid-view="operation-order-grid"/>
 			<panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 6">
-				<panel name="desiredDates" title="Desired dates" colSpan="12">
-					<field name="desiredStartDateT" title="Start date"/>
-					<field name="desiredEndDateT" title="End date"/>
-				</panel>
 				<panel name="plannedDatesPanel" title="Planned dates">
 					<field name="plannedStartDateT" title="Start date" onChange="action-manuf-order-method-update-planned-dates"/>
 					<field name="plannedEndDateT" title="End date" onChange="action-manuf-order-validate-planned-end-date"/>
@@ -413,12 +408,8 @@
     	<call class="com.axelor.apps.production.web.ManufOrderController" method="cancel"/>
     </action-method>
     
-    <action-method name="action-manuf-order-method-quick-plan">
-    	<call class="com.axelor.apps.production.web.ManufOrderController" method="quickPlan"/>
-    </action-method>
-    
-    <action-method name="action-manuf-order-method-slow-plan">
-    	<call class="com.axelor.apps.production.web.ManufOrderController" method="slowPlan"/>
+    <action-method name="action-manuf-order-method-plan">
+    	<call class="com.axelor.apps.production.web.ManufOrderController" method="plan"/>
     </action-method>
 
 	<action-method name="action-manuf-order-method-part-finish">

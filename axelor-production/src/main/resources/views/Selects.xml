@@ -58,7 +58,6 @@
 	    <option value="7">Need / Manufacturing order</option>
    	    <option value="8">Manufacturing proposal</option>
   	    <option value="9">Need / Manufacturing proposal</option>
-  	    <option value="10">Master Production Scheduling</option>
 	</selection>
 	
 	<selection name="supplychain.mrp.line.related.to.select" id="production.supplychain.mrp.line.related.to.select">
@@ -120,17 +119,6 @@
 	<selection name="production.weekly.planning.type.select">
 		<option value="1">Human resources</option>
 		<option value="2">Machine</option>
-	</selection>
-	
-	<selection name="production.manuf.order.optaplanner.granularity.select">
-		<option value="1">Minutes</option>
-		<option value="2">Hours</option>
-		<option value="3">Days</option>
-	</selection>
-	
-	<selection name="production.sop.line.status">
-		<option value="1">Draft</option>
-		<option value="2">Confirmed</option>
 	</selection>
 
 	<selection name="production.cost.calculations.status.select">

@@ -29,17 +29,10 @@
 		
 		<many-to-one name="barcodeTypeConfig" title="Barcode Type" ref="com.axelor.apps.base.db.BarcodeTypeConfig" default="EAN_13"/>
 		<boolean name="printPlannedDateOnManufOrder" title="Print planned date on manuf order ?" default="true"/>
+
         <string name="mOFilterOnStockDetailStatusSelect" title="Status considered to filter a manuf order" selection="production.manuf.order.status.select" default="4,5"/>
-		<boolean name="finiteCapacity" title="Finite capacity"/>
-		<integer name="schedulingGranularity" title="Scheduling granularity" selection="production.manuf.order.optaplanner.granularity.select"/>
-		
-		<extra-code><![CDATA[
-			// Scheduling granularity
-			public static final int GRANULARITY_MINUTES = 1;
-			public static final int GRANULARITY_HOURS = 2;
-			public static final int GRANULARITY_DAYS = 3;
-		]]></extra-code>
-		
+
+
 		<track>
 			<field name="prodOrderMgtOnSO" on="UPDATE"/>
 			<field name="productionOrderGenerationAuto" on="UPDATE"/>
@@ -65,10 +58,6 @@
 			<field name="barcodeTypeConfig" on="UPDATE"/>
 			<field name="printPlannedDateOnManufOrder" on="UPDATE"/>
 		</track>
-		
-		
 	</entity>
-  
-  
 
 </domain-models>

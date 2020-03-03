@@ -18,7 +18,7 @@
 <!--   	<decimal name="qty" title="Quantity"/> -->
   
   	<many-to-one name="workCenter" ref="com.axelor.apps.production.db.WorkCenter" title="Work center" initParam="true"/>
-  	<many-to-one name="machineWorkCenter" ref="com.axelor.apps.production.db.Machine" title="Machine" initParam="true"/>
+  	<many-to-one name="machineWorkCenter" ref="com.axelor.apps.production.db.WorkCenter" title="Machine" initParam="true"/>
   
   	<one-to-many name="prodHumanResourceList" ref="com.axelor.apps.production.db.ProdHumanResource" mappedBy="operationOrder" title="Human resources"/>
   
@@ -35,14 +35,11 @@
 
       <datetime name="realStartDateT" title="Real start"/>
       <datetime name="realEndDateT" title="Real end"/>
-	    
+    
     <one-to-many name="inStockMoveList" ref="com.axelor.apps.stock.db.StockMove" title="Stock move in" mappedBy="inOperationOrder"/>
     
-
-    <boolean name="isPinned" title="Is pinned" />
-
-    <long name="plannedDuration" title="Planned duration"/>
-    <long name="realDuration" title="Real duration"/>
+    <long name="plannedDuration" title="Planned duration (hh:mm:ss)"/>
+    <long name="realDuration" title="Real duration (hh:mm:ss)"/>
     
     <boolean name="isWithDifference" >
 	    <![CDATA[
