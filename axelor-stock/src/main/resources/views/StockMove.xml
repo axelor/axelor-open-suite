@@ -429,7 +429,6 @@
             
 			<panel name="datesPanel" title="Dates">
             	<field name="realDate" colSpan="4"/>
-                <field name="reservationDateTime" colSpan="4" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation())"/>
                 <field name="pickingEditDate" hidden="true" showIf="pickingEditDate" readonly="true"/>
 			</panel>
 
