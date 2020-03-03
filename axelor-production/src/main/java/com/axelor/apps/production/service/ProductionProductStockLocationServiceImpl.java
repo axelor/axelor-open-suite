@@ -38,6 +38,7 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 
@@ -60,7 +61,8 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
       StockLocationLineRepository stockLocationLineRepository,
       AppProductionService appProductionService,
       ManufOrderService manufOrderService,
-      StockMoveLineRepository stockMoveLineRepository) {
+      StockMoveLineRepository stockMoveLineRepository,
+      AppBaseService appBaseService) {
     super(
         unitConversionService,
         appSupplychainService,
@@ -70,7 +72,8 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
         stockLocationService,
         stockLocationServiceSupplychain,
         stockLocationLineService,
-        stockLocationLineRepository);
+        stockLocationLineRepository,
+        appBaseService);
     this.appProductionService = appProductionService;
     this.manufOrderService = manufOrderService;
     this.stockMoveLineRepository = stockMoveLineRepository;
@@ -83,15 +86,23 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
     Product product = productRepository.find(productId);
     Company company = companyRepository.find(companyId);
     StockLocation stockLocation = stockLocationRepository.find(stockLocationId);
+    int scale = appBaseService.getNbDecimalDigitForQty();
     BigDecimal consumeManufOrderQty =
-        this.getConsumeManufOrderQty(product, company, stockLocation).setScale(2);
+        this.getConsumeManufOrderQty(product, company, stockLocation)
+            .setScale(scale, RoundingMode.HALF_UP);
     BigDecimal availableQty =
-        (BigDecimal) map.getOrDefault("$availableQty", BigDecimal.ZERO.setScale(2));
-    map.put("$buildingQty", this.getBuildingQty(product, company, stockLocation).setScale(2));
+        (BigDecimal)
+            map.getOrDefault(
+                "$availableQty", BigDecimal.ZERO.setScale(scale, RoundingMode.HALF_UP));
+    map.put(
+        "$buildingQty",
+        this.getBuildingQty(product, company, stockLocation).setScale(scale, RoundingMode.HALF_UP));
     map.put("$consumeManufOrderQty", consumeManufOrderQty);
     map.put(
         "$missingManufOrderQty",
-        BigDecimal.ZERO.max(consumeManufOrderQty.subtract(availableQty)).setScale(2));
+        BigDecimal.ZERO
+            .max(consumeManufOrderQty.subtract(availableQty))
+            .setScale(scale, RoundingMode.HALF_UP));
     return map;
   }
 
