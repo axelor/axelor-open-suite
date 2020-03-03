@@ -16,6 +16,7 @@
 - Stock Move Line reservation: correctly set qty requested flag when generated from a sale order line.
 - Stock Move: Delete empty date field in form view.
 - PROJECT : Fix NPE when generate Business project with SaleOrderTypeSelect as title. 
+- SALEORDER : fixed bug causing the margins to be rounded to the unit
 
 ## [5.2.5] - 2020-02-25
 ## Improvements
