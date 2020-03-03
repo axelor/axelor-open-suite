@@ -7,6 +7,7 @@
 ## Improvements
 - LEAVE REQUEST : Allow sending a leave request in the past.
 - Block the creation of duplicate accounts
+- BANK ORDER LINE : add all origin references in reference field.
 
 ## Bug Fixes
 - Fix Timesheet Reminder Batch sendReminder method
