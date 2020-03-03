@@ -3,16 +3,21 @@
 ## Feature
 - Workflow : Add support to select real status fields.
 - STOCK CONFIG : add three fields in stock move printing setting
+- SaleOrderLine/PurchaseOrderLine : Added transient boolean field to freeze price,qty,productName
 
 ## Improvements
 - LEAVE REQUEST : Allow sending a leave request in the past.
 - Block the creation of duplicate accounts
+- HR BATCH : set email template for batch 'Email reminder for timesheets'
 - CUSTOMER INFORMATIONS : Indicate that Payment delay is in days
 
 ## Bug Fixes
 - Fix Timesheet Reminder Batch sendReminder method
 - DEBT RECOVERY : rollback debt recovery process if to recipients is empty or not in generated message.
 - Fix the error which is getting when group is empty in user. 
+- Stock Move Line reservation: correctly set qty requested flag when generated from a sale order line.
+- Stock Move: Delete empty date field in form view.
+- PROJECT : Fix NPE when generate Business project with SaleOrderTypeSelect as title. 
 
 ## [5.2.5] - 2020-02-25
 ## Improvements

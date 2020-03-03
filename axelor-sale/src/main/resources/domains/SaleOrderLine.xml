@@ -68,6 +68,8 @@
   	<decimal name="totalPack" title="Total for pack lines"/>
 	<integer name="packPriceSelect" title="Pack price select" selection="product.pack.price.select"/>
 	
+	<boolean name="enableFreezeFields" transient="true" title="Freeze fields"/>
+
 	<finder-method name="findAllBySaleOrder" using="saleOrder" all="true"/>
 
 	<extra-code>
