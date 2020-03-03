@@ -55,7 +55,8 @@
 				<field name="analyticJournal" showIf="typeSelect == 2000 || typeSelect == 2001"  domain="self.company = :company" form-view="analytic-journal-form" grid-view="analytic-journal-grid"/>
 				<field name="bankDetailsSet"   if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')" requiredIf="typeSelect == 18" showIf="typeSelect == 18" colSpan="12" form-view="bank-details-form" grid-view="bank-details-grid" widget="TagSelect" canNew="false" onSelect="action-accounting-report-method-set-bank-details-domain"/>
 <field name="analyticDistributionTemplate" showIf="typeSelect == 17" form-view="analytic-distribution-template-form" grid-view="analytic-distribution-template-grid"/>
-
+<field name="subtotalByAnalyticDistribution" showIf="typeSelect == 17" widget="boolean-switch"/>
+			
 			</panel>
 			<panel name="printingInformationsPanel" title="Printing information" hideIf="!typeSelect || [16,17,18].indexOf(typeSelect) != -1">
 				<field name="global" hideIf="!typeSelect || [0,3,4,10,12,13,15,16,17].indexOf(typeSelect) != -1"	onChange="action-accounting-report-record-global" />
@@ -222,6 +223,8 @@
 		<field name="period" expr="eval: null"/>
   		<field name="dateFrom" expr="eval: null"/>
   		<field name="dateTo" expr="eval: null"/>
+  		<field name="analyticDistributionTemplate" expr="eval: null"/>
+  		<field name="subtotalByAnalyticDistribution" expr="eval: null"/>
 	</action-record>
 	
 	<action-record name="action-accounting-report-record-default-global" model="com.axelor.apps.account.db.AccountingReport">
