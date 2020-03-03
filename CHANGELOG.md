@@ -8,3 +8,4 @@
 - BASE : Cache memory performace improved by not stocking geographical entities anymore
 
 ## Bug Fixes
+- PROJECT : NPE on generate Business project with SaleOrderTypeSelect as title . 

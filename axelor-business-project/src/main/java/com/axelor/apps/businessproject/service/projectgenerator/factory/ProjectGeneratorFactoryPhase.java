@@ -73,7 +73,7 @@ public class ProjectGeneratorFactoryPhase implements ProjectGeneratorFactory {
     projectRepository.save(project);
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
       Product product = saleOrderLine.getProduct();
-      if (ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect())
+      if (product != null && ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect())
           && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE) {
         Project phase = projectBusinessService.generatePhaseProject(saleOrderLine, project);
         phase.setFromDate(startDate);
