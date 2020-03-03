@@ -10,6 +10,7 @@
 - Stock Move Line reservation: correctly set qty requested flag when generated from a sale order line.
 - Stock Move: Delete empty date field in form view.
 - Advance data import: Fix search issue on main object to import.
+- Partner : Invoice copy number selection field display when the partner is a supplier.
 
 ## [5.3.0] - 2020-02-25
 ## Features
