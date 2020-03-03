@@ -12,6 +12,7 @@
 - Stock Move Line reservation: correctly set qty requested flag when generated from a sale order line.
 - Stock Move: Delete empty date field in form view.
 - Advance data import: Fix search issue on main object to import.
+- LEAD : removed the persistable field on the form view
 
 ## [5.3.0] - 2020-02-25
 ## Features
