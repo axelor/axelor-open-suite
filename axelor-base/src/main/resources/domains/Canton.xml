@@ -3,7 +3,7 @@
   
   <module name="base" package="com.axelor.apps.base.db"/>
   
-  <entity name="Canton" lang="java" cacheable="true">
+  <entity name="Canton" lang="java" >
   
     <string name="name" title="Name" required="true"/>
     <string name="code" title="Code" unique="true" required="true"/>

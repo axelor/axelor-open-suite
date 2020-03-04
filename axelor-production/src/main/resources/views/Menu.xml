@@ -125,13 +125,60 @@
 		<view type="form" name="raw-material-requirement-form"/>
 	</action-view>
 	
+	<menuitem name="manufacturing-mps" parent="manufacturing-root" title="MPS" order="43" if="__config__.app.isApp('supplychain')"/>
+
+	<menuitem name="manufacturing-mps-master-production-scheduling" parent="manufacturing-mps" title="Master Production Scheduling" 
+		action="manufacturing.mps.master.production.scheduling" order="1"/>
+
+	<action-view name="manufacturing.mps.master.production.scheduling" title="Master Production Scheduling"
+		model="com.axelor.apps.supplychain.db.Mrp">
+		<view type="grid" name="mrp-grid"/>
+		<view type="form" name="mrp-manuf-order-form"/>
+		<domain>self.mrpType = 2</domain>
+	</action-view>
+	
 	<menuitem name="manufacturing-root-cost-calculations" parent="manufacturing-root" title="Cost calculations" action="manufacturing.root.cost.calculations" order="44"/>
 
 	<action-view name="manufacturing.root.cost.calculations" title="Cost calculations" model="com.axelor.apps.production.db.UnitCostCalculation">
 		<view type="grid" name="cost-calculations-grid"/>
 		<view type="form" name="cost-calculations-form"/>
 	</action-view>
+	
+	<menuitem name="manufacturing-mps-forecast" parent="manufacturing-mps" title="Forecasts" action="manufacturing.mps.forecast" order="2"/>
 
+	<action-view name="manufacturing.mps.forecast" title="Forecasts" model="com.axelor.apps.supplychain.db.MrpForecast">
+		<view type="grid" name="mrp-forecast-grid"/>
+		<view type="form" name="mrp-forecast-form"/>
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+	</action-view>
+	
+	<menuitem name="manufacturing-mps-conf" parent="manufacturing-mps" title="Configuration" icon="fa-cog" order="3"/>
+	
+	<menuitem name="manufacturing-mps-conf-mrp-line-type" parent="manufacturing-mps-conf" title="Move types" action="manufacturing.mps.conf.mrp.line.type"/>
+	
+	<action-view name="manufacturing.mps.conf.mrp.line.type" title="Move types" model="com.axelor.apps.supplychain.db.MrpLineType">
+		<view type="grid" name="mrp-line-type-grid"/>
+		<view type="form" name="mrp-line-type-form"/>
+	</action-view>
+	
+	<menuitem name="manufacturing-mps-conf-manufacturing-periods" parent="manufacturing-mps-conf" 
+		title="Manufacturing periods" action="manufacturing.mps.conf.manufacturing-periods"/>
+	
+	<action-view name="manufacturing.mps.conf.manufacturing-periods" title="Manufacturing periods" model="com.axelor.apps.base.db.Year">
+		<view type="grid" name="year-account-grid"/>
+		<view type="form" name="year-manuf-order-form"/>
+		<domain>self.typeSelect = 3</domain>
+	</action-view>
+	
+	<menuitem name="manufacturing-root-sop" parent="manufacturing-root"
+		title="S&amp;OP" action="manufacturing.root.sop" order="44"/>
+
+	<action-view name="manufacturing.root.sop" title="Sales and Operations Planning"
+		model="com.axelor.apps.production.db.Sop">
+		<view type="grid" name="sop-grid"/>
+		<view type="form" name="sop-form"/>
+	</action-view>
+	
 	<menuitem name="manufacturing-root-report" parent="manufacturing-root" title="Reportings" order="45" icon="fa-bar-chart"/>
 
     <menuitem name="menu-manufacturing-dashboard-1" parent="manufacturing-root-report" title="Manufacturing" action="manufacturing.dashboard.view" />

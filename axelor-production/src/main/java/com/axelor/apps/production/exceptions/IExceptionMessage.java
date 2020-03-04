@@ -75,6 +75,10 @@ public interface IExceptionMessage {
   static final String MANUF_ORDER_1 = /*$$(*/
       "Please select the Manufacturing order(s) to print." /*)*/;
 
+  /** Manuf Order Plan Service */
+  static final String MANUF_ORDER_PLAN_UNRECOGNIZED_GRANULARITY = /*$$(*/
+      "Unrecognized granularity." /*)*/;
+
   /** Operation Order Controller */
   static final String OPERATION_ORDER_1 = /*$$(*/
       "Please select the Operation order(s) to print." /*)*/;

@@ -919,7 +919,7 @@ LEFT JOIN
 LEFT JOIN 
 	production_prod_process_line AS ProdProcessLine ON (ProdProcessLine.id = OperationOrderLine.prod_process_line)
 LEFT JOIN 
-	production_work_center AS Machine ON (Machine.id = OperationOrderLine.work_center)
+	production_machine AS Machine ON (Machine.id = OperationOrderLine.machine_work_center)
 
 LEFT JOIN meta_select AS MetaSelect ON MetaSelect.name = 'production.manuf.order.status.select'
 LEFT JOIN meta_select_item MetaSelectItem ON MetaSelectItem.select_id = MetaSelect.id
@@ -929,201 +929,10 @@ WHERE ManufOrder.id IN (@INJECTID) AND MetaSelectItem.value = cast ( OperationOr
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="OperationDetails" id="4361">
             <property name="nullsOrdering">nulls lowest</property>
-            <list-property name="columnHints">
-                <structure>
-                    <property name="columnName">manuf_order_id</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">manuf_order_id</text-property>
-                    <text-property name="heading">manuf_order_id</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">id</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">id</text-property>
-                    <text-property name="heading">id</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">priority</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">priority</text-property>
-                    <text-property name="heading">priority</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">prod_process_line</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">prod_process_line</text-property>
-                    <text-property name="heading">prod_process_line</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">planned_start_datet</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">planned_start_datet</text-property>
-                    <text-property name="heading">planned_start_datet</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">planned_end_datet</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">planned_end_datet</text-property>
-                    <text-property name="heading">planned_end_datet</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">real_start_datet</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">real_start_datet</text-property>
-                    <text-property name="heading">real_start_datet</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">real_end_datet</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">real_end_datet</text-property>
-                    <text-property name="heading">real_end_datet</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">machine_serial</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">machine_serial</text-property>
-                    <text-property name="heading">machine_serial</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">description_id</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">description_id</text-property>
-                    <text-property name="heading">description_id</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">description_prio</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">description_prio</text-property>
-                    <text-property name="heading">description_prio</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">file_path</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">file_path</text-property>
-                    <text-property name="heading">file_path</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">description</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">description</text-property>
-                    <text-property name="heading">description</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">is_cons_pro_on_operation</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">is_cons_pro_on_operation</text-property>
-                    <text-property name="heading">is_cons_pro_on_operation</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">bar_code_path</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">bar_code_path</text-property>
-                    <text-property name="heading">bar_code_path</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">operation_name</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">operation_name</text-property>
-                    <text-property name="heading">operation_name</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">bar_code</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">bar_code</text-property>
-                    <text-property name="heading">bar_code</text-property>
-                </structure>
-            </list-property>
+            <list-property name="columnHints"/>
             <list-property name="filter"/>
             <list-property name="parameters"/>
-            <structure name="cachedMetaData">
-                <list-property name="resultSet">
-                    <structure>
-                        <property name="position">1</property>
-                        <property name="name">manuf_order_id</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">2</property>
-                        <property name="name">id</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">3</property>
-                        <property name="name">priority</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">4</property>
-                        <property name="name">prod_process_line</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">5</property>
-                        <property name="name">planned_start_datet</property>
-                        <property name="dataType">date-time</property>
-                    </structure>
-                    <structure>
-                        <property name="position">6</property>
-                        <property name="name">planned_end_datet</property>
-                        <property name="dataType">date-time</property>
-                    </structure>
-                    <structure>
-                        <property name="position">7</property>
-                        <property name="name">real_start_datet</property>
-                        <property name="dataType">date-time</property>
-                    </structure>
-                    <structure>
-                        <property name="position">8</property>
-                        <property name="name">real_end_datet</property>
-                        <property name="dataType">date-time</property>
-                    </structure>
-                    <structure>
-                        <property name="position">9</property>
-                        <property name="name">machine_serial</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">10</property>
-                        <property name="name">description_id</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">11</property>
-                        <property name="name">description_prio</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">12</property>
-                        <property name="name">file_path</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">13</property>
-                        <property name="name">description</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">14</property>
-                        <property name="name">is_cons_pro_on_operation</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">15</property>
-                        <property name="name">bar_code_path</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">16</property>
-                        <property name="name">operation_name</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">17</property>
-                        <property name="name">bar_code</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                </list-property>
-            </structure>
+            <structure name="cachedMetaData"/>
             <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace('@INJECTID', params["ManufOrderId"])]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet"/>
@@ -1143,9 +952,9 @@ FROM production_object_description as ObjectDescription
 INNER JOIN 
 	production_manuf_order AS ManufOrder ON (OperationOrderLine.manuf_order = ManufOrder.id)
 LEFT JOIN 
-	production_work_center AS WorkCenter ON (WorkCenter.id = OperationOrderLine.machine_work_center)
+	production_work_center AS WorkCenter ON (WorkCenter.id = OperationOrderLine.work_center)
 	LEFT JOIN 
-		production_machine AS Machine ON (Machine.id = WorkCenter.machine)
+		production_machine AS Machine ON (Machine.id = OperationOrderLine.machine_work_center)
 WHERE ManufOrder.id IN (@INJECTID)
 	ORDER BY OperationOrderLine.priority, ObjectDescription.sequence
 ]]></xml-property>

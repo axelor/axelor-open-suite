@@ -69,11 +69,12 @@
 				<button name="updateCurrencyConversionBtn" title="Update &amp; Historize conversion rate"  onClick="save,action-base-method-update-currency-conversion"/>
 				<field name="currencyConversionLineList" colSpan="12" grid-view="currency-conversion-line-grid" form-view="currency-conversion-line-form"/>
 			</panel>
-			<panel name="global-tracking-configuration-wizard-panel" title="Global tracking configuration" colSpan="12">
-				<panel name="global-tracking-configuration-sub-panel" title="Logs configuration">
+			<panel name="global-tracking-configuration-panel" title="Global tracking configuration" colSpan="12" >
+        <panel name="global-tracking-configuration-sub-panel" title="Logs configuration">
 					<field name="globalTrackingLogPersistence"/>
 					<button name="cleanBtn" title="Clean logs manually" onClick="save,action-method-clean-global-tracking-logs"/>			
 				</panel>
+				<panel-related title="Global tracking configuration lines" field="globalTrackingConfigurationLines" colSpan="12" form-view="global-tracking-configuration-line-form" grid-view="global-tracking-configuration-line-grid" canNew="true" canEdit="true" />
 			</panel>
 		</panel-tabs>
 		<panel-mail name="mailPanel">
