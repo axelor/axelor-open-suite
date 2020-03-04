@@ -211,7 +211,7 @@ public class TemplateMaker {
       if (item != null) {
         return item.getTitle();
       }
-      return value == null ? "" : value.toString();
+      return value.toString();
     }
 
     @Override
