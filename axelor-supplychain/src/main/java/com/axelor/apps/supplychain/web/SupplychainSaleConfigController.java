@@ -1,6 +1,7 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.sale.db.SaleConfig;
+import com.axelor.apps.supplychain.service.SupplychainSaleConfigService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
