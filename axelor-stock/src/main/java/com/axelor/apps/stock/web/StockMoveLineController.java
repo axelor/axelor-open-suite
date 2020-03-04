@@ -262,10 +262,7 @@ public class StockMoveLineController {
       StockLocationLine detailStockLocationLine =
           stockLocationLineService.getDetailLocationLine(
               stockMove.getFromStockLocation(), stockMoveLine.getProduct(), trackingNumber);
-      BigDecimal availableQty =
-          detailStockLocationLine != null
-              ? detailStockLocationLine.getCurrentQty()
-              : BigDecimal.ZERO;
+      BigDecimal availableQty = detailStockLocationLine.getCurrentQty();
       Map<String, Object> map = new HashMap<String, Object>();
       map.put("trackingNumber", trackingNumber);
       map.put("trackingNumberSeq", trackingNumber.getTrackingNumberSeq());

@@ -23,6 +23,7 @@
 - LEAVE REQUEST : Fix the NPE when no leaveRequest is selected to be edited
 - AccountChartService : BLOCKER - line 99
 - PROJECT : Remove unnecessary code.
+- MANUFACTURING ORDER : On consumed product, no longer diplay tracking numbers if avaible quantity equals 0.
 
 ## [5.2.5] - 2020-02-25
 ## Improvements
