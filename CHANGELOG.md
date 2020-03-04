@@ -5,7 +5,8 @@
 - InvoiceLine: add fields in advanced search.
 - LEAVE REQUEST : Allow sending a leave request in the past.
 - CUSTOMER INFORMATIONS : Indicate that Payment delay is in days
-- INVOICES DASHBOARD: Turnover is now calculated using both sales and assets
+- INVOICES DASHBOARD : Turnover is now calculated using both sales and assets.
+- EXCEPTION ORIGIN : Refactor.
 
 ## Bug Fixes
 - Fix Timesheet Reminder Batch sendReminder method
