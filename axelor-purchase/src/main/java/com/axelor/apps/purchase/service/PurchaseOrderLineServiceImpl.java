@@ -390,7 +390,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
                     .getSalePrice()
                     .divide(
                         product.getManagPriceCoef().signum() == 0
-                            ? BigDecimal.ZERO
+                            ? BigDecimal.ONE
                             : product.getManagPriceCoef(),
                         appBaseService.getNbDecimalDigitForUnitPrice(),
                         RoundingMode.HALF_UP));
@@ -400,7 +400,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
                 .getSalePrice()
                 .divide(
                     product.getManagPriceCoef().signum() == 0
-                        ? BigDecimal.ZERO
+                        ? BigDecimal.ONE
                         : product.getManagPriceCoef(),
                     appBaseService.getNbDecimalDigitForUnitPrice(),
                     RoundingMode.HALF_UP);
