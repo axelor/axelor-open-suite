@@ -1142,7 +1142,7 @@ InvoiceSet.length > 0))"
 	</action-validate>
 
 	<action-validate name="action-validate-send-email-remove-access-for-client">
-		<error message="Error - You are not authorized to perform this action" if="__user__.group.isClient"/>
+		<error message="Error - You are not authorized to perform this action" if="__user__.group?.isClient"/>
     </action-validate>
 
     <action-validate name="action-validate-invoice-ckeck-invoice-line-tax-list">

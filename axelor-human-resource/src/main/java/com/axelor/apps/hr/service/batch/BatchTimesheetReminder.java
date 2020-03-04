@@ -23,18 +23,17 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
 import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.repo.EmailAccountRepository;
+import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageService;
-import com.axelor.auth.AuthUtils;
+import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaModel;
 import com.google.inject.Inject;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.List;
 import javax.mail.MessagingException;
 
@@ -42,30 +41,42 @@ public class BatchTimesheetReminder extends BatchStrategy {
 
   protected TimesheetRepository timesheetRepo;
   protected MessageService messageService;
+  protected MessageRepository messageRepo;
+  protected TemplateMessageService templateMessageService;
 
   @Inject
   public BatchTimesheetReminder(
       LeaveManagementService leaveManagementService,
       TimesheetRepository timesheetRepo,
-      MessageService messageService) {
+      MessageService messageService,
+      MessageRepository messageRepo,
+      TemplateMessageService templateMessageService) {
     super(leaveManagementService);
     this.timesheetRepo = timesheetRepo;
     this.messageService = messageService;
+    this.messageRepo = messageRepo;
+    this.templateMessageService = templateMessageService;
   }
 
   @Override
   protected void process() {
-    for (Employee employee : getEmployeesWithoutRecentTimesheet()) {
-      try {
-        sendReminder(employee);
+    Template template = batch.getHrBatch().getTemplate();
+    MetaModel metaModel = template.getMetaModel();
+    try {
+      if (metaModel != null) {
+        if (metaModel.getName().equals(Employee.class.getSimpleName())) {
+          sendReminderUsingEmployees(template);
 
-      } catch (Exception e) {
-        TraceBackService.trace(e, Employee.class.getSimpleName(), batch.getId());
-        incrementAnomaly();
-
-      } finally {
-        incrementDone();
+        } else if (metaModel.getName().equals(Timesheet.class.getSimpleName())) {
+          sendReminderUsingTimesheets(template);
+        }
       }
+    } catch (Exception e) {
+      TraceBackService.trace(e, metaModel.getName(), batch.getId());
+      incrementAnomaly();
+
+    } finally {
+      incrementDone();
     }
   }
 
@@ -97,6 +108,11 @@ public class BatchTimesheetReminder extends BatchStrategy {
   }
 
   private boolean hasRecentTimesheet(LocalDate now, long daysBeforeReminder, Employee employee) {
+    Timesheet timesheet = getRecentEmployeeTimesheet(employee);
+    return timesheet != null && timesheet.getToDate().plusDays(daysBeforeReminder).isAfter(now);
+  }
+
+  protected Timesheet getRecentEmployeeTimesheet(Employee employee) {
     Timesheet timesheet =
         timesheetRepo
             .all()
@@ -108,23 +124,25 @@ public class BatchTimesheetReminder extends BatchStrategy {
             .bind("companyId", batch.getHrBatch().getCompany().getId())
             .order("-toDate")
             .fetchOne();
-    return timesheet != null && timesheet.getToDate().plusDays(daysBeforeReminder).isAfter(now);
+    return timesheet;
   }
 
-  private void sendReminder(Employee employee)
-      throws AxelorException, MessagingException, IOException {
-    Message message = new Message();
-    message.setMediaTypeSelect(MessageRepository.MEDIA_TYPE_EMAIL);
-    message.setReplyToEmailAddressSet(new HashSet<>());
-    message.setCcEmailAddressSet(new HashSet<>());
-    message.setBccEmailAddressSet(new HashSet<>());
-    message.addToEmailAddressSetItem(employee.getContactPartner().getEmailAddress());
-    message.setSenderUser(AuthUtils.getUser());
-    message.setSubject(batch.getHrBatch().getTemplate().getSubject());
-    message.setContent(batch.getHrBatch().getTemplate().getContent());
-    message.setMailAccount(
-        Beans.get(EmailAccountRepository.class).all().filter("self.isDefault = true").fetchOne());
+  protected void sendReminderUsingEmployees(Template template)
+      throws AxelorException, MessagingException, IOException, ClassNotFoundException,
+          InstantiationException, IllegalAccessException {
+    for (Employee employee : getEmployeesWithoutRecentTimesheet()) {
+      Message message = templateMessageService.generateMessage(employee, template);
+      messageService.sendByEmail(message);
+    }
+  }
 
-    messageService.sendByEmail(message);
+  protected void sendReminderUsingTimesheets(Template template)
+      throws AxelorException, MessagingException, IOException, ClassNotFoundException,
+          InstantiationException, IllegalAccessException {
+    for (Employee employee : getEmployeesWithoutRecentTimesheet()) {
+      Message message =
+          templateMessageService.generateMessage(getRecentEmployeeTimesheet(employee), template);
+      messageService.sendByEmail(message);
+    }
   }
 }
