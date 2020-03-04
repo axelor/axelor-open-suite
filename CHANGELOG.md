@@ -10,7 +10,8 @@
 - Block the creation of duplicate accounts
 - HR BATCH : set email template for batch 'Email reminder for timesheets'
 - CUSTOMER INFORMATIONS : Indicate that Payment delay is in days
-- INVOICES DASHBOARD: Turnover is now calculated using both sales and assets
+- INVOICES DASHBOARD : Turnover is now calculated using both sales and assets.
+- EXCEPTION ORIGIN : Refactor.
 
 ## Bug Fixes
 - Fix Timesheet Reminder Batch sendReminder method
