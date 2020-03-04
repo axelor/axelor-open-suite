@@ -116,14 +116,6 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
     if (purchaseOrderLine.getProduct() != null) {
       map.put("maxPurchasePrice", getPurchaseMaxPrice(purchaseOrder, purchaseOrderLine));
-      map.put(
-          "salePrice",
-          getSalePrice(
-              purchaseOrder,
-              purchaseOrderLine.getProduct(),
-              purchaseOrder.getInAti()
-                  ? purchaseOrderLine.getInTaxPrice()
-                  : purchaseOrderLine.getPrice()));
     }
     map.put("exTaxTotal", exTaxTotal);
     map.put("inTaxTotal", inTaxTotal);
@@ -136,13 +128,6 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     purchaseOrderLine.setCompanyExTaxTotal(companyExTaxTotal);
     purchaseOrderLine.setCompanyInTaxTotal(companyInTaxTotal);
     purchaseOrderLine.setMaxPurchasePrice(getPurchaseMaxPrice(purchaseOrder, purchaseOrderLine));
-    purchaseOrderLine.setSalePrice(
-        getSalePrice(
-            purchaseOrder,
-            purchaseOrderLine.getProduct(),
-            purchaseOrder.getInAti()
-                ? purchaseOrderLine.getInTaxPrice()
-                : purchaseOrderLine.getPrice()));
     return map;
   }
 
@@ -330,10 +315,6 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     line.setInTaxPrice(inTaxPrice);
 
     line.setMaxPurchasePrice(getPurchaseMaxPrice(purchaseOrder, line));
-    line.setSalePrice(
-        getSalePrice(
-            purchaseOrder, line.getProduct(), purchaseOrder.getInAti() ? inTaxPrice : price));
-
     return line;
   }
 
@@ -347,7 +328,6 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     line.setPrice(null);
     line.setInTaxPrice(null);
     line.setMaxPurchasePrice(null);
-    line.setSalePrice(null);
     line.setExTaxTotal(null);
     line.setInTaxTotal(null);
     line.setCompanyInTaxTotal(null);
@@ -416,25 +396,6 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     } catch (Exception e) {
       return BigDecimal.ZERO;
     }
-  }
-
-  @Override
-  public BigDecimal getSalePrice(PurchaseOrder purchaseOrder, Product product, BigDecimal price)
-      throws AxelorException {
-
-    if (product == null || !product.getSellable()) {
-      return BigDecimal.ZERO;
-    }
-
-    price = price.multiply(product.getManagPriceCoef());
-
-    return currencyService
-        .getAmountCurrencyConvertedAtDate(
-            product.getSaleCurrency(),
-            purchaseOrder.getCurrency(),
-            price,
-            purchaseOrder.getOrderDate())
-        .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
   }
 
   @Override

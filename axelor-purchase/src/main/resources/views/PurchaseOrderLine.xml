@@ -126,7 +126,6 @@
 				<field name="exTaxTotal" colSpan="3" readonly="true"/>
 				<field name="inTaxTotal" colSpan="3" readonly="true"/>
 				<field name="fixedAssets" widget="boolean-switch"/>
-				<field name="salePrice" colSpan="3" hidden="true"/>
 				<field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
 				<panel name="descriptionPanel" title="Description" colSpan="12">
 					<field name="description" showTitle="false" colSpan="12" widget="html" x-lite="true"/>
