@@ -11,6 +11,7 @@
 - MOVE LINE : removed the possibility to delete a move line in a move when the move line is reconcile.
 - FIXED ASSET : correction of prorata temporis
 - INVOICE : now the date verification of the ventilation process depends of invoices of the same company.
+- SUPPLIER INVOICE : fix the problem of amount not updated in supplier invoice after use of mass invoice payment function.
 
 ## [5.1.14] - 2020-01-17
 ## Improvements
