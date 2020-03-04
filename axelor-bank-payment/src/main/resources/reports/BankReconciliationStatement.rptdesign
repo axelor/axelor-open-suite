@@ -1584,12 +1584,17 @@ as UnreconcileAmountTableSupSup
                     <column id="6199">
                         <property name="suppressDuplicates">false</property>
                         <property name="textAlign">center</property>
+                        <property name="width">15%</property>
+                    </column>
+                    <column id="6888">
+                        <property name="suppressDuplicates">false</property>
+                        <property name="textAlign">center</property>
                         <property name="width">18.469cm</property>
                     </column>
                     <column id="6200">
                         <property name="suppressDuplicates">false</property>
                         <property name="textAlign">right</property>
-                        <property name="width">1.5in</property>
+                        <property name="width">15%</property>
                     </column>
                     <column id="6201">
                         <property name="textAlign">right</property>
@@ -1606,24 +1611,9 @@ as UnreconcileAmountTableSupSup
                         <property name="verticalAlign">middle</property>
                         <property name="width">6%</property>
                     </column>
-                    <row id="6204">
-                        <property name="height">0.026458333333333334cm</property>
-                        <cell id="6205">
-                            <property name="borderBottomStyle">none</property>
-                            <property name="borderLeftStyle">none</property>
-                            <property name="borderRightStyle">none</property>
-                            <property name="borderTopStyle">none</property>
-                            <property name="textAlign">center</property>
-                        </cell>
-                        <cell id="6206"/>
-                        <cell id="6207"/>
-                        <cell id="6208"/>
-                        <cell id="6209"/>
-                    </row>
                     <row id="6210">
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <property name="height">1.2964583333333333cm</property>
                         <cell id="6211">
                             <property name="borderBottomStyle">none</property>
                             <property name="borderLeftStyle">none</property>
@@ -1631,8 +1621,9 @@ as UnreconcileAmountTableSupSup
                             <property name="borderTopStyle">none</property>
                             <property name="textAlign">left</property>
                             <property name="verticalAlign">middle</property>
-                            <text id="6760">
-                                <property name="fontSize">8pt</property>
+                            <image id="4733">
+                                <property name="height">44px</property>
+                                <property name="width">107px</property>
                                 <property name="dataSet">AccountingReportDS</property>
                                 <list-property name="visibility">
                                     <structure>
@@ -1641,6 +1632,12 @@ as UnreconcileAmountTableSupSup
                                     </structure>
                                 </list-property>
                                 <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">logo_path</property>
+                                        <text-property name="displayName">logo_path</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
                                     <structure>
                                         <property name="name">company_name</property>
                                         <text-property name="displayName">company_name</text-property>
@@ -1658,12 +1655,6 @@ as UnreconcileAmountTableSupSup
                                         <text-property name="displayName">report_date_edition</text-property>
                                         <expression name="expression" type="javascript">dataSetRow["report_date_edition"]</expression>
                                         <property name="dataType">date-time</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">logo_path</property>
-                                        <text-property name="displayName">logo_path</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                                        <property name="dataType">string</property>
                                     </structure>
                                     <structure>
                                         <property name="name">currencycode</property>
@@ -1684,15 +1675,18 @@ as UnreconcileAmountTableSupSup
                                         <property name="dataType">integer</property>
                                     </structure>
                                 </list-property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                            </text>
+                                <property name="source">file</property>
+                                <property name="proportionalScale">true</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                            </image>
+                        </cell>
+                        <cell id="6887">
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                            <property name="textAlign">left</property>
+                            <property name="verticalAlign">middle</property>
                         </cell>
                         <cell id="6213">
                             <property name="verticalAlign">middle</property>
