@@ -91,13 +91,13 @@ public class TrainingRegisterController {
       trainingSaved = trainingRegisterSaved.getTraining();
     }
 
-    if (trainingSaved != null && trainingSaved.getId() != trainingRegister.getTraining().getId()) {
+    if (trainingSaved != null && trainingSaved.getId().equals(trainingRegister.getTraining().getId())) {
       trainingRegisterService.updateTrainingRating(trainingSaved, trainingRegister.getId());
     }
 
     if (trainingSessionSaved != null) {
       if (trainingRegister.getTrainingSession() == null
-          || trainingRegister.getTrainingSession().getId() != trainingSessionSaved.getId()) {
+          || trainingRegister.getTrainingSession().getId().equals(trainingSessionSaved.getId())) {
         trainingRegisterService.updateSessionRating(trainingSessionSaved, trainingRegister.getId());
       }
     }
