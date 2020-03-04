@@ -11,9 +11,11 @@
 - Fix Timesheet Reminder Batch sendReminder method
 - Stock Move Line reservation: correctly set qty requested flag when generated from a sale order line.
 - Stock Move: Delete empty date field in form view.
+<<<<<<< HEAD
 - Advance data import: Fix search issue on main object to import.
 - LEAD : removed the persistable field on the form view
 - LEAVEREQUEST : Fix the NPE when no leaveRequest is selected to be edited
+- MANUFACTURING ORDER : On consumed product, no longer diplay tracking numbers if avaible quantity equals 0.
 
 ## [5.3.0] - 2020-02-25
 ## Features

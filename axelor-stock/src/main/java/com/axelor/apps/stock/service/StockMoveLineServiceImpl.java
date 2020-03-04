@@ -1194,14 +1194,14 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
   public List<TrackingNumber> getAvailableTrackingNumbers(
       StockMoveLine stockMoveLine, StockMove stockMove) {
-    List<TrackingNumber> trackingNumbers = null;
     String domain =
         "self.product.id = "
             + stockMoveLine.getProduct().getId()
-            + " AND self.id in (select stockLocationLine.trackingNumber.id from StockLocationLine stockLocationLine join StockLocation sl on sl.id = stockLocationLine.detailsStockLocation.id WHERE sl.id = "
+            + " AND self.id in (select stockLocationLine.trackingNumber.id from StockLocationLine stockLocationLine"
+            + " join StockLocation sl on sl.id = stockLocationLine.detailsStockLocation.id WHERE sl.id = "
             + stockMove.getFromStockLocation().getId()
-            + " )";
-    trackingNumbers = trackingNumberRepo.all().filter(domain).fetch();
+            + " AND coalesce(stockLocationLine.currentQty, 0) != 0)";
+    List<TrackingNumber> trackingNumbers = trackingNumberRepo.all().filter(domain).fetch();
     return trackingNumbers;
   }
 
