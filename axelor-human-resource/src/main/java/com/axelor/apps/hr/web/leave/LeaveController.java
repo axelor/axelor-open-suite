@@ -106,7 +106,7 @@ public class LeaveController {
     try {
       Map<String, Object> leaveMap = (Map<String, Object>) request.getContext().get("leaveSelect");
       if (leaveMap == null) {
-        response.setError("Please select a Leave request to edit");
+        response.setError(I18n.get("Select the leave request you want to edit"));
       } else {
         Long leaveId = Long.valueOf(leaveMap.get("id").toString());
 
