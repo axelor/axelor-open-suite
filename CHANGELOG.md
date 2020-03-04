@@ -23,6 +23,7 @@
 - LEAVE REQUEST : Fix the NPE when no leaveRequest is selected to be edited
 - AccountChartService : BLOCKER - line 99
 - PROJECT : Remove unnecessary code.
+- SUPPLIER INVOICE : fix the problem of amount not updated in supplier invoice after use of mass invoice payment function.
 
 ## [5.2.5] - 2020-02-25
 ## Improvements
