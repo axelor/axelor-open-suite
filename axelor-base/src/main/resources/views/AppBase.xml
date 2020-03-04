@@ -72,7 +72,7 @@
 			<panel name="global-tracking-configuration-wizard-panel" title="Global tracking configuration" colSpan="12">
 				<panel name="global-tracking-configuration-sub-panel" title="Logs configuration">
 					<field name="globalTrackingLogPersistence"/>
-					<button name="cleanBtn" title="Clean logs manualy" onClick="save,action-method-clean-global-tracking-logs"/>			
+					<button name="cleanBtn" title="Clean logs manually" onClick="save,action-method-clean-global-tracking-logs"/>			
 				</panel>
 			</panel>
 		</panel-tabs>
