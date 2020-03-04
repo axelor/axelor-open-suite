@@ -1,6 +1,5 @@
 # Changelog
 ## [Unreleased 5.3.1]
-
 ## Improvements
 - InvoiceLine: add fields in advanced search.
 - LEAVE REQUEST : Allow sending a leave request in the past.
@@ -14,6 +13,7 @@
 - Stock Move: Delete empty date field in form view.
 - Advance data import: Fix search issue on main object to import.
 - LEAD : removed the persistable field on the form view
+- LEAVEREQUEST : Fix the NPE when no leaveRequest is selected to be edited
 
 ## [5.3.0] - 2020-02-25
 ## Features
