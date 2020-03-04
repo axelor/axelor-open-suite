@@ -2,7 +2,7 @@
 ## [Unreleased 5.2.6]
 ## Feature
 - Workflow : Add support to select real status fields.
-- STOCK CONFIG : add three fields in stock move printing setting
+- STOCK CONFIG : Added three boolean fields so as to whether display product code, price, order reference and date in stock move report
 - SaleOrderLine/PurchaseOrderLine : Added transient boolean field to freeze price,qty,productName
 
 ## Improvements
