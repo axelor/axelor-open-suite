@@ -3,12 +3,17 @@
 ## Improvements
 - InvoiceLine: add fields in advanced search.
 - LEAVE REQUEST : Allow sending a leave request in the past.
+- CUSTOMER INFORMATIONS : Indicate that Payment delay is in days
+- INVOICES DASHBOARD: Turnover is now calculated using both sales and assets
+- PRODUCT : Quantity field digits length is now based on nbDecimalDigitForQty in Base Config
 
 ## Bug Fixes
 - Fix Timesheet Reminder Batch sendReminder method
 - Stock Move Line reservation: correctly set qty requested flag when generated from a sale order line.
+- Stock Move: Delete empty date field in form view.
+- Advance data import: Fix search issue on main object to import.
+- LEAD : removed the persistable field on the form view
 - LEAVEREQUEST : Fix the NPE when no leaveRequest is selected to be edited
-
 
 ## [5.3.0] - 2020-02-25
 ## Features
@@ -60,6 +65,7 @@
 - SEQUENCE: enable tracking for most fields.
 - BANK ORDER: Bank order workflow pass from draft to validated when automatic transmission is not activated in payment mode.
 - INVOICE: add specific note of company bank details on invoice report.
+- SUPPLYCHAIN : In stock-detail-by-product menu, company field now autofill with the user's active company.
 
 ## Bug Fixes
 - Studio: Fix access to json fields of base model in chart builder form.
