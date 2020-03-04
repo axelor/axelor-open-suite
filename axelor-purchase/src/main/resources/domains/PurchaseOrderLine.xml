@@ -44,7 +44,7 @@
   	
   	<boolean name="isOrdered" title="Ordered"/>
   	  	
-  	<decimal name="saleMinPrice" title="Min sale price" precision="20" scale="10"/>
+  	<decimal name="maxPurchasePrice" title="Max purchase price" precision="20" scale="10"/>
   	
 	<date name="estimatedDelivDate" title="Estim. receipt date"/>
 	<date name="desiredDelivDate" title="Desired receipt date"/>

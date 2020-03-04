@@ -9,7 +9,7 @@
 - PRODUCTION : Creation of a new object MPS Charge
 - MACHINE : Tool management
 - PRODUCTION : created buttons in product to create new bill of material and production process.
-
+- PURCHASEORDERLINE : Replaced salMinPrice per maxPurchasePrice
 
 ## Improvements
 - Production : Change in reference of machineWorkCenter from workCenter to machine.

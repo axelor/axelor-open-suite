@@ -42,7 +42,7 @@ public interface PurchaseOrderLineService {
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, TaxLine taxLine)
       throws AxelorException;
 
-  public BigDecimal getMinSalePrice(
+  public BigDecimal getPurchaseMaxPrice(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
 
   public BigDecimal getSalePrice(PurchaseOrder purchaseOrder, Product product, BigDecimal price)

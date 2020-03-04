@@ -106,13 +106,13 @@
 					<field name="unit" colSpan="3" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
 					<panel name="pricePanel" colSpan="3">
 		          		<field name="price" hidden="true" colSpan="12" onChange="action-purchase-order-line-method-onchange-price,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount">
-		            		<hilite color="danger" if=" $number(saleMinPrice) &lt; $number(salePrice)"/>
+		            		<hilite color="danger" if=" $number(maxPurchasePrice) &lt; $number(price)"/>
 		          		</field>
 		          		<field name="inTaxPrice" hidden="true" colSpan="12" onChange="action-purchase-order-line-method-onchange-intaxprice,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount">
-	            			<hilite color="danger" if=" $number(saleMinPrice) &lt; $number(salePrice)"/>
+	            			<hilite color="danger" if=" $number(maxPurchasePrice) &lt; $number(price)"/>
 		          		</field>
 		        	</panel>
-					<field name="saleMinPrice" colSpan="3" readonly="true"/>
+					<field name="maxPurchasePrice" colSpan="3" readonly="true"/>
 					<label name="minQtyNotRespectedLabel" hidden="true" colSpan="12"/>
 					<label name="multipleQtyNotRespectedLabel" hidden="true" colSpan="12"/>
 					<field name="$qtyValid" hidden="true" colSpan="12"/>
@@ -404,7 +404,7 @@
 		<attribute name="scale" for="inTaxPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="priceDiscounted" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="discountAmount" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
-		<attribute name="scale" for="saleMinPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="maxPurchasePrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		
 		<attribute name="scale" for="qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
 		<attribute name="scale" for="receivedQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
