@@ -1,11 +1,11 @@
 # Changelog
 ## [Unreleased 5.3.1]
-
 ## Improvements
 - InvoiceLine: add fields in advanced search.
 - LEAVE REQUEST : Allow sending a leave request in the past.
 - CUSTOMER INFORMATIONS : Indicate that Payment delay is in days
 - INVOICES DASHBOARD : Turnover is now calculated using both sales and assets.
+- PRODUCT : Quantity field digits length is now based on nbDecimalDigitForQty in Base Config
 - EXCEPTION ORIGIN : Refactor.
 
 ## Bug Fixes
@@ -13,6 +13,8 @@
 - Stock Move Line reservation: correctly set qty requested flag when generated from a sale order line.
 - Stock Move: Delete empty date field in form view.
 - Advance data import: Fix search issue on main object to import.
+- LEAD : removed the persistable field on the form view
+- LEAVEREQUEST : Fix the NPE when no leaveRequest is selected to be edited
 
 ## [5.3.0] - 2020-02-25
 ## Features
