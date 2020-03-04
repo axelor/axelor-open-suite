@@ -130,7 +130,7 @@
         		<field name="product.isPrototype" hidden="true"/>
 				<field name="product" canEdit="false" onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="product-grid" if="!__config__.app.isApp('supplychain')"/>
 				<field name="product" canEdit="false" onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="stock-move-line-product-grid" if="__config__.app.isApp('supplychain')"/>
-				<field name="enableFreezeFields" colSpan="2"/>
+				<field name="enableFreezeFields" widget="boolean-switch" colSpan="2"/>
 				<field name="typeSelect" colSpan="2" onChange="action-sale-order-line-method-empty-line,action-sale-order-attrs-hide-ati" selection-in="[0,1]"/>
 				<field name="packPriceSelect" showIf="typeSelect == 2 &amp;&amp; product != null" colSpan="4" onChange="action-group-sale-order-line-pack-price-select-onchange"  if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())" />
 				<field name="productName" colSpan="12"/>

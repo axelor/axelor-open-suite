@@ -60,7 +60,7 @@
   	
   	<boolean name="isTitleLine" title="Title Line"/>
   	
-  	<boolean name="enableFreezeFields" transient="true" title="Freeze fields"/>
+  	<boolean name="enableFreezeFields" title="Freeze fields" default="false"/>
   	
   </entity>
 
