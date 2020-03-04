@@ -32,7 +32,7 @@
 - ACCOUNT CONFIG: change the place of invoice automatic mail and invoice message template in account config.
 - ACCOUNTING REPORT: group by and subtotal of analyticDistributionTemplate.
 - INVOICE: created new field payment date in invoice in order to use it in advance search.
-
+- EBICSPARTNER : mass update on testMode
 
 ## Bug Fixes
 - MANUF ORDER: Display sale order comment in manufacturing order printing.
