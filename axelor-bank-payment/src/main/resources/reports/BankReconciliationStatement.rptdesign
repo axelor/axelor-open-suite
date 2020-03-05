@@ -1615,15 +1615,16 @@ as UnreconcileAmountTableSupSup
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <cell id="6211">
+                            <property name="colSpan">2</property>
+                            <property name="rowSpan">1</property>
                             <property name="borderBottomStyle">none</property>
                             <property name="borderLeftStyle">none</property>
                             <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
                             <property name="textAlign">left</property>
                             <property name="verticalAlign">middle</property>
-                            <image id="4733">
-                                <property name="height">44px</property>
-                                <property name="width">107px</property>
+                            <text id="4245">
+                                <property name="fontSize">8pt</property>
                                 <property name="dataSet">AccountingReportDS</property>
                                 <list-property name="visibility">
                                     <structure>
@@ -1639,30 +1640,6 @@ as UnreconcileAmountTableSupSup
                                         <property name="dataType">string</property>
                                     </structure>
                                     <structure>
-                                        <property name="name">company_name</property>
-                                        <text-property name="displayName">company_name</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["company_name"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">report_date</property>
-                                        <text-property name="displayName">report_date</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
-                                        <property name="dataType">date</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">report_date_edition</property>
-                                        <text-property name="displayName">report_date_edition</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["report_date_edition"]</expression>
-                                        <property name="dataType">date-time</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">currencycode</property>
-                                        <text-property name="displayName">currencycode</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["currencycode"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
                                         <property name="name">logo_height</property>
                                         <text-property name="displayName">logo_height</text-property>
                                         <expression name="expression" type="javascript">dataSetRow["logo_height"]</expression>
@@ -1675,18 +1652,15 @@ as UnreconcileAmountTableSupSup
                                         <property name="dataType">integer</property>
                                     </structure>
                                 </list-property>
-                                <property name="source">file</property>
-                                <property name="proportionalScale">true</property>
-                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
-                            </image>
-                        </cell>
-                        <cell id="6887">
-                            <property name="borderBottomStyle">none</property>
-                            <property name="borderLeftStyle">none</property>
-                            <property name="borderRightStyle">none</property>
-                            <property name="borderTopStyle">none</property>
-                            <property name="textAlign">left</property>
-                            <property name="verticalAlign">middle</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<TABLE>
+	<TR>
+		<VALUE-OF format="HTML">
+			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
+		</VALUE-OF>
+	</TR>
+</TABLE>]]></text-property>
+                            </text>
                         </cell>
                         <cell id="6213">
                             <property name="verticalAlign">middle</property>
