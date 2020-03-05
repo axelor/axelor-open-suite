@@ -15,6 +15,7 @@
 - Production : Change in reference of machineWorkCenter from workCenter to machine.
 - MANUF ORDER : Print residual products on report and add panel of residual products
 - MPS/MRP : title before sequence to change depending on typeSelect
+- SALES DASHBOARD : Added multiple charts : turnover per customer, per company and per product per company
 
 ## Bug Fixes
 - Production : Fix Java Heap Error.

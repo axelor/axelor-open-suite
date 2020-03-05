@@ -660,6 +660,72 @@
 		<series key="_amount" type="donut" title="Turnover"/>
 	</chart>
 	
+	<chart onInit="action.sale.chart.set.date" name="chart.sale.turnover.per.customer" title="Turnover per customer">
+		<search-fields>
+			<field type="date" name="fromDate" title="From Date" x-required="true"/>
+			<field type="date" name="toDate" title="To Date" x-required="true"/>
+		</search-fields>
+		<dataset type="jpql">
+			SELECT
+		    	SUM(self.exTaxTotal) AS _amount,
+		    	self.saleOrder.clientPartner.simpleFullName AS _partner
+		    FROM
+		    	SaleOrderLine self
+		    WHERE
+			    self.saleOrder.statusSelect in (3,4)
+			    AND self.saleOrder.confirmationDateTime BETWEEN DATE(:fromDate) AND DATE(:toDate)
+			    AND self.saleOrder.company = :activeCompany
+		    GROUP BY
+		    	self.saleOrder.clientPartner.simpleFullName
+		</dataset>
+		<category key="_partner" type="text" title="Partner"/>
+		<series key="_amount" type="donut" title="Turnover"/>
+	</chart>
+	
+	<chart onInit="action.sale.chart.set.date" name="chart.sale.turnover.per.company" title="Turnover per company">
+		<search-fields>
+			<field type="date" name="fromDate" title="From Date" x-required="true"/>
+			<field type="date" name="toDate" title="To Date" x-required="true"/>
+		</search-fields>
+		<dataset type="jpql">
+			SELECT
+		    	SUM(self.exTaxTotal) AS _amount,
+		    	self.saleOrder.company.name AS _company
+		    FROM
+		    	SaleOrderLine self
+		    WHERE
+			    self.saleOrder.statusSelect in (3,4)
+			    AND self.saleOrder.confirmationDateTime BETWEEN DATE(:fromDate) AND DATE(:toDate)
+		    GROUP BY
+		    	self.saleOrder.company.name
+		</dataset>
+		<category key="_company" type="text" title="Company"/>
+		<series key="_amount" type="bar" title="Turnover"/>
+	</chart>
+	
+	<chart onInit="action.sale.chart.set.date" name="chart.sale.turnover.per.product.per.company" title="Turnover per product per company" stacked="true">
+		<search-fields>
+			<field type="date" name="fromDate" title="From Date" x-required="true"/>
+			<field type="date" name="toDate" title="To Date" x-required="true"/>
+		</search-fields>
+		 <dataset type="jpql">
+			SELECT
+		    	SUM(self.exTaxTotal) AS _amount,
+		    	self.saleOrder.company.name AS _company,
+				self.product.name AS _product
+		    FROM
+		    	SaleOrderLine self
+		    WHERE
+			    self.saleOrder.statusSelect in (3,4)
+			    AND self.saleOrder.confirmationDateTime BETWEEN DATE(:fromDate) AND DATE(:toDate)
+		    GROUP BY
+		    	self.saleOrder.company.name, self.product.name
+
+   		</dataset>
+		<category key="_company" type="text" title="Company"/>
+		<series key="_amount" groupBy="_product" type="bar" title="Turnover"/>
+	</chart>
+	
 	<chart onInit="action.sale.chart.set.date" name="chart.sale.turnover.per.customer.category" title="Turnover per customer category">
 		<search-fields>
 			<field type="date" name="fromDate" title="From Date" x-required="true"/>
