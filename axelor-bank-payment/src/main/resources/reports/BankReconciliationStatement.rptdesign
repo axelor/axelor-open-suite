@@ -1531,7 +1531,8 @@ as UnreconcileAmountTableSupSup
             <property name="orientation">landscape</property>
             <property name="showHeaderOnFirst">true</property>
             <property name="showFooterOnLast">true</property>
-            <property name="headerHeight">0in</property>
+            <property name="headerHeight">0cm</property>
+            <property name="footerHeight">0.5in</property>
             <page-footer>
                 <grid id="6198">
                     <property name="height">0.625in</property>
@@ -1584,12 +1585,10 @@ as UnreconcileAmountTableSupSup
                     <column id="6199">
                         <property name="suppressDuplicates">false</property>
                         <property name="textAlign">center</property>
-                        <property name="width">15%</property>
                     </column>
                     <column id="6888">
                         <property name="suppressDuplicates">false</property>
                         <property name="textAlign">center</property>
-                        <property name="width">18.469cm</property>
                     </column>
                     <column id="6200">
                         <property name="suppressDuplicates">false</property>
@@ -1612,6 +1611,7 @@ as UnreconcileAmountTableSupSup
                         <property name="width">6%</property>
                     </column>
                     <row id="6210">
+                        <property name="fontSize">12pt</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <cell id="6211">
@@ -1622,7 +1622,6 @@ as UnreconcileAmountTableSupSup
                             <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
                             <property name="textAlign">left</property>
-                            <property name="verticalAlign">middle</property>
                             <text id="4245">
                                 <property name="fontSize">8pt</property>
                                 <property name="dataSet">AccountingReportDS</property>
@@ -1719,6 +1718,7 @@ as UnreconcileAmountTableSupSup
                         <cell id="6216">
                             <auto-text id="6217">
                                 <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">10pt</property>
                                 <property name="textAlign">right</property>
                                 <property name="type">page-number</property>
                             </auto-text>
@@ -1726,6 +1726,7 @@ as UnreconcileAmountTableSupSup
                         <cell id="6218">
                             <text id="6219">
                                 <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">10pt</property>
                                 <property name="textAlign">center</property>
                                 <property name="contentType">plain</property>
                                 <text-property name="content"><![CDATA[/]]></text-property>
@@ -1734,6 +1735,7 @@ as UnreconcileAmountTableSupSup
                         <cell id="6220">
                             <auto-text id="6221">
                                 <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">10pt</property>
                                 <property name="textAlign">left</property>
                                 <property name="type">total-page</property>
                             </auto-text>
