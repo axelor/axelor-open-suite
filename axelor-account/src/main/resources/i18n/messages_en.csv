@@ -314,6 +314,8 @@
 "AccountingReportType17.residual_value","Net carrying amount",,
 "AccountingReportType17.title","Summary of gross values and depreciation",,
 "AccountingReportType17.to","To",,
+"AccountingReportType17.total_by_account_and_analytic_template","Total by account and analytic template",,
+"AccountingReportType17.total_by_analytic_template","Total by analytic template",,
 "AccountingReportType17.year","Year",,
 "AccountingReportType17.year_end_value","Year-end values",,
 "AccountingReportType17.year_start_value","Year-start values",,
