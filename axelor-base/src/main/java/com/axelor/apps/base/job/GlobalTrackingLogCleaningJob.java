@@ -1,11 +1,10 @@
 package com.axelor.apps.base.job;
 
-import org.quartz.JobExecutionContext;
-
 import com.axelor.apps.admin.service.GlobalTrackingLogService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import org.quartz.JobExecutionContext;
 
 public class GlobalTrackingLogCleaningJob extends ThreadedJob {
 

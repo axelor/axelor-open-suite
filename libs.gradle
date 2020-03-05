@@ -1,7 +1,5 @@
 def libs = ext.libs = [:]
 
-libs.axelor_web = 'com.axelor:axelor-web:5.3.+'
-
 libs.bcpkix_jdk15on = 'org.bouncycastle:bcpkix-jdk15on:1.62'
 libs.bcprov_jdk15on = 'org.bouncycastle:bcprov-jdk15on:1.62'
 

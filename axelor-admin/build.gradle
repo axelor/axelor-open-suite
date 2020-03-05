@@ -15,8 +15,6 @@ axelor {
 dependencies {
 	api project(":modules:axelor-exception")
 	api project(":modules:axelor-tool")
-
-  	implementation libs.axelor_web
 }
 
 def updateJsp(jspFile, check, lines) {
