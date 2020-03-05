@@ -314,6 +314,8 @@
 "AccountingReportType17.residual_value",,,
 "AccountingReportType17.title",,,
 "AccountingReportType17.to",,,
+"AccountingReportType17.total_by_account_and_analytic_template",,,
+"AccountingReportType17.total_by_analytic_template",,,
 "AccountingReportType17.year",,,
 "AccountingReportType17.year_end_value",,,
 "AccountingReportType17.year_start_value",,,
