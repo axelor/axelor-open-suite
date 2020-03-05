@@ -314,6 +314,8 @@
 "AccountingReportType17.residual_value","Valeur nette comptable",,
 "AccountingReportType17.title","Synthèse des valeurs brutes et des amortissements",,
 "AccountingReportType17.to","Au",,
+"AccountingReportType17.total_by_account_and_analytic_template","Total par compte et modèle de répartition analytique",,
+"AccountingReportType17.total_by_analytic_template","Total du modèle de répartition analytique",,
 "AccountingReportType17.year","Année",,
 "AccountingReportType17.year_end_value","Val. fin d'exercice",,
 "AccountingReportType17.year_start_value","Val. début d'exercice",,
