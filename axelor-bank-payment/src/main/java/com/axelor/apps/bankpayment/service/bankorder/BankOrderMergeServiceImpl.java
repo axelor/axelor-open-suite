@@ -34,6 +34,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -46,6 +47,8 @@ import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -284,7 +287,14 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
     String lastReferenceId = "";
     LocalDate lastReferenceDate = null;
 
-    for (BankOrderLineOrigin bankOrderLineOrigin : bankOrderLine.getBankOrderLineOriginList()) {
+    List<BankOrderLineOrigin> orderByDateBankOrderLineOriginList =
+        bankOrderLine.getBankOrderLineOriginList();
+
+    Collections.sort(
+        orderByDateBankOrderLineOriginList,
+        Comparator.comparing(BankOrderLineOrigin::getRelatedToSelectDate));
+
+    for (BankOrderLineOrigin bankOrderLineOrigin : orderByDateBankOrderLineOriginList) {
       LocalDate originDate = null;
       String originReferenceId = null;
 
@@ -321,7 +331,8 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
       }
     }
 
-    return Pair.of(StringUtils.chop(lastReferenceId), lastReferenceDate);
+    return Pair.of(
+        StringTool.truncRight(StringUtils.chop(lastReferenceId), 255), lastReferenceDate);
   }
 
   @Override
