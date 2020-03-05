@@ -112,4 +112,12 @@ public class StockMoveController {
       response.setReload(true);
     }
   }
+
+  public void notRemoveAllocatedStockMoveLine(ActionRequest request, ActionResponse response) {
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+    if (Beans.get(StockMoveServiceSupplychain.class).isAddAllocatedStockMoveLine(stockMove)) {
+      response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
+      response.setNotify(I18n.get(IExceptionMessage.ALLOCATED_STOCK_MOVE_LINE_NOT_DELETED));
+    }
+  }
 }
