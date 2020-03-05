@@ -38,8 +38,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import org.apache.commons.io.FileUtils;
-import org.apache.tika.detect.AutoDetectReader;
-import org.apache.tika.exception.TikaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,11 +67,10 @@ public class DMSImportWizardServiceImpl implements DMSImportWizardService {
   }
 
   private ZipInputStream validateZip(File file) throws AxelorException {
-    try (AutoDetectReader autoDetectReader = new AutoDetectReader(new FileInputStream(file));
-        ZipInputStream zis =
-            new ZipInputStream(new FileInputStream(file), autoDetectReader.getCharset())) {
+    try (ZipInputStream zis =
+        new ZipInputStream(new FileInputStream(file), MetaFiles.detectEncoding(file))) {
       return zis;
-    } catch (IOException | TikaException e) {
+    } catch (IOException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.DMS_IMPORT_INVALID_ZIP_ERROR));
