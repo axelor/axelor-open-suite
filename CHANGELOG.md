@@ -24,6 +24,7 @@
 - AccountChartService : BLOCKER - line 99
 - PROJECT : Remove unnecessary code.
 - SUPPLIER INVOICE : fix the problem of amount not updated in supplier invoice after use of mass invoice payment function.
+- Project : Resolve issue in computation of timespent
 - TALENT : Use BigDecimal.valueOf(double) instead of new BigDecimal(double) in TrainingRegisterServiceImpl.
 
 ## [5.2.5] - 2020-02-25
