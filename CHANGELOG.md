@@ -6,6 +6,7 @@
 - CUSTOMER INFORMATIONS : Indicate that Payment delay is in days
 - INVOICES DASHBOARD: Turnover is now calculated using both sales and assets
 - PRODUCT : Quantity field digits length is now based on nbDecimalDigitForQty in Base Config
+- MASS INVOICING : When generating one invoice from two or more stock moves, invoices lines are sorted by strock move.
 
 ## Bug Fixes
 - Fix Timesheet Reminder Batch sendReminder method
