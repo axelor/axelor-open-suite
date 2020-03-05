@@ -39,6 +39,7 @@ import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -417,5 +418,31 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       }
     }
     return newStockMove;
+  }
+
+  @Override
+  public boolean isAddAllocatedStockMoveLine(StockMove stockMove) {
+
+    StockMove StoredStockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
+    Boolean isAllocatedStockMoveLine = false;
+    if (ObjectUtils.notEmpty(StoredStockMove)) {
+      List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+      List<StockMoveLine> StoredStockMoveLineList = StoredStockMove.getStockMoveLineList();
+      if (stockMoveLineList != null && StoredStockMoveLineList != null) {
+        for (StockMoveLine stockMoveLine : StoredStockMoveLineList) {
+          if (Beans.get(StockMoveLineServiceSupplychain.class)
+                  .isAllocatedStockMoveLine(stockMoveLine)
+              && !stockMoveLineList.contains(stockMoveLine)) {
+            stockMoveLineList.add(stockMoveLine);
+            isAllocatedStockMoveLine = true;
+          }
+          if (isAllocatedStockMoveLine) {
+            stockMove.setStockMoveLineList(stockMoveLineList);
+          }
+        }
+      }
+    }
+
+    return isAllocatedStockMoveLine;
   }
 }
