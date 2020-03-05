@@ -20,6 +20,7 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.db.DataConfigLine;
 import com.axelor.apps.base.db.ObjectDataConfig;
 import com.axelor.apps.base.db.ObjectDataConfigExport;
+import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.common.Inflector;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
@@ -231,7 +232,7 @@ public class ObjectDataExportServiceImpl implements ObjectDataExportService {
 
       for (String model : data.keySet()) {
         File modelFile = MetaFiles.createTempFile(model, ".csv").toFile();
-        CSVWriter writer = new CSVWriter(new FileWriter(modelFile), ';');
+        CSVWriter writer = CsvTool.newCSVWriter(new FileWriter(modelFile), ';');
         writer.writeAll(data.get(model));
         writer.close();
         zout.putNextEntry(new ZipEntry(model + ".csv"));

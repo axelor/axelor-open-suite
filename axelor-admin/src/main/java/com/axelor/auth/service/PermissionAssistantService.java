@@ -18,6 +18,7 @@
 package com.axelor.auth.service;
 
 import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.IMessage;
 import com.axelor.auth.db.Permission;
@@ -47,6 +48,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
+import com.opencsv.exceptions.CsvException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -126,7 +128,7 @@ public class PermissionAssistantService {
 
       try (FileWriterWithEncoding fileWriter =
           new FileWriterWithEncoding(permFile, StandardCharsets.UTF_8)) {
-        CSVWriter csvWriter = new CSVWriter(fileWriter, ';');
+        CSVWriter csvWriter = CsvTool.newCSVWriter(fileWriter, ';');
         writeGroup(csvWriter, assistant);
       }
 
@@ -409,7 +411,7 @@ public class PermissionAssistantService {
       File csvFile = MetaFiles.getPath(metaFile).toFile();
 
       try (CSVReader csvReader =
-          new CSVReader(
+          CsvTool.newCSVReader(
               new InputStreamReader(new FileInputStream(csvFile), StandardCharsets.UTF_8), ';')) {
 
         String[] groupRow = csvReader.readNext();
@@ -540,7 +542,7 @@ public class PermissionAssistantService {
       Map<String, Group> groupMap,
       MetaField field,
       Boolean fieldBoolean)
-      throws IOException {
+      throws IOException, CsvException {
 
     Map<String, MetaPermission> metaPermDict = new HashMap<String, MetaPermission>();
     String objectName = null;
@@ -582,7 +584,7 @@ public class PermissionAssistantService {
       Map<String, Role> roleMap,
       MetaField field,
       Boolean fieldPermission)
-      throws IOException {
+      throws IOException, CsvException {
 
     Map<String, MetaPermission> metaPermDict = new HashMap<String, MetaPermission>();
     String objectName = null;

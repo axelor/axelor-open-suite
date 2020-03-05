@@ -18,6 +18,7 @@
 package com.axelor.meta.service;
 
 import com.axelor.app.internal.AppFilter;
+import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.IMessage;
 import com.axelor.auth.db.Role;
@@ -37,6 +38,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
+import com.opencsv.exceptions.CsvException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -121,7 +123,7 @@ public class MetaGroupMenuAssistantService {
       addGroupAccess(rows);
 
       try (CSVWriter csvWriter =
-              new CSVWriter(new FileWriterWithEncoding(groupMenuFile, "utf-8"), ';');
+              CsvTool.newCSVWriter(new FileWriterWithEncoding(groupMenuFile, "utf-8"), ';');
           FileInputStream fis = new FileInputStream(groupMenuFile)) {
         csvWriter.writeAll(rows);
 
@@ -134,7 +136,7 @@ public class MetaGroupMenuAssistantService {
   }
 
   private List<String[]> createHeader(MetaGroupMenuAssistant groupMenuAssistant)
-      throws IOException {
+      throws IOException, CsvException {
 
     MetaFile metaFile = groupMenuAssistant.getMetaFile();
     List<String[]> rows = new ArrayList<String[]>();
@@ -143,7 +145,7 @@ public class MetaGroupMenuAssistantService {
       logger.debug("File name: {}", csvFile.getAbsolutePath());
       logger.debug("File length: {}", csvFile.length());
       try (CSVReader csvReader =
-          new CSVReader(
+          CsvTool.newCSVReader(
               new InputStreamReader(new FileInputStream(csvFile), StandardCharsets.UTF_8), ';')) {
         rows = csvReader.readAll();
         logger.debug("Rows size: {}", rows.size());
@@ -299,7 +301,7 @@ public class MetaGroupMenuAssistantService {
   public String importGroupMenu(MetaGroupMenuAssistant groupMenuAssistant) {
 
     try (CSVReader csvReader =
-        new CSVReader(
+        CsvTool.newCSVReader(
             new InputStreamReader(
                 new FileInputStream(MetaFiles.getPath(groupMenuAssistant.getMetaFile()).toFile()),
                 StandardCharsets.UTF_8),

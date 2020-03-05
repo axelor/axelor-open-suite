@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.repo.FileFieldRepository;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.apps.base.service.readers.DataReaderFactory;
 import com.axelor.apps.base.service.readers.DataReaderService;
+import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.apps.tool.service.TranslationService;
 import com.axelor.common.Inflector;
 import com.axelor.common.StringUtils;
@@ -176,7 +177,7 @@ public class DataImportServiceImpl implements DataImportService {
       ifList = new ArrayList<String>();
 
       try (CSVWriter csvWriter =
-          new CSVWriter(new FileWriter(new File(dataDir, fileName)), CSV_SEPRATOR)) {
+          CsvTool.newCSVWriter(new FileWriter(new File(dataDir, fileName)), CSV_SEPRATOR)) {
 
         int totalLines = reader.getTotalLines(fileTab.getName());
         if (totalLines == 0) {

@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.db.repo.StreetRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -92,7 +93,7 @@ public class AddressServiceImpl implements AddressService {
     List<Address> addresses = addressRepo.all().filter("self.certifiedOk IS FALSE").fetch();
 
     CSVWriter csv =
-        new CSVWriter(new java.io.FileWriter(path), "|".charAt(0), CSVWriter.NO_QUOTE_CHARACTER);
+        CsvTool.newCSVWriter(new java.io.FileWriter(path), '|', CSVWriter.NO_QUOTE_CHARACTER);
     List<String> header = new ArrayList<>();
     header.add("Id");
     header.add("AddressL1");

@@ -17,17 +17,143 @@
  */
 package com.axelor.apps.tool.file;
 
+import com.axelor.exception.AxelorException;
+import com.opencsv.CSVParser;
+import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
 import com.opencsv.CSVWriter;
+import com.opencsv.ICSVWriter;
+import com.opencsv.exceptions.CsvException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
 import java.util.List;
 
 public final class CsvTool {
 
   private CsvTool() {}
+
+  /**
+   * Create new {@link CSVReader} with the given reader, separator, quote and escape char.
+   *
+   * @param reader the reader
+   * @param separator separator char
+   * @param quoteChar quote char
+   * @param escapeChar escape char
+   * @return new instance of {@link CSVReader}
+   */
+  public static CSVReader newCSVReader(
+      Reader reader, char separator, char quoteChar, char escapeChar) {
+    return new CSVReaderBuilder(reader)
+        .withCSVParser(
+            new CSVParserBuilder()
+                .withSeparator(separator)
+                .withQuoteChar(quoteChar)
+                .withEscapeChar(escapeChar)
+                .build())
+        .build();
+  }
+
+  /**
+   * Create new {@link CSVReader} with the given reader, separator, quote char.
+   *
+   * @param reader the reader
+   * @param separator separator char
+   * @param quoteChar quote char
+   * @return new instance of {@link CSVReader}
+   */
+  public static CSVReader newCSVReader(Reader reader, char separator, char quoteChar) {
+    return newCSVReader(reader, separator, quoteChar, CSVParser.DEFAULT_ESCAPE_CHARACTER);
+  }
+
+  /**
+   * Create new {@link CSVReader} with the given reader, separator.
+   *
+   * @param reader the reader
+   * @param separator separator char
+   * @return new instance of {@link CSVReader}
+   */
+  public static CSVReader newCSVReader(Reader reader, char separator) {
+    return newCSVReader(reader, separator, CSVParser.DEFAULT_QUOTE_CHARACTER);
+  }
+
+  /**
+   * Create new {@link CSVReader} with the given reader.
+   *
+   * @param reader the reader
+   * @return new instance of {@link CSVReader}
+   */
+  public static CSVReader newCSVReader(Reader reader) {
+    return newCSVReader(reader, CSVParser.DEFAULT_SEPARATOR);
+  }
+
+  /**
+   * Create new {@link CSVWriter} with the given writer, separator, quote, escape char and line
+   * ending.
+   *
+   * @param writer the writer
+   * @param separator separator char
+   * @param quoteChar quote char
+   * @param escapeChar escape char
+   * @param lineEnd line ending
+   * @return new instance of {@link CSVWriter}
+   */
+  public static CSVWriter newCSVWriter(
+      Writer writer, char separator, char quoteChar, char escapeChar, String lineEnd) {
+    return new CSVWriter(writer, separator, quoteChar, escapeChar, lineEnd);
+  }
+
+  /**
+   * Create new {@link CSVWriter} with the given writer, separator, quote char and line ending.
+   *
+   * @param writer the writer
+   * @param separator separator char
+   * @param quoteChar quote char
+   * @param lineEnd line ending
+   * @return new instance of {@link CSVWriter}
+   */
+  public static CSVWriter newCSVWriter(
+      Writer writer, char separator, char quoteChar, String lineEnd) {
+    return newCSVWriter(writer, separator, quoteChar, ICSVWriter.DEFAULT_ESCAPE_CHARACTER, lineEnd);
+  }
+
+  /**
+   * Create new {@link CSVWriter} with the given writer, separator, quote char.
+   *
+   * @param writer the writer
+   * @param separator separator char
+   * @param quoteChar quote char
+   * @return new instance of {@link CSVWriter}
+   */
+  public static CSVWriter newCSVWriter(Writer writer, char separator, char quoteChar) {
+    return newCSVWriter(writer, separator, quoteChar, ICSVWriter.DEFAULT_LINE_END);
+  }
+
+  /**
+   * Create new {@link CSVWriter} with the given writer, separator.
+   *
+   * @param writer the writer
+   * @param separator separator char
+   * @return new instance of {@link CSVWriter}
+   */
+  public static CSVWriter newCSVWriter(Writer writer, char separator) {
+    return newCSVWriter(writer, separator, ICSVWriter.DEFAULT_QUOTE_CHARACTER);
+  }
+
+  /**
+   * Create new {@link CSVWriter} with the given writer, separator.
+   *
+   * @param writer the writer
+   * @param separator separator char
+   * @return new instance of {@link CSVWriter}
+   */
+  public static CSVWriter newCSVWriter(Writer writer) {
+    return newCSVWriter(writer, ICSVWriter.DEFAULT_SEPARATOR);
+  }
 
   /**
    * Méthode permettant de lire le contenu d'un fichier
@@ -37,12 +163,13 @@ public final class CsvTool {
    * @throws IOException
    * @throws AxelorException
    */
-  public static List<String[]> cSVFileReader(String fileName, char separator) throws IOException {
+  public static List<String[]> cSVFileReader(String fileName, char separator)
+      throws IOException, CsvException {
 
     CSVReader reader;
     List<String[]> myEntries;
 
-    reader = new CSVReader(new FileReader(fileName), separator);
+    reader = newCSVReader(new FileReader(fileName), separator);
     myEntries = reader.readAll();
     reader.close();
 
@@ -56,7 +183,7 @@ public final class CsvTool {
       throws IOException {
 
     java.io.Writer w = new FileWriter(filePath + File.separator + fileName);
-    return new CSVWriter(w, separator, CSVWriter.NO_QUOTE_CHARACTER, "\r\n");
+    return newCSVWriter(w, separator, CSVWriter.NO_QUOTE_CHARACTER, "\r\n");
   }
 
   public static CSVWriter setCsvFile(
@@ -64,7 +191,7 @@ public final class CsvTool {
       throws IOException {
 
     java.io.Writer w = new FileWriter(filePath + File.separator + fileName);
-    return new CSVWriter(w, separator, quoteChar, "\r\n");
+    return newCSVWriter(w, separator, quoteChar, "\r\n");
   }
 
   public static void csvWriter(

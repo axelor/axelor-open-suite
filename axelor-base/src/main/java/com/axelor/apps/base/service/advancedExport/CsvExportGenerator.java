@@ -19,6 +19,7 @@ package com.axelor.apps.base.service.advancedExport;
 
 import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.AdvancedExportLine;
+import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -47,7 +48,7 @@ public class CsvExportGenerator extends AdvancedExportGenerator {
     exportFileName = advancedExport.getMetaModel().getName() + ".csv";
     try {
       exportFile = File.createTempFile(advancedExport.getMetaModel().getName(), ".csv");
-      csvWriter = new CSVWriter(new FileWriter(exportFile, true), ';');
+      csvWriter = CsvTool.newCSVWriter(new FileWriter(exportFile, true), ';');
     } catch (IOException e) {
       TraceBackService.trace(e);
       throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);

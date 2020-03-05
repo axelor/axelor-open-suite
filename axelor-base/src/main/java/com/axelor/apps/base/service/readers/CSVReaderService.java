@@ -17,9 +17,11 @@
  */
 package com.axelor.apps.base.service.readers;
 
+import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -56,13 +58,13 @@ public class CSVReaderService implements DataReaderService {
     try (FileInputStream inSteam = new FileInputStream(inFile)) {
 
       csvReader =
-          new CSVReader(
+          CsvTool.newCSVReader(
               new InputStreamReader(inSteam, StandardCharsets.UTF_8), separator.charAt(0));
       totalRows = csvReader.readAll();
       if (csvReader.getLinesRead() == 0) {
         return false;
       }
-    } catch (IOException e) {
+    } catch (IOException | CsvException e) {
       LOG.error(e.getMessage());
       return false;
     }

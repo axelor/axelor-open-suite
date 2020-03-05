@@ -20,6 +20,7 @@ package com.axelor.apps.base.service.app;
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.DataBackup;
 import com.axelor.apps.tool.date.DateTool;
+import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.common.StringUtils;
 import com.axelor.data.csv.CSVBind;
@@ -145,7 +146,7 @@ public class DataBackupCreateService {
           referenceFlag = false;
 
           CSVWriter csvWriter =
-              new CSVWriter(
+              CsvTool.newCSVWriter(
                   new FileWriter(new File(tempDirectoryPath, metaModel.getName() + ".csv")),
                   SEPARATOR,
                   QUOTE_CHAR);
