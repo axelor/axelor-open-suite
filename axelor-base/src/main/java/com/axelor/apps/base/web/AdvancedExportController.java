@@ -237,7 +237,7 @@ public class AdvancedExportController {
             parentRequest
                 .getCriteria()
                 .createQuery(klass, filter)
-                .fetchSteam(advancedExport.getMaxExportLimit());
+                .fetchStream(advancedExport.getMaxExportLimit());
         return listObj.map(it -> it.getId()).collect(Collectors.toList());
       }
     }
