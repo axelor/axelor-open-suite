@@ -91,7 +91,8 @@ public class TrainingRegisterController {
       trainingSaved = trainingRegisterSaved.getTraining();
     }
 
-    if (trainingSaved != null && trainingSaved.getId().equals(trainingRegister.getTraining().getId())) {
+    if (trainingSaved != null
+        && trainingSaved.getId().equals(trainingRegister.getTraining().getId())) {
       trainingRegisterService.updateTrainingRating(trainingSaved, trainingRegister.getId());
     }
 
