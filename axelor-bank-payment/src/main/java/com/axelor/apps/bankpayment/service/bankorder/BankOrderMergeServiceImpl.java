@@ -50,6 +50,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -291,9 +292,9 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
         case BankOrderLineOriginRepository.RELATED_TO_INVOICE:
           Invoice invoice = invoiceRepository.find(bankOrderLineOrigin.getRelatedToSelectId());
           if (!Strings.isNullOrEmpty(invoice.getSupplierInvoiceNb())) {
-            originReferenceId = invoice.getSupplierInvoiceNb();
+            originReferenceId += invoice.getSupplierInvoiceNb() + "/";
           } else {
-            originReferenceId = invoice.getInvoiceId();
+            originReferenceId += invoice.getInvoiceId() + "/";
           }
           if (!Strings.isNullOrEmpty(invoice.getSupplierInvoiceNb())) {
             originDate = invoice.getOriginDate();
@@ -305,7 +306,7 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
         case BankOrderLineOriginRepository.RELATED_TO_PAYMENT_SCHEDULE_LINE:
           PaymentScheduleLine paymentScheduleLine =
               paymentScheduleLineRepository.find(bankOrderLineOrigin.getRelatedToSelectId());
-          originReferenceId = paymentScheduleLine.getName();
+          originReferenceId += paymentScheduleLine.getName() + "/";
           originDate = paymentScheduleLine.getScheduleDate();
           break;
 
@@ -320,7 +321,7 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
       }
     }
 
-    return Pair.of(lastReferenceId, lastReferenceDate);
+    return Pair.of(StringUtils.chop(lastReferenceId), lastReferenceDate);
   }
 
   @Override
