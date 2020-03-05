@@ -41,7 +41,8 @@ libs.xalan = 'xalan:xalan:2.7.2'
 libs.xmlbeans = 'org.apache.xmlbeans:xmlbeans:2.5.0'
 libs.xmlsec = 'org.apache.santuario:xmlsec:1.4.3'
 
-libs.jaxws_api = 'javax.xml.ws:jaxws-api:2.3.1'
+libs.jaxws_api = 'jakarta.xml.ws:jakarta.xml.ws-api:2.3.2'
+libs.jaxws_runtime = 'com.sun.xml.ws:jaxws-ri:2.3.2'
 
 libs.jaxb_api = 'javax.xml.bind:jaxb-api:2.2.2'
 libs.jaxb_impl = 'com.sun.xml.bind:jaxb-impl:2.2.2'

@@ -25,6 +25,7 @@ dependencies {
 
 	compileOnly libs.jaxws_api
 	compileOnly libs.jaxb_api
-
+  
+    implementation libs.jaxws_runtime
 	implementation libs.jaxb_impl
 }
