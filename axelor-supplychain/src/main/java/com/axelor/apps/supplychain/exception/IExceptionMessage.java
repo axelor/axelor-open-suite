@@ -247,4 +247,7 @@ public interface IExceptionMessage {
 
   static final String SALE_ORDER_COMPLETE_MANUALLY = /*$$(*/
       "There is at least one draft or planned stock move for this sale order." /*)*/;
+
+  public static final String ALLOCATED_STOCK_MOVE_LINE_DELETED_ERROR = /*$$(*/
+      "It is not possible to delete a stock move line with allocated or reserved quantity." /*)*/;
 }

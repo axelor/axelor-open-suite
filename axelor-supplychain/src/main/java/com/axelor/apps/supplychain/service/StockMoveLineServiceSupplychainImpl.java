@@ -477,4 +477,10 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       stockMoveLine.setAvailableStatusSelect(1);
     }
   }
+
+  @Override
+  public boolean isAllocatedStockMoveLine(StockMoveLine stockMoveLine) {
+    return stockMoveLine.getReservedQty().compareTo(BigDecimal.ZERO) > 0
+        || stockMoveLine.getRequestedReservedQty().compareTo(BigDecimal.ZERO) > 0;
+  }
 }
