@@ -8,6 +8,7 @@
 - PRODUCT : Quantity field digits length is now based on nbDecimalDigitForQty in Base Config
 - TIMESHEET PRINTING : Manage visibility for task and activity column
 - STUDIO : Add panel on custom model demo data
+- ACCOUNTING REPORT : add account filter to summary and gross value report.
 
 ## Bug Fixes
 - Fix Timesheet Reminder Batch sendReminder method
