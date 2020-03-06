@@ -18,6 +18,7 @@
 - LEAD : removed the persistable field on the form view
 - LEAVEREQUEST : Fix the NPE when no leaveRequest is selected to be edited
 - Project : Resolve issue in computation of timespent
+- TimesheetLine : Fill duration on data import
 
 ## [5.3.0] - 2020-02-25
 ## Features
