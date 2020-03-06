@@ -53,11 +53,11 @@ public class SaleOrderMarginServiceImpl implements SaleOrderMarginService {
           marginRate =
               totalGrossProfit
                   .multiply(new BigDecimal(100))
-                  .divide(accountedRevenue, RoundingMode.HALF_EVEN);
+                  .divide(accountedRevenue, 2, RoundingMode.HALF_EVEN);
           markup =
               totalGrossProfit
                   .multiply(new BigDecimal(100))
-                  .divide(totalCostPrice, RoundingMode.HALF_EVEN);
+                  .divide(totalCostPrice, 2, RoundingMode.HALF_EVEN);
         }
       }
     }
