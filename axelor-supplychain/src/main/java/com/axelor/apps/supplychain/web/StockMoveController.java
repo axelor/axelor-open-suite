@@ -87,11 +87,13 @@ public class StockMoveController {
     }
   }
 
-  public void notRemoveAllocatedStockMoveLine(ActionRequest request, ActionResponse response) {
+  public void isAllocatedStockMoveLineRemoved(ActionRequest request, ActionResponse response) {
     StockMove stockMove = request.getContext().asType(StockMove.class);
-    if (Beans.get(StockMoveServiceSupplychain.class).isAddAllocatedStockMoveLine(stockMove)) {
+    if (stockMove.getId() != null
+        && Beans.get(StockMoveServiceSupplychain.class)
+            .isAllocatedStockMoveLineRemoved(stockMove)) {
       response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
-      response.setNotify(I18n.get(IExceptionMessage.ALLOCATED_STOCK_MOVE_LINE_NOT_DELETED));
+      response.setNotify(I18n.get(IExceptionMessage.ALLOCATED_STOCK_MOVE_LINE_DELETED_ERROR));
     }
   }
 }

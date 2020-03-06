@@ -32,5 +32,5 @@ public interface StockMoveServiceSupplychain {
 
   void verifyProductStock(StockMove stockMove) throws AxelorException;
 
-  public boolean isAddAllocatedStockMoveLine(StockMove stockMove);
+  public boolean isAllocatedStockMoveLineRemoved(StockMove stockMove);
 }

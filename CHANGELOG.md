@@ -10,6 +10,7 @@
 - STUDIO : Add panel on custom model demo data
 - ACCOUNTING REPORT : add account filter to summary and gross value report.
 - Accounting Config : clarifying the field lineMinBeforeLongReportGenerationMessageNumber
+- Stock Move Line : Do not allow user to remove allocated stock move line.
 
 ## Bug Fixes
 - SALEORDER : fixed bug causing the margins to be rounded to the unit
