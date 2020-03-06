@@ -101,7 +101,7 @@
 				</field>
 				<field name="budgetDistributionSumAmount" colSpan="6" if="__config__.app.getApp('budget').getManageMultiBudget()" readonly="true"/>
 				<field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()" canEdit="false" domain="self.statusSelect = 2"/>
-				<panel-related name="budgetDistributionListPanel" field="budgetDistributionList" editable="true" colSpan="12" if="__config__.app.getApp('budget').getManageMultiBudget()" onChange="action-budget-validate-exceed-line-amount,action-invoice-order-method-compute-budget-distribution-sum-amount"/>
+				<panel-related name="budgetDistributionListPanel" field="budgetDistributionList" grid-view="invoice-budget-distribution-grid" form-view="invoice-budget-distribution-form" editable="true" colSpan="12" if="__config__.app.getApp('budget').getManageMultiBudget()" onChange="action-budget-validate-exceed-line-amount,action-invoice-order-method-compute-budget-distribution-sum-amount"/>
 				<field name="$currencySymbol" hidden="true"/>
 			</panel>
 			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectInvoiceLines()" title="Business Project" if-module="axelor-business-project" >
