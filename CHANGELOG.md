@@ -16,6 +16,7 @@
 - ACCOUNTING REPORT : add account filter to summary and gross value report.
 - STUDIO : Add panel on custom model demo data
 - QUALITY CONTROL : update the qualitycontrol report.
+- INVOICE LINE : add grid view and form view of budgetDistributionListPanel to form
 
 ## Bug Fixes
 - Fix Timesheet Reminder Batch sendReminder method
