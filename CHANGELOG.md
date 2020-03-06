@@ -12,6 +12,10 @@
 - CUSTOMER INFORMATIONS : Indicate that Payment delay is in days
 - INVOICES DASHBOARD: Turnover is now calculated using both sales and assets
 - MANUF ORDER : fix missing form and grid view attributes for workshopStockLocation.
+- Stock Move Line : Do not allow user to remove allocated stock move line.
+- ACCOUNTING REPORT : add account filter to summary and gross value report.
+- STUDIO : Add panel on custom model demo data
+- QUALITY CONTROL : update the qualitycontrol report.
 
 ## Bug Fixes
 - Fix Timesheet Reminder Batch sendReminder method
@@ -27,6 +31,7 @@
 - Project : Resolve issue in computation of timespent
 - TALENT : Use BigDecimal.valueOf(double) instead of new BigDecimal(double) in TrainingRegisterServiceImpl.
 - PROJECT : Fix NPE when generate Business project with projectGeneratorType Task by line and Task by product.
+- MRP : sequence is copied when MRP is copied.
 - TEAM TASK : Fixed issue in copy by using clearList instead of set it to null for projectPlanningTimeList.
 
 ## [5.2.5] - 2020-02-25
