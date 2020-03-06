@@ -7,7 +7,7 @@
 
   <entity name="Sop" lang="java">
   
-	<many-to-one name="productFamily" ref="com.axelor.apps.base.db.ProductFamily" title="Family"/>
+	<many-to-one name="categoryFamily" ref="com.axelor.apps.base.db.ProductCategory" title="Category"/>
 	<one-to-many name="sopLineList" ref="com.axelor.apps.production.db.SopLine" title="Sales and Operations Planning Lines"/>
   	
   </entity>

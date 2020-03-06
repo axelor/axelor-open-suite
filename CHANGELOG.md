@@ -16,6 +16,7 @@
 - MANUF ORDER : Print residual products on report and add panel of residual products
 - MPS/MRP : title before sequence to change depending on typeSelect
 - WORKSHOP SEQUENCE CONFIG LINE : update domain when workshop management is enabled & make grid editable. 
+- SOP : changed to category instead of family product
 
 ## Bug Fixes
 - Production : Fix Java Heap Error.
