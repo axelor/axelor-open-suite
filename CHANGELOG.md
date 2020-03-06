@@ -33,6 +33,7 @@
 - PROJECT : Fix NPE when generate Business project with projectGeneratorType Task by line and Task by product.
 - MRP : sequence is copied when MRP is copied.
 - TEAM TASK : Fixed issue in copy by using clearList instead of set it to null for projectPlanningTimeList.
+- PURCHASE ORDER REPORT: Fixed value of payment condition from PurchaseOrder's payment condition instead of using partner.
 
 ## [5.2.5] - 2020-02-25
 ## Improvements
