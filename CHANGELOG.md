@@ -13,6 +13,7 @@
 - INVOICES DASHBOARD: Turnover is now calculated using both sales and assets
 - MANUF ORDER : fix missing form and grid view attributes for workshopStockLocation.
 - Stock Move Line : Do not allow user to remove allocated stock move line.
+- ACCOUNTING REPORT : add account filter to summary and gross value report.
 
 ## Bug Fixes
 - Fix Timesheet Reminder Batch sendReminder method
