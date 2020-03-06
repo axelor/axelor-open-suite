@@ -476,28 +476,29 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   }
 
   @Override
-  public boolean isAddAllocatedStockMoveLine(StockMove stockMove) {
+  public boolean isAllocatedStockMoveLineRemoved(StockMove stockMove) {
 
-    StockMove StoredStockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
-    Boolean isAllocatedStockMoveLine = false;
-    if (ObjectUtils.notEmpty(StoredStockMove)) {
+    StockMove storedStockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
+    Boolean isAllocatedStockMoveLineRemoved = false;
+
+    if (ObjectUtils.notEmpty(storedStockMove)) {
       List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
-      List<StockMoveLine> StoredStockMoveLineList = StoredStockMove.getStockMoveLineList();
-      if (stockMoveLineList != null && StoredStockMoveLineList != null) {
-        for (StockMoveLine stockMoveLine : StoredStockMoveLineList) {
+      List<StockMoveLine> storedStockMoveLineList = storedStockMove.getStockMoveLineList();
+      if (stockMoveLineList != null && storedStockMoveLineList != null) {
+        for (StockMoveLine stockMoveLine : storedStockMoveLineList) {
           if (Beans.get(StockMoveLineServiceSupplychain.class)
                   .isAllocatedStockMoveLine(stockMoveLine)
               && !stockMoveLineList.contains(stockMoveLine)) {
             stockMoveLineList.add(stockMoveLine);
-            isAllocatedStockMoveLine = true;
+            isAllocatedStockMoveLineRemoved = true;
           }
-          if (isAllocatedStockMoveLine) {
+          if (isAllocatedStockMoveLineRemoved) {
             stockMove.setStockMoveLineList(stockMoveLineList);
           }
         }
       }
     }
 
-    return isAllocatedStockMoveLine;
+    return isAllocatedStockMoveLineRemoved;
   }
 }
