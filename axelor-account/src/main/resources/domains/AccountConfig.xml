@@ -159,7 +159,7 @@
 		<boolean name="isManagePFPInRefund" title="Manage PFP on supplier refunds"/>
 
 		<!-- Account Report -->
-		<integer name="lineMinBeforeLongReportGenerationMessageNumber" title="Number of lines minimum before long report generation message appears" min="0" help="Minimal number of line required to display a confirmation message when you try to export an accounting report. Value 0 is equal to no message"  default="10000"/>
+		<integer name="lineMinBeforeLongReportGenerationMessageNumber" title="Number of lines minimum before long report generation message appears" min="0" help="Minimal number of lines required to display a confirmation message when you try to export an accounting report. Value 0 is equal to no message"  default="10000"/>
 
 
     <finder-method name="findByCompany" using="company"/>

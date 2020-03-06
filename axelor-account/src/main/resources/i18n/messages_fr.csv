@@ -1204,7 +1204,7 @@
 "Message template","Modèle de message",,
 "Method name","Nom",,
 "Min. amount (€)","Montant min. (€)",,
-"Minimal number of line required to display a confirmation message when you try to export an accounting report. Value 0 is equal to no message","Nombre minimum de lignes requises pour l'affichage d'un message de confirmation lors de l'export d'un rapport comptable. 0 pour n'afficher aucun message.",,
+"Minimal number of lines required to display a confirmation message when you try to export an accounting report. Value 0 is equal to no message","Nombre minimum de lignes requises pour l'affichage d'un message de confirmation lors de l'export d'un rapport comptable. 0 pour n'afficher aucun message.",,
 "Misc. Moves","O.D.",,
 "Missing deposit slip sequence for company %s","Séquence de bordereau de remise manquante pour la société %s",,
 "Missing direct debit payment mode in the company's account configuration","Mode de paiement pour les virements manquant dans la configuration comptable de la société",,
