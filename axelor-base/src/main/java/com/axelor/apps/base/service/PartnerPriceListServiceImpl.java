@@ -54,8 +54,7 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
       return;
     }
     Set<PriceList> sortedPriceListSet =
-        priceListSet
-            .stream()
+        priceListSet.stream()
             .sorted(
                 Comparator.comparing(
                     priceList ->
@@ -103,8 +102,7 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
       return null;
     }
     List<PriceList> priceLists =
-        priceListSet
-            .stream()
+        priceListSet.stream()
             .filter(
                 priceList ->
                     (priceList.getApplicationBeginDate() == null
@@ -145,8 +143,7 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
       return "self.id IN (0)";
     }
     List<PriceList> priceLists =
-        partnerPriceLists
-            .stream()
+        partnerPriceLists.stream()
             .flatMap(partnerPriceList1 -> partnerPriceList1.getPriceListSet().stream())
             .filter(
                 priceList ->

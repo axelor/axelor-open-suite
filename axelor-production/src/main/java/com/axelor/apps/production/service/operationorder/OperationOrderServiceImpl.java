@@ -461,9 +461,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
       return;
     }
     Optional<StockMove> stockMoveOpt =
-        operationOrder
-            .getInStockMoveList()
-            .stream()
+        operationOrder.getInStockMoveList().stream()
             .filter(stockMove -> stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED)
             .findFirst();
     StockMove stockMove;

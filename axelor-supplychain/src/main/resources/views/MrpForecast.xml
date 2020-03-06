@@ -57,11 +57,11 @@
 	 	<field name="unit" expr="eval: product?.salesUnit" if="product?.salesUnit != null"/>
 	 	<field name="unit" expr="eval: product?.unit" if="product?.salesUnit == null"/>
 	 </action-record>
-	 
+
  	<action-attrs name="action-mrp-forecast-attrs-scale-and-precision">
 		<attribute name="scale" for="qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
 	</action-attrs>
-	
+
 	 <action-record name="action-mrp-forecast-record-set-technical-origin" model="com.axelor.apps.supplychain.db.MrpForecast">
 	 	<field name="technicalOrigin" expr="eval: 1"/>
 	 </action-record>

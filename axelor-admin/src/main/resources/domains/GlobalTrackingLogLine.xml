@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+
+  <module name="admin" package="com.axelor.apps.admin.db"/>
+
+  <entity name="GlobalTrackingLogLine" cacheable="true">
+  
+    <many-to-one name="metaField" title="Meta field" ref="com.axelor.meta.db.MetaField" readonly="true" /> 
+    <many-to-one name="globalTrackingLog" title="Global tracking log" ref="com.axelor.apps.admin.db.GlobalTrackingLog"  readonly="true" />
+    <string name="previousValue" title="Previous value" readonly="true" large="true" multiline="true"/>
+    <string name="newValue" title="Newly set value" readonly="true" large="true" multiline="true" />
+    
+    <string name="metaFieldName" transient="true" />
+    
+  </entity>
+
+</domain-models>

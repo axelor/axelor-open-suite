@@ -95,7 +95,7 @@
 		<option value="2">Confirmed</option>
 		<option value="3">Cancelled</option>
 	</selection>
-	
+
 	<selection name="sequence.generic.code.select" id="supplychain.sequence.generic.code.select">
 		<option value="mrp">MRP</option>
 	</selection>	

@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.db.repo.StreetRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -61,6 +62,7 @@ public class AddressServiceImpl implements AddressService {
   @Inject protected MapService mapService;
   @Inject protected CityRepository cityRepository;
   @Inject protected StreetRepository streetRepository;
+  @Inject protected AppBaseService appBaseService;
 
   protected static final Set<Function<Long, Boolean>> checkUsedFuncs = new LinkedHashSet<>();
 
@@ -302,17 +304,19 @@ public class AddressServiceImpl implements AddressService {
     address.setCity(city);
     address.setAddressL6(city != null ? zip + " " + city.getName() : null);
 
-    List<Street> streets =
-        streetRepository.all().filter("self.city = :city").bind("city", city).fetch();
-    if (streets.size() == 1) {
-      Street street = streets.get(0);
-      address.setStreet(street);
-      String name = street.getName();
-      String num = address.getStreetNumber();
-      address.setAddressL4(num != null ? num + " " + name : name);
-    } else {
-      address.setStreet(null);
-      address.setAddressL4(null);
+    if (appBaseService.getAppBase().getStoreStreets()) {
+      List<Street> streets =
+          streetRepository.all().filter("self.city = :city").bind("city", city).fetch();
+      if (streets.size() == 1) {
+        Street street = streets.get(0);
+        address.setStreet(street);
+        String name = street.getName();
+        String num = address.getStreetNumber();
+        address.setAddressL4(num != null ? num + " " + name : name);
+      } else {
+        address.setStreet(null);
+        address.setAddressL4(null);
+      }
     }
   }
 }

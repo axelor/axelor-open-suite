@@ -44,9 +44,8 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(
-  name = "",
-  propOrder = {"layout"}
-)
+    name = "",
+    propOrder = {"layout"})
 @XmlRootElement(name = "QALayouts")
 public class QALayouts {
 

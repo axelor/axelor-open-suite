@@ -41,5 +41,13 @@
 		<option value="3">Backup Restored</option>
 		<option value="4">Backup Restore Error</option>
 	</selection>
+	
+	<selection name="global.tracking.log.type.select">
+		<option value="1">CREATE</option>
+		<option value="2">READ</option>
+		<option value="3">UPDATE</option>
+		<option value="4">DELETE</option>
+		<option value="5">EXPORT</option>
+	</selection>
 
 </object-views>

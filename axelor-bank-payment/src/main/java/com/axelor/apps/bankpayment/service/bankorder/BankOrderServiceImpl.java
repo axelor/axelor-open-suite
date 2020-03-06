@@ -315,9 +315,13 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEbicsModule()) {
 
+      PaymentMode paymentMode = bankOrder.getPaymentMode();
       bankOrder.setConfirmationDateTime(
           Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
-      bankOrder.setStatusSelect(BankOrderRepository.STATUS_AWAITING_SIGNATURE);
+      bankOrder.setStatusSelect(
+          paymentMode != null && paymentMode.getAutomaticTransmission()
+              ? BankOrderRepository.STATUS_AWAITING_SIGNATURE
+              : BankOrderRepository.STATUS_VALIDATED);
       makeEbicsUserFollow(bankOrder);
 
       bankOrderRepo.save(bankOrder);
@@ -826,5 +830,20 @@ public class BankOrderServiceImpl implements BankOrderService {
             .add("form", formViewName)
             .domain(viewDomain);
     return actionViewBuilder;
+  }
+
+  @Transactional
+  @Override
+  public void setStatusToDraft(BankOrder bankOrder) {
+    bankOrder.setStatusSelect(BankOrderRepository.STATUS_DRAFT);
+    bankOrderRepo.save(bankOrder);
+  }
+
+  @Transactional
+  @Override
+  public void setStatusToRejected(BankOrder bankOrder) {
+    bankOrder.setRejectStatusSelect(BankOrderRepository.REJECT_STATUS_TOTALLY_REJECTED);
+    bankOrder.setStatusSelect(BankOrderRepository.STATUS_REJECTED);
+    bankOrderRepo.save(bankOrder);
   }
 }

@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
-    
+
   <grid name="manuf-order-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq">
 		<toolbar>
 			<button name="printBtn" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
@@ -145,10 +145,6 @@
 		<panel-tabs name="mainPanelTab" colSpan="4" >
 			<panel-related name="operationOrderListPanel" field="operationOrderList" readonlyIf="statusSelect == 6" colSpan="12" height="15" form-view="operation-order-form" grid-view="operation-order-grid"/>
 			<panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 6">
-				<panel name="desiredDates" title="Desired dates" colSpan="12">
-					<field name="desiredStartDateT" title="Start date"/>
-					<field name="desiredEndDateT" title="End date"/>
-				</panel>
 				<panel name="plannedDatesPanel" title="Planned dates">
 					<field name="plannedStartDateT" title="Start date" onChange="action-manuf-order-method-update-planned-dates"/>
 					<field name="plannedEndDateT" title="End date" onChange="action-manuf-order-validate-planned-end-date"/>

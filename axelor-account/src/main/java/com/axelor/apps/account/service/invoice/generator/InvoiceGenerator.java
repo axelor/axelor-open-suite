@@ -266,8 +266,7 @@ public abstract class InvoiceGenerator {
     if (partner.getFactorizedCustomer() && accountConfig.getFactorPartner() != null) {
       List<BankDetails> bankDetailsList = accountConfig.getFactorPartner().getBankDetailsList();
       companyBankDetails =
-          bankDetailsList
-              .stream()
+          bankDetailsList.stream()
               .filter(bankDetails -> bankDetails.getIsDefault())
               .findFirst()
               .orElse(null);
@@ -303,7 +302,9 @@ public abstract class InvoiceGenerator {
 
   public int getInvoiceCopy() {
     if (partner.getIsCustomer()) {
-      return partner.getInvoicesCopySelect();
+      return (partner.getInvoicesCopySelect() == 0)
+          ? DEFAULT_INVOICE_COPY
+          : partner.getInvoicesCopySelect();
     }
     return DEFAULT_INVOICE_COPY;
   }

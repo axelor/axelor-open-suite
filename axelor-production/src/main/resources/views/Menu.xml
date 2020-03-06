@@ -108,9 +108,9 @@
 		<domain>self.statusSelect = 6</domain>
 	</action-view>
 	
-	
+
 	<menuitem name="manufacturing-root-outsourcing" title="Outsourcing" parent="manufacturing-root" order="37" if="__config__.app.getApp('production').getManageOutsourcing()"/>
-	
+
 	<menuitem name="manufacturing-root-outsourcing-subcontractors" title="Subcontractors" parent="manufacturing-root-outsourcing" action="manufacturing.root.subcontractors"/>
 	<action-view name="manufacturing.root.subcontractors" title="Subcontractors" model="com.axelor.apps.base.db.Partner">
 		<view type="cards" name="partner-cards"/>
@@ -119,38 +119,38 @@
 		<domain>self.isSubcontractor = :_isSubcontractor</domain>
 		<context name="_isSubcontractor" expr="eval:true"/>
 	</action-view>
-	
-	<menuitem name="manufacturing-root-outsourcing-subcontractors-deliveries" title="Subcontractors deliveries" 
+
+	<menuitem name="manufacturing-root-outsourcing-subcontractors-deliveries" title="Subcontractors deliveries"
 		parent="manufacturing-root-outsourcing" action="manufacturing.root.subcontractors.deliveries"/>
 	<action-view name="manufacturing.root.subcontractors.deliveries" title="Subcontractors deliveries" model="com.axelor.apps.stock.db.StockMove">
 		<view type="grid" name="stock-move-out-grid"/>
         <view type="calendar" name="stock-move-calendar" />
 		<view type="form" name="stock-move-customer-deliveries-form"/>
-        <domain>self.typeSelect = :_typeSelect AND 
-        		self.isReversion = FALSE AND 
-        		self.toStockLocation.typeSelect=:_stockLocTypeSelect AND 
+        <domain>self.typeSelect = :_typeSelect AND
+        		self.isReversion = FALSE AND
+        		self.toStockLocation.typeSelect=:_stockLocTypeSelect AND
         		self.toStockLocation.isOutsourcingLocation=:_isOutsourcingLoc</domain>
 		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
 		<context name="_stockLocTypeSelect" expr="eval: __repo__(StockLocation).TYPE_VIRTUAL"/>
 		<context name="_isOutsourcingLoc" expr="eval:true"/>
 	</action-view>
-	
-	<menuitem name="manufacturing-root-outsourcing-subcontractors-arrivals" title="Subcontractors arrivals" 
+
+	<menuitem name="manufacturing-root-outsourcing-subcontractors-arrivals" title="Subcontractors arrivals"
 		parent="manufacturing-root-outsourcing" action="manufacturing.root.subcontractors.arrivals"/>
 	<action-view name="manufacturing.root.subcontractors.arrivals" title="Subcontractors arrivals" model="com.axelor.apps.stock.db.StockMove">
 		<view type="grid" name="stock-move-in-grid"/>
         <view type="calendar" name="stock-move-calendar" />
 		<view type="form" name="stock-move-supplier-arrivals-form"/>
-        <domain>self.typeSelect = :_typeSelect AND 
-        		self.isReversion = FALSE AND 
-        		self.fromStockLocation.typeSelect=:_stockLocTypeSelect AND 
+        <domain>self.typeSelect = :_typeSelect AND
+        		self.isReversion = FALSE AND
+        		self.fromStockLocation.typeSelect=:_stockLocTypeSelect AND
         		self.fromStockLocation.isOutsourcingLocation=:_isOutsourcingLoc</domain>
 		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_INCOMING"/>
 		<context name="_stockLocTypeSelect" expr="eval: __repo__(StockLocation).TYPE_VIRTUAL"/>
 		<context name="_isOutsourcingLoc" expr="eval:true"/>
 	</action-view>
-	
-	
+
+
 	<menuitem name="manufacturing-root-charge-by-machine-dashboard" parent="manufacturing-root"
 		title="Charge by machine" action="manufacturing.root.charge.by.machine.dashboard" order="40" />
 
@@ -177,7 +177,7 @@
 
 	<menuitem name="manufacturing-mps" parent="manufacturing-root" title="MPS" order="43" if="__config__.app.isApp('supplychain')"/>
 
-	<menuitem name="manufacturing-mps-master-production-scheduling" parent="manufacturing-mps" title="Master Production Scheduling" 
+	<menuitem name="manufacturing-mps-master-production-scheduling" parent="manufacturing-mps" title="Master Production Scheduling"
 		action="manufacturing.mps.master.production.scheduling" order="1"/>
 
 	<action-view name="manufacturing.mps.master.production.scheduling" title="Master Production Scheduling"
@@ -186,7 +186,7 @@
 		<view type="form" name="mrp-manuf-order-form"/>
 		<domain>self.mrpTypeSelect = 2</domain>
 	</action-view>
-	
+
 	<menuitem name="manufacturing-mps-forecast" parent="manufacturing-mps" title="Forecasts" action="manufacturing.mps.forecast" order="2"/>
 
 	<action-view name="manufacturing.mps.forecast" title="Forecasts" model="com.axelor.apps.supplychain.db.MrpForecast">
@@ -194,25 +194,25 @@
 		<view type="form" name="mrp-forecast-form"/>
 		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>
-	
+
 	<menuitem name="manufacturing-mps-conf" parent="manufacturing-mps" title="Configuration" icon="fa-cog" order="3"/>
-	
+
 	<menuitem name="manufacturing-mps-conf-mrp-line-type" parent="manufacturing-mps-conf" title="Move types" action="manufacturing.mps.conf.mrp.line.type"/>
-	
+
 	<action-view name="manufacturing.mps.conf.mrp.line.type" title="Move types" model="com.axelor.apps.supplychain.db.MrpLineType">
 		<view type="grid" name="mrp-line-type-grid"/>
 		<view type="form" name="mrp-line-type-form"/>
 	</action-view>
-	
-	<menuitem name="manufacturing-mps-conf-manufacturing-periods" parent="manufacturing-mps-conf" 
+
+	<menuitem name="manufacturing-mps-conf-manufacturing-periods" parent="manufacturing-mps-conf"
 		title="Manufacturing periods" action="manufacturing.mps.conf.manufacturing-periods"/>
-	
+
 	<action-view name="manufacturing.mps.conf.manufacturing-periods" title="Manufacturing periods" model="com.axelor.apps.base.db.Year">
 		<view type="grid" name="year-account-grid"/>
 		<view type="form" name="year-manuf-order-form"/>
 		<domain>self.typeSelect = 3</domain>
 	</action-view>
-	
+
 	<menuitem name="manufacturing-root-sop" parent="manufacturing-root"
 		title="S&amp;OP" action="manufacturing.root.sop" order="46"/>
 
@@ -221,7 +221,7 @@
 		<view type="grid" name="sop-grid"/>
 		<view type="form" name="sop-form"/>
 	</action-view>
-	
+
 	<menuitem name="manufacturing-root-mps-charge" parent="manufacturing-root"
 		title="MPS Charge" action="manufacturing.root.mps.charge" order="43"
 		if="__config__.app.getApp('production')?.manageMpsCharge"/>
@@ -231,7 +231,7 @@
 		<view type="grid" name="mps-charge-grid"/>
 		<view type="form" name="mps-charge-form"/>
 	</action-view>
-	
+
 	<menuitem name="manufacturing-root-report" parent="manufacturing-root" title="Reportings" order="45" icon="fa-bar-chart"/>
 
     <menuitem name="menu-manufacturing-dashboard-1" parent="manufacturing-root-report" title="Manufacturing" action="manufacturing.dashboard.view" />
@@ -409,14 +409,14 @@
 		<context name="_productionWorkshop" expr="eval:true"/>
 	</action-view>
 	
-	<menuitem title="MPS Weekly schedules" name="manufacturing-conf-mps-weekly-schedule" parent="manufacturing-conf" 
+	<menuitem title="MPS Weekly schedules" name="manufacturing-conf-mps-weekly-schedule" parent="manufacturing-conf"
 		action="manufacturing.conf.mps.weekly.schedule" if-module="axelor-production" if="__config__.app.getApp('production')?.manageMpsCharge"/>
 
  	<action-view name="manufacturing.conf.mps.weekly.schedule" title="MPS Weekly schedules" model="com.axelor.apps.production.db.MpsWeeklySchedule">
 		<view type="grid" name="mps-weekly-schedule-grid"/>
 		<view type="form" name="mps-weekly-schedule-form"/>
 	</action-view>
-	
+
 	<!-- ADMINISTRATION -->
 
 	<menuitem name="admin-root-batch-production" parent="admin-root-batch" if="__config__.app.isApp('production')" if-module="axelor-production" 

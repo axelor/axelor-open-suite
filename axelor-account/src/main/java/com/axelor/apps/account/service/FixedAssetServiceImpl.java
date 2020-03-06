@@ -286,9 +286,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       throws AxelorException {
 
     Map<Integer, List<FixedAssetLine>> FixedAssetLineMap =
-        fixedAsset
-            .getFixedAssetLineList()
-            .stream()
+        fixedAsset.getFixedAssetLineList().stream()
             .collect(Collectors.groupingBy(fa -> fa.getStatusSelect()));
     List<FixedAssetLine> previousPlannedLineList =
         FixedAssetLineMap.get(FixedAssetLineRepository.STATUS_PLANNED);
@@ -329,9 +327,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       }
     }
     List<FixedAssetLine> fixedAssetLineList =
-        fixedAsset
-            .getFixedAssetLineList()
-            .stream()
+        fixedAsset.getFixedAssetLineList().stream()
             .filter(
                 fixedAssetLine ->
                     fixedAssetLine.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED)

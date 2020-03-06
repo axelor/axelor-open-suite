@@ -663,9 +663,9 @@ LEFT JOIN
 LEFT JOIN
 	base_unit AS Unit ON (Unit.id = BOM.unit)
 LEFT JOIN 
-	production_work_center AS MachineWorkCenter ON (MachineWorkCenter.id = OperationOrder.work_center)
+	production_work_center AS MachineWorkCenter ON (MachineWorkCenter.id = OperationOrder.machine_work_center)
 LEFT JOIN 
-	production_machine AS Machine ON (Machine.id = OperationOrder.machine_work_center)
+	production_machine AS Machine ON (Machine.id = MachineWorkCenter.machine)
 LEFT JOIN 
 	production_prod_process AS ProdProcess ON (ProdProcess.id = BOM.prod_process)
 LEFT JOIN 

@@ -223,7 +223,6 @@
 		<option value="0">Civil Year</option>
 		<option value="1">Fiscal Year</option>
 		<option value="2">Payroll Year</option>
-		<option value="3">Manufacturing Year</option>
 	</selection>
 	
 	<selection name="base.year.status.select">
@@ -387,6 +386,7 @@
 
 	<selection name="meta.schedule.job.select">
 		<option value="com.axelor.mail.service.MailFetchJob">com.axelor.mail.service.MailFetchJob</option>
+		<option value="com.axelor.apps.base.job.GlobalTrackingLogCleaningJob">com.axelor.apps.base.job.GlobalTrackingLogCleaningJob</option>
 		<option value="com.axelor.apps.base.job.MailJob">com.axelor.apps.base.job.MailJob</option>
 		<option value="com.axelor.apps.base.job.BatchJob">com.axelor.apps.base.job.BatchJob</option>
 		<option value="com.axelor.apps.base.job.CurrencyConversionJob">com.axelor.apps.base.job.CurrencyConversionJob</option>

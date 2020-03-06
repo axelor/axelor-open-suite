@@ -402,7 +402,7 @@
 	    <button if="__config__.app.getApp('production')?.prodOrderMgtOnSO &amp;&amp; !__config__.app.getApp('production')?.productionOrderGenerationAuto" name="generateProductionOrderBtn" title="Generate production order" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12" onClick="save,action-sale-order-method-create-production-order"/>
 	    <button name="cancelBtn" title="Cancel" css="btn-danger" icon="fa-times" showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12" onClick="save,action-sale-order-view-cancel"/>
 	    <button if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('account').getManageAdvancePaymentInvoice()" if-module="axelor-supplychain" name="addAdvancePaymentBtn" title="Register a deposit" showIf="statusSelect == 3 &amp;&amp; amountInvoiced == 0" colSpan="12" onClick="save,action-sale-order-view-register-advance-payment"/>
-	    <button if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowCompleteManuallySaleOrder" name="backToOrderConfirmBtn" title="Back to confirmed order" showIf="statusSelect == 4" if-module="axelor-supplychain" onClick="action-sale-order-attrs-set-status-to-confirmed,save"/>
+	    <button if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowCompleteManuallySaleOrder" name="backToOrderConfirmBtn" title="Back to confirmed order" showIf="statusSelect == 4" if-module="axelor-supplychain" onClick="save,action-sale-order-method-set-status-to-confirmed"/>
 	    <field name="message" hidden="true" type="string"/>
 	    <field name="amountInvoiced" hidden="true"/>
 	    <button if="__config__.app.getApp('sale').getEnableConfigurator()" name="addLineFromConfiguratorBtn" title="Add Line from Configurator" showIf="statusSelect == 1" onClick="save,action-sale-order-view-generate-line"/>
@@ -1434,7 +1434,8 @@
   	<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="generateAdvancePaymentInvoice"/>
   </action-method>
   
-  	<action-attrs name="action-sale-order-attrs-set-status-to-confirmed">
-  		<attribute name="value" for="statusSelect" expr="eval: __repo__(SaleOrder).STATUS_ORDER_CONFIRMED"/>
-  	</action-attrs>
+	<action-method name="action-sale-order-method-set-status-to-confirmed">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="backToConfirmedStatus" />
+	</action-method>
+	
 </object-views>

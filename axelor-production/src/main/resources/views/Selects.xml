@@ -58,7 +58,6 @@
 	    <option value="7">Need / Manufacturing order</option>
    	    <option value="8">Manufacturing proposal</option>
   	    <option value="9">Need / Manufacturing proposal</option>
-  	    <option value="10">Master Production Scheduling</option>
 	</selection>
 	
 	<selection name="supplychain.mrp.line.related.to.select" id="production.supplychain.mrp.line.related.to.select">

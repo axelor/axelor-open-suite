@@ -79,8 +79,7 @@ public class SaleOrderReservedQtyServiceImpl implements SaleOrderReservedQtyServ
         saleOrder.getSaleOrderLineList() == null
             ? new ArrayList<>()
             : saleOrder.getSaleOrderLineList();
-    return saleOrderLineList
-        .stream()
+    return saleOrderLineList.stream()
         .filter(saleOrderLine -> getPlannedStockMoveLine(saleOrderLine) != null)
         .collect(Collectors.toList());
   }

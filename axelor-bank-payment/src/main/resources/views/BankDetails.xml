@@ -19,6 +19,7 @@
         <field name="company" hidden="true" />
 		<field name="balanceUpdatedDate" if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')"/>
 		<field name="balance" aggregate="sum" if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')"/>
+		<button name="showBalanceBtn" icon="fa-search" if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')" onClick="action-bank-details-view-show-bank-statement-lines"/>
     </grid>
     
     <tree name="bank-details-bank-payment-tree" title="Bank details tree">

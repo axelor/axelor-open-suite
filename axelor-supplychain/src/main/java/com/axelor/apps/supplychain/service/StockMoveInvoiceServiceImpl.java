@@ -313,7 +313,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       if (qtyToInvoiceMap != null && qtyToInvoiceMap.containsKey(id)) {
         invoiceLineListCreated =
             this.createInvoiceLine(invoice, stockMoveLine, qtyToInvoiceMap.get(id));
-      } else if (id == null) {
+      } else {
         invoiceLineListCreated =
             this.createInvoiceLine(
                 invoice,
@@ -509,16 +509,12 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
         && stockMove.getInvoiceSet() != null
         && !stockMove.getInvoiceSet().isEmpty()) {
       BigDecimal totalInvoicedQty =
-          stockMove
-              .getStockMoveLineList()
-              .stream()
+          stockMove.getStockMoveLineList().stream()
               .map(StockMoveLine::getQtyInvoiced)
               .reduce(BigDecimal::add)
               .orElse(BigDecimal.ZERO);
       BigDecimal totalRealQty =
-          stockMove
-              .getStockMoveLineList()
-              .stream()
+          stockMove.getStockMoveLineList().stream()
               .map(StockMoveLine::getRealQty)
               .reduce(BigDecimal::add)
               .orElse(BigDecimal.ZERO);

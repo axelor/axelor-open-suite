@@ -735,9 +735,6 @@ public class CostSheetServiceImpl implements CostSheetService {
 
       WorkCenter workCenter = operationOrder.getWorkCenter();
       if (workCenter == null) {
-        workCenter = operationOrder.getWorkCenter();
-      }
-      if (workCenter == null) {
         continue;
       }
       int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
