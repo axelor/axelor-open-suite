@@ -27,6 +27,7 @@
 - Project : Resolve issue in computation of timespent
 - TALENT : Use BigDecimal.valueOf(double) instead of new BigDecimal(double) in TrainingRegisterServiceImpl.
 - PROJECT : Fix NPE when generate Business project with projectGeneratorType Task by line and Task by product.
+- PURCHASE ORDER REPORT: Fixed value of payment condition from PurchaseOrder's payment condition instead of using partner.
 
 ## [5.2.5] - 2020-02-25
 ## Improvements
