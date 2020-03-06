@@ -26,8 +26,11 @@ import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.apps.message.service.MessageServiceImpl;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
+import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -36,6 +39,7 @@ import com.axelor.tool.template.TemplateMaker;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -185,5 +189,105 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
     }
 
     return "\"" + partnerName + "\" <" + emailAddress.getAddress() + ">";
+  }
+
+  @Override
+  protected Message createMessage(
+      String content,
+      EmailAddress fromEmailAddress,
+      String relatedTo1Select,
+      long relatedTo1SelectId,
+      String relatedTo2Select,
+      long relatedTo2SelectId,
+      boolean sentByEmail,
+      int statusSelect,
+      String subject,
+      int typeSelect,
+      List<EmailAddress> replyToEmailAddressList,
+      List<EmailAddress> toEmailAddressList,
+      List<EmailAddress> ccEmailAddressList,
+      List<EmailAddress> bccEmailAddressList,
+      String addressBlock,
+      int mediaTypeSelect,
+      EmailAccount emailAccount) {
+
+    Set<EmailAddress> replyToEmailAddressSet = Sets.newHashSet();
+    Set<EmailAddress> bccEmailAddressSet = Sets.newHashSet();
+    Set<EmailAddress> toEmailAddressSet = Sets.newHashSet();
+    Set<EmailAddress> ccEmailAddressSet = Sets.newHashSet();
+
+    if (mediaTypeSelect == MessageRepository.MEDIA_TYPE_EMAIL) {
+      if (replyToEmailAddressList != null) {
+        replyToEmailAddressSet.addAll(replyToEmailAddressList);
+      }
+      if (bccEmailAddressList != null) {
+        bccEmailAddressSet.addAll(bccEmailAddressList);
+      }
+      if (toEmailAddressList != null) {
+        toEmailAddressSet.addAll(toEmailAddressList);
+      }
+      if (ccEmailAddressList != null) {
+        ccEmailAddressSet.addAll(ccEmailAddressList);
+      }
+    }
+
+    boolean userSigned = false;
+    if (fromEmailAddress != null) {
+      String cleanEmail[] = fromEmailAddress.getAddress().split("@");
+      if (cleanEmail.length > 1) {
+        UserRepository userRepo = Beans.get(UserRepository.class);
+        User sender =
+            userRepo
+                        .all()
+                        .filter(
+                            "LOWER(self.email) like LOWER('"
+                                + cleanEmail[0]
+                                + "_"
+                                + cleanEmail[1]
+                                + "')")
+                        .fetchOne()
+                    != null
+                ? userRepo
+                    .all()
+                    .filter(
+                        "LOWER(self.email) like LOWER('"
+                            + cleanEmail[0]
+                            + "_"
+                            + cleanEmail[1]
+                            + "')")
+                    .fetchOne()
+                : null;
+        if (sender != null) {
+          content += "<p></p><p></p>" + Beans.get(UserService.class).getEmailSignature(sender);
+          userSigned = true;
+        }
+      }
+    }
+    if (emailAccount != null && !userSigned) {
+      content += "<p></p><p></p>" + Beans.get(MailAccountService.class).getSignature(emailAccount);
+    }
+
+    Message message =
+        new Message(
+            typeSelect,
+            subject,
+            content,
+            statusSelect,
+            mediaTypeSelect,
+            addressBlock,
+            fromEmailAddress,
+            replyToEmailAddressSet,
+            toEmailAddressSet,
+            ccEmailAddressSet,
+            bccEmailAddressSet,
+            sentByEmail,
+            emailAccount);
+
+    message.setRelatedTo1Select(relatedTo1Select);
+    message.setRelatedTo1SelectId(relatedTo1SelectId);
+    message.setRelatedTo2Select(relatedTo2Select);
+    message.setRelatedTo2SelectId(relatedTo2SelectId);
+
+    return message;
   }
 }

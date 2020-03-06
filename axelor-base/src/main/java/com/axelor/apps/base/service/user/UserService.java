@@ -179,4 +179,6 @@ public interface UserService {
 
   @Transactional
   public void generateRandomPasswordForUsers(List<Long> userIds);
+
+  public String getEmailSignature(User user);
 }

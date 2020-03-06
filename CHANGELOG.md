@@ -38,6 +38,7 @@
 - Address: Addition of boolean 'isSharedAddress' in base config to check addresses are shared or not.
 - BANK STATEMENT LINE: order by operation date and sequence in AFB120 grid view.
 - BANK DETAILS: add search button on bank-details-bank-order-company-grid.
+- USER : Add user's email signature, automaticly added to the content of emails send from this user's email address
 
 ## Improvements
 - JOURNAL: new viewer to display the balance.
