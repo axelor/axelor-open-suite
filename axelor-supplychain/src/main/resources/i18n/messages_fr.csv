@@ -218,6 +218,7 @@
 "Is ISPM 15 required",,,
 "Is amount in %","Montant en %",,
 "Is certificate of conformity required",,,
+"It is not possible to delete a stock move line with allocated or reserved quantity.","Il n'est pas possible de supprimer une ligne de mouvement de stock avec une quantité allouée ou réservée.",,
 "Label","Libellé",,
 "Left empty","Laisser vide",,
 "Line numberFiscal valueTaker",,,

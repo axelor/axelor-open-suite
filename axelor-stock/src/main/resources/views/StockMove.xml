@@ -601,7 +601,7 @@
     	<action name="action-stock-move-method-compute"/>
     	<action name="action-stock-move-line-method-change-conformity"/>
     	<action name="action-stock-move-method-set-available-status"/>
-        <action name="action-supply-chain-method-not-remove-allocated-stock-move-line"/>
+        <action name="action-stock-move-method-is-allocated-stock-move-line-removed"/>
     </action-group>
     
 	<action-group name="action-group-stock-stockmove-plan-click">
@@ -1027,8 +1027,8 @@
 		<context name="_isReversion" expr="eval:_isReversion"/>
 	</action-view>
   
-    <action-method name="action-supply-chain-method-not-remove-allocated-stock-move-line">
-       <call class="com.axelor.apps.supplychain.web.StockMoveController" method="notRemoveAllocatedStockMoveLine"/>
+    <action-method name="action-stock-move-method-is-allocated-stock-move-line-removed">
+       <call class="com.axelor.apps.supplychain.web.StockMoveController" method="isAllocatedStockMoveLineRemoved"/>
     </action-method>
 
 </object-views>
