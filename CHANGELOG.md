@@ -24,6 +24,7 @@
 - PURCHASE ORDER REPORT: Fixed value of payment condition from PurchaseOrder's payment condition instead of using partner.
 - STUDIO : Set Large option as default value for the 'Form Width' in demo data
 - Workflow : Add support to select real status fields.
+- QUALITY CONTROL : update the qualitycontrol report.
 
 ## Bug Fixes
 - SALEORDER : fixed bug causing the margins to be rounded to the unit
