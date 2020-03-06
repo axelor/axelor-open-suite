@@ -76,4 +76,14 @@ task archiveReports(type: Zip) {
 	destinationDirectory = file("$buildDir/libs")
 }
 
+
+task generateChangeLog(type: com.axelor.gradle.tasks.GenerateChangeLog) {
+  group "Axelor application"
+  description "Generate change logs from unreleased entries."
+  files = fileTree(projectDir) {
+    include '**/changelogs/**/*.yml'
+    include '**/changelogs/**/*.yaml'
+  }
+}
+
 build.finalizedBy archiveReports
