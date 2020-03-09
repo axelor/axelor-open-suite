@@ -71,6 +71,7 @@
 - BANK ORDER: Bank order workflow pass from draft to validated when automatic transmission is not activated in payment mode.
 - INVOICE: add specific note of company bank details on invoice report.
 - SUPPLYCHAIN : In stock-detail-by-product menu, company field now autofill with the user's active company.
+- MASS INVOICING : When generating one invoice from two or more stock moves, invoices lines are sorted by strock move.
 
 ## Bug Fixes
 - Studio: Fix access to json fields of base model in chart builder form.

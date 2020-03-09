@@ -376,14 +376,17 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
 
+    int lineSeqenceFromStockMove = 0;
+    
     for (StockMove stockMoveLocal : stockMoveList) {
       List<InvoiceLine> createdInvoiceLines =
           stockMoveInvoiceService.createInvoiceLines(
-              invoice, stockMoveLocal.getStockMoveLineList(), null);
+              invoice, stockMoveLocal.getStockMoveLineList(), null, lineSeqenceFromStockMove);
       if (stockMoveLocal.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
         createdInvoiceLines.forEach(this::negateInvoiceLinePrice);
       }
       invoiceLineList.addAll(createdInvoiceLines);
+      lineSeqenceFromStockMove ++;
     }
 
     invoiceGenerator.populate(invoice, invoiceLineList);
@@ -465,14 +468,17 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
 
+    int lineSeqenceFromStockMove = 0;
+    
     for (StockMove stockMoveLocal : stockMoveList) {
       List<InvoiceLine> createdInvoiceLines =
           stockMoveInvoiceService.createInvoiceLines(
-              invoice, stockMoveLocal.getStockMoveLineList(), null);
+              invoice, stockMoveLocal.getStockMoveLineList(), null, lineSeqenceFromStockMove);
       if (stockMoveLocal.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
         createdInvoiceLines.forEach(this::negateInvoiceLinePrice);
       }
       invoiceLineList.addAll(createdInvoiceLines);
+      lineSeqenceFromStockMove ++;
     }
 
     invoiceGenerator.populate(invoice, invoiceLineList);

@@ -333,6 +333,48 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     }
     return invoiceLineList;
   }
+  
+  @Override
+  public List<InvoiceLine> createInvoiceLines(
+	      Invoice invoice, List<StockMoveLine> stockMoveLineList, Map<Long, BigDecimal> qtyToInvoiceMap, int lineSequence)
+	      throws AxelorException {
+
+	    List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
+
+	    for (StockMoveLine stockMoveLine : getConsolidatedStockMoveLineList(stockMoveLineList)) {
+
+	      List<InvoiceLine> invoiceLineListCreated = null;
+	      Long id = stockMoveLine.getId();
+	      if (qtyToInvoiceMap != null && qtyToInvoiceMap.containsKey(id)) {
+	        invoiceLineListCreated =
+	            this.createInvoiceLine(invoice, stockMoveLine, qtyToInvoiceMap.get(id));
+	      } else {
+	        invoiceLineListCreated =
+	            this.createInvoiceLine(
+	                invoice,
+	                stockMoveLine,
+	                stockMoveLine.getRealQty().subtract(computeNonCanceledInvoiceQty(stockMoveLine)));
+	      }
+
+	      if (invoiceLineListCreated != null) {
+	        invoiceLineList.addAll(invoiceLineListCreated);
+	      }
+	      // Depending on stockMove type
+	      if (stockMoveLine.getSaleOrderLine() != null) {
+	        stockMoveLine.getSaleOrderLine().setInvoiced(true);
+	      } else if (stockMoveLine.getPurchaseOrderLine() != null) {
+	        stockMoveLine.getPurchaseOrderLine().setInvoiced(true);
+	      }
+	    }
+	    
+	    for (InvoiceLine line : invoiceLineList)
+	    {
+	    	line.setSequence(lineSequence);
+	    }
+	    
+	    return invoiceLineList;
+	  }
+
 
   @Override
   public List<InvoiceLine> createInvoiceLine(
