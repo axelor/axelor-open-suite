@@ -19,6 +19,7 @@
 - LEAVEREQUEST : Fix the NPE when no leaveRequest is selected to be edited
 - Project : Resolve issue in computation of timespent
 - EBICS: Display correctly hash code in certificates EBICS.
+- Move: Fix exception message when saving a new record.
 
 ## [5.3.0] - 2020-02-25
 ## Features
