@@ -109,7 +109,7 @@
   		<panel name="mainPanel" colSpan="12">
   			<panel name="mainPanel" colSpan="12" readonlyIf="statusSelect &gt;= 2">
 	  			<field name="bankOrderSeq" css="label-bold bold" colSpan="12" readonly="true"/>
-	    		<field name="bankOrderDate" css="label-bold bold" colSpan="6" hidden="true" hideIf="isMultiDate"/>
+	    		<field name="bankOrderDate" css="label-bold bold" colSpan="6" hidden="true" hideIf="isMultiDate" readonlyIf="technicalOriginSelect == 1"/>
 	    		<field name="orderTypeSelect" css="label-bold bold" colSpan="6" readonly="true" readonlyIf="technicalOriginSelect == 1"/>
 	    		<field name="paymentMode" css="label-bold bold" colSpan="6" canView="false" domain="self.orderTypeSelect = :orderTypeSelect" onChange="action-bank-order-record-payment-mode-change,action-bank-order-attrs-bank-order-file-format-change,action-bank-order-record-update-bankorder-currency,action-bank-order-record-update-bank-order-parameter" readonlyIf="technicalOriginSelect == 1"/>
 	    		<field name="bankOrderFileFormat" form-view="bank-order-file-format-form" grid-view="bank-order-file-format-grid" canView="false" domain="self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true'" colSpan="6" onChange="action-bank-order-attrs-bank-order-file-format-change,action-bank-order-record-update-bankorder-currency,action-bank-order-record-update-bank-order-parameter" readonlyIf="technicalOriginSelect == 1"/>
@@ -118,7 +118,7 @@
 	        </panel>
 	        <panel name="mainPanel" colSpan="12" readonlyIf="statusSelect &gt;= 3" >  
 		        <field name="signatoryUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid" hidden="true"/>
-		        <field name="signatoryEbicsUser" form-view="ebics-user-form" grid-view="ebics-user-grid" canView="false" onChange="action-bank-order-record-fill-signatory-user" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet AND self.userTypeSelect = 1 AND self.statusSelect = 3" showIf="senderBankDetails" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
+		        <field name="signatoryEbicsUser" form-view="ebics-user-form" grid-view="ebics-user-grid" canView="false" onChange="action-bank-order-record-fill-signatory-user" domain=":senderBankDetails MEMBER OF self.ebicsPartner.bankDetailsSet AND self.userTypeSelect = 1 AND self.statusSelect = 3" showIf="senderBankDetails" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
 		        <field name="signatoryEbicsUser.ebicsPartner.testMode" hidden="true"/>
 		        <field name="$viewerPartnerTestMode" readonly="true" showTitle="false" hideIf="!signatoryEbicsUser.ebicsPartner.testMode || statusSelect >= 4">
 		        	<viewer depends="signatoryEbicsUser.ebicsPartner.testMode">
@@ -232,9 +232,9 @@
     		<button name="confirmBtn" title="Confirm" showIf="statusSelect == 1" onClick="action-bank-order-group-confirm"/>
     		<button name="signBtn" title="Sign" showIf="statusSelect == 2" onClick="save,action-bank-order-method-sign"/>
     		<button name="carryOutBtn" title="Carry out" showIf="statusSelect == 3" onClick="save,action-bank-order-method-realize,save"/>
-<!-- 			<button name="reject" title="Reject" showIf="statusSelect == 3 || statusSelect == 4" onClick="save,action-bank-order-record-reject,action-method-bank-order-payment-cancel,save"/>    		 -->
+<!-- 			<button name="reject" title="Reject" showIf="statusSelect == 3 || statusSelect == 4" onClick="save,action-bank-order-method-set-status-reject,action-method-bank-order-payment-cancel,save"/>    		 -->
     		<button name="cancelBtn" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" prompt="This action is irreversible, do you want to continue ?" onClick="save,action-bank-order-method-cancel,save"/>
-			<button name="correctBtn" title="Correct" showIf="statusSelect == 2 || statusSelect == 3" prompt="The payment status will not update." onClick="save,action-bank-order-record-correct,save"/>
+			<button name="correctBtn" title="Correct" showIf="statusSelect == 2 || statusSelect == 3" prompt="The payment status will not update." onClick="save,action-bank-order-method-set-status-correct"/>
   		</panel>
   		<panel name="dateTimePanel" sidebar="true" showIf="statusSelect &gt;= 2 || technicalOriginSelect == 1" itemSpan="12" readonly="true">
   			<field name="confirmationDateTime"/>
@@ -284,7 +284,7 @@
 				<field name="orderTypeSelect" hidden="true"/>
 			</panel>
 	        <panel name="signatoryPanel" colSpan="12" readonlyIf="statusSelect &gt;= 3">  	
-				<field name="signatoryEbicsUser" form-view="ebics-user-form" grid-view="ebics-user-grid" requiredIf="statusSelect == 2" onChange="action-bank-order-record-fill-signatory-user" colSpan="6" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet AND self.statusSelect = 3" showIf="senderBankDetails" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
+				<field name="signatoryEbicsUser" form-view="ebics-user-form" grid-view="ebics-user-grid" requiredIf="statusSelect == 2" onChange="action-bank-order-record-fill-signatory-user" colSpan="6" domain=":senderBankDetails MEMBER OF self.ebicsPartner.bankDetailsSet AND self.statusSelect = 3" showIf="senderBankDetails" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
 				<field name="signatoryUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid" hidden="true"/>
 				<field name="signatoryEbicsUser.ebicsPartner.testMode" hidden="true"/>
 				<field name="$viewerPartnerTestMode" readonly="true" showTitle="false" hideIf="!signatoryEbicsUser.ebicsPartner.testMode || statusSelect >= 4">
@@ -313,7 +313,7 @@
     		<button name="signBtn" title="Sign" showIf="statusSelect == 2" onClick="save,action-bank-order-method-sign"/>
     		<button name="carryOutBtn" title="Carry out" showIf="statusSelect == 3" onClick="save,action-bank-order-method-realize,save"/>
     		<button name="cancelBtn" title="Cancel" showIf="statusSelect == 1 || statusSelect == 2 || statusSelect == 3" prompt="This action is irreversible, do you want to continue ?" onClick="save,action-bank-order-method-cancel"/>
-			<button name="correctBtn" title="Correct" showIf="statusSelect == 2 || statusSelect == 3" prompt="The payment status will not update." onClick="save,action-bank-order-record-correct,save"/>
+			<button name="correctBtn" title="Correct" showIf="statusSelect == 2 || statusSelect == 3" prompt="The payment status will not update." onClick="save,action-bank-order-method-set-status-correct"/>
   		</panel>
   		<panel name="dateTimePanel" sidebar="true" showIf="statusSelect &gt;= 2 || technicalOriginSelect == 1" itemSpan="12" readonly="true">
   			<field name="confirmationDateTime"/>
@@ -332,7 +332,7 @@
 				<field name="companyCurrencyTotalAmount" colSpan="8"/>
 				<field name="companyCurrency" canView="false" grid-view="currency-grid" form-view="currency-form" colSpan="4"/>
 			</panel>
-    		<field name="signatoryEbicsUser" title="Ebics User" widget="SuggestBox" colOffset="1" canEdit="false" colSpan="6" required="true" grid-view="ebics-user-grid" form-view="ebics-user-form" domain=":senderBankDetails IN self.ebicsPartner.bankDetailsSet AND self.statusSelect = 3"/>
+    		<field name="signatoryEbicsUser" title="Ebics User" widget="SuggestBox" colOffset="1" canEdit="false" colSpan="6" required="true" grid-view="ebics-user-grid" form-view="ebics-user-form" domain=":senderBankDetails MEMBER OF self.ebicsPartner.bankDetailsSet AND self.statusSelect = 3"/>
     		<field name="$password" title="Password" widget="password" colOffset="1"  colSpan="6" required="true"/>
     		<button name="validateBtn" title="Validate" colOffset="1"  colSpan="6" onClick="save,action-bank-order-method-validate,close"/>
     		<field name="isMultiCurrency" hidden="true"/>
@@ -468,15 +468,6 @@
 		<field name="bankOrderFileFormat" expr="eval: paymentMode?.bankOrderFileFormat"/>
 	</action-record>
 	
-	<action-record name="action-bank-order-record-reject" model="com.axelor.apps.bankpayment.db.BankOrder">
-		<field name="statusSelect" expr="5"/>
-		<field name="rejectStatusSelect" expr="2"/>
-	</action-record>
-
-	<action-record name="action-bank-order-record-correct" model="com.axelor.apps.bankpayment.db.BankOrder">
-		<field name="statusSelect" expr="1"/>
-	</action-record>
-	
 	<action-record name="action-bank-order-record-partner-type-select-default" model="com.axelor.apps.bankpayment.db.BankOrder">
 		<field name="partnerTypeSelect" expr="3" if="orderTypeSelect == 2 || orderTypeSelect == 4"/>
 	</action-record>
@@ -490,6 +481,14 @@
 	</action-record>
 
 		<!-- Actions Methods -->
+	
+	<action-method name="action-bank-order-method-set-status-correct">
+		<call class="com.axelor.apps.bankpayment.web.BankOrderController" method="setStatusCorrect"/>
+	</action-method>
+	
+	<action-method name="action-bank-order-method-set-status-reject">
+		<call class="com.axelor.apps.bankpayment.web.BankOrderController" method="setStatusReject"/>
+	</action-method>
 	
 	<action-method name="action-bank-order-method-confirm">
 		<call class="com.axelor.apps.bankpayment.web.BankOrderController" method="confirm"/>

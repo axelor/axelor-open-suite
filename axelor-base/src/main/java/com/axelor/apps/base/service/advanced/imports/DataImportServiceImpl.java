@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,6 +26,7 @@ import com.axelor.apps.base.service.readers.DataReaderFactory;
 import com.axelor.apps.base.service.readers.DataReaderService;
 import com.axelor.apps.tool.service.TranslationService;
 import com.axelor.common.Inflector;
+import com.axelor.common.StringUtils;
 import com.axelor.data.XStreamUtils;
 import com.axelor.data.adapter.DataAdapter;
 import com.axelor.data.adapter.JavaTimeAdapter;
@@ -170,49 +171,50 @@ public class DataImportServiceImpl implements DataImportService {
       csvInput = this.createCSVInput(fileTab, fileName);
       ifList = new ArrayList<String>();
 
-      CSVWriter csvWriter =
-          new CSVWriter(new FileWriter(new File(dataDir, fileName)), CSV_SEPRATOR);
+      try (CSVWriter csvWriter =
+          new CSVWriter(new FileWriter(new File(dataDir, fileName)), CSV_SEPRATOR)) {
 
-      int totalLines = reader.getTotalLines(fileTab.getName());
-      if (totalLines == 0) {
-        continue;
-      }
-
-      Mapper mapper = advancedImportService.getMapper(fileTab.getMetaModel().getFullName());
-      List<String[]> allLines = new ArrayList<String[]>();
-      int startIndex = isConfig ? 1 : linesToIgnore;
-
-      String[] row = reader.read(fileTab.getName(), startIndex, 0);
-      String[] headers = this.createHeader(row, fileTab, isConfig, mapper);
-      allLines.add(headers);
-
-      int tabConfigRowCount = 0;
-      if (isTabConfig) {
-        String objectRow[] = reader.read(fileTab.getName(), 0, 0);
-        tabConfigRowCount =
-            advancedImportService.getTabConfigRowCount(
-                fileTab.getName(), reader, totalLines, objectRow);
-      }
-      startIndex =
-          isConfig
-              ? tabConfigRowCount + 3
-              : fileTab.getAdvancedImport().getIsHeader() ? linesToIgnore + 1 : linesToIgnore;
-
-      for (int line = startIndex; line < totalLines; line++) {
-        String[] dataRow = reader.read(fileTab.getName(), line, row.length);
-        if (dataRow == null) {
+        int totalLines = reader.getTotalLines(fileTab.getName());
+        if (totalLines == 0) {
           continue;
         }
-        String[] data = this.createData(dataRow, fileTab, isConfig, mapper);
-        allLines.add(data);
+
+        Mapper mapper = advancedImportService.getMapper(fileTab.getMetaModel().getFullName());
+        List<String[]> allLines = new ArrayList<String[]>();
+        int startIndex = isConfig ? 1 : linesToIgnore;
+
+        String[] row = reader.read(fileTab.getName(), startIndex, 0);
+        String[] headers = this.createHeader(row, fileTab, isConfig, mapper);
+        allLines.add(headers);
+
+        int tabConfigRowCount = 0;
+        if (isTabConfig) {
+          String objectRow[] = reader.read(fileTab.getName(), 0, 0);
+          tabConfigRowCount =
+              advancedImportService.getTabConfigRowCount(
+                  fileTab.getName(), reader, totalLines, objectRow);
+        }
+        startIndex =
+            isConfig
+                ? tabConfigRowCount + 3
+                : fileTab.getAdvancedImport().getIsHeader() ? linesToIgnore + 1 : linesToIgnore;
+
+        for (int line = startIndex; line < totalLines; line++) {
+          String[] dataRow = reader.read(fileTab.getName(), line, row.length);
+          if (dataRow == null || Arrays.stream(dataRow).allMatch(StringUtils::isBlank)) {
+            continue;
+          }
+          String[] data = this.createData(dataRow, fileTab, isConfig, mapper);
+          allLines.add(data);
+        }
+        csvWriter.writeAll(allLines);
+        csvWriter.flush();
       }
-      csvWriter.writeAll(allLines);
-      csvWriter.flush();
-      csvWriter.close();
 
       inputList.add(csvInput);
       importContext.put("ifConditions" + fileTab.getId(), ifList);
       importContext.put("jsonContextValues" + fileTab.getId(), createJsonContext(fileTab));
+      importContext.put("actionsToApply" + fileTab.getId(), fileTab.getActions());
     }
     return inputList;
   }
@@ -421,10 +423,10 @@ public class DataImportServiceImpl implements DataImportService {
 
   private CSVInput createCSVInput(FileTab fileTab, String fileName) {
     boolean update = false;
-    int importType = fileTab.getImportType();
+    String searchCall = fileTab.getSearchCall();
 
-    if ((importType == FileFieldRepository.IMPORT_TYPE_FIND)
-        && !CollectionUtils.isEmpty(fileTab.getSearchFieldSet())) {
+    if (CollectionUtils.isNotEmpty(fileTab.getSearchFieldSet())
+        || StringUtils.notBlank(searchCall)) {
       update = true;
     }
 
@@ -437,6 +439,7 @@ public class DataImportServiceImpl implements DataImportService {
     input.setCallable(INPUT_CALLABLE);
     input.setSearch(null);
     input.setBindings(new ArrayList<>());
+    input.setSearchCall(searchCall);
 
     return input;
   }
@@ -829,31 +832,31 @@ public class DataImportServiceImpl implements DataImportService {
     }
 
     File attachmentFile = MetaFiles.getPath(attachments).toFile();
-    ZipInputStream zis = new ZipInputStream(new FileInputStream(attachmentFile));
-    ZipEntry ze;
-    byte[] buffer = new byte[1024];
+    try (ZipInputStream zis = new ZipInputStream(new FileInputStream(attachmentFile))) {
+      ZipEntry ze;
+      byte[] buffer = new byte[1024];
 
-    while ((ze = zis.getNextEntry()) != null) {
-      String fileName = ze.getName();
-      File extractFile = new File(dataDir, fileName);
+      while ((ze = zis.getNextEntry()) != null) {
+        String fileName = ze.getName();
+        File extractFile = new File(dataDir, fileName);
 
-      if (ze.isDirectory()) {
-        extractFile.mkdirs();
-        continue;
-      } else {
-        extractFile.getParentFile().mkdirs();
-        extractFile.createNewFile();
+        if (ze.isDirectory()) {
+          extractFile.mkdirs();
+          continue;
+        } else {
+          extractFile.getParentFile().mkdirs();
+          extractFile.createNewFile();
+        }
+
+        try (FileOutputStream fos = new FileOutputStream(extractFile)) {
+          int len;
+          while ((len = zis.read(buffer)) > 0) {
+            fos.write(buffer, 0, len);
+          }
+        }
+        zis.closeEntry();
       }
-
-      FileOutputStream fos = new FileOutputStream(extractFile);
-      int len;
-      while ((len = zis.read(buffer)) > 0) {
-        fos.write(buffer, 0, len);
-      }
-      fos.close();
-      zis.closeEntry();
     }
-    zis.close();
   }
 
   private MetaFile importData(List<CSVInput> inputs) throws IOException {

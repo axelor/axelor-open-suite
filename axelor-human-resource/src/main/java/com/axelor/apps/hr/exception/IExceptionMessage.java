@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,7 +21,7 @@ package com.axelor.apps.hr.exception;
 public interface IExceptionMessage {
 
   static final String HR_CONFIG = /*$$(*/
-      "Please configure informations for human resources for the company %s" /*)*/;
+      "Please configure information for human resources for the company %s" /*)*/;
   static final String HR_CONFIG_EXPENSE_TYPE = /*$$(*/
       "Please configure the expense type for kilometric allowance in HR config for the company %s" /*)*/;
   static final String HR_CONFIG_SENT_EXPENSE_TEMPLATE = /*$$(*/

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -60,7 +60,7 @@ public class SignaturePubKeyOrderDataElement extends DefaultEbicsRootElement {
 
     EbicsCertificate ebicsEertificate = session.getUser().getA005Certificate();
 
-    // Include certificate issuer and serial (certificate informations)
+    // Include certificate issuer and serial (certificate information)
     //    x509Data = EbicsXmlFactory.createX509DataType(ebicsEertificate.getSubject(), certEncoded,
     // ebicsEertificate.getIssuer(),  new BigInteger(ebicsEertificate.getSerial(), 16));
 

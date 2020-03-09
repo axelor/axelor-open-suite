@@ -23,7 +23,7 @@
 				</field>
 			</panel>
 			<panel name="actionPanel" colSpan="3">
-				<button name="$operatingDurationBtn" title="Operating duration" colSpan="12" icon="fa-clock-o" widget="info-button"/>
+				<button name="$operatingDurationBtn" onClick="" title="Operating duration" colSpan="12" icon="fa-clock-o" widget="info-button" />
 			</panel>
 			<field name="brand"/>
 			<field name="stockLocation" required="true" grid-view="stock-location-grid" form-view="stock-location-form"/>

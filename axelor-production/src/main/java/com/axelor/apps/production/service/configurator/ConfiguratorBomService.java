@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,7 +26,8 @@ import com.axelor.rpc.JsonContext;
 public interface ConfiguratorBomService {
 
   /**
-   * Generate a bill of material from a configurator BOM and a JsonContext holding the custom values
+   * Generate a bill of materials from a configurator BOM and a JsonContext holding the custom
+   * values
    *
    * @param configuratorBOM
    * @param attributes

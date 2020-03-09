@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,6 +20,7 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
@@ -48,10 +49,12 @@ import com.axelor.apps.supplychain.service.MrpServiceImpl;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import org.slf4j.Logger;
@@ -61,10 +64,13 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  protected AppBaseService appBaseService;
+
   protected ManufOrderRepository manufOrderRepository;
 
   @Inject
   public MrpServiceProductionImpl(
+      AppBaseService appBaseService,
       AppProductionService appProductionService,
       MrpRepository mrpRepository,
       StockLocationRepository stockLocationRepository,
@@ -95,6 +101,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         mrpForecastRepository,
         stockLocationService);
 
+    this.appBaseService = appBaseService;
     this.manufOrderRepository = manufOrderRepository;
   }
 
@@ -103,7 +110,9 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
     super.completeMrp(mrp);
 
-    this.createManufOrderMrpLines();
+    if (Beans.get(AppProductionService.class).isApp("production")) {
+      this.createManufOrderMrpLines();
+    }
   }
 
   // Manufacturing order AND manufacturing order need
@@ -227,7 +236,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
           // A component of a manuf order that is not loaded on MRP because there is no default
           // BOM or
-          // because the component of manuf order is not a component of the bill of material, we
+          // because the component of manuf order is not a component of the bill of materials, we
           // add it with the level of manuf order product + 1.
           if (!this.productMap.containsKey(product.getId())) {
             this.assignProductAndLevel(product, manufOrder.getProduct());
@@ -275,6 +284,9 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         mrpLineOriginList,
         relatedToSelectName);
 
+    if (!Beans.get(AppProductionService.class).isApp("production")) {
+      return;
+    }
     BillOfMaterial defaultBillOfMaterial = product.getDefaultBillOfMaterial();
 
     if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL
@@ -293,7 +305,9 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
               mrp,
               subProduct,
               manufProposalNeedMrpLineType,
-              reorderQty.multiply(billOfMaterial.getQty()),
+              reorderQty
+                  .multiply(billOfMaterial.getQty())
+                  .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN),
               stockLocation,
               maturityDate,
               mrpLineOriginList,
@@ -314,6 +328,10 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
   protected MrpLineType getMrpLineTypeForProposal(StockRules stockRules, Product product)
       throws AxelorException {
 
+    if (!Beans.get(AppProductionService.class).isApp("production")) {
+      return super.getMrpLineTypeForProposal(stockRules, product);
+    }
+
     if (stockRules != null) {
       if (stockRules.getOrderAlertSelect() == StockRulesRepository.ORDER_ALERT_PRODUCTION_ORDER) {
         return this.getMrpLineType(MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL);
@@ -332,6 +350,10 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
   @Override
   protected boolean isProposalElement(MrpLineType mrpLineType) {
 
+    if (!Beans.get(AppProductionService.class).isApp("production")) {
+      return super.isProposalElement(mrpLineType);
+    }
+
     if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL
         || mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL
         || mrpLineType.getElementSelect()
@@ -345,6 +367,11 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
   @Override
   protected void assignProductAndLevel(Product product) {
+
+    if (!Beans.get(AppProductionService.class).isApp("production")) {
+      super.assignProductAndLevel(product);
+      return;
+    }
 
     log.debug("Add of the product : {}", product.getFullName());
     this.productMap.put(product.getId(), this.getMaxLevel(product, 0));
@@ -364,7 +391,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
   }
 
   /**
-   * Update the level of Bill of material. The highest for each product (0: product with parent, 1:
+   * Update the level of Bill of materials. The highest for each product (0: product with parent, 1:
    * product with a parent, 2: product with a parent that have a parent, ...)
    *
    * @param billOfMaterial
@@ -393,7 +420,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
           this.assignProductLevel(subBillOfMaterial, level);
 
           if (subProduct.getDefaultBillOfMaterial() != null) {
-            this.assignProductLevel(subProduct.getDefaultBillOfMaterial(), level);
+            this.productMap.put(subProduct.getId(), this.getMaxLevel(subProduct, level));
           }
         }
       }
@@ -402,7 +429,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
   /**
    * Add a component product of a manuf order where the component product is not contained on the
-   * default bill of material of the produced product.
+   * default bill of materials of the produced product.
    *
    * @param manufOrderComponentProduct
    * @param manufOrderProducedProduct

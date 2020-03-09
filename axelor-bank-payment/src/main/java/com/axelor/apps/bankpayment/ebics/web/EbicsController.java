@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -34,13 +34,11 @@ import com.axelor.apps.bankpayment.ebics.service.EbicsCertificateService;
 import com.axelor.apps.bankpayment.ebics.service.EbicsService;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.report.IReport;
+import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.data.Listener;
 import com.axelor.data.xml.XMLImporter;
-import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -70,8 +68,6 @@ import org.apache.xmlbeans.impl.common.IOUtil;
 
 @Singleton
 public class EbicsController {
-
-  private static int totalRecord = 0, importedRecord = 0;
 
   @Transactional
   public void generateCertificate(ActionRequest request, ActionResponse response) {
@@ -415,33 +411,10 @@ public class EbicsController {
       File importFile = new File(tempDir, "ebics-user.xml");
       Files.copy(path.toFile(), importFile);
 
-      totalRecord = importedRecord = 0;
       XMLImporter importer =
           new XMLImporter(configFile.getAbsolutePath(), tempDir.getAbsolutePath());
-      final StringBuilder log = new StringBuilder();
 
-      Listener listner =
-          new Listener() {
-
-            @Override
-            public void imported(Integer imported, Integer total) {}
-
-            @Override
-            public void imported(Model arg0) {
-              if (arg0.getClass().isAssignableFrom(EbicsUser.class)) {
-                totalRecord++;
-                importedRecord++;
-              }
-            }
-
-            @Override
-            public void handle(Model arg0, Exception err) {
-              TraceBackService.trace(err);
-              if (arg0.getClass().isAssignableFrom(EbicsUser.class)) {
-                totalRecord++;
-              }
-            }
-          };
+      ImporterListener listner = new ImporterListener("EbicsUser");
 
       importer.addListener(listner);
 
@@ -450,8 +423,7 @@ public class EbicsController {
       FileUtils.forceDelete(configFile);
 
       FileUtils.forceDelete(tempDir);
-      log.append("Total records: " + totalRecord + ", Total imported: " + importedRecord);
-      response.setValue("importLog", log.toString());
+      response.setValue("importLog", listner.getImportLog());
 
     } catch (IOException e) {
       e.printStackTrace();

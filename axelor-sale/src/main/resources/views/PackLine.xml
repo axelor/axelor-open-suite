@@ -1,20 +1,65 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<object-views xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd" xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  
-  <grid name="pack-line-grid" title="Pack lines" model="com.axelor.apps.sale.db.PackLine">
-    <field name="product"/>
-    <field name="quantity"/>
-  </grid>
-  
-  <form name="pack-line-form" title="Pack line" model="com.axelor.apps.sale.db.PackLine" width="large">
-    <panel name="mainPanel" colSpan="12">
-      <field name="product" onSelect="action-pack-line-attrs-set-product-domain"/>
-      <field name="quantity"/>
-    </panel>
-  </form>
-  
-  <action-attrs name="action-pack-line-attrs-set-product-domain">
-  	<attribute name="domain" for="product" expr="eval: &quot; self.id != ${_parent?.id} and self.productTypeSelect != 'pack' &quot;"/>
-  </action-attrs>
-  
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+
+    <grid name="pack-line-grid" title="PackLine" model="com.axelor.apps.sale.db.PackLine">
+    	<field name="product.code"/>
+    	<field name="productName"/>
+    	<field name="quantity" x-sclae="2"/>
+    	<field name="unit"/>
+    	<field name="price"/>
+    </grid>
+
+    <form name="pack-line-form" title="PackLine" model="com.axelor.apps.sale.db.PackLine" 
+    	  onNew="action-pack-line-record-onnew,action-pack-line-attrs-set-scale" onLoad="action-pack-line-attrs-type-select,action-pack-line-attrs-set-scale">
+	    <panel name="packLinePanel">
+	    	<field name="product" onSelect="action-pack-line-attrs-domain-product" onChange="action-pack-line-record-product-onchange" canEdit="false" form-view="product-form" grid-view="product-grid"/>
+	    	<field name="price"/>
+	    	<field name="productName"/>
+	    	<field name="quantity"/>
+	    	<field name="typeSelect" onChange="action-pack-line-group-type-select-onchange"/>
+	    	<field name="unit" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
+	    	<field name="isShowTotal" hidden="true"/>
+	    	<field name="isHideUnitAmounts" hidden="true"/>
+    	</panel>
+    </form>
+
+    <action-record name="action-pack-line-record-product-onchange" model="com.axelor.apps.sale.db.PackLine">
+    	<field name="productName" expr="eval: product?.name"/>
+    	<field name="price" expr="eval: product?.salePrice"/>
+    	<field name="unit" expr="eval: product?.unit"/>
+    	<field name="unit" expr="eval: product?.salesUnit" if="product?.unit == null"/>
+    </action-record>
+
+    <action-record name="action-pack-line-record-onnew" model="com.axelor.apps.sale.db.PackLine">
+    	<field name="typeSelect" expr="eval: 0"/>
+    	<field name="quantity" expr="eval: 1.00"/>
+    	<field name="price" expr="eval: 0.00"/>
+    </action-record>
+
+    <action-record name="action-pack-line-record-type-select-onchange" model="com.axelor.apps.sale.db.PackLine">
+    	<field name="product,unit" expr="eval: null" if="typeSelect == 1"/>
+    	<field name="quantity" expr="eval: 1.00" />
+    	<field name="price" expr="eval: 0.00" if="typeSelect == 1"/>
+    </action-record>
+    
+	<action-attrs name="action-pack-line-attrs-set-scale">
+		<attribute name="scale" for="quantity" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+	</action-attrs>
+
+    <action-attrs name="action-pack-line-attrs-type-select">
+    	<attribute name="hidden" for="isShowTotal,isHideUnitAmounts" expr="eval: typeSelect != 1"/>
+    	<attribute name="hidden" for="product,price,unit" expr="eval: typeSelect == 1"/>
+    </action-attrs>
+
+    <action-group name="action-pack-line-group-type-select-onchange">
+    	<action name="action-pack-line-attrs-type-select"/>
+    	<action name="action-pack-line-record-type-select-onchange"/>
+    </action-group>
+
+    <action-attrs name="action-pack-line-attrs-domain-product">
+    	<attribute name="domain" for="product" expr="eval: &quot; self.isModel = false and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true &quot;"/>
+    </action-attrs>
+
 </object-views>

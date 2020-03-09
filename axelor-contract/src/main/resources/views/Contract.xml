@@ -294,7 +294,7 @@
     </action-method>
 
     <form name="contract-archived-version-form" title="Version" model="com.axelor.apps.contract.db.ContractVersion">
-        <panel title="Informations" name="informationsPanel">
+        <panel title="Information" name="informationsPanel">
             <field name="statusSelect" colSpan="12" readonly="true" widget="NavSelect" showTitle="false"/>
             <panel showIf="id" colSpan="12" name="creationDetailsPanel">
                 <field name="createdOn"/>

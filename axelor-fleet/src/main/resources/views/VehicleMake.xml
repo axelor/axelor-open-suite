@@ -3,11 +3,11 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
-    <grid name="vehicle-make-grid" title="Make" model="com.axelor.apps.fleet.db.VehicleMake">
+    <grid name="vehicle-make-grid" title="Vehicle brands" model="com.axelor.apps.fleet.db.VehicleMake">
        <field name="name" />
     </grid>
     
-    <form name="vehicle-make-form" title="Make" model="com.axelor.apps.fleet.db.VehicleMake" width="large">
+    <form name="vehicle-make-form" title="Brand" model="com.axelor.apps.fleet.db.VehicleMake" width="large">
        <panel name="mainPanel">
        	   <panel colSpan="2" name="imagePanel">
        	   		<field name="image" widget="Image" colSpan="12"/>

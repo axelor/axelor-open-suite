@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -290,11 +290,7 @@ public abstract class InvoiceGenerator {
     }
     invoice.setCompanyBankDetails(companyBankDetails);
 
-    if (companyBankDetails != null
-        && !Strings.isNullOrEmpty(companyBankDetails.getSpecificNoteOnInvoice())) {
-      invoice.setNote(
-          partner.getInvoiceComments() + "\n" + companyBankDetails.getSpecificNoteOnInvoice());
-    } else {
+    if (partner != null && !Strings.isNullOrEmpty(partner.getInvoiceComments())) {
       invoice.setNote(partner.getInvoiceComments());
     }
 
@@ -307,7 +303,9 @@ public abstract class InvoiceGenerator {
 
   public int getInvoiceCopy() {
     if (partner.getIsCustomer()) {
-      return partner.getInvoicesCopySelect();
+      return (partner.getInvoicesCopySelect() == 0)
+          ? DEFAULT_INVOICE_COPY
+          : partner.getInvoicesCopySelect();
     }
     return DEFAULT_INVOICE_COPY;
   }

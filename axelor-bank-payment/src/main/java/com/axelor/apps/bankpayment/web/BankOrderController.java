@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -264,5 +264,19 @@ public class BankOrderController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void setStatusCorrect(ActionRequest request, ActionResponse response) {
+    BankOrder bankOrder = request.getContext().asType(BankOrder.class);
+    bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
+    Beans.get(BankOrderService.class).setStatusToDraft(bankOrder);
+    response.setReload(true);
+  }
+
+  public void setStatusReject(ActionRequest request, ActionResponse response) {
+    BankOrder bankOrder = request.getContext().asType(BankOrder.class);
+    bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
+    Beans.get(BankOrderService.class).setStatusToRejected(bankOrder);
+    response.setReload(true);
   }
 }

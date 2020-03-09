@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -73,8 +73,6 @@ public interface InvoiceLineService {
   Unit getUnit(Product product, boolean isPurchase);
 
   Map<String, Object> resetProductInformation(Invoice invoice) throws AxelorException;
-
-  boolean isAccountRequired(InvoiceLine invoiceLine);
 
   Map<String, Object> fillProductInformation(Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException;

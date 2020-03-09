@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,10 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.FileTab;
 import com.axelor.apps.base.db.repo.FileTabRepository;
+import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.service.advanced.imports.ActionService;
 import com.axelor.apps.base.service.advanced.imports.FileTabService;
+import com.axelor.apps.base.service.advanced.imports.SearchCallService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -94,6 +97,33 @@ public class FileTabController {
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void validateActions(ActionRequest request, ActionResponse response) {
+    FileTab fileTab = request.getContext().asType(FileTab.class);
+
+    if (StringUtils.isEmpty(fileTab.getActions())) {
+      return;
+    }
+
+    ActionService actionService = Beans.get(ActionService.class);
+    if (!actionService.validate(fileTab.getActions())) {
+      response.setError(
+          String.format(
+              IExceptionMessage.ADVANCED_IMPORT_LOG_10, fileTab.getMetaModel().getName()));
+    }
+  }
+
+  public void validateSearchCall(ActionRequest request, ActionResponse response) {
+    FileTab fileTab = request.getContext().asType(FileTab.class);
+
+    SearchCallService searchCallService = Beans.get(SearchCallService.class);
+
+    if (!searchCallService.validate(fileTab.getSearchCall())) {
+      response.setError(
+          String.format(
+              IExceptionMessage.ADVANCED_IMPORT_LOG_11, fileTab.getMetaModel().getName()));
     }
   }
 }

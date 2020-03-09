@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+
+	<form name="dms-import-wizard-form" title="DMS Import"
+		model="com.axelor.apps.base.db.Wizard">
+		<panel>
+			<field name="metaFile" title="File" type="many-to-one"
+				target="com.axelor.meta.db.MetaFile" widget="binary-link" />
+			<button name="importDMS" title="Import" showIf="metaFile != null"
+				onClick="com.axelor.apps.base.web.DmsImportWizardController:importDMS" />
+		</panel>
+	</form>
+
+</object-views>

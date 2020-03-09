@@ -185,15 +185,11 @@
 	</action-method>
 
 	<menuitem name="leave-request-root-leave-calendar" parent="leave-request-root"
-		title="Leaves calendar" action="leave.request.root.leave.calendar" />
+		title="Leaves calendar" action="action.leave.request.method.leave.calendar" />
 
-	<action-view name="leave.request.root.leave.calendar" title="Leaves calendar"
-		model="com.axelor.apps.base.db.ICalendarEvent" >
-		<view type="calendar" name="calendar-event-leave-request"/>
-		<view type="grid" name="calendar-event-grid"/>
-		<view type="form" name="calendar-event-form"/>
-		<domain>self.typeSelect = 4</domain>
-	</action-view>
+	<action-method name="action.leave.request.method.leave.calendar">
+		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="leaveCalendar"/>
+	</action-method>
 
 	<menuitem name="leave-request-to-justify" parent="leave-request-root" title="Leave to justify" action="leave.request.to.justify"/>
 
@@ -391,6 +387,14 @@
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_isModel" expr="false"/>
 		<context name="_productTypeSelect" expr="storable"/>
+	</action-view>
+
+	<menuitem name="extra-hours-type" parent="extra-hours-root" title="Extra hours Type" action="extra.hours.type"/>
+
+	<action-view name="extra.hours.type" model="com.axelor.apps.hr.db.ExtraHoursType"
+		title="Extra Hours Type">
+		<view name="extra-hours-type-grid" type="grid" />
+		<view name="extra-hours-type-form" type="form" />
 	</action-view>
 
 	<menuitem name="admin-root-batch-hr" parent="admin-root-batch" if="__config__.app.isApp('employee')" if-module="axelor-human-resource"

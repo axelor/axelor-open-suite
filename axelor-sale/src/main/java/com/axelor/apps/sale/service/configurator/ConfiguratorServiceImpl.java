@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -193,15 +193,15 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       // generate sale order line from product
       saleOrderLine = new SaleOrderLine();
       saleOrderLine.setSaleOrder(saleOrder);
-      generateProduct(configurator, jsonAttributes, jsonIndicators);
+      generate(configurator, jsonAttributes, jsonIndicators);
 
       saleOrderLine.setProduct(configurator.getProduct());
       this.fillSaleOrderWithProduct(saleOrderLine);
       Beans.get(SaleOrderLineService.class)
           .computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
+      Beans.get(SaleOrderLineRepository.class).save(saleOrderLine);
     } else {
-      saleOrderLine =
-          generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
+      generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
     }
     Beans.get(SaleOrderComputeService.class).computeSaleOrder(saleOrder);
 
@@ -216,8 +216,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
   protected void fillSaleOrderWithProduct(SaleOrderLine saleOrderLine) throws AxelorException {
     SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
     if (saleOrderLine.getProduct() != null) {
-      saleOrderLineService.computeProductInformation(
-          saleOrderLine, saleOrderLine.getSaleOrder(), null);
+      saleOrderLineService.computeProductInformation(saleOrderLine, saleOrderLine.getSaleOrder());
     }
   }
 

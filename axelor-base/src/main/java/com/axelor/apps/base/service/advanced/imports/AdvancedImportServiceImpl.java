@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -46,6 +46,8 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -66,7 +68,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
   private Inflector inflector = Inflector.getInstance();
 
-  private List<String> searchFieldList;
+  private List<String> searchFieldList = new ArrayList<>();
 
   private boolean isTabWithoutConfig = false;
 
@@ -408,7 +410,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     }
     fileFieldList.add(fileField);
     fileField = fileFieldRepository.save(fileField);
-    fileField.setFileTab(fileTab);
+    fileTab.addFileFieldListItem(fileField);
   }
 
   private boolean checkFields(Mapper mapper, String importField, String subImportField)
@@ -558,35 +560,41 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
   protected void setFileTabConfig(String row[], FileTab fileTab, int rowIndex)
       throws AxelorException {
 
-    searchFieldList = new ArrayList<String>();
-    String objName = row[rowIndex].split("\\:")[1].trim();
-    MetaModel model = metaModelRepo.findByName(objName);
+    final String KEY_OBJECT = "object";
+    final String KEY_IMPORT_TYPE = "importtype";
+    final String KEY_SEARCH_FIELD_SET = "searchfieldset";
+    final String KEY_ACTIONS = "actions";
+    final String KEY_SEARCH_CALL = "search-call";
+    final List<String> KEY_LIST =
+        Arrays.asList(
+            KEY_IMPORT_TYPE, KEY_OBJECT, KEY_SEARCH_FIELD_SET, KEY_ACTIONS, KEY_SEARCH_CALL);
+    Map<String, String> tabConfigDataMap = getTabConfigDataMap(row, KEY_LIST);
+
+    MetaModel model = metaModelRepo.findByName(tabConfigDataMap.get(KEY_OBJECT));
     fileTab.setMetaModel(model);
 
-    if (row.length >= 2 && StringUtils.containsIgnoreCase(row[rowIndex + 1], "importType")) {
-      String type = row[rowIndex + 1].split("\\:")[1].trim();
+    if (tabConfigDataMap.containsKey(KEY_IMPORT_TYPE)) {
 
-      if (!type.equals(null)) {
+      Integer importType = this.getImportType(null, tabConfigDataMap.get(KEY_IMPORT_TYPE));
+      fileTab.setImportType(importType);
 
-        fileTab.setImportType(this.getImportType(null, type));
-
-        if (!fileTab.getImportType().equals(FileFieldRepository.IMPORT_TYPE_NEW)) {
-          if (StringUtils.containsIgnoreCase(row[rowIndex + 2], "searchFieldSet")) {
-            String searchFieldtype = row[rowIndex + 2].split("\\:")[1].trim();
-            String[] searchFieldArr = searchFieldtype.split("\\,");
-
-            for (String search : searchFieldArr) {
-              searchFieldList.add(search);
-            }
-          } else {
-            throw new AxelorException(
-                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                I18n.get(IExceptionMessage.ADVANCED_IMPORT_6),
-                fileTab.getName());
-          }
+      if (importType != FileFieldRepository.IMPORT_TYPE_NEW) {
+        if (!tabConfigDataMap.containsKey(KEY_SEARCH_FIELD_SET)
+            && !tabConfigDataMap.containsKey(KEY_SEARCH_CALL)) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(IExceptionMessage.ADVANCED_IMPORT_6),
+              fileTab.getName());
+        }
+        if (tabConfigDataMap.containsKey(KEY_SEARCH_CALL)) {
+          fileTab.setSearchCall(tabConfigDataMap.get(KEY_SEARCH_CALL));
+        } else {
+          searchFieldList = Arrays.asList(tabConfigDataMap.get(KEY_SEARCH_FIELD_SET).split("\\,"));
         }
       }
     }
+
+    fileTab.setActions(tabConfigDataMap.get(KEY_ACTIONS));
   }
 
   protected void setFileFieldConfig(String[] row, Integer i, FileField fileField) {
@@ -859,5 +867,24 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
 
       modelRepo.all().filter("self.id IN (" + ids + ")").delete();
     }
+  }
+
+  protected Map<String, String> getTabConfigDataMap(String row[], List<String> keys) {
+    Map<String, String> tabConfigDataMap = new HashMap<>();
+    for (String data : row) {
+      if (StringUtils.isBlank(data)) {
+        continue;
+      }
+
+      String[] keyValue = data.split("\\:", 2);
+      if (keyValue.length != 2) {
+        continue;
+      }
+      String key = keyValue[0].replaceAll("(^\\h*)|(\\h*$)", "").trim().toLowerCase();
+      if (keys.contains(key)) {
+        tabConfigDataMap.put(key, keyValue[1].trim());
+      }
+    }
+    return tabConfigDataMap;
   }
 }

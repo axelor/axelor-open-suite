@@ -273,6 +273,16 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="paramName">AccountingReportId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">2</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
             </list-property>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
@@ -419,13 +429,16 @@ InvoiceLine.ex_tax_total AS total ,
 null AS computation_method,
 null AS duration ,
 Type.name AS type
-FROM public.account_invoice_line AS InvoiceLine 
+FROM public.account_accounting_report as AccountingReport
+LEFT JOIN public.account_invoice_line AS InvoiceLine ON (AccountingReport.id = ?)    
 LEFT JOIN public.account_invoice AS Invoice ON InvoiceLine. invoice = Invoice.id 
 LEFT JOIN public.account_account AS InvoiceAccount ON InvoiceLine.account = InvoiceAccount.id
 LEFT JOIN public.account_fixed_asset_category AS Category ON InvoiceLine.fixed_asset_category = Category.id
 LEFT JOIN public.account_fixed_asset_type AS Type ON Category.fixed_asset_type = Type.id
 LEFT JOIN account_fixed_asset AS Asset ON Asset.invoice_line = InvoiceLine.id 
-WHERE InvoiceLine.fixed_assets = true AND Asset.invoice_line IS NULL )
+WHERE InvoiceLine.fixed_assets = true AND Asset.invoice_line IS NULL AND Invoice.company = AccountingReport.company 
+AND (AccountingReport.date_from IS NULL OR Invoice.invoice_date >= AccountingReport.date_from) 
+AND (AccountingReport.date_to IS NULL OR Invoice.invoice_date <= AccountingReport.date_to))
 ORDER BY type]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="4345">
@@ -1599,6 +1612,7 @@ where AccountingReport.id = ?
                     <property name="allowExport">true</property>
                 </structure>
             </list-property>
+            <property name="pageBreakInterval">0</property>
             <column id="4344">
                 <property name="width">0.1875in</property>
             </column>

@@ -47,6 +47,10 @@
     <boolean name="displayCodeAccountColumnOnPrinting" title="Display column with accounting number"/>
     <boolean name="displayNameAccountColumnOnPrinting" title="Display column with accounting name"/>
     <boolean name="displayMoveLineSequenceOnPrinting" title="Display moveline sequence"/>
+    
+    <many-to-one name="analyticDistributionTemplate" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate" title="Analytic Distribution Template"/>
+    
+    <boolean name="subtotalByAnalyticDistribution" title="Subtotal by analytic distribution"/>
 
 	<unique-constraint columns="ref,company"/>
     

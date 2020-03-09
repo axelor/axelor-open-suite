@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -539,6 +539,21 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
   }
 
   @Override
+  public BigDecimal getTrackingNumberAvailableQty(
+      StockLocation stockLocation, TrackingNumber trackingNumber) {
+    StockLocationLine detailStockLocationLine =
+        Beans.get(StockLocationLineService.class)
+            .getDetailLocationLine(stockLocation, trackingNumber.getProduct(), trackingNumber);
+
+    BigDecimal availableQty = BigDecimal.ZERO;
+
+    if (detailStockLocationLine != null) {
+      availableQty = detailStockLocationLine.getCurrentQty();
+    }
+    return availableQty;
+  }
+
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void updateStockLocationFromProduct(StockLocationLine stockLocationLine, Product product)
       throws AxelorException {
@@ -554,7 +569,9 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     Unit stockLocationUnit = stockLocationLine.getUnit();
 
     if (productUnit != null && !productUnit.equals(stockLocationUnit)) {
-      int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
+      AppBaseService appBaseService = Beans.get(AppBaseService.class);
+      int scale = appBaseService.getNbDecimalDigitForUnitPrice();
+      int qtyScale = appBaseService.getNbDecimalDigitForQty();
       BigDecimal oldQty = stockLocationLine.getCurrentQty();
       BigDecimal oldAvgPrice = stockLocationLine.getAvgPrice();
       UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
@@ -573,7 +590,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 
       BigDecimal avgQty = BigDecimal.ZERO;
       if (currentQty.compareTo(BigDecimal.ZERO) != 0) {
-        avgQty = oldQty.divide(currentQty, scale, RoundingMode.HALF_UP);
+        avgQty = oldQty.divide(currentQty, qtyScale, RoundingMode.HALF_UP);
       }
       BigDecimal newAvgPrice = oldAvgPrice.multiply(avgQty);
       updateWap(stockLocationLine, newAvgPrice.setScale(scale, RoundingMode.HALF_UP));

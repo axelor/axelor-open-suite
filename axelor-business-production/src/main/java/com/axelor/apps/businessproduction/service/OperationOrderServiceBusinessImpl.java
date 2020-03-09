@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,6 +23,7 @@ import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.operationorder.OperationOrderServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -39,6 +40,11 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
   @Transactional(rollbackOn = {Exception.class})
   public OperationOrder createOperationOrder(ManufOrder manufOrder, ProdProcessLine prodProcessLine)
       throws AxelorException {
+    AppProductionService appProductionService = Beans.get(AppProductionService.class);
+    if (!appProductionService.isApp("production")
+        || !appProductionService.getAppProduction().getManageBusinessProduction()) {
+      return super.createOperationOrder(manufOrder, prodProcessLine);
+    }
 
     OperationOrder operationOrder =
         this.createOperationOrder(
@@ -86,6 +92,12 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
 
   @Override
   protected ProdHumanResource copyProdHumanResource(ProdHumanResource prodHumanResource) {
+    AppProductionService appProductionService = Beans.get(AppProductionService.class);
+
+    if (!appProductionService.isApp("production")
+        || !appProductionService.getAppProduction().getManageBusinessProduction()) {
+      return super.copyProdHumanResource(prodHumanResource);
+    }
 
     ProdHumanResource prodHumanResourceCopy =
         new ProdHumanResource(prodHumanResource.getProduct(), prodHumanResource.getDuration());

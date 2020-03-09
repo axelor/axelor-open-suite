@@ -15,8 +15,8 @@
       <field name="product" hidden="true"/>
       <field name="maturityDate" width="110"/>
       <field name="mrpLineType" width="210"/>
-      <field name="qty" width="100"/>
-      <field name="cumulativeQty" css="bold" width="130"/>
+      <field name="qty" width="100" x-scale="2"/>
+      <field name="cumulativeQty" css="bold" width="130" x-scale="2"/>
       <field name="unit" width="80"/>
       <field name="company" />
       <field name="stockLocation" />

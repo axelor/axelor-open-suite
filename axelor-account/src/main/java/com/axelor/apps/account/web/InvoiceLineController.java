@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -160,8 +160,7 @@ public class InvoiceLineController {
 
         String errorMsg = (String) productInformation.get("error");
 
-        if (!Strings.isNullOrEmpty(errorMsg)
-            && Beans.get(InvoiceLineService.class).isAccountRequired(invoiceLine)) {
+        if (!Strings.isNullOrEmpty(errorMsg)) {
           response.setFlash(errorMsg);
         }
       } catch (Exception e) {

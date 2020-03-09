@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -350,9 +350,6 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     productInformation.put("inTaxTotal", null);
     productInformation.put("companyInTaxTotal", null);
     productInformation.put("companyExTaxTotal", null);
-    productInformation.put("subLineList", null);
-    productInformation.put("totalPack", null);
-    productInformation.put("packPriceSelect", 0);
     productInformation.put("typeSelect", InvoiceLineRepository.TYPE_NORMAL);
     boolean isPurchase = InvoiceToolService.isPurchase(invoice);
     if ((isPurchase
@@ -398,7 +395,6 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 
     Map<String, Object> productInformation = resetProductInformation(invoice);
 
-    boolean isAccountRequired = isAccountRequired(invoiceLine);
     Product product = invoiceLine.getProduct();
     TaxLine taxLine = null;
     Company company = invoice.getCompany();
@@ -423,24 +419,17 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       productInformation.put("error", e.getMessage());
     }
 
-    if (isAccountRequired) {
-      BigDecimal price = this.getExTaxUnitPrice(invoice, invoiceLine, taxLine, isPurchase);
-      BigDecimal inTaxPrice = this.getInTaxUnitPrice(invoice, invoiceLine, taxLine, isPurchase);
+    BigDecimal price = this.getExTaxUnitPrice(invoice, invoiceLine, taxLine, isPurchase);
+    BigDecimal inTaxPrice = this.getInTaxUnitPrice(invoice, invoiceLine, taxLine, isPurchase);
 
-      productInformation.put("price", price);
-      productInformation.put("inTaxPrice", inTaxPrice);
+    productInformation.put("price", price);
+    productInformation.put("inTaxPrice", inTaxPrice);
 
-      productInformation.putAll(
-          this.getDiscount(invoice, invoiceLine, product.getInAti() ? inTaxPrice : price));
+    productInformation.putAll(
+        this.getDiscount(invoice, invoiceLine, product.getInAti() ? inTaxPrice : price));
 
-      productInformation.put("productName", invoiceLine.getProduct().getName());
-    }
+    productInformation.put("productName", invoiceLine.getProduct().getName());
 
     return productInformation;
-  }
-
-  @Override
-  public boolean isAccountRequired(InvoiceLine invoiceLine) {
-    return true;
   }
 }

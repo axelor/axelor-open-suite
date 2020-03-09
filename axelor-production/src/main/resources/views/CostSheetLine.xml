@@ -111,7 +111,7 @@
     </action-view>
 	
     <action-attrs name="action-cost-sheet-line-attrs-price-and-qty-digits">
-    	<attribute name="scale" for="consumptionQty" expr="eval: __config__.app.getApp('production').nbDecimalDigitForBomQty"/>
+    	<attribute name="scale" for="consumptionQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
         <attribute name="scale" for="costPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
     </action-attrs>
 	

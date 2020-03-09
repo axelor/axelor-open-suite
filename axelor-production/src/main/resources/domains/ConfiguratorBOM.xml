@@ -13,7 +13,7 @@
         <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
         <string name="productFormula" title="Product" large="true"/>
         <boolean name="defProductAsFormula" title="Define with a script" default="false"/>
-        <boolean name="defProductFromConfigurator" title="Use generated product" default="true"/>
+        <boolean name="defProductFromConfigurator" title="Use generated product" default="false"/>
         <decimal name="qty" title="Qty"/>
         <string name="qtyFormula" title="Qty" large="true"/>
         <boolean name="defQtyAsFormula" title="Define with a script" default="false"/>
@@ -27,13 +27,14 @@
         <boolean name="defProdProcessAsConfigurator" title="Define with a configurator" default="false"/>
         <one-to-many name="configuratorBomList" ref="com.axelor.apps.production.db.ConfiguratorBOM" mappedBy="parentConfiguratorBOM" title="Configurators BOMs"/>
         <many-to-one name="parentConfiguratorBOM" ref="com.axelor.apps.production.db.ConfiguratorBOM" title="Parent Configurator BOM"/>
+        <boolean name="defineSubBillOfMaterial" title="Define sub bill of material" default="true"/>
 
         <integer name="statusSelect" title="Status" selection="production.bill.of.material.status.select" default="2"/>
 
         <string name="useCondition" title="Condition" large="true"/>
 
         <!--we don't want a real database relation between configurator and
-        bill of material, so we just save the id-->
+        bill of materials, so we just save the id-->
         <long name="billOfMaterialId"/>
     </entity>
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -70,7 +70,9 @@ public class StockRulesServiceProductionImpl extends StockRulesServiceSupplychai
     if (stockRules == null) {
       return;
     }
-    if (stockRules.getOrderAlertSelect() == StockRulesRepository.ORDER_ALERT_PRODUCTION_ORDER) {
+    if (stockRules
+        .getOrderAlertSelect()
+        .equals(StockRulesRepository.ORDER_ALERT_PRODUCTION_ORDER)) {
       this.generateProductionOrder(product, qty, stockLocationLine, type, stockRules);
     } else {
       this.generatePurchaseOrder(product, qty, stockLocationLine, type);
@@ -96,6 +98,9 @@ public class StockRulesServiceProductionImpl extends StockRulesServiceSupplychai
       BigDecimal qtyToProduce = this.getQtyToOrder(qty, stockLocationLine, type, stockRules);
       Beans.get(ProductionOrderService.class)
           .generateProductionOrder(product, null, qtyToProduce, LocalDateTime.now());
+      if (stockRules.getAlert()) {
+        this.generateAndSendMessage(stockRules);
+      }
     }
   }
 }

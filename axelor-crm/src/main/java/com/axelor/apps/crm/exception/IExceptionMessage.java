@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -69,7 +69,7 @@ public interface IExceptionMessage {
 
   /** Configuration */
   static final String CRM_CONFIG_1 = /*$$(*/
-      "Please configure informations for CRM for company %s" /*)*/;
+      "Please configure information for CRM for company %s" /*)*/;
 
   static final String CRM_CONFIG_USER_EMAIL = /*$$(*/
       "User %s does not have an email address configured nor is it linked to a partner with an email address configured." /*)*/;

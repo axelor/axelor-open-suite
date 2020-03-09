@@ -20,6 +20,8 @@
   	 <many-to-one name="parent" ref="ActionBuilderLine" />
   	 <string name="name" title="Target field" />
   	 <boolean name="dummy" title="Dummy" />
+  	 <boolean name="isTargetJson" title="Target Json?" />
+     <boolean name="isSourceJson" title="Source Json?" />
   </entity>
 
 </domain-models>

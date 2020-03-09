@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -66,11 +66,10 @@ public class CostSheetServiceImpl implements CostSheetService {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  private final int QTY_MAX_SCALE = 10;
-
   protected UnitConversionService unitConversionService;
   protected CostSheetLineService costSheetLineService;
   protected BillOfMaterialRepository billOfMaterialRepo;
+  protected AppBaseService appBaseService;
   protected AppProductionService appProductionService;
 
   protected Unit hourUnit;
@@ -83,11 +82,13 @@ public class CostSheetServiceImpl implements CostSheetService {
       AppProductionService appProductionService,
       UnitConversionService unitConversionService,
       CostSheetLineService costSheetLineService,
+      AppBaseService appBaseService,
       BillOfMaterialRepository billOfMaterialRepo) {
 
     this.appProductionService = appProductionService;
     this.unitConversionService = unitConversionService;
     this.costSheetLineService = costSheetLineService;
+    this.appBaseService = appBaseService;
     this.billOfMaterialRepo = billOfMaterialRepo;
   }
 
@@ -458,7 +459,7 @@ public class CostSheetServiceImpl implements CostSheetService {
                   appProductionService.getNbDecimalDigitForUnitPrice(),
                   BigDecimal.ROUND_HALF_EVEN)
               .multiply(this.getNbCycle(producedQty, prodProcessLine.getMaxCapacityPerCycle()));
-      qty = qty.setScale(QTY_MAX_SCALE, BigDecimal.ROUND_HALF_EVEN);
+      qty = qty.setScale(appBaseService.getNbDecimalDigitForQty(), BigDecimal.ROUND_HALF_EVEN);
       BigDecimal costPrice = workCenter.getCostAmount().multiply(qty);
 
       costSheetLineService.createWorkCenterMachineCostSheetLine(
@@ -601,8 +602,7 @@ public class CostSheetServiceImpl implements CostSheetService {
       }
 
       valuationQty =
-          valuationQty.setScale(
-              appProductionService.getNbDecimalDigitForBomQty(), RoundingMode.HALF_UP);
+          valuationQty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
 
       if (valuationQty.compareTo(BigDecimal.ZERO) == 0) {
         continue;
@@ -651,11 +651,7 @@ public class CostSheetServiceImpl implements CostSheetService {
       totalQty =
           totalQty.add(
               unitConversionService.convert(
-                  unit,
-                  costSheet.getManufOrder().getUnit(),
-                  realQty,
-                  appProductionService.getNbDecimalDigitForBomQty(),
-                  product));
+                  unit, costSheet.getManufOrder().getUnit(), realQty, realQty.scale(), product));
     }
 
     return totalQty;
@@ -911,7 +907,7 @@ public class CostSheetServiceImpl implements CostSheetService {
                       appProductionService.getNbDecimalDigitForUnitPrice(),
                       BigDecimal.ROUND_HALF_EVEN)
                   .multiply(durationPerCycle)
-                  .setScale(QTY_MAX_SCALE, BigDecimal.ROUND_HALF_EVEN);
+                  .setScale(appBaseService.getNbDecimalDigitForQty(), BigDecimal.ROUND_HALF_EVEN);
         } else {
           qty = durationPerCycle;
         }
@@ -956,7 +952,7 @@ public class CostSheetServiceImpl implements CostSheetService {
                     stockMoveLine.getUnit(),
                     costSheet.getManufOrder().getUnit(),
                     stockMoveLine.getQty(),
-                    appProductionService.getNbDecimalDigitForBomQty(),
+                    stockMoveLine.getQty().scale(),
                     product));
       }
     }

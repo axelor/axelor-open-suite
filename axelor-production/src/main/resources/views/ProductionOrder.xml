@@ -54,7 +54,7 @@
         </panel-tabs>
     </form>
     
-    <form name="add-manuf-order-wizard-form" model="com.axelor.apps.base.db.Wizard" title="Add Manuf. Order" onNew="action-production-order-record-default-wizard">
+    <form name="add-manuf-order-wizard-form" model="com.axelor.apps.base.db.Wizard" title="Add Manuf. Order" onNew="action-production-order-record-default-wizard,action-add-manuf-order-wizard-attrs-scale">
     	<panel name="wizardPanel">
      		<field name="$product" title="Product" type="many-to-one" target="com.axelor.apps.base.db.Product" canEdit="false" domain="self.expense = false and self.productTypeSelect = 'storable' and self.procurementMethodSelect = 'produce'" form-view="product-form" grid-view="product-grid" onChange="action-production-order-wizard-record-bill-of-materials"/>
         	<field name="$billOfMaterial" title="BOM" type="many-to-one" onChange="action-production-order-wizard-record-product" onSelect="action-production-order-wizard-attrs-bill-of-material-dummy-domain" target="com.axelor.apps.production.db.BillOfMaterial" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
@@ -66,6 +66,10 @@
           <field name="$product.defaultBillOfMaterial" />
         </panel>
     </form>
+    
+    <action-attrs name="action-add-manuf-order-wizard-attrs-scale">
+    	<attribute name="scale" for="$qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    </action-attrs>
 
     <action-attrs if-module="axelor-business-production" name="action-production-order-attrs-title-project">
 		<attribute name="title" for="project" expr="eval: __config__.app.getApp('project').getProjectLabel()" if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>

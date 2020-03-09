@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -69,7 +69,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
 
   @Override
   public SaleOrder createSaleOrder(
-      User salemanUser,
+      User salespersonUser,
       Company company,
       Partner contactPartner,
       Currency currency,
@@ -81,8 +81,23 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       Partner clientPartner,
       Team team)
       throws AxelorException {
+
+    if (!Beans.get(AppSaleService.class).isApp("supplychain")) {
+      return super.createSaleOrder(
+          salespersonUser,
+          company,
+          contactPartner,
+          currency,
+          deliveryDate,
+          internalReference,
+          externalReference,
+          orderDate,
+          priceList,
+          clientPartner,
+          team);
+    }
     return createSaleOrder(
-        salemanUser,
+        salespersonUser,
         company,
         contactPartner,
         currency,
@@ -97,7 +112,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
   }
 
   public SaleOrder createSaleOrder(
-      User salemanUser,
+      User salespersonUser,
       Company company,
       Partner contactPartner,
       Currency currency,
@@ -119,7 +134,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
 
     SaleOrder saleOrder =
         super.createSaleOrder(
-            salemanUser,
+            salespersonUser,
             company,
             contactPartner,
             currency,

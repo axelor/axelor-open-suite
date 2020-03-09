@@ -7,8 +7,8 @@
     	canNew="false" canDelete="false">
         <field name="name" width="120"/>	
         <field name="stockMove.realDate"/>
-        <field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange"/>
-        <field name="qtyInvoiced"/>
+        <field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange" x-scale="2"/>
+        <field name="qtyInvoiced" x-scale="2"/>
         <field name="unitPriceUntaxed" x-scale="2"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
@@ -26,8 +26,8 @@
         <field name="producedManufOrder"/>
         <field name="stockMove.stockMoveSeq" /> 
         <field name="stockMove.realDate"/>
-        <field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange"/>
-        <field name="qtyInvoiced"/>
+        <field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange" x-scale="2"/>
+        <field name="qtyInvoiced" x-scale="2"/>
         <field name="unitPriceUntaxed" x-scale="2"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
@@ -46,8 +46,8 @@
         <field name="consumedOperationOrder"/>
         <field name="stockMove.stockMoveSeq" /> 
         <field name="stockMove.realDate"/>
-        <field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange"/>
-        <field name="qtyInvoiced"/>
+        <field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange" x-scale="2"/>
+        <field name="qtyInvoiced" x-scale="2"/>
         <field name="unitPriceUntaxed" x-scale="2"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
@@ -59,6 +59,42 @@
           <hilite color="danger" strong="true" if="availableStatusSelect == 3"/>
         </field>
     </grid>
+
+  <grid name="stock-move-line-declaration-exchanges-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine" orderBy="stockMove.statusSelect,-stockMove.estimatedDate"
+    canNew="false" canDelete="false">
+    <field name="name" width="120"/>
+    <field name="stockMove.realDate"/>
+    <field name="stockMove.typeSelect"/>
+    <field name="stockMove.fromStockLocation"/>
+    <field name="stockMove.toStockLocation"/>
+    <field name="product" form-view="product-form" grid-view="product-grid" readonlyIf="$get('stockMove.statusSelect') > 1"/>
+    <field name="productName" />
+    <field name="stockMove.partner"/>
+    <field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange"/>
+    <field name="qtyInvoiced" readonly="true"/>
+    <field name="unitPriceUntaxed" hidden="true" x-scale="2"/>
+    <field name="companyPurchasePrice" hidden="true" x-scale="2"/>
+    <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
+    <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+    <field name="trackingNumber" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product" readonlyIf="$get('stockMove.statusSelect') > 1"/>
+    <field name="stockMove.origin" width="120"/>
+    <field name="availableStatus" width="150">
+      <hilite strong="true" color="success" if="availableStatusSelect == 1"/>
+      <hilite strong="true" color="info" if="availableStatusSelect == 2"/>
+      <hilite color="danger" strong="true" if="availableStatusSelect == 3"/>
+      <hilite strong="true" color="warning" if="availableStatusSelect == 4"/>
+    </field>
+  </grid>
+
+    <form name="allocated-qty-stock-move-line-form" title="Change allocated qty"
+          model="com.axelor.apps.stock.db.StockMoveLine">
+        <panel name="mainPanel">
+            <field name="reservedQty" onChange="action-supplychain-attrs-sale-order-line-max-reserved-qty"/>
+            <button name="confirmNewReservationBtn" title="OK"
+                    onClick="action-method-stock-move-line-change-reserved-qty,close"/>
+            <field name="qty" hidden="true"/>
+        </panel>
+    </form>
 
     <action-view name="action-stock-move-line-product-reserved-planned" title="${fullName} plan. st. move"
 		model="com.axelor.apps.stock.db.StockMoveLine">
@@ -75,8 +111,43 @@
     	<context name="locationId" expr="eval: stockLocation?.id "/>
     </action-view>
 
-  <action-attrs name="action-supplychain-attrs-stock-order-line-max-reserved-qty">
-    <attribute name="value" for="reservedQty" expr="eval: realQty" if="reservedQty > realQty"/>
-  </action-attrs>
-  
-</object-views>	
+    <action-view name="action-view-stock-move-line-allocated-qty-wizard" title="Change allocated qty"
+                 model="com.axelor.apps.stock.db.StockMoveLine">
+        <view type="form" name="allocated-qty-stock-move-line-form"/>
+        <view-param name="popup" value="reload"/>
+        <view-param name="show-toolbar" value="false"/>
+        <view-param name="show-confirm" value="false" />
+        <view-param name="popup-save" value="false"/>
+        <view-param name="forceEdit" value="true"/>
+        <context name="_showRecord" expr="eval: id"/>
+    </action-view>
+
+    <action-method name="action-supplychain-stock-move-line-allocate-all">
+    <call class="com.axelor.apps.supplychain.web.StockMoveLineController" method="allocateAll"/>
+  </action-method>
+
+  <action-method name="action-supplychain-stock-move-line-deallocate-all">
+    <call class="com.axelor.apps.supplychain.web.StockMoveLineController" method="deallocateAll"/>
+  </action-method>
+
+    <action-method name="action-method-stock-move-line-change-reserved-qty">
+        <call class="com.axelor.apps.supplychain.web.StockMoveLineController" method="changeReservedQty"/>
+    </action-method>
+
+    <action-method name="action-method-stock-move-line-request-qty">
+        <call class="com.axelor.apps.supplychain.web.StockMoveLineController" method="requestQty"/>
+    </action-method>
+
+    <action-method name="action-method-stock-move-line-cancel-reservation">
+        <call class="com.axelor.apps.supplychain.web.StockMoveLineController" method="cancelReservation"/>
+    </action-method>
+
+    <action-attrs name="action-supplychain-stock-move-line-attrs-hide-button">
+        <attribute for="updateAllocatedQtyBtn" name="hidden" expr="eval: id == null || __parent__.statusSelect != 2" if="__parent__"/>
+        <attribute for="updateAllocatedQtyBtn" name="hidden" expr="eval: id == null || stockMove.statusSelect != 2" if="stockMove"/>
+        <attribute for="requestQty" name="hidden" expr="eval: isQtyRequested || __parent__.statusSelect != 2" if="__parent__"/>
+        <attribute for="requestQty" name="hidden" expr="eval: isQtyRequested || stockMove.statusSelect != 2" if="stockMove"/>
+        <attribute for="cancelReservation" name="hidden" expr="eval: !isQtyRequested || __parent__.statusSelect != 2" if="__parent__"/>
+        <attribute for="cancelReservation" name="hidden" expr="eval: !isQtyRequested || stockMove.statusSelect != 2" if="stockMove"/>
+    </action-attrs>
+</object-views>

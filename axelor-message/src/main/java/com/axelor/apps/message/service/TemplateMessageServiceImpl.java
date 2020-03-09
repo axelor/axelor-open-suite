@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -177,7 +177,6 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 
     mediaTypeSelect = this.getMediaTypeSelect(template);
     log.debug("Media ::: {}", mediaTypeSelect);
-    log.debug("Content ::: {}", content);
 
     Message message =
         messageService.createMessage(
@@ -320,7 +319,6 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
     EmailAccount mailAccount = Beans.get(MailAccountService.class).getDefaultSender();
 
     if (mailAccount != null) {
-      log.debug("Email account ::: {}", mailAccount);
       return mailAccount;
     }
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,7 +22,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.inject.Beans;
-import java.util.Set;
+import java.util.List;
 
 public class CompanyServiceImpl implements CompanyService {
 
@@ -46,10 +46,10 @@ public class CompanyServiceImpl implements CompanyService {
    */
   private int countActiveBankDetails(Company company) {
     int count = 0;
-    Set<BankDetails> bankDetailsSet = company.getBankDetailsSet();
+    List<BankDetails> bankDetailsList = company.getBankDetailsList();
 
-    if (bankDetailsSet != null) {
-      for (BankDetails bankDetails : bankDetailsSet) {
+    if (bankDetailsList != null) {
+      for (BankDetails bankDetails : bankDetailsList) {
         if (bankDetails.getActive()) {
           ++count;
         }

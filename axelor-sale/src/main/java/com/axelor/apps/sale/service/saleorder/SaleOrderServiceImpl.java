@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,10 @@ package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.CurrencyConversionService;
 import com.axelor.apps.base.service.DurationService;
+import com.axelor.apps.sale.db.Pack;
+import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -27,17 +30,27 @@ import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.report.IReport;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.net.MalformedURLException;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import wslite.json.JSONException;
 
 public class SaleOrderServiceImpl implements SaleOrderService {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  @Inject private SaleOrderLineService saleOrderService;
 
   @Override
   public String getFileName(SaleOrder saleOrder) {
@@ -113,5 +126,53 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     if (saleOrder.getSaleOrderLineList() != null) {
       saleOrder.getSaleOrderLineList().sort(Comparator.comparing(SaleOrderLine::getSequence));
     }
+  }
+
+  @Override
+  @Transactional
+  public SaleOrder addPack(SaleOrder saleOrder, Pack pack, BigDecimal packQty) {
+    Integer sequence = 0;
+
+    List<SaleOrderLine> soLines = saleOrder.getSaleOrderLineList();
+    if (soLines != null && !soLines.isEmpty()) {
+      sequence =
+          Collections.max(
+              soLines.stream().map(soLine -> soLine.getSequence()).collect(Collectors.toSet()));
+    }
+
+    BigDecimal ConversionRate = new BigDecimal(1.00);
+    if (pack.getCurrency() != null
+        && !pack.getCurrency().getCode().equals(saleOrder.getCurrency().getCode())) {
+      try {
+        ConversionRate =
+            Beans.get(CurrencyConversionService.class)
+                .convert(pack.getCurrency(), saleOrder.getCurrency());
+      } catch (MalformedURLException | JSONException | AxelorException e) {
+        TraceBackService.trace(e);
+      }
+    }
+
+    SaleOrderLine soLine;
+    for (PackLine packLine : pack.getComponents()) {
+      soLine =
+          saleOrderService.createSaleOrderLine(
+              packLine, saleOrder, packQty, ConversionRate, ++sequence);
+      if (soLine != null) {
+        soLine.setSaleOrder(saleOrder);
+        soLines.add(soLine);
+      }
+    }
+
+    if (soLines != null && !soLines.isEmpty()) {
+      try {
+        saleOrder = Beans.get(SaleOrderComputeService.class).computeSaleOrder(saleOrder);
+        Beans.get(SaleOrderMarginService.class).computeMarginSaleOrder(saleOrder);
+      } catch (AxelorException e) {
+        TraceBackService.trace(e);
+      }
+
+      Beans.get(SaleOrderRepository.class).save(saleOrder);
+    }
+    return saleOrder;
   }
 }

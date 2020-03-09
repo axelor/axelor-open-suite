@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,7 +18,6 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.DirectDebitManagement;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
@@ -50,7 +49,6 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -250,113 +248,5 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
     paymentScheduleService.closePaymentScheduleIfAllPaid(paymentSchedule);
 
     return move;
-  }
-
-  /**
-   * Procédure permettant d'assigner un numéro de prélèvement à l'échéance à prélever Si plusieurs
-   * échéance d'un même échéancier sont à prélever, alors on utilise un objet de gestion de
-   * prélèvement encadrant l'ensemble des échéances en question Sinon on assigne simplement un
-   * numéro de prélèvement à l'échéance
-   *
-   * @param paymentScheduleLineList Une liste d'échéance à prélever
-   * @param paymentScheduleLine L'échéance traité
-   * @param company Une société
-   * @param paymentMode TODO
-   * @param journal Un journal (prélèvement mensu masse ou grand compte)
-   * @throws AxelorException
-   */
-  protected void setDebitNumber(
-      List<PaymentScheduleLine> paymentScheduleLineList,
-      PaymentScheduleLine paymentScheduleLine,
-      Company company,
-      PaymentMode paymentMode)
-      throws AxelorException {
-
-    if (hasOtherPaymentScheduleLine(paymentScheduleLineList, paymentScheduleLine)) {
-      DirectDebitManagement directDebitManagement =
-          getDirectDebitManagement(paymentScheduleLineList, paymentScheduleLine);
-      if (directDebitManagement == null) {
-        directDebitManagement =
-            createDirectDebitManagement(getDirectDebitSequence(company, paymentMode), company);
-      }
-      paymentScheduleLine.setDirectDebitManagement(directDebitManagement);
-      directDebitManagement.getPaymentScheduleLineList().add(paymentScheduleLine);
-    } else {
-      paymentScheduleLine.setDebitNumber(getDirectDebitSequence(company, paymentMode));
-    }
-  }
-
-  protected void setDebitNumber(PaymentScheduleLine paymentScheduleLine, PaymentMode paymentMode)
-      throws AxelorException {
-    PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
-    List<PaymentScheduleLine> paymentScheduleLineList =
-        paymentSchedule.getPaymentScheduleLineList();
-    Company company = paymentSchedule.getCompany();
-    setDebitNumber(paymentScheduleLineList, paymentScheduleLine, company, paymentMode);
-  }
-
-  /**
-   * Y a-t-il d'autres échéance a exporter pour le même payeur ?
-   *
-   * @param pslList : une liste d'échéance
-   * @param psl
-   * @return
-   */
-  protected boolean hasOtherPaymentScheduleLine(
-      List<PaymentScheduleLine> pslList, PaymentScheduleLine psl) {
-    int i = 0;
-    for (PaymentScheduleLine paymentScheduleLine : pslList) {
-      paymentScheduleLine = paymentScheduleLineRepo.find(paymentScheduleLine.getId());
-      if (psl.getPaymentSchedule().equals(paymentScheduleLine.getPaymentSchedule())) {
-        i++;
-      }
-    }
-    return i > 1;
-  }
-
-  /**
-   * Procédure permettant de récupérer l'objet de gestion déjà créé lors du prélèvement d'une autre
-   * échéance
-   *
-   * @param pslList La liste d'échéance à prélever
-   * @param psl L'échéance à prélever
-   * @return L'objet de gestion trouvé
-   */
-  protected DirectDebitManagement getDirectDebitManagement(
-      List<PaymentScheduleLine> pslList, PaymentScheduleLine psl) {
-    for (PaymentScheduleLine paymentScheduleLine : pslList) {
-      paymentScheduleLine = paymentScheduleLineRepo.find(paymentScheduleLine.getId());
-      if (psl.getPaymentSchedule().equals(paymentScheduleLine.getPaymentSchedule())) {
-        if (paymentScheduleLine.getDirectDebitManagement() != null) {
-          return paymentScheduleLine.getDirectDebitManagement();
-        }
-      }
-    }
-    return null;
-  }
-
-  /**
-   * Procédure permettant de créer un objet de gestion de prélèvement
-   *
-   * @param sequence La séquence de prélèvement à utiliser
-   * @param company Une société
-   * @return
-   */
-  protected DirectDebitManagement createDirectDebitManagement(String sequence, Company company) {
-    DirectDebitManagement directDebitManagement = new DirectDebitManagement();
-    directDebitManagement.setDebitNumber(sequence);
-    directDebitManagement.setInvoiceSet(new HashSet<Invoice>());
-    directDebitManagement.setPaymentScheduleLineList(new ArrayList<PaymentScheduleLine>());
-    directDebitManagement.setCompany(company);
-    return directDebitManagement;
-  }
-
-  protected String getDirectDebitSequence(Company company, PaymentMode paymentMode)
-      throws AxelorException {
-
-    // TODO manage multi bank
-
-    return sequenceService.getSequenceNumber(
-        paymentModeService.getPaymentModeSequence(paymentMode, company, null));
   }
 }

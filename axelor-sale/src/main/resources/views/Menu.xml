@@ -38,6 +38,15 @@
 		<context name="_domain" expr="self.isContact = true AND self.mainPartner.isCustomer = true"/>
 	</action-view>
 	
+	<menuitem name="sc-root-sale-pack" parent="sc-root-sale" order="12"
+		title="Pack" action="sc.root.sale.pack" if="__config__.app.getApp('sale')?.enablePackManagement"/>
+
+	<action-view name="sc.root.sale.pack" title="Pack"
+		model="com.axelor.apps.sale.db.Pack" >
+		<view type="grid" name="pack-grid" />
+		<view type="form" name="pack-form" />
+	</action-view>
+	
 	<menuitem name="sc-root-sale-products" parent="sc-root-sale" order="15"
 		title="Products &amp; services" action="sc.root.sale.products" />
 
@@ -232,7 +241,7 @@
 				 model="com.axelor.apps.sale.db.Configurator" >
 		<view type="grid" name="configurator-grid" />
 		<view type="form" name="configurator-form" />
-		<domain>:__user__ IN self.configuratorCreator.authorizedUserSet OR :groupId IN self.configuratorCreator.authorizedGroupSet</domain>
+		<domain>:__user__ MEMBER OF self.configuratorCreator.authorizedUserSet OR :groupId MEMBER OF self.configuratorCreator.authorizedGroupSet</domain>
 		<context name="groupId" expr="eval: __user__.group.id"/>
 	</action-view>
 
@@ -287,9 +296,9 @@
 	</action-view>
 		
 	<menuitem name="menu-saleman-dashboard-sample" parent="sc-root-sale-report" order="-205"
-		title="Salesman"  action="saleman.dashboard.view.sample" />
+		title="Salesperson"  action="saleman.dashboard.view.sample" />
 		
-	<action-view name="saleman.dashboard.view.sample" title="Salesman Details">
+	<action-view name="saleman.dashboard.view.sample" title="Salesperson Details">
 		<view type="dashboard" name="sale.saleman.dashboard.sample" />
     	<context name="_user" expr="eval:__user__"/>
     	<context name="_user_id" expr="eval:__user__.id"/>
