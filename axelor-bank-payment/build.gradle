@@ -46,7 +46,7 @@ license {
 
 task xjc () {
 	def source = "${projectDir}/src/main/resources/xsd/sepa"
-	def target = "${buildDir}/src-gen/java"
+	def target = "${buildDir}/src-gen/xjc"
 
 	inputs.dir(source)
 	outputs.dir(target)
@@ -65,7 +65,14 @@ task xjc () {
 			ant.xjc	( argsin )
 		}
 	}
+
+	sourceSets {
+		main {
+			java {
+				srcDirs target
+			}
+		}
+	}
 }
 
-compileJava.dependsOn xjc
 generateCode.finalizedBy xjc
