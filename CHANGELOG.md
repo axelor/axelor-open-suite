@@ -34,6 +34,7 @@
 - MRP : sequence is copied when MRP is copied.
 - TEAM TASK : Fixed issue in copy by using clearList instead of set it to null for projectPlanningTimeList.
 - PURCHASE ORDER REPORT: Fixed value of payment condition from PurchaseOrder's payment condition instead of using partner.
+- Move: Fix exception message when saving a new record.
 
 ## [5.2.5] - 2020-02-25
 ## Improvements
