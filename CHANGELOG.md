@@ -21,6 +21,7 @@
 - Project : Resolve issue in computation of timespent
 - EBICS: Display correctly hash code in certificates EBICS.
 - Move: Fix exception message when saving a new record.
+- Invoice Payment : change date from move date to move line date.  
 
 ## [5.3.0] - 2020-02-25
 ## Features
