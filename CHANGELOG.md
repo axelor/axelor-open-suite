@@ -21,6 +21,7 @@
 - INVOICE : fix the NPE when payment mode is null in invoice.
 - Move: Fix exception message when saving a new record.
 - SALEORDER : fixed bug causing the margins to be rounded to the unit
+- SUPPLIER INVOICE : fix the problem of amount not updated in supplier invoice after use of mass invoice payment function.
 
 ## [5.1.14] - 2020-01-17
 ## Improvements
