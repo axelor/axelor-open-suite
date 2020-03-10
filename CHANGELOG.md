@@ -12,6 +12,7 @@
 - Accounting Config : clarifying the field lineMinBeforeLongReportGenerationMessageNumber
 
 ## Bug Fixes
+- SALEORDER : fixed bug causing the margins to be rounded to the unit
 - Fix Timesheet Reminder Batch sendReminder method
 - Stock Move Line reservation: correctly set qty requested flag when generated from a sale order line.
 - Stock Move: Delete empty date field in form view.
