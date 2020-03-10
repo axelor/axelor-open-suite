@@ -1384,7 +1384,7 @@ EMPLOYEE RESUME
                         <property name="paddingBottom">1pt</property>
                         <property name="textAlign">center</property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<H2>Personal Informations</H2>]]></text-property>
+                        <text-property name="content"><![CDATA[<H2>Personal Information</H2>]]></text-property>
                     </text>
                     <grid id="281">
                         <column id="282"/>

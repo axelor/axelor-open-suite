@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -28,7 +28,6 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
-import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceService;
 import com.axelor.db.JPA;
 import com.axelor.exception.service.TraceBackService;
@@ -305,30 +304,6 @@ public class InvoiceController {
                       .SUBSCRIPTION_INVOICE_GENERATION_ERROR),
               e.getMessage()));
       TraceBackService.trace(e);
-    }
-  }
-
-  public void addSubLines(ActionRequest request, ActionResponse response) {
-    try {
-      Invoice invoice = request.getContext().asType(Invoice.class);
-      response.setValue(
-          "invoiceLineList",
-          Beans.get(InvoiceServiceSupplychain.class).addSubLines(invoice.getInvoiceLineList()));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-      response.setReload(true);
-    }
-  }
-
-  public void removeSubLines(ActionRequest request, ActionResponse response) {
-    try {
-      Invoice invoice = request.getContext().asType(Invoice.class);
-      response.setValue(
-          "invoiceLineList",
-          Beans.get(InvoiceServiceSupplychain.class).removeSubLines(invoice.getInvoiceLineList()));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-      response.setReload(true);
     }
   }
 }

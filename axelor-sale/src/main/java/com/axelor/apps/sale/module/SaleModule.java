@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -27,8 +27,6 @@ import com.axelor.apps.sale.db.repo.AdvancePaymentSaleRepository;
 import com.axelor.apps.sale.db.repo.OpportunitySaleRepository;
 import com.axelor.apps.sale.db.repo.SaleBatchRepository;
 import com.axelor.apps.sale.db.repo.SaleBatchSaleRepository;
-import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.sale.db.repo.SaleOrderLineSaleRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.AddressServiceSaleImpl;
@@ -80,7 +78,6 @@ public class SaleModule extends AxelorModule {
     bind(OpportunitySaleOrderService.class).to(OpportunitySaleOrderServiceImpl.class);
     bind(AdvancePaymentService.class).to(AdvancePaymentServiceImpl.class);
     bind(AppSaleService.class).to(AppSaleServiceImpl.class);
-    bind(SaleOrderLineRepository.class).to(SaleOrderLineSaleRepository.class);
     bind(SaleConfigService.class).to(SaleConfigServiceImpl.class);
     bind(SaleBatchRepository.class).to(SaleBatchSaleRepository.class);
     PartnerAddressRepository.modelPartnerFieldMap.put(SaleOrder.class.getName(), "clientPartner");

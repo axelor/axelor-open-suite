@@ -10,8 +10,8 @@
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" initParam="true"/>
     <decimal name="qualityRating" title="Quality rating"/>
     <decimal name="qualityRatingSelect" title="Quality rating" selection="rating.icon.select"/>
-    <decimal name="compliantArrivalProductQty"/>
-    <decimal name="arrivalProductQty"/>
+    <decimal name="compliantArrivalProductQty" precision="20" scale="10"/>
+    <decimal name="arrivalProductQty" precision="20" scale="10"/>
   </entity>
   
 </domain-models>

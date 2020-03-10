@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -69,11 +69,11 @@ public interface ManufOrderService {
   public void createToConsumeProdProductList(ManufOrder manufOrder);
 
   /**
-   * Compute the quantity on generated prod product line. If the quantity of the bill of material is
-   * equal to the quantity of manuf order then the prod product line will have the same quantity as
-   * configured line.
+   * Compute the quantity on generated prod product line. If the quantity of the bill of materials
+   * is equal to the quantity of manuf order then the prod product line will have the same quantity
+   * as configured line.
    *
-   * @param bomQty quantity of the bill of material.
+   * @param bomQty quantity of the bill of materials.
    * @param manufOrderQty quantity configured of the manuf order.
    * @param lineQty quantity of the line.
    * @return the quantity for the prod product line.

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -53,14 +53,14 @@ public class BatchOrderInvoicingSale extends BatchOrderInvoicing {
 
     if (supplychainBatch.getSalespersonOrBuyerSet() != null
         && !supplychainBatch.getSalespersonOrBuyerSet().isEmpty()) {
-      filterList.add("self.salemanUser IN (:salespersonSet)");
+      filterList.add("self.salespersonUser IN (:salespersonSet)");
       query.bind("salespersonSet", supplychainBatch.getSalespersonOrBuyerSet());
     }
 
     if (supplychainBatch.getTeam() != null) {
       filterList.add(
           "self.team = :team "
-              + "OR self.team IS NULL AND self.salemanUser IS NOT NULL AND self.salemanUser.activeTeam = :team");
+              + "OR self.team IS NULL AND self.salespersonUser IS NOT NULL AND self.salespersonUser.activeTeam = :team");
       query.bind("team", supplychainBatch.getTeam());
     }
 

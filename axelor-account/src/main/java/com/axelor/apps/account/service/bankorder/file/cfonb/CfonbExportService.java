@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,7 +19,6 @@ package com.axelor.apps.account.service.bankorder.file.cfonb;
 
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.CfonbConfig;
-import com.axelor.apps.account.db.DirectDebitManagement;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.PaymentScheduleLine;
@@ -165,20 +164,9 @@ public class CfonbExportService {
     String senderCFONB = this.createSenderMonthlyExportCFONB(scheduleDate, bankDetails);
     List<String> multiRecipientCFONB = new ArrayList<String>();
 
-    List<DirectDebitManagement> directDebitManagementList = new ArrayList<DirectDebitManagement>();
     for (PaymentScheduleLine paymentScheduleLine : paymentScheduleLineList) {
       paymentScheduleLine = paymentScheduleLineRepo.find(paymentScheduleLine.getId());
-      if (paymentScheduleLine.getDirectDebitManagement() == null) {
-        multiRecipientCFONB.add(this.createRecipientCFONB(paymentScheduleLine, true));
-      } else {
-        if (!directDebitManagementList.contains(paymentScheduleLine.getDirectDebitManagement())) {
-          directDebitManagementList.add(paymentScheduleLine.getDirectDebitManagement());
-        }
-      }
-    }
-
-    for (DirectDebitManagement directDebitManagement : directDebitManagementList) {
-      multiRecipientCFONB.add(this.createRecipientCFONB(directDebitManagement, false));
+      multiRecipientCFONB.add(this.createRecipientCFONB(paymentScheduleLine, true));
     }
 
     String totalCFONB =
@@ -227,21 +215,9 @@ public class CfonbExportService {
     String senderCFONB = this.createSenderMonthlyExportCFONB(scheduleDate, bankDetails);
     List<String> multiRecipientCFONB = new ArrayList<String>();
 
-    List<DirectDebitManagement> directDebitManagementList = new ArrayList<DirectDebitManagement>();
-
     for (Invoice invoice : invoiceList) {
       invoice = invoiceRepo.find(invoice.getId());
-      if (invoice.getDirectDebitManagement() == null) {
-        multiRecipientCFONB.add(this.createRecipientCFONB(company, invoice));
-      } else {
-        if (!directDebitManagementList.contains(invoice.getDirectDebitManagement())) {
-          directDebitManagementList.add(invoice.getDirectDebitManagement());
-        }
-      }
-    }
-
-    for (DirectDebitManagement directDebitManagement : directDebitManagementList) {
-      multiRecipientCFONB.add(this.createRecipientCFONB(directDebitManagement, true));
+      multiRecipientCFONB.add(this.createRecipientCFONB(company, invoice));
     }
 
     BigDecimal amount = this.getTotalAmountInvoice(invoiceList);
@@ -294,37 +270,15 @@ public class CfonbExportService {
     List<String> multiRecipientCFONB = new ArrayList<String>();
 
     // Echéanciers
-    List<DirectDebitManagement> directDebitManagementList = new ArrayList<DirectDebitManagement>();
     for (PaymentScheduleLine paymentScheduleLine : paymentScheduleLineList) {
       paymentScheduleLine = paymentScheduleLineRepo.find(paymentScheduleLine.getId());
-      if (paymentScheduleLine.getDirectDebitManagement() == null) {
-        multiRecipientCFONB.add(this.createRecipientCFONB(paymentScheduleLine, false));
-      } else {
-        if (!directDebitManagementList.contains(paymentScheduleLine.getDirectDebitManagement())) {
-          directDebitManagementList.add(paymentScheduleLine.getDirectDebitManagement());
-        }
-      }
-    }
-
-    for (DirectDebitManagement directDebitManagement : directDebitManagementList) {
-      multiRecipientCFONB.add(this.createRecipientCFONB(directDebitManagement, false));
+      multiRecipientCFONB.add(this.createRecipientCFONB(paymentScheduleLine, false));
     }
 
     // Factures
-    directDebitManagementList = new ArrayList<DirectDebitManagement>();
     for (Invoice invoice : invoiceList) {
       invoice = invoiceRepo.find(invoice.getId());
-      if (invoice.getDirectDebitManagement() == null) {
-        multiRecipientCFONB.add(this.createRecipientCFONB(company, invoice));
-      } else {
-        if (!directDebitManagementList.contains(invoice.getDirectDebitManagement())) {
-          directDebitManagementList.add(invoice.getDirectDebitManagement());
-        }
-      }
-    }
-
-    for (DirectDebitManagement directDebitManagement : directDebitManagementList) {
-      multiRecipientCFONB.add(this.createRecipientCFONB(directDebitManagement, true));
+      multiRecipientCFONB.add(this.createRecipientCFONB(company, invoice));
     }
 
     BigDecimal amount =
@@ -533,68 +487,6 @@ public class CfonbExportService {
         this.cfonbConfig.getDirectDebitOperationCodeExportCFONB(); // Code opération
 
     return this.createRecipientCFONB(amount, ref, partnerName, bankDetails, operationCode);
-  }
-
-  /**
-   * Fonction permettant de créer un enregistrement 'destinataire' pour un export de prélèvement de
-   * plusieurs échéances par le biais d'un objet de gestion de prélèvement
-   *
-   * @param company Une société
-   * @param paymentScheduleLine Une échéance
-   * @return Un enregistrement 'destinataire'
-   * @throws AxelorException
-   */
-  private String createRecipientCFONB(
-      DirectDebitManagement directDebitManagement, boolean isForInvoice) throws AxelorException {
-    BankDetails bankDetails = null;
-    String partnerName = "";
-    if (isForInvoice) {
-      Invoice invoice = (Invoice) directDebitManagement.getInvoiceSet().toArray()[0];
-      Partner partner = invoice.getPartner();
-      bankDetails = partnerService.getDefaultBankDetails(partner);
-      partnerName =
-          this.getPayeurPartnerName(invoice.getPartner()); // Nom/Raison sociale du débiteur
-      if (bankDetails == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2),
-            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
-            partner.getName());
-      }
-    } else {
-      PaymentSchedule paymentSchedule =
-          directDebitManagement.getPaymentScheduleLineList().get(0).getPaymentSchedule();
-      Partner partner = paymentSchedule.getPartner();
-      partnerName = this.getPayeurPartnerName(partner); // Nom/Raison sociale du débiteur
-
-      bankDetails = Beans.get(PaymentScheduleService.class).getBankDetails(paymentSchedule);
-    }
-
-    BigDecimal amount = this.getAmount(directDebitManagement, isForInvoice);
-
-    String ref = directDebitManagement.getDebitNumber(); // Référence
-
-    String operationCode =
-        this.cfonbConfig.getDirectDebitOperationCodeExportCFONB(); // Code opération
-
-    return this.createRecipientCFONB(amount, ref, partnerName, bankDetails, operationCode);
-  }
-
-  private BigDecimal getAmount(DirectDebitManagement directDebitManagement, boolean isForInvoice) {
-    BigDecimal amount = BigDecimal.ZERO;
-
-    if (isForInvoice) {
-      for (Invoice invoice : directDebitManagement.getInvoiceSet()) {
-        amount = amount.add(invoice.getDirectDebitAmount());
-      }
-    } else {
-      for (PaymentScheduleLine paymentScheduleLine :
-          directDebitManagement.getPaymentScheduleLineList()) {
-        amount = amount.add(paymentScheduleLine.getDirectDebitAmount());
-      }
-    }
-
-    return amount;
   }
 
   /**

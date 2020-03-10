@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -264,7 +264,7 @@ public class BankOrderLineService {
       if (bankOrderLine.getReceiverCompany() != null) {
 
         bankDetailsIds =
-            StringTool.getIdListString(bankOrderLine.getReceiverCompany().getBankDetailsSet());
+            StringTool.getIdListString(bankOrderLine.getReceiverCompany().getBankDetailsList());
 
         if (bankOrderLine.getReceiverCompany().getDefaultBankDetails() != null) {
           bankDetailsIds += bankDetailsIds.equals("") ? "" : ",";
@@ -337,7 +337,7 @@ public class BankOrderLineService {
         && bankOrderLine.getReceiverCompany() != null) {
       candidateBankDetails = bankOrderLine.getReceiverCompany().getDefaultBankDetails();
       if (candidateBankDetails == null) {
-        for (BankDetails bankDetails : bankOrderLine.getReceiverCompany().getBankDetailsSet()) {
+        for (BankDetails bankDetails : bankOrderLine.getReceiverCompany().getBankDetailsList()) {
           if (candidateBankDetails != null && bankDetails.getActive()) {
             candidateBankDetails = null;
             break;

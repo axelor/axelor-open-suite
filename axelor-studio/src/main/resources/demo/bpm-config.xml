@@ -34,6 +34,7 @@
 				<bind node="@sequence" to="sequence"/>
 				<bind node="@onChange" to="onChange" />
 				<bind node="@visibleInGrid" to="visibleInGrid" />
+				<bind node="@widgetAttrs" to="widgetAttrs" />
 			</bind>
 		</bind>
 		
@@ -156,6 +157,8 @@
 				<bind node="@value" to="value"/>
 				<bind node="@filter" to="filter"/>
 				<bind node="@dummy" to="dummy"/>
+				<bind node="@isSourceJson" to="isSourceJson"/>
+				<bind node="@isTargetJson" to="isTargetJson"/>
 				<bind node="subLines/line" to="subLines">
 					<bind node="@metaModel" to="metaModel" />
 					<bind node="@valueModel" to="valueModel" />

@@ -207,7 +207,7 @@
 												<span class="label label-success" style="margin: 5px 0 0 10px !important; display: inline-table; line-height: initial;" ng-show="record.conformitySelect == 2 && record.statusSelect != 1" x-translate>Compliant</span>
 												<span class="label label-important" style="margin: 5px 0 0 10px !important; display: inline-table; line-height: initial;" ng-show="record.conformitySelect == 3 && record.statusSelect != 1" x-translate>Non-compliant</span>
 											</h4>
-			
+
 										]]></viewer>
 							</field>
 			            </panel>
@@ -230,12 +230,12 @@
 									</h4>
 								]]></viewer>
 							</field>
-							<field name="$invoicingTags" showTitle="false" readonly="true" showIf="statusSelect == 3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()">
-								<viewer depends="$invoiceStatus"><![CDATA[
+							<field name="$invoicingTags" showTitle="false" readonly="true" showIf="statusSelect == 3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+								<viewer depends="invoicingStatusSelect"><![CDATA[
 									<h4 class="text-left">
-										<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.$invoiceStatus == 0"  x-translate>Not invoiced</span>
-										<span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.$invoiceStatus == 1" x-translate>Partially invoiced</span>
-										<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.$invoiceStatus == 2" x-translate>Invoiced</span>
+										<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 0"  x-translate>Not invoiced</span>
+										<span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 1" x-translate>Partially invoiced</span>
+										<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 2" x-translate>Invoiced</span>
 									</h4>
 								]]>
 								</viewer>
@@ -258,7 +258,7 @@
 							]]>
 							</viewer>
 						</field>
-						<field name="$invoiceStatus" hidden="true" colSpan="12"/>
+						<field name="invoicingStatusSelect" hidden="true" colSpan="12"/>
 					</panel>
 				</panel>
 			</panel>
@@ -429,7 +429,6 @@
             
 			<panel name="datesPanel" title="Dates">
             	<field name="realDate" colSpan="4"/>
-                <field name="reservationDateTime" colSpan="4" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation())"/>
                 <field name="pickingEditDate" hidden="true" showIf="pickingEditDate" readonly="true"/>
 			</panel>
 
@@ -449,7 +448,7 @@
                     <field name="realStockMoveMessageTemplate" requiredIf="realStockMoveAutomaticMail" showIf="realStockMoveAutomaticMail" grid-view="template-grid" form-view="template-form"/>
                 </panel>
             </panel>
-            
+
         </panel-tabs>
         <panel-mail name="mailPanel">
 			<mail-messages limit="4"/>
@@ -484,12 +483,16 @@
 		<field name="isWithBackorder" expr="true"/>
 	</action-record>
 
-    <form name="stock-move-wizard-special-split-form" title="Special split" model="com.axelor.apps.base.db.Wizard">
+    <form name="stock-move-wizard-special-split-form" title="Special split" model="com.axelor.apps.base.db.Wizard" onNew="action-stock-move-attrs-set-scale" onLoad="action-stock-move-attrs-set-scale">
     	<panel name="mainPanel" colSpan="12">
 	        <field name="splitQty" type="decimal" widget="Decimal" title="Split in Qty of" x-scale="2" x-precision="18" colSpan="6"/>
 	        <button name="splitBtn" title="Split" onClick="action-stock-move-method-split-stock-move-lines-special" colSpan="6"/>
         </panel>
     </form>
+    
+    <action-attrs name="action-stock-move-attrs-set-scale">
+    	<attribute name="scale" for="splitQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    </action-attrs>
     
     <form name="stock-move-wizard-stock-per-day" title="Stock Availability" model="com.axelor.apps.base.db.Wizard" 
     	 canSave="false" canDelete="false" canCopy="false" canAttach="false" canNew="false"
@@ -534,15 +537,7 @@
 	        <button name="splitBtn" title="Split" onClick="action-stock-move-method-split-into-2"/>
         </panel>
     </form>
-    
-    <action-method name="action-stock-move-method-add-subline">
-    	<call class="com.axelor.apps.supplychain.web.StockMoveController" method="addSubLines"/>
-    </action-method>
-    
-    <action-method name="action-stock-move-method-remove-subline">
-    	<call class="com.axelor.apps.supplychain.web.StockMoveController" method="removeSubLines"/>
-    </action-method>
-    
+
     <action-method name="action-stock-move-method-compute">
     	<call class="com.axelor.apps.stock.web.StockMoveController" method="compute"/>
     </action-method>
@@ -566,10 +561,6 @@
 	    <context name="_showRecord" expr="eval: __this__.id" />
 	</action-view>
 
-    <!-- <action-attrs name="action-stock-move-attrs-title-realize-button">
-    	<attribute name="title" for="realize" expr="eval: (fromStockLocation) ? ((fromStockLocation?.typeSelect != 1 &amp;&amp; toStockLocation?.typeSelect == 1) ? 'Receive' : 'Send') : ((toStockLocation?.typeSelect == 1) ? 'Receive' : 'Send')"/>
-    </action-attrs> -->
-    
     <action-attrs name="action-stock-move-attrs-filter-on-available-products">
     	<attribute name="hidden" for="filterOnAvailableProducts" expr="eval: statusSelect &gt; 1 || (fromStockLocation != null &amp;&amp; fromStockLocation.typeSelect == 3)"/>
     </action-attrs>
@@ -592,14 +583,11 @@
         <action name="action-stock-move-attrs-hide-avg-price"/>
         <action name="action-stock-move-attrs-set-required-shipment-supplier-details"/>
 		<action name="action-stock-move-attrs-filter-on-available-products"/>
-		<action name="action-supplychain-stock-move-record-set-invoice-status"/>
 		<action name="action-stock-move-attrs-check-delivery-address" if="partner?.partnerAddressList?.size() > 1" />
     </action-group>
     
     <action-group name="action-stock-move-line-change-group">
-    	<action name="action-stock-move-method-remove-subline"/>
     	<action name="save" if="stockMoveLineList.find{it->it.lineTypeSelect == 2 &amp;&amp; (it.version != null || it.id == null)} != null" />
-    	<action name="action-stock-move-method-add-subline"/>
     	<action name="action-stock-move-method-compute"/>
     	<action name="action-stock-move-line-method-change-conformity"/>
     	<action name="action-stock-move-method-set-available-status"/>
@@ -662,6 +650,7 @@
     	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Internal move lines')" if="typeSelect == 1"/>
     	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Outgoing move lines')" if="typeSelect == 2"/>
     	<attribute name="title" for="stockMoveLineList" expr="eval: com.axelor.i18n.I18n.get('Incoming move lines')" if="typeSelect == 3"/>
+    	<attribute name="required" for="fromAddress" expr="eval: typeSelect == __repo__(StockMove).TYPE_INCOMING &amp;&amp; !isReversion"/>
     </action-attrs>
 	
 	<action-attrs name="action-stock-move-attrs-set-values-typeselect-onchange">
@@ -692,7 +681,10 @@
     </action-attrs>
 	
 	<action-attrs name="action-stock-move-hide-reserved-qty">
-        <attribute for="stockMoveLineList.reservedQty" name="hidden" expr="eval: typeSelect != 2"/>
+        <attribute for="stockMoveLineList.reservedQty" name="hidden" expr="eval: typeSelect == 3"/>
+        <attribute for="stockMoveLineList.requestedReservedQty" name="hidden" expr="eval: typeSelect == 3"/>
+        <attribute for="stockMoveLineList.allocateAll" name="hidden" expr="eval: typeSelect == 3"/>
+        <attribute for="stockMoveLineList.deallocate" name="hidden" expr="eval: typeSelect == 3"/>
         <attribute for="stockMoveLineList.requestedReservedQty,reservationDateTime" name="hidden" expr="eval: typeSelect == 3"/>
         <attribute name="hidden" for="stockMoveLineList.availableStatus" expr="eval: typeSelect == 3"/>
 	</action-attrs>
@@ -786,7 +778,7 @@
         <field if="company == null" name="plannedStockMoveMessageTemplate" expr="eval: null"/>
         <field if="company == null" name="realStockMoveMessageTemplate" expr="eval: null"/>
     </action-record>
-    
+
     <action-record name="action-stock-move-record-set-stock-locations-company-onchange" model="com.axelor.apps.stock.db.StockMove">
 	    <field if="typeSelect == __repo__(StockMove).TYPE_OUTGOING &amp;&amp; company != null" name="fromStockLocation" expr="eval: company?.getStockConfig()?.getPickupDefaultStockLocation()"/>
 	    <field if="typeSelect == __repo__(StockMove).TYPE_OUTGOING &amp;&amp; company != null" name="toStockLocation" expr="eval:company?.getStockConfig()?.getCustomerVirtualStockLocation()"/>
@@ -794,7 +786,7 @@
 	    <field if="typeSelect == __repo__(StockMove).TYPE_INCOMING &amp;&amp; company != null" name="fromStockLocation" expr="eval:company?.getStockConfig()?.getSupplierVirtualStockLocation()"/>
 	    <field name="fromStockLocation,toStockLocation" expr="eval: null" if="company == null"/>
 	</action-record>
-	
+
 	<action-method name="action-stock-move-method-plan">
 		<call class="com.axelor.apps.stock.web.StockMoveController" method="plan"/>
 	</action-method>

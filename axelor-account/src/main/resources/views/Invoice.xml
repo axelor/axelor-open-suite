@@ -22,10 +22,10 @@
     <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
     <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
     <field name="invoiceId" width="120"/>
-		<field name="company" form-view="company-form" grid-view="company-grid" widget="200" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement" widget="200"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" width="200" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement" width="200"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
-		<field name="operationSubTypeSelect" widget="160"/>
+		<field name="operationSubTypeSelect" width="160"/>
     <field name="invoiceDate" width="120"/>
     <field name="dueDate" width="120"/>
     <field name="exTaxTotal" aggregate="sum" width="120"/>
@@ -55,10 +55,10 @@
 		<hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
 		<hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
     <field name="invoiceId" width="120"/>
-		<field name="company" form-view="company-form" grid-view="company-grid" widget="200" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement" widget="200"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" width="200" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement" width="200"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"/>
-		<field name="operationSubTypeSelect" widget="160"/>
+		<field name="operationSubTypeSelect" width="160"/>
 		<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" width="160"/>
     <field name="invoiceDate" width="120"/>
     <field name="dueDate" width="120"/>
@@ -89,7 +89,7 @@
 		<hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
     <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
     <field name="invoiceId" width="120"/>
-		<field name="company" form-view="company-form" grid-view="company-grid" widget="200" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" width="200" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
     <field name="supplierInvoiceNb"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
@@ -127,7 +127,7 @@
 	  <hilite color="warning" if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
 	  <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
 		<field name="invoiceId" width="120"/>
-		<field name="company" form-view="company-form" grid-view="company-grid" widget="200" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" width="200" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="supplierInvoiceNb"/>
 		<field name="operationTypeSelect"/>
 		<field name="operationSubTypeSelect"/>
@@ -264,13 +264,13 @@
             <field name="currency" colSpan="3" canEdit="false" onChange="action-invoice-group-currency-onchange" readonlyIf="statusSelect != 1 || (invoiceLineList &amp;&amp; invoiceLineList.length != 0)" form-view="currency-form" grid-view="currency-grid"/>
             <field name="priceList" colSpan="3" canEdit="false" onChange="action-invoice-record-hide-discount" readonlyIf="statusSelect != 1" onSelect="action-invoice-method-domain-priceList" form-view="price-list-form" grid-view="price-list-grid"/>
             <field name="tradingName" canEdit="false" grid-view="trading-name-grid" form-view="trading-name-form" if="__config__.app.getApp('base').enableTradingNamesManagement" readonlyIf="statusSelect != 1" domain=":company MEMBER OF self.companySet" onChange="action-invoice-method-printing-settings-default-values"/>
-            <field name="companyBankDetails" canEdit="false" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain" form-view="bank-details-form" grid-view="bank-details-grid" onChange="action-invoice-record-specific-note-on-invoice"/>
+            <field name="companyBankDetails" canEdit="false" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain" form-view="bank-details-form" grid-view="bank-details-grid" />
             <field name="interco" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
             <field name="createdByInterco" showIf="createdByInterco" readonly="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
             <field name="inAti" onChange="action-invoice-attrs-in-ati" readonlyIf="statusSelect != 1 || invoiceLineList.length > 0"/>
         </panel>
 
-        <panel name="invoicingInfoPanel" title="Invoicing informations" hideIf="company == null">
+        <panel name="invoicingInfoPanel" title="Invoicing information" hideIf="company == null">
             <field name="partner" colSpan="3" canEdit="false" readonlyIf="((operationTypeSelect == 3 || operationTypeSelect == 4) &amp;&amp; statusSelect != 1) || ((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; (statusSelect != 1 || invoiceLineList.length > 0))"  onChange="action-group-account-invoice-partner-onchange,action-method-invoice-address-str" onSelect="action-invoice-method-set-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
             <field name="contactPartner" colSpan="3" canEdit="false" onSelect="action-set-partner-domain" domain="self.isContact = true AND :company member of self.companySet" readonlyIf="partner != null &amp;&amp; partner.partnerTypeSelect == 2" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
             <field name="paymentMode" colSpan="3" canEdit="false" widget="SuggestBox" onSelect="action-set-payment-mode-domain" onChange="action-invoice-method-fill-company-bank-details,action-invoice-method-check-partner-bank-details-list" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
@@ -311,7 +311,7 @@
 
 		<panel-tabs name="mainPanelTab" hideIf="partner == null">
 			<panel name="invoiceContentPanel" title="Content" showTitle="false">
-				<panel-related name="invoiceLineListPanel" field="invoiceLineList" canNew="statusSelect == 1" canRemove="statusSelect == 1" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-grid" onChange="action-invoice-group-invoice-line-onchange" canMove="true" orderBy="sequence" height="30"/>
+				<panel-related name="invoiceLineListPanel" field="invoiceLineList" canNew="statusSelect == 1" canRemove="statusSelect == 1" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-grid" onChange="action-invoice-method-compute" canMove="true" orderBy="sequence"  height="30" />
 			</panel>
 			<panel name="invoiceTaxPanel" title="Tax" showTitle="false">
 				<panel-related name="invoiceLineTaxListPanel" field="invoiceLineTaxList" colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
@@ -377,6 +377,9 @@ InvoiceSet.length > 0))"
 				</panel>
 				<panel name="descriptionToDisplayOnProformaPanel" title="Comment to display on proforma" colSpan="12">
 				  <field name="proformaComments" widget="html" colSpan="12" showTitle="false"/>
+				</panel>
+				<panel name="specificNoteOnInvoiceToDisplayPanel" title="Bank details specific note" colSpan="12" hidden="true" showIf="companyBankDetails.specificNoteOnInvoice">
+					<field name="companyBankDetails.specificNoteOnInvoice" widget="html" colSpan="12" showTitle="false"/>
 				</panel>
 			</panel>
       <panel name="automaticMailPanel" title="Automatic mail" hideIf="statusSelect == 3 &amp;&amp; !invoiceAutomaticMail &amp;&amp; !invoiceAutomaticMailOnValidate">
@@ -483,7 +486,9 @@ InvoiceSet.length > 0))"
                         <a href="#/ds/action-invoice-view-register-payment{{record.$paymentVouchersOnInvoice ? '-voucher':''}}/edit/{{record.id}}">
                           <i class="fa fa-link" ng-class="{'font-black': record.statusSelect == 1, 'hilite-danger-text': record.statusSelect == 2, 'hilite-info-text': record.statusSelect == 3}"></i>
                         </a>
-                        <font x-translate ng-if="record.typeSelect == 1 || record.typeSelect == 2">Paid on</font>
+                        <font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect != 2 && record.statusSelect != 3">Paid on</font>
+                        <font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 2">Canceled payment on</font>
+                        <font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 3">Pending payment</font>
                         <font x-translate ng-if="record.typeSelect == 3">Ref. on</font>
                         <font x-translate ng-if="record.typeSelect == 4">Inv. on</font>
                         <font x-translate ng-if="record.typeSelect == 5">Other on</font>
@@ -604,7 +609,7 @@ InvoiceSet.length > 0))"
 			<field name="inAti" onChange="action-invoice-attrs-in-ati"/>
 		</panel>
 
-		<panel name="invoicingInfoPanel" title="Invoicing informations">
+		<panel name="invoicingInfoPanel" title="Invoicing information">
 			<field name="partner" canEdit="false" form-view="partner-form" grid-view="partner-grid" readonlyIf="((operationTypeSelect == 3 || operationTypeSelect == 4) &amp;&amp; statusSelect != 1) || ((operationTypeSelect == 1 || operationTypeSelect == 2) &amp;&amp; (statusSelect !=1 || invoiceLineList.length > 0))" onChange="action-group-account-invoice-partner-onchange,action-method-invoice-address-str" onSelect="action-invoice-method-set-partner-domain" canView="false"/>
 			<field name="contactPartner" canEdit="false" onSelect="action-set-partner-domain" domain="self.isContact = true AND :company member of self.companySet" form-view="partner-contact-form" grid-view="partner-contact-grid"
 				   readonlyIf="partner != null &amp;&amp; partner.partnerTypeSelect == 2" canView="false"/>
@@ -684,7 +689,9 @@ InvoiceSet.length > 0))"
                         <a href="#/ds/action-invoice-view-register-payment{{record.$paymentVouchersOnInvoice ? '-voucher':''}}/edit/{{record.id}}">
                           <i class="fa fa-link" ng-class="{'font-black': record.statusSelect == 1, 'hilite-danger-text': record.statusSelect == 2, 'hilite-info-text': record.statusSelect == 3}"></i>
                         </a>
-                        <font x-translate ng-if="record.typeSelect == 1 || record.typeSelect == 2">Paid on</font>
+                        <font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect != 2 && record.statusSelect != 3">Paid on</font>
+                        <font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 2">Canceled payment on</font>
+                        <font x-translate ng-if="(record.typeSelect == 1 || record.typeSelect == 2) && record.statusSelect == 3">Pending payment</font>
                         <font x-translate ng-if="record.typeSelect == 3">Ref. on</font>
                         <font x-translate ng-if="record.typeSelect == 4">Inv. on</font>
                         <font x-translate ng-if="record.typeSelect == 5">Other on</font>
@@ -740,13 +747,8 @@ InvoiceSet.length > 0))"
     </grid>
 
 	<!-- VIEW LITE  -->
-    <grid name="invoice-lite-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice">
-    	<toolbar>
-        	<button name="newBtn" title="" hidden="true"/>
-    		<button name="saveBtn" title="" hidden="true"/>
-    		<button name="copyBtn" title="" hidden="true"/>
-    		<button name="deleteBtn" title="" hidden="true"/>
-		</toolbar>
+    <grid name="invoice-lite-grid" title="Invoices" model="com.axelor.apps.account.db.Invoice" 
+    	canNew="false" canDelete="false" canSave="false">
         <field name="invoiceId"/>
         <field name="invoiceDate"/>
 		<field name="operationTypeSelect"/>
@@ -756,7 +758,7 @@ InvoiceSet.length > 0))"
 
 	<grid model="com.axelor.apps.account.db.Invoice" title="Release details"
 		name="invoice-release-details-grid" orderBy="invoiceDate, dueDate, invoiceId">
-		<hilite background="danger" if="$subrogationStatusSelect == 3 &amp;&amp; amountRemaining &gt; 0"/>
+		
 		<field name="invoiceId" width="120"/>
 		<field name="partner.partnerSeq" width="120"/>
 		<field name="partner.name" />
@@ -765,7 +767,9 @@ InvoiceSet.length > 0))"
 		<field name="inTaxTotal" />
 		<field name="currency" />
 		<field name="$subrogationStatusSelect" hidden="true"/>
-		<field name="amountRemaining" hidden="true"/>
+		<field name="amountRemaining" >
+			<hilite background="danger" if="$subrogationStatusSelect == 3 &amp;&amp; amountRemaining &gt; 0"/>
+		</field>
 	</grid>
 
     <!-- CUSTOMER INVOICES MERGE  -->
@@ -847,7 +851,6 @@ InvoiceSet.length > 0))"
 
     <action-group name="action-group-account-invoice-company-onchange">
     	<action name="action-invoice-method-fill-company-bank-details"/>
-        <action name="action-invoice-record-specific-note-on-invoice"/>
     	<action name="action-invoice-attrs-hide-cancel-button"/>
         <action name="action-invoice-record-update-info-company"/>
         <action name="action-invoice-record-set-dummy-field-language"/>
@@ -879,14 +882,6 @@ InvoiceSet.length > 0))"
 	<action-group name="action-invoice-group-saleorder-onchange">
 		<action name="action-invoice-method-fill-in-lines"/>
 		<action name="action-invoice-method-fill-advance-payment-set"/>
-	</action-group>
-
-	<action-group name="action-invoice-group-invoice-line-onchange">
-		<action name="action-invoice-method-remove-subline"/> 
-		<action name="save" if="invoiceLineList.find{it->it.typeSelect == 2 &amp;&amp; (it.version != null || it.id == null)} != null" />
-		<action name="action-invoice-method-add-subline"/>
-		<action name="action-invoice-method-compute"/>
-		<action name="save" if="invoiceLineList.find{it->it.typeSelect == 2 &amp;&amp; (it.version != null || it.id == null)} != null" />
 	</action-group>
 
 	<action-group name="action-invoice-group-report-print">
@@ -940,7 +935,7 @@ InvoiceSet.length > 0))"
 
 	<action-record name="action-invoice-record-in-ati" model="com.axelor.apps.account.db.Invoice">
 		<field name="inAti" expr="eval: __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 2
-										|| __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 4"/>
+										|| __repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.invoiceInAtiSelect == 4" if="company"/>
 	</action-record>
 
     <action-record name="action-invoice-record-default" model="com.axelor.apps.account.db.Invoice">
@@ -970,12 +965,11 @@ InvoiceSet.length > 0))"
     	<field name="currency" expr="eval: partner?.currency"/>
 		<field name="bankDetails" expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} ? partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} : null" />
     	<field name="contactPartner" expr="eval: partner?.contactPartnerSet?.size() == 1 ? partner?.contactPartnerSet[0] : null" />
-    	<field name="invoicesCopySelect" expr="eval: partner?.invoicesCopySelect"/>
+    	<field name="invoicesCopySelect" expr="eval: partner?.invoicesCopySelect != 0 ? partner?.invoicesCopySelect :1"/>
     	<field name="project" expr="eval: null"/>
     	<field name="purchaseOrder" expr="eval: null"/>
     	<field name="partnerTaxNbr" expr="eval: partner?.taxNbr"/>
     	<field name="proformaComments" expr="eval: partner?.proformaComments"/>
-    	<field name="note" expr="eval: partner?.invoiceComments"/>
       <field name="headOfficeAddress" expr="eval: partner?.headOfficeAddress"/>
     </action-record>
 
@@ -1011,7 +1005,7 @@ InvoiceSet.length > 0))"
     </action-record>
 
 	<action-record name="action-invoice-record-specific-note-on-invoice" model="com.axelor.apps.account.db.Invoice">
-		<field name="note" expr="eval: (note ? note + &quot;&lt;br&gt;&quot; : '') + (partner?.invoiceComments ? partner.invoiceComments + &quot;&lt;br&gt;&quot; : '') + (companyBankDetails?.specificNoteOnInvoice ?: '')"/>
+		<field name="note" expr="eval: (note ? note + &quot;&lt;br&gt;&quot; : '') + (partner?.invoiceComments ? partner.invoiceComments + &quot;&lt;br&gt;&quot; : '')"/>
 	</action-record>
 
 	<action-record name="action-invoice-record-pfp-validate" model="com.axelor.apps.account.db.Invoice">
@@ -1026,7 +1020,7 @@ InvoiceSet.length > 0))"
 	</action-record>
 
 	<action-record name="action-invoice-record-set-dummy-field-language" model="com.axelor.apps.account.db.Invoice">
-		<field name="$language" expr="eval: (__repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.getIsPrintInvoicesInCompanyLanguage()) ? company?.language : partner?.language"/>
+		<field name="$language" expr="eval: (__repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.getIsPrintInvoicesInCompanyLanguage()) ? company?.language : partner?.language" if="company"/>
 	</action-record>
 
     <!-- ACTION ATTRS -->
@@ -1198,14 +1192,6 @@ InvoiceSet.length > 0))"
 
 	<action-method name="action-invoice-method-create-refund">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="createRefund"/>
-	</action-method>
-	
-	<action-method name="action-invoice-method-add-subline">
-		<call class="com.axelor.apps.supplychain.web.InvoiceController" method="addSubLines"/>
-	</action-method>
-	
-	<action-method name="action-invoice-method-remove-subline">
-		<call class="com.axelor.apps.supplychain.web.InvoiceController" method="removeSubLines"/>
 	</action-method>
 
 	<action-method name="action-invoice-method-compute">

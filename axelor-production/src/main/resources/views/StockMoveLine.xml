@@ -10,7 +10,11 @@
     <field name="product" form-view="product-form" grid-view="product-grid" readonlyIf="id" />
     <field name="productModel" form-view="product-form" grid-view="product-grid"
       if="__config__.app.getApp('base').manageProductVariants" readonlyIf="product || id" />
-    <field name="qty" title="Consumed quantity" />
+    <field name="qty" title="Consumed quantity" x-scale="2"/>
+    <field name="requestedReservedQty" if-module="axelor-supplychain" readonly="true" if="__config__.app.getApp('supplychain').getManageStockReservation()" aggregate="sum"/>
+    <field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" aggregate="sum" readonly="true"/>
+    <button name="allocateAll" if="__config__.app.getApp('supplychain')?.manageStockReservation" title="Allocate" icon="fa-plus-square" readonlyIf="$get('stockMove.statusSelect') != 2 || $number(reservedQty) == $number(qty)" onClick="save,action-supplychain-stock-move-line-allocate-all"/>
+    <button name="deallocate"  if="__config__.app.getApp('supplychain')?.manageStockReservation" title="Deallocate" icon="fa-minus-square" readonlyIf="$get('stockMove.statusSelect') != 2 || $number(reservedQty) == 0" onClick="save,action-supplychain-stock-move-line-deallocate-all"/>
     <field name="unitPriceUntaxed" x-scale="2" />
     <field name="unitPriceTaxed" x-scale="2" hidden="true" />
     <field name="unit" form-view="unit-form" grid-view="unit-grid" />
@@ -25,7 +29,7 @@
 	<field name="product.trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
     <field name="stockMove.statusSelect" />
     <button name="trackNumberWizardBtn" title="Split by tracking numbers" readonlyIf="$get('stockMove.statusSelect') > 2 || (!$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged'))" icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard"/>
-    <field name="realQty" hidden="true"/>
+    <field name="realQty" hidden="true" x-scale="2"/>
   </grid>
 
   <grid name="stock-move-line-produced-production-grid" title="Stock move lines"
@@ -35,7 +39,7 @@
     <field name="product" form-view="product-form" grid-view="product-grid" readonlyIf="id" />
     <field name="productModel" form-view="product-form" grid-view="product-grid"
       if="__config__.app.getApp('base').manageProductVariants" readonlyIf="product || id" />
-    <field name="qty" title="Produced quantity" />
+    <field name="qty" title="Produced quantity" x-scale="2"/>
     <field name="unitPriceUntaxed" x-scale="2" />
     <field name="unitPriceTaxed" x-scale="2" hidden="true" />
     <field name="unit" form-view="unit-form" grid-view="unit-grid" />
@@ -50,7 +54,7 @@
 	<field name="product.trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
     <field name="stockMove.statusSelect" />
     <button name="trackNumberWizardBtn" title="Split by tracking numbers" readonlyIf="$get('stockMove.statusSelect') > 2 || (!$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged'))" icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard"/>
-    <field name="realQty" hidden="true"/>
+    <field name="realQty" hidden="true" x-scale="2"/>
   </grid>
 
   <form name="stock-move-line-production-form" title="Stock move line"
@@ -78,6 +82,17 @@
         onSelect="action-stock-move-line-attrs-tracking-number-domain" 
         readonlyIf="$get('stockMove.statusSelect') > 2" 
 		requiredIf="realQty &gt; 0 &amp;&amp; ($get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') || $get('product.trackingNumberConfiguration.isProductionTrackingManaged'))" />
+        <field name="reservedQty" readonly="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
+        <field name="requestedReservedQty" hidden="true" readonly="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
+        <panel name="reservedQtyBtnsPanel" colSpan="12" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()">
+            <button name="updateAllocatedQtyBtn" colSpan="6" hidden="true" title="Change allocated qty" onClick="action-view-stock-move-line-allocated-qty-wizard"/>
+        </panel>
+        <panel name="requestedReservedQtyBtnqPanel" colSpan="12" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()">
+            <button name="requestQty" title="Request reservation" hidden="true" onClick="save,action-method-stock-move-line-request-qty"/>
+        </panel>
+        <panel name="cancelReservedQtyBtnqPanel" colSpan="12" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()">
+            <button name="cancelReservation" title="Cancel reservation" showIf="isQtyRequested" onClick="save,action-method-stock-move-line-cancel-reservation"/>
+        </panel>
 		<field name="product.trackingNumberConfiguration.isPurchaseTrackingManaged" hidden="true"/>
 		<field name="product.trackingNumberConfiguration.isProductionTrackingManaged" hidden="true"/>
         <field name="stockMove.fromStockLocation.typeSelect" hidden="true"/>

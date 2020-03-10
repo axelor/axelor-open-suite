@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,6 +26,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineTaxService;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -50,6 +51,10 @@ public class SaleOrderComputeServiceSupplychainImpl extends SaleOrderComputeServ
   public void _computeSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
     super._computeSaleOrder(saleOrder);
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return;
+    }
 
     int maxDelay = 0;
 

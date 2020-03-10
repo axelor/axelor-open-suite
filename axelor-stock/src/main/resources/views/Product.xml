@@ -23,10 +23,10 @@
 		<template><![CDATA[
 		   <div class="span12"><strong>{{fullName}}</strong></div>
 		   <div>
-			  <div class="span4 card-image">
-			    <img ng-src="{{$image('picture', 'content')}}" />
+			  <div class="span4 card-image" style="width: 128px; height: 64px;">
+			    <img ng-src="{{$image('picture', 'content')}}" style="width: 100%; height: 100%; object-fit: contain;" />
 			  </div>
-			  <div class="span8">
+			  <div class="span8" style="width: 60%;">
 			   <strong><span x-translate>Min stock</span>(<span>{{$fmt('$stockMinDate')}}</span>):</strong> <span>{{$fmt('$stockMin')}}</span>
 				 <br/>
 			    <strong><span x-translate>Max stock</span>(<span>{{$fmt('$stockMaxDate')}}</span>):</strong> <span>{{$fmt('$stockMax')}}</span>
@@ -82,7 +82,8 @@
 		<field name="$qty" title="Qty" type="decimal"/>
 	</grid>
 	
-	<form model="com.axelor.apps.base.db.Wizard" title="Stock per day" name="wizard-stock-perday-form" canEdit="false">
+	<form model="com.axelor.apps.base.db.Wizard" title="Stock per day" name="wizard-stock-perday-form" canEdit="false"
+		  onNew="action-wizard-stock-per-day-attrs-scale">
 		<panel name="mainPanel">
 			<field name="$date" title="Date" type="date"/>
 			<field name="$qty" title="Qty" type="decimal"/>
@@ -105,6 +106,10 @@
 	<action-record name="action-stock-product-record-stock-managed-onchange" model="com.axelor.apps.base.db.Product">
 		<field name="excludeFromMrp" expr="eval: !stockManaged"/>
 	</action-record>
+	
+    <action-attrs name="action-wizard-stock-per-day-attrs-scale">
+		<attribute name="scale" for="$qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+	</action-attrs>
 
 	<action-view name="action-stock-view-stock-rule" title="Stock rule" model="com.axelor.apps.stock.db.StockRules">
 		<view type="grid" name="stock-rule-product-grid"/>

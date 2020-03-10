@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -166,7 +166,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
             ? this.generateProject(
                 null,
                 saleOrder.getFullName() + "_project",
-                saleOrder.getSalemanUser(),
+                saleOrder.getSalespersonUser(),
                 saleOrder.getCompany(),
                 saleOrder.getClientPartner())
             : project;
@@ -183,9 +183,16 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       Partner clientPartner) {
     Project project =
         super.generateProject(parentProject, fullName, assignedTo, company, clientPartner);
+
+    if (!Beans.get(AppBusinessProjectService.class).isApp("business-project")) {
+      return project;
+    }
+
     if (assignedTo != null) {
       project.addMembersUserSetItem(assignedTo);
     }
+
+    project.addMembersUserSetItem(assignedTo);
     project.setImputable(true);
     if (parentProject != null && parentProject.getIsInvoicingTimesheet()) {
       project.setIsInvoicingTimesheet(true);
@@ -199,7 +206,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
         generateProject(
             parent,
             saleOrderLine.getFullName(),
-            saleOrderLine.getSaleOrder().getSalemanUser(),
+            saleOrderLine.getSaleOrder().getSalespersonUser(),
             parent.getCompany(),
             parent.getClientPartner());
     project.setProjectTypeSelect(ProjectRepository.TYPE_PHASE);

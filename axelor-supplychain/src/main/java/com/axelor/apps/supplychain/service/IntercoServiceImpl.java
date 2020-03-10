@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -69,6 +69,8 @@ import java.util.List;
 import java.util.Set;
 
 public class IntercoServiceImpl implements IntercoService {
+
+  protected static int DEFAULT_INVOICE_COPY = 1;
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
@@ -359,7 +361,10 @@ public class IntercoServiceImpl implements IntercoService {
       intercoInvoice.setPfpValidatorUser(accountingSituation.getPfpValidatorUser());
     }
     intercoInvoice.setPriceList(intercoPriceList);
-    intercoInvoice.setInvoicesCopySelect(intercoPartner.getInvoicesCopySelect());
+    intercoInvoice.setInvoicesCopySelect(
+        (intercoPartner.getInvoicesCopySelect() == 0)
+            ? DEFAULT_INVOICE_COPY
+            : intercoPartner.getInvoicesCopySelect());
     intercoInvoice.setCreatedByInterco(true);
     intercoInvoice.setInterco(false);
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,13 +32,19 @@ public class ImportCity {
     assert bean instanceof City;
 
     City city = (City) bean;
+    LOG.debug(city.getName());
 
-    try {
-      if (city.getCanton() != null) {
-        city.getCanton().setDepartment(city.getDepartment());
+    if (city.getCountry() == null || city.getName() == null) {
+      return null;
+
+    } else {
+      try {
+        if (city.getCanton() != null) {
+          city.getCanton().setDepartment(city.getDepartment());
+        }
+      } catch (Exception e) {
+        LOG.error("Error when importing city : {}", e);
       }
-    } catch (Exception e) {
-      LOG.error("Error when importing city : {}", e);
     }
 
     return city;

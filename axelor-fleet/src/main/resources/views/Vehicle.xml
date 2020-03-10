@@ -22,6 +22,7 @@
        	   		<field name="image" widget="Image" colSpan="12"/>
        	   </panel>
        	   <panel name="vehicleDetailsPanel" colSpan="6" itemSpan="12">
+       	   		<field name="isRentalCar" widget="boolean-switch"/>
        	   		<field name="vehicleModel" onChange="action-fleet-set-vehicle-name" required="true"/>
 	     		<field name="name" readonly="true"/>
 	    		<field name="plateNo" onChange="action-fleet-set-vehicle-name"/>
@@ -59,6 +60,10 @@
 	       		</panel>
 	       </panel>
        </panel>
+       <panel name="rentalPanel" title="Rental" colSpan="12" hidden="true" showIf="isRentalCar">
+       		<field name="fuelCardNumber"/>
+       		<field name="fuelCardCode"/>
+       </panel>
        <panel-tabs name="mainPanelTab">
     		<panel-related name="vehicleFuelLogListPanel" field="vehicleFuelLogList" title="Vehicle Fuel Log"  colSpan="12">
             	<field name="liter"/>
@@ -81,6 +86,7 @@
             <field name="totalPrice"/>
             <field name="date" />
       		</panel-related>
+			<panel-related name="vehicleRepairListPanel" field="vehicleRepairList" title="Repairs" colSpan="12"/>
     </panel-tabs>
     
        
@@ -101,10 +107,10 @@
 		<template><![CDATA[
 		    <div class="span12"><strong>{{name}}</strong></div>
 			<div>
-			  <div class="span4 card-image">
-			    <img ng-src="{{$image(null, 'image')}}" />
+			  <div class="span4 card-image" style="width: 128px; height: 64px;">
+			    <img ng-src="{{$image(null, 'image')}}" style="width: 100%; height: 100%; object-fit: contain;" />
 			  </div>
-			  <div class="span8">
+			  <div class="span8" style="width: 60%;">
 			    <span>{{plateNo}}<br/>
 			    {{company.name}}<br/>
 			    {{driverPartner.fullName}}<br/></span>

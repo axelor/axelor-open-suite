@@ -21,8 +21,6 @@
 			<field name="allowRemovalValidatedMove"/>
 			<field name="generateMoveForAdvancePayment"/>
 			<field name="accountingDaybook"/>
-			<field name="lineMinBeforeLongReportGenerationMessageNumber"/>
-			<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
 		</panel>
 
 		<panel-tabs name="mainPanelTab">
@@ -97,14 +95,18 @@
 				<panel name="expensePanel" title="Expense" colSpan="12">
 					<field name="expenseTaxAccount" domain="self.company = :company" if-module="axelor-human-resource" grid-view="account-grid" form-view="account-form" if="__config__.app.isApp('expense')"/>
 				</panel>
+				<panel name="accountingReportPanel" title="Accounting reports" colSpan="12">
+      	    		<field name="lineMinBeforeLongReportGenerationMessageNumber"/>
+      			</panel>
 			</panel>
 
 			<panel title="Invoicing" name="invoicingPanel">
 				<field name="allowCancelVentilatedInvoice" widget="boolean-switch"/>
 				<field name="generateMoveForInvoicePayment" widget="boolean-switch"/>
 				<field name="invoiceInAtiSelect"/>
-				<field name="invoiceAutomaticMail" widget="boolean-switch"/>
 				<field name="fixedAssetCatReqOnInvoice" widget="boolean-switch"/>
+				<field name="invoiceAutomaticMail" widget="boolean-switch"/>
+				<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
 
 				<panel name="passedForPaymentPanel" title="Passed for payment" colSpan="12" if="__config__.app.getApp('account').getActivatePassedForPayment()">
 					<field name="isManagePassedForPayment" widget="boolean-switch"/>

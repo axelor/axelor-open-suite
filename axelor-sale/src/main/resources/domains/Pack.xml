@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="sale" package="com.axelor.apps.sale.db" />
+
+	<entity name="Pack" lang="java">
+
+		<string name="code" title="Code" unique="true"/>
+		<string name="name" title="Name"/>
+		<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+		<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
+		<one-to-many name="components" ref="com.axelor.apps.sale.db.PackLine" title="Components"/>
+
+	</entity>
+
+</domain-models>

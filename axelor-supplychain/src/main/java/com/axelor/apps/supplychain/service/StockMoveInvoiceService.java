@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,7 +24,6 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.exception.AxelorException;
-import com.axelor.meta.CallMethod;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
@@ -61,7 +60,17 @@ public interface StockMoveInvoiceService {
   public List<InvoiceLine> createInvoiceLine(
       Invoice invoice, StockMoveLine stockMoveLine, BigDecimal qty) throws AxelorException;
 
-  public List<Map<String, Object>> getStockMoveLinesToInvoice(StockMove stockMove);
+  public List<Map<String, Object>> getStockMoveLinesToInvoice(StockMove stockMove)
+      throws AxelorException;
+
+  /**
+   * Sum the total of non canceled invoice qty in every stock move lines of the stock move.
+   *
+   * @param stockMove a stock move
+   * @return the computed sum.
+   * @throws AxelorException
+   */
+  BigDecimal computeNonCanceledInvoiceQty(StockMove stockMove) throws AxelorException;
 
   /**
    * Compute quantity in stock move line that is not invoiced (e.g. has no invoice line or a
@@ -71,8 +80,20 @@ public interface StockMoveInvoiceService {
    * @param stockMoveLine a stock move line
    * @return the invoiced quantity
    */
-  BigDecimal getNonCanceledInvoiceQty(StockMoveLine stockMoveLine);
+  BigDecimal computeNonCanceledInvoiceQty(StockMoveLine stockMoveLine) throws AxelorException;
 
-  @CallMethod
-  public int getStockMoveInvoiceStatus(StockMove stockMove);
+  /**
+   * Compute invoicing status select field in a stock move from the field {@link
+   * StockMoveLine#qtyInvoiced} in stock move lines and set it in the stock move.
+   *
+   * @param stockMove a stock move
+   */
+  void computeStockMoveInvoicingStatus(StockMove stockMove);
+
+  /**
+   * Checks if the given invoice is a refund of a stock move. Either the stock move is not a
+   * reversion, then we return whether the invoice is a refund, or it is a reversion, then we return
+   * the opposite.
+   */
+  boolean isInvoiceRefundingStockMove(StockMove stockMove, Invoice invoice) throws AxelorException;
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -333,6 +333,14 @@ public interface IExceptionMessage {
   public static final String ABC_CLASSES_NEGATIVE_OR_NULL_QTY_OR_WORTH = /*$$(*/
       "The worth and quantity value of each class must be greater than 0." /*)*/;
 
+  /* DMS Import */
+  public static final String DMS_IMPORT_PROCESS_SUCCESS_MESSAGE = /*$$(*/
+      "File loaded successfully" /*)*/;
+  public static final String DMS_IMPORT_FILE_PROCESS_ERROR = /*$$(*/
+      "Error while processing zip file" /*)*/;
+  public static final String DMS_IMPORT_INVALID_ZIP_ERROR = /*$$(*/
+      "Uploaded file is not a valid zip file" /*)*/;
+
   /** Advanced Import */
   public static final String ADVANCED_IMPORT_NO_IMPORT_FILE = /*$$(*/
       "Data file doesn't exist" /*)*/;
@@ -352,7 +360,7 @@ public interface IExceptionMessage {
   public static final String ADVANCED_IMPORT_5 = /*$$(*/
       "Sub field doesn't exist of field(%s) for the object(%s)" /*)*/;
   public static final String ADVANCED_IMPORT_6 = /*$$(*/
-      "Search fields are missing for the object(%s)" /*)*/;
+      "Please enter search call or search fields for the object(%s)" /*)*/;
   public static final String ADVANCED_IMPORT_TAB_ERR = /*$$(*/
       "File tab is not matched inside file" /*)*/;
   public static final String ADVANCED_IMPORT_NO_OBJECT = /*$$(*/
@@ -376,7 +384,11 @@ public interface IExceptionMessage {
   public static final String ADVANCED_IMPORT_LOG_9 = /*$$(*/ "Invalid type of data" /*)*/;
   public static final String ADVANCED_IMPORT_LOG_10 = /*$$(*/
       "Action does not exists or invalid for the object(%s)" /*)*/;
+  public static final String ADVANCED_IMPORT_LOG_11 = /*$$(*/
+      "Invalid Search call for the object(%s)" /*)*/;
   public static final String ADVANCED_IMPORT_RESET = /*$$(*/
       "Reset imported data successfully" /*)*/;
   public static final String ADVANCED_IMPORT_NO_RESET = /*$$(*/ "No imported data to reset" /*)*/;
+  public static final String SERVER_CONNECTION_ERROR = /*$$(*/
+      "Unable to connect to Geonames server" /*)*/;
 }

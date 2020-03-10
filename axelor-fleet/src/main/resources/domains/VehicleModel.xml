@@ -5,7 +5,7 @@
 	<module name="fleet" package="com.axelor.apps.fleet.db"/>
 
 	<entity name="VehicleModel" lang="java" cacheable="true">
-		<many-to-one name="vehicleMake" ref="VehicleMake" title="Make" />
+		<many-to-one name="vehicleMake" ref="VehicleMake" title="Brand" />
 		<string name="model" title="Model" required="true"/>
 		<string name="name" title="Name" required="true" namecolumn="true">
 			<![CDATA[

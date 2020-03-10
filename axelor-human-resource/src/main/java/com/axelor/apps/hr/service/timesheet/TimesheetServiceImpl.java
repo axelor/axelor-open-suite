@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -62,6 +62,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.JpaSupport;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -87,10 +88,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javax.mail.MessagingException;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.LockModeType;
+import javax.persistence.PersistenceException;
+import org.apache.commons.collections4.ListUtils;
 
 /** @author axelor */
-public class TimesheetServiceImpl implements TimesheetService {
+public class TimesheetServiceImpl extends JpaSupport implements TimesheetService {
 
   protected PriceListService priceListService;
   protected AppHumanResourceService appHumanResourceService;
@@ -102,6 +109,11 @@ public class TimesheetServiceImpl implements TimesheetService {
   protected TimesheetLineService timesheetLineService;
   protected ProjectPlanningTimeRepository projectPlanningTimeRepository;
   protected TeamTaskRepository teamTaskRepository;
+  protected TimesheetLineRepository timesheetlineRepo;
+  protected TimesheetRepository timeSheetRepository;
+  private ExecutorService executor = Executors.newCachedThreadPool();
+  private static final int ENTITY_FIND_TIMEOUT = 10000;
+  private static final int ENTITY_FIND_INTERVAL = 50;
 
   @Inject
   public TimesheetServiceImpl(
@@ -114,7 +126,9 @@ public class TimesheetServiceImpl implements TimesheetService {
       UserHrService userHrService,
       TimesheetLineService timesheetLineService,
       ProjectPlanningTimeRepository projectPlanningTimeRepository,
-      TeamTaskRepository teamTaskRepository) {
+      TeamTaskRepository teamTaskRepository,
+      TimesheetLineRepository timesheetlineRepo,
+      TimesheetRepository timeSheetRepository) {
     this.priceListService = priceListService;
     this.appHumanResourceService = appHumanResourceService;
     this.hrConfigService = hrConfigService;
@@ -125,6 +139,8 @@ public class TimesheetServiceImpl implements TimesheetService {
     this.timesheetLineService = timesheetLineService;
     this.projectPlanningTimeRepository = projectPlanningTimeRepository;
     this.teamTaskRepository = teamTaskRepository;
+    this.timesheetlineRepo = timesheetlineRepo;
+    this.timeSheetRepository = timeSheetRepository;
   }
 
   @Override
@@ -657,9 +673,7 @@ public class TimesheetServiceImpl implements TimesheetService {
             discountTypeSelect,
             price.multiply(qtyConverted),
             null,
-            false,
-            false,
-            0) {
+            false) {
 
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
@@ -689,22 +703,73 @@ public class TimesheetServiceImpl implements TimesheetService {
 
       while (projectIterator.hasNext()) {
         Project project = projectIterator.next();
+        getEntityManager().flush();
+        executor.submit(
+            () -> {
+              final Long startTime = System.currentTimeMillis();
+              boolean done = false;
+              PersistenceException persistenceException = null;
 
-        BigDecimal timeSpent =
-            projectTimeSpentMap.get(project).add(this.computeSubTimeSpent(project));
-        project.setTimeSpent(timeSpent);
+              do {
+                try {
+                  inTransaction(
+                      () -> {
+                        final Project updateProject = findProject(project.getId());
+                        getEntityManager().lock(updateProject, LockModeType.PESSIMISTIC_WRITE);
 
-        this.computeParentTimeSpent(project);
+                        BigDecimal timeSpent =
+                            projectTimeSpentMap
+                                .get(updateProject)
+                                .add(this.computeSubTimeSpent(updateProject));
+                        updateProject.setTimeSpent(timeSpent);
+
+                        projectRepo.save(updateProject);
+
+                        this.computeParentTimeSpent(updateProject);
+                      });
+                  done = true;
+                } catch (PersistenceException e) {
+                  persistenceException = e;
+                  sleep();
+                }
+              } while (!done && System.currentTimeMillis() - startTime < ENTITY_FIND_TIMEOUT);
+
+              if (!done) {
+                throw persistenceException;
+              }
+              return true;
+            });
       }
     }
     this.setTeamTaskTotalRealHrs(timesheet.getTimesheetLineList(), true);
+  }
+
+  private Project findProject(Long projectId) {
+    Project project;
+    final long startTime = System.currentTimeMillis();
+    while ((project = projectRepo.find(projectId)) == null
+        && System.currentTimeMillis() - startTime < ENTITY_FIND_TIMEOUT) {
+      sleep();
+    }
+    if (project == null) {
+      throw new EntityNotFoundException(projectId.toString());
+    }
+    return project;
+  }
+
+  private void sleep() {
+    try {
+      Thread.sleep(ENTITY_FIND_INTERVAL);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+    }
   }
 
   @Override
   public BigDecimal computeSubTimeSpent(Project project) {
     BigDecimal sum = BigDecimal.ZERO;
     List<Project> subProjectList =
-        Beans.get(ProjectRepository.class).all().filter("self.parentProject = ?1", project).fetch();
+        projectRepo.all().filter("self.parentProject = ?1", project).fetch();
     if (subProjectList == null || subProjectList.isEmpty()) {
       return this.computeTimeSpent(project);
     }
@@ -721,6 +786,7 @@ public class TimesheetServiceImpl implements TimesheetService {
       return;
     }
     parentProject.setTimeSpent(project.getTimeSpent().add(this.computeTimeSpent(parentProject)));
+    projectRepo.save(parentProject);
     this.computeParentTimeSpent(parentProject);
   }
 
@@ -728,7 +794,7 @@ public class TimesheetServiceImpl implements TimesheetService {
   public BigDecimal computeTimeSpent(Project project) {
     BigDecimal sum = BigDecimal.ZERO;
     List<TimesheetLine> timesheetLineList =
-        Beans.get(TimesheetLineRepository.class)
+        timesheetlineRepo
             .all()
             .filter(
                 "self.project = ?1 AND self.timesheet.statusSelect = ?2",
@@ -1090,6 +1156,17 @@ public class TimesheetServiceImpl implements TimesheetService {
             ? employee.getPublicHolidayEventsPlanning()
             : config.getPublicHolidayEventsPlanning();
 
+    if (timesheet.getTimesheetLineList() != null && !timesheet.getTimesheetLineList().isEmpty()) {
+      fromDate =
+          timesheet
+              .getTimesheetLineList()
+              .stream()
+              .map(TimesheetLine::getDate)
+              .max(LocalDate::compareTo)
+              .get()
+              .plusDays(1);
+    }
+
     for (LocalDate date = fromDate; !date.isAfter(toDate); date = date.plusDays(1)) {
       BigDecimal dayValueInHours =
           weeklyPlanningService.getWorkingDayValueInHours(
@@ -1103,7 +1180,7 @@ public class TimesheetServiceImpl implements TimesheetService {
       } else if (appTimesheet.getCreateLinesForLeaves()) {
         LeaveRequest leave = leaveService.getLeave(user, date);
         if (leave != null) {
-          BigDecimal hours = leaveService.computeDuration(leave);
+          BigDecimal hours = leaveService.computeDuration(leave, date, date);
           if (leave.getLeaveLine().getLeaveReason().getUnitSelect()
               == LeaveReasonRepository.UNIT_SELECT_DAYS) {
             hours = hours.multiply(dayValueInHours);
@@ -1130,5 +1207,22 @@ public class TimesheetServiceImpl implements TimesheetService {
         teamTaskRepository.save(teamTask);
       }
     }
+  }
+
+  @Override
+  @Transactional
+  public void removeAfterToDateTimesheetLines(Timesheet timesheet) {
+
+    List<TimesheetLine> removedTimesheetLines = new ArrayList<>();
+
+    for (TimesheetLine timesheetLine : ListUtils.emptyIfNull(timesheet.getTimesheetLineList())) {
+      if (timesheetLine.getDate().isAfter(timesheet.getToDate())) {
+        removedTimesheetLines.add(timesheetLine);
+        if (timesheetLine.getId() != null) {
+          timesheetlineRepo.remove(timesheetLine);
+        }
+      }
+    }
+    timesheet.getTimesheetLineList().removeAll(removedTimesheetLines);
   }
 }

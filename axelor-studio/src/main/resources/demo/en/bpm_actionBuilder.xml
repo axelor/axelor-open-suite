@@ -52,15 +52,15 @@
   	model="ProductCategory"
   	targetModel="ProductOrder">
   	<lines>
-	  	<line jsonField="customer" jsonModel="ProductOrder"  filter="self.name = 'Axelor'" />
-	  	<line jsonField="status" jsonModel="ProductOrder" value="1" />
-	  	<line jsonField="total" jsonModel="ProductOrder"  value="$.products.sum($.price)" />
-	  	<line jsonField="lines" jsonModel="ProductOrder"  value="$.products" valueJsonModel="ProductCategory" valueJsonField="products">
+	  	<line jsonField="customer" isTargetJson="true" jsonModel="ProductOrder"  filter="self.name = 'Axelor'" />
+	  	<line jsonField="status" isTargetJson="true"  jsonModel="ProductOrder" value="1" />
+	  	<line jsonField="total" isTargetJson="true"  jsonModel="ProductOrder"  value="$.products.sum($.price)" />
+	  	<line jsonField="lines" isTargetJson="true"  jsonModel="ProductOrder"  value="$.products" valueJsonModel="ProductCategory" isSourceJson="true"  valueJsonField="products">
 	  		<subLines>
-	  			<line jsonField="product" jsonModel="ProductOrderLine"  value="$" />
-	  			<line jsonField="price" jsonModel="ProductOrderLine"  value="$.price" valueJsonModel="Product" valueJsonField="price" />
-	  			<line jsonField="qty" jsonModel="ProductOrderLine"  value="1" />
-	  			<line jsonField="total" jsonModel="ProductOrderLine"  value="$.price" valueJsonModel="Product" valueJsonField="price" />
+	  			<line jsonField="product" isTargetJson="true"  jsonModel="ProductOrderLine"  value="$" />
+	  			<line jsonField="price" isTargetJson="true" jsonModel="ProductOrderLine"  value="$.price" valueJsonModel="Product" isSourceJson="true"  valueJsonField="price" />
+	  			<line jsonField="qty" isTargetJson="true" jsonModel="ProductOrderLine"  value="1" />
+	  			<line jsonField="total" isTargetJson="true" jsonModel="ProductOrderLine"  value="$.price" valueJsonModel="Product" isSourceJson="true"  valueJsonField="price" />
 	  		</subLines>
 	  	</line>
 	</lines>
@@ -73,7 +73,7 @@
   	model="ProductOrderLine"
   	targetModel="ProductOrderLine">
   	<lines>
-	  	<line jsonField="total" jsonModel="ProductOrderLine"  value="$.price*$.qty" />
+	  	<line isTargetJson="true"  jsonField="total" jsonModel="ProductOrderLine"  value="$.price*$.qty" />
 	</lines>
   </action-builder>
   
@@ -84,7 +84,7 @@
   	model="ProductOrderLine"
   	targetModel="ProductOrderLine">
   	<lines>
-	  	<line jsonField="price" jsonModel="ProductOrderLine" valueJson="Product" valueJsonModel="ProductOrderLine" valueJsonField="product" value="$.product.price" />
+	  	<line isTargetJson="true"  jsonField="price" jsonModel="ProductOrderLine" isSourceJson="true"  valueJson="Product" valueJsonModel="ProductOrderLine" valueJsonField="product" value="$.product.price" />
 	</lines>
   </action-builder>
   
@@ -95,7 +95,7 @@
   	model="ProductOrder"
   	targetModel="ProductOrder">
   	<lines>
-	  	<line jsonField="total" jsonModel="ProductOrder" valueJson="Product" valueJsonModel="ProductOrder"  valueJsonField="lines" value="$.lines.sum($.total)" />
+	  	<line isTargetJson="true"  jsonField="total" jsonModel="ProductOrder"  isSourceJson="true" valueJson="Product" valueJsonModel="ProductOrder"  valueJsonField="lines" value="$.lines.sum($.total)" />
 	</lines>
   </action-builder>
   

@@ -56,7 +56,7 @@
 		</panel>
 		
 		<panel name="configuratorBomPanel" title="Configurator BoM" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getEnableConfigurator()" colSpan="12">
-            <field name="configuratorBom" showTitle="false" if-module="axelor-production" colSpan="12">
+            <field name="configuratorBom" showTitle="false" if-module="axelor-production" colSpan="12" form-view="configurator-bom-form" grid-view="configurator-bom-grid">
                 <editor>
                     <panel>
                         <field name="company"/>
@@ -103,7 +103,9 @@
                         <field name="configuratorProdProcess" colSpan="12"
                                canNew="true" showIf="defProdProcessAsConfigurator"/>
                     </panel>
-                    <field name="configuratorBomList" showTitle="false" form-view="configurator-bom-form" grid-view="configurator-bom-grid" colSpan="12"/>
+                  <panel colSpan="12">
+										<field name="configuratorBomList" showTitle="false" title="Components" height="15" domain="self.defineSubBillOfMaterial = true and (:id is null or self.id != :id)" form-view="configurator-bom-line-form" grid-view="configurator-bom-line-grid" canSelect="true" colSpan="12"/>
+									</panel>
                 </editor>
             </field>
         </panel>
