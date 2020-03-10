@@ -20,6 +20,7 @@
 - Invoice payment: fix issue in invoice payment form when invoice due date is empty.
 - INVOICE : fix the NPE when payment mode is null in invoice.
 - Move: Fix exception message when saving a new record.
+- SALEORDER : fixed bug causing the margins to be rounded to the unit
 
 ## [5.1.14] - 2020-01-17
 ## Improvements
