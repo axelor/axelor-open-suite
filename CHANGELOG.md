@@ -9,6 +9,7 @@
 - TIMESHEET PRINTING : Manage visibility for task and activity column
 - STUDIO : Add panel on custom model demo data
 - ACCOUNTING REPORT : add account filter to summary and gross value report.
+- Accounting Config : clarifying the field lineMinBeforeLongReportGenerationMessageNumber
 
 ## Bug Fixes
 - Fix Timesheet Reminder Batch sendReminder method
@@ -70,7 +71,6 @@
 - BANK ORDER: Bank order workflow pass from draft to validated when automatic transmission is not activated in payment mode.
 - INVOICE: add specific note of company bank details on invoice report.
 - SUPPLYCHAIN : In stock-detail-by-product menu, company field now autofill with the user's active company.
-- Accounting Config : clarifying the field lineMinBeforeLongReportGenerationMessageNumber
 
 ## Bug Fixes
 - Studio: Fix access to json fields of base model in chart builder form.
