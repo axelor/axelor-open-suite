@@ -7,8 +7,12 @@
 - INVOICES DASHBOARD: Turnover is now calculated using both sales and assets
 - PRODUCT : Quantity field digits length is now based on nbDecimalDigitForQty in Base Config
 - TIMESHEET PRINTING : Manage visibility for task and activity column
+- STUDIO : Add panel on custom model demo data
+- ACCOUNTING REPORT : add account filter to summary and gross value report.
+- Accounting Config : clarifying the field lineMinBeforeLongReportGenerationMessageNumber
 
 ## Bug Fixes
+- SALEORDER : fixed bug causing the margins to be rounded to the unit
 - Fix Timesheet Reminder Batch sendReminder method
 - Stock Move Line reservation: correctly set qty requested flag when generated from a sale order line.
 - Stock Move: Delete empty date field in form view.
@@ -16,6 +20,8 @@
 - LEAD : removed the persistable field on the form view
 - LEAVEREQUEST : Fix the NPE when no leaveRequest is selected to be edited
 - Project : Resolve issue in computation of timespent
+- EBICS: Display correctly hash code in certificates EBICS.
+- Move: Fix exception message when saving a new record.
 - SUPPLIER INVOICE : fix the problem of amount not updated in supplier invoice after use of mass invoice payment function.
 
 ## [5.3.0] - 2020-02-25
