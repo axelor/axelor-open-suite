@@ -4,6 +4,7 @@
 - Workflow : Add support to select real status fields.
 - STOCK CONFIG : Added three boolean fields so as to whether display product code, price, order reference and date in stock move report
 - SaleOrderLine/PurchaseOrderLine : Added transient boolean field to freeze price,qty,productName
+- Ebics user : Display associated user in list view.
 
 ## Improvements
 - LEAVE REQUEST : Allow sending a leave request in the past.
