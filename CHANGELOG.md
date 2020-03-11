@@ -9,6 +9,7 @@
 - Subrogation release : improved visibility of unpaid invoices.
 - PRODUCT : display button 'Update stock location' only for storable and stock managed products.
 - STUDIO : Add panel on custom model demo data
+- Partner : rename 'Create order' button & translation.
 
 ## Bug Fixes
 - STOCKMOVE : display qty per tracking number and not total available qty for tracking number
