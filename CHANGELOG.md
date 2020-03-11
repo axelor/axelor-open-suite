@@ -24,6 +24,7 @@
 - Move: Fix exception message when saving a new record.
 - SUPPLIER INVOICE : fix the problem of amount not updated in supplier invoice after use of mass invoice payment function.
 - CLIENT PORTAL : fix TeamTask counters
+- TimesheetLine : Fill duration on data import
 
 ## [5.3.0] - 2020-02-25
 ## Features
