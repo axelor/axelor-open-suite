@@ -9,16 +9,23 @@
 - TIMESHEET PRINTING : Manage visibility for task and activity column
 - STUDIO : Add panel on custom model demo data
 - ACCOUNTING REPORT : add account filter to summary and gross value report.
+- Accounting Config : clarifying the field lineMinBeforeLongReportGenerationMessageNumber
 - INVOICE LINE : add grid view and form view of budgetDistributionListPanel in form.
 
 ## Bug Fixes
+- SALEORDER : fixed bug causing the margins to be rounded to the unit
 - Fix Timesheet Reminder Batch sendReminder method
 - Stock Move Line reservation: correctly set qty requested flag when generated from a sale order line.
 - Stock Move: Delete empty date field in form view.
-- Advance data import: Fix search issue on main object to import.
+- Advance data import: Fix search issue on main object to import.invoice payment function.
 - LEAD : removed the persistable field on the form view
 - LEAVEREQUEST : Fix the NPE when no leaveRequest is selected to be edited
 - Project : Resolve issue in computation of timespent
+- EBICS: Display correctly hash code in certificates EBICS.
+- Move: Fix exception message when saving a new record.
+- SUPPLIER INVOICE : fix the problem of amount not updated in supplier invoice after use of mass invoice payment function.
+- CLIENT PORTAL : fix TeamTask counters
+- TimesheetLine : Fill duration on data import
 
 ## [5.3.0] - 2020-02-25
 ## Features
