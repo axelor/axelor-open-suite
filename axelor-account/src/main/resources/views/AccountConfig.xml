@@ -21,7 +21,6 @@
 			<field name="allowRemovalValidatedMove"/>
 			<field name="generateMoveForAdvancePayment"/>
 			<field name="accountingDaybook"/>
-			<field name="lineMinBeforeLongReportGenerationMessageNumber"/>
 		</panel>
 
 		<panel-tabs name="mainPanelTab">
@@ -96,6 +95,9 @@
 				<panel name="expensePanel" title="Expense" colSpan="12">
 					<field name="expenseTaxAccount" domain="self.company = :company" if-module="axelor-human-resource" grid-view="account-grid" form-view="account-form" if="__config__.app.isApp('expense')"/>
 				</panel>
+				<panel name="accountingReportPanel" title="Accounting reports" colSpan="12">
+      	    		<field name="lineMinBeforeLongReportGenerationMessageNumber"/>
+      			</panel>
 			</panel>
 
 			<panel title="Invoicing" name="invoicingPanel">

@@ -33,6 +33,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.filter.Filter;
 import com.axelor.team.db.TeamTask;
 import java.util.Map;
 
@@ -63,14 +64,16 @@ public class ClientViewController {
       if (clientUser.getPartner() == null) {
         response.setError(I18n.get(ITranslation.CLIENT_PORTAL_NO_PARTNER));
       } else {
-        String domain = clientViewService.getOrdersInProgressOfUser(clientUser);
-        response.setView(
-            ActionView.define(I18n.get("Orders in progress"))
-                .model(SaleOrder.class.getName())
-                .add("grid", "sale-order-grid-client")
-                .add("form", "sale-order-form-client")
-                .domain(domain)
-                .map());
+        Filter filter = clientViewService.getOrdersInProgressOfUser(clientUser).get(0);
+        if (filter != null) {
+          response.setView(
+              ActionView.define(I18n.get("Orders in progress"))
+                  .model(SaleOrder.class.getName())
+                  .add("grid", "sale-order-grid")
+                  .add("form", "sale-order-form")
+                  .domain(filter.getQuery())
+                  .map());
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -84,14 +87,16 @@ public class ClientViewController {
       if (clientUser.getPartner() == null) {
         response.setError(I18n.get(ITranslation.CLIENT_PORTAL_NO_PARTNER));
       } else {
-        String domain = clientViewService.getQuotationsOfUser(clientUser);
-        response.setView(
-            ActionView.define(I18n.get("My quotations"))
-                .model(SaleOrder.class.getName())
-                .add("grid", "sale-order-grid")
-                .add("form", "sale-order-form")
-                .domain(domain)
-                .map());
+        Filter filter = clientViewService.getQuotationsOfUser(clientUser).get(0);
+        if (filter != null) {
+          response.setView(
+              ActionView.define(I18n.get("My quotations"))
+                  .model(SaleOrder.class.getName())
+                  .add("grid", "sale-order-grid")
+                  .add("form", "sale-order-form")
+                  .domain(filter.getQuery())
+                  .map());
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -105,15 +110,19 @@ public class ClientViewController {
       if (clientUser.getPartner() == null) {
         response.setError(I18n.get(ITranslation.CLIENT_PORTAL_NO_PARTNER));
       } else {
-        String domain = clientViewService.getLastOrderOfUser(clientUser);
-        SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).all().filter(domain).fetchOne();
-        if (saleOrder != null) {
-          response.setView(
-              ActionView.define(I18n.get("Last order"))
-                  .model(SaleOrder.class.getName())
-                  .add("form", "sale-order-form-client")
-                  .context("_showRecord", saleOrder.getId())
-                  .map());
+        Filter filter = clientViewService.getLastOrderOfUser(clientUser).get(0);
+        if (filter != null) {
+
+          SaleOrder saleOrder =
+              Beans.get(SaleOrderRepository.class).all().filter(filter.getQuery()).fetchOne();
+          if (saleOrder != null) {
+            response.setView(
+                ActionView.define(I18n.get("Last order"))
+                    .model(SaleOrder.class.getName())
+                    .add("form", "sale-order-form")
+                    .context("_showRecord", saleOrder.getId())
+                    .map());
+          }
         }
       }
     } catch (Exception e) {
@@ -129,14 +138,16 @@ public class ClientViewController {
       if (clientUser.getPartner() == null) {
         response.setError(I18n.get(ITranslation.CLIENT_PORTAL_NO_PARTNER));
       } else {
-        String domain = clientViewService.getTotalProjectsOfUser(clientUser);
-        response.setView(
-            ActionView.define(I18n.get("Total projects"))
-                .model(Project.class.getName())
-                .add("grid", "project-grid")
-                .add("form", "project-form")
-                .domain(domain)
-                .map());
+        Filter filter = clientViewService.getTotalProjectsOfUser(clientUser).get(0);
+        if (filter != null) {
+          response.setView(
+              ActionView.define(I18n.get("Total projects"))
+                  .model(Project.class.getName())
+                  .add("grid", "project-grid")
+                  .add("form", "project-form")
+                  .domain(filter.getQuery())
+                  .map());
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -150,14 +161,16 @@ public class ClientViewController {
       if (clientUser.getPartner() == null) {
         response.setError(I18n.get(ITranslation.CLIENT_PORTAL_NO_PARTNER));
       } else {
-        String domain = clientViewService.getNewTasksOfUser(clientUser);
-        response.setView(
-            ActionView.define(I18n.get("New tasks"))
-                .model(TeamTask.class.getName())
-                .add("grid", "team-task-grid")
-                .add("form", "team-task-form")
-                .domain(domain)
-                .map());
+        Filter filter = clientViewService.getNewTasksOfUser(clientUser).get(0);
+        if (filter != null) {
+          response.setView(
+              ActionView.define(I18n.get("New tasks"))
+                  .model(TeamTask.class.getName())
+                  .add("grid", "team-task-grid")
+                  .add("form", "team-task-form")
+                  .domain(filter.getQuery())
+                  .map());
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -171,14 +184,16 @@ public class ClientViewController {
       if (clientUser.getPartner() == null) {
         response.setError(I18n.get(ITranslation.CLIENT_PORTAL_NO_PARTNER));
       } else {
-        String domain = clientViewService.getTasksInProgressOfUser(clientUser);
-        response.setView(
-            ActionView.define(I18n.get("Tasks in progress"))
-                .model(TeamTask.class.getName())
-                .add("grid", "team-task-grid")
-                .add("form", "team-task-form")
-                .domain(domain)
-                .map());
+        Filter filter = clientViewService.getTasksInProgressOfUser(clientUser).get(0);
+        if (filter != null) {
+          response.setView(
+              ActionView.define(I18n.get("Tasks in progress"))
+                  .model(TeamTask.class.getName())
+                  .add("grid", "team-task-grid")
+                  .add("form", "team-task-form")
+                  .domain(filter.getQuery())
+                  .map());
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -192,14 +207,16 @@ public class ClientViewController {
       if (clientUser.getPartner() == null) {
         response.setError(I18n.get(ITranslation.CLIENT_PORTAL_NO_PARTNER));
       } else {
-        String domain = clientViewService.getTasksDueOfUser(clientUser);
-        response.setView(
-            ActionView.define(I18n.get("Tasks due"))
-                .model(TeamTask.class.getName())
-                .add("grid", "team-task-grid")
-                .add("form", "team-task-form")
-                .domain(domain)
-                .map());
+        Filter filter = clientViewService.getTasksDueOfUser(clientUser).get(0);
+        if (filter != null) {
+          response.setView(
+              ActionView.define(I18n.get("Tasks due"))
+                  .model(TeamTask.class.getName())
+                  .add("grid", "team-task-grid")
+                  .add("form", "team-task-form")
+                  .domain(filter.getQuery())
+                  .map());
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -214,16 +231,19 @@ public class ClientViewController {
       if (clientUser.getPartner() == null) {
         response.setError(I18n.get(ITranslation.CLIENT_PORTAL_NO_PARTNER));
       } else {
-        String domain = clientViewService.getLastDeliveryOfUser(clientUser);
-        StockMove stockMove = Beans.get(StockMoveRepository.class).all().filter(domain).fetchOne();
-        if (stockMove != null) {
-          response.setView(
-              ActionView.define(I18n.get("Last delivery"))
-                  .model(StockMove.class.getName())
-                  .add("form", "stock-move-form")
-                  .context("_showRecord", stockMove.getId())
-                  .domain(domain)
-                  .map());
+        Filter filter = clientViewService.getLastDeliveryOfUser(clientUser).get(0);
+        if (filter != null) {
+
+          StockMove stockMove =
+              Beans.get(StockMoveRepository.class).all().filter(filter.getQuery()).fetchOne();
+          if (stockMove != null) {
+            response.setView(
+                ActionView.define(I18n.get("Last delivery"))
+                    .model(StockMove.class.getName())
+                    .add("form", "stock-move-form")
+                    .context("_showRecord", stockMove.getId())
+                    .map());
+          }
         }
       }
     } catch (Exception e) {
@@ -238,16 +258,19 @@ public class ClientViewController {
       if (clientUser.getPartner() == null) {
         response.setError(I18n.get(ITranslation.CLIENT_PORTAL_NO_PARTNER));
       } else {
-        String domain = clientViewService.getNextDeliveryOfUser(clientUser);
-        StockMove stockMove = Beans.get(StockMoveRepository.class).all().filter(domain).fetchOne();
-        if (stockMove != null) {
-          response.setView(
-              ActionView.define(I18n.get("Next delivery"))
-                  .model(StockMove.class.getName())
-                  .add("form", "stock-move-form")
-                  .context("_showRecord", stockMove.getId())
-                  .domain(domain)
-                  .map());
+        Filter filter = clientViewService.getNextDeliveryOfUser(clientUser).get(0);
+        if (filter != null) {
+
+          StockMove stockMove =
+              Beans.get(StockMoveRepository.class).all().filter(filter.getQuery()).fetchOne();
+          if (stockMove != null) {
+            response.setView(
+                ActionView.define(I18n.get("Next delivery"))
+                    .model(StockMove.class.getName())
+                    .add("form", "stock-move-form")
+                    .context("_showRecord", stockMove.getId())
+                    .map());
+          }
         }
       }
     } catch (Exception e) {
@@ -262,14 +285,16 @@ public class ClientViewController {
       if (clientUser.getPartner() == null) {
         response.setError(I18n.get(ITranslation.CLIENT_PORTAL_NO_PARTNER));
       } else {
-        String domain = clientViewService.getPlannedDeliveriesOfUser(clientUser);
-        response.setView(
-            ActionView.define(I18n.get("Planned deliveries"))
-                .model(StockMove.class.getName())
-                .add("grid", "stock-move-grid")
-                .add("form", "stock-move-form")
-                .domain(domain)
-                .map());
+        Filter filter = clientViewService.getPlannedDeliveriesOfUser(clientUser).get(0);
+        if (filter != null) {
+          response.setView(
+              ActionView.define(I18n.get("Planned deliveries"))
+                  .model(StockMove.class.getName())
+                  .add("grid", "stock-move-grid")
+                  .add("form", "stock-move-form")
+                  .domain(filter.getQuery())
+                  .map());
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -283,14 +308,16 @@ public class ClientViewController {
       if (clientUser.getPartner() == null) {
         response.setError(I18n.get(ITranslation.CLIENT_PORTAL_NO_PARTNER));
       } else {
-        String domain = clientViewService.getReversionsOfUser(clientUser);
-        response.setView(
-            ActionView.define(I18n.get("My reversions"))
-                .model(StockMove.class.getName())
-                .add("grid", "stock-move-grid")
-                .add("form", "stock-move-form")
-                .domain(domain)
-                .map());
+        Filter filter = clientViewService.getReversionsOfUser(clientUser).get(0);
+        if (filter != null) {
+          response.setView(
+              ActionView.define(I18n.get("My reversions"))
+                  .model(StockMove.class.getName())
+                  .add("grid", "stock-move-grid")
+                  .add("form", "stock-move-form")
+                  .domain(filter.getQuery())
+                  .map());
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -305,14 +332,16 @@ public class ClientViewController {
       if (clientUser.getPartner() == null) {
         response.setError(I18n.get(ITranslation.CLIENT_PORTAL_NO_PARTNER));
       } else {
-        String domain = clientViewService.getOverdueInvoicesOfUser(clientUser);
-        response.setView(
-            ActionView.define(I18n.get("Overdue invoices"))
-                .model(Invoice.class.getName())
-                .add("grid", "invoice-grid")
-                .add("form", "invoice-client-form")
-                .domain(domain)
-                .map());
+        Filter filter = clientViewService.getOverdueInvoicesOfUser(clientUser).get(0);
+        if (filter != null) {
+          response.setView(
+              ActionView.define(I18n.get("Overdue invoices"))
+                  .model(Invoice.class.getName())
+                  .add("grid", "invoice-grid")
+                  .add("form", "invoice-form")
+                  .domain(filter.getQuery())
+                  .map());
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -326,14 +355,16 @@ public class ClientViewController {
       if (clientUser.getPartner() == null) {
         response.setError(I18n.get(ITranslation.CLIENT_PORTAL_NO_PARTNER));
       } else {
-        String domain = clientViewService.getAwaitingInvoicesOfUser(clientUser);
-        response.setView(
-            ActionView.define(I18n.get("Awaiting invoices"))
-                .model(Invoice.class.getName())
-                .add("grid", "invoice-grid")
-                .add("form", "invoice-client-form")
-                .domain(domain)
-                .map());
+        Filter filter = clientViewService.getAwaitingInvoicesOfUser(clientUser).get(0);
+        if (filter != null) {
+          response.setView(
+              ActionView.define(I18n.get("Awaiting invoices"))
+                  .model(Invoice.class.getName())
+                  .add("grid", "invoice-grid")
+                  .add("form", "invoice-form")
+                  .domain(filter.getQuery())
+                  .map());
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -347,14 +378,16 @@ public class ClientViewController {
       if (clientUser.getPartner() == null) {
         response.setError(I18n.get(ITranslation.CLIENT_PORTAL_NO_PARTNER));
       } else {
-        String domain = clientViewService.getTotalRemainingOfUser(clientUser);
-        response.setView(
-            ActionView.define(I18n.get("Total remaining"))
-                .model(Invoice.class.getName())
-                .add("grid", "invoice-grid")
-                .add("form", "invoice-client-form")
-                .domain(domain)
-                .map());
+        Filter filter = clientViewService.getTotalRemainingOfUser(clientUser).get(0);
+        if (filter != null) {
+          response.setView(
+              ActionView.define(I18n.get("Total remaining"))
+                  .model(Invoice.class.getName())
+                  .add("grid", "invoice-grid")
+                  .add("form", "invoice-form")
+                  .domain(filter.getQuery())
+                  .map());
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -368,14 +401,16 @@ public class ClientViewController {
       if (clientUser.getPartner() == null) {
         response.setError(I18n.get(ITranslation.CLIENT_PORTAL_NO_PARTNER));
       } else {
-        String domain = clientViewService.getRefundOfUser(clientUser);
-        response.setView(
-            ActionView.define(I18n.get("My refund"))
-                .model(Invoice.class.getName())
-                .add("grid", "invoice-refund-grid")
-                .add("form", "invoice-client-form")
-                .domain(domain)
-                .map());
+        Filter filter = clientViewService.getRefundOfUser(clientUser).get(0);
+        if (filter != null) {
+          response.setView(
+              ActionView.define(I18n.get("My refund"))
+                  .model(Invoice.class.getName())
+                  .add("grid", "invoice-refund-grid")
+                  .add("form", "invoice-form")
+                  .domain(filter.getQuery())
+                  .map());
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -390,14 +425,17 @@ public class ClientViewController {
       if (clientUser.getPartner() == null) {
         response.setError(I18n.get(ITranslation.CLIENT_PORTAL_NO_PARTNER));
       } else {
-        String domain = clientViewService.getTicketsOfUser(clientUser);
-        response.setView(
-            ActionView.define(I18n.get("Customer tickets"))
-                .model(Ticket.class.getName())
-                .add("grid", "ticket-grid")
-                .add("form", "ticket-form")
-                .domain(domain)
-                .map());
+        Filter filter = clientViewService.getTicketsOfUser(clientUser).get(0);
+
+        if (filter != null) {
+          response.setView(
+              ActionView.define(I18n.get("Customer tickets"))
+                  .model(Ticket.class.getName())
+                  .add("grid", "ticket-grid")
+                  .add("form", "ticket-form")
+                  .domain(filter.getQuery())
+                  .map());
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -411,14 +449,16 @@ public class ClientViewController {
       if (clientUser.getPartner() == null) {
         response.setError(I18n.get(ITranslation.CLIENT_PORTAL_NO_PARTNER));
       } else {
-        String domain = clientViewService.getCompanyTicketsOfUser(clientUser);
-        response.setView(
-            ActionView.define(I18n.get("Company tickets"))
-                .model(Ticket.class.getName())
-                .add("grid", "ticket-grid")
-                .add("form", "ticket-form")
-                .domain(domain)
-                .map());
+        Filter filter = clientViewService.getCompanyTicketsOfUser(clientUser).get(0);
+        if (filter != null) {
+          response.setView(
+              ActionView.define(I18n.get("Company tickets"))
+                  .model(Ticket.class.getName())
+                  .add("grid", "ticket-grid")
+                  .add("form", "ticket-form")
+                  .domain(filter.getQuery())
+                  .map());
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -432,14 +472,16 @@ public class ClientViewController {
       if (clientUser.getPartner() == null) {
         response.setError(I18n.get(ITranslation.CLIENT_PORTAL_NO_PARTNER));
       } else {
-        String domain = clientViewService.getResolvedTicketsOfUser(clientUser);
-        response.setView(
-            ActionView.define(I18n.get("Resolved tickets"))
-                .model(Ticket.class.getName())
-                .add("grid", "ticket-grid")
-                .add("form", "ticket-form")
-                .domain(domain)
-                .map());
+        Filter filter = clientViewService.getResolvedTicketsOfUser(clientUser).get(0);
+        if (filter != null) {
+          response.setView(
+              ActionView.define(I18n.get("Resolved tickets"))
+                  .model(Ticket.class.getName())
+                  .add("grid", "ticket-grid")
+                  .add("form", "ticket-form")
+                  .domain(filter.getQuery())
+                  .map());
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -453,14 +495,16 @@ public class ClientViewController {
       if (clientUser.getPartner() == null) {
         response.setError(I18n.get(ITranslation.CLIENT_PORTAL_NO_PARTNER));
       } else {
-        String domain = clientViewService.getLateTicketsOfUser(clientUser);
-        response.setView(
-            ActionView.define(I18n.get("Late tickets"))
-                .model(Ticket.class.getName())
-                .add("grid", "ticket-grid")
-                .add("form", "ticket-form")
-                .domain(domain)
-                .map());
+        Filter filter = clientViewService.getLateTicketsOfUser(clientUser).get(0);
+        if (filter != null) {
+          response.setView(
+              ActionView.define(I18n.get("Late tickets"))
+                  .model(Ticket.class.getName())
+                  .add("grid", "ticket-grid")
+                  .add("form", "ticket-form")
+                  .domain(filter.getQuery())
+                  .map());
+        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

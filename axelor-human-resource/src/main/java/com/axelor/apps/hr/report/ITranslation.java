@@ -99,4 +99,5 @@ public class ITranslation {
 
   public static final String EXPENSE_TOTAL_ATI = /*$$(*/ "Expense.totalA.T.I"; /*)*/
   public static final String EXPENSE_TOTAL_TO_REFUND = /*$$(*/ "Expense.totalToRefund"; /*)*/
+  public static final String TIMESHEET_TASK = /*$$(*/ "Timesheet.task"; /*)*/
 }

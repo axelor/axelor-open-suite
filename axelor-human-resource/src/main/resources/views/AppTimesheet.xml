@@ -17,6 +17,8 @@
 			<field name="displayTimesheetLineNumber" widget="boolean-switch" />
 			<field name="timesheetReminderTemplate" domain="self.metaModel.name = 'TimesheetReminder'"/>
 			<field name="isAlertManufOrderFinish" widget="boolean-switch"/>
+			<field name="displayTaskColumnInPrinting" widget="boolean-switch"/>
+			<field name="displayActivityColumnInPrinting" widget="boolean-switch"/>
 		</panel>
 				
 		<panel-mail name="mailPanel">

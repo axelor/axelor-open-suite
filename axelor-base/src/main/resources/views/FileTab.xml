@@ -15,9 +15,10 @@
 		<panel name="mainPanel">
 			<field name="name"/>
 			<field name="metaModel" required="true" onChange="action-file-tab-group-on-meta-model"/>
-			<field name="importType" selection-in="[1,2,3]" showIf="metaModel != null" onChange="action-file-tab-record-set-search-field" validIf="$number(importType) > 0"/>
+			<field name="importType" selection-in="[1,2,3]" showIf="metaModel != null" onChange="action-file-tab-record-set-search-field" validIf="$number(importType) > 0" colSpan="12"/>
 			<field name="actions" onChange="action-file-tab-method-on-change-validate-actions"/>
-			<field name="searchFieldSet" domain="self.fileTab = :id" widget="TagSelect" form-view="file-field-form" grid-view="file-field-grid" colSpan="12" canNew="false" showIf="(importType == 1 || importType == 2) &amp;&amp; metaModel != null"/>
+			<field name="searchCall" onChange="action-file-tab-method-on-change-validate-search-call" showIf="(importType == 1 || importType == 2) &amp;&amp; metaModel != null &amp;&amp; (searchFieldSet.length === 0 || !searchFieldSet)"/>
+			<field name="searchFieldSet" domain="self.fileTab = :id" widget="TagSelect" form-view="file-field-form" grid-view="file-field-grid" colSpan="12" canNew="false" showIf="(importType == 1 || importType == 2) &amp;&amp; metaModel != null &amp;&amp; !searchCall"/>
 			<panel-related field="fileFieldList" onChange="action-file-tab-method-compute" colSpan="12" grid-view="file-field-grid" form-view="file-field-form" orderBy="sequence"/>
 			<field name="validationLog" widget="binary-link" showIf="validationLog != null"/>
 			<field name="advancedImport.statusSelect" hidden="true"/>
@@ -30,6 +31,7 @@
 	
 	<action-record name="action-file-tab-record-set-search-field" model="com.axelor.apps.base.db.FileTab">
 		<field name="searchFieldSet" expr="eval: null" if="importType == 3 &amp;&amp; searchFieldSet != null"/>
+		<field name="searchCall" expr="eval: null" if="importType == 3 &amp;&amp; searchCall != null"/>
 	</action-record>
 	
 	<action-record name="action-file-tab-record-import-type" model="com.axelor.apps.base.db.FileTab">
@@ -49,5 +51,13 @@
 	  <action name="action-file-tab-record-set-search-field"/>
 	  <action name="action-file-tab-method-update-fields"/>
 	</action-group>
+	
+	<action-method name="action-file-tab-method-on-change-validate-actions">
+      <call class="com.axelor.apps.base.web.FileTabController" method="validateActions"/>
+    </action-method>
+	
+	<action-method name="action-file-tab-method-on-change-validate-search-call">
+	  <call class="com.axelor.apps.base.web.FileTabController" method="validateSearchCall"/>
+	</action-method>
 	
 </object-views>
