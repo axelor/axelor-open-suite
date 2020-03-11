@@ -5,10 +5,23 @@
 - BANKSTATEMENT : on copy reset statusSelect
 - GEONAME : import city form zip
 - Check and modify all service code according to app configuration
+- BANKPAYMENT : Update condition to display field ics number.
+- Subrogation release : improved visibility of unpaid invoices.
+- PRODUCT : display button 'Update stock location' only for storable and stock managed products.
+- STUDIO : Add panel on custom model demo data
 
 ## Bug Fixes
 - STOCKMOVE : display qty per tracking number and not total available qty for tracking number
 - MOVE LINE : removed the possibility to delete a move line in a move when the move line is reconcile.
+- FIXED ASSET : correction of prorata temporis
+- INVOICE : now the date verification of the ventilation process depends of invoices of the same company.
+- MOVE : corrected sequence generation, now use correctly the date of the move and not the date of validation.
+- Subrogative release : corrected the possibility to create two subrogation transmitted or accounted with the same invoices.
+- Invoice payment: fix issue in invoice payment form when invoice due date is empty.
+- INVOICE : fix the NPE when payment mode is null in invoice.
+- Move: Fix exception message when saving a new record.
+- SALEORDER : fixed bug causing the margins to be rounded to the unit
+- SUPPLIER INVOICE : fix the problem of amount not updated in supplier invoice after use of mass invoice payment function.
 
 ## [5.1.14] - 2020-01-17
 ## Improvements

@@ -123,7 +123,7 @@
     
     <action-validate name="action-fixed-asset-validate-check-first-depreciation-date">
     	<error if="acquisitionDate &amp;&amp; firstDepreciationDate &amp;&amp; firstDepreciationDate.isBefore(acquisitionDate)" message="First depreciation date cannot be before Acquisition date."/>
-    	<error if="java.time.temporal.ChronoUnit.MONTHS.between(acquisitionDate.withDayOfMonth(1), firstDepreciationDate.withDayOfMonth(1)) &gt;= periodicityInMonth" message="Acquisition date and first depreciation date should not be more than one depreciation period apart."/>
+    	<error if="java.time.temporal.ChronoUnit.MONTHS.between(acquisitionDate, firstDepreciationDate) &gt;= periodicityInMonth" message="Acquisition date and first depreciation date should not be more than one depreciation period apart."/>
     </action-validate>
     
     <action-validate name="action-fixed-asset-validate-check-puchase-account">

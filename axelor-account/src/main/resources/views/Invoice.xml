@@ -680,7 +680,7 @@ InvoiceSet.length > 0))"
 
 	<grid model="com.axelor.apps.account.db.Invoice" title="Release details"
 		name="invoice-release-details-grid" orderBy="invoiceDate, dueDate, invoiceId">
-		<hilite background="danger" if="$subrogationStatusSelect == 3 &amp;&amp; amountRemaining &gt; 0"/>
+		
 		<field name="invoiceId" width="120"/>
 		<field name="partner.partnerSeq" width="120"/>
 		<field name="partner.name" />
@@ -689,7 +689,9 @@ InvoiceSet.length > 0))"
 		<field name="inTaxTotal" />
 		<field name="currency" />
 		<field name="$subrogationStatusSelect" hidden="true"/>
-		<field name="amountRemaining" hidden="true"/>
+		<field name="amountRemaining" >
+			<hilite background="danger" if="$subrogationStatusSelect == 3 &amp;&amp; amountRemaining &gt; 0"/>
+		</field>
 	</grid>
 
     <!-- CUSTOMER INVOICES MERGE  -->
