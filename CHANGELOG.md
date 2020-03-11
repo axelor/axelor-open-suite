@@ -3,6 +3,7 @@
 ## [Unreleased 5.0.12]
 ## Improvements
 - ACCOUNTING REPORT : display popup message on click of 'exportBtn'.
+- Partner : rename 'Create order' button & translation.
 
 ## Bug Fixes
 - INVOICE : now the date verification of the ventilation process depends of invoices of the same company.
