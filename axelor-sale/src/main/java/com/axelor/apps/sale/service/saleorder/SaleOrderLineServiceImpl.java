@@ -548,7 +548,9 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       subTotalGrossProfit = totalWT.subtract(subTotalCostPrice);
       logger.debug("Subtotal gross margin: {}", subTotalGrossProfit);
       subMarginRate =
-          subTotalGrossProfit.multiply(new BigDecimal(100)).divide(totalWT, 2, RoundingMode.HALF_EVEN);
+          subTotalGrossProfit
+              .multiply(new BigDecimal(100))
+              .divide(totalWT, 2, RoundingMode.HALF_EVEN);
       logger.debug("Subtotal gross margin rate: {}", subMarginRate);
 
       if (subTotalCostPrice.compareTo(BigDecimal.ZERO) != 0) {
