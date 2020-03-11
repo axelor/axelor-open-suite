@@ -30,4 +30,13 @@ public class MrpManagementRepository extends MrpRepository {
 
     super.save(entity);
   }
+
+  @Override
+  public Mrp copy(Mrp entity, boolean deep) {
+    Mrp copy = super.copy(entity, deep);
+    copy.setStatusSelect(MrpManagementRepository.STATUS_DRAFT);
+    copy.setStartDateTime(null);
+    copy.setEndDateTime(null);
+    return copy;
+  }
 }
