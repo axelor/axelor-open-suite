@@ -23,7 +23,7 @@
 	        <menu title="Tools" icon="fa-wrench" showTitle="true">
 	            <item title="Schedule Event" action="save,action-partner-view-schedule-event" readonlyIf="id == null" if="__config__.app.isApp('crm')"/>
 	            <item title="Create opportunity" action="save,action-partner-view-create-opportunity" readonlyIf="id == null" if="__config__.app.isApp('crm')"/>
-	            <item title="Create order" action="save,action-partner-view-create-order" readonlyIf="id == null || id &lt; 1" if-module="axelor-sale" if="__config__.app.isApp('sale')" showIf="isProspect || isCustomer"/>
+	            <item title="Create sale quotation" action="save,action-partner-view-create-order" readonlyIf="id == null || id &lt; 1" if-module="axelor-sale" if="__config__.app.isApp('sale')" showIf="isProspect || isCustomer"/>
 	            <item title="Generate Project" action="action-partner-method-generate-project" readonlyIf="id == null || id &lt; 1" if-module="axelor-project" if="__config__.app.isApp('project')"/>
 	            <item title="Send email" action="save,action-send-by-email-with-template" readonlyIf="id == null" if-module="axelor-message" />
 	        </menu>
