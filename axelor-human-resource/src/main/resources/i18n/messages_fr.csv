@@ -575,6 +575,7 @@
 "No expense to be validated by your subordinates","Aucune NdeF à valider par mes subordonnés",,
 "No extra hours to be validated by your subordinates","Aucune heure sup. à valider par mes subordonnés",,
 "No such place exists",,,
+"No time sheet found for employee %s","Aucune feuille de temps n'a été trouvé pour l'employer %s",,
 "No timesheet line has been created because the duration is less than 1 minute","Aucune ligne de feuille de temps n'a été générée car la durée est inférieure à 1 minute",,
 "No timesheet to be validated by your subordinates","Aucune f. de temps à valider par mes subordonnés",,
 "No user found",,,
