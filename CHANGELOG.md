@@ -10,6 +10,7 @@
 - PRODUCT : display button 'Update stock location' only for storable and stock managed products.
 - STUDIO : Add panel on custom model demo data
 - MRP : Reset fields values on copy of MRP form.
+- Partner : rename 'Create order' button & translation
 
 ## Bug Fixes
 - STOCKMOVE : display qty per tracking number and not total available qty for tracking number
