@@ -38,6 +38,7 @@
 - Move: Fix exception message when saving a new record.
 - SALEORDER : fixed bug causing the margins to be rounded to the unit
 - CLIENT PORTAL : debug TeamTask counters
+- MRP : Fixed issue when user try to copy an existing MRP record.
 
 ## [5.2.5] - 2020-02-25
 ## Improvements
