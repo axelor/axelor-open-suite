@@ -1,7 +1,43 @@
 # Changelog
 ## [Unreleased 5.2.6]
+## Feature
+- Workflow : Add support to select real status fields.
+- STOCK CONFIG : Added three boolean fields so as to whether display product code, price, order reference and date in stock move report
+- SaleOrderLine/PurchaseOrderLine : Added transient boolean field to freeze price,qty,productName
+
 ## Improvements
+- LEAVE REQUEST : Allow sending a leave request in the past.
+- Block the creation of duplicate accounts
+- HR BATCH : set email template for batch 'Email reminder for timesheets'
+- CUSTOMER INFORMATIONS : Indicate that Payment delay is in days
+- INVOICES DASHBOARD: Turnover is now calculated using both sales and assets
+- MANUF ORDER : fix missing form and grid view attributes for workshopStockLocation.
+- Stock Move Line : Do not allow user to remove allocated stock move line.
+- ACCOUNTING REPORT : add account filter to summary and gross value report.
+- STUDIO : Add panel on custom model demo data
+- QUALITY CONTROL : update the qualitycontrol report.
+- INVOICE LINE : add grid view and form view of budgetDistributionListPanel to form
+
 ## Bug Fixes
+- Fix Timesheet Reminder Batch sendReminder method
+- DEBT RECOVERY : rollback debt recovery process if to recipients is empty or not in generated message.
+- Fix the error which is getting when group is empty in user. 
+- Stock Move Line reservation: correctly set qty requested flag when generated from a sale order line.
+- Stock Move: Delete empty date field in form view.
+- PROJECT : Fix NPE when generate Business project with SaleOrderTypeSelect as title. 
+- LEAVE REQUEST : Fix the NPE when no leaveRequest is selected to be edited
+- AccountChartService : BLOCKER - line 99
+- PROJECT : Remove unnecessary code.
+- SUPPLIER INVOICE : fix the problem of amount not updated in supplier invoice after use of mass invoice payment function.
+- Project : Resolve issue in computation of timespent
+- TALENT : Use BigDecimal.valueOf(double) instead of new BigDecimal(double) in TrainingRegisterServiceImpl.
+- PROJECT : Fix NPE when generate Business project with projectGeneratorType Task by line and Task by product.
+- MRP : sequence is copied when MRP is copied.
+- TEAM TASK : Fixed issue in copy by using clearList instead of set it to null for projectPlanningTimeList.
+- PURCHASE ORDER REPORT: Fixed value of payment condition from PurchaseOrder's payment condition instead of using partner.
+- Move: Fix exception message when saving a new record.
+- SALEORDER : fixed bug causing the margins to be rounded to the unit
+- CLIENT PORTAL : debug TeamTask counters
 
 ## [5.2.5] - 2020-02-25
 ## Improvements
@@ -14,6 +50,7 @@
 - ACCOUNT CONFIG: change the place of invoice automatic mail and invoice message template in account config.
 - ACCOUNTING REPORT: group by and subtotal of analyticDistributionTemplate.
 - INVOICE: created new field payment date in invoice in order to use it in advance search.
+- EBICSPARTNER : mass update on testMode
 - CLIENT-PORTAL : Chart now only shows invoices corresponding the client partner.
 
 ## Bug Fixes
@@ -35,6 +72,7 @@
 - TASK: fix translation issue caused by "Package" entitled field.
 - ACCOUNTING REPORT : corrected several issues with values on the summary of gross values and depreciation report.
 - ACCOUNTING REPORT : in the summary of gross values and depreciation report corrected the problem of the apparition of line with an acquisition date after the report dates.
+- LEAD : removed the persistable field on the form view
 - CLIENT-PORTAL : fixed the NPE when the user does not correspond to any partner.
 
 ## [5.2.4] - 2020-02-05
