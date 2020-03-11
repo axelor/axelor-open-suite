@@ -812,19 +812,27 @@ public class MrpServiceImpl implements MrpService {
   }
 
   /**
-   * retrieve the maturityDate of some MrpLineType.
+   * Retrieves the maturityDate of some MrpLineType. Provides a default value if maturityDate passed
+   * as an argument is null and the mrp line type includes elements without date. The default value
+   * is chosen with the configuration in mrpLineType.
    *
-   * @param maturityDate different values :<br>
+   * <p>Also if the maturityDate is before today, returns today date.
+   *
+   * @param maturityDate different possible values :<br>
    *     - PurchaseOrderLine : estimatedDelivDate or purchaseOrder.deliveryDate if
    *     estimatedDelivDate is null<br>
    *     - MrpForecast : forecastDate<br>
    *     - SaleOrderLine : estimatedDelivDate or saleOrder.deliveryDate if estimatedDelivDate is
    *     null
-   * @param mrpLineType
-   * @return maturityDate if maturityDate != null && maturityDate > today<br>
-   *     maturityDate + NbDays if maturityDate == null && mrpLineType.select is
-   *     CURRENT_DATE_PLUS_DAYS with selecting a NbDays<br>
-   *     today if maturityDate == null && mrpLineType.select is MrpLineTypeRepository.CURRENT_DATE
+   * @param mrpLineType the type of mrp line being created
+   * @return maturityDate if maturityDate is not null and maturityDate is after today<br>
+   *     today if maturityDate is not null and maturityDate is before today<br>
+   *     null if the mrpLineType is not configured to include elements without date and the
+   *     maturityDate is null<br>
+   *     today + NbDays if the mrpLineType is configured to include elements without date,
+   *     maturityDate is null and mrpLineType.select is CURRENT_DATE_PLUS_DAYS<br>
+   *     today if the mrpLineType is configured to include elements without date, maturityDate is
+   *     null and mrpLineType.select is MrpLineTypeRepository.CURRENT_DATE
    */
   protected LocalDate computeMaturityDate(LocalDate maturityDate, MrpLineType mrpLineType) {
     if ((maturityDate != null && maturityDate.isBefore(today))
@@ -835,21 +843,20 @@ public class MrpServiceImpl implements MrpService {
     } else if (maturityDate == null
         && mrpLineType.getIncludeElementWithoutDate()
         && mrpLineType.getSetElementToSelect() == MrpLineTypeRepository.CURRENT_DATE_PLUS_DAYS
-        && mrpLineType.getNumberOfDays().compareTo(BigDecimal.ZERO) >= 0) {
-      maturityDate = today.plusDays(mrpLineType.getNumberOfDays().longValue());
+        && mrpLineType.getNumberOfDays() >= 0) {
+      maturityDate = today.plusDays(mrpLineType.getNumberOfDays());
     }
     return maturityDate;
   }
 
-  public boolean isBeforeEndDate(LocalDate maturityDate) {
+  /**
+   * Returns false if maturityDate is null, true if mrp end date is null. If both are not null we
+   * return whether the maturityDate is before or equal to end date.
+   */
+  protected boolean isBeforeEndDate(LocalDate maturityDate) {
 
-    if (maturityDate != null
-        && (mrp.getEndDate() == null || !maturityDate.isAfter(mrp.getEndDate()))) {
-
-      return true;
-    }
-
-    return false;
+    return maturityDate != null
+        && (mrp.getEndDate() == null || !maturityDate.isAfter(mrp.getEndDate()));
   }
 
   protected void createAvailableStockMrpLines() throws AxelorException {

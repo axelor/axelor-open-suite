@@ -21,7 +21,6 @@ import com.axelor.auth.db.Permission;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.repo.PermissionRepository;
 import com.axelor.meta.db.MetaAction;
-import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.MetaSelect;
 import com.axelor.meta.db.MetaSelectItem;
@@ -34,8 +33,10 @@ import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,16 +72,17 @@ class WkfNodeService {
    * Root method to access the service. It start processing of WkfNode and call different methods
    * for that.
    */
-  protected List<String[]> process() {
+  protected Map<String, Object> process() {
 
-    MetaJsonField statusField = wkfService.workflow.getStatusField();
-    MetaSelect metaSelect = addMetaSelect(statusField);
+    Map<String, Object> values = new HashMap<String, Object>();
+    MetaSelect metaSelect = addMetaSelect();
 
     nodeActions = new ArrayList<String[]>();
-    String defaultValue = processNodes(metaSelect, statusField);
-    statusField.setDefaultValue(defaultValue);
+    String defaultValue = processNodes(metaSelect);
 
-    return nodeActions;
+    values.put("defaultValue", defaultValue);
+    values.put("nodeActions", nodeActions);
+    return values;
   }
 
   /**
@@ -90,7 +92,7 @@ class WkfNodeService {
    * @return MetaSelect of statusField.
    */
   @Transactional
-  public MetaSelect addMetaSelect(MetaJsonField statusField) {
+  public MetaSelect addMetaSelect() {
 
     String selectName = wkfService.getSelectName();
 
@@ -151,7 +153,11 @@ class WkfNodeService {
    * @param metaSelect MetaSelect to update.
    * @return Return first item as default value for wkfStatus field.
    */
-  private String processNodes(MetaSelect metaSelect, MetaJsonField statusField) {
+  private String processNodes(MetaSelect metaSelect) {
+
+    String wkfFieldInfo[] = wkfService.getWkfFieldInfo(wkfService.workflow);
+    String wkfFieldName = wkfFieldInfo[0];
+    String wkfFieldType = wkfFieldInfo[1];
 
     List<WkfNode> nodeList = wkfService.workflow.getNodes();
 
@@ -192,13 +198,10 @@ class WkfNodeService {
       if (!actions.isEmpty()) {
         String name = getActionName(node.getName());
         String value = node.getSequence().toString();
-        if (statusField.getType().equals("string")) {
+        if (wkfFieldType.equals("string") || wkfFieldType.equals("String")) {
           value = "'" + value + "'";
         }
-        String condition = statusField.getName() + " == " + value;
-        if (!wkfService.workflow.getIsJson()) {
-          condition = "$" + wkfService.workflow.getJsonField() + "." + condition;
-        }
+        String condition = wkfFieldName + " == " + value;
         nodeActions.add(new String[] {name, condition});
         this.wkfService.updateActionGroup(name, actions);
       }

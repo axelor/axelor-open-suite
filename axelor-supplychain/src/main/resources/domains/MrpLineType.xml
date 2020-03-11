@@ -18,7 +18,7 @@
       help="Purchase order or sale order without estimated delivery date and manufacturing order without planned date. In this case, we use the MRP start date (today)"/>
 
 	  <integer name="setElementToSelect" title="Set elements to" selection="supplychain.mrplinetype.set.element.to.select" default="1"/>
-      <decimal name="numberOfDays" title="Number of days" min="0" />
+      <long name="numberOfDays" title="Number of days" min="0"/>
 
 
     
