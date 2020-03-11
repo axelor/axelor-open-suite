@@ -17,6 +17,7 @@
 - EBICSPARTNER : mass update on testMode
 - EMPLOYEE : update the stepByStepSelect=5(Finished) for all records in demo data
 - PURCHASE REQUEST : translate "Purchase Request Lines" in french "Ligne de demandes d'achat"
+- Ebics user : Display associated user in list view
 
 ## Bug Fixes
 - SALEORDER : fixed bug causing the margins to be rounded to the unit
