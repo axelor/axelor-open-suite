@@ -50,11 +50,12 @@
 				<field name="journal" hideIf="!typeSelect || [0,1,2,3,4,5,10,12,13,14,15,16,17,18].indexOf(typeSelect) != -1" domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form" grid-view="journal-grid" canEdit="false"/>
 				<field name="journalSet" if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')" requiredIf="typeSelect == 18" widget="TagSelect" canNew="false" showIf="typeSelect == 18" colSpan="12" domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form" grid-view="journal-grid" canEdit="false"/>
 				<field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form" hideIf="!typeSelect || [1,2,3,4,5,10,12,13,14,15,16,17,18].indexOf(typeSelect) != -1"/>
-				<field name="accountSet" requiredIf="typeSelect == 18" hideIf="typeSelect == 2000 || typeSelect == 2001 || typeSelect == 16 || typeSelect == 17 || typeSelect == 12" colSpan="12" form-view="account-form" grid-view="account-grid" widget="TagSelect" canNew="false" domain="self.company = :company AND ((:typeSelect = 18 AND self.accountType.technicalTypeSelect = 'cash') OR (:typeSelect &lt;&gt; 18  AND(:typeSelect &lt;&gt;  6 OR self.useForPartnerBalance = true)))"/>
+				<field name="accountSet" requiredIf="typeSelect == 18" hideIf="typeSelect == 2000 || typeSelect == 2001 || typeSelect == 16 || typeSelect == 12" colSpan="12" form-view="account-form" grid-view="account-grid" widget="TagSelect" canNew="false" domain="self.company = :company AND ((:typeSelect = 18 AND self.accountType.technicalTypeSelect = 'cash') OR (:typeSelect &lt;&gt; 18  AND(:typeSelect &lt;&gt;  6 OR self.useForPartnerBalance = true)))"/>
 				<field name="partnerSet" hideIf="typeSelect == 2000 || typeSelect == 2001 || typeSelect == 16 || typeSelect == 17 || typeSelect == 12 || typeSelect == 18" colSpan="12" form-view="partner-form" grid-view="partner-grid" widget="TagSelect" canNew="false" domain=":company member of self.companySet AND self.isContact = false"/>
 				<field name="analyticJournal" showIf="typeSelect == 2000 || typeSelect == 2001"  domain="self.company = :company" form-view="analytic-journal-form" grid-view="analytic-journal-grid"/>
 				<field name="bankDetailsSet"   if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')" requiredIf="typeSelect == 18" showIf="typeSelect == 18" colSpan="12" form-view="bank-details-form" grid-view="bank-details-grid" widget="TagSelect" canNew="false" onSelect="action-accounting-report-method-set-bank-details-domain"/>
 				<field name="analyticDistributionTemplate" showIf="typeSelect == 17" form-view="analytic-distribution-template-form" grid-view="analytic-distribution-template-grid"/>
+				<field name="subtotalByAnalyticDistribution" showIf="typeSelect == 17" widget="boolean-switch"/>
 			
 			</panel>
 			<panel name="printingInformationsPanel" title="Printing informations" hideIf="!typeSelect || [16,17,18].indexOf(typeSelect) != -1">
@@ -222,6 +223,8 @@
 		<field name="period" expr="eval: null"/>
   		<field name="dateFrom" expr="eval: null"/>
   		<field name="dateTo" expr="eval: null"/>
+  		<field name="analyticDistributionTemplate" expr="eval: null"/>
+  		<field name="subtotalByAnalyticDistribution" expr="eval: null"/>
 	</action-record>
 	
 	<action-record name="action-accounting-report-record-default-global" model="com.axelor.apps.account.db.AccountingReport">

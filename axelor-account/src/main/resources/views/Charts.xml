@@ -31,13 +31,16 @@
 	    <dataset type="sql">
 	    <![CDATA[
 			SELECT
-				SUM(_invoice.ex_tax_total) AS _turn_over,
+				SUM(CASE _invoice.operation_type_select
+						WHEN 3 THEN _invoice.ex_tax_total
+						WHEN 4 THEN -_invoice.ex_tax_total
+						END) AS _turn_over,
 				DATE_PART('year',_invoice.invoice_date) AS _year
 			FROM
 				account_invoice AS _invoice	
 			WHERE
 				_invoice.status_select != 1
-				AND _invoice.operation_type_select=3
+				AND (_invoice.operation_type_select=3 OR _invoice.operation_type_select=4)
 				AND DATE_PART('year',_invoice.invoice_date) 
 				IN (DATE_PART('year',CURRENT_DATE) - 1, DATE_PART('year',CURRENT_DATE) )
 			GROUP BY
@@ -57,16 +60,19 @@
 			  <field type="date" name="fromDate" title="From Date" x-required="true"/>
 	 	        <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
 	 	    </search-fields>	 
-	
-		 <dataset type="sql">
-		  
+		    <dataset type="sql">
+
 		 SELECT 
 		    to_char(_invoice.invoice_date,'yyyy-MM') AS _month_no,
 		    coalesce(_product._product_type,'other') AS product,
-		    coalesce(SUM(_invoice._turn_over), 00) AS _turn_over
+		    coalesce(SUM(CASE _operation_type
+						WHEN 3 THEN _invoice._turn_over
+						WHEN 4 THEN -_invoice._turn_over
+						END), 00) AS _turn_over
 		  FROM
 		    (SELECT 
 		      _invoice.id AS _invoice_id,
+    			_invoice.operation_type_select AS _operation_type,
 		      _invoice.invoice_date as invoice_date,
 		      date_part('mon', _invoice.invoice_date) AS _month,
 		      _line.ex_tax_total AS _turn_over,
@@ -83,13 +89,13 @@
 		    WHERE
 		      _invoice.status_select != 1
 		      AND _invoice.invoice_date BETWEEN DATE(:fromDate) AND  DATE(:fromDate) + CAST(:monthSelect as int) * INTERVAL '1 month' 
-		      AND _invoice.operation_type_select=3
-		      
+		      AND (_invoice.operation_type_select=3 OR _invoice.operation_type_select=4)
+
 		    GROUP BY 
 		      _invoice_id, _line_product, _turn_over, _month) AS _invoice
-		  
+
 		  JOIN
-		
+
 		    (SELECT 
 		      _category.name AS _product_type, _product.id AS _product_id
 		    FROM
@@ -97,12 +103,12 @@
 		    JOIN
 		      base_product_category AS _category 
 		      ON _product.product_category=_category.id AND _category.name IS NOT NULL) AS _product
-		
+
 		  ON _invoice._line_product=_product._product_id
 		  GROUP BY _month_no, _product._product_type
 		  ORDER BY _month_no, _turn_over DESC
-		   
-		   
+
+
 		  </dataset>
 		  <category key="_month_no" type="month" title="Month"/>
 		  <series key="_turn_over" groupBy="product" type="bar" title="TurnOver" aggregate="sum"/>
@@ -173,16 +179,19 @@
 		<field type="date" name="fromDate" title="From Date" x-required="true"/>
 		<field type="date" name="toDate" title="To Date" x-required="true"/>
 	 </search-fields>	 
- 	<dataset type="sql">
+ 	  <dataset type="sql">
 	  <![CDATA[
 		SELECT 
 		_category.name AS _product_category, 
-			coalesce(SUM(_line.ex_tax_total), 0) AS _revenue
+			coalesce(SUM(CASE _invoice.operation_type_select
+						WHEN 3 THEN _line.ex_tax_total
+						WHEN 4 THEN -_line.ex_tax_total
+						END), 0) AS _revenue
 		FROM
 			account_invoice_line AS _line
 		JOIN
 			account_invoice AS _invoice ON _invoice.id = _line.invoice 
-			AND _invoice.operation_type_select=3
+			AND (_invoice.operation_type_select=3 OR _invoice.operation_type_select=4)
 			AND _invoice.invoice_date BETWEEN DATE(:fromDate) AND  DATE(:toDate) 
 		JOIN
 			auth_user AS _user
@@ -208,11 +217,14 @@
 	  <![CDATA[
 		SELECT 
 			_country.name AS _geo_region, 
-			coalesce(SUM(_line.ex_tax_total), 0.00) AS _revenue
+			coalesce(SUM(CASE _invoice.operation_type_select
+						WHEN 3 THEN _line.ex_tax_total
+						WHEN 4 THEN -_line.ex_tax_total
+						END), 0.00) AS _revenue
 		FROM
 			account_invoice_line AS _line
 		JOIN
-			account_invoice AS _invoice ON _invoice.id = _line.invoice AND _invoice.operation_type_select=3
+			account_invoice AS _invoice ON _invoice.id = _line.invoice AND (_invoice.operation_type_select=3 OR _invoice.operation_type_select=4)
 		LEFT JOIN
 			base_address AS _address ON _address.id = _invoice.address
 		LEFT JOIN

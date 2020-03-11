@@ -1,27 +1,76 @@
 # Changelog
-## [Unreleased 5.2.5]
+## [Unreleased 5.2.6]
+## Feature
+- Workflow : Add support to select real status fields.
+- STOCK CONFIG : Added three boolean fields so as to whether display product code, price, order reference and date in stock move report
+- SaleOrderLine/PurchaseOrderLine : Added transient boolean field to freeze price,qty,productName
+
 ## Improvements
-- STOCK RULE : add comment field
-- Sale Order: Desired delivery date is used to generate stock move if estimated date is empty.
-- BILL OF MATERIAL : display product field before the production process field.
-- UNIT CONVERSION : used large width for unit conversion form view.
+- LEAVE REQUEST : Allow sending a leave request in the past.
+- Block the creation of duplicate accounts
+- HR BATCH : set email template for batch 'Email reminder for timesheets'
+- CUSTOMER INFORMATIONS : Indicate that Payment delay is in days
+- INVOICES DASHBOARD: Turnover is now calculated using both sales and assets
+- MANUF ORDER : fix missing form and grid view attributes for workshopStockLocation.
+- Stock Move Line : Do not allow user to remove allocated stock move line.
+- ACCOUNTING REPORT : add account filter to summary and gross value report.
+- STUDIO : Add panel on custom model demo data
+- QUALITY CONTROL : update the qualitycontrol report.
+- MRP : manage maturityDate of some MrpLineType (SaleOrder, PurchaseOrder, ManufacturingOrder) with the chosen select
 
 ## Bug Fixes
-- MANUF ORDER : Display sale order comment in manufacturing order printing.
+- Fix Timesheet Reminder Batch sendReminder method
+- DEBT RECOVERY : rollback debt recovery process if to recipients is empty or not in generated message.
+- Fix the error which is getting when group is empty in user. 
+- Stock Move Line reservation: correctly set qty requested flag when generated from a sale order line.
+- Stock Move: Delete empty date field in form view.
+- PROJECT : Fix NPE when generate Business project with SaleOrderTypeSelect as title. 
+- LEAVE REQUEST : Fix the NPE when no leaveRequest is selected to be edited
+- AccountChartService : BLOCKER - line 99
+- PROJECT : Remove unnecessary code.
+- SUPPLIER INVOICE : fix the problem of amount not updated in supplier invoice after use of mass invoice payment function.
+- Project : Resolve issue in computation of timespent
+- TALENT : Use BigDecimal.valueOf(double) instead of new BigDecimal(double) in TrainingRegisterServiceImpl.
+- PROJECT : Fix NPE when generate Business project with projectGeneratorType Task by line and Task by product.
+- MRP : sequence is copied when MRP is copied.
+- TEAM TASK : Fixed issue in copy by using clearList instead of set it to null for projectPlanningTimeList.
+- PURCHASE ORDER REPORT: Fixed value of payment condition from PurchaseOrder's payment condition instead of using partner.
+- Move: Fix exception message when saving a new record.
+- SALEORDER : fixed bug causing the margins to be rounded to the unit
+
+## [5.2.5] - 2020-02-25
+## Improvements
+- STOCK RULE: add comment field.
+- Sale Order: Desired delivery date is used to generate stock move if estimated date is empty.
+- BILL OF MATERIAL: display product field before the production process field.
+- UNIT CONVERSION: used large width for unit conversion form view.
+- LEAVE REQUEST: display unit in email template.
+- Timesheet: synchronize time computation method of project when multi user triggers validation of timesheet.
+- ACCOUNT CONFIG: change the place of invoice automatic mail and invoice message template in account config.
+- ACCOUNTING REPORT: group by and subtotal of analyticDistributionTemplate.
+- INVOICE: created new field payment date in invoice in order to use it in advance search.
+- EBICSPARTNER : mass update on testMode
+
+## Bug Fixes
+- MANUF ORDER: Display sale order comment in manufacturing order printing.
 - Invoice payment: fix issue in invoice payment form when invoice due date is empty.
-- AppServiceImpl: Fix open resource with try-with-resources
-- ObjectDataExportServiceImpl: Fix open resource with try-with-resources
-- ImportAccountChart: Fix open resource with try-with-resources
-- DataBackupCreateService: Fix open resource with try-with-resources
 - MRP: Desired delivery date in sale/purchase orders is used when estimated date is empty.
 - EMPLOYEESERVICE: Fix computation of working days.
-- StockMove : Fix issue of generated invoice with empty invoiceLines
-- DEBT RECOVERY : Don't create debt recovery line if no email address in debtRecovery.
-- SaleOrderInvoicing : impossible to InvoiceAll if one invoice has been already generated
+- StockMove: Fix issue of generated invoice with no lines.
+- DEBT RECOVERY: Do not create debt recovery line if there are no email addresses in debtRecovery.
+- SaleOrderInvoicing: impossible to InvoiceAll if one invoice has been already generated.
 - Invoice: fix error on ventilation when sequence reset is per year.
-- PROJECT : Replace required attribute on code field with readOnly if generateProjectSequence is true
+- PROJECT: Replace required attribute on code field with readOnly if generateProjectSequence is true.
 - Stock Move: Do not modify wap when generating a new line in customer return linked to an order.
-- MRP : manage maturityDate of some MrpLineType (SaleOrder, PurchaseOrder, ManufacturingOrder) with the chosen select
+- REPORTS: Fix issue for reports which split the report on many tab on excel.
+- PRODUCT: display button 'Update stock location' only for storable and stock managed products.
+- ADDRESS: addressL4 is emptied when zip is filled.
+- INVOICE Report: Fixed issue when displaying proforma invoice comment from grid button.
+- INVOICE: fix the NPE when payment mode is null in invoice.
+- TASK: fix translation issue caused by "Package" entitled field.
+- ACCOUNTING REPORT : corrected several issues with values on the summary of gross values and depreciation report.
+- ACCOUNTING REPORT : in the summary of gross values and depreciation report corrected the problem of the apparition of line with an acquisition date after the report dates.
+- LEAD : removed the persistable field on the form view
 
 ## [5.2.4] - 2020-02-05
 ## Improvements
@@ -69,8 +118,6 @@
 - Stock Move: Do not modify wap when generating customer return.
 - ADDRESS: Fix error message when clicking on ViewMap Btn of a new address.
 - Configurator BOM: Correctly make the difference between components and sub bill of material.
-- ACCOUNTING REPORT : corrected several issues with values on the summary of gross values and depreciation report.
-- ACCOUNTING REPORT : in the summary of gross values and depreciation report corrected the problem of the apparition of line with an acquisition date after the report dates.
 
 ## [5.2.3] - 2020-01-23
 ## Features
@@ -444,7 +491,8 @@ In this case, the file is correctly retrieved from the bank server, but not save
 - LEAVE REQUEST: Add error when leave reason has no unit.
 - LEAVE REQUEST: Set duration value 0 if day planning of selected weekly planning is empty
 
-[Unreleased 5.2.5]: https://github.com/axelor/axelor-open-suite/compare/v5.2.4...dev
+[Unreleased 5.2.6]: https://github.com/axelor/axelor-open-suite/compare/v5.2.5...dev
+[5.2.5]: https://github.com/axelor/axelor-open-suite/compare/v5.2.4...v5.2.5
 [5.2.4]: https://github.com/axelor/axelor-open-suite/compare/v5.2.3...v5.2.4
 [5.2.3]: https://github.com/axelor/axelor-open-suite/compare/v5.2.2...v5.2.3
 [5.2.2]: https://github.com/axelor/axelor-open-suite/compare/v5.2.1...v5.2.2

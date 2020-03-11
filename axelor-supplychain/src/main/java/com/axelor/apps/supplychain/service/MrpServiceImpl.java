@@ -812,7 +812,7 @@ public class MrpServiceImpl implements MrpService {
   }
 
   /**
-   * retrieve the maturityDate of some MrpLineType.
+   * retrieve the maturityDate of some MrpLineType. MaturityDate is used as a reference for PurchaseOrderLine, SaleOrderLine, MrpForecast
    *
    * @param maturityDate different values :<br>
    *     - PurchaseOrderLine : estimatedDelivDate or purchaseOrder.deliveryDate if
@@ -821,10 +821,10 @@ public class MrpServiceImpl implements MrpService {
    *     - SaleOrderLine : estimatedDelivDate or saleOrder.deliveryDate if estimatedDelivDate is
    *     null
    * @param mrpLineType
-   * @return maturityDate if maturityDate != null && maturityDate > today<br>
-   *     maturityDate + NbDays if maturityDate == null && mrpLineType.select is
+   * @return maturityDate if maturityDate is not null and maturityDate is greater than today<br>
+   *     maturityDate + NbDays if maturityDate is null and mrpLineType.select is
    *     CURRENT_DATE_PLUS_DAYS with selecting a NbDays<br>
-   *     today if maturityDate == null && mrpLineType.select is MrpLineTypeRepository.CURRENT_DATE
+   *     today if maturityDate is null and mrpLineType.select is MrpLineTypeRepository.CURRENT_DATE
    */
   protected LocalDate computeMaturityDate(LocalDate maturityDate, MrpLineType mrpLineType) {
     if ((maturityDate != null && maturityDate.isBefore(today))
@@ -835,8 +835,8 @@ public class MrpServiceImpl implements MrpService {
     } else if (maturityDate == null
         && mrpLineType.getIncludeElementWithoutDate()
         && mrpLineType.getSetElementToSelect() == MrpLineTypeRepository.CURRENT_DATE_PLUS_DAYS
-        && mrpLineType.getNumberOfDays().compareTo(BigDecimal.ZERO) >= 0) {
-      maturityDate = today.plusDays(mrpLineType.getNumberOfDays().longValue());
+        && mrpLineType.getNumberOfDays() >= 0) {
+      maturityDate = today.plusDays(mrpLineType.getNumberOfDays());
     }
     return maturityDate;
   }
