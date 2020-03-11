@@ -15,6 +15,7 @@
 - STUDIO: Set default value for form width to large
 - Block the creation of duplicate accounts
 - EBICSPARTNER : mass update on testMode
+- EMPLOYEE : update the stepByStepSelect=5(Finished) for all records in demo data
 
 ## Bug Fixes
 - SALEORDER : fixed bug causing the margins to be rounded to the unit
