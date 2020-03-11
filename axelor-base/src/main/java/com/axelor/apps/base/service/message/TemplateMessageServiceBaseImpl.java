@@ -21,7 +21,10 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.BirtTemplateParameter;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateContextService;
 import com.axelor.apps.message.service.TemplateMessageServiceImpl;
@@ -32,8 +35,12 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.db.MetaJsonModel;
+import com.axelor.meta.db.MetaModel;
 import com.axelor.tool.template.TemplateMaker;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -53,10 +60,15 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  protected MessageServiceBase messageServiceBase;
+
   @Inject
   public TemplateMessageServiceBaseImpl(
-      MessageService messageService, TemplateContextService templateContextService) {
+      MessageService messageService,
+      TemplateContextService templateContextService,
+      MessageServiceBase messageServiceBase) {
     super(messageService, templateContextService);
+    this.messageServiceBase = messageServiceBase;
   }
 
   @Override
@@ -190,5 +202,133 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
       return DataTypeUtil.toInteger(value);
     }
     return value;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public Message generateMessage(Long objectId, String model, String tag, Template template)
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+          AxelorException, IOException {
+
+    Object modelObj = template.getIsJson() ? template.getMetaJsonModel() : template.getMetaModel();
+
+    if (modelObj != null) {
+      String modelName =
+          template.getIsJson()
+              ? ((MetaJsonModel) modelObj).getName()
+              : ((MetaModel) modelObj).getFullName();
+
+      if (!model.equals(modelName)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            String.format(
+                I18n.get(
+                    com.axelor.apps.message.exception.IExceptionMessage
+                        .INVALID_MODEL_TEMPLATE_EMAIL),
+                modelName,
+                model));
+      }
+      initMaker(objectId, model, tag, template.getIsJson());
+      computeTemplateContexts(
+          template.getTemplateContextList(), objectId, model, template.getIsJson());
+    }
+
+    log.debug("model : {}", model);
+    log.debug("tag : {}", tag);
+    log.debug("object id : {}", objectId);
+    log.debug("template : {}", template);
+
+    String content = "";
+    String subject = "";
+    String from = "";
+    String replyToRecipients = "";
+    String toRecipients = "";
+    String ccRecipients = "";
+    String bccRecipients = "";
+    String addressBlock = "";
+    int mediaTypeSelect;
+    String signature = "";
+
+    if (!Strings.isNullOrEmpty(template.getContent())) {
+      // Set template
+      maker.setTemplate(template.getContent());
+      content = maker.make();
+    }
+
+    if (!Strings.isNullOrEmpty(template.getAddressBlock())) {
+      maker.setTemplate(template.getAddressBlock());
+      // Make it
+      addressBlock = maker.make();
+    }
+
+    if (!Strings.isNullOrEmpty(template.getSubject())) {
+      maker.setTemplate(template.getSubject());
+      subject = maker.make();
+      log.debug("Subject ::: {}", subject);
+    }
+
+    if (!Strings.isNullOrEmpty(template.getFromAdress())) {
+      maker.setTemplate(template.getFromAdress());
+      from = maker.make();
+      log.debug("From ::: {}", from);
+    }
+
+    if (!Strings.isNullOrEmpty(template.getReplyToRecipients())) {
+      maker.setTemplate(template.getReplyToRecipients());
+      replyToRecipients = maker.make();
+      log.debug("Reply to ::: {}", replyToRecipients);
+    }
+
+    if (template.getToRecipients() != null) {
+      maker.setTemplate(template.getToRecipients());
+      toRecipients = maker.make();
+      log.debug("To ::: {}", toRecipients);
+    }
+
+    if (template.getCcRecipients() != null) {
+      maker.setTemplate(template.getCcRecipients());
+      ccRecipients = maker.make();
+      log.debug("CC ::: {}", ccRecipients);
+    }
+
+    if (template.getBccRecipients() != null) {
+      maker.setTemplate(template.getBccRecipients());
+      bccRecipients = maker.make();
+      log.debug("BCC ::: {}", bccRecipients);
+    }
+
+    mediaTypeSelect = this.getMediaTypeSelect(template);
+    log.debug("Media ::: {}", mediaTypeSelect);
+
+    if (template.getSignature() != null) {
+      maker.setTemplate(template.getSignature());
+      signature = maker.make();
+      log.debug("Signature ::: {}", signature);
+    }
+
+    Message message =
+        messageServiceBase.createMessage(
+            model,
+            Math.toIntExact(objectId),
+            subject,
+            content,
+            getEmailAddress(from),
+            getEmailAddresses(replyToRecipients),
+            getEmailAddresses(toRecipients),
+            getEmailAddresses(ccRecipients),
+            getEmailAddresses(bccRecipients),
+            null,
+            addressBlock,
+            mediaTypeSelect,
+            getMailAccount(),
+            signature);
+
+    message.setTemplate(Beans.get(TemplateRepository.class).find(template.getId()));
+
+    message = Beans.get(MessageRepository.class).save(message);
+
+    messageService.attachMetaFiles(message, getMetaFiles(template));
+
+    return message;
   }
 }

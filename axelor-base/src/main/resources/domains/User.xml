@@ -47,6 +47,8 @@
 
     <string name="attrs" json="true"/>
 
+	<string name="emailSignature" title="Email signature" large="true"/>
+
     <finder-method name="findByCode" using="code" filter="LOWER(self.code) = LOWER(:code)"/>
 
     <track>

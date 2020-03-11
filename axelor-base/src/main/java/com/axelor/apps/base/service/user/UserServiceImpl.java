@@ -423,4 +423,12 @@ public class UserServiceImpl implements UserService {
       session.setAttribute("loginDate", todayDateTime);
     }
   }
+
+  public String getEmailSignature(User user) {
+
+    if (user != null && user.getEmailSignature() != null) {
+      return "\n " + user.getEmailSignature();
+    }
+    return "";
+  }
 }

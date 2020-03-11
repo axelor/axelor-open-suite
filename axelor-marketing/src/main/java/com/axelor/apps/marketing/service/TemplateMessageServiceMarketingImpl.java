@@ -18,6 +18,7 @@
 package com.axelor.apps.marketing.service;
 
 import com.axelor.apps.base.service.app.AppService;
+import com.axelor.apps.base.service.message.MessageServiceBase;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
 import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.Template;
@@ -39,8 +40,10 @@ public class TemplateMessageServiceMarketingImpl extends TemplateMessageServiceB
 
   @Inject
   public TemplateMessageServiceMarketingImpl(
-      MessageService messageService, TemplateContextService templateContextService) {
-    super(messageService, templateContextService);
+      MessageService messageService,
+      TemplateContextService templateContextService,
+      MessageServiceBase messageServiceBase) {
+    super(messageService, templateContextService, messageServiceBase);
   }
 
   @Override

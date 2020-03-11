@@ -9,6 +9,8 @@
   	
   	<many-to-one name="birtTemplate" ref="com.axelor.apps.base.db.BirtTemplate" title="Birt Template"/>
     <many-to-one name="language" ref="com.axelor.apps.base.db.Language" title="Language"/>
+    <string name="signature" title="Signature"/>
+    <boolean name="addSignature" title="Add Signature"/>
     
   </entity>
 

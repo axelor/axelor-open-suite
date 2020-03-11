@@ -25,7 +25,9 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.db.repo.EmailAccountRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.apps.message.service.MailAccountService;
 import com.axelor.apps.message.service.MessageServiceImpl;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
@@ -36,6 +38,7 @@ import com.axelor.tool.template.TemplateMaker;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -49,7 +52,7 @@ import javax.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MessageServiceBaseImpl extends MessageServiceImpl {
+public class MessageServiceBaseImpl extends MessageServiceImpl implements MessageServiceBase {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -79,23 +82,37 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
       Set<MetaFile> metaFiles,
       String addressBlock,
       int mediaTypeSelect,
-      EmailAccount emailAccount) {
+      EmailAccount emailAccount,
+      String signature) {
 
+    emailAccount =
+        emailAccount != null
+            ? Beans.get(EmailAccountRepository.class).find(emailAccount.getId())
+            : emailAccount;
     Message message =
-        super.createMessage(
-            model,
-            id,
-            subject,
+        createMessage(
             content,
             fromEmailAddress,
+            model,
+            id,
+            null,
+            0,
+            false,
+            MessageRepository.STATUS_DRAFT,
+            subject,
+            MessageRepository.TYPE_SENT,
             replyToEmailAddressList,
             toEmailAddressList,
             ccEmailAddressList,
             bccEmailAddressList,
-            metaFiles,
             addressBlock,
             mediaTypeSelect,
-            emailAccount);
+            emailAccount,
+            signature);
+
+    messageRepository.save(message);
+
+    attachMetaFiles(message, metaFiles);
 
     message.setSenderUser(AuthUtils.getUser());
     message.setCompany(userService.getUserActiveCompany());
@@ -185,5 +202,76 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
     }
 
     return "\"" + partnerName + "\" <" + emailAddress.getAddress() + ">";
+  }
+
+  @Override
+  public Message createMessage(
+      String content,
+      EmailAddress fromEmailAddress,
+      String relatedTo1Select,
+      long relatedTo1SelectId,
+      String relatedTo2Select,
+      long relatedTo2SelectId,
+      boolean sentByEmail,
+      int statusSelect,
+      String subject,
+      int typeSelect,
+      List<EmailAddress> replyToEmailAddressList,
+      List<EmailAddress> toEmailAddressList,
+      List<EmailAddress> ccEmailAddressList,
+      List<EmailAddress> bccEmailAddressList,
+      String addressBlock,
+      int mediaTypeSelect,
+      EmailAccount emailAccount,
+      String signature) {
+
+    Set<EmailAddress> replyToEmailAddressSet = Sets.newHashSet();
+    Set<EmailAddress> bccEmailAddressSet = Sets.newHashSet();
+    Set<EmailAddress> toEmailAddressSet = Sets.newHashSet();
+    Set<EmailAddress> ccEmailAddressSet = Sets.newHashSet();
+
+    if (mediaTypeSelect == MessageRepository.MEDIA_TYPE_EMAIL) {
+      if (replyToEmailAddressList != null) {
+        replyToEmailAddressSet.addAll(replyToEmailAddressList);
+      }
+      if (bccEmailAddressList != null) {
+        bccEmailAddressSet.addAll(bccEmailAddressList);
+      }
+      if (toEmailAddressList != null) {
+        toEmailAddressSet.addAll(toEmailAddressList);
+      }
+      if (ccEmailAddressList != null) {
+        ccEmailAddressSet.addAll(ccEmailAddressList);
+      }
+    }
+
+    if (!Strings.isNullOrEmpty(signature)) {
+      content += "<p></p><p></p>" + signature;
+    } else if (emailAccount != null) {
+      content += "<p></p><p></p>" + Beans.get(MailAccountService.class).getSignature(emailAccount);
+    }
+
+    Message message =
+        new Message(
+            typeSelect,
+            subject,
+            content,
+            statusSelect,
+            mediaTypeSelect,
+            addressBlock,
+            fromEmailAddress,
+            replyToEmailAddressSet,
+            toEmailAddressSet,
+            ccEmailAddressSet,
+            bccEmailAddressSet,
+            sentByEmail,
+            emailAccount);
+
+    message.setRelatedTo1Select(relatedTo1Select);
+    message.setRelatedTo1SelectId(relatedTo1SelectId);
+    message.setRelatedTo2Select(relatedTo2Select);
+    message.setRelatedTo2SelectId(relatedTo2SelectId);
+
+    return message;
   }
 }

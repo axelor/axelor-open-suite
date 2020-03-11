@@ -114,6 +114,7 @@ import com.axelor.apps.base.service.imports.ImportCityServiceImpl;
 import com.axelor.apps.base.service.imports.ImportDemoDataService;
 import com.axelor.apps.base.service.imports.ImportDemoDataServiceImpl;
 import com.axelor.apps.base.service.message.MailAccountServiceBaseImpl;
+import com.axelor.apps.base.service.message.MessageServiceBase;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
 import com.axelor.apps.base.service.tax.AccountManagementService;
@@ -195,5 +196,6 @@ public class BaseModule extends AxelorModule {
     bind(ActionService.class).to(ActionServiceImpl.class);
     bind(PartnerService.class).to(PartnerServiceImpl.class);
     bind(SearchCallService.class).to(SearchCallServiceImpl.class);
+    bind(MessageServiceBase.class).to(MessageServiceBaseImpl.class);
   }
 }

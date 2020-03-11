@@ -63,7 +63,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
   private static final String RECIPIENT_SEPARATOR = ";|,";
   private static final char TEMPLATE_DELIMITER = '$';
 
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  protected final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected TemplateMaker maker =
       new TemplateMaker(Locale.FRENCH, TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
