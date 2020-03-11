@@ -714,7 +714,7 @@ public class SaleOrderController {
   public void getSaleOrderPartnerDomain(ActionRequest request, ActionResponse response) {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     Company company = saleOrder.getCompany();
-    long companyId = company.getPartner().getId();
+    Long companyId = company.getPartner() == null ? null : company.getPartner().getId();
     String domain =
         String.format(
             "self.id != %d AND self.isContact = false AND (self.isCustomer = true or self.isProspect = true)",
