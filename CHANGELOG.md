@@ -26,6 +26,7 @@
 - SUPPLIER INVOICE : fix the problem of amount not updated in supplier invoice after use of mass invoice payment function.
 - CLIENT PORTAL : fix TeamTask counters
 - TimesheetLine : Fill duration on data import
+- MRP : Fixed issue when user try to copy an existing MRP record.
 
 ## [5.3.0] - 2020-02-25
 ## Features
