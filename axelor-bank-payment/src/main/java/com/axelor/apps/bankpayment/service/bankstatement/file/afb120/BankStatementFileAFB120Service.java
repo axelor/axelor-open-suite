@@ -171,8 +171,7 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
             (String) structuredContentLine.get("unavailabilityIndexSelect"),
             (String) structuredContentLine.get("commissionExemptionIndexSelect"));
 
-    bankStatementLineAFB120Repository.save(bankStatementLineAFB120);
-    return bankStatementLineAFB120;
+    return bankStatementLineAFB120Repository.save(bankStatementLineAFB120);
   }
 
   protected List<Map<String, Object>> readFile() throws IOException, AxelorException {
