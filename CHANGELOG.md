@@ -25,6 +25,7 @@
 - SUPPLIER INVOICE : fix the problem of amount not updated in supplier invoice after use of mass invoice payment function.
 - CLIENT PORTAL : fix TeamTask counters
 - TimesheetLine : Fill duration on data import
+- Base Batch : Fix the issue when user run calendar synchronization batch.
 
 ## [5.3.0] - 2020-02-25
 ## Features
