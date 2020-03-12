@@ -20,6 +20,7 @@
 - Project : Resolve issue in computation of timespent
 - EBICS: Display correctly hash code in certificates EBICS.
 - Move: Fix exception message when saving a new record.
+- Logistial Form : Fix NPE when computing volume
 
 ## [5.3.0] - 2020-02-25
 ## Features
