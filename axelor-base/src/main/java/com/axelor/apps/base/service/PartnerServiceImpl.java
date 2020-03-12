@@ -671,6 +671,25 @@ public class PartnerServiceImpl implements PartnerService {
     return domain;
   }
 
+  @Override
+  public String getTaxNbrFromRegistrationCode(Partner partner) {
+    String regCode = partner.getRegistrationCode();
+    String taxNbr = "";
+
+    if (regCode != null) {
+      regCode = regCode.replaceAll(" ", "");
+
+      if (regCode.length() == 14) {
+        int siren = Integer.parseInt(regCode.substring(0, 9));
+        siren = Math.floorMod(siren, 97);
+        siren = Math.floorMod(12 + 3 * siren, 97);
+        taxNbr = Integer.toString(siren);
+      }
+    }
+
+    return taxNbr;
+  }
+
   public Partner isThereDuplicatePartnerInArchive(Partner partner) {
     return isThereDuplicatePartnerQuery(partner, true);
   }
