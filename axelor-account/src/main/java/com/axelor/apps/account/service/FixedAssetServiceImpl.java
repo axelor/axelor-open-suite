@@ -30,6 +30,8 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.tool.ModelTool;
+import com.axelor.apps.tool.ThrowConsumer;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -42,22 +44,27 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class FixedAssetServiceImpl implements FixedAssetService {
 
-  @Inject FixedAssetRepository fixedAssetRepo;
-
-  @Inject FixedAssetLineService fixedAssetLineService;
-
   protected MoveLineService moveLineService;
+  protected FixedAssetRepository fixedAssetRepo;
+  protected FixedAssetLineService fixedAssetLineService;
 
   @Inject
-  public FixedAssetServiceImpl(MoveLineService moveLineService) {
+  public FixedAssetServiceImpl(
+      MoveLineService moveLineService,
+      FixedAssetRepository fixedAssetRepo,
+      FixedAssetLineService fixedAssetLineService) {
     this.moveLineService = moveLineService;
+    this.fixedAssetRepo = fixedAssetRepo;
+    this.fixedAssetLineService = fixedAssetLineService;
   }
 
   @Override
@@ -419,6 +426,80 @@ public class FixedAssetServiceImpl implements FixedAssetService {
           }
         }
       }
+    }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void validate(FixedAsset fixedAsset) {
+    if (fixedAsset.getGrossValue().compareTo(BigDecimal.ZERO) > 0) {
+
+      if (!fixedAsset.getFixedAssetLineList().isEmpty()) {
+        fixedAsset.getFixedAssetLineList().clear();
+      }
+      fixedAsset = generateAndcomputeLines(fixedAsset);
+
+    } else {
+      fixedAsset.getFixedAssetLineList().clear();
+    }
+    fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_VALIDATED);
+    fixedAssetRepo.save(fixedAsset);
+  }
+
+  @Override
+  public Pair<Integer, Integer> massValidation(Collection<? extends Number> fixedAssetIds) {
+    return massProcess(fixedAssetIds, this::validate, FixedAssetRepository.STATUS_DRAFT);
+  }
+
+  protected Pair<Integer, Integer> massProcess(
+      Collection<? extends Number> fixedAssetIds,
+      ThrowConsumer<FixedAsset> consumer,
+      int statusSelect) {
+    IntCounter doneCounter = new IntCounter();
+
+    int errorCount =
+        ModelTool.apply(
+            FixedAsset.class,
+            fixedAssetIds,
+            new ThrowConsumer<FixedAsset>() {
+              @Override
+              public void accept(FixedAsset fixedAsset) throws Exception {
+                if (fixedAsset.getStatusSelect() == statusSelect) {
+                  consumer.accept(fixedAsset);
+                  doneCounter.increment();
+                }
+              }
+            });
+
+    return Pair.of(doneCounter.intValue(), errorCount);
+  }
+
+  private static class IntCounter extends Number {
+    private static final long serialVersionUID = -5434353935712805399L;
+    private int count = 0;
+
+    public void increment() {
+      ++count;
+    }
+
+    @Override
+    public int intValue() {
+      return count;
+    }
+
+    @Override
+    public long longValue() {
+      return Long.valueOf(count);
+    }
+
+    @Override
+    public float floatValue() {
+      return Float.valueOf(count);
+    }
+
+    @Override
+    public double doubleValue() {
+      return Double.valueOf(count);
     }
   }
 }

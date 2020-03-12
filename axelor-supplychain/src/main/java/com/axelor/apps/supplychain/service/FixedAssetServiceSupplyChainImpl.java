@@ -19,6 +19,8 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.account.service.FixedAssetLineService;
 import com.axelor.apps.account.service.FixedAssetServiceImpl;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -35,8 +37,11 @@ import org.apache.commons.collections.CollectionUtils;
 public class FixedAssetServiceSupplyChainImpl extends FixedAssetServiceImpl {
 
   @Inject
-  public FixedAssetServiceSupplyChainImpl(MoveLineService moveLineService) {
-    super(moveLineService);
+  public FixedAssetServiceSupplyChainImpl(
+      MoveLineService moveLineService,
+      FixedAssetRepository fixedAssetRepo,
+      FixedAssetLineService fixedAssetLineService) {
+    super(moveLineService, fixedAssetRepo, fixedAssetLineService);
   }
 
   @Transactional

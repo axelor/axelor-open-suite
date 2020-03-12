@@ -20,15 +20,21 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.FixedAssetService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.common.base.Function;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.List;
+import org.apache.commons.lang3.tuple.Pair;
 
 @Singleton
 public class FixedAssetController {
@@ -69,6 +75,18 @@ public class FixedAssetController {
     response.setCanClose(true);
   }
 
+  public void validate(ActionRequest request, ActionResponse response) {
+    FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+    if (fixedAsset.getStatusSelect() == FixedAssetRepository.STATUS_DRAFT) {
+      try {
+        Beans.get(FixedAssetService.class).validate(fixedAsset);
+      } catch (Exception e) {
+        TraceBackService.trace(response, e);
+      }
+    }
+    response.setReload(true);
+  }
+
   public void createAnalyticDistributionWithTemplate(
       ActionRequest request, ActionResponse response) {
 
@@ -80,5 +98,60 @@ public class FixedAssetController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void massValidation(ActionRequest request, ActionResponse response) {
+    try {
+      Function<Collection<? extends Number>, Pair<Integer, Integer>> function =
+          Beans.get(FixedAssetService.class)::massValidation;
+      massProcess(request, response, function);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  private void massProcess(
+      ActionRequest request,
+      ActionResponse response,
+      Function<Collection<? extends Number>, Pair<Integer, Integer>> function) {
+
+    try {
+      @SuppressWarnings("unchecked")
+      List<Number> ids = (List<Number>) request.getContext().get("_ids");
+
+      if (ObjectUtils.isEmpty(ids)) {
+        response.setError(com.axelor.apps.base.exceptions.IExceptionMessage.RECORD_NONE_SELECTED);
+        return;
+      }
+
+      Pair<Integer, Integer> massCount = function.apply(ids);
+
+      String message = buildMassMessage(massCount.getLeft(), massCount.getRight());
+      response.setFlash(message);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    } finally {
+      response.setReload(true);
+    }
+  }
+
+  private String buildMassMessage(int doneCount, int errorCount) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(
+        String.format(
+            I18n.get(
+                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_DONE_SINGULAR,
+                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_DONE_PLURAL,
+                doneCount),
+            doneCount));
+    sb.append(" ");
+    sb.append(
+        String.format(
+            I18n.get(
+                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
+                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL,
+                errorCount),
+            errorCount));
+    return sb.toString();
   }
 }
