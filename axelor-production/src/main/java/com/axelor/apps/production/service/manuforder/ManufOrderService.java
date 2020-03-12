@@ -239,4 +239,6 @@ public interface ManufOrderService {
    * @return the query.
    */
   public String getBuildingQtyForAProduct(Long productId, Long companyId, Long stockLocationId);
+
+  public void generateAllSubManufOrder(List<BillOfMaterial> billOfMaterialList, ManufOrder manufOrder) throws AxelorException;
 }

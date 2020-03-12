@@ -18,9 +18,12 @@
 package com.axelor.apps.production.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
@@ -32,6 +35,7 @@ import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -45,7 +49,11 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import java.util.stream.Collectors;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
@@ -450,6 +458,54 @@ public class ManufOrderController {
               .map());
 
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from manuf order form, on clicking "Multi-level planning" button.
+   *
+   * @param request
+   * @param response
+   */
+  public void multiLevelManufOrderLoadBOM(ActionRequest request, ActionResponse response) {
+    try {
+      Long moId = Long.valueOf(request.getContext().get("_manufOrderId").toString());
+      ManufOrder mo = Beans.get(ManufOrderRepository.class).find(moId);
+      Set<BillOfMaterial> billOfMaterialSet = mo.getBillOfMaterial().getBillOfMaterialSet().stream()
+          .filter(billOfMaterial -> billOfMaterial.getProduct().getProductSubTypeSelect() == ProductRepository.PRODUCT_SUB_TYPE_FINISHED_PRODUCT
+              || billOfMaterial.getProduct().getProductSubTypeSelect() == ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT)
+          .collect(Collectors.toSet());
+      response.setValue("$components", billOfMaterialSet);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from multi-level-planing-wizard-form, on clicking "Generate MO" button.
+   *
+   * @param request
+   * @param response
+   */
+  @SuppressWarnings("unchecked")
+  public void generateMultiLevelManufOrder(ActionRequest request, ActionResponse response) {
+    try {
+      Long moId = Long.valueOf(request.getContext().get("_manufOrderId").toString());
+      ManufOrder mo = Beans.get(ManufOrderRepository.class).find(moId);
+      BillOfMaterialRepository billOfMaterialRepository = Beans.get(BillOfMaterialRepository.class);
+      List<BillOfMaterial> billOfMaterialList =
+          ((List<LinkedHashMap<String, Object>>) request.getContext().get("components")).stream()
+          .filter(map -> (boolean) map.get("selected"))
+          .map(map -> billOfMaterialRepository.find(Long.valueOf(map.get("id").toString())))
+          .collect(Collectors.toList());
+      if (billOfMaterialList.size() == 0) {
+        throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.NO_BILL_OF_MATERIAL_SELECTED));
+      }
+      Beans.get(ManufOrderService.class).generateAllSubManufOrder(billOfMaterialList, mo);
+      response.setNotify(String.format(I18n.get(IExceptionMessage.MO_CREATED), billOfMaterialList.size()));
+      response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
