@@ -155,7 +155,7 @@
     <!-- END OF New employee wizard -->
 
   	<panel name="headerPanel">
-	    <panel name="contactPanel" showIf="stepByStepSelect == 5" colSpan="8">
+	    <panel name="contactPanel" showIf="stepByStepSelect == 5" colSpan="10">
 	      <field name="contactPartner" colSpan="12" domain="self.employee = null AND (self.partnerTypeSelect = 2 OR self.isContact = true)" form-view="partner-contact-form" grid-view="partner-contact-grid" showTitle="false">
 	        <editor x-viewer="true">
 	          <panel name="imagePanel" colSpan="2">
@@ -186,23 +186,16 @@
 	      </field>
 	    </panel>
 	    
-		<panel name="companyPanel" showIf="stepByStepSelect == 5" colSpan="4">
-	      <field name="mainEmploymentContract" colSpan="12" domain="self.employee.id = :id" showTitle="false">
-	          <editor x-viewer="true">
-	              <panel name="logoPanel" colSpan="4">
-	                <field name="payCompany.logo" widget="Image" colSpan="12" showTitle="false"/>
-	            </panel>
-	              <panel name="detailsPanel" colSpan="8">
-	                <field name="payCompany.name" colSpan="10" css="bold large" showTitle="false"/>
-	                <field name="payCompany.partner" canNew="true" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
-	                <field name="payCompany.parent" form-view="company-form" grid-view="company-grid"/>
-	             </panel>
-	            <panel name="addressPanel" colSpan="12">
-	                <field name="payCompany.address" canNew="true" colSpan="12" form-view="address-form" grid-view="address-grid"/>
-	            </panel>
-	        </editor>
-	      </field>
-	    </panel>
+		<panel name="companyPanel" showIf="stepByStepSelect == 5" colSpan="2">
+		      <field name="mainEmploymentContract" showTitle="false" colSpan="12" domain="self.employee.id = :id">
+		        <editor x-viewer="true">
+		          <panel name="payCompanyPanel" colSpan="12" title="Pay Company">
+		            <field name="payCompany.logo" showTitle="false" colSpan="12" widget="Image"/>
+		            <field name="payCompany.name" showTitle="false" colSpan="12" css="bold large" readonly="true"/>
+		          </panel>
+		        </editor>
+		      </field>
+		    </panel>
   	</panel>
     <panel-tabs name="mainPanelTab" showIf="stepByStepSelect == 5">
       <panel name="informationPanel" title="Information">
