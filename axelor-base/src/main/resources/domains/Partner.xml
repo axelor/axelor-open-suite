@@ -71,6 +71,10 @@
 	<string name="registrationCode" title="Registration code"/>
     <string name="mainActivityCode" title="Main activity code"/>
 	<string name="taxNbr" title="Tax N°"/>
+	<string name="siren" title="N° Siren"/>
+	<string name="nic" title="Internal Classification Number"></string>
+	<many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName" title="Agency"></many-to-one>
+	<boolean name="isInternal" title="Internal partner" default="false"></boolean>
 	
  	<string name="fullName" title="Name" namecolumn="true"/>
  	<string name="simpleFullName" title="Name"/>
@@ -80,6 +84,8 @@
 	
 	<string name="timeSlot" title="Time slot" large="true"/>
 	<string name="companyStr" title="Companies" />
+	
+	
 	
 	<!-- -Json fields -->
 	<string name="partnerAttrs" title="Fields" json="true" />
