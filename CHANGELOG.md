@@ -28,6 +28,7 @@
 - CLIENT PORTAL : fix TeamTask counters
 - TimesheetLine : Fill duration on data import
 - MRP : Fixed issue when user try to copy an existing MRP record.
+- LEAVE REQUEST : corrected error when trying to change user.
 
 ## [5.3.0] - 2020-02-25
 ## Features
