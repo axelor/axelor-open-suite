@@ -8,5 +8,6 @@
 ## Improvements
 - USER : Default User language is based on application.locale from application.properties
 - BASE : Cache memory performace improved by not stocking geographical entities anymore
+- Removed block persmissions from demo data
 
 ## Bug Fixes
