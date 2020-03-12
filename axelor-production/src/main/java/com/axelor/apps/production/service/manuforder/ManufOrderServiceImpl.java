@@ -820,4 +820,17 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     }
     return statusList;
   }
+
+  public void generateAllSubManufOrder(List<BillOfMaterial> billOfMaterialList, ManufOrder manufOrder) throws AxelorException {
+    for (BillOfMaterial billOfMaterial : billOfMaterialList) {
+      generateManufOrder(billOfMaterial.getProduct(),
+          billOfMaterial.getQty(),
+          billOfMaterial.getPriority(),
+          IS_TO_INVOICE,
+          billOfMaterial,
+          manufOrder.getPlannedStartDateT(),
+          manufOrder.getPlannedEndDateT(),
+          ORIGIN_TYPE_OTHER);
+    }
+  }
 }
