@@ -60,7 +60,7 @@
       		<field name="leadFilterList" colSpan="12" layout="table" showIf="leadQueryTypeSelect == 0">
 		  	 	<editor x-show-titles="false">
               <panel name="metaFieldPanel">
-                <field name="metaField" onSelect="action-target-list-partner-filters-field-domain" colSpan="4" widget="SuggestBox" required="true" onChange="action-filter-method-update-target-field" target-name="label"/>
+                <field name="metaField" onSelect="action-target-list-lead-filters-field-domain" colSpan="4" widget="SuggestBox" required="true" onChange="action-filter-method-update-target-field" target-name="label"/>
                 <field name="targetTitle" colSpan="8" readonly="true"/>
                 <field name="targetMetaField" requiredIf="targetType == 'ManyToOne' || targetType == 'ManyToMany'"
                   readonlyIf="(targetMetaField != null &amp;&amp; targetMetaField.relationship == null) || (metaTargetFieldDomain == null &amp;&amp; $contains(targetField,'.'))"

@@ -19,6 +19,7 @@
 - QUALITY CONTROL : update the qualitycontrol report.
 - INVOICE LINE : add grid view and form view of budgetDistributionListPanel to form
 - EMPLOYEE : update the stepByStepSelect=5(Finished) for all records in demo data
+- CAMPAIGN : add exception message on partner and lead at invalid domain in target list
 
 ## Bug Fixes
 - Fix Timesheet Reminder Batch sendReminder method

@@ -31,7 +31,7 @@ public interface CampaignService {
 
   public void generateEvents(Campaign campaign);
 
-  public void generateTargets(Campaign campaign);
+  public void generateTargets(Campaign campaign) throws AxelorException;
 
   @Transactional
   public void inviteAllTargets(Campaign campaign);
