@@ -61,7 +61,7 @@
 		</panel>
 	</form>
 
-	<cards name="bank-details-cards" model="com.axelor.apps.base.db.BankDetails" title="Bank details" width="400px">
+	<cards name="bank-details-cards" model="com.axelor.apps.base.db.BankDetails" title="Bank details" width="410px">
 		<field name="iban"/>
 		<field name="bank.code"/>
 		<field name="bank.bankName"/>
@@ -86,10 +86,10 @@
 				<span class="btn info-button pull-right" style="width: 50%;" ng-show="record.balance && record.balanceUpdatedDate">
 				<a style="text-decoration: none;" ui-action-click="action-bank-details-view-show-bank-statement-lines">
 					<i class="pull-left fa fa-balance-scale" style="margin-top: 3%; font-size:30px;"/>
-     				<p class="pull-left span3" style="font-size: 20px; margin-top: 3%; width: 60%; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-					<strong>{{balance}}</strong>
+     				<p class="pull-left span3" style="font-size: 11px; margin-top: 3%; width: 60%; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+					<strong>{{$fmt('balance')}}</strong>
 					<br/>
-					<span class="pull-left" style="color: #000000; font-size: 12px;"> {{ $fmt('balanceUpdatedDate') }} </span></p>
+					<span class="pull-left" style="color: #000000; font-size: 9px;"> {{ $fmt('balanceUpdatedDate') }} </span></p>
 				</a>
 				</span>
 			</div>

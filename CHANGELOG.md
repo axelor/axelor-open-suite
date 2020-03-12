@@ -10,6 +10,9 @@
 - STUDIO : Add panel on custom model demo data
 - ACCOUNTING REPORT : add account filter to summary and gross value report.
 - Accounting Config : clarifying the field lineMinBeforeLongReportGenerationMessageNumber
+- Stock Move Line : Do not allow user to remove allocated stock move line.
+- CAMPAIGN : add exception message on partner and lead at invalid domain in target list
+- STUDIO: Set default value for form width to large
 
 ## Bug Fixes
 - SALEORDER : fixed bug causing the margins to be rounded to the unit
@@ -25,6 +28,8 @@
 - SUPPLIER INVOICE : fix the problem of amount not updated in supplier invoice after use of mass invoice payment function.
 - CLIENT PORTAL : fix TeamTask counters
 - TimesheetLine : Fill duration on data import
+- MRP : Fixed issue when user try to copy an existing MRP record.
+- LEAVE REQUEST : corrected error when trying to change user.
 - Base Batch : Fix the issue when user run calendar synchronization batch.
 
 ## [5.3.0] - 2020-02-25
