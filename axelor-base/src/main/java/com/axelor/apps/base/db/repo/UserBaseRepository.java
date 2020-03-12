@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.db.repo;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.db.User;
@@ -31,6 +32,10 @@ public class UserBaseRepository extends UserRepository {
   @Override
   public User save(User user) {
     try {
+      if (user.getId() == null || (user.getId() != null && user.getVersion() == 0)) {
+        AppSettings appSettings = AppSettings.get();
+        user.setLanguage(appSettings.get("application.locale"));
+      }
       if (user.getPartner() != null
           && user.getPartner().getEmailAddress() != null
           && StringUtils.notBlank(user.getPartner().getEmailAddress().getAddress())
