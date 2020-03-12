@@ -141,7 +141,7 @@ public class ManufOrderWorkflowService {
     for (ManufOrder manufOrder : manufOrderList) {
       if (manufOrder.getOperationOrderList() != null) {
         for (OperationOrder operationOrder : getSortedOperationOrderList(manufOrder)) {
-          operationOrderWorkflowService.plan(operationOrder);
+          operationOrderWorkflowService.plan(operationOrder, null);
         }
       }
     }
@@ -474,7 +474,8 @@ public class ManufOrderWorkflowService {
         Comparator.comparing(
             OperationOrder::getId, Comparator.nullsFirst(Comparator.naturalOrder()));
 
-    return operationOrderList.stream()
+    return operationOrderList
+        .stream()
         .sorted(byPriority.thenComparing(byId))
         .collect(Collectors.toList());
   }
