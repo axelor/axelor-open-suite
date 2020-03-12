@@ -282,7 +282,7 @@
           <panel name="otherPartnerDetailsPanel">
             <field name="saleTurnover" hideIf="partnerTypeSelect== 2"/>
             <field name="nbrEmployees" hideIf="partnerTypeSelect== 2"/>
-            <field name="registrationCode" hideIf="partnerTypeSelect== 2"/>
+            <field name="registrationCode" hideIf="partnerTypeSelect== 2" onChange="action-method-partner-registration-code-onChange"/>
             <field name="mainActivityCode" hideIf="partnerTypeSelect== 2"/>
             <field name="taxNbr" hideIf="partnerTypeSelect== 2"/>
 						<field name="paymentDelay" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')"/>
@@ -976,6 +976,10 @@
     <action-method name="action-partner-method-show-on-map">
         <call class="com.axelor.apps.base.web.PartnerController" method="showPartnerOnMap"/>
     </action-method>
+
+	<action-method name="action-method-partner-registration-code-onChange">
+		<call class="com.axelor.apps.base.web.PartnerController" method="setTaxNbr"/>
+	</action-method>
 
 	<action-view name="action-contact-partner-dashlet" title="Partners"  model="com.axelor.apps.base.db.Partner">
 		<view type="grid" name="partner-grid"/>
