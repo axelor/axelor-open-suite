@@ -186,8 +186,7 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
       User user = follower.getUser();
       if (user != null) {
         if (!(user.getReceiveEmails()
-            && user.getFollowedMetaModelSet()
-                .stream()
+            && user.getFollowedMetaModelSet().stream()
                 .anyMatch(x -> x.getFullName().equals(entityName)))) {
           continue;
         } else {

@@ -390,9 +390,7 @@ public class InvoiceLineController {
                 == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)) {
 
       fixedAssetCategory =
-          product
-              .getAccountManagementList()
-              .stream()
+          product.getAccountManagementList().stream()
               .filter(am -> am.getCompany() == invoice.getCompany())
               .findFirst()
               .get()

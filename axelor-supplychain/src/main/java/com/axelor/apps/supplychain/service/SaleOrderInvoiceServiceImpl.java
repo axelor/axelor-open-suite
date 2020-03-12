@@ -746,9 +746,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         .filter(
             "self.saleOrder.id = ? OR (self.saleOrder.id IS NULL AND EXISTS(SELECT 1 FROM self.invoiceLineList inli WHERE inli.saleOrderLine.id IN (?)))",
             saleOrder.getId(),
-            saleOrder
-                .getSaleOrderLineList()
-                .stream()
+            saleOrder.getSaleOrderLineList().stream()
                 .map(SaleOrderLine::getId)
                 .collect(Collectors.toList()))
         .fetch();

@@ -116,8 +116,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
             .fetch();
     List<StockMove> stockMoves =
         !allStockMoves.isEmpty()
-            ? allStockMoves
-                .stream()
+            ? allStockMoves.stream()
                 .filter(stockMove -> !stockMove.getAvailabilityRequest())
                 .collect(Collectors.toList())
             : allStockMoves;

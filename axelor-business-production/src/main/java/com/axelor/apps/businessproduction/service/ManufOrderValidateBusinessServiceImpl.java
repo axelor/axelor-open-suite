@@ -26,9 +26,7 @@ public class ManufOrderValidateBusinessServiceImpl implements ManufOrderValidate
   public long checkTimesheet(ManufOrder manufOrder) {
     OperationOrderValidateBusinessService operationOrderValidService =
         Beans.get(OperationOrderValidateBusinessService.class);
-    return manufOrder
-        .getOperationOrderList()
-        .stream()
+    return manufOrder.getOperationOrderList().stream()
         .mapToLong(operationOrderValidService::checkTimesheet)
         .sum();
   }

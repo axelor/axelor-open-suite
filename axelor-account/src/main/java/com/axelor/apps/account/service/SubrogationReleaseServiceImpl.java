@@ -177,9 +177,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
     Comparator<Invoice> byInvoiceId = (i1, i2) -> i1.getInvoiceId().compareTo(i2.getInvoiceId());
 
     List<Invoice> releaseDetails =
-        subrogationRelease
-            .getInvoiceSet()
-            .stream()
+        subrogationRelease.getInvoiceSet().stream()
             .sorted(byInvoiceDate.thenComparing(byDueDate).thenComparing(byInvoiceId))
             .collect(Collectors.toList());
 
@@ -322,9 +320,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
   @Override
   public boolean isSubrogationReleaseCompletelyPaid(SubrogationRelease subrogationRelease) {
 
-    return subrogationRelease
-            .getInvoiceSet()
-            .stream()
+    return subrogationRelease.getInvoiceSet().stream()
             .filter(p -> p.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1)
             .count()
         == 0;

@@ -45,9 +45,8 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(
-  name = "",
-  propOrder = {"country", "engine", "promptSet", "qaConfig"}
-)
+    name = "",
+    propOrder = {"country", "engine", "promptSet", "qaConfig"})
 @XmlRootElement(name = "QAGetPromptSet")
 public class QAGetPromptSet {
 

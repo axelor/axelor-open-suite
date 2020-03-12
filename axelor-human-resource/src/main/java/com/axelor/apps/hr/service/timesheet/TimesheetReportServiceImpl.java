@@ -210,8 +210,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
           continue;
         }
         Optional<TimesheetReminder> optReminder =
-            timesheetReminders
-                .stream()
+            timesheetReminders.stream()
                 .filter(reminder -> reminder.getEmployee().getId().compareTo(employee.getId()) == 0)
                 .findFirst();
 

@@ -159,9 +159,7 @@ public class ActionServiceImpl implements ActionService {
     if (property.isCollection() && value instanceof Collection) {
       value =
           ((Collection<?>) value)
-              .stream()
-              .map(item -> createOrFind(property, item))
-              .collect(Collectors.toList());
+              .stream().map(item -> createOrFind(property, item)).collect(Collectors.toList());
     } else if (property.isReference()) {
       value = createOrFind(property, value);
     }

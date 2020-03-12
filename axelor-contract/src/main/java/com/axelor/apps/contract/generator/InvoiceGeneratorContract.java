@@ -78,10 +78,7 @@ public class InvoiceGeneratorContract extends InvoiceGenerator {
     }
 
     invoice.setBankDetails(
-        contract
-            .getPartner()
-            .getBankDetailsList()
-            .stream()
+        contract.getPartner().getBankDetailsList().stream()
             .filter(it -> it.getIsDefault())
             .findFirst()
             .orElse(null));

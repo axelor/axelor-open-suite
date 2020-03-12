@@ -518,8 +518,7 @@ public class MoveServiceImpl implements MoveService {
 
   @Override
   public MoveLine findMoveLineByAccount(Move move, Account account) throws AxelorException {
-    return move.getMoveLineList()
-        .stream()
+    return move.getMoveLineList().stream()
         .filter(moveLine -> moveLine.getAccount().equals(account))
         .findFirst()
         .orElseThrow(
@@ -542,15 +541,13 @@ public class MoveServiceImpl implements MoveService {
     values.put("$totalLines", move.getMoveLineList().size());
 
     BigDecimal totalDebit =
-        move.getMoveLineList()
-            .stream()
+        move.getMoveLineList().stream()
             .map(MoveLine::getDebit)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
     values.put("$totalDebit", totalDebit);
 
     BigDecimal totalCredit =
-        move.getMoveLineList()
-            .stream()
+        move.getMoveLineList().stream()
             .map(MoveLine::getCredit)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
     values.put("$totalCredit", totalCredit);

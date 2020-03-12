@@ -85,8 +85,7 @@ public class LogisticalFormLineServiceImpl implements LogisticalFormLineService 
       domainList.add(String.format("self.id NOT IN (%s)", idListString));
     }
 
-    return domainList
-        .stream()
+    return domainList.stream()
         .map(domain -> String.format("(%s)", domain))
         .collect(Collectors.joining(" AND "));
   }
