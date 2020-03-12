@@ -25,6 +25,7 @@
 - SALEORDER : fixed bug causing the margins to be rounded to the unit
 - SUPPLIER INVOICE : fix the problem of amount not updated in supplier invoice after use of mass invoice payment function.
 - CAMPAIGN : add exception message on partner and lead at invalid domain in target list
+- LEAVE REQUEST : corrected error when trying to change user.
 
 ## [5.1.14] - 2020-01-17
 ## Improvements
