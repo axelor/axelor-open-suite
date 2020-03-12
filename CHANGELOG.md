@@ -12,6 +12,7 @@
 - Accounting Config : clarifying the field lineMinBeforeLongReportGenerationMessageNumber
 - Stock Move Line : Do not allow user to remove allocated stock move line.
 - CAMPAIGN : add exception message on partner and lead at invalid domain in target list
+- STUDIO: Set default value for form width to large
 
 ## Bug Fixes
 - SALEORDER : fixed bug causing the margins to be rounded to the unit
