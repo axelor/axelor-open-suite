@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 @javax.xml.bind.annotation.XmlSchema(
-    namespace = "http://www.qas.com/web-2005-02",
-    elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
+  namespace = "http://www.qas.com/web-2005-02",
+  elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED
+)
 package com.qas.web_2005_02;

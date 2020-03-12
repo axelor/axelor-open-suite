@@ -46,7 +46,8 @@ public class TradingNameServiceImpl implements TradingNameService {
               .bind("tradingName", tradingName.getId())
               .fetch();
       printingSettingsList =
-          tradingNamePrintingSettingsList.stream()
+          tradingNamePrintingSettingsList
+              .stream()
               .map(TradingNamePrintingSettings::getPrintingSettings)
               .collect(Collectors.toList());
     }

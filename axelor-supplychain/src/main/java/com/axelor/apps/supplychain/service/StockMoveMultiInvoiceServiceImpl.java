@@ -135,16 +135,19 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       PaymentMode firstPaymentMode = dummyInvoiceList.get(0).getPaymentMode();
       Partner firstContactPartner = dummyInvoiceList.get(0).getContactPartner();
       paymentConditionToCheck =
-          !dummyInvoiceList.stream()
+          !dummyInvoiceList
+              .stream()
               .map(Invoice::getPaymentCondition)
               .allMatch(
                   paymentCondition -> Objects.equals(paymentCondition, firstPaymentCondition));
       paymentModeToCheck =
-          !dummyInvoiceList.stream()
+          !dummyInvoiceList
+              .stream()
               .map(Invoice::getPaymentMode)
               .allMatch(paymentMode -> Objects.equals(paymentMode, firstPaymentMode));
       contactPartnerToCheck =
-          !dummyInvoiceList.stream()
+          !dummyInvoiceList
+              .stream()
               .map(Invoice::getContactPartner)
               .allMatch(contactPartner -> Objects.equals(contactPartner, firstContactPartner));
 
@@ -226,16 +229,19 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       PaymentMode firstPaymentMode = dummyInvoiceList.get(0).getPaymentMode();
       Partner firstContactPartner = dummyInvoiceList.get(0).getContactPartner();
       paymentConditionToCheck =
-          !dummyInvoiceList.stream()
+          !dummyInvoiceList
+              .stream()
               .map(Invoice::getPaymentCondition)
               .allMatch(
                   paymentCondition -> Objects.equals(paymentCondition, firstPaymentCondition));
       paymentModeToCheck =
-          !dummyInvoiceList.stream()
+          !dummyInvoiceList
+              .stream()
               .map(Invoice::getPaymentMode)
               .allMatch(paymentMode -> Objects.equals(paymentMode, firstPaymentMode));
       contactPartnerToCheck =
-          !dummyInvoiceList.stream()
+          !dummyInvoiceList
+              .stream()
               .map(Invoice::getContactPartner)
               .allMatch(contactPartner -> Objects.equals(contactPartner, firstContactPartner));
       mapResult.put("paymentCondition", firstPaymentCondition);
@@ -631,7 +637,9 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   /** This method will throw an exception if the given stock move is already invoiced. */
   protected void checkIfAlreadyInvoiced(StockMove stockMove) throws AxelorException {
     if (stockMove.getInvoiceSet() != null
-        && stockMove.getInvoiceSet().stream()
+        && stockMove
+            .getInvoiceSet()
+            .stream()
             .anyMatch(invoice -> invoice.getStatusSelect() != InvoiceRepository.STATUS_CANCELED)) {
       String templateMessage;
       if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {

@@ -49,8 +49,9 @@ import javax.validation.constraints.NotNull;
 public class Contact extends JpaModel {
 
   @ManyToOne(
-      cascade = {CascadeType.PERSIST, CascadeType.MERGE},
-      fetch = FetchType.LAZY)
+    cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+    fetch = FetchType.LAZY
+  )
   private Title title;
 
   @NotNull private String firstName;
@@ -70,15 +71,17 @@ public class Contact extends JpaModel {
   private LocalDate dateOfBirth;
 
   @OneToMany(
-      mappedBy = "contact",
-      cascade = CascadeType.ALL,
-      fetch = FetchType.LAZY,
-      orphanRemoval = true)
+    mappedBy = "contact",
+    cascade = CascadeType.ALL,
+    fetch = FetchType.LAZY,
+    orphanRemoval = true
+  )
   private List<Address> addresses;
 
   @ManyToMany(
-      cascade = {CascadeType.PERSIST, CascadeType.MERGE},
-      fetch = FetchType.LAZY)
+    cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+    fetch = FetchType.LAZY
+  )
   private Set<Group> groups;
 
   @Widget(title = "Photo", help = "Max size 4MB.")

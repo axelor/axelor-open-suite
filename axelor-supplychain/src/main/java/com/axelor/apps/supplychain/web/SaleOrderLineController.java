@@ -224,7 +224,8 @@ public class SaleOrderLineController {
         domain +=
             String.format(
                 " AND self.id IN (%s)",
-                authorizedPartnerIdsList.stream()
+                authorizedPartnerIdsList
+                    .stream()
                     .map(Object::toString)
                     .collect(Collectors.joining(",")));
       }

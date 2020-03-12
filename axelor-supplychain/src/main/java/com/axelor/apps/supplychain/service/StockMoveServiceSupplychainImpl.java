@@ -152,7 +152,9 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     detachNonDeliveredStockMoveLines(stockMove);
 
     List<Long> trackingNumberIds =
-        stockMove.getStockMoveLineList().stream()
+        stockMove
+            .getStockMoveLineList()
+            .stream()
             .map(StockMoveLine::getTrackingNumber)
             .filter(Objects::nonNull)
             .map(TrackingNumber::getId)
@@ -177,7 +179,9 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     if (stockMove.getStockMoveLineList() == null) {
       return;
     }
-    stockMove.getStockMoveLineList().stream()
+    stockMove
+        .getStockMoveLineList()
+        .stream()
         .filter(line -> line.getRealQty().signum() == 0)
         .forEach(line -> line.setSaleOrderLine(null));
   }

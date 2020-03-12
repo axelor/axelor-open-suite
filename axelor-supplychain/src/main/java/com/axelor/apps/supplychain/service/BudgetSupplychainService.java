@@ -171,7 +171,8 @@ public class BudgetSupplychainService extends BudgetService {
     }
 
     BigDecimal totalAmountCommitted =
-        budgetLineList.stream()
+        budgetLineList
+            .stream()
             .map(BudgetLine::getAmountCommitted)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
@@ -187,7 +188,8 @@ public class BudgetSupplychainService extends BudgetService {
       return;
     }
 
-    purchaseOrderLineList.stream()
+    purchaseOrderLineList
+        .stream()
         .flatMap(x -> x.getBudgetDistributionList().stream())
         .forEach(
             budgetDistribution -> {

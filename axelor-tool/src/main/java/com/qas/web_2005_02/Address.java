@@ -42,8 +42,9 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(
-    name = "",
-    propOrder = {"qaAddress"})
+  name = "",
+  propOrder = {"qaAddress"}
+)
 @XmlRootElement(name = "Address")
 public class Address {
 

@@ -1022,7 +1022,9 @@ public class ExpenseServiceImpl implements ExpenseService {
   public Expense updateMoveDateAndPeriod(Expense expense) {
     if (CollectionUtils.isNotEmpty(expense.getGeneralExpenseLineList())) {
       LocalDate recentDate =
-          expense.getGeneralExpenseLineList().stream()
+          expense
+              .getGeneralExpenseLineList()
+              .stream()
               .map(ExpenseLine::getExpenseDate)
               .max(LocalDate::compareTo)
               .get();

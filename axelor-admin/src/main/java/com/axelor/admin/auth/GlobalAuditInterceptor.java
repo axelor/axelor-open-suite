@@ -94,9 +94,9 @@ public class GlobalAuditInterceptor extends AuditInterceptor {
                   "[%s]",
                   ((Collection<AuditableModel>) state[i])
                       .stream()
-                          .map(AuditableModel::getId)
-                          .map(String::valueOf)
-                          .collect(Collectors.joining(", ")));
+                      .map(AuditableModel::getId)
+                      .map(String::valueOf)
+                      .collect(Collectors.joining(", ")));
         }
         logLine.setNewValue(newVal);
       } else {
@@ -168,9 +168,9 @@ public class GlobalAuditInterceptor extends AuditInterceptor {
                   "[%s]",
                   ((Collection<AuditableModel>) previousState[i])
                       .stream()
-                          .map(AuditableModel::getId)
-                          .map(String::valueOf)
-                          .collect(Collectors.joining(", ")));
+                      .map(AuditableModel::getId)
+                      .map(String::valueOf)
+                      .collect(Collectors.joining(", ")));
         }
         if (CollectionUtils.isNotEmpty((Collection<Object>) currentState[i])) {
           newVal =
@@ -178,9 +178,9 @@ public class GlobalAuditInterceptor extends AuditInterceptor {
                   "[%s]",
                   ((Collection<AuditableModel>) currentState[i])
                       .stream()
-                          .map(AuditableModel::getId)
-                          .map(String::valueOf)
-                          .collect(Collectors.joining(", ")));
+                      .map(AuditableModel::getId)
+                      .map(String::valueOf)
+                      .collect(Collectors.joining(", ")));
         }
         logLine.setPreviousValue(prevVal);
         logLine.setNewValue(newVal);

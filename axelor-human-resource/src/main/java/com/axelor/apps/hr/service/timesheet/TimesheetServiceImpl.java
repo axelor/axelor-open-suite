@@ -1155,7 +1155,9 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
 
     if (timesheet.getTimesheetLineList() != null && !timesheet.getTimesheetLineList().isEmpty()) {
       fromDate =
-          timesheet.getTimesheetLineList().stream()
+          timesheet
+              .getTimesheetLineList()
+              .stream()
               .map(TimesheetLine::getDate)
               .max(LocalDate::compareTo)
               .get()

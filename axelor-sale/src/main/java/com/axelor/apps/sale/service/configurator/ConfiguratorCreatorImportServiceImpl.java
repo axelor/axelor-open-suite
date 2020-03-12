@@ -169,7 +169,8 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
       String oldAttributeName,
       String newAttributeName) {
 
-    formulas.stream()
+    formulas
+        .stream()
         .forEach(
             configuratorFormula ->
                 configuratorFormula.setFormula(

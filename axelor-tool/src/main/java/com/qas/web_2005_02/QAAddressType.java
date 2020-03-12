@@ -46,8 +46,9 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(
-    name = "QAAddressType",
-    propOrder = {"addressLine"})
+  name = "QAAddressType",
+  propOrder = {"addressLine"}
+)
 public class QAAddressType {
 
   @XmlElement(name = "AddressLine", required = true)

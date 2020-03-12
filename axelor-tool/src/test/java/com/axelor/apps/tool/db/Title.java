@@ -38,9 +38,10 @@ public class Title extends Model {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CONTACT_TITLE_SEQ")
   @SequenceGenerator(
-      name = "CONTACT_TITLE_SEQ",
-      sequenceName = "CONTACT_TITLE_SEQ",
-      allocationSize = 1)
+    name = "CONTACT_TITLE_SEQ",
+    sequenceName = "CONTACT_TITLE_SEQ",
+    allocationSize = 1
+  )
   private Long id;
 
   @NotNull

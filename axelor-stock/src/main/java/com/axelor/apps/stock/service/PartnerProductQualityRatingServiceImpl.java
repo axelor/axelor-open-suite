@@ -112,7 +112,8 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
     }
 
     Optional<PartnerProductQualityRating> productQualityRating =
-        partnerProductQualityRatingList.stream()
+        partnerProductQualityRatingList
+            .stream()
             .filter(
                 PartnerProductQualityRating ->
                     PartnerProductQualityRating.getProduct() != null

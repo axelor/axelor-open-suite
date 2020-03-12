@@ -72,7 +72,9 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
     fixedAsset.setResidualValue(residualValue.subtract(fixedAssetLine.getDepreciation()));
 
     FixedAssetLine plannedFixedAssetLine =
-        fixedAsset.getFixedAssetLineList().stream()
+        fixedAsset
+            .getFixedAssetLineList()
+            .stream()
             .filter(line -> line.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED)
             .findAny()
             .orElse(null);

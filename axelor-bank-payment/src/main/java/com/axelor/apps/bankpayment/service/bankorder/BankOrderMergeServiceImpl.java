@@ -249,7 +249,9 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
           consolidateBankOrderLine.setBankOrderLineOriginList(new ArrayList<>());
         }
         if (bankOrderLine.getBankOrderLineOriginList() != null) {
-          bankOrderLine.getBankOrderLineOriginList().stream()
+          bankOrderLine
+              .getBankOrderLineOriginList()
+              .stream()
               .forEach(consolidateBankOrderLine::addBankOrderLineOriginListItem);
         }
         consolidateBankOrderLine.setBankOrderAmount(

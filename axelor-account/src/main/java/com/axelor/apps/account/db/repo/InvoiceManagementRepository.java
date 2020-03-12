@@ -79,7 +79,8 @@ public class InvoiceManagementRepository extends InvoiceRepository {
       List<InvoicePayment> invoicePayments = invoice.getInvoicePaymentList();
       if (CollectionUtils.isNotEmpty(invoicePayments)) {
         LocalDate latestPaymentDate =
-            invoicePayments.stream()
+            invoicePayments
+                .stream()
                 .filter(
                     invoicePayment ->
                         invoicePayment.getStatusSelect()

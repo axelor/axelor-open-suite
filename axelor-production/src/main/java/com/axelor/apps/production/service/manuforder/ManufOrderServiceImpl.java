@@ -202,7 +202,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       Collection<BillOfMaterial> billsOfMaterials) {
 
     billsOfMaterials = MoreObjects.firstNonNull(billsOfMaterials, Collections.emptyList());
-    return billsOfMaterials.stream()
+    return billsOfMaterials
+        .stream()
         .sorted(
             Comparator.comparing(BillOfMaterial::getPriority)
                 .thenComparing(Comparator.comparing(BillOfMaterial::getId)))
@@ -540,7 +541,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       Product product = prodProduct.getProduct();
       Unit newUnit = prodProduct.getUnit();
       List<StockMoveLine> stockMoveLineProductList =
-          stockMoveLineList.stream()
+          stockMoveLineList
+              .stream()
               .filter(stockMoveLine1 -> stockMoveLine1.getProduct() != null)
               .filter(stockMoveLine1 -> stockMoveLine1.getProduct().equals(product))
               .collect(Collectors.toList());
@@ -564,11 +566,13 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     // There are stock move lines with products that are not available in
     // prod product list. It needs to appear in the prod product list
     List<StockMoveLine> stockMoveLineMissingProductList =
-        stockMoveLineList.stream()
+        stockMoveLineList
+            .stream()
             .filter(stockMoveLine1 -> stockMoveLine1.getProduct() != null)
             .filter(
                 stockMoveLine1 ->
-                    !prodProductList.stream()
+                    !prodProductList
+                        .stream()
                         .map(ProdProduct::getProduct)
                         .collect(Collectors.toList())
                         .contains(stockMoveLine1.getProduct()))
@@ -652,7 +656,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       throws AxelorException {
 
     List<StockMoveLine> realizedProducedStockMoveLineList =
-        stockMoveLineList.stream()
+        stockMoveLineList
+            .stream()
             .filter(
                 stockMoveLine ->
                     stockMoveLine.getStockMove() != null
@@ -661,7 +666,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             .sorted(Comparator.comparingLong(StockMoveLine::getId))
             .collect(Collectors.toList());
     List<StockMoveLine> oldRealizedProducedStockMoveLineList =
-        oldStockMoveLineList.stream()
+        oldStockMoveLineList
+            .stream()
             .filter(
                 stockMoveLine ->
                     stockMoveLine.getStockMove() != null
@@ -686,7 +692,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     }
 
     // add missing lines in stock move
-    stockMoveLineList.stream()
+    stockMoveLineList
+        .stream()
         .filter(stockMoveLine -> stockMoveLine.getStockMove() == null)
         .forEach(stockMove::addStockMoveLineListItem);
 

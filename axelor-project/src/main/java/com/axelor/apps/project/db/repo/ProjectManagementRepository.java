@@ -50,7 +50,9 @@ public class ProjectManagementRepository extends ProjectRepository {
 
   public static void setAllProjectMembersUserSet(Project project) {
     if (project.getParentProject() == null && project.getChildProjectList() != null) {
-      project.getChildProjectList().stream()
+      project
+          .getChildProjectList()
+          .stream()
           .filter(Project::getExtendsMembersFromParent)
           .peek(p -> project.getMembersUserSet().forEach(p::addMembersUserSetItem))
           .forEach(p -> p.setTeam(project.getTeam()));

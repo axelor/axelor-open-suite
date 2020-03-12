@@ -195,7 +195,9 @@ public class ValidatorService {
     }
     List<String> sheetList = Arrays.asList(sheets);
     List<String> tabList =
-        advancedImport.getFileTabList().stream()
+        advancedImport
+            .getFileTabList()
+            .stream()
             .map(tab -> tab.getName())
             .collect(Collectors.toList());
 
@@ -352,7 +354,9 @@ public class ValidatorService {
       throws IOException, ClassNotFoundException {
 
     List<String> relationalFieldList =
-        fileTab.getFileFieldList().stream()
+        fileTab
+            .getFileFieldList()
+            .stream()
             .filter(field -> !Strings.isNullOrEmpty(field.getSubImportField()))
             .map(field -> field.getImportField().getName() + "." + field.getSubImportField())
             .collect(Collectors.toList());

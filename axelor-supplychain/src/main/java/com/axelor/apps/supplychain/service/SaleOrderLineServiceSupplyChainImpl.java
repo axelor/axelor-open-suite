@@ -181,7 +181,9 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
         || product.getSupplierCatalogList() == null) {
       return new ArrayList<>();
     }
-    return product.getSupplierCatalogList().stream()
+    return product
+        .getSupplierCatalogList()
+        .stream()
         .map(SupplierCatalog::getSupplierPartner)
         .filter(Objects::nonNull)
         .map(Partner::getId)

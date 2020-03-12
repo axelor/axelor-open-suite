@@ -45,8 +45,9 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(
-    name = "",
-    propOrder = {"warningLevel", "licensedSet"})
+  name = "",
+  propOrder = {"warningLevel", "licensedSet"}
+)
 @XmlRootElement(name = "QALicenceInfo")
 public class QALicenceInfo {
 

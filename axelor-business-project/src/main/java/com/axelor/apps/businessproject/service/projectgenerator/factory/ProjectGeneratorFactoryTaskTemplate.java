@@ -118,7 +118,9 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
       if (!CollectionUtils.isEmpty(product.getTaskTemplateSet()) && !(isTaskGenerated)) {
         List<TeamTask> convertedTasks =
             productTaskTemplateService.convert(
-                product.getTaskTemplateSet().stream()
+                product
+                    .getTaskTemplateSet()
+                    .stream()
                     .filter(template -> Objects.isNull(template.getParentTaskTemplate()))
                     .collect(Collectors.toList()),
                 project,

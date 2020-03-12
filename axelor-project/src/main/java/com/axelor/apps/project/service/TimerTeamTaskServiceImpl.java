@@ -47,7 +47,8 @@ public class TimerTeamTaskServiceImpl extends AbstractTimerService implements Ti
     User user = userService.getUser();
     TeamTask task = (TeamTask) model;
 
-    return task.getTimerList().stream()
+    return task.getTimerList()
+        .stream()
         .filter(t -> t.getAssignedToUser() == user)
         .findFirst()
         .orElse(null);

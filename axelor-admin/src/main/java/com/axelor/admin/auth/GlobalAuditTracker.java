@@ -131,7 +131,8 @@ public class GlobalAuditTracker {
       String fieldName = newValues.getRole().replace(owner.getClass().getCanonicalName() + ".", "");
 
       GlobalTrackingLog log =
-          LOGS.get().stream()
+          LOGS.get()
+              .stream()
               .filter(
                   l ->
                       l.getRelatedId().equals(id)
@@ -157,7 +158,8 @@ public class GlobalAuditTracker {
       }
 
       GlobalTrackingLogLine line =
-          log.getGlobalTrackingLogLineList().stream()
+          log.getGlobalTrackingLogLineList()
+              .stream()
               .filter(l -> l.getMetaFieldName().equals(fieldName))
               .findFirst()
               .orElse(null);

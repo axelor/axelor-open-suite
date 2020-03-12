@@ -122,8 +122,9 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 
   @Override
   @Transactional(
-      rollbackOn = {Exception.class},
-      ignore = {BlockedSaleOrderException.class})
+    rollbackOn = {Exception.class},
+    ignore = {BlockedSaleOrderException.class}
+  )
   public void finalizeQuotation(SaleOrder saleOrder) throws AxelorException {
     Partner partner = saleOrder.getClientPartner();
 

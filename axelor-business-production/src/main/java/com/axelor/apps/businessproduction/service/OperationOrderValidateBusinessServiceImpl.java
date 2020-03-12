@@ -27,7 +27,9 @@ public class OperationOrderValidateBusinessServiceImpl
 
   @Override
   public long checkTimesheet(OperationOrder operationOrder) {
-    return operationOrder.getTimesheetLineList().stream()
+    return operationOrder
+        .getTimesheetLineList()
+        .stream()
         .map(TimesheetLine::getTimesheet)
         .filter(Objects::nonNull)
         .filter(timesheet -> timesheet.getStatusSelect() == TimesheetRepository.STATUS_CONFIRMED)

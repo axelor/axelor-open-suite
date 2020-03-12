@@ -67,7 +67,8 @@ public class AppMobileController {
 
   private Object convertToData(Set<? extends AuditableModel> modelSet) {
 
-    return modelSet.stream()
+    return modelSet
+        .stream()
         .map(
             it ->
                 new HashMap<String, Object>() {

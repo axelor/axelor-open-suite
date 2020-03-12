@@ -163,9 +163,9 @@ public class StockMoveController {
             (List)
                 (((List) context.get("_ids"))
                     .stream()
-                        .filter(ObjectUtils::notEmpty)
-                        .map(input -> Long.parseLong(input.toString()))
-                        .collect(Collectors.toList()));
+                    .filter(ObjectUtils::notEmpty)
+                    .map(input -> Long.parseLong(input.toString()))
+                    .collect(Collectors.toList()));
         fileLink = stockMovePrintService.printStockMoves(ids);
         title = I18n.get("Stock Moves");
       } else if (context.get("id") != null) {
@@ -208,9 +208,9 @@ public class StockMoveController {
             (List)
                 (((List) context.get("_ids"))
                     .stream()
-                        .filter(ObjectUtils::notEmpty)
-                        .map(input -> Long.parseLong(input.toString()))
-                        .collect(Collectors.toList()));
+                    .filter(ObjectUtils::notEmpty)
+                    .map(input -> Long.parseLong(input.toString()))
+                    .collect(Collectors.toList()));
         fileLink = pickingstockMovePrintService.printStockMoves(ids, userType);
         title = I18n.get("Stock Moves");
       } else if (context.get("id") != null) {
@@ -255,9 +255,9 @@ public class StockMoveController {
             (List)
                 (((List) context.get("_ids"))
                     .stream()
-                        .filter(ObjectUtils::notEmpty)
-                        .map(input -> Long.parseLong(input.toString()))
-                        .collect(Collectors.toList()));
+                    .filter(ObjectUtils::notEmpty)
+                    .map(input -> Long.parseLong(input.toString()))
+                    .collect(Collectors.toList()));
         fileLink = conformityCertificatePrintService.printConformityCertificates(ids);
         title = I18n.get("Conformity Certificates");
       } else if (context.get("id") != null) {

@@ -410,7 +410,8 @@ public class PayrollPreparationService {
                   true)
               .fetch();
       Map<ExtraHoursType, BigDecimal> extraHourLineExportMap =
-          extraHourLineList.stream()
+          extraHourLineList
+              .stream()
               .collect(
                   Collectors.groupingBy(
                       ExtraHoursLine::getExtraHoursType,

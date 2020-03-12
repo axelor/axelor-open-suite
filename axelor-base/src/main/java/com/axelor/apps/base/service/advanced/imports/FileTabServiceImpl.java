@@ -136,7 +136,8 @@ public class FileTabServiceImpl implements FileTabService {
     }
 
     String ids =
-        recordList.stream()
+        recordList
+            .stream()
             .map(
                 obj -> {
                   Map<String, Object> recordMap = Mapper.toMap(EntityHelper.getEntity(obj));

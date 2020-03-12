@@ -186,7 +186,9 @@ public class PartnerServiceImpl implements PartnerService {
               .fetchOne());
 
     } else if (partner.getPartnerAddressList() != null
-        && partner.getPartnerAddressList().stream()
+        && partner
+            .getPartnerAddressList()
+            .stream()
             .map(PartnerAddress::getAddress)
             .noneMatch(address::equals)) {
       PartnerAddress mainAddress = new PartnerAddress();

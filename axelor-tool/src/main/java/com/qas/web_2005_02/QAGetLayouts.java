@@ -43,8 +43,9 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(
-    name = "",
-    propOrder = {"country", "qaConfig"})
+  name = "",
+  propOrder = {"country", "qaConfig"}
+)
 @XmlRootElement(name = "QAGetLayouts")
 public class QAGetLayouts {
 

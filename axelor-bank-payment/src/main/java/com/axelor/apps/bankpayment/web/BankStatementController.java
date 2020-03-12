@@ -82,7 +82,8 @@ public class BankStatementController {
                     "self.id in ("
                         + Joiner.on(",")
                             .join(
-                                bankReconciliationList.stream()
+                                bankReconciliationList
+                                    .stream()
                                     .map(BankReconciliation::getId)
                                     .toArray())
                         + ")")

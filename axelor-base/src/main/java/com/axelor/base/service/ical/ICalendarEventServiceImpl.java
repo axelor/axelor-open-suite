@@ -39,7 +39,9 @@ public class ICalendarEventServiceImpl implements ICalendarEventService {
           AxelorException, MessagingException, IOException, ICalendarException, ParseException {
     if (email != null) {
       if (event.getAttendees() == null
-          || !event.getAttendees().stream()
+          || !event
+              .getAttendees()
+              .stream()
               .anyMatch(x -> email.getAddress().equals(x.getEmail()))) {
         ICalendarUser calUser = new ICalendarUser();
         calUser.setEmail(email.getAddress());

@@ -62,7 +62,8 @@ public class ExpenseLineProjectController {
       response.setFlash(IExceptionMessage.LINES_NOT_SELECTED);
     } else {
       List<Long> lineIds =
-          expenseLineSet.stream()
+          expenseLineSet
+              .stream()
               .map(it -> Long.parseLong(it.get("id").toString()))
               .collect(Collectors.toList());
       Beans.get(ExpenseLineProjectService.class).setProject(lineIds, project);

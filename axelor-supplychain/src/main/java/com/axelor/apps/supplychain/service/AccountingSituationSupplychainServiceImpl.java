@@ -113,8 +113,9 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
 
   @Override
   @Transactional(
-      rollbackOn = {AxelorException.class, Exception.class},
-      ignore = {BlockedSaleOrderException.class})
+    rollbackOn = {AxelorException.class, Exception.class},
+    ignore = {BlockedSaleOrderException.class}
+  )
   public void updateCustomerCreditFromSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
     if (!appAccountService.getAppAccount().getManageCustomerCredit()) {

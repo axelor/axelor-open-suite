@@ -226,7 +226,9 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
     if (paymentSchedule.getTypeSelect() == PaymentScheduleRepository.TYPE_TERMS
         && paymentSchedule.getInvoiceSet() != null) {
       List<MoveLine> debitMoveLineList =
-          paymentSchedule.getInvoiceSet().stream()
+          paymentSchedule
+              .getInvoiceSet()
+              .stream()
               .sorted(Comparator.comparing(Invoice::getDueDate))
               .map(invoice -> moveService.getMoveLineService().getDebitCustomerMoveLine(invoice))
               .collect(Collectors.toList());

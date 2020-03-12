@@ -82,7 +82,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
           planningTimeRepo.all().filter("self.task = ?1", task).fetch();
       if (plannings != null) {
         totalPlanned =
-            plannings.stream()
+            plannings
+                .stream()
                 .map(ProjectPlanningTime::getPlannedHours)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
       }
@@ -106,7 +107,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
               .fetch();
       if (plannings != null) {
         totalPlanned =
-            plannings.stream()
+            plannings
+                .stream()
                 .map(ProjectPlanningTime::getPlannedHours)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
       }

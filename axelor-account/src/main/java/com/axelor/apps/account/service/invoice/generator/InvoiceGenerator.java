@@ -266,7 +266,8 @@ public abstract class InvoiceGenerator {
     if (partner.getFactorizedCustomer() && accountConfig.getFactorPartner() != null) {
       List<BankDetails> bankDetailsList = accountConfig.getFactorPartner().getBankDetailsList();
       companyBankDetails =
-          bankDetailsList.stream()
+          bankDetailsList
+              .stream()
               .filter(bankDetails -> bankDetails.getIsDefault())
               .findFirst()
               .orElse(null);

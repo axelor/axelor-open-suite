@@ -44,8 +44,9 @@ import javax.xml.bind.annotation.XmlValue;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(
-    name = "EngineType",
-    propOrder = {"value"})
+  name = "EngineType",
+  propOrder = {"value"}
+)
 public class EngineType {
 
   @XmlValue protected EngineEnumType value;

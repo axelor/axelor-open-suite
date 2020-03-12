@@ -509,12 +509,16 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
         && stockMove.getInvoiceSet() != null
         && !stockMove.getInvoiceSet().isEmpty()) {
       BigDecimal totalInvoicedQty =
-          stockMove.getStockMoveLineList().stream()
+          stockMove
+              .getStockMoveLineList()
+              .stream()
               .map(StockMoveLine::getQtyInvoiced)
               .reduce(BigDecimal::add)
               .orElse(BigDecimal.ZERO);
       BigDecimal totalRealQty =
-          stockMove.getStockMoveLineList().stream()
+          stockMove
+              .getStockMoveLineList()
+              .stream()
               .map(StockMoveLine::getRealQty)
               .reduce(BigDecimal::add)
               .orElse(BigDecimal.ZERO);

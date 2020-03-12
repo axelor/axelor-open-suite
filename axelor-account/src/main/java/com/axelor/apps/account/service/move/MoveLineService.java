@@ -981,11 +981,15 @@ public class MoveLineService {
   protected Pair<List<MoveLine>, List<MoveLine>> findMoveLineLists(
       Pair<List<MoveLine>, List<MoveLine>> moveLineLists) {
     List<MoveLine> fetchedDebitMoveLineList =
-        moveLineLists.getLeft().stream()
+        moveLineLists
+            .getLeft()
+            .stream()
             .map(moveLine -> moveLineRepository.find(moveLine.getId()))
             .collect(Collectors.toList());
     List<MoveLine> fetchedCreditMoveLineList =
-        moveLineLists.getRight().stream()
+        moveLineLists
+            .getRight()
+            .stream()
             .map(moveLine -> moveLineRepository.find(moveLine.getId()))
             .collect(Collectors.toList());
     return Pair.of(fetchedDebitMoveLineList, fetchedCreditMoveLineList);

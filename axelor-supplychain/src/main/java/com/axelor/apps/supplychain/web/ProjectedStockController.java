@@ -209,7 +209,8 @@ public class ProjectedStockController {
         (Collection<Map<String, Object>>) context.get("_mrpLineListToProject");
 
     List<MrpLine> mrpLineList =
-        contextMrpLineList.stream()
+        contextMrpLineList
+            .stream()
             .map(map -> Mapper.toBean(MrpLine.class, map))
             .collect(Collectors.toList());
 

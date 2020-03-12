@@ -75,7 +75,9 @@ public class ExcelLogWriter {
         Cell dataCell2 = dataRow.createCell(1);
         if (!CollectionUtils.isEmpty(dataEntry.getValue())) {
           dataCell2.setCellValue(
-              dataEntry.getValue().stream()
+              dataEntry
+                  .getValue()
+                  .stream()
                   .map(num -> String.valueOf(num))
                   .collect(Collectors.joining(",")));
         }

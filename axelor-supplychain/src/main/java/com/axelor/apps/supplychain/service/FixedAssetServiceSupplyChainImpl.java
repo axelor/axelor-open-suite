@@ -66,7 +66,11 @@ public class FixedAssetServiceSupplyChainImpl extends FixedAssetServiceImpl {
           && CollectionUtils.isNotEmpty(
               fixedAsset.getInvoiceLine().getIncomingStockMove().getStockMoveLineList())) {
         fixedAsset.setTrackingNumber(
-            fixedAsset.getInvoiceLine().getIncomingStockMove().getStockMoveLineList().stream()
+            fixedAsset
+                .getInvoiceLine()
+                .getIncomingStockMove()
+                .getStockMoveLineList()
+                .stream()
                 .filter(l -> pol.equals(l.getPurchaseOrderLine()))
                 .findFirst()
                 .map(StockMoveLine::getTrackingNumber)

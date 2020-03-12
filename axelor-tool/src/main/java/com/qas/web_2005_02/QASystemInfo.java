@@ -44,8 +44,9 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(
-    name = "",
-    propOrder = {"systemInfo"})
+  name = "",
+  propOrder = {"systemInfo"}
+)
 @XmlRootElement(name = "QASystemInfo")
 public class QASystemInfo {
 

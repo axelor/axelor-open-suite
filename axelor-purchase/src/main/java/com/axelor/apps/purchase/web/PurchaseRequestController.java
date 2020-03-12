@@ -79,7 +79,8 @@ public class PurchaseRequestController {
                 .filter("self.id in (?1)", requestIds)
                 .fetch();
         List<String> purchaseRequestSeqs =
-            purchaseRequests.stream()
+            purchaseRequests
+                .stream()
                 .filter(pr -> pr.getSupplierUser() == null)
                 .map(PurchaseRequest::getPurchaseRequestSeq)
                 .collect(Collectors.toList());

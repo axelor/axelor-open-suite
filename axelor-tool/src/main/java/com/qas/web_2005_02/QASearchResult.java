@@ -45,8 +45,9 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(
-    name = "",
-    propOrder = {"qaPicklist", "qaAddress"})
+  name = "",
+  propOrder = {"qaPicklist", "qaAddress"}
+)
 @XmlRootElement(name = "QASearchResult")
 public class QASearchResult {
 

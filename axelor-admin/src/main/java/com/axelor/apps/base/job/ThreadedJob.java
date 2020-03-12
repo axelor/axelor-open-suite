@@ -79,7 +79,10 @@ public abstract class ThreadedJob implements Job {
 
   private boolean isRunning(JobExecutionContext context) {
     try {
-      return context.getScheduler().getCurrentlyExecutingJobs().stream()
+      return context
+          .getScheduler()
+          .getCurrentlyExecutingJobs()
+          .stream()
           .anyMatch(
               j ->
                   j.getTrigger().equals(context.getTrigger())

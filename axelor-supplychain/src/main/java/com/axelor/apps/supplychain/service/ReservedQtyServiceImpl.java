@@ -77,7 +77,8 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
     if (stockMoveLineList != null) {
       stockMoveLineList =
-          stockMoveLineList.stream()
+          stockMoveLineList
+              .stream()
               .filter(
                   smLine -> smLine.getProduct() != null && smLine.getProduct().getStockManaged())
               .collect(Collectors.toList());
@@ -178,7 +179,9 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
       return;
     }
     List<Product> productList =
-        stockMove.getStockMoveLineList().stream()
+        stockMove
+            .getStockMoveLineList()
+            .stream()
             .map(StockMoveLine::getProduct)
             .filter(Objects::nonNull)
             .filter(Product::getStockManaged)
@@ -187,13 +190,16 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     for (Product product : productList) {
       if (product != null) {
         List<StockMoveLine> stockMoveLineListToConsolidate =
-            stockMove.getStockMoveLineList().stream()
+            stockMove
+                .getStockMoveLineList()
+                .stream()
                 .filter(stockMoveLine1 -> product.equals(stockMoveLine1.getProduct()))
                 .collect(Collectors.toList());
         if (stockMoveLineListToConsolidate.size() > 1) {
           stockMoveLineListToConsolidate.sort(Comparator.comparing(StockMoveLine::getId));
           BigDecimal reservedQtySum =
-              stockMoveLineListToConsolidate.stream()
+              stockMoveLineListToConsolidate
+                  .stream()
                   .map(StockMoveLine::getReservedQty)
                   .reduce(BigDecimal::add)
                   .orElse(BigDecimal.ZERO);

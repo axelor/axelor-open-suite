@@ -126,7 +126,9 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         getAllPurchaseOrderLinePerDate(purchaseOrder);
 
     for (LocalDate estimatedDeliveryDate :
-        purchaseOrderLinePerDateMap.keySet().stream()
+        purchaseOrderLinePerDateMap
+            .keySet()
+            .stream()
             .filter(x -> x != null)
             .sorted((x, y) -> x.compareTo(y))
             .collect(Collectors.toList())) {

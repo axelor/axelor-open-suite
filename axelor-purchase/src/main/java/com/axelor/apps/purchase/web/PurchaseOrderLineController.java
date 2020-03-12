@@ -366,7 +366,10 @@ public class PurchaseOrderLineController {
           "self.id != "
               + company.getPartner().getId()
               + " AND self.id IN "
-              + purchaseOrderLine.getProduct().getSupplierCatalogList().stream()
+              + purchaseOrderLine
+                  .getProduct()
+                  .getSupplierCatalogList()
+                  .stream()
                   .map(s -> s.getSupplierPartner().getId())
                   .collect(Collectors.toList())
                   .toString()

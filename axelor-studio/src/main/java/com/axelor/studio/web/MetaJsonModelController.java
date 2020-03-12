@@ -88,7 +88,9 @@ public class MetaJsonModelController {
       }
 
       String jsonFields =
-          jsonModel.getFields().stream()
+          jsonModel
+              .getFields()
+              .stream()
               .map(list -> list.getName())
               .collect(Collectors.joining(", "));
 

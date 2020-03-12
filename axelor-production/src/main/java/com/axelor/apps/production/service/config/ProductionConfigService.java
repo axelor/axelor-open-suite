@@ -61,7 +61,9 @@ public class ProductionConfigService {
     Sequence sequence = null;
     if (productionConfig.getWorkshopSequenceConfigLineList() != null) {
       sequence =
-          productionConfig.getWorkshopSequenceConfigLineList().stream()
+          productionConfig
+              .getWorkshopSequenceConfigLineList()
+              .stream()
               .filter(
                   workshopSequenceConfigLine ->
                       workshopSequenceConfigLine.getWorkshopStockLocation().equals(workshop))

@@ -811,7 +811,8 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     }
 
     String ids =
-        recordList.stream()
+        recordList
+            .stream()
             .map(
                 obj -> {
                   Map<String, Object> recordMap = Mapper.toMap(EntityHelper.getEntity(obj));
@@ -845,7 +846,8 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
       List<Object> recList = (List<Object>) jsonContext.get(field);
 
       String ids =
-          recList.stream()
+          recList
+              .stream()
               .map(
                   obj -> {
                     Map<String, Object> recordMap = Mapper.toMap(EntityHelper.getEntity(obj));

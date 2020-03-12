@@ -37,9 +37,10 @@ public class Group extends Model {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CONTACT_GROUP_SEQ")
   @SequenceGenerator(
-      name = "CONTACT_GROUP_SEQ",
-      sequenceName = "CONTACT_GROUP_SEQ",
-      allocationSize = 1)
+    name = "CONTACT_GROUP_SEQ",
+    sequenceName = "CONTACT_GROUP_SEQ",
+    allocationSize = 1
+  )
   private Long id;
 
   @NotNull private String name;
