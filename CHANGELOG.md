@@ -11,6 +11,7 @@
 - ACCOUNTING REPORT : add account filter to summary and gross value report.
 - Accounting Config : clarifying the field lineMinBeforeLongReportGenerationMessageNumber
 - Stock Move Line : Do not allow user to remove allocated stock move line.
+- CAMPAIGN : add exception message on partner and lead at invalid domain in target list
 
 ## Bug Fixes
 - SALEORDER : fixed bug causing the margins to be rounded to the unit
