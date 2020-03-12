@@ -19,8 +19,11 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.translation.ITranslation;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -28,6 +31,8 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
+import java.util.List;
+import org.springframework.util.ObjectUtils;
 
 @Singleton
 public class AccountController {
@@ -52,6 +57,33 @@ public class AccountController {
       }
 
       response.setValue("$balanceBtn", balance);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkIfCodeAccountAlreadyExistForCompany(
+      ActionRequest request, ActionResponse response) {
+    try {
+      Account account = request.getContext().asType(Account.class);
+      List<Account> sameAccountList =
+          Beans.get(AccountRepository.class)
+              .all()
+              .filter(
+                  "self.company = ?1 AND self.code = ?2 AND self.id != ?3",
+                  account.getCompany(),
+                  account.getCode(),
+                  account.getId())
+              .fetch();
+      if (!ObjectUtils.isEmpty(sameAccountList)) {
+
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.ACCOUNT_CODE_ALREADY_IN_USE_FOR_COMPANY),
+            account.getCode(),
+            account.getCompany().getName());
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
