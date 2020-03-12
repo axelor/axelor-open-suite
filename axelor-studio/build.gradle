@@ -36,19 +36,28 @@ def updateJsp(jspFile, check, lines) {
 //XXX: this task should be removed when we introduce per module webapp support in Axelor Open Platform
 task copyWebapp(type: Copy) {
 	destinationDir = file(rootProject.buildDir)
-	into("webapp/studio") {
-		from "src/main/webapp"
+	into("webapp/studio/custom-model") {
+		from "src/main/webapp/custom-model"
 	}
+  into("webapp/css") {
+    from "src/main/webapp/css"
+  }
+  into("webapp/lib") {
+    from "src/main/webapp/lib"
+  }
+  into("webapp/js/form") {
+    from "src/main/webapp/js/form"
+  }
 	doLast {
 		// update index-head.jsp
 		updateJsp("index-head.jsp", "diagram-js.css", [
-			'<link href="studio/lib/bpmn-js/assets/bpmn-font/css/bpmn-embedded.css" rel="stylesheet">',
-			'<link href="studio/lib/bpmn-js/assets/diagram-js.css" rel="stylesheet">',
-			'<link href="studio/css/bpmn.css" rel="stylesheet">'])
+			'<link href="lib/bpmn-js/assets/bpmn-font/css/bpmn-embedded.css" rel="stylesheet">',
+			'<link href="lib/bpmn-js/assets/diagram-js.css" rel="stylesheet">',
+			'<link href="css/bpmn.css" rel="stylesheet">'])
 		// update index-foot.jsp
 		updateJsp("index-foot.jsp", "bpmn-modeler.js", [
-			'<script src="studio/lib/bpmn-js/bpmn-modeler.js"></script>',
-			'<script src="studio/js/form/form.bpmn.js"></script>'])
+			'<script src="lib/bpmn-js/bpmn-modeler.js"></script>',
+			'<script src="js/form/form.bpmn.js"></script>'])
 	}
 }
 
