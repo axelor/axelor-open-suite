@@ -21,6 +21,7 @@
 - STOCK CONFIG : add three fields related to stock move printing settings
 - SaleOrderLine/PurchaseOrderLine : Added transient boolean field to freeze price,qty,productName
 - HR BATCH : set email template for batch 'Email reminder for timesheets'
+- PURCHASE ORDER REPORT: Fixed value of payment condition from PurchaseOrder's payment condition instead of using partner.
 - STUDIO : Set Large option as default value for the 'Form Width' in demo data
 
 ## Bug Fixes
@@ -44,6 +45,8 @@
 - Fix the error which is getting when group is empty in user.
 - DEBT RECOVERY : rollback debt recovery process if to recipients is empty or not in generated message.
 - PROJECT : Fix NPE when generate Business project with SaleOrderTypeSelect as title. 
+- PROJECT : Fix NPE when generate Business project with projectGeneratorType Task by line and Task by product.
+- MRP : sequence is copied when MRP is copied.
 
 ## [5.3.0] - 2020-02-25
 ## Features
