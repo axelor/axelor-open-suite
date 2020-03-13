@@ -54,6 +54,7 @@ import com.axelor.rpc.Resource;
 import com.axelor.studio.db.Wkf;
 import com.axelor.studio.db.WkfNode;
 import com.axelor.studio.db.repo.WkfRepository;
+import com.axelor.studio.exception.IExceptionMessage;
 import com.axelor.studio.service.StudioMetaService;
 import com.axelor.studio.service.filter.FilterGroovyService;
 import com.google.common.base.Joiner;
@@ -119,9 +120,10 @@ public class WkfService {
    *
    * @param wkf Worklfow to process.
    * @return Exception string if any issue in processing else null.
+   * @throws Exception
    */
   @SuppressWarnings("unchecked")
-  public String process(Wkf wkf) {
+  public String process(Wkf wkf) throws Exception {
 
     try {
       initService(wkf);
@@ -158,6 +160,10 @@ public class WkfService {
       MetaStore.clear();
 
     } catch (Exception e) {
+      if (e.getMessage().equals(IExceptionMessage.CANNOT_ALTER_NODES)) {
+        throw e;
+      }
+
       e.printStackTrace();
       return e.toString();
     }
