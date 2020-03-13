@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -186,6 +186,9 @@ public interface IExceptionMessage {
   static final String SALE_ORDER_LINE_NO_STOCK_MOVE = /*$$(*/
       "Please generate a stock move for this sale order before modifying allocated quantity." /*)*/;
 
+  static final String SALE_ORDER_LINE_REQUEST_QTY_NEGATIVE = /*$$(*/
+      "You cannot request reservation with a negative quantity." /*)*/;
+
   static final String SALE_ORDER_LINE_RESERVATION_QTY_NEGATIVE = /*$$(*/
       "Please do not enter negative quantity for reservation." /*)*/;
 
@@ -232,4 +235,7 @@ public interface IExceptionMessage {
 
   static final String PURCHASE_ORDER_ANALYTIC_DISTRIBUTION_ERROR = /*$$(*/
       "There is no analytic distribution on %s purchase order line" /*)*/;
+
+  static final String SALE_ORDER_COMPLETE_MANUALLY = /*$$(*/
+      "There is at least one draft or planned stock move for this sale order." /*)*/;
 }

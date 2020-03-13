@@ -138,5 +138,10 @@
 		<option value="2">Accounting value</option>
 		<option value="3">Sale value</option>
 	</selection>
+  
+    <selection name="stock.stock.location.printing.type">
+        <option value="1">Location financial data</option>
+        <option value="2">Stock location content</option>
+    </selection>
 
 </object-views>

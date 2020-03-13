@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -687,11 +687,11 @@ public class LeaveServiceImpl implements LeaveService {
         daysToAdd =
             BigDecimal.valueOf(
                 computeStartDateWithSelect(
-                    fromDate, leaveRequest.getStartOnSelect(), weeklyPlanning));
+                    itDate, leaveRequest.getStartOnSelect(), weeklyPlanning));
       } else if (itDate.equals(leaveTo) && !eveningHalf) {
         daysToAdd =
             BigDecimal.valueOf(
-                computeEndDateWithSelect(toDate, leaveRequest.getEndOnSelect(), weeklyPlanning));
+                computeEndDateWithSelect(itDate, leaveRequest.getEndOnSelect(), weeklyPlanning));
       } else {
         daysToAdd =
             BigDecimal.valueOf(
@@ -701,7 +701,6 @@ public class LeaveServiceImpl implements LeaveService {
       if (!publicHolidayHrService.checkPublicHolidayDay(itDate, employee)) {
         leaveDays = leaveDays.add(daysToAdd);
       }
-
       itDate = itDate.plusDays(1);
     }
 
@@ -891,6 +890,10 @@ public class LeaveServiceImpl implements LeaveService {
   }
 
   public boolean isLeaveDay(User user, LocalDate date) {
+    return getLeave(user, date) != null;
+  }
+
+  public LeaveRequest getLeave(User user, LocalDate date) {
     List<LeaveRequest> leaves =
         JPA.all(LeaveRequest.class)
             .filter("self.user = :userId AND self.statusSelect IN (:awaitingValidation,:validated)")
@@ -904,10 +907,10 @@ public class LeaveServiceImpl implements LeaveService {
         LocalDate from = leave.getFromDateT().toLocalDate();
         LocalDate to = leave.getToDateT().toLocalDate();
         if ((from.isBefore(date) && to.isAfter(date)) || from.isEqual(date) || to.isEqual(date)) {
-          return true;
+          return leave;
         }
       }
     }
-    return false;
+    return null;
   }
 }

@@ -4,8 +4,8 @@
 
 	<grid name="timesheet-grid" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" canNew="false" groupBy="user" orderBy="user,-fromDate">
 		<menubar>
-			<menu title="Tools" icon="fa-wrench" showTitle="true">
-				<item action="action-timesheet-method-timesheet-line-historic" title="See timesheet lines"/>
+			<menu name="timesheetToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+				<item name="seeTimesheetLinesItem" action="action-timesheet-method-timesheet-line-historic" title="See timesheet lines"/>
 			</menu>
 		</menubar>
 		<hilite color="danger" if="statusSelect == 4"/>
@@ -21,8 +21,8 @@
 	
 	<grid name="all-timesheet-grid" title="All timesheets" model="com.axelor.apps.hr.db.Timesheet" canNew="false" groupBy="user" orderBy="user,-fromDate">
 		<menubar>
-			<menu title="Tools" icon="fa-wrench" showTitle="true">
-				<item action="action-timesheet-method-all-timesheet-line" title="See timesheet lines"/>
+			<menu name="timesheetToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+				<item name="seeTimesheetLinesItem" action="action-timesheet-method-all-timesheet-line" title="See timesheet lines"/>
 			</menu>
 		</menubar>
 		<hilite color="danger" if="statusSelect == 4"/>
@@ -38,8 +38,8 @@
 	
 	<grid name="my-timesheets-grid" title="My Timesheets" model="com.axelor.apps.hr.db.Timesheet" canNew="false" orderBy="-fromDate">
 		<menubar>
-			<menu title="Tools" icon="fa-wrench" showTitle="true">
-				<item action="action-timesheet-see-timesheet-lines" title="See timesheet lines"/>
+			<menu name="timesheetToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+				<item name="seeTimesheetLinesItem" action="action-timesheet-see-timesheet-lines" title="See timesheet lines"/>
 			</menu>
 		</menubar>
 		<hilite color="danger" if="statusSelect == 4"/>
@@ -54,9 +54,9 @@
 	
 	<grid name="timesheet-validate-grid" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" canNew="false" orderBy="user,-fromDate">
 		<menubar>
-			<menu title="Tools" icon="fa-wrench" showTitle="true">
-				<item action="com.axelor.apps.hr.web.timesheet.TimesheetController:showSubordinateTimesheets" title="Show timesheets to be validated by my subordinates"/>
-				<item action="action-timesheet-method-timesheet-line-validate" title="See timesheet lines"/>
+			<menu name="timesheetToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+				<item name="timesheetValidatedBySubordinatesItem" action="com.axelor.apps.hr.web.timesheet.TimesheetController:showSubordinateTimesheets" title="Show timesheets to be validated by my subordinates"/>
+				<item name="seeTimesheetLinesItem" action="action-timesheet-method-timesheet-line-validate" title="See timesheet lines"/>
 			</menu>
 		</menubar>
 		<hilite background="danger" if="$moment(fromDate).diff(todayDate,'days') &lt;= 0"/>
@@ -75,8 +75,8 @@
 	    onLoad="action-timesheet-group-onload" canNew="false"
 	    onSave="action-timesheet-group-onsave" canCopy="false">
 	    <menubar>
-            <menu title="Reports" icon="fa-files-o">
-				<item name="printTimesheet" title="Print" action="save,action-print-timesheet"/>
+            <menu name="timesheetToolsMenu" title="Reports" icon="fa-files-o">
+				<item name="printTimesheetItem" title="Print" action="save,action-print-timesheet"/>
 			</menu>
 			<menu title="Tools" icon="fa-wrench">
 				<item title="Generate Lines Automatically" showIf="statusSelect == 1" action="action-timesheet-record-default-generation-date,action-timesheet-attrs-set-log-time-title,action-timesheet-attrs-generate-lines-panel-hidden-false"/>
@@ -228,11 +228,15 @@
 		<action name="action-timesheet-attrs-set-visible-duration-title"/>
 		<action name="action-timesheet-record-from-period-date"/>
 		<action name="action-timesheet-record-to-date" if="fromDate != null"/>
+		<action name="action-timesheet-prefill-lines" if="toDate != null &amp;&amp; (__config__.app.getApp('timesheet').getCreateLinesForLeaves() || __config__.app.getApp('timesheet').getCreateLinesForHolidays())"/>
 		<action name="action-timesheet-attrs-title-project"/>
 		<action name="action-timesheet-attrs-from-date-on-new"/>
 		<action name="action-timesheet-attrs-panels"/>
 	</action-group>
 
+	<action-method name="action-timesheet-prefill-lines">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="prefillLines" />
+	</action-method>
 
 	<action-method name="action-timesheet-method-timesheet-compute-period-total">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="timesheetPeriodTotalController"/>
@@ -458,7 +462,7 @@
 	</action-method>
 
 	<action-attrs name="action-hr-attrs-set-user-domain">
-		<attribute for="user" name="domain" if="company &amp;&amp; __user__?.employee?.hrManager" expr="eval: &quot; self.employee.id IN (${(__repo__(EmploymentContract).all().filter('self.payCompany.id = :companyId').bind('companyId', company.id).fetch().collect{it -> it?.employee.id ?: 0}+[0]).join(',')}) &quot;"/>
+		<attribute for="user" name="domain" if="company &amp;&amp; __user__?.employee?.hrManager" expr="eval: &quot; self.employee.id IN (${(__repo__(EmploymentContract).all().filter('self.payCompany.id = :companyId').bind('companyId', company.id).fetch().collect{it -> it?.employee?.id ?: 0}+[0]).join(',')}) &quot;"/>
 		<attribute for="user" name="domain" if="company &amp;&amp; !__user__?.employee?.hrManager" expr="eval: &quot; self.employee.id IN (${(__repo__(EmploymentContract).all().filter('self.payCompany.id = :companyId').bind('companyId', company.id).fetch().collect{it -> it.employee}.findAll{it -> it?.managerUser?.id == __user__.id || it?.id == __user__?.employee?.id}.collect{it -> it.id}+[0]).join(',')}) &quot;"/>
 		<attribute for="user" name="domain" if="!company" expr="eval: &quot; self.employee.id IN (0) &quot;"/>
 	</action-attrs>

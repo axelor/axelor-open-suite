@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,8 +20,10 @@ package com.axelor.apps.hr.service.timesheet;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.db.AppTimesheet;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.DayPlanning;
+import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
@@ -33,11 +35,15 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
+import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.HRConfig;
+import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
+import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
@@ -71,10 +77,12 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -148,6 +156,9 @@ public class TimesheetServiceImpl implements TimesheetService {
 
     User user = timesheet.getUser();
     Employee employee = user.getEmployee();
+    if (employee == null) {
+      return;
+    }
     if (employee.getPublicHolidayEventsPlanning() == null) {
       throw new AxelorException(
           timesheet,
@@ -588,7 +599,7 @@ public class TimesheetServiceImpl implements TimesheetService {
 
     if (priceList != null) {
       PriceListLine priceListLine =
-          priceListService.getPriceListLine(product, qtyConverted, priceList);
+          priceListService.getPriceListLine(product, qtyConverted, priceList, price);
       if (priceListLine != null) {
         discountMethodTypeSelect = priceListLine.getTypeSelect();
       }
@@ -656,11 +667,20 @@ public class TimesheetServiceImpl implements TimesheetService {
   @Transactional
   public void computeTimeSpent(Timesheet timesheet) {
     List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
-    for (TimesheetLine timesheetLine : timesheetLineList) {
-      Project project = timesheetLine.getProject();
-      if (project != null) {
-        project.setTimeSpent(
-            timesheetLine.getHoursDuration().add(this.computeSubTimeSpent(project)));
+
+    if (timesheetLineList != null) {
+      Map<Project, BigDecimal> projectTimeSpentMap =
+          timesheetLineService.getProjectTimeSpentMap(timesheetLineList);
+
+      Iterator<Project> projectIterator = projectTimeSpentMap.keySet().iterator();
+
+      while (projectIterator.hasNext()) {
+        Project project = projectIterator.next();
+
+        BigDecimal timeSpent =
+            projectTimeSpentMap.get(project).add(this.computeSubTimeSpent(project));
+        project.setTimeSpent(timeSpent);
+
         this.computeParentTimeSpent(project);
       }
     }
@@ -672,7 +692,7 @@ public class TimesheetServiceImpl implements TimesheetService {
     List<Project> subProjectList =
         Beans.get(ProjectRepository.class).all().filter("self.parentProject = ?1", project).fetch();
     if (subProjectList == null || subProjectList.isEmpty()) {
-      return project.getTimeSpent();
+      return this.computeTimeSpent(project);
     }
     for (Project projectIt : subProjectList) {
       sum = sum.add(this.computeSubTimeSpent(projectIt));
@@ -1051,5 +1071,50 @@ public class TimesheetServiceImpl implements TimesheetService {
               .fetch();
     }
     return planningList;
+  }
+
+  @Override
+  public void prefillLines(Timesheet timesheet) throws AxelorException {
+    PublicHolidayService holidayService = Beans.get(PublicHolidayService.class);
+    LeaveService leaveService = Beans.get(LeaveService.class);
+    WeeklyPlanningService weeklyPlanningService = Beans.get(WeeklyPlanningService.class);
+    AppTimesheet appTimesheet = appHumanResourceService.getAppTimesheet();
+
+    LocalDate fromDate = timesheet.getFromDate();
+    LocalDate toDate = timesheet.getToDate();
+    User user = timesheet.getUser();
+
+    Employee employee = user.getEmployee();
+    HRConfig config = timesheet.getCompany().getHrConfig();
+    WeeklyPlanning weeklyPlanning =
+        employee != null ? employee.getWeeklyPlanning() : config.getWeeklyPlanning();
+    EventsPlanning holidayPlanning =
+        employee != null
+            ? employee.getPublicHolidayEventsPlanning()
+            : config.getPublicHolidayEventsPlanning();
+
+    for (LocalDate date = fromDate; !date.isAfter(toDate); date = date.plusDays(1)) {
+      BigDecimal dayValueInHours =
+          weeklyPlanningService.getWorkingDayValueInHours(
+              weeklyPlanning, date, LocalTime.MIN, LocalTime.MAX);
+
+      if (appTimesheet.getCreateLinesForHolidays()
+          && holidayService.checkPublicHolidayDay(date, holidayPlanning)) {
+        timesheetLineService.createTimesheetLine(
+            user, date, timesheet, dayValueInHours, I18n.get(IExceptionMessage.TIMESHEET_HOLIDAY));
+
+      } else if (appTimesheet.getCreateLinesForLeaves()) {
+        LeaveRequest leave = leaveService.getLeave(user, date);
+        if (leave != null) {
+          BigDecimal hours = leaveService.computeDuration(leave);
+          if (leave.getLeaveLine().getLeaveReason().getUnitSelect()
+              == LeaveReasonRepository.UNIT_SELECT_DAYS) {
+            hours = hours.multiply(dayValueInHours);
+          }
+          timesheetLineService.createTimesheetLine(
+              user, date, timesheet, hours, I18n.get(IExceptionMessage.TIMESHEET_DAY_LEAVE));
+        }
+      }
+    }
   }
 }

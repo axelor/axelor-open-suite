@@ -70,9 +70,9 @@
 			<button name="acceptBtn" readonlyIf="statusSelect == 14" icon="fa-power-off" showIf="typeSelect == 3" onClick="action-set-task-status-select-4,save"/>
 		</toolbar>
 		<menubar>
-			<menu title="Tools" icon="fa-wrench" showTitle="true">
-			  <item title="Create opportunity" action="save,action-event-view-create-opportunity"/>
-			  <item title="Create event" action="save,action-event-view-create-event"/>
+			<menu name="eventToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+			  <item name="createOpportunityItem" title="Create opportunity" action="save,action-event-view-create-opportunity"/>
+			  <item name="createEventItem" title="Create event" action="save,action-event-view-create-event"/>
 			</menu>
 		</menubar>
 		<panel colSpan="12" name="meetingGeneralPanel">

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -55,6 +55,8 @@ public class ImportInventoryLine {
 
     BigDecimal realQtyRemaning = inventoryLine.getRealQty();
 
+    inventoryLineService.compute(inventoryLine, inventoryLine.getInventory());
+
     TrackingNumber trackingNumber;
 
     if (trackingNumberConfig != null) {
@@ -90,6 +92,8 @@ public class ImportInventoryLine {
                 inventoryLine.getCurrentQty(),
                 inventoryLine.getRack(),
                 trackingNumber);
+
+        inventoryLineNew.setUnit(inventoryLine.getProduct().getUnit());
 
         if (realQtyRemaning.compareTo(qtyByTracking) < 0) {
           inventoryLineNew.setRealQty(realQtyRemaning);

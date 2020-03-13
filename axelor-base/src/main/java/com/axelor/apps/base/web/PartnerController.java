@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -347,9 +347,26 @@ public class PartnerController {
    * @param response
    */
   public void checkPartnerName(ActionRequest request, ActionResponse response) {
-    Partner partner = request.getContext().asType(Partner.class);
-    response.setAttr(
-        "duplicatePartnerText", "hidden", !partnerService.isThereDuplicatePartner(partner));
+    try {
+      Partner partner = request.getContext().asType(Partner.class);
+      response.setAttr(
+          "duplicatePartnerText", "hidden", !partnerService.isThereDuplicatePartner(partner));
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+  }
+
+  public void checkPartnerNameArchived(ActionRequest request, ActionResponse response) {
+    try {
+      Partner partner = request.getContext().asType(Partner.class);
+      Partner partnerArchived = partnerService.isThereDuplicatePartnerInArchive(partner);
+      if (partnerArchived != null) {
+        response.setValue("duplicatePartnerInArchiveText", partnerArchived.getPartnerSeq());
+        response.setAttr("duplicatePartnerInArchiveText", "hidden", false);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
   }
 
   public void showPartnerOnMap(ActionRequest request, ActionResponse response) {

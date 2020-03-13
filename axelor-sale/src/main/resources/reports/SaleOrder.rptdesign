@@ -42,6 +42,12 @@
         </structure>
     </list-property>
     <property name="units">cm</property>
+    <method name="beforeFactory"><![CDATA[if(params["HeaderHeight"].value != 0 ) {
+reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty("headerHeight",params["HeaderHeight"].value+"cm");
+}
+if(params["FooterHeight"].value != 0) {
+reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty("footerHeight",params["FooterHeight"].value+"cm");
+}]]></method>
     <property name="layoutPreference">auto layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
@@ -163,6 +169,28 @@
             <property name="paramType">simple</property>
             <property name="controlType">check-box</property>
             <structure name="format"/>
+        </scalar-parameter>
+        <scalar-parameter name="HeaderHeight" id="5372">
+            <property name="valueType">static</property>
+            <property name="dataType">decimal</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="FooterHeight" id="5373">
+            <property name="valueType">static</property>
+            <property name="dataType">decimal</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
         </scalar-parameter>
     </parameters>
     <data-sources>
@@ -1897,7 +1925,7 @@ where SaleOrder.id = ?]]></xml-property>
 	SOLine.id, 
 	SOLine.description, 
 	SOLine.qty as "quantity", 
-	Unit.label_to_printing as "UnitCode", 
+	COALESCE(Unit.label_to_printing,Unit.name) as "UnitCode", 
 	SOLine.product_name as "ProductName", 
 	(CASE WHEN SaleOrder.in_ati
 		THEN SOLine.in_tax_price
@@ -5058,7 +5086,7 @@ row["ClientPartFirstName"]
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">if(!row["is_sub_line"] &amp;&amp; !row["is_pack_line"] &amp;&amp; !row["is_title_line"]) {row["quantity"]}</VALUE-OF>
 <VALUE-OF format="^">if(row["is_sub_line"] &amp;&amp; !row["is_pack_line"]) {"  "}</VALUE-OF>
-<VALUE-OF format="^">if(!row["is_sub_line"] &amp;&amp; !row["is_pack_line"]) {" " + row["UnitCode"]}</VALUE-OF>
+<VALUE-OF format="^">if(!row["is_sub_line"] &amp;&amp; !row["is_pack_line"] &amp;&amp; row["UnitCode"] != null) {" " + row["UnitCode"]}</VALUE-OF>
 <I><FONT size="7pt"><VALUE-OF format="#,##0.00">if(row["is_sub_line"]) {row["quantity"]}</VALUE-OF><VALUE-OF format="^">if(row["is_sub_line"]) {"  "}</VALUE-OF><VALUE-OF>if(row["is_sub_line"]) {row["UnitCode"]}</VALUE-OF></FONT></I>
 <B><VALUE-OF format="#,##0.00">if(row["is_pack_line"]) {row["quantity"]}</VALUE-OF><VALUE-OF format="^">if(row["is_pack_line"]) {"  "}</VALUE-OF><VALUE-OF>if(row["is_pack_line"]) {row["UnitCode"]}</VALUE-OF></B>]]></text-property>
                                         </text>

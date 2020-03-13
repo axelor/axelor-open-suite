@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -272,6 +272,13 @@ public class ExpenseController {
     Expense expense = request.getContext().asType(Expense.class);
     expense = expenseServiceProvider.get().compute(expense);
     response.setValues(expense);
+  }
+
+  public void updateMoveDateAndPeriod(ActionRequest request, ActionResponse response) {
+    Expense expense = request.getContext().asType(Expense.class);
+    expense = expenseServiceProvider.get().updateMoveDateAndPeriod(expense);
+    response.setValue("moveDate", expense.getMoveDate());
+    response.setValue("period", expense.getPeriod());
   }
 
   public void ventilate(ActionRequest request, ActionResponse response) throws AxelorException {

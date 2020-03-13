@@ -3,11 +3,11 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-    <grid title="Debt Recoveries" name="debt-recovery-grid" model="com.axelor.apps.account.db.DebtRecovery">
+    <grid title="Debt Recoveries" name="debt-recovery-grid" model="com.axelor.apps.account.db.DebtRecovery" canNew="false">
 		<hilite if="waitDebtRecoveryMethodLine" color="warning"/>
 		<hilite if="!waitDebtRecoveryMethodLine" color="success"/>
     	<field name="company"/>
-    	<field name="partnerFullName"/>
+        <field name="accountingSituation.partner"/>
         <field name="referenceDate"/>
         <field name="debtRecoveryDate"/>
         <field name="debtRecoveryMethod"/>
@@ -19,7 +19,7 @@
     </grid>
 
 	<form name="debt-recovery-form" title="Debt Recovery"
-		model="com.axelor.apps.account.db.DebtRecovery">
+		model="com.axelor.apps.account.db.DebtRecovery" canNew="false">
 		<panel name="mainPanel" title="Overview">
 			<field name="name" showTitle="false" colSpan="12">
 				<viewer depends="name">
@@ -32,7 +32,7 @@
 			</field>
 			<field name="company" form-view="company-form" grid-view="company-grid" readonly="true" colSpan="3"/>
 			<field name="currency" form-view="currency-form" grid-view="currency-grid" readonly="true" colSpan="3"/>
-			<field name="partnerFullName" readonly="true" colSpan="3"/>
+			<field name="accountingSituation.partner" readonly="true" colSpan="3" form-view="partner-form" grid-view="partner-grid"/>
 			<spacer name="partnerFullNameSpacer" colSpan="3"/>
 			<field name="balanceDue" colSpan="3" />
 			<field name="balanceDueDebtRecovery" colSpan="3" />

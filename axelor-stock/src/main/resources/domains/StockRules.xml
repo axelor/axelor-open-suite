@@ -20,8 +20,8 @@
 	<integer name="useCaseSelect" title="Use Case" selection="stock.stock.rules.use.case.select" required="true"/>
   	<integer name="typeSelect" title="Type" selection="stock.stock.rules.type.select" nullable="true" />
   	<integer name="orderAlertSelect" title="Refill type" selection="stock.stock.rules.order.alert.select" massUpdate="true" required="true"/>
-  	<many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User"/>
-  	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
+  	<many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User to alert"/>
+  	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team to alert"/>
   	
   	 <extra-code><![CDATA[
 	   	// USE CASE SELECT
@@ -47,7 +47,7 @@
 		<field name="orderAlertSelect"/>
 		<field name="minQty"/>
 		<field name="useIdealQty"/>
-		<field name="idealQty" if="userIdealQty"/>
+		<field name="idealQty" if="useIdealQty"/>
 		<field name="useMaxQty"/>
 		<field name="maxQty" if="useMaxQty"/>
 		<field name="reOrderQty"/>

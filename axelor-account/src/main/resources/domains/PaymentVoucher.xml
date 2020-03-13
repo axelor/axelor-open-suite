@@ -40,7 +40,7 @@
 			<![CDATA[
             BigDecimal totalElementToPay = BigDecimal.ZERO;
             if (getPaidAmount().signum() != 0) {
-                if (getPayVoucherElementToPayList() != null) {
+                if (getPayVoucherElementToPayList() != null && !getPayVoucherElementToPayList().isEmpty() ) {
                     for (PayVoucherElementToPay payVoucherElementToPay : getPayVoucherElementToPayList()) {
                         if (payVoucherElementToPay != null) {
                             totalElementToPay = totalElementToPay.add(payVoucherElementToPay.getAmountToPayCurrency());

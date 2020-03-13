@@ -14,6 +14,7 @@
 	<integer name="paymentTime" title="Payment period (N days / Month)"/>    
 	<integer name="daySelect" title="Day (end of month)" selection="day.month.select"/>
 	<boolean name="isFree" title="Free"/>
+	<decimal name="advancePaymentNeeded" default="0" title="Percentage of advance payment"/>
 
 	<extra-code><![CDATA[
 	

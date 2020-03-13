@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.crm.web;
 
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -55,34 +56,38 @@ public class ConvertLeadWizardController {
   @Inject private LeadService leadService;
 
   @SuppressWarnings("unchecked")
-  public void convertLead(ActionRequest request, ActionResponse response) throws AxelorException {
-
-    Context context = request.getContext();
-
-    Map<String, Object> leadContext = (Map<String, Object>) context.get("_lead");
-
-    Lead lead = leadRepo.find(((Integer) leadContext.get("id")).longValue());
-
-    Partner partner = createPartnerData(context);
-    Partner contactPartner = null;
-
-    if (partner != null) {
-      contactPartner = createContactData(context, partner);
-    }
+  public void convertLead(ActionRequest request, ActionResponse response) {
 
     try {
-      lead = leadService.convertLead(lead, partner, contactPartner);
+      Context context = request.getContext();
+
+      Map<String, Object> leadContext = (Map<String, Object>) context.get("_lead");
+
+      Lead lead = leadRepo.find(((Integer) leadContext.get("id")).longValue());
+
+      Partner partner = createPartnerData(context);
+      Partner contactPartner = null;
+
+      if (partner != null) {
+        contactPartner = createContactData(context, partner);
+      }
+
+      try {
+        lead = leadService.convertLead(lead, partner, contactPartner);
+      } catch (Exception e) {
+        TraceBackService.trace(e);
+      }
+
+      if (lead.getPartner() == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.CONVERT_LEAD_ERROR));
+      }
+
+      openPartner(response, lead);
     } catch (Exception e) {
-      TraceBackService.trace(e);
+      TraceBackService.trace(response, e);
     }
-
-    if (lead.getPartner() == null) {
-      throw new AxelorException(
-          TraceBackRepository.TYPE_TECHNICAL,
-          I18n.get(I18n.get(IExceptionMessage.CONVERT_LEAD_ERROR)));
-    }
-
-    openPartner(response, lead);
   }
 
   @SuppressWarnings("unchecked")
@@ -92,11 +97,17 @@ public class ConvertLeadWizardController {
     Partner partner = null;
 
     if (leadToPartnerSelect == LeadRepository.CONVERT_LEAD_CREATE_PARTNER) {
-
+      Address primaryAddress = convertLeadWizardService.createPrimaryAddress(context);
+      if (primaryAddress != null
+          && (primaryAddress.getAddressL6() == null
+              || primaryAddress.getAddressL7Country() == null)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.LEAD_PARTNER_MISSING_ADDRESS));
+      }
       partner =
           convertLeadWizardService.createPartner(
-              (Map<String, Object>) context.get("partner"),
-              convertLeadWizardService.createPrimaryAddress(context));
+              (Map<String, Object>) context.get("partner"), primaryAddress);
       // TODO check all required fields...
     } else if (leadToPartnerSelect == LeadRepository.CONVERT_LEAD_SELECT_PARTNER) {
       Map<String, Object> selectPartnerContext = (Map<String, Object>) context.get("selectPartner");
@@ -122,11 +133,18 @@ public class ConvertLeadWizardController {
 
     if (leadToContactSelect == LeadRepository.CONVERT_LEAD_CREATE_CONTACT
         && partner.getPartnerTypeSelect() != PartnerRepository.PARTNER_TYPE_INDIVIDUAL) {
+      Address primaryAddress = convertLeadWizardService.createPrimaryAddress(context);
+      if (primaryAddress != null
+          && (primaryAddress.getAddressL6() == null
+              || primaryAddress.getAddressL7Country() == null)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.LEAD_CONTACT_MISSING_ADDRESS));
+      }
 
       contactPartner =
           convertLeadWizardService.createPartner(
-              (Map<String, Object>) context.get("contactPartner"),
-              convertLeadWizardService.createPrimaryAddress(context));
+              (Map<String, Object>) context.get("contactPartner"), primaryAddress);
       contactPartner.setIsContact(true);
       // TODO check all required fields...
     } else if (leadToContactSelect == LeadRepository.CONVERT_LEAD_SELECT_CONTACT

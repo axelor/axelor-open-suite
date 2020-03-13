@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,6 +23,7 @@ import com.axelor.apps.account.service.PaymentScheduleLineServiceImpl;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
 import com.axelor.apps.account.service.batch.BatchCreditTransferPartnerReimbursement;
 import com.axelor.apps.account.service.batch.BatchCreditTransferSupplierPayment;
+import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateServiceImpl;
@@ -30,8 +31,12 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentVal
 import com.axelor.apps.account.web.InvoicePaymentController;
 import com.axelor.apps.bankpayment.db.repo.BankOrderManagementRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.bankpayment.db.repo.BankPaymentBatchBankRepository;
+import com.axelor.apps.bankpayment.db.repo.BankPaymentBatchRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationManagementRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
+import com.axelor.apps.bankpayment.db.repo.BankStatementManagementRepository;
+import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsBankAccountRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsBankRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsCertificateAccountRepository;
@@ -63,6 +68,7 @@ import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentCreateS
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentCreateServiceBankPayImpl;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidateServiceBankPayImpl;
 import com.axelor.apps.bankpayment.service.move.BankPaymentMoveServiceImpl;
+import com.axelor.apps.bankpayment.service.move.MoveRemoveServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.web.InvoicePaymentBankPayController;
 
 public class BankPaymentModule extends AxelorModule {
@@ -119,6 +125,11 @@ public class BankPaymentModule extends AxelorModule {
 
     bind(BankOrderLineOriginService.class).to(BankOrderLineOriginServiceImpl.class);
 
+    bind(MoveRemoveService.class).to(MoveRemoveServiceBankPaymentImpl.class);
+
     bind(MoveServiceImpl.class).to(BankPaymentMoveServiceImpl.class);
+
+    bind(BankPaymentBatchRepository.class).to(BankPaymentBatchBankRepository.class);
+    bind(BankStatementRepository.class).to(BankStatementManagementRepository.class);
   }
 }

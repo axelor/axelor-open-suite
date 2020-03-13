@@ -20,15 +20,15 @@
           onLoad="action-bill-of-material-attrs-price-and-qty-digits,action-bill-of-material-record-count-number-of-components">
 
 		<menubar>
-			<menu title="Reports">
-				<item title="Print" action="action-bill-of-material-method-print"/>				
+			<menu name="bomReportsMenu" title="Reports">
+				<item name="printItem" title="Print" action="action-bill-of-material-method-print"/>				
 			</menu>
 
-            <menu title="Options">
-                <item title="Generate new version"
+            <menu name="bomOptionsMenu" title="Options">
+                <item name="generateNewVersionItem" title="Generate new version"
                     action="action-bill-of-material-check-other-version,action-bill-of-material-generate-new-version"
                     if="__config__.app.getApp('production').manageBillOfMaterialVersion"/>
-                <item title="Define as default bill of material of product"
+                <item name="defineDefaultBomProductItem" title="Define as default bill of material of product"
                     action="save,action-bill-of-material-method-set-bill-of-material-as-default-on-product"
                     hideIf="product.defaultBillOfMaterial.id == id"/>
             </menu>
@@ -104,6 +104,11 @@
 				<field name="note" showTitle="false" colSpan="12"/>
 			</panel>
 		</panel-tabs>
+		
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
 	</form>
     
     

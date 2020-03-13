@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -262,8 +262,19 @@ public class StockLocationServiceImpl implements StockLocationService {
     query.setParameter("id", stockLocation.getId());
 
     List<?> result = query.getResultList();
-    return result.get(0) == null
+    return (result.get(0) == null || ((BigDecimal) result.get(0)).signum() == 0)
         ? BigDecimal.ZERO
         : ((BigDecimal) result.get(0)).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+  }
+
+  @Override
+  public boolean isConfigMissing(StockLocation stockLocation, int printType) {
+
+    StockConfig stockConfig = stockLocation.getCompany().getStockConfig();
+    return printType == StockLocationRepository.PRINT_TYPE_LOCATION_FINANCIAL_DATA
+        && (stockConfig == null
+            || (!stockConfig.getIsDisplayAccountingValueInPrinting()
+                && !stockConfig.getIsDisplayAgPriceInPrinting()
+                && !stockConfig.getIsDisplaySaleValueInPrinting()));
   }
 }

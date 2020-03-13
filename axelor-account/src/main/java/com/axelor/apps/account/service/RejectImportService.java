@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,7 +24,9 @@ import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbImportService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.tool.file.FileTool;
 import com.axelor.exception.AxelorException;
+import com.google.common.io.Files;
 import com.google.inject.Inject;
+import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
@@ -77,6 +79,8 @@ public class RejectImportService {
 
   public String getDestCFONBFile(String src, String temp) throws AxelorException, IOException {
     String dest = this.getDestFilename(src, temp);
+
+    this.createFilePath(dest);
 
     // copie du fichier d'import dans un repetoire temporaire
     FileTool.copy(src, dest);
@@ -201,5 +205,12 @@ public class RejectImportService {
         Integer.parseInt(dateReject.substring(4, 6)) + 2000,
         Integer.parseInt(dateReject.substring(2, 4)),
         Integer.parseInt(dateReject.substring(0, 2)));
+  }
+
+  public void createFilePath(String path) throws IOException {
+
+    File file = new File(path);
+    Files.createParentDirs(file);
+    file.createNewFile();
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -190,6 +190,11 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     if (supplychainConfig.getDefaultEstimatedDate() == SupplyChainConfigRepository.CURRENT_DATE
         && stockMove.getEstimatedDate() == null) {
       stockMove.setEstimatedDate(appBaseService.getTodayDate());
+    } else if (supplychainConfig.getDefaultEstimatedDate()
+            == SupplyChainConfigRepository.CURRENT_DATE_PLUS_DAYS
+        && stockMove.getEstimatedDate() == null) {
+      stockMove.setEstimatedDate(
+          appBaseService.getTodayDate().plusDays(supplychainConfig.getNumberOfDays().longValue()));
     }
 
     stockMoveService.plan(stockMove);
