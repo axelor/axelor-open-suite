@@ -114,7 +114,7 @@ public class TrainingRegisterServiceImpl implements TrainingRegisterService {
 
     log.debug("Avg training rating : {}", avgRating);
 
-    training.setRating(new BigDecimal(avgRating));
+    training.setRating(BigDecimal.valueOf(avgRating));
 
     return trainingRepo.save(training);
   }
@@ -137,7 +137,7 @@ public class TrainingRegisterServiceImpl implements TrainingRegisterService {
 
     log.debug("Avg session rating : {}", avgRating);
 
-    session.setRating(new BigDecimal(avgRating));
+    session.setRating(BigDecimal.valueOf(avgRating));
     session.setNbrRegistered(totalSessionSize);
 
     return trainingSessionRepo.save(session);

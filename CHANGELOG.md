@@ -10,6 +10,21 @@
 - STUDIO : Add panel on custom model demo data
 - ACCOUNTING REPORT : add account filter to summary and gross value report.
 - Accounting Config : clarifying the field lineMinBeforeLongReportGenerationMessageNumber
+- Stock Move Line : Do not allow user to remove allocated stock move line.
+- CAMPAIGN : add exception message on partner and lead at invalid domain in target list
+- STUDIO: Set default value for form width to large
+- Block the creation of duplicate accounts
+- EBICSPARTNER : mass update on testMode
+- EMPLOYEE : update the stepByStepSelect=5(Finished) for all records in demo data
+- PURCHASE REQUEST : translate "Purchase Request Lines" in french "Ligne de demandes d'achat"
+- Ebics user : Display associated user in list view
+- STOCK CONFIG : add three fields related to stock move printing settings
+- SaleOrderLine/PurchaseOrderLine : Added transient boolean field to freeze price,qty,productName
+- HR BATCH : set email template for batch 'Email reminder for timesheets'
+- PURCHASE ORDER REPORT: Fixed value of payment condition from PurchaseOrder's payment condition instead of using partner.
+- STUDIO : Set Large option as default value for the 'Form Width' in demo data
+- Workflow : Add support to select real status fields.
+- QUALITY CONTROL : update the qualitycontrol report.
 - INVOICE LINE : add grid view and form view of budgetDistributionListPanel in form.
 
 ## Bug Fixes
@@ -26,6 +41,16 @@
 - SUPPLIER INVOICE : fix the problem of amount not updated in supplier invoice after use of mass invoice payment function.
 - CLIENT PORTAL : fix TeamTask counters
 - TimesheetLine : Fill duration on data import
+- MRP : Fixed issue when user try to copy an existing MRP record.
+- LEAVE REQUEST : corrected error when trying to change user.
+- Base Batch : Fix the issue when user run calendar synchronization batch.
+- LOGIN : Fixed js code page redirection.
+- Fix the error which is getting when group is empty in user.
+- DEBT RECOVERY : rollback debt recovery process if to recipients is empty or not in generated message.
+- PROJECT : Fix NPE when generate Business project with SaleOrderTypeSelect as title. 
+- PROJECT : Fix NPE when generate Business project with projectGeneratorType Task by line and Task by product.
+- MRP : sequence is copied when MRP is copied.
+- TEAM TASK : Fixed issue in copy by using clearList instead of set it to null for projectPlanningTimeList.
 
 ## [5.3.0] - 2020-02-25
 ## Features
