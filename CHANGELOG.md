@@ -1,5 +1,10 @@
 # Changelog
 ## [Unreleased 5.3.1]
+## Features
+- USER : Add user's email signature, an html text field.
+- MESSAGE TEMPLATE : New possibility to add an email signature from a user directly or an email account with a formula.
+
+
 ## Improvements
 - InvoiceLine: add fields in advanced search.
 - LEAVE REQUEST : Allow sending a leave request in the past.
