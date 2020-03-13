@@ -357,6 +357,11 @@
 		<view-param name="showArchived" value="true"/>
 		<domain>self.period = :_id AND (self.statusSelect NOT IN (1,3,4) OR  (self.statusSelect = 1 AND (self.archived = false OR self.archived is null) ))</domain>
 	</action-view>
+
+	<action-method name="action-move-is-hidden-move-line-list-viewer-attrs-method">
+		<call class="com.axelor.apps.account.web.MoveController" method="isHiddenMoveLineListViewer"/>
+	</action-method>
+
 	
 	<search-filters name="move-filters" model="com.axelor.apps.account.db.Move" title="Move filters">
 		<filter title="Current Period Entries">
