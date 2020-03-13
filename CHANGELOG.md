@@ -8,5 +8,5 @@
 ## Improvements
 - USER : Default User language is based on application.locale from application.properties
 - BASE : Cache memory performace improved by not stocking geographical entities anymore
-
+- Accounting move line : When creating a new line the default debit or credit is set in order to balance the move
 ## Bug Fixes
