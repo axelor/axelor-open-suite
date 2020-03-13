@@ -5,6 +5,7 @@
 - STOCK CONFIG : Added three boolean fields so as to whether display product code, price, order reference and date in stock move report
 - SaleOrderLine/PurchaseOrderLine : Added transient boolean field to freeze price,qty,productName
 - Ebics user : Display associated user in list view.
+- MESSAGE TEMPLATE : New possibility to add an email signature from a user directly or an email account with a formula.
 
 ## Improvements
 - LEAVE REQUEST : Allow sending a leave request in the past.
