@@ -289,18 +289,14 @@
 		<call class="com.axelor.apps.account.web.MoveController" method="filterPartner"/>
 	</action-method>
 	
-<<<<<<< HEAD
 	<action-method name="action-move-update-move-line-dates">
 		<call class="com.axelor.apps.account.web.MoveController" method="updateMoveLineDates"/>
 	</action-method>
 	
-	
-=======
 	<action-method name="action-move-is-hidden-move-line-list-viewer-attrs-method">
 		<call class="com.axelor.apps.account.web.MoveController" method="isHiddenMoveLineListViewer"/>
 	</action-method>
 	
->>>>>>> 954ce05a3d15a353eb7a9b9a1413b800c9081f57
 	<search-filters name="move-filters" model="com.axelor.apps.account.db.Move" title="Move filters">
 		<filter title="Current Period Entries">
 			<domain>self.period IS NULL OR (CURRENT_DATE &gt;= self.period.fromDate and CURRENT_DATE &lt;= self.period.toDate)</domain>

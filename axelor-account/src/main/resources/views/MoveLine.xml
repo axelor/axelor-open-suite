@@ -486,7 +486,7 @@
 	</search-filters>
 	
 	<action-validate name="action-move-line-check-date-in-period">
-		<info message="The selected date is out of the accounting period." if="eval: date &lt; move.period.fromDate || date &gt; move.period.toDate" action="action-update-move-line-date-record"/>
+		<error message="The selected date is out of the accounting period." if="eval: date &lt; move.period.fromDate || date &gt; move.period.toDate" action="action-update-move-line-date-record"/>
 	</action-validate>
 	
 	<action-record name="action-update-move-line-date-record" model="com.axelor.apps.account.db.MoveLine">
