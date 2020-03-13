@@ -32,6 +32,8 @@
         <panel name="currencyPanel">
 			<field name="label"/>
 			<field name="currency"/>
+			<field name="bankAccount" showIf="company != null" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"/>
+			<field name="journal" showIf="company != null" domain="self.company = :company AND self.statusSelect = 1"/>
             <field name="code" x-bind="{{code|uppercase}}" hidden="true" />
 		</panel>
 		<panel name="activePanel" sidebar="true">
