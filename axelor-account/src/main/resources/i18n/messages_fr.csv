@@ -1800,6 +1800,7 @@
 "Temporary filepath to import rejected records","Chemin du fichier d'import temporaire",,
 "Terms and Conditions","Conditions générales",,
 "The Move Balance must be positive","La balance de l'écriture doit être positive.",,
+"The account code %s is already used for the company %s, there cannot be two accounts with the same code for the same company.","Le code du compte comptable %s est déja en cours d'utilisation pour la société %s, il ne peut pas y avoir deux comptes avec le même code pour la même société.",,
 "The account of a product could not be determined or is not filled. Please fill the missing account on invoice line %s","Le compte d’un produit n’a pas pu être déterminé ou n’est pas renseigné. Veuillez renseigner le compte sur la ligne de facture %s.",,
 "The accounting move line on the account %s can't have an amount equals to zero","L'écriture comptable sur le compte %s ne peut avoir un montant égale à zéro",,
 "The bank order linked to this invoice payment has already been carried out/rejected, and thus can't be canceled","L'ordre bancaire lié à ce paiement a déjà été réalisé/rejeté, vous ne pouvez donc annuler ce paiement",,
