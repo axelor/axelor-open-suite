@@ -66,6 +66,10 @@ public class AccountController {
       ActionRequest request, ActionResponse response) {
     try {
       Account account = request.getContext().asType(Account.class);
+      Long accountId = account.getId();
+      if (accountId == null) {
+        accountId = 0L;
+      }
       List<Account> sameAccountList =
           Beans.get(AccountRepository.class)
               .all()
@@ -73,7 +77,7 @@ public class AccountController {
                   "self.company = ?1 AND self.code = ?2 AND self.id != ?3",
                   account.getCompany(),
                   account.getCode(),
-                  account.getId())
+                  accountId)
               .fetch();
       if (!ObjectUtils.isEmpty(sameAccountList)) {
 
