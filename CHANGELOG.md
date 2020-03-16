@@ -56,6 +56,8 @@
 - PROJECT : Fix NPE when generate Business project with projectGeneratorType Task by line and Task by product.
 - MRP : sequence is copied when MRP is copied.
 - TEAM TASK : Fixed issue in copy by using clearList instead of set it to null for projectPlanningTimeList.
+- INVOICE : Fix quantity and discount not display on printing.
+- SALE ORDER : Fix unit code not display on printing.
 
 ## [5.3.0] - 2020-02-25
 ## Features
