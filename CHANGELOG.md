@@ -1,4 +1,8 @@
 # Changelog
+## [Unreleased 5.3.2]
+## Improvements
+## Bug Fixes
+
 ## [5.3.1] - 2020-03-16
 ## Improvements
 - InvoiceLine: add company and status fields in advanced search.
@@ -121,5 +125,6 @@
 - PRODUCT: Fix economicManufOrderQty displayed twice.
 
 
+[Unreleased 5.3.2]: https://github.com/axelor/axelor-open-suite/compare/v5.3.1...dev
 [5.3.1]: https://github.com/axelor/axelor-open-suite/compare/v5.3.0...v5.3.1
 [5.3.0]: https://github.com/axelor/axelor-open-suite/compare/v5.2.5...v5.3.0
