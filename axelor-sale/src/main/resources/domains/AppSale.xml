@@ -18,6 +18,7 @@
 		<boolean name="enableCustomerCatalogMgt" title="Enable customer catalog management"/>
 		<boolean name="enablePackManagement" title="Pack Management"/>
 		<boolean name="isDisplaySaleOrderLineNumber" title="Display sale order line number"/>
+		<boolean name="enableSalesProductByTradName" title="Filter products by trading name" default="false"></boolean>
 
 		<track>
 			<field name="manageSaleOrderVersion" on="UPDATE"/>
