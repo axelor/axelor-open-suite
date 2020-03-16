@@ -19,6 +19,7 @@ package com.axelor.apps.hr.service.batch;
 
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
+import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
@@ -36,6 +37,8 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.mail.MessagingException;
 
 public class BatchTimesheetReminder extends BatchStrategy {
@@ -55,7 +58,10 @@ public class BatchTimesheetReminder extends BatchStrategy {
 
   @Override
   protected void process() {
-    for (Employee employee : getEmployeesWithoutRecentTimesheet()) {
+    for (Employee employee :
+        getEmployeesWithoutRecentTimesheet().stream()
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList())) {
       try {
         sendReminder(employee);
 
@@ -83,7 +89,7 @@ public class BatchTimesheetReminder extends BatchStrategy {
 
   private List<Employee> getEmployeesWithoutRecentTimesheet() {
     LocalDate now = LocalDate.now();
-    long daysBeforeReminder = batch.getHrBatch().getDaysBeforeReminder().longValue();
+    long daysBeforeReminder = batch.getHrBatch().getDaysBeforeReminder();
 
     List<Employee> employees =
         employeeRepository
@@ -113,6 +119,9 @@ public class BatchTimesheetReminder extends BatchStrategy {
 
   private void sendReminder(Employee employee)
       throws AxelorException, MessagingException, IOException {
+    if (employee == null || EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+      return;
+    }
     Message message = new Message();
     message.setMediaTypeSelect(MessageRepository.MEDIA_TYPE_EMAIL);
     message.setReplyToEmailAddressSet(new HashSet<>());

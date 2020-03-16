@@ -3,6 +3,18 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
+  <search-filters name="employee-filters" model="com.axelor.apps.hr.db.Employee" title="Employee filters">
+    <filter title="New employees">
+      <domain>self.leavingDate IS NULL AND self.dateOfHire &gt; CURRENT_DATE - 30</domain>
+    </filter>
+    <filter title="Active employees">
+      <domain>(self.leavingDate IS NULL OR self.leavingDate &gt; CURRENT_DATE) AND (self.dateOfHire IS NULL OR self.dateOfHire &lt; CURRENT_DATE)</domain>
+    </filter>
+    <filter title="Former employees">
+      <domain>self.leavingDate &lt; CURRENT_DATE</domain>
+    </filter>
+  </search-filters>
+
 	<grid name="employee-grid" title="Employee" model="com.axelor.apps.hr.db.Employee" orderBy="contactPartner.simpleFullName">
 		 <toolbar>
 			<button name="printEmployeePhoneBookBtn" title="Employee PhoneBook" icon="fa-print" onClick="action-print-employee-phonebook"/>
@@ -155,6 +167,18 @@
     <!-- END OF New employee wizard -->
 
     <panel name="contactPanel" showIf="stepByStepSelect == 5">
+      <panel name="viewerTagsPanel" colSpan="12">
+        <field name="$viewerTags" showTitle="false" readonly="true" showIf="$readonly()" colSpan="12">
+          <viewer>
+            <![CDATA[
+            <h4 class="text-right">
+                <span class="label label-default" style="background-color: #20BCB5; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.leavingDate == null && $moment(record.dateOfHire) > $moment().subtract(30, 'days')" x-translate>New employee</span>
+                <span class="label label-default" style="background-color: #BC2026; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.leavingDate != null && $moment(record.leavingDate) < $moment()" x-translate>Former employee</span>
+            </h4>
+	        ]]>
+          </viewer>
+        </field>
+      </panel>
       <field name="contactPartner" colSpan="12" domain="self.employee = null AND (self.partnerTypeSelect = 2 OR self.isContact = true)" form-view="partner-contact-form" grid-view="partner-contact-grid" showTitle="false">
         <editor x-viewer="true">
           <panel name="imagePanel" colSpan="2">
@@ -234,10 +258,11 @@
 
       <panel name="employmentContractsPanel" title="Employment contracts">
         <panel name="contractualInfoPanel" title="Contractual information" colSpan="12">
-          <field name="dateOfHire" colSpan="3"/>
-          <field name="seniorityDate" colSpan="3"/>
-          <field name="bonusCoef" colSpan="3"/>
-          <field name="profitSharingBeneficiary" colSpan="3"/>
+          <field name="dateOfHire" colSpan="4"/>
+          <field name="seniorityDate" colSpan="4"/>
+          <field name="leavingDate" colSpan="4"/>
+          <field name="bonusCoef" colSpan="6"/>
+          <field name="profitSharingBeneficiary" colSpan="6"/>
 
           <field name="weeklyWorkHours" colSpan="3"/>
           <field name="dailyWorkHours" colSpan="3"/>
@@ -388,6 +413,8 @@
 		<field name="contactPartner.mobilePhone" />
 		<field name="mainEmploymentContract.payCompany"/>
 		<field name="mainEmploymentContract.companyDepartment"/>
+    <field name="dateOfHire"/>
+    <field name="leavingDate"/>
 		<field name="hrManager"/>
 		<template><![CDATA[
 			<div>
@@ -405,6 +432,8 @@
 			  </div>
 			  <div class="span12" style="margin-left:30px;">
 			   <span class="label label-important" ng-show="hrManager" x-translate>{{ "HR manager" }}</span>
+			   <span class="label label-default" style="background-color: #20BCB5; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.leavingDate == null && $moment(record.dateOfHire) > $moment().subtract(30, 'days')" x-translate>New employee</span>
+         <span class="label label-default" style="background-color: #BC2026; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.leavingDate != null && $moment(record.leavingDate) < $moment()" x-translate>Former employee</span>
 			  </div>
 			</div>
 		]]>

@@ -23,6 +23,8 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
+import java.time.LocalDate;
+import java.util.Objects;
 
 public class EmployeeHRRepository extends EmployeeRepository {
 
@@ -88,5 +90,20 @@ public class EmployeeHRRepository extends EmployeeRepository {
       }
     }
     super.remove(employee);
+  }
+
+  /**
+   * Return true if given employee is a New employee or a Former employee according to hire date and
+   * leaving date.
+   *
+   * @param employee
+   * @return
+   */
+  public static boolean isEmployeeFormerOrNew(Employee employee) {
+    Objects.requireNonNull(employee);
+    return (employee.getLeavingDate() != null
+            && employee.getLeavingDate().compareTo(LocalDate.now()) < 0)
+        || (employee.getDateOfHire() != null
+            && employee.getDateOfHire().compareTo(LocalDate.now()) > 0);
   }
 }

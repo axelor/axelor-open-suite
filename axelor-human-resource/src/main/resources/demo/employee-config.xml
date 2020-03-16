@@ -23,7 +23,10 @@
 	
 	<input file="hr_kilometricAllowanceRule.csv" type="com.axelor.apps.hr.db.KilometricAllowanceRule" separator=";"/>
 	
-	<input file="hr_employee.csv" separator=";" type="com.axelor.apps.hr.db.Employee" search="self.importId  = :importId"/>
+	<input file="hr_employee.csv" separator=";" type="com.axelor.apps.hr.db.Employee" search="self.importId  = :importId">
+		<bind to="dateOfHire" column="dateOfHire" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dateOfHire)" />
+		<bind to="leavingDate" column="leavingDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(leavingDate)" />
+	</input>
  	
  	<input file="auth_user.csv" separator=";" search="self.importId = :importId" type="com.axelor.auth.db.User" update="true" />
 	

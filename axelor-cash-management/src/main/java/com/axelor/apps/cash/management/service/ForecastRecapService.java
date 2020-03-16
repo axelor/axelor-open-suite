@@ -38,6 +38,7 @@ import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
+import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -421,6 +422,9 @@ public class ForecastRecapService {
       LocalDate monthEnd = itDate.withDayOfMonth(itDate.lengthOfMonth());
       if (itDate.isEqual(monthEnd)) {
         for (Employee employee : employeeList) {
+          if (EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+            continue;
+          }
           forecastRecap.addForecastRecapLineListItem(
               this.createForecastRecapLine(
                   itDate,

@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.db.PayrollPreparation;
+import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
 import com.axelor.apps.hr.db.repo.HrBatchRepository;
 import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
@@ -43,6 +44,8 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -126,7 +129,8 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
 
   public void generatePayrollPreparations(List<Employee> employeeList) {
 
-    for (Employee employee : employeeList) {
+    for (Employee employee :
+        employeeList.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
       try {
         employee = employeeRepository.find(employee.getId());
         if (employee.getMainEmploymentContract() != null
@@ -151,6 +155,9 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
 
   @Transactional(rollbackOn = {Exception.class})
   public void createPayrollPreparation(Employee employee) throws AxelorException {
+    if (employee == null || EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+      return;
+    }
     String filter = "self.period = ?1 AND self.employee = ?2";
     String companyFilter = filter + " AND self.company = ?3";
 
