@@ -3,8 +3,14 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
-	<action-attrs name="action-sale-order-line-attrs-domain-product" id="hr-action-sale-order-line-attrs-domain-product">
-		<attribute name="domain" for="product" expr="self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true"/>
+	<action-attrs name="action-sale-order-line-attrs-domain-product"
+		id="hr-action-sale-order-line-attrs-domain-product">
+		<attribute name="domain" for="product"
+			expr="self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true"
+			if="!__config__.app.getApp('sale').enableSalesProductByTradName" />
+		<attribute name="domain" for="product"
+			expr="eval: &quot;self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true AND ${_parent?.tradingName?.id} member of self.tradingNameSellerSet&quot;"
+			if="__config__.app.getApp('sale')?.enableSalesProductByTradName" />
 	</action-attrs>
-	
+
 </object-views>

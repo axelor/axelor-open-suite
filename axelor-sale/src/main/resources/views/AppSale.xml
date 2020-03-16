@@ -17,6 +17,8 @@
             <field name="enableCustomerCatalogMgt" widget="boolean-switch"/>
             <field name="enablePackManagement" widget="boolean-switch"/>
             <field name="isDisplaySaleOrderLineNumber" widget="boolean-switch"/>
+            <field name="enableSalesProductByTradName" showIf="__config__.app.getApp('base').enableTradingNamesManagement"></field>
+	
 		</panel>
 		<panel name="actionsPanel">
 			<button name="generateSaleConfigurationsBtn" colSpan="4" title="Generate sale configurations" onClick="save,com.axelor.apps.sale.web.AppSaleController:generateSaleConfigurations"/>
