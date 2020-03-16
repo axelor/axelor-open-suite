@@ -83,7 +83,7 @@
 
 	<form onNew="action-manuf-order-default-record,action-manuf-order-attrs-price-digits,action-manuf-order-attrs-scale-and-precision"
 	      name="manuf-order-form" title="Manufacturing order" model="com.axelor.apps.production.db.ManufOrder"
-	      onLoad="action-manuf-order-attrs-isConsProOnOperation,action-manuf-order-attrs-price-digits,action-manuf-order-attrs-scale-and-precision" width="large">
+	      onLoad="action-manuf-order-attrs-isConsProOnOperation,action-manuf-order-attrs-price-digits,action-manuf-order-attrs-scale-and-precision,action-production-attrs-hide-purchaseOrder" width="large">
 <!--     TODO avec propagation -->
 		<menubar>
             <menu name="manufOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
@@ -118,15 +118,16 @@
 			<field name="statusSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
 			<field name="billOfMaterial" required="true" readonlyIf="statusSelect &gt; 1" onChange="action-manuf-order-group-onchange" domain="self.defineSubBillOfMaterial = true AND self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation)" grid-view="bill-of-material-grid" form-view="bill-of-material-form" colSpan="3" canEdit="false"/>
 			<field name="prodProcess" onChange="action-manuf-order-group-prod-process-onchange" onSelect="action-manuf-order-attrs-filter-prodProcess" readonlyIf="statusSelect &gt; 1" grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3" canEdit="false"/>
-			<field name="prodProcess.outsourcing" colSpan="3" hidden="true"/>
+			<field name="outsourcing" colSpan="3" onChange="action-production-attrs-hide-purchaseOrder"/>
 			<field name="product" canEdit="false" required="true" readonlyIf="statusSelect &gt; 1 || !product.isModel" form-view="product-form" grid-view="product-grid" onSelect="action-manuf-order-attrs-filter-product"/>
 			<field name="qty" readonlyIf="statusSelect &gt; 1 || isPermanent" validIf="isPermanent || qty > 0" colSpan="3"/>
 			<field name="product.economicManufOrderQty" colSpan="3"/>
 			<field name="unit" readonly="true"/>
 			<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" domain="self.isCustomer=true AND :company member of self.companySet" onChange="action-manuf-order-atts-sale-order-onchange-client-partner" canEdit="false"/>
 			<field name="saleOrder" form-view="sale-order-form" grid-view="sale-order-grid" onSelect="action-manuf-order-attrs-sale-order-onselect" onChange="action-manuf-order-record-client-partner-onchange-sale-order" canEdit="false"/>
+			<field name="purchaseOrder" form-view="purchase-order-form" grid-view="purchase-order-grid" canEdit="false" canSelect="false" showIf="false"/>
 			<field name="isConsProOnOperation" hidden="true"/>
-			<field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice" if-module="axelor-business-production" if="__config__.app.getApp('production').getManageBusinessProduction()" />
+			<field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice" if-module="axelor-business-production" showIf="__config__.app.getApp('production').getManageBusinessProduction()" />
 			<field name="invoiced" showIf="isToInvoice" if-module="axelor-business-production" if="__config__.app.getApp('production').getManageBusinessProduction()" />
 			<button name="preFillOperationsBtn" colSpan="4" title="Pre-fill operations" hideIf="statusSelect &gt; 1  &#124;&#124; operationOrderList.length &gt; 0" onClick="save,action-manuf-order-method-pre-fill-operations" />
 			<field name="product.isModel" hidden="true"/>
@@ -335,7 +336,8 @@
 
 	<action-record name="action-manuf-order-record-update-qty-from-prod-process" model="com.axelor.apps.production.db.ManufOrder">
 		<field name="qty" expr="eval: prodProcess.launchQty" if="prodProcess?.launchQty > 0"/>
-	</action-record>
+		<field name="outsourcing" expr="eval: prodProcess?.outsourcing"/>
+ 	</action-record>
 
     <action-record name="action-manuf-order-on-change-bill-of-material" model="com.axelor.apps.production.db.ManufOrder">
         <field name="product" expr="eval:billOfMaterial.product" if="billOfMaterial != null"/>
@@ -357,7 +359,17 @@
     <action name="action-manuf-order-attrs-isConsProOnOperation"/>
 		<action name="action-manuf-order-record-isConsProOnOperation"/>
 		<action name="action-manuf-order-record-update-qty-from-prod-process"/>
+		<action name="action-production-attrs-set-outsourcing-value"/>
+		<action name="action-production-attrs-hide-purchaseOrder"/>
 	</action-group>
+	
+	<action-attrs name="action-production-attrs-hide-purchaseOrder" >
+	    <attribute name="hidden" for="purchaseOrder" expr="eval: !(outsourcing &amp;&amp; prodProcess?.generatePurchaseOrderOnMoPlanning)"/>
+	</action-attrs>
+	
+	<action-attrs name="action-production-attrs-set-outsourcing-value" >
+	    <attribute name="value" for="outsourcing" expr="eval: prodProcess?.outsourcing" />
+	</action-attrs>
 
 	<action-group name="action-manuf-order-group-finish">
 		<action name="action-businessproduction-manuf-order-method-check-timesheet" if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"/>
@@ -375,6 +387,8 @@
 		<action name="action-manuf-order-record-isConsProOnOperation"/>
         <action name="action-manuf-order-reset"/>
         <action name="action-manuf-order-attrs-set-unit"  if="billOfMaterial != null"/>
+        <action name="action-production-attrs-set-outsourcing-value"/>
+		<action name="action-production-attrs-hide-purchaseOrder"/>
 	</action-group>
 	
 	<action-group name="action-manuf-order-group-cancel-confirm">
