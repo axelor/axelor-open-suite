@@ -109,11 +109,15 @@ public class ManufOrderStockMoveService {
     StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
     StockConfig stockConfig = stockConfigService.getStockConfig(company);
     StockLocation virtualStockLocation =
-        stockConfigService.getProductionVirtualStockLocation(
-            stockConfig, manufOrder.getProdProcess().getOutsourcing());
+        manufOrder.getOutsourcing()
+            ? manufOrder.getProdProcess().getProducedProductStockLocation()
+            : stockConfigService.getProductionVirtualStockLocation(
+                stockConfig, manufOrder.getProdProcess().getOutsourcing());
 
     StockLocation fromStockLocation =
-        getDefaultStockLocation(manufOrder, company, STOCK_LOCATION_IN);
+        manufOrder.getOutsourcing()
+            ? company.getStockConfig().getOutsourcingReceiptStockLocation()
+            : getDefaultStockLocation(manufOrder, company, STOCK_LOCATION_IN);
 
     StockMove stockMove =
         stockMoveService.createStockMove(
@@ -226,6 +230,7 @@ public class ManufOrderStockMoveService {
   @Transactional(rollbackOn = {Exception.class})
   public void consumeInStockMoves(ManufOrder manufOrder) throws AxelorException {
     for (StockMove stockMove : manufOrder.getInStockMoveList()) {
+
       finishStockMove(stockMove);
     }
   }
