@@ -19,6 +19,7 @@ package com.axelor.apps.talent.service;
 
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmploymentContract;
+import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
@@ -34,7 +35,9 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.mail.MessagingException;
 
 public class AppraisalServiceImpl implements AppraisalService {
@@ -124,7 +127,11 @@ public class AppraisalServiceImpl implements AppraisalService {
       return appraisalIds;
     }
 
-    for (Employee employee : employees) {
+    for (Employee employee :
+        employees.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
+      if (EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+        continue;
+      }
       Appraisal appraisal = appraisalRepo.copy(appraisalTemplate, false);
       appraisal.setEmployee(employee);
       if (appraisal.getCompany() == null) {

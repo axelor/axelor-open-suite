@@ -22,6 +22,7 @@ import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveManagement;
 import com.axelor.apps.hr.db.LeaveReason;
+import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveManagementRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
@@ -43,6 +44,8 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.validation.constraints.Digits;
 
 public class BatchLeaveManagement extends BatchStrategy {
@@ -133,7 +136,8 @@ public class BatchLeaveManagement extends BatchStrategy {
 
   public void generateLeaveManagementLines(List<Employee> employeeList) {
 
-    for (Employee employee : employeeList) {
+    for (Employee employee :
+        employeeList.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
 
       try {
         createLeaveManagement(employeeRepository.find(employee.getId()));
@@ -155,63 +159,62 @@ public class BatchLeaveManagement extends BatchStrategy {
 
   @Transactional(rollbackOn = {Exception.class})
   public void createLeaveManagement(Employee employee) throws AxelorException {
+    if (employee == null || EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+      return;
+    }
 
     batch = batchRepo.find(batch.getId());
     LeaveLine leaveLine = null;
     LeaveReason leaveReason = batch.getHrBatch().getLeaveReason();
 
-    if (employee != null) {
-      leaveLine = leaveServiceProvider.get().addLeaveReasonOrCreateIt(employee, leaveReason);
+    leaveLine = leaveServiceProvider.get().addLeaveReasonOrCreateIt(employee, leaveReason);
 
-      BigDecimal dayNumber =
-          batch.getHrBatch().getUseWeeklyPlanningCoef()
-              ? batch
-                  .getHrBatch()
-                  .getDayNumber()
-                  .multiply(employee.getWeeklyPlanning().getLeaveCoef())
-              : batch.getHrBatch().getDayNumber();
-      dayNumber =
-          dayNumber.subtract(
-              new BigDecimal(
-                  publicHolidayService.getImposedDayNumber(
-                      employee,
-                      batch.getHrBatch().getStartDate(),
-                      batch.getHrBatch().getEndDate())));
-      LeaveManagement leaveManagement =
-          leaveManagementService.createLeaveManagement(
-              leaveLine,
-              AuthUtils.getUser(),
-              batch.getHrBatch().getComments(),
-              null,
-              batch.getHrBatch().getStartDate(),
-              batch.getHrBatch().getEndDate(),
-              dayNumber);
-      BigDecimal qty = leaveLine.getQuantity().add(dayNumber);
-      BigDecimal totalQty = leaveLine.getTotalQuantity().add(dayNumber);
+    BigDecimal dayNumber =
+        batch.getHrBatch().getUseWeeklyPlanningCoef()
+            ? batch
+                .getHrBatch()
+                .getDayNumber()
+                .multiply(employee.getWeeklyPlanning().getLeaveCoef())
+            : batch.getHrBatch().getDayNumber();
+    dayNumber =
+        dayNumber.subtract(
+            new BigDecimal(
+                publicHolidayService.getImposedDayNumber(
+                    employee, batch.getHrBatch().getStartDate(), batch.getHrBatch().getEndDate())));
+    LeaveManagement leaveManagement =
+        leaveManagementService.createLeaveManagement(
+            leaveLine,
+            AuthUtils.getUser(),
+            batch.getHrBatch().getComments(),
+            null,
+            batch.getHrBatch().getStartDate(),
+            batch.getHrBatch().getEndDate(),
+            dayNumber);
+    BigDecimal qty = leaveLine.getQuantity().add(dayNumber);
+    BigDecimal totalQty = leaveLine.getTotalQuantity().add(dayNumber);
 
-      try {
-        int integer =
-            LeaveLine.class.getDeclaredField("quantity").getAnnotation(Digits.class).integer();
-        BigDecimal limit = new BigDecimal((long) Math.pow(10, integer));
-        if (qty.compareTo(limit) >= 0 || totalQty.compareTo(limit) >= 0) {
-          throw new AxelorException(
-              employee,
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.BATCH_LEAVE_MANAGEMENT_QTY_OUT_OF_BOUNDS),
-              limit.longValue());
-        }
-
-      } catch (NoSuchFieldException | SecurityException e) {
-        throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+    try {
+      int integer =
+          LeaveLine.class.getDeclaredField("quantity").getAnnotation(Digits.class).integer();
+      BigDecimal limit = new BigDecimal((long) Math.pow(10, integer));
+      if (qty.compareTo(limit) >= 0 || totalQty.compareTo(limit) >= 0) {
+        throw new AxelorException(
+            employee,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.BATCH_LEAVE_MANAGEMENT_QTY_OUT_OF_BOUNDS),
+            limit.longValue());
       }
 
-      leaveLine.setQuantity(qty.setScale(4, RoundingMode.HALF_EVEN));
-      leaveLine.setTotalQuantity(totalQty.setScale(4, RoundingMode.HALF_EVEN));
-
-      leaveManagementRepository.save(leaveManagement);
-      leaveLineRepository.save(leaveLine);
-      updateEmployee(employee);
+    } catch (NoSuchFieldException | SecurityException e) {
+      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
     }
+
+    leaveLine.setQuantity(qty.setScale(4, RoundingMode.HALF_EVEN));
+    leaveLine.setTotalQuantity(totalQty.setScale(4, RoundingMode.HALF_EVEN));
+
+    leaveManagementRepository.save(leaveManagement);
+    leaveLineRepository.save(leaveLine);
+    updateEmployee(employee);
   }
 
   @Override

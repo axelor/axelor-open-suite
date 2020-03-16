@@ -25,6 +25,7 @@ import com.axelor.apps.hr.db.EmployeeBonusMgtLine;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.EmployeeBonusMgtLineRepository;
 import com.axelor.apps.hr.db.repo.EmployeeBonusMgtRepository;
+import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.employee.EmployeeServiceImpl;
@@ -84,6 +85,9 @@ public class EmployeeBonusService {
 
     Integer employeeBonusStatus = EmployeeBonusMgtRepository.STATUS_CALCULATED;
     for (Employee employee : allEmployee) {
+      if (EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+        continue;
+      }
 
       // check if line is already calculated
       if (employeeStatus.get(employee) != null) {
