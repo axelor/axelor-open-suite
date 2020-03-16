@@ -1,4 +1,61 @@
 # Changelog
+## [5.3.1] - 2020-03-16
+## Improvements
+- InvoiceLine: add company and status fields in advanced search.
+- LEAVE REQUEST: Allow sending a leave request in the past.
+- CUSTOMER INFORMATIONS: Indicate that payment delay is in days.
+- INVOICES DASHBOARD: Turnover is now calculated using both sales and assets.
+- PRODUCT: Quantity field digits length is now based on nbDecimalDigitForQty in base config.
+- TIMESHEET PRINTING: Manage visibility for task and activity column.
+- STUDIO: Add panel on custom model demo data.
+- ACCOUNTING REPORT: add account filter to summary and gross value report.
+- Accounting Config: clarifying the field lineMinBeforeLongReportGenerationMessageNumber.
+- Stock Move Line: Do not allow user to remove allocated stock move line.
+- STUDIO: Set default value for form width to large.
+- Block the creation of duplicate accounts.
+- EBICSPARTNER: mass update on testMode field.
+- PURCHASE REQUEST: translate "Purchase Request Lines" in french "Ligne de demandes d'achat".
+- Ebics user: Display associated user in list view.
+- STOCK CONFIG: Add three boolean fields to configure the display of product code, price, order reference and date in stock move report.
+- SaleOrderLine/PurchaseOrderLine: Add transient boolean field to freeze price, qty, productName.
+- HR BATCH: set email template for batch 'Email reminder for timesheets'.
+- Workflow: Add support to select real status fields.
+- QUALITY CONTROL: update the quality control report.
+- USER: Add user's email signature, an html text field.
+- MESSAGE TEMPLATE: New possibility to add an email signature from a user directly or an email account with a formula.
+- SUPPLYCHAIN: In menu stock details by product, company field now autofills with the user's active company.
+
+## Bug Fixes
+- INVOICE LINE: add grid view and form view of budgetDistributionListPanel in form.
+- PURCHASE ORDER REPORT: Fixed value of payment condition from PurchaseOrder's payment condition instead of using partner.
+- EMPLOYEE: update the employee records in demo data so the creation process is finished.
+- CAMPAIGN: add exception message on partner and lead at invalid domain in target list.
+- SALEORDER: fixed bug causing the margins to be rounded to the unit.
+- Fix exception happening when a timesheet reminder batch is run.
+- Stock Move Line reservation: correctly set qty requested flag when generated from a sale order line.
+- Stock Move: Delete empty date field in form view.
+- Advance data import: Fix search issue on main object to import.
+- LEAD: removed non persistable field wrongly appearing on the form view.
+- LEAVEREQUEST: Fix the NPE when no leave request is selected to be edited.
+- Project: Resolve issue in computation of time spent.
+- EBICS: Display correctly hash code in certificates EBICS.
+- Move: Fix exception message when saving a new record.
+- SUPPLIER INVOICE: fix the problem of amount not updated in supplier invoice after use of mass invoice payment function.
+- CLIENT PORTAL: Take user permissions into account for TeamTask counters.
+- TimesheetLine: Fill duration on data import
+- MRP: Fixed issue when user try to copy an existing MRP record.
+- LEAVE REQUEST: corrected error when trying to change user.
+- Base Batch: Fix the issue when user run calendar synchronization batch.
+- LOGIN: Fixed js code page redirection.
+- Fix exception happening in sale order line form when group is empty in user.
+- DEBT RECOVERY: rollback debt recovery process if to recipients is empty or not in generated message.
+- PROJECT: Fix NPE when generate Business project with SaleOrderTypeSelect as title.
+- PROJECT: Fix NPE when generate Business project with projectGeneratorType Task by line and Task by product.
+- MRP: do not copy sequence on MRP copy.
+- TEAM TASK: Fixed issue on copying line from project view.
+- INVOICE: Fix quantity and discount not displayed on printing.
+- SALE ORDER: Fix unit code not displayed on printing.
+
 ## [5.3.0] - 2020-02-25
 ## Features
 - Add Pack Feature in sale order.
@@ -63,4 +120,6 @@
 - Sales dashboard: Fix chart not displayed.
 - PRODUCT: Fix economicManufOrderQty displayed twice.
 
+
+[5.3.1]: https://github.com/axelor/axelor-open-suite/compare/v5.3.0...v5.3.1
 [5.3.0]: https://github.com/axelor/axelor-open-suite/compare/v5.2.5...v5.3.0
