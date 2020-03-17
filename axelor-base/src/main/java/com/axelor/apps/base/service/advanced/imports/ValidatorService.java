@@ -92,6 +92,8 @@ public class ValidatorService {
 
   @Inject private MetaJsonFieldRepository metaJsonFieldRepo;
 
+  @Inject private SearchCallService searchCallService;
+
   public boolean validate(AdvancedImport advancedImport)
       throws AxelorException, IOException, ClassNotFoundException {
 
@@ -160,7 +162,7 @@ public class ValidatorService {
         }
         this.validateObject(objectRow, fileTab, isTabConfig);
       }
-      this.validateSearchFields(fileTab);
+      this.validateSearch(fileTab);
       this.validateObjectRequiredFields(fileTab);
       this.validateFieldAndData(reader, sheet, fileTab, isConfig, isTabConfig, tabConfigRowCount);
       this.validateActions(fileTab);
@@ -234,18 +236,6 @@ public class ValidatorService {
       if (fileTab.getMetaModel() != null && !fileTab.getMetaModel().getName().equals(model)) {
         logService.addLog(LogService.COMMON_KEY, IExceptionMessage.ADVANCED_IMPORT_LOG_1, rowIndex);
       }
-    }
-  }
-
-  private void validateSearchFields(FileTab fileTab) throws AxelorException {
-    if ((fileTab.getImportType() == FileFieldRepository.IMPORT_TYPE_FIND
-            || fileTab.getImportType() == FileFieldRepository.IMPORT_TYPE_FIND_NEW)
-        && CollectionUtils.isEmpty(fileTab.getSearchFieldSet())) {
-
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(
-              I18n.get(IExceptionMessage.ADVANCED_IMPORT_6), fileTab.getMetaModel().getName()));
     }
   }
 
@@ -729,7 +719,17 @@ public class ValidatorService {
     if (!actionService.validate(actions)) {
       logService.addLog(
           LogService.COMMON_KEY,
-          String.format(IExceptionMessage.ADVANCED_IMPORT_LOG_10, fileTab.getMetaModel().getName()),
+          String.format(IExceptionMessage.ADVANCED_IMPORT_LOG_10, fileTab.getName()),
+          1);
+    }
+  }
+
+  private void validateSearchCall(FileTab fileTab) {
+    String searchCall = fileTab.getSearchCall();
+    if (!searchCallService.validate(searchCall)) {
+      logService.addLog(
+          LogService.COMMON_KEY,
+          String.format(IExceptionMessage.ADVANCED_IMPORT_LOG_11, fileTab.getName()),
           1);
     }
   }
@@ -822,5 +822,17 @@ public class ValidatorService {
     jsonField.setShowIf(fieldName + " != null && $record.advancedImport.statusSelect > 0");
 
     metaJsonFieldRepo.save(jsonField);
+  }
+
+  private void validateSearch(FileTab fileTab) throws AxelorException {
+    if (fileTab.getImportType() != FileFieldRepository.IMPORT_TYPE_NEW) {
+      if (CollectionUtils.isEmpty(fileTab.getSearchFieldSet())
+          && StringUtils.isBlank(fileTab.getSearchCall())) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            String.format(I18n.get(IExceptionMessage.ADVANCED_IMPORT_6), fileTab.getName()));
+      }
+      this.validateSearchCall(fileTab);
+    }
   }
 }
