@@ -68,6 +68,9 @@ public class WkfController {
       Beans.get(WkfService.class).process(workflow);
       response.setReload(true);
     } catch (Exception e) {
+      if (e.getMessage().equals(IExceptionMessage.CANNOT_ALTER_NODES)) {
+        this.setDefaultNodes(request, response);
+      }
       TraceBackService.trace(response, e);
     }
   }
@@ -247,7 +250,7 @@ public class WkfController {
   }
 
   @SuppressWarnings("unchecked")
-  private List<Option> getSelect(Object wkfField) {
+  public List<Option> getSelect(Object wkfField) {
 
     if (wkfField == null) {
       return Collections.emptyList();

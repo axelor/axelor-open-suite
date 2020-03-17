@@ -218,6 +218,7 @@
 "Is ISPM 15 required",,,
 "Is amount in %",,,
 "Is certificate of conformity required",,,
+"It is not possible to delete a stock move line with allocated or reserved quantity.",,,
 "Label",,,
 "Left empty",,,
 "Line numberFiscal valueTaker",,,
