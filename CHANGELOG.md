@@ -3,6 +3,7 @@
 ## [Unreleased 5.2.7]
 ## Improvements
 ## Bug Fixes
+- SALE ORDER : Fix NPE when interco sale order finalized.
 
 ## [5.2.6] - 2020-03-13
 ## Improvements
