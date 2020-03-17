@@ -4,6 +4,7 @@
 ## Improvements
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
+- SALE CONFIG : Fixed "Action not allowed" error when we try to update customer's accepted credit.
 
 ## [5.2.6] - 2020-03-13
 ## Improvements
@@ -24,7 +25,7 @@
 - Ebics user: Display associated user in list view.
 - MESSAGE TEMPLATE: New possibility to add an email signature from a user directly or an email account with a formula.
 - EBICSPARTNER: mass update on testMode field.
-
+ 
 ## Bug Fixes
 - INVOICE LINE: add grid view and form view of budgetDistributionListPanel to form.
 - MANUF ORDER: fix missing form and grid view attributes for workshopStockLocation.
