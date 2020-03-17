@@ -31,6 +31,7 @@
 - Workflow : Add support to select real status fields.
 - QUALITY CONTROL : update the qualitycontrol report.
 - INVOICE LINE : add grid view and form view of budgetDistributionListPanel in form.
+- MRP FAMILY : improve traduction.
 
 ## Bug Fixes
 - SALEORDER : fixed bug causing the margins to be rounded to the unit
