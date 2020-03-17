@@ -211,7 +211,7 @@
                     <panel-dashlet name="showUsedBOMPanel" colSpan="12" action="action-product-view-show-used-bill-of-material" showIf="id &amp;&amp; (productSubTypeSelect == 3 || productSubTypeSelect == 2)"/>
                     <panel-dashlet name="productionProcessPanel" colSpan="12" action="action-product-view-production-process" showIf="id &amp;&amp; (procurementMethodSelect == 'produce' || procurementMethodSelect == 'buyAndProduce')"/>
                 </panel>
-                <panel name="stockPanel" title="Stock" showTitle="false" showIf="productTypeSelect == 'storable'" if-module="axelor-stock" if="__config__.app.isApp('stock')" >
+                <panel name="trackingNumberPanel" title="Tracking number" showTitle="false" showIf="productTypeSelect == 'storable'" if-module="axelor-stock" if="__config__.app.isApp('stock')" >
 					<panel colSpan="12" name="trackingDetailsPanel">
 				        <field name="hasWarranty"/>
 				        <field name="warrantyNbrOfMonths" showIf="hasWarranty"/>
