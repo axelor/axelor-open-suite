@@ -4,6 +4,7 @@
 ## Improvements
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
+- MANUFACTURING ORDER : On consumed product, no longer display tracking numbers if available quantity equals 0.
 
 ## [5.2.6] - 2020-03-13
 ## Improvements
