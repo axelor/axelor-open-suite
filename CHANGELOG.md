@@ -2,12 +2,11 @@
 ## [Unreleased 5.3.2]
 ## Improvements
 - PARTNER : add url widget for website.
+- MrpFamily : make 'name' required field.
 
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
-
-## Improvements
-- MrpFamily : make 'name' required field.
+- SALE CONFIG : Fixed "Action not allowed" error when we try to update customer's accepted credit
 
 ## [5.3.1] - 2020-03-16
 ## Improvements
