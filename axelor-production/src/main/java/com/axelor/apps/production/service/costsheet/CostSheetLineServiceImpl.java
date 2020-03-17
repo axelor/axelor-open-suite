@@ -161,7 +161,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
   }
 
   public CostSheetLine createResidualProductCostSheetLine(
-      Product product, Unit unit, BigDecimal consumptionQty) throws AxelorException {
+      Product product, Unit unit, BigDecimal consumptionQty, Company company) throws AxelorException {
 
     if (appProductionService.getAppProduction().getSubtractProdResidualOnCostSheet()) {
       consumptionQty = consumptionQty.negate();
@@ -171,19 +171,19 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
         unitConversionService
             .convert(
                 unit,
-                product.getUnit(),
-                product.getCostPrice(),
+                (Unit) productCompanyService.get(product, "unit", company),
+                (BigDecimal) productCompanyService.get(product, "costPrice", company),
                 appProductionService.getNbDecimalDigitForUnitPrice(),
                 product)
             .multiply(consumptionQty);
 
     return this.createCostSheetLine(
-        product.getName(),
-        product.getCode(),
+		(String) productCompanyService.get(product, "name", company),
+		(String) productCompanyService.get(product, "code", company),
         0,
         consumptionQty,
         costPrice,
-        product.getCostSheetGroup(),
+        (CostSheetGroup) productCompanyService.get(product, "costSheetGroup", company),
         product,
         CostSheetLineRepository.TYPE_PRODUCED_PRODUCT,
         CostSheetLineRepository.TYPE_PRODUCED_PRODUCT,

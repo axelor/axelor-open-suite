@@ -412,7 +412,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
       return BigDecimal.ZERO;
     }
 
-    price = price.multiply(product.getManagPriceCoef());
+    price = price.multiply((BigDecimal) productCompanyService.get(product, "managPriceCoef", purchaseOrder.getCompany()));
 
     return currencyService
         .getAmountCurrencyConvertedAtDate(

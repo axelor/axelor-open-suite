@@ -151,7 +151,8 @@
 	    	<panel name="purchaseCostsPanel" title="Purchase/Costs" showTitle="false">
 		      	<panel name="purchasePanel" title="Purchases" colSpan="6">
 			        <field name="purchasable" colSpan="12"/>
-			        <field name="purchasePrice" showIf="purchasable" colSpan="6"/>
+			        <field name="purchasePrice" showIf="purchasable" colSpan="3"/>
+			        <field name="lastPurchasePrice" showIf="purchasable" colSpan="3" readonly="true"/>
 			        <field name="purchaseCurrency" canEdit="false" showIf="purchasable" colSpan="6" form-view="currency-form" grid-view="currency-grid"/>
 			        <field name="defaultSupplierPartner" canEdit="false" showIf="purchasable" colSpan="6" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
 			        <field name="supplierDeliveryTime" showIf="purchasable" colSpan="6"/>
@@ -429,11 +430,14 @@
     	<attribute name="title" for="salePrice,productCompanyList.salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale price W.T.')" if="!inAti"/>
     	<attribute name="title" for="purchasePrice,productCompanyList.purchasePrice" expr="eval: com.axelor.i18n.I18n.get('Purchase price A.T.I.')" if="inAti"/>
     	<attribute name="title" for="purchasePrice,productCompanyList.purchasePrice" expr="eval: com.axelor.i18n.I18n.get('Purchase price W.T.')" if="!inAti"/>
+    	<attribute name="title" for="lastPurchasePrice,productCompanyList.lastPurchasePrice" expr="eval: com.axelor.i18n.I18n.get('Last purchase price A.T.I.')" if="inAti"/>
+    	<attribute name="title" for="lastPurchasePrice,productCompanyList.lastPurchasePrice" expr="eval: com.axelor.i18n.I18n.get('Last purchase price W.T.')" if="!inAti"/>
     </action-attrs>
 
     <action-attrs name="action-product-attrs-scale-and-precision">
 		<attribute name="scale" for="salePrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="purchasePrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="lastPurchasePrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="costPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		
 		<attribute name="scale" for="economicManufOrderQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
@@ -446,7 +450,8 @@
 	</action-attrs>
 
 	<action-attrs name="action-product-attrs-update-cost-price">
-		<attribute for="costPrice" name="value" expr="eval: shippingCoef ? purchasePrice.multiply(shippingCoef) : purchasePrice" if="costTypeSelect == 2"/>
+		<attribute for="costPrice" name="value" expr="eval: shippingCoef ? lastPurchasePrice.multiply(shippingCoef) : lastPurchasePrice" if="costTypeSelect == 2 &amp;&amp; lastPurchasePrice &gt; 0"/>
+		<attribute for="costPrice" name="value" expr="eval: shippingCoef ? purchasePrice.multiply(shippingCoef) : purchasePrice" if="costTypeSelect == 2  &amp;&amp; lastPurchasePrice &lt;= 0"/>
 		<attribute for="costPrice" name="value" expr="eval: avgPrice" if="costTypeSelect == 3"/>
 		<attribute for="costPrice" name="value" expr="eval: lastProductionPrice" if="costTypeSelect == 4"/>
 	</action-attrs>
@@ -473,6 +478,7 @@
     	<field name="startDate" expr="eval:__config__.app.getTodayDate()" if="startDate == null"/>
     	<field name="salePrice" expr="0"/>
     	<field name="purchasePrice" expr="0"/>
+    	<field name="lastPurchasePrice" expr="0"/>
     	<field name="saleCurrency" expr="eval: _activeCompany?.currency"/>
     	<field name="purchaseCurrency" expr="eval: _activeCompany?.currency"/>
     	<field name="managPriceCoef" expr="1"/>

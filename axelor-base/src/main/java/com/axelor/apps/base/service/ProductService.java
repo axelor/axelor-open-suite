@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.ProductVariantConfig;
@@ -28,16 +29,16 @@ import java.math.BigDecimal;
 public interface ProductService {
 
   @Transactional
-  public void updateProductPrice(Product product);
+  public void updateProductPrice(Product product) throws AxelorException;
 
   public String getSequence() throws AxelorException;
 
-  public void updateSalePrice(Product product);
+  public void updateSalePrice(Product product, Company company) throws AxelorException;
 
   @Transactional
-  public void generateProductVariants(Product productModel);
+  public void generateProductVariants(Product productModel) throws AxelorException;
 
-  public Product createProduct(Product productModel, ProductVariant productVariant, int seq);
+  public Product createProduct(Product productModel, ProductVariant productVariant, int seq) throws AxelorException;
 
   /**
    * @param productVariant

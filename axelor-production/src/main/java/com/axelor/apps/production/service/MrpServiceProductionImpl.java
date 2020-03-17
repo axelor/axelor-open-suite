@@ -20,6 +20,7 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
@@ -67,6 +68,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
   protected AppBaseService appBaseService;
 
   protected ManufOrderRepository manufOrderRepository;
+  
+  protected ProductCompanyService productCompanyService;
 
   @Inject
   public MrpServiceProductionImpl(
@@ -84,7 +87,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       MrpLineService mrpLineService,
       MrpForecastRepository mrpForecastRepository,
       ManufOrderRepository manufOrderRepository,
-      StockLocationService stockLocationService) {
+      StockLocationService stockLocationService,
+      ProductCompanyService productCompanyService) {
 
     super(
         appProductionService,
@@ -103,6 +107,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
     this.appBaseService = appBaseService;
     this.manufOrderRepository = manufOrderRepository;
+    this.productCompanyService = productCompanyService;
   }
 
   @Override
@@ -325,11 +330,11 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
    * manufacturing order is generated.
    */
   @Override
-  protected MrpLineType getMrpLineTypeForProposal(StockRules stockRules, Product product)
+  protected MrpLineType getMrpLineTypeForProposal(StockRules stockRules, Product product, Company company)
       throws AxelorException {
 
     if (!Beans.get(AppProductionService.class).isApp("production")) {
-      return super.getMrpLineTypeForProposal(stockRules, product);
+      return super.getMrpLineTypeForProposal(stockRules, product, company);
     }
 
     if (stockRules != null) {
@@ -340,7 +345,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       }
     }
 
-    if (product.getProcurementMethodSelect().equals(ProductRepository.PROCUREMENT_METHOD_BUY)) {
+    if (((String) productCompanyService.get(product, "procurementMethodSelect", company)).equals(ProductRepository.PROCUREMENT_METHOD_BUY)) {
       return this.getMrpLineType(MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL);
     } else {
       return this.getMrpLineType(MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL);

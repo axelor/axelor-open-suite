@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.ProductVariantAttr;
@@ -48,6 +49,7 @@ public class ProductServiceImpl implements ProductService {
   protected SequenceService sequenceService;
   protected AppBaseService appBaseService;
   protected ProductRepository productRepo;
+  protected ProductCompanyService productCompanyService;
 
   @Inject
   public ProductServiceImpl(
@@ -55,21 +57,23 @@ public class ProductServiceImpl implements ProductService {
       ProductVariantRepository productVariantRepo,
       SequenceService sequenceService,
       AppBaseService appBaseService,
-      ProductRepository productRepo) {
+      ProductRepository productRepo,
+      ProductCompanyService productCompanyService) {
     this.productVariantService = productVariantService;
     this.productVariantRepo = productVariantRepo;
     this.sequenceService = sequenceService;
     this.appBaseService = appBaseService;
     this.productRepo = productRepo;
+    this.productCompanyService = productCompanyService;
   }
 
   @Inject private MetaFiles metaFiles;
 
   @Override
   @Transactional
-  public void updateProductPrice(Product product) {
+  public void updateProductPrice(Product product) throws AxelorException {
 
-    this.updateSalePrice(product);
+    this.updateSalePrice(product, null);
 
     productRepo.save(product);
   }
@@ -87,11 +91,10 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
-  public void updateSalePrice(Product product) {
+  public void updateSalePrice(Product product, Company company) throws AxelorException {
+    BigDecimal managePriceCoef = (BigDecimal) productCompanyService.get(product, "managPriceCoef", company);
 
-    BigDecimal managePriceCoef = product.getManagPriceCoef();
-
-    if (product.getCostPrice() != null) {
+    if ((BigDecimal) productCompanyService.get(product, "costPrice", company) != null) {
 
       if (product.getProductVariant() != null) {
 
@@ -105,11 +108,11 @@ public class ProductServiceImpl implements ProductService {
       }
     }
 
-    if (product.getCostPrice() != null && managePriceCoef != null) {
+    if ((BigDecimal) productCompanyService.get(product, "costPrice", company) != null && managePriceCoef != null) {
 
-      product.setSalePrice(
-          (product.getCostPrice().multiply(managePriceCoef))
-              .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP));
+	  productCompanyService.set(product, "salePrice",
+          (((BigDecimal) productCompanyService.get(product, "costPrice", company)).multiply(managePriceCoef))
+              .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP), company);
 
       if (product.getProductVariant() != null) {
 
@@ -129,7 +132,7 @@ public class ProductServiceImpl implements ProductService {
     }
   }
 
-  private void updateSalePriceOfVariant(Product product) {
+  private void updateSalePriceOfVariant(Product product) throws AxelorException {
 
     List<? extends Product> productVariantList =
         productRepo.all().filter("self.parentProduct = ?1 AND dtype = 'Product'", product).fetch();
@@ -140,13 +143,13 @@ public class ProductServiceImpl implements ProductService {
       productVariant.setSalePrice(product.getSalePrice());
       productVariant.setManagPriceCoef(product.getManagPriceCoef());
 
-      this.updateSalePrice(productVariant);
+      this.updateSalePrice(productVariant, null);
     }
   }
 
   @Override
   @Transactional
-  public void generateProductVariants(Product productModel) {
+  public void generateProductVariants(Product productModel) throws AxelorException {
 
     List<ProductVariant> productVariantList =
         this.getProductVariantList(productModel.getProductVariantConfig());
@@ -162,7 +165,7 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
-  public Product createProduct(Product productModel, ProductVariant productVariant, int seq) {
+  public Product createProduct(Product productModel, ProductVariant productVariant, int seq) throws AxelorException {
 
     String description = "";
     String internalDescription = "";
@@ -204,7 +207,7 @@ public class ProductServiceImpl implements ProductService {
     product.setSalePrice(productModel.getSalePrice());
     product.setManagPriceCoef(productModel.getManagPriceCoef());
 
-    this.updateSalePrice(product);
+    this.updateSalePrice(product, null);
 
     return product;
   }

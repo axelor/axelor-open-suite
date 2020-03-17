@@ -39,6 +39,30 @@ public class ProductCompanyServiceImpl implements ProductCompanyService {
   @Override
   @CallMethod
   public Object get(Product originalProduct, String fieldName, Company company) throws AxelorException {
+	  Mapper mapper = Mapper.of(Product.class);
+	  Product product = findAppropriateProductCompany(originalProduct, fieldName, company);
+	  
+	  return mapper.get(product, fieldName);
+  }
+  
+  @Override
+  @CallMethod
+  public void set(Product originalProduct, String fieldName, Object fieldValue, Company company) throws AxelorException {	  
+	  Mapper mapper = Mapper.of(Product.class);
+	  Product product = findAppropriateProductCompany(originalProduct, fieldName, company);
+	  
+	  mapper.set(product, fieldName, fieldValue);
+  }
+  
+  /**
+   * Finds the appropriate company-specific version of a product if searched field is overwritten by company
+   * @param originalProduct 
+   * @param fieldName
+   * @param company
+   * @return
+   * @throws AxelorException
+   */
+  private Product findAppropriateProductCompany(Product originalProduct, String fieldName, Company company) throws AxelorException {
 	  if (originalProduct == null) {
 		  throw new AxelorException(
 			TraceBackRepository.CATEGORY_MISSING_FIELD,
@@ -52,7 +76,6 @@ public class ProductCompanyServiceImpl implements ProductCompanyService {
 	  }
 	  
 	  Product product = originalProduct;
-	  Mapper mapper = Mapper.of(Product.class);
 
 	  if (company != null && originalProduct.getProductCompanyList() != null) {
 		  for (ProductCompany productCompany : originalProduct.getProductCompanyList()) {
@@ -69,7 +92,7 @@ public class ProductCompanyServiceImpl implements ProductCompanyService {
 		  }
 	  }
 	  
-	  return mapper.get(product, fieldName);
+	  return product;
   }
 
 }

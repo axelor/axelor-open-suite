@@ -10,7 +10,7 @@
 		<field name="purchasePrice" x-scale="2"/>
 		<field name="purchaseCurrency"/>
 		<field name="costPrice" x-scale="2"/>
-		<field name="avgPrice" hidden="true"/>
+		<field name="avgPrice" x-scale="2"/>
 		<field name="company.currency" title="Company currency"/>
 	</grid>
 	
@@ -21,14 +21,20 @@
 			<field name="product" readonly="true" form-view="product-form"/>
 			<field name="company" required="true"/>
 		</panel>
-		<panel name="overridePanel" title="Company-specific information">	
+		<panel name="overridePanel" title="Company-specific information">
+			<field name="procurementMethodSelect"/>
+			<spacer/>	
 			<field name="salePrice"/>
 			<field name="saleCurrency"/>
 			<field name="purchasePrice"/>
 			<field name="purchaseCurrency"/>
-			<field name="costPrice"/>
-			<field name="avgPrice" hidden="true"/>
+			<field name="costPrice" readonlyIf="costTypeSelect != 1" onChange="action-product-record-compute-sale-price"/>
+			<field name="costTypeSelect" onChange="action-product-group-cost-type-select-onchange"/>
+			<field name="managPriceCoef" colSpan="12"/>
+			<field name="avgPrice" readonly="true"/>
 			<field name="company.currency" title="Company currency" readonly="true"/>
+			<field name="autoUpdateSalePrice"/>
+			<field name="lastPurchasePrice" hidden="true"/>
 		</panel>
 	</form> 
 	

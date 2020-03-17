@@ -106,7 +106,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
       Product product = orderLine.getProduct();
       if (product != null
           && !((ProductRepository.PROCUREMENT_METHOD_PRODUCE.equals(
-                      product.getProcurementMethodSelect())
+        		      (String) productCompanyService.get(product, "procurementMethodSelect", saleOrder.getCompany()))
                   || orderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE)
               && ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect()))) {
         continue;

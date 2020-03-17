@@ -1,2 +1,2 @@
 "code";"defaultProjectUnit.importId";"defaultPartnerLanguageCode";"unitMinutes.importId";"unitHours.importId";"unitDays.importId";"dailyWorkHours";"companySpecificFieldName"
-"base";7;"fr";100;101;103;7;"salePrice|saleCurrency|purchasePrice|purchaseCurrency|costPrice|avgPrice"
+"base";7;"fr";100;101;103;7;"procurementMethodSelect|salePrice|saleCurrency|purchasePrice|lastPurchasePrice|purchaseCurrency|costPrice|costTypeSelect|managPriceCoef|avgPrice|autoUpdateSalePrice"
