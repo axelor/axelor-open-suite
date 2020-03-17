@@ -1,6 +1,8 @@
 # Changelog
 ## [Unreleased 5.3.2]
 ## Improvements
+- PARTNER : add url widget for website.
+
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
 
