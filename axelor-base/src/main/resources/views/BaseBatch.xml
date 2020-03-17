@@ -34,7 +34,7 @@
 		    </panel>
   		</panel-tabs>
   		<panel name="synchronizeBtnPanel" sidebar="true">
-  			<button name="synchronizeBtn" showIf="actionSelect == 2" title="Batch calendar synchronization" onClick="action-base-batch-method-synchronize-calendars"/>
+  			<button name="synchronizeBtn" showIf="actionSelect == 2" title="Batch calendar synchronization" onClick="save,action-base-batch-method-synchronize-calendars"/>
   		</panel>
     </form>
     
