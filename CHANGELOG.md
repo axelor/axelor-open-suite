@@ -20,6 +20,7 @@
 - MOVE : corrected sequence generation, now use correctly the date of the move and not the date of validation.
 - Subrogative release : corrected the possibility to create two subrogation transmitted or accounted with the same invoices.
 - Invoice payment: fix issue in invoice payment form when invoice due date is empty.
+- SALE CONFIG : Fixed "Action not allowed" error when we try to update customer's accepted credit
 - INVOICE : fix the NPE when payment mode is null in invoice.
 - Move: Fix exception message when saving a new record.
 - SALEORDER : fixed bug causing the margins to be rounded to the unit
