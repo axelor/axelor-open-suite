@@ -23,6 +23,8 @@
 "Accounting cut-off configuration",,,
 "Action",,,
 "Actions",,,
+"Activate partial invoicing for incoming moves",,,
+"Activate partial invoicing for outgoing moves",,,
 "All invoices have been generated for this sale order.",,,
 "Allocated Qty",,,
 "Allocated qty",,,
