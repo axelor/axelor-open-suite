@@ -6,6 +6,9 @@
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
 
+## Improvements
+- MrpFamily : make 'name' required field.
+
 ## [5.3.1] - 2020-03-16
 ## Improvements
 - InvoiceLine: add company and status fields in advanced search.
