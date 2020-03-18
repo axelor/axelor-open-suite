@@ -160,11 +160,10 @@ public interface IExceptionMessage {
   static final String UNIT_COST_CALCULATION_NO_PRODUCT = /*$$(*/
       "Please select an element (a product, a product category or a product family) to run calculation" /*)*/;
 
-  static final String NO_BILL_OF_MATERIAL_SELECTED = /*$$(*/
-      "Please select at least one bill of material in the list." /*)*/;
+  static final String NO_PRODUCT_SELECTED = /*$$(*/
+      "Please select at least one product in the list." /*)*/;
 
-  static final String MO_CREATED = /*$$(*/
-      "%d MO created." /*)*/;
+  static final String MO_CREATED = /*$$(*/ "%d MO created." /*)*/;
 
   // CostSheetLine service
   static final String MISSING_PRODUCT_PURCHASE_CURRENCY = /*$$(*/

@@ -18,16 +18,19 @@
 package com.axelor.apps.production.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
+import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
+import com.axelor.apps.production.db.repo.ProdProductRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.report.IReport;
+import com.axelor.apps.production.service.ProdProductProductionRepository;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.production.service.manuforder.ManufOrderPrintService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
@@ -51,7 +54,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import java.util.stream.Collectors;
@@ -469,15 +471,33 @@ public class ManufOrderController {
    * @param request
    * @param response
    */
-  public void multiLevelManufOrderLoadBOM(ActionRequest request, ActionResponse response) {
+  public void multiLevelManufOrderOnLoad(ActionRequest request, ActionResponse response) {
     try {
-      Long moId = Long.valueOf(request.getContext().get("_manufOrderId").toString());
+      Long moId = Long.valueOf(request.getContext().get("id").toString());
       ManufOrder mo = Beans.get(ManufOrderRepository.class).find(moId);
-      Set<BillOfMaterial> billOfMaterialSet = mo.getBillOfMaterial().getBillOfMaterialSet().stream()
-          .filter(billOfMaterial -> billOfMaterial.getProduct().getProductSubTypeSelect() == ProductRepository.PRODUCT_SUB_TYPE_FINISHED_PRODUCT
-              || billOfMaterial.getProduct().getProductSubTypeSelect() == ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT)
-          .collect(Collectors.toSet());
-      response.setValue("$components", billOfMaterialSet);
+      boolean showOnlyMissingQty =
+          request.getContext().get("_showOnlyMissingQty") != null
+              && Boolean.parseBoolean(request.getContext().get("_showOnlyMissingQty").toString());
+      ProdProductProductionRepository prodProductProductionRepository =
+          Beans.get(ProdProductProductionRepository.class);
+      List<ProdProduct> prodProducts =
+          mo.getToConsumeProdProductList().stream()
+              .filter(
+                  prodProduct ->
+                      prodProduct.getProduct().getProductSubTypeSelect()
+                              == ProductRepository.PRODUCT_SUB_TYPE_FINISHED_PRODUCT
+                          || prodProduct.getProduct().getProductSubTypeSelect()
+                              == ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT)
+              .filter(
+                  prodProduct ->
+                      !showOnlyMissingQty
+                          || prodProductProductionRepository
+                                  .computeMissingQty(
+                                      prodProduct.getProduct().getId(), prodProduct.getQty(), moId)
+                                  .compareTo(BigDecimal.ZERO)
+                              > 0)
+              .collect(Collectors.toList());
+      response.setValue("$components", prodProducts);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -492,19 +512,29 @@ public class ManufOrderController {
   @SuppressWarnings("unchecked")
   public void generateMultiLevelManufOrder(ActionRequest request, ActionResponse response) {
     try {
-      Long moId = Long.valueOf(request.getContext().get("_manufOrderId").toString());
+      Long moId = Long.valueOf(request.getContext().get("id").toString());
       ManufOrder mo = Beans.get(ManufOrderRepository.class).find(moId);
-      BillOfMaterialRepository billOfMaterialRepository = Beans.get(BillOfMaterialRepository.class);
-      List<BillOfMaterial> billOfMaterialList =
-          ((List<LinkedHashMap<String, Object>>) request.getContext().get("components")).stream()
-          .filter(map -> (boolean) map.get("selected"))
-          .map(map -> billOfMaterialRepository.find(Long.valueOf(map.get("id").toString())))
-          .collect(Collectors.toList());
-      if (billOfMaterialList.size() == 0) {
-        throw new AxelorException(TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.NO_BILL_OF_MATERIAL_SELECTED));
+      ProdProductRepository prodProductRepository = Beans.get(ProdProductRepository.class);
+      List<ProdProduct> prodProductList =
+          ((List<LinkedHashMap<String, Object>>) request.getContext().get("components"))
+              .stream()
+                  .filter(map -> (boolean) map.get("selected"))
+                  .map(map -> prodProductRepository.find(Long.valueOf(map.get("id").toString())))
+                  .collect(Collectors.toList());
+      if (prodProductList.size() == 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.NO_PRODUCT_SELECTED));
       }
+      List<Product> productList =
+          prodProductList.stream().map(ProdProduct::getProduct).collect(Collectors.toList());
+      List<BillOfMaterial> billOfMaterialList =
+          mo.getBillOfMaterial().getBillOfMaterialSet().stream()
+              .filter(billOfMaterial -> productList.contains(billOfMaterial.getProduct()))
+              .collect(Collectors.toList());
       Beans.get(ManufOrderService.class).generateAllSubManufOrder(billOfMaterialList, mo);
-      response.setNotify(String.format(I18n.get(IExceptionMessage.MO_CREATED), billOfMaterialList.size()));
+      response.setNotify(
+          String.format(I18n.get(IExceptionMessage.MO_CREATED), billOfMaterialList.size()));
       response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

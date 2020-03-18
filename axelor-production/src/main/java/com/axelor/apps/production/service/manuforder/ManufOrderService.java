@@ -240,5 +240,6 @@ public interface ManufOrderService {
    */
   public String getBuildingQtyForAProduct(Long productId, Long companyId, Long stockLocationId);
 
-  public void generateAllSubManufOrder(List<BillOfMaterial> billOfMaterialList, ManufOrder manufOrder) throws AxelorException;
+  public void generateAllSubManufOrder(
+      List<BillOfMaterial> billOfMaterialList, ManufOrder manufOrder) throws AxelorException;
 }

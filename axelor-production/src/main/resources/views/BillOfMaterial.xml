@@ -133,12 +133,6 @@
         <field name="prodProcess" readonlyIf="!defineSubBillOfMaterial" grid-view="prod-process-grid" form-view="prod-process-form"/>
     </grid>
 
-	<grid title="Bills of material" name="bill-of-material-multi-level-planing-line-grid" model="com.axelor.apps.production.db.BillOfMaterial">
-		<field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-group-product" form-view="product-form" grid-view="product-grid"/>
-		<field name="qty" aggregate="sum" x-scale="2"/>
-		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-	</grid>
-
 	<form name="bill-of-material-line-form" title="Bill of materials"
 		model="com.axelor.apps.production.db.BillOfMaterial"
 		onNew="action-bill-of-material-line-default-record,action-bill-of-material-attrs-price-and-qty-digits" 
