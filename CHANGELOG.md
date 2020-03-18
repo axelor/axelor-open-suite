@@ -4,6 +4,7 @@
 - Workflow : Add support to select real status fields.
 - STOCK CONFIG : Added three boolean fields so as to whether display product code, price, order reference and date in stock move report
 - SaleOrderLine/PurchaseOrderLine : Added transient boolean field to freeze price,qty,productName
+- Ebics user : Display associated user in list view.
 
 ## Improvements
 - LEAVE REQUEST : Allow sending a leave request in the past.
@@ -16,6 +17,8 @@
 - ACCOUNTING REPORT : add account filter to summary and gross value report.
 - STUDIO : Add panel on custom model demo data
 - QUALITY CONTROL : update the qualitycontrol report.
+- INVOICE LINE : add grid view and form view of budgetDistributionListPanel to form
+- EMPLOYEE : update the stepByStepSelect=5(Finished) for all records in demo data
 
 ## Bug Fixes
 - Fix Timesheet Reminder Batch sendReminder method
@@ -35,7 +38,11 @@
 - TEAM TASK : Fixed issue in copy by using clearList instead of set it to null for projectPlanningTimeList.
 - PURCHASE ORDER REPORT: Fixed value of payment condition from PurchaseOrder's payment condition instead of using partner.
 - Move: Fix exception message when saving a new record.
-- SaleOrder : Fixed NPE when trying to select a customer with a company with no linked partner
+- SALEORDER : fixed bug causing the margins to be rounded to the unit
+- CLIENT PORTAL : debug TeamTask counters
+- MRP : Fixed issue when user try to copy an existing MRP record.
+- PURCHASE REQUEST : translate "Purchase Request Lines" in french "Ligne de demandes d'achat"
+- SALEORDER : Fixed NPE when trying to select a customer with a company with no linked partner
 
 ## [5.2.5] - 2020-02-25
 ## Improvements

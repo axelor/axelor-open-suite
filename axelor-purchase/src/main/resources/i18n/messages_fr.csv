@@ -169,7 +169,7 @@
 "Purchase Buyer","Acheteur",,
 "Purchase Manager","Manager",,
 "Purchase Request Line",,,
-"Purchase Request Lines",,,
+"Purchase Request Lines","Ligne de demandes d'achat",,
 "Purchase blocking","Blocage cmde fournisseur",,
 "Purchase config","Config. Achats",,
 "Purchase config (${ name })",,,
