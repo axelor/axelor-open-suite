@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+
+	<module name="account" package="com.axelor.apps.base.db" />
+
+	<entity name="Partner" lang="java">
+
+
+		<one-to-many name="partner1SupplychainLinkList"
+			ref="com.axelor.apps.base.db.PartnerSupplychainLink" title="Managed by"
+			mappedBy="partner1" />
+		<one-to-many name="partner2SupplychainLinkList"
+			ref="com.axelor.apps.base.db.PartnerSupplychainLink" title="Managed for"
+			mappedBy="partner2" />
+
+	</entity>
+
+</domain-models>

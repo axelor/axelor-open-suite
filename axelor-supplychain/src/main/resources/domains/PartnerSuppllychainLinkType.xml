@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+
+  <module name="account" package="com.axelor.apps.base.db"/>
+
+  <entity name="PartnerSupplychainLinkType" lang="java" >
+  
+  	<string namecolumn="true" name="typeSelect" title="Type" selection="base.base.partner.supply.chain.link.type.select" ></string>
+	<string name="link1Name" title="Relation 1"></string>
+	<string name="link2Name" title="Relation 2"></string>
+  </entity>
+
+</domain-models>

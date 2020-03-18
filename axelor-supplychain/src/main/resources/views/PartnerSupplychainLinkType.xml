@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+	<grid model="com.axelor.apps.base.db.PartnerSupplychainLinkType"
+		title="Supply chain links type" editable="true"
+		name="partner-supplychain-link-type-grid">
+		<field name="typeSelect"></field>
+		<field name="link1Name"></field>
+		<field name="link2Name"></field>
+	</grid>
+
+
+	<form model="com.axelor.apps.base.db.PartnerSupplychainLinkType"
+		title="Supply chain type" name="partner-supplychain-link-type-form">
+		<panel>
+			<field name="typeSelect" colSpan="6"></field>
+			<field name="link1Name"></field>
+			<field name="link2Name"></field>
+		</panel>
+	</form>
+
+</object-views>
