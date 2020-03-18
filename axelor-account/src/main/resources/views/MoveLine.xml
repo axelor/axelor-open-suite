@@ -43,8 +43,8 @@
 		<field name="date" width="100" onChange="account-move-line-record-date-onchange,action-move-line-method-compute-analytic-distribution"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid" onSelect="action-account-move-line-partner-group" width="120" canEdit="false" readonlyIf="amountPaid &gt; 0"/>
         <field name="account" form-view="account-form" grid-view="account-grid" onSelect="action-move-line-attrs-domain-account" width="200" canEdit="false" readonlyIf="amountPaid &gt; 0" onChange="action-move-line-method-compute-analytic-distribution"/>
-        <field name="debit" onChange="action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="credit != 0 || amountPaid &gt; 0"/>
-        <field name="credit" onChange="action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="debit != 0 || amountPaid &gt; 0"/>
+        <field name="debit" onChange="action-record-account-moveline-debit-onchange,action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="amountPaid &gt; 0"/>
+        <field name="credit" onChange="action-record-account-moveline-credit-onchange,action-group-account-moveline-debitcredit-onchange" width="90" readonlyIf="amountPaid &gt; 0"/>
 		<field name="amountRemaining" hidden="true" width="150"/>
 		<field name="amountPaid" hidden="true"/>
     	<field name="taxLine" readonlyIf="!account.isTaxAuthorizedOnMoveLine" requiredIf="account.isTaxRequiredOnMoveLine || account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'" domain="self.endDate > :date OR self.endDate IS NULL"/>
@@ -322,7 +322,6 @@
     	<call class="com.axelor.apps.account.web.MoveLineController" method="computeTaxAmount"/>
     </action-method>
 
-    
     <action-group name="action-account-move-line-onnew-group">
 	    <action name="action-move-line-record-get-move-informations"/>
 	    <action name="action-move-line-record-get-first-move-line-informations"/>
@@ -440,6 +439,14 @@
 		<field name="debit" expr="0" if="debit &lt; 0"/>
 		<field name="credit" expr="0" if="credit &lt; 0"/>
 	</action-record>
+	
+	<action-record name="action-record-account-moveline-debit-onchange" model="com.axelor.apps.account.db.MoveLine">
+		<field name="credit" expr="0" if="credit != 0 &amp;&amp; debit != 0"/>
+    </action-record>
+    
+	<action-record name="action-record-account-moveline-credit-onchange" model="com.axelor.apps.account.db.MoveLine">
+		<field name="debit" expr="0" if="credit != 0 &amp;&amp; debit != 0"/>
+    </action-record>
 	
 	<action-record name="account-move-line-record-date-onchange" model="com.axelor.apps.account.db.MoveLine">
 		<field name="originDate" expr="eval: date"/>

@@ -13,8 +13,9 @@
       <string name="name" title="Name" required="true" />
       <string name="model" title="Object" required="true" />
       <string name="jsonField" title="Json Field"/>
-      <boolean name="isJson" title="Custom" default="true" />
-      <many-to-one name="statusField" ref="com.axelor.meta.db.MetaJsonField" title="Wkf field" required="true"/>
+      <boolean name="isJson" title="Custom" />
+      <many-to-one name="statusField" ref="com.axelor.meta.db.MetaJsonField" title="Wkf field"/>
+      <many-to-one name="statusMetaField" ref="com.axelor.meta.db.MetaField" title="Wkf field"/>
       <one-to-many name="nodes" ref="WkfNode" mappedBy="wkf" orderBy="sequence"/>
       <one-to-many name="transitions" ref="WkfTransition" mappedBy="wkf"/>
       <one-to-many name="wkfTrackings" ref="WkfTracking" mappedBy="wkf"/>
@@ -25,6 +26,9 @@
       <one-to-many name="conditions" ref="Filter" title="Apply if" mappedBy="wkf"/>
       <integer name="wkfSequence" title="Wkf sequence" />
       <boolean name="isTrackFlow" title="Track flow"/>
+      <many-to-one name="metaView" ref="com.axelor.meta.db.MetaView" title="Select view"/>
+      <many-to-one name="generatedMetaView" ref="com.axelor.meta.db.MetaView" title="Generated view"/>
+      <string name="wkfModel" title="Wkf model"/>
   </entity>
     
  </domain-models>

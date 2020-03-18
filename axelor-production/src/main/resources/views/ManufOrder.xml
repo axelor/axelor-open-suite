@@ -97,7 +97,7 @@
 			<field name="manufOrderSeq"  readonly="true" css="bold" colSpan="2"/>
 			<field name="prioritySelect" readonlyIf="statusSelect == 6" colSpan="2"/>
 			<field name="company" widget="SuggestBox" onChange="action-manuf-order-record-empty-workshop" canEdit="false" readonlyIf="statusSelect &gt; 1" colSpan="2" form-view="company-form" grid-view="company-grid"/>
-			<field name="workshopStockLocation" colSpan="2" canEdit="false" onChange="action-manuf-order-record-workshop-onchange" readonlyIf="statusSelect &gt; 1" if="__config__.app.getApp('production').getManageWorkshop()" domain="self.company = :company and self.typeSelect = 1 and self.isWorkshop = true"/>
+			<field name="workshopStockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="2" canEdit="false" onChange="action-manuf-order-record-workshop-onchange" readonlyIf="statusSelect &gt; 1" if="__config__.app.getApp('production').getManageWorkshop()" domain="self.company = :company and self.typeSelect = 1 and self.isWorkshop = true"/>
 			<field name="$viewerIsOutsourcing" showTitle="false" readonly="true" showIf="$readonly()" colSpan="2" depends="prodProcess.outsourcing">
 				<viewer>
 					<![CDATA[
@@ -123,7 +123,7 @@
 			<field name="product" canEdit="false" required="true" readonlyIf="statusSelect &gt; 1 || !product.isModel" form-view="product-form" grid-view="product-grid" onSelect="action-manuf-order-attrs-filter-product"/>
 			<field name="qty" readonlyIf="statusSelect &gt; 1 || isPermanent" validIf="isPermanent || qty > 0" colSpan="3"/>
 			<field name="product.economicManufOrderQty" colSpan="3"/>
-			<field name="unit" readonly="true"/>
+			<field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
 			<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" domain="self.isCustomer=true AND :company member of self.companySet" onChange="action-manuf-order-atts-sale-order-onchange-client-partner" canEdit="false"/>
 			<field name="saleOrder" form-view="sale-order-form" grid-view="sale-order-grid" onSelect="action-manuf-order-attrs-sale-order-onselect" onChange="action-manuf-order-record-client-partner-onchange-sale-order" canEdit="false"/>
 			<field name="isConsProOnOperation" hidden="true"/>
@@ -150,7 +150,7 @@
 					<field name="plannedStartDateT" title="Start date" onChange="action-manuf-order-method-update-planned-dates"/>
 					<field name="plannedEndDateT" title="End date" onChange="action-manuf-order-validate-planned-end-date"/>
 					<field name="$totalPlannedDuration" title="Total Planned Duration" type="long" readonly="true" widget="duration" x-seconds="true" x-big="true"/>
-					<field name="cancelReason" hidden="true"/>
+					<field name="cancelReason" hidden="true" grid-view="cancel-reason-grid" form-view="cancel-reason-form"/>
 					<field name="cancelReasonStr" title="Cancel Reason" hidden="true" readonly="true" showIf="cancelReason != null &amp;&amp; cancelReasonStr != null" colSpan="12" css="red">
 						<viewer><![CDATA[{{record.cancelReasonStr}}]]></viewer>
 					</field>
