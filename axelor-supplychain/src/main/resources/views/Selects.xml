@@ -131,11 +131,5 @@
 		<option value="1">Created manually</option>
 		<option value="2">Created from SOP</option>
 	</selection>
-	
-	<selection name="base.base.partner.supply.chain.link.type.select">
-		<option value="Invoiced by">Invoiced by</option>
-		<option value="Delivered by">Delivered by</option>
-		<option value="Ordered by">Ordered by</option>
-	</selection>
 
 </object-views>

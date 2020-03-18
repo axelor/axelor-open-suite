@@ -2,71 +2,41 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
-
-	<form name="incl-sales-order-dashelt-form" title="Partner"
-		model="com.axelor.apps.base.db.Partner">
-		<panel-dashlet name="customerSalesLastYearvsYtdByFamilyPanel"
-			colSpan="12" action="dashlet.customer.sales.lastYear.vs.ytd.by.family"
-			height="350" title="Sales" showIf="id != null" />
+ 	
+    <form name="incl-sales-order-dashelt-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
+    	<panel-dashlet name="customerSalesLastYearvsYtdByFamilyPanel" colSpan="12" action="dashlet.customer.sales.lastYear.vs.ytd.by.family" height="350" title="Sales" showIf="id != null" />
+	</form>
+	
+     <form name="incl-sales-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
+	   <panel-dashlet name="partnerSOPanel" colSpan="12" action="action-partner-view-sales-orders" title="Sales orders" showIf="id != null &amp;&amp; (isCustomer || isProspect)"/>
+	</form>
+	
+	<form name="incl-sales-contact-form" title="Contact" model="com.axelor.apps.base.db.Partner" >
+	   <panel-dashlet name="contactSOPanel" colSpan="12" action="action-contact-view-sales-orders" title="Sales orders" showIf="id != null"/>
 	</form>
 
-	<form name="incl-sales-partner-form" title="Partner"
-		model="com.axelor.apps.base.db.Partner">
-		<panel-dashlet name="partnerSOPanel" colSpan="12"
-			action="action-partner-view-sales-orders" title="Sales orders"
-			showIf="id != null &amp;&amp; (isCustomer || isProspect)" />
-	</form>
-
-	<form name="incl-sales-contact-form" title="Contact"
-		model="com.axelor.apps.base.db.Partner">
-		<panel-dashlet name="contactSOPanel" colSpan="12"
-			action="action-contact-view-sales-orders" title="Sales orders"
-			showIf="id != null" />
-	</form>
-
-	<form name="incl-purchases-partner-form" title="Partner"
-		model="com.axelor.apps.base.db.Partner">
-		<panel-dashlet name="partnerPOPasnel" colSpan="12"
-			action="action-partner-view-purchases-orders" title="Purchase orders"
-			showIf="id != null &amp;&amp; (isSupplier || isCarrier)" />
-	</form>
-
-	<form id="supplychain-partner-form" name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner"
-		onNew="action-group-base-partner-onnew" onLoad="action-group-partner-onload"
-		onSave="action-partner-iban-check-on-save" width="large" extension="true">
-		<extend target="panel[@name='partnerDetailsPanel']">
-			<insert position="after">
-				<panel-related field="partner1SupplychainLinkList"
-					grid-view="partner-supplychain-link-partner-1-grid" form-view="partner-supplychain-link-form"
-					colSpan="6"></panel-related>
-				<panel-related field="partner2SupplychainLinkList"
-					grid-view="partner-supplychain-link-partner-2-grid" form-view="partner-supplychain-link-form"
-					colSpan="6"></panel-related>
-			</insert>
-		</extend>
-	</form>
-
-
-	<action-view name="action-partner-view-sales-orders" title="Sales orders"
-		model="com.axelor.apps.sale.db.SaleOrder">
-		<view type="grid" name="sale-order-partner-grid" />
-		<view type="form" name="sale-order-form" />
+    <form name="incl-purchases-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" >
+       <panel-dashlet name="partnerPOPasnel" colSpan="12" action="action-partner-view-purchases-orders" title="Purchase orders" showIf="id != null &amp;&amp; (isSupplier || isCarrier)"/>
+    </form>
+    
+	
+     <action-view name="action-partner-view-sales-orders" title="Sales orders" model="com.axelor.apps.sale.db.SaleOrder">
+		<view type="grid" name="sale-order-partner-grid"/>
+		<view type="form" name="sale-order-form"/>
 		<domain>(self.clientPartner.id = :id OR self.contactPartner.id = :id)</domain>
-		<context name="id" expr="eval: id" />
+		<context name="id" expr="eval: id"/>
 	</action-view>
-
-	<action-view name="action-contact-view-sales-orders" title="Sales orders"
-		model="com.axelor.apps.sale.db.SaleOrder">
-		<view type="grid" name="sale-order-partner-grid" />
-		<view type="form" name="sale-order-form" />
+	
+	<action-view name="action-contact-view-sales-orders" title="Sales orders" model="com.axelor.apps.sale.db.SaleOrder">
+		<view type="grid" name="sale-order-partner-grid"/>
+		<view type="form" name="sale-order-form"/>
 		<domain>(self.contactPartner.id = :id)</domain>
-		<context name="id" expr="eval: id" />
+		<context name="id" expr="eval: id"/>
 	</action-view>
 
-	<action-view name="action-partner-view-purchases-orders"
-		title="Purchases orders" model="com.axelor.apps.purchase.db.PurchaseOrder">
-		<view type="grid" name="purchase-order-grid" />
-		<view type="form" name="purchase-order-form" />
-		<domain>(self.supplierPartner.id = :id)</domain>
-	</action-view>
+     <action-view name="action-partner-view-purchases-orders" title="Purchases orders" model="com.axelor.apps.purchase.db.PurchaseOrder">
+        <view type="grid" name="purchase-order-grid"/>
+        <view type="form" name="purchase-order-form"/>
+        <domain>(self.supplierPartner.id = :id)</domain>
+    </action-view>
 </object-views>
