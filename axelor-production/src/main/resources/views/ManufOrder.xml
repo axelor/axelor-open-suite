@@ -267,7 +267,7 @@
 		<panel name="mainPanel" colSpan="12">
 			<field name="$components" title="Products" type="one-to-many" canView="false" readonly="true"
 						 target="com.axelor.apps.production.db.ProdProduct"
-						 grid-view="prod-product-consume-manuf-order-grid" colSpan="12"/>
+						 grid-view="prod-product-multi-level-manuf-order-grid" colSpan="12"/>
 			<button name="generateMO" title="Generate MO"
 							onClick="com.axelor.apps.production.web.ManufOrderController:generateMultiLevelManufOrder"
 							colSpan="4" colOffset="8"/>
