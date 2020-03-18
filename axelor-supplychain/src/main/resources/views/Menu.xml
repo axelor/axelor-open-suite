@@ -2,19 +2,21 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
-	
-	
-	<menuitem name="menu-products-dashboard-1" parent="referential-report"  if="__config__.app.isApp('supplychain')"
-		title="Products"  action="supplychain.products.dashboard.1" />	
-		
+
+
+	<menuitem name="menu-products-dashboard-1" parent="referential-report"
+		if="__config__.app.isApp('supplychain')" title="Products"
+		action="supplychain.products.dashboard.1" />
+
 	<action-view name="supplychain.products.dashboard.1" title="Products Details">
-		<view type="dashboard" name="supplychain.products.dashboard.view.1" />	 
+		<view type="dashboard" name="supplychain.products.dashboard.view.1" />
 	</action-view>
 
 
-	
-	<menuitem name="admin-root-batch-supplychain" parent="admin-root-batch" if="__config__.app.isApp('supplychain')"
-		title="Supplychain batches" action="admin.root.batch.supplychain" />
+
+	<menuitem name="admin-root-batch-supplychain" parent="admin-root-batch"
+		if="__config__.app.isApp('supplychain')" title="Supplychain batches"
+		action="admin.root.batch.supplychain" />
 
 	<action-view name="admin.root.batch.supplychain" title="Supplychain batches"
 		model="com.axelor.apps.supplychain.db.SupplychainBatch">
@@ -27,159 +29,192 @@
 		<context name="disabledActionSelect" expr="eval: 0"
 			if="__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()" />
 	</action-view>
-	
-<!-- 	MRP -->
-	
-	<menuitem name="stock-mrp" parent="stock-root" title="MRP" if="__config__.app.isApp('supplychain')"  order="40"/> 
-	
-	<menuitem name="stock-mrp-calculation" parent="stock-mrp" title="Calculation" action="stock.mrp.calculation"/>
-	
-	<action-view name="stock.mrp.calculation" title="Calculation" model="com.axelor.apps.supplychain.db.Mrp">
-	    <view type="grid" name="mrp-grid"/>
-	    <view type="form" name="mrp-form"/>
-	</action-view>
-	
-	<menuitem name="stock-mrp-forecast" parent="stock-mrp" title="Forecasts" action="stock.mrp.forecast"/>
 
-	<action-view name="stock.mrp.forecast" title="Forecasts" model="com.axelor.apps.supplychain.db.MrpForecast">
-   	    <view type="grid" name="mrp-forecast-grid"/>
-	    <view type="form" name="mrp-forecast-form"/>
-   		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+	<!-- MRP -->
+
+	<menuitem name="stock-mrp" parent="stock-root" title="MRP"
+		if="__config__.app.isApp('supplychain')" order="40" />
+
+	<menuitem name="stock-mrp-calculation" parent="stock-mrp"
+		title="Calculation" action="stock.mrp.calculation" />
+
+	<action-view name="stock.mrp.calculation" title="Calculation"
+		model="com.axelor.apps.supplychain.db.Mrp">
+		<view type="grid" name="mrp-grid" />
+		<view type="form" name="mrp-form" />
 	</action-view>
 
-	
-	<menuitem name="stock-mrp-configuration" parent="stock-mrp" title="Configuration" icon="fa-cog"/>
-	
-	<menuitem name="stock-mrp-configuration-mrp-line-type" parent="stock-mrp-configuration" title="MRP move types" action="stock.mrp.configuration.mrp.line.type"/>
+	<menuitem name="stock-mrp-forecast" parent="stock-mrp" title="Forecasts"
+		action="stock.mrp.forecast" />
 
-	<action-view name="stock.mrp.configuration.mrp.line.type" title="MRP move types" model="com.axelor.apps.supplychain.db.MrpLineType">
-    	<view type="grid" name="mrp-line-type-grid"/>
-	    <view type="form" name="mrp-line-type-form"/>
-	</action-view>
-	
-	<menuitem name="invoice-root-subscription-invoice" parent="invoice-root" title="Subscription invoices to validate" 
-		action="invoice.root.subscription.invoice" order="22"  />
-	
-	<action-view name="invoice.root.subscription.invoice" title="Subscription invoices to validate"
-		model="com.axelor.apps.account.db.Invoice">
-		<view type="grid" name="invoice-light-grid"/>
-		<view type="form" name="invoice-form"/>
-		<domain>self.operationSubTypeSelect = 6 and self.statusSelect = 1</domain>
-		<context name="_operationTypeSelect" expr="eval:3"/>
-		<context name="_operationSubTypeSelect" expr="eval:6"/>
+	<action-view name="stock.mrp.forecast" title="Forecasts"
+		model="com.axelor.apps.supplychain.db.MrpForecast">
+		<view type="grid" name="mrp-forecast-grid" />
+		<view type="form" name="mrp-forecast-form" />
 		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>
-	
-	<menuitem title="Declarations of exchanges" name="supplychain-declarations-of-exchanges"
-      parent="account-root-periodic-processing" action="supplychain.declarations.of.exchanges"/>
 
-    <action-view name="supplychain.declarations.of.exchanges" title="Declarations of exchanges"
-      model="com.axelor.apps.supplychain.db.DeclarationOfExchanges">
-      <view type="grid" name="declaration-of-exchanges-grid"/>
-      <view type="form" name="declaration-of-exchanges-form"/>
-      <context name="YEAR_TYPE_FISCAL" expr="eval: com.axelor.apps.base.db.repo.YearRepository.TYPE_FISCAL"/>
-      <context name="STOCK_MOVE_TYPE_OUTGOING" expr="eval: com.axelor.apps.stock.db.repo.StockMoveRepository.TYPE_OUTGOING"/>
-      <context name="STOCK_MOVE_TYPE_INCOMING" expr="eval: com.axelor.apps.stock.db.repo.StockMoveRepository.TYPE_INCOMING"/>
-    </action-view>
-	
-	<menuitem name="top-menu-purchase-suparrivals" parent="top-menu-purchase" if="__config__.app.isApp('stock')"
-		title="Supplier Arrivals" action="top.menu.purchase.suparrivals" top="true"/>
+
+	<menuitem name="stock-mrp-configuration" parent="stock-mrp"
+		title="Configuration" icon="fa-cog" />
+
+	<menuitem name="stock-mrp-configuration-mrp-line-type" parent="stock-mrp-configuration"
+		title="MRP move types" action="stock.mrp.configuration.mrp.line.type" />
+
+	<action-view name="stock.mrp.configuration.mrp.line.type"
+		title="MRP move types" model="com.axelor.apps.supplychain.db.MrpLineType">
+		<view type="grid" name="mrp-line-type-grid" />
+		<view type="form" name="mrp-line-type-form" />
+	</action-view>
+
+	<menuitem name="invoice-root-subscription-invoice" parent="invoice-root"
+		title="Subscription invoices to validate" action="invoice.root.subscription.invoice"
+		order="22" />
+
+	<action-view name="invoice.root.subscription.invoice"
+		title="Subscription invoices to validate" model="com.axelor.apps.account.db.Invoice">
+		<view type="grid" name="invoice-light-grid" />
+		<view type="form" name="invoice-form" />
+		<domain>self.operationSubTypeSelect = 6 and self.statusSelect = 1</domain>
+		<context name="_operationTypeSelect" expr="eval:3" />
+		<context name="_operationSubTypeSelect" expr="eval:6" />
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+	</action-view>
+
+	<menuitem title="Declarations of exchanges" name="supplychain-declarations-of-exchanges"
+		parent="account-root-periodic-processing" action="supplychain.declarations.of.exchanges" />
+
+	<action-view name="supplychain.declarations.of.exchanges"
+		title="Declarations of exchanges" model="com.axelor.apps.supplychain.db.DeclarationOfExchanges">
+		<view type="grid" name="declaration-of-exchanges-grid" />
+		<view type="form" name="declaration-of-exchanges-form" />
+		<context name="YEAR_TYPE_FISCAL"
+			expr="eval: com.axelor.apps.base.db.repo.YearRepository.TYPE_FISCAL" />
+		<context name="STOCK_MOVE_TYPE_OUTGOING"
+			expr="eval: com.axelor.apps.stock.db.repo.StockMoveRepository.TYPE_OUTGOING" />
+		<context name="STOCK_MOVE_TYPE_INCOMING"
+			expr="eval: com.axelor.apps.stock.db.repo.StockMoveRepository.TYPE_INCOMING" />
+	</action-view>
+
+	<menuitem name="top-menu-purchase-suparrivals" parent="top-menu-purchase"
+		if="__config__.app.isApp('stock')" title="Supplier Arrivals"
+		action="top.menu.purchase.suparrivals" top="true" />
 
 	<action-view name="top.menu.purchase.suparrivals" title="Supplier Arrivals"
-		model="com.axelor.apps.stock.db.StockMove" >
-		<view type="grid" name="stock-move-in-grid"/>
-		<view type="form" name="stock-move-form"/>
-		<view-param name="search-filters" value="supplier-arrivals-filters"/>
+		model="com.axelor.apps.stock.db.StockMove">
+		<view type="grid" name="stock-move-in-grid" />
+		<view type="form" name="stock-move-form" />
+		<view-param name="search-filters" value="supplier-arrivals-filters" />
 		<domain>self.fromStockLocation.typeSelect = 2</domain>
-		<context name="_typeSelect" expr="3"/>
-		<context name="_newDate" expr="eval: __date__.plusWeeks(1)"/>
+		<context name="_typeSelect" expr="3" />
+		<context name="_newDate" expr="eval: __date__.plusWeeks(1)" />
 	</action-view>
-	
-	<menuitem name="top-menu-sales-custdeliveries" parent="top-menu-sales"  if="__config__.app.isApp('stock')"
-		title="Customer deliveries" action="top.menu.sales.custdeliveries" top="true"/>
+
+	<menuitem name="top-menu-sales-custdeliveries" parent="top-menu-sales"
+		if="__config__.app.isApp('stock')" title="Customer deliveries"
+		action="top.menu.sales.custdeliveries" top="true" />
 
 	<action-view name="top.menu.sales.custdeliveries" title="Customer deliveries"
-		model="com.axelor.apps.stock.db.StockMove" >
-		<view type="grid" name="stock-move-out-grid"/>
-		<view type="form" name="stock-move-form"/>
-		<view-param name="search-filters" value="customer-deliveries-filters"/>
+		model="com.axelor.apps.stock.db.StockMove">
+		<view type="grid" name="stock-move-out-grid" />
+		<view type="form" name="stock-move-form" />
+		<view-param name="search-filters" value="customer-deliveries-filters" />
 		<domain>self.toStockLocation.typeSelect = 2</domain>
-		<context name="_typeSelect" expr="2"/>
+		<context name="_typeSelect" expr="2" />
 	</action-view>
-	
-	<menuitem name="purchase-root-purchase-orders-without-stock.move" title="Purchase order without stock move"
-		parent="sc-root-purchase" action="purchase.root.purchase.orders.without.stock.move" order="25"
-		if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').isPurchaseOrderWithoutIncomingStockMove"/>
 
-	<action-view name="purchase.root.purchase.orders.without.stock.move" title="Purchase order without stock move"
-		model="com.axelor.apps.purchase.db.PurchaseOrder">
-		<view type="cards" name="purchase-order-cards"/>
+	<menuitem name="purchase-root-purchase-orders-without-stock.move"
+		title="Purchase order without stock move" parent="sc-root-purchase"
+		action="purchase.root.purchase.orders.without.stock.move" order="25"
+		if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').isPurchaseOrderWithoutIncomingStockMove" />
+
+	<action-view name="purchase.root.purchase.orders.without.stock.move"
+		title="Purchase order without stock move" model="com.axelor.apps.purchase.db.PurchaseOrder">
+		<view type="cards" name="purchase-order-cards" />
 		<view type="grid" name="purchase-order-grid" />
 		<view type="form" name="purchase-order-form" />
 		<domain>self.statusSelect = 3 AND self IN (select p.purchaseOrder from PurchaseOrderLine as p where p.receiptState != 3 AND p.product.productTypeSelect = 'storable' AND p.product.stockManaged = true) AND self.id NOT IN (SELECT s.originId FROM StockMove s WHERE s.originTypeSelect LIKE 'com.axelor.apps.purchase.db.PurchaseOrder' AND s.statusSelect = 2)</domain>
 	</action-view>
-	
-	<menuitem name="sale-root-sale-orders-without-stock-move" title="Sale order without stock move"
-		parent="sc-root-sale" action="sale.root.sale.orders.without.stock.move" order="25"
-		if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').isSaleOrderWithoutOutgoingStockMove"/>
 
-	<action-view name="sale.root.sale.orders.without.stock.move" title="Sale order without stock move"
-		model="com.axelor.apps.sale.db.SaleOrder">
-		<view type="cards" name="sale-order-cards"/>
-		<view type="grid" name="sale-order-grid"/>
-		<view type="calendar" name="sale-order-calendar"/>
-		<view type="form" name="sale-order-form"/>
+	<menuitem name="sale-root-sale-orders-without-stock-move"
+		title="Sale order without stock move" parent="sc-root-sale"
+		action="sale.root.sale.orders.without.stock.move" order="25"
+		if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').isSaleOrderWithoutOutgoingStockMove" />
+
+	<action-view name="sale.root.sale.orders.without.stock.move"
+		title="Sale order without stock move" model="com.axelor.apps.sale.db.SaleOrder">
+		<view type="cards" name="sale-order-cards" />
+		<view type="grid" name="sale-order-grid" />
+		<view type="calendar" name="sale-order-calendar" />
+		<view type="form" name="sale-order-form" />
 		<domain>self.statusSelect = 3 AND self IN (select s.saleOrder from SaleOrderLine as s where s.deliveryState != 3 AND s.product.productTypeSelect = 'storable' AND s.product.stockManaged = true) AND self.id NOT IN (SELECT s.originId FROM StockMove s WHERE s.originTypeSelect LIKE 'com.axelor.apps.sale.db.SaleOrder' AND s.statusSelect = 2)</domain>
 	</action-view>
-	
-	<menuitem name="sale-configuration-timetable-template" title="Timetable templates" 
-		parent="sc-root-sale-conf" action="sale.conf.timetable.template"/>
-	
-	<action-view name="sale.conf.timetable.template" title="Timetable templates" 
+
+	<menuitem name="sale-configuration-timetable-template" title="Timetable templates"
+		parent="sc-root-sale-conf" action="sale.conf.timetable.template" />
+
+	<action-view name="sale.conf.timetable.template" title="Timetable templates"
 		model="com.axelor.apps.supplychain.db.TimetableTemplate">
-		<view type="grid" name="timetable-template-grid"/>
-		<view type="form" name="timetable-template-form"/>
+		<view type="grid" name="timetable-template-grid" />
+		<view type="form" name="timetable-template-form" />
 	</action-view>
-	
-	<menuitem name="stock-multi-purchase-invoicing" parent="sc-root-purchase" order="26"
-		title="Mass Suppl. Stock Move Invoicing" action="stock.root.multi.purchase.invoicing"/>
-	
-	<action-view name="stock.root.multi.purchase.invoicing" title="Mass Suppl. Stock Move Invoicing"
-		model="com.axelor.apps.stock.db.StockMove" >
-		<view type="form" name="stock-move-multi-purchase-invoicing-form"/>
+
+	<menuitem name="stock-multi-purchase-invoicing" parent="sc-root-purchase"
+		order="26" title="Mass Suppl. Stock Move Invoicing" action="stock.root.multi.purchase.invoicing" />
+
+	<action-view name="stock.root.multi.purchase.invoicing"
+		title="Mass Suppl. Stock Move Invoicing" model="com.axelor.apps.stock.db.StockMove">
+		<view type="form" name="stock-move-multi-purchase-invoicing-form" />
 	</action-view>
-	
-	<menuitem name="stock-multi-sale-invoicing" parent="sc-root-sale" order="26" if="__config__.app.isApp('supplychain')"
-		title="Mass Cust. Stock Move Invoicing" action="stock.root.multi.sale.invoicing"/>
-		
+
+	<menuitem name="stock-multi-sale-invoicing" parent="sc-root-sale"
+		order="26" if="__config__.app.isApp('supplychain')" title="Mass Cust. Stock Move Invoicing"
+		action="stock.root.multi.sale.invoicing" />
+
 	<action-view name="stock.root.multi.sale.invoicing" title="Mass Cust. Stock Move Invoicing"
-		model="com.axelor.apps.stock.db.StockMove" >
-		<view type="form" name="stock-move-multi-sale-invoicing-form"/>
+		model="com.axelor.apps.stock.db.StockMove">
+		<view type="form" name="stock-move-multi-sale-invoicing-form" />
 	</action-view>
-	
-	<menuitem name="stock-root-availabilityreq" parent="sc-root-sale" order="27"
-		title="Availability requests" action="stock.root.availabilityreq" 
+
+	<menuitem name="stock-root-availabilityreq" parent="sc-root-sale"
+		order="27" title="Availability requests" action="stock.root.availabilityreq"
 		if="__config__.app.isApp('stock') &amp;&amp; __config__.app.getApp('stock').isSeparateShipmentOperations" />
-		
+
 	<action-view name="stock.root.availabilityreq" title="Availability requests"
-		model="com.axelor.apps.stock.db.StockMove" >
-		<view type="grid" name="stock-move-out-availability-req-grid"/>
-        <view type="calendar" name="stock-move-calendar" />
-		<view type="form" name="stock-move-form"/>
-		<view-param name="search-filters" value="customer-deliveries-filters"/>
-        <domain>self.typeSelect = :_typeSelect AND self.isReversion = :_isReversion</domain>
-		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
-		<context name="_isReversion" expr="eval: false"/>
-		<context name="_userType" expr="eval: __repo__(StockMove).USER_TYPE_SALESPERSON"/>
+		model="com.axelor.apps.stock.db.StockMove">
+		<view type="grid" name="stock-move-out-availability-req-grid" />
+		<view type="calendar" name="stock-move-calendar" />
+		<view type="form" name="stock-move-form" />
+		<view-param name="search-filters" value="customer-deliveries-filters" />
+		<domain>self.typeSelect = :_typeSelect AND self.isReversion = :_isReversion</domain>
+		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING" />
+		<context name="_isReversion" expr="eval: false" />
+		<context name="_userType"
+			expr="eval: __repo__(StockMove).USER_TYPE_SALESPERSON" />
 	</action-view>
-  
-  <menuitem name="stock-root-stock-details-by-product" parent="stock-root" if="__config__.app.isApp('supplychain')"
-    title="Stock details by product" action="stock.root.stock.details.by.product" />
-    
-    <action-view name="stock.root.stock.details.by.product" title="Stock details by product" model="com.axelor.apps.base.db.Product">
-      <view type="form" name="supplychain-stock-details-by-product-form"/>
-    </action-view>
-	
+
+	<menuitem name="stock-root-stock-details-by-product" parent="stock-root"
+		if="__config__.app.isApp('supplychain')" title="Stock details by product"
+		action="stock.root.stock.details.by.product" />
+
+	<action-view name="stock.root.stock.details.by.product"
+		title="Stock details by product" model="com.axelor.apps.base.db.Product">
+		<view type="form" name="supplychain-stock-details-by-product-form" />
+	</action-view>
+
+
+	<menuitem name="referential-conf-partner" parent="referential-conf"
+		if="__config__.app.isApp('supplychain')" title="Partner relations type"
+		action="supplychain.referential.conf.partner" />
+
+
+
+	<action-view name="supplychain.referential.conf.partner"
+		title="Partner relations types" model="com.axelor.apps.base.db.PartnerSupplychainLinkType">
+		<view type="grid" name="partner-supplychain-link-type-grid" />
+		<view type="form" name="partner-supplychain-link-type-form" />
+	</action-view>
+
 </object-views>
 
 
