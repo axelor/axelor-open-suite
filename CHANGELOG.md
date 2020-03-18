@@ -3,6 +3,7 @@
 ## Improvements
 - PARTNER : add url widget for website.
 - MrpFamily : make 'name' required field.
+- STOCK : Improve translation
 
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
