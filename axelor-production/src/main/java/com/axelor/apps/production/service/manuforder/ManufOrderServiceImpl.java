@@ -333,7 +333,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   /**
    * Trier une liste de ligne de règle de template
    *
-   * @param templateRuleLine
+   * @param prodProcessLineList
    */
   public List<ProdProcessLine> _sortProdProcessLineByPriority(
       List<ProdProcessLine> prodProcessLineList) {
@@ -821,15 +821,25 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     return statusList;
   }
 
-  public void generateAllSubManufOrder(List<BillOfMaterial> billOfMaterialList, ManufOrder manufOrder) throws AxelorException {
+  /**
+   * Called by generateMultiLevelManufOrder controller to generate all manuf order for a given bill
+   * of material list from a given manuf order.
+   *
+   * @param billOfMaterialList
+   * @param manufOrder
+   * @throws AxelorException
+   */
+  public void generateAllSubManufOrder(
+      List<BillOfMaterial> billOfMaterialList, ManufOrder manufOrder) throws AxelorException {
     for (BillOfMaterial billOfMaterial : billOfMaterialList) {
-      generateManufOrder(billOfMaterial.getProduct(),
+      generateManufOrder(
+          billOfMaterial.getProduct(),
           billOfMaterial.getQty(),
           billOfMaterial.getPriority(),
           IS_TO_INVOICE,
           billOfMaterial,
+          null,
           manufOrder.getPlannedStartDateT(),
-          manufOrder.getPlannedEndDateT(),
           ORIGIN_TYPE_OTHER);
     }
   }
