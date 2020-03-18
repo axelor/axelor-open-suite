@@ -497,5 +497,10 @@
         <option value="0">Standard</option>
         <option value="1">Title</option>
     </selection>
+    
+    <selection name="product.sequence.type.select">
+    	<option value="Per product">Per product</option> 
+    	<option value="Per product category">Per product category</option>   
+    </selection>
 
 </object-views>

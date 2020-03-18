@@ -30,7 +30,7 @@ public interface ProductService {
   @Transactional
   public void updateProductPrice(Product product);
 
-  public String getSequence() throws AxelorException;
+  public String getSequence(Product product) throws AxelorException;
 
   /**
    * Retourne le prix d'un produit à une date t.
