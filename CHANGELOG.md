@@ -7,6 +7,7 @@
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
 - SALE CONFIG : Fixed "Action not allowed" error when we try to update customer's accepted credit
+- TIMESHEET : Fix auto-generation of leave days not generating the first day
 
 ## [5.3.1] - 2020-03-16
 ## Improvements
