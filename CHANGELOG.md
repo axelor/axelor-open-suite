@@ -8,5 +8,6 @@
 ## Improvements
 - USER : Default User language is based on application.locale from application.properties
 - BASE : Cache memory performace improved by not stocking geographical entities anymore
+- Employee : renamed dateOfHire, timeOfHire, endDateContract, dateOfBirth fields to hireDate, hireTime, contractEndDate, birthDate
 
 ## Bug Fixes
