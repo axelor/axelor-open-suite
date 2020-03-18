@@ -77,6 +77,10 @@
 	   	
 	   	<one-to-many name="globalTrackingConfigurationLines" ref="com.axelor.apps.admin.db.GlobalTrackingConfigurationLine" mappedBy="appBase" orphanRemoval="true"/>
 	   	
+	   	<string name="productSequenceTypeSelect" selection="product.sequence.type.select" title="Sequence product type" default="Per product"></string>
+		
+    	<many-to-one name="productSequence" ref="com.axelor.apps.base.db.Sequence" title="Product sequence"></many-to-one>
+		
 		<extra-code>
 	   		<![CDATA[
 	   			public static final int DISCOUNT_SEPARATE = 1;
@@ -88,6 +92,9 @@
 	   			
 	   			public static final int ROUTING_API_YOURS = 1;
 	   			public static final int ROUTING_API_OSRM = 2;
+	   			
+	   			public static final String SEQUENCE_PER_PRODUCT = "Per product";
+	   			public static final String SEQUENCE_PER_PRODUCT_CATEGORY = "Per product category";
 	   		]]>
 	   	</extra-code>
 	   	

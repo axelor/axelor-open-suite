@@ -364,6 +364,7 @@
 		<action name="action-product-attrs-set-cost-type-select"/>
 		<action name="action-product-record-set-barcode-type-config"/>
 		<action name="action-product-attrs-title-unit"/>
+		<action name="action-product-attrs-set-required-productCategory"/>
     </action-group>
     
     <action-group name="action-group-base-product-producttype-onchange">
@@ -396,8 +397,9 @@
         <action name="action-product-set-stock"/>
         <action name="action-product-set-total-variants"/>
         <action name="action-product-attrs-readonly-sellable" if="__context__?._fromSale"/>
-        <action name="action-product-attrs-readonly-purchasable" if="__context__?._fromPurchase"/>
-		<action name="action-product-attrs-cost-price-variant"/>
+        <action name="action-product-attrs-readonly-purchasable" if="__context__?._fromPurchase"/>    
+		<action name="action-product-attrs-cost-price-variant"/>		    
+		<action name="action-product-attrs-set-required-productCategory"/>
     </action-group>
 
 	<action-group name="action-product-group-cost-type-select-onchange">
@@ -598,5 +600,9 @@
 		<domain>self.product.id = :productId AND self.defineSubBillOfMaterial = true</domain>
 		<context name="productId" expr="eval: id"/>
 	</action-view>
+	
+	<action-attrs name="action-product-attrs-set-required-productCategory">
+		<attribute name="required" for="productCategory" expr="eval: __config__.app.getApp('base').getGenerateProductSequence() &amp;&amp; __config__.app.getApp('base').getProductSequenceTypeSelect() == 'Per product category'"/>
+	</action-attrs>
 	
 </object-views>
