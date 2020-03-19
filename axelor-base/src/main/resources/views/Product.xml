@@ -107,7 +107,7 @@
   			<panel name="salePanel" title="Sale" showTitle="false">
 				<panel name="subSalePanel" title="Sales" colSpan="6">
 					<field name="sellable" colSpan="6"/>
-					<field name="tradingNameSellerSet" colSpan="12" showIf="sellable" canNew="false" canSelect="true"></field>
+					<field name="tradingNameSellerSet" colSpan="12" showIf="sellable" canNew="false" canSelect="true"/>
 					<field name="productSynchronizedInPrestashop" colSpan="6" if="__config__.app.isApp('prestashop')" if-module="axelor-prestashop"/>
 					<field name="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"/>
 					<field name="salePrice" readonlyIf="autoUpdateSalePrice" hideIf="!sellable" colSpan="12"/>
@@ -151,7 +151,7 @@
 	    	<panel name="purchaseCostsPanel" title="Purchase/Costs" showTitle="false">
 		      	<panel name="purchasePanel" title="Purchases" colSpan="6">
 			        <field name="purchasable" colSpan="12"/>
-					<field name="tradingNameBuyerSet" colSpan="12" showIf="purchasable" canSelect="true" canNew="false"></field>
+					<field name="tradingNameBuyerSet" colSpan="12" showIf="purchasable" canSelect="true" canNew="false"/>
 			        <field name="purchasePrice" showIf="purchasable" colSpan="6"/>
 			        <field name="purchaseCurrency" canEdit="false" showIf="purchasable" colSpan="6" form-view="currency-form" grid-view="currency-grid"/>
 			        <field name="defaultSupplierPartner" canEdit="false" showIf="purchasable" colSpan="6" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>

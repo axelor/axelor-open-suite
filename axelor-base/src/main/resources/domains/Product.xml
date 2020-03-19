@@ -129,8 +129,8 @@
 			
 		<boolean name="allowToForcePurchaseQty" title="Allow to force purchases quantities"/>
 		
-		<many-to-many name="tradingNameSellerSet" ref="com.axelor.apps.base.db.TradingName" title="Trading name that can sells this product"/>
-		<many-to-many name="tradingNameBuyerSet" ref="com.axelor.apps.base.db.TradingName" title="Trading name that can buys this product"/>
+		<many-to-many name="tradingNameSellerSet" ref="com.axelor.apps.base.db.TradingName" title="Trading names that can sell this product"/>
+		<many-to-many name="tradingNameBuyerSet" ref="com.axelor.apps.base.db.TradingName" title="Trading names that can buy this product"/>
 		
 		<extra-code>
 	   		<![CDATA[

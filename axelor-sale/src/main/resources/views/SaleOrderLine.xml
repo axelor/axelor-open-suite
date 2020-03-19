@@ -134,7 +134,7 @@
 				</panel>
 				<field name="product.isUnrenewed" hidden="true"/>
         		<field name="product.isPrototype" hidden="true"/>
-        		<field name="saleOrder" hidden="true"></field>
+        		<field name="saleOrder" hidden="true"/>
 				<field name="product" canEdit="false" onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="product-grid" if="!__config__.app.isApp('supplychain')"/>
 				<field name="product" canEdit="false" onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="stock-move-line-product-grid" if="__config__.app.isApp('supplychain')"/>
 				<field name="enableFreezeFields" colSpan="2"/>
@@ -579,9 +579,9 @@
 	</action-attrs>
 	
 	<action-attrs name="action-sale-order-line-attrs-domain-product">
-	<attribute name="domain" for="product" expr="self.isModel = false and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true" if="!__config__.app.getApp('sale').enableSalesProductByTradName"/>
-  <attribute name="domain" for="product" expr="eval: &quot;self.isModel = false and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true AND ${_parent?.tradingName?.id} member of self.tradingNameSellerSet&quot;" if="__config__.app.getApp('sale')?.enableSalesProductByTradName"/>	
-</action-attrs>
+		<attribute name="domain" for="product" expr="self.isModel = false and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true" if="!__config__.app.getApp('sale').enableSalesProductByTradName || _parent?.company?.tradingNameSet == null || _parent?.company?.tradingNameSet.isEmpty()"/>
+		<attribute name="domain" for="product" expr="eval: &quot;self.isModel = false and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true AND ${_parent?.tradingName?.id} member of self.tradingNameSellerSet&quot;" if="__config__.app.getApp('sale')?.enableSalesProductByTradName &amp;&amp; _parent?.company?.tradingNameSet != null &amp;&amp; !_parent?.company?.tradingNameSet.isEmpty()"/>	
+	</action-attrs>
 	
   	<action-attrs name="action-sale-order-line-attrs-scale-and-precision">
 		<attribute name="scale" for="price" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>

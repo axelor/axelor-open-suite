@@ -268,9 +268,11 @@
 	        ]]></viewer>
 	      </field>
 	  	</panel>
+	  	<field name="company.tradingNameSet" hidden="true"/>
 	    <panel name="generalInfoPanel" colSpan="12">
 	      <field name="company" readonlyIf="statusSelect == 3 || clientPartner != null" widget="SuggestBox" canEdit="false" onChange="action-sale-group-onchange-company" form-view="company-form" grid-view="company-grid" colSpan="3"/>
-	      <field if="__config__.app.getApp('base').enableTradingNamesManagement" name="tradingName" readonlyIf="statusSelect >= 2" canEdit="false" onChange="action-sale-method-printing-settings-default-values" domain=":company MEMBER OF self.companySet" form-view="trading-name-form" grid-view="trading-name-grid" colSpan="3"/>
+	      <field if="__config__.app.getApp('base').enableTradingNamesManagement" name="tradingName" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" canEdit="false" onChange="action-sale-method-printing-settings-default-values" domain=":company MEMBER OF self.companySet" form-view="trading-name-form" grid-view="trading-name-grid" colSpan="3" 
+	      		 requiredIf="$enableSalesProductByTradName &amp;&amp; company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0"/>
 	      <label name="tradingNameLabel" if="!(__config__.app.getApp('base').enableTradingNamesManagement)" colSpan="3" />
 	      <field name="currency" required="true" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" canEdit="false" form-view="currency-form" grid-view="currency-grid" colSpan="3"/>
 	      <field name="priceList" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" onChange="action-sale-order-record-hide-discount" onSelect="action-sale-order-method-price-list-domain" canEdit="false" form-view="price-list-form" grid-view="price-list-grid" hideIf="company == null" colSpan="3"/>
@@ -300,7 +302,7 @@
 	    </panel>
 	    <field name="clientPartner.saleOrderInformation" showTitle="false" hideIf="clientPartner == null || clientPartner.saleOrderInformation == null" colSpan="12" css="bold red"/>
 	  </panel>
-	  <panel-tabs name="mainPanelTab" hideIf="clientPartner == null">
+	  <panel-tabs name="mainPanelTab" hideIf="clientPartner == null || ($enableSalesProductByTradName &amp;&amp; company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0 &amp;&amp; tradingName == null)">
 	    <panel name="contentPanel" title="Content">
 	      <panel-related name="detailLinesPanel" canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)" 
                      canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
@@ -927,6 +929,7 @@
         <action name="action-sale-order-attrs-external-reference"/>
         <action name="action-sale-order-attrs-availability"/>
         <action name="action-sale-order-group-set-defualts-from-opportunity" if="_parent != null &amp;&amp; _parent?._model=='com.axelor.apps.crm.db.Opportunity'"/>
+		<action name="action-sale-order-record-load-trading-name-config"/>
     </action-group>
 
 	<action-group name="action-sale-order-group-set-defualts-from-opportunity">
@@ -940,7 +943,11 @@
     </action-record>
 
    <action-record name="action-sale-order-record-set-salemanuser-from-opportunity" model="com.axelor.apps.sale.db.SaleOrder">
-      <field name="salemanUser" expr="eval: _parent?.user"/>
+		<field name="salemanUser" expr="eval: _parent?.user"/>
+   </action-record>
+   
+   <action-record name="action-sale-order-record-load-trading-name-config" model="com.axelor.apps.sale.db.SaleOrder">
+		<field name="$enableSalesProductByTradName" expr="eval: __config__.app.getApp('sale').enableSalesProductByTradName"/>
    </action-record>
 
     <action-group name="action-group-sale-saleorder-onload">
@@ -952,6 +959,7 @@
 		<action name="action-sale-order-attrs-external-reference"/>
 		<action name="action-sale-order-attrs-availability"/>
 		<action name="action-sale-order-attrs-set-required"/>
+		<action name="action-sale-order-record-load-trading-name-config"/>
 	</action-group>
 
 	<action-group name="action-sale-group-confirmed">
