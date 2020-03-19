@@ -110,7 +110,7 @@
 				<panel name="contactDetailPanel" title="Contact details" readonlyIf="statusSelect == 4 || statusSelect == 5" colSpan="12">
 					<field name="isDoNotCall" colSpan="3" hideIf="$readonly()"/>
 					<field name="isDoNotSendEmail" colSpan="3" hideIf="$readonly()"/>
-					<field name="$viewerCallAndEmail" showIf="$readonly" colSpan="12" showTitle="false">
+					<field name="$viewerCallAndEmail" showIf="$readonly()" colSpan="12" showTitle="false">
 						<viewer>
 							<![CDATA[
 								<h4>
@@ -120,7 +120,6 @@
 							]]>
 						</viewer>
 					</field>
-					<spacer name="viewerCallAndEmailSpacer" colSpan="6"/>
 					<field name="mobilePhone" colSpan="3" placeholder="+33100000000" onChange="action-partner-method-normalize-mobilePhone" pattern="^\+?([\s()-.]*\d){7,}$"/>
 					<field name="emailAddress" colSpan="3" canSelect="false" form-view="email-address-simple-form" x-show-icons="false">
 						<editor x-show-titles="false">
@@ -129,15 +128,14 @@
 					</field>
 					<field name="fixedPhone" colSpan="3" placeholder="+33100000000" onChange="action-partner-method-normalize-fixedPhone" pattern="^\+?([\s()-.]*\d){7,}$"/>
 					<field name="fax" colSpan="3" placeholder="+33100000000" onChange="action-partner-method-normalize-fax" pattern="^\+?([\s()-.]*\d){7,}$"/>
-					<field name="webSite" colSpan="3" placeholder="http://www.url.com" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
+					<field name="webSite" colSpan="6" placeholder="http://www.url.com" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
 				</panel>
 
 				<panel name="primaryAddress" title="Primary address" readonlyIf="statusSelect == 4 || statusSelect == 5" colSpan="12">
-					<field name="primaryAddress" colSpan="12"/>
-					<field name="primaryCity" colSpan="4"/>
-					<field name="primaryState" colSpan="4"/>
+					<field name="primaryAddress" colSpan="8"/>
 					<field name="primaryPostalCode" colSpan="4"/>
-					<spacer name="primaryPostalCodeSpacer" colSpan="8"/>
+					<field name="primaryCity" colSpan="4" form-view="city-from" grid-view="city-grid" onChange="action-record-lead-set-primary-postal-code"/>
+					<field name="primaryState" colSpan="4" form-view="region-form" grid-view="region-grid"/>
 					<field name="primaryCountry" colSpan="4" form-view="country-form" grid-view="country-grid"/>
 				</panel>
 
@@ -267,6 +265,10 @@
    	<action-record name="action-lead-record-status-recycle" model="com.axelor.apps.crm.db.Lead">
     	<field name="statusSelect" expr="3"/>
     	<field name="isRecycled" expr="true"/>
+    </action-record>
+    
+    <action-record name="action-record-lead-set-primary-postal-code" model="com.axelor.apps.crm.db.Lead">
+    	<field name="primaryPostalCode" expr="eval: primaryCity?.zip"/>
     </action-record>
 
     <action-view name="action-lead-view-lose" model="com.axelor.apps.crm.db.Lead" title="Lose">

@@ -66,6 +66,8 @@
 	<boolean name="isShowTotal" title="Show Total"/>
 	<boolean name="isHideUnitAmounts" title="Hide Unit Amounts"/>
 	
+	<boolean name="enableFreezeFields" transient="true" title="Freeze fields"/>
+
 	<finder-method name="findAllBySaleOrder" using="saleOrder" all="true"/>
 
 	<extra-code>

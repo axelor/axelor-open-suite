@@ -90,6 +90,9 @@ public class ITranslation {
   public static final String PHONE_BOOK_COMPANY_PHONE_BOOK = /*$$(*/
       "Phonebook.employeePhonebook"; /*)*/
 
+  public static final String TIMESHEET_FROM_DATE = /*$$(*/ "Timesheet.fromDate"; /*)*/
+  public static final String TIMESHEET_TO_DATE = /*$$(*/ "Timesheet.toDate"; /*)*/
+
   public static final String EMPLOYEE_TIMESHEET_FROM_DATE = /*$$(*/
       "EmployeeTimesheet.fromDate"; /*)*/
   public static final String EMPLOYEE_TIMESHEET_TO_DATE = /*$$(*/ "EmployeeTimesheet.toDate"; /*)*/
@@ -99,4 +102,5 @@ public class ITranslation {
 
   public static final String EXPENSE_TOTAL_ATI = /*$$(*/ "Expense.totalA.T.I"; /*)*/
   public static final String EXPENSE_TOTAL_TO_REFUND = /*$$(*/ "Expense.totalToRefund"; /*)*/
+  public static final String TIMESHEET_TASK = /*$$(*/ "Timesheet.task"; /*)*/
 }
