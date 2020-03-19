@@ -9,6 +9,7 @@
 - SALE CONFIG : Fixed "Action not allowed" error when we try to update customer's accepted credit.
 - TIMESHEET : Fix auto-generation of leave days not generating the first day
 - CLIENT-PORTAL : fixed the NPE when the user does not correspond to any partner.
+- Partner : Invoice copy number selection field display when the partner is a supplier.
 
 ## [5.2.6] - 2020-03-13
 ## Improvements
