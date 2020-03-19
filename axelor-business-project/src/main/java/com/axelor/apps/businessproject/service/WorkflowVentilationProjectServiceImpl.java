@@ -34,11 +34,13 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSupplychainImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -68,7 +70,9 @@ public class WorkflowVentilationProjectServiceImpl
       TimesheetLineRepository timesheetLineRepo,
       StockMoveInvoiceService stockMoveInvoiceService,
       UnitConversionService unitConversionService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      SupplyChainConfigService supplyChainConfigService,
+      StockMoveLineRepository stockMoveLineRepository) {
     super(
         accountConfigService,
         invoicePaymentRepo,
@@ -81,7 +85,9 @@ public class WorkflowVentilationProjectServiceImpl
         appSupplychainService,
         stockMoveInvoiceService,
         unitConversionService,
-        appBaseService);
+        appBaseService,
+        supplyChainConfigService,
+        stockMoveLineRepository);
     this.invoicingProjectRepo = invoicingProjectRepo;
     this.timesheetLineRepo = timesheetLineRepo;
   }

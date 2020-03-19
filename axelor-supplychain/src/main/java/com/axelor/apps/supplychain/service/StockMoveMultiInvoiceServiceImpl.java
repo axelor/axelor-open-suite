@@ -377,6 +377,9 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
 
     for (StockMove stockMoveLocal : stockMoveList) {
+
+      stockMoveInvoiceService.checkSplitSalePartiallyInvoicedStockMoveLines(
+          stockMoveLocal, stockMoveLocal.getStockMoveLineList());
       List<InvoiceLine> createdInvoiceLines =
           stockMoveInvoiceService.createInvoiceLines(
               invoice, stockMoveLocal.getStockMoveLineList(), null);
