@@ -1170,26 +1170,6 @@ where Timesheet.id = ?]]></xml-property>
             <column id="3348">
                 <property name="width">1.4791666666666667in</property>
             </column>
-            <row id="3349">
-                <property name="height">0.9583333333333334in</property>
-                <cell id="3350">
-                    <property name="colSpan">2</property>
-                    <property name="rowSpan">1</property>
-                </cell>
-                <cell id="3352">
-                    <property name="colSpan">1</property>
-                    <property name="rowSpan">1</property>
-                    <property name="textAlign">right</property>
-                </cell>
-                <cell id="4034">
-                    <property name="textAlign">right</property>
-                </cell>
-                <cell id="4035">
-                    <property name="colSpan">2</property>
-                    <property name="rowSpan">1</property>
-                    <property name="textAlign">right</property>
-                </cell>
-            </row>
             <row id="3836">
                 <property name="height">0.5729166666666666in</property>
                 <cell id="3837">
@@ -1287,7 +1267,7 @@ where Timesheet.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'Expense.period'</value>
+                                    <value type="javascript">'Timesheet.fromDate'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
@@ -1378,7 +1358,7 @@ where Timesheet.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'To date'</value>
+                                    <value type="javascript">'Timesheet.toDate'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
