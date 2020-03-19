@@ -2,6 +2,7 @@
 ## [Unreleased 5.3.6]
 ## Improvements
 - DURATION : rearranged fields in grid and form view.
+- Add configuration to activate partial invoicing for sale order and purchase order.
 
 ## Bug Fixes
 
