@@ -72,9 +72,9 @@
     <string name="mainActivityCode" title="Main activity code"/>
 	<string name="taxNbr" title="Tax N°"/>
 	<string name="siren" title="N° Siren"/>
-	<string name="nic" title="Internal Classification Number"></string>
-	<many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName" title="Agency"></many-to-one>
-	<boolean name="isInternal" title="Internal partner" default="false"></boolean>
+	<string name="nic" title="Internal Classification Number"/>
+	<many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName" title="Agency"/>
+	<boolean name="isInternal" title="Internal partner" default="false"/>
 	
  	<string name="fullName" title="Name" namecolumn="true"/>
  	<string name="simpleFullName" title="Name"/>

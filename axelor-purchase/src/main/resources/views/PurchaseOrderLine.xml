@@ -388,12 +388,12 @@
 	<!-- ACTION ATTRS -->
 	
 	<action-attrs name="action-purchase-order-line-attrs-product-domain">
-		<attribute name="domain" for="product" if="!__config__.app.getApp('purchase')?.enablePurchasesProductByTradName"
+		<attribute name="domain" for="product" if="!__config__.app.getApp('purchase')?.enablePurchasesProductByTradName || _parent?.company?.tradingNameSet == null || _parent?.company?.tradingNameSet.isEmpty()"
 		expr="eval: isFilterOnSupplier &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog()
 		? &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true and self.id IN (SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = ${_parent?.supplierPartner?.id}) &quot; 
 		: &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true &quot;" />
 	
-				<attribute name="domain" for="product" if="__config__.app.getApp('purchase')?.enablePurchasesProductByTradName"
+		<attribute name="domain" for="product" if="__config__.app.getApp('purchase')?.enablePurchasesProductByTradName &amp;&amp; _parent?.company?.tradingNameSet != null &amp;&amp; !_parent?.company?.tradingNameSet.isEmpty()"
 		expr="eval: isFilterOnSupplier &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog()
 		? &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true AND ${_parent?.tradingName?.id} member of self.tradingNameBuyerSet and self.id IN (SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = ${_parent?.supplierPartner?.id}) &quot; 
 		: &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true AND ${_parent?.tradingName?.id} member of self.tradingNameBuyerSet &quot;" />

@@ -17,7 +17,7 @@
             <field name="enableCustomerCatalogMgt" widget="boolean-switch"/>
             <field name="enablePackManagement" widget="boolean-switch"/>
             <field name="isDisplaySaleOrderLineNumber" widget="boolean-switch"/>
-            <field name="enableSalesProductByTradName" showIf="__config__.app.getApp('base').enableTradingNamesManagement"></field>
+            <field name="enableSalesProductByTradName" widget="boolean-switch"/>
 	
 		</panel>
 		<panel name="actionsPanel">
@@ -37,8 +37,12 @@
 		<view type="form" name="sale-config-form"/>
 	</action-view>
 
-  <action-attrs name="action-app-sale-attrs-manage-sale-order-version-onchange">
-    <attribute name="value" expr="eval: true" for="printingOnSOFinalization" if="manageSaleOrderVersion"/>
-  </action-attrs>
+	<action-attrs name="action-app-sale-attrs-manage-sale-order-version-onchange">
+		<attribute name="value" expr="eval: true" for="printingOnSOFinalization" if="manageSaleOrderVersion"/>
+	</action-attrs>
+  
+	<action-attrs name="action-sale-attrs-set-hidden" model="com.axelor.apps.base.db.AppSale">
+		<attribute name="hidden" for="enableSalesProductByTradName" expr="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+	</action-attrs>
 
 </object-views>

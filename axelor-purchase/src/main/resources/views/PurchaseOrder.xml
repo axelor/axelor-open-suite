@@ -106,13 +106,17 @@
 	          <span class="label label-success" ng-show="record.receiptState == 3" x-translate>Received</span>
 	        ]]></viewer>
 	      </field>
+	    <field name="company.tradingNameSet" hidden="true" colSpan="12"/>
         <field name="company" canEdit="false" colSpan="3" widget="SuggestBox" onChange="action-group-purchase-order-company-change-actions" form-view="company-form" grid-view="company-grid" readonlyIf="statusSelect >= 3 || supplierPartner != null" />
+        <field name="tradingName" canEdit="false" grid-view="trading-name-grid" form-view="trading-name-form" if="__config__.app.getApp('base').enableTradingNamesManagement" colSpan="3" readonlyIf="purchaseOrderLineList.length > 0 || statusSelect >= 3" domain=":company MEMBER OF self.companySet" onChange="action-purchase-order-method-printing-settings-default-value"
+               requiredIf="$enablePurchasesProductByTradName &amp;&amp; company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0"/>
+        <label name="tradingNameLabel" if="!(__config__.app.getApp('base').enableTradingNamesManagement)" colSpan="3" />
+        <field name="currency" canEdit="false" colSpan="3" form-view="currency-form" grid-view="currency-grid" readonlyIf="statusSelect >= 3"/>
+        <field name="priceList" onSelect="action-purchase-order-method-price-list-domain" colSpan="3" readonlyIf="statusSelect >= 3" form-view="price-list-form" grid-view="price-list-grid" hideIf="company == null" />
         <field name="supplierPartner" canEdit="false" hideIf="company == null" colSpan="3" onChange="action-group-purchase-order-partner-onchange" readonlyIf="purchaseOrderLineList.length > 0 || statusSelect >= 3" onSelect="action-set-supplier-partner-domain" form-view="partner-form" grid-view="partner-grid"/>
-			  <field name="currency" canEdit="false" colSpan="3" form-view="currency-form" grid-view="currency-grid" readonlyIf="statusSelect >= 3"/>
-	      <field name="priceList" onSelect="action-purchase-order-method-price-list-domain" colSpan="3" readonlyIf="statusSelect >= 3" form-view="price-list-form" grid-view="price-list-grid" hideIf="company == null" />
-  			<field name="contactPartner" onChange="action-record-po-contact-partner-change" onSelect="action-attrs-po-domain-on-contact-partner" domain="self.isContact = true" form-view="partner-contact-form" grid-view="partner-contact-grid" hideIf="company == null" />
+        <field name="contactPartner" onChange="action-record-po-contact-partner-change" onSelect="action-attrs-po-domain-on-contact-partner" domain="self.isContact = true" colSpan="3" form-view="partner-contact-form" grid-view="partner-contact-grid" hideIf="company == null" />
         <field name="versionNumber" if="__config__.app.getApp('purchase').getManagePurchaseOrderVersion()" colSpan="3"/>
-				<panel name="inAtiAndIntercoPanel" colSpan="3">
+        <panel name="inAtiAndIntercoPanel" colSpan="3">
           <field name="inAti" onChange="action-purchase-order-attrs-in-ati" readonlyIf="purchaseOrderLineList.length > 0 || statusSelect >= 3"/>
           <field name="interco" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
           <field name="createdByInterco" showIf="createdByInterco" readonly="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
@@ -120,7 +124,7 @@
         <field name="supplierPartner.purchaseOrderInformation" css="bold red" colSpan="12" showTitle="false" hideIf="supplierPartner == null || supplierPartner.purchaseOrderInformation == null"/>
       	</panel>
 		</panel>
-		<panel-tabs name="mainPanelTab" hideIf="supplierPartner == null">
+		<panel-tabs name="mainPanelTab" hideIf="supplierPartner == null || ($enablePurchasesProductByTradName &amp;&amp; company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0 &amp;&amp; tradingName == null)">
 			<panel name="contentPanel" title="Content" colSpan="12">
 				<panel-related name="purchaseOrderLineListPanel" field="purchaseOrderLineList" canNew="statusSelect &lt; 3" canRemove="statusSelect &lt; 3" grid-view="purchase-order-line-purchase-order-grid" title="PO lines detail" colSpan="12" onChange="action-purchase-order-method-compute" form-view="purchase-order-line-form" canMove="true" orderBy="sequence" height="30"/>
 				<field name="notes" colSpan="12" x-lite="true" widget="html"/>
@@ -204,7 +208,6 @@
   <panel name="purchasesFollowUpPanel" title="Purchases follow-up" hideIf="supplierPartner == null" sidebar="true" itemSpan="6" canCollapse="true" collapseIf="true">
     <field name="buyerUser" canNew="false" canEdit="false" canView="false" form-view="user-form" grid-view="user-grid"/>
     <field if="__config__.app.getApp('base').getTeamManagement()" name="team" canEdit="false" form-view="team-form" grid-view="team-grid"/>
-    <field name="tradingName" canEdit="false" grid-view="trading-name-grid" form-view="trading-name-form" if="__config__.app.getApp('base').enableTradingNamesManagement" readonlyIf="statusSelect >= 3" domain=":company MEMBER OF self.companySet" onChange="action-purchase-order-method-printing-settings-default-value"/>
   </panel>
 		<panel name="datesPanel" title="Dates" sidebar="true" hideIf="supplierPartner == null" readonlyIf="statusSelect == 4" itemSpan="6" canCollapse="true" collapseIf="true">
       <field name="orderDate"/>
@@ -381,6 +384,7 @@
 		<action name="action-purchase-order-attrs-external-reference"/>
 		<action name="action-purchase-order-record-set-supplier-partner-from-partner" if="_partner!=null"/>
 		<action name="action-group-purchase-order-partner-onchange" if="_partner!=null"/>
+		<action name="action-purchase-order-record-load-trading-name-config"/>
     </action-group>
 
     <action-group name="action-group-purchase-order-on-load-actions">
@@ -389,6 +393,7 @@
 		<action name="action-attrs-po-hidden-bank-details"/>
 		<action name="action-purchase-order-attrs-interco"/>
 		<action name="action-purchase-order-attrs-external-reference"/>
+		<action name="action-purchase-order-record-load-trading-name-config"/>
 	</action-group>
 
     <action-group name="action-group-purchase-order-company-change-actions">
@@ -450,6 +455,10 @@
     <action-attrs name="action-purchase-order-attrs-stock-location-address">
     	<attribute name="value" for="stockLocation.address" expr="eval: stockLocation.address"/>
     </action-attrs>
+    
+	<action-record name="action-purchase-order-record-load-trading-name-config" model="com.axelor.apps.purchase.db.PurchaseOrder">
+		<field name="$enablePurchasesProductByTradName" expr="eval: __config__.app.getApp('purchase').enablePurchasesProductByTradName"/>
+	</action-record>
 
     <action-record name="action-purchase-order-record-in-ati" model="com.axelor.apps.purchase.db.PurchaseOrder">
     	<field name="inAti" expr="eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 2

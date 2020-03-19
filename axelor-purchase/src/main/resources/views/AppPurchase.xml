@@ -11,11 +11,11 @@
             <field name="manageMultiplePurchaseQuantity" widget="boolean-switch"/>
 			<field name="isEnabledProductDescriptionCopy" widget="boolean-switch"/>
 			<field name="manageSupplierCatalog" widget="boolean-switch"/>
-			<field name="isDisplayPurchaseOrderLineNumber" widget="boolean-switch"></field>
-			<field name="enablePurchasesProductByTradName" widget="boolean-switch"></field>
+			<field name="isDisplayPurchaseOrderLineNumber" widget="boolean-switch"/>
+			<field name="enablePurchasesProductByTradName" widget="boolean-switch"/>
 		</panel>
 		<panel name="actionsPanel">
-			<button name="generatePurchaseConfigurationsBtn" colSpan="4" title="Generate purchase configurations" onClick="save,com.axelor.apps.purchase.web.AppPurchaseController:generatePurchaseConfigurations"  />
+			<button name="generatePurchaseConfigurationsBtn" colSpan="4" title="Generate purchase configurations" onClick="save,com.axelor.apps.purchase.web.AppPurchaseController:generatePurchaseConfigurations" />
 			<panel-dashlet name="confPurchaseConfigPanel" action="admin.root.conf.purchase.config" colSpan="12"/> 
 		</panel>
 		
@@ -31,10 +31,9 @@
 		<view type="grid" name="purchase-config-grid" />
 		<view type="form" name="purchase-config-form" />
 	</action-view>
-	
 	  
-  <action-attrs name="action-purchase-attrs-set-hidden" model="com.axelor.apps.base.db.AppPurchase">
-  	<attribute name="hidden" for="enablePurchasesProductByTradName" expr="!__config__.app.getApp('base').enableTradingNamesManagement"/>
-  </action-attrs>
+	<action-attrs name="action-purchase-attrs-set-hidden" model="com.axelor.apps.base.db.AppPurchase">
+		<attribute name="hidden" for="enablePurchasesProductByTradName" expr="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+	</action-attrs>
 	
 </object-views>

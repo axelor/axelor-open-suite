@@ -11,7 +11,7 @@
 		<boolean name="isEnabledProductDescriptionCopy" title="Enable product description copy"/>
 		<boolean name="manageSupplierCatalog" title="Manage supplier catalog"/>
 		<boolean name="isDisplayPurchaseOrderLineNumber" title="Display purchase order line number"/>		
-		<boolean name="enablePurchasesProductByTradName" title="Filter products by trading name" default="false"></boolean>
+		<boolean name="enablePurchasesProductByTradName" title="Filter products by trading name" default="false"/>
 		
 		<track>
 			<field name="managePurchaseOrderVersion" on="UPDATE"/>
