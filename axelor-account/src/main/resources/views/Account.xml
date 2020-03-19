@@ -36,7 +36,7 @@
     </tree>
 
 	<form name="account-form" title="Accounting.Account" model="com.axelor.apps.account.db.Account" width="large"
-		onNew="action-account-record-new" onLoad="action-account-method-compute-balance">
+		onNew="action-account-record-new" onLoad="action-account-method-compute-balance" onSave="action-account-method-check-if-code-already-exist-for-company">
 		<panel name="mainPanel">
 			<panel name="accountDetailsPanel" colSpan="8">
 				<field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"/>
@@ -154,6 +154,10 @@
     
     <action-method name="action-account-method-compute-balance">
     	<call class="com.axelor.apps.account.web.AccountController" method="computeBalance"/>
+    </action-method>
+    
+    <action-method name="action-account-method-check-if-code-already-exist-for-company">
+    	<call class="com.axelor.apps.account.web.AccountController" method="checkIfCodeAccountAlreadyExistForCompany"/>
     </action-method>
     
 </object-views>
