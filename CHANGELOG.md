@@ -14,6 +14,7 @@
 - TIMESHEET : Fix auto-generation of leave days not generating the first day
 - CLIENT-PORTAL : fixed the NPE when the user does not correspond to any partner.
 - Partner: Invoice copy number selection field displayed when the partner is a supplier.
+- LEAD: Fix form-view of primaryCity.
 
 ## [5.3.1] - 2020-03-16
 ## Improvements
