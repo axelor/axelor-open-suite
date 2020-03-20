@@ -13,6 +13,7 @@
 - EXCEPTION ORIGIN: Split selection values per module.
 - SALEORDER : Fixed NPE when trying to select a customer with a company with no linked partner
 - INVENTORY: Add missing translations.
+- MANUF ORDER: add missing translation
 
 ## [5.2.6] - 2020-03-13
 ## Improvements
