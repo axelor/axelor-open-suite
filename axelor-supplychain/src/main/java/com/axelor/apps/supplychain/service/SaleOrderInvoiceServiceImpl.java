@@ -940,9 +940,10 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent) throws AxelorException {
     List<Invoice> invoices =
         Query.of(Invoice.class)
-            .filter(" self.saleOrder.id = :saleOrderId AND self.statusSelect != :invoiceStatus")
+            .filter(" self.saleOrder.id = :saleOrderId AND self.statusSelect != :invoiceStatus AND self.operationTypeSelect = :operationTypeSelect")
             .bind("saleOrderId", saleOrder.getId())
             .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
+            .bind("operationTypeSelect",InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
             .fetch();
     if (isPercent) {
       amountToInvoice =

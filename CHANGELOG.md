@@ -7,6 +7,7 @@
 - LEAD : new design for view form
 - OPPORTUNITY : removed help in buttons from form view
 - DURATION : changed title and translation from typeSelect
+- SaleOrder : Add filter on invoice selected lines when operation choice = invoice selected lines
 
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
