@@ -17,6 +17,7 @@
 - Partner: Invoice copy number selection field displayed when the partner is a supplier.
 - MANUF ORDER: add missing translation.
 - STOCK CORRECTION: Add missing translations.
+- LEAD: Fix form-view of primaryCity.
 
 ## [5.3.1] - 2020-03-16
 ## Improvements
