@@ -25,18 +25,18 @@
       <field name="firstName"/>
       <field name="socialSecurityNumber"/>
       <field name="sexSelect"/>
-      <field name="dateOfBirth"/>
+      <field name="birthDate"/>
       <field name="departmentOfBirth"/>
       <field name="cityOfBirth"/>
       <field name="countryOfBirth"/>
     </panel>
 
     <panel name="contractPanel" title="Contract">
-      <field name="dateOfHire"/>
-      <field name="timeOfHire"/>
+      <field name="hireDate"/>
+      <field name="hireTime"/>
       <field name="trialPeriodDuration"/>
       <field name="contractType"/>
-      <field name="endDateOfContract"/>
+      <field name="contractEndDate"/>
     </panel>
   </form>
 

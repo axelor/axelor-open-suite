@@ -65,7 +65,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
   protected Employee createEmployee(JobApplication jobApplication) {
 
     Employee employee = new Employee();
-    employee.setDateOfHire(appBaseService.getTodayDate());
+    employee.setHireDate(appBaseService.getTodayDate());
     employee.setContactPartner(createContact(jobApplication));
     Set<Skill> tagSkillSet = new HashSet<Skill>();
     tagSkillSet.addAll(jobApplication.getSkillSet());
