@@ -75,7 +75,14 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
             printedPurchaseOrders.add(print(purchaseOrder, ReportSettings.FORMAT_PDF));
           }
         });
-    String fileName = getPurchaseOrderFilesName(true, ReportSettings.FORMAT_PDF);
+    String fileName =
+        I18n.get("Purchase orders")
+            + " - "
+            + Beans.get(AppBaseService.class)
+                .getTodayDate()
+                .format(DateTimeFormatter.BASIC_ISO_DATE)
+            + "."
+            + ReportSettings.FORMAT_PDF;
     return PdfTool.mergePdfToFileLink(printedPurchaseOrders, fileName);
   }
 
@@ -104,14 +111,6 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
         .addParam("HeaderHeight", purchaseOrder.getPrintingSettings().getPdfHeaderHeight())
         .addParam("FooterHeight", purchaseOrder.getPrintingSettings().getPdfFooterHeight())
         .addFormat(formatPdf);
-  }
-
-  protected String getPurchaseOrderFilesName(boolean plural, String formatPdf) {
-    return I18n.get(plural ? "Purchase orders" : "Purchase order")
-        + " - "
-        + Beans.get(AppBaseService.class).getTodayDate().format(DateTimeFormatter.BASIC_ISO_DATE)
-        + "."
-        + formatPdf;
   }
 
   @Override

@@ -78,7 +78,14 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
             printedSaleOrders.add(print(saleOrder, false, ReportSettings.FORMAT_PDF));
           }
         });
-    String fileName = getSaleOrderFilesName(true, ReportSettings.FORMAT_PDF);
+    String fileName =
+        I18n.get("Sale orders")
+            + " - "
+            + Beans.get(AppBaseService.class)
+                .getTodayDate()
+                .format(DateTimeFormatter.BASIC_ISO_DATE)
+            + "."
+            + ReportSettings.FORMAT_PDF;
     return PdfTool.mergePdfToFileLink(printedSaleOrders, fileName);
   }
 
@@ -117,19 +124,5 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
         .addParam("HeaderHeight", saleOrder.getPrintingSettings().getPdfHeaderHeight())
         .addParam("FooterHeight", saleOrder.getPrintingSettings().getPdfFooterHeight())
         .addFormat(format);
-  }
-
-  /**
-   * Return the name for the printed sale order.
-   *
-   * @param plural if there is one or multiple sale orders.
-   */
-  protected String getSaleOrderFilesName(boolean plural, String format) {
-
-    return I18n.get(plural ? "Sale orders" : "Sale order")
-        + " - "
-        + Beans.get(AppBaseService.class).getTodayDate().format(DateTimeFormatter.BASIC_ISO_DATE)
-        + "."
-        + format;
   }
 }
