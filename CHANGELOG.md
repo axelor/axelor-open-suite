@@ -20,6 +20,7 @@
 - LEAD: Fix form-view of primaryCity.
 - EXCEPTION ORIGIN: Split selection values per module.
 - PURCHASE REQUEST : Fix new product name not showing on line grid view
+- INVENTORY: add missing translations.
 
 ## [5.3.1] - 2020-03-16
 ## Improvements
