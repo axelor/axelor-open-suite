@@ -253,17 +253,19 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       Map<Budget, BigDecimal> amountPerBudget = new HashMap<>();
       if (appAccountService.getAppBudget().getManageMultiBudget()) {
         for (PurchaseOrderLine pol : purchaseOrderLines) {
-          for (BudgetDistribution bd : pol.getBudgetDistributionList()) {
-            Budget budget = bd.getBudget();
+          if (pol.getBudgetDistributionList() != null) {
+            for (BudgetDistribution bd : pol.getBudgetDistributionList()) {
+              Budget budget = bd.getBudget();
 
-            if (!amountPerBudget.containsKey(budget)) {
-              amountPerBudget.put(budget, bd.getAmount());
-            } else {
-              BigDecimal oldAmount = amountPerBudget.get(budget);
-              amountPerBudget.put(budget, oldAmount.add(bd.getAmount()));
+              if (!amountPerBudget.containsKey(budget)) {
+                amountPerBudget.put(budget, bd.getAmount());
+              } else {
+                BigDecimal oldAmount = amountPerBudget.get(budget);
+                amountPerBudget.put(budget, oldAmount.add(bd.getAmount()));
+              }
+
+              isBudgetExceeded(budget, amountPerBudget.get(budget));
             }
-
-            isBudgetExceeded(budget, amountPerBudget.get(budget));
           }
         }
       } else {

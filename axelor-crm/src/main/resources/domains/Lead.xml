@@ -21,8 +21,8 @@
   	
 <!--   Primary address group -->
 	<string name="primaryAddress" title="Address"/>
-	<string name="primaryCity" title="City"/>
-	<string name="primaryState" title="Region"/>
+	<many-to-one name="primaryCity" title="City" ref="com.axelor.apps.base.db.City"/>
+	<many-to-one name="primaryState" title="Region" ref="com.axelor.apps.base.db.Region"/>
 	<string name="primaryPostalCode" title="Postal code"/>
   	<many-to-one name="primaryCountry" ref="com.axelor.apps.base.db.Country" title="Country"/>
   
