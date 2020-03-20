@@ -28,6 +28,7 @@ import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaModel;
@@ -140,9 +141,17 @@ public class BatchTimesheetReminder extends BatchStrategy {
       throws AxelorException, MessagingException, IOException, ClassNotFoundException,
           InstantiationException, IllegalAccessException {
     for (Employee employee : getEmployeesWithoutRecentTimesheet()) {
-      Message message =
-          templateMessageService.generateMessage(getRecentEmployeeTimesheet(employee), template);
-      messageService.sendByEmail(message);
+      Timesheet timeSheet = getRecentEmployeeTimesheet(employee);
+      if (timeSheet != null) {
+        Message message = templateMessageService.generateMessage(timeSheet, template);
+        messageService.sendByEmail(message);
+      } else {
+        throw new AxelorException(
+            Timesheet.class,
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(IExceptionMessage.NO_TIMESHEET_FOUND_FOR_EMPLOYEE),
+            employee.getName());
+      }
     }
   }
 }
