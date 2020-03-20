@@ -18,6 +18,7 @@
 - MANUF ORDER: add missing translation.
 - STOCK CORRECTION: Add missing translations.
 - LEAD: Fix form-view of primaryCity.
+- EXCEPTION ORIGIN: Split selection values per module.
 
 ## [5.3.1] - 2020-03-16
 ## Improvements
