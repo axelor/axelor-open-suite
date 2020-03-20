@@ -13,3 +13,4 @@
 - Employee : renamed dateOfHire, timeOfHire, endDateContract, dateOfBirth fields to hireDate, hireTime, contractEndDate, birthDate
 
 ## Bug Fixes
+- SALEORDER : Fixed NPE when trying to select a customer with a company with no linked partner
