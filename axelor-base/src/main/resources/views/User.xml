@@ -178,6 +178,9 @@
         		<field name="activeCompany.accountConfig" hidden="true"/>
 			<field name="activeCompany.accountConfig.isManagePassedForPayment" hidden="true"/>
         	</panel>
+        	<panel name="emailSignaturePanel" colSpan="12" title="Email signature">
+        		<field name="emailSignature" widget="Html" x-lite="true" height="9" colSpan="12"/>
+        	</panel>
         </panel-tabs>
 
         <panel name="transientPasswordPanel" hidden="true" colSpan="12">

@@ -21,6 +21,7 @@
 			<bind node="@name" to="name" />
 			<bind node="@title" to="title" />
 			<bind node="@appBuilder" to="appBuilder" search="self.code = :appBuilder"  />
+			<bind to="formWidth" eval="'large'" />
 			<bind node="fields/field" to="fields">
 				<bind node="@name" to="name"/>
 				<bind node="@title" to="title" />
@@ -34,6 +35,7 @@
 				<bind node="@sequence" to="sequence"/>
 				<bind node="@onChange" to="onChange" />
 				<bind node="@visibleInGrid" to="visibleInGrid" />
+				<bind node="@widgetAttrs" to="widgetAttrs" />
 			</bind>
 		</bind>
 		

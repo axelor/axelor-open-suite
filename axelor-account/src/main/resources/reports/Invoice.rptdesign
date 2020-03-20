@@ -4341,6 +4341,53 @@ row["partnerFirstName"]
                                 <property name="dataType">string</property>
                                 <property name="allowExport">true</property>
                             </structure>
+                            <structure>
+                                <property name="name">invoice_ex_tax_total_before_discount</property>
+                                <text-property name="displayName">invoice_ex_tax_total_before_discount</text-property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">dataSetRow["ex_tax_total"] - dataSetRow["totaldiscountamount"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">sumNegativeExTaxTotal</property>
+                                <text-property name="displayName">sumNegativeExTaxTotal</text-property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">dataSetRow["ex_tax_total"]</expression>
+                                    </structure>
+                                </list-property>
+                                <expression name="filterExpr" type="javascript">dataSetRow["ex_tax_total"] &lt; 0</expression>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">invoice_total_discount</property>
+                                <text-property name="displayName">invoice_total_discount</text-property>
+                                <expression name="expression" type="javascript">row["invoice_sum_discount_line"] + row["sumNegativeExTaxTotal"]</expression>
+                                <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">invoice_sum_discount_line</property>
+                                <text-property name="displayName">invoice_sum_discount_line</text-property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">dataSetRow["totaldiscountamount"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
                         </list-property>
                         <list-property name="sort">
                             <structure>
@@ -4905,7 +4952,7 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">row["is_title_line"]</expression>
+                                                <expression name="valueExpr" type="javascript">row._outer["is_title_line"]</expression>
                                             </structure>
                                         </list-property>
                                         <list-property name="boundDataColumns">
@@ -4917,7 +4964,7 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["qty"],"#,##0."+Array(row["nb_decimal_digit_for_qty"]+1).join("0"))</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row["unitname"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["qty"],"#,##0."+Array(row["nb_decimal_digit_for_qty"]+1).join("0"))</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["unitname"]</VALUE-OF>]]></text-property>
                                     </text>
                                     <text id="5431">
                                         <property name="fontSize">8pt</property>
@@ -4927,7 +4974,7 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">!row["is_title_line"] &amp;&amp; row["qty"] == 0</expression>
+                                                <expression name="valueExpr" type="javascript">!row._outer["is_title_line"] || row._outer["qty"] == 0</expression>
                                             </structure>
                                         </list-property>
                                         <list-property name="boundDataColumns">
@@ -4939,7 +4986,7 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["qty"],"#,##0."+Array(row["nb_decimal_digit_for_qty"]+1).join("0"))</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row["unitname"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["qty"],"#,##0."+Array(row["nb_decimal_digit_for_qty"]+1).join("0"))</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="5393">

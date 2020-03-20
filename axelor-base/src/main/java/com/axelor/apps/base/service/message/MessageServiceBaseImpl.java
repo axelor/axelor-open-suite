@@ -79,7 +79,8 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
       Set<MetaFile> metaFiles,
       String addressBlock,
       int mediaTypeSelect,
-      EmailAccount emailAccount) {
+      EmailAccount emailAccount,
+      String signature) {
 
     Message message =
         super.createMessage(
@@ -95,7 +96,8 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
             metaFiles,
             addressBlock,
             mediaTypeSelect,
-            emailAccount);
+            emailAccount,
+            signature);
 
     message.setSenderUser(AuthUtils.getUser());
     message.setCompany(userService.getUserActiveCompany());

@@ -54,6 +54,9 @@
 	<boolean name="displayTrackNbrOnCertificateOfConformityPrinting" title="Display tracking number details on certificate of conformity printing"/>
 	<boolean name="displayExtRefOnCertificateOfConformityPrinting" title="Display external ref. on certificate of conformity printing"/>
 	<many-to-one name="stockRuleMessageTemplate" ref="com.axelor.apps.message.db.Template" title="Message template for stock rules"/>
+	<boolean name="displayProductCodeOnPrinting" title="Display product code on printing" default="false"/>
+	<boolean name="displayPriceOnPrinting" title="Display price on printing" default="false"/>
+	<boolean name="displayOrderReferenceAndOrderDate" title="Display order reference and order date" default="false"/>
 
 	<track>
 		<field name="company" on="UPDATE"/>
