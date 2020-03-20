@@ -153,6 +153,7 @@ public class GenerateMessageController {
                   null,
                   null,
                   MessageRepository.MEDIA_TYPE_EMAIL,
+                  null,
                   null);
     }
 
