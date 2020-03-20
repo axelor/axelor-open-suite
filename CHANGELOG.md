@@ -8,6 +8,7 @@
 - OPPORTUNITY : removed help in buttons from form view
 - DURATION : changed title and translation from typeSelect
 - SaleOrder : Add filter on invoice selected lines when operation choice = invoice selected lines
+- ACCOUNTING REPORT: improved bank statement report.
 
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
@@ -22,6 +23,7 @@
 - PURCHASE REQUEST : Fix new product name not showing on line grid view
 - INVENTORY: add missing translations.
 - SALEORDER : Fixed NPE when trying to select a customer with a company with no linked partner
+- BANK RECONCILIATION : corrected error with bank statement load where no other statement was loaded.
 
 ## [5.3.1] - 2020-03-16
 ## Improvements
@@ -79,6 +81,7 @@
 - TEAM TASK: Fixed issue on copying line from project view.
 - INVOICE: Fix quantity and discount not displayed on printing.
 - SALE ORDER: Fix unit code not displayed on printing.
+
 
 ## [5.3.0] - 2020-02-25
 ## Features
