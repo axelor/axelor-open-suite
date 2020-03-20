@@ -803,4 +803,7 @@ public interface IExceptionMessage {
 
   static final String CLOSE_NO_REPORTED_BALANCE_DATE = /*$$(*/
       "Please set a reported balance date on fiscal year" /*)*/;
+
+  static final String ACCOUNT_CODE_ALREADY_IN_USE_FOR_COMPANY = /*$$(*/
+      "The account code %s is already used for the company %s, there cannot be two accounts with the same code for the same company." /*)*/;;
 }

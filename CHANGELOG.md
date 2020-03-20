@@ -1,26 +1,62 @@
 # Changelog
-## [Unreleased 5.2.6]
-## Feature
-- Workflow : Add support to select real status fields.
-- STOCK CONFIG : Added three boolean fields so as to whether display product code, price, order reference and date in stock move report
-- SaleOrderLine/PurchaseOrderLine : Added transient boolean field to freeze price,qty,productName
 
+## [Unreleased 5.2.7]
 ## Improvements
-- LEAVE REQUEST : Allow sending a leave request in the past.
-- Block the creation of duplicate accounts
-- HR BATCH : set email template for batch 'Email reminder for timesheets'
-- CUSTOMER INFORMATIONS : Indicate that Payment delay is in days
-- INVOICES DASHBOARD : Turnover is now calculated using both sales and assets.
-- EXCEPTION ORIGIN : Refactor.
+- CLIENT-PORTAL : Chart now only shows invoices corresponding the client partner.
 
 ## Bug Fixes
-- Fix Timesheet Reminder Batch sendReminder method
-- DEBT RECOVERY : rollback debt recovery process if to recipients is empty or not in generated message.
-- Fix the error which is getting when group is empty in user. 
+- SALE ORDER : Fix NPE when interco sale order finalized.
+- SALE CONFIG : Fixed "Action not allowed" error when we try to update customer's accepted credit.
+- TIMESHEET : Fix auto-generation of leave days not generating the first day
+- CLIENT-PORTAL : fixed the NPE when the user does not correspond to any partner.
+- Partner : Invoice copy number selection field display when the partner is a supplier.
+- EXCEPTION ORIGIN: Split selection values per module.
+
+## [5.2.6] - 2020-03-13
+## Improvements
+- Workflow: Add support to select real status fields.
+- STOCK CONFIG: Add three boolean fields to configure the display of product code, price, order reference and date in stock move report
+- LEAVE REQUEST: Allow sending a leave request in the past.
+- Block the creation of duplicate accounts.
+- HR BATCH: set email template for batch 'Email reminder for timesheets'.
+- CUSTOMER INFORMATIONS: Indicate that Payment delay is in days.
+- INVOICES DASHBOARD: Turnover is now calculated using both sales and assets.
+- Stock Move Line: Do not allow user to remove allocated stock move line.
+- ACCOUNTING REPORT: add account filter to summary and gross value report.
+- STUDIO: Add panel on custom model demo data.
+- QUALITY CONTROL: update the quality control report.
+- CAMPAIGN: add exception message on partner and lead at invalid domain in target list.
+- Accounting Config: clarifying the field lineMinBeforeLongReportGenerationMessageNumber.
+- SaleOrderLine/PurchaseOrderLine: Add transient boolean field to freeze price, qty, productName.
+- Ebics user: Display associated user in list view.
+- MESSAGE TEMPLATE: New possibility to add an email signature from a user directly or an email account with a formula.
+- EBICSPARTNER: mass update on testMode field.
+ 
+## Bug Fixes
+- INVOICE LINE: add grid view and form view of budgetDistributionListPanel to form.
+- MANUF ORDER: fix missing form and grid view attributes for workshopStockLocation.
+- Fix exception happening when a timesheet reminder batch is run.
+- DEBT RECOVERY: rollback debt recovery process if to recipients is empty or not in generated message.
+- Fix exception happening in sale order line form when group is empty in user.
 - Stock Move Line reservation: correctly set qty requested flag when generated from a sale order line.
 - Stock Move: Delete empty date field in form view.
-- PROJECT : Fix NPE when generate Business project with SaleOrderTypeSelect as title. 
-- LEAVE REQUEST : Fix the NPE when no leaveRequest is selected to be edited
+- PROJECT: Fix NPE when generate Business project with SaleOrderTypeSelect as title.
+- LEAVE REQUEST: Fix the NPE when no leave request is selected to be edited.
+- SUPPLIER INVOICE: fix the problem of amount not updated in supplier invoice after use of mass invoice payment function.
+- Project: Resolve issue in computation of timespent
+- PROJECT: Fix NPE when generating Business project with projectGeneratorType Task by line and Task by product.
+- MRP: sequence is copied when MRP is copied.
+- TEAM TASK: Fixed issue on copying line from project view.
+- PURCHASE ORDER REPORT: Fixed value of payment condition from PurchaseOrder's payment condition instead of using partner.
+- Move: Fix exception message when saving a new record.
+- SALEORDER: fixed bug causing the margins to be rounded to the unit
+- CLIENT PORTAL: Take user permissions into account for TeamTask counters.
+- MRP: Fixed issue when user try to copy an existing MRP record.
+- PURCHASE REQUEST: translate "Purchase Request Lines" in french "Ligne de demandes d'achat".
+- LOGIN: Fixed js code page redirection.
+- LEAVE REQUEST: corrected error when trying to change user.
+- EMPLOYEE: update the employee records in demo data so the creation process is finished.
+- LEAD: removed non persistable field wrongly appearing on the form view.
 
 ## [5.2.5] - 2020-02-25
 ## Improvements
@@ -33,7 +69,6 @@
 - ACCOUNT CONFIG: change the place of invoice automatic mail and invoice message template in account config.
 - ACCOUNTING REPORT: group by and subtotal of analyticDistributionTemplate.
 - INVOICE: created new field payment date in invoice in order to use it in advance search.
-
 
 ## Bug Fixes
 - MANUF ORDER: Display sale order comment in manufacturing order printing.
@@ -54,7 +89,6 @@
 - TASK: fix translation issue caused by "Package" entitled field.
 - ACCOUNTING REPORT : corrected several issues with values on the summary of gross values and depreciation report.
 - ACCOUNTING REPORT : in the summary of gross values and depreciation report corrected the problem of the apparition of line with an acquisition date after the report dates.
-- LEAD : removed the persistable field on the form view
 
 ## [5.2.4] - 2020-02-05
 ## Improvements
@@ -475,7 +509,8 @@ In this case, the file is correctly retrieved from the bank server, but not save
 - LEAVE REQUEST: Add error when leave reason has no unit.
 - LEAVE REQUEST: Set duration value 0 if day planning of selected weekly planning is empty
 
-[Unreleased 5.2.6]: https://github.com/axelor/axelor-open-suite/compare/v5.2.5...dev
+[Unreleased 5.2.7]: https://github.com/axelor/axelor-open-suite/compare/v5.2.6...dev
+[5.2.6]: https://github.com/axelor/axelor-open-suite/compare/v5.2.5...v5.2.6
 [5.2.5]: https://github.com/axelor/axelor-open-suite/compare/v5.2.4...v5.2.5
 [5.2.4]: https://github.com/axelor/axelor-open-suite/compare/v5.2.3...v5.2.4
 [5.2.3]: https://github.com/axelor/axelor-open-suite/compare/v5.2.2...v5.2.3
