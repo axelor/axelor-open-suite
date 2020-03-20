@@ -9,6 +9,7 @@
 - SALE ORDER : Fix NPE when interco sale order finalized.
 - SALE CONFIG : Fixed "Action not allowed" error when we try to update customer's accepted credit
 - TIMESHEET : Fix auto-generation of leave days not generating the first day
+- WORK CENTER : Fix machine not set to null for a human type work center
 
 ## [5.3.1] - 2020-03-16
 ## Improvements
