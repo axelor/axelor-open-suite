@@ -437,7 +437,13 @@
 "Pickup default stock location","Emplacement par défaut pour l'expédition",,
 "Plan","Planifier",,
 "Planned","Planifié",,
+<<<<<<< HEAD
 "Planned Inventories","Inventaires Planifiés",,
+=======
+"Planned End Date","Date de fin planifiée",,
+"Planned Inventories","Inventaires Planifiés",,
+"Planned Start Date","Date de début planifiée",,
+>>>>>>> 18f8a43f1f... RM26584 : Improve translation of Inventory form view (#5152)
 "Planned move",,,
 "Planned stock move",,,
 "Planned stock move line list",,,
