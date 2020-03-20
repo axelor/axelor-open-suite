@@ -21,6 +21,7 @@
 - EXCEPTION ORIGIN: Split selection values per module.
 - PURCHASE REQUEST : Fix new product name not showing on line grid view
 - INVENTORY: add missing translations.
+- SALEORDER : Fixed NPE when trying to select a customer with a company with no linked partner
 
 ## [5.3.1] - 2020-03-16
 ## Improvements
