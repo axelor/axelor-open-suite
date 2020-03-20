@@ -12,6 +12,7 @@
 - Partner : Invoice copy number selection field display when the partner is a supplier.
 - EXCEPTION ORIGIN: Split selection values per module.
 - SALEORDER : Fixed NPE when trying to select a customer with a company with no linked partner
+- MANUF ORDER: add missing translation
 
 ## [5.2.6] - 2020-03-13
 ## Improvements
