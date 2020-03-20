@@ -3,6 +3,7 @@
 ## [Unreleased 5.2.7]
 ## Improvements
 - CLIENT-PORTAL : Chart now only shows invoices corresponding the client partner.
+- ACCOUNTING REPORT: improved bank statement report.
 
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
@@ -15,6 +16,7 @@
 - INVENTORY: Add missing translations.
 - MANUF ORDER: add missing translation
 - STOCK CORRECTION: Add missing translations.
+- BANK RECONCILIATION : corrected error with bank statement load where no other statement was loaded.
 
 ## [5.2.6] - 2020-03-13
 ## Improvements
@@ -216,6 +218,7 @@ In this case, the file is correctly retrieved from the bank server, but not save
 - STOCK MOVE: Add default supplier partner in mrp line grid.
 - STOCK MOVE: Maximized pop up of projected stock and counter.
 - STOCK MOVE: store invoicing status in database.
+
 
 ## Bug Fixes
 - Ebics User: resolve error getting on export and modify import config and export template to include BankOrderList and BankStatementList of EbicsPartner.
