@@ -19,6 +19,7 @@
 - STOCK CORRECTION: Add missing translations.
 - LEAD: Fix form-view of primaryCity.
 - EXCEPTION ORIGIN: Split selection values per module.
+- MOVE TEMPLATE : Move templates without an end of validity date are now appearing in wizard
 
 ## [5.3.1] - 2020-03-16
 ## Improvements
