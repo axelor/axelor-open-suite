@@ -6,6 +6,7 @@
 - MrpFamily : make 'name' required field.
 - LEAD : new design for view form
 - OPPORTUNITY : removed help in buttons from form view
+- DURATION : changed title and translation from typeSelect
 
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
