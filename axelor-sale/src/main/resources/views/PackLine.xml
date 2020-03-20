@@ -6,7 +6,7 @@
     <grid name="pack-line-grid" title="PackLine" model="com.axelor.apps.sale.db.PackLine">
     	<field name="product.code"/>
     	<field name="productName"/>
-    	<field name="quantity" x-sclae="2"/>
+    	<field name="quantity" x-scale="2"/>
     	<field name="unit"/>
     	<field name="price"/>
     </grid>
