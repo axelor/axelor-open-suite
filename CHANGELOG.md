@@ -7,6 +7,7 @@
 - LEAD : new design for view form
 - OPPORTUNITY : removed help in buttons from form view
 - DURATION : changed title and translation from typeSelect
+- SaleOrder : Add filter on invoice selected lines when operation choice = invoice selected lines
 
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
@@ -14,6 +15,8 @@
 - TIMESHEET : Fix auto-generation of leave days not generating the first day
 - CLIENT-PORTAL : fixed the NPE when the user does not correspond to any partner.
 - Partner: Invoice copy number selection field displayed when the partner is a supplier.
+- MANUF ORDER: add missing translation.
+- STOCK CORRECTION: Add missing translations.
 - LEAD: Fix form-view of primaryCity.
 
 ## [5.3.1] - 2020-03-16
