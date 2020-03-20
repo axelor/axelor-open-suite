@@ -160,4 +160,16 @@ public interface ITranslation {
       "BankReconciliationStatement.actualBalance"; /*)*/;
   public static final String BANK_RECONCILIATION_STATEMENT_MAIN_TITLE = /*$$(*/
       "BankReconciliationStatement.mainTitle"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_SUMMARY_TITLE = /*$$(*/
+      "BankReconciliationStatement.SummaryTitle"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_ACCOUNT_BALANCE = /*$$(*/
+      "BankReconciliationStatement.accountBalance"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_BANK_BALANCE = /*$$(*/
+      "BankReconciliationStatement.bankBalance"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_ACCOUNT_BANK_GAP = /*$$(*/
+      "BankReconciliationStatement.accountBankGap"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_UNRECONCILE_ACCOUNT_BALANCE = /*$$(*/
+      "BankReconciliationStatement.unreconileAccountBalance"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_RECONCILIATION_GAP = /*$$(*/
+      "BankReconciliationStatement.reconciliationGap"; /*)*/;
 }
