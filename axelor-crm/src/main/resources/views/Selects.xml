@@ -142,5 +142,9 @@
 		<option value="0">All users</option>
 		<option value="1">Some user groups</option>
 	</selection>
+	
+	<selection name='trace.back.origin.select' id="trace.back.origin.select.crm">
+		<option value="crm">CRM</option>
+	</selection>
 
 </object-views>
