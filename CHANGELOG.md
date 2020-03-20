@@ -1,15 +1,24 @@
 # Changelog
 ## [Unreleased 5.3.2]
 ## Improvements
+- CLIENT-PORTAL : Chart now only shows invoices corresponding the client partner.
 - PARTNER : add url widget for website.
 - MrpFamily : make 'name' required field.
 - LEAD : new design for view form
-- INVENTORY : improve translation
+- OPPORTUNITY : removed help in buttons from form view
+- DURATION : changed title and translation from typeSelect
+- SaleOrder : Add filter on invoice selected lines when operation choice = invoice selected lines
 
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
 - SALE CONFIG : Fixed "Action not allowed" error when we try to update customer's accepted credit
 - TIMESHEET : Fix auto-generation of leave days not generating the first day
+- CLIENT-PORTAL : fixed the NPE when the user does not correspond to any partner.
+- Partner: Invoice copy number selection field displayed when the partner is a supplier.
+- MANUF ORDER: add missing translation.
+- STOCK CORRECTION: Add missing translations.
+- LEAD: Fix form-view of primaryCity.
+- INVENTORY: add missing translations.
 
 ## [5.3.1] - 2020-03-16
 ## Improvements

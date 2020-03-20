@@ -134,7 +134,7 @@
 				<panel name="primaryAddress" title="Primary address" readonlyIf="statusSelect == 4 || statusSelect == 5" colSpan="12">
 					<field name="primaryAddress" colSpan="8"/>
 					<field name="primaryPostalCode" colSpan="4"/>
-					<field name="primaryCity" colSpan="4" form-view="city-from" grid-view="city-grid" onChange="action-record-lead-set-primary-postal-code"/>
+					<field name="primaryCity" colSpan="4" form-view="city-form" grid-view="city-grid" onChange="action-record-lead-set-primary-postal-code"/>
 					<field name="primaryState" colSpan="4" form-view="region-form" grid-view="region-grid"/>
 					<field name="primaryCountry" colSpan="4" form-view="country-form" grid-view="country-grid"/>
 				</panel>
