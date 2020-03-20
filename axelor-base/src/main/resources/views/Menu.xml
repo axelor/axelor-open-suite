@@ -3,194 +3,224 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
-	<menuitem id="abs-menu-mail" name="menu-mail" if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base').getEnterpriseCommunication()" hidden="false" order="-110"
-    title="Messaging" icon="fa-users" icon-background="#84429f" />
-	
-	<menuitem title="Mailing lists" name="menu-mail-mailing-list" parent="menu-mail" order="-75"/>
+	<menuitem id="abs-menu-mail" name="menu-mail"
+		if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base').getEnterpriseCommunication()"
+		hidden="false" order="-110" title="Messaging" icon="fa-users"
+		icon-background="#84429f" />
 
-	<menuitem title="My Mailing lists" name="menu-mail-my-mailing-list" parent="menu-mail-mailing-list" action="menu.mail.my.mailing.list"/>
-	<menuitem title="All Mailing lists" name="menu-mail-all-mailing-list" parent="menu-mail-mailing-list" action="menu.mail.all.mailing.list"/>
+	<menuitem title="Mailing lists" name="menu-mail-mailing-list"
+		parent="menu-mail" order="-75" />
 
-	<action-view name="menu.mail.my.mailing.list" title="My Mailing lists" model="com.axelor.apps.base.db.MailingListMessage">
-		<view type="cards" name="mailing-list-message-cards"/>
-		<view type="form" name="mailing-list-message-form"/>
-		<view type="grid" name="mailing-list-message-grid"/>
+	<menuitem title="My Mailing lists" name="menu-mail-my-mailing-list"
+		parent="menu-mail-mailing-list" action="menu.mail.my.mailing.list" />
+	<menuitem title="All Mailing lists" name="menu-mail-all-mailing-list"
+		parent="menu-mail-mailing-list" action="menu.mail.all.mailing.list" />
+
+	<action-view name="menu.mail.my.mailing.list" title="My Mailing lists"
+		model="com.axelor.apps.base.db.MailingListMessage">
+		<view type="cards" name="mailing-list-message-cards" />
+		<view type="form" name="mailing-list-message-form" />
+		<view type="grid" name="mailing-list-message-grid" />
 		<domain>self IN (SELECT mf.relatedId FROM MailFollower mf where mf.archived = false)</domain>
 	</action-view>
-	<action-view name="menu.mail.all.mailing.list" title="All Mailing lists" model="com.axelor.apps.base.db.MailingListMessage">
-		<view type="cards" name="mailing-list-message-cards"/>
-		<view type="form" name="mailing-list-message-form"/>
-		<view type="grid" name="mailing-list-message-grid"/>
+	<action-view name="menu.mail.all.mailing.list" title="All Mailing lists"
+		model="com.axelor.apps.base.db.MailingListMessage">
+		<view type="cards" name="mailing-list-message-cards" />
+		<view type="form" name="mailing-list-message-form" />
+		<view type="grid" name="mailing-list-message-grid" />
 	</action-view>
 
-	<menuitem id="abs-menu-dms" name="menu-dms" if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base').getDocument()" hidden="false" order="-109"
-    title="Documents" icon="fa-archive" icon-background="#3f6bb9" />
+	<menuitem id="abs-menu-dms" name="menu-dms"
+		if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base').getDocument()"
+		hidden="false" order="-109" title="Documents" icon="fa-archive"
+		icon-background="#3f6bb9" />
 
-	<menuitem id="abs-menu-dms-config" name="menu-dms-config" title="Configuration" parent="menu-dms" order="-70" icon="fa-cog"/>
+	<menuitem id="abs-menu-dms-config" name="menu-dms-config"
+		title="Configuration" parent="menu-dms" order="-70" icon="fa-cog" />
 
-    <menuitem id="abs-menu-team" name="menu-team" if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base').getTeamManagement()" hidden="false"  order="-110"
-    title="Teamwork" icon="fa-user" icon-background="blue"/>
+	<menuitem id="abs-menu-team" name="menu-team"
+		if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base').getTeamManagement()"
+		hidden="false" order="-110" title="Teamwork" icon="fa-user"
+		icon-background="blue" />
 
-	<menuitem id="abs-menu-team-tasks-due" name="menu-team-tasks-due" hidden="true" title="Tasks due"/>
-	<menuitem id="abs-menu-team-tasks-todo" name="menu-team-tasks-todo" hidden="true" title="Tasks todo"/>
-	<menuitem id="abs-menu-team-tasks-open" name="menu-team-tasks-open" hidden="true" title="Tasks open"/>
-	<menuitem id="abs-menu-team-tasks-assigned" name="menu-team-tasks-assigned" title="My tasks" parent="menu-team-tasks" action="team.tasks.assigned"/>
-	<menuitem id="abs-menu-team-tasks-created" name="menu-team-tasks-created" hidden="true" title="Tasks created by me"/>
-	<menuitem name="menu-team-tasks-all" title="All tasks" parent="menu-team-tasks" action="team.tasks.all" order="20"/>
+	<menuitem id="abs-menu-team-tasks-due" name="menu-team-tasks-due"
+		hidden="true" title="Tasks due" />
+	<menuitem id="abs-menu-team-tasks-todo" name="menu-team-tasks-todo"
+		hidden="true" title="Tasks todo" />
+	<menuitem id="abs-menu-team-tasks-open" name="menu-team-tasks-open"
+		hidden="true" title="Tasks open" />
+	<menuitem id="abs-menu-team-tasks-assigned" name="menu-team-tasks-assigned"
+		title="My tasks" parent="menu-team-tasks" action="team.tasks.assigned" />
+	<menuitem id="abs-menu-team-tasks-created" name="menu-team-tasks-created"
+		hidden="true" title="Tasks created by me" />
+	<menuitem name="menu-team-tasks-all" title="All tasks" parent="menu-team-tasks"
+		action="team.tasks.all" order="20" />
 
-	<menuitem id="abs-menu-team-teams-my" name="menu-team-teams-my" order="-110" title="My teams" parent="menu-team-teams" action="teams.my"/>
-	<menuitem id="abs-menu-team-teams-all" name="menu-team-teams-all" order="-100" title="All teams" parent="menu-team-teams" action="teams.all"/>
+	<menuitem id="abs-menu-team-teams-my" name="menu-team-teams-my"
+		order="-110" title="My teams" parent="menu-team-teams" action="teams.my" />
+	<menuitem id="abs-menu-team-teams-all" name="menu-team-teams-all"
+		order="-100" title="All teams" parent="menu-team-teams" action="teams.all" />
 
-    <menuitem id="calendar.root.menu" if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base').getEnableCalendars()" name="menu-calendar" order="-110" title="Calendar" icon="fa-calendar" icon-background="#34d0f7"/>
+	<menuitem id="calendar.root.menu"
+		if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base').getEnableCalendars()"
+		name="menu-calendar" order="-110" title="Calendar" icon="fa-calendar"
+		icon-background="#34d0f7" />
 
-    <menuitem id="calendar.root.menu.general" name="menu-calendar-general" title="My events" parent="menu-calendar" action="calendar.root.menu.my.calendar" order="1"/>
+	<menuitem id="calendar.root.menu.general" name="menu-calendar-general"
+		title="My events" parent="menu-calendar" action="calendar.root.menu.my.calendar"
+		order="1" />
 
 	<action-method name="calendar.root.menu.my.calendar">
-		<call class="com.axelor.apps.base.web.ICalendarController" method="showMyEvents"/>
+		<call class="com.axelor.apps.base.web.ICalendarController"
+			method="showMyEvents" />
 	</action-method>
 
-    <menuitem id="calendar.root.menu.configuration" name="menu-calendar-configuration" title="Configuration" parent="menu-calendar" icon="fa-cog" order="3"/>
+	<menuitem id="calendar.root.menu.configuration" name="menu-calendar-configuration"
+		title="Configuration" parent="menu-calendar" icon="fa-cog" order="3" />
 
-    <menuitem id="calendar.root.menu.configuration.calendars" name="menu-calendar-configuration-calendars" title="My calendars" parent="menu-calendar-configuration" action="calendar.root.menu.my.calendars"/>
+	<menuitem id="calendar.root.menu.configuration.calendars"
+		name="menu-calendar-configuration-calendars" title="My calendars"
+		parent="menu-calendar-configuration" action="calendar.root.menu.my.calendars" />
 
-	<action-view name="calendar.root.menu.my.calendars" title="My calendars" model="com.axelor.apps.base.db.ICalendar">
-		<view type="grid" name="calendar-user-grid"/>
-		<view type="form" name="calendar-form"/>
+	<action-view name="calendar.root.menu.my.calendars" title="My calendars"
+		model="com.axelor.apps.base.db.ICalendar">
+		<view type="grid" name="calendar-user-grid" />
+		<view type="form" name="calendar-form" />
 		<domain>self.user = :__user__</domain>
 	</action-view>
 
-    <menuitem id="calendar.root.menu.configuration.others" name="menu-calendar-configuration-others" title="Shared with me" parent="menu-calendar-configuration" action="calendar.root.menu.shared.with.me"/>
+	<menuitem id="calendar.root.menu.configuration.others" name="menu-calendar-configuration-others"
+		title="Shared with me" parent="menu-calendar-configuration" action="calendar.root.menu.shared.with.me" />
 
-	<action-view name="calendar.root.menu.shared.with.me" title="Sharing settings" model="com.axelor.apps.base.db.SharingSetting">
-		<view type="grid" name="sharing-setting-menu-grid"/>
-		<view type="form" name="sharing-setting-menu-form"/>
+	<action-view name="calendar.root.menu.shared.with.me"
+		title="Sharing settings" model="com.axelor.apps.base.db.SharingSetting">
+		<view type="grid" name="sharing-setting-menu-grid" />
+		<view type="form" name="sharing-setting-menu-form" />
 		<domain>self.sharedWith = :__user__</domain>
 	</action-view>
 
-	<menuitem id="abs-menu-admin" name="menu-admin" title="Administration" order="100"
-	     icon="fa-wrench" icon-background="#2fa042" />
+	<menuitem id="abs-menu-admin" name="menu-admin" title="Administration"
+		order="100" icon="fa-wrench" icon-background="#2fa042" />
 
-	<menuitem name="admin-root-general" parent="admin-root" order="10" if="__config__.app.isApp('base')"
-		title="General data"  />
+	<menuitem name="admin-root-general" parent="admin-root" order="10"
+		if="__config__.app.isApp('base')" title="General data" />
 
-	<menuitem name="admin-root-general-unit" parent="admin-root-general" order="-10"
-		title="Units" action="admin.root.general.unit" />
+	<menuitem name="admin-root-general-unit" parent="admin-root-general"
+		order="-10" title="Units" action="admin.root.general.unit" />
 
 	<action-view name="admin.root.general.unit" title="Units"
-		model="com.axelor.apps.base.db.Unit" >
+		model="com.axelor.apps.base.db.Unit">
 		<view type="grid" name="unit-grid" />
-		<view type="form" name="unit-form"/>
+		<view type="form" name="unit-form" />
 	</action-view>
 
 	<menuitem name="admin-root-general-currency" parent="admin-root-general"
 		title="Currencies" action="admin.root.general.currency" />
 
-	<action-view name="admin.root.general.currency"
-		title="Currencies" model="com.axelor.apps.base.db.Currency" >
-		<view type="grid" name="currency-grid"/>
-		<view type="form" name="currency-form"/>
+	<action-view name="admin.root.general.currency" title="Currencies"
+		model="com.axelor.apps.base.db.Currency">
+		<view type="grid" name="currency-grid" />
+		<view type="form" name="currency-form" />
 	</action-view>
 
 	<menuitem name="admin-root-general-unit-conversion" order="-5"
-		parent="admin-root-general" title="Unit conversions"
-		action="admin.root.general.unit.conversion" />
+		parent="admin-root-general" title="Unit conversions" action="admin.root.general.unit.conversion" />
 
 	<action-view name="admin.root.general.unit.conversion"
-		title="Unit conversions" model="com.axelor.apps.base.db.UnitConversion" >
-		<view type="grid" name="unit-conversion-grid"/>
-		<view type="form" name="unit-conversion-form"/>
-		<context name="_duplicateFinderFields" expr="startUnit;endUnit"/>
+		title="Unit conversions" model="com.axelor.apps.base.db.UnitConversion">
+		<view type="grid" name="unit-conversion-grid" />
+		<view type="form" name="unit-conversion-form" />
+		<context name="_duplicateFinderFields" expr="startUnit;endUnit" />
 	</action-view>
 
 	<menuitem name="admin-root-general-year" parent="admin-root-general"
 		title="Years" action="admin.root.general.year" />
 
 	<action-view name="admin.root.general.year" title="Years"
-		model="com.axelor.apps.base.db.Year" >
-		<view type="grid" name="year-grid"/>
-		<view type="form" name="year-form"/>
+		model="com.axelor.apps.base.db.Year">
+		<view type="grid" name="year-grid" />
+		<view type="form" name="year-form" />
 		<domain>self.typeSelect = 0</domain>
 	</action-view>
 
-	<menuitem name="admin-root-general-sequence-generic"
-		parent="admin-root-general" title="Sequences"
-		action="admin.root.general.sequence.generic" />
+	<menuitem name="admin-root-general-sequence-generic" parent="admin-root-general"
+		title="Sequences" action="admin.root.general.sequence.generic" />
 
 	<action-view name="admin.root.general.sequence.generic"
-		title="Sequences" model="com.axelor.apps.base.db.Sequence" >
-		<view type="grid" name="sequence-grid"/>
-		<view type="form" name="sequence-form"/>
+		title="Sequences" model="com.axelor.apps.base.db.Sequence">
+		<view type="grid" name="sequence-grid" />
+		<view type="form" name="sequence-form" />
 	</action-view>
 
-	<menuitem name="admin-root-general-barcode"
-		parent="admin-root-general" title="Barcode type configurations"
-		action="admin.root.general.barcode"/>
+	<menuitem name="admin-root-general-barcode" parent="admin-root-general"
+		title="Barcode type configurations" action="admin.root.general.barcode" />
 
-	<action-view name="admin.root.general.barcode"
-		title="Barcode type configurations" model="com.axelor.apps.base.db.BarcodeTypeConfig" >
-		<view type="grid" name="barcode-type-config-grid"/>
-		<view type="form" name="barcode-type-config-form"/>
+	<action-view name="admin.root.general.barcode" title="Barcode type configurations"
+		model="com.axelor.apps.base.db.BarcodeTypeConfig">
+		<view type="grid" name="barcode-type-config-grid" />
+		<view type="form" name="barcode-type-config-form" />
 	</action-view>
 
-    <menuitem name="admin-root-general-language"
-        parent="admin-root-general" title="Languages"
-        action="admin.root.general.language"/>
+	<menuitem name="admin-root-general-language" parent="admin-root-general"
+		title="Languages" action="admin.root.general.language" />
 
-    <action-view name="admin.root.general.language"
-        title="Languages" model="com.axelor.apps.base.db.Language" >
-        <view type="grid" name="language-grid"/>
-        <view type="form" name="language-form"/>
-    </action-view>
+	<action-view name="admin.root.general.language" title="Languages"
+		model="com.axelor.apps.base.db.Language">
+		<view type="grid" name="language-grid" />
+		<view type="form" name="language-form" />
+	</action-view>
 
-	<menuitem name="referential-root" title="Referential" order="15" parent="admin-root" if="__config__.app.isApp('base')"/>
-		
+	<menuitem name="referential-root" title="Referential" order="15"
+		parent="admin-root" if="__config__.app.isApp('base')" />
+
 	<menuitem name="referential-root-partners" parent="referential-root"
-		title="Partners" action="referential.root.partners" order="10"/>
+		title="Partners" action="referential.root.partners" order="10" />
 
 	<action-view name="referential.root.partners" title="Partners"
-		model="com.axelor.apps.base.db.Partner" >
+		model="com.axelor.apps.base.db.Partner">
 		<view type="cards" name="partner-cards" />
 		<view type="grid" name="partner-grid" />
 		<view type="form" name="partner-form" />
-	  	<view-param name="limit" value="39"/>
-		<view-param name="search-filters" value="partner-filters"/>
+		<view-param name="limit" value="39" />
+		<view-param name="search-filters" value="partner-filters" />
 		<!-- <domain>self.curUser = null OR self.curUser = :user_id</domain> -->
 		<domain>self.isContact != true</domain>
 		<context name="user_id" expr="eval:__user__" />
 		<context name="json-enhance" expr="eval:true" />
-		<context name="_domain" expr="self.isContact != true"/>
+		<context name="_domain" expr="self.isContact != true" />
 	</action-view>
-	
+
 	<menuitem name="referential-root-contacts" parent="referential-root"
-		title="Contacts" action="referential.root.contacts" order="20"/>
+		title="Contacts" action="referential.root.contacts" order="20" />
 
 	<action-view name="referential.root.contacts" title="Contacts"
-		model="com.axelor.apps.base.db.Partner" >
+		model="com.axelor.apps.base.db.Partner">
 		<view type="cards" name="partner-contact-cards" />
 		<view type="grid" name="partner-contact-grid" />
 		<view type="form" name="partner-contact-form" />
-	  	<view-param name="limit" value="39"/>
-		<view-param name="search-filters" value="partner-filters"/>
+		<view-param name="limit" value="39" />
+		<view-param name="search-filters" value="partner-filters" />
 		<domain>self.isContact = true</domain>
-		<context name="_domain" expr="self.isContact = true"/>
+		<context name="_domain" expr="self.isContact = true" />
 	</action-view>
-	
-	<menuitem name="referential-root-product-root" title="Products" order="30" parent="referential-root"/>
+
+	<menuitem name="referential-root-product-root" title="Products"
+		order="30" parent="referential-root" />
 
 	<menuitem name="product-root-product" parent="referential-root-product-root"
 		title="Products" action="product.root.product" />
 
 	<action-view name="product.root.product" title="Products"
-		model="com.axelor.apps.base.db.Product" >
+		model="com.axelor.apps.base.db.Product">
 		<view type="cards" name="product-cards" />
 		<view type="grid" name="product-grid" />
 		<view type="form" name="product-form" />
-	  	<view-param name="limit" value="39"/>
-		<view-param name="search-filters" value="products-filters"/>
+		<view-param name="limit" value="39" />
+		<view-param name="search-filters" value="products-filters" />
 		<domain>self.isModel = :_isModel AND self.productTypeSelect = :_productTypeSelect </domain>
-		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
-		<context name="_isModel" expr="false"/>
-		<context name="_productTypeSelect" expr="storable"/>
+		<context name="_activeCompany" expr="eval:__user__.activeCompany" />
+		<context name="_isModel" expr="false" />
+		<context name="_productTypeSelect" expr="storable" />
 	</action-view>
 
 
@@ -198,233 +228,240 @@
 		title="Services" action="product.root.service" />
 
 	<action-view name="product.root.service" title="Services"
-		model="com.axelor.apps.base.db.Product" >
+		model="com.axelor.apps.base.db.Product">
 		<view type="cards" name="product-cards" />
 		<view type="grid" name="product-grid" />
 		<view type="form" name="product-form" />
-	  	<view-param name="limit" value="39"/>
-		<view-param name="search-filters" value="products-filters"/>
+		<view-param name="limit" value="39" />
+		<view-param name="search-filters" value="products-filters" />
 		<domain>self.isModel = :_isModel AND self.productTypeSelect = :_productTypeSelect </domain>
-		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
-		<context name="_isModel" expr="false"/>
-		<context name="_productTypeSelect" expr="service"/>
+		<context name="_activeCompany" expr="eval:__user__.activeCompany" />
+		<context name="_isModel" expr="false" />
+		<context name="_productTypeSelect" expr="service" />
 	</action-view>
-	
+
 	<menuitem name="product-root-product-model" parent="referential-root-product-root"
-		title="Products models" action="product.root.product.model" if="__config__.app.getApp('base').getManageProductVariants()" />
+		title="Products models" action="product.root.product.model"
+		if="__config__.app.getApp('base').getManageProductVariants()" />
 
 	<action-view name="product.root.product.model" title="Products models"
-		model="com.axelor.apps.base.db.Product" >
+		model="com.axelor.apps.base.db.Product">
 		<view type="cards" name="product-cards" />
 		<view type="grid" name="product-grid" />
 		<view type="form" name="product-form" />
-	  	<view-param name="limit" value="39"/>
-		<view-param name="search-filters" value="products-filters"/>
+		<view-param name="limit" value="39" />
+		<view-param name="search-filters" value="products-filters" />
 		<domain>self.isModel = :_isModel</domain>
-		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
-		<context name="_isModel" expr="true"/>
+		<context name="_activeCompany" expr="eval:__user__.activeCompany" />
+		<context name="_isModel" expr="true" />
 	</action-view>
-	
+
 	<menuitem name="referential-root-price-list" parent="referential-root"
 		if="__config__.app.isApp('account') || __config__.app.isApp('sale') || __config__.app.isApp('purchase')"
-		title="Price lists" action="referential.root.price.list" order="95"/>
+		title="Price lists" action="referential.root.price.list" order="95" />
 
 	<action-view name="referential.root.price.list" title="Price lists"
-		model="com.axelor.apps.base.db.PriceList" >
+		model="com.axelor.apps.base.db.PriceList">
 		<view type="grid" name="price-list-grid" />
 		<view type="form" name="price-list-form" />
 	</action-view>
 
-	<menuitem name="referential-conf" title="Configuration" order="100" parent="referential-root" icon="fa-cog"/>
-	
+	<menuitem name="referential-conf" title="Configuration" order="100"
+		parent="referential-root" icon="fa-cog" />
+
 	<menuitem name="referential-conf-contact-function" parent="referential-conf"
 		title="Contact function" action="referential.conf.contact.function" />
-		
-	<action-view name="referential.conf.contact.function" title="Contact function"
-		model="com.axelor.apps.base.db.Function" >
-		<view type="grid" name="function-grid"/>
-		<view type="form" name="function-form"/>
+
+	<action-view name="referential.conf.contact.function"
+		title="Contact function" model="com.axelor.apps.base.db.Function">
+		<view type="grid" name="function-grid" />
+		<view type="form" name="function-form" />
 	</action-view>
-	
+
 	<menuitem name="referential-conf-address" parent="referential-conf"
-		title="Addresses" action="referential.conf.address" order="110"/>
+		title="Addresses" action="referential.conf.address" order="110" />
 
 	<action-view name="referential.conf.address" title="Addresses"
-		model="com.axelor.apps.base.db.Address" >
+		model="com.axelor.apps.base.db.Address">
 		<view type="grid" name="address-grid" />
 		<view type="form" name="address-form" />
-		<context name="fromMain" expr="eval:true"/>
-		<context name="_duplicateFinderFields" expr=" addressL4;addressL6"/>
+		<context name="fromMain" expr="eval:true" />
+		<context name="_duplicateFinderFields" expr=" addressL4;addressL6" />
 	</action-view>
-	
-	<menuitem name="referential-conf-invoice-rib" parent="referential-conf"
-		title="Bank details" action="referential.conf.invoice.rib" order="120"/>
 
-	<action-view name="referential.conf.invoice.rib"
-		title="Bank details" model="com.axelor.apps.base.db.BankDetails" >
-		<view type="grid" name="bank-details-grid"/>
-		<view type="form" name="bank-details-form"/>
+	<menuitem name="referential-conf-invoice-rib" parent="referential-conf"
+		title="Bank details" action="referential.conf.invoice.rib" order="120" />
+
+	<action-view name="referential.conf.invoice.rib" title="Bank details"
+		model="com.axelor.apps.base.db.BankDetails">
+		<view type="grid" name="bank-details-grid" />
+		<view type="form" name="bank-details-form" />
 	</action-view>
 
 	<menuitem name="referential-conf-invoice-bank" parent="referential-conf"
-		title="SWIFT codes" action="referential.conf.invoice.bank" order="130"/>
+		title="SWIFT codes" action="referential.conf.invoice.bank" order="130" />
 
-	<action-view name="referential.conf.invoice.bank"
-		title="SWIFT codes" model="com.axelor.apps.base.db.Bank" >
-		<view type="grid" name="bank-grid"/>
-		<view type="form" name="bank-form"/>
+	<action-view name="referential.conf.invoice.bank" title="SWIFT codes"
+		model="com.axelor.apps.base.db.Bank">
+		<view type="grid" name="bank-grid" />
+		<view type="form" name="bank-form" />
 	</action-view>
-	
+
 	<menuitem name="referential-conf-partner-category" parent="referential-conf"
-		title="Partner categories" action="referential.conf.partner.category" order="140"/>
+		title="Partner categories" action="referential.conf.partner.category"
+		order="140" />
 
-	<action-view name="referential.conf.partner.category" title="Partner categories"
-		model="com.axelor.apps.base.db.PartnerCategory" >
-		<view type="grid" name="partner-category-grid"/>
-		<view type="form" name="partner-category-form"/>
+	<action-view name="referential.conf.partner.category"
+		title="Partner categories" model="com.axelor.apps.base.db.PartnerCategory">
+		<view type="grid" name="partner-category-grid" />
+		<view type="form" name="partner-category-form" />
 	</action-view>
 
-	<menuitem name="referential-conf-partner-sources"
-		parent="referential-conf" title="Partner sources"
-		action="referential.conf.partner.sources" order="150"/>
+	<menuitem name="referential-conf-partner-sources" parent="referential-conf"
+		title="Partner sources" action="referential.conf.partner.sources"
+		order="150" />
 
-	<action-view name="referential.conf.partner.sources"
-		title="Partner sources" model="com.axelor.apps.base.db.Source" >
-		<view type="grid" name="source-grid"/>
-		<view type="form" name="source-form"/>
+	<action-view name="referential.conf.partner.sources" title="Partner sources"
+		model="com.axelor.apps.base.db.Source">
+		<view type="grid" name="source-grid" />
+		<view type="form" name="source-form" />
 	</action-view>
 
-	<menuitem name="referential-conf-industry-sector-config" parent="referential-conf"
-		title="Industry sectors" action="referential.conf.industry.sector.config" order="160"/>
+	<menuitem name="referential-conf-industry-sector-config"
+		parent="referential-conf" title="Industry sectors"
+		action="referential.conf.industry.sector.config" order="160" />
 
-	<action-view name="referential.conf.industry.sector.config" title="Industry sectors"
-		model="com.axelor.apps.base.db.IndustrySector" >
-		<view type="grid" name="industry-sector-grid"/>
-		<view type="form" name="industry-sector-form"/>
+	<action-view name="referential.conf.industry.sector.config"
+		title="Industry sectors" model="com.axelor.apps.base.db.IndustrySector">
+		<view type="grid" name="industry-sector-grid" />
+		<view type="form" name="industry-sector-form" />
 	</action-view>
 
 	<menuitem name="referential-conf-product-category" parent="referential-conf"
-		title="Product categories" action="referential.conf.product.category" order="170"/>
+		title="Product categories" action="referential.conf.product.category"
+		order="170" />
 
-	<action-view name="referential.conf.product.category" title="Product categories"
-		model="com.axelor.apps.base.db.ProductCategory" >
-		<view type="grid" name="product-category-grid"/>
-		<view type="form" name="product-category-form"/>
+	<action-view name="referential.conf.product.category"
+		title="Product categories" model="com.axelor.apps.base.db.ProductCategory">
+		<view type="grid" name="product-category-grid" />
+		<view type="form" name="product-category-form" />
 	</action-view>
 
-	<menuitem name="referential-conf-product-category-tree" title="Categories tree" 
-        parent="referential-conf" action="referential.conf.product.category.tree" order="171"/>
-    
-    <action-view name="referential.conf.product.category.tree" title="Product category" model="com.axelor.apps.base.db.ProductCategory">
-      <view type="tree" name="product-category-tree"/>
-      <view-param name="forceTitle" value="true"/>
-    </action-view>
+	<menuitem name="referential-conf-product-category-tree" title="Categories tree"
+		parent="referential-conf" action="referential.conf.product.category.tree"
+		order="171" />
+
+	<action-view name="referential.conf.product.category.tree"
+		title="Product category" model="com.axelor.apps.base.db.ProductCategory">
+		<view type="tree" name="product-category-tree" />
+		<view-param name="forceTitle" value="true" />
+	</action-view>
 
 	<menuitem name="referential-conf-product-family" parent="referential-conf"
-		title="Product accounting families" action="referential.conf.product.family" order="180"/>
+		title="Product accounting families" action="referential.conf.product.family"
+		order="180" />
 
 	<action-view name="referential.conf.product.family" title="Product accounting families"
-		model="com.axelor.apps.base.db.ProductFamily" >
-		<view type="grid" name="product-family-grid"/>
-		<view type="form" name="product-family-form"/>
-		<context name="fromMenu" expr="eval:true"/>		
+		model="com.axelor.apps.base.db.ProductFamily">
+		<view type="grid" name="product-family-grid" />
+		<view type="form" name="product-family-form" />
+		<context name="fromMenu" expr="eval:true" />
 	</action-view>
-	
-    <menuitem name="referential-conf-product-variant-attr"
-        parent="referential-conf"
-        title="Products variant attributes" action="referential.conf.product.variant.attr" order="190" if="__config__.app.getApp('base').manageProductVariants"/>
 
-    <action-view name="referential.conf.product.variant.attr"
-        title="Product variant attributes"
-        model="com.axelor.apps.base.db.ProductVariantAttr" >
-        <view type="grid" name="product-variant-attr-grid"/>
-        <view type="form" name="product-variant-attr-form"/>
-    </action-view>
+	<menuitem name="referential-conf-product-variant-attr" parent="referential-conf"
+		title="Products variant attributes" action="referential.conf.product.variant.attr"
+		order="190" if="__config__.app.getApp('base').manageProductVariants" />
+
+	<action-view name="referential.conf.product.variant.attr"
+		title="Product variant attributes" model="com.axelor.apps.base.db.ProductVariantAttr">
+		<view type="grid" name="product-variant-attr-grid" />
+		<view type="form" name="product-variant-attr-form" />
+	</action-view>
 
 	<menuitem name="referential-conf-stop-reason" parent="referential-conf"
-		title="Blocking reasons" action="referential.conf.stop.reason" order="200"/>
+		title="Blocking reasons" action="referential.conf.stop.reason" order="200" />
 
 	<action-view name="referential.conf.stop.reason" title="Blocking reasons"
-		model="com.axelor.apps.base.db.StopReason" >
-		<view type="grid" name="stop-reason-grid"/>
-		<view type="form" name="stop-reason-form"/>
+		model="com.axelor.apps.base.db.StopReason">
+		<view type="grid" name="stop-reason-grid" />
+		<view type="form" name="stop-reason-form" />
 	</action-view>
 
-	<menuitem name="referential-report" parent="referential-root" order="90" title="Reportings" icon="fa-bar-chart"/>
+	<menuitem name="referential-report" parent="referential-root"
+		order="90" title="Reportings" icon="fa-bar-chart" />
 
-	<menuitem name="referential-report-dashboards-customers"  parent="referential-report"
-    	title="Customers" icon="fa-bar-chart"  action="customer.list.dashboard.view"/>
-	
+	<menuitem name="referential-report-dashboards-customers"
+		parent="referential-report" title="Customers" icon="fa-bar-chart"
+		action="customer.list.dashboard.view" />
+
 	<action-view name="customer.list.dashboard.view" title="Customers">
 		<view type="dashboard" name="base.partner.list.dashboard" />
 	</action-view>
-	
-	<menuitem name="referential-report-maps" parent="referential-report" title="Maps" order="10"/>
-		
-	<menuitem name="referential-report-partner-customers" parent="referential-report-maps" 
-		title="Customers" action="action-show-customers-on-map-page"/>
-	
-	<menuitem name="referential-report-partner-prospects" parent="referential-report-maps" 
-		title="Prospects" action="action-show-prospects-on-map-page"/>
-		
-<!-- 	<action-method name="action-show-customers-on-map-page">
-	  <call method="showCustomersOnMap" class="com.axelor.apps.base.web.GeneralController"/>
-	</action-method> -->
-	
+
+	<menuitem name="referential-report-maps" parent="referential-report"
+		title="Maps" order="10" />
+
+	<menuitem name="referential-report-partner-customers" parent="referential-report-maps"
+		title="Customers" action="action-show-customers-on-map-page" />
+
+	<menuitem name="referential-report-partner-prospects" parent="referential-report-maps"
+		title="Prospects" action="action-show-prospects-on-map-page" />
+
+	<!-- <action-method name="action-show-customers-on-map-page"> <call method="showCustomersOnMap" 
+		class="com.axelor.apps.base.web.GeneralController"/> </action-method> -->
+
 	<action-method name="action-show-customers-on-map-page">
-	  <call method="showCustomersOnMap" class="com.axelor.apps.base.web.AppBaseController"/>
+		<call method="showCustomersOnMap" class="com.axelor.apps.base.web.AppBaseController" />
 	</action-method>
 
-<!-- 	<action-method name="action-show-prospects-on-map-page">
-	  <call method="showProspectsOnMap" class="com.axelor.apps.base.web.GeneralController"/>
-	</action-method> -->
+	<!-- <action-method name="action-show-prospects-on-map-page"> <call method="showProspectsOnMap" 
+		class="com.axelor.apps.base.web.GeneralController"/> </action-method> -->
 
 	<action-method name="action-show-prospects-on-map-page">
-	  <call method="showProspectsOnMap" class="com.axelor.apps.base.web.AppBaseController"/>
+		<call method="showProspectsOnMap" class="com.axelor.apps.base.web.AppBaseController" />
 	</action-method>
-	
-	<menuitem name="referential-report-partner-suppliers" parent="referential-report-maps" 
-		title="Suppliers" action="action-show-suppliers-on-map-page"/>	
-	
-<!-- 	<action-method name="action-show-suppliers-on-map-page">
-	  <call method="showSuppliersOnMap" class="com.axelor.apps.base.web.GeneralController"/>
-	</action-method> -->
+
+	<menuitem name="referential-report-partner-suppliers" parent="referential-report-maps"
+		title="Suppliers" action="action-show-suppliers-on-map-page" />
+
+	<!-- <action-method name="action-show-suppliers-on-map-page"> <call method="showSuppliersOnMap" 
+		class="com.axelor.apps.base.web.GeneralController"/> </action-method> -->
 
 	<action-method name="action-show-suppliers-on-map-page">
-	  <call method="showSuppliersOnMap" class="com.axelor.apps.base.web.AppBaseController"/>
+		<call method="showSuppliersOnMap" class="com.axelor.apps.base.web.AppBaseController" />
 	</action-method>
 
-	<menuitem name="admin-root-organisation" parent="admin-root" title="Organization" order="20"  if="__config__.app.isApp('base')"/>
+	<menuitem name="admin-root-organisation" parent="admin-root"
+		title="Organization" order="20" if="__config__.app.isApp('base')" />
 
-	<menuitem name="admin-root-organisation-territory"
-		parent="admin-root-organisation" title="Territories"
-		action="admin.root.organisation.territory" />
+	<menuitem name="admin-root-organisation-territory" parent="admin-root-organisation"
+		title="Territories" action="admin.root.organisation.territory" />
 
 	<action-view name="admin.root.organisation.territory"
-		title="Territories" model="com.axelor.apps.base.db.Territory"  >
-		<view type="grid" name="territory-grid"/>
-		<view type="form" name="territory-form"/>
+		title="Territories" model="com.axelor.apps.base.db.Territory">
+		<view type="grid" name="territory-grid" />
+		<view type="form" name="territory-form" />
 	</action-view>
-    
-    <menuitem name="admin-root-organisation-territory-street"
-        parent="admin-root-organisation-territory" title="Streets"
-        action="admin.root.organisation.territory.street" if="__config__.app.getApp('base').getStoreStreets()" />
 
-    <action-view name="admin.root.organisation.territory.street"
-        title="Streets" model="com.axelor.apps.base.db.Street" >
-        <view type="grid" name="street-grid"/>
-        <view type="form" name="street-form"/>
-    </action-view>
-    
+	<menuitem name="admin-root-organisation-territory-street"
+		parent="admin-root-organisation-territory" title="Streets"
+		action="admin.root.organisation.territory.street" if="__config__.app.getApp('base').getStoreStreets()" />
+
+	<action-view name="admin.root.organisation.territory.street"
+		title="Streets" model="com.axelor.apps.base.db.Street">
+		<view type="grid" name="street-grid" />
+		<view type="form" name="street-form" />
+	</action-view>
+
 	<menuitem name="admin-root-organisation-territory-city"
 		parent="admin-root-organisation-territory" title="Cities"
 		action="admin.root.organisation.territory.city" />
 
 	<action-view name="admin.root.organisation.territory.city"
-		title="Cities" model="com.axelor.apps.base.db.City" >
-		<view type="grid" name="city-grid"/>
-		<view type="form" name="city-form"/>
-		<context name="_duplicateFinderFields" expr="name"/>
+		title="Cities" model="com.axelor.apps.base.db.City">
+		<view type="grid" name="city-grid" />
+		<view type="form" name="city-form" />
+		<context name="_duplicateFinderFields" expr="name" />
 	</action-view>
 
 	<menuitem name="admin-root-organisation-territory-department"
@@ -432,29 +469,27 @@
 		action="admin.root.organisation.territory.department" />
 
 	<action-view name="admin.root.organisation.territory.department"
-		title="Departments" model="com.axelor.apps.base.db.Department" >
+		title="Departments" model="com.axelor.apps.base.db.Department">
 		<view type="grid" name="department-grid" />
 		<view type="form" name="department-form" />
 	</action-view>
 
-	<menuitem name="admin-root-organisation-region"
-		parent="admin-root-organisation-territory" title="Regions"
-		action="admin.root.organisation.region" />
+	<menuitem name="admin-root-organisation-region" parent="admin-root-organisation-territory"
+		title="Regions" action="admin.root.organisation.region" />
 
-	<action-view name="admin.root.organisation.region"
-		title="Regions" model="com.axelor.apps.base.db.Region" >
+	<action-view name="admin.root.organisation.region" title="Regions"
+		model="com.axelor.apps.base.db.Region">
 		<view type="grid" name="region-grid" />
 		<view type="form" name="region-form" />
 	</action-view>
 
-	<menuitem name="admin-root-organisation-country"
-		parent="admin-root-organisation-territory" title="Countries"
-		action="admin.root.organisation.country" />
+	<menuitem name="admin-root-organisation-country" parent="admin-root-organisation-territory"
+		title="Countries" action="admin.root.organisation.country" />
 
-	<action-view name="admin.root.organisation.country"
-		title="Countries" model="com.axelor.apps.base.db.Country" >
-		<view type="grid" name="country-grid"/>
-		<view type="form" name="country-form"/>
+	<action-view name="admin.root.organisation.country" title="Countries"
+		model="com.axelor.apps.base.db.Country">
+		<view type="grid" name="country-grid" />
+		<view type="form" name="country-form" />
 	</action-view>
 
 	<menuitem name="admin-root-organisation-territory-canton"
@@ -462,116 +497,127 @@
 		action="admin.root.organisation.territory.canton" />
 
 	<action-view name="admin.root.organisation.territory.canton"
-		title="Cantons" model="com.axelor.apps.base.db.Canton" >
-		<view type="grid" name="canton-grid"/>
-		<view type="form" name="canton-form"/>
+		title="Cantons" model="com.axelor.apps.base.db.Canton">
+		<view type="grid" name="canton-grid" />
+		<view type="form" name="canton-form" />
 	</action-view>
 
-    <menuitem name="admin-root-organisation-economic-area"
-      parent="admin-root-organisation-territory" title="Economic areas"
-      action="admin.root.organisation.economic.area" />
-  
-    <action-view name="admin.root.organisation.economic.area"
-      title="Economic areas" model="com.axelor.apps.base.db.EconomicArea">
-      <view type="grid" name="economic-area-grid"/>
-      <view type="form" name="economic-area-form"/>
-    </action-view>
-    
-    <menuitem name="admin-root-organisation-territory-citizenship"
-      parent="admin-root-organisation-territory" title="Citizenship"
-      action="admin.root.organisation.territory.citizenship" />
-  
-    <action-view name="admin.root.organisation.territory.citizenship"
-      title="Citizenship" model="com.axelor.apps.base.db.Citizenship">
-      <view type="grid" name="citizenship-grid"/>
-      <view type="form" name="citizenship-form"/>
-    </action-view>
+	<menuitem name="admin-root-organisation-economic-area" parent="admin-root-organisation-territory"
+		title="Economic areas" action="admin.root.organisation.economic.area" />
 
-	<menuitem name="admin-root-user" parent="admin-root" if="__config__.app.isApp('base')"
-		title="Users/Companies" order="25" />
+	<action-view name="admin.root.organisation.economic.area"
+		title="Economic areas" model="com.axelor.apps.base.db.EconomicArea">
+		<view type="grid" name="economic-area-grid" />
+		<view type="form" name="economic-area-form" />
+	</action-view>
+
+	<menuitem name="admin-root-organisation-territory-citizenship"
+		parent="admin-root-organisation-territory" title="Citizenship"
+		action="admin.root.organisation.territory.citizenship" />
+
+	<action-view name="admin.root.organisation.territory.citizenship"
+		title="Citizenship" model="com.axelor.apps.base.db.Citizenship">
+		<view type="grid" name="citizenship-grid" />
+		<view type="form" name="citizenship-form" />
+	</action-view>
+
+	<menuitem name="admin-root-user" parent="admin-root"
+		if="__config__.app.isApp('base')" title="Users/Companies" order="25" />
 
 	<menuitem name="admin-root-user-user" parent="admin-root-user"
-		title="Users" action="action-auth-users" order="1"/>
+		title="Users" action="action-auth-users" order="1" />
 
-	<action-view id="base-action-auth-users" name="action-auth-users" title="Users" model="com.axelor.auth.db.User">
+	<action-view id="base-action-auth-users" name="action-auth-users"
+		title="Users" model="com.axelor.auth.db.User">
 		<view type="grid" name="user-grid" />
 		<view type="form" name="user-form" />
-		<view-param name="search-filters" value="user-filters"/>
-		<context name="_today" expr="eval: __date__"/>
+		<view-param name="search-filters" value="user-filters" />
+		<context name="_today" expr="eval: __date__" />
 	</action-view>
 
 	<menuitem name="admin-root-user-company" parent="admin-root-user"
-		title="Companies" action="admin.root.base.company" order="2"/>
-		
-    <menuitem title="Company tree" name="admin-root-user-company-tree"
-        parent="admin-root-user" action="action-company-view-tree" order="3"/>
-        
-    <action-view name="action-company-view-tree" title="Company tree">
-        <view type="tree" name="company-tree"/>
-    </action-view>
+		title="Companies" action="admin.root.base.company" order="2" />
+
+	<menuitem title="Company tree" name="admin-root-user-company-tree"
+		parent="admin-root-user" action="action-company-view-tree" order="3" />
+
+	<action-view name="action-company-view-tree" title="Company tree">
+		<view type="tree" name="company-tree" />
+	</action-view>
 
 	<action-view name="admin.root.base.company" title="Companies"
-		model="com.axelor.apps.base.db.Company" >
-		<view type="grid" name="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-		<view type="form" name="company-form"/>
-		<context name="_showRecord" expr="eval:__repo__(Company).all().fetchOne()?.getId()"  if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
-    <context name="_canNew" expr="eval:__config__.app.getApp('base').getEnableMultiCompany()"/>
+		model="com.axelor.apps.base.db.Company">
+		<view type="grid" name="company-grid"
+			if="__config__.app.getApp('base').getEnableMultiCompany()" />
+		<view type="form" name="company-form" />
+		<context name="_showRecord"
+			expr="eval:__repo__(Company).all().fetchOne()?.getId()" if="!__config__.app.getApp('base').getEnableMultiCompany()" />
+		<context name="_canNew"
+			expr="eval:__config__.app.getApp('base').getEnableMultiCompany()" />
 	</action-view>
 
 	<menuitem name="admin-root-user-configuration" parent="admin-root-user"
-		title="Configuration" icon="fa-cog" order="4"/>
+		title="Configuration" icon="fa-cog" order="4" />
 
 	<menuitem name="company-department-all" parent="admin-root-user-configuration"
-    	title="Departments"
-    	action="company.department.all"/>
+		title="Departments" action="company.department.all" />
 
-	<action-view name="company.department.all" title="Company departments" model="com.axelor.apps.base.db.CompanyDepartment">
-    	<view type="grid" name="company-department-grid"/>
-	    <view type="form" name="company-department-form"/>
+	<action-view name="company.department.all" title="Company departments"
+		model="com.axelor.apps.base.db.CompanyDepartment">
+		<view type="grid" name="company-department-grid" />
+		<view type="form" name="company-department-form" />
 	</action-view>
 
-	<menuitem name="company-bank-details" parent="admin-root-user-configuration" title="Bank details" action="company.bank.details"/>
+	<menuitem name="company-bank-details" parent="admin-root-user-configuration"
+		title="Bank details" action="company.bank.details" />
 
-	<action-view name="company.bank.details" title="Company.bankDetails" model="com.axelor.apps.base.db.BankDetails">
-    	<view type="cards" name="bank-details-cards"/>
-    	<view type="grid" name="bank-details-bank-order-company-grid"/>
-	    <view type="form" name="bank-details-form"/>
-	    <domain>self.company != null</domain>
+	<action-view name="company.bank.details" title="Company.bankDetails"
+		model="com.axelor.apps.base.db.BankDetails">
+		<view type="cards" name="bank-details-cards" />
+		<view type="grid" name="bank-details-bank-order-company-grid" />
+		<view type="form" name="bank-details-form" />
+		<domain>self.company != null</domain>
 	</action-view>
 
-	<menuitem name="company-bank-details-tree" parent="admin-root-user-configuration" title="Bank details tree" action="company.bank.details.tree"/>
+	<menuitem name="company-bank-details-tree" parent="admin-root-user-configuration"
+		title="Bank details tree" action="company.bank.details.tree" />
 
-	<action-view name="company.bank.details.tree" title="Bank details tree" model="com.axelor.apps.base.db.BankDetails">
-    	<view type="tree" name="bank-details-tree" if="!__config__.app.isApp('bank-payment')"/>
-    	<view type="tree" name="bank-details-bank-payment-tree" if="__config__.app.isApp('bank-payment')"/>
+	<action-view name="company.bank.details.tree" title="Bank details tree"
+		model="com.axelor.apps.base.db.BankDetails">
+		<view type="tree" name="bank-details-tree" if="!__config__.app.isApp('bank-payment')" />
+		<view type="tree" name="bank-details-bank-payment-tree" if="__config__.app.isApp('bank-payment')" />
 	</action-view>
 
-	<menuitem title="Trading names" name="admin-root-trading-name" parent="admin-root-user-configuration" action="action-view-trading-name" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
+	<menuitem title="Trading names" name="admin-root-trading-name"
+		parent="admin-root-user-configuration" action="action-view-trading-name"
+		if="__config__.app.getApp('base').enableTradingNamesManagement" />
 
-	<action-view name="action-view-trading-name" title="Trading names" model="com.axelor.apps.base.db.TradingName">
+	<action-view name="action-view-trading-name" title="Trading names"
+		model="com.axelor.apps.base.db.TradingName">
 		<view type="grid" name="trading-name-grid" />
 		<view type="form" name="trading-name-form" />
 	</action-view>
 
-	<menuitem name="alarm-root" title="Alarms" order="30" if="__config__.app.isApp('base')"
-		  parent="admin-root"/>
+	<menuitem name="alarm-root" title="Alarms" order="30"
+		if="__config__.app.isApp('base')" parent="admin-root" />
 
-	<menuitem name="alarm-root-alarm-other" parent="alarm-root" title="All Alarms"
-		action="alarm.root.alarm.other" />
+	<menuitem name="alarm-root-alarm-other" parent="alarm-root"
+		title="All Alarms" action="alarm.root.alarm.other" />
 
 	<action-view name="alarm.root.alarm.other" title="All Alarms"
-		model="com.axelor.apps.base.db.Alarm" >
+		model="com.axelor.apps.base.db.Alarm">
 		<view type="grid" name="alarm-grid" />
 		<view type="form" name="alarm-form" />
 	</action-view>
 
-	<menuitem name="alarm-conf" parent="alarm-root" title="Configuration" icon="fa-cog"/>
+	<menuitem name="alarm-conf" parent="alarm-root" title="Configuration"
+		icon="fa-cog" />
 
 	<menuitem name="alarm-conf-alarm-engine" parent="alarm-conf"
 		title="Alarm engines" action="alarm.conf.alarm.engine" />
 
 	<action-view name="alarm.conf.alarm.engine" title="Alarm engines"
-		model="com.axelor.apps.base.db.AlarmEngine" >
+		model="com.axelor.apps.base.db.AlarmEngine">
 		<view type="grid" name="alarm-engine-grid" />
 		<view type="form" name="alarm-engine-form" />
 	</action-view>
@@ -580,127 +626,131 @@
 		action="alarm.conf.message" />
 
 	<action-view name="alarm.conf.message" title="All Messages"
-		model="com.axelor.apps.base.db.AlarmMessage" >
-		<view type="grid" name="alarm-message-grid"/>
-		<view type="form" name="alarm-message-form"/>
+		model="com.axelor.apps.base.db.AlarmMessage">
+		<view type="grid" name="alarm-message-grid" />
+		<view type="form" name="alarm-message-form" />
 	</action-view>
 
 	<menuitem name="alarm-conf-alarm-engine-batch" parent="alarm-conf"
 		title="Alarm batches" action="alarm.conf.alarm.engine.batch" />
 
 	<action-view name="alarm.conf.alarm.engine.batch" title="Alarm batches"
-		model="com.axelor.apps.base.db.AlarmEngineBatch" >
-		<view type="grid" name="alarm-engine-batch-grid"/>
-		<view type="form" name="alarm-engine-batch-form"/>
+		model="com.axelor.apps.base.db.AlarmEngineBatch">
+		<view type="grid" name="alarm-engine-batch-grid" />
+		<view type="form" name="alarm-engine-batch-form" />
 	</action-view>
-	
-	<menuitem name="admin-root-batch" parent="admin-root" if="__config__.app.isApp('base')"
-		title="Batches" order="35" />
+
+	<menuitem name="admin-root-batch" parent="admin-root"
+		if="__config__.app.isApp('base')" title="Batches" order="35" />
 
 	<menuitem name="admin-root-batch-base" parent="admin-root-batch"
 		title="Base batches" action="admin.root.batch.base" />
 
 	<action-view name="admin.root.batch.base" title="Base batches"
-		model="com.axelor.apps.base.db.BaseBatch" >
-		<view type="grid" name="base-batch-grid"/>
-		<view type="form" name="base-batch-form"/>
+		model="com.axelor.apps.base.db.BaseBatch">
+		<view type="grid" name="base-batch-grid" />
+		<view type="form" name="base-batch-form" />
 	</action-view>
-	
+
 	<menuitem name="admin-root-batch-mail" parent="admin-root-batch"
 		title="Mail batches" action="admin.root.batch.mail" />
 
 	<action-view name="admin.root.batch.mail" title="Mail batches"
-		model="com.axelor.apps.base.db.MailBatch" >
-		<view type="grid" name="mail-batch-grid"/>
-		<view type="form" name="mail-batch-form"/>
+		model="com.axelor.apps.base.db.MailBatch">
+		<view type="grid" name="mail-batch-grid" />
+		<view type="form" name="mail-batch-form" />
 	</action-view>
-	
-	<menuitem id="bas-mail-conf" name="mail-conf" parent="admin-root" if="__config__.app.isApp('base')"
-		title="Message"  order="40" />
 
-	<menuitem name="mail-conf-pdf-templates"
-		parent="mail-conf" order="35" title="PDF Templates"
-		action="admin.root.templating.pdf.templates" />
+	<menuitem id="bas-mail-conf" name="mail-conf" parent="admin-root"
+		if="__config__.app.isApp('base')" title="Message" order="40" />
+
+	<menuitem name="mail-conf-pdf-templates" parent="mail-conf"
+		order="35" title="PDF Templates" action="admin.root.templating.pdf.templates" />
 
 	<action-view name="admin.root.templating.pdf.templates"
 		title="PDF Templates" model="com.axelor.apps.base.db.BirtTemplate">
-		<view type="grid" name="birt-template-grid"/>
-		<view type="form" name="birt-template-form"/>
+		<view type="grid" name="birt-template-grid" />
+		<view type="form" name="birt-template-form" />
 	</action-view>
 
 	<menuitem name="admin-root-maintenance-trace-back" parent="admin-root-maintenance"
 		title="Tracebacks" action="admin.root.maintenance.trace.back" />
 
 	<action-view name="admin.root.maintenance.trace.back"
-		title="Tracebacks" model="com.axelor.exception.db.TraceBack" >
-		<view type="grid" name="trace-back-grid"/>
-		<view type="form" name="trace-back-form"/>
+		title="Tracebacks" model="com.axelor.exception.db.TraceBack">
+		<view type="grid" name="trace-back-grid" />
+		<view type="form" name="trace-back-form" />
 	</action-view>
 
 	<menuitem name="admin-root-import" parent="admin-root-maintenance"
 		title="Imports" action="admin.root.import" />
 
 	<action-view name="admin.root.import" title="Imports"
-		model="com.axelor.apps.base.db.ImportConfiguration" >
+		model="com.axelor.apps.base.db.ImportConfiguration">
 		<view type="grid" name="import-configuration-grid" />
 		<view type="form" name="import-configuration-form" />
 	</action-view>
-	
+
 	<menuitem name="admin-root-advanced-import" parent="admin-root-maintenance"
-   		title="Advanced import" action="admin.root.advanced.import"/>
-  
+		title="Advanced import" action="admin.root.advanced.import" />
+
 	<action-view name="admin.root.advanced.import" title="Advanced import"
-		model="com.axelor.apps.base.db.AdvancedImport" >
-		<view type="grid" name="advanced-import-grid"/>
-		<view type="form" name="advanced-import-form"/>
+		model="com.axelor.apps.base.db.AdvancedImport">
+		<view type="grid" name="advanced-import-grid" />
+		<view type="form" name="advanced-import-form" />
 	</action-view>
-	
+
 	<menuitem name="admin-root-convert-demo-file" parent="admin-root-maintenance"
-		title="Convert demo file" action="admin.root.convert.demo.file"/>
-		
+		title="Convert demo file" action="admin.root.convert.demo.file" />
+
 	<action-view name="admin.root.convert.demo.file" title="Convert demo file"
 		model="com.axelor.apps.base.db.Wizard">
 		<view type="form" name="convert-demo-file-wizard-form" />
 	</action-view>
-	
+
 	<menuitem name="admin-root-import-demo-data" parent="admin-root-maintenance"
 		title="Import demo data" action="admin.root.import.demo.data" />
 
 	<action-view name="admin.root.import.demo.data" title="Import demo data"
-		model="com.axelor.apps.base.db.Wizard" >
+		model="com.axelor.apps.base.db.Wizard">
 		<view type="form" name="import-demo-data-wizard-form" />
 	</action-view>
 
-	<menuitem name="admin-root-indicator-generator-grouping" parent="admin-root-maintenance"
-		title="Indicators groups" action="admin.root.indicator.generator.grouping" />
+	<menuitem name="admin-root-indicator-generator-grouping"
+		parent="admin-root-maintenance" title="Indicators groups"
+		action="admin.root.indicator.generator.grouping" />
 
 	<action-view name="admin.root.indicator.generator.grouping"
-		title="Indicators groups" model="com.axelor.apps.base.db.IndicatorGeneratorGrouping" >
+		title="Indicators groups" model="com.axelor.apps.base.db.IndicatorGeneratorGrouping">
 		<view type="grid" name="indicator-generator-grouping-grid" />
-		<view type="form" name="indicator-generator-grouping-form"/>
+		<view type="form" name="indicator-generator-grouping-form" />
 	</action-view>
-	
+
 	<menuitem name="admin-root-indicator-generator" parent="admin-root-maintenance"
 		title="Indicators generators" action="admin.root.indicator.generator" />
 
-	<action-view name="admin.root.indicator.generator"
-		title="Indicators generators" model="com.axelor.apps.base.db.IndicatorGenerator" >
+	<action-view name="admin.root.indicator.generator" title="Indicators generators"
+		model="com.axelor.apps.base.db.IndicatorGenerator">
 		<view type="grid" name="indicator-generator-grid" />
-		<view type="form" name="indicator-generator-form"/>
+		<view type="form" name="indicator-generator-form" />
 	</action-view>
-	
-	<menuitem title="Advanced exports" name="menu-advanced-export" parent="admin-root-maintenance" action="menu.advanced.export" />
 
-	<action-view name="menu.advanced.export" title="Advanced export" model="com.axelor.apps.base.db.AdvancedExport">
-		<view type="grid" name="advanced-export-grid"/>
-		<view type="form" name="advanced-export-form"/>
+	<menuitem title="Advanced exports" name="menu-advanced-export"
+		parent="admin-root-maintenance" action="menu.advanced.export" />
+
+	<action-view name="menu.advanced.export" title="Advanced export"
+		model="com.axelor.apps.base.db.AdvancedExport">
+		<view type="grid" name="advanced-export-grid" />
+		<view type="form" name="advanced-export-form" />
 	</action-view>
-	
-	<menuitem title="Printing Setting" name="menu-printing-setting" parent="admin-root-maintenance" action="menu-printing-setting" />
 
-	<action-view name="menu-printing-setting" title="Printing Setting" model="com.axelor.apps.base.db.PrintingSettings">
-		<view type="grid" name="printing-setting-grid"/>
-		<view type="form" name="printing-setting-form"/>
+	<menuitem title="Printing Setting" name="menu-printing-setting"
+		parent="admin-root-maintenance" action="menu-printing-setting" />
+
+	<action-view name="menu-printing-setting" title="Printing Setting"
+		model="com.axelor.apps.base.db.PrintingSettings">
+		<view type="grid" name="printing-setting-grid" />
+		<view type="form" name="printing-setting-form" />
 	</action-view>
 
 	<menuitem title="DMS Import" name="menu-dms-import-wizard"
@@ -713,96 +763,113 @@
 		<view-param name="show-toolbar" value="false" />
 	</action-view>
 
-	<menuitem name="admin-root-calendars" parent="admin-root" if="__config__.app.isApp('base')"
-			  title="Calendars" order="50"/>
+	<menuitem name="admin-root-calendars" parent="admin-root"
+		if="__config__.app.isApp('base')" title="Calendars" order="50" />
 
 	<menuitem name="admin-root-calendars-icalendars" title="iCalendars"
-			  parent="admin-root-calendars" action="admin.root.calendars.icalendars"/>
+		parent="admin-root-calendars" action="admin.root.calendars.icalendars" />
 
 	<action-view name="admin.root.calendars.icalendars" title="ICalendars"
-				 model="com.axelor.apps.base.db.ICalendar">
-		<view type="grid" name="calendar-grid"/>
-		<view type="form" name="calendar-form"/>
+		model="com.axelor.apps.base.db.ICalendar">
+		<view type="grid" name="calendar-grid" />
+		<view type="form" name="calendar-form" />
 	</action-view>
 
 	<menuitem name="admin-root-calendars-ievents" title="iEvents"
-			  parent="admin-root-calendars" action="admin.root.calendars.ievents"/>
+		parent="admin-root-calendars" action="admin.root.calendars.ievents" />
 
 	<action-view name="admin.root.calendars.ievents" title="IEvents"
-				 model="com.axelor.apps.base.db.ICalendarEvent">
-		<view type="calendar" name="calendar-event-all"/>
-		<view type="grid" name="calendar-event-grid"/>
-		<view type="form" name="calendar-event-form"/>
+		model="com.axelor.apps.base.db.ICalendarEvent">
+		<view type="calendar" name="calendar-event-all" />
+		<view type="grid" name="calendar-event-grid" />
+		<view type="form" name="calendar-event-form" />
 	</action-view>
-	
+
 	<menuitem name="admin-root-calendars-config" parent="admin-root-calendars"
 		title="Calendar Configurations" action="admin.root.calendars.config" />
 
 	<action-view name="admin.root.calendars.config" title="Calendar Configurations"
-		model="com.axelor.apps.base.db.CalendarConfiguration" >
-		<view type="grid" name="calendar-configuration-grid"/>
-		<view type="form" name="calendar-configuration-form"/>
+		model="com.axelor.apps.base.db.CalendarConfiguration">
+		<view type="grid" name="calendar-configuration-grid" />
+		<view type="form" name="calendar-configuration-form" />
 	</action-view>
-	
-	<action-view id="base.team.tasks.due" name="team.tasks.due" model="com.axelor.team.db.TeamTask" title="Tasks due">
-	  <view name="team-task-grid" type="grid"/>
-	  <view name="team-task-calendar" type="calendar"/>
-	  <view name="team-task-form" type="form"/>
-	  <view-param name="details-view" value="true"/>
-	  <domain>
+
+	<action-view id="base.team.tasks.due" name="team.tasks.due"
+		model="com.axelor.team.db.TeamTask" title="Tasks due">
+		<view name="team-task-grid" type="grid" />
+		<view name="team-task-calendar" type="calendar" />
+		<view name="team-task-form" type="form" />
+		<view-param name="details-view" value="true" />
+		<domain>
 	    (self.assignedTo = :__user__  AND self.status NOT IN :closed_status) AND
 	    (self.taskDeadline &lt;= current_date)
 	  </domain>
-	  <context name="closed_status" expr="#{['closed', 'canceled']}"/>
+		<context name="closed_status" expr="#{['closed', 'canceled']}" />
 	</action-view>
 
-	<action-view id="base.team.tasks.todo" name="team.tasks.todo" model="com.axelor.team.db.TeamTask" title="Tasks todo">
-	  <view name="team-task-grid" type="grid"/>
-	  <view name="team-task-calendar" type="calendar"/>
-	  <view name="team-task-form" type="form"/>
-	  <view-param name="details-view" value="true"/>
-	  <domain>
+	<action-view id="base.team.tasks.todo" name="team.tasks.todo"
+		model="com.axelor.team.db.TeamTask" title="Tasks todo">
+		<view name="team-task-grid" type="grid" />
+		<view name="team-task-calendar" type="calendar" />
+		<view name="team-task-form" type="form" />
+		<view-param name="details-view" value="true" />
+		<domain>
 	    (self.assignedTo = :__user__ AND self.status NOT IN :closed_status) AND
 	    (self.taskDeadline &lt;= current_date OR self.taskDate &lt;= current_date)
 	  </domain>
-	  <context name="closed_status" expr="#{['closed', 'canceled']}"/>
-	</action-view>
-	
-	<action-view id="base.team.tasks.open" name="team.tasks.open" model="com.axelor.team.db.TeamTask" title="My open tasks">
-	  <view name="team-task-grid" type="grid"/>
-	  <view name="team-task-calendar" type="calendar"/>
-	  <view name="team-task-form" type="form"/>
-	  <view-param name="details-view" value="true"/>
-	  <domain>self.assignedTo = :__user__ AND self.status NOT IN :closed_status</domain>
-	  <context name="closed_status" expr="#{['closed', 'canceled']}"/>
-	</action-view>
-	
-	<action-view id="base.team.tasks.assigned" name="team.tasks.assigned" model="com.axelor.team.db.TeamTask" title="My tasks">
-	  <view name="team-task-grid" type="grid"/>
-	  <view name="team-task-calendar" type="calendar"/>
-	  <view name="team-task-form" type="form"/>
-	  <view-param name="search-filters" value="task-filters"/>
-	  <view-param name="details-view" value="true"/>
-    <domain>self.assignedTo = :__user__ AND self.typeSelect = :_typeSelect</domain>
-    <context name="_typeSelect" expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TASK"/>
-	</action-view>
-	
-	<action-view id="base.team.tasks.created" name="team.tasks.created" model="com.axelor.team.db.TeamTask" title="Tasks created by me">
-	  <view name="team-task-grid" type="grid"/>
-	  <view name="team-task-calendar" type="calendar"/>
-	  <view name="team-task-form" type="form"/>
-	  <view-param name="details-view" value="true"/>
-	  <domain>self.createdBy = :__user__ AND self.status NOT IN :closed_status</domain>
-	  <context name="closed_status" expr="#{['closed', 'canceled']}"/>
+		<context name="closed_status" expr="#{['closed', 'canceled']}" />
 	</action-view>
 
-  <action-view name="team.tasks.all" model="com.axelor.team.db.TeamTask" title="All tasks">
-    <view name="team-task-grid" type="grid"/>
-    <view name="team-task-calendar" type="calendar"/>
-    <view name="team-task-form" type="form"/>
-    <view-param name="search-filters" value="task-filters"/>
-    <view-param name="details-view" value="true"/>
-    <domain>self.typeSelect = :_typeSelect</domain>
-    <context name="_typeSelect" expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TASK"/>
-  </action-view>
+	<action-view id="base.team.tasks.open" name="team.tasks.open"
+		model="com.axelor.team.db.TeamTask" title="My open tasks">
+		<view name="team-task-grid" type="grid" />
+		<view name="team-task-calendar" type="calendar" />
+		<view name="team-task-form" type="form" />
+		<view-param name="details-view" value="true" />
+		<domain>self.assignedTo = :__user__ AND self.status NOT IN :closed_status</domain>
+		<context name="closed_status" expr="#{['closed', 'canceled']}" />
+	</action-view>
+
+	<action-view id="base.team.tasks.assigned" name="team.tasks.assigned"
+		model="com.axelor.team.db.TeamTask" title="My tasks">
+		<view name="team-task-grid" type="grid" />
+		<view name="team-task-calendar" type="calendar" />
+		<view name="team-task-form" type="form" />
+		<view-param name="search-filters" value="task-filters" />
+		<view-param name="details-view" value="true" />
+		<domain>self.assignedTo = :__user__ AND self.typeSelect = :_typeSelect</domain>
+		<context name="_typeSelect"
+			expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TASK" />
+	</action-view>
+
+	<action-view id="base.team.tasks.created" name="team.tasks.created"
+		model="com.axelor.team.db.TeamTask" title="Tasks created by me">
+		<view name="team-task-grid" type="grid" />
+		<view name="team-task-calendar" type="calendar" />
+		<view name="team-task-form" type="form" />
+		<view-param name="details-view" value="true" />
+		<domain>self.createdBy = :__user__ AND self.status NOT IN :closed_status</domain>
+		<context name="closed_status" expr="#{['closed', 'canceled']}" />
+	</action-view>
+
+	<action-view name="team.tasks.all" model="com.axelor.team.db.TeamTask"
+		title="All tasks">
+		<view name="team-task-grid" type="grid" />
+		<view name="team-task-calendar" type="calendar" />
+		<view name="team-task-form" type="form" />
+		<view-param name="search-filters" value="task-filters" />
+		<view-param name="details-view" value="true" />
+		<domain>self.typeSelect = :_typeSelect</domain>
+		<context name="_typeSelect"
+			expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TASK" />
+	</action-view>
+
+	<menuitem title="Roles" name="referential-conf-partner-roles"
+		parent="referential-conf" action="referential.conf.partner.roles" />
+
+	<action-view name="referential.conf.partner.roles" title="Roles"
+		model="com.axelor.apps.base.db.PartnerRole">
+		<view type="grid" name="partner-role-grid" />
+		<view type="form" name="partner-role-form" />
+	</action-view>
 </object-views>

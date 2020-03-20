@@ -99,6 +99,9 @@
 	<string name="pickingOrderComments" title="Comment to display on picking order" large="true"/>
 	
 	<string name="proformaComments" title="Comment to display on proforma" large="true"/>
+	
+	<string name="functionBusinessCard" title="Function / Business card"></string>
+	<many-to-many name="partnerRoleSet" ref="com.axelor.apps.base.db.PartnerRole" title="Roles"/>
 
 	<finder-method name="findByUser" using="user"/>
 
