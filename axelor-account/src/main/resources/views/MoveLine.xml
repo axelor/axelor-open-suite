@@ -413,8 +413,8 @@
 	</action-record>
 	
 	<action-record name="action-move-line-record-get-creditdebit-balance" model="com.axelor.apps.account.db.MoveLine">
-		<field name="debit" expr="eval: _parent?.moveLineList.collect{Double.parseDouble(it.credit)}.sum() - _parent?.moveLineList.collect{Double.parseDouble(it.debit)}.sum()" if="eval: _parent?.moveLineList.collect{Double.parseDouble(it.credit)}.sum() &gt; _parent?.moveLineList.collect{Double.parseDouble(it.debit)}.sum()" />
-		<field name="credit" expr="eval: _parent?.moveLineList.collect{Double.parseDouble(it.debit)}.sum() - _parent?.moveLineList.collect{Double.parseDouble(it.credit)}.sum()" if="eval: _parent?.moveLineList.collect{Double.parseDouble(it.credit)}.sum() &lt; _parent?.moveLineList.collect{Double.parseDouble(it.debit)}.sum()"/>
+		<field name="debit" expr="eval: _parent?.moveLineList.collect{new BigDecimal(it.credit)}.sum() - _parent?.moveLineList.collect{new BigDecimal(it.debit)}.sum()" if="eval: _parent?.moveLineList.collect{new BigDecimal(it.credit)}.sum() &gt; _parent?.moveLineList.collect{new BigDecimal(it.debit)}.sum()" />
+		<field name="credit" expr="eval: _parent?.moveLineList.collect{new BigDecimal(it.debit)}.sum() - _parent?.moveLineList.collect{new BigDecimal(it.credit)}.sum()" if="eval: _parent?.moveLineList.collect{new BigDecimal(it.credit)}.sum() &lt; _parent?.moveLineList.collect{new BigDecimal(it.debit)}.sum()"/>
 	</action-record>
 
 	<action-record name="action-move-line-record-set-currencyRate" model="com.axelor.apps.account.db.MoveLine">
