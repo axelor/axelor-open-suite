@@ -88,7 +88,7 @@ public class StockMovePrintServiceImpl implements StockMovePrintService {
   @Override
   public String printStockMove(StockMove stockMove, String format)
       throws AxelorException, IOException {
-    String fileName = getStockMoveFilesName(false, ReportSettings.FORMAT_PDF);
+    String fileName = I18n.get("Stock Move") + "-" + stockMove.getStockMoveSeq() + "." + format;
     return PdfTool.getFileLinkFromPdfFile(print(stockMove, format), fileName);
   }
 

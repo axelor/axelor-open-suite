@@ -23,6 +23,7 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.report.IReport;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.ThrowConsumer;
@@ -42,10 +43,26 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
 
   @Inject SaleOrderService saleOrderService;
 
+  protected AppSaleService appSaleService;
+
+  @Inject
+  public SaleOrderPrintServiceImpl(AppSaleService appSaleService) {
+    this.appSaleService = appSaleService;
+  }
+
   @Override
   public String printSaleOrder(SaleOrder saleOrder, boolean proforma, String format)
       throws AxelorException, IOException {
-    String fileName = getSaleOrderFilesName(false, format);
+    String fileName =
+        I18n.get("Sale order")
+            + "-"
+            + saleOrder.getSaleOrderSeq()
+            + (appSaleService.getAppSale().getManageSaleOrderVersion()
+                ? "-" + saleOrder.getVersionNumber()
+                : "")
+            + "."
+            + format;
+
     return PdfTool.getFileLinkFromPdfFile(print(saleOrder, proforma, format), fileName);
   }
 

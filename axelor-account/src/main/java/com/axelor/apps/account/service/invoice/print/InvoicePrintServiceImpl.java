@@ -64,7 +64,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
   public String printInvoice(
       Invoice invoice, boolean forceRefresh, String format, Integer reportType, String locale)
       throws AxelorException, IOException {
-    String fileName = getInvoiceFilesName(false, format);
+    String fileName = I18n.get("Invoice") + "-" + invoice.getInvoiceId() + "." + format;
     return PdfTool.getFileLinkFromPdfFile(
         printCopiesToFile(invoice, forceRefresh, reportType, format, locale), fileName);
   }
