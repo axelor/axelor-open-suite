@@ -121,7 +121,7 @@
                         hideIf="isShippingCostsProduct || !sellable"/>
 					<panel name="unitsPanel" title="Units" colSpan="12">
 						<field name="unit" canEdit="false" colSpan="6" form-view="unit-form" grid-view="unit-grid"/>
-						<button name="updateUnitBtn" title="Update stock location" colSpan="6" showIf="id" onClick="save,action-product-method-update-stock-location" if-module="axelor-stock" if="__config__.app.isApp('stock')"/>
+						<button name="updateUnitBtn" title="Update stock location" colSpan="6" showIf="id &amp;&amp; productTypeSelect == 'storable' &amp;&amp; stockManaged" onClick="save,action-product-method-update-stock-location" if-module="axelor-stock" if="__config__.app.isApp('stock')"/>
 						<field name="salesUnit" canEdit="false" hideIf="!sellable" colSpan="6" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('sale')?.getManageSalesUnits()"/>
 						<spacer colSpan="6"/>
 						<field name="purchasesUnit" canEdit="false" hideIf="!purchasable" colSpan="6" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('purchase')?.getManagePurchasesUnits()"/>

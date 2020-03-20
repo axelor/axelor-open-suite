@@ -232,8 +232,8 @@
 				 model="com.axelor.apps.sale.db.Configurator" >
 		<view type="grid" name="configurator-grid" />
 		<view type="form" name="configurator-form" />
-		<domain>:__user__ MEMBER OF self.configuratorCreator.authorizedUserSet OR :groupId MEMBER OF self.configuratorCreator.authorizedGroupSet</domain>
-		<context name="groupId" expr="eval: __user__.group.id"/>
+		<domain>:__user__ MEMBER OF self.configuratorCreator.authorizedUserSet OR :_group MEMBER OF self.configuratorCreator.authorizedGroupSet</domain>
+		<context name="_group" expr="eval: __user__.group"/>
 	</action-view>
 
 <!-- ADMINISTRATION -->

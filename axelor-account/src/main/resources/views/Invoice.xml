@@ -365,7 +365,7 @@ InvoiceSet.length > 0))"
 			</panel>
 			<panel title="Printing" name="printingPanel" colSpan="12">
 				<field name="printingSettings" onSelect="action-invoice-method-filter-printing-settings" canEdit="false"/>
-				<field name="invoicesCopySelect" colSpan="6" title="Invoices copy" validIf="invoicesCopySelect > 0"/>
+				<field name="invoicesCopySelect" colSpan="6" title="Invoices copy"/>
 				<field name="hideDiscount" colSpan="6"/>
         		<field name="headOfficeAddress" if="__user__.activeCompany?.accountConfig?.displayHeadOfficeAddrOnInvoicePrinting"/>
         		<field name="specificNotes" colSpan="12" readonly="true" showIf="specificNotes"/>
@@ -1142,7 +1142,7 @@ InvoiceSet.length > 0))"
 	</action-validate>
 
 	<action-validate name="action-validate-send-email-remove-access-for-client">
-		<error message="Error - You are not authorized to perform this action" if="__user__.group.isClient"/>
+		<error message="Error - You are not authorized to perform this action" if="__user__.group?.isClient"/>
     </action-validate>
 
     <action-validate name="action-validate-invoice-ckeck-invoice-line-tax-list">

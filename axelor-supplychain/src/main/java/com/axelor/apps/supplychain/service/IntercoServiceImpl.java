@@ -70,6 +70,8 @@ import java.util.Set;
 
 public class IntercoServiceImpl implements IntercoService {
 
+  protected static int DEFAULT_INVOICE_COPY = 1;
+
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public SaleOrder generateIntercoSaleFromPurchase(PurchaseOrder purchaseOrder)
@@ -359,7 +361,10 @@ public class IntercoServiceImpl implements IntercoService {
       intercoInvoice.setPfpValidatorUser(accountingSituation.getPfpValidatorUser());
     }
     intercoInvoice.setPriceList(intercoPriceList);
-    intercoInvoice.setInvoicesCopySelect(intercoPartner.getInvoicesCopySelect());
+    intercoInvoice.setInvoicesCopySelect(
+        (intercoPartner.getInvoicesCopySelect() == 0)
+            ? DEFAULT_INVOICE_COPY
+            : intercoPartner.getInvoicesCopySelect());
     intercoInvoice.setCreatedByInterco(true);
     intercoInvoice.setInterco(false);
 
