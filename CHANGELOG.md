@@ -10,6 +10,7 @@
 - SaleOrder : Add filter on invoice selected lines when operation choice = invoice selected lines
 - ACCOUNTING REPORT: improved bank statement report.
 - Product : set sequence while creating duplicate.
+- FORECAST RECAP : translation for Forecast Recap line Type(s).
 
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
