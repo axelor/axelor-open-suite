@@ -197,5 +197,10 @@
         <option value="1">All</option>
         <option value="2">Only missing</option>
     </selection>
+    
+    <selection name='trace.back.origin.select' id="trace.back.origin.select.hr">
+		<option value='reminder'>Reminder</option>
+		<option value="leaveManagement">Leave management</option>
+	</selection>
 
 </object-views>
