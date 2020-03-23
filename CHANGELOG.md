@@ -1,33 +1,33 @@
 # Changelog
-## [Unreleased 5.1.15]
+## [5.1.15] - 2020-03-23
 ## Improvements
-- PurchaseRequestLine : cacheable removed for this entity
-- BANKSTATEMENT : on copy reset statusSelect
-- GEONAME : import city form zip
-- Check and modify all service code according to app configuration
-- BANKPAYMENT : Update condition to display field ics number.
-- Subrogation release : improved visibility of unpaid invoices.
-- PRODUCT : display button 'Update stock location' only for storable and stock managed products.
-- STUDIO : Add panel on custom model demo data
-- MRP : Reset fields values on copy of MRP form.
-- Partner : rename 'Create order' button & translation
+- PurchaseRequestLine: cacheable removed for this entity.
+- Check and modify all service code according to app configuration.
+- BANKPAYMENT: Update condition to display field ics number.
+- Subrogation release: improved visibility of unpaid invoices.
+- PRODUCT: display button 'Update stock location' only for storable and stock managed products.
+- STUDIO: Add panel on custom model demo data.
+- Partner: rename 'Create order' button & translation
 
 ## Bug Fixes
-- STOCKMOVE : display qty per tracking number and not total available qty for tracking number
-- MOVE LINE : removed the possibility to delete a move line in a move when the move line is reconcile.
-- FIXED ASSET : correction of prorata temporis
-- INVOICE : now the date verification of the ventilation process depends of invoices of the same company.
-- MOVE : corrected sequence generation, now use correctly the date of the move and not the date of validation.
-- Subrogative release : corrected the possibility to create two subrogation transmitted or accounted with the same invoices.
+- STOCKMOVE: display qty per tracking number and not total available qty for tracking number.
+- MOVE LINE: removed the possibility to delete a move line in a move when the move line is reconcile.
+- FIXED ASSET: correction of prorata temporis.
+- INVOICE: now the date verification of the ventilation process depends of invoices of the same company.
+- MOVE: corrected sequence generation, now use correctly the date of the move and not the date of validation.
+- Subrogative release: corrected the possibility to create two subrogations transmitted or accounted with the same invoices.
 - Invoice payment: fix issue in invoice payment form when invoice due date is empty.
-- SALE CONFIG : Fixed "Action not allowed" error when we try to update customer's accepted credit
-- INVOICE : fix the NPE when payment mode is null in invoice.
+- SALE CONFIG: Fixed "Action not allowed" error when we try to update customer's accepted credit.
+- INVOICE: fix the NPE when payment mode is null in invoice.
 - Move: Fix exception message when saving a new record.
-- SALEORDER : fixed bug causing the margins to be rounded to the unit
-- SUPPLIER INVOICE : fix the problem of amount not updated in supplier invoice after use of mass invoice payment function.
-- CAMPAIGN : add exception message on partner and lead at invalid domain in target list
-- LEAVE REQUEST : corrected error when trying to change user.
-- MANUF ORDER: add missing translation
+- SALEORDER: fixed bug causing the margins to be rounded to the unit.
+- SUPPLIER INVOICE: fix the problem of amount not updated in supplier invoice after use of mass invoice payment function.
+- CAMPAIGN: add exception message on partner and lead at invalid domain in target list.
+- LEAVE REQUEST: corrected error when trying to change user.
+- MANUF ORDER: add missing translation.
+- BANKSTATEMENT: reset status on copy.
+- GEONAME: fix city import.
+- MRP: Reset fields values on copy of MRP form.
 
 ## [5.1.14] - 2020-01-17
 ## Improvements
@@ -1552,20 +1552,20 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Purchase Order: remove save on loading purchase order form.
 
 
-[Unreleased 5.1.15]: https://github.com/axelor/axelor-business-suite/compare/v5.1.14...5.1-dev
-[5.1.14]: https://github.com/axelor/axelor-business-suite/compare/v5.1.13...v5.1.14
-[5.1.13]: https://github.com/axelor/axelor-business-suite/compare/v5.1.12...v5.1.13
-[5.1.12]: https://github.com/axelor/axelor-business-suite/compare/v5.1.11...v5.1.12
-[5.1.11]: https://github.com/axelor/axelor-business-suite/compare/v5.1.10...v5.1.11
-[5.1.10]: https://github.com/axelor/axelor-business-suite/compare/v5.1.9...v5.1.10
-[5.1.9]: https://github.com/axelor/axelor-business-suite/compare/v5.1.8...v5.1.9
-[5.1.8]: https://github.com/axelor/axelor-business-suite/compare/v5.1.7...v5.1.8
-[5.1.7]: https://github.com/axelor/axelor-business-suite/compare/v5.1.6...v5.1.7
-[5.1.6]: https://github.com/axelor/axelor-business-suite/compare/v5.1.5...v5.1.6
-[5.1.5]: https://github.com/axelor/axelor-business-suite/compare/v5.1.4...v5.1.5
-[5.1.4]: https://github.com/axelor/axelor-business-suite/compare/v5.1.3...v5.1.4
-[5.1.3]: https://github.com/axelor/axelor-business-suite/compare/v5.1.2...v5.1.3
-[5.1.2]: https://github.com/axelor/axelor-business-suite/compare/v5.1.1...v5.1.2
-[5.1.1]: https://github.com/axelor/axelor-business-suite/compare/v5.1.0...v5.1.1
-[5.1.0]: https://github.com/axelor/axelor-business-suite/compare/5.0...v5.1.0
+[5.1.15]: https://github.com/axelor/axelor-open-suite/compare/v5.1.14...v5.1.15
+[5.1.14]: https://github.com/axelor/axelor-open-suite/compare/v5.1.13...v5.1.14
+[5.1.13]: https://github.com/axelor/axelor-open-suite/compare/v5.1.12...v5.1.13
+[5.1.12]: https://github.com/axelor/axelor-open-suite/compare/v5.1.11...v5.1.12
+[5.1.11]: https://github.com/axelor/axelor-open-suite/compare/v5.1.10...v5.1.11
+[5.1.10]: https://github.com/axelor/axelor-open-suite/compare/v5.1.9...v5.1.10
+[5.1.9]: https://github.com/axelor/axelor-open-suite/compare/v5.1.8...v5.1.9
+[5.1.8]: https://github.com/axelor/axelor-open-suite/compare/v5.1.7...v5.1.8
+[5.1.7]: https://github.com/axelor/axelor-open-suite/compare/v5.1.6...v5.1.7
+[5.1.6]: https://github.com/axelor/axelor-open-suite/compare/v5.1.5...v5.1.6
+[5.1.5]: https://github.com/axelor/axelor-open-suite/compare/v5.1.4...v5.1.5
+[5.1.4]: https://github.com/axelor/axelor-open-suite/compare/v5.1.3...v5.1.4
+[5.1.3]: https://github.com/axelor/axelor-open-suite/compare/v5.1.2...v5.1.3
+[5.1.2]: https://github.com/axelor/axelor-open-suite/compare/v5.1.1...v5.1.2
+[5.1.1]: https://github.com/axelor/axelor-open-suite/compare/v5.1.0...v5.1.1
+[5.1.0]: https://github.com/axelor/axelor-open-suite/compare/5.0...v5.1.0
 
