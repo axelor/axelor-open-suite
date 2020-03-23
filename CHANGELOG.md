@@ -10,6 +10,8 @@
 - SaleOrder : Add filter on invoice selected lines when operation choice = invoice selected lines
 - ACCOUNTING REPORT: improved bank statement report.
 - Product : set sequence while creating duplicate.
+- ORDER LINE : freeze fields translation
+- ORDER/STOCK : ISPM15 translation
 - FORECAST RECAP : translation for Forecast Recap line Type(s).
 
 ## Bug Fixes
@@ -26,6 +28,8 @@
 - INVENTORY: add missing translations.
 - SALEORDER : Fixed NPE when trying to select a customer with a company with no linked partner
 - BANK RECONCILIATION : corrected error with bank statement load where no other statement was loaded.
+- LEAD : Fix action doesnot exist on LEAD convert.
+- MOVE TEMPLATE : Add missing translation
 
 ## [5.3.1] - 2020-03-16
 ## Improvements
