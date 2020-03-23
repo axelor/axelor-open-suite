@@ -21,13 +21,17 @@
    		    <field name="moveTemplateType" canEdit="false" readonlyIf="moveTemplateLineList.length > 0" required="true" grid-view="move-template-type-grid" form-view="move-template-type-form"/>
    		    <field name="moveTemplateType.typeSelect"/>
    		    <field name="endOfValidityDate"/>
-	 	</panel>
+	 		</panel>
     	<panel-related name="moveTemplateLineListPanel" field="moveTemplateLineList" colSpan="12" form-view="move-template-line-in-amount-form" grid-view="move-template-line-in-amount-grid" onChange="action-move-template-method-set-is-valid" showIf="moveTemplateType.typeSelect == 2" hidden="true"/>
     	<panel-related name="moveTemplateLineListPanel" field="moveTemplateLineList" colSpan="12" form-view="move-template-line-in-percentage-form" grid-view="move-template-line-in-percentage-grid" onChange="action-move-template-method-set-is-valid" showIf="moveTemplateType.typeSelect == 1" hidden="true"/>
      	<panel sidebar="true" name="actionsPanel" title="Actions">
     		<field name="isValid" readonlyIf="!isValid" onChange="action-move-template-method-set-is-valid" colSpan="12"/>
     		<button name="checkValidityBtn" title="Check validity" readonlyIf="isValid" onClick="save,action-move-template-method-check-validity" colSpan="12"/>
- 	 	</panel>
+ 	 		</panel>
+			<panel-mail>
+				<mail-messages limit="4" />
+				<mail-followers />
+			</panel-mail>
 	</form>
     
     <form name="move-template-wizard-form" title="Generate move from template" model="com.axelor.apps.base.db.Wizard" width="large" 
