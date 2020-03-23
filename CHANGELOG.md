@@ -12,6 +12,7 @@
 - Product : set sequence while creating duplicate.
 - ORDER LINE : freeze fields translation
 - ORDER/STOCK : ISPM15 translation
+- FORECAST RECAP : translation for Forecast Recap line Type(s).
 
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
