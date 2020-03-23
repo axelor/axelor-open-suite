@@ -11,6 +11,7 @@
 - ACCOUNTING REPORT: improved bank statement report.
 - Product : set sequence while creating duplicate.
 - ORDER LINE : freeze fields translation
+- ORDER/STOCK : ISPM15 translation
 
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
