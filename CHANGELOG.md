@@ -13,6 +13,7 @@
 - ORDER LINE : freeze fields translation
 - ORDER/STOCK : ISPM15 translation
 - FORECAST RECAP : translation for Forecast Recap line Type(s).
+- MARKETING : Fix for setting end date after start date.
 
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
