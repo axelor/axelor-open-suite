@@ -13,18 +13,16 @@
 
 	<grid model="com.axelor.apps.base.db.PartnerSupplychainLink"
 		title="Supply chain links" editable="true"
-		name="partner-supplychain-link-partner-1-grid">	
-		<field name="partnerSupplychainLinkType" title="Relation type"></field>
-		<field name="partnerSupplychainLinkType.link1Name" title="Relation"></field>
+		name="partner-supplychain-link-partner-1-grid">
+		<field name="partnerSupplychainLinkType" target-name="link2Name"></field>
 		<field name="partner2"></field>
 	</grid>
 
 	<grid model="com.axelor.apps.base.db.PartnerSupplychainLink"
 		title="Supply chain links" editable="true"
 		name="partner-supplychain-link-partner-2-grid">
-		<field name="partnerSupplychainLinkType" title="Relation type"></field>
-		<field name="partnerSupplychainLinkType.link2Name" title="Relation"></field>
 		<field name="partner1"></field>
+		<field name="partnerSupplychainLinkType" target-name="link1Name"></field>
 	</grid>
 
 	<form model="com.axelor.apps.base.db.PartnerSupplychainLink"
