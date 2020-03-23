@@ -42,6 +42,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -143,7 +144,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         depreciationDate = addPeriodicity(fixedAsset, firstDepreciationDate, counter);
       } else {
         depreciationValue =
-            this.computeDepreciation(fixedAsset, fixedAsset.getResidualValue(), false, isLinear);
+            this.computeDepreciation(fixedAsset, fixedAsset.getGrossValue(), false, isLinear);
 
         depreciationDate = addPeriodicity(fixedAsset, firstDepreciationDate, counter);
       }
@@ -155,7 +156,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     return fixedAsset;
   }
 
-  private LocalDate addPeriodicity(
+  protected LocalDate addPeriodicity(
       FixedAsset fixedAsset, LocalDate fisrtDepreciationDate, int counter) {
     LocalDate depreciationDate;
     depreciationDate =
@@ -168,15 +169,15 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     return depreciationDate;
   }
 
-  private BigDecimal computeDepreciationValue(FixedAsset fixedAsset, boolean isLinear) {
+  protected BigDecimal computeDepreciationValue(FixedAsset fixedAsset, boolean isLinear) {
     BigDecimal depreciationValue = BigDecimal.ZERO;
     depreciationValue =
         this.computeDepreciation(fixedAsset, fixedAsset.getGrossValue(), true, isLinear);
     return depreciationValue;
   }
 
-  private BigDecimal computeProrataTemporis(FixedAsset fixedAsset, boolean isFirstYear) {
-    float prorataTemporis = 1;
+  protected BigDecimal computeProrataTemporis(FixedAsset fixedAsset, boolean isFirstYear) {
+    BigDecimal prorataTemporis = BigDecimal.ONE;
     if (isFirstYear
         && fixedAsset.getFixedAssetCategory().getIsProrataTemporis()
         && !fixedAsset.getAcquisitionDate().equals(fixedAsset.getFirstDepreciationDate())) {
@@ -184,20 +185,60 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       LocalDate acquisitionDate = fixedAsset.getAcquisitionDate();
       LocalDate depreciationDate = fixedAsset.getFirstDepreciationDate();
 
-      long nbDaysOfPeriod =
-          DateTool.daysBetween(
-              DateTool.minusMonths(depreciationDate, fixedAsset.getPeriodicityInMonth()),
-              depreciationDate,
-              false);
-      long nbDaysBetweenAcqAndFirstDepDate =
-          DateTool.daysBetween(acquisitionDate, depreciationDate, false) + 1;
+      int acquisitionYear = acquisitionDate.getYear();
+      int acquisitionMonth = acquisitionDate.getMonthValue();
+      int acquisitionDay = acquisitionDate.getDayOfMonth();
+      int depreciationYear = depreciationDate.getYear();
+      int depreciationMonth = depreciationDate.getMonthValue();
+      int depreciationDay = depreciationDate.getDayOfMonth();
 
-      prorataTemporis = (float) nbDaysBetweenAcqAndFirstDepDate / (float) nbDaysOfPeriod;
+      // US way
+      if (fixedAsset.getFixedAssetCategory().getIsUSProrataTemporis()) {
+
+        if (acquisitionMonth == 2
+            && depreciationMonth == 2
+            && isLastDayOfFebruary(acquisitionYear, acquisitionDay)
+            && isLastDayOfFebruary(depreciationYear, depreciationDay)) {
+          depreciationDay = 30;
+        }
+
+        if (acquisitionMonth == 2 && isLastDayOfFebruary(acquisitionYear, acquisitionDay)) {
+          acquisitionDay = 30;
+        }
+
+        if (acquisitionDay >= 30 && depreciationDay > 30) {
+          depreciationDay = 30;
+        }
+
+        if (acquisitionDay > 30) {
+          acquisitionDay = 30;
+        }
+
+      } else { // European way
+
+        if (acquisitionDay == 31) {
+          acquisitionDay = 30;
+        }
+
+        if (depreciationDay == 31) {
+          depreciationDay = 30;
+        }
+      }
+
+      BigDecimal nbDaysBetweenAcqAndFirstDepDate =
+          BigDecimal.valueOf(
+                  360 * (depreciationYear - acquisitionYear)
+                      + 30 * (depreciationMonth - acquisitionMonth)
+                      + (depreciationDay - acquisitionDay))
+              .setScale(6);
+      BigDecimal nbDaysOfPeriod =
+          BigDecimal.valueOf(fixedAsset.getPeriodicityInMonth() * 30).setScale(6);
+      prorataTemporis = nbDaysBetweenAcqAndFirstDepDate.divide(nbDaysOfPeriod).setScale(6);
     }
-    return BigDecimal.valueOf(prorataTemporis);
+    return prorataTemporis;
   }
 
-  private BigDecimal computeDepreciation(
+  protected BigDecimal computeDepreciation(
       FixedAsset fixedAsset, BigDecimal residualValue, boolean isFirstYear, boolean isLinear) {
 
     int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
@@ -205,7 +246,10 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         !isLinear && fixedAsset.getFixedAssetCategory().getIsProrataTemporis()
             ? fixedAsset.getNumberOfDepreciation() - 1
             : fixedAsset.getNumberOfDepreciation();
-    float depreciationRate = numberOfDepreciation == 0 ? 0 : 1f / numberOfDepreciation * 100f;
+    BigDecimal depreciationRate =
+        numberOfDepreciation == 0
+            ? BigDecimal.ZERO
+            : BigDecimal.ONE.divide(BigDecimal.valueOf(numberOfDepreciation * 100)).setScale(6);
     BigDecimal ddRate = BigDecimal.ONE;
     BigDecimal prorataTemporis = this.computeProrataTemporis(fixedAsset, isFirstYear);
     if (fixedAsset
@@ -214,7 +258,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       ddRate = fixedAsset.getDegressiveCoef();
     }
     return residualValue
-        .multiply(BigDecimal.valueOf(depreciationRate))
+        .multiply(depreciationRate)
         .multiply(ddRate)
         .multiply(prorataTemporis)
         .divide(new BigDecimal(100), scale);
@@ -345,7 +389,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     fixedAssetRepo.save(fixedAsset);
   }
 
-  private FixedAssetLine generateProrataDepreciationLine(
+  protected FixedAssetLine generateProrataDepreciationLine(
       FixedAsset fixedAsset, LocalDate disposalDate, FixedAssetLine previousRealizedLine) {
 
     LocalDate previousRealizedDate =
@@ -359,14 +403,17 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     FixedAssetLine fixedAssetLine = new FixedAssetLine();
     fixedAssetLine.setDepreciationDate(disposalDate);
     BigDecimal prorataTemporis =
-        new BigDecimal(monthsBetweenDates / fixedAsset.getPeriodicityInMonth().floatValue());
+        BigDecimal.valueOf(monthsBetweenDates)
+            .divide(BigDecimal.valueOf(fixedAsset.getPeriodicityInMonth()))
+            .setScale(6);
 
     int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
     int numberOfDepreciation =
         fixedAsset.getFixedAssetCategory().getIsProrataTemporis()
             ? fixedAsset.getNumberOfDepreciation() - 1
             : fixedAsset.getNumberOfDepreciation();
-    float depreciationRate = 1f / numberOfDepreciation * 100f;
+    BigDecimal depreciationRate =
+        BigDecimal.ONE.divide(BigDecimal.valueOf(numberOfDepreciation * 100));
     BigDecimal ddRate = BigDecimal.ONE;
     if (fixedAsset
         .getComputationMethodSelect()
@@ -376,7 +423,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     BigDecimal deprecationValue =
         fixedAsset
             .getGrossValue()
-            .multiply(new BigDecimal(depreciationRate))
+            .multiply(depreciationRate)
             .multiply(ddRate)
             .multiply(prorataTemporis)
             .divide(new BigDecimal(100), scale);
@@ -424,5 +471,12 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         }
       }
     }
+  }
+
+  protected boolean isLastDayOfFebruary(int year, int day) {
+    Calendar calendar = Calendar.getInstance();
+    calendar.set(year, Calendar.FEBRUARY, 1);
+    int maxDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+    return maxDays == day;
   }
 }

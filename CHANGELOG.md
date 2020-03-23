@@ -2,10 +2,13 @@
 
 ## [Unreleased 5.2.7]
 ## Improvements
+- Fixed asset : add EU and US prorata temporis.
+
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
 - SALE CONFIG : Fixed "Action not allowed" error when we try to update customer's accepted credit.
 - TIMESHEET : Fix auto-generation of leave days not generating the first day
+- Fixed asset : corrected calculation of amortization.
 
 ## [5.2.6] - 2020-03-13
 ## Improvements
