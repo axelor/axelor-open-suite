@@ -23,6 +23,7 @@
 - EXPENSE : add new printing design.
 - Invoice printing: remove space between invoice lines without description.
 - INVOICE :  Add translation for "Canceled payment on" and "Pending payment" and update invoicePaymentList viewer in invoice form.
+- Accounting report : improved and change VAT logic in vat reports, now collected vat and deductible vat depend of the invoice or the return and not only from the move.
 
 ## Bug Fixes
 - INVOICE : Fixed payment mode on mass invoicing refund.

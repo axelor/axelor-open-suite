@@ -249,6 +249,12 @@ public interface ITranslation {
       "AccountingReportType15.amount"; /*)*/
   public static final String ACCOUNTING_REPORT_15_TAX_RATE = /*$$(*/
       "AccountingReportType15.taxRate"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_INVOICE_ID = /*$$(*/
+	  "AccountingReportType15.InvoiceId"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_FUNC_ORIGIN_MOVE = /*$$(*/
+	  "AccountingReportType15.FuncOriginMove"; /*)*/
+  public static final String ACCOUNTING_REPORT_15_OD_TAX_AMOUNT = /*$$(*/
+	  "AccountingReportType15.ODTaxAmount"; /*)*/
 
   public static final String ACCOUNTING_REPORT_11_JOURNAL = /*$$(*/
       "AccountingReportType11.daySubTotal"; /*)*/

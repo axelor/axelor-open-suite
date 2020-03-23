@@ -151,7 +151,9 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/abs52-wip</property>
+            <property name="odaUser">axelor</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsYWE=</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -217,6 +219,18 @@
                     <property name="analysis">measure</property>
                     <text-property name="displayName">credittaxamount</text-property>
                     <text-property name="heading">credittaxamount</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">invoiceid</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">invoiceid</text-property>
+                    <text-property name="heading">invoiceid</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">funcorigin</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">funcorigin</text-property>
+                    <text-property name="heading">funcorigin</text-property>
                 </structure>
             </list-property>
             <list-property name="filter"/>
@@ -284,6 +298,16 @@
                         <property name="position">10</property>
                         <property name="name">credittaxamount</property>
                         <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">invoiceid</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">funcorigin</property>
+                        <property name="dataType">integer</property>
                     </structure>
                 </list-property>
             </structure>
@@ -360,6 +384,20 @@
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
+                <structure>
+                    <property name="position">11</property>
+                    <property name="name">invoiceid</property>
+                    <property name="nativeName">invoiceid</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">funcorigin</property>
+                    <property name="nativeName">funcorigin</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[Select 
 MoveLine.name as moveLineName,
@@ -368,16 +406,28 @@ Account.code as accountCode,
 Account.name as accountName,
 Tax.code as taxCode,
 AccountType.technical_type_select,
-Case  when AccountType.technical_type_select != 'tax' then MoveLine.debit
+
+Case when Invoice.operation_type_select = 1 and AccountType.technical_type_select != 'tax' then MoveLine.debit + MoveLine.credit
+when Invoice.operation_type_select = 2  and AccountType.technical_type_select != 'tax' then -(MoveLine.debit + MoveLine.credit)
+else 0
 end as debit,
-Case when AccountType.technical_type_select = 'tax' then MoveLine.debit
+
+Case when Invoice.operation_type_select = 1 and AccountType.technical_type_select = 'tax' then MoveLine.debit + MoveLine.credit
+when  Invoice.operation_type_select = 2 and AccountType.technical_type_select = 'tax' then -(MoveLine.debit + MoveLine.credit)
+else 0
 end as debitTaxAmount,
-Case  when AccountType.technical_type_select != 'tax' then MoveLine.credit
+
+Case when Invoice.operation_type_select = 3 and AccountType.technical_type_select != 'tax' then MoveLine.credit + MoveLine.debit
+when Invoice.operation_type_select = 4 and AccountType.technical_type_select != 'tax' then -(MoveLine.credit + MoveLine.debit)
+else 0
 end as credit,
-Case when AccountType.technical_type_select = 'tax' then MoveLine.credit
-end as creditTaxAmount
 
-
+Case when Invoice.operation_type_select = 3 and AccountType.technical_type_select = 'tax' then MoveLine.credit + MoveLine.debit
+when Invoice.operation_type_select = 4 and AccountType.technical_type_select = 'tax' then -(MoveLine.credit + MoveLine.debit)
+else 0
+end as creditTaxAmount,
+Invoice.invoice_id as invoiceId,
+Move.functional_origin_select as FuncOrigin
 from public.account_accounting_report as AccountingReport 
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join public.account_account as Account on (MoveLine.account = Account.id)
@@ -385,6 +435,7 @@ left outer join public.account_account_type as AccountType on (Account.account_t
 left outer join public.account_move as Move on (MoveLine.move = Move.id)
 left outer join public.account_tax_line as TaxLine on (MoveLine.tax_line = TaxLine.id) 
 left outer join public.account_tax as Tax on (TaxLine.tax = Tax.id) 
+left outer join public.account_invoice as Invoice on Move.invoice = Invoice.id
 where 
 (AccountingReport.currency = Move.company_currency) 
 AND AccountingReport.company = Move.company 
@@ -589,6 +640,12 @@ where AccountingReport.id = ?
                     <text-property name="displayName">credittaxamount</text-property>
                     <text-property name="heading">credittaxamount</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">techorigintaxamount</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">techorigintaxamount</text-property>
+                    <text-property name="heading">techorigintaxamount</text-property>
+                </structure>
             </list-property>
             <list-property name="filter"/>
             <list-property name="parameters">
@@ -639,6 +696,11 @@ where AccountingReport.id = ?
                     <structure>
                         <property name="position">7</property>
                         <property name="name">credittaxamount</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">techorigintaxamount</property>
                         <property name="dataType">decimal</property>
                     </structure>
                 </list-property>
@@ -695,24 +757,46 @@ where AccountingReport.id = ?
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">techorigintaxamount</property>
+                    <property name="nativeName">techorigintaxamount</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[Select 
 Tax.code as taxCode,
 Tax.name as taxName, 
 TaxLine.value as taxLineValue, 
-sum(Case  when AccountType.technical_type_select != 'tax' then MoveLine.debit
+SUM(Case when Invoice.operation_type_select = 1 and AccountType.technical_type_select != 'tax' then MoveLine.debit + MoveLine.credit
+ when Invoice.operation_type_select = 2  and AccountType.technical_type_select != 'tax' then -(MoveLine.debit + MoveLine.credit)
 else 0
-end) as debit,
-sum(Case when AccountType.technical_type_select = 'tax' then MoveLine.debit
+end ) as debit,
+SUM(Case when Invoice.operation_type_select = 1 and AccountType.technical_type_select = 'tax' then MoveLine.debit + MoveLine.credit
+when  Invoice.operation_type_select = 2 and AccountType.technical_type_select = 'tax' then -(MoveLine.debit + MoveLine.credit)
 else 0
-end) as debitTaxAmount,
-sum(Case  when AccountType.technical_type_select != 'tax' then MoveLine.credit
-else 0
-end) as credit,
-sum(Case when AccountType.technical_type_select = 'tax' then MoveLine.credit
-else 0
-end) as creditTaxAmount
+end ) as debitTaxAmount,
 
+SUM(Case when Invoice.operation_type_select = 3 and AccountType.technical_type_select != 'tax' then MoveLine.credit + MoveLine.debit
+when Invoice.operation_type_select = 4 and AccountType.technical_type_select != 'tax' then -(MoveLine.credit + MoveLine.debit)
+else 0
+end ) as credit,
+SUM(Case when Invoice.operation_type_select = 3 and AccountType.technical_type_select = 'tax' then MoveLine.credit + MoveLine.debit
+ when Invoice.operation_type_select = 4 and AccountType.technical_type_select = 'tax' then -(MoveLine.credit + MoveLine.debit)
+else 0
+end ) as creditTaxAmount,
+
+SUM(Case when Move.technical_origin_select = 1 
+	and (Invoice.operation_type_select = 3 or Invoice.operation_type_select = 1) 
+	and AccountType.technical_type_select = 'tax' 
+	then MoveLine.credit + MoveLine.debit
+when Move.technical_origin_select = 1 
+	and (Invoice.operation_type_select = 4  or Invoice.operation_type_select = 2) 
+	and AccountType.technical_type_select = 'tax' 
+	then -(MoveLine.credit + MoveLine.debit)
+else 0
+end ) as TechOriginTaxAmount
 
 from public.account_accounting_report as AccountingReport 
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
@@ -721,6 +805,7 @@ left outer join public.account_account_type as AccountType on (Account.account_t
 left outer join public.account_move as Move on (MoveLine.move = Move.id)
 left outer join public.account_tax_line as TaxLine on (MoveLine.tax_line = TaxLine.id) 
 left outer join public.account_tax as Tax on (TaxLine.tax = Tax.id) 
+left outer join public.account_invoice as Invoice on Move.invoice = Invoice.id
 where 
 (AccountingReport.currency = Move.company_currency) 
 AND AccountingReport.company = Move.company 
@@ -1353,6 +1438,24 @@ balance
                     <expression name="expression" type="javascript">dataSetRow["taxlinevalue"]</expression>
                     <property name="dataType">decimal</property>
                 </structure>
+                <structure>
+                    <property name="name">techorigintaxamount</property>
+                    <text-property name="displayName">techorigintaxamount</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["techorigintaxamount"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">SumTechOriginTaxOD</property>
+                    <property name="dataType">float</property>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["techorigintaxamount"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <property name="pageBreakInterval">0</property>
             <column id="4116">
@@ -1374,6 +1477,9 @@ balance
                 <property name="width">15%</property>
             </column>
             <column id="4121">
+                <property name="width">15%</property>
+            </column>
+            <column id="4179">
                 <property name="width">15%</property>
             </column>
             <header>
@@ -1403,7 +1509,7 @@ balance
                         <property name="borderRightWidth">thin</property>
                         <label id="4160">
                             <property name="fontWeight">bold</property>
-                            <text-property name="text">TVA à payer</text-property>
+                            <text-property name="text">TVA collecté</text-property>
                         </label>
                     </cell>
                     <cell id="4158">
@@ -1415,8 +1521,14 @@ balance
                         <property name="borderRightWidth">thin</property>
                         <label id="4161">
                             <property name="fontWeight">bold</property>
-                            <text-property name="text">TVA à déduire</text-property>
+                            <text-property name="text">TVA déductible</text-property>
                         </label>
+                    </cell>
+                    <cell id="4174">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
                     </cell>
                 </row>
                 <row id="4083">
@@ -1498,6 +1610,16 @@ balance
                             <text-property name="text">Montant</text-property>
                         </label>
                     </cell>
+                    <cell id="4175">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <label id="4196">
+                            <property name="fontWeight">bold</property>
+                            <text-property name="text">Montant tax OD</text-property>
+                        </label>
+                    </cell>
                 </row>
             </header>
             <detail>
@@ -1531,7 +1653,7 @@ balance
                             <property name="fontSize">9pt</property>
                             <structure name="numberFormat">
                                 <property name="category">Custom</property>
-                                <property name="pattern">###,##0.00 %</property>
+                                <property name="pattern">###,##0.000 %</property>
                             </structure>
                             <property name="textAlign">right</property>
                             <property name="resultSetColumn">taxlinevalue</property>
@@ -1621,6 +1743,17 @@ balance
                             <property name="resultSetColumn">debittaxamount</property>
                         </data>
                     </cell>
+                    <cell id="4176">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <data id="4195">
+                            <property name="fontSize">9pt</property>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">techorigintaxamount</property>
+                        </data>
+                    </cell>
                 </row>
             </detail>
             <footer>
@@ -1678,6 +1811,18 @@ balance
                             <property name="resultSetColumn">totalDebitTaxAmount</property>
                         </data>
                     </cell>
+                    <cell id="4177">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <data id="4782">
+                            <property name="fontSize">9pt</property>
+                            <property name="fontWeight">bold</property>
+                            <property name="textAlign">right</property>
+                            <property name="resultSetColumn">SumTechOriginTaxOD</property>
+                        </data>
+                    </cell>
                 </row>
                 <row id="4122">
                     <property name="borderBottomStyle">solid</property>
@@ -1730,6 +1875,12 @@ balance
                             <property name="textAlign">right</property>
                             <property name="resultSetColumn">debitBalance</property>
                         </data>
+                    </cell>
+                    <cell id="4178">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
                     </cell>
                 </row>
             </footer>
@@ -1796,6 +1947,24 @@ balance
                     <expression name="expression" type="javascript">dataSetRow["credit"]</expression>
                     <property name="dataType">decimal</property>
                 </structure>
+                <structure>
+                    <property name="name">technical_type_select</property>
+                    <text-property name="displayName">technical_type_select</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["technical_type_select"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">invoiceid</property>
+                    <text-property name="displayName">invoiceid</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["invoiceid"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">funcorigin</property>
+                    <text-property name="displayName">funcorigin</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["funcorigin"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
             </list-property>
             <property name="pageBreakInterval">0</property>
             <column id="4052">
@@ -1804,26 +1973,32 @@ balance
             <column id="4053">
                 <property name="width">7%</property>
             </column>
+            <column id="4184">
+                <property name="width">7%</property>
+            </column>
+            <column id="4189">
+                <property name="width">7%</property>
+            </column>
             <column id="4054">
                 <property name="width">8%</property>
             </column>
             <column id="4055">
-                <property name="width">25%</property>
+                <property name="width">33%</property>
             </column>
             <column id="4056">
                 <property name="width">5%</property>
             </column>
             <column id="4060">
-                <property name="width">10%</property>
+                <property name="width">8%</property>
             </column>
             <column id="4064">
-                <property name="width">10%</property>
+                <property name="width">8%</property>
             </column>
             <column id="4068">
-                <property name="width">10%</property>
+                <property name="width">8%</property>
             </column>
             <column id="4072">
-                <property name="width">10%</property>
+                <property name="width">8%</property>
             </column>
             <header>
                 <row id="4142">
@@ -1832,7 +2007,7 @@ balance
                     <property name="borderTopStyle">solid</property>
                     <property name="borderTopWidth">thin</property>
                     <cell id="4143">
-                        <property name="colSpan">5</property>
+                        <property name="colSpan">7</property>
                         <property name="rowSpan">1</property>
                         <property name="borderLeftStyle">solid</property>
                         <property name="borderLeftWidth">thin</property>
@@ -1892,6 +2067,26 @@ balance
                         <label id="4028">
                             <property name="fontWeight">bold</property>
                             <text-property name="text">Date</text-property>
+                        </label>
+                    </cell>
+                    <cell id="4181">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <label id="4192">
+                            <property name="fontWeight">bold</property>
+                            <text-property name="text">Origine fonctionnel</text-property>
+                        </label>
+                    </cell>
+                    <cell id="4186">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <label id="4193">
+                            <property name="fontWeight">bold</property>
+                            <text-property name="text">Invoice ID</text-property>
                         </label>
                     </cell>
                     <cell id="4029">
@@ -1996,6 +2191,24 @@ balance
                             </structure>
                             <property name="textAlign">center</property>
                             <property name="resultSetColumn">movelinedate</property>
+                        </data>
+                    </cell>
+                    <cell id="4182">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <data id="4191">
+                            <property name="resultSetColumn">funcorigin</property>
+                        </data>
+                    </cell>
+                    <cell id="4187">
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <data id="4190">
+                            <property name="resultSetColumn">invoiceid</property>
                         </data>
                     </cell>
                     <cell id="4040">
@@ -2142,6 +2355,22 @@ balance
                         <property name="borderRightWidth">thin</property>
                     </cell>
                     <cell id="4048">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                    </cell>
+                    <cell id="4183">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                    </cell>
+                    <cell id="4188">
                         <property name="borderBottomStyle">solid</property>
                         <property name="borderBottomWidth">thin</property>
                         <property name="borderLeftStyle">solid</property>
