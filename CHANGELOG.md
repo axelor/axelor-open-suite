@@ -33,6 +33,7 @@
 - MOVE TEMPLATE : Add missing translation
 - STOCK LOCATION : Add missing translation
 - MRP FAMILY : Fix wrong case in views title
+- CONTACT: fix for Main Company not set for Contact from Partner
 
 ## [5.3.1] - 2020-03-16
 ## Improvements
