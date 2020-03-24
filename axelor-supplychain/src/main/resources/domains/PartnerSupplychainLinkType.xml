@@ -7,9 +7,9 @@
 
   <entity name="PartnerSupplychainLinkType" lang="java" >
   
-  	<string namecolumn="true" name="typeSelect" title="Type" selection="base.base.partner.supply.chain.link.type.select" ></string>
-	<string name="link1Name" title="Relation 1"></string>
-	<string name="link2Name" title="Relation 2"></string>
+  	<string namecolumn="true" name="typeSelect" title="Type" selection="base.base.partner.supply.chain.link.type.select"/>
+	<string name="link1Name" title="Relation 1"/>
+	<string name="link2Name" title="Relation 2"/>
   </entity>
 
 </domain-models>

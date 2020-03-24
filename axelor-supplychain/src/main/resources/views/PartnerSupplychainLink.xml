@@ -6,31 +6,31 @@
 	<grid model="com.axelor.apps.base.db.PartnerSupplychainLink"
 		title="Supply chain links" editable="true"
 		name="partner-supplychain-link-grid">
-		<field name="partner1"></field>
-		<field name="partnerSupplychainLinkType"></field>
-		<field name="partner2"></field>
+		<field name="partner1"/>
+		<field name="partnerSupplychainLinkType"/>
+		<field name="partner2"/>
 	</grid>
 
 	<grid model="com.axelor.apps.base.db.PartnerSupplychainLink"
 		title="Supply chain links" editable="true"
 		name="partner-supplychain-link-partner-1-grid">
-		<field name="partnerSupplychainLinkType" target-name="link2Name"></field>
-		<field name="partner2"></field>
+		<field name="partnerSupplychainLinkType" target-name="link2Name"/>
+		<field name="partner2"/>
 	</grid>
 
 	<grid model="com.axelor.apps.base.db.PartnerSupplychainLink"
 		title="Supply chain links" editable="true"
 		name="partner-supplychain-link-partner-2-grid">
-		<field name="partner1"></field>
-		<field name="partnerSupplychainLinkType" target-name="link1Name"></field>
+		<field name="partner1"/>
+		<field name="partnerSupplychainLinkType" target-name="link1Name"/>
 	</grid>
 
 	<form model="com.axelor.apps.base.db.PartnerSupplychainLink"
 		title="Supply chain" name="partner-supplychain-link-form">
 		<panel>
-			<field name="partner1" colSpan="4"></field>
-			<field name="partnerSupplychainLinkType" colSpan="4"></field>
-			<field name="partner2" colSpan="4"></field>
+			<field name="partner1" colSpan="4"/>
+			<field name="partnerSupplychainLinkType" colSpan="4"/>
+			<field name="partner2" colSpan="4"/>
 		</panel>
 	</form>
 

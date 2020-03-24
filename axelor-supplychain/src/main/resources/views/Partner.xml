@@ -40,10 +40,10 @@
 				<panel colSpan="12" itemSpan="6">
 					<panel-related field="partner1SupplychainLinkList"
 						grid-view="partner-supplychain-link-partner-1-grid" form-view="partner-supplychain-link-form"
-						colSpan="6"></panel-related>
+						colSpan="6"/>
 					<panel-related field="partner2SupplychainLinkList"
 						grid-view="partner-supplychain-link-partner-2-grid" form-view="partner-supplychain-link-form"
-						colSpan="6"></panel-related>
+						colSpan="6"/>
 				</panel>
 
 			</insert>

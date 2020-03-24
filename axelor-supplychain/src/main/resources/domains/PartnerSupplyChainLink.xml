@@ -8,12 +8,12 @@
 	<entity name="PartnerSupplychainLink" lang="java">
 
 		<many-to-one name="partner1" ref="com.axelor.apps.base.db.Partner"
-			title="Partner"></many-to-one>
+			title="Partner"/>
 		<many-to-one name="partner2" ref="com.axelor.apps.base.db.Partner"
-			title="Partner"></many-to-one>
+			title="Partner"/>
 		<many-to-one name="partnerSupplychainLinkType"
 			ref="com.axelor.apps.base.db.PartnerSupplychainLinkType"
-			title="Link type"></many-to-one>
+			title="Link type"/>
 
 	</entity>
 
