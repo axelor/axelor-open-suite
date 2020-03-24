@@ -50,7 +50,14 @@ public class StockMovePrintServiceImpl implements StockMovePrintService {
             printedStockMoves.add(print(stockMove, ReportSettings.FORMAT_PDF));
           }
         });
-    String fileName = getStockMoveFilesName(true, ReportSettings.FORMAT_PDF);
+    String fileName =
+        I18n.get("Stock moves")
+            + " - "
+            + Beans.get(AppBaseService.class)
+                .getTodayDate()
+                .format(DateTimeFormatter.BASIC_ISO_DATE)
+            + "."
+            + ReportSettings.FORMAT_PDF;
     return PdfTool.mergePdfToFileLink(printedStockMoves, fileName);
   }
 
@@ -88,22 +95,8 @@ public class StockMovePrintServiceImpl implements StockMovePrintService {
   @Override
   public String printStockMove(StockMove stockMove, String format)
       throws AxelorException, IOException {
-    String fileName = getStockMoveFilesName(false, ReportSettings.FORMAT_PDF);
+    String fileName = I18n.get("Stock Move") + "-" + stockMove.getStockMoveSeq() + "." + format;
     return PdfTool.getFileLinkFromPdfFile(print(stockMove, format), fileName);
-  }
-
-  /**
-   * Return the name for the printed stock move.
-   *
-   * @param plural if there is one or multiple stock moves.
-   */
-  public String getStockMoveFilesName(boolean plural, String format) {
-
-    return I18n.get(plural ? "Stock moves" : "Stock move")
-        + " - "
-        + Beans.get(AppBaseService.class).getTodayDate().format(DateTimeFormatter.BASIC_ISO_DATE)
-        + "."
-        + format;
   }
 
   @Override

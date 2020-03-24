@@ -15,20 +15,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.studio.exception;
+package com.axelor.apps.base.service.advanced.imports;
 
-public interface IExceptionMessage {
+import com.axelor.common.ObjectUtils;
+import java.util.Map;
 
-  /** Check if app builder code is not conflicting with existing app. */
-  static final String APP_BUILDER_1 = /*$$(*/
-      "Please provide unique code. The code '%s' is already used" /*)*/;
+public class SearchCallServiceImpl implements SearchCallService {
 
-  /** Check if chart name doesn't contains any space. */
-  static final String CHART_BUILDER_1 = /*$$(*/ "Name must not contains space" /*)*/;
-
-  /** Message to display on click of edit icon of node or transition if workflow is not saved. */
-  static final String WKF_1 = /*$$(*/ "Workflow is not saved" /*)*/;
-
-  static final String CANNOT_ALTER_NODES = /*$$(*/
-      "Can't alter nodes for real existing selection field" /*)*/;
+  @Override
+  public Boolean validate(String searchCall) {
+    if (ObjectUtils.notEmpty(searchCall)) {
+      try {
+        String className = searchCall.split("\\:")[0];
+        String method = searchCall.split("\\:")[1];
+        Class<?> klass = Class.forName(className);
+        klass.getMethod(method, Map.class);
+      } catch (Exception e) {
+        return false;
+      }
+    }
+    return true;
+  }
 }

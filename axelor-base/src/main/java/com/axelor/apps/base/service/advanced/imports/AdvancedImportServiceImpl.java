@@ -564,8 +564,10 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
     final String KEY_IMPORT_TYPE = "importtype";
     final String KEY_SEARCH_FIELD_SET = "searchfieldset";
     final String KEY_ACTIONS = "actions";
+    final String KEY_SEARCH_CALL = "search-call";
     final List<String> KEY_LIST =
-        Arrays.asList(KEY_IMPORT_TYPE, KEY_OBJECT, KEY_SEARCH_FIELD_SET, KEY_ACTIONS);
+        Arrays.asList(
+            KEY_IMPORT_TYPE, KEY_OBJECT, KEY_SEARCH_FIELD_SET, KEY_ACTIONS, KEY_SEARCH_CALL);
     Map<String, String> tabConfigDataMap = getTabConfigDataMap(row, KEY_LIST);
 
     MetaModel model = metaModelRepo.findByName(tabConfigDataMap.get(KEY_OBJECT));
@@ -577,13 +579,18 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
       fileTab.setImportType(importType);
 
       if (importType != FileFieldRepository.IMPORT_TYPE_NEW) {
-        if (!tabConfigDataMap.containsKey(KEY_SEARCH_FIELD_SET)) {
+        if (!tabConfigDataMap.containsKey(KEY_SEARCH_FIELD_SET)
+            && !tabConfigDataMap.containsKey(KEY_SEARCH_CALL)) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               I18n.get(IExceptionMessage.ADVANCED_IMPORT_6),
               fileTab.getName());
         }
-        searchFieldList = Arrays.asList(tabConfigDataMap.get(KEY_SEARCH_FIELD_SET).split("\\,"));
+        if (tabConfigDataMap.containsKey(KEY_SEARCH_CALL)) {
+          fileTab.setSearchCall(tabConfigDataMap.get(KEY_SEARCH_CALL));
+        } else {
+          searchFieldList = Arrays.asList(tabConfigDataMap.get(KEY_SEARCH_FIELD_SET).split("\\,"));
+        }
       }
     }
 
@@ -867,7 +874,7 @@ public class AdvancedImportServiceImpl implements AdvancedImportService {
         continue;
       }
 
-      String[] keyValue = data.split("\\:");
+      String[] keyValue = data.split("\\:", 2);
       if (keyValue.length != 2) {
         continue;
       }
