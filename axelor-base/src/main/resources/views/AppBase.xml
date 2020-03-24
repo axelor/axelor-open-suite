@@ -40,7 +40,7 @@
 				<panel name="productSequenceManagement" colSpan="12" itemSpan="4">								
 					<field name="generateProductSequence" widget="boolean-switch"/>
 					<field name="productSequenceTypeSelect"  showIf="generateProductSequence"/>
-					<field name="productSequence" onSelect="action-attrs-app-base-config-set-product-sequence-domain" showIf="generateProductSequence &amp;&amp; productSequenceTypeSelect == 'Per product'"></field>
+					<field name="productSequence" onSelect="action-attrs-app-base-config-set-product-sequence-domain" showIf="generateProductSequence &amp;&amp; productSequenceTypeSelect == 'Per product'"/>
 				</panel>
 				<field name="manageMultiBanks" widget="boolean-switch"/>
 				<field name="enterpriseCommunication" widget="boolean-switch"/>

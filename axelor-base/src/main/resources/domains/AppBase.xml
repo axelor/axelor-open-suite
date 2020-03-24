@@ -77,9 +77,9 @@
 	   	
 	   	<one-to-many name="globalTrackingConfigurationLines" ref="com.axelor.apps.admin.db.GlobalTrackingConfigurationLine" mappedBy="appBase" orphanRemoval="true"/>
 	   	
-	   	<string name="productSequenceTypeSelect" selection="product.sequence.type.select" title="Sequence product type" default="Per product"></string>
+	   	<string name="productSequenceTypeSelect" selection="product.sequence.type.select" title="Sequence product type" default="Per product"/>
 		
-    	<many-to-one name="productSequence" ref="com.axelor.apps.base.db.Sequence" title="Product sequence"></many-to-one>
+    	<many-to-one name="productSequence" ref="com.axelor.apps.base.db.Sequence" title="Product sequence"/>
 		
 		<extra-code>
 	   		<![CDATA[

@@ -17,7 +17,7 @@
         	<field name="name"/>
         	<field name="code" x-bind="{{code|unaccent|uppercase}}" />
 	        <field name="parentProductCategory" form-view="product-category-form" grid-view="product-family-grid"/>
-			<field name="sequence" onSelect="action-attrs-product-category-form-set-sequence-domain"></field>
+			<field name="sequence" onSelect="action-attrs-product-category-form-set-sequence-domain"/>
 		</panel>
    		<panel-dashlet name="salesTurnoverPanel"  title="Sales Turnover" action="dashlet.category.sales.turnover.per.month" colSpan="12" height="350" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
     </form>  

@@ -10,7 +10,7 @@
     <string name="code" title="Code" required="true" unique="true"/>
     <string name="name" title="Name" unique="true" required="true" namecolumn="true"/>
     <many-to-one name="parentProductCategory" ref="ProductCategory" title="Parent category"/>
-    <many-to-one name="sequence" ref="com.axelor.apps.base.db.Sequence" title="Sequence"></many-to-one>
+    <many-to-one name="sequence" ref="com.axelor.apps.base.db.Sequence" title="Sequence"/>
   	
   </entity>
   
