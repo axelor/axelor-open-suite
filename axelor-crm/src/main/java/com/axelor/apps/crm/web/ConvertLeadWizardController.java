@@ -177,11 +177,11 @@ public class ConvertLeadWizardController {
 
     Lead lead = findLead(request);
 
-    response.setAttr("$primaryAddress", "value", lead.getPrimaryAddress());
-    response.setAttr("$primaryCity", "value", lead.getPrimaryCity());
-    response.setAttr("$primaryState", "value", lead.getPrimaryState());
-    response.setAttr("$primaryPostalCode", "value", lead.getPrimaryPostalCode());
-    response.setAttr("$primaryCountry", "value", lead.getPrimaryCountry());
+    response.setAttr("$partner.$primaryAddress", "value", lead.getPrimaryAddress());
+    response.setAttr("$partner.$primaryCity", "value", lead.getPrimaryCity());
+    response.setAttr("$partner.$primaryState", "value", lead.getPrimaryState());
+    response.setAttr("$partner.$primaryPostalCode", "value", lead.getPrimaryPostalCode());
+    response.setAttr("$partner.$primaryCountry", "value", lead.getPrimaryCountry());
     response.setAttr("$contactAddress", "value", lead.getPrimaryAddress());
     response.setAttr("$contactCity", "value", lead.getPrimaryCity());
     response.setAttr("$contactState", "value", lead.getPrimaryState());
