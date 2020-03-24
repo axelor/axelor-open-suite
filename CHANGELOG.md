@@ -13,6 +13,7 @@
 - ORDER LINE : freeze fields translation
 - ORDER/STOCK : ISPM15 translation
 - FORECAST RECAP : translation for Forecast Recap line Type(s).
+- MARKETING : Fix for setting end date after start date.
 
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
@@ -30,6 +31,7 @@
 - BANK RECONCILIATION : corrected error with bank statement load where no other statement was loaded.
 - LEAD : Fix action doesnot exist on LEAD convert.
 - MOVE TEMPLATE : Add missing translation
+- STOCK LOCATION : Add missing translation
 - MRP FAMILY : Fix wrong case in views title
 
 ## [5.3.1] - 2020-03-16
