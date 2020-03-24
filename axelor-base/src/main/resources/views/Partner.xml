@@ -368,7 +368,7 @@
 				<field name="department" colSpan="6"
 					hideIf="partnerTypeSelect== 2" />
 				<field name="jobTitleFunction" showIf="isContact || partnerTypeSelect == 2" onChange="action-record-base-partner-set-business-card"/>
-				<field name="functionBusinessCard" showIf="isContact || partnerTypeSelect == 2"></field>
+				<field name="functionBusinessCard" showIf="isContact || partnerTypeSelect == 2"/>
 			</panel>
 			<panel name="otherPartnerDetailsPanel">
 				<field name="siren" hideIf="partnerTypeSelect== 2" colSpan="4"
@@ -856,7 +856,7 @@
 		<panel-tabs name="mainPanelTab">
 			<panel name="contactDetailsPanel" title="Contact details">
 				<field name="jobTitleFunction" onChange="action-record-base-partner-set-business-card" />
-				<field name="functionBusinessCard"></field>
+				<field name="functionBusinessCard"/>
 				<field name="reportsTo" domain="self.isContact = true" />
 				<field name="fixedPhone" placeholder="+33100000000"
 					pattern="^\+?([\s()-.]*\d){7,}$"

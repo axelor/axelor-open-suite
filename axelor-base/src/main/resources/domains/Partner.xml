@@ -85,11 +85,6 @@
 	<string name="timeSlot" title="Time slot" large="true"/>
 	<string name="companyStr" title="Companies" />
 	
-	
-	
-	<!-- -Json fields -->
-	<string name="partnerAttrs" title="Fields" json="true" />
-	<string name="contactAttrs" title="Fields" json="true" />
 	<string name="headOfficeAddress" title="Head office address"/>
 
 	<string name="invoiceComments" title="Comment to display on invoice" large="true"/>
@@ -100,8 +95,12 @@
 	
 	<string name="proformaComments" title="Comment to display on proforma" large="true"/>
 	
-	<string name="functionBusinessCard" title="Function / Business card"></string>
+	<string name="functionBusinessCard" title="Function / Business card"/>
 	<many-to-many name="partnerRoleSet" ref="com.axelor.apps.base.db.PartnerRole" title="Roles"/>
+	
+	<!-- -Json fields -->
+	<string name="partnerAttrs" title="Fields" json="true" />
+	<string name="contactAttrs" title="Fields" json="true" />
 
 	<finder-method name="findByUser" using="user"/>
 
