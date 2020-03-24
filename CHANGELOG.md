@@ -6,6 +6,7 @@
 - Update to Axelor Open Platform 5.3
 - Bank details : Add new fields journal and bank account.
 - Move template : Add new field description
+- HR : Added a leave line configuration menu in leave management
 
 ## Improvements
 - USER : Default User language is based on application.locale from application.properties
@@ -15,3 +16,5 @@
 - Employee : renamed dateOfHire, timeOfHire, endDateContract, dateOfBirth fields to hireDate, hireTime, contractEndDate, birthDate
 
 ## Bug Fixes
+- HR : A leave-line cannot be saved whitout employee or leave-reason.
+
