@@ -351,6 +351,11 @@
 				</panel>
 			</panel>
 		</panel>
+		<panel-related name="partnerRoleSetPanel"
+			field="partnerRoleSet"
+			form-view="partner-role-form" grid-view="partner-role-grid"
+			showIf="isContact || partnerTypeSelect == 2"
+			canNew="false" />
 		<panel name="partnerDetailsPanel" title="Partner Details"
 			hideIf="isEmployee" colSpan="12">
 			<panel colSpan="6" name="partnerCategoryPanel">
@@ -362,6 +367,8 @@
 					widget="SuggestBox" form-view="source-form" grid-view="source-grid" />
 				<field name="department" colSpan="6"
 					hideIf="partnerTypeSelect== 2" />
+				<field name="jobTitleFunction" showIf="isContact || partnerTypeSelect == 2" onChange="action-record-base-partner-set-business-card"/>
+				<field name="functionBusinessCard" showIf="isContact || partnerTypeSelect == 2"/>
 			</panel>
 			<panel name="otherPartnerDetailsPanel">
 				<field name="siren" hideIf="partnerTypeSelect== 2" colSpan="4"
@@ -842,9 +849,14 @@
 				<field name="isContact" hidden="true" colSpan="12" />
 			</panel>
 		</panel>
+		<panel-related name="partnerRoleSetPanel"
+			field="partnerRoleSet"
+			form-view="partner-role-form" grid-view="partner-role-grid" canNew="false" />
+		
 		<panel-tabs name="mainPanelTab">
 			<panel name="contactDetailsPanel" title="Contact details">
-				<field name="jobTitleFunction" />
+				<field name="jobTitleFunction" onChange="action-record-base-partner-set-business-card" />
+				<field name="functionBusinessCard"/>
 				<field name="reportsTo" domain="self.isContact = true" />
 				<field name="fixedPhone" placeholder="+33100000000"
 					pattern="^\+?([\s()-.]*\d){7,}$"
@@ -1606,6 +1618,10 @@
 		<view type="form" name="partner-form" />
 		<domain>self.id in (select p.id from Partner p where p.parentPartner = :id)</domain>
 	</action-view>
+	
+	<action-record name="action-record-base-partner-set-business-card" model="com.axelor.apps.base.db.Partner">
+		<field name="functionBusinessCard" expr="eval: jobTitleFunction.name" if="jobTitleFunction != null"/>
+	</action-record>
 
 	<search-filters name="partner-filters"
 		model="com.axelor.apps.base.db.Partner" title="Partner filters">
