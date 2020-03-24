@@ -452,7 +452,7 @@
 "Stock details","Détails du stock",,
 "Stock details by product","Détails des stocks par produit",,
 "Stock history","Historique des stocks",,
-"Stock location",,,
+"Stock location","Emplacement de stock",,
 "Stock location is missing for the purchase order %s.",,,
 "Stock location is missing for the sale order %s.","L'emplacement de stock est manquant pour la commande %s.",,
 "Stock location lines by product","Ligne d'emplacement de stock par produit",,
