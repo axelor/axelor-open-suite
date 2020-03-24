@@ -32,6 +32,7 @@
 - LEAD : Fix action doesnot exist on LEAD convert.
 - MOVE TEMPLATE : Add missing translation
 - STOCK LOCATION : Add missing translation
+- MRP FAMILY : Fix wrong case in views title
 
 ## [5.3.1] - 2020-03-16
 ## Improvements
