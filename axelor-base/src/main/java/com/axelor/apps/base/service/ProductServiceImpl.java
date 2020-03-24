@@ -18,14 +18,16 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.ProductVariantAttr;
 import com.axelor.apps.base.db.ProductVariantConfig;
 import com.axelor.apps.base.db.ProductVariantValue;
+import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.ProductVariantRepository;
 import com.axelor.apps.base.db.repo.ProductVariantValueRepository;
-import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -74,8 +76,35 @@ public class ProductServiceImpl implements ProductService {
     productRepo.save(product);
   }
 
-  public String getSequence() throws AxelorException {
-    String seq = sequenceService.getSequenceNumber(SequenceRepository.PRODUCT);
+  public String getSequence(Product product) throws AxelorException {
+    String seq = null;
+    if (appBaseService
+        .getAppBase()
+        .getProductSequenceTypeSelect()
+        .equals(AppBaseRepository.SEQUENCE_PER_PRODUCT_CATEGORY)) {
+      ProductCategory productCategory = product.getProductCategory();
+      if (productCategory.getSequence() != null) {
+        seq = sequenceService.getSequenceNumber(productCategory.getSequence());
+      }
+      if (seq == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.CATEGORY_NO_SEQUENCE));
+      }
+    } else if (appBaseService
+        .getAppBase()
+        .getProductSequenceTypeSelect()
+        .equals(AppBaseRepository.SEQUENCE_PER_PRODUCT)) {
+      Sequence productSequence = appBaseService.getAppBase().getProductSequence();
+      if (productSequence != null) {
+        seq = sequenceService.getSequenceNumber(productSequence);
+      }
+      if (seq == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.APP_BASE_NO_SEQUENCE));
+      }
+    }
 
     if (seq == null) {
       throw new AxelorException(

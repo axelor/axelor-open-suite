@@ -9,7 +9,7 @@
         <field name="parentProductCategory" form-view="product-category-form" grid-view="product-family-grid"/>
     </grid>
     
-    <form name="product-category-form" title="Product category" model="com.axelor.apps.base.db.ProductCategory" width="large">
+    <form name="product-category-form" title="Product category" model="com.axelor.apps.base.db.ProductCategory" width="large" onLoad="action-attrs-product-category-form-set-hidden" onNew="action-attrs-product-category-form-set-hidden">
 	    <toolbar>
 			<button name="viewProductsBtn" title="View Products" onClick="action-view-product-by-category"/>
 		</toolbar>
@@ -17,6 +17,7 @@
         	<field name="name"/>
         	<field name="code" x-bind="{{code|unaccent|uppercase}}" />
 	        <field name="parentProductCategory" form-view="product-category-form" grid-view="product-family-grid"/>
+			<field name="sequence" onSelect="action-attrs-product-category-form-set-sequence-domain"/>
 		</panel>
    		<panel-dashlet name="salesTurnoverPanel"  title="Sales Turnover" action="dashlet.category.sales.turnover.per.month" colSpan="12" height="350" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
     </form>  
@@ -53,5 +54,13 @@
 		<context name="_isModel" expr="false"/>
 		<context name="_productCategoryId" expr="eval:__this__.id" />
 	</action-view>
+	
+	<action-attrs name="action-attrs-product-category-form-set-hidden">
+		<attribute name="hidden" for="sequence" expr="eval: __config__.app.getApp('base').getProductSequenceTypeSelect() != 'Per product category' || __repo__(ProductCategory).all().filter('self.parentProductCategory.id = ?', id).count() > 0"/>
+	</action-attrs>
+	
+	<action-attrs name="action-attrs-product-category-form-set-sequence-domain">
+		<attribute name="domain" for="sequence" expr="self.codeSelect = 'product'"/>
+	</action-attrs>
 	
 </object-views>

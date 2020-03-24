@@ -36,8 +36,12 @@
        			 	<field name="barcodeTypeConfig" showIf="activateBarCodeGeneration==true" requiredIf="activateBarCodeGeneration &amp;&amp; !editProductBarcodeType"/>
 			    </panel>
                 <field name="generatePartnerSequence" widget="boolean-switch"/>
-				<field name="generateProductSequence" widget="boolean-switch"/>
-				<field name="manageProductVariants" widget="boolean-switch"/>
+				<field name="manageProductVariants" widget="boolean-switch"/>	
+				<panel name="productSequenceManagement" colSpan="12" itemSpan="4">								
+					<field name="generateProductSequence" widget="boolean-switch"/>
+					<field name="productSequenceTypeSelect"  showIf="generateProductSequence"/>
+					<field name="productSequence" onSelect="action-attrs-app-base-config-set-product-sequence-domain" showIf="generateProductSequence &amp;&amp; productSequenceTypeSelect == 'Per product'"/>
+				</panel>
 				<field name="manageMultiBanks" widget="boolean-switch"/>
 				<field name="enterpriseCommunication" widget="boolean-switch"/>
 				<field name="enableCalendars" widget="boolean-switch"/>
@@ -109,4 +113,9 @@
 	<action-record name="action-base-record-set-enable-multi-company" model="com.axelor.apps.base.db.AppBase">
   		<field if="!enableMultiCompany &amp;&amp; __repo__(Company).all().count() &gt; 1" name="enableMultiCompany" expr="eval: true"/>
 	</action-record>
+	
+	<!-- ACTION ATTRS -->
+	<action-attrs name="action-attrs-app-base-config-set-product-sequence-domain">
+		<attribute name="domain" for="productSequence" expr="eval: &quot; self.codeSelect = 'product' &quot;"/>
+	</action-attrs>
 </object-views>
