@@ -14,6 +14,7 @@
 - ORDER/STOCK : ISPM15 translation
 - FORECAST RECAP : translation for Forecast Recap line Type(s).
 - MARKETING : Fix for setting end date after start date.
+- changes for messy convert-lead-wizard-form
 
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
@@ -33,6 +34,7 @@
 - MOVE TEMPLATE : Add missing translation
 - STOCK LOCATION : Add missing translation
 - MRP FAMILY : Fix wrong case in views title
+- INVOICELINE : Fix account not filtered depending on fixedAssets boolean
 - CONTACT: fix for Main Company not set for Contact from Partner
 
 ## [5.3.1] - 2020-03-16
