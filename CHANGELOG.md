@@ -14,6 +14,7 @@
 - Accounting Move Line : When debit/credit is filled the other field is set to 0 instead of being set to a readonly mode
 - Invoice/Orders : The printing filename has been changed to show the id of the printed order/invoice
 - Employee : renamed dateOfHire, timeOfHire, endDateContract, dateOfBirth fields to hireDate, hireTime, contractEndDate, birthDate
+- Removed block permission from demo data.
 
 ## Bug Fixes
 - HR : A leave-line cannot be saved whitout employee or leave-reason.
