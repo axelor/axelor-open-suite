@@ -20,6 +20,7 @@
 - LEAD : Fix action doesnot exist on LEAD convert.
 - STOCK LOCATION : Add missing translation
 - Account Config: display correct form view on clicking products.
+- Stock Move invoicing: Fix NPE on opening invoicing wizard when a line has no product.
 
 ## [5.2.6] - 2020-03-13
 ## Improvements
