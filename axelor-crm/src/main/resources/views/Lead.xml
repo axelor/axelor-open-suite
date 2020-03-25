@@ -132,11 +132,10 @@
 				</panel>
 
 				<panel name="primaryAddress" title="Primary address" readonlyIf="statusSelect == 4 || statusSelect == 5" colSpan="12">
-					<field name="primaryAddress" colSpan="12"/>
-					<field name="primaryCity" colSpan="4"/>
-					<field name="primaryState" colSpan="4"/>
+					<field name="primaryAddress" colSpan="8"/>
 					<field name="primaryPostalCode" colSpan="4"/>
-					<spacer name="primaryPostalCodeSpacer" colSpan="8"/>
+					<field name="primaryCity" colSpan="4" form-view="city-form" grid-view="city-grid" onChange="action-record-lead-set-primary-postal-code"/>
+					<field name="primaryState" colSpan="4" form-view="region-form" grid-view="region-grid"/>
 					<field name="primaryCountry" colSpan="4" form-view="country-form" grid-view="country-grid"/>
 				</panel>
 
@@ -157,7 +156,7 @@
 		<panel name="actionsPanel" sidebar="true">
 			<button name="grabLeadBtn" title="Assign to me" hideIf="user.id == _internalUserId || statusSelect == 4 || statusSelect == 5" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeLead"/>
 			<button name="startBtn" title="Start" hideIf="statusSelect >= 3" icon="fa-play" onClick="save,action-lead-record-status-start,save"/>
-			<button name="convertBtn" title="Convert" hideIf="statusSelect >= 4 || !id" icon="fa-exchange" onClick="save,action-lead-view-convert-lead,reload"/>
+			<button name="convertBtn" title="Convert" hideIf="statusSelect >= 4 || !id" icon="fa-exchange" onClick="save,action-lead-view-convert-lead"/>
 			<button name="recycleBtn" title="Recycle" hideIf="statusSelect != 5" icon="fa-recycle" onClick="save,action-lead-record-status-recycle,save"/>
 			<button name="loseBtn" title="Lose" hideIf="statusSelect == 5" icon="fa-times" onClick="save,action-lead-view-lose,save" css="btn-danger"/>
 			<button name="showPartnerBtn" title="Show Partner" showIf="partner" colSpan="6" onClick="action-lead-view-show-partner"/>
@@ -266,6 +265,10 @@
    	<action-record name="action-lead-record-status-recycle" model="com.axelor.apps.crm.db.Lead">
     	<field name="statusSelect" expr="3"/>
     	<field name="isRecycled" expr="true"/>
+    </action-record>
+    
+    <action-record name="action-record-lead-set-primary-postal-code" model="com.axelor.apps.crm.db.Lead">
+    	<field name="primaryPostalCode" expr="eval: primaryCity?.zip"/>
     </action-record>
 
     <action-view name="action-lead-view-lose" model="com.axelor.apps.crm.db.Lead" title="Lose">

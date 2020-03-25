@@ -51,8 +51,12 @@
 		<panel sidebar="true" name="characteristicsPanel" title="Characteristics"
 			canCollapse="true">
 			<field name="periodTypeSelect" />
-			<field name="fromDate" colSpan="6" required="true" />
-			<field name="toDate" colSpan="6" required="true" />
+			<field name="fromDate" colSpan="6" required="true" onChange="action-target-configuration-condition-dates"/>
+			<field name="toDate" colSpan="6" required="true" onChange="action-target-configuration-condition-dates"/>
 		</panel>
 	</form>
+
+	<action-condition name="action-target-configuration-condition-dates">
+		<check field="toDate" if="toDate != null &amp;&amp; toDate &lt; fromDate" error="End date cannot be inferior to start date"/>
+	</action-condition>
 </object-views>
