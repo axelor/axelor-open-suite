@@ -20,23 +20,31 @@ package com.axelor.studio.service.wkf;
 import com.axelor.auth.db.Permission;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.repo.PermissionRepository;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaAction;
-import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.MetaSelect;
 import com.axelor.meta.db.MetaSelectItem;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaSelectRepository;
+import com.axelor.meta.schema.views.Selection.Option;
 import com.axelor.studio.db.WkfNode;
+import com.axelor.studio.exception.IExceptionMessage;
+import com.axelor.studio.web.WkfController;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,17 +78,20 @@ class WkfNodeService {
   /**
    * Root method to access the service. It start processing of WkfNode and call different methods
    * for that.
+   *
+   * @throws AxelorException
    */
-  protected List<String[]> process() {
+  protected Map<String, Object> process() throws AxelorException {
 
-    MetaJsonField statusField = wkfService.workflow.getStatusField();
-    MetaSelect metaSelect = addMetaSelect(statusField);
+    Map<String, Object> values = new HashMap<String, Object>();
+    MetaSelect metaSelect = addMetaSelect();
 
     nodeActions = new ArrayList<String[]>();
-    String defaultValue = processNodes(metaSelect, statusField);
-    statusField.setDefaultValue(defaultValue);
+    String defaultValue = processNodes(metaSelect);
 
-    return nodeActions;
+    values.put("defaultValue", defaultValue);
+    values.put("nodeActions", nodeActions);
+    return values;
   }
 
   /**
@@ -90,7 +101,7 @@ class WkfNodeService {
    * @return MetaSelect of statusField.
    */
   @Transactional
-  public MetaSelect addMetaSelect(MetaJsonField statusField) {
+  public MetaSelect addMetaSelect() {
 
     String selectName = wkfService.getSelectName();
 
@@ -150,8 +161,13 @@ class WkfNodeService {
    *
    * @param metaSelect MetaSelect to update.
    * @return Return first item as default value for wkfStatus field.
+   * @throws AxelorException
    */
-  private String processNodes(MetaSelect metaSelect, MetaJsonField statusField) {
+  private String processNodes(MetaSelect metaSelect) throws AxelorException {
+
+    String wkfFieldInfo[] = wkfService.getWkfFieldInfo(wkfService.workflow);
+    String wkfFieldName = wkfFieldInfo[0];
+    String wkfFieldType = wkfFieldInfo[1];
 
     List<WkfNode> nodeList = wkfService.workflow.getNodes();
 
@@ -162,14 +178,33 @@ class WkfNodeService {
         nodeList,
         (WkfNode node1, WkfNode node2) -> node1.getSequence().compareTo(node2.getSequence()));
 
+    List<Option> oldSeqenceOptions =
+        Beans.get(WkfController.class).getSelect(wkfService.workflow.getStatusMetaField());
+    int oldSequenceCounter = 0;
+
+    if (!CollectionUtils.isEmpty(oldSeqenceOptions)
+        && oldSeqenceOptions.size() != nodeList.size()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, IExceptionMessage.CANNOT_ALTER_NODES);
+    }
+
     for (WkfNode node : nodeList) {
+
+      if (!CollectionUtils.isEmpty(oldSeqenceOptions)
+          && !oldSeqenceOptions.get(oldSequenceCounter).getTitle().equals(node.getTitle())) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, IExceptionMessage.CANNOT_ALTER_NODES);
+      }
 
       log.debug("Procesing node: {}", node.getName());
       String option = node.getSequence().toString();
       MetaSelectItem metaSelectItem = getMetaSelectItem(metaSelect, option);
       if (metaSelectItem == null) {
         metaSelectItem = new MetaSelectItem();
-        metaSelectItem.setValue(option);
+        metaSelectItem.setValue(
+            !CollectionUtils.isEmpty(oldSeqenceOptions)
+                ? oldSeqenceOptions.get(oldSequenceCounter).getValue()
+                : option);
         metaSelect.addItem(metaSelectItem);
       }
 
@@ -192,16 +227,15 @@ class WkfNodeService {
       if (!actions.isEmpty()) {
         String name = getActionName(node.getName());
         String value = node.getSequence().toString();
-        if (statusField.getType().equals("string")) {
+        if (wkfFieldType.equals("string") || wkfFieldType.equals("String")) {
           value = "'" + value + "'";
         }
-        String condition = statusField.getName() + " == " + value;
-        if (!wkfService.workflow.getIsJson()) {
-          condition = "$" + wkfService.workflow.getJsonField() + "." + condition;
-        }
+        String condition = wkfFieldName + " == " + value;
         nodeActions.add(new String[] {name, condition});
         this.wkfService.updateActionGroup(name, actions);
       }
+
+      oldSequenceCounter++;
     }
 
     return defaultValue;

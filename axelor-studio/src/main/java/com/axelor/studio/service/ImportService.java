@@ -110,7 +110,7 @@ public class ImportService {
     return actionBuilderRepo.save((ActionBuilder) bean);
   }
 
-  public Object importWkf(Object bean, Map<String, Object> values) {
+  public Object importWkf(Object bean, Map<String, Object> values) throws Exception {
 
     assert bean instanceof Wkf;
 
@@ -225,7 +225,7 @@ public class ImportService {
     return dashboardBuilderRepo.save(dashboard);
   }
 
-  public Object importAppWkf(Object bean, Map<String, Object> values) {
+  public Object importAppWkf(Object bean, Map<String, Object> values) throws Exception {
 
     assert bean instanceof Wkf;
 
