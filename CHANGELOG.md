@@ -7,6 +7,7 @@
 - Bank details : Add new fields journal and bank account.
 - Move template : Add new field description
 - HR : Added a leave line configuration menu in leave management
+- Move template : Add details button to grid view to display fields
 
 ## Improvements
 - USER : Default User language is based on application.locale from application.properties
