@@ -5,6 +5,7 @@
 - Update to Gradle 5.6.4
 - Update to Axelor Open Platform 5.3
 - Bank details : Add new fields journal and bank account.
+- Move template : Add journal field to wizard
 - Move template : Add new field description
 - HR : Added a leave line configuration menu in leave management
 
