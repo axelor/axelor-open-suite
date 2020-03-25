@@ -24,6 +24,7 @@
 - Stock Move invoicing: Fix NPE on opening invoicing wizard when a line has no product.
 - Fixed asset : corrected calculation of amortization.
 - Product : prevent the updation of salePrice if autoUpdateSalePrice = false. 
+- Logistial Form : Fix NPE when computing volume
 
 ## [5.2.6] - 2020-03-13
 ## Improvements
