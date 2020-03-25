@@ -5,6 +5,7 @@
 - PARTNER : add url widget for website.
 - MrpFamily : make 'name' required field.
 - LEAD : new design for view form
+- TAX LINE : run off date must now be superior to start date
 - OPPORTUNITY : removed help in buttons from form view
 - DURATION : changed title and translation from typeSelect
 - SaleOrder : Add filter on invoice selected lines when operation choice = invoice selected lines

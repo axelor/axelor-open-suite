@@ -1281,6 +1281,7 @@
 "Run",,,
 "Run analysis",,,
 "Run off Date",,,
+"Run off date cannot be inferior to start date",,,
 "Russian Beta",,,
 "SQL",,,
 "SSL",,,
