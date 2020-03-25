@@ -147,6 +147,7 @@
 "Emails",,,
 "End","Fin",,
 "End date","Date de fin",,
+"End date cannot be inferior to start date","La date de fin ne peut pas être inférieure à celle de début",,
 "Enterprise","Entreprise",,
 "Enterprise name","Entreprise",,
 "Error in lead conversion",,,
