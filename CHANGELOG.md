@@ -12,6 +12,7 @@
 - STOCK MOVE : Fix link between sale order and backorder stockmove
 - MOVE : corrected sequence generation, now use correctly the date of the move and not the date of validation.
 - Invoice payment: fix issue in invoice payment form when invoice due date is empty.
+- Account Config: display correct form view on clicking products.
 
 ## [5.0.11] - 2019-12-19
 ## Improvements
