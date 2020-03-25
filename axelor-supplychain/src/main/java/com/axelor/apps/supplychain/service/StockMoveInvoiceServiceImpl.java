@@ -513,7 +513,9 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
           stockMoveLine.getRealQty().subtract(computeNonCanceledInvoiceQty(stockMoveLine));
       if (qty.compareTo(BigDecimal.ZERO) != 0) {
         Map<String, Object> stockMoveLineMap = new HashMap<>();
-        stockMoveLineMap.put("productCode", stockMoveLine.getProduct().getCode());
+        stockMoveLineMap.put(
+            "productCode",
+            stockMoveLine.getProduct() != null ? stockMoveLine.getProduct().getCode() : null);
         stockMoveLineMap.put("productName", stockMoveLine.getProductName());
         stockMoveLineMap.put("remainingQty", qty);
         stockMoveLineMap.put("realQty", stockMoveLine.getRealQty());
