@@ -18,7 +18,7 @@
     <integer name="opportunityCreatedWon" title="Created Won" readonly="true"/>
     <decimal name="opportunityAmountWonTarget" title="Amount Won"/>
     <integer name="opportunityCreatedNumberTarget" title="Created Nbr."/>
-    <integer name="opportunityCreatedWonTarget" title="Created Won"/>
+    <integer name="opportunityCreatedWonTarget" title="Closed Won"/>
     
 <!-- Sales order -->
 <!-- 	<decimal name="saleOrderAmountWon" title="Amount won"/> -->
@@ -36,8 +36,8 @@
     
     <integer name="periodTypeSelect" title="Period type" selection="crm.target.configuration.period.type.select"/>
     
-    <date name="fromDate" title="Date from"/>
-    <date name="toDate" title="Date to"/>
+    <date name="fromDate" title="Starting date"/>
+    <date name="toDate" title="End date"/>
     
     
   </entity>
