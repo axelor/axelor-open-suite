@@ -37,6 +37,7 @@
 - INVOICELINE : Fix account not filtered depending on fixedAssets boolean
 - CONTACT: fix for Main Company not set for Contact from Partner
 - Account Config: display correct form view on clicking products.
+- Stock Move invoicing: Fix NPE on opening invoicing wizard when a line has no product.
 
 ## [5.3.1] - 2020-03-16
 ## Improvements
