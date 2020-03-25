@@ -5,6 +5,8 @@
 - PARTNER : add url widget for website.
 - MrpFamily : make 'name' required field.
 - LEAD : new design for view form
+- TARGET CONFIGURATION : end off date must now be superior to start date
+- TAX LINE : run off date must now be superior to start date
 - OPPORTUNITY : removed help in buttons from form view
 - DURATION : changed title and translation from typeSelect
 - SaleOrder : Add filter on invoice selected lines when operation choice = invoice selected lines
@@ -15,6 +17,8 @@
 - FORECAST RECAP : translation for Forecast Recap line Type(s).
 - MARKETING : Fix for setting end date after start date.
 - changes for messy convert-lead-wizard-form
+- Target Configuration : improve naming & translation
+- Target : improve naming & translation
 
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
@@ -36,6 +40,8 @@
 - MRP FAMILY : Fix wrong case in views title
 - INVOICELINE : Fix account not filtered depending on fixedAssets boolean
 - CONTACT: fix for Main Company not set for Contact from Partner
+- Account Config: display correct form view on clicking products.
+- Stock Move invoicing: Fix NPE on opening invoicing wizard when a line has no product.
 - Product : prevent the updation of salePrice if autoUpdateSalePrice = false.
 
 ## [5.3.1] - 2020-03-16
