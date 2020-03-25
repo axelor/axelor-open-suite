@@ -43,7 +43,8 @@
 - Account Config: display correct form view on clicking products.
 - Stock Move invoicing: Fix NPE on opening invoicing wizard when a line has no product.
 - Product : prevent the updation of salePrice if autoUpdateSalePrice = false.
-- Logistial Form : Fix NPE when computing volume
+- Logistical Form : Fix NPE when computing volume
+- WORK CENTER : Fix machine not set to null for a human type work center
 
 ## [5.3.1] - 2020-03-16
 ## Improvements
