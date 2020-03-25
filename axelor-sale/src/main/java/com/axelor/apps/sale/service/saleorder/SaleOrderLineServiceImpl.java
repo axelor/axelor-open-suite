@@ -29,7 +29,6 @@ import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.sale.db.PackLine;
@@ -55,17 +54,29 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject protected CurrencyService currencyService;
+  protected CurrencyService currencyService;
 
-  @Inject protected PriceListService priceListService;
+  protected PriceListService priceListService;
 
-  @Inject protected ProductMultipleQtyService productMultipleQtyService;
+  protected ProductMultipleQtyService productMultipleQtyService;
 
-  @Inject protected AppBaseService appBaseService;
+  protected AppSaleService appSaleService;
 
-  @Inject protected AppSaleService appSaleService;
+  protected AccountManagementService accountManagementService;
 
-  @Inject protected AccountManagementService accountManagementService;
+  @Inject
+  public SaleOrderLineServiceImpl(
+      CurrencyService currencyService,
+      PriceListService priceListService,
+      ProductMultipleQtyService productMultipleQtyService,
+      AppSaleService appSaleService,
+      AccountManagementService accountManagementService) {
+    this.currencyService = currencyService;
+    this.priceListService = priceListService;
+    this.productMultipleQtyService = productMultipleQtyService;
+    this.appSaleService = appSaleService;
+    this.accountManagementService = accountManagementService;
+  }
 
   @Override
   public void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
@@ -566,7 +577,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
             packLine
                 .getQuantity()
                 .multiply(packQty)
-                .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN));
+                .setScale(appSaleService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN));
       }
       soLine.setUnit(packLine.getUnit());
       soLine.setTypeSelect(packLine.getTypeSelect());

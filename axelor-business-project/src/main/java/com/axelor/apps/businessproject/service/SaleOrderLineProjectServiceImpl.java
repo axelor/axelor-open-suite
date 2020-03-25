@@ -18,9 +18,17 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
+import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.ProductMultipleQtyService;
+import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -29,7 +37,30 @@ import java.util.List;
 public class SaleOrderLineProjectServiceImpl extends SaleOrderLineServiceSupplyChainImpl
     implements SaleOrderLineProjectService {
 
-  @Inject private SaleOrderLineRepository saleOrderLineRepo;
+  private SaleOrderLineRepository saleOrderLineRepo;
+
+  @Inject
+  public SaleOrderLineProjectServiceImpl(
+      CurrencyService currencyService,
+      PriceListService priceListService,
+      ProductMultipleQtyService productMultipleQtyService,
+      AppSaleService appSaleService,
+      AccountManagementService accountManagementService,
+      AppAccountService appAccountService,
+      AnalyticMoveLineService analyticMoveLineService,
+      InvoiceLineRepository invoiceLineRepository,
+      SaleOrderLineRepository saleOrderLineRepo) {
+    super(
+        currencyService,
+        priceListService,
+        productMultipleQtyService,
+        appSaleService,
+        accountManagementService,
+        appAccountService,
+        analyticMoveLineService,
+        invoiceLineRepository);
+    this.saleOrderLineRepo = saleOrderLineRepo;
+  }
 
   @Transactional
   @Override

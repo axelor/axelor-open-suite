@@ -19,19 +19,27 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.AppAccountRepository;
+import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.ProductMultipleQtyService;
+import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineServiceImpl;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
@@ -58,9 +66,30 @@ import javax.persistence.Query;
 public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImpl
     implements SaleOrderLineServiceSupplyChain {
 
-  @Inject protected AppAccountService appAccountService;
+  protected AppAccountService appAccountService;
+  protected AnalyticMoveLineService analyticMoveLineService;
+  protected InvoiceLineRepository invoiceLineRepository;
 
-  @Inject protected AnalyticMoveLineService analyticMoveLineService;
+  @Inject
+  public SaleOrderLineServiceSupplyChainImpl(
+      CurrencyService currencyService,
+      PriceListService priceListService,
+      ProductMultipleQtyService productMultipleQtyService,
+      AppSaleService appSaleService,
+      AccountManagementService accountManagementService,
+      AppAccountService appAccountService,
+      AnalyticMoveLineService analyticMoveLineService,
+      InvoiceLineRepository invoiceLineRepository) {
+    super(
+        currencyService,
+        priceListService,
+        productMultipleQtyService,
+        appSaleService,
+        accountManagementService);
+    this.appAccountService = appAccountService;
+    this.analyticMoveLineService = analyticMoveLineService;
+    this.invoiceLineRepository = invoiceLineRepository;
+  }
 
   @Override
   public void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
@@ -278,5 +307,32 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     }
 
     return qty;
+  }
+
+  @Override
+  public BigDecimal computeInvoicedQty(SaleOrderLine saleOrderLine) throws AxelorException {
+    List<InvoiceLine> nonCanceledInvoiceLineList =
+        invoiceLineRepository
+            .all()
+            .filter(
+                "self.invoice.statusSelect != :invoiceCanceled "
+                    + "AND self.saleOrderLine.id = :saleOrderLineId "
+                    + "AND self.invoice.operationTypeSelect IN (:customerSale, :customerRefund) "
+                    + "AND self.invoice.operationSubTypeSelect != :advancePayment")
+            .bind("invoiceCanceled", InvoiceRepository.STATUS_CANCELED)
+            .bind("saleOrderLineId", saleOrderLine.getId())
+            .bind("customerSale", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
+            .bind("customerRefund", InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND)
+            .bind("advancePayment", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
+            .fetch();
+    BigDecimal nonCanceledInvoiceQty = BigDecimal.ZERO;
+    for (InvoiceLine invoiceLine : nonCanceledInvoiceLineList) {
+      if (InvoiceToolService.isRefund(invoiceLine.getInvoice())) {
+        nonCanceledInvoiceQty = nonCanceledInvoiceQty.subtract(invoiceLine.getQty());
+      } else {
+        nonCanceledInvoiceQty = nonCanceledInvoiceQty.add(invoiceLine.getQty());
+      }
+    }
+    return nonCanceledInvoiceQty;
   }
 }
