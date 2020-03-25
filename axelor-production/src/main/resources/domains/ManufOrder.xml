@@ -65,6 +65,8 @@
     <string name="cancelReasonStr" title="Cancel Reason" large="true"/>
     
     <string name="moCommentFromSaleOrder" title="MO's comment from sale order" large="true"/>
+    <boolean name="outsourcing" title="Outsourcing"/>
+    <many-to-one name="purchaseOrder" title="Purchase order" ref="com.axelor.apps.purchase.db.PurchaseOrder" />
     
     <unique-constraint columns="manufOrderSeq,company"/>
 

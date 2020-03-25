@@ -41,7 +41,7 @@
 		</toolbar>
 		<panel name="mainPanel">
 			<field name="name"/>
-			<field name="typeSelect" colSpan="3" onChange="action-stock-location-attrs-set-isOutsourcingLocation"/>
+			<field name="typeSelect" colSpan="3" onChange="action-stock-location-attrs-set-isOutsourcingLocation,action-stock-set-partner-doamin-attrs"/>
 			<field name="parentStockLocation" canEdit="false" form-view="stock-location-form" grid-view="stock-location-grid"/>
 			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<field name="partner" canEdit="false" showIf="typeSelect == 2" domain="self.isContact = false AND :company member of self.companySet" form-view="partner-form" grid-view="partner-grid"/>
@@ -69,7 +69,7 @@
                 <field name="isNotInCalculStock" colSpan="3"/>
 
 				<field name="isWorkshop"  colSpan="3" title="Workshop" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop()" showIf="usableOnProduction"/>
-				<field name="isOutsourcingLocation" showIf="typeSelect==2 || typeSelect==3"  colSpan="3" if-module="axelor-production" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageOutsourcing()"/>
+				<field name="isOutsourcingLocation" onChange="action-stock-set-partner-doamin-attrs" showIf="typeSelect==2 || typeSelect==3"  colSpan="3" if-module="axelor-production" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageOutsourcing()"/>
 			</panel>
 
 		</panel-tabs>
@@ -102,6 +102,13 @@
 	
 	<action-attrs name="action-stock-location-attrs-set-isOutsourcingLocation" model="com.axelor.apps.stock.db.StockLocation">
 		<attribute name="value" for="isOutsourcingLocation" expr="eval:false" if="typeSelect==1"/>
+	</action-attrs>
+	
+	<action-attrs name="action-stock-set-partner-doamin-attrs" model="com.axelor.apps.stock.db.StockLocation">
+	   <attribute name="doamin" for="partner" expr="eval: &quot;self.isContact = false AND :company member of self.companySet &amp;&amp; self.isSubcontractor = true&quot;" if="typeSelect == 2 &amp;&amp; isOutsourcingLocation &amp;&amp; __config__.app.getApp('production').getManageOutsourcing()"/>
+	   <attribute name="doamin" for="partner" expr="eval: null" if="typeSelect == 1 &amp;&amp; !__config__.app.getApp('production').getManageOutsourcing()"/>
+	   <attribute name="title" for="partner" expr="Partner" if="typeSelect == 1"/>
+	   <attribute name="title" for="partner" expr="Deported stock location" if= "typeSelect == 3 &amp;&amp; __config__.app.getApp('production').getManageOutsourcing()" />
 	</action-attrs>
     
     <action-view name="action-location-view-create-inventory" title="Create inventory" model="com.axelor.apps.stock.db.Inventory">

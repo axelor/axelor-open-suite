@@ -122,6 +122,9 @@ public class OperationOrderServiceImpl implements OperationOrderService {
 
     this._createHumanResourceList(operationOrder, workCenter);
 
+    operationOrder.setUseLineInGeneratedPurchaseOrder(
+        prodProcessLine.getUseLineInGeneratedPurchaseOrder());
+
     return Beans.get(OperationOrderRepository.class).save(operationOrder);
   }
 
