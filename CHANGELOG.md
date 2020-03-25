@@ -21,9 +21,10 @@
 - LEAD : Fix action doesnot exist on LEAD convert.
 - STOCK LOCATION : Add missing translation
 - Account Config: display correct form view on clicking products.
-- Stock Move invoicing: Fix NPE on opening invoicing wizard when a line has no product.
+- Stock Move invoicing: Fix NPE on opening invoicing wizccoard when a line has no product.
 - Fixed asset : corrected calculation of amortization.
 - Product : prevent the updation of salePrice if autoUpdateSalePrice = false. 
+- WORK CENTER : Fix machine not set to null for a human type work center
 
 ## [5.2.6] - 2020-03-13
 ## Improvements
