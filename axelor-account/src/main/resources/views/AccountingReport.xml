@@ -56,6 +56,7 @@
 				<field name="bankDetailsSet"   if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')" requiredIf="typeSelect == 18" showIf="typeSelect == 18" colSpan="12" form-view="bank-details-form" grid-view="bank-details-grid" widget="TagSelect" canNew="false" onSelect="action-accounting-report-method-set-bank-details-domain"/>
 				<field name="analyticDistributionTemplate" showIf="typeSelect == 17" form-view="analytic-distribution-template-form" grid-view="analytic-distribution-template-grid"/>
 				<field name="subtotalByAnalyticDistribution" showIf="typeSelect == 17" widget="boolean-switch"/>
+
 			
 			</panel>
 			<panel name="printingInformationsPanel" title="Printing informations" hideIf="!typeSelect || [16,17,18].indexOf(typeSelect) != -1">
