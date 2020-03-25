@@ -38,6 +38,10 @@ import java.util.Map;
 
 public interface SaleOrderInvoiceService {
 
+  String SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD = "qtyToInvoice";
+  String SO_LINES_WIZARD_QTY_REMAINING_TO_INVOICE_FIELD = "remainingQty";
+  String SO_LINES_WIZARD_SO_LINE_ID = "saleOrderLineId";
+
   /**
    * Generate an invoice from a sale order. call {@link
    * SaleOrderInvoiceService#createInvoice(SaleOrder)} to create the invoice.
@@ -273,25 +277,22 @@ public interface SaleOrderInvoiceService {
    * @param saleOrder the sale order from context
    * @return the domain for the operation select field in the invoicing wizard form
    */
-  List<Integer> getInvoicingWizardOperationDomain(SaleOrder saleOrder);
+  List<Integer> getInvoicingWizardOperationDomain(SaleOrder saleOrder) throws AxelorException;
 
   /**
-   * throw exception if all invoices amount generated from the sale order and amountToInvoice is
-   * greater than saleOrder's amount
+   * Compute sale order line to invoice to be shown in the invoicing wizard.
    *
-   * @param saleOrder
-   * @param amountToInvoice
-   * @param isPercent
-   * @throws AxelorException
+   * @param saleOrder a sale order
+   * @return a list of created sale order line to be shown in a wizard view.
    */
-  void displayErrorMessageIfSaleOrderIsInvoiceable(
-      SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent) throws AxelorException;
+  List<Map<String, Object>> getSaleOrderLinesToInvoice(SaleOrder saleOrder) throws AxelorException;
 
   /**
-   * Display error message if all invoices have been generated for the sale order
+   * Method used for the invoicing wizard. The computation uses the invoicing quantity, but also
+   * quantity from invoices that are not still ventilated. Also manage the case of refund invoice.
    *
-   * @param saleOrder
-   * @throws AxelorException
+   * @param saleOrder a sale order
+   * @return the quantity remaining to invoice for the sale order.
    */
-  void displayErrorMessageBtnGenerateInvoice(SaleOrder saleOrder) throws AxelorException;
+  BigDecimal computeTotalInvoicedQty(SaleOrder saleOrder) throws AxelorException;
 }

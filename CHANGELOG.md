@@ -37,6 +37,9 @@
 - INVOICELINE : Fix account not filtered depending on fixedAssets boolean
 - CONTACT: fix for Main Company not set for Contact from Partner
 - Account Config: display correct form view on clicking products.
+- Sale Order Invoicing: rework the wizard.
+Now the sale order invoicing pop-up correctly takes into account refund and correctly ignores advance payment.
+Also we correctly manage the already invoiced quantity when invoicing by line.
 
 ## [5.3.1] - 2020-03-16
 ## Improvements

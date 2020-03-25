@@ -19,9 +19,21 @@
 			<field name="amountToInvoice" title="Amount to invoice" type="decimal" min="0"
 				   showIf="$contains([3],$number(operationSelect))"/>
 		</panel>
-		<panel-related name="saleOrderLineListPanel" field="saleOrderLineList" hideIf="operationSelect != 2" canNew="false"
-					   grid-view="invoicing-wizard-sale-order-line-grid"
-					   editable="true"/>
+		<panel-related name="saleOrderLineListPanel" field="$saleOrderLineDummyList" canNew="false" target="com.axelor.apps.sale.db.SaleOrderLine" type="one-to-many" editable="true" hideIf="operationSelect != 2">
+			<field name="$productCode" title="Code" width="120"/>
+			<field name="productName" readonly="true"/>
+			<field name="qty" readonly="true" aggregate="sum" x-scale="2"/>
+			<field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
+			<field name="price" readonly="true" x-scale="2"/>
+			<field name="exTaxTotal" readonly="true" aggregate="sum"/>
+			<field name="amountInvoiced" readonly="true"/>
+			<field name="remainingQty" readonly="true" aggregate="sum" title="Remaining Qty"/>
+			<field name="qtyToInvoice" title="Qty to invoice" type="decimal"
+				readonlyIf="invoiceAll || isSubline" min="0" validIf="$number(remainingQty) >= $number(qtyToInvoice)"/>
+			<field name="invoiceAll" title="Invoice all" type="boolean"
+				onChange="action-attrs-sale-order-line-invoicing-wizard-fill-qty"/>
+      <field name="saleOrderLineId" hidden="true"/>
+		</panel-related>
 		<panel name="timetablePanel" colSpan="12" showTitle="false" hidden="true" showIf="operationSelect == 4">
 			<field name="$uninvoicedTimetablesList" title="Select the lines to invoice" type="one-to-many" target="com.axelor.apps.supplychain.db.Timetable" 
 				   colSpan="12" canNew="false" canRemove="false" 
@@ -38,21 +50,6 @@
 		</panel>
 	</form>
 
-	<grid name="invoicing-wizard-sale-order-line-grid" title="Lines to invoice" edit-icon="false"
-		  model="com.axelor.apps.sale.db.SaleOrderLine">
-		<field name="product.code" width="120"/>
-		<field name="productName" readonly="true"/>
-		<field name="qty" readonly="true" aggregate="sum" x-scale="2"/>
-		<field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
-		<field name="price" readonly="true" x-scale="2"/>
-		<field name="exTaxTotal" readonly="true" aggregate="sum"/>
-		<field name="amountInvoiced" readonly="true"/>
-        <field name="qtyToInvoice" title="Qty to invoice" type="decimal"
-			   readonlyIf="invoiceAll" min="0" x-scale="2"/>
-        <field name="invoiceAll" title="Invoice all" type="boolean"
-			   onChange="action-attrs-sale-order-line-invoicing-wizard-fill-qty"/>
-	</grid>
-	
 	<grid name="invoicing-wizard-timetable-grid" title="Select timetables to invoice" edit-icon="false"
 		  model="com.axelor.apps.supplychain.db.Timetable" orderBy="estimatedDate" editable="true">
 		<field name="toInvoice" type="boolean" title=" "/>
@@ -73,8 +70,7 @@
 	</form>
 
 	<action-group name="action-group-sale-order-invoicing-wizard-onload">
-		<action name="action-method-sale-order-invoicing-wizard-default"/>
-		<action name="action-attrs-sale-order-invoicing-wizard-amount-invoiced"/>
+		<action name="action-method-sale-order-fill-invoicing-wizard"/>
 		<action name="action-attrs-sale-order-invoicing-wizard-hide-advance-payment"/>
 		<action name="action-method-sale-order-invoicing-wizard-operation-select-domain"/>
 		<action name="action-record-sale-order-invoicing-wizard-set-uninvoiced-timetables-list"/>
@@ -82,16 +78,11 @@
 	
 	<action-attrs name="action-attrs-sale-order-line-invoicing-wizard-fill-qty">
 		<attribute for="qtyToInvoice" name="value" if="invoiceAll &amp;&amp; !__parent__?.isPercent"
-				   expr="eval: qty"/>
+				   expr="eval: remainingQty"/>
 		<attribute for="qtyToInvoice" name="value" if="invoiceAll &amp;&amp; __parent__?.isPercent"
 				   expr="eval: 100"/>
 	</action-attrs>
 
-	<action-attrs name="action-attrs-sale-order-invoicing-wizard-amount-invoiced">
-		<attribute for="amountToInvoice" name="value" if="amountInvoiced > 0"
-				   expr="eval: exTaxTotal - amountInvoiced"/>
-	</action-attrs>
-	
 	<action-record name="action-record-sale-order-invoicing-wizard-set-uninvoiced-timetables-list" model="com.axelor.apps.sale.db.SaleOrder">
 		<field name="$uninvoicedTimetablesList" expr="eval: timetableList.findAll{it.invoiced == false}.sort{it.estimatedDate}"/>
 	</action-record>
@@ -106,9 +97,9 @@
 			  method="generateInvoice"/>
 	</action-method>
 
-	<action-method name="action-method-sale-order-invoicing-wizard-default">
+	<action-method name="action-method-sale-order-fill-invoicing-wizard">
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController"
-			  method="fillDefaultValueWizard"/>
+			  method="fillInvoicingWizard"/>
 	</action-method>
   
       <action-group name="action-group-sale-order-invoicing-wizard-generate">

@@ -19,6 +19,7 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -70,4 +71,13 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
    * @param saleOrderLine
    */
   BigDecimal checkInvoicedOrDeliveredOrderQty(SaleOrderLine saleOrderLine);
+
+  /**
+   * Method used for the invoicing wizard. The computation uses the invoicing quantity, but also
+   * quantity from invoices that are not still ventilated. Also manage the case of refund invoice.
+   *
+   * @param saleOrderLine a sale order line with a sale order.
+   * @return the quantity remaining to invoice
+   */
+  BigDecimal computeInvoicedQty(SaleOrderLine saleOrderLine) throws AxelorException;
 }

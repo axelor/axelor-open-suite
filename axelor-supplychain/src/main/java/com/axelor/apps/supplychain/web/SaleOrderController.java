@@ -45,7 +45,6 @@ import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.db.JPA;
-import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -73,8 +72,6 @@ import java.util.Map;
 
 @Singleton
 public class SaleOrderController {
-
-  private final String SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD = "qtyToInvoice";
 
   public void createStockMove(ActionRequest request, ActionResponse response) {
 
@@ -279,19 +276,19 @@ public class SaleOrderController {
 
       SaleOrderInvoiceService saleOrderInvoiceService = Beans.get(SaleOrderInvoiceService.class);
 
-      saleOrderInvoiceService.displayErrorMessageIfSaleOrderIsInvoiceable(
-          saleOrder, amountToInvoice, isPercent);
       Map<Long, BigDecimal> qtyToInvoiceMap = new HashMap<>();
 
       List<Map<String, Object>> saleOrderLineListContext;
       saleOrderLineListContext =
-          (List<Map<String, Object>>) request.getRawContext().get("saleOrderLineList");
+          (List<Map<String, Object>>) request.getRawContext().get("saleOrderLineDummyList");
       for (Map<String, Object> map : saleOrderLineListContext) {
-        if (map.get(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD) != null) {
+        if (map.get(SaleOrderInvoiceService.SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD) != null) {
           BigDecimal qtyToInvoiceItem =
-              new BigDecimal(map.get(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD).toString());
+              new BigDecimal(
+                  map.get(SaleOrderInvoiceService.SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD).toString());
           if (qtyToInvoiceItem.compareTo(BigDecimal.ZERO) != 0) {
-            Long soLineId = Long.valueOf((Integer) map.get("id"));
+            Long soLineId =
+                Long.valueOf((Integer) map.get(SaleOrderInvoiceService.SO_LINES_WIZARD_SO_LINE_ID));
             qtyToInvoiceMap.put(soLineId, qtyToInvoiceItem);
           }
         }
@@ -594,13 +591,19 @@ public class SaleOrderController {
    * @param response
    */
   public void changeWizardOperationDomain(ActionRequest request, ActionResponse response) {
-    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    List<Integer> operationSelectValues =
-        Beans.get(SaleOrderInvoiceService.class).getInvoicingWizardOperationDomain(saleOrder);
-    if (operationSelectValues.contains(Integer.valueOf(SaleOrderRepository.INVOICE_ALL))) {
-      response.setAttr("operationSelect", "value", SaleOrderRepository.INVOICE_ALL);
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      List<Integer> operationSelectValues =
+          Beans.get(SaleOrderInvoiceService.class).getInvoicingWizardOperationDomain(saleOrder);
+      if (operationSelectValues.contains(SaleOrderRepository.INVOICE_ALL)) {
+        response.setAttr("operationSelect", "value", SaleOrderRepository.INVOICE_ALL);
+      } else if (operationSelectValues.contains(SaleOrderRepository.INVOICE_LINES)) {
+        response.setAttr("operationSelect", "value", SaleOrderRepository.INVOICE_LINES);
+      }
+      response.setAttr("operationSelect", "selection-in", operationSelectValues);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    response.setAttr("operationSelect", "selection-in", operationSelectValues);
   }
 
   /**
@@ -647,23 +650,18 @@ public class SaleOrderController {
   }
 
   /**
-   * Called on load of sale order invoicing wizard view. Fill dummy field with default value to
-   * avoid issues with null values.
+   * Called on load of sale order invoicing wizard view. Fill dummy field with correct values.
    *
    * @param request
    * @param response
    */
-  public void fillDefaultValueWizard(ActionRequest request, ActionResponse response) {
+  public void fillInvoicingWizard(ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-      List<Map<String, Object>> saleOrderLineList = new ArrayList<>();
-      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        Map<String, Object> saleOrderLineMap = Mapper.toMap(saleOrderLine);
-        saleOrderLineMap.put(SO_LINES_WIZARD_QTY_TO_INVOICE_FIELD, BigDecimal.ZERO);
-        saleOrderLineList.add(saleOrderLineMap);
-      }
+      List<Map<String, Object>> saleOrderLineList =
+          Beans.get(SaleOrderInvoiceService.class).getSaleOrderLinesToInvoice(saleOrder);
       response.setValue("amountToInvoice", BigDecimal.ZERO);
-      response.setValue("saleOrderLineList", saleOrderLineList);
+      response.setValue("$saleOrderLineDummyList", saleOrderLineList);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -782,18 +780,23 @@ public class SaleOrderController {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
-      Beans.get(SaleOrderInvoiceService.class).displayErrorMessageBtnGenerateInvoice(saleOrder);
-      response.setView(
-          ActionView.define("Invoicing")
-              .model(SaleOrder.class.getName())
-              .add("form", "sale-order-invoicing-wizard-form")
-              .param("popup", "reload")
-              .param("show-toolbar", "false")
-              .param("show-confirm", "false")
-              .param("popup-save", "false")
-              .param("forceEdit", "true")
-              .context("_showRecord", String.valueOf(saleOrder.getId()))
-              .map());
+      if (Beans.get(SaleOrderInvoiceService.class)
+          .getSaleOrderLinesToInvoice(saleOrder)
+          .isEmpty()) {
+        response.setError(I18n.get(IExceptionMessage.SO_INVOICE_GENERATE_ALL_INVOICES));
+      } else {
+        response.setView(
+            ActionView.define("Invoicing")
+                .model(SaleOrder.class.getName())
+                .add("form", "sale-order-invoicing-wizard-form")
+                .param("popup", "reload")
+                .param("show-toolbar", "false")
+                .param("show-confirm", "false")
+                .param("popup-save", "false")
+                .param("forceEdit", "true")
+                .context("_showRecord", String.valueOf(saleOrder.getId()))
+                .map());
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -831,7 +834,12 @@ public class SaleOrderController {
     Context context = request.getContext();
     try {
       SaleOrder saleOrder = context.asType(SaleOrder.class);
-      Beans.get(SaleOrderInvoiceService.class).displayErrorMessageBtnGenerateInvoice(saleOrder);
+      if (Beans.get(SaleOrderInvoiceService.class)
+          .getSaleOrderLinesToInvoice(saleOrder)
+          .isEmpty()) {
+        response.setError(I18n.get(IExceptionMessage.SO_INVOICE_GENERATE_ALL_INVOICES));
+        return;
+      }
       Boolean isPercent = (Boolean) context.getOrDefault("isPercent", false);
       BigDecimal amountToInvoice =
           new BigDecimal(context.getOrDefault("amountToInvoice", "0").toString());
