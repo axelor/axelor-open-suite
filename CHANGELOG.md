@@ -19,6 +19,7 @@
 - BANK RECONCILIATION : corrected error with bank statement load where no other statement was loaded.
 - LEAD : Fix action doesnot exist on LEAD convert.
 - STOCK LOCATION : Add missing translation
+- Account Config: display correct form view on clicking products.
 
 ## [5.2.6] - 2020-03-13
 ## Improvements
