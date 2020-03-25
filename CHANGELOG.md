@@ -36,6 +36,7 @@
 - MRP FAMILY : Fix wrong case in views title
 - INVOICELINE : Fix account not filtered depending on fixedAssets boolean
 - CONTACT: fix for Main Company not set for Contact from Partner
+- Account Config: display correct form view on clicking products.
 
 ## [5.3.1] - 2020-03-16
 ## Improvements
