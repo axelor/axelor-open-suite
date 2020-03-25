@@ -45,6 +45,7 @@
 - Product : prevent the updation of salePrice if autoUpdateSalePrice = false.
 - Logistical Form : Fix NPE when computing volume
 - WORK CENTER : Fix machine not set to null for a human type work center
+- MOVE TEMPLATE : Move templates without an end of validity date are now appearing in wizard
 
 ## [5.3.1] - 2020-03-16
 ## Improvements
