@@ -5,9 +5,20 @@
 - PARTNER : add url widget for website.
 - MrpFamily : make 'name' required field.
 - LEAD : new design for view form
+- TARGET CONFIGURATION : end off date must now be superior to start date
+- TAX LINE : run off date must now be superior to start date
 - OPPORTUNITY : removed help in buttons from form view
 - DURATION : changed title and translation from typeSelect
 - SaleOrder : Add filter on invoice selected lines when operation choice = invoice selected lines
+- ACCOUNTING REPORT: improved bank statement report.
+- Product : set sequence while creating duplicate.
+- ORDER LINE : freeze fields translation
+- ORDER/STOCK : ISPM15 translation
+- FORECAST RECAP : translation for Forecast Recap line Type(s).
+- MARKETING : Fix for setting end date after start date.
+- changes for messy convert-lead-wizard-form
+- Target Configuration : improve naming & translation
+- Target : improve naming & translation
 
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
@@ -19,6 +30,21 @@
 - STOCK CORRECTION: Add missing translations.
 - LEAD: Fix form-view of primaryCity.
 - EXCEPTION ORIGIN: Split selection values per module.
+- PURCHASE REQUEST : Fix new product name not showing on line grid view
+- INVENTORY: add missing translations.
+- SALEORDER : Fixed NPE when trying to select a customer with a company with no linked partner
+- BANK RECONCILIATION : corrected error with bank statement load where no other statement was loaded.
+- LEAD : Fix action doesnot exist on LEAD convert.
+- MOVE TEMPLATE : Add missing translation
+- STOCK LOCATION : Add missing translation
+- MRP FAMILY : Fix wrong case in views title
+- INVOICELINE : Fix account not filtered depending on fixedAssets boolean
+- CONTACT: fix for Main Company not set for Contact from Partner
+- Account Config: display correct form view on clicking products.
+- Stock Move invoicing: Fix NPE on opening invoicing wizard when a line has no product.
+- Product : prevent the updation of salePrice if autoUpdateSalePrice = false.
+- Logistical Form : Fix NPE when computing volume
+- WORK CENTER : Fix machine not set to null for a human type work center
 - MOVE TEMPLATE : Move templates without an end of validity date are now appearing in wizard
 
 ## [5.3.1] - 2020-03-16
