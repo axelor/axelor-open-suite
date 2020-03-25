@@ -36,6 +36,7 @@
 - MRP FAMILY : Fix wrong case in views title
 - INVOICELINE : Fix account not filtered depending on fixedAssets boolean
 - CONTACT: fix for Main Company not set for Contact from Partner
+- Product : prevent the updation of salePrice if autoUpdateSalePrice = false.
 
 ## [5.3.1] - 2020-03-16
 ## Improvements
