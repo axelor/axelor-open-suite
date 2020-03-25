@@ -858,6 +858,7 @@
 "Timesheet.fromDate",,,
 "Timesheet.task",,,
 "Timesheet.timesheetOf",,,
+"Timesheet.toDate",,,
 "Timesheet.totalDuration",,,
 "TimesheetLine.duration",,,
 "TimesheetLine.product",,,
