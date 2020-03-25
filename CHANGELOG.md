@@ -2,6 +2,7 @@
 ## [Unreleased 5.1.16]
 ## Improvements
 ## Bug Fixes
+- Account Config: display correct form view on clicking products.
 
 ## [5.1.15] - 2020-03-23
 ## Improvements
