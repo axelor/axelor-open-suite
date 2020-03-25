@@ -1932,6 +1932,7 @@
 "Validate Debt Recovery",,,
 "Validate account clearances",,,
 "Validate automatically fixed assets generated from invoice",,,
+"Validate automatically the generated moves",,,
 "Validate payment by deposit slip publication",,,
 "Validate reject",,,
 "Validate selected invoices",,,

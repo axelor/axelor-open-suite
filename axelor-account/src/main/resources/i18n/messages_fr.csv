@@ -1932,6 +1932,7 @@
 "Validate Debt Recovery","Valider le recouvrement",,
 "Validate account clearances","Valider l'apurement des comptes",,
 "Validate automatically fixed assets generated from invoice","Validation automatique des immobilisations générées depuis les factures",,
+"Validate automatically the generated moves","Validation automatique des écritures générées",,
 "Validate payment by deposit slip publication","Valider le paiement par l’édition du bordereau",,
 "Validate reject","Valider le rejet",,
 "Validate selected invoices","Valider factures sélectionnées",,

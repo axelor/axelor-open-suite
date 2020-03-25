@@ -18,9 +18,10 @@
 		    <field name="code" x-bind="{{code|unaccent|uppercase}}" required="true" colSpan="3"/>
 		    <field name="company" canEdit="false" readonlyIf="journal" colSpan="3" canNew="false" form-view="company-form" grid-view="company-grid"/>
 		    <field name="journal" canEdit="false" readonlyIf="moveTemplateLineList.length > 0" onSelect="action-move-template-set-journal-domain" grid-view="journal-grid" form-view="journal-form" required="true"/>
-   		    <field name="moveTemplateType" canEdit="false" readonlyIf="moveTemplateLineList.length > 0" required="true" grid-view="move-template-type-grid" form-view="move-template-type-form"/>
-   		    <field name="moveTemplateType.typeSelect"/>
-   		    <field name="endOfValidityDate"/>
+				<field name="moveTemplateType" canEdit="false" readonlyIf="moveTemplateLineList.length > 0" required="true" grid-view="move-template-type-grid" form-view="move-template-type-form" colSpan="3"/>
+				<field name="moveTemplateType.typeSelect" colSpan="3"/>
+				<field name="endOfValidityDate"/>
+				<field name="automaticallyValidate"/>
 	 	</panel>
     	<panel-related name="moveTemplateLineListPanel" field="moveTemplateLineList" colSpan="12" form-view="move-template-line-in-amount-form" grid-view="move-template-line-in-amount-grid" onChange="action-move-template-method-set-is-valid" showIf="moveTemplateType.typeSelect == 2" hidden="true"/>
     	<panel-related name="moveTemplateLineListPanel" field="moveTemplateLineList" colSpan="12" form-view="move-template-line-in-percentage-form" grid-view="move-template-line-in-percentage-grid" onChange="action-move-template-method-set-is-valid" showIf="moveTemplateType.typeSelect == 1" hidden="true"/>
@@ -118,7 +119,5 @@
 		<field name="moveTemplate" expr="eval:__repo__(MoveTemplate).find(_parent.moveTemplate.id)" />
 		<field name="partnerInputSelect" expr="eval:__repo__(MoveTemplate).find(_parent.moveTemplate.id).partnerInputSelect"/>
 	</action-record>
-	
-    
     
 </object-views>
