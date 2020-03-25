@@ -43,6 +43,7 @@
 - Account Config: display correct form view on clicking products.
 - Stock Move invoicing: Fix NPE on opening invoicing wizard when a line has no product.
 - Product : prevent the updation of salePrice if autoUpdateSalePrice = false.
+- Logistial Form : Fix NPE when computing volume
 
 ## [5.3.1] - 2020-03-16
 ## Improvements
@@ -100,7 +101,6 @@
 - TEAM TASK: Fixed issue on copying line from project view.
 - INVOICE: Fix quantity and discount not displayed on printing.
 - SALE ORDER: Fix unit code not displayed on printing.
-
 
 ## [5.3.0] - 2020-02-25
 ## Features
