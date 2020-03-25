@@ -5,6 +5,7 @@
 - CLIENT-PORTAL : Chart now only shows invoices corresponding the client partner.
 - ACCOUNTING REPORT: improved bank statement report.
 - Fixed asset : add EU and US prorata temporis.
+- Accounting Report : add the possibility to filter the ledger report with only not completely lettered move lines. 
 
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
