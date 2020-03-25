@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">Data Cube.MoveLineDS.x</property>
@@ -422,11 +422,18 @@ end as taxDebit
 FROM public.account_accounting_report as AccountingReport 
 CROSS JOIN public.account_move_line as MoveLine
 LEFT JOIN public.account_account as Account on (MoveLine.account = Account.id)
+left outer join public.account_account as ParentAccount on (Account.parent_account  = ParentAccount.id )
+left outer join public.account_account as ParentAccount2 on (ParentAccount.parent_account  = ParentAccount2.id )
+left outer join public.account_account as ParentAccount3 on (ParentAccount2.parent_account  = ParentAccount3.id )
+left outer join public.account_account as ParentAccount4 on (ParentAccount3.parent_account  = ParentAccount4.id )
+left outer join public.account_account as ParentAccount5 on (ParentAccount4.parent_account  = ParentAccount5.id )
+left outer join public.account_account as ParentAccount6 on (ParentAccount5.parent_account  = ParentAccount6.id )
 LEFT JOIN public.account_account_type as AccountType on (Account.account_type = AccountType.id)
 LEFT JOIN public.account_move as Move on (MoveLine.move = Move.id)
 LEFT JOIN public.account_tax_payment_move_line as TaxPaymentMoveLine on (MoveLine.id = TaxPaymentMoveLine.move_line)
 LEFT JOIN public.account_tax_line as TaxLine on (TaxPaymentMoveLine.origin_tax_line = TaxLine.id) 
 LEFT JOIN public.account_tax as Tax on (TaxLine.tax = Tax.id)
+left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
 WHERE AccountingReport.id = ?
 AND  Move.ignore_in_accounting_ok = false 
 AND (Move.status_select = 3 OR Move.status_select = 2)
@@ -441,6 +448,10 @@ AND (AccountingReport.display_opening_accounting_moves is true
 	OR(AccountingReport.display_opening_accounting_moves is false
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
 AND AccountingReport.company = Move.company
+AND (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id or AccountSet.account_set = ParentAccount.id 
+    or AccountSet.account_set = ParentAccount2.id or AccountSet.account_set = ParentAccount3.id
+    or AccountSet.account_set = ParentAccount4.id or AccountSet.account_set = ParentAccount5.id 
+    or AccountSet.account_set = ParentAccount6.id or AccountSet.account_set = ParentAccount6.parent_account)
 order by MoveLine.date_val ASC, MoveLine.name ASC]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
@@ -828,11 +839,18 @@ end) as taxDebit
 FROM public.account_accounting_report as AccountingReport 
 CROSS JOIN public.account_move_line as MoveLine
 LEFT JOIN public.account_account as Account on (MoveLine.account = Account.id)
+left outer join public.account_account as ParentAccount on (Account.parent_account  = ParentAccount.id )
+left outer join public.account_account as ParentAccount2 on (ParentAccount.parent_account  = ParentAccount2.id )
+left outer join public.account_account as ParentAccount3 on (ParentAccount2.parent_account  = ParentAccount3.id )
+left outer join public.account_account as ParentAccount4 on (ParentAccount3.parent_account  = ParentAccount4.id )
+left outer join public.account_account as ParentAccount5 on (ParentAccount4.parent_account  = ParentAccount5.id )
+left outer join public.account_account as ParentAccount6 on (ParentAccount5.parent_account  = ParentAccount6.id )
 LEFT JOIN public.account_account_type as AccountType on (Account.account_type = AccountType.id)
 LEFT JOIN public.account_move as Move on (MoveLine.move = Move.id)
 LEFT JOIN public.account_tax_payment_move_line as TaxPaymentMoveLine on (MoveLine.id = TaxPaymentMoveLine.move_line)
 LEFT JOIN public.account_tax_line as TaxLine on (TaxPaymentMoveLine.origin_tax_line = TaxLine.id) 
 LEFT JOIN public.account_tax as Tax on (TaxLine.tax = Tax.id)
+left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
 WHERE AccountingReport.id = ?
 AND  Move.ignore_in_accounting_ok = false 
 AND (Move.status_select = 3 OR Move.status_select = 2)
@@ -847,6 +865,10 @@ AND (AccountingReport.display_opening_accounting_moves is true
 	OR(AccountingReport.display_opening_accounting_moves is false
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
 AND AccountingReport.company = Move.company
+AND (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id or AccountSet.account_set = ParentAccount.id 
+    or AccountSet.account_set = ParentAccount2.id or AccountSet.account_set = ParentAccount3.id
+    or AccountSet.account_set = ParentAccount4.id or AccountSet.account_set = ParentAccount5.id 
+    or AccountSet.account_set = ParentAccount6.id or AccountSet.account_set = ParentAccount6.parent_account)
 GROUP BY Tax.id ,TaxPaymentMoveLine.tax_rate
 order by Tax.code ASC]]></xml-property>
         </oda-data-set>

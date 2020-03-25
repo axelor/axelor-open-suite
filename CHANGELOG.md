@@ -14,6 +14,8 @@
 - MANUF ORDER : fix missing form and grid view attributes for workshopStockLocation.
 - Stock Move Line : Do not allow user to remove allocated stock move line.
 - ACCOUNTING REPORT : add account filter to summary and gross value report.
+- Accounting report : add account filter on all possible report.
+- Accounting report : add analytic account filter on analytic reports.
 
 ## Bug Fixes
 - Fix Timesheet Reminder Batch sendReminder method

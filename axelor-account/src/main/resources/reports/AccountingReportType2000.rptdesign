@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -131,7 +131,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-open-suite</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -351,14 +351,15 @@ from public.account_accounting_report as AccountingReport
 left outer join public.account_analytic_move_line as AnalyticMoveLine on (AccountingReport.id = ?) 
 left outer join public.account_move_line as MoveLine on (AnalyticMoveLine.move_line = MoveLine.id)
 left outer join public.account_move as Move on (MoveLine.move = Move.id)
+left outer join public.account_account as Account on MoveLine.account  = Account.id 
 left outer join public.account_analytic_account as AnalyticAccount on (AnalyticMoveLine.analytic_account  = AnalyticAccount.id )
 left outer join public.account_analytic_axis as AnalyticAxis on (AnalyticMoveLine.analytic_axis = AnalyticAxis.id ) 
 left outer join public.account_analytic_journal as AnalyticJournal on (AnalyticMoveLine.analytic_journal = AnalyticJournal.id ) 
 left outer join public.account_account_type as AccountType on (AnalyticMoveLine.account_type  = AccountType.id )
+left outer join public.base_company as Company on (AccountingReport.company = Company.id)
 
-
-left outer join public.base_company as Company on (AccountingReport.company = Company.id) 
-
+left join public.account_accounting_report_account_set as AccountSet on AccountSet.account_accounting_report = AccountingReport.id
+left join public.account_accounting_report_analytic_account_set as AnalyticAccountSet on AnalyticAccountSet.account_accounting_report = AccountingReport.id
 where
 (Move.company_currency = AccountingReport.currency) AND
 (AccountingReport.journal IS NULL OR AccountingReport.journal  = Move.journal) AND
@@ -370,7 +371,8 @@ AND (AccountingReport.analytic_journal IS NULL OR AccountingReport.analytic_jour
 AND AnalyticMoveLine.type_select = 3
 AND  Move.ignore_in_accounting_ok = false 
 AND (Move.status_select = 3 OR Move.status_select = 2)
-
+AND(AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
+AND(AnalyticAccountSet.analytic_account_set IS NULL OR AnalyticAccountSet.analytic_account_set = AnalyticAccount.id)
 group by AnalyticJournal.id, AnalyticAxis.id, AnalyticAccount.id, AccountType.id 
 order by AnalyticJournal.name, AnalyticAxis.code, AnalyticAccount.code, AccountType.id]]></xml-property>
         </oda-data-set>

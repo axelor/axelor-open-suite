@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -413,7 +413,14 @@ FROM public.account_accounting_report as AccountingReport
 LEFT JOIN public.account_fixed_asset AS Asset ON (AccountingReport.id = ?)   
 LEFT JOIN public.account_fixed_asset_category AS Category ON Asset.fixed_asset_category = Category.id
 LEFT JOIN public.account_fixed_asset_type AS Type ON Category.fixed_asset_type = Type.id
-LEFT JOIN public.account_account AS Account ON Asset.purchase_account = Account.id 
+LEFT JOIN public.account_account AS Account ON Asset.purchase_account = Account.id
+left outer join public.account_account as ParentAccount on (Account.parent_account  = ParentAccount.id )
+left outer join public.account_account as ParentAccount2 on (ParentAccount.parent_account  = ParentAccount2.id )
+left outer join public.account_account as ParentAccount3 on (ParentAccount2.parent_account  = ParentAccount3.id )
+left outer join public.account_account as ParentAccount4 on (ParentAccount3.parent_account  = ParentAccount4.id )
+left outer join public.account_account as ParentAccount5 on (ParentAccount4.parent_account  = ParentAccount5.id )
+left outer join public.account_account as ParentAccount6 on (ParentAccount5.parent_account  = ParentAccount6.id )
+left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
 WHERE Asset.status_select in (2,3) 
 AND (AccountingReport.date_from IS NULL OR Asset.acquisition_date >= AccountingReport.date_from) 
 AND (AccountingReport.date_to IS NULL OR Asset.acquisition_date <= AccountingReport.date_to)
@@ -439,6 +446,10 @@ LEFT JOIN account_fixed_asset AS Asset ON Asset.invoice_line = InvoiceLine.id
 WHERE InvoiceLine.fixed_assets = true AND Asset.invoice_line IS NULL AND Invoice.company = AccountingReport.company 
 AND (AccountingReport.date_from IS NULL OR Invoice.invoice_date >= AccountingReport.date_from) 
 AND (AccountingReport.date_to IS NULL OR Invoice.invoice_date <= AccountingReport.date_to))
+AND (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id or AccountSet.account_set = ParentAccount.id 
+    or AccountSet.account_set = ParentAccount2.id or AccountSet.account_set = ParentAccount3.id
+    or AccountSet.account_set = ParentAccount4.id or AccountSet.account_set = ParentAccount5.id 
+    or AccountSet.account_set = ParentAccount6.id or AccountSet.account_set = ParentAccount6.parent_account)
 ORDER BY type]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="4345">

@@ -25,7 +25,7 @@
     <boolean name="global" title="Global" default="false"/>
     <boolean name="globalByPartner" title="Subtotal by partner" default="false"/>
     <boolean name="globalByDate" title="Subtotal by date" default="false"/>
-    <many-to-one name="analyticJournal" ref="com.axelor.apps.account.db.AnalyticJournal" title="Analytic Journal"/>
+    
     
     <boolean name="detailed" title="Detailed" default="false"/>
     <integer name="statusSelect" title="Status" selection="iaccount.accounting.report.status.select" readonly="true" default="1"/>
@@ -48,7 +48,10 @@
     <boolean name="displayNameAccountColumnOnPrinting" title="Display column with accounting name"/>
     <boolean name="displayMoveLineSequenceOnPrinting" title="Display moveline sequence"/>
     
+    <!-- Report 2000 and 2001: analytic -->
+    <many-to-one name="analyticJournal" ref="com.axelor.apps.account.db.AnalyticJournal" title="Analytic Journal"/>
     <many-to-one name="analyticDistributionTemplate" ref="com.axelor.apps.account.db.AnalyticDistributionTemplate" title="Analytic Distribution Template"/>
+    <many-to-many name="anlalyticAccountSet" ref="AnalyticAccount" title="Analytic Accounts"/> 
     
     <boolean name="subtotalByAnalyticDistribution" title="Subtotal by analytic distribution"/>
 

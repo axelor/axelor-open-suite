@@ -131,7 +131,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor_business_suite</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -473,6 +473,10 @@ left outer join public.account_account_type as AccountType on (AnalyticMoveLine.
 
 left outer join public.base_company as Company on (AccountingReport.company = Company.id) 
 
+left outer join public.account_account as Account on MoveLine.account  = Account.id 
+left join public.account_accounting_report_account_set as AccountSet on AccountSet.account_accounting_report = AccountingReport.id
+left join public.account_accounting_report_analytic_account_set as AnalyticAccountSet on AnalyticAccountSet.account_accounting_report = AccountingReport.id
+
 where
 (Move.company_currency = AccountingReport.currency) AND
 (AccountingReport.journal IS NULL OR AccountingReport.journal  = Move.journal) AND
@@ -484,6 +488,8 @@ AND (AccountingReport.analytic_journal IS NULL OR AccountingReport.analytic_jour
 AND AnalyticMoveLine.type_select = 3
 AND  Move.ignore_in_accounting_ok = false 
 AND (Move.status_select = 3 OR Move.status_select = 2)
+AND(AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
+AND(AnalyticAccountSet.analytic_account_set IS NULL OR AnalyticAccountSet.analytic_account_set = AnalyticAccount.id)
 order by AnalyticJournal.name, AnalyticAxis.code, AnalyticAccount.code, AccountType.id]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
