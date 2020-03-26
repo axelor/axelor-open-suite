@@ -15,7 +15,7 @@
 <!-- Opportunity -->
     <decimal name="opportunityAmountWon" title="Amount Won"/>
     <integer name="opportunityCreatedNumber" title="Created Nbr"/>
-    <integer name="opportunityCreatedWon" title="Created Won"/>
+    <integer name="opportunityCreatedWon" title="Closed Won"/>
     
 <!-- Sales order -->
 <!-- 	<decimal name="saleOrderAmountWon" title="Amount won"/> -->

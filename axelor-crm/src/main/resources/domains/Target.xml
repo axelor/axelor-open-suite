@@ -18,7 +18,7 @@
     <integer name="opportunityCreatedWon" title="Created Won" readonly="true"/>
     <decimal name="opportunityAmountWonTarget" title="Amount Won"/>
     <integer name="opportunityCreatedNumberTarget" title="Created Nbr."/>
-    <integer name="opportunityCreatedWonTarget" title="Created Won"/>
+    <integer name="opportunityCreatedWonTarget" title="Closed Won"/>
     
 <!-- Sales order -->
 <!-- 	<decimal name="saleOrderAmountWon" title="Amount won"/> -->
