@@ -50,6 +50,7 @@
 - Fix a french word in an english message file.
 - Fixed asset : corrected calculation of amortization.
 - Production Order: fix typo in french translation.
+- Accounting Situation: fix computation of balance due debt recovery.
 
 
 ## [5.3.1] - 2020-03-16
