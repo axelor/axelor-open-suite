@@ -25,6 +25,7 @@
 - Fixed asset : corrected calculation of amortization.
 - Product : prevent the updation of salePrice if autoUpdateSalePrice = false. 
 - Fix a french word in an english message file.
+- Production Order: fix typo in french translation.
 
 ## [5.2.6] - 2020-03-13
 ## Improvements
