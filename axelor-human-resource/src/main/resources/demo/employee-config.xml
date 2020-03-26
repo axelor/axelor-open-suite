@@ -24,12 +24,11 @@
 	<input file="hr_kilometricAllowanceRule.csv" type="com.axelor.apps.hr.db.KilometricAllowanceRule" separator=";"/>
 	
 	<input file="hr_employee.csv" separator=";" type="com.axelor.apps.hr.db.Employee" search="self.importId  = :importId"/>
-
+	
+	<input file="hr_contract.csv" separator=";" type="com.axelor.apps.hr.db.EmploymentContract" search="self.importId = :importId"/>
+	
 	<input file="hr_employee.csv" separator=";" type="com.axelor.apps.hr.db.Employee" search="self.importId  = :importId" update="true">
-		<bind to="mainEmploymentContract">
-			<bind to="payCompany" search="self.name = 'Axelor'" update="true"/>
-			<bind to="companyDepartment" eval="com.axelor.inject.Beans.get(com.axelor.apps.base.db.repo.CompanyDepartmentRepository.class).all().filter(&quot;self.company.name = 'Axelor'&quot;).fetchOne((int)(java.lang.Math.random()*com.axelor.inject.Beans.get(com.axelor.apps.base.db.repo.CompanyDepartmentRepository.class).all().filter(&quot;self.company.name = 'Axelor'&quot;).fetch().size()))"/>
-		</bind>
+		<bind to="mainEmploymentContract" search="self.importId = :importId"/>
 	</input>
  	
  	<input file="auth_user.csv" separator=";" search="self.importId = :importId" type="com.axelor.auth.db.User" update="true" />
