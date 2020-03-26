@@ -29,10 +29,8 @@
 - PURCHASE ORDER REPORT: Fixed value of payment condition from PurchaseOrder's payment condition instead of using partner.
 - STUDIO : Set Large option as default value for the 'Form Width' in demo data
 - Workflow : Add support to select real status fields.
-- QUALITY CONTROL : update the quality control report.
+- QUALITY CONTROL : update the qualitycontrol report.
 - INVOICE LINE : add grid view and form view of budgetDistributionListPanel in form.
-- Target Configuration : improve naming & translation
-- Target : improve naming & translation
 
 ## Bug Fixes
 - SALEORDER : fixed bug causing the margins to be rounded to the unit
