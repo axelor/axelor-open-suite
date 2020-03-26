@@ -8,6 +8,7 @@
 - Move template : Add journal field to wizard
 - Move template : Add new field description
 - HR : Added a leave line configuration menu in leave management
+- Move Template : Add totals for amount type
 
 ## Improvements
 - USER : Default User language is based on application.locale from application.properties
