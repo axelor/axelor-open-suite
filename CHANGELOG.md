@@ -5,6 +5,7 @@
 - CLIENT-PORTAL : Chart now only shows invoices corresponding the client partner.
 - ACCOUNTING REPORT: improved bank statement report.
 - Fixed asset : add EU and US prorata temporis.
+- TRADING NAME : Fill default company printing settings if trade name printing setttings is not there in company.
 
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
