@@ -243,6 +243,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">amount_remaining</property>
+                    <property name="analysis">measure</property>
                     <text-property name="displayName">amount_remaining</text-property>
                     <text-property name="heading">amount_remaining</text-property>
                 </structure>
@@ -495,6 +496,7 @@ AND (AccountingReport.display_closing_accounting_moves is true
 AND (AccountingReport.display_opening_accounting_moves is true 
 	OR(AccountingReport.display_opening_accounting_moves is false 
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
+AND ((MoveLine.amount_remaining > 0 AND AccountingReport.display_only_not_completely_lettered_move_lines) OR not ccountingReport.display_only_not_completely_lettered_move_lines)
 order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
@@ -1973,13 +1975,6 @@ else{
                             </structure>
                         </list-property>
                         <property name="pageBreakInterval">0</property>
-                        <list-property name="filter">
-                            <structure>
-                                <property name="operator">is-true</property>
-                                <expression name="expr" type="javascript">(row["amount_remaining"] > 0 &amp;&amp; row._outer["display_only_not_completely_lettered_move_lines"]) || !row._outer["display_only_not_completely_lettered_move_lines"]</expression>
-                                <property name="updateAggregation">true</property>
-                            </structure>
-                        </list-property>
                         <column id="4147">
                             <property name="width">2%</property>
                         </column>
