@@ -497,5 +497,9 @@
         <option value="0">Standard</option>
         <option value="1">Title</option>
     </selection>
+    
+    <selection name='trace.back.origin.select' id="trace.back.origin.select.base" >
+    	<option value="import">Importing</option>
+    </selection>
 
 </object-views>

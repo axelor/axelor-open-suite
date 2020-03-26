@@ -6,7 +6,7 @@
 	<form name="incl-invoice-payment-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" onLoad="action-partner-attrs-show-specific-tax-note">
 	    <panel name="mainPanel" colSpan="12">
 	    	<field name="invoiceSendingFormatSelect" hideIf="isEmployee"/>
-	        <field name="invoicesCopySelect" hideIf="!isCustomer || isEmployee"/>
+	        <field name="invoicesCopySelect" hideIf="(!isCustomer &amp;&amp; !isSupplier) || isEmployee"/>
 	        <field name="inPaymentMode" canEdit="false" grid-view="payment-mode-grid" form-view="payment-mode-form" domain="self.inOutSelect = 1"/>
 	        <field name="outPaymentMode" canEdit="false" grid-view="payment-mode-grid" form-view="payment-mode-form" domain="self.inOutSelect = 2"/>
 	        <field name="paymentCondition" canEdit="false" grid-view="payment-condition-grid" form-view="payment-condition-form" hideIf="isEmployee"/>
