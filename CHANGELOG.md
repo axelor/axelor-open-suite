@@ -49,6 +49,7 @@
 - MOVE TEMPLATE : Move templates without an end of validity date are now appearing in wizard
 - Fix a french word in an english message file.
 - Fixed asset : corrected calculation of amortization.
+- BPM : Remove default separator field when create new workflow for custom object.
 
 
 ## [5.3.1] - 2020-03-16
