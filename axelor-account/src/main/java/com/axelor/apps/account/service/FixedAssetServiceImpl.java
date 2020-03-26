@@ -33,6 +33,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.ThrowConsumer;
 import com.axelor.apps.tool.date.DateTool;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -447,59 +448,16 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   }
 
   @Override
-  public Pair<Integer, Integer> massValidation(Collection<? extends Number> fixedAssetIds) {
-    return massProcess(fixedAssetIds, this::validate, FixedAssetRepository.STATUS_DRAFT);
-  }
-
-  protected Pair<Integer, Integer> massProcess(
-      Collection<? extends Number> fixedAssetIds,
-      ThrowConsumer<FixedAsset> consumer,
-      int statusSelect) {
-    IntCounter doneCounter = new IntCounter();
-
-    int errorCount =
-        ModelTool.apply(
-            FixedAsset.class,
-            fixedAssetIds,
-            new ThrowConsumer<FixedAsset>() {
-              @Override
-              public void accept(FixedAsset fixedAsset) throws Exception {
-                if (fixedAsset.getStatusSelect() == statusSelect) {
-                  consumer.accept(fixedAsset);
-                  doneCounter.increment();
-                }
-              }
-            });
-
-    return Pair.of(doneCounter.intValue(), errorCount);
-  }
-
-  private static class IntCounter extends Number {
-    private static final long serialVersionUID = -5434353935712805399L;
-    private int count = 0;
-
-    public void increment() {
-      ++count;
-    }
-
-    @Override
-    public int intValue() {
-      return count;
-    }
-
-    @Override
-    public long longValue() {
-      return Long.valueOf(count);
-    }
-
-    @Override
-    public float floatValue() {
-      return Float.valueOf(count);
-    }
-
-    @Override
-    public double doubleValue() {
-      return Double.valueOf(count);
-    }
+  public int massValidation(List<Long> fixedAssetIds) {
+	  int count = 0;
+	  for(Long id : fixedAssetIds) {
+		  FixedAsset fixedAsset = fixedAssetRepo.find(id);
+		  if (fixedAsset.getStatusSelect() == FixedAssetRepository.STATUS_DRAFT) {
+			  validate(fixedAsset);
+			  JPA.clear();
+			  count ++;
+		  }
+	  }
+    return count;
   }
 }

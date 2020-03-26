@@ -34,6 +34,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.tuple.Pair;
 
 @Singleton
@@ -99,59 +101,26 @@ public class FixedAssetController {
       TraceBackService.trace(response, e);
     }
   }
-
+  @SuppressWarnings("unchecked")
   public void massValidation(ActionRequest request, ActionResponse response) {
     try {
-      Function<Collection<? extends Number>, Pair<Integer, Integer>> function =
-          Beans.get(FixedAssetService.class)::massValidation;
-      massProcess(request, response, function);
+    	if (!ObjectUtils.isEmpty(request.getContext().get("_ids"))) {
+            List<Long> ids =
+                (List)
+                    (((List) request.getContext().get("_ids"))
+                        .stream()
+                            .filter(ObjectUtils::notEmpty)
+                            .map(input -> Long.parseLong(input.toString()))
+                            .collect(Collectors.toList()));
+    	int validatedFixedAssets = Beans.get(FixedAssetService.class).massValidation(ids);
+    	    response.setFlash( validatedFixedAssets + " " + I18n.get("fixed asset validated", "fixed assets validated",validatedFixedAssets));
+    		response.setReload(true);
+    	}
+    	else {
+    		response.setFlash(I18n.get("Please select something to validate"));
+    	}
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-  }
-
-  private void massProcess(
-      ActionRequest request,
-      ActionResponse response,
-      Function<Collection<? extends Number>, Pair<Integer, Integer>> function) {
-
-    try {
-      @SuppressWarnings("unchecked")
-      List<Number> ids = (List<Number>) request.getContext().get("_ids");
-
-      if (ObjectUtils.isEmpty(ids)) {
-        response.setError(com.axelor.apps.base.exceptions.IExceptionMessage.RECORD_NONE_SELECTED);
-        return;
-      }
-
-      Pair<Integer, Integer> massCount = function.apply(ids);
-
-      String message = buildMassMessage(massCount.getLeft(), massCount.getRight());
-      response.setFlash(message);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    } finally {
-      response.setReload(true);
-    }
-  }
-
-  private String buildMassMessage(int doneCount, int errorCount) {
-    StringBuilder sb = new StringBuilder();
-    sb.append(
-        String.format(
-            I18n.get(
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_DONE_SINGULAR,
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_DONE_PLURAL,
-                doneCount),
-            doneCount));
-    sb.append(" ");
-    sb.append(
-        String.format(
-            I18n.get(
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL,
-                errorCount),
-            errorCount));
-    return sb.toString();
   }
 }

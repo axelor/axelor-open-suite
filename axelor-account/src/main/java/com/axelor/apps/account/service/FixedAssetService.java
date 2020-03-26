@@ -66,5 +66,5 @@ public interface FixedAssetService {
 
   public void validate(FixedAsset fixedAsset);
 
-  public Pair<Integer, Integer> massValidation(Collection<? extends Number> fixedAssetIds);
+  public int massValidation(List<Long> fixedAssetIds);
 }
