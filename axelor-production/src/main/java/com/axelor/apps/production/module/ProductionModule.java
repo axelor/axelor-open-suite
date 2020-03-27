@@ -33,6 +33,7 @@ import com.axelor.apps.production.db.repo.ProductionBatchRepository;
 import com.axelor.apps.production.db.repo.RawMaterialRequirementProductionRepository;
 import com.axelor.apps.production.db.repo.RawMaterialRequirementRepository;
 import com.axelor.apps.production.db.repo.StockMoveLineProductionRepository;
+import com.axelor.apps.production.db.repo.StockMoveProductionRepository;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
 import com.axelor.apps.production.service.MrpLineServiceProductionImpl;
@@ -75,6 +76,7 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.apps.stock.db.repo.ProductStockRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineStockRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.supplychain.db.repo.StockMoveSupplychainRepository;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
 import com.axelor.apps.supplychain.service.MrpServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderWorkflowServiceSupplychainImpl;
@@ -120,5 +122,6 @@ public class ProductionModule extends AxelorModule {
     bind(ProductStockRepository.class).to(ProductProductionRepository.class);
     bind(ConfiguratorCreatorImportServiceImpl.class)
         .to(ConfiguratorCreatorImportServiceProductionImpl.class);
+    bind(StockMoveSupplychainRepository.class).to(StockMoveProductionRepository.class);
   }
 }
