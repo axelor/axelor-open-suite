@@ -2,8 +2,33 @@
 
 ## [Unreleased 5.2.7]
 ## Improvements
+- CLIENT-PORTAL : Chart now only shows invoices corresponding the client partner.
+- ACCOUNTING REPORT: improved bank statement report.
+- Fixed asset : add EU and US prorata temporis.
+- TRADING NAME : Fill default company printing settings if trade name printing setttings is not there in company.
+
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
+- SALE CONFIG : Fixed "Action not allowed" error when we try to update customer's accepted credit.
+- TIMESHEET : Fix auto-generation of leave days not generating the first day
+- CLIENT-PORTAL : fixed the NPE when the user does not correspond to any partner.
+- Partner : Invoice copy number selection field display when the partner is a supplier.
+- EXCEPTION ORIGIN: Split selection values per module.
+- SALEORDER : Fixed NPE when trying to select a customer with a company with no linked partner
+- INVENTORY: Add missing translations.
+- MANUF ORDER: add missing translation
+- STOCK CORRECTION: Add missing translations.
+- BANK RECONCILIATION : corrected error with bank statement load where no other statement was loaded.
+- LEAD : Fix action doesnot exist on LEAD convert.
+- STOCK LOCATION : Add missing translation
+- Account Config: display correct form view on clicking products.
+- Stock Move invoicing: Fix NPE on opening invoicing wizard when a line has no product.
+- Fixed asset : corrected calculation of amortization.
+- Product : prevent the updation of salePrice if autoUpdateSalePrice = false. 
+- Fix a french word in an english message file.
+- Production Order: fix typo in french translation.
+- Accounting Situation: fix computation of balance due debt recovery.
+- Stock Move: empty all references to orders and invoices on copy.
 - MANUFACTURING ORDER : On consumed product, no longer display tracking numbers if available quantity equals 0.
 
 ## [5.2.6] - 2020-03-13
@@ -25,7 +50,7 @@
 - Ebics user: Display associated user in list view.
 - MESSAGE TEMPLATE: New possibility to add an email signature from a user directly or an email account with a formula.
 - EBICSPARTNER: mass update on testMode field.
-
+ 
 ## Bug Fixes
 - INVOICE LINE: add grid view and form view of budgetDistributionListPanel to form.
 - MANUF ORDER: fix missing form and grid view attributes for workshopStockLocation.
@@ -206,6 +231,7 @@ In this case, the file is correctly retrieved from the bank server, but not save
 - STOCK MOVE: Add default supplier partner in mrp line grid.
 - STOCK MOVE: Maximized pop up of projected stock and counter.
 - STOCK MOVE: store invoicing status in database.
+
 
 ## Bug Fixes
 - Ebics User: resolve error getting on export and modify import config and export template to include BankOrderList and BankStatementList of EbicsPartner.
