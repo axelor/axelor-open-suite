@@ -80,15 +80,14 @@
     		<panel name="productInfoPanel" colSpan="10" >
       
       			<panel name="productTypologyPanel" title="Product typology" colSpan="6" colWidths="30%,70%">
-			        <field name="productTypeSelect" colSpan="12" onChange="action-group-base-product-producttype-onchange" selection-in="['service','storable','pack']" if="__config__.app.getApp('sale')?.getProductPackMgt()"/>
-			        <field name="productTypeSelect" colSpan="12" onChange="action-group-base-product-producttype-onchange" selection-in="['service','storable']" if="!(__config__.app.getApp('sale')?.getProductPackMgt())"/>
+			        <field name="productTypeSelect" colSpan="12" onChange="action-group-base-product-producttype-onchange" />
 			        <field name="productSubTypeSelect" colSpan="12"  showIf="productTypeSelect == 'storable'" if="__config__.app.isApp('production')" onChange="action-product-record-product-sub-type-select-onchange"/>
                     <field name="isShippingCostsProduct" colSpan="4" hideIf="productTypeSelect != 'storable' || productSubTypeSelect || _fromProduction || _fromStock || _fromSale || _fromPurchase"/>
 			        <field name="isActivity" showIf="productTypeSelect == 'service' &amp;&amp; !isShippingCostsProduct" if-module="axelor-human-resource" if="__config__.app.isApp('employee')" />
                     <field name="procurementMethodSelect" colSpan="6"
                         requiredIf="productTypeSelect == 'storable'"
                         onChange="action-product-record-tick-checkbox-purchasable" hideIf="isShippingCostsProduct" readonlyIf="productSubTypeSelect == 3"/>
-			        <field name="standardDelay" colSpan="12" hideIf="productTypeSelect =='pack'" showIf="saleSupplySelect == 2 || saleSupplySelect == 3" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+			        <field name="standardDelay" colSpan="12" showIf="saleSupplySelect == 2 || saleSupplySelect == 3" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
       			</panel>
 		      	<panel name="categorizationPanel" title="Categorization" colSpan="6" colWidths="30%,70%">
 		        	<field name="productFamily" canEdit="false"  colSpan="12" form-view="product-family-form" grid-view="product-family-grid"/>
@@ -105,11 +104,7 @@
     		</panel>
   		</panel>
   		<panel-tabs name="productSpecificAttributes" title="Product specific attributes">
-  			<panel name="packLinesPanel" title="Pack Lines" showIf="productTypeSelect=='pack'" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()">
-  				<field name="packPriceSelect"/>
-  				<panel-related name="packLinesPanel" field="packLines" colSpan="12"/>
-  			</panel>
-    		<panel name="salePanel" title="Sale" showTitle="false">
+  			<panel name="salePanel" title="Sale" showTitle="false">
 				<panel name="subSalePanel" title="Sales" colSpan="6">
 					<field name="sellable" colSpan="6"/>
 					<field name="productSynchronizedInPrestashop" colSpan="6" if="__config__.app.isApp('prestashop')" if-module="axelor-prestashop"/>
@@ -121,7 +116,7 @@
                         hideIf="isShippingCostsProduct || !sellable"/>
 					<panel name="unitsPanel" title="Units" colSpan="12">
 						<field name="unit" canEdit="false" colSpan="6" form-view="unit-form" grid-view="unit-grid"/>
-						<button name="updateUnitBtn" title="Update stock location" colSpan="6" showIf="id" onClick="save,action-product-method-update-stock-location" if-module="axelor-stock" if="__config__.app.isApp('stock')"/>
+						<button name="updateUnitBtn" title="Update stock location" colSpan="6" showIf="id &amp;&amp; productTypeSelect == 'storable' &amp;&amp; stockManaged" onClick="save,action-product-method-update-stock-location" if-module="axelor-stock" if="__config__.app.isApp('stock')"/>
 						<field name="salesUnit" canEdit="false" hideIf="!sellable" colSpan="6" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('sale')?.getManageSalesUnits()"/>
 						<spacer colSpan="6"/>
 						<field name="purchasesUnit" canEdit="false" hideIf="!purchasable" colSpan="6" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('purchase')?.getManagePurchasesUnits()"/>
@@ -179,7 +174,7 @@
 							<field name="usedInDEB" title="Used in DES" showIf="productTypeSelect =='service'"/>
                 <panel-related name="accountManagementListPanel" field="accountManagementList" form-view="account-management-form" grid-view="account-management-product-grid" domain="self.typeSelect = 1" title="Accounting" showTitle="false" colSpan="12"/>
             </panel>
-	    		<panel name="stockPanel" title="Stock" showTitle="false" showIf="productTypeSelect == 'storable' || productTypeSelect == 'pack'" if-module="axelor-stock" if="__config__.app.isApp('stock')" >
+            	<panel name="stockPanel" title="Stock" showTitle="false" showIf="productTypeSelect == 'storable'" if-module="axelor-stock" if="__config__.app.isApp('stock')" >
 	     			<panel name="procurementSettingsPanel" title="Procurement settings" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" >
 				        <field name="excludeFromMrp" showIf="productTypeSelect == 'storable' &amp;&amp; stockManaged" colSpan="6"/>
 				        <field name="stockManaged" onChange="action-stock-product-record-stock-managed-onchange"/>
@@ -209,15 +204,15 @@
                     if-module="axelor-production"
                     if="__config__.app.isApp('production')">
                     <field name="costSheetGroup" showIf="productSubTypeSelect == 3" if="__config__.app.getApp('production').getManageCostSheetGroup()"/>
-                    <field name="economicManufOrderQty"/>
+                    <field name="economicManufOrderQty" showIf="productSubTypeSelect == 3 || (productSubTypeSelect == 2 &amp;&amp; procurementMethodSelect == 'buy')"/>
                     <panel name="productionPanel" colSpan="12" showIf="procurementMethodSelect == 'produce' || procurementMethodSelect == 'buyAndProduce'">
                     	<panel-include view="product-production-form"/>
                     </panel>
                     <panel-dashlet name="showUsedBOMPanel" colSpan="12" action="action-product-view-show-used-bill-of-material" showIf="id &amp;&amp; (productSubTypeSelect == 3 || productSubTypeSelect == 2)"/>
                     <panel-dashlet name="productionProcessPanel" colSpan="12" action="action-product-view-production-process" showIf="id &amp;&amp; (procurementMethodSelect == 'produce' || procurementMethodSelect == 'buyAndProduce')"/>
                 </panel>
-	    		<panel name="trackingNumberPanel" title="Tracking number" showTitle="false" showIf="productTypeSelect != 'service' &amp;&amp; productTypeSelect != 'pack' &amp;&amp; stockManaged" if-module="axelor-stock" if="__config__.app.isApp('stock')">
-	      			<panel colSpan="12" name="trackingDetailsPanel">
+                <panel name="trackingNumberPanel" title="Tracking number" showTitle="false" showIf="productTypeSelect == 'storable'" if-module="axelor-stock" if="__config__.app.isApp('stock')" >
+					<panel colSpan="12" name="trackingDetailsPanel">
 				        <field name="hasWarranty"/>
 				        <field name="warrantyNbrOfMonths" showIf="hasWarranty"/>
 				        <field name="isPerishable"/>
@@ -271,9 +266,9 @@
 				<panel-dashlet name="StockMoveLineIncomingPLannedPanel" colSpan="12" action="action-product-view-stock-move-line-incoming-planned" showIf="id" />
 				<panel-dashlet name="StockMoveLineConsumptionPLannedPanel" colSpan="12" action="action-product-view-stock-move-line-consumption-planned" showIf="id" />
 				<panel-dashlet name="StockMoveLineDashletPanel" colSpan="12" action="action-product-view-stock-move-line" showIf="id" />
-<!--  				<panel-dashlet action="action-product-view-supplier-requests-historical" colSpan="12" if-module="axelor-supplier-management"/> -->
-<!--  				<panel-dashlet action="action-product-view-purchase-order-line-in-progress" colSpan="12" if-module="axelor-purchase"/> -->
-<!--  				<panel-dashlet action="action-product-view-purchase-order-line-historical" colSpan="12" if-module="axelor-purchase"/> -->
+<!--                           <panel-dashlet action="action-product-view-supplier-requests-historical" colSpan="12" if-module="axelor-supplier-management"/> -->
+<!--                           <panel-dashlet action="action-product-view-purchase-order-line-in-progress" colSpan="12" if-module="axelor-purchase"/> -->
+<!--                           <panel-dashlet action="action-product-view-purchase-order-line-historical" colSpan="12" if-module="axelor-purchase"/> -->
 				<panel-dashlet name="stockMoveLineConsumptionHistoricalPanel" colSpan="12" action="action-product-view-stock-move-line-consumption-historical" showIf="id" />
 	    	</panel>
             <panel name="packingPanel" title="Packing" hideIf="isShippingCostsProduct || productTypeSelect =='service'">
@@ -437,6 +432,8 @@
 		<attribute name="scale" for="salePrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="purchasePrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="costPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+		
+		<attribute name="scale" for="economicManufOrderQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
 	</action-attrs>
 
 	<action-attrs name="action-product-attrs-set-cost-type-select">

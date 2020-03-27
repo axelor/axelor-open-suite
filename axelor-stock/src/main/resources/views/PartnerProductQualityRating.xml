@@ -6,7 +6,7 @@
     <grid name="partner-product-quality-rating-grid" title="Partner product quality ratings" model="com.axelor.apps.stock.db.PartnerProductQualityRating">
     	<field name="product"/>
     	<field name="qualityRatingSelect" widget="ImageSelect" x-labels="false"/>
-    	<field name="arrivalProductQty"/>
+    	<field name="arrivalProductQty" x-scale="2"/>
     </grid>
     
     <form name="partner-product-quality-rating-form" title="Partner product quality rating" model="com.axelor.apps.stock.db.PartnerProductQualityRating">
@@ -16,5 +16,9 @@
     		<field name="arrivalProductQty" colSpan="3"/>
     	</panel>
     </form>
+    
+    <action-attrs name="action-partner-product-quality-rating-attrs-set-scale">
+    	<attribute name="scale" for="arrivalProductQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    </action-attrs>
     
  </object-views>

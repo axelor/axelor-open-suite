@@ -32,13 +32,19 @@ public class ImportCity {
     assert bean instanceof City;
 
     City city = (City) bean;
+    LOG.debug(city.getName());
 
-    try {
-      if (city.getCanton() != null) {
-        city.getCanton().setDepartment(city.getDepartment());
+    if (city.getCountry() == null || city.getName() == null) {
+      return null;
+
+    } else {
+      try {
+        if (city.getCanton() != null) {
+          city.getCanton().setDepartment(city.getDepartment());
+        }
+      } catch (Exception e) {
+        LOG.error("Error when importing city : {}", e);
       }
-    } catch (Exception e) {
-      LOG.error("Error when importing city : {}", e);
     }
 
     return city;

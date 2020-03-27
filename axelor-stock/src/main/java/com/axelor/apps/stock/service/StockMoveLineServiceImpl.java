@@ -441,7 +441,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       Product product = stockMoveLine.getProduct();
 
       if (product != null
-          && stockMoveLine.getLineTypeSelect() != StockMoveLineRepository.TYPE_PACK
           && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
 
         BigDecimal qty;
@@ -1195,15 +1194,14 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
   public List<TrackingNumber> getAvailableTrackingNumbers(
       StockMoveLine stockMoveLine, StockMove stockMove) {
-    List<TrackingNumber> trackingNumbers = null;
     String domain =
         "self.product.id = "
             + stockMoveLine.getProduct().getId()
-            + " AND self.id in (select stockLocationLine.trackingNumber.id from StockLocationLine stockLocationLine join StockLocation sl on sl.id = stockLocationLine.detailsStockLocation.id WHERE sl.id = "
+            + " AND self.id in (select stockLocationLine.trackingNumber.id from StockLocationLine stockLocationLine"
+            + " join StockLocation sl on sl.id = stockLocationLine.detailsStockLocation.id WHERE sl.id = "
             + stockMove.getFromStockLocation().getId()
-            + " )";
-    trackingNumbers = trackingNumberRepo.all().filter(domain).fetch();
-    return trackingNumbers;
+            + " AND coalesce(stockLocationLine.currentQty, 0) != 0)";
+    return trackingNumberRepo.all().filter(domain).fetch();
   }
 
   public void fillRealizeWapPrice(StockMoveLine stockMoveLine) {

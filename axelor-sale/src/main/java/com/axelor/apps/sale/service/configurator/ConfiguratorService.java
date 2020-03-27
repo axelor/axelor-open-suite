@@ -50,7 +50,7 @@ public interface ConfiguratorService {
   Object computeFormula(String groovyFormula, JsonContext values) throws AxelorException;
 
   /**
-   * Generate the product, and the bill of material if we are in the right module
+   * Generate the product, and the bill of materials if we are in the right module
    *
    * @param configurator
    * @param jsonAttributes

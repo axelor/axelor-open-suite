@@ -11,8 +11,8 @@
   	
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" readonly="true"/>
 	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
-	<decimal name="currentQty" title="Current Qty" readonly="true"/>
-	<decimal name="futureQty" title="Future Qty" readonly="true"/>
+	<decimal name="currentQty" title="Current Qty" precision="20" scale="10" readonly="true"/>
+	<decimal name="futureQty" title="Future Qty" precision="20" scale="10" readonly="true"/>
 	<decimal name="avgPrice" precision="20" scale="10" readonly="true" title="Average Price"/>
 	<boolean name="isAvgPriceChanged" transient="true"/>
 	<date name="lastFutureStockMoveDate" title="Last Future Stock Move" readonly="true"/>
@@ -21,7 +21,7 @@
 	<many-to-one name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber" title="Tracking Nbr" readonly="true"/>
 	<many-to-one name="detailsStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location details" readonly="true"/>
 
-	<decimal name="lastInventoryRealQty"/>
+	<decimal name="lastInventoryRealQty" precision="20" scale="10"/>
 	<datetime name="lastInventoryDateT" tz="true" title="Last inventory date"/>
 	
   </entity>

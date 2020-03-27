@@ -113,7 +113,7 @@
 		<option value="1">Partial end of production</option>
 		<option value="2">End of production</option>
 		<option value="3">Work in progress</option>
-		<option value="4">Bill of material</option>
+		<option value="4">Bill of materials</option>
 	</selection>
 
 	<selection name="production.weekly.planning.type.select">
@@ -125,6 +125,10 @@
 		<option value="1">Draft</option>
 		<option value="2">Costs computed</option>
 		<option value="3">Costs updated</option>
+	</selection>
+
+	<selection name='trace.back.origin.select' id="trace.back.origin.select.production" >
+		<option value='costSheet'>Cost sheet valuation</option>
 	</selection>
 
 </object-views>

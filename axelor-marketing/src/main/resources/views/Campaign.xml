@@ -29,10 +29,10 @@
 				</editor>
 			</field>
 			<spacer name="nameSpacer"/>
-			<panel name="informationPanel" title="Informations" colSpan="12">
+			<panel name="informationPanel" title="Information" colSpan="12">
 				<field name="campaignType" canEdit="false" colSpan="4"/>
-				<field name="eventStartDateT" colSpan="4"/>
-				<field name="eventEndDateT" colSpan="4"/>
+				<field name="eventStartDateT" colSpan="4" validIf="eventStartDateT == null || eventEndDateT == null || eventStartDateT &lt; eventEndDateT"/>
+				<field name="eventEndDateT" colSpan="4" validIf="eventStartDateT == null || eventEndDateT == null || eventStartDateT &lt; eventEndDateT"/>
 				<field name="emailing" colSpan="4" widget="boolean-switch" />
 				<field name="manageAnEventPerTarget" colSpan="4" widget="boolean-switch"/>
 				<field name="manageAttendees" colSpan="4" widget="boolean-switch"/>

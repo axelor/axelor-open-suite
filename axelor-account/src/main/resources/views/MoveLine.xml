@@ -219,7 +219,7 @@
     
     <form name="move-line-move-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" 
 	onNew="action-account-move-line-onnew-group" onLoad="action-account-moveline-onload-group" width="large">
-		<panel name="informationsPanel" title="Informations" colSpan="12" canArchive="false">
+		<panel name="informationsPanel" title="Information" colSpan="12" canArchive="false">
 
 			<field name="name" colSpan="8" showTitle="false">
 				<viewer depends="name">
@@ -450,7 +450,7 @@
 		<view type="form" name="move-line-move-form"/>
 		<domain>self.account.id = :_id</domain>
 	</action-view>
-	
+
 	<action-attrs name="action-move-line-attrs-show-tax-amount" model="com.axelor.apps.account.db.MoveLine">
 		<attribute name="hidden" for="taxAmount" expr="eval: !( account?.reconcileOk &amp;&amp; account?.useForPartnerBalance)"/>
     </action-attrs>

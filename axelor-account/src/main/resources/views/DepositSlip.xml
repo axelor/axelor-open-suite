@@ -89,11 +89,11 @@
 
     <action-attrs name="action-deposit-slip-company-bank-details-domain" model="com.axelor.apps.account.db.DepositSlip">
         <attribute name="domain"
-            expr="eval: &quot;self.id IN (${company?.bankDetailsSet?.collect{it.id}.join(',')},${company?.defaultBankDetails?.id}) AND self.active = true&quot;"
-            for="companyBankDetails" if="!company?.bankDetailsSet?.isEmpty()" />
+            expr="eval: &quot;self.id IN (${company?.bankDetailsList?.collect{it.id}.join(',')},${company?.defaultBankDetails?.id}) AND self.active = true&quot;"
+            for="companyBankDetails" if="!company?.bankDetailsList?.isEmpty()" />
         <attribute name="domain"
             expr="eval: &quot;self.id = ${company?.defaultBankDetails?.id} AND self.active = true&quot;" for="companyBankDetails"
-            if="company?.bankDetailsSet?.isEmpty()" />
+            if="company?.bankDetailsList?.isEmpty()" />
     </action-attrs>
 
     <action-method name="action-deposit-slip-load-payments" model="com.axelor.apps.account.db.DepositSlip">

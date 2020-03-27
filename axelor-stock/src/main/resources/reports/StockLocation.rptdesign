@@ -2832,7 +2832,7 @@ if(params["PrintType"].value.equals('2'))
                             <property name="color">#000000</property>
                             <property name="textAlign">right</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["current_qty"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00########">row["current_qty"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="4546">

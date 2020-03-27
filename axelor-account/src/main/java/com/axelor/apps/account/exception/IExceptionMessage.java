@@ -87,7 +87,7 @@ public interface IExceptionMessage {
 
   /** Account clearance service and controller */
   static final String ACCOUNT_CLEARANCE_1 = /*$$(*/
-      "%s : You must configure account informations for the company %s" /*)*/;
+      "%s : You must configure account information for the company %s" /*)*/;
 
   static final String ACCOUNT_CLEARANCE_2 = /*$$(*/
       "%s : You must configure a financial account for then company %s" /*)*/;
@@ -392,7 +392,7 @@ public interface IExceptionMessage {
       "%s : Please, configure a currency for the company %s" /*)*/;
 
   static final String ACCOUNT_CONFIG_1 = /*$$(*/
-      "%s : You must configure account's informations for the company %s" /*)*/;
+      "%s : You must configure account's information for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_2 = /*$$(*/
       "%s : You must configure a CFONB format reimbursement's export's folder for the company %s" /*)*/;
   static final String ACCOUNT_CONFIG_3 = /*$$(*/
@@ -536,6 +536,8 @@ public interface IExceptionMessage {
       "%s : Letter template missing for debt recovery matrix %s (Partner %s, Level %s)." /*)*/;
   static final String DEBT_RECOVERY_ACTION_4 = /*$$(*/
       "Email is not sent. Please check email account configuration." /*)*/;
+  static final String DEBT_RECOVERY_ACTION_5 = /*$$(*/
+      "No email address in debt recovery %s. Please set one." /*)*/;
 
   /** Debt recovery service */
   static final String DEBT_RECOVERY_1 = /*$$(*/ "There's no accounting situation." /*)*/;
@@ -801,4 +803,7 @@ public interface IExceptionMessage {
 
   static final String CLOSE_NO_REPORTED_BALANCE_DATE = /*$$(*/
       "Please set a reported balance date on fiscal year" /*)*/;
+
+  static final String ACCOUNT_CODE_ALREADY_IN_USE_FOR_COMPANY = /*$$(*/
+      "The account code %s is already used for the company %s, there cannot be two accounts with the same code for the same company." /*)*/;;
 }

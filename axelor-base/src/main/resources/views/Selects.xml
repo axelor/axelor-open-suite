@@ -22,6 +22,11 @@
 	<selection name="iterritory.city.type.select">
 		<option value="geonames">Geonames</option>
 	</selection>
+	
+	<selection name="base.city.auto.import.type.select">
+		<option value="FR.zip">France</option>
+		<option value="allCountries.zip">All Countries</option>
+	</selection>
 
 	<selection name="partner.title.type.select">
 		<option value="1">M.</option>
@@ -47,7 +52,6 @@
 	<selection name='product.product.type.select'>
 		<option value='service'>Service</option>
 		<option value='storable'>Product</option>
-		<option value='pack'>Pack</option>
 	</selection>
 
 	<selection name='product.procurement.method.select'>
@@ -491,7 +495,10 @@
     <selection name="line.type.select">
         <option value="0">Standard</option>
         <option value="1">Title</option>
-        <option value="2">Pack</option>
+    </selection>
+    
+    <selection name='trace.back.origin.select' id="trace.back.origin.select.base" >
+    	<option value="import">Importing</option>
     </selection>
 
 </object-views>
