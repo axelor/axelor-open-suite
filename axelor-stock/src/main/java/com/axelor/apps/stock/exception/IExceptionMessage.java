@@ -179,7 +179,7 @@ public interface IExceptionMessage {
   String LOGISTICAL_FORM_MISSING_TEMPLATE = /*$$(*/
       "The template to send message on save is missing." /*)*/;
 
-  String LOGISTICAL_FORM_INVALID_DIMENSIONS= /*$$(*/ "Invalid field dimensions" /*)*/;
+  String LOGISTICAL_FORM_INVALID_DIMENSIONS = /*$$(*/ "Invalid field dimensions" /*)*/;
 
   String CANCEL_REASON_MISSING = /*$$(*/ "A cancel reason must be selected" /*)*/;
   String CANCEL_REASON_BAD_TYPE = /*$$(*/

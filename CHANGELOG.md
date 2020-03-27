@@ -19,6 +19,7 @@
 - changes for messy convert-lead-wizard-form
 - Target Configuration : improve naming & translation
 - Target : improve naming & translation
+- Fixed asset : add EU and US prorata temporis.
 
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
@@ -46,6 +47,13 @@
 - Logistical Form : Fix NPE when computing volume
 - WORK CENTER : Fix machine not set to null for a human type work center
 - MOVE TEMPLATE : Move templates without an end of validity date are now appearing in wizard
+- Fix a french word in an english message file.
+- Fixed asset : corrected calculation of amortization.
+- Production Order: fix typo in french translation.
+- Accounting Situation: fix computation of balance due debt recovery.
+- Stock Move : Fix 'Invoiced' tag displaying in internal stock moves and stock move lines.
+- Stock Move: empty all references to orders and invoices on copy.
+- MANUFACTURING ORDER : On consumed product, no longer display tracking numbers if available quantity equals 0.
 - MOVE : Add missing translation
 
 ## [5.3.1] - 2020-03-16
