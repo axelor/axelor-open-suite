@@ -15,38 +15,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.db.repo;
+package com.axelor.apps.production.db.repo;
 
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
-import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import java.math.BigDecimal;
+import com.axelor.apps.supplychain.db.repo.StockMoveSupplychainRepository;
 
-public class StockMoveSupplychainRepository extends StockMoveManagementRepository {
+public class StockMoveProductionRepository extends StockMoveSupplychainRepository {
 
   @Override
   public StockMove copy(StockMove entity, boolean deep) {
-
     StockMove copy = super.copy(entity, deep);
-
-    copy.setInvoiceSet(null);
-    copy.setOriginTypeSelect(null);
-    copy.setOrigin(null);
-    copy.setOriginId(null);
+    copy.setInManufOrder(null);
+    copy.setOutManufOrder(null);
+    copy.setInOperationOrder(null);
     if (copy.getStockMoveLineList() != null) {
       for (StockMoveLine stockMoveLine : copy.getStockMoveLineList()) {
-        stockMoveLine.setReservedQty(BigDecimal.ZERO);
-        stockMoveLine.setRequestedReservedQty(BigDecimal.ZERO);
-        stockMoveLine.setIsQtyRequested(false);
-        stockMoveLine.setReservationDateTime(null);
-        stockMoveLine.setQtyInvoiced(null);
-        stockMoveLine.setSaleOrderLine(null);
-        stockMoveLine.setPurchaseOrderLine(null);
+        stockMoveLine.setProducedManufOrder(null);
+        stockMoveLine.setConsumedManufOrder(null);
+        stockMoveLine.setConsumedOperationOrder(null);
       }
     }
-    copy.setInvoicingStatusSelect(StockMoveRepository.STATUS_NOT_INVOICED);
-
     return copy;
   }
 }

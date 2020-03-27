@@ -62,7 +62,7 @@
 "Cancellation confirmation",,,
 "Cancelled MOs","OF annulés",,
 "Cancelled Operations","Opérations annulées",,
-"Cannot add a manufacturing order without a production process. Please check that your chosen bill of material has a valid production process.","Impossible d’ajouter l’ordre de facturation. Vérifiez que votre nomenclature a une gamme valide.",,
+"Cannot add a manufacturing order without a production process. Please check that your chosen bill of material has a valid production process.","Impossible d’ajouter l’ordre de fabrication. Vérifiez que votre nomenclature a une gamme valide.",,
 "Capacity settings","Paramétrages capacité",,
 "Change allocated qty","Changer la quantité allouée",,
 "Charge by machine","Charge par machine",,
