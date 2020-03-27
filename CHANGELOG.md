@@ -20,4 +20,5 @@
 
 ## Bug Fixes
 - HR : A leave-line cannot be saved whitout employee or leave-reason.
+- GlobalTrackingCOnfigurationLine : display correctly boolean field titles.
 
