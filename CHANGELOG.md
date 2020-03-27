@@ -1,8 +1,58 @@
 # Changelog
 ## [Unreleased 5.3.2]
 ## Improvements
+- CLIENT-PORTAL : Chart now only shows invoices corresponding the client partner.
+- PARTNER : add url widget for website.
+- MrpFamily : make 'name' required field.
+- LEAD : new design for view form
+- TARGET CONFIGURATION : end off date must now be superior to start date
+- TAX LINE : run off date must now be superior to start date
+- OPPORTUNITY : removed help in buttons from form view
+- DURATION : changed title and translation from typeSelect
+- SaleOrder : Add filter on invoice selected lines when operation choice = invoice selected lines
+- ACCOUNTING REPORT: improved bank statement report.
+- Product : set sequence while creating duplicate.
+- ORDER LINE : freeze fields translation
+- ORDER/STOCK : ISPM15 translation
+- FORECAST RECAP : translation for Forecast Recap line Type(s).
+- MARKETING : Fix for setting end date after start date.
+- changes for messy convert-lead-wizard-form
+- Target Configuration : improve naming & translation
+- Target : improve naming & translation
+- Fixed asset : add EU and US prorata temporis.
+
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
+- SALE CONFIG : Fixed "Action not allowed" error when we try to update customer's accepted credit
+- TIMESHEET : Fix auto-generation of leave days not generating the first day
+- CLIENT-PORTAL : fixed the NPE when the user does not correspond to any partner.
+- Partner: Invoice copy number selection field displayed when the partner is a supplier.
+- MANUF ORDER: add missing translation.
+- STOCK CORRECTION: Add missing translations.
+- LEAD: Fix form-view of primaryCity.
+- EXCEPTION ORIGIN: Split selection values per module.
+- PURCHASE REQUEST : Fix new product name not showing on line grid view
+- INVENTORY: add missing translations.
+- SALEORDER : Fixed NPE when trying to select a customer with a company with no linked partner
+- BANK RECONCILIATION : corrected error with bank statement load where no other statement was loaded.
+- LEAD : Fix action doesnot exist on LEAD convert.
+- MOVE TEMPLATE : Add missing translation
+- STOCK LOCATION : Add missing translation
+- MRP FAMILY : Fix wrong case in views title
+- INVOICELINE : Fix account not filtered depending on fixedAssets boolean
+- CONTACT: fix for Main Company not set for Contact from Partner
+- Account Config: display correct form view on clicking products.
+- Stock Move invoicing: Fix NPE on opening invoicing wizard when a line has no product.
+- Product : prevent the updation of salePrice if autoUpdateSalePrice = false.
+- Logistical Form : Fix NPE when computing volume
+- WORK CENTER : Fix machine not set to null for a human type work center
+- MOVE TEMPLATE : Move templates without an end of validity date are now appearing in wizard
+- Fix a french word in an english message file.
+- Fixed asset : corrected calculation of amortization.
+- Production Order: fix typo in french translation.
+- Accounting Situation: fix computation of balance due debt recovery.
+- Stock Move : Fix 'Invoiced' tag displaying in internal stock moves and stock move lines.
+- Stock Move: empty all references to orders and invoices on copy.
 - MANUFACTURING ORDER : On consumed product, no longer display tracking numbers if available quantity equals 0.
 
 ## [5.3.1] - 2020-03-16

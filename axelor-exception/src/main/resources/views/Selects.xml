@@ -17,15 +17,7 @@
 	</selection>
 	
 	<selection name='trace.back.origin.select'>
-	  <option value='invoice'>Invoicing</option>
-  	  <option value='reminder'>Reminder</option>
-  	  <option value='debtRecovery'>Debt recovery</option>
- 	  <option value='doubtfulCustomer'>Doubtful customer</option>
-   	  <option value='reimbursement'>Reimbursement</option>
-   	  <option value='directDebit'>Direct debit</option>
-   	  <option value="interbankPaymentOrder">Interbank payment order</option>
-   	  <option value="crm">CRM</option>
-   	  <option value="reportedBalance">Reported balance</option>
+		<option value="default">Default</option>
 	</selection>
 
 </object-views>

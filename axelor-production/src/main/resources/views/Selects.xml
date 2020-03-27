@@ -127,4 +127,8 @@
 		<option value="3">Costs updated</option>
 	</selection>
 
+	<selection name='trace.back.origin.select' id="trace.back.origin.select.production" >
+		<option value='costSheet'>Cost sheet valuation</option>
+	</selection>
+
 </object-views>
