@@ -29,6 +29,7 @@
 - Production Order: fix typo in french translation.
 - Accounting Situation: fix computation of balance due debt recovery.
 - Stock Move: empty all references to orders and invoices on copy.
+- MANUFACTURING ORDER : On consumed product, no longer display tracking numbers if available quantity equals 0.
 
 ## [5.2.6] - 2020-03-13
 ## Improvements
