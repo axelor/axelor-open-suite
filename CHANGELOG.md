@@ -54,6 +54,7 @@
 - Stock Move : Fix 'Invoiced' tag displaying in internal stock moves and stock move lines.
 - Stock Move: empty all references to orders and invoices on copy.
 - MANUFACTURING ORDER : On consumed product, no longer display tracking numbers if available quantity equals 0.
+- MOVE : Add missing translation
 
 ## [5.3.1] - 2020-03-16
 ## Improvements
