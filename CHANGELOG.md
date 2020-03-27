@@ -20,6 +20,7 @@
 - Target Configuration : improve naming & translation
 - Target : improve naming & translation
 - Fixed asset : add EU and US prorata temporis.
+- DEMO DATA : add analytic journals to demo data.
 
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
