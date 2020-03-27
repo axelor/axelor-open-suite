@@ -51,6 +51,7 @@
 - Fixed asset : corrected calculation of amortization.
 - Production Order: fix typo in french translation.
 - Accounting Situation: fix computation of balance due debt recovery.
+- Stock Move : Fix 'Invoiced' tag displaying in internal stock moves and stock move lines.
 
 
 ## [5.3.1] - 2020-03-16
