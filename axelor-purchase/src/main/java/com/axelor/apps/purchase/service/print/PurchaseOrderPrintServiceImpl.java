@@ -22,6 +22,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.report.IReport;
+import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.ThrowConsumer;
@@ -30,6 +31,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
@@ -38,10 +40,25 @@ import java.util.List;
 
 public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService {
 
+  protected AppPurchaseService appPurchaseService;
+
+  @Inject
+  public PurchaseOrderPrintServiceImpl(AppPurchaseService appPurchaseService) {
+    this.appPurchaseService = appPurchaseService;
+  }
+
   @Override
   public String printPurchaseOrder(PurchaseOrder purchaseOrder, String formatPdf)
       throws AxelorException {
-    String fileName = getPurchaseOrderFilesName(false, formatPdf);
+    String fileName =
+        I18n.get("Purchase order")
+            + "-"
+            + purchaseOrder.getPurchaseOrderSeq()
+            + (appPurchaseService.getAppPurchase().getManagePurchaseOrderVersion()
+                ? "-" + purchaseOrder.getVersionNumber()
+                : "")
+            + "."
+            + formatPdf;
     return PdfTool.getFileLinkFromPdfFile(print(purchaseOrder, formatPdf), fileName);
   }
 
@@ -58,7 +75,14 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
             printedPurchaseOrders.add(print(purchaseOrder, ReportSettings.FORMAT_PDF));
           }
         });
-    String fileName = getPurchaseOrderFilesName(true, ReportSettings.FORMAT_PDF);
+    String fileName =
+        I18n.get("Purchase orders")
+            + " - "
+            + Beans.get(AppBaseService.class)
+                .getTodayDate()
+                .format(DateTimeFormatter.BASIC_ISO_DATE)
+            + "."
+            + ReportSettings.FORMAT_PDF;
     return PdfTool.mergePdfToFileLink(printedPurchaseOrders, fileName);
   }
 
@@ -87,14 +111,6 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
         .addParam("HeaderHeight", purchaseOrder.getPrintingSettings().getPdfHeaderHeight())
         .addParam("FooterHeight", purchaseOrder.getPrintingSettings().getPdfFooterHeight())
         .addFormat(formatPdf);
-  }
-
-  protected String getPurchaseOrderFilesName(boolean plural, String formatPdf) {
-    return I18n.get(plural ? "Purchase orders" : "Purchase order")
-        + " - "
-        + Beans.get(AppBaseService.class).getTodayDate().format(DateTimeFormatter.BASIC_ISO_DATE)
-        + "."
-        + formatPdf;
   }
 
   @Override

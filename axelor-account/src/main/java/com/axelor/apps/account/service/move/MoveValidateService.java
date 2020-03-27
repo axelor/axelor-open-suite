@@ -140,8 +140,7 @@ public class MoveValidateService {
           String.format(I18n.get(IExceptionMessage.MOVE_8), move.getReference()));
     }
 
-    if (move.getMoveLineList()
-        .stream()
+    if (move.getMoveLineList().stream()
         .allMatch(
             moveLine ->
                 moveLine.getDebit().add(moveLine.getCredit()).compareTo(BigDecimal.ZERO) == 0)) {

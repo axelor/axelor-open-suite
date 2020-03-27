@@ -107,8 +107,7 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
 
     AccountConfig accountConfig = Beans.get(AccountConfigService.class).getAccountConfig(company);
     List<BankDetails> bankDetailsList = accountConfig.getFactorPartner().getBankDetailsList();
-    return bankDetailsList
-        .stream()
+    return bankDetailsList.stream()
         .filter(bankDetails -> bankDetails.getActive())
         .collect(Collectors.toList());
   }
@@ -177,8 +176,7 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
       return null;
     }
     List<BankDetails> bankDetailsList = accountConfig.getFactorPartner().getBankDetailsList();
-    return bankDetailsList
-        .stream()
+    return bankDetailsList.stream()
         .filter(bankDetails -> bankDetails.getIsDefault())
         .findFirst()
         .orElse(null);

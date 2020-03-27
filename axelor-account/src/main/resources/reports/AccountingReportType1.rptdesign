@@ -2404,6 +2404,7 @@ else{
                             </header>
                             <footer>
                                 <row id="4106">
+                                    <method name="onCreate"><![CDATA[vars["PreviousBalance"]=0]]></method>
                                     <cell id="4145"/>
                                     <cell id="4107">
                                         <property name="colSpan">7</property>

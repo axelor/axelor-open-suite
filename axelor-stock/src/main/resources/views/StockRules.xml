@@ -14,11 +14,12 @@
         <field name="idealQty" aggregate="min" x-scale="2"/>
         <field name="maxQty" aggregate="min" x-scale="2"/>
         <field name="reOrderQty" aggregate="sum" x-scale="2"/>
+        <field name="comments"/>
 		<field name="useCaseSelect"/>
         <field name="typeSelect"/>
         <field name="orderAlertSelect"/>
     </grid>
-    
+
 	<grid name="stock-rule-product-grid" title="Stock rules" model="com.axelor.apps.stock.db.StockRules" orderBy="stockLocation.name,useCaseSelect">
     	<field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="minQty" aggregate="min" x-scale="2"/>
@@ -28,7 +29,7 @@
 		<field name="useCaseSelect"/>
         <field name="orderAlertSelect"/>
     </grid>
-    
+
     <form name="stock-rules-form" title="Stock rules" model="com.axelor.apps.stock.db.StockRules"
     	onNew="action-stock-rules-record-new,action-stock-rules-attrs-scale-and-precision" onLoad="action-stock-rules-attrs-scale-and-precision" width="large">
 		<panel name="mainPanel" >
@@ -50,6 +51,9 @@
 			</panel>
 			<field name="product.procurementMethodSelect" hidden="true"/>
       <field name="alert" showIf="orderAlertSelect != 1" colSpan="3"/>
+			<panel name="commentPanel" title="Comments" colSpan="12">
+				<field name="comments" showTitle="false" colSpan="12"/>
+    		</panel>
 		</panel>
 		<panel-mail name="mailPanel">
 	    	<mail-messages limit="4"/>
@@ -100,7 +104,7 @@
 	<action-record name="action-stock-rules-record-set-stock-rule-message-template" model="com.axelor.apps.stock.db.StockRules">
 		<field name="stockRuleMessageTemplate" expr="eval: __repo__(StockConfig).all().filter('self.company.id = ?1',__this__.stockLocation?.company?.id).fetchOne()?.getStockRuleMessageTemplate()" if="!stockRuleMessageTemplate"/>
 	</action-record>
-	
+
 	<action-attrs name="action-stock-rules-attrs-scale-and-precision">
 		<attribute name="scale" for="minQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
 		<attribute name="scale" for="maxQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>

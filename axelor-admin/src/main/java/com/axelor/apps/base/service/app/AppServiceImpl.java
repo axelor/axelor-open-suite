@@ -210,8 +210,7 @@ public class AppServiceImpl implements AppService {
         config.getAbsolutePath(),
         data.getAbsolutePath());
 
-    try {
-      Scanner scanner = new Scanner(config);
+    try (Scanner scanner = new Scanner(config)) {
       Importer importer = null;
       while (scanner.hasNextLine()) {
         String str = scanner.nextLine();

@@ -1612,6 +1612,7 @@ where AccountingReport.id = ?
                     <property name="allowExport">true</property>
                 </structure>
             </list-property>
+            <property name="pageBreakInterval">0</property>
             <column id="4344">
                 <property name="width">0.1875in</property>
             </column>

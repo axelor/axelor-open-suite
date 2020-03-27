@@ -222,4 +222,7 @@ public interface IExceptionMessage {
 
   static final String MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_BANK_RECONCILIATION_AMOUNT = /*$$(*/
       "This move line %s can not be archived because its bank reconciliation amount is superior to 0." /*)*/;
+
+  static final String INVOICE_PAYMENT_MODE_MISSING = /*$$(*/
+      "Payment mode is missing on the invoice %s" /*)*/;
 }

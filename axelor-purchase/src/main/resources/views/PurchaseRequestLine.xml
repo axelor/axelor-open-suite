@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
 	<grid model="com.axelor.apps.purchase.db.PurchaseRequestLine" title="Purchase Request Lines" name="purchase-request-line-grid">
-		<field name="product"/>
+		<field name="productTitle"/>
 		<field name="newProduct"/>
 		<field name="unit"/>
 		<field name="quantity" x-scale="2"/>
@@ -27,6 +27,7 @@
 	
 	<action-record name="action-purchase-request-line-product-on-change" model="com.axelor.apps.purchase.db.PurchaseRequestLine">
 		<field name="unit" expr="eval: product?.purchasesUnit ? product.purchasesUnit : product?.unit"/>
+		<field name="productTitle" expr="eval: product?.name"/>
 	</action-record>
 	
 	<action-attrs name="action-purchase-request-line-attrs-product-domain">

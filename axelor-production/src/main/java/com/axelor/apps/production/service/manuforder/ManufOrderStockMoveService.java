@@ -331,9 +331,7 @@ public class ManufOrderStockMoveService {
    * @param stockMove
    */
   protected void updateRealPrice(ManufOrder manufOrder, StockMove stockMove) {
-    stockMove
-        .getStockMoveLineList()
-        .stream()
+    stockMove.getStockMoveLineList().stream()
         .filter(
             stockMoveLine ->
                 stockMoveLine.getProduct() != null
@@ -455,8 +453,7 @@ public class ManufOrderStockMoveService {
    * @return an optional stock move
    */
   public Optional<StockMove> getPlannedStockMove(List<StockMove> stockMoveList) {
-    return stockMoveList
-        .stream()
+    return stockMoveList.stream()
         .filter(stockMove -> stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED)
         .findFirst();
   }
@@ -569,9 +566,7 @@ public class ManufOrderStockMoveService {
       _createStockMoveLine(prodProduct, stockMove, StockMoveLineService.TYPE_IN_PRODUCTIONS, qty);
 
       // Update consumed StockMoveLineList with created stock move lines
-      stockMove
-          .getStockMoveLineList()
-          .stream()
+      stockMove.getStockMoveLineList().stream()
           .filter(
               stockMoveLine1 -> !manufOrder.getConsumedStockMoveLineList().contains(stockMoveLine1))
           .forEach(manufOrder::addConsumedStockMoveLineListItem);
@@ -616,9 +611,7 @@ public class ManufOrderStockMoveService {
           productCostPrice);
 
       // Update produced StockMoveLineList with created stock move lines
-      stockMove
-          .getStockMoveLineList()
-          .stream()
+      stockMove.getStockMoveLineList().stream()
           .filter(
               stockMoveLine1 -> !manufOrder.getProducedStockMoveLineList().contains(stockMoveLine1))
           .forEach(manufOrder::addProducedStockMoveLineListItem);

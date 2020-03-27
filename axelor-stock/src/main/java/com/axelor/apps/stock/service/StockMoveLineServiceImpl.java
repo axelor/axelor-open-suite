@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.CustomsCodeNomenclature;
@@ -78,6 +79,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   protected WeightedAveragePriceService weightedAveragePriceService;
   protected TrackingNumberRepository trackingNumberRepo;
   protected ProductCompanyService productCompanyService;
+  protected ShippingCoefService shippingCoefService;
 
   @Inject
   public StockMoveLineServiceImpl(
@@ -90,7 +92,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       UnitConversionService unitConversionService,
       WeightedAveragePriceService weightedAveragePriceService,
       TrackingNumberRepository trackingNumberRepo,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      ShippingCoefService shippingCoefService) {
     this.trackingNumberService = trackingNumberService;
     this.appBaseService = appBaseService;
     this.appStockService = appStockService;
@@ -101,6 +104,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     this.weightedAveragePriceService = weightedAveragePriceService;
     this.trackingNumberRepo = trackingNumberRepo;
     this.productCompanyService = productCompanyService;
+    this.shippingCoefService = shippingCoefService;
   }
 
   @Override
@@ -128,6 +132,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
               quantity,
               unitPrice,
               companyUnitPriceUntaxed,
+              BigDecimal.ZERO,
               unit,
               stockMove,
               taxed,
@@ -146,6 +151,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           BigDecimal.ZERO,
           BigDecimal.ZERO,
           companyUnitPriceUntaxed,
+          BigDecimal.ZERO,
           unit,
           stockMove,
           null);
@@ -159,6 +165,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       BigDecimal quantity,
       BigDecimal unitPrice,
       BigDecimal companyUnitPriceUntaxed,
+      BigDecimal companyPurchasePrice,
       Unit unit,
       StockMove stockMove,
       boolean taxed,
@@ -190,6 +197,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         unitPriceUntaxed,
         unitPriceTaxed,
         companyUnitPriceUntaxed,
+        companyPurchasePrice,
         unit,
         stockMove,
         null);
@@ -303,18 +311,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     }
   }
 
-  /**
-   * Méthode générique permettant de créer une ligne de mouvement de stock
-   *
-   * @param product
-   * @param quantity
-   * @param unit
-   * @param price
-   * @param stockMove
-   * @param trackingNumber
-   * @return
-   * @throws AxelorException
-   */
   @Override
   public StockMoveLine createStockMoveLine(
       Product product,
@@ -324,6 +320,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       BigDecimal unitPriceUntaxed,
       BigDecimal unitPriceTaxed,
       BigDecimal companyUnitPriceUntaxed,
+      BigDecimal companyPurchasePrice,
       Unit unit,
       StockMove stockMove,
       TrackingNumber trackingNumber)
@@ -340,6 +337,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     stockMoveLine.setUnit(unit);
     stockMoveLine.setTrackingNumber(trackingNumber);
     stockMoveLine.setCompanyUnitPriceUntaxed(companyUnitPriceUntaxed);
+    stockMoveLine.setCompanyPurchasePrice(companyPurchasePrice);
 
     if (stockMove != null) {
       stockMove.addStockMoveLineListItem(stockMoveLine);
@@ -418,6 +416,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             stockMoveLine.getUnitPriceUntaxed(),
             stockMoveLine.getUnitPriceTaxed(),
             stockMoveLine.getCompanyUnitPriceUntaxed(),
+            stockMoveLine.getCompanyPurchasePrice(),
             stockMoveLine.getUnit(),
             stockMoveLine.getStockMove(),
             trackingNumber);
@@ -802,11 +801,30 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   public StockMoveLine compute(StockMoveLine stockMoveLine, StockMove stockMove)
       throws AxelorException {
     BigDecimal unitPriceUntaxed = BigDecimal.ZERO;
+    BigDecimal companyPurchasePrice = BigDecimal.ZERO;
     if (stockMoveLine.getProduct() != null && stockMove != null) {
-      if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
+      if ((stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+              && stockMove.getIsReversion())
+          || (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+              && !stockMove.getIsReversion())) {
+        // customer delivery or customer return
         unitPriceUntaxed = (BigDecimal) productCompanyService.get(stockMoveLine.getProduct(), "salePrice", stockMove.getCompany());
-      } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
-        unitPriceUntaxed = (BigDecimal) productCompanyService.get(stockMoveLine.getProduct(), "purchasePrice", stockMove.getCompany());
+        BigDecimal wapPrice =
+            computeFromStockLocation(stockMoveLine, stockMove.getToStockLocation());
+        stockMoveLine.setWapPrice(wapPrice);
+      } else if ((stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+              && stockMove.getIsReversion())
+          || (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+              && !stockMove.getIsReversion())) {
+        // supplier return or supplier delivery
+        BigDecimal shippingCoef =
+            shippingCoefService.getShippingCoef(
+                stockMoveLine.getProduct(),
+                stockMove.getPartner(),
+                stockMove.getCompany(),
+                stockMoveLine.getRealQty());
+        companyPurchasePrice = (BigDecimal) productCompanyService.get(stockMoveLine.getProduct(), "purchasePrice", stockMove.getCompany());;
+        unitPriceUntaxed = companyPurchasePrice.multiply(shippingCoef);
       } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL
           && stockMove.getFromStockLocation() != null
           && stockMove.getFromStockLocation().getTypeSelect()
@@ -817,6 +835,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         unitPriceUntaxed = (BigDecimal) productCompanyService.get(stockMoveLine.getProduct(), "costPrice", stockMove.getCompany());
       }
     }
+    stockMoveLine.setCompanyPurchasePrice(companyPurchasePrice);
     stockMoveLine.setUnitPriceUntaxed(unitPriceUntaxed);
     stockMoveLine.setUnitPriceTaxed(unitPriceUntaxed);
     stockMoveLine.setCompanyUnitPriceUntaxed(unitPriceUntaxed);
@@ -931,8 +950,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     }
 
     BigDecimal qtySpreadOverLogisticalMoveLines =
-        logisticalFormLineList
-            .stream()
+        logisticalFormLineList.stream()
             .map(
                 logisticalFormLine ->
                     logisticalFormLine.getQty() != null

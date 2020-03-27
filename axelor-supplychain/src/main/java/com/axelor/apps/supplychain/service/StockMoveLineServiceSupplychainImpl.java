@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
@@ -73,6 +74,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       UnitConversionService unitConversionService,
       WeightedAveragePriceService weightedAveragePriceService,
       TrackingNumberRepository trackingNumberRepo,
+      ShippingCoefService shippingCoefService,
       AccountManagementService accountManagementService,
       PriceListService priceListService,
       ProductCompanyService productCompanyService) {
@@ -86,7 +88,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         unitConversionService,
         weightedAveragePriceService,
         trackingNumberRepo,
-        productCompanyService);
+        productCompanyService,
+        shippingCoefService);
     this.accountManagementService = accountManagementService;
     this.priceListService = priceListService;
   }
@@ -100,6 +103,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       BigDecimal requestedReservedQty,
       BigDecimal unitPrice,
       BigDecimal companyUnitPriceUntaxed,
+      BigDecimal companyPurchasePrice,
       Unit unit,
       StockMove stockMove,
       int type,
@@ -118,11 +122,14 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
               quantity,
               unitPrice,
               companyUnitPriceUntaxed,
+              companyPurchasePrice,
               unit,
               stockMove,
               taxed,
               taxRate);
       stockMoveLine.setRequestedReservedQty(requestedReservedQty);
+      stockMoveLine.setIsQtyRequested(
+          requestedReservedQty != null && requestedReservedQty.signum() > 0);
       stockMoveLine.setSaleOrderLine(saleOrderLine);
       stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
       TrackingNumberConfiguration trackingNumberConfiguration =
@@ -139,6 +146,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
           BigDecimal.ZERO,
           BigDecimal.ZERO,
           companyUnitPriceUntaxed,
+          BigDecimal.ZERO,
           unit,
           stockMove,
           null);
@@ -154,7 +162,10 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       return super.compute(stockMoveLine, null);
     }
 
-    if (stockMove.getOriginId() != null && stockMove.getOriginId() != 0L) {
+    if (stockMove.getOriginId() != null
+        && stockMove.getOriginId() != 0L
+        && (stockMoveLine.getSaleOrderLine() != null
+            || stockMoveLine.getPurchaseOrderLine() != null)) {
       // the stock move comes from a sale or purchase order, we take the price from the order.
       stockMoveLine = computeFromOrder(stockMoveLine, stockMove);
     } else {
@@ -360,6 +371,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
             BigDecimal.ZERO,
             BigDecimal.ZERO,
             BigDecimal.ZERO,
+            BigDecimal.ZERO,
             unit,
             null,
             null);
@@ -460,5 +472,11 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       stockMoveLine.setAvailableStatus(I18n.get("Invoiced"));
       stockMoveLine.setAvailableStatusSelect(1);
     }
+  }
+
+  @Override
+  public boolean isAllocatedStockMoveLine(StockMoveLine stockMoveLine) {
+    return stockMoveLine.getReservedQty().compareTo(BigDecimal.ZERO) > 0
+        || stockMoveLine.getRequestedReservedQty().compareTo(BigDecimal.ZERO) > 0;
   }
 }

@@ -179,6 +179,7 @@
     <action-view name="stock.root.stock.details.by.product" title="Stock details by product" model="com.axelor.apps.base.db.Product">
       <view type="form" name="supplychain-stock-details-by-product-form"/>
       <domain>dtype = 'Product'</domain>
+      <context name="_isFromMenu" expr="eval: true"/>
     </action-view>
 	
 </object-views>

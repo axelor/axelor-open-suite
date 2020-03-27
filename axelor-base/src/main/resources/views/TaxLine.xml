@@ -17,8 +17,8 @@
         <panel name="mainPanel">
         	<field name="tax" readonly="true" form-view="tax-form" grid-view="tax-grid"/>
 	        <field name="value"/>
-	        <field name="startDate"/>
-	        <field name="endDate"/>
+	        <field name="startDate" onChange="action-tax-line-condition-dates"/>
+	        <field name="endDate" onChange="action-tax-line-condition-dates"/>
         </panel>
         
     </form>
@@ -28,18 +28,21 @@
         <field name="endDate"/>
         <field name="value"/>
     </grid>
-    
+
     <form name="tax-line-tax-form" title="Tax Rate" model="com.axelor.apps.account.db.TaxLine" onNew="action-base-record-new-tax-line-tax">
         <panel name="mainPanel">
 	        <field name="value"/>
-	        <field name="startDate"/>
-	        <field name="endDate"/>
+	        <field name="startDate" onChange="action-tax-line-condition-dates"/>
+	        <field name="endDate" onChange="action-tax-line-condition-dates"/>
         </panel>
-        
     </form>
     
     <action-record name="action-base-record-new-tax-line-tax" model="com.axelor.apps.account.db.TaxLine">
 		<field name="tax" expr="eval: __parent__"/>
 	</action-record>
+  
+  <action-condition name="action-tax-line-condition-dates">
+    <check field="endDate" if="endDate != null &amp;&amp; endDate &lt; startDate" error="Run off date cannot be inferior to start date"/>
+  </action-condition>
     
 </object-views>

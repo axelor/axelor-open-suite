@@ -145,8 +145,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
       String errorMessage =
           String.format(
               "<ul>%s</ul>",
-              warningMessageList
-                  .stream()
+              warningMessageList.stream()
                   .map(message -> String.format("<li>%s</li>", message))
                   .collect(Collectors.joining("\n")));
       throw new LogisticalFormWarning(logisticalForm, errorMessage);
@@ -334,9 +333,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
     if (logisticalForm.getLogisticalFormLineList() != null) {
       StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
 
-      logisticalForm
-          .getLogisticalFormLineList()
-          .stream()
+      logisticalForm.getLogisticalFormLineList().stream()
           .filter(
               logisticalFormLine ->
                   logisticalFormLine.getTypeSelect() == LogisticalFormLineRepository.TYPE_DETAIL
@@ -368,9 +365,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
     Map<StockMoveLine, BigDecimal> spreadQtyMap = new LinkedHashMap<>();
 
     if (logisticalForm.getLogisticalFormLineList() != null) {
-      logisticalForm
-          .getLogisticalFormLineList()
-          .stream()
+      logisticalForm.getLogisticalFormLineList().stream()
           .filter(
               logisticalFormLine ->
                   logisticalFormLine.getTypeSelect() == LogisticalFormLineRepository.TYPE_DETAIL)
@@ -454,9 +449,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
     }
 
     OptionalInt max =
-        logisticalForm
-            .getLogisticalFormLineList()
-            .stream()
+        logisticalForm.getLogisticalFormLineList().stream()
             .mapToInt(LogisticalFormLine::getSequence)
             .max();
 
@@ -482,9 +475,13 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
             totalGrossMass = totalGrossMass.add(logisticalFormLine.getGrossMass());
           }
 
-          totalVolume =
-              totalVolume.add(
-                  logisticalFormLineService.evalVolume(logisticalFormLine, scriptHelper));
+          BigDecimal toAdd = logisticalFormLineService.evalVolume(logisticalFormLine, scriptHelper);
+          if (toAdd == null) {
+            throw new LogisticalFormError(
+                logisticalForm, I18n.get(IExceptionMessage.LOGISTICAL_FORM_INVALID_DIMENSIONS));
+          } else {
+            totalVolume = totalVolume.add(toAdd);
+          }
         } else if (stockMoveLine != null) {
           totalNetMass =
               totalNetMass.add(logisticalFormLine.getQty().multiply(stockMoveLine.getNetMass()));
@@ -529,8 +526,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
       domainList.add(String.format("self.id NOT IN (%s)", idListString));
     }
 
-    return domainList
-        .stream()
+    return domainList.stream()
         .map(domain -> String.format("(%s)", domain))
         .collect(Collectors.joining(" AND "));
   }
@@ -577,9 +573,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 
     Set<StockMove> stockMoveSet = new HashSet<>();
 
-    logisticalForm
-        .getLogisticalFormLineList()
-        .stream()
+    logisticalForm.getLogisticalFormLineList().stream()
         .filter(
             logisticalFormLine ->
                 logisticalFormLine.getTypeSelect() == LogisticalFormLineRepository.TYPE_DETAIL
@@ -641,8 +635,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 
     if (freightCarrierCustomerAccountNumberList != null) {
       Optional<FreightCarrierCustomerAccountNumber> freightCarrierCustomerAccountNumber =
-          freightCarrierCustomerAccountNumberList
-              .stream()
+          freightCarrierCustomerAccountNumberList.stream()
               .filter(it -> it.getCarrierPartner().equals(logisticalForm.getCarrierPartner()))
               .findFirst();
 

@@ -41,7 +41,6 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
@@ -80,7 +79,8 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
       Set<MetaFile> metaFiles,
       String addressBlock,
       int mediaTypeSelect,
-      EmailAccount emailAccount) {
+      EmailAccount emailAccount,
+      String signature) {
 
     Message message =
         super.createMessage(
@@ -96,7 +96,8 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
             metaFiles,
             addressBlock,
             mediaTypeSelect,
-            emailAccount);
+            emailAccount,
+            signature);
 
     message.setSenderUser(AuthUtils.getUser());
     message.setCompany(userService.getUserActiveCompany());
@@ -146,15 +147,10 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
   public Message sendByEmail(Message message) throws MessagingException, AxelorException {
 
     if (Beans.get(AppBaseService.class).getAppBase().getActivateSendingEmail()) {
+      message.setStatusSelect(MessageRepository.STATUS_IN_PROGRESS);
       return super.sendByEmail(message);
     }
-
-    message.setSentByEmail(true);
-    message.setStatusSelect(MessageRepository.STATUS_SENT);
-    message.setSentDateT(LocalDateTime.now());
-    message.setSenderUser(AuthUtils.getUser());
-
-    return messageRepository.save(message);
+    return message;
   }
 
   public List<String> getEmailAddressNames(Set<EmailAddress> emailAddressSet) {

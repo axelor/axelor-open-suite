@@ -92,7 +92,8 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
       Set<MetaFile> metaFiles,
       String addressBlock,
       int mediaTypeSelect,
-      EmailAccount emailAccount) {
+      EmailAccount emailAccount,
+      String signature) {
 
     emailAccount =
         emailAccount != null
@@ -116,7 +117,8 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
             bccEmailAddressList,
             addressBlock,
             mediaTypeSelect,
-            emailAccount);
+            emailAccount,
+            signature);
 
     messageRepository.save(message);
 
@@ -159,7 +161,8 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
       List<EmailAddress> bccEmailAddressList,
       String addressBlock,
       int mediaTypeSelect,
-      EmailAccount emailAccount) {
+      EmailAccount emailAccount,
+      String signature) {
 
     Set<EmailAddress> replyToEmailAddressSet = Sets.newHashSet();
     Set<EmailAddress> bccEmailAddressSet = Sets.newHashSet();
@@ -181,7 +184,9 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
       }
     }
 
-    if (emailAccount != null) {
+    if (!Strings.isNullOrEmpty(signature)) {
+      content += "<p></p><p></p>" + signature;
+    } else if (emailAccount != null) {
       content += "<p></p><p></p>" + Beans.get(MailAccountService.class).getSignature(emailAccount);
     }
 
@@ -211,7 +216,6 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
 
   public Message sendMessage(Message message) throws AxelorException {
     try {
-      message.setStatusSelect(MessageRepository.STATUS_IN_PROGRESS);
       if (message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_MAIL) {
         return sendByMail(message);
       } else if (message.getMediaTypeSelect() == MessageRepository.MEDIA_TYPE_EMAIL) {

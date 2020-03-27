@@ -4,7 +4,7 @@
 
 	<module name="fleet" package="com.axelor.apps.fleet.db"/>
 
-	<entity name="RepairCause" lang="java" cachable="true">
+	<entity name="RepairCause" lang="java" cacheable="true">
 		<string name="name" title="Name"/>
 	</entity>
 

@@ -4,7 +4,7 @@
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
     <form name="configurator-bom-form" title="Configurator BOM"
-    		onNew="action-configurator-bom-method-set-parent"
+    		onNew="action-configurator-bom-record-set-parent"
     		model="com.axelor.apps.production.db.ConfiguratorBOM">
         <panel name="mainPanel">
             <panel>
@@ -53,17 +53,53 @@
             </panel>
         </panel>
       <panel-tabs name="mainPanelTab">
-        <panel-related name="configuratorBomListPanel" field="configuratorBomList" form-view="configurator-bom-form" grid-view="configurator-bom-grid" colSpan="12"/>
+        <panel-related name="configuratorBomListPanel" canSelect="true" field="configuratorBomList" title="Components" height="15" domain="self.defineSubBillOfMaterial = true and (:id is null or self.id != :id)" form-view="configurator-bom-line-form" grid-view="configurator-bom-line-grid" colSpan="12"/>
         <panel-dashlet name="configuratorBomTreePanel" title="Configurator BOM tree view" action="action-configurator-bom-view-tree"/>
       </panel-tabs>
     </form>
 
-    <grid name="configurator-bom-grid" title="Configurator BOM" model="com.axelor.apps.production.db.ConfiguratorBOM">
-        <field name="name"/>
-        <field name="product"/>
-        <field name="qty"/>
-        <field name="unit"/>
-    </grid>
+  <form name="configurator-bom-line-form" title="Configurator BOM component"
+    onNew="action-configurator-bom-record-set-parent"
+    model="com.axelor.apps.production.db.ConfiguratorBOM">
+    <panel name="mainPanel">
+      <field name="useCondition" widget="CodeEditor" height="120" colSpan="12"
+        x-code-syntax="groovy"/>
+      <panel name="productPanel" title="Product">
+        <field name="defProductAsFormula" colSpan="6" showIf="!defProductFromConfigurator"/>
+        <field name="product" colSpan="12"
+          showIf="!defProductAsFormula &amp;&amp; !defProductFromConfigurator"
+          onSelect="action-configurator-bom-attrs-product-domain"
+          form-view="product-form" grid-view="product-grid"/>
+        <field name="productFormula" colSpan="12" height="120" widget="CodeEditor"
+          x-code-syntax="groovy" showTitle="false" showIf="defProductAsFormula"/>
+      </panel>
+      <panel name="qtyPanel" title="Qty">
+        <field name="defQtyAsFormula" colSpan="6"/>
+        <field name="qty" colSpan="12" showIf="!defQtyAsFormula"/>
+        <field name="qtyFormula" colSpan="12" height="120" widget="CodeEditor"
+          showTitle="false" x-code-syntax="groovy" showIf="defQtyAsFormula"/>
+      </panel>
+      <panel name="unitPanel" title="Unit">
+        <field name="defUnitAsFormula" colSpan="6"/>
+        <field name="unit" colSpan="12" showIf="!defUnitAsFormula"/>
+        <field name="unitFormula" colSpan="12" height="120" widget="CodeEditor"
+          showTitle="false" x-code-syntax="groovy" showIf="defUnitAsFormula"/>
+      </panel>
+    </panel>
+  </form>
+
+  <grid name="configurator-bom-grid" title="Configurator BOM" model="com.axelor.apps.production.db.ConfiguratorBOM">
+    <field name="name"/>
+    <field name="product"/>
+    <field name="qty"/>
+    <field name="unit"/>
+  </grid>
+
+  <grid name="configurator-bom-line-grid" title="Configurator BOM" model="com.axelor.apps.production.db.ConfiguratorBOM">
+    <field name="product"/>
+    <field name="qty"/>
+    <field name="unit"/>
+  </grid>
 
      <action-view name="action-configurator-bom-view" title="Configurator BOM"
                   model="com.axelor.apps.production.db.ConfiguratorBOM">
@@ -81,15 +117,16 @@
      	<context name="confBomId" expr="eval: id"/>
     </action-view>
     
-    <action-record name="action-configurator-bom-method-set-parent" model="com.axelor.apps.production.db.ConfiguratorBOM">
+    <action-record name="action-configurator-bom-record-set-parent" model="com.axelor.apps.production.db.ConfiguratorBOM">
     	<field name="parentConfiguratorBOM" expr="eval: __parent__"/>
+      <field name="defineSubBillOfMaterial" expr="eval: !__parent__"/>
     </action-record>
     
     <action-attrs name="action-configurator-bom-attrs-product-domain">
         <attribute name="domain" for="product"
                    expr="eval: &quot; self.productTypeSelect = 'storable' AND dtype = 'Product'&quot;"/>
-    	<attribute name="domain" for="product" if="parentConfiguratorBOM == null"
-                   expr="eval: &quot; self.productTypeSelect = 'storable' &amp;&amp; self.productSubTypeSelect != 3 AND dtype = 'Product'&quot;" />
+    	<attribute name="domain" for="product" if="parentConfiguratorBOM == null" 
+                   expr="eval: &quot; self.productTypeSelect = 'storable' AND self.productSubTypeSelect != 3 AND dtype = 'Product'&quot;" />
     </action-attrs>
 
     <tree name="configurator-bom-tree" title="Configurators BOMs tree">

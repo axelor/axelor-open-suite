@@ -12,8 +12,8 @@ axelor {
 }
 
 dependencies {
-	compile project(":modules:axelor-purchase")
-	compile project(":modules:axelor-sale")
-	compile project(":modules:axelor-stock")
-	compile project(":modules:axelor-account")
+	api project(":modules:axelor-purchase")
+	api project(":modules:axelor-sale")
+	api project(":modules:axelor-stock")
+	api project(":modules:axelor-account")
 }

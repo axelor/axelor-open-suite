@@ -4369,6 +4369,12 @@ row["ex_tax_total"] - row["totalDiscountAmount"]
                             <property name="width">10%</property>
                         </column>
                         <column id="4615">
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row["is_title_line"]</expression>
+                                </structure>
+                            </list-property>
                             <property name="width">10%</property>
                         </column>
                         <column id="4616">
@@ -5065,7 +5071,7 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                             </list-property>
                                             <structure name="toc"/>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["quantity"],"#,##0."+Array((row["nb_decimal_digit_for_qty"] || 2)+1).join("0"))</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row["UnitCode"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["quantity"],"#,##0."+Array((row["nb_decimal_digit_for_qty"] || 2)+1).join("0"))</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["UnitCode"]</VALUE-OF>]]></text-property>
                                         </text>
                                         <text id="5378">
                                             <property name="fontSize">8pt</property>
@@ -5087,7 +5093,7 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                                 </structure>
                                             </list-property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["quantity"],"#,##0."+Array((row["nb_decimal_digit_for_qty"] || 2)+1).join("0"))</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row["UnitCode"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["quantity"],"#,##0."+Array((row["nb_decimal_digit_for_qty"] || 2)+1).join("0"))</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="4567">

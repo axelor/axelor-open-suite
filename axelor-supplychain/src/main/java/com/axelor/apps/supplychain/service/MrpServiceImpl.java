@@ -182,9 +182,7 @@ public class MrpServiceImpl implements MrpService {
     // Initialize
     this.mrp = mrp;
     List<StockLocation> slList =
-        stockLocationService
-            .getAllLocationAndSubLocation(mrp.getStockLocation(), false)
-            .stream()
+        stockLocationService.getAllLocationAndSubLocation(mrp.getStockLocation(), false).stream()
             .filter(x -> !x.getIsNotInMrp())
             .collect(Collectors.toList());
     this.stockLocationList = slList;
@@ -624,6 +622,9 @@ public class MrpServiceImpl implements MrpService {
     if (maturityDate == null) {
       maturityDate = purchaseOrder.getDeliveryDate();
     }
+    if (maturityDate == null) {
+      maturityDate = purchaseOrderLine.getDesiredDelivDate();
+    }
 
     maturityDate = this.computeMaturityDate(maturityDate, purchaseOrderMrpLineType);
 
@@ -721,6 +722,9 @@ public class MrpServiceImpl implements MrpService {
 
     if (maturityDate == null) {
       maturityDate = saleOrder.getDeliveryDate();
+    }
+    if (maturityDate == null) {
+      maturityDate = saleOrderLine.getDesiredDelivDate();
     }
     maturityDate = this.computeMaturityDate(maturityDate, saleOrderMrpLineType);
 

@@ -121,6 +121,13 @@ public class SaleOrderLineController {
     }
   }
 
+  /**
+   * Called from sale order line request quantity wizard view. Call {@link
+   * ReservedQtyService#updateReservedQty(SaleOrderLine, BigDecimal)}.
+   *
+   * @param request
+   * @param response
+   */
   public void changeReservedQty(ActionRequest request, ActionResponse response) {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
     BigDecimal newReservedQty = saleOrderLine.getReservedQty();
@@ -217,8 +224,7 @@ public class SaleOrderLineController {
         domain +=
             String.format(
                 " AND self.id IN (%s)",
-                authorizedPartnerIdsList
-                    .stream()
+                authorizedPartnerIdsList.stream()
                     .map(Object::toString)
                     .collect(Collectors.joining(",")));
       }

@@ -107,7 +107,7 @@
 
     <!-- Employment contract -->
     <panel name="contractualInfoSBSPanel" title="Contractual information" showIf="stepByStepSelect == 2">
-      <field name="dateOfHire" colSpan="3"/>
+      <field name="hireDate" colSpan="3"/>
       <field name="seniorityDate" colSpan="3"/>
       <field name="bonusCoef" colSpan="3"/>
       <field name="profitSharingBeneficiary" colSpan="3"/>
@@ -234,7 +234,7 @@
 
       <panel name="employmentContractsPanel" title="Employment contracts">
         <panel name="contractualInfoPanel" title="Contractual information" colSpan="12">
-          <field name="dateOfHire" colSpan="3"/>
+          <field name="hireDate" colSpan="3"/>
           <field name="seniorityDate" colSpan="3"/>
           <field name="bonusCoef" colSpan="3"/>
           <field name="profitSharingBeneficiary" colSpan="3"/>

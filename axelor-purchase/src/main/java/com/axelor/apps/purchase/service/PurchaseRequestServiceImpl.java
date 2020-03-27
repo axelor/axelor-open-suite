@@ -132,9 +132,7 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
     PurchaseOrderLine purchaseOrderLine =
         purchaseOrder.getPurchaseOrderLineList() != null
                 && !purchaseOrder.getPurchaseOrderLineList().isEmpty()
-            ? purchaseOrder
-                .getPurchaseOrderLineList()
-                .stream()
+            ? purchaseOrder.getPurchaseOrderLineList().stream()
                 .filter(poLine -> poLine.getProduct().equals(product))
                 .findFirst()
                 .orElse(null)

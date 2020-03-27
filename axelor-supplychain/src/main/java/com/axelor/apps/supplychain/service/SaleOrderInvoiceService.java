@@ -273,7 +273,7 @@ public interface SaleOrderInvoiceService {
    * @param saleOrder the sale order from context
    * @return the domain for the operation select field in the invoicing wizard form
    */
-  Map<String, Integer> getInvoicingWizardOperationDomain(SaleOrder saleOrder);
+  List<Integer> getInvoicingWizardOperationDomain(SaleOrder saleOrder);
 
   /**
    * throw exception if all invoices amount generated from the sale order and amountToInvoice is

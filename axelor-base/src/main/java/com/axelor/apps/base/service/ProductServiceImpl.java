@@ -108,7 +108,9 @@ public class ProductServiceImpl implements ProductService {
       }
     }
 
-    if ((BigDecimal) productCompanyService.get(product, "costPrice", company) != null && managePriceCoef != null) {
+    if ((BigDecimal) productCompanyService.get(product, "costPrice", company) != null
+    	&& managePriceCoef != null
+    	&& (Boolean) productCompanyService.get(product, "autoUpdateSalePrice", company)) {
 
 	  productCompanyService.set(product, "salePrice",
           (((BigDecimal) productCompanyService.get(product, "costPrice", company)).multiply(managePriceCoef))
@@ -140,7 +142,9 @@ public class ProductServiceImpl implements ProductService {
     for (Product productVariant : productVariantList) {
 
       productVariant.setCostPrice(product.getCostPrice());
-      productVariant.setSalePrice(product.getSalePrice());
+      if (product.getAutoUpdateSalePrice()) {
+        productVariant.setSalePrice(product.getSalePrice());
+      }
       productVariant.setManagPriceCoef(product.getManagPriceCoef());
 
       this.updateSalePrice(productVariant, null);

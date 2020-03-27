@@ -144,9 +144,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl {
     SaleOrder saleOrder = invoice.getSaleOrder();
     // search sale order in invoice lines
     List<SaleOrder> saleOrderList =
-        invoice
-            .getInvoiceLineList()
-            .stream()
+        invoice.getInvoiceLineList().stream()
             .map(invoiceLine -> invoice.getSaleOrder())
             .collect(Collectors.toList());
 
@@ -160,8 +158,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl {
       return new ArrayList<>();
     } else {
       // get move lines from sale order
-      return saleOrderList
-          .stream()
+      return saleOrderList.stream()
           .flatMap(saleOrder1 -> saleOrder1.getAdvancePaymentList().stream())
           .filter(Objects::nonNull)
           .distinct()

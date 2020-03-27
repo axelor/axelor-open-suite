@@ -536,6 +536,8 @@ public interface IExceptionMessage {
       "%s : Letter template missing for debt recovery matrix %s (Partner %s, Level %s)." /*)*/;
   static final String DEBT_RECOVERY_ACTION_4 = /*$$(*/
       "Email is not sent. Please check email account configuration." /*)*/;
+  static final String DEBT_RECOVERY_ACTION_5 = /*$$(*/
+      "No email address in debt recovery %s. Please set one." /*)*/;
 
   /** Debt recovery service */
   static final String DEBT_RECOVERY_1 = /*$$(*/ "There's no accounting situation." /*)*/;
@@ -765,6 +767,8 @@ public interface IExceptionMessage {
    */
   static final String SUBROGATION_RELEASE_MISSING_SEQUENCE = /*$$(*/
       "Missing subrogation release sequence for company %s" /*)*/;
+  static final String SUBROGATION_RELEASE_SUBROGATION_ALREADY_EXIST_FOR_INVOICES = /*$$(*/
+      "A transmitted or a accounted subrogation release already exist for the invoices %s." /*)*/;
 
   /** MoveLine */
   static final String NO_MOVE_LINE_SELECTED = /*$$(*/ "No Lines selected" /*)*/;
@@ -799,4 +803,7 @@ public interface IExceptionMessage {
 
   static final String CLOSE_NO_REPORTED_BALANCE_DATE = /*$$(*/
       "Please set a reported balance date on fiscal year" /*)*/;
+
+  static final String ACCOUNT_CODE_ALREADY_IN_USE_FOR_COMPANY = /*$$(*/
+      "The account code %s is already used for the company %s, there cannot be two accounts with the same code for the same company." /*)*/;;
 }

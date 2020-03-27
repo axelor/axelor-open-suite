@@ -90,7 +90,7 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
                   .fetch()
                   .size()
               > 0;
-      if (ProductRepository.PRODUCT_TYPE_SERVICE.equals((String) productCompanyService.get(product, "productTypeSelect", saleOrder.getCompany()))
+      if (product != null && ProductRepository.PRODUCT_TYPE_SERVICE.equals((String) productCompanyService.get(product, "productTypeSelect", saleOrder.getCompany()))
           && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE
           && !(isTaskGenerated)) {
 

@@ -33,6 +33,7 @@
 		<integer name="productInAtiSelect" title="Products ATI/WT" selection="base.in.ati.select" default="1"/>
 		<integer name="nbDecimalDigitForUnitPrice" title="Nb of digits for unit prices" min="0" max="10" default="2"/>
 		<integer name="nbDecimalDigitForQty" title="Nb of digits for quantities" min="0" max="10" default="2"/>
+		<integer name="globalTrackingLogPersistence" title="Tracking logs persistence (in months)" min="0" default="1"/>
 		
 		<integer name="computeMethodDiscountSelect" title="Compute Method for Discounts" selection="base.compute.method.discount.select" default="1"/>
 
@@ -73,8 +74,11 @@
         <integer name="limitNumberTasksGenerated" title="Number of tasks generated at most at once" min="1" default="100"/>
     
 		<boolean name="isSharedAddress" title="Shared address" default="false"/>
-		
+
 		<many-to-many name="companySpecificProductFieldsList" ref="com.axelor.meta.db.MetaField" title="Company-specific product fields"/>
+	   	
+	   	<one-to-many name="globalTrackingConfigurationLines" ref="com.axelor.apps.admin.db.GlobalTrackingConfigurationLine" mappedBy="appBase" orphanRemoval="true"/>
+
 		<extra-code>
 	   		<![CDATA[
 	   			public static final int DISCOUNT_SEPARATE = 1;

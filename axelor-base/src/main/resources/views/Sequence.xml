@@ -42,6 +42,10 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
 			<field name="monthlyResetOk" onChange="action-sequence-monthly-reset" />
 		</panel>
 		<panel-related name="sequenceVersionListPanel" field="sequenceVersionList" grid-view="sequence-version-grid" form-view="sequence-version-form"  />
+		<panel-mail name="mailsPanel">
+	  	 	<mail-messages limit="4"/>
+			<mail-followers/>
+		 </panel-mail>
 	</form>
 	
     <grid editable="true" name="sequence-version-grid" title="Versions" model="com.axelor.apps.base.db.SequenceVersion" orderBy="-startDate">

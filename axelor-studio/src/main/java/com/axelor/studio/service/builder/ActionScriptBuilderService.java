@@ -106,8 +106,15 @@ public class ActionScriptBuilderService {
     fbuilder = new ArrayList<>();
     varCount = 1;
     int level = 1;
+    String condition = builder.getConditionText();
 
-    stb.append(format("var ctx = $request.context;", level));
+    stb.append(
+        condition == null
+            ? format("var ctx = $request.context;", level)
+            : format("var ctx = $request.context;", level)
+                + "\n"
+                + format("if(" + condition.replaceAll("\\$.", "ctx.") + "){", level));
+
     String targetModel;
     if (builder.getTypeSelect() == ActionBuilderRepository.TYPE_SELECT_CREATE) {
       targetModel = builder.getTargetModel();
@@ -126,7 +133,7 @@ public class ActionScriptBuilderService {
       addUpdateCode(builder.getIsJson(), stb, level, targetModel);
     }
 
-    stb.append("\n");
+    stb.append(condition == null ? "\n" : format("}", level) + "\n");
 
     addRootFunction(builder, stb, level);
 

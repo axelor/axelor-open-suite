@@ -207,7 +207,7 @@
 												<span class="label label-success" style="margin: 5px 0 0 10px !important; display: inline-table; line-height: initial;" ng-show="record.conformitySelect == 2 && record.statusSelect != 1" x-translate>Compliant</span>
 												<span class="label label-important" style="margin: 5px 0 0 10px !important; display: inline-table; line-height: initial;" ng-show="record.conformitySelect == 3 && record.statusSelect != 1" x-translate>Non-compliant</span>
 											</h4>
-			
+
 										]]></viewer>
 							</field>
 			            </panel>
@@ -429,7 +429,6 @@
             
 			<panel name="datesPanel" title="Dates">
             	<field name="realDate" colSpan="4"/>
-                <field name="reservationDateTime" colSpan="4" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation())"/>
                 <field name="pickingEditDate" hidden="true" showIf="pickingEditDate" readonly="true"/>
 			</panel>
 
@@ -592,6 +591,7 @@
     	<action name="action-stock-move-method-compute"/>
     	<action name="action-stock-move-line-method-change-conformity"/>
     	<action name="action-stock-move-method-set-available-status"/>
+        <action name="action-stock-move-method-is-allocated-stock-move-line-removed"/>
     </action-group>
     
 	<action-group name="action-group-stock-stockmove-plan-click">
@@ -682,7 +682,10 @@
     </action-attrs>
 	
 	<action-attrs name="action-stock-move-hide-reserved-qty">
-        <attribute for="stockMoveLineList.reservedQty" name="hidden" expr="eval: typeSelect != 2"/>
+        <attribute for="stockMoveLineList.reservedQty" name="hidden" expr="eval: typeSelect == 3"/>
+        <attribute for="stockMoveLineList.requestedReservedQty" name="hidden" expr="eval: typeSelect == 3"/>
+        <attribute for="stockMoveLineList.allocateAll" name="hidden" expr="eval: typeSelect == 3"/>
+        <attribute for="stockMoveLineList.deallocate" name="hidden" expr="eval: typeSelect == 3"/>
         <attribute for="stockMoveLineList.requestedReservedQty,reservationDateTime" name="hidden" expr="eval: typeSelect == 3"/>
         <attribute name="hidden" for="stockMoveLineList.availableStatus" expr="eval: typeSelect == 3"/>
 	</action-attrs>
@@ -776,7 +779,7 @@
         <field if="company == null" name="plannedStockMoveMessageTemplate" expr="eval: null"/>
         <field if="company == null" name="realStockMoveMessageTemplate" expr="eval: null"/>
     </action-record>
-    
+
     <action-record name="action-stock-move-record-set-stock-locations-company-onchange" model="com.axelor.apps.stock.db.StockMove">
 	    <field if="typeSelect == __repo__(StockMove).TYPE_OUTGOING &amp;&amp; company != null" name="fromStockLocation" expr="eval: company?.getStockConfig()?.getPickupDefaultStockLocation()"/>
 	    <field if="typeSelect == __repo__(StockMove).TYPE_OUTGOING &amp;&amp; company != null" name="toStockLocation" expr="eval:company?.getStockConfig()?.getCustomerVirtualStockLocation()"/>
@@ -784,7 +787,7 @@
 	    <field if="typeSelect == __repo__(StockMove).TYPE_INCOMING &amp;&amp; company != null" name="fromStockLocation" expr="eval:company?.getStockConfig()?.getSupplierVirtualStockLocation()"/>
 	    <field name="fromStockLocation,toStockLocation" expr="eval: null" if="company == null"/>
 	</action-record>
-	
+
 	<action-method name="action-stock-move-method-plan">
 		<call class="com.axelor.apps.stock.web.StockMoveController" method="plan"/>
 	</action-method>
@@ -1013,5 +1016,9 @@
 		<context name="_typeSelect" expr="eval:_typeSelect"/>
 		<context name="_isReversion" expr="eval:_isReversion"/>
 	</action-view>
+  
+    <action-method name="action-stock-move-method-is-allocated-stock-move-line-removed">
+       <call class="com.axelor.apps.supplychain.web.StockMoveController" method="isAllocatedStockMoveLineRemoved"/>
+    </action-method>
 
 </object-views>

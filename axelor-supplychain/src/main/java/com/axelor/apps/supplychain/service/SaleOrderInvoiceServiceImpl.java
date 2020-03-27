@@ -746,9 +746,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         .filter(
             "self.saleOrder.id = ? OR (self.saleOrder.id IS NULL AND EXISTS(SELECT 1 FROM self.invoiceLineList inli WHERE inli.saleOrderLine.id IN (?)))",
             saleOrder.getId(),
-            saleOrder
-                .getSaleOrderLineList()
-                .stream()
+            saleOrder.getSaleOrderLineList().stream()
                 .map(SaleOrderLine::getId)
                 .collect(Collectors.toList()))
         .fetch();
@@ -903,28 +901,36 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   }
 
   @Override
-  public Map<String, Integer> getInvoicingWizardOperationDomain(SaleOrder saleOrder) {
+  public List<Integer> getInvoicingWizardOperationDomain(SaleOrder saleOrder) {
     boolean manageAdvanceInvoice =
         Beans.get(AppAccountService.class).getAppAccount().getManageAdvancePaymentInvoice();
+    boolean allowTimetableInvoicing =
+        Beans.get(AppSupplychainService.class).getAppSupplychain().getAllowTimetableInvoicing();
     BigDecimal amountInvoiced = saleOrder.getAmountInvoiced();
     BigDecimal exTaxTotal = saleOrder.getExTaxTotal();
+    Invoice invoice =
+        Query.of(Invoice.class)
+            .filter(" self.saleOrder.id = :saleOrderId AND self.statusSelect != :invoiceStatus")
+            .bind("saleOrderId", saleOrder.getId())
+            .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
+            .fetchOne();
+    List<Integer> operationSelectList = new ArrayList<>();
+    operationSelectList.add(0);
+    if (exTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
+      operationSelectList.add(Integer.valueOf(SaleOrderRepository.INVOICE_LINES));
+    }
+    if (manageAdvanceInvoice && exTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
+      operationSelectList.add(Integer.valueOf(SaleOrderRepository.INVOICE_ADVANCE_PAYMENT));
+    }
+    if (allowTimetableInvoicing) {
+      operationSelectList.add(Integer.valueOf(SaleOrderRepository.INVOICE_TIMETABLES));
+    }
+    if (invoice == null && amountInvoiced.compareTo(BigDecimal.ZERO) == 0
+        || exTaxTotal.compareTo(BigDecimal.ZERO) == 0) {
+      operationSelectList.add(Integer.valueOf(SaleOrderRepository.INVOICE_ALL));
+    }
 
-    Map<String, Integer> contextValues = new HashMap<>();
-    contextValues.put(
-        "invoiceAll",
-        amountInvoiced.compareTo(BigDecimal.ZERO) == 0 || exTaxTotal.compareTo(BigDecimal.ZERO) == 0
-            ? SaleOrderRepository.INVOICE_ALL
-            : 0);
-
-    contextValues.put(
-        "invoiceLines",
-        exTaxTotal.compareTo(BigDecimal.ZERO) == 0 ? 0 : SaleOrderRepository.INVOICE_LINES);
-    contextValues.put(
-        "invoiceAdvPayment",
-        manageAdvanceInvoice && exTaxTotal.compareTo(BigDecimal.ZERO) != 0
-            ? SaleOrderRepository.INVOICE_ADVANCE_PAYMENT
-            : 0);
-    return contextValues;
+    return operationSelectList;
   }
 
   @Override
@@ -932,9 +938,11 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent) throws AxelorException {
     List<Invoice> invoices =
         Query.of(Invoice.class)
-            .filter(" self.saleOrder.id = :saleOrderId AND self.statusSelect != :invoiceStatus")
+            .filter(
+                " self.saleOrder.id = :saleOrderId AND self.statusSelect != :invoiceStatus AND self.operationTypeSelect = :operationTypeSelect")
             .bind("saleOrderId", saleOrder.getId())
             .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
+            .bind("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
             .fetch();
     if (isPercent) {
       amountToInvoice =

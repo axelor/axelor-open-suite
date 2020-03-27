@@ -47,7 +47,12 @@
      <action name="action-method-find-all-sublocation"/>
      <action name="action-method-update-indicators" />
      <action name="action-attrs-reload-panel-dashlet"/>
+     <action name="action-stock-details-record-set-user-s-company"/>
   </action-group>
+
+	<action-record name="action-stock-details-record-set-user-s-company" model="com.axelor.apps.base.db.Product">
+		<field name="$company" expr="eval: __user__.getActiveCompany()" if="eval: _isFromMenu"/>
+	</action-record>
 
   <action-record name="action-record-empty-company-and-stock-location" model="com.axelor.apps.base.db.Product">
      <field name="$stockLocation" expr="eval: null" if="!$company"/>

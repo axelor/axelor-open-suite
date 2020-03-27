@@ -61,9 +61,8 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(
-  name = "PicklistEntryType",
-  propOrder = {"moniker", "partialAddress", "picklist", "postcode", "score"}
-)
+    name = "PicklistEntryType",
+    propOrder = {"moniker", "partialAddress", "picklist", "postcode", "score"})
 public class PicklistEntryType {
 
   @XmlElement(name = "Moniker", required = true)
