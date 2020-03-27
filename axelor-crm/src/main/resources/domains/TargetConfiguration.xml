@@ -15,7 +15,7 @@
 <!-- Opportunity -->
     <decimal name="opportunityAmountWon" title="Amount Won"/>
     <integer name="opportunityCreatedNumber" title="Created Nbr"/>
-    <integer name="opportunityCreatedWon" title="Created Won"/>
+    <integer name="opportunityCreatedWon" title="Closed Won"/>
     
 <!-- Sales order -->
 <!-- 	<decimal name="saleOrderAmountWon" title="Amount won"/> -->
@@ -28,8 +28,8 @@
     
     <integer name="periodTypeSelect" title="Period type" selection="crm.target.configuration.period.type.select"/>
     
-    <date name="fromDate" title="Date from" required="true"/>
-    <date name="toDate" title="Date to" required="true"/>
+    <date name="fromDate" title="Starting date" required="true"/>
+    <date name="toDate" title="End date" required="true"/>
     
  	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
     

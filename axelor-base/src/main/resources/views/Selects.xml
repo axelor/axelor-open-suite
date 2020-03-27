@@ -5,7 +5,7 @@
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
-	
+
 	<selection name="grade.1.up.to.10.select">
 		<option value="1">1</option>
 		<option value="2">2</option>
@@ -18,11 +18,11 @@
 		<option value="9">9</option>
 		<option value="10">10</option>
 	</selection>
-	
+
 	<selection name="iterritory.city.type.select">
 		<option value="geonames">Geonames</option>
 	</selection>
-	
+
 	<selection name="base.city.auto.import.type.select">
 		<option value="FR.zip">France</option>
 		<option value="allCountries.zip">All Countries</option>
@@ -34,7 +34,7 @@
 		<option value="3">Dr</option>
 		<option value="4">Prof.</option>
 	</selection>
-	
+
 	<selection name="partner.partner.type.select">
 		<option value="1">Company</option>
 		<option value="2">Individual</option>
@@ -66,7 +66,7 @@
 		<option value="2">Purchase</option>
 		<option value="3">Produce</option>
 	</selection>
-	
+
 	<selection name='ialarm.type.select'>
 		<option value='invoice'>Invoice</option>
 		<option value='payment'>Payment Schedule</option>
@@ -99,15 +99,16 @@
 		<option value="ods">ODS</option>
 	</selection>
 
-	<selection name='iadministration.declaration.of.exchanges.export.type.select'>
+	<selection
+		name='iadministration.declaration.of.exchanges.export.type.select'>
 		<option value="pdf">PDF</option>
 		<option value="csv">CSV</option>
 	</selection>
-	
+
 	<selection name="sequence.generic.code.select">
 		<option value="partner">Partner (Cust/Suppl)</option>
 		<option value="product">Product</option>
-        <option value="abcAnalysis">ABC Analysis</option>
+		<option value="abcAnalysis">ABC Analysis</option>
 	</selection>
 
 	<!-- TODO à modifier, produit, taxe, paiement dans le code java ou les vues -->
@@ -131,21 +132,22 @@
 		<option value="1">Google</option>
 		<option value="2">Open street map</option>
 	</selection>
-	
+
 	<selection name="base.app.base.osm.routing.api.select">
 		<option value="1">YOUR navigation</option>
 		<option value="2">OSRM</option>
 	</selection>
-	
+
 	<selection name="base.app.base.currency.api.select">
-		<option value="https://sdw-wsrest.ecb.europa.eu/service/data/EXR/D.%s+%s.EUR.SP00.A?startPeriod=%s&amp;endPeriod=%s">ECB</option>
+		<option
+			value="https://sdw-wsrest.ecb.europa.eu/service/data/EXR/D.%s+%s.EUR.SP00.A?startPeriod=%s&amp;endPeriod=%s">ECB</option>
 	</selection>
 
 	<selection name="base.price.list.type.select">
 		<option value="1">Sale</option>
 		<option value="2">Purchase</option>
 	</selection>
-	
+
 	<selection name="base.price.list.line.type.select">
 		<option value="1">Discount</option>
 		<option value="2">Additionnal</option>
@@ -153,7 +155,7 @@
 	</selection>
 
 	<selection name="base.price.list.line.amount.type.select">
-        <option value="0">No Discount</option>
+		<option value="0">No Discount</option>
 		<option value="1">In %</option>
 		<option value="2">Fixed</option>
 	</selection>
@@ -217,122 +219,122 @@
 		<option value="3">3 Months</option>
 		<option value="6">6 Months</option>
 		<option value="12">1 Year</option>
-	</selection>	
-	
+	</selection>
+
 	<selection name="account.year.type.select">
 		<option value="0">Civil Year</option>
 		<option value="1">Fiscal Year</option>
 		<option value="2">Payroll Year</option>
 	</selection>
-	
+
 	<selection name="base.year.status.select">
 		<option value="1">Opened</option>
 		<option value="2">Closed</option>
 		<option value="3">Adjusting</option>
 	</selection>
-	
+
 	<selection name="base.period.status.select">
 		<option value="1">Opened</option>
 		<option value="2">Closed</option>
 		<option value="3">Adjusting</option>
 	</selection>
-	
+
 	<selection name="company.partner.type.select">
 		<option value="1">Company</option>
 		<option value="2">Individual</option>
 	</selection>
-	
+
 	<selection name="base.batch.action.select">
 		<option value="1">Remind time sheets validation</option>
 	</selection>
-	
+
 	<selection name="base.duration.type.select">
 		<option value="1">Month</option>
 		<option value="2">Day</option>
 	</selection>
-	
+
 	<selection name="base.compute.method.discount.select">
 		<option value="1">Compute Discount Separately</option>
 		<option value="2">Include Discount in unit price only for replace type</option>
 		<option value="3">Include Discount in unit price</option>
 	</selection>
-	
+
 	<selection name="message.related.to.select" id="base.message.related.to.select">
 		<option value="com.axelor.apps.base.db.Partner">Partner/Contact</option>
 		<option value="com.axelor.apps.base.db.Product">Product</option>
 	</selection>
-	
+
 	<selection name="base.in.ati.select">
 		<option value="1">Always W.T.</option>
 		<option value="2">Always A.T.I.</option>
 		<option value="3">W.T. by default</option>
 		<option value="4">A.T.I. by default</option>
 	</selection>
-	
+
 	<selection name="base.product.cost.type.select">
 		<option value="1">Manual</option>
 		<option value="2">Last purchase price</option>
 		<option value="3">Average Price</option>
 		<option value="4">Last production price</option>
 	</selection>
-	
+
 	<selection name="product.inventory.type.select">
 		<option value="1">Yearly</option>
 		<option value="2">Cycle counting</option>
 	</selection>
-	
-	
+
+
 	<selection name="product.sub.type.product.select">
 		<option value="1">Finished product</option>
 		<option value="2">Semi-finished product</option>
 		<option value="3">Component</option>
 	</selection>
-	
-	
+
+
 	<selection name="crm.event.related.to.select" id="base.crm.event.related.to.select">
 		<option value="com.axelor.apps.base.db.Partner">Partner/Contact</option>
 		<option value="com.axelor.apps.base.db.Product">Product</option>
 	</selection>
-	
+
 	<selection name="unit.conversion.type.select">
 		<option value="1">Coeff</option>
 		<option value="2">Formula</option>
 	</selection>
-	
+
 	<selection name="i.calendar.user.status.select">
 		<option value="1">Yes</option>
 		<option value="2">No</option>
 		<option value="3">Maybe</option>
 	</selection>
-	
+
 	<selection name="i.cal.event.visibility.select">
 		<option value="1">Public</option>
 		<option value="2">Private</option>
 	</selection>
-	
+
 	<selection name="i.cal.event.disponibility.select">
 		<option value="1">Busy</option>
 		<option value="2">Available</option>
 	</selection>
-	
+
 	<selection name="unit.unit.type.select">
 		<option value="1">Mass unit</option>
 		<option value="2">Length unit</option>
 		<option value="3">Time unit</option>
 	</selection>
-	
+
 	<selection name="iaccount.payment.mode.type.select">
 		<option value="1">Other</option>
 		<option value="2">Direct debit</option>
-        <option value="3">IPO</option>
-        <option value="4">IPO + Cheque</option>
+		<option value="3">IPO</option>
+		<option value="4">IPO + Cheque</option>
 		<option value="5">Cash</option>
 		<option value="6">Bank card</option>
 		<option value="7">Cheque</option>
 		<option value="8">Web</option>
 		<option value="9">Transfer</option>
 	</selection>
-	
+
 	<selection name="iaccount.payment.mode.in.out.select">
 		<option value="1">In</option>
 		<option value="2">Out</option>
@@ -378,11 +380,11 @@
 		<option value="time">Time</option>
 	</selection>
 
-    <selection name="base.blocking.select">
-        <option value="1">Reminder blocking</option>
-        <option value="2">Invoicing blocking</option>
-        <option value="3">Refund blocking</option>
-    </selection>
+	<selection name="base.blocking.select">
+		<option value="1">Reminder blocking</option>
+		<option value="2">Invoicing blocking</option>
+		<option value="3">Refund blocking</option>
+	</selection>
 
 	<selection name="meta.schedule.job.select">
 		<option value="com.axelor.mail.service.MailFetchJob">com.axelor.mail.service.MailFetchJob</option>
@@ -403,12 +405,12 @@
 
 	<selection name="base.cancel.reason.application.type.select">
 		<option value="com.axelor.apps.sale.db.SaleOrder">Sale order</option>
-        <option value="com.axelor.apps.stock.db.StockMove">Stock move</option>
-        <option value="com.axelor.apps.account.db.Invoice">Invoice</option>
+		<option value="com.axelor.apps.stock.db.StockMove">Stock move</option>
+		<option value="com.axelor.apps.account.db.Invoice">Invoice</option>
 	</selection>
 
- 	<selection name="base.barcode.select">
-        <option value="AZTEC">AZTEC</option>
+	<selection name="base.barcode.select">
+		<option value="AZTEC">AZTEC</option>
 		<option value="CODABAR">CODABAR</option>
 		<option value="CODE_39">CODE_39</option>
 		<option value="CODE_128">CODE_128</option>
@@ -419,25 +421,25 @@
 		<option value="PDF_417">PDF_417</option>
 		<option value="QR_CODE">QR_CODE</option>
 		<option value="UPC_A">UPC_A</option>
-    </selection>
-   
-    <selection name="base.sharing.setting.rights.select">
-        <option value="1">Read only</option>
-        <option value="2">Modification</option>
-    </selection>
-    
-    <selection id="base.object.data.config.model.select" name="object.data.config.model.select">
-		    <option value="com.axelor.apps.base.db.Partner">Partner</option>
-	  </selection>
-    
-    <selection name="base.user.form.step.select">
+	</selection>
+
+	<selection name="base.sharing.setting.rights.select">
+		<option value="1">Read only</option>
+		<option value="2">Modification</option>
+	</selection>
+
+	<selection id="base.object.data.config.model.select" name="object.data.config.model.select">
+		<option value="com.axelor.apps.base.db.Partner">Partner</option>
+	</selection>
+
+	<selection name="base.user.form.step.select">
 		<option value="0">Basic overview</option>
 		<option value="1">Authorization details</option>
 		<option value="2">Contact / Partner</option>
 		<option value="3">Employee</option>
 		<option value="4">Activation</option>
 		<option value="5">Complete</option>
-    </selection>
+	</selection>
 
 	<selection name="select.language" id="base.language.select">
 		<option value="de">German Beta</option>
@@ -449,58 +451,62 @@
 		<option value="ru">Russian Beta</option>
 	</selection>
 
-  <selection name="frequency.base.type.select">
-    <option value="monthDays">Month days</option>
-    <option value="everyNWeeks">Every N weeks</option>
-  </selection>
+	<selection name="frequency.base.type.select">
+		<option value="monthDays">Month days</option>
+		<option value="everyNWeeks">Every N weeks</option>
+	</selection>
 
-  <selection name="team.task.type.select">
-    <option value="task">Task</option>
-    <option value="ticket">Ticket</option>
-  </selection>
-  	
-  	<selection name="advanced.import.status.select">
-  		<option value="0">Draft</option>
-  		<option value="1">Validated</option>
-  	</selection>
-  
-  	<selection name="file.field.import.type.select">
+	<selection name="team.task.type.select">
+		<option value="task">Task</option>
+		<option value="ticket">Ticket</option>
+	</selection>
+
+	<selection name="advanced.import.status.select">
+		<option value="0">Draft</option>
+		<option value="1">Validated</option>
+	</selection>
+
+	<selection name="file.field.import.type.select">
 		<option value="0">Direct</option>
 		<option value="1">Find</option>
 		<option value="2">FindNew</option>
 		<option value="3">New</option>
 		<option value="4">Ignore/Empty</option>
-  	</selection>
-  
+	</selection>
+
 	<selection name="file.field.for.select.use.select">
 		<option value="0">Titles</option>
 		<option value="1">Values</option>
 		<option value="2">Translated titles</option>
 	</selection>
 
-  <selection name="abc.analysis.type.select">
-	  <option value="com.axelor.apps.base.service.ABCAnalysisServiceImpl">Base</option>
-  </selection>
+	<selection name="abc.analysis.type.select">
+		<option value="com.axelor.apps.base.service.ABCAnalysisServiceImpl">Base</option>
+	</selection>
 
-  <selection name="abc.analysis.status.select">
-      <option value="1">Draft</option>
-	  <option value="2">Analyzing</option>
-      <option value="3">Finished</option>
-  </selection>
+	<selection name="abc.analysis.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Analyzing</option>
+		<option value="3">Finished</option>
+	</selection>
 
 	<selection name="order.by.type">
 		<option value="asc">Ascending</option>
 		<option value="desc">Descending</option>
-	</selection>	
+	</selection>
 
-    <selection name="line.type.select">
-        <option value="0">Standard</option>
-        <option value="1">Title</option>
-    </selection>
-    
-    <selection name="product.sequence.type.select">
-    	<option value="Per product">Per product</option> 
-    	<option value="Per product category">Per product category</option>   
-    </selection>
+	<selection name="line.type.select">
+		<option value="0">Standard</option>
+		<option value="1">Title</option>
+	</selection>
+
+	<selection name="product.sequence.type.select">
+		<option value="Per product">Per product</option>
+		<option value="Per product category">Per product category</option>
+	</selection>
+
+	<selection name='trace.back.origin.select' id="trace.back.origin.select.base">
+		<option value="import">Importing</option>
+	</selection>
 
 </object-views>

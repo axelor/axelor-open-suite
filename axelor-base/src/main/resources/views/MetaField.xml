@@ -9,4 +9,14 @@
 		<field name="label"/>
 	</grid>
 
+	<grid name="meta-field-details-grid" title="METAMODEL.DETAILS" model="com.axelor.meta.db.MetaField" groupBy="metaModel">
+		<field name="metaModel"/>
+		<field name="name"/>
+		<field name="typeName"/>
+		<field name="label"/>
+		<field name="relationship"/>
+		<field name="mappedBy"/>
+		<field name="metaModel.tableName"/>
+	</grid>
+
 </object-views>

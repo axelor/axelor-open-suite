@@ -23,6 +23,7 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.report.IReport;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.ThrowConsumer;
@@ -42,10 +43,26 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
 
   @Inject SaleOrderService saleOrderService;
 
+  protected AppSaleService appSaleService;
+
+  @Inject
+  public SaleOrderPrintServiceImpl(AppSaleService appSaleService) {
+    this.appSaleService = appSaleService;
+  }
+
   @Override
   public String printSaleOrder(SaleOrder saleOrder, boolean proforma, String format)
       throws AxelorException, IOException {
-    String fileName = getSaleOrderFilesName(false, format);
+    String fileName =
+        I18n.get("Sale order")
+            + "-"
+            + saleOrder.getSaleOrderSeq()
+            + (appSaleService.getAppSale().getManageSaleOrderVersion()
+                ? "-" + saleOrder.getVersionNumber()
+                : "")
+            + "."
+            + format;
+
     return PdfTool.getFileLinkFromPdfFile(print(saleOrder, proforma, format), fileName);
   }
 
@@ -61,7 +78,14 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
             printedSaleOrders.add(print(saleOrder, false, ReportSettings.FORMAT_PDF));
           }
         });
-    String fileName = getSaleOrderFilesName(true, ReportSettings.FORMAT_PDF);
+    String fileName =
+        I18n.get("Sale orders")
+            + " - "
+            + Beans.get(AppBaseService.class)
+                .getTodayDate()
+                .format(DateTimeFormatter.BASIC_ISO_DATE)
+            + "."
+            + ReportSettings.FORMAT_PDF;
     return PdfTool.mergePdfToFileLink(printedSaleOrders, fileName);
   }
 
@@ -100,19 +124,5 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
         .addParam("HeaderHeight", saleOrder.getPrintingSettings().getPdfHeaderHeight())
         .addParam("FooterHeight", saleOrder.getPrintingSettings().getPdfFooterHeight())
         .addFormat(format);
-  }
-
-  /**
-   * Return the name for the printed sale order.
-   *
-   * @param plural if there is one or multiple sale orders.
-   */
-  protected String getSaleOrderFilesName(boolean plural, String format) {
-
-    return I18n.get(plural ? "Sale orders" : "Sale order")
-        + " - "
-        + Beans.get(AppBaseService.class).getTodayDate().format(DateTimeFormatter.BASIC_ISO_DATE)
-        + "."
-        + format;
   }
 }
