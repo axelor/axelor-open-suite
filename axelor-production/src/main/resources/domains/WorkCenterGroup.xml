@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+
+  <module name="production" package="com.axelor.apps.production.db"/>
+
+  <entity name="WorkCenterGroup" lang="java">
+	<string name="name" title="Name" namecolumn="true" />
+ 	<integer name="workCenterTypeSelect" title="Work center type" selection="iproduction.work.center.type.select"/>
+   	<boolean name="template" title="Template"></boolean>
+   	<many-to-many name="workCenterSet"  ref="com.axelor.apps.production.db.WorkCenter" title="Work center"/>
+    
+  </entity>
+</domain-models>
