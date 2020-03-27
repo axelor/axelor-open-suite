@@ -28,6 +28,7 @@
 - Fix a french word in an english message file.
 - Production Order: fix typo in french translation.
 - Accounting Situation: fix computation of balance due debt recovery.
+- Stock Move: empty all references to orders and invoices on copy.
 
 ## [5.2.6] - 2020-03-13
 ## Improvements
