@@ -496,7 +496,7 @@ AND (AccountingReport.display_closing_accounting_moves is true
 AND (AccountingReport.display_opening_accounting_moves is true 
 	OR(AccountingReport.display_opening_accounting_moves is false 
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
-AND ((MoveLine.amount_remaining > 0 AND AccountingReport.display_only_not_completely_lettered_move_lines) OR not ccountingReport.display_only_not_completely_lettered_move_lines)
+AND ((MoveLine.amount_remaining > 0 AND AccountingReport.display_only_not_completely_lettered_move_lines) OR not AccountingReport.display_only_not_completely_lettered_move_lines)
 order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
