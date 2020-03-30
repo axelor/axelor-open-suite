@@ -5,6 +5,8 @@
 - CLIENT-PORTAL : Chart now only shows invoices corresponding the client partner.
 - ACCOUNTING REPORT: improved bank statement report.
 - Fixed asset : add EU and US prorata temporis.
+- TRADING NAME : Fill default company printing settings if trade name printing setttings is not there in company.
+- Stock Move : Fix 'Invoiced' tag displaying in internal stock moves and stock move lines.
 
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
@@ -24,6 +26,13 @@
 - Stock Move invoicing: Fix NPE on opening invoicing wizard when a line has no product.
 - Fixed asset : corrected calculation of amortization.
 - Product : prevent the updation of salePrice if autoUpdateSalePrice = false. 
+- Fix a french word in an english message file.
+- Production Order: fix typo in french translation.
+- Accounting Situation: fix computation of balance due debt recovery.
+- Stock Move: empty all references to orders and invoices on copy.
+- MANUFACTURING ORDER : On consumed product, no longer display tracking numbers if available quantity equals 0.
+- WORK CENTER : Fix machine not set to null for a human type work center
+- Logistial Form : Fix NPE when computing volume
 - MOVE : Add missing translation
 
 ## [5.2.6] - 2020-03-13
