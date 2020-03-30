@@ -10,6 +10,11 @@
         <field name="workCenterTypeSelect"/>
     </grid>
     
+    <grid name="work-center-grid-small" title="Work centers" model="com.axelor.apps.production.db.WorkCenter">
+        <field name="name"/>
+        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    </grid>
+    
 	<form name="work-center-form" title="Work center" model="com.axelor.apps.production.db.WorkCenter" width="large" onNew="action-work-center-record-default">
 	  <panel name="mainPanel" >
 	    <field name="name"/>

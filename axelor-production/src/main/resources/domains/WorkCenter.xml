@@ -30,7 +30,7 @@
     
   	<many-to-one name="costSheetGroup" ref="com.axelor.apps.production.db.CostSheetGroup" title="Cost sheet group"/>
     <many-to-one name="machineTool" ref="com.axelor.apps.production.db.MachineTool" title="Tools"/>
-  	
+  	<integer name="sequence" title="Priority"></integer>
   	<extra-code>
 		<![CDATA[
 		
