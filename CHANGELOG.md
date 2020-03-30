@@ -7,6 +7,7 @@
 - Fixed asset : add EU and US prorata temporis.
 - TRADING NAME : Fill default company printing settings if trade name printing setttings is not there in company.
 - Stock Move : Fix 'Invoiced' tag displaying in internal stock moves and stock move lines.
+- Accounting Report : add the possibility to filter the ledger report to only see not completely lettered move lines.
 
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
