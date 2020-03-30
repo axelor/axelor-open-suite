@@ -55,6 +55,7 @@
 - TEAM TASK: Fixed issue on copying line from project view.
 - INVOICE: Fix quantity and discount not displayed on printing.
 - SALE ORDER: Fix unit code not displayed on printing.
+- EBICS CERTIFICATE : Fix serial number not saved.
 
 ## [5.3.0] - 2020-02-25
 ## Features
