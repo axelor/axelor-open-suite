@@ -219,9 +219,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   protected void checkInvoicedConsumptionLines(Contract contract) throws AxelorException {
     Contract origin = find(contract.getId());
     List<ConsumptionLine> lineInvoiced =
-        origin
-            .getConsumptionLineList()
-            .stream()
+        origin.getConsumptionLineList().stream()
             .filter(ConsumptionLine::getIsInvoiced)
             .collect(Collectors.toList());
     for (ConsumptionLine line : contract.getConsumptionLineList()) {
@@ -239,9 +237,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   protected void checkInvoicedAdditionalContractLine(Contract contract) throws AxelorException {
     Contract origin = find(contract.getId());
     List<ContractLine> lineInvoiced =
-        origin
-            .getAdditionalBenefitContractLineList()
-            .stream()
+        origin.getAdditionalBenefitContractLineList().stream()
             .filter(ContractLine::getIsInvoiced)
             .collect(Collectors.toList());
     for (ContractLine line : contract.getAdditionalBenefitContractLineList()) {
@@ -397,9 +393,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
     // Compute all additional lines
     List<ContractLine> additionalLines =
-        contract
-            .getAdditionalBenefitContractLineList()
-            .stream()
+        contract.getAdditionalBenefitContractLineList().stream()
             .filter(contractLine -> !contractLine.getIsInvoiced())
             .peek(contractLine -> contractLine.setIsInvoiced(true))
             .collect(Collectors.toList());
@@ -435,9 +429,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
                 start, end, contract.getCurrentContractVersion().getInvoicingDuration());
       }
       List<ContractLine> lines =
-          version
-              .getContractLineList()
-              .stream()
+          version.getContractLineList().stream()
               .filter(contractLine -> !contractLine.getIsConsumptionLine())
               .collect(Collectors.toList());
 
@@ -455,9 +447,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     for (Entry<ContractLine, Collection<ConsumptionLine>> entries : consLines.asMap().entrySet()) {
       ContractLine line = entries.getKey();
       InvoiceLine invoiceLine = generate(invoice, line);
-      entries
-          .getValue()
-          .stream()
+      entries.getValue().stream()
           .peek(cons -> cons.setInvoiceLine(invoiceLine))
           .forEach(cons -> cons.setIsInvoiced(true));
       line.setQty(BigDecimal.ZERO);

@@ -115,27 +115,27 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
         root.setTaskDate(startDate.toLocalDate());
         tasks.add(teamTaskRepository.save(root));
       }
-      if (!CollectionUtils.isEmpty(product.getTaskTemplateSet()) && !(isTaskGenerated)) {
-        List<TeamTask> convertedTasks =
-            productTaskTemplateService.convert(
-                product
-                    .getTaskTemplateSet()
-                    .stream()
-                    .filter(template -> Objects.isNull(template.getParentTaskTemplate()))
-                    .collect(Collectors.toList()),
-                project,
-                root,
-                startDate,
-                orderLine.getQty(),
-                orderLine);
-        convertedTasks.stream().forEach(task -> task.setSaleOrderLine(orderLine));
-        tasks.addAll(convertedTasks);
-      } else if (CollectionUtils.isEmpty(product.getTaskTemplateSet()) && !(isTaskGenerated)) {
-        TeamTask childTask =
-            teamTaskService.create(orderLine.getFullName(), project, project.getAssignedTo());
-        this.updateTask(root, childTask, orderLine);
+      if (product != null && !isTaskGenerated) {
+        if (!CollectionUtils.isEmpty(product.getTaskTemplateSet())) {
+          List<TeamTask> convertedTasks =
+              productTaskTemplateService.convert(
+                  product.getTaskTemplateSet().stream()
+                      .filter(template -> Objects.isNull(template.getParentTaskTemplate()))
+                      .collect(Collectors.toList()),
+                  project,
+                  root,
+                  startDate,
+                  orderLine.getQty(),
+                  orderLine);
+          convertedTasks.stream().forEach(task -> task.setSaleOrderLine(orderLine));
+          tasks.addAll(convertedTasks);
+        } else {
+          TeamTask childTask =
+              teamTaskService.create(orderLine.getFullName(), project, project.getAssignedTo());
+          this.updateTask(root, childTask, orderLine);
 
-        tasks.add(teamTaskRepository.save(childTask));
+          tasks.add(teamTaskRepository.save(childTask));
+        }
       }
     }
     if (root == null) {

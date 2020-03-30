@@ -18,12 +18,22 @@
 	<form onSave="action-validate-bank-details-bbanKey" onNew="action-group-account-bank-details-form-onnew" name="bank-details-form" title="Bank details"
 		  onLoad="action-group-account-bank-details-form-onload" model="com.axelor.apps.base.db.BankDetails" width="large">
 		<panel name="ownerPanel" title="Owner">
-			<field name="partner" onChange="action-set-owner-name,action-bank-details-attrs-specific-notes" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" />
-			<field name="ownerName" />
+			<panel name="ownerInfoPanel" colSpan="9">
+				<field name="partner" onChange="action-set-owner-name,action-bank-details-attrs-specific-notes" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" colSpan="10" />
+				<field name="ownerName" colSpan="10" />
+				<field name="company" hidden="true"/>
+				<field name="balance" hidden="true" if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')"/>
+				<field name="balanceUpdatedDate" hidden="true" if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')"/>
+			</panel>
+			<panel name="balancePanel" hidden="true" showIf="company &amp;&amp; balance &amp;&amp; balanceUpdatedDate" colSpan="3" if="__config__.app.isApp('bank-payment')">
+				<button name="$balanceBtn" title="Balance" icon="fa-balance-scale" widget="info-button" onClick="action-bank-details-view-show-bank-statement-lines" colSpan="12" />
+			</panel>
 		</panel>
         <panel name="currencyPanel">
 			<field name="label"/>
 			<field name="currency"/>
+			<field name="bankAccount" showIf="company != null" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"/>
+			<field name="journal" showIf="company != null" domain="self.company = :company AND self.statusSelect = 1"/>
             <field name="code" x-bind="{{code|uppercase}}" hidden="true" />
 		</panel>
 		<panel name="activePanel" sidebar="true">
@@ -52,6 +62,63 @@
 			<field name="specificNoteOnInvoice" widget="html" colSpan="12"/>
 		</panel>
 	</form>
+
+	<cards name="bank-details-cards" model="com.axelor.apps.base.db.BankDetails" title="Bank details" width="410px">
+		<field name="iban"/>
+		<field name="bank.code"/>
+		<field name="bank.bankName"/>
+		<field name="company.name"/>
+		<field name="balance" if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')"/>
+		<field name="balanceUpdatedDate" if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')"/>
+		<field name="active"/>
+		<template><![CDATA[
+			<div>
+				<div class="span12">
+					<span>
+						<strong>{{iban}}</strong> <br/>
+						<strong><span x-translate>BIC (Bank Identifier)</span></strong> : {{bank.code}}<br/>
+						<strong><span x-translate>Bank Name</span></strong> : {{bank.bankName}}<br/>
+					</span>
+				</div>
+			</div>
+			<div class="span12" style="margin-left: 0%;">
+				<br/>
+				<span class="label label-default" ng-show="record.company" style="background-color: #2185D0;">{{company.name}}</span>
+				<span class="label label-important" ng-show="!record.active" x-translate>Inactive</span>
+				<span class="btn info-button pull-right" style="width: 50%;" ng-show="record.balance && record.balanceUpdatedDate">
+				<a style="text-decoration: none;" ui-action-click="action-bank-details-view-show-bank-statement-lines">
+					<i class="pull-left fa fa-balance-scale" style="margin-top: 3%; font-size:30px;"/>
+     				<p class="pull-left span3" style="font-size: 11px; margin-top: 3%; width: 60%; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+					<strong>{{$fmt('balance')}}</strong>
+					<br/>
+					<span class="pull-left" style="color: #000000; font-size: 9px;"> {{ $fmt('balanceUpdatedDate') }} </span></p>
+				</a>
+				</span>
+			</div>
+		]]>
+		</template>
+	</cards>
+
+	<tree name="bank-details-tree" title="Bank details tree">
+		<column name="company" type="string"/>
+		<column name="bankDetails" type="string"/>
+		<column name="active" type="boolean"/>
+
+		<node model="com.axelor.apps.base.db.Company" onClick="action-company-form-view">
+			<field name="name" as="company"/>
+		</node>
+
+		<node model="com.axelor.apps.base.db.BankDetails" onClick="action-bank-details-form-view" parent="company">
+			<field name="fullName" as="bankDetails"/>
+			<field name="active" as="active"/>
+		</node>
+	</tree>
+
+	<action-view name="action-bank-details-form-view" model="com.axelor.apps.base.db.BankDetails" title="Bank details">
+		<view name="bank-details-grid" type="grid"/>
+		<view name="bank-details-form" type="form"/>
+		<context name="_showRecord" expr="eval: id"/>
+	</action-view>
 	
 	<action-group name="action-group-account-bankdetails-iban-onchange">
 		<action name="action-method_bank-details-validate-iban" />
@@ -72,6 +139,12 @@
 		<action name="action-method_bank-details-validate-iban"/>
         <action name="action-bank-details-attrs-code"/>
         <action name="action-bank-details-attrs-specific-notes"/>
+        <action name="action-group-bank-details-set-balance-onload" if="company &amp;&amp; balance &amp;&amp; balanceUpdatedDate"/>
+	</action-group>
+
+	<action-group name="action-group-bank-details-set-balance-onload">
+		<action name="action-bank-details-attrs-set-balance-title" />
+		<action name="action-bank-details-record-set-balance-value" />
 	</action-group>
 
 	<action-method name="action-method_bank-details-validate-iban">
@@ -115,6 +188,20 @@
      <action-attrs name="action-bank-details-attrs-specific-notes">
         <attribute name="hidden" for="specificNotesPanel" expr="eval: !partner?.isFactor &amp;&amp; !__parent__?.getContextClass().equals('Company')"/>
     </action-attrs>
-    
+
+	<action-attrs name="action-bank-details-attrs-set-balance-title">
+		<attribute name="title" for="$balanceBtn" expr="eval: balanceUpdatedDate.format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))"/>
+	</action-attrs>
+
+	<action-record name="action-bank-details-record-set-balance-value" model="com.axelor.apps.base.db.BankDetails">
+		<field name="$balanceBtn" expr="eval: balance"/>
+	</action-record>
+
+	<action-view name="action-bank-details-view-show-bank-statement-lines" title="Bank Statement lines" model="com.axelor.apps.bankpayment.db.BankStatementLineAFB120">
+		<view type="grid" name="bank-statement-line-afb-120-grid"/>
+		<view type="form" name="bank-statement-line-afb-120-form"/>
+		<domain>self.bankDetails.id = :bankDetailsId AND self.lineTypeSelect = 2</domain>
+		<context name="bankDetailsId" expr="eval: id"/>
+	</action-view>
 
 </object-views>

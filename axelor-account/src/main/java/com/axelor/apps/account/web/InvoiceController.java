@@ -173,6 +173,12 @@ public class InvoiceController {
     Invoice invoice = request.getContext().asType(Invoice.class);
     invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
 
+    if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
+        && invoice.getCompany().getAccountConfig() != null
+        && !invoice.getCompany().getAccountConfig().getAllowCancelVentilatedInvoice()) {
+      return;
+    }
+
     Beans.get(InvoiceService.class).cancel(invoice);
     response.setFlash(I18n.get(IExceptionMessage.INVOICE_1));
     response.setReload(true);
@@ -311,9 +317,9 @@ public class InvoiceController {
             (List)
                 (((List) context.get("_ids"))
                     .stream()
-                    .filter(ObjectUtils::notEmpty)
-                    .map(input -> Long.parseLong(input.toString()))
-                    .collect(Collectors.toList()));
+                        .filter(ObjectUtils::notEmpty)
+                        .map(input -> Long.parseLong(input.toString()))
+                        .collect(Collectors.toList()));
         fileLink = Beans.get(InvoicePrintService.class).printInvoices(ids);
         title = I18n.get("Invoices");
       } else if (context.get("id") != null) {
@@ -848,9 +854,9 @@ public class InvoiceController {
             (List)
                 (((List) context.get("_ids"))
                     .stream()
-                    .filter(ObjectUtils::notEmpty)
-                    .map(input -> Long.parseLong(input.toString()))
-                    .collect(Collectors.toList()));
+                        .filter(ObjectUtils::notEmpty)
+                        .map(input -> Long.parseLong(input.toString()))
+                        .collect(Collectors.toList()));
 
         List<Long> invoiceToPay =
             Beans.get(InvoicePaymentCreateService.class).getInvoiceIdsToPay(invoiceIdList);

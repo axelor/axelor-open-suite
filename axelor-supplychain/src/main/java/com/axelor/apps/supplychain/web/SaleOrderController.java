@@ -42,6 +42,7 @@ import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderReservedQtyService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
+import com.axelor.apps.supplychain.service.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
@@ -594,9 +595,12 @@ public class SaleOrderController {
    */
   public void changeWizardOperationDomain(ActionRequest request, ActionResponse response) {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    Map<String, Integer> contextValues =
+    List<Integer> operationSelectValues =
         Beans.get(SaleOrderInvoiceService.class).getInvoicingWizardOperationDomain(saleOrder);
-    response.setValues(contextValues);
+    if (operationSelectValues.contains(Integer.valueOf(SaleOrderRepository.INVOICE_ALL))) {
+      response.setAttr("operationSelect", "value", SaleOrderRepository.INVOICE_ALL);
+    }
+    response.setAttr("operationSelect", "selection-in", operationSelectValues);
   }
 
   /**
@@ -855,6 +859,17 @@ public class SaleOrderController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void backToConfirmedStatus(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+      Beans.get(SaleOrderSupplychainService.class).updateToConfirmedStatus(saleOrder);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

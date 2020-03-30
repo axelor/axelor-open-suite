@@ -97,8 +97,9 @@
        			<spacer name="receiptStateSpacer"  if="__config__.app.isApp('supplychain')"/>
 				<field name="product"  canEdit="false" onChange="action-group-purchase-purchase-orderline-product-onchange"
 				  onSelect="action-purchase-order-line-attrs-product-domain" form-view="product-form" grid-view="product-grid"/>
+				<field name="enableFreezeFields" colSpan="2"/>
 				<field name="$isFilterOnSupplier" type="boolean" title="Filter on supplier" widget="boolean-switch" colSpan="2" if="__config__.app.getApp('purchase').getManageSupplierCatalog()"/>
-				<field name="isTitleLine" colSpan="2" colOffset="2" onChange="action-purchase-order-line-method-empty-line" widget="boolean-switch"/>
+				<field name="isTitleLine" colSpan="2" onChange="action-purchase-order-line-method-empty-line" widget="boolean-switch"/>
 				<field name="productCode" colSpan="3"/>
 				<field name="productName" colSpan="9"/>
 				<panel name="orderDetailsPanel" colSpan="12">
@@ -106,13 +107,13 @@
 					<field name="unit" colSpan="3" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
 					<panel name="pricePanel" colSpan="3">
 		          		<field name="price" hidden="true" colSpan="12" onChange="action-purchase-order-line-method-onchange-price,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount">
-		            		<hilite color="danger" if=" $number(saleMinPrice) &lt; $number(salePrice)"/>
+		            		<hilite color="danger" if=" $number(maxPurchasePrice) &lt; $number(price)"/>
 		          		</field>
 		          		<field name="inTaxPrice" hidden="true" colSpan="12" onChange="action-purchase-order-line-method-onchange-intaxprice,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount">
-	            			<hilite color="danger" if=" $number(saleMinPrice) &lt; $number(salePrice)"/>
+	            			<hilite color="danger" if=" $number(maxPurchasePrice) &lt; $number(price)"/>
 		          		</field>
 		        	</panel>
-					<field name="saleMinPrice" colSpan="3" readonly="true"/>
+					<field name="maxPurchasePrice" colSpan="3" readonly="true"/>
 					<label name="minQtyNotRespectedLabel" hidden="true" colSpan="12"/>
 					<label name="multipleQtyNotRespectedLabel" hidden="true" colSpan="12"/>
 					<field name="$qtyValid" hidden="true" colSpan="12"/>
@@ -126,7 +127,6 @@
 				<field name="exTaxTotal" colSpan="3" readonly="true"/>
 				<field name="inTaxTotal" colSpan="3" readonly="true"/>
 				<field name="fixedAssets" widget="boolean-switch"/>
-				<field name="salePrice" colSpan="3" hidden="true"/>
 				<field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
 				<panel name="descriptionPanel" title="Description" colSpan="12">
 					<field name="description" showTitle="false" colSpan="12" widget="html" x-lite="true"/>
@@ -404,7 +404,7 @@
 		<attribute name="scale" for="inTaxPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="priceDiscounted" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="discountAmount" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
-		<attribute name="scale" for="saleMinPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="maxPurchasePrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		
 		<attribute name="scale" for="qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
 		<attribute name="scale" for="receivedQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>

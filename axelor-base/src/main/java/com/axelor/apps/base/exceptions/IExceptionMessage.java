@@ -360,7 +360,7 @@ public interface IExceptionMessage {
   public static final String ADVANCED_IMPORT_5 = /*$$(*/
       "Sub field doesn't exist of field(%s) for the object(%s)" /*)*/;
   public static final String ADVANCED_IMPORT_6 = /*$$(*/
-      "Search fields are missing for the object(%s)" /*)*/;
+      "Please enter search call or search fields for the object(%s)" /*)*/;
   public static final String ADVANCED_IMPORT_TAB_ERR = /*$$(*/
       "File tab is not matched inside file" /*)*/;
   public static final String ADVANCED_IMPORT_NO_OBJECT = /*$$(*/
@@ -384,6 +384,8 @@ public interface IExceptionMessage {
   public static final String ADVANCED_IMPORT_LOG_9 = /*$$(*/ "Invalid type of data" /*)*/;
   public static final String ADVANCED_IMPORT_LOG_10 = /*$$(*/
       "Action does not exists or invalid for the object(%s)" /*)*/;
+  public static final String ADVANCED_IMPORT_LOG_11 = /*$$(*/
+      "Invalid Search call for the object(%s)" /*)*/;
   public static final String ADVANCED_IMPORT_RESET = /*$$(*/
       "Reset imported data successfully" /*)*/;
   public static final String ADVANCED_IMPORT_NO_RESET = /*$$(*/ "No imported data to reset" /*)*/;

@@ -17,7 +17,11 @@
  */
 package com.axelor.apps.base.module;
 
+import com.axelor.admin.auth.ExportObserver;
+import com.axelor.app.AppSettings;
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.admin.service.GlobalTrackingLogService;
+import com.axelor.apps.admin.service.GlobalTrackingLogServiceImpl;
 import com.axelor.apps.base.db.repo.ObjectDataConfigExportManagementRepository;
 import com.axelor.apps.base.db.repo.ObjectDataConfigExportRepository;
 import com.axelor.apps.base.service.ObjectDataAnonymizeService;
@@ -45,5 +49,13 @@ public class AdminModule extends AxelorModule {
     bind(DataBackupService.class).to(DataBackupServiceImpl.class);
     bind(ObjectDataConfigExportRepository.class)
         .to(ObjectDataConfigExportManagementRepository.class);
+
+    bind(GlobalTrackingLogService.class).to(GlobalTrackingLogServiceImpl.class);
+
+    if (AppSettings.get()
+        .get("hibernate.session_factory.interceptor", "")
+        .equals("com.axelor.admin.auth.GlobalAuditInterceptor")) {
+      bind(ExportObserver.class);
+    }
   }
 }

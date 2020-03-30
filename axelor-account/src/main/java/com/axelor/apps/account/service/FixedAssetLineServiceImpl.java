@@ -72,9 +72,7 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
     fixedAsset.setResidualValue(residualValue.subtract(fixedAssetLine.getDepreciation()));
 
     FixedAssetLine plannedFixedAssetLine =
-        fixedAsset
-            .getFixedAssetLineList()
-            .stream()
+        fixedAsset.getFixedAssetLineList().stream()
             .filter(line -> line.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED)
             .findAny()
             .orElse(null);
@@ -94,7 +92,7 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
     Journal journal = fixedAsset.getJournal();
     Company company = fixedAsset.getCompany();
     Partner partner = fixedAsset.getPartner();
-    LocalDate date = fixedAsset.getAcquisitionDate();
+    LocalDate date = fixedAssetLine.getDepreciationDate();
 
     log.debug(
         "Creating an fixed asset line specific accounting entry {} (Company : {}, Journal : {})",
@@ -175,7 +173,7 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
     Journal journal = fixedAsset.getJournal();
     Company company = fixedAsset.getCompany();
     Partner partner = fixedAsset.getPartner();
-    LocalDate date = fixedAsset.getAcquisitionDate();
+    LocalDate date = fixedAssetLine.getDepreciationDate();
 
     // Creating move
     Move move =

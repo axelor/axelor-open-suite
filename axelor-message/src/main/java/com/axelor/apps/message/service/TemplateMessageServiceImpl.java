@@ -126,6 +126,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
     String bccRecipients = "";
     String addressBlock = "";
     int mediaTypeSelect;
+    String signature = "";
 
     if (!Strings.isNullOrEmpty(template.getContent())) {
       // Set template
@@ -177,7 +178,12 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 
     mediaTypeSelect = this.getMediaTypeSelect(template);
     log.debug("Media ::: {}", mediaTypeSelect);
-    log.debug("Content ::: {}", content);
+
+    if (template.getSignature() != null) {
+      maker.setTemplate(template.getSignature());
+      signature = maker.make();
+      log.debug("Signature ::: {}", signature);
+    }
 
     Message message =
         messageService.createMessage(
@@ -193,7 +199,8 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
             null,
             addressBlock,
             mediaTypeSelect,
-            getMailAccount());
+            getMailAccount(),
+            signature);
 
     message.setTemplate(Beans.get(TemplateRepository.class).find(template.getId()));
 
@@ -320,7 +327,6 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
     EmailAccount mailAccount = Beans.get(MailAccountService.class).getDefaultSender();
 
     if (mailAccount != null) {
-      log.debug("Email account ::: {}", mailAccount);
       return mailAccount;
     }
 

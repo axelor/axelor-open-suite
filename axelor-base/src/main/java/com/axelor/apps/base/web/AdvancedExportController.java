@@ -221,9 +221,7 @@ public class AdvancedExportController {
     if (request.getContext().get("_criteria") != null) {
       if (request.getContext().get("_criteria").toString().startsWith("[")) {
         String ids = request.getContext().get("_criteria").toString();
-        return Splitter.on(", ")
-            .splitToList(ids.substring(1, ids.length() - 1))
-            .stream()
+        return Splitter.on(", ").splitToList(ids.substring(1, ids.length() - 1)).stream()
             .map(id -> Long.valueOf(id.toString()))
             .collect(Collectors.toList());
 

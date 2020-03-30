@@ -103,6 +103,8 @@ import com.axelor.apps.base.service.advanced.imports.FileFieldService;
 import com.axelor.apps.base.service.advanced.imports.FileFieldServiceImpl;
 import com.axelor.apps.base.service.advanced.imports.FileTabService;
 import com.axelor.apps.base.service.advanced.imports.FileTabServiceImpl;
+import com.axelor.apps.base.service.advanced.imports.SearchCallService;
+import com.axelor.apps.base.service.advanced.imports.SearchCallServiceImpl;
 import com.axelor.apps.base.service.advancedExport.AdvancedExportService;
 import com.axelor.apps.base.service.advancedExport.AdvancedExportServiceImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -196,6 +198,7 @@ public class BaseModule extends AxelorModule {
     bind(FileFieldService.class).to(FileFieldServiceImpl.class);
     bind(ActionService.class).to(ActionServiceImpl.class);
     bind(PartnerService.class).to(PartnerServiceImpl.class);
+    bind(SearchCallService.class).to(SearchCallServiceImpl.class);
     bind(PrintTemplateService.class).to(PrintTemplateServiceImpl.class);
     bind(PrintService.class).to(PrintServiceImpl.class);
   }

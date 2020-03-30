@@ -53,21 +53,20 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(
-  name = "QALicensedSet",
-  propOrder = {
-    "id",
-    "description",
-    "copyright",
-    "version",
-    "baseCountry",
-    "status",
-    "server",
-    "warningLevel",
-    "daysLeft",
-    "dataDaysLeft",
-    "licenceDaysLeft"
-  }
-)
+    name = "QALicensedSet",
+    propOrder = {
+      "id",
+      "description",
+      "copyright",
+      "version",
+      "baseCountry",
+      "status",
+      "server",
+      "warningLevel",
+      "daysLeft",
+      "dataDaysLeft",
+      "licenceDaysLeft"
+    })
 public class QALicensedSet {
 
   @XmlElement(name = "ID", required = true)

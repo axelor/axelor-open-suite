@@ -24,7 +24,9 @@ import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -43,6 +45,10 @@ public class FixedAssetServiceSupplyChainImpl extends FixedAssetServiceImpl {
 
     List<FixedAsset> fixedAssetList = super.createFixedAssets(invoice);
 
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return fixedAssetList;
+    }
+
     if (CollectionUtils.isEmpty(fixedAssetList)) {
       return null;
     }
@@ -60,11 +66,7 @@ public class FixedAssetServiceSupplyChainImpl extends FixedAssetServiceImpl {
           && CollectionUtils.isNotEmpty(
               fixedAsset.getInvoiceLine().getIncomingStockMove().getStockMoveLineList())) {
         fixedAsset.setTrackingNumber(
-            fixedAsset
-                .getInvoiceLine()
-                .getIncomingStockMove()
-                .getStockMoveLineList()
-                .stream()
+            fixedAsset.getInvoiceLine().getIncomingStockMove().getStockMoveLineList().stream()
                 .filter(l -> pol.equals(l.getPurchaseOrderLine()))
                 .findFirst()
                 .map(StockMoveLine::getTrackingNumber)

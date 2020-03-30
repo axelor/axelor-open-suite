@@ -181,9 +181,7 @@ public class MrpServiceImpl implements MrpService {
     // Initialize
     this.mrp = mrp;
     List<StockLocation> slList =
-        stockLocationService
-            .getAllLocationAndSubLocation(mrp.getStockLocation(), false)
-            .stream()
+        stockLocationService.getAllLocationAndSubLocation(mrp.getStockLocation(), false).stream()
             .filter(x -> !x.getIsNotInMrp())
             .collect(Collectors.toList());
     this.stockLocationList = slList;
@@ -632,6 +630,9 @@ public class MrpServiceImpl implements MrpService {
     if (maturityDate == null) {
       maturityDate = purchaseOrder.getDeliveryDate();
     }
+    if (maturityDate == null) {
+      maturityDate = purchaseOrderLine.getDesiredDelivDate();
+    }
 
     maturityDate = this.computeMaturityDate(maturityDate, purchaseOrderMrpLineType);
 
@@ -734,6 +735,9 @@ public class MrpServiceImpl implements MrpService {
 
     if (maturityDate == null) {
       maturityDate = saleOrder.getDeliveryDate();
+    }
+    if (maturityDate == null) {
+      maturityDate = saleOrderLine.getDesiredDelivDate();
     }
     maturityDate = this.computeMaturityDate(maturityDate, saleOrderMrpLineType);
 
@@ -906,16 +910,13 @@ public class MrpServiceImpl implements MrpService {
 
     int applicationFieldSelect = getApplicationField(mrp.getMrpTypeSelect());
 
-    MrpLineType mrpLineType =
-        mrpLineTypeRepository
-            .all()
-            .filter(
-                "self.elementSelect = ?1 and self.applicationFieldSelect LIKE ?2",
-                elementSelect,
-                "%" + applicationFieldSelect + "%")
-            .fetchOne();
-
-    return mrpLineType;
+    return mrpLineTypeRepository
+        .all()
+        .filter(
+            "self.elementSelect = ?1 and self.applicationFieldSelect LIKE ?2",
+            elementSelect,
+            "%" + applicationFieldSelect + "%")
+        .fetchOne();
   }
 
   protected int getApplicationField(int mrpTypeSelect) {

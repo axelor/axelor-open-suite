@@ -239,7 +239,13 @@
 	</selection>
 	
 	<selection name='accounting.report.type.select' id="bank.paymennt.accounting.report.type.select">
-		<option order="3000" value="3000">Bank reconciliation statement</option>
+		<option order="16" value="18">Bank reconciliation statement</option>
+	</selection>
+
+	<selection name='trace.back.origin.select' id="trace.back.origin.select.bank.payment">
+   	  <option value='directDebit'>Direct debit</option>
+   	  <option value="interbankPaymentOrder">Interbank payment order</option> <!-- seems to be unused. If delete, also do it for corresponding constant in view ExceptionOrigin.xml -->
+   	  <option value="bankStatement">Bank Statement</option>
 	</selection>
 
 </object-views>

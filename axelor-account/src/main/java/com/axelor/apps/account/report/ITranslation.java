@@ -289,6 +289,51 @@ public interface ITranslation {
   public static final String ACCOUNTING_REPORT_2000_TOTAL_PER_ANALYTIC_ACCOUNT = /*$$(*/
       "AccountingReportType2000.totalPerAnalyticAccount"; /*)*/
 
+  public static final String ACCOUNTING_REPORT_2001_ACCOUNT_TYPE = /*$$(*/
+      "AccountingReportType2001.accountType"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_AMOUNT = /*$$(*/
+      "AccountingReportType2001.amount"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_ANALYTIC_ACCOUNT = /*$$(*/
+      "AccountingReportType2001.analyticAccount"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_ANALYTIC_ACCOUNT_CODE = /*$$(*/
+      "AccountingReportType2001.analyticAccountCode"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_ANALYTIC_ACCOUNT_NAME = /*$$(*/
+      "AccountingReportType2001.analyticAccountName"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_ANALYTIC_AXIS = /*$$(*/
+      "AccountingReportType2001.analyticAxis"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_ANALYTIC_AXIS_CODE = /*$$(*/
+      "AccountingReportType2001.analyticAxisCode"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_ANALYTIC_AXIS_NAME = /*$$(*/
+      "AccountingReportType2001.analyticAxisName"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_ANALYTIC_JOURNAL = /*$$(*/
+      "AccountingReportType2001.analyticJournal"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_COMPANY = /*$$(*/
+      "AccountingReportType2001.company"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_END_DATE = /*$$(*/
+      "AccountingReportType2001.endDate"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_FROM = /*$$(*/
+      "AccountingReportType2001.from"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_ACCOUNT = /*$$(*/
+      "AccountingReportType2001.account"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_TITLE = /*$$(*/
+      "AccountingReportType2001.title"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_TO = /*$$(*/
+      "AccountingReportType2001.to"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_TOTAL_PER_ANALYTIC_ACCOUNT = /*$$(*/
+      "AccountingReportType2001.totalPerAnalyticAccount"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_TOTAL_PER_ANALYTIC_AXIS = /*$$(*/
+      "AccountingReportType2001.totalPerAnalyticAxis"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_TOTAL_PER_ANALYTIC_JOURNAL = /*$$(*/
+      "AccountingReportType2001.totalPerAnalyticJournal"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_DATE = /*$$(*/
+      "AccountingReportType2001.date"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_CURRENCY = /*$$(*/
+      "AccountingReportType2001.currency"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_ANALYTIC_MOVE_LINE_ID = /*$$(*/
+      "AccountingReportType2001.AnalyticMoveLineID"; /*)*/
+  public static final String ACCOUNTING_REPORT_2001_MOVE_LINE_NAME = /*$$(*/
+      "AccountingReportType2001.moveLineName"; /*)*/
+
   public static final String SALE_INVOICE_DETAILS_REPORT_TITLE = /*$$(*/
       "SaleInvoicesDetails.title"; /*)*/
   public static final String SALE_INVOICE_DETAILS_REPORT_COMPANY = /*$$(*/
@@ -501,6 +546,10 @@ public interface ITranslation {
       /*$$(*/ "AccountingReportType17.year_start_value"; /*)*/
   public static final String ACCOUNTING_REPORT_17_DEPRECIATION_CHARGE =
       /*$$(*/ "AccountingReportType17.depreciation_charge"; /*)*/
+  public static final String ACCOUNTING_REPORT_17_TOTAL_BY_ACCOUNT_AND_ANALYTIC_TEMPLATE =
+      /*$$(*/ "AccountingReportType17.total_by_account_and_analytic_template"; /*)*/
+  public static final String ACCOUNTING_REPORT_17_TOTAL_BY_ANALYTIC_TEMPLATE =
+      /*$$(*/ "AccountingReportType17.total_by_analytic_template"; /*)*/
 
   public static final String INVOICE_PAYMENT_DATE = /*$$(*/ "InvoicePayment.date"; /*)*/
   public static final String INVOICE_PAYMENT_TYPE = /*$$(*/ "InvoicePayment.type"; /*)*/

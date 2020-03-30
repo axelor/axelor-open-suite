@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Country" lang="java" cacheable="true">
+  <entity name="Country" lang="java" >
   
     <string name="alpha3Code" title="Alpha-3 code (ISO)" min="3" max="3"/>
     <string name="alpha2Code" title="Alpha-2 code (ISO)" min="2" max="2"/>

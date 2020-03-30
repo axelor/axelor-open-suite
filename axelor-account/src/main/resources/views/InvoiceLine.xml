@@ -62,7 +62,7 @@
 					<field name="discountAmount" colSpan="3" onChange="action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount" hideIf="discountTypeSelect == 3"/>
 					<field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"/>
 				</panel>
-				<field name="taxLine" canEdit="false" onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount" grid-view="tax-line-grid" form-view="tax-line-form"/>
+				<field name="taxLine" canEdit="false" onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount" grid-view="tax-line-grid" form-view="tax-line-form" domain="self.endDate = null or self.endDate &gt; :__date__"/>
 				<field name="exTaxTotal" colSpan="3" readonly="true"/>
 				<field name="inTaxTotal" colSpan="3" readonly="true"/>
 				<field name="$isReadOnly" hidden="true"/>
@@ -101,7 +101,7 @@
 				</field>
 				<field name="budgetDistributionSumAmount" colSpan="6" if="__config__.app.getApp('budget').getManageMultiBudget()" readonly="true"/>
 				<field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()" canEdit="false" domain="self.statusSelect = 2"/>
-				<panel-related name="budgetDistributionListPanel" field="budgetDistributionList" editable="true" colSpan="12" if="__config__.app.getApp('budget').getManageMultiBudget()" onChange="action-budget-validate-exceed-line-amount,action-invoice-order-method-compute-budget-distribution-sum-amount"/>
+				<panel-related name="budgetDistributionListPanel" field="budgetDistributionList" grid-view="invoice-budget-distribution-grid" form-view="invoice-budget-distribution-form" editable="true" colSpan="12" if="__config__.app.getApp('budget').getManageMultiBudget()" onChange="action-budget-validate-exceed-line-amount,action-invoice-order-method-compute-budget-distribution-sum-amount"/>
 				<field name="$currencySymbol" hidden="true"/>
 			</panel>
 			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectInvoiceLines()" title="Business Project" if-module="axelor-business-project" >
@@ -375,6 +375,9 @@
 
 	<search-filters name="invoice-line-filters" model="com.axelor.apps.account.db.InvoiceLine" title="Invoice line filters">
 		<field name="invoice.invoiceDate" title="Invoice Date"/>
+		<field name="invoice.paymentDate" title="Payment date"/>
+		<field name="invoice.company" title="Company"/>
+		<field name="invoice.statusSelect" title="Status select"/>
 	</search-filters>
 
 </object-views>

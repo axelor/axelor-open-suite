@@ -21,8 +21,6 @@
 			<field name="allowRemovalValidatedMove"/>
 			<field name="generateMoveForAdvancePayment"/>
 			<field name="accountingDaybook"/>
-			<field name="lineMinBeforeLongReportGenerationMessageNumber"/>
-			<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
 		</panel>
 
 		<panel-tabs name="mainPanelTab">
@@ -37,7 +35,7 @@
 						<field name="customerAccountPrefix" help="Prefix to be prepended on customer accounts' codes, the code will be [prefix]PARTNERNAME"
 							   showIf="partnerAccountGenerationModeSelect == 1" requiredIf="partnerAccountGenerationModeSelect == 1"/>
 						<field name="customerAccountSequence" help="Sequence to be used to generate customer accounts' codes" canNew="true" canEdit="true"
-                               showIf="partnerAccountGenerationModeSelect == 2" requiredIf="partnerAccountGenerationModeSelect == 2" domain="self.code = 'partnerAccount' and self.company = :company"/>
+                               showIf="partnerAccountGenerationModeSelect == 2" requiredIf="partnerAccountGenerationModeSelect == 2" domain="self.codeSelect = 'partnerAccount' and self.company = :company"/>
 					</panel>
 					<panel title="AccountConfig.Suppliers" colSpan="12">
 						<field name="supplierAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect ='payable'" grid-view="account-grid" form-view="account-form"
@@ -45,7 +43,7 @@
 						<field name="supplierAccountPrefix" help="Prefix to be prepended on supplier accounts' codes, the code will be [prefix]PARTNERNAME"
 							   showIf="partnerAccountGenerationModeSelect == 1" requiredIf="partnerAccountGenerationModeSelect == 1"/>
 						<field name="supplierAccountSequence" help="Sequence to be used to generate supplier accounts' codes" canNew="true" canEdit="true"
-                               showIf="partnerAccountGenerationModeSelect == 2" requiredIf="partnerAccountGenerationModeSelect == 2" domain="self.code = 'partnerAccount' and self.company = :company"/>
+                               showIf="partnerAccountGenerationModeSelect == 2" requiredIf="partnerAccountGenerationModeSelect == 2" domain="self.codeSelect = 'partnerAccount' and self.company = :company"/>
 					</panel>
 					<panel title="AccountConfig.Employees" colSpan="12">
 						<field name="employeeAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"
@@ -53,7 +51,7 @@
 						<field name="employeeAccountPrefix" help="Prefix to be prepended on employee accounts' codes, the code will be [prefix]PARTNERNAME"
 							   showIf="partnerAccountGenerationModeSelect == 1" requiredIf="partnerAccountGenerationModeSelect == 1"/>
 						<field name="employeeAccountSequence" help="Sequence to be used to generate employee accounts' codes" canNew="true" canEdit="true"
-                               showIf="partnerAccountGenerationModeSelect == 2" requiredIf="partnerAccountGenerationModeSelect == 2" domain="self.code = 'partnerAccount' and self.company = :company"/>
+                               showIf="partnerAccountGenerationModeSelect == 2" requiredIf="partnerAccountGenerationModeSelect == 2" domain="self.codeSelect = 'partnerAccount' and self.company = :company"/>
 					</panel>
 					<panel name="accountFactorPanel" if="__config__.app.getApp('account').getManageFactors()" colSpan="12">
 						<field name="factorDebitAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
@@ -97,14 +95,18 @@
 				<panel name="expensePanel" title="Expense" colSpan="12">
 					<field name="expenseTaxAccount" domain="self.company = :company" if-module="axelor-human-resource" grid-view="account-grid" form-view="account-form" if="__config__.app.isApp('expense')"/>
 				</panel>
+				<panel name="accountingReportPanel" title="Accounting reports" colSpan="12">
+      	    		<field name="lineMinBeforeLongReportGenerationMessageNumber"/>
+      			</panel>
 			</panel>
 
 			<panel title="Invoicing" name="invoicingPanel">
 				<field name="allowCancelVentilatedInvoice" widget="boolean-switch"/>
 				<field name="generateMoveForInvoicePayment" widget="boolean-switch"/>
 				<field name="invoiceInAtiSelect"/>
-				<field name="invoiceAutomaticMail" widget="boolean-switch"/>
 				<field name="fixedAssetCatReqOnInvoice" widget="boolean-switch"/>
+				<field name="invoiceAutomaticMail" widget="boolean-switch"/>
+				<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
 
 				<panel name="passedForPaymentPanel" title="Passed for payment" colSpan="12" if="__config__.app.getApp('account').getActivatePassedForPayment()">
 					<field name="isManagePassedForPayment" widget="boolean-switch"/>
@@ -112,15 +114,15 @@
 				</panel>
 
 				<panel name="invoiceSequencesPanel" title="Invoices sequences" colSpan="12">
-					<field name="custInvSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
-					<field name="custRefSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
-					<field name="suppInvSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
-					<field name="suppRefSequence" domain="self.code = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
+					<field name="custInvSequence" domain="self.codeSelect = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
+					<field name="custRefSequence" domain="self.codeSelect = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
+					<field name="suppInvSequence" domain="self.codeSelect = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
+					<field name="suppRefSequence" domain="self.codeSelect = 'invoice' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid" canNew="true" canEdit="true"/>
 				</panel>
 
 				<panel name="productsPanel" title="Products" colSpan="12">
-					<field name="invoicingProduct"/>
-					<field name="advancePaymentProduct"/>
+					<field name="invoicingProduct" form-view="product-form" grid-view="product-grid"/>
+					<field name="advancePaymentProduct" form-view="product-form" grid-view="product-grid"/>
 				</panel>
 
 				<panel name="printingSettingsPanel" title="Printing settings" colSpan="12">

@@ -244,7 +244,6 @@ public class DebtRecoveryActionService {
 
     for (Message message : messageSet) {
       message = Beans.get(MessageRepository.class).save(message);
-      message = Beans.get(MessageService.class).sendMessage(message);
 
       if (!debtRecovery.getDebtRecoveryMethodLine().getManualValidationOk()
           && message.getMailAccount() == null) {
@@ -252,6 +251,15 @@ public class DebtRecoveryActionService {
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_4));
       }
+
+      if (CollectionUtils.isEmpty(message.getToEmailAddressSet())) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.DEBT_RECOVERY_ACTION_5),
+            debtRecovery.getDebtRecoveryMethodLine().getDebtRecoveryLevelLabel());
+      }
+
+      Beans.get(MessageService.class).sendMessage(message);
     }
   }
 

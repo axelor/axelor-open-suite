@@ -23,7 +23,7 @@
 				form-view="template-form" grid-view="template-grid" domain="self.metaModel.name = 'ManufOrder'"/>
 		</panel>
 		<panel name="manufOrderSeqPanel" title="Manufacturing order sequence">
-        	<field name="manufOrderSequence" canEdit="true" canNew="true" domain="self.code = 'manufOrder' and self.company = :company"  form-view="sequence-form" grid-view="sequence-grid"/>
+        	<field name="manufOrderSequence" canEdit="true" canNew="true" domain="self.codeSelect = 'manufOrder' and self.company = :company"  form-view="sequence-form" grid-view="sequence-grid"/>
 			<field name="workshopSequenceConfigLineList" form-view="workshop-sequence-config-line-form" colSpan="12" grid-view="workshop-sequence-config-line-grid"/>
 		</panel>
 				

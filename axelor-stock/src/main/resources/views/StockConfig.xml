@@ -15,7 +15,8 @@
 	    <field name="customerVirtualStockLocation" onSelect="action-stock-config-attrs-customer-stocklocation-domain" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
 	    <field name="supplierVirtualStockLocation" onSelect="action-stock-config-attrs-supplier-stocklocation-domain" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
 	    <field name="inventoryVirtualStockLocation" domain="self.typeSelect = 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid"/>
-		  <field name="productionVirtualStockLocation" domain="self.usableOnProduction = True AND self.typeSelect = 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
+		<field name="productionVirtualStockLocation" domain="self.usableOnProduction = True AND self.typeSelect = 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
+	    <field name="virtualOutsourcingStockLocation" domain="self.isOutsourcingLocation = true AND self.typeSelect = 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageOutsourcing()"/> 
 	  </panel>
 	  <panel name="stockMoveInfoPanel" title="Stock move information">
 		  <panel colSpan="12" name="subStockMoveInfoPanel">
@@ -26,6 +27,7 @@
 			  <field name="componentDefaultStockLocation" domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect != 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
 			  <field name="finishedProductsDefaultStockLocation" domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect != 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-production" if="__config__.app.isApp('production')"/>
 			  <field name="directOrderStockLocation" domain="self.directOrderLocation = True and self.typeSelect != 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+		 	  <field name="outsourcingReceiptStockLocation" domain="self.isOutsourcingLocation = true AND self.typeSelect != 3" colSpan="4" form-view="stock-location-form" grid-view="stock-location-grid" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageOutsourcing()"/>
 		 	  <field name="isWithReturnSurplus" widget="boolean-switch" colSpan="4"/>
 		 	  <field name="isWithBackorder" widget="boolean-switch" colSpan="4"/>
 		  </panel>
@@ -81,6 +83,9 @@
 			<field name="isDisplayAgPriceInPrinting" widget="boolean-switch"></field>
 			<field name="displayTrackNbrOnCertificateOfConformityPrinting" widget="boolean-switch"/>
 			<field name="displayExtRefOnCertificateOfConformityPrinting" widget="boolean-switch"/>
+			<field name="displayOrderReferenceAndOrderDate" widget="boolean-switch"/>
+			<field name="displayProductCodeOnPrinting" widget="boolean-switch"/>
+			<field name="displayPriceOnPrinting" widget="boolean-switch"/>
 		</panel>
 				
 		<panel-mail name="mailPanel">

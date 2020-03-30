@@ -68,4 +68,7 @@ public interface StockMoveMultiInvoiceService {
       PaymentMode paymentModeIn,
       Partner contactPartnerIn)
       throws AxelorException;
+
+  public void checkForAlreadyInvoicedStockMove(List<StockMove> stockMoveList)
+      throws AxelorException;
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -51,35 +51,27 @@ public class DMSImportWizardServiceImpl implements DMSImportWizardService {
 
   @Override
   public void importDMS(MetaFile metaFile) throws AxelorException {
-    ZipInputStream zipInputStream = null;
     try {
       File file = MetaFiles.getPath(metaFile).toFile();
-      ZipFile zipfile = new ZipFile(file);
-      zipInputStream = validateZip(file);
-      createDmsTree(zipInputStream, zipfile);
+
+      try (ZipFile zipFile = new ZipFile(file);
+          ZipInputStream zipInputStream = validateZip(file)) {
+        createDmsTree(zipInputStream, zipFile);
+      }
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.DMS_IMPORT_PROCESS_SUCCESS_MESSAGE));
-    } catch (IOException e) {
+    } catch (IOException | UnsupportedOperationException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.DMS_IMPORT_FILE_PROCESS_ERROR));
-    } finally {
-      try {
-        if (zipInputStream != null) {
-          zipInputStream.close();
-        }
-      } catch (IOException e) {
-      }
     }
   }
 
   private ZipInputStream validateZip(File file) throws AxelorException {
-    try {
-      AutoDetectReader autoDetectReader = new AutoDetectReader(new FileInputStream(file));
-      ZipInputStream zis =
-          new ZipInputStream(new FileInputStream(file), autoDetectReader.getCharset());
-      autoDetectReader.close();
+    try (AutoDetectReader autoDetectReader = new AutoDetectReader(new FileInputStream(file));
+        ZipInputStream zis =
+            new ZipInputStream(new FileInputStream(file), autoDetectReader.getCharset())) {
       return zis;
     } catch (IOException | TikaException e) {
       throw new AxelorException(

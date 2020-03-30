@@ -38,6 +38,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -181,6 +182,11 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
   protected InvoiceLine createInvoiceLine() throws AxelorException {
 
     InvoiceLine invoiceLine = super.createInvoiceLine();
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return invoiceLine;
+    }
+
     InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
 
     this.assignOriginElements(invoiceLine);

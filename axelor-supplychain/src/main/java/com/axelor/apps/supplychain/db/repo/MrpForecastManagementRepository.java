@@ -24,7 +24,8 @@ public class MrpForecastManagementRepository extends MrpForecastRepository {
   @Override
   public MrpForecast copy(MrpForecast entity, boolean deep) {
 
-    entity.setStatusSelect(MrpForecastRepository.STATUS_DRAFT);
-    return super.copy(entity, deep);
+    MrpForecast copy = super.copy(entity, deep);
+    copy.setStatusSelect(MrpForecastRepository.STATUS_DRAFT);
+    return copy;
   }
 }

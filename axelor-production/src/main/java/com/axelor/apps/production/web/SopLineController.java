@@ -47,6 +47,7 @@ public class SopLineController {
   @Inject CurrencyRepository currencyRepo;
 
   public void fillMrpForecast(ActionRequest request, ActionResponse response) {
+
     Context context = request.getContext();
 
     @SuppressWarnings("unchecked")

@@ -64,7 +64,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
   public String printInvoice(
       Invoice invoice, boolean forceRefresh, String format, Integer reportType, String locale)
       throws AxelorException, IOException {
-    String fileName = getInvoiceFilesName(false, format);
+    String fileName = I18n.get("Invoice") + "-" + invoice.getInvoiceId() + "." + format;
     return PdfTool.getFileLinkFromPdfFile(
         printCopiesToFile(invoice, forceRefresh, reportType, format, locale), fileName);
   }
@@ -75,6 +75,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
       throws AxelorException, IOException {
     File file = getPrintedInvoice(invoice, forceRefresh, reportType, format, locale);
     int copyNumber = invoice.getInvoicesCopySelect();
+    copyNumber = copyNumber == 0 ? 1 : copyNumber;
     return format.equals(ReportSettings.FORMAT_PDF)
         ? PdfTool.printCopiesToFile(file, copyNumber)
         : file;
@@ -164,7 +165,13 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
           }
         });
 
-    String fileName = getInvoiceFilesName(true, "pdf");
+    String fileName =
+        I18n.get("Invoices")
+            + " - "
+            + Beans.get(AppBaseService.class)
+                .getTodayDate()
+                .format(DateTimeFormatter.BASIC_ISO_DATE)
+            + ".pdf";
     return PdfTool.mergePdfToFileLink(printedInvoices, fileName);
   }
 
@@ -227,19 +234,5 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
         .addParam("HeaderHeight", invoice.getPrintingSettings().getPdfHeaderHeight())
         .addParam("FooterHeight", invoice.getPrintingSettings().getPdfFooterHeight())
         .addFormat(format);
-  }
-
-  /**
-   * Return the name for the printed invoice.
-   *
-   * @param plural if there is one or multiple invoices.
-   */
-  protected String getInvoiceFilesName(boolean plural, String format) {
-
-    return I18n.get(plural ? "Invoices" : "Invoice")
-        + " - "
-        + Beans.get(AppBaseService.class).getTodayDate().format(DateTimeFormatter.BASIC_ISO_DATE)
-        + "."
-        + format;
   }
 }

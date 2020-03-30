@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="City" lang="java" cacheable="true">
+  <entity name="City" lang="java" >
   
     <string name="name" title="Name" required="true"/>
     <string name="artmin" title="Artmin" selection="iterritory.artmin.select"/>

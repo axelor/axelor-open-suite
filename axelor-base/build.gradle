@@ -1,5 +1,6 @@
 apply plugin: "com.axelor.app-module"
 
+apply from: "../libs.gradle"
 apply from: "../version.gradle"
 
 apply {
@@ -12,14 +13,19 @@ axelor {
 }
 
 dependencies {
-    compile project(":modules:axelor-admin")
-	compile project(":modules:axelor-message")
-	compile "org.apache.commons:commons-math3:3.6.1"
-	compile "commons-validator:commons-validator:1.4.0"
-	compile "org.mnode.ical4j:ical4j:2.2.0"
-	compile "org.mnode.ical4j:ical4j-extensions:1.0.3"
-	compile "org.mnode.ical4j:ical4j-connector:1.0.1"
-	compile "com.google.zxing:core:3.3.2"
-	compile 'org.iban4j:iban4j:3.2.1'
-	compile 'com.itextpdf:itextpdf:5.5.13.1'
+    api project(":modules:axelor-admin")
+	api project(":modules:axelor-message")
+
+	implementation libs.commons_lang3
+	implementation libs.commons_math3
+	implementation libs.commons_validator
+
+	implementation libs.ical4j
+	implementation libs.ical4j_extensions
+	implementation libs.ical4j_connector
+
+	implementation libs.iban4j
+	implementation libs.itextpdf
+	implementation libs.jackrabbit_webdav
+	implementation libs.zxing_core
 }

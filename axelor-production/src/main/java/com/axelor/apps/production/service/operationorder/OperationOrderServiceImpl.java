@@ -122,6 +122,9 @@ public class OperationOrderServiceImpl implements OperationOrderService {
 
     this._createHumanResourceList(operationOrder, workCenter);
 
+    operationOrder.setUseLineInGeneratedPurchaseOrder(
+        prodProcessLine.getUseLineInGeneratedPurchaseOrder());
+
     return Beans.get(OperationOrderRepository.class).save(operationOrder);
   }
 
@@ -461,9 +464,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
       return;
     }
     Optional<StockMove> stockMoveOpt =
-        operationOrder
-            .getInStockMoveList()
-            .stream()
+        operationOrder.getInStockMoveList().stream()
             .filter(stockMove -> stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED)
             .findFirst();
     StockMove stockMove;

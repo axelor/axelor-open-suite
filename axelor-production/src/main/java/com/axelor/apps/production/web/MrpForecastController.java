@@ -41,6 +41,7 @@ public class MrpForecastController {
 
   @SuppressWarnings("unchecked")
   public void generateMrpForecast(ActionRequest request, ActionResponse response) {
+
     Context context = request.getContext();
 
     LinkedHashMap<String, Object> sopLineMap =
@@ -70,6 +71,7 @@ public class MrpForecastController {
   }
 
   public void computeTotalForecast(ActionRequest request, ActionResponse response) {
+
     Context context = request.getContext();
     @SuppressWarnings("unchecked")
     ArrayList<LinkedHashMap<String, Object>> mrpForecastList =
@@ -99,6 +101,7 @@ public class MrpForecastController {
   }
 
   public void resetMrpForecasts(ActionRequest request, ActionResponse response) {
+
     Context context = request.getContext();
     @SuppressWarnings("unchecked")
     ArrayList<LinkedHashMap<String, Object>> mrpForecastList =

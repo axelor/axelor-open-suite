@@ -148,14 +148,11 @@ public class IOUtils {
    * @throws EbicsException
    */
   public static byte[] getFileContent(String path) throws AxelorException {
-    try {
-      InputStream input;
+    try (InputStream input = new FileInputStream(path)) {
       byte[] content;
 
-      input = new FileInputStream(path);
       content = new byte[input.available()];
       input.read(content);
-      input.close();
       return content;
     } catch (IOException e) {
       throw new AxelorException(

@@ -1221,7 +1221,10 @@ coalesce(StockMoveLine.customs_code, CustomsCodeNomenclature.code) customs_code,
 case StockMove.type_select
 when 2 then coalesce(ToCountry.alpha2code, ToStockLocationCountry.alpha2code)
 when 3 then coalesce(FromCountry.alpha2code, FromStockLocationCountry.alpha2code) end dst_src_country_code,
-round(StockMoveLine.company_unit_price_untaxed * StockMoveLine.real_qty) fiscal_value,
+round(
+    (CASE WHEN StockMoveLine.company_purchase_price != 0 AND StockMove.type_select = 3
+        THEN StockMoveLine.company_purchase_price
+        ELSE StockMoveLine.company_unit_price_untaxed END) * StockMoveLine.real_qty) fiscal_value,
 coalesce(StockMoveLine.regime, case StockMove.type_select when 2 then 21 when 3 then 11 end) regime,
 round(StockMoveLine.total_net_mass) total_net_mass,
 ceil(StockMoveLine.real_qty) as supplementary_unit,

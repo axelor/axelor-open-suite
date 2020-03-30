@@ -58,9 +58,8 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(
-  name = "QAPicklistType",
-  propOrder = {"fullPicklistMoniker", "picklistEntry", "prompt", "total"}
-)
+    name = "QAPicklistType",
+    propOrder = {"fullPicklistMoniker", "picklistEntry", "prompt", "total"})
 public class QAPicklistType {
 
   @XmlElement(name = "FullPicklistMoniker", required = true)

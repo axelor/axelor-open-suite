@@ -17,6 +17,9 @@
     <many-to-one name="supplierVirtualStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Supplier virtual stock location"/>
     <many-to-one name="inventoryVirtualStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Inventory virtual stock location"/>
 
+    <many-to-one name="virtualOutsourcingStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Virtual outsourcing stock location"/>
+    <many-to-one name="outsourcingReceiptStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Outsourcing receipt stock location"/>
+    
 	<many-to-one name="customsMassUnit" ref="com.axelor.apps.base.db.Unit" title="Unit of mass"/>
 
     <boolean name="realizeStockMovesUponParcelPalletCollection" title="Realize stock moves upon parcel/pallet collection" />
@@ -54,6 +57,9 @@
 	<boolean name="displayTrackNbrOnCertificateOfConformityPrinting" title="Display tracking number details on certificate of conformity printing"/>
 	<boolean name="displayExtRefOnCertificateOfConformityPrinting" title="Display external ref. on certificate of conformity printing"/>
 	<many-to-one name="stockRuleMessageTemplate" ref="com.axelor.apps.message.db.Template" title="Message template for stock rules"/>
+	<boolean name="displayProductCodeOnPrinting" title="Display product code on printing" default="false"/>
+	<boolean name="displayPriceOnPrinting" title="Display price on printing" default="false"/>
+	<boolean name="displayOrderReferenceAndOrderDate" title="Display order reference and order date" default="false"/>
 
 	<track>
 		<field name="company" on="UPDATE"/>

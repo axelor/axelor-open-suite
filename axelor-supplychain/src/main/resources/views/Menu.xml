@@ -37,7 +37,6 @@
 	<action-view name="stock.mrp.calculation" title="Calculation" model="com.axelor.apps.supplychain.db.Mrp">
 	    <view type="grid" name="mrp-grid"/>
 	    <view type="form" name="mrp-form"/>
-	    <domain>self.mrpTypeSelect = 1</domain>
 	</action-view>
 	
 	<menuitem name="stock-mrp-forecast" parent="stock-mrp" title="Forecasts" action="stock.mrp.forecast" order="2"/>
@@ -45,14 +44,15 @@
 	<action-view name="stock.mrp.forecast" title="Forecasts" model="com.axelor.apps.supplychain.db.MrpForecast">
    	    <view type="grid" name="mrp-forecast-grid"/>
 	    <view type="form" name="mrp-forecast-form"/>
-	    <context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+   		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
 	</action-view>
+
 	
 	<menuitem name="stock-mrp-configuration" parent="stock-mrp" title="Configuration" icon="fa-cog" order="3"/>
 	
-	<menuitem name="stock-mrp-configuration-mrp-line-type" parent="stock-mrp-configuration" title="Move types" action="stock.mrp.configuration.mrp.line.type"/>
-	
-	<action-view name="stock.mrp.configuration.mrp.line.type" title="Move types" model="com.axelor.apps.supplychain.db.MrpLineType">
+	<menuitem name="stock-mrp-configuration-mrp-line-type" parent="stock-mrp-configuration" title="MRP move types" action="stock.mrp.configuration.mrp.line.type"/>
+
+	<action-view name="stock.mrp.configuration.mrp.line.type" title="MRP move types" model="com.axelor.apps.supplychain.db.MrpLineType">
     	<view type="grid" name="mrp-line-type-grid"/>
 	    <view type="form" name="mrp-line-type-form"/>
 	</action-view>
@@ -178,6 +178,7 @@
     
     <action-view name="stock.root.stock.details.by.product" title="Stock details by product" model="com.axelor.apps.base.db.Product">
       <view type="form" name="supplychain-stock-details-by-product-form"/>
+      <context name="_isFromMenu" expr="eval: true"/>
     </action-view>
 	
 </object-views>

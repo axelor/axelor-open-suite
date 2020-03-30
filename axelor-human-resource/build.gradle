@@ -1,5 +1,6 @@
 apply plugin: "com.axelor.app-module"
 
+apply from: "../libs.gradle"
 apply from: "../version.gradle"
 
 apply {
@@ -12,8 +13,11 @@ axelor {
 }
 
 dependencies {
-	compile project(":modules:axelor-project")
-	compile project(":modules:axelor-bank-payment")
+	api project(":modules:axelor-project")
+	api project(":modules:axelor-bank-payment")
+
+	implementation libs.commons_lang3
+	implementation libs.commons_collections4
 }
 
 task copyWebapp(type: Copy) {

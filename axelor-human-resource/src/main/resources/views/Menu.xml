@@ -185,15 +185,11 @@
 	</action-method>
 
 	<menuitem name="leave-request-root-leave-calendar" parent="leave-request-root"
-		title="Leaves calendar" action="leave.request.root.leave.calendar" />
+		title="Leaves calendar" action="action.leave.request.method.leave.calendar" />
 
-	<action-view name="leave.request.root.leave.calendar" title="Leaves calendar"
-		model="com.axelor.apps.base.db.ICalendarEvent" >
-		<view type="calendar" name="calendar-event-leave-request"/>
-		<view type="grid" name="calendar-event-grid"/>
-		<view type="form" name="calendar-event-form"/>
-		<domain>self.typeSelect = 4</domain>
-	</action-view>
+	<action-method name="action.leave.request.method.leave.calendar">
+		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="leaveCalendar"/>
+	</action-method>
 
 	<menuitem name="leave-request-to-justify" parent="leave-request-root" title="Leave to justify" action="leave.request.to.justify"/>
 
@@ -212,6 +208,13 @@
 	<action-view name="leave.reason.all" title="Leave reason" model="com.axelor.apps.hr.db.LeaveReason">
     	<view type="grid" name="leave-reason-grid"/>
 	    <view type="form" name="leave-reason-form"/>
+	</action-view>
+	
+	<menuitem name="leave-line-all-employee" parent="leave-request-conf" title="All employees's leave lines" action="action.leave.line.view.conf" />
+
+	<action-view name="action.leave.line.view.conf" title="All employees's leave lines" model="com.axelor.apps.hr.db.LeaveLine">
+		<view type="grid" name="leave-line-grid-all-employee"/>
+		<view type="form" name="leave-line-form-all-employee"/>
 	</action-view>
 
 

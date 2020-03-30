@@ -1,0 +1,46 @@
+def libs = ext.libs = [:]
+
+libs.bcpkix_jdk15on = 'org.bouncycastle:bcpkix-jdk15on:1.62'
+libs.bcprov_jdk15on = 'org.bouncycastle:bcprov-jdk15on:1.62'
+
+libs.commons_codec = 'commons-codec:commons-codec:1.11'
+libs.commons_collections4 = 'org.apache.commons:commons-collections4:4.4'
+libs.commons_exec = 'org.apache.commons:commons-exec:1.2'
+libs.commons_httpclient = 'commons-httpclient:commons-httpclient:3.1'
+libs.commons_io = 'org.apache.commons:commons-io:1.3.2'
+libs.commons_lang3 = 'org.apache.commons:commons-lang3:3.2'
+libs.commons_math3 = 'org.apache.commons:commons-math3:3.6.1'
+libs.commons_net = 'commons-net:commons-net:2.0'
+libs.commons_validator = 'commons-validator:commons-validator:1.4.0'
+
+libs.pdfbox = 'org.apache.pdfbox:pdfbox:2.0.9'
+libs.itextpdf = 'com.itextpdf:itextpdf:5.5.13.1'
+libs.flying_saucer_pdf = 'org.xhtmlrenderer:flying-saucer-pdf:9.1.4'
+
+libs.iban4j = 'org.iban4j:iban4j:3.2.1'
+
+libs.ical4j = 'org.mnode.ical4j:ical4j:2.2.0'
+libs.ical4j_connector = 'org.mnode.ical4j:ical4j-connector:1.0.1'
+libs.ical4j_extensions = 'org.mnode.ical4j:ical4j-extensions:1.0.3'
+
+libs.jsch = 'com.jcraft:jsch:0.1.55'
+
+libs.jsoup = 'org.jsoup:jsoup:1.10.2'
+
+libs.lutung = 'com.mandrillapp.wrapper.lutung:lutung:0.0.7'
+
+libs.jackrabbit_webdav = 'org.apache.jackrabbit:jackrabbit-webdav:2.8.0'
+
+libs.zxing_core = 'com.google.zxing:core:3.3.2'
+
+libs.tidy = 'org.eclipse.birt.runtime.3_7_1:Tidy:1'
+libs.jdom = 'jdom:jdom:1.1'
+libs.xalan = 'xalan:xalan:2.7.2'
+libs.xmlbeans = 'org.apache.xmlbeans:xmlbeans:2.5.0'
+libs.xmlsec = 'org.apache.santuario:xmlsec:1.4.3'
+
+libs.jaxws_api = 'javax.xml.ws:jaxws-api:2.3.1'
+
+libs.jaxb_api = 'javax.xml.bind:jaxb-api:2.2.2'
+libs.jaxb_impl = 'com.sun.xml.bind:jaxb-impl:2.2.2'
+libs.jaxb_xjc = 'com.sun.xml.bind:jaxb-xjc:2.2.2'

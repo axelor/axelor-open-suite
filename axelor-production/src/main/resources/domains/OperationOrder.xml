@@ -35,7 +35,7 @@
 
       <datetime name="realStartDateT" title="Real start"/>
       <datetime name="realEndDateT" title="Real end"/>
-	    
+
     <one-to-many name="inStockMoveList" ref="com.axelor.apps.stock.db.StockMove" title="Stock move in" mappedBy="inOperationOrder"/>
     <long name="plannedDuration" title="Planned duration (hh:mm:ss)"/>
     <long name="realDuration" title="Real duration (hh:mm:ss)"/>
@@ -55,6 +55,9 @@
     <many-to-one name="barCode" ref="com.axelor.meta.db.MetaFile" title="Barcode" readonly="true"/>
 
     <many-to-one name="machineTool" ref="com.axelor.apps.production.db.MachineTool" title="Tools" initParam="true"/>
+    <boolean name="useLineInGeneratedPurchaseOrder" title="Use this line in the generated purchase order" />
+    
+    <boolean name="outsourcing" title="Outsourcing"/>
 
 	<extra-code><![CDATA[
 		// STATUS SELECT

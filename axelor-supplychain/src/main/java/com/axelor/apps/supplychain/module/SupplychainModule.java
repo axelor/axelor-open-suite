@@ -98,6 +98,7 @@ import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainIm
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockServiceImpl;
+import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseRequestServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.ReservedQtyServiceImpl;
@@ -114,6 +115,7 @@ import com.axelor.apps.supplychain.service.SaleOrderReservedQtyServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.SaleOrderStockServiceImpl;
+import com.axelor.apps.supplychain.service.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.SaleOrderWorkflowServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockCorrectionServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockLocationLineReservationService;
@@ -127,6 +129,7 @@ import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveMultiInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveMultiInvoiceServiceImpl;
+import com.axelor.apps.supplychain.service.StockMoveServiceSupplychain;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockRulesServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SupplychainSaleConfigService;
@@ -220,5 +223,8 @@ public class SupplychainModule extends AxelorModule {
     bind(FixedAssetServiceImpl.class).to(FixedAssetServiceSupplyChainImpl.class);
     bind(StockMoveLineStockRepository.class).to(StockMoveLineSupplychainRepository.class);
     bind(MrpForecastRepository.class).to(MrpForecastManagementRepository.class);
+    bind(PurchaseOrderSupplychainService.class).to(PurchaseOrderServiceSupplychainImpl.class);
+    bind(SaleOrderSupplychainService.class).to(SaleOrderServiceSupplychainImpl.class);
+    bind(StockMoveServiceSupplychain.class).to(StockMoveServiceSupplychainImpl.class);
   }
 }

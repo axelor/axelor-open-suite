@@ -145,7 +145,7 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
 
       if (accountingBatch.getIncludeOtherBankAccounts()
           && appBaseService.getAppBase().getManageMultiBanks()) {
-        bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsSet());
+        bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsList());
       }
 
       queryBuilder.add(

@@ -18,13 +18,17 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.SubrogationRelease;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import javax.persistence.PersistenceException;
+import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceManagementRepository extends InvoiceRepository {
   @Override
@@ -72,6 +76,20 @@ public class InvoiceManagementRepository extends InvoiceRepository {
   @Override
   public Invoice save(Invoice invoice) {
     try {
+      List<InvoicePayment> invoicePayments = invoice.getInvoicePaymentList();
+      if (CollectionUtils.isNotEmpty(invoicePayments)) {
+        LocalDate latestPaymentDate =
+            invoicePayments.stream()
+                .filter(
+                    invoicePayment ->
+                        invoicePayment.getStatusSelect()
+                            == InvoicePaymentRepository.STATUS_VALIDATED)
+                .map(InvoicePayment::getPaymentDate)
+                .max(LocalDate::compareTo)
+                .orElse(null);
+        invoice.setPaymentDate(latestPaymentDate);
+      }
+
       invoice = super.save(invoice);
       Beans.get(InvoiceService.class).setDraftSequence(invoice);
 
@@ -87,10 +105,18 @@ public class InvoiceManagementRepository extends InvoiceRepository {
     try {
       if (context.get("_model") != null
           && context.get("_model").toString().contains("SubrogationRelease")) {
-        long id = (long) context.get("id");
-        SubrogationRelease subrogationRelease =
-            Beans.get(SubrogationReleaseRepository.class).find(id);
-        json.put("$subrogationStatusSelect", subrogationRelease.getStatusSelect());
+        if (context.get("id") != null) {
+          long id = (long) context.get("id");
+          SubrogationRelease subrogationRelease =
+              Beans.get(SubrogationReleaseRepository.class).find(id);
+          if (subrogationRelease != null && subrogationRelease.getStatusSelect() != null) {
+            json.put("$subrogationStatusSelect", subrogationRelease.getStatusSelect());
+          } else {
+            json.put("$subrogationStatusSelect", SubrogationReleaseRepository.STATUS_NEW);
+          }
+        }
+      } else {
+        json.put("$subrogationStatusSelect", SubrogationReleaseRepository.STATUS_NEW);
       }
     } catch (Exception e) {
       TraceBackService.trace(e);

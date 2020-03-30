@@ -21,9 +21,14 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineStockRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import java.util.Map;
+import javax.persistence.PersistenceException;
 
 public class StockMoveLineSupplychainRepository extends StockMoveLineStockRepository {
 
@@ -44,5 +49,21 @@ public class StockMoveLineSupplychainRepository extends StockMoveLineStockReposi
       json.put("availableStatusSelect", stockMoveLine.getAvailableStatusSelect());
     }
     return stockMoveLineMap;
+  }
+
+  @Override
+  public void remove(StockMoveLine stockMoveLine) {
+    try {
+      if (Beans.get(StockMoveLineServiceSupplychain.class)
+          .isAllocatedStockMoveLine(stockMoveLine)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.ALLOCATED_STOCK_MOVE_LINE_DELETED_ERROR));
+      } else {
+        super.remove(stockMoveLine);
+      }
+    } catch (AxelorException e) {
+      throw new PersistenceException(e.getLocalizedMessage());
+    }
   }
 }

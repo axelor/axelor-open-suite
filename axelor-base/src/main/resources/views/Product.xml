@@ -116,7 +116,7 @@
                         hideIf="isShippingCostsProduct || !sellable"/>
 					<panel name="unitsPanel" title="Units" colSpan="12">
 						<field name="unit" canEdit="false" colSpan="6" form-view="unit-form" grid-view="unit-grid"/>
-						<button name="updateUnitBtn" title="Update stock location" colSpan="6" showIf="id" onClick="save,action-product-method-update-stock-location" if-module="axelor-stock" if="__config__.app.isApp('stock')"/>
+						<button name="updateUnitBtn" title="Update stock location" colSpan="6" showIf="id &amp;&amp; productTypeSelect == 'storable' &amp;&amp; stockManaged" onClick="save,action-product-method-update-stock-location" if-module="axelor-stock" if="__config__.app.isApp('stock')"/>
 						<field name="salesUnit" canEdit="false" hideIf="!sellable" colSpan="6" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('sale')?.getManageSalesUnits()"/>
 						<spacer colSpan="6"/>
 						<field name="purchasesUnit" canEdit="false" hideIf="!purchasable" colSpan="6" form-view="unit-form" grid-view="unit-grid" if="__config__.app.getApp('purchase')?.getManagePurchasesUnits()"/>
@@ -204,14 +204,14 @@
                     if-module="axelor-production"
                     if="__config__.app.isApp('production')">
                     <field name="costSheetGroup" showIf="productSubTypeSelect == 3" if="__config__.app.getApp('production').getManageCostSheetGroup()"/>
-                    <field name="economicManufOrderQty"/>
+                    <field name="economicManufOrderQty" showIf="productSubTypeSelect == 3 || (productSubTypeSelect == 2 &amp;&amp; procurementMethodSelect == 'buy')"/>
                     <panel name="productionPanel" colSpan="12" showIf="procurementMethodSelect == 'produce' || procurementMethodSelect == 'buyAndProduce'">
                     	<panel-include view="product-production-form"/>
                     </panel>
                     <panel-dashlet name="showUsedBOMPanel" colSpan="12" action="action-product-view-show-used-bill-of-material" showIf="id &amp;&amp; (productSubTypeSelect == 3 || productSubTypeSelect == 2)"/>
                     <panel-dashlet name="productionProcessPanel" colSpan="12" action="action-product-view-production-process" showIf="id &amp;&amp; (procurementMethodSelect == 'produce' || procurementMethodSelect == 'buyAndProduce')"/>
                 </panel>
-                <panel name="stockPanel" title="Stock" showTitle="false" showIf="productTypeSelect == 'storable'" if-module="axelor-stock" if="__config__.app.isApp('stock')" >
+                <panel name="trackingNumberPanel" title="Tracking number" showTitle="false" showIf="productTypeSelect == 'storable'" if-module="axelor-stock" if="__config__.app.isApp('stock')" >
 					<panel colSpan="12" name="trackingDetailsPanel">
 				        <field name="hasWarranty"/>
 				        <field name="warrantyNbrOfMonths" showIf="hasWarranty"/>
@@ -318,11 +318,11 @@
 		<template><![CDATA[
 		    <div class="span12"><strong>{{fullName}}</strong></div>
 			<div>
-			  <div class="span4 card-image">
-			    <img ng-show="picture" ng-src="{{$image('picture', 'content')}}" />
+			  <div class="span4 card-image" style="width: 128px; height: 64px;">
+			    <img ng-show="picture" ng-src="{{$image('picture', 'content')}}" style="width: 100%; height: 100%; object-fit: contain;"/>
 			    <img ng-show="!picture" src="img/product-default.png" />
 			  </div>
-			  <div class="span8">
+			  <div class="span8" style="width: 60%;">
 			    <span>{{$fmt('salePrice')}} {{saleCurrency.symbol}}<br/>
 			    {{productFamily.name}}<br/>
 			    {{productCategory.name}}</span>

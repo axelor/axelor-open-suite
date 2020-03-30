@@ -152,4 +152,24 @@ public interface ITranslation {
       "BankReconciliationStatement.amountToReconcile"; /*)*/;
   public static final String BANK_RECONCILIATION_STATEMENT_NO_LINE_FOUND_MESSAGE = /*$$(*/
       "BankReconciliationStatement.noLineFoundMessage"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_ACCOUNT = /*$$(*/
+      "BankReconciliationStatement.account"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_BANK_DETAILS = /*$$(*/
+      "BankReconciliationStatement.bankDetails"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_ACTUAL_BALANCE = /*$$(*/
+      "BankReconciliationStatement.actualBalance"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_MAIN_TITLE = /*$$(*/
+      "BankReconciliationStatement.mainTitle"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_SUMMARY_TITLE = /*$$(*/
+      "BankReconciliationStatement.SummaryTitle"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_ACCOUNT_BALANCE = /*$$(*/
+      "BankReconciliationStatement.accountBalance"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_BANK_BALANCE = /*$$(*/
+      "BankReconciliationStatement.bankBalance"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_ACCOUNT_BANK_GAP = /*$$(*/
+      "BankReconciliationStatement.accountBankGap"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_UNRECONCILE_ACCOUNT_BALANCE = /*$$(*/
+      "BankReconciliationStatement.unreconileAccountBalance"; /*)*/;
+  public static final String BANK_RECONCILIATION_STATEMENT_RECONCILIATION_GAP = /*$$(*/
+      "BankReconciliationStatement.reconciliationGap"; /*)*/;
 }

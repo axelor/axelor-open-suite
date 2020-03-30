@@ -23,9 +23,10 @@
   	<many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User to alert"/>
   	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team to alert"/>
 	<many-to-one name="stockRuleMessageTemplate" ref="com.axelor.apps.message.db.Template" title="Message template for stock rules"/>
-	<boolean name="alert" title="Alert" default="false"/>
+		<boolean name="alert" title="Alert" default="false"/>
+	<string name="comments" title="Comments" large="true"/>
 
-  	
+
   	 <extra-code><![CDATA[
 	   	// USE CASE SELECT
 	   	public static final int USE_CASE_USED_FOR_MRP = 1;

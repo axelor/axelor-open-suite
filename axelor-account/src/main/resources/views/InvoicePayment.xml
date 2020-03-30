@@ -29,8 +29,7 @@
             <field name="paymentDate"/>
             <field name="delayReason"
                 showIf="paymentDate &gt; invoice.dueDate" readonly="false"/>
-            <field name="invoice.dueDate"
-                showIf="paymentDate &gt; invoice.dueDate" requiredIf="typeSelect != 3 &amp;&amp; typeSelect != 4" hideIf="typeSelect == 3 || typeSelect == 4"/>
+            <field name="invoice.dueDate" showIf="paymentDate &gt; invoice.dueDate"/>
             <field name="companyBankDetails" canEdit="false"
                 onSelect="action-invoice-payment-method-bank-details-domain"
                 form-view="bank-details-form" grid-view="bank-details-grid"/>

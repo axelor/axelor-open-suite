@@ -405,10 +405,15 @@ public class StockMoveInvoiceController {
       List<Map> stockMoveMap = (List<Map>) request.getContext().get("customerStockMoveToInvoice");
 
       List<Long> stockMoveIdList = new ArrayList<>();
+      List<StockMove> stockMoveList = new ArrayList<>();
 
       for (Map map : stockMoveMap) {
         stockMoveIdList.add(((Number) map.get("id")).longValue());
       }
+      for (Long stockMoveId : stockMoveIdList) {
+        stockMoveList.add(JPA.em().find(StockMove.class, stockMoveId));
+      }
+      Beans.get(StockMoveMultiInvoiceService.class).checkForAlreadyInvoicedStockMove(stockMoveList);
 
       Entry<List<Long>, String> result =
           Beans.get(StockMoveMultiInvoiceService.class).generateMultipleInvoices(stockMoveIdList);
@@ -443,10 +448,15 @@ public class StockMoveInvoiceController {
       List<Map> stockMoveMap = (List<Map>) request.getContext().get("supplierStockMoveToInvoice");
 
       List<Long> stockMoveIdList = new ArrayList<>();
+      List<StockMove> stockMoveList = new ArrayList<>();
 
       for (Map map : stockMoveMap) {
         stockMoveIdList.add(((Number) map.get("id")).longValue());
       }
+      for (Long stockMoveId : stockMoveIdList) {
+        stockMoveList.add(JPA.em().find(StockMove.class, stockMoveId));
+      }
+      Beans.get(StockMoveMultiInvoiceService.class).checkForAlreadyInvoicedStockMove(stockMoveList);
 
       Entry<List<Long>, String> result =
           Beans.get(StockMoveMultiInvoiceService.class).generateMultipleInvoices(stockMoveIdList);
@@ -481,13 +491,7 @@ public class StockMoveInvoiceController {
       StockMove stockMove = Beans.get(StockMoveRepository.class).find(id);
       StockMoveInvoiceService stockMoveInvoiceService = Beans.get(StockMoveInvoiceService.class);
 
-      BigDecimal totalInvoicedQty =
-          stockMove
-              .getStockMoveLineList()
-              .stream()
-              .map(stockMoveInvoiceService::getNonCanceledInvoiceQty)
-              .reduce(BigDecimal::add)
-              .orElse(BigDecimal.ZERO);
+      BigDecimal totalInvoicedQty = stockMoveInvoiceService.computeNonCanceledInvoiceQty(stockMove);
       if (totalInvoicedQty.compareTo(BigDecimal.ZERO) == 0) {
         response.setValue("operationSelect", StockMoveRepository.INVOICE_ALL);
       } else {

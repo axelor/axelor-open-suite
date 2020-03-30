@@ -18,9 +18,17 @@
 package com.axelor.apps.production.service.manuforder;
 
 import com.axelor.apps.base.db.CancelReason;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.UnitRepository;
+import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.ProductService;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.Template;
@@ -28,6 +36,7 @@ import com.axelor.apps.message.db.repo.EmailAccountRepository;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.CostSheetRepository;
@@ -39,7 +48,12 @@ import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.service.PurchaseOrderLineService;
+import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -474,8 +488,7 @@ public class ManufOrderWorkflowService {
         Comparator.comparing(
             OperationOrder::getId, Comparator.nullsFirst(Comparator.naturalOrder()));
 
-    return operationOrderList
-        .stream()
+    return operationOrderList.stream()
         .sorted(byPriority.thenComparing(byId))
         .collect(Collectors.toList());
   }
@@ -500,5 +513,141 @@ public class ManufOrderWorkflowService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage(), manufOrder);
     }
     return true;
+  }
+
+  private void createPurchaseOrderLineProduction(
+      OperationOrder operationOrder, PurchaseOrder purchaseOrder) throws AxelorException {
+
+    UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
+    PurchaseOrderLineService purchaseOrderLineService = Beans.get(PurchaseOrderLineService.class);
+    PurchaseOrderLine purchaseOrderLine;
+    BigDecimal quantity = BigDecimal.ONE;
+    Unit startUnit =
+        Beans.get(UnitRepository.class)
+            .all()
+            .filter("self.name = 'Hour' AND self.unitTypeSelect = 3")
+            .fetchOne();
+
+    for (ProdHumanResource humanResource : operationOrder.getProdHumanResourceList()) {
+
+      Product product = humanResource.getProduct();
+      Unit purchaseUnit = product.getPurchasesUnit();
+
+      if (purchaseUnit != null) {
+        quantity =
+            unitConversionService.convert(
+                startUnit,
+                purchaseUnit,
+                new BigDecimal(humanResource.getDuration() / 3600),
+                0,
+                humanResource.getProduct());
+      }
+
+      purchaseOrderLine =
+          purchaseOrderLineService.createPurchaseOrderLine(
+              purchaseOrder,
+              product,
+              product.getName(),
+              product.getDescription(),
+              quantity,
+              purchaseUnit);
+
+      purchaseOrder.getPurchaseOrderLineList().add(purchaseOrderLine);
+    }
+  }
+
+  private PurchaseOrder setPurchaseOrderSupplierDetails(PurchaseOrder purchaseOrder)
+      throws AxelorException {
+    Partner supplierPartner = purchaseOrder.getSupplierPartner();
+
+    if (supplierPartner != null) {
+      purchaseOrder.setCurrency(supplierPartner.getCurrency());
+      purchaseOrder.setShipmentMode(supplierPartner.getShipmentMode());
+      purchaseOrder.setFreightCarrierMode(supplierPartner.getFreightCarrierMode());
+      purchaseOrder.setNotes(supplierPartner.getPurchaseOrderComments());
+
+      if (supplierPartner.getPaymentCondition() != null) {
+        purchaseOrder.setPaymentCondition(supplierPartner.getPaymentCondition());
+      } else {
+        purchaseOrder.setPaymentCondition(
+            purchaseOrder.getCompany().getAccountConfig().getDefPaymentCondition());
+      }
+
+      if (supplierPartner.getOutPaymentMode() != null) {
+        purchaseOrder.setPaymentMode(supplierPartner.getOutPaymentMode());
+      } else {
+        purchaseOrder.setPaymentMode(
+            purchaseOrder.getCompany().getAccountConfig().getOutPaymentMode());
+      }
+
+      if (supplierPartner.getContactPartnerSet().size() == 1) {
+        purchaseOrder.setContactPartner(supplierPartner.getContactPartnerSet().iterator().next());
+      }
+
+      purchaseOrder.setCompanyBankDetails(
+          Beans.get(BankDetailsService.class)
+              .getDefaultCompanyBankDetails(
+                  purchaseOrder.getCompany(),
+                  purchaseOrder.getPaymentMode(),
+                  purchaseOrder.getSupplierPartner(),
+                  null));
+
+      purchaseOrder.setPriceList(
+          Beans.get(PartnerPriceListService.class)
+              .getDefaultPriceList(
+                  purchaseOrder.getSupplierPartner(), PriceListRepository.TYPE_PURCHASE));
+
+      if (Beans.get(AppSupplychainService.class).isApp("supplychain")
+          && Beans.get(AppSupplychainService.class).getAppSupplychain().getIntercoFromPurchase()
+          && !purchaseOrder.getCreatedByInterco()
+          && (Beans.get(CompanyRepository.class)
+                  .all()
+                  .filter("self.partner = ?", supplierPartner)
+                  .fetchOne()
+              != null)) {
+        purchaseOrder.setInterco(true);
+      }
+    }
+
+    return purchaseOrder;
+  }
+
+  @Transactional
+  public void createPurchaseOrder(ManufOrder manufOrder) throws AxelorException {
+
+    PurchaseOrder purchaseOrder =
+        Beans.get(PurchaseOrderService.class)
+            .createPurchaseOrder(
+                null,
+                manufOrder.getCompany(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                manufOrder.getProdProcess().getSubcontractors(),
+                null);
+
+    purchaseOrder.setOutsourcingOrder(true);
+
+    if (manufOrder.getCompany() != null && manufOrder.getCompany().getStockConfig() != null) {
+      purchaseOrder.setStockLocation(
+          manufOrder.getCompany().getStockConfig().getOutsourcingReceiptStockLocation());
+    }
+
+    this.setPurchaseOrderSupplierDetails(purchaseOrder);
+
+    for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+      if (operationOrder.getUseLineInGeneratedPurchaseOrder()) {
+        this.createPurchaseOrderLineProduction(operationOrder, purchaseOrder);
+      }
+    }
+
+    Beans.get(PurchaseOrderService.class).computePurchaseOrder(purchaseOrder);
+    manufOrder.setPurchaseOrder(purchaseOrder);
+
+    Beans.get(ManufOrderRepository.class).save(manufOrder);
   }
 }

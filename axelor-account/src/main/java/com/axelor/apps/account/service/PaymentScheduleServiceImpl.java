@@ -598,8 +598,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
         MoreObjects.firstNonNull(
             paymentSchedule.getPaymentScheduleLineList(), Collections.emptyList());
     int currentMaxSequenceNumber =
-        paymentScheduleLines
-            .stream()
+        paymentScheduleLines.stream()
             .mapToInt(PaymentScheduleLine::getScheduleLineSeq)
             .max()
             .orElse(0);

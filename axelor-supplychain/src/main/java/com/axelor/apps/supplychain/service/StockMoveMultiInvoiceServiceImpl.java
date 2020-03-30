@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
 import com.axelor.apps.base.db.Partner;
@@ -134,19 +135,16 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       PaymentMode firstPaymentMode = dummyInvoiceList.get(0).getPaymentMode();
       Partner firstContactPartner = dummyInvoiceList.get(0).getContactPartner();
       paymentConditionToCheck =
-          !dummyInvoiceList
-              .stream()
+          !dummyInvoiceList.stream()
               .map(Invoice::getPaymentCondition)
               .allMatch(
                   paymentCondition -> Objects.equals(paymentCondition, firstPaymentCondition));
       paymentModeToCheck =
-          !dummyInvoiceList
-              .stream()
+          !dummyInvoiceList.stream()
               .map(Invoice::getPaymentMode)
               .allMatch(paymentMode -> Objects.equals(paymentMode, firstPaymentMode));
       contactPartnerToCheck =
-          !dummyInvoiceList
-              .stream()
+          !dummyInvoiceList.stream()
               .map(Invoice::getContactPartner)
               .allMatch(contactPartner -> Objects.equals(contactPartner, firstContactPartner));
 
@@ -228,19 +226,16 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       PaymentMode firstPaymentMode = dummyInvoiceList.get(0).getPaymentMode();
       Partner firstContactPartner = dummyInvoiceList.get(0).getContactPartner();
       paymentConditionToCheck =
-          !dummyInvoiceList
-              .stream()
+          !dummyInvoiceList.stream()
               .map(Invoice::getPaymentCondition)
               .allMatch(
                   paymentCondition -> Objects.equals(paymentCondition, firstPaymentCondition));
       paymentModeToCheck =
-          !dummyInvoiceList
-              .stream()
+          !dummyInvoiceList.stream()
               .map(Invoice::getPaymentMode)
               .allMatch(paymentMode -> Objects.equals(paymentMode, firstPaymentMode));
       contactPartnerToCheck =
-          !dummyInvoiceList
-              .stream()
+          !dummyInvoiceList.stream()
               .map(Invoice::getContactPartner)
               .allMatch(contactPartner -> Objects.equals(contactPartner, firstContactPartner));
       mapResult.put("paymentCondition", firstPaymentCondition);
@@ -528,6 +523,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     refund.setTaxTotal(refund.getTaxTotal().negate());
     refund.setAmountRemaining(refund.getAmountRemaining().negate());
     refund.setCompanyTaxTotal(refund.getCompanyTaxTotal().negate());
+    refund.setPaymentMode(Beans.get(InvoiceToolService.class).getPaymentMode(refund));
     return invoiceRepository.save(refund);
   }
 
@@ -611,7 +607,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
    * This method will throw an exception if a stock move has already been invoiced. The exception
    * message will give every already invoiced stock move.
    */
-  protected void checkForAlreadyInvoicedStockMove(List<StockMove> stockMoveList)
+  @Override
+  public void checkForAlreadyInvoicedStockMove(List<StockMove> stockMoveList)
       throws AxelorException {
     StringBuilder invoiceAlreadyGeneratedMessage = new StringBuilder();
 
@@ -634,9 +631,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   /** This method will throw an exception if the given stock move is already invoiced. */
   protected void checkIfAlreadyInvoiced(StockMove stockMove) throws AxelorException {
     if (stockMove.getInvoiceSet() != null
-        && stockMove
-            .getInvoiceSet()
-            .stream()
+        && stockMove.getInvoiceSet().stream()
             .anyMatch(invoice -> invoice.getStatusSelect() != InvoiceRepository.STATUS_CANCELED)) {
       String templateMessage;
       if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {

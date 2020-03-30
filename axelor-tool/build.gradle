@@ -1,5 +1,6 @@
 apply plugin: "com.axelor.app-module"
 
+apply from: "../libs.gradle"
 apply from: "../version.gradle"
 
 apply {
@@ -12,13 +13,18 @@ axelor {
 }
 
 dependencies {
-	compile "commons-net:commons-net:2.0"
-	compile "org.apache.commons:commons-io:1.3.2"
-	compile "org.apache.commons:commons-lang3:3.1"
-	compile "com.sun.xml.bind:jaxb-impl:2.2.2"
-	compile "org.apache.pdfbox:pdfbox:2.0.9"
-	compile project(":modules:axelor-exception")
+	api project(":modules:axelor-exception")
 
-  // JSch
-  compile "com.jcraft:jsch:0.1.55"
+	implementation libs.commons_net
+	implementation libs.commons_io
+	implementation libs.commons_lang3
+	implementation libs.pdfbox
+
+	// JSch
+	implementation libs.jsch
+
+	compileOnly libs.jaxws_api
+	compileOnly libs.jaxb_api
+
+	implementation libs.jaxb_impl
 }

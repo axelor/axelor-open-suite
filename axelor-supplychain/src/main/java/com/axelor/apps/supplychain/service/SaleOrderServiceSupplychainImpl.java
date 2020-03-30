@@ -26,6 +26,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -49,19 +50,24 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
+public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
+    implements SaleOrderSupplychainService {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected AppSupplychain appSupplychain;
   protected SaleOrderStockService saleOrderStockService;
+  protected SaleOrderRepository saleOrderRepository;
 
   @Inject
   public SaleOrderServiceSupplychainImpl(
-      AppSupplychainService appSupplychainService, SaleOrderStockService saleOrderStockService) {
+      AppSupplychainService appSupplychainService,
+      SaleOrderStockService saleOrderStockService,
+      SaleOrderRepository saleOrderRepository) {
 
     this.appSupplychain = appSupplychainService.getAppSupplychain();
     this.saleOrderStockService = saleOrderStockService;
+    this.saleOrderRepository = saleOrderRepository;
   }
 
   public SaleOrder getClientInformations(SaleOrder saleOrder) {
@@ -97,6 +103,10 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
   public boolean enableEditOrder(SaleOrder saleOrder) throws AxelorException {
     boolean checkAvailabiltyRequest = super.enableEditOrder(saleOrder);
 
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return checkAvailabiltyRequest;
+    }
+
     List<StockMove> allStockMoves =
         Beans.get(StockMoveRepository.class)
             .findAllBySaleOrderAndStatus(
@@ -106,8 +116,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
             .fetch();
     List<StockMove> stockMoves =
         !allStockMoves.isEmpty()
-            ? allStockMoves
-                .stream()
+            ? allStockMoves.stream()
                 .filter(stockMove -> !stockMove.getAvailabilityRequest())
                 .collect(Collectors.toList())
             : allStockMoves;
@@ -141,6 +150,11 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
   @Override
   public void checkModifiedConfirmedOrder(SaleOrder saleOrder, SaleOrder saleOrderView)
       throws AxelorException {
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      super.checkModifiedConfirmedOrder(saleOrder, saleOrderView);
+      return;
+    }
 
     List<SaleOrderLine> saleOrderLineList =
         MoreObjects.firstNonNull(saleOrder.getSaleOrderLineList(), Collections.emptyList());
@@ -181,11 +195,22 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
   public void validateChanges(SaleOrder saleOrder) throws AxelorException {
     super.validateChanges(saleOrder);
 
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return;
+    }
+
     saleOrderStockService.fullyUpdateDeliveryState(saleOrder);
     saleOrder.setOrderBeingEdited(false);
 
     if (appSupplychain.getCustomerStockMoveGenerationAuto()) {
       saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);
     }
+  }
+
+  @Override
+  @Transactional
+  public void updateToConfirmedStatus(SaleOrder saleOrder) {
+    saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
+    saleOrderRepository.save(saleOrder);
   }
 }

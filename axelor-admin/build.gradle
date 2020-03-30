@@ -1,5 +1,6 @@
 apply plugin: "com.axelor.app-module"
 
+apply from: "../libs.gradle"
 apply from: "../version.gradle"
 
 apply {
@@ -12,8 +13,8 @@ axelor {
 }
 
 dependencies {
-	compile project(":modules:axelor-exception")
-	compile project(":modules:axelor-tool")
+	api project(":modules:axelor-exception")
+	api project(":modules:axelor-tool")
 }
 
 def updateJsp(jspFile, check, lines) {

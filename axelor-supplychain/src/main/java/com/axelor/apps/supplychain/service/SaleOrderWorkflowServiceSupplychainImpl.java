@@ -79,6 +79,10 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
 
     super.confirmSaleOrder(saleOrder);
 
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return;
+    }
+
     if (appSupplychain.getPurchaseOrderGenerationAuto()) {
       saleOrderPurchaseService.createPurchaseOrders(saleOrder);
     }
@@ -100,6 +104,10 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
   public void cancelSaleOrder(
       SaleOrder saleOrder, CancelReason cancelReason, String cancelReasonStr) {
     super.cancelSaleOrder(saleOrder, cancelReason, cancelReasonStr);
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return;
+    }
     try {
       accountingSituationSupplychainService.updateUsedCredit(saleOrder.getClientPartner());
     } catch (Exception e) {
@@ -109,10 +117,15 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
 
   @Override
   @Transactional(
-    rollbackOn = {AxelorException.class, RuntimeException.class},
-    ignore = {BlockedSaleOrderException.class}
-  )
+      rollbackOn = {AxelorException.class, RuntimeException.class},
+      ignore = {BlockedSaleOrderException.class})
   public void finalizeQuotation(SaleOrder saleOrder) throws AxelorException {
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      super.finalizeQuotation(saleOrder);
+      return;
+    }
+
     accountingSituationSupplychainService.updateCustomerCreditFromSaleOrder(saleOrder);
     super.finalizeQuotation(saleOrder);
     int intercoSaleCreatingStatus =
@@ -148,6 +161,12 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
   @Override
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void completeSaleOrder(SaleOrder saleOrder) throws AxelorException {
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      super.completeSaleOrder(saleOrder);
+      return;
+    }
+
     List<StockMove> stockMoves =
         Beans.get(StockMoveRepository.class)
             .all()

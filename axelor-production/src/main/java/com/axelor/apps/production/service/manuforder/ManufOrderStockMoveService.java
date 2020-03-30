@@ -109,11 +109,15 @@ public class ManufOrderStockMoveService {
     StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
     StockConfig stockConfig = stockConfigService.getStockConfig(company);
     StockLocation virtualStockLocation =
-        stockConfigService.getProductionVirtualStockLocation(
-            stockConfig, manufOrder.getProdProcess().getOutsourcing());
+        manufOrder.getOutsourcing()
+            ? manufOrder.getProdProcess().getProducedProductStockLocation()
+            : stockConfigService.getProductionVirtualStockLocation(
+                stockConfig, manufOrder.getProdProcess().getOutsourcing());
 
     StockLocation fromStockLocation =
-        getDefaultStockLocation(manufOrder, company, STOCK_LOCATION_IN);
+        manufOrder.getOutsourcing()
+            ? company.getStockConfig().getOutsourcingReceiptStockLocation()
+            : getDefaultStockLocation(manufOrder, company, STOCK_LOCATION_IN);
 
     StockMove stockMove =
         stockMoveService.createStockMove(
@@ -226,6 +230,7 @@ public class ManufOrderStockMoveService {
   @Transactional(rollbackOn = {Exception.class})
   public void consumeInStockMoves(ManufOrder manufOrder) throws AxelorException {
     for (StockMove stockMove : manufOrder.getInStockMoveList()) {
+
       finishStockMove(stockMove);
     }
   }
@@ -340,9 +345,7 @@ public class ManufOrderStockMoveService {
    * @param stockMove
    */
   protected void updateRealPrice(ManufOrder manufOrder, StockMove stockMove) {
-    stockMove
-        .getStockMoveLineList()
-        .stream()
+    stockMove.getStockMoveLineList().stream()
         .filter(
             stockMoveLine ->
                 stockMoveLine.getProduct() != null
@@ -468,8 +471,7 @@ public class ManufOrderStockMoveService {
    * @return an optional stock move
    */
   public Optional<StockMove> getPlannedStockMove(List<StockMove> stockMoveList) {
-    return stockMoveList
-        .stream()
+    return stockMoveList.stream()
         .filter(stockMove -> stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED)
         .findFirst();
   }
@@ -582,9 +584,7 @@ public class ManufOrderStockMoveService {
       _createStockMoveLine(prodProduct, stockMove, StockMoveLineService.TYPE_IN_PRODUCTIONS, qty);
 
       // Update consumed StockMoveLineList with created stock move lines
-      stockMove
-          .getStockMoveLineList()
-          .stream()
+      stockMove.getStockMoveLineList().stream()
           .filter(
               stockMoveLine1 -> !manufOrder.getConsumedStockMoveLineList().contains(stockMoveLine1))
           .forEach(manufOrder::addConsumedStockMoveLineListItem);
@@ -628,9 +628,7 @@ public class ManufOrderStockMoveService {
           getCostPriceFromProduct(prodProduct));
 
       // Update produced StockMoveLineList with created stock move lines
-      stockMove
-          .getStockMoveLineList()
-          .stream()
+      stockMove.getStockMoveLineList().stream()
           .filter(
               stockMoveLine1 -> !manufOrder.getProducedStockMoveLineList().contains(stockMoveLine1))
           .forEach(manufOrder::addProducedStockMoveLineListItem);

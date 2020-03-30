@@ -30,7 +30,7 @@ import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 public class ExportService {
 

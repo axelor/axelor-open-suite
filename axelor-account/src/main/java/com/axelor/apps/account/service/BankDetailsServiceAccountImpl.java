@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.BankDetails;
@@ -30,7 +31,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsServiceImpl;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -53,7 +53,10 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
       Partner partner, Company company, PaymentMode paymentMode, Integer operationTypeSelect)
       throws AxelorException {
 
-    if (!Beans.get(AppBaseService.class).getAppBase().getManageMultiBanks()) {
+    AppAccountService appAccountService = Beans.get(AppAccountService.class);
+
+    if (!appAccountService.isApp("account")
+        || !appAccountService.getAppBase().getManageMultiBanks()) {
       return super.createCompanyBankDetailsDomain(
           partner, company, paymentMode, operationTypeSelect);
     } else {
@@ -104,8 +107,7 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
 
     AccountConfig accountConfig = Beans.get(AccountConfigService.class).getAccountConfig(company);
     List<BankDetails> bankDetailsList = accountConfig.getFactorPartner().getBankDetailsList();
-    return bankDetailsList
-        .stream()
+    return bankDetailsList.stream()
         .filter(bankDetails -> bankDetails.getActive())
         .collect(Collectors.toList());
   }
@@ -125,7 +127,10 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
       Company company, PaymentMode paymentMode, Partner partner, Integer operationTypeSelect)
       throws AxelorException {
 
-    if (!Beans.get(AppBaseService.class).getAppBase().getManageMultiBanks()) {
+    AppAccountService appAccountService = Beans.get(AppAccountService.class);
+
+    if (!appAccountService.isApp("account")
+        || !appAccountService.getAppBase().getManageMultiBanks()) {
       return super.getDefaultCompanyBankDetails(company, paymentMode, partner, operationTypeSelect);
     } else {
 
@@ -171,8 +176,7 @@ public class BankDetailsServiceAccountImpl extends BankDetailsServiceImpl {
       return null;
     }
     List<BankDetails> bankDetailsList = accountConfig.getFactorPartner().getBankDetailsList();
-    return bankDetailsList
-        .stream()
+    return bankDetailsList.stream()
         .filter(bankDetails -> bankDetails.getIsDefault())
         .findFirst()
         .orElse(null);

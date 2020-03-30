@@ -108,7 +108,7 @@ public abstract class BatchCreditTransferInvoice extends BatchStrategy {
       Set<BankDetails> bankDetailsSet = Sets.newHashSet(accountingBatch.getBankDetails());
 
       if (accountingBatch.getIncludeOtherBankAccounts()) {
-        bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsSet());
+        bankDetailsSet.addAll(accountingBatch.getCompany().getBankDetailsList());
       }
 
       query.bind("bankDetailsSet", bankDetailsSet);

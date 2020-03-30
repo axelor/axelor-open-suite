@@ -40,8 +40,7 @@ public class PartnerStockSettingsServiceImpl implements PartnerStockSettingsServ
       return createMailSettings(partner, company);
     }
     Optional<PartnerStockSettings> partnerStockSettings =
-        mailSettingsList
-            .stream()
+        mailSettingsList.stream()
             .filter(stockSettings -> company.equals(stockSettings.getCompany()))
             .findAny();
     return partnerStockSettings.isPresent()
