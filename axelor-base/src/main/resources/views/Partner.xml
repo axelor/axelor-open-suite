@@ -3,15 +3,13 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
-	<grid name="partner-grid" title="Partners"
-		model="com.axelor.apps.base.db.Partner" orderBy="name">
+	<grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner"
+		orderBy="name">
 		<toolbar>
 			<button name="printPhoneBookBtn" title="Contact PhoneBook"
 				icon="fa-print" onClick="action-print-phonebook" />
-			<button name="printCompanyPhoneBookBtn"
-				title="Company PhoneBook" icon="fa-print"
-				onClick="action-print-company-phonebook"
-				if="__config__.app.isApp('employee')" />
+			<button name="printCompanyPhoneBookBtn" title="Company PhoneBook"
+				icon="fa-print" onClick="action-print-company-phonebook" if="__config__.app.isApp('employee')" />
 			<button name="checkDuplicateBtn" title="Check Duplicate"
 				onClick="action-general-check-duplicate-records" />
 			<button name="replaceDuplicateBtn" title="Merge duplicated"
@@ -30,24 +28,23 @@
 		<field name="mainAddress" />
 		<field name="companyStr"
 			if="__config__.app.getApp('base').getEnableMultiCompany()" />
-		<button name="scheduleEventBtn" title="Schedule Event"
-			icon="fa-group" onClick="action-partner-view-schedule-event"
-			if-module="axelor-crm" if="__config__.app.isApp('crm')" />
-		<button name="sendByEmailBtn" title="Send Email"
-			icon="fa-envelope" onClick="action-send-by-email-with-template"
-			if-module="axelor-crm" if="__config__.app.isApp('crm')" />
+		<button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
+			onClick="action-partner-view-schedule-event" if-module="axelor-crm"
+			if="__config__.app.isApp('crm')" />
+		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
+			onClick="action-send-by-email-with-template" if-module="axelor-crm"
+			if="__config__.app.isApp('crm')" />
 	</grid>
 
 	<grid name="partner-customer-grid" title="Customers"
 		model="com.axelor.apps.base.db.Partner" orderBy="name">
 		<menubar>
-			<menu name="partnerReportsMenu" title="Reports"
-				icon="fa-files-o" showTitle="true">
+			<menu name="partnerReportsMenu" title="Reports" icon="fa-files-o"
+				showTitle="true">
 				<item name="contactPhoneBookItem" title="Contact PhoneBook"
 					action="action-print-phonebook" />
 				<item name="companyPhoneBookItem" title="Company phoneBook"
-					action="action-print-company-phonebook"
-					if="__config__.app.isApp('employee')" />
+					action="action-print-company-phonebook" if="__config__.app.isApp('employee')" />
 			</menu>
 			<menu name="partnerToolsMenu" title="Tools" icon="fa-wrench"
 				showTitle="true">
@@ -60,8 +57,8 @@
 		<field name="partnerSeq" width="120" />
 		<field name="simpleFullName" />
 		<field name="fixedPhone" />
-		<field name="emailAddress.address"
-			placeholder="whatever@example.com" title="Email" />
+		<field name="emailAddress.address" placeholder="whatever@example.com"
+			title="Email" />
 		<field name="partnerCategory" grid-view="partner-category-grid"
 			form-view="partner-category-form" />
 		<field name="fiscalPosition.code" title="Fiscal position" />
@@ -69,24 +66,23 @@
 		<field name="mainAddress" />
 		<field name="companyStr"
 			if="__config__.app.getApp('base').getEnableMultiCompany()" />
-		<button name="scheduleEventBtn" title="Schedule Event"
-			icon="fa-group" onClick="action-partner-view-schedule-event"
-			if-module="axelor-crm" if="__config__.app.isApp('crm')" />
-		<button name="sendByEmailBtn" title="Send Email"
-			icon="fa-envelope" onClick="action-send-by-email-with-template"
-			if-module="axelor-crm" if="__config__.app.isApp('crm')" />
+		<button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
+			onClick="action-partner-view-schedule-event" if-module="axelor-crm"
+			if="__config__.app.isApp('crm')" />
+		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
+			onClick="action-send-by-email-with-template" if-module="axelor-crm"
+			if="__config__.app.isApp('crm')" />
 	</grid>
 
 	<grid name="partner-supplier-grid" title="Suppliers"
 		model="com.axelor.apps.base.db.Partner" orderBy="name">
 		<menubar>
-			<menu name="partnerReportsMenu" title="Reports"
-				icon="fa-files-o" showTitle="true">
+			<menu name="partnerReportsMenu" title="Reports" icon="fa-files-o"
+				showTitle="true">
 				<item name="contactPhoneBookItem" title="Contact PhoneBook"
 					action="action-print-phonebook" />
 				<item name="companyPhoneBookItem" title="Company phoneBook"
-					action="action-print-company-phonebook"
-					if="__config__.app.isApp('employee')" />
+					action="action-print-company-phonebook" if="__config__.app.isApp('employee')" />
 			</menu>
 			<menu name="partnerToolsMenu" title="Tools" icon="fa-wrench"
 				showTitle="true">
@@ -99,8 +95,8 @@
 		<field name="partnerSeq" width="120" />
 		<field name="simpleFullName" />
 		<field name="fixedPhone" />
-		<field name="emailAddress.address"
-			placeholder="whatever@example.com" title="Email" />
+		<field name="emailAddress.address" placeholder="whatever@example.com"
+			title="Email" />
 		<field name="partnerCategory" grid-view="partner-category-grid"
 			form-view="partner-category-form" />
 		<field name="fiscalPosition.code" title="Fiscal position" />
@@ -108,12 +104,12 @@
 		<field name="mainAddress" />
 		<field name="companyStr"
 			if="__config__.app.getApp('base').getEnableMultiCompany()" />
-		<button name="scheduleEventBtn" title="Schedule Event"
-			icon="fa-group" onClick="action-partner-view-schedule-event"
-			if-module="axelor-crm" if="__config__.app.isApp('crm')" />
-		<button name="sendByEmailBtn" title="Send Email"
-			icon="fa-envelope" onClick="action-send-by-email-with-template"
-			if-module="axelor-crm" if="__config__.app.isApp('crm')" />
+		<button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
+			onClick="action-partner-view-schedule-event" if-module="axelor-crm"
+			if="__config__.app.isApp('crm')" />
+		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
+			onClick="action-send-by-email-with-template" if-module="axelor-crm"
+			if="__config__.app.isApp('crm')" />
 	</grid>
 
 	<grid name="partner-contact-grid" title="Contacts"
@@ -128,16 +124,16 @@
 		<field name="simpleFullName" />
 		<field name="fixedPhone" />
 		<field name="mobilePhone" />
-		<field name="emailAddress.address"
-			placeholder="whatever@example.com" title="Email" />
+		<field name="emailAddress.address" placeholder="whatever@example.com"
+			title="Email" />
 		<field name="mainPartner.simpleFullName" title="Main company" />
 		<field name="jobTitleFunction" />
-		<button name="scheduleEventBtn" title="Schedule Event"
-			icon="fa-group" onClick="action-contact-partner-view-schedule-event"
-			if-module="axelor-crm" if="__config__.app.isApp('crm')" />
-		<button name="sendByEmailBtn" title="Send Email"
-			icon="fa-envelope" onClick="action-send-by-email-with-template"
-			if-module="axelor-crm" if="__config__.app.isApp('crm')" />
+		<button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
+			onClick="action-contact-partner-view-schedule-event" if-module="axelor-crm"
+			if="__config__.app.isApp('crm')" />
+		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
+			onClick="action-send-by-email-with-template" if-module="axelor-crm"
+			if="__config__.app.isApp('crm')" />
 	</grid>
 
 	<grid name="partner-grid-group" title="Partner"
@@ -151,53 +147,45 @@
 	</grid>
 
 	<form name="partner-customer-form" title="Customer"
-		model="com.axelor.apps.base.db.Partner"
-		onNew="action-group-base-partner-onnew"
+		model="com.axelor.apps.base.db.Partner" onNew="action-group-base-partner-onnew"
 		onLoad="action-group-partner-onload,action-partner-attrs-hide-customer-recovery"
-		onSave="action-partner-validate-partner-stock-settings-list"
-		width="large">
+		onSave="action-partner-validate-partner-stock-settings-list" width="large">
 		<panel-include view="partner-form" />
 	</form>
 
 	<form name="partner-supplier-form" title="Supplier"
-		model="com.axelor.apps.base.db.Partner"
-		onNew="action-group-base-partner-onnew"
+		model="com.axelor.apps.base.db.Partner" onNew="action-group-base-partner-onnew"
 		onLoad="action-group-partner-onload" width="large">
 		<panel-include view="partner-form" />
 	</form>
 
 	<form name="incl-event-actions-partner-form" title="Partner"
-		model="com.axelor.apps.base.db.Partner"
-		id="incl-event-actions-base-partner-form">
+		model="com.axelor.apps.base.db.Partner" id="incl-event-actions-base-partner-form">
 		<menubar>
 			<menu name="partnerToolsMenu" title="Tools" icon="fa-wrench"
 				showTitle="true">
 				<item name="sendEmailItem" title="Send email"
-					action="save,action-send-by-email-with-template"
-					readonlyIf="id == null" if-module="axelor-message" />
+					action="save,action-send-by-email-with-template" readonlyIf="id == null"
+					if-module="axelor-message" />
 			</menu>
 		</menubar>
 	</form>
 
-	<form name="partner-form" title="Partner"
-		model="com.axelor.apps.base.db.Partner"
-		onNew="action-group-base-partner-onnew"
-		onLoad="action-group-partner-onload"
+	<form name="partner-form" title="Partner" model="com.axelor.apps.base.db.Partner"
+		onNew="action-group-base-partner-onnew" onLoad="action-group-partner-onload"
 		onSave="action-partner-iban-check-on-save" width="large">
 		<toolbar>
 			<button name="showMapBtn" title="Map" icon="fa-map-marker"
 				onClick="action-partner-method-show-on-map" readonlyIf="!id" />
 		</toolbar>
 		<menubar>
-			<menu name="partnerReportsMenu" title="Reports"
-				icon="fa-files-o" showTitle="true">
+			<menu name="partnerReportsMenu" title="Reports" icon="fa-files-o"
+				showTitle="true">
 				<item name="envelopeItem" title="Envelope"
-					action="save,action-partner-method-show-envelope"
-					readonlyIf="id == null" />
+					action="save,action-partner-method-show-envelope" readonlyIf="id == null" />
 				<item name="customerSituationItem" title="Customer Situation"
 					action="save,action-partner-method-show-client-situation"
-					readonlyIf="id == null" showIf="isCustomer == true"
-					if-module="axelor-account" />
+					readonlyIf="id == null" showIf="isCustomer == true" if-module="axelor-account" />
 			</menu>
 		</menubar>
 		<panel-include view="incl-event-actions-partner-form" />
@@ -217,8 +205,7 @@
 					]]>
 					</viewer>
 				</field>
-				<panel name="socialNetworkPanel" colSpan="12"
-					showIf="fullName != null">
+				<panel name="socialNetworkPanel" colSpan="12" showIf="fullName != null">
 					<label name="googleLabel"
 						title="&lt;a class='fa fa-google' href='http://www.google.com' target='_blank' /&gt;"
 						colSpan="2" />
@@ -245,38 +232,33 @@
 							<field name="partnerTypeSelect" showTitle="false"
 								onChange="action-partner-partner-type-select-change,action-partner-method-set-social-network-url,action-partner-record-employee"
 								colSpan="12" placeholder="Partner Type" />
-							<panel name="companyPartnerNamePanel"
-								showIf="partnerTypeSelect == 1" colSpan="12">
+							<panel name="companyPartnerNamePanel" showIf="partnerTypeSelect == 1"
+								colSpan="12">
 								<field name="name" showTitle="false" css="highlight"
-									placeholder="Name"
-									onChange="action-group-base-partner-contact-name-onchange"
+									placeholder="Name" onChange="action-group-base-partner-contact-name-onchange"
 									colSpan="12" />
 							</panel>
-							<panel name="individualPartnerNamePanel"
-								showIf="partnerTypeSelect == 2" colSpan="12">
-								<field name="titleSelect" showTitle="false"
-									placeholder="Civility" colSpan="2" />
+							<panel name="individualPartnerNamePanel" showIf="partnerTypeSelect == 2"
+								colSpan="12">
+								<field name="titleSelect" showTitle="false" placeholder="Civility"
+									colSpan="2" />
 								<field name="name" showTitle="false" css="highlight"
-									placeholder="Name"
-									onChange="action-group-base-partner-contact-name-onchange"
+									placeholder="Name" onChange="action-group-base-partner-contact-name-onchange"
 									colSpan="5" />
 								<field name="firstName" showTitle="false" css="highlight"
-									placeholder="First name"
-									onChange="action-group-base-partner-contact-name-onchange"
+									placeholder="First name" onChange="action-group-base-partner-contact-name-onchange"
 									colSpan="5" />
 							</panel>
 						</editor>
 					</field>
 					<field name="partnerSeq" showTitle="false" colSpan="2"
 						css="label-bold bold large" />
-					<button if="__config__.app.isApp('account')"
-						name="$positiveBalanceBtn" title="Balance" colSpan="3"
-						icon="fa-balance-scale"
+					<button if="__config__.app.isApp('account')" name="$positiveBalanceBtn"
+						title="Balance" colSpan="3" icon="fa-balance-scale"
 						onClick="action-partner-view-show-move-lines" widget="info-button"
 						showIf="id" />
 					<field name="$balance" hidden="true" />
-					<static name="duplicatePartnerText" hidden="true"
-						colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
+					<static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
 				</panel>
 				<field name="isProspect" colSpan="2" widget="InlineCheckbox"
 					hideIf="isContact || $readonly()"
@@ -290,22 +272,18 @@
 				<field name="isSupplier" colSpan="2" widget="InlineCheckbox"
 					hideIf="isContact || $readonly() || isEmployee"
 					onChange="action-partner-account-attrs-hide-supplier-account,action-partner-record-unset-factor" />
-				<field name="isSubcontractor" colSpan="2"
-					widget="InlineCheckbox" hideIf="$readonly()"
-					if-module="axelor-production"
+				<field name="isSubcontractor" colSpan="2" widget="InlineCheckbox"
+					hideIf="$readonly()" if-module="axelor-production"
 					if="__config__.app.getApp('production')?.getManageOutsourcing()" />
 				<field name="isInternal" colSpan="2" widget="InlineCheckbox"
 					hideIf="$readonly()" />
-				<spacer
-					if="!__config__.app.getApp('production')?.manageOutsourcing"
+				<spacer if="!__config__.app.getApp('production')?.manageOutsourcing"
 					colSpan="2" />
 				<field name="isCarrier" colSpan="2" widget="InlineCheckbox"
-					hideIf="isContact || $readonly() || isEmployee"
-					if="__config__.app.isApp('stock')"
+					hideIf="isContact || $readonly() || isEmployee" if="__config__.app.isApp('stock')"
 					onChange="action-partner-record-unset-factor" />
 				<field name="isFactor" colSpan="2" widget="InlineCheckbox"
-					hideIf="isContact || $readonly() || isEmployee"
-					if="__config__.app.getApp('account')?.manageFactors"
+					hideIf="isContact || $readonly() || isEmployee" if="__config__.app.getApp('account')?.manageFactors"
 					onChange="action-partner-record-set-factor" />
 				<field name="$viewerPartnerType" showTitle="false"
 					hideIf="isContact || !$readonly()" colSpan="12">
@@ -327,8 +305,8 @@
 				<field name="$isSubcontractor" type="boolean" hidden="true"
 					colSpan="12" />
 				<field name="isContact" hidden="true" colSpan="12" />
-				<panel name="blockingPanel" hideIf="!$readonly()"
-					colOffset="9" colSpan="3">
+				<panel name="blockingPanel" hideIf="!$readonly()" colOffset="9"
+					colSpan="3">
 					<field name="$activeBlockings" showTitle="false" colSpan="12">
 						<viewer><![CDATA[
                             <h4 style="text-align: right;">
@@ -351,11 +329,9 @@
 				</panel>
 			</panel>
 		</panel>
-		<panel-related name="partnerRoleSetPanel"
-			field="partnerRoleSet"
+		<panel-related name="partnerRoleSetPanel" field="partnerRoleSet"
 			form-view="partner-role-form" grid-view="partner-role-grid"
-			showIf="isContact || partnerTypeSelect == 2"
-			canNew="false" />
+			showIf="isContact || partnerTypeSelect == 2" canNew="false" />
 		<panel name="partnerDetailsPanel" title="Partner Details"
 			hideIf="isEmployee" colSpan="12">
 			<panel colSpan="6" name="partnerCategoryPanel">
@@ -363,12 +339,12 @@
 					form-view="partner-category-form" grid-view="partner-category-grid" />
 				<field name="industrySector" colSpan="6" widget="SuggestBox"
 					hideIf="partnerTypeSelect== 2" />
-				<field name="source" canEdit="false" colSpan="6"
-					widget="SuggestBox" form-view="source-form" grid-view="source-grid" />
-				<field name="department" colSpan="6"
-					hideIf="partnerTypeSelect== 2" />
-				<field name="jobTitleFunction" showIf="isContact || partnerTypeSelect == 2" onChange="action-record-base-partner-set-business-card"/>
-				<field name="functionBusinessCard" showIf="isContact || partnerTypeSelect == 2"/>
+				<field name="source" canEdit="false" colSpan="6" widget="SuggestBox"
+					form-view="source-form" grid-view="source-grid" />
+				<field name="department" colSpan="6" hideIf="partnerTypeSelect== 2" />
+				<field name="jobTitleFunction" showIf="isContact || partnerTypeSelect == 2"
+					onChange="action-record-base-partner-set-business-card" />
+				<field name="functionBusinessCard" showIf="isContact || partnerTypeSelect == 2" />
 			</panel>
 			<panel name="otherPartnerDetailsPanel">
 				<field name="siren" hideIf="partnerTypeSelect== 2" colSpan="4"
@@ -376,7 +352,8 @@
 				<field name="nic" hideIf="partnerTypeSelect== 2" colSpan="4"
 					onChange="action-partner-record-set-registration-code" />
 				<field name="registrationCode" hideIf="partnerTypeSelect== 2"
-					readonly="true" colSpan="4" onChange="action-method-partner-registration-code-onChange"/>
+					readonly="true" colSpan="4"
+					onChange="action-method-partner-registration-code-onChange" />
 				<field name="saleTurnover" hideIf="partnerTypeSelect== 2" />
 				<field name="nbrEmployees" hideIf="partnerTypeSelect== 2" />
 				<field name="mainActivityCode" hideIf="partnerTypeSelect== 2" />
@@ -390,9 +367,9 @@
 					if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFactors()" />
 			</panel>
 		</panel>
-		<panel-dashlet action="action-partner-view-subsidiary-partners" name="subsidiaryPartners"/>
-		<panel-related name="contactPartnerSetPanel"
-			field="contactPartnerSet"
+		<panel-dashlet action="action-partner-view-subsidiary-partners"
+			name="subsidiaryPartners" />
+		<panel-related name="contactPartnerSetPanel" field="contactPartnerSet"
 			hideIf="!id || isContact || partnerTypeSelect == 2"
 			domain="self.isContact = 'true' AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)"
 			form-view="partner-contact-form" grid-view="partner-contact-grid" />
@@ -400,8 +377,7 @@
 			<panel name="informationPanel" title="Information">
 				<panel name="employeeAddressPanel" title="Contact address"
 					colSpan="12" showIf="isEmployee">
-					<field name="mainAddress" form-view="address-form"
-						grid-view="address-grid">
+					<field name="mainAddress" form-view="address-form" grid-view="address-grid">
 						<editor x-show-titles="false">
 							<field name="addressL2" x-bind="{{addressL2|uppercase}}"
 								placeholder="e.g. Financial department, CEO" />
@@ -410,13 +386,12 @@
 							<field name="addressL4" x-bind="{{addressL4|uppercase}}" />
 							<field name="addressL5" x-bind="{{addressL5|uppercase}}"
 								placeholder="e.g. POB 254" />
-							<field name="city" canNew="true"
-								onChange="action-address-change-city" form-view="city-form"
-								grid-view="city-grid" />
+							<field name="city" canNew="true" onChange="action-address-change-city"
+								form-view="city-form" grid-view="city-grid" />
 							<field name="addressL6" x-bind="{{addressL6|uppercase}}"
 								required="true" />
-							<field name="addressL7Country" required="true"
-								form-view="country-form" grid-view="country-grid" />
+							<field name="addressL7Country" required="true" form-view="country-form"
+								grid-view="country-grid" />
 						</editor>
 					</field>
 				</panel>
@@ -432,18 +407,17 @@
 								<field name="$canSelect" hidden="true" colSpan="12" />
 								<label colSpan="12"
 									title="The following address is invalid. Please use '+' button to create a new one :"
-									showIf="address == null || address.addressL4 == null"
-									hidden="true" css="label-bold" name="addressHelperLabel" />
+									showIf="address == null || address.addressL4 == null" hidden="true"
+									css="label-bold" name="addressHelperLabel" />
 								<panel colSpan="12" stacked="true" css="field-append">
 									<field name="address" canEdit="!$canSelect" canNew="true"
-										form-view="address-form" grid-view="address-grid"
-										canSelect="$canSelect" />
-									<field name="isInvoicingAddr" widget="toggle"
-										hideIf="$readonly()" x-icon="fa-list-alt" />
-									<field name="isDeliveryAddr" widget="toggle"
-										hideIf="$readonly()" x-icon="fa-shopping-cart" />
-									<field name="isDefaultAddr" widget="toggle"
-										hideIf="$readonly()" x-icon="fa-star-o" />
+										form-view="address-form" grid-view="address-grid" canSelect="$canSelect" />
+									<field name="isInvoicingAddr" widget="toggle" hideIf="$readonly()"
+										x-icon="fa-list-alt" />
+									<field name="isDeliveryAddr" widget="toggle" hideIf="$readonly()"
+										x-icon="fa-shopping-cart" />
+									<field name="isDefaultAddr" widget="toggle" hideIf="$readonly()"
+										x-icon="fa-star-o" />
 									<field name="address.addressL4" hidden="true" />
 								</panel>
 							</panel>
@@ -454,154 +428,132 @@
 						if="__user__.activeCompany?.accountConfig?.displayHeadOfficeAddrOnInvoicePrinting"
 						colSpan="12" />
 				</panel>
-				<panel name="generalContactDetailsPanel"
-					title="General contact details" colSpan="12">
-					<field name="fixedPhone" colSpan="3"
-						placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
-						onChange="action-partner-method-normalize-fixedPhone" />
+				<panel name="generalContactDetailsPanel" title="General contact details"
+					colSpan="12">
+					<field name="fixedPhone" colSpan="3" placeholder="+33100000000"
+						pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fixedPhone" />
 					<field name="fax" colSpan="3" placeholder="+33000000000"
-						pattern="^\+?([\s()-.]*\d){7,}$"
-						onChange="action-partner-method-normalize-fax" />
-					<field name="mobilePhone" colSpan="3"
-						hideIf="partnerTypeSelect == 1" placeholder="+33100000000"
-						pattern="^\+?([\s()-.]*\d){7,}$"
+						pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fax" />
+					<field name="mobilePhone" colSpan="3" hideIf="partnerTypeSelect == 1"
+						placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
 						onChange="action-partner-method-normalize-mobilePhone" />
 					<field name="emailAddress" canSelect="false" colSpan="6"
 						form-view="email-address-simple-form" x-show-icons="false">
 						<editor x-show-titles="false">
-							<field name="address" colSpan="12"
-								placeholder="whatever@example.com"
+							<field name="address" colSpan="12" placeholder="whatever@example.com"
 								pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$" />
 						</editor>
 					</field>
 					<field name="webSite" placeholder="http://www.url.com"
 						pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$" />
+
 				</panel>
 
 				<panel name="employeePanel" hidden="true">
-					<button name="openEmployeeFormBtn"
-						title="Open employee form" colSpan="6"
-						onClick="action-partner-view-open-employee-form" />
+					<button name="openEmployeeFormBtn" title="Open employee form"
+						colSpan="6" onClick="action-partner-view-open-employee-form" />
 				</panel>
 
 				<panel name="settingsPanel" title="Settings" colSpan="12">
 					<field name="language" colSpan="6" canEdit="false" />
-					<panel name="assignedToPanel" title="Assigned to"
-						colSpan="12">
+					<panel name="assignedToPanel" title="Assigned to" colSpan="12">
 						<field name="user" colSpan="6" form-view="user-form"
 							onSelect="action-partner-attrs-user-group" grid-view="user-grid"
-							hideIf="isEmployee" canNew="false" canEdit="false"
-							canView="false" />
-						<field name="team" canEdit="false" colSpan="6"
-							form-view="team-form" grid-view="team-grid"
-							if="__config__.app.getApp('base').getTeamManagement()"
+							hideIf="isEmployee" canNew="false" canEdit="false" canView="false" />
+						<field name="team" canEdit="false" colSpan="6" form-view="team-form"
+							grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"
 							hideIf="isEmployee" />
 						<field name="companySet" colSpan="12" widget="TagSelect"
 							canNew="false" form-view="company-form" grid-view="company-grid" />
 					</panel>
 				</panel>
 				<panel name="notesPanel" title="Notes" colSpan="12">
-					<field name="description" colSpan="12" height="8"
-						showTitle="false" widget="Html" />
+					<field name="description" colSpan="12" height="8" showTitle="false"
+						widget="Html" />
 				</panel>
 			</panel>
-			<panel name="paymentPanel" title="Invoicing/Payment"
-				hideIf="isContact" if-module="axelor-account" colSpan="12"
-				if="__config__.app.isApp('account')">
-				<panel-include
-					view="incl-invoice-payment-partner-form" from="axelor-account"
-					if="__config__.app.isApp('invoice')" />
+			<panel name="paymentPanel" title="Invoicing/Payment" hideIf="isContact"
+				if-module="axelor-account" colSpan="12" if="__config__.app.isApp('account')">
+				<panel-include view="incl-invoice-payment-partner-form"
+					from="axelor-account" if="__config__.app.isApp('invoice')" />
 				<panel-include if-module="axelor-account"
 					if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
 					view="incl-sepa-direct-debit-partner-form" from="axelor-account" />
-				<panel name="invoiceCommentsPanel"
-					title="Comment to display on invoice" colSpan="12">
+				<panel name="invoiceCommentsPanel" title="Comment to display on invoice"
+					colSpan="12">
 					<field name="invoiceComments" widget="html" colSpan="12"
 						showTitle="false" />
 				</panel>
-				<panel name="descriptionToDisplayOnProformaPanel"
-					title="Comment to display on proforma" colSpan="12">
+				<panel name="descriptionToDisplayOnProformaPanel" title="Comment to display on proforma"
+					colSpan="12">
 					<field name="proformaComments" widget="html" colSpan="12"
 						showTitle="false" />
 				</panel>
 			</panel>
 			<panel-related name="accountingSituationListPanel"
 				if-module="axelor-account" if="__config__.app.isApp('account')"
-				field="accountingSituationList" title="Accounting situation"
-				hideIf="isContact" colSpan="12"
-				grid-view="accounting-situation-partner-grid"
+				field="accountingSituationList" title="Accounting situation" hideIf="isContact"
+				colSpan="12" grid-view="accounting-situation-partner-grid"
 				form-view="accounting-situation-partner-form"
 				onSelect="action-account-accounting-situation-method-update-customer-account" />
-			<panel-include if-module="axelor-account"
-				view="incl-blocking-partner-form" from="axelor-account"
-				if="__config__.app.isApp('account')" />
-			<panel name="activitiesPanel" title="Activities"
-				showIf="id != null" if-module="axelor-crm"
-				onTabSelect="action-partner-method-view-emails" hideIf="isEmployee"
-				if="__config__.app.isApp('crm')">
-				<button name="showAllEventsBtn" title="Show all events"
-					css="btn-custom text-left" icon="fa-tasks"
-					onClick="action-partner-view-events" readonlyIf="id == null" />
+			<panel-include if-module="axelor-account" view="incl-blocking-partner-form"
+				from="axelor-account" if="__config__.app.isApp('account')" />
+			<panel name="activitiesPanel" title="Activities" showIf="id != null"
+				if-module="axelor-crm" onTabSelect="action-partner-method-view-emails"
+				hideIf="isEmployee" if="__config__.app.isApp('crm')">
+				<button name="showAllEventsBtn" title="Show all events" css="btn-custom text-left"
+					icon="fa-tasks" onClick="action-partner-view-events" readonlyIf="id == null" />
 				<panel-include view="incl-activities-partner-form"
 					from="axelor-crm" />
-				<panel-include if-module="axelor-sale"
-					view="incl-sales-partner-form" if="__config__.app.isApp('sale')" />
-				<panel-include if-module="axelor-purchase"
-					view="incl-purchases-partner-form"
+				<panel-include if-module="axelor-sale" view="incl-sales-partner-form"
+					if="__config__.app.isApp('sale')" />
+				<panel-include if-module="axelor-purchase" view="incl-purchases-partner-form"
 					if="__config__.app.isApp('purchase')" />
 				<field name="$emailsList" colSpan="12" type="many-to-many"
-					target="com.axelor.apps.message.db.Message" title="Emails"
-					canNew="false" canSelect="false" canRemove="false" />
+					target="com.axelor.apps.message.db.Message" title="Emails" canNew="false"
+					canSelect="false" canRemove="false" />
 				<panel-dashlet name="marketingCampaignsPanel"
-					action="action-partner-view-marketing-campaigns"
-					if-module="axelor-marketing" if="__config__.app.isApp('marketing')"
-					colSpan="12" />
+					action="action-partner-view-marketing-campaigns" if-module="axelor-marketing"
+					if="__config__.app.isApp('marketing')" colSpan="12" />
 			</panel>
-			<panel name="customerPanel" title="Customer"
-				if-module="axelor-sale" showIf="isCustomer"
-				if="__config__.app.isApp('sale')">
+			<panel name="customerPanel" title="Customer" if-module="axelor-sale"
+				showIf="isCustomer" if="__config__.app.isApp('sale')">
 				<field name="saleOrderInformation" />
 				<field name="payerQuality" if-module="axelor-account"
 					if="__config__.app.isApp('account')" hideIf="isEmployee" />
 				<field name="salePartnerPriceList" canEdit="false"
-					domain="self.typeSelect = 1"
-					form-view="sale-partner-price-list-form"
+					domain="self.typeSelect = 1" form-view="sale-partner-price-list-form"
 					grid-view="partner-price-list-grid" />
 				<field name="chargeBackPurchaseSelect" colSpan="3"
-					if-module="axelor-business-project"
-					if="__config__.app.isApp('business-project')" />
+					if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
 				<field name="chargeBackPurchase" colSpan="3"
-					showIf="chargeBackPurchaseSelect == 3"
-					if-module="axelor-business-project"
+					showIf="chargeBackPurchaseSelect == 3" if-module="axelor-business-project"
 					if="__config__.app.isApp('business-project')" />
-				<panel name="clientPortalAccessPanel"
-					title="Client portal access" if-module="axelor-client-portal"
+				<panel name="clientPortalAccessPanel" title="Client portal access"
+					if-module="axelor-client-portal"
 					if="__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getPortalSelect() == 2">
 					<field name="password" widget="password" />
 				</panel>
 				<field name="factorizedCustomer"
 					if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFactors()" />
 				<field name="customerCatalogList" colSpan="12"
-					form-view="customer-catalog-partner-form"
-					grid-view="customer-catalog-partner-grid" if-module="axelor-sale"
+					form-view="customer-catalog-partner-form" grid-view="customer-catalog-partner-grid"
+					if-module="axelor-sale"
 					if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getEnableCustomerCatalogMgt()" />
-				<panel name="saleOrderCommentsPanel"
-					title="Comment to display on sale order" colSpan="12">
+				<panel name="saleOrderCommentsPanel" title="Comment to display on sale order"
+					colSpan="12">
 					<field name="saleOrderComments" widget="html" colSpan="12"
 						showTitle="false" />
 				</panel>
 			</panel>
-			<panel name="supplierPanel" title="Supplier"
-				if-module="axelor-purchase" showIf="isSupplier || isSubcontractor"
-				if="__config__.app.isApp('purchase')">
+			<panel name="supplierPanel" title="Supplier" if-module="axelor-purchase"
+				showIf="isSupplier || isSubcontractor" if="__config__.app.isApp('purchase')">
 				<field name="purchaseOrderInformation" />
 				<field name="purchasePartnerPriceList" canEdit="false"
-					domain="self.typeSelect = 2"
-					form-view="purchase-partner-price-list-form"
+					domain="self.typeSelect = 2" form-view="purchase-partner-price-list-form"
 					grid-view="partner-price-list-grid" />
-				<field name="supplierCatalogList" colSpan="12"
-					x-can-copy="true" form-view="supplier-catalog-partner-form"
-					grid-view="supplier-catalog-partner-grid"
+				<field name="supplierCatalogList" colSpan="12" x-can-copy="true"
+					form-view="supplier-catalog-partner-form" grid-view="supplier-catalog-partner-grid"
 					if-module="axelor-purchase"
 					if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog()" />
 				<field name="supplierQualityRatingSelect" widget="ImageSelect"
@@ -609,54 +561,45 @@
 				<field name="supplierArrivalProductQty" colSpan="3" />
 				<spacer name="supplierSpacer" />
 				<field name="partnerProductQualityRatingList" colSpan="12"
-					grid-view="partner-product-quality-rating-grid"
-					form-view="partner-product-quality-rating-form" />
-				<panel name="purchaseOrderCommentsPanel"
-					title="Comment to display on purchase order" colSpan="12">
-					<field name="purchaseOrderComments" widget="html"
-						colSpan="12" showTitle="false" />
+					grid-view="partner-product-quality-rating-grid" form-view="partner-product-quality-rating-form" />
+				<panel name="purchaseOrderCommentsPanel" title="Comment to display on purchase order"
+					colSpan="12">
+					<field name="purchaseOrderComments" widget="html" colSpan="12"
+						showTitle="false" />
 				</panel>
 			</panel>
 			<panel name="carrierPanel" title="Carrier" showIf="isCarrier">
-				<field name="freightCarrierModeList"
-					title="Freight Carrier Mode"
-					form-view="freight-carrier-mode-freight-carrier-form"
-					grid-view="freight-carrier-mode-freight-carrier-grid" colSpan="12" />
+				<field name="freightCarrierModeList" title="Freight Carrier Mode"
+					form-view="freight-carrier-mode-freight-carrier-form" grid-view="freight-carrier-mode-freight-carrier-grid"
+					colSpan="12" />
 			</panel>
 			<panel name="deliveryPanel" title="Delivery"
-				showIf="isSupplier || isCustomer || isSubcontractor"
-				if="__config__.app.isApp('stock')" if-module="axelor-stock">
-				<field name="deliveryDelay"
-					showIf="isSupplier || isSubcontractor" />
+				showIf="isSupplier || isCustomer || isSubcontractor" if="__config__.app.isApp('stock')"
+				if-module="axelor-stock">
+				<field name="deliveryDelay" showIf="isSupplier || isSubcontractor" />
 				<spacer name="deliveryDelaySpacer" />
 				<field name="shipmentMode" form-view="shipment-mode-form"
-					grid-view="shipment-mode-grid"
-					onChange="action-partner-record-empty-freight-carrier-mode"
+					grid-view="shipment-mode-grid" onChange="action-partner-record-empty-freight-carrier-mode"
 					title="Shipment Mode" />
-				<field name="freightCarrierMode"
-					domain="self.shipmentMode = :shipmentMode"
-					onChange="action-partner-record-freight-carrier"
-					form-view="freight-carrier-mode-form"
-					grid-view="freight-carrier-mode-grid"
-					readonlyIf="shipmentMode == null" title="Freight Carrier Mode" />
+				<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode"
+					onChange="action-partner-record-freight-carrier" form-view="freight-carrier-mode-form"
+					grid-view="freight-carrier-mode-grid" readonlyIf="shipmentMode == null"
+					title="Freight Carrier Mode" />
 				<field name="carrierPartner" form-view="partner-form"
 					grid-view="partner-grid" title="Freight Carrier" readonly="true" />
-				<field name="isIspmRequired" hidden="true"
-					showIf="isCustomer || isProspect" />
-				<field name="isNeedingConformityCertificate"
-					showIf="isCustomer || isProspect" />
+				<field name="isIspmRequired" hidden="true" showIf="isCustomer || isProspect" />
+				<field name="isNeedingConformityCertificate" showIf="isCustomer || isProspect" />
 				<field name="partnerStockSettingsList" colSpan="12"
-					form-view="partner-stock-settings-form"
-					grid-view="partner-stock-settings-grid" />
+					form-view="partner-stock-settings-form" grid-view="partner-stock-settings-grid" />
 				<panel-include
 					view="incl-freight-carrer-customer-account-number-list-partner-form" />
-				<panel name="deliveryCommentsPanel"
-					title="Comment to display on delivery" colSpan="12">
+				<panel name="deliveryCommentsPanel" title="Comment to display on delivery"
+					colSpan="12">
 					<field name="deliveryComments" widget="html" colSpan="12"
 						showTitle="false" />
 				</panel>
-				<panel name="pickingOrderCommentsPanel"
-					title="Comment to display on picking order" colSpan="12">
+				<panel name="pickingOrderCommentsPanel" title="Comment to display on picking order"
+					colSpan="12">
 					<field name="pickingOrderComments" widget="html" colSpan="12"
 						showTitle="false" />
 				</panel>
@@ -680,57 +623,52 @@
 	</grid>
 
 	<form name="partner-light-form" title="Partner"
-		model="com.axelor.apps.base.db.Partner"
-		onNew="action-group-base-partner-onnew"
+		model="com.axelor.apps.base.db.Partner" onNew="action-group-base-partner-onnew"
 		onLoad="action-group-partner-onload" width="large">
 		<toolbar>
 			<button name="sendByEmailBtn" title="Send email"
-				onClick="save,action-send-by-email-with-template"
-				readonlyIf="id == null" />
+				onClick="save,action-send-by-email-with-template" readonlyIf="id == null" />
 		</toolbar>
 		<panel name="mainPanel">
 			<field name="picture" widget="Image" colSpan="4" />
 			<panel name="generalInfoPanel" colSpan="8">
-				<field name="titleSelect" hideIf="partnerTypeSelect != 2"
-					css="highlight" />
+				<field name="titleSelect" hideIf="partnerTypeSelect != 2" css="highlight" />
 				<spacer name="titleSelectSpacer" />
 				<field name="name" css="highlight"
 					onChange="action-partner-record-simple-and-full-name" />
-				<field name="firstName" hideIf="partnerTypeSelect != 2"
-					css="highlight"
+				<field name="firstName" hideIf="partnerTypeSelect != 2" css="highlight"
 					onChange="action-partner-record-simple-and-full-name" />
 				<field name="partnerCategory" widget="SuggestBox" />
-				<field name="partnerTypeSelect"
-					onChange="action-partner-partner-type-select-change" />
+				<field name="partnerTypeSelect" onChange="action-partner-partner-type-select-change" />
 				<field name="isContact" hideIf="partnerTypeSelect != 2" />
 				<spacer name="isContactSpacer" />
-				<field name="mainPartner" hideIf="!isContact"
-					form-view="partner-form" grid-view="partner-grid"
+				<field name="mainPartner" hideIf="!isContact" form-view="partner-form"
+					grid-view="partner-grid"
 					domain="self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)" />
 			</panel>
 		</panel>
 		<panel-tabs name="mainPanelTab">
 			<panel name="informationPanel" title="Information">
-				<panel name="departmentPanel" title="Partner details"
-					colSpan="12" hideIf="partnerTypeSelect == 2">
+				<panel name="departmentPanel" title="Partner details" colSpan="12"
+					hideIf="partnerTypeSelect == 2">
 					<field name="department" form-view="department-form"
 						grid-view="department-grid" />
 					<field name="source" canEdit="false" hideIf="isContact"
 						form-view="source-form" grid-view="source-grid" />
 				</panel>
-				<panel colSpan="12" name="postalAddressesPanel"
-					title="Postal addresses" hideIf="isContact">
+				<panel colSpan="12" name="postalAddressesPanel" title="Postal addresses"
+					hideIf="isContact">
 					<static name="invoiceAndDeliveryAddressText" hidden="true"
 						colSpan="12"><![CDATA[<span class='label label-warning'>Please add an invoice address and a delivery address by default.</span>]]></static>
 					<field name="partnerAddressList" colSpan="12">
 						<editor layout="table" x-show-titles="false">
 							<field name="address" canNew="true" />
-							<field name="isInvoicingAddr" widget="toggle"
-								x-icon="fa-list-alt" colSpan="1" />
-							<field name="isDeliveryAddr" widget="toggle"
-								x-icon="fa-shopping-cart" colSpan="1" />
-							<field name="isDefaultAddr" widget="toggle"
-								x-icon="fa-star-o" colSpan="1" />
+							<field name="isInvoicingAddr" widget="toggle" x-icon="fa-list-alt"
+								colSpan="1" />
+							<field name="isDeliveryAddr" widget="toggle" x-icon="fa-shopping-cart"
+								colSpan="1" />
+							<field name="isDefaultAddr" widget="toggle" x-icon="fa-star-o"
+								colSpan="1" />
 						</editor>
 					</field>
 				</panel>
@@ -743,17 +681,15 @@
 							<field name="address" />
 						</editor>
 					</field>
-					<field name="fax" placeholder="+33000000000"
-						pattern="^\+?([\s()-.]*\d){7,}$"
+					<field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$"
 						onChange="action-partner-method-normalize-fax" />
-					<field name="fixedPhone" placeholder="+33100000000"
-						pattern="^\+?([\s()-.]*\d){7,}$"
+					<field name="fixedPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
 						onChange="action-partner-method-normalize-fixedPhone" />
 					<field name="mobilePhone" placeholder="+33100000000"
-						pattern="^\+?([\s()-.]*\d){7,}$"
-						onChange="action-partner-method-normalize-mobilePhone" />
+						pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-mobilePhone" />
 					<field name="webSite" placeholder="http://www.url.com"
 						pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$" />
+
 				</panel>
 			</panel>
 		</panel-tabs>
@@ -766,21 +702,18 @@
 		onLoad="action-group-partner-contact-onload"
 		onSave="save,action-partner-method-set-user-partner,action-partner-method-add-contact-partner">
 		<toolbar>
-			<button name="convertToIndividualPartnerBtn"
-				title="Convert into an individual partner" icon="fa-user"
-				onClick="action-convert-into-individual-partner,close"
+			<button name="convertToIndividualPartnerBtn" title="Convert into an individual partner"
+				icon="fa-user" onClick="action-convert-into-individual-partner,close"
 				showIf="id != null &amp;&amp; isContact == true &amp;&amp; mainPartner == null" />
 		</toolbar>
 		<menubar>
-			<menu name="partnerReportsMenu" title="Reports"
-				icon="fa-files-o" showTitle="true">
+			<menu name="partnerReportsMenu" title="Reports" icon="fa-files-o"
+				showTitle="true">
 				<item name="envelopeItem" title="Envelope"
-					action="save,action-partner-method-show-envelope"
-					readonlyIf="id == null" />
+					action="save,action-partner-method-show-envelope" readonlyIf="id == null" />
 				<item name="customerSituationItem" title="Customer Situation"
 					action="save,action-partner-method-show-client-situation"
-					readonlyIf="id == null" showIf="isContact == false"
-					if-module="axelor-account" />
+					readonlyIf="id == null" showIf="isContact == false" if-module="axelor-account" />
 			</menu>
 		</menubar>
 		<panel-include view="incl-event-actions-partner-form" />
@@ -818,21 +751,18 @@
 				</panel>
 			</panel>
 			<panel name="namePanel" colSpan="9">
-				<field name="fullName" css="bold" showTitle="false"
-					colSpan="12">
+				<field name="fullName" css="bold" showTitle="false" colSpan="12">
 					<editor x-show-titles="false">
 						<field name="titleSelect" placeholder="Civility" colSpan="2" />
 						<field name="name" css="highlight" placeholder="Name"
 							onChange="action-group-base-partner-contact-name-onchange"
 							colSpan="5" />
-						<field name="firstName" css="highlight"
-							placeholder="First name"
+						<field name="firstName" css="highlight" placeholder="First name"
 							onChange="action-group-base-partner-contact-name-onchange"
 							colSpan="5" />
 					</editor>
 				</field>
-				<static name="duplicatePartnerText" hidden="true"
-					colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
+				<static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
 				<field name="duplicatePartnerInArchiveText" hidden="true"
 					type="string" showTitle="false" readonly="true">
 					<viewer depends="duplicatePartnerInArchiveText">
@@ -849,20 +779,17 @@
 				<field name="isContact" hidden="true" colSpan="12" />
 			</panel>
 		</panel>
-		<panel-related name="partnerRoleSetPanel"
-			field="partnerRoleSet"
+		<panel-related name="partnerRoleSetPanel" field="partnerRoleSet"
 			form-view="partner-role-form" grid-view="partner-role-grid" canNew="false" />
-		
+
 		<panel-tabs name="mainPanelTab">
 			<panel name="contactDetailsPanel" title="Contact details">
 				<field name="jobTitleFunction" onChange="action-record-base-partner-set-business-card" />
-				<field name="functionBusinessCard"/>
+				<field name="functionBusinessCard" />
 				<field name="reportsTo" domain="self.isContact = true" />
-				<field name="fixedPhone" placeholder="+33100000000"
-					pattern="^\+?([\s()-.]*\d){7,}$"
+				<field name="fixedPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
 					onChange="action-partner-method-normalize-fixedPhone" />
-				<field name="mobilePhone" placeholder="+33100000000"
-					pattern="^\+?([\s()-.]*\d){7,}$"
+				<field name="mobilePhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
 					onChange="action-partner-method-normalize-mobilePhone" />
 				<field name="emailAddress" canSelect="false"
 					form-view="email-address-simple-form" x-show-icons="false">
@@ -872,31 +799,27 @@
 							colSpan="12" />
 					</editor>
 				</field>
-				<field name="fax" placeholder="+33000000000"
-					pattern="^\+?([\s()-.]*\d){7,}$"
+				<field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$"
 					onChange="action-partner-method-normalize-fax" />
-				<field name="mainAddress" canNew="true"
-					form-view="address-form" grid-view="address-grid" colSpan="12" />
+				<field name="mainAddress" canNew="true" form-view="address-form"
+					grid-view="address-grid" colSpan="12" />
 				<field name="timeSlot" colSpan="12" />
 			</panel>
-			<panel name="activitiesPanel" title="Activities"
-				showIf="id != null" if-module="axelor-crm"
-				onTabSelect="action-partner-method-view-emails-contact"
+			<panel name="activitiesPanel" title="Activities" showIf="id != null"
+				if-module="axelor-crm" onTabSelect="action-partner-method-view-emails-contact"
 				if="__config__.app.isApp('crm')">
-				<button name="showAllEventsBtn" title="Show all events"
-					css="btn-custom text-left" icon="fa-tasks"
-					onClick="action-contact-view-events" readonlyIf="id == null" />
+				<button name="showAllEventsBtn" title="Show all events" css="btn-custom text-left"
+					icon="fa-tasks" onClick="action-contact-view-events" readonlyIf="id == null" />
 				<panel-include view="incl-activities-contact-form"
 					from="axelor-crm" />
-				<panel-include if-module="axelor-supplychain"
-					view="incl-sales-contact-form" from="axelor-supplychain"
-					if="__config__.app.isApp('supplychain')" />
+				<panel-include if-module="axelor-supplychain" view="incl-sales-contact-form"
+					from="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
 				<field name="$emailsList" colSpan="12" type="many-to-many"
-					target="com.axelor.apps.message.db.Message" title="Emails"
-					canNew="false" canSelect="false" canRemove="false" />
+					target="com.axelor.apps.message.db.Message" title="Emails" canNew="false"
+					canSelect="false" canRemove="false" />
 			</panel>
-			<panel-dashlet name="contactPartnerPanel"
-				action="action-contact-partner-dashlet" title="Partners" />
+			<panel-dashlet name="contactPartnerPanel" action="action-contact-partner-dashlet"
+				title="Partners" />
 		</panel-tabs>
 
 		<panel name="employeePanel" hidden="true" sidebar="true">
@@ -907,20 +830,17 @@
 		<panel name="settingsPanel" sidebar="true" title="Settings">
 			<field name="partnerSeq" />
 			<field name="language" canEdit="false" />
-			<panel name="assignedToPanel" title="Assigned to"
-				canCollapse="true" colSpan="12">
+			<panel name="assignedToPanel" title="Assigned to" canCollapse="true"
+				colSpan="12">
 				<field name="user" colSpan="6" form-view="user-form"
-					grid-view="user-grid" canNew="false" canEdit="false"
-					canView="false" />
-				<field name="team" canEdit="false" colSpan="6"
-					form-view="team-form" grid-view="team-grid"
-					if="__config__.app.getApp('base').getTeamManagement()" />
+					grid-view="user-grid" canNew="false" canEdit="false" canView="false" />
+				<field name="team" canEdit="false" colSpan="6" form-view="team-form"
+					grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()" />
 				<field name="companySet" colSpan="12" widget="TagSelect"
 					canNew="false" form-view="company-form" grid-view="company-grid" />
 			</panel>
 		</panel>
-		<panel name="notesPanel" title="Notes" colSpan="12"
-			sidebar="true">
+		<panel name="notesPanel" title="Notes" colSpan="12" sidebar="true">
 			<field name="description" showTitle="false" colSpan="12"
 				height="6" widget="Html" />
 		</panel>
@@ -943,23 +863,20 @@
 						pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$" />
 				</editor>
 			</field>
-			<field name="fax" placeholder="+33000000000"
-				pattern="^\+?([\s()-.]*\d){7,}$"
+			<field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$"
 				onChange="action-partner-method-normalize-fax" />
-			<field name="fixedPhone" placeholder="+33100000000"
-				pattern="^\+?([\s()-.]*\d){7,}$"
+			<field name="fixedPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
 				onChange="action-partner-method-normalize-fixedPhone" />
-			<field name="mobilePhone" placeholder="+33100000000"
-				pattern="^\+?([\s()-.]*\d){7,}$"
+			<field name="mobilePhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
 				onChange="action-partner-method-normalize-mobilePhone" />
 			<field name="webSite" placeholder="http://www.url.com"
 				pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$" />
+
 		</panel>
 	</form>
 
-	<cards name="partner-cards"
-		model="com.axelor.apps.base.db.Partner" title="Partners"
-		css="rect-image">
+	<cards name="partner-cards" model="com.axelor.apps.base.db.Partner"
+		title="Partners" css="rect-image">
 		<field name="fullName" />
 		<field name="picture" />
 		<field name="fixedPhone" />
@@ -1000,9 +917,8 @@
 		</template>
 	</cards>
 
-	<cards name="partner-contact-cards"
-		model="com.axelor.apps.base.db.Partner" title="Contacts"
-		css="rect-image">
+	<cards name="partner-contact-cards" model="com.axelor.apps.base.db.Partner"
+		title="Contacts" css="rect-image">
 		<toolbar>
 			<button name="checkDuplicateBtn" title="Check Duplicate"
 				onClick="action-general-check-duplicate-records" />
@@ -1040,8 +956,7 @@
 		</template>
 	</cards>
 
-	<grid title="Employee List" name="partner-employee-grid"
-		model="com.axelor.apps.base.db.Partner">
+	<grid title="Employee List" name="partner-employee-grid" model="com.axelor.apps.base.db.Partner">
 		<!-- name/firstName/fixedPhone/mobilePhone/emailAddress.address -->
 		<field name="name" />
 		<field name="firstName" />
@@ -1051,20 +966,17 @@
 	</grid>
 
 	<form name="partner-employee-form" title="Employee"
-		model="com.axelor.apps.base.db.Partner"
-		onNew="action-partner-employee-record-default"
+		model="com.axelor.apps.base.db.Partner" onNew="action-partner-employee-record-default"
 		onLoad="action-partner-attrs-change-name,action-partner-method-set-social-network-url"
 		onSave="save,action-partner-method-set-user-partner">
 		<menubar>
-			<menu name="partnerReportsMenu" title="Reports"
-				icon="fa-files-o" showTitle="true">
+			<menu name="partnerReportsMenu" title="Reports" icon="fa-files-o"
+				showTitle="true">
 				<item name="envelopeItem" title="Envelope"
-					action="save,action-partner-method-show-envelope"
-					readonlyIf="id == null" />
+					action="save,action-partner-method-show-envelope" readonlyIf="id == null" />
 				<item name="customerSituationItem" title="Customer Situation"
 					action="save,action-partner-method-show-client-situation"
-					readonlyIf="id == null" showIf="isContact == false"
-					if-module="axelor-account" />
+					readonlyIf="id == null" showIf="isContact == false" if-module="axelor-account" />
 			</menu>
 		</menubar>
 		<panel-include view="incl-event-actions-partner-form" />
@@ -1091,18 +1003,15 @@
 				</panel>
 			</panel>
 			<panel name="namePanel" colSpan="9">
-				<field name="titleSelect" showTitle="false"
-					placeholder="Civility" colSpan="2" />
+				<field name="titleSelect" showTitle="false" placeholder="Civility"
+					colSpan="2" />
 				<field name="name" showTitle="false" css="highlight"
-					placeholder="Name"
-					onChange="action-group-base-partner-contact-name-onchange"
+					placeholder="Name" onChange="action-group-base-partner-contact-name-onchange"
 					colSpan="5" />
 				<field name="firstName" showTitle="false" css="highlight"
-					placeholder="First name"
-					onChange="action-group-base-partner-contact-name-onchange"
+					placeholder="First name" onChange="action-group-base-partner-contact-name-onchange"
 					colSpan="5" />
-				<static name="duplicatePartnerText" hidden="true"
-					colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
+				<static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
 				<panel name="companyPanel" title="Company" colSpan="12">
 					<field name="mainPartner"
 						domain="self.isContact = false  AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)"
@@ -1116,11 +1025,9 @@
 			<panel name="contactDetailsPanel" title="Contact details">
 				<field name="jobTitleFunction" />
 				<field name="reportsTo" domain="self.isContact = true" />
-				<field name="fixedPhone" placeholder="+33100000000"
-					pattern="^\+?([\s()-.]*\d){7,}$"
+				<field name="fixedPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
 					onChange="action-partner-method-normalize-fixedPhone" />
-				<field name="mobilePhone" placeholder="+33100000000"
-					pattern="^\+?([\s()-.]*\d){7,}$"
+				<field name="mobilePhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$"
 					onChange="action-partner-method-normalize-mobilePhone" />
 				<field name="emailAddress" canSelect="false"
 					form-view="email-address-simple-form" x-show-icons="false">
@@ -1129,24 +1036,21 @@
 							pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$" />
 					</editor>
 				</field>
-				<field name="fax" placeholder="+33000000000"
-					pattern="^\+?([\s()-.]*\d){7,}$"
+				<field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$"
 					onChange="action-partner-method-normalize-fax" />
-				<field name="mainAddress" canNew="true"
-					form-view="address-form" grid-view="address-grid" />
+				<field name="mainAddress" canNew="true" form-view="address-form"
+					grid-view="address-grid" />
 			</panel>
-			<panel name="activitiesPanel" title="Activities"
-				showIf="id != null" if-module="axelor-crm"
-				onTabSelect="action-partner-method-view-emails-contact"
+			<panel name="activitiesPanel" title="Activities" showIf="id != null"
+				if-module="axelor-crm" onTabSelect="action-partner-method-view-emails-contact"
 				if="__config__.app.isApp('crm')">
 				<panel-include view="incl-activities-contact-form"
 					from="axelor-crm" />
-				<panel-include if-module="axelor-supplychain"
-					view="incl-sales-contact-form" from="axelor-supplychain"
-					if="__config__.app.isApp('supplychain')" />
+				<panel-include if-module="axelor-supplychain" view="incl-sales-contact-form"
+					from="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
 				<field name="$emailsList" colSpan="12" type="many-to-many"
-					target="com.axelor.apps.message.db.Message" title="Emails"
-					canNew="false" canSelect="false" canRemove="false" />
+					target="com.axelor.apps.message.db.Message" title="Emails" canNew="false"
+					canSelect="false" canRemove="false" />
 			</panel>
 			<panel-dashlet name="contactPartnerDetailsPanel"
 				action="action-contact-partner-dashlet" title="Partners" />
@@ -1154,20 +1058,17 @@
 		<panel name="settingsPanel" sidebar="true" title="Settings">
 			<field name="partnerSeq" />
 			<field name="language" canEdit="false" />
-			<panel name="assignedToPanel" title="Assigned to"
-				canCollapse="true" colSpan="12">
+			<panel name="assignedToPanel" title="Assigned to" canCollapse="true"
+				colSpan="12">
 				<field name="user" colSpan="6" form-view="user-form"
-					grid-view="user-grid" canNew="false" canEdit="false"
-					canView="false" />
-				<field name="team" canEdit="false" colSpan="6"
-					form-view="team-form" grid-view="team-grid"
-					if="__config__.app.getApp('base').getTeamManagement()" />
+					grid-view="user-grid" canNew="false" canEdit="false" canView="false" />
+				<field name="team" canEdit="false" colSpan="6" form-view="team-form"
+					grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()" />
 				<field name="companySet" colSpan="12" widget="TagSelect"
 					canNew="false" form-view="company-form" grid-view="company-grid" />
 			</panel>
 		</panel>
-		<panel name="notesPanel" title="Notes" colSpan="12"
-			sidebar="true">
+		<panel name="notesPanel" title="Notes" colSpan="12" sidebar="true">
 			<field name="description" showTitle="false" colSpan="12"
 				height="6" widget="Html" />
 		</panel>
@@ -1178,41 +1079,32 @@
 		<action name="action-partner-attrs-show-specific-tax-note" />
 		<action name="action-partner-method-set-social-network-url" />
 		<action name="action-partner-attrs-hide-employee-panel" />
-		<action
-			name="action-partner-account-attrs-hide-supplier-account" />
-		<action
-			name="action-partner-account-attrs-hide-customer-account" />
-		<action
-			name="action-partner-account-attrs-hide-employee-account" />
-		<action name="action-partner-record-set-balance"
-			if="__config__.app.isApp('account')" />
-		<action name="action-partner-record-set-positive-balance"
-			if="__config__.app.isApp('account')" />
+		<action name="action-partner-account-attrs-hide-supplier-account" />
+		<action name="action-partner-account-attrs-hide-customer-account" />
+		<action name="action-partner-account-attrs-hide-employee-account" />
+		<action name="action-partner-record-set-balance" if="__config__.app.isApp('account')" />
+		<action name="action-partner-record-set-positive-balance" if="__config__.app.isApp('account')" />
 		<action name="action-partner-attrs-name-balance" />
 		<action name="action-partner-attrs-partner-seq-editable" />
 		<action name="action-partner-method-check-name" />
 		<action name="action-partner-method-check-name-in-archive" />
-		<action
-			name="action-partner-attrs-hide-invoice-and-delivery-address-text" />
+		<action name="action-partner-attrs-hide-invoice-and-delivery-address-text" />
 		<action name="action-partner-attrs-set-canselect" />
-		<action name="action-partner-attrs-set-subcontactor"
-			if="__config__.app.isApp('production')" />
+		<action name="action-partner-attrs-set-subcontactor" if="__config__.app.isApp('production')" />
 	</action-group>
 
 	<action-group name="action-group-base-partner-onnew">
 		<action name="action-partner-record-partner-type-select" />
 		<action name="action-partner-record-set-default" />
 		<action name="action-partner-attrs-set-default" />
-		<action
-			name="action-partner-record-set-default-cash-management" />
+		<action name="action-partner-record-set-default-cash-management" />
 		<action name="action-partner-record-set-payment-modes" />
 		<action name="action-partner-record-payment-condition" />
 		<action name="action-partner-attrs-partner-seq-editable" />
 		<action name="action-partner-attrs-set-canselect" />
 	</action-group>
 
-	<action-group
-		name="action-group-base-partner-contact-name-onchange">
+	<action-group name="action-group-base-partner-contact-name-onchange">
 		<action name="action-partner-method-check-name" />
 		<action name="action-partner-method-check-name-in-archive" />
 		<action name="action-partner-record-simple-and-full-name" />
@@ -1220,41 +1112,30 @@
 	</action-group>
 
 	<action-method name="action-partner-method-check-name">
-		<call class="com.axelor.apps.base.web.PartnerController"
-			method="checkPartnerName" />
+		<call class="com.axelor.apps.base.web.PartnerController" method="checkPartnerName" />
 	</action-method>
 
-	<action-method
-		name="action-partner-method-check-name-in-archive">
-		<call class="com.axelor.apps.base.web.PartnerController"
-			method="checkPartnerNameArchived" />
+	<action-method name="action-partner-method-check-name-in-archive">
+		<call class="com.axelor.apps.base.web.PartnerController" method="checkPartnerNameArchived" />
 	</action-method>
 
 	<action-method name="action-partner-method-show-envelope">
-		<call class="com.axelor.apps.base.web.PartnerController"
-			method="showEnvelope" />
+		<call class="com.axelor.apps.base.web.PartnerController" method="showEnvelope" />
 	</action-method>
 
-	<action-method
-		name="action-partner-method-set-social-network-url">
-		<call class="com.axelor.apps.base.web.PartnerController"
-			method="setSocialNetworkUrl" />
+	<action-method name="action-partner-method-set-social-network-url">
+		<call class="com.axelor.apps.base.web.PartnerController" method="setSocialNetworkUrl" />
 	</action-method>
 
-	<action-method
-		name="action-partner-method-add-contact-partner">
-		<call class="com.axelor.apps.base.web.PartnerController"
-			method="addContactToPartner" />
+	<action-method name="action-partner-method-add-contact-partner">
+		<call class="com.axelor.apps.base.web.PartnerController" method="addContactToPartner" />
 	</action-method>
 
-	<action-method
-		name="action-partner-method-set-user-partner">
-		<call class="com.axelor.apps.base.web.UserController"
-			method="setUserPartner" />
+	<action-method name="action-partner-method-set-user-partner">
+		<call class="com.axelor.apps.base.web.UserController" method="setUserPartner" />
 	</action-method>
 
-	<action-attrs
-		name="action-partner-attrs-partner-seq-editable">
+	<action-attrs name="action-partner-attrs-partner-seq-editable">
 		<attribute name="readonly" for="partnerSeq"
 			expr="__config__.app.getApp('base').getGeneratePartnerSequence()" />
 		<attribute name="readonly" for="companyPanel"
@@ -1279,8 +1160,7 @@
 			expr="eval:__config__.app.getApp('base').getIsSharedAddress()" />
 	</action-attrs>
 
-	<action-group
-		name="action-partner-partner-type-select-change">
+	<action-group name="action-partner-partner-type-select-change">
 		<action name="action-partner-attrs-change-name" />
 		<action name="action-partner-empty-first-name"
 			if="partnerTypeSelect != __repo__(Partner).PARTNER_TYPE_INDIVIDUAL" />
@@ -1300,8 +1180,7 @@
 		<field name="firstName" expr="eval: null" />
 	</action-record>
 
-	<action-attrs
-		name="action-partner-attrs-hide-contact-partner">
+	<action-attrs name="action-partner-attrs-hide-contact-partner">
 		<attribute name="hidden" for="contactPartner"
 			expr="#{clientPartner != null &amp;&amp; clientPartner.partnerTypeSelect == 2}" />
 	</action-attrs>
@@ -1318,14 +1197,11 @@
 
 	<action-attrs name="action-partner-attrs-name-balance">
 		<attribute name="title" for="$positiveBalanceBtn"
-			expr="eval: com.axelor.i18n.I18n.get('Debit Balance')"
-			if="$balance &gt; 0" />
+			expr="eval: com.axelor.i18n.I18n.get('Debit Balance')" if="$balance &gt; 0" />
 		<attribute name="title" for="$positiveBalanceBtn"
-			expr="eval: com.axelor.i18n.I18n.get('Credit Balance')"
-			if="$balance &lt; 0" />
+			expr="eval: com.axelor.i18n.I18n.get('Credit Balance')" if="$balance &lt; 0" />
 		<attribute name="title" for="$positiveBalanceBtn"
-			expr="eval: com.axelor.i18n.I18n.get('Balance')"
-			if="$positiveBalanceBtn == 0" />
+			expr="eval: com.axelor.i18n.I18n.get('Balance')" if="$positiveBalanceBtn == 0" />
 	</action-attrs>
 
 	<action-attrs name="action-partner-attrs-set-default">
@@ -1339,14 +1215,12 @@
 			expr="eval: &quot; (self.isCustomer = true OR self.isSupplier = true OR self.isProspect = true) AND self.isEmployee = false &quot;" />
 	</action-attrs>
 
-	<action-attrs
-		name="action-partner-attrs-hide-customer-recovery">
+	<action-attrs name="action-partner-attrs-hide-customer-recovery">
 		<attribute name="hidden" for="customerRecovery"
 			expr="eval: accountingSituationList.every{accountingSituation -> accountingSituation.debtRecovery == null}" />
 	</action-attrs>
 
-	<action-attrs
-		name="action-partner-attrs-hide-employee-panel">
+	<action-attrs name="action-partner-attrs-hide-employee-panel">
 		<attribute name="hidden" for="employeePanel"
 			expr="eval:!( __this__.employee != null &amp;&amp; __user__.employee != null  &amp;&amp;
 		(__user__.employee.hrManager &amp;&amp;  __user__ == __this__.employee.managerUser))" />
@@ -1362,38 +1236,30 @@
                 ).sum()}" />
 	</action-record>
 
-	<action-record
-		name="action-partner-record-set-positive-balance"
+	<action-record name="action-partner-record-set-positive-balance"
 		model="com.axelor.apps.base.db.Partner">
-		<field name="$positiveBalanceBtn"
-			expr="eval: $balance &lt; 0 ? $balance * -1 : $balance"
+		<field name="$positiveBalanceBtn" expr="eval: $balance &lt; 0 ? $balance * -1 : $balance"
 			if="$balance != null" />
-		<field name="$positiveBalanceBtn" expr="eval: 0"
-			if="$balance == null" />
+		<field name="$positiveBalanceBtn" expr="eval: 0" if="$balance == null" />
 	</action-record>
 
 	<action-record name="action-partner-record-employee"
 		model="com.axelor.apps.base.db.Partner">
-		<field name="isEmployee" expr="eval: false"
-			if="partnerTypeSelect == 1" />
+		<field name="isEmployee" expr="eval: false" if="partnerTypeSelect == 1" />
 	</action-record>
 
-	<action-record
-		name="action-partner-record-invoices-copy-default-value"
+	<action-record name="action-partner-record-invoices-copy-default-value"
 		model="com.axelor.apps.base.db.Partner" if-module="axelor-account">
 		<field name="invoicesCopySelect" expr="eval:1"
 			if="isCustomer &amp;&amp; __config__.app.isApp('account')" />
 	</action-record>
 
-	<action-record
-		name="action-partner-record-partner-type-select"
+	<action-record name="action-partner-record-partner-type-select"
 		model="com.axelor.apps.base.db.Partner">
-		<field name="partnerTypeSelect"
-			expr="#{__user__.activeCompany.defaultPartnerTypeSelect}" />
+		<field name="partnerTypeSelect" expr="#{__user__.activeCompany.defaultPartnerTypeSelect}" />
 	</action-record>
 
-	<action-record
-		name="action-partner-record-simple-and-full-name"
+	<action-record name="action-partner-record-simple-and-full-name"
 		model="com.axelor.apps.base.db.Partner">
 		<field name="simpleFullName"
 			expr="call:com.axelor.apps.base.service.PartnerService:computeSimpleFullName(__this__)" />
@@ -1417,8 +1283,7 @@
 		<field name="isSubcontractor" expr="true" if="_isSubcontractor" />
 	</action-record>
 
-	<action-record
-		name="action-partner-contact-record-default"
+	<action-record name="action-partner-contact-record-default"
 		model="com.axelor.apps.base.db.Partner">
 		<field name="partnerTypeSelect" expr="#{2}" />
 		<field name="isContact" expr="#{true}" />
@@ -1433,13 +1298,14 @@
 			if="#{_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'}" />
 		<field name="team" expr="#{__user__.activeTeam}"
 			if="#{_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'}" />
-		<field name="companySet"
-			expr="eval: __repo__(Company).all().fetchOne()"
+		<field name="companySet" expr="eval: __repo__(Company).all().fetchOne()"
 			if="!__config__.app.getApp('base').getEnableMultiCompany()" />
+
+		<field name="mainPartner" expr="eval: __parent__"
+			if="#{_parent != null &amp;&amp; _parent._model == 'com.axelor.apps.base.db.Partner'}" />
 	</action-record>
 
-	<action-record
-		name="action-partner-employee-record-default"
+	<action-record name="action-partner-employee-record-default"
 		model="com.axelor.apps.base.db.Partner">
 		<field name="partnerTypeSelect" expr="#{2}" />
 		<field name="isContact" expr="#{false}" />
@@ -1455,44 +1321,34 @@
 			if="#{__parent__ == null || __parent__._model != 'com.axelor.apps.base.db.Partner'}" />
 		<field name="team" expr="#{__user__.activeTeam}"
 			if="#{__parent__ == null || __parent__._model != 'com.axelor.apps.base.db.Partner'}" />
-		<field name="mainPartner"
-			expr="#{__repo__(Partner).find(__parent__.id)}"
+		<field name="mainPartner" expr="#{__repo__(Partner).find(__parent__.id)}"
 			if="#{__parent__ &amp;&amp; __parent__.id != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}" />
 	</action-record>
 
-	<action-method
-		name="action-partner-method-normalize-fixedPhone">
-		<call class="com.axelor.apps.base.web.PartnerController"
-			method="normalizePhoneNumber" />
+	<action-method name="action-partner-method-normalize-fixedPhone">
+		<call class="com.axelor.apps.base.web.PartnerController" method="normalizePhoneNumber" />
 	</action-method>
 
 	<action-method name="action-partner-method-normalize-fax">
-		<call class="com.axelor.apps.base.web.PartnerController"
-			method="normalizePhoneNumber" />
+		<call class="com.axelor.apps.base.web.PartnerController" method="normalizePhoneNumber" />
 	</action-method>
 
-	<action-method
-		name="action-partner-method-normalize-mobilePhone">
-		<call class="com.axelor.apps.base.web.PartnerController"
-			method="normalizePhoneNumber" />
+	<action-method name="action-partner-method-normalize-mobilePhone">
+		<call class="com.axelor.apps.base.web.PartnerController" method="normalizePhoneNumber" />
 	</action-method>
 
-	<action-record
-		name="action-partner-record-empty-freight-carrier-mode"
+	<action-record name="action-partner-record-empty-freight-carrier-mode"
 		model="com.axelor.apps.base.db.Partner">
 		<field name="freightCarrierMode" expr="eval:null" />
 		<field name="carrierPartner" expr="eval:null" />
 	</action-record>
 
-	<action-record
-		name="action-partner-record-freight-carrier"
+	<action-record name="action-partner-record-freight-carrier"
 		model="com.axelor.apps.base.db.Partner">
-		<field name="carrierPartner"
-			expr="eval:freightCarrierMode?.carrierPartner" />
+		<field name="carrierPartner" expr="eval:freightCarrierMode?.carrierPartner" />
 	</action-record>
 
-	<action-record
-		name="action-partner-record-set-payment-modes"
+	<action-record name="action-partner-record-set-payment-modes"
 		model="com.axelor.apps.base.db.Partner" if-module="axelor-account">
 		<field name="inPaymentMode"
 			expr="eval: __user__?.activeCompany?.accountConfig?.inPaymentMode" />
@@ -1500,50 +1356,42 @@
 			expr="eval: __user__?.activeCompany?.accountConfig?.outPaymentMode" />
 	</action-record>
 
-	<action-record
-		name="action-partner-record-payment-condition"
+	<action-record name="action-partner-record-payment-condition"
 		model="com.axelor.apps.base.db.Partner" if-module="axelor-account">
 		<field name="paymentCondition"
 			expr="eval: __user__?.activeCompany?.accountConfig?.defPaymentCondition" />
 	</action-record>
 
 	<action-method name="action-print-company-phonebook">
-		<call class="com.axelor.apps.base.web.PartnerController"
-			method="printCompanyPhonebook" />
+		<call class="com.axelor.apps.base.web.PartnerController" method="printCompanyPhonebook" />
 	</action-method>
 
 	<action-method name="action-print-phonebook">
-		<call class="com.axelor.apps.base.web.PartnerController"
-			method="printContactPhonebook" />
+		<call class="com.axelor.apps.base.web.PartnerController" method="printContactPhonebook" />
 	</action-method>
 
 	<action-method name="action-partner-method-view-emails">
-		<call class="com.axelor.apps.base.web.PartnerController"
-			method="findPartnerMails" />
+		<call class="com.axelor.apps.base.web.PartnerController" method="findPartnerMails" />
 	</action-method>
 
-	<action-method
-		name="action-partner-method-view-emails-contact">
-		<call class="com.axelor.apps.base.web.PartnerController"
-			method="findContactMails" />
+	<action-method name="action-partner-method-view-emails-contact">
+		<call class="com.axelor.apps.base.web.PartnerController" method="findContactMails" />
 	</action-method>
 
 	<action-method name="action-partner-iban-check-on-save">
-		<call class="com.axelor.apps.base.web.PartnerController"
-			method="checkIbanValidity" />
+		<call class="com.axelor.apps.base.web.PartnerController" method="checkIbanValidity" />
 	</action-method>
 
 	<action-method name="action-partner-method-show-on-map">
-		<call class="com.axelor.apps.base.web.PartnerController"
-			method="showPartnerOnMap" />
+		<call class="com.axelor.apps.base.web.PartnerController" method="showPartnerOnMap" />
 	</action-method>
 
 	<action-method name="action-method-partner-registration-code-onChange">
-		<call class="com.axelor.apps.base.web.PartnerController" method="setTaxNbr"/>
+		<call class="com.axelor.apps.base.web.PartnerController" method="setTaxNbr" />
 	</action-method>
 
-	<action-view name="action-contact-partner-dashlet"
-		title="Partners" model="com.axelor.apps.base.db.Partner">
+	<action-view name="action-contact-partner-dashlet" title="Partners"
+		model="com.axelor.apps.base.db.Partner">
 		<view type="grid" name="partner-grid" />
 		<view type="form" name="partner-form" />
 		<domain>self.contactPartnerSet.id = :_contactId</domain>
@@ -1565,10 +1413,8 @@
 		<context name="_showRecord" expr="eval:employee.id" />
 	</action-view>
 
-	<action-method
-		name="action-convert-into-individual-partner">
-		<call class="com.axelor.apps.base.web.PartnerController"
-			method="convertToIndividualPartner" />
+	<action-method name="action-convert-into-individual-partner">
+		<call class="com.axelor.apps.base.web.PartnerController" method="convertToIndividualPartner" />
 	</action-method>
 
 	<action-record name="action-partner-record-unset-factor"
@@ -1585,10 +1431,8 @@
 		<field name="isCarrier" expr="eval: false" />
 	</action-record>
 
-	<action-validate
-		name="action-partner-validate-partner-stock-settings-list">
-		<alert
-			message="Partner has duplicate stock settings for same company"
+	<action-validate name="action-partner-validate-partner-stock-settings-list">
+		<alert message="Partner has duplicate stock settings for same company"
 			if="partnerStockSettingsList != null &amp;&amp; partnerStockSettingsList.collect{it->it.company}.unique().size() &lt; partnerStockSettingsList.size" />
 	</action-validate>
 
@@ -1604,33 +1448,31 @@
 			expr="eval:__config__.app.getApp('production')?.getManageOutsourcing()" />
 	</action-attrs>
 
-	<action-record
-		name="action-partner-record-set-registration-code"
+	<action-record name="action-partner-record-set-registration-code"
 		model="com.axelor.apps.base.db.Partner">
-		<field name="registrationCode"
-			expr="eval: __this__.siren?.concat(__this__.nic)" />
+		<field name="registrationCode" expr="eval: __this__.siren?.concat(__this__.nic)" />
 	</action-record>
 
-	<action-view
-		name="action-partner-view-subsidiary-partners" title="Subsidiaries"
-		model="com.axelor.apps.base.db.Partner">
+	<action-view name="action-partner-view-subsidiary-partners"
+		title="Subsidiaries" model="com.axelor.apps.base.db.Partner">
 		<view type="grid" name="partner-grid" />
 		<view type="form" name="partner-form" />
 		<domain>self.id in (select p.id from Partner p where p.parentPartner = :id)</domain>
 	</action-view>
-	
-	<action-record name="action-record-base-partner-set-business-card" model="com.axelor.apps.base.db.Partner">
-		<field name="functionBusinessCard" expr="eval: jobTitleFunction.name" if="jobTitleFunction != null"/>
+
+	<action-record name="action-record-base-partner-set-business-card"
+		model="com.axelor.apps.base.db.Partner">
+		<field name="functionBusinessCard" expr="eval: jobTitleFunction.name"
+			if="jobTitleFunction != null" />
 	</action-record>
 
-	<search-filters name="partner-filters"
-		model="com.axelor.apps.base.db.Partner" title="Partner filters">
+	<search-filters name="partner-filters" model="com.axelor.apps.base.db.Partner"
+		title="Partner filters">
 		<field name="partnerAddressList" hidden="true" />
 		<field name="mainAddress" title="Main address" />
 		<field name="isContact" title="Is a contact" />
 		<field name="simpleFullName" hidden="true" />
-		<field name="isCarrier" title="Is a carrier"
-			if="__config__.app.isApp('stock')" />
+		<field name="isCarrier" title="Is a carrier" if="__config__.app.isApp('stock')" />
 		<filter title="All Enterprises">
 			<domain>self.partnerTypeSelect = 1 AND self.isContact = false</domain>
 		</filter>

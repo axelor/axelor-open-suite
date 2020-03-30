@@ -52,7 +52,7 @@ public class EmployeeHRRepository extends EmployeeRepository {
     entity.setPhoneAtCustomer(null);
     entity.setEmergencyContact(null);
     entity.setEmergencyNumber(null);
-    entity.setDateOfHire(null);
+    entity.setHireDate(null);
     entity.setSeniorityDate(null);
     entity.setProfitSharingBeneficiary(null);
     entity.setMainEmploymentContract(null);

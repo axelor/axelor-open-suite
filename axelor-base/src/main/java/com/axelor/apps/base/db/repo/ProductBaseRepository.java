@@ -104,6 +104,13 @@ public class ProductBaseRepository extends ProductRepository {
     Product copy = super.copy(product, deep);
     Beans.get(ProductService.class).copyProduct(product, copy);
 
+    try {
+      if (appBaseService.getAppBase().getGenerateProductSequence()) {
+        copy.setCode(Beans.get(ProductService.class).getSequence(product));
+      }
+    } catch (Exception e) {
+      throw new PersistenceException(e.getLocalizedMessage());
+    }
     return copy;
   }
 }

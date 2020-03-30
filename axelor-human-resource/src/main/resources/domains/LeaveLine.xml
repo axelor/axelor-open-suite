@@ -6,22 +6,15 @@
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
   <entity name="LeaveLine" cacheable="true">
-    <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee"/>
-    <many-to-one name="leaveReason" ref="com.axelor.apps.hr.db.LeaveReason" title="Type" />
+    <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" required="true"/>
+    <many-to-one name="leaveReason" ref="com.axelor.apps.hr.db.LeaveReason" title="Type" required="true"/>
     <decimal name="quantity" title="Remaining" scale="4" precision="8"/>
     <decimal name="daysToValidate" title="Waiting for validation" scale="4" precision="8"/>
     <decimal name="daysValidated" title="Days validated" scale="4" precision="8"/>
     <decimal name="totalQuantity" title="Acquired" scale="4" precision="8"/>
     <one-to-many name="leaveManagementList" title="Leaves Management" ref="com.axelor.apps.hr.db.LeaveManagement" mappedBy="leaveLine"/>
     
-    <string name="name" namecolumn="true">
-    <![CDATA[
-      		if(this.getLeaveReason() != null)
-	  			return this.getLeaveReason().getLeaveReason();
-	  		else
-	  			return " ";
-	  ]]>
-    </string>
+    <string name="name" namecolumn="true"/>
     
   </entity>
   

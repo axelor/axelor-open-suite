@@ -121,9 +121,10 @@
 	              <field name="chkPassword" title="Confirm password" placeholder="confirm password" widget="password" requiredIf="change || !id" validIf="chkPassword === newPassword"/>
 	              <label name="passwordPatternDescriptionLabel" css="label-danger"/>
 	            </panel>
-	            <panel name="passwordOptionsPanel" showIf="code != $user">
+	            <panel name="passwordOptionsPanel" showIf="code != $user" itemSpan="4">
 	              <field name="$generateRandomPassword" title="Generate random password" widget="boolean" onChange="action-user-generate-random-password"/>
 	              <field name="sendEmailUponPasswordChange"/>
+								<field name="forcePasswordChange"/>
 	            </panel>
 	          </panel>
 	        </panel>
