@@ -3408,7 +3408,7 @@ row["ClientPartFirstName"]
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["invoicingAddress"] == null || row._outer["invoicingAddress"] == ""</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["invoicingAddress"] == row._outer["deliveryAddress"] || row._outer["invoicingAddress"] == null || row._outer["invoicingAddress"] == "" || row._outer["deliveryAddress"] == null || row._outer["deliveryAddress"] == ""</expression>
                             </structure>
                         </list-property>
                         <list-property name="paramBindings">
@@ -3454,7 +3454,7 @@ row["ClientPartFirstName"]
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row._outer["invoicingAddress"] == row._outer["deliveryAddress"] || row._outer["deliveryAddress"] == "" || row._outer["deliveryAddress"] == null</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["invoicingAddress"] == row._outer["deliveryAddress"] || row._outer["invoicingAddress"] == null || row._outer["invoicingAddress"] == "" || row._outer["deliveryAddress"] == null || row._outer["deliveryAddress"] == ""</expression>
                             </structure>
                         </list-property>
                         <list-property name="paramBindings">
