@@ -56,6 +56,7 @@
 - Stock Move: empty all references to orders and invoices on copy.
 - MANUFACTURING ORDER : On consumed product, no longer display tracking numbers if available quantity equals 0.
 - MOVE : Add missing translation
+- User : Added domain filter on icalendar field in user-preferences-form
 
 ## [5.3.1] - 2020-03-16
 ## Improvements
