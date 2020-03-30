@@ -389,4 +389,6 @@ public interface IExceptionMessage {
   public static final String ADVANCED_IMPORT_NO_RESET = /*$$(*/ "No imported data to reset" /*)*/;
   public static final String SERVER_CONNECTION_ERROR = /*$$(*/
       "Unable to connect to Geonames server" /*)*/;
+  public static final String PRINT_TEMPLATE_CONDITIONS_MUST_BE_BOOLEAN = /*$$(*/
+      "The groovy conditions result must be a boolean" /*)*/;
 }

@@ -789,4 +789,12 @@
     <domain>self.typeSelect = :_typeSelect</domain>
     <context name="_typeSelect" expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TASK"/>
   </action-view>
+  
+  <!-- Print -->
+  <menuitem name="mail-conf-print-templates" parent="mail-conf" order="40" title="Print templates" action="action.print.template.view.all"/>
+
+  <action-view name="action.print.template.view.all" title="Print templates" model="com.axelor.apps.base.db.PrintTemplate">
+     <view type="grid" name="print-template-grid"/>
+     <view type="form" name="print-template-form"/>
+  </action-view>
 </object-views>

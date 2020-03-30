@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+    <grid name="print-template-line-grid" title="Print template lines" model="com.axelor.apps.base.db.PrintTemplateLine">
+        <field name="sequence" width="100"/>
+        <field name="title"/>
+    </grid>
+
+    <form name="print-template-line-form" title="Print template line" model="com.axelor.apps.base.db.PrintTemplateLine">
+        <panel>
+            <field name="sequence"/>
+            <field name="title" widget="html" colSpan="12"/>
+            <field name="content" widget="html" colSpan="12"/>            
+            <field name="conditions"/>
+            <field name="isEditable"/>            
+            <panel-related name="printTemplateLineListPanel" field="printTemplateLineList" grid-view="print-template-line-grid" form-view="print-template-line-form" colSpan="12" orderBy="sequence" canMove="true"/>
+            <field name="parent" hidden="true"/>
+        </panel>
+    </form>
+
+</object-views>

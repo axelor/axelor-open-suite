@@ -497,5 +497,16 @@
         <option value="0">Standard</option>
         <option value="1">Title</option>
     </selection>
-
+    
+    <selection name="base.print.template.format.select">
+       <option value="PDF">PDF</option>
+       <option value="WORD">WORD</option>
+       <option value="ODT">ODT</option>
+    </selection>
+    
+    <selection name="base.print.display.type.select">
+       <option value="1">Portrait</option>
+       <option value="2">Landscape</option>
+    </selection>
+    
 </object-views>
