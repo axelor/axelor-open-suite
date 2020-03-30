@@ -230,7 +230,7 @@
 									</h4>
 								]]></viewer>
 							</field>
-							<field name="$invoicingTags" showTitle="false" readonly="true" showIf="statusSelect == 3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+							<field name="$invoicingTags" showTitle="false" readonly="true" showIf="statusSelect == 3 &amp;&amp; typeSelect != 1" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 								<viewer depends="invoicingStatusSelect"><![CDATA[
 									<h4 class="text-left">
 										<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 0"  x-translate>Not invoiced</span>
