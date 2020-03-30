@@ -46,7 +46,7 @@
 - Stock Move invoicing: Fix NPE on opening invoicing wizard when a line has no product.
 - Product : prevent the updation of salePrice if autoUpdateSalePrice = false.
 - Logistical Form : Fix NPE when computing volume
-- WORK CENTER : Fix machine not set to null for a human type work center
+- WORK CENTER : Fix fields not set to null for specific types of work center
 - MOVE TEMPLATE : Move templates without an end of validity date are now appearing in wizard
 - Fix a french word in an english message file.
 - Fixed asset : corrected calculation of amortization.
