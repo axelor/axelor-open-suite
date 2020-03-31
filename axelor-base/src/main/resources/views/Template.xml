@@ -26,6 +26,7 @@
 			</field>
 			<field name="mediaTypeSelect" />
 			<field name="language" canEdit="false" form-view="language-form" grid-view="language-grid" />
+			<field name="templateEngineSelect"/>
 			<field name="isJson" onChange="action-template-record-is-json-change"/>
 			<panel itemSpan="12">
 				<field name="metaModel" hideIf="isJson" canEdit="false" form-view="meta-model-form" grid-view="meta-model-grid" onSelect="action-template-attrs-meta-model-domain" />

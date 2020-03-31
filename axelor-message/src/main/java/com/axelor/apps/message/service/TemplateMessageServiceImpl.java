@@ -40,10 +40,13 @@ import com.axelor.meta.db.MetaJsonModel;
 import com.axelor.meta.db.MetaJsonRecord;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.rpc.Context;
-import com.axelor.tool.template.TemplateMaker;
+import com.axelor.text.GroovyTemplates;
+import com.axelor.text.StringTemplates;
+import com.axelor.text.Templates;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -51,7 +54,6 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import javax.mail.MessagingException;
@@ -64,9 +66,6 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
   private static final char TEMPLATE_DELIMITER = '$';
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  protected TemplateMaker maker =
-      new TemplateMaker(Locale.FRENCH, TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
 
   protected MessageService messageService;
   protected TemplateContextService templateContextService;
@@ -93,6 +92,15 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           AxelorException, IOException {
 
+    Templates templates;
+    Map<String, Object> templatesContext = Maps.newHashMap();
+
+    if (template.getTemplateEngineSelect() == TemplateRepository.TEMPLATE_ENGINE_GROOVY_TEMPLATE) {
+      templates = Beans.get(GroovyTemplates.class);
+    } else {
+      templates = new StringTemplates(TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
+    }
+
     Object modelObj = template.getIsJson() ? template.getMetaJsonModel() : template.getMetaModel();
 
     if (modelObj != null) {
@@ -107,9 +115,13 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
             String.format(
                 I18n.get(IExceptionMessage.INVALID_MODEL_TEMPLATE_EMAIL), modelName, model));
       }
-      initMaker(objectId, model, tag, template.getIsJson());
+      initMaker(objectId, model, tag, template.getIsJson(), templatesContext);
       computeTemplateContexts(
-          template.getTemplateContextList(), objectId, model, template.getIsJson());
+          template.getTemplateContextList(),
+          objectId,
+          model,
+          template.getIsJson(),
+          templatesContext);
     }
 
     log.debug("model : {}", model);
@@ -129,50 +141,42 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
     String signature = "";
 
     if (!Strings.isNullOrEmpty(template.getContent())) {
-      // Set template
-      maker.setTemplate(template.getContent());
-      content = maker.make();
+      content = templates.fromText(template.getContent()).make(templatesContext).render();
     }
 
     if (!Strings.isNullOrEmpty(template.getAddressBlock())) {
-      maker.setTemplate(template.getAddressBlock());
-      // Make it
-      addressBlock = maker.make();
+      addressBlock = templates.fromText(template.getAddressBlock()).make(templatesContext).render();
     }
 
     if (!Strings.isNullOrEmpty(template.getSubject())) {
-      maker.setTemplate(template.getSubject());
-      subject = maker.make();
+      subject = templates.fromText(template.getSubject()).make(templatesContext).render();
       log.debug("Subject ::: {}", subject);
     }
 
     if (!Strings.isNullOrEmpty(template.getFromAdress())) {
-      maker.setTemplate(template.getFromAdress());
-      from = maker.make();
+      from = templates.fromText(template.getFromAdress()).make(templatesContext).render();
       log.debug("From ::: {}", from);
     }
 
     if (!Strings.isNullOrEmpty(template.getReplyToRecipients())) {
-      maker.setTemplate(template.getReplyToRecipients());
-      replyToRecipients = maker.make();
+      replyToRecipients =
+          templates.fromText(template.getReplyToRecipients()).make(templatesContext).render();
       log.debug("Reply to ::: {}", replyToRecipients);
     }
 
     if (template.getToRecipients() != null) {
-      maker.setTemplate(template.getToRecipients());
-      toRecipients = maker.make();
+      toRecipients = templates.fromText(template.getToRecipients()).make(templatesContext).render();
       log.debug("To ::: {}", toRecipients);
     }
 
     if (template.getCcRecipients() != null) {
-      maker.setTemplate(template.getCcRecipients());
-      ccRecipients = maker.make();
+      ccRecipients = templates.fromText(template.getCcRecipients()).make(templatesContext).render();
       log.debug("CC ::: {}", ccRecipients);
     }
 
     if (template.getBccRecipients() != null) {
-      maker.setTemplate(template.getBccRecipients());
-      bccRecipients = maker.make();
+      bccRecipients =
+          templates.fromText(template.getBccRecipients()).make(templatesContext).render();
       log.debug("BCC ::: {}", bccRecipients);
     }
 
@@ -180,8 +184,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
     log.debug("Media ::: {}", mediaTypeSelect);
 
     if (template.getSignature() != null) {
-      maker.setTemplate(template.getSignature());
-      signature = maker.make();
+      signature = templates.fromText(template.getSignature()).make(templatesContext).render();
       log.debug("Signature ::: {}", signature);
     }
 
@@ -206,7 +209,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 
     message = Beans.get(MessageRepository.class).save(message);
 
-    messageService.attachMetaFiles(message, getMetaFiles(template));
+    messageService.attachMetaFiles(message, getMetaFiles(template, templates, templatesContext));
 
     return message;
   }
@@ -223,7 +226,9 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
   }
 
   @Override
-  public Set<MetaFile> getMetaFiles(Template template) throws AxelorException, IOException {
+  public Set<MetaFile> getMetaFiles(
+      Template template, Templates templates, Map<String, Object> templatesContext)
+      throws AxelorException, IOException {
 
     List<DMSFile> metaAttachments =
         Query.of(DMSFile.class)
@@ -243,26 +248,31 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 
   @Override
   @SuppressWarnings("unchecked")
-  public TemplateMaker initMaker(long objectId, String model, String tag, boolean isJson)
+  public Map<String, Object> initMaker(
+      long objectId, String model, String tag, boolean isJson, Map<String, Object> templatesContext)
       throws ClassNotFoundException {
 
     if (isJson) {
-      maker.setContext(JPA.find(MetaJsonRecord.class, objectId), tag);
+      templatesContext.put(tag, JPA.find(MetaJsonRecord.class, objectId));
     } else {
       Class<? extends Model> myClass = (Class<? extends Model>) Class.forName(model);
-      maker.setContext(JPA.find(myClass, objectId), tag);
+      templatesContext.put(tag, JPA.find(myClass, objectId));
     }
 
-    return maker;
+    return templatesContext;
   }
 
   @SuppressWarnings("unchecked")
-  protected TemplateMaker computeTemplateContexts(
-      List<TemplateContext> templateContextList, long objectId, String model, boolean isJson)
+  protected Map<String, Object> computeTemplateContexts(
+      List<TemplateContext> templateContextList,
+      long objectId,
+      String model,
+      boolean isJson,
+      Map<String, Object> templatesContext)
       throws ClassNotFoundException {
 
     if (templateContextList == null) {
-      return maker;
+      return templatesContext;
     }
 
     Context context = null;
@@ -275,10 +285,10 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 
     for (TemplateContext templateContext : templateContextList) {
       Object result = templateContextService.computeTemplateContext(templateContext, context);
-      maker.addContext(templateContext.getName(), result);
+      templatesContext.put(templateContext.getName(), result);
     }
 
-    return maker;
+    return templatesContext;
   }
 
   protected List<EmailAddress> getEmailAddresses(String recipients) {
