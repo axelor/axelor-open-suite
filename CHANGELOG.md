@@ -9,6 +9,7 @@
 - Move template : Add new field description
 - HR : Added a leave line configuration menu in leave management
 - Move template : Add details button to grid view to display fields
+- Move template : Add change track on update
 
 ## Improvements
 - USER : Default User language is based on application.locale from application.properties
