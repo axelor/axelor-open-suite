@@ -57,6 +57,7 @@
 - MANUFACTURING ORDER : On consumed product, no longer display tracking numbers if available quantity equals 0.
 - MOVE : Add missing translation
 - Sale Order Report: fix title being shown above address when there is only one address.
+- Ebics Certificate : Set serial number. 
 
 ## [5.3.1] - 2020-03-16
 ## Improvements
