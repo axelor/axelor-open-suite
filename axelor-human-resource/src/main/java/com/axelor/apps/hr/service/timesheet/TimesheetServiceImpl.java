@@ -1156,15 +1156,6 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
             ? employee.getPublicHolidayEventsPlanning()
             : config.getPublicHolidayEventsPlanning();
 
-    if (timesheet.getTimesheetLineList() != null && !timesheet.getTimesheetLineList().isEmpty()) {
-      fromDate =
-          timesheet.getTimesheetLineList().stream()
-              .map(TimesheetLine::getDate)
-              .max(LocalDate::compareTo)
-              .get()
-              .plusDays(1);
-    }
-
     for (LocalDate date = fromDate; !date.isAfter(toDate); date = date.plusDays(1)) {
       BigDecimal dayValueInHours =
           weeklyPlanningService.getWorkingDayValueInHours(
