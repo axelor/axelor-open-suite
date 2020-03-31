@@ -36,6 +36,7 @@
 - Logistial Form : Fix NPE when computing volume
 - Sale Order Report: fix title being shown above address when there is only one address.
 - LEAD : Fix display issue for description field on lead-event-grid
+- User : Added domain filter on icalendar field in user-preferences-form
 
 ## [5.2.6] - 2020-03-13
 ## Improvements
