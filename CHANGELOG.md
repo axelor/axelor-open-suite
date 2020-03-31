@@ -22,6 +22,7 @@
 - Fixed asset : add EU and US prorata temporis.
 - DEMO DATA : add analytic journals to demo data.
 - Accounting Report : add the possibility to filter the ledger report to only see not completely lettered move lines.
+- LEAD : fill region and country automatically onchange of city in lead.
 
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
