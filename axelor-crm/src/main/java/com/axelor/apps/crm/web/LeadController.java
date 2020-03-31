@@ -90,7 +90,7 @@ public class LeadController {
                     + lead.getName()
                     + " "
                     + lead.getFirstName()
-                    + " "
+                    + " - "
                     + lead.getEnterpriseName()
                 : "Leads";
       }
