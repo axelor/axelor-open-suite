@@ -7,6 +7,7 @@
 - Fixed asset : add EU and US prorata temporis.
 - TRADING NAME : Fill default company printing settings if trade name printing setttings is not there in company.
 - Stock Move : Fix 'Invoiced' tag displaying in internal stock moves and stock move lines.
+- Accounting Report : add the possibility to filter the ledger report to only see not completely lettered move lines.
 
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
@@ -33,6 +34,9 @@
 - MANUFACTURING ORDER : On consumed product, no longer display tracking numbers if available quantity equals 0.
 - WORK CENTER : Fix machine not set to null for a human type work center
 - Logistial Form : Fix NPE when computing volume
+- Sale Order Report: fix title being shown above address when there is only one address.
+- LEAD : Fix display issue for description field on lead-event-grid
+- User : Added domain filter on icalendar field in user-preferences-form
 - MOVE : Add missing translation
 
 ## [5.2.6] - 2020-03-13
