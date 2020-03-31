@@ -361,10 +361,11 @@ public class InvoiceLineController {
     if (invoice != null && invoice.getCompany() != null) {
       List<String> technicalTypeSelectList = new ArrayList<>();
       if (InvoiceToolService.isPurchase(invoice)) {
-        technicalTypeSelectList.add(AccountTypeRepository.TYPE_DEBT);
-        technicalTypeSelectList.add(AccountTypeRepository.TYPE_CHARGE);
         if (invoiceLine.getFixedAssets()) {
           technicalTypeSelectList.add(AccountTypeRepository.TYPE_IMMOBILISATION);
+        } else {
+          technicalTypeSelectList.add(AccountTypeRepository.TYPE_DEBT);
+          technicalTypeSelectList.add(AccountTypeRepository.TYPE_CHARGE);
         }
       } else {
         technicalTypeSelectList.add(AccountTypeRepository.TYPE_INCOME);
