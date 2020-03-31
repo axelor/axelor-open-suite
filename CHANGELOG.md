@@ -5,6 +5,10 @@
 - Update to Gradle 5.6.4
 - Update to Axelor Open Platform 5.3
 - Bank details : Add new fields journal and bank account.
+- Move template : Add journal field to wizard
+- Move template : Add new field description
+- HR : Added a leave line configuration menu in leave management
+- Move template : Add details button to grid view to display fields
 - Move template : Add change track on update
 
 ## Improvements
@@ -13,5 +17,7 @@
 - Accounting Move Line : When debit/credit is filled the other field is set to 0 instead of being set to a readonly mode
 - Invoice/Orders : The printing filename has been changed to show the id of the printed order/invoice
 - Employee : renamed dateOfHire, timeOfHire, endDateContract, dateOfBirth fields to hireDate, hireTime, contractEndDate, birthDate
+- Removed block permission from demo data.
 
 ## Bug Fixes
+- HR : A leave-line cannot be saved whitout employee or leave-reason.
