@@ -58,6 +58,7 @@
 - MOVE : Add missing translation
 - Sale Order Report: fix title being shown above address when there is only one address.
 - LEAD : Fix display issue for description field on lead-event-grid
+- User : Added domain filter on icalendar field in user-preferences-form
 
 ## [5.3.1] - 2020-03-16
 ## Improvements
