@@ -6,6 +6,7 @@
 - Fix a french word in an english message file.
 - Accounting Situation: fix computation of balance due debt recovery.
 - LEAD : Fix display issue for description field on lead-event-grid
+- User : Added domain filter on icalendar field in user-preferences-form
 
 ## [5.1.15] - 2020-03-23
 ## Improvements
