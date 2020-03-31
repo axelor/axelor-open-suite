@@ -17,6 +17,7 @@
 			<field name="mediaTypeSelect" colSpan="4"/>
 			<field name="isDefault" colSpan="2"/>
 			<field name="isSystem" colSpan="2"/>
+			<field name="templateEngineSelect"/>
 			<field name="isJson" onChange="action-template-record-is-json-change"/>
 			<field name="metaModel" hideIf="isJson" form-view="meta-model-form" grid-view="meta-model-grid"/>
 			<field name="metaJsonModel" showIf="isJson" form-view="json-model-form" grid-view="json-model-grid" />
