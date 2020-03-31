@@ -37,11 +37,13 @@
 - WORK CENTER: Fix machine not set to null for a human type work center.
 - Logistial Form: Fix NPE when computing volume.
 - Sale Order Report: fix title being shown above address when there is only one address.
+<<<<<<< HEAD
 - LEAD: Fix display issue for description field on lead-event-grid
 - User: Added domain filter on icalendar field in user-preferences-form
 - Stock Move: Fix 'Invoiced' tag displaying in internal stock moves and stock move lines.
 - MOVE: Add missing translation.
 - EBICS CERTIFICATE : Fix serial number not saved.
+- LEAD : Fixed the blank pdf when printing
 
 ## [5.2.6] - 2020-03-13
 ## Improvements
