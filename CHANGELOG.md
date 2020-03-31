@@ -56,6 +56,9 @@
 - Stock Move: empty all references to orders and invoices on copy.
 - MANUFACTURING ORDER : On consumed product, no longer display tracking numbers if available quantity equals 0.
 - MOVE : Add missing translation
+- Sale Order Report: fix title being shown above address when there is only one address.
+- LEAD : Fix display issue for description field on lead-event-grid
+- User : Added domain filter on icalendar field in user-preferences-form
 - LEAD : Fix error on import demo data
 
 ## [5.3.1] - 2020-03-16
@@ -114,6 +117,7 @@
 - TEAM TASK: Fixed issue on copying line from project view.
 - INVOICE: Fix quantity and discount not displayed on printing.
 - SALE ORDER: Fix unit code not displayed on printing.
+- EBICS CERTIFICATE : Fix serial number not saved.
 
 ## [5.3.0] - 2020-02-25
 ## Features
