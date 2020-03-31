@@ -4,6 +4,7 @@
 ## Improvements
 - ACCOUNTING REPORT : display popup message on click of 'exportBtn'.
 - Partner : rename 'Create order' button & translation.
+- User : Added domain filter on icalendar field in user-preferences-form
 
 ## Bug Fixes
 - INVOICE : now the date verification of the ventilation process depends of invoices of the same company.
