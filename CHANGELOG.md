@@ -4,6 +4,7 @@
 - COST SHEET: in batch computing work in progress valuation, compute cost for ongoing manuf orders at the valuation date.
 ## Bug Fixes
 - Manuf Order: add missing translations.
+- BudgetLine : Resolve NPE on dates.
 
 ## [5.2.8] - 2020-04-14
 ## Improvements
