@@ -68,6 +68,8 @@ import com.axelor.apps.production.service.costsheet.UnitCostCalcLineService;
 import com.axelor.apps.production.service.costsheet.UnitCostCalcLineServiceImpl;
 import com.axelor.apps.production.service.costsheet.UnitCostCalculationService;
 import com.axelor.apps.production.service.costsheet.UnitCostCalculationServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderPrintService;
+import com.axelor.apps.production.service.manuforder.ManufOrderPrintServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
@@ -135,5 +137,6 @@ public class ProductionModule extends AxelorModule {
         .to(ConfiguratorCreatorImportServiceProductionImpl.class);
     bind(ProductStockLocationServiceImpl.class).to(ProductionProductStockLocationServiceImpl.class);
     bind(StockMoveSupplychainRepository.class).to(StockMoveProductionRepository.class);
+    bind(ManufOrderPrintService.class).to(ManufOrderPrintServiceImpl.class);
   }
 }

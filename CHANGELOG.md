@@ -2,6 +2,8 @@
 ## [Unreleased 5.3.3]
 ## Improvements
 ## Bug Fixes
+- Manuf Order: fix issue when printing multiple manufacturing orders.
+When printing multiple manufacturing orders, operations from all orders were printed for each one.
 
 ## [5.3.2] - 2020-04-01
 ## Improvements
