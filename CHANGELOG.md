@@ -3,6 +3,8 @@
 ## Improvements
 ## Bug Fixes
 - LEAD : Fixed the blank pdf when printing
+- Purchase Request: Add missing translation.
+- Purchase Request Line: fix product domain.
 
 ## [5.2.7] - 2020-03-31
 ## Improvements
