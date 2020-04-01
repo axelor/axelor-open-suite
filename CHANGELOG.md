@@ -1,75 +1,76 @@
 # Changelog
-## [Unreleased 5.3.2]
+## [5.3.2] - 2020-04-01
 ## Improvements
-- CLIENT-PORTAL : Chart now only shows invoices corresponding the client partner.
+- CLIENT-PORTAL: Chart now only shows invoices corresponding the client partner.
 - PARTNER : add url widget for website.
-- MrpFamily : make 'name' required field.
-- LEAD : new design for view form
-- TARGET CONFIGURATION : end off date must now be superior to start date
-- TAX LINE : run off date must now be superior to start date
-- OPPORTUNITY : removed help in buttons from form view
-- DURATION : changed title and translation from typeSelect
-- SaleOrder : Add filter on invoice selected lines when operation choice = invoice selected lines
+- MrpFamily: make 'name' required field.
+- LEAD: new design for view form.
+- TARGET CONFIGURATION: end off date must now be superior to start date.
+- TAX LINE: run off date must now be superior to start date.
+- OPPORTUNITY: removed help in buttons from form view.
+- DURATION: remove question mark in type selection title and add translation.
+- Sale Order Invoicing Wizard: When searching for already invoiced lines, only takes customer invoices.
 - ACCOUNTING REPORT: improved bank statement report.
-- Product : set sequence while creating duplicate.
-- ORDER LINE : freeze fields translation
-- ORDER/STOCK : ISPM15 translation
-- FORECAST RECAP : translation for Forecast Recap line Type(s).
-- MARKETING : Fix for setting end date after start date.
-- changes for messy convert-lead-wizard-form
-- Target Configuration : improve naming & translation
-- Target : improve naming & translation
-- Fixed asset : add EU and US prorata temporis.
-- DEMO DATA : add analytic journals to demo data.
-- Accounting Report : add the possibility to filter the ledger report to only see not completely lettered move lines.
-- LEAD : enterprise name is now more highlighted
-- LEAD : fill region and country automatically onchange of city in lead.
-- APP LEAVE : remove unused boolean overtimeManagement.
+- Product: set sequence while creating copy.
+- MARKETING: end off date must now be superior to start date.
+- Improve convert lead wizard form view layout.
+- Target Configuration: improve naming & translation.
+- Target: improve naming & translation.
+- Fixed asset: add EU and US prorata temporis.
+- DEMO DATA: add analytic journals to demo data.
+- Accounting Report: add the possibility to filter the ledger report to only see not completely lettered move lines.
+- LEAD: company name is now more highlighted.
+- LEAD: fill region and country automatically on change of city in lead.
 
 ## Bug Fixes
-- SALE ORDER : Fix NPE when interco sale order finalized.
-- SALE CONFIG : Fixed "Action not allowed" error when we try to update customer's accepted credit
-- TIMESHEET : Fix auto-generation of leave days not generating the first day
-- CLIENT-PORTAL : fixed the NPE when the user does not correspond to any partner.
-- Partner: Invoice copy number selection field displayed when the partner is a supplier.
+- ORDER LINE: add missing french translation for "freeze fields".
+- ORDER/STOCK: add missing translation for ISPM15.
+- FORECAST RECAP: add translation for Forecast Recap line Type(s).
+- SALE ORDER: Fix NPE when interco sale order is being finalized.
+- SALE CONFIG: Fixed "Action not allowed" error when we try to update customer's accepted credit.
+- TIMESHEET: Fix auto-generation of leave days not generating the first day.
+- CLIENT-PORTAL: fixed the NPE when the user does not correspond to any partner.
+- Partner: Invoice copy number selection field is now displayed when the partner is a supplier.
 - MANUF ORDER: add missing translation.
 - STOCK CORRECTION: Add missing translations.
-- LEAD: Fix form-view of primaryCity.
+- LEAD: Fix form view of primaryCity.
 - EXCEPTION ORIGIN: Split selection values per module.
-- PURCHASE REQUEST : Fix new product name not showing on line grid view
+- PURCHASE REQUEST: Fix new product name not showing on line grid view.
 - INVENTORY: add missing translations.
-- SALEORDER : Fixed NPE when trying to select a customer with a company with no linked partner
-- BANK RECONCILIATION : corrected error with bank statement load where no other statement was loaded.
-- LEAD : Fix action doesnot exist on LEAD convert.
-- MOVE TEMPLATE : Add missing translation
-- STOCK LOCATION : Add missing translation
-- MRP FAMILY : Fix wrong case in views title
-- INVOICELINE : Fix account not filtered depending on fixedAssets boolean
-- CONTACT: fix for Main Company not set for Contact from Partner
+- SALEORDER: Fixed NPE when trying to select a customer with a company with no linked partner.
+- BANK RECONCILIATION: corrected error with bank statement load where no other statements were loaded.
+- LEAD: Fix "action does not exist" error on LEAD convert.
+- MOVE TEMPLATE: Add missing translation.
+- STOCK LOCATION: Add missing translation.
+- MRP FAMILY: Fix wrong case in views title.
+- INVOICELINE: Fix account not filtered depending on fixedAssets boolean.
+- CONTACT: fix for Main Company not set for Contact from Partner.
 - Account Config: display correct form view on clicking products.
 - Stock Move invoicing: Fix NPE on opening invoicing wizard when a line has no product.
-- Product : prevent the updation of salePrice if autoUpdateSalePrice = false.
-- Logistical Form : Fix NPE when computing volume
-- WORK CENTER : Fix fields not set to null for specific types of work center
-- MOVE TEMPLATE : Move templates without an end of validity date are now appearing in wizard
+- Product: prevent the update of salePrice if autoUpdateSalePrice is disabled.
+- Logistical Form: Fix NPE when computing volume.
+- WORK CENTER: Fix fields not set to null for specific types of work center.
+- MOVE TEMPLATE: Move templates without an end of validity date are now appearing in wizard.
 - Fix a french word in an english message file.
-- Fixed asset : corrected calculation of amortization.
+- Fixed asset: corrected calculation of amortization.
 - Production Order: fix typo in french translation.
 - Accounting Situation: fix computation of balance due debt recovery.
-- Stock Move : Fix 'Invoiced' tag displaying in internal stock moves and stock move lines.
+- Stock Move: Fix 'Invoiced' tag displaying in internal stock moves and stock move lines.
 - Stock Move: empty all references to orders and invoices on copy.
-- MANUFACTURING ORDER : On consumed product, no longer display tracking numbers if available quantity equals 0.
-- MOVE : Add missing translation
+- MANUFACTURING ORDER: On consumed product, no longer display tracking numbers if available quantity equals 0.
+- MOVE: Add missing translation.
 - Sale Order Report: fix title being shown above address when there is only one address.
-- LEAD : Fix display issue for description field on lead-event-grid
-- User : Added domain filter on icalendar field in user-preferences-form
-- LEAD : Fix error on import demo data
-- LEAD : Fixed the blank pdf when printing
-- BudgetLine : Resolve NPE on dates.
-- EMPLOYEE CONFIG : set exportCode visibility and required in EmployeeBonusType, LeaveReason, ExtraHoursType
-- TRADING NAME : Fill default company printing settings if trade name printing setttings is not there in company.
-- EMPLOYEE : set maidenName visibility by sexSelect select.
-- TIMETABLE : Invoiced lines deleted when changing some fields
+- LEAD: Fix display issue for description field on lead event grid view.
+- User: Add domain filter on icalendar field in user preferences form view.
+- LEAD: Fix error on import demo data.
+- LEAD: Fixed the blank pdf when printing.
+- BudgetLine: Resolve NPE when trying to validate an invoice with budget lines missing a date.
+- EMPLOYEE CONFIG: Export code is now only visible and required if we choose to include the record in the export. Change made for EmployeeBonusType, LeaveReason, and ExtraHoursType.
+- TRADING NAME: Fill default company printing settings if trade name printing setttings is not there in company.
+- EMPLOYEE: set maidenName visibility by sexSelect select.
+- TIMETABLE: Already invoiced timetable are now readonly.
+- APP LEAVE: remove unused boolean overtimeManagement.
+- EBICS CERTIFICATE: Fix serial number not saved.
 
 ## [5.3.1] - 2020-03-16
 ## Improvements
@@ -127,7 +128,6 @@
 - TEAM TASK: Fixed issue on copying line from project view.
 - INVOICE: Fix quantity and discount not displayed on printing.
 - SALE ORDER: Fix unit code not displayed on printing.
-- EBICS CERTIFICATE : Fix serial number not saved.
 
 ## [5.3.0] - 2020-02-25
 ## Features
@@ -194,6 +194,6 @@
 - PRODUCT: Fix economicManufOrderQty displayed twice.
 
 
-[Unreleased 5.3.2]: https://github.com/axelor/axelor-open-suite/compare/v5.3.1...dev
+[5.3.2]: https://github.com/axelor/axelor-open-suite/compare/v5.3.1...v5.3.2
 [5.3.1]: https://github.com/axelor/axelor-open-suite/compare/v5.3.0...v5.3.1
 [5.3.0]: https://github.com/axelor/axelor-open-suite/compare/v5.2.5...v5.3.0
