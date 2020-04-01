@@ -13,6 +13,7 @@
 - Fixed asset: add EU and US prorata temporis.
 - TRADING NAME: Fill default company printing settings if trade name printing setttings is not there in company.
 - Accounting Report: add the possibility to filter the ledger report to only see not completely lettered move lines.
+- Accounting Report : change visibility condition for field displayOnlyNotCompletelyLetteredMoveLines.
 
 ## Bug Fixes
 - SALE ORDER: Fix NPE when interco sale order is finalized.
