@@ -4,6 +4,8 @@
 ## Bug Fixes
 - Manuf Order: fix issue when printing multiple manufacturing orders.
 When printing multiple manufacturing orders, operations from all orders were printed for each one.
+- Purchase Request: Add missing translation.
+- Purchase Request Line: fix product domain.
 
 ## [5.3.2] - 2020-04-01
 ## Improvements
