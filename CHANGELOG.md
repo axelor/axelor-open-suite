@@ -21,6 +21,9 @@
 - Target : improve naming & translation
 - Fixed asset : add EU and US prorata temporis.
 - DEMO DATA : add analytic journals to demo data.
+- Accounting Report : add the possibility to filter the ledger report to only see not completely lettered move lines.
+- LEAD : enterprise name is now more highlighted
+- LEAD : fill region and country automatically onchange of city in lead.
 
 ## Bug Fixes
 - SALE ORDER : Fix NPE when interco sale order finalized.
@@ -46,7 +49,7 @@
 - Stock Move invoicing: Fix NPE on opening invoicing wizard when a line has no product.
 - Product : prevent the updation of salePrice if autoUpdateSalePrice = false.
 - Logistical Form : Fix NPE when computing volume
-- WORK CENTER : Fix machine not set to null for a human type work center
+- WORK CENTER : Fix fields not set to null for specific types of work center
 - MOVE TEMPLATE : Move templates without an end of validity date are now appearing in wizard
 - Fix a french word in an english message file.
 - Fixed asset : corrected calculation of amortization.
@@ -60,6 +63,7 @@
 - LEAD : Fix display issue for description field on lead-event-grid
 - User : Added domain filter on icalendar field in user-preferences-form
 - LEAD : Fix error on import demo data
+- LEAD : Fixed the blank pdf when printing
 - BudgetLine : Resolve NPE on dates.
 
 ## [5.3.1] - 2020-03-16
