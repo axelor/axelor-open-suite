@@ -84,15 +84,7 @@ public class LeadController {
     if (!leadIds.equals("")) {
       String title = " ";
       if (lead.getFirstName() != null) {
-        title +=
-            lstSelectedleads == null
-                ? "Lead "
-                    + lead.getName()
-                    + " "
-                    + lead.getFirstName()
-                    + " - "
-                    + lead.getEnterpriseName()
-                : "Leads";
+        title += lstSelectedleads == null ? "Lead " + lead.getFirstName() : "Leads";
       }
 
       String fileLink =
