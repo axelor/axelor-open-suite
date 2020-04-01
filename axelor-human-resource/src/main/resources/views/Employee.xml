@@ -74,8 +74,8 @@
       <field name="departmentOfBirth" colSpan="4" onChange="action-employee-attrs-department-of-birth-on-change" onSelect="action-employee-attrs-department-of-birth-on-select"/>
       <field name="cityOfBirth" colSpan="4" onSelect="action-employee-attrs-city-of-birth-on-select"/>
       <field name="citizenship" colSpan="4"/>
-      <field name="maidenName" colSpan="4"/>
       <field name="maritalName" colSpan="4"/>
+      <field name="maidenName" colSpan="4" hideIf="sexSelect!='F'"/>
       <field name="socialSecurityNumber" colSpan="4" max="15" min="12"/>
     </panel>
 
@@ -201,8 +201,8 @@
           <field name="departmentOfBirth" colSpan="4" onChange="action-employee-attrs-department-of-birth-on-change" onSelect="action-employee-attrs-department-of-birth-on-select"/>
           <field name="cityOfBirth" colSpan="4" onSelect="action-employee-attrs-city-of-birth-on-select"/>
           <field name="citizenship" colSpan="4"/>
-          <field name="maidenName" colSpan="4"/>
           <field name="maritalName" colSpan="4"/>
+          <field name="maidenName" colSpan="4" hideIf="sexSelect!='F'"/>
           <field name="socialSecurityNumber" colSpan="4" max="15" min="12"/>
         </panel>
 
