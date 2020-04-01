@@ -107,7 +107,7 @@
 
     <!-- Employment contract -->
     <panel name="contractualInfoSBSPanel" title="Contractual information" showIf="stepByStepSelect == 2">
-      <field name="hireDate" colSpan="3"/>
+      <field name="hireDate" colSpan="3" onChange="action-employee-attrs-set-seniority-date"/>
       <field name="seniorityDate" colSpan="3"/>
       <field name="bonusCoef" colSpan="3"/>
       <field name="profitSharingBeneficiary" colSpan="3"/>
@@ -234,7 +234,7 @@
 
       <panel name="employmentContractsPanel" title="Employment contracts">
         <panel name="contractualInfoPanel" title="Contractual information" colSpan="12">
-          <field name="hireDate" colSpan="3"/>
+          <field name="hireDate" colSpan="3" onChange="action-employee-attrs-set-seniority-date"/>
           <field name="seniorityDate" colSpan="3"/>
           <field name="bonusCoef" colSpan="3"/>
           <field name="profitSharingBeneficiary" colSpan="3"/>
@@ -496,6 +496,10 @@
 	<action-condition name="action-employee-validate-dates">
 		<check error="Invalid date" field="endDate" if="startDate != null &amp;&amp; endDate != null  &amp;&amp; (endDate &lt; startDate)"/>
 	</action-condition>
+	
+	<action-attrs name="action-employee-attrs-set-seniority-date">
+		<attribute name="value" for="seniorityDate" expr="eval: hireDate" if="seniorityDate == null"/>
+	</action-attrs>
 	
     <search-filters name="employee-filters" model="com.axelor.apps.hr.db.Employee"
         title="Employee filters">
