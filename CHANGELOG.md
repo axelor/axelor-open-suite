@@ -1,6 +1,7 @@
 # Changelog
 ## [Unreleased 5.2.8]
 ## Improvements
+- TIMETABLE : Invoiced lines deleted when changing some fields
 ## Bug Fixes
 - LEAD : Fixed the blank pdf when printing
 - Purchase Request: Add missing translation.
