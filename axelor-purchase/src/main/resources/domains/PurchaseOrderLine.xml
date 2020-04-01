@@ -37,7 +37,7 @@
   	<many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv" title="Tax Equiv"/>
   	
   	<string name="description" title="Description" large="true"/>
-  	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+  	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit" required="true"/>
   	
   	<decimal name="discountAmount" title="Discount amount" precision="20" scale="10"/>
   	<integer name="discountTypeSelect" title="Discount Type" selection="base.price.list.line.amount.type.select" default="0" />
