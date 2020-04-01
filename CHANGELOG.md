@@ -1,6 +1,8 @@
 # Changelog
 ## [Unreleased 5.1.16]
 ## Improvements
+- LEAD : Changed the tab name of the printing
+
 ## Bug Fixes
 - Account Config: display correct form view on clicking products.
 - Fix a french word in an english message file.
