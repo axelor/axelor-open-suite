@@ -1,6 +1,8 @@
 # Changelog
 ## [Unreleased 5.1.16]
 ## Improvements
+- LEAD : Changed the printing tab's name
+
 ## Bug Fixes
 - Account Config: display correct form view on clicking products.
 - Fix a french word in an english message file.
@@ -8,7 +10,7 @@
 - LEAD : Fix display issue for description field on lead-event-grid
 - User : Added domain filter on icalendar field in user-preferences-form
 - EBICS CERTIFICATE : Fix serial number not saved.
-- LEAD : Fixed the blank pdf when printing
+
 
 ## [5.1.15] - 2020-03-23
 ## Improvements
