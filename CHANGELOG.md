@@ -6,6 +6,8 @@
 - LEAD : Fixed the blank pdf when printing
 - Purchase Request: Add missing translation.
 - Purchase Request Line: fix product domain.
+- Manuf Order: fix issue when printing multiple manufacturing orders.
+When printing multiple manufacturing orders, operations from all orders were printed for each one.
 
 ## [5.2.7] - 2020-03-31
 ## Improvements
