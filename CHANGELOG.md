@@ -68,6 +68,7 @@
 - BudgetLine : Resolve NPE on dates.
 - EMPLOYEE CONFIG : set exportCode visibility and required in EmployeeBonusType, LeaveReason, ExtraHoursType
 - TRADING NAME : Fill default company printing settings if trade name printing setttings is not there in company.
+- EMPLOYEE : set maidenName visibility by sexSelect select.
 
 ## [5.3.1] - 2020-03-16
 ## Improvements
