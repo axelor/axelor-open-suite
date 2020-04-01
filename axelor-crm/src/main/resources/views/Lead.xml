@@ -96,7 +96,7 @@
 				<static name="duplicateLeadText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a lead with this name.</span>]]></static>
 				<field name="fullName" showTitle="false" colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 5">
 					<editor x-show-titles="false">
-						<field name="enterpriseName" colSpan="12" showIf="partner == null" placeholder="Enterprise name" onChange="action-lead-method-set-social-network-url"/>
+						<field name="enterpriseName" css="label-bold bold large" colSpan="12" showIf="partner == null" placeholder="Enterprise name" onChange="action-lead-method-set-social-network-url"/>
 						<field name="jobTitleFunction" colSpan="6" placeholder="Function"/>
 						<field name="industrySector" colSpan="6" form-view="industry-sector-form" grid-view="industry-sector-grid" canEdit="false"/>
 						<field name="partner" colSpan="12" showIf="statusSelect == 4" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
@@ -134,7 +134,7 @@
 				<panel name="primaryAddress" title="Primary address" readonlyIf="statusSelect == 4 || statusSelect == 5" colSpan="12">
 					<field name="primaryAddress" colSpan="8"/>
 					<field name="primaryPostalCode" colSpan="4"/>
-					<field name="primaryCity" colSpan="4" form-view="city-form" grid-view="city-grid" onChange="action-record-lead-set-primary-postal-code"/>
+					<field name="primaryCity" colSpan="4" form-view="city-form" grid-view="city-grid" onChange="action-attrs-lead-set-primary-state-country-postal-code"/>
 					<field name="primaryState" colSpan="4" form-view="region-form" grid-view="region-grid"/>
 					<field name="primaryCountry" colSpan="4" form-view="country-form" grid-view="country-grid"/>
 				</panel>
@@ -267,9 +267,13 @@
     	<field name="isRecycled" expr="true"/>
     </action-record>
     
-    <action-record name="action-record-lead-set-primary-postal-code" model="com.axelor.apps.crm.db.Lead">
-    	<field name="primaryPostalCode" expr="eval: primaryCity?.zip"/>
-    </action-record>
+    <action-attrs name="action-attrs-lead-set-primary-state-country-postal-code">
+    	<attribute if="eval: primaryCity?.department?.region" name="value" expr="eval: primaryCity.department.region" for="primaryState"/>
+ 		<attribute if="eval: primaryCity?.country" name="value" expr="eval: primaryCity.country" for="primaryCountry"/>
+ 		<attribute name="readonly" expr="eval: primaryCity?.department?.region ? true: false" for="primaryState"/>
+ 		<attribute name="readonly" expr="eval: primaryCity?.country ? true: false" for="primaryCountry"/>
+ 		<attribute name="value" for="primaryPostalCode" expr="eval: primaryCity?.zip"/>
+    </action-attrs>
 
     <action-view name="action-lead-view-lose" model="com.axelor.apps.crm.db.Lead" title="Lose">
 	  	<view type="form" name="lead-lose-wizard-form"/>
