@@ -64,6 +64,7 @@
 - User : Added domain filter on icalendar field in user-preferences-form
 - LEAD : Fix error on import demo data
 - LEAD : Fixed the blank pdf when printing
+- EMPLOYEE CONFIG : set exportCode visibility and required in EmployeeBonusType, LeaveReason, ExtraHoursType
 
 ## [5.3.1] - 2020-03-16
 ## Improvements
