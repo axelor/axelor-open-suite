@@ -6,6 +6,7 @@
 When printing multiple manufacturing orders, operations from all orders were printed for each one.
 - Purchase Request: Add missing translation.
 - Purchase Request Line: fix product domain.
+- OPPORTUNITY : Fix address being incorrect when creating a partner from a lead
 
 ## [5.3.2] - 2020-04-01
 ## Improvements
