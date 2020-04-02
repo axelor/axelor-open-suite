@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaDriverClass</property>
@@ -493,7 +493,7 @@ where message_key = ? and language = ? ]]></xml-property>
                             <property name="pageBreakBefore">auto</property>
                             <property name="canShrink">true</property>
                             <property name="overflow">visible</property>
-                            <property name="height">9.958333333333334in</property>
+                            <property name="height">11.212765957446809in</property>
                             <property name="width">7.677083333333333in</property>
                             <structure name="toc"/>
                             <column id="19">
@@ -505,13 +505,8 @@ where message_key = ? and language = ? ]]></xml-property>
                             <column id="20">
                                 <property name="width">2.09375in</property>
                             </column>
-                            <row id="21">
-                                <cell id="22"/>
-                                <cell id="100"/>
-                                <cell id="23"/>
-                            </row>
                             <row id="24">
-                                <property name="height">0.3645833333333333in</property>
+                                <property name="height">0.3in</property>
                                 <cell id="25">
                                     <property name="colSpan">3</property>
                                     <property name="rowSpan">1</property>
@@ -547,17 +542,11 @@ where message_key = ? and language = ? ]]></xml-property>
                                     </text>
                                 </cell>
                             </row>
-                            <row id="36">
-                                <property name="height">0.16666666666666666in</property>
-                                <cell id="37"/>
-                                <cell id="102"/>
-                                <cell id="38"/>
-                            </row>
                             <row id="27">
-                                <property name="height">0.375in</property>
+                                <property name="height">0.2in</property>
                                 <cell id="28">
                                     <label id="35">
-                                        <property name="fontSize">12pt</property>
+                                        <property name="fontSize">10pt</property>
                                         <property name="fontWeight">bold</property>
                                         <text-property name="text">Date :</text-property>
                                     </label>
@@ -566,17 +555,17 @@ where message_key = ? and language = ? ]]></xml-property>
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
                                     <text id="140">
-                                        <property name="fontSize">12pt</property>
+                                        <property name="fontSize">10pt</property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="dd.MM.yyyy">row["init_letter_edition_date"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                             </row>
                             <row id="39">
-                                <property name="height">0.375in</property>
+                                <property name="height">0.2in</property>
                                 <cell id="40">
                                     <label id="54">
-                                        <property name="fontSize">12pt</property>
+                                        <property name="fontSize">10pt</property>
                                         <property name="fontWeight">bold</property>
                                         <text-property name="text">Time :</text-property>
                                     </label>
@@ -585,17 +574,17 @@ where message_key = ? and language = ? ]]></xml-property>
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
                                     <text id="141">
-                                        <property name="fontSize">12pt</property>
+                                        <property name="fontSize">10pt</property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="HH:mm:ss">row["init_letter_edition_date"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                             </row>
                             <row id="42">
-                                <property name="height">0.375in</property>
+                                <property name="height">0.2in</property>
                                 <cell id="43">
                                     <label id="55">
-                                        <property name="fontSize">12pt</property>
+                                        <property name="fontSize">10pt</property>
                                         <property name="fontWeight">bold</property>
                                         <text-property name="text">Host Id :</text-property>
                                     </label>
@@ -604,16 +593,16 @@ where message_key = ? and language = ? ]]></xml-property>
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
                                     <data id="63">
-                                        <property name="fontSize">12pt</property>
+                                        <property name="fontSize">10pt</property>
                                         <property name="resultSetColumn">host_id</property>
                                     </data>
                                 </cell>
                             </row>
                             <row id="59">
-                                <property name="height">0.375in</property>
+                                <property name="height">0.2in</property>
                                 <cell id="60">
                                     <text id="62">
-                                        <property name="fontSize">12pt</property>
+                                        <property name="fontSize">10pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="dataSet">Translation</property>
                                         <list-property name="paramBindings">
@@ -646,16 +635,16 @@ where message_key = ? and language = ? ]]></xml-property>
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
                                     <data id="64">
-                                        <property name="fontSize">12pt</property>
+                                        <property name="fontSize">10pt</property>
                                         <property name="resultSetColumn">bank_name</property>
                                     </data>
                                 </cell>
                             </row>
                             <row id="45">
-                                <property name="height">0.375in</property>
+                                <property name="height">0.2in</property>
                                 <cell id="46">
                                     <label id="56">
-                                        <property name="fontSize">12pt</property>
+                                        <property name="fontSize">10pt</property>
                                         <property name="fontWeight">bold</property>
                                         <text-property name="text">User-ID :</text-property>
                                     </label>
@@ -664,16 +653,16 @@ where message_key = ? and language = ? ]]></xml-property>
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
                                     <data id="65">
-                                        <property name="fontSize">12pt</property>
+                                        <property name="fontSize">10pt</property>
                                         <property name="resultSetColumn">user_id</property>
                                     </data>
                                 </cell>
                             </row>
                             <row id="48">
-                                <property name="height">0.375in</property>
+                                <property name="height">0.2in</property>
                                 <cell id="49">
                                     <label id="57">
-                                        <property name="fontSize">12pt</property>
+                                        <property name="fontSize">10pt</property>
                                         <property name="fontWeight">bold</property>
                                         <text-property name="text">Partner-ID :</text-property>
                                     </label>
@@ -682,16 +671,16 @@ where message_key = ? and language = ? ]]></xml-property>
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
                                     <data id="66">
-                                        <property name="fontSize">12pt</property>
+                                        <property name="fontSize">10pt</property>
                                         <property name="resultSetColumn">partner_id</property>
                                     </data>
                                 </cell>
                             </row>
                             <row id="51">
-                                <property name="height">0.375in</property>
+                                <property name="height">0.2in</property>
                                 <cell id="52">
                                     <label id="58">
-                                        <property name="fontSize">12pt</property>
+                                        <property name="fontSize">10pt</property>
                                         <property name="fontWeight">bold</property>
                                         <text-property name="text">Version :</text-property>
                                     </label>
@@ -700,7 +689,7 @@ where message_key = ? and language = ? ]]></xml-property>
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
                                     <text id="154">
-                                        <property name="fontSize">12pt</property>
+                                        <property name="fontSize">10pt</property>
                                         <property name="dataSet">Translation</property>
                                         <list-property name="paramBindings">
                                             <structure>
@@ -729,14 +718,8 @@ where message_key = ? and language = ? ]]></xml-property>
                                     </text>
                                 </cell>
                             </row>
-                            <row id="68">
-                                <property name="height">0.19791666666666666in</property>
-                                <cell id="69"/>
-                                <cell id="110"/>
-                                <cell id="70"/>
-                            </row>
                             <row id="71">
-                                <property name="height">6in</property>
+                                <property name="height">7.180851063829787in</property>
                                 <cell id="72">
                                     <property name="colSpan">3</property>
                                     <property name="rowSpan">1</property>
@@ -750,10 +733,10 @@ where message_key = ? and language = ? ]]></xml-property>
                                     <property name="borderTopWidth">thin</property>
                                     <grid id="115">
                                         <property name="overflow">visible</property>
-                                        <property name="height">6.927083333333333in</property>
+                                        <property name="height">8.24468085106383in</property>
                                         <column id="116"/>
                                         <row id="117">
-                                            <property name="height">0.3333333333333333in</property>
+                                            <property name="height">0.25in</property>
                                             <cell id="118">
                                                 <text id="123">
                                                     <property name="fontSize">14pt</property>
@@ -787,10 +770,10 @@ where message_key = ? and language = ? ]]></xml-property>
                                             </cell>
                                         </row>
                                         <row id="119">
-                                            <property name="height">0.3333333333333333in</property>
+                                            <property name="height">0.25in</property>
                                             <cell id="120">
                                                 <text id="124">
-                                                    <property name="fontSize">14pt</property>
+                                                    <property name="fontSize">12pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="contentType">html</property>
                                                     <text-property name="content"><![CDATA[Type : <VALUE-OF>row["certificate_type"]</VALUE-OF>]]></text-property>
@@ -798,10 +781,10 @@ where message_key = ? and language = ? ]]></xml-property>
                                             </cell>
                                         </row>
                                         <row id="121">
-                                            <property name="height">0.3541666666666667in</property>
+                                            <property name="height">0.23in</property>
                                             <cell id="122">
                                                 <text id="125">
-                                                    <property name="fontSize">12pt</property>
+                                                    <property name="fontSize">10pt</property>
                                                     <property name="dataSet">Translation</property>
                                                     <list-property name="visibility">
                                                         <structure>
@@ -837,10 +820,10 @@ where message_key = ? and language = ? ]]></xml-property>
                                             </cell>
                                         </row>
                                         <row id="126">
-                                            <property name="height">0.3541666666666667in</property>
+                                            <property name="height">0.23in</property>
                                             <cell id="127">
                                                 <text id="128">
-                                                    <property name="fontSize">12pt</property>
+                                                    <property name="fontSize">10pt</property>
                                                     <property name="dataSet">Translation</property>
                                                     <list-property name="visibility">
                                                         <structure>
@@ -878,6 +861,7 @@ where message_key = ? and language = ? ]]></xml-property>
                                         <row id="129">
                                             <property name="canShrink">false</property>
                                             <property name="overflow">visible</property>
+                                            <property name="height">4.787234042553192in</property>
                                             <cell id="130">
                                                 <property name="borderBottomStyle">none</property>
                                                 <property name="borderLeftStyle">none</property>
@@ -886,13 +870,14 @@ where message_key = ? and language = ? ]]></xml-property>
                                                 <property name="canShrink">false</property>
                                                 <property name="overflow">auto</property>
                                                 <data id="144">
+                                                    <property name="fontSize">6pt</property>
                                                     <property name="overflow">auto</property>
                                                     <property name="resultSetColumn">pem_string</property>
                                                 </data>
                                             </cell>
                                         </row>
                                         <row id="131">
-                                            <property name="height">0.3541666666666667in</property>
+                                            <property name="height">0.2553191489361702in</property>
                                             <cell id="132">
                                                 <text id="136">
                                                     <property name="fontSize">12pt</property>
@@ -925,15 +910,11 @@ where message_key = ? and language = ? ]]></xml-property>
                                                 </text>
                                             </cell>
                                         </row>
-                                        <row id="142">
-                                            <property name="height">0.0625in</property>
-                                            <cell id="143"/>
-                                        </row>
                                         <row id="134">
-                                            <property name="height">1.6979166666666667in</property>
+                                            <property name="height">1.4042553191489362in</property>
                                             <cell id="135">
                                                 <data id="138">
-                                                    <property name="fontSize">12pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="resultSetColumn">sha2has</property>
                                                 </data>
                                             </cell>
@@ -941,14 +922,8 @@ where message_key = ? and language = ? ]]></xml-property>
                                     </grid>
                                 </cell>
                             </row>
-                            <row id="78">
-                                <property name="height">0.21875in</property>
-                                <cell id="79"/>
-                                <cell id="112"/>
-                                <cell id="80"/>
-                            </row>
                             <row id="81">
-                                <property name="height">0.375in</property>
+                                <property name="height">0.5531914893617021in</property>
                                 <cell id="82">
                                     <label id="98">
                                         <property name="fontSize">12pt</property>

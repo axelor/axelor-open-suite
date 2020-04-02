@@ -1,8 +1,16 @@
 # Changelog
 ## [Unreleased 5.2.8]
 ## Improvements
+- TIMETABLE : Invoiced lines deleted when changing some fields
+- EBICS: Display correctly hash code in certificates EBICS.
+
 ## Bug Fixes
 - LEAD : Fixed the blank pdf when printing
+- Purchase Request: Add missing translation.
+- Purchase Request Line: fix product domain.
+- Manuf Order: fix issue when printing multiple manufacturing orders.
+When printing multiple manufacturing orders, operations from all orders were printed for each one.
+- Availability request: do not ask to allocate stock if the product is not managed in stock.
 
 ## [5.2.7] - 2020-03-31
 ## Improvements
@@ -11,6 +19,7 @@
 - Fixed asset: add EU and US prorata temporis.
 - TRADING NAME: Fill default company printing settings if trade name printing setttings is not there in company.
 - Accounting Report: add the possibility to filter the ledger report to only see not completely lettered move lines.
+- Accounting Report : change visibility condition for field displayOnlyNotCompletelyLetteredMoveLines.
 - MOVE TEMPLATE LINE : fix for analytic template and tax field are editable or required depending to the account settings.
 
 ## Bug Fixes
