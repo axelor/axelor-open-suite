@@ -71,12 +71,12 @@ public class UnitConversionService {
       Unit startUnit, Unit endUnit, BigDecimal value, int scale, Product product)
       throws AxelorException {
 
-    if (startUnit == null || endUnit == null)
+    if (startUnit == null && endUnit != null || endUnit == null && startUnit != null)
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.UNIT_CONVERSION_2));
 
-    if (startUnit.equals(endUnit)) return value;
+    if ((startUnit == null && endUnit == null) || startUnit.equals(endUnit)) return value;
     else {
       try {
         BigDecimal coefficient =
