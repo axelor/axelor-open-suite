@@ -20,6 +20,7 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - TRADING NAME: Fill default company printing settings if trade name printing setttings is not there in company.
 - Accounting Report: add the possibility to filter the ledger report to only see not completely lettered move lines.
 - Accounting Report : change visibility condition for field displayOnlyNotCompletelyLetteredMoveLines.
+- MOVE TEMPLATE LINE : fix for analytic template and tax field are editable or required depending to the account settings.
 
 ## Bug Fixes
 - SALE ORDER: Fix NPE when interco sale order is finalized.

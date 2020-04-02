@@ -30,7 +30,7 @@
 			<field name="debit" readonlyIf="credit > 0" onChange="action-move-template-line-record-update-need-to-check-validity"/>
         	<field name="credit" readonlyIf="debit > 0" onChange="action-move-template-line-record-update-need-to-check-validity"/>
         	<field name="product" canEdit="false" onChange="action-move-template-line-get-account" form-view="product-form" grid-view="product-grid"/>
-			<field name="account" canEdit="false" onSelect="action-move-template-line-set-account-domain" grid-view="account-grid" form-view="account-form"/>
+			<field name="account" canEdit="false" onSelect="action-move-template-line-set-account-domain" onChange="action-move-template-line-account-onchange-attrs" grid-view="account-grid" form-view="account-form"/>
 	        <field name="tax" canEdit="false" grid-view="tax-grid" form-view="tax-form"/>
 	        <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form"/>
 			<field name="isValid" readonly="true" hidden="true"/>
@@ -43,7 +43,7 @@
 			<field name="debitCreditSelect" onChange="action-move-template-line-get-account" required="true"/>
 			<field name="percentage" placeholder="80" onChange="action-template-move-line-check-percent,action-move-template-line-record-update-need-to-check-validity"/>
 			<field name="product" canEdit="false" onChange="action-move-template-line-get-account" form-view="product-form" grid-view="product-grid"/>
-			<field name="account" canEdit="false" onSelect="action-move-template-line-set-account-domain" grid-view="account-grid" form-view="account-form"/>
+			<field name="account" canEdit="false" onSelect="action-move-template-line-set-account-domain" onChange="action-move-template-line-account-onchange-attrs" grid-view="account-grid" form-view="account-form"/>
 			<field name="hasPartnerToDebit" showIf="debitCreditSelect == 'D'"/>
 			<field name="hasPartnerToCredit" showIf="debitCreditSelect == 'C'"/>
 	        <field name="tax" canEdit="false" grid-view="tax-grid" form-view="tax-form"/>
@@ -74,6 +74,12 @@
     <action-attrs name="action-move-template-line-set-account-domain">
         <attribute name="domain" for="account" expr="eval:&quot;self.company.id = ${_parent?.company?.id} &quot;" if="_parent != null" />
         <attribute name="domain" for="account" expr="eval:&quot;self.company.id = ${moveTemplate?.company?.id} &quot;" if="moveTemplate != null" />
+    </action-attrs>
+    
+    <action-attrs name="action-move-template-line-account-onchange-attrs">
+        <attribute name="required" for="analyticDistributionTemplate" expr="eval: account != null ? account.getAnalyticDistributionRequiredOnMoveLines() &amp;&amp; account.getAnalyticDistributionAuthorized() : false" />
+        <attribute name="readonly" for="analyticDistributionTemplate" expr="eval: account != null ? !account.getAnalyticDistributionAuthorized() : false" />
+        <attribute name="readonly" for="tax" expr="eval: account != null ? !account.getIsTaxAuthorizedOnMoveLine() : fasle" />
     </action-attrs>
     
     
