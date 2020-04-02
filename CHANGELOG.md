@@ -3,6 +3,7 @@
 ## Improvements
 - TIMETABLE : Invoiced lines deleted when changing some fields
 - EBICS: Display correctly hash code in certificates EBICS.
+- STOCK LOCATION LINE : now shows wap dashlet when accessing line from a product
 
 ## Bug Fixes
 - LEAD : Fixed the blank pdf when printing
