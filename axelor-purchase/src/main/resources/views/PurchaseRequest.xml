@@ -103,7 +103,7 @@
 			<field name="supplierUser" domain="self.isSupplier = true" colSpan="12" canEdit="false" form-view="partner-form" grid-view="partner-grid"/>
 		</panel>
 		<panel sidebar="true" name="follow-upPanel" title="Follow-up"
-			canCollapse="true">
+			canCollapse="true" showIf="purchaseOrder">
 			<field name="purchaseOrder" showIf="purchaseOrder" colSpan="6" />
 		</panel>
 		<panel name="attrsPanel">

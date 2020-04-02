@@ -36,7 +36,7 @@
     
     <integer name="periodTypeSelect" title="Period type" selection="crm.target.configuration.period.type.select"/>
     
-    <date name="fromDate" title="Starting date"/>
+    <date name="fromDate" title="Starting Date"/>
     <date name="toDate" title="End date"/>
     
     
