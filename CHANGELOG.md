@@ -3,6 +3,7 @@
 ## Improvements
 - TIMETABLE : Invoiced lines deleted when changing some fields
 - EBICS: Display correctly hash code in certificates EBICS.
+- SUPPLIER INVOICE : modify domain filter for Suppl. invoices to pay.
 
 ## Bug Fixes
 - LEAD : Fixed the blank pdf when printing
