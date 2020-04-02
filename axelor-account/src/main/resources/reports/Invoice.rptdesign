@@ -4176,6 +4176,7 @@ row["partnerFirstName"]
                 <cell id="5351">
                     <property name="colSpan">9</property>
                     <property name="rowSpan">1</property>
+                    <property name="paddingTop">45pt</property>
                     <table name="InvoiceLineTable1" id="5601">
                         <property name="marginLeft">0pt</property>
                         <property name="width">19.235208333333336cm</property>
