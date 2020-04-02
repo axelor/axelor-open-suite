@@ -105,6 +105,7 @@
 
 	<action-record name="action-work-center-record-type-select-onchange" model="com.axelor.apps.production.db.WorkCenter">
 		<field name="machine" expr="eval: null" if="workCenterTypeSelect == 1"/>
+		<field name="prodHumanResourceList" expr="eval: null" if="workCenterTypeSelect == 2"/>
 	</action-record>
     
 </object-views>
