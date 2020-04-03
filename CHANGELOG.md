@@ -2,7 +2,6 @@
 ## [Unreleased 5.3.3]
 ## Improvements
 - INVOICE : fix for less Margins between the customer name/address zone and the invoice lines table on Birt printout
-- STOCK LOCATION LINE : now shows wap dashlet when accessing line from a product
 
 ## Bug Fixes
 - Manuf Order: fix issue when printing multiple manufacturing orders.
