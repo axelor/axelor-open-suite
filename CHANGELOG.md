@@ -83,6 +83,7 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - TIMETABLE: Already invoiced timetable are now readonly.
 - APP LEAVE: remove unused boolean overtimeManagement.
 - EBICS CERTIFICATE: Fix serial number not saved.
+- AnalyticMoveLine : Validate total percentage.
 
 ## [5.3.1] - 2020-03-16
 ## Improvements
