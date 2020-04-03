@@ -59,6 +59,8 @@ public interface IExceptionMessage {
 
   static final String UNIT_CONVERSION_2 = /*$$(*/ "Can't convert void to a unit." /*)*/;
 
+  static final String UNIT_CONVERSION_3 = /*$$(*/ "Conversion impossible because of no unit" /*)*/;;
+
   static final String CURRENCY_CONVERSION_1 = /*$$(*/
       "WARNING : Please close the current conversion period before creating new one" /*)*/;
   static final String CURRENCY_CONVERSION_2 = /*$$(*/
