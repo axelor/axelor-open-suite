@@ -153,4 +153,27 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     }
     return true;
   }
+
+  @Override
+  public boolean validateAnalyticMoveLines(List<AnalyticMoveLine> analyticMoveLineList) {
+
+    if (analyticMoveLineList != null) {
+      Map<AnalyticAxis, BigDecimal> map = new HashMap<AnalyticAxis, BigDecimal>();
+      for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
+        if (map.containsKey(analyticMoveLine.getAnalyticAxis())) {
+          map.put(
+              analyticMoveLine.getAnalyticAxis(),
+              map.get(analyticMoveLine.getAnalyticAxis()).add(analyticMoveLine.getPercentage()));
+        } else {
+          map.put(analyticMoveLine.getAnalyticAxis(), analyticMoveLine.getPercentage());
+        }
+      }
+      for (AnalyticAxis analyticAxis : map.keySet()) {
+        if (map.get(analyticAxis).compareTo(new BigDecimal(100)) > 0) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
 }

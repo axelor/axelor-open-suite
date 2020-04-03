@@ -884,7 +884,7 @@
 
     <action-validate name="action-stock-move-validate-check-reservation">
         <alert message="Do you want to allocate all the products ?"
-               if="__config__.app.getApp('supplychain')?.manageStockReservation &amp;&amp; company?.supplyChainConfig?.autoAllocateOnAvailabilityRequest &amp;&amp; stockMoveLineList.any{it?.reservedQty.compareTo(it?.realQty) &lt; 0} &amp;&amp; availabilityRequest"/>
+               if="__config__.app.getApp('supplychain')?.manageStockReservation &amp;&amp; company?.supplyChainConfig?.autoAllocateOnAvailabilityRequest &amp;&amp; stockMoveLineList.any{it?.product?.stockManaged &amp;&amp; it?.reservedQty.compareTo(it?.realQty) &lt; 0} &amp;&amp; availabilityRequest"/>
     </action-validate>
 
     <action-view name="action-stock-move-view-logistical-forms" title="Logistical forms"
