@@ -2,6 +2,8 @@
 ## [Unreleased 5.3.3]
 ## Improvements
 - INVOICE : fix for less Margins between the customer name/address zone and the invoice lines table on Birt printout
+- PAYROLL PREP : Net salary and social charges fields are now editable
+- MESSAGE : Changed the order of fields Language & Template when sending a message from an object
 
 ## Bug Fixes
 - Manuf Order: fix issue when printing multiple manufacturing orders.
@@ -12,6 +14,7 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - SUPPLIER INVOICE : modify domain filter for Suppl. invoices to pay.
 - Company: Add missing translations.
 - OPPORTUNITY : Fix address being incorrect when creating a partner from a lead
+- CostSheet: Add exception when purchase currency is needed in computation and missing in product.
 - INVENTORY : Fixed NPE on change product field
 
 ## [5.3.2] - 2020-04-01

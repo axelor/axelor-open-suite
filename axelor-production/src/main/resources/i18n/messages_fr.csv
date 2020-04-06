@@ -506,6 +506,7 @@
 "Products to consume","Produits à consommer",,
 "Products to produce","Produits à fabriquer",,
 "Profile","Profil",,
+"Purchase currency is missing for product %s, please configure it.","La devise d'achat est manquante pour le produit %s, merci de la renseigner.",,
 "Qty","Qté",,
 "Quantity","Quantité",,
 "Quantity Wasted per Product","Quantité Gaspillée par Produit",,

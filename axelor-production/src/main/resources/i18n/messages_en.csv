@@ -505,6 +505,7 @@
 "Products to consume",,,
 "Products to produce",,,
 "Profile",,,
+"Purchase currency is missing for product %s, please configure it.",,,
 "Qty",,,
 "Quantity",,,
 "Quantity Wasted per Product",,,
