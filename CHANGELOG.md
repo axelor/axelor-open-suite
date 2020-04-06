@@ -5,6 +5,7 @@
 - EBICS: Display correctly hash code in certificates EBICS.
 - SUPPLIER INVOICE : modify domain filter for Suppl. invoices to pay.
 - AnalyticMoveLine : Validate total percentage.
+- STOCK LOCATION LINE : show wap dashlet when accessing line from a product
 
 ## Bug Fixes
 - LEAD : Fixed the blank pdf when printing
