@@ -6,10 +6,10 @@
     
     <form name="generate-message-wizard-form"  model="com.axelor.apps.base.db.Wizard" title="Generate message" onNew="action-generate-message-group-on-new">
     	<panel name="mainPanel" >
+	      	<field name="language" title="Language" widget="SuggestBox" type="MANY_TO_ONE" target="com.axelor.apps.base.db.Language" target-name="name"
+				   form-view="language-form" grid-view="language-grid" onChange="action-on-change-language-template"/>	      	
 	      	<field name="_xTemplate" title="Template" widget="SuggestBox" type="MANY_TO_ONE" target="com.axelor.apps.message.db.Template" target-name="name"
 				   form-view="template-form" grid-view="template-grid" onSelect="action-method-template-domain"/>
-	      	<field name="language" title="Language" widget="SuggestBox" type="MANY_TO_ONE" target="com.axelor.apps.base.db.Language" target-name="name"
-				   form-view="language-form" grid-view="language-grid" onChange="action-on-change-language-template"/>
 			<spacer name="languageSpacer"/>
 	      	<button name="validateBtn" title="Validate" onClick="save, action-generate-message-method-generate-message"/>
       	</panel>
