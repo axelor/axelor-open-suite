@@ -3,6 +3,7 @@
 ## Improvements
 - INVOICE : fix for less Margins between the customer name/address zone and the invoice lines table on Birt printout
 - PAYROLL PREP : Net salary and social charges fields are now editable
+- LEAD : fix for function is not displayed
 
 ## Bug Fixes
 - Manuf Order: fix issue when printing multiple manufacturing orders.
