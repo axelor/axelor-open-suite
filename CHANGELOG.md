@@ -13,6 +13,7 @@
 - Manuf Order: fix issue when printing multiple manufacturing orders.
 When printing multiple manufacturing orders, operations from all orders were printed for each one.
 - Availability request: do not ask to allocate stock if the product is not managed in stock.
+- CostSheet: improve price computation from WAP.
 
 ## [5.2.7] - 2020-03-31
 ## Improvements
