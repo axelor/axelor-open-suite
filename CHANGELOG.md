@@ -3,7 +3,9 @@
 ## Improvements
 - TIMETABLE : Invoiced lines deleted when changing some fields
 - EBICS: Display correctly hash code in certificates EBICS.
-- STOCK LOCATION LINE : now shows wap dashlet when accessing line from a product
+- SUPPLIER INVOICE : modify domain filter for Suppl. invoices to pay.
+- AnalyticMoveLine : Validate total percentage.
+- STOCK LOCATION LINE : show wap dashlet when accessing line from a product
 
 ## Bug Fixes
 - LEAD : Fixed the blank pdf when printing
@@ -12,6 +14,7 @@
 - Manuf Order: fix issue when printing multiple manufacturing orders.
 When printing multiple manufacturing orders, operations from all orders were printed for each one.
 - Availability request: do not ask to allocate stock if the product is not managed in stock.
+- CostSheet: Add exception when purchase currency is needed in computation and missing in product.
 
 ## [5.2.7] - 2020-03-31
 ## Improvements
