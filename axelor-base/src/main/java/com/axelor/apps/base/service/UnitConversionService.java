@@ -78,10 +78,16 @@ public class UnitConversionService {
           I18n.get(IExceptionMessage.UNIT_CONVERSION_3));
     }
 
-    if (startUnit == null && endUnit != null || endUnit == null && startUnit != null) {
+    if (startUnit == null && endUnit != null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.UNIT_CONVERSION_2));
+    }
+
+    if (endUnit == null && startUnit != null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.UNIT_CONVERSION_4));
     }
 
     if (startUnit.equals(endUnit)) return value;
