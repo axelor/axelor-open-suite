@@ -5,6 +5,8 @@
 - PAYROLL PREP : Net salary and social charges fields are now editable
 - MESSAGE : Changed the order of fields Language & Template when sending a message from an object
 - STOCK LOCATION LINE : now shows wap dashlet when accessing line from a product
+- LEAD : fix for function is not displayed
+- CONTROL POINT : name - translation
 
 ## Bug Fixes
 - Manuf Order: fix issue when printing multiple manufacturing orders.
@@ -17,7 +19,8 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - OPPORTUNITY : Fix address being incorrect when creating a partner from a lead
 - CostSheet: Add exception when purchase currency is needed in computation and missing in product.
 - INVENTORY : Fixed NPE on change product field
-- SaleOrder - PurchaseOrder : generate good quotation's title according to it status
+- Partner : Fix customer situation report display value of contact partner jobTitle
+- SaleOrder - PurchaseOrder : generate correct quotation's title according to its status
 
 ## [5.3.2] - 2020-04-01
 ## Improvements
