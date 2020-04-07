@@ -18,6 +18,7 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - CostSheet: Add exception when purchase currency is needed in computation and missing in product.
 - WORK CENTER : Fix human resource list not set to null for machine only work center
 - EmailAddress : Fix email address pattern.
+- DEMO DATA : add analytic journals to demo data.
 
 ## [5.2.7] - 2020-03-31
 ## Improvements
