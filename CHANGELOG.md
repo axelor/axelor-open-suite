@@ -5,6 +5,7 @@
 - PAYROLL PREP : Net salary and social charges fields are now editable
 - MESSAGE : Changed the order of fields Language & Template when sending a message from an object
 - STOCK LOCATION LINE : now shows wap dashlet when accessing line from a product
+- LEAD : fix for function is not displayed
 
 ## Bug Fixes
 - Manuf Order: fix issue when printing multiple manufacturing orders.
