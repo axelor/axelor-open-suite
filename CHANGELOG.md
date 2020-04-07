@@ -19,6 +19,7 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - OPPORTUNITY : Fix address being incorrect when creating a partner from a lead
 - CostSheet: Add exception when purchase currency is needed in computation and missing in product.
 - INVENTORY : Fixed NPE on change product field
+- Partner : Fix customer situation report display value of contact partner jobTitle
 
 ## [5.3.2] - 2020-04-01
 ## Improvements
