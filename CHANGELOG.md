@@ -20,6 +20,7 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - CostSheet: Add exception when purchase currency is needed in computation and missing in product.
 - INVENTORY : Fixed NPE on change product field
 - Partner : Fix customer situation report display value of contact partner jobTitle
+- SaleOrder - PurchaseOrder : generate correct quotation's title according to its status
 
 ## [5.3.2] - 2020-04-01
 ## Improvements
