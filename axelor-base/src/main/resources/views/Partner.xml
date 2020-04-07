@@ -303,8 +303,8 @@
 					<field name="description" colSpan="12" height="8" showTitle="false" widget="Html"/>
 				</panel>
 			</panel>
-			<panel name="paymentPanel" title="Invoicing/Payment" hideIf="isContact" if-module="axelor-account" colSpan="12"  if="__config__.app.isApp('account')">
-				<panel-include view="incl-invoice-payment-partner-form" from="axelor-account"  if="__config__.app.isApp('invoice')" />
+			<panel name="paymentPanel" title="Invoicing/Payment" hideIf="isContact" if-module="axelor-account" colSpan="12"  if="__config__.app.isApp('invoice')">
+				<panel-include view="incl-invoice-payment-partner-form" from="axelor-account"/>
 				<panel-include if-module="axelor-account" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment"  view="incl-sepa-direct-debit-partner-form" from="axelor-account"/>
 				<panel name="invoiceCommentsPanel" title="Comment to display on invoice" colSpan="12">
 				  <field name="invoiceComments" widget="html" colSpan="12" showTitle="false"/>

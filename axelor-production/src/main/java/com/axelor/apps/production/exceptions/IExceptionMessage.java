@@ -156,4 +156,8 @@ public interface IExceptionMessage {
 
   static final String UNIT_COST_CALCULATION_NO_PRODUCT = /*$$(*/
       "Please select an element (a product, a product category or a product family) to run calculation" /*)*/;
+
+  // CostSheetLine service
+  static final String MISSING_PRODUCT_PURCHASE_CURRENCY = /*$$(*/
+      "Purchase currency is missing for product %s, please configure it." /*)*/;
 }
