@@ -10,6 +10,7 @@
 - LEAD : Fix display issue for description field on lead-event-grid
 - User : Added domain filter on icalendar field in user-preferences-form
 - EBICS CERTIFICATE : Fix serial number not saved.
+- BANK ORDER REPORT : fix the problem of empty report if bank order line sequences are too big.
 
 
 ## [5.1.15] - 2020-03-23
