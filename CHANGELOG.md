@@ -22,6 +22,7 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - INVENTORY : Fixed NPE on change product field
 - Partner : Fix customer situation report display value of contact partner jobTitle
 - SaleOrder - PurchaseOrder : generate correct quotation's title according to its status
+- EmailAddress : Fix email address pattern.
 
 ## [5.3.2] - 2020-04-01
 ## Improvements
