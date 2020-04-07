@@ -111,6 +111,7 @@
         	<button name="showDetailedStockBtn" title="Show detailed stock" onClick="action-stock-location-line-view-show-detailed-stock" colSpan="3"/>
         </panel>
         <panel-dashlet name="productQtyInOtherStockLocationPanel" action="action-stock-location-line-view-product-qty" title="Product quantity in other stock locations"/>
+      <panel-dashlet name="wapHistoryPanel" action="action-stock-location-line-view-wap-history" title="WAP history"/>
     </form>
     
      <grid name="stock-location-line-product-group-by-variant-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.StockLocationLine" groupBy="product">
