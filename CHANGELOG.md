@@ -1,11 +1,29 @@
 # Changelog
 ## [Unreleased 5.3.3]
 ## Improvements
+- INVOICE : fix for less Margins between the customer name/address zone and the invoice lines table on Birt printout
+- PAYROLL PREP : Net salary and social charges fields are now editable
+- MESSAGE : Changed the order of fields Language & Template when sending a message from an object
+- STOCK LOCATION LINE : now shows wap dashlet when accessing line from a product
+- LEAD : fix for function is not displayed
+- CONTROL POINT : name - translation
+- PARTNER: fix fo invoiceCommentsPanel and descriptionToDisplayOnProformaPanel must be displayed if the Invoicing app is installed.
+
 ## Bug Fixes
 - Manuf Order: fix issue when printing multiple manufacturing orders.
 When printing multiple manufacturing orders, operations from all orders were printed for each one.
 - Purchase Request: Add missing translation.
 - Purchase Request Line: fix product domain.
+- Availability request: do not ask to allocate stock if the product is not managed in stock.
+- SUPPLIER INVOICE : modify domain filter for Suppl. invoices to pay.
+- Company: Add missing translations.
+- OPPORTUNITY : Fix address being incorrect when creating a partner from a lead
+- CostSheet: Add exception when purchase currency is needed in computation and missing in product.
+- INVENTORY : Fixed NPE on change product field
+- Partner : Fix customer situation report display value of contact partner jobTitle
+- SaleOrder - PurchaseOrder : generate correct quotation's title according to its status
+- EmailAddress : Fix email address pattern.
+- BANK ORDER REPORT : fix the problem of empty report if bank order lines sequences are too big.
 - Opportunity : Fix email not being duplicated when creating a partner from a lead
 
 ## [5.3.2] - 2020-04-01
@@ -80,6 +98,7 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - TIMETABLE: Already invoiced timetable are now readonly.
 - APP LEAVE: remove unused boolean overtimeManagement.
 - EBICS CERTIFICATE: Fix serial number not saved.
+- AnalyticMoveLine : Validate total percentage.
 
 ## [5.3.1] - 2020-03-16
 ## Improvements

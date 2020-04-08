@@ -78,7 +78,8 @@
 				
 		<panel name="analyticDistributionPanel" title="Analytic distribution" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-expense-line-attrs-read-only-distribution-lines">
 			<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" canEdit="false" onChange="action-expense-line-method-create-distribution"/>
-			<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
+			<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12" onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+			<field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
 		</panel>
 
 		<panel name="attrsPanel">
@@ -110,7 +111,8 @@
 		
 		<panel name="analyticDistributionPanel" title="Analytic distribution" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-expense-line-attrs-read-only-distribution-lines">
 			<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" canEdit="false" onChange="action-expense-line-method-create-distribution"/>
-			<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
+			<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12" onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+			<field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
 		</panel>
 	</form>
 	

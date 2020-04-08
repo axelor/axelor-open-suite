@@ -54,8 +54,12 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
   @Override
   public String getFileName(SaleOrder saleOrder) {
-
-    return I18n.get("Sale order")
+    String prefixFileName = I18n.get("Sale order");
+    if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT_QUOTATION
+        || saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
+      prefixFileName = I18n.get("Sale quotation");
+    }
+    return prefixFileName
         + " "
         + saleOrder.getSaleOrderSeq()
         + ((saleOrder.getVersionNumber() > 1) ? "-V" + saleOrder.getVersionNumber() : "");
