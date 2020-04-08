@@ -10,7 +10,7 @@
 - LEAD : Fix display issue for description field on lead-event-grid
 - User : Added domain filter on icalendar field in user-preferences-form
 - EBICS CERTIFICATE : Fix serial number not saved.
-
+- COST SHEET: properly take purchase unit into account
 
 ## [5.1.15] - 2020-03-23
 ## Improvements
@@ -494,7 +494,6 @@
 - JOB COSTING : Fix division by zero error on financial report
 - Manuf Order: updating planned quantities correctly changes planned dates.
 - Budget Line: Fix NPE by adding null check for dates in budgetSupplyChainService.
-- COST SHEET: properly take purchase unit into account
 
 ## [5.1.7] - 2019-06-17
 ## Features

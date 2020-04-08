@@ -257,12 +257,26 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       price = weightedAveragePriceService.computeAvgPriceForCompany(product, company);
     }
     if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
-      price = unitConversionService.convert(product.getUnit(),product.getPurchasesUnit(), product.getPurchasePrice(), appProductionService.getNbDecimalDigitForUnitPrice(), product);
+      price =
+          unitConversionService.convert(
+              product.getUnit(),
+              product.getPurchasesUnit() != null ? product.getPurchasesUnit() : product.getUnit(),
+              product.getPurchasePrice(),
+              appProductionService.getNbDecimalDigitForUnitPrice(),
+              product);
     }
     if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
       for (SupplierCatalog supplierCatalog : product.getSupplierCatalogList()) {
         if (BigDecimal.ZERO.compareTo(supplierCatalog.getPrice()) < 0) {
-          price = unitConversionService.convert(product.getUnit(), product.getPurchasesUnit(), supplierCatalog.getPrice(), appProductionService.getNbDecimalDigitForUnitPrice(), product);
+          price =
+              unitConversionService.convert(
+                  product.getUnit(),
+                  product.getPurchasesUnit() != null
+                      ? product.getPurchasesUnit()
+                      : product.getUnit(),
+                  supplierCatalog.getPrice(),
+                  appProductionService.getNbDecimalDigitForUnitPrice(),
+                  product);
           break;
         }
       }
