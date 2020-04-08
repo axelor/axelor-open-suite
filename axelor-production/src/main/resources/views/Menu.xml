@@ -523,15 +523,15 @@
 		title="Work center group" />
 
 	<menuitem name="manufacturing-conf-work-center-group-model"
-		parent="manufacturing-conf-work-center-group" title="Work center model" action="manufacturing.conf.work.center.group.model"/>
+		parent="manufacturing-conf-work-center-group" title="Work center group model" action="manufacturing.conf.work.center.group.model"/>
 		
 	<menuitem name="manufacturing-conf-work-center-group-basic"
 		parent="manufacturing-conf-work-center-group" title="Work center group" action="manufacturing.conf.work.center.group.basic" />
 
 	<action-view name="manufacturing.conf.work.center.group.model" title="Work center model"
 		model="com.axelor.apps.production.db.WorkCenterGroup">
-		<view type="grid" name="work-center-group-grid" />
-		<view type="form" name="work-center-group-form-from-menu" />
+		<view type="grid" name="work-center-group-model-grid" />
+		<view type="form" name="work-center-group-model-form-from-menu" />
 		<domain>self.template IS TRUE</domain>
 		<context name="_template" expr="eval: true"/>
 	</action-view>

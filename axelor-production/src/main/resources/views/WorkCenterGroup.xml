@@ -9,6 +9,19 @@
 		<field name="workCenterTypeSelect"></field>
 		<field name="template"></field>
 	</grid>
+	
+	<grid model="com.axelor.apps.production.db.WorkCenterGroup" title="Work center groups"
+		name="work-center-group-grid-small">
+		<field name="name"></field>
+		<field name="template"></field>
+	</grid>
+	
+	<grid model="com.axelor.apps.production.db.WorkCenterGroup" title="Work center group models"
+		name="work-center-group-model-grid">
+		<field name="name"></field>
+		<field name="workCenterTypeSelect"></field>
+		<field name="template"></field>
+	</grid>
 
 	<form model="com.axelor.apps.production.db.WorkCenterGroup" title="Work center group"
 		name="work-center-group-form">
@@ -20,12 +33,17 @@
 		<!-- If workCenterTypeSelect = Machine or Human + Machine -->
 		<panel-related name="detailLinesPanel" field="workCenterSet"
 			canMove="true" orderBy="sequence" grid-view="work-center-grid"
-			form-view="work-center-form" showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3" />
+			form-view="work-center-form" canNew="true" showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3" />
 		<!-- If workCenterTypeSelect = Human -->
 		<panel-related name="detailLinesPanel" field="workCenterSet"
-			canMove="true" orderBy="sequence" grid-view="work-center-grid-small"
+			canMove="true" canNew="true" orderBy="sequence" grid-view="work-center-grid-small"
 			form-view="work-center-form" showIf="workCenterTypeSelect == 1" />
 
+	</form>
+	
+	<form model="com.axelor.apps.production.db.WorkCenterGroup" title="Work center group model"
+		name="work-center-group-model-form">
+		<panel-include view="work-center-group-form"/>
 	</form>
 
 	<form model="com.axelor.apps.production.db.WorkCenterGroup" title="Work center group"
@@ -40,16 +58,21 @@
 			canMove="true" orderBy="sequence" grid-view="work-center-grid"
 			domain="self.workCenterTypeSelect = :workCenterTypeSelect" form-view="work-center-form"
 			showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3"
-			canNew="false" canSelect="true" />
+			canNew="true" canSelect="true" />
 		<!-- If workCenterTypeSelect = Human -->
 		<panel-related name="detailLinesPanel" field="workCenterSet"
-			canNew="false" canSelect="true" canMove="true" orderBy="sequence"
+			canNew="true" canSelect="true" canMove="true" orderBy="sequence"
 			grid-view="work-center-grid-small" domain="self.workCenterTypeSelect = :workCenterTypeSelect"
 			form-view="work-center-form" showIf="workCenterTypeSelect == 1" />
 
-		<panel-dashlet name="prodProcessLinesPanel" title="Prod process lines"
-			colSpan="12" action="action-work-center-group-view-prod-process-lines" />
+		<panel-dashlet name="prodProcessLinesPanel" title="ProdProcess.phases"
+			colSpan="12" action="action-work-center-group-view-prod-process-lines" showIf="template == false"/>
 
+	</form>
+	
+	<form model="com.axelor.apps.production.db.WorkCenterGroup" title="Work center group model"
+		name="work-center-group-model-form-from-menu" onNew="action-production-work-center-group-on-new">
+		<panel-include view="work-center-group-form-from-menu"/>
 	</form>
 
 	<action-view name="action-work-center-group-view-prod-process-lines"

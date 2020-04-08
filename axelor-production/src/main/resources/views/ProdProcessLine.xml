@@ -22,19 +22,22 @@
 			<field name="name" />
 			<field name="priority" colSpan="3" />
 			<field name="workCenterTypeSelect"></field>
-			<field name="workCenterGroup" >
+			<button name="buttonWorkCenterGroupWizard" title="Use a work center group model"
+				onClick="save,action-production-view-work-center-group-wizard" />
+			<field name="workCenterGroup" colSpan="12" showIf="workCenterGroup">
 				<editor>
 					<panel colSpan="12" itemSpan="12">
 						<field name="name" readonly="true"></field>
 						<field name="workCenterSet" readonly="true" grid-view="work-center-grid"
 							form-view="work-center-form" canNew="true"
-							onChange="action-prod-process-line-group-work-center-onchange" />
+							onChange="action-prod-process-line-group-work-center-onchange" showIf="workCenterTypeSelect == 3" />
+						<field name="workCenterSet" readonly="true" grid-view="work-center-grid-small"
+							form-view="work-center-form" canNew="true"
+							onChange="action-prod-process-line-group-work-center-onchange" showIf="workCenterTypeSelect != 3" />
 					</panel>
 
 				</editor>
 			</field>
-			<button name="buttonWorkCenterGroupWizard" title="Manage work center group"
-				onClick="action-production-view-work-center-group-wizard" />
 			<field name="outsourcing" />
 			<field name="optional" />
 			<field name="useLineInGeneratedPurchaseOrder"/>
@@ -81,8 +84,7 @@
 		name="prod-process-line-work-center-group-wizard-form">
 		<panel name="mainPanel">
 			<field canNew="false" canEdit="false" canSelect="true"
-				name="workCenterGroup"
-				domain="self.template IS TRUE and self.workCenterTypeSelect = :workCenterTypeSelect"></field>
+				name="workCenterGroup" onSelect="action-attrs-production-set-work-center-group-domain"></field>
 			<button name="workCenterGroupWizerdSave" title="Save"
 				onClick="save,action-production-method-set-work-center-group" />
 
@@ -147,12 +149,17 @@
 		<view-param name="popup-save" value="false" />
 		<view-param name="forceEdit" value="true" />
 		<context name="_showRecord" expr="eval: __this__.id" />
+		<context name="workCenterTypeSelect" expr="eval: __this__.workCenterTypeSelect" />
 	</action-view>
 
 	<action-method name="action-production-method-set-work-center-group">
 		<call class="com.axelor.apps.production.web.ProdProcessLineController"
 			method="copyWorkCenterGroup" />
 	</action-method>
+	
+	<action-attrs name="action-attrs-production-set-work-center-group-domain" model="com.axelor.apps.production.db.ProdProcessLine">
+		<attribute name="domain" for="workCenterGroup" expr="self.template IS TRUE and self.workCenterTypeSelect = :workCenterTypeSelect"/>
+	</action-attrs>
 
 </object-views>
 
