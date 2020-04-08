@@ -294,11 +294,18 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
 
     if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
 
+      price =
+          unitConversionService.convert(
+              product.getUnit(),
+              product.getPurchasesUnit() != null ? product.getPurchasesUnit() : product.getUnit(),
+              product.getPurchasePrice(),
+              appProductionService.getNbDecimalDigitForUnitPrice(),
+              product);
+
       BigDecimal shippingCoef =
           shippingCoefService.getShippingCoef(
               product, product.getDefaultSupplierPartner(), company, new BigDecimal(9999999));
-
-      price = product.getPurchasePrice().multiply(shippingCoef);
+      price = price.multiply(shippingCoef);
 
       if (product.getPurchaseCurrency() == null) {
         throw new AxelorException(
@@ -317,7 +324,15 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
         for (SupplierCatalog supplierCatalog : product.getSupplierCatalogList()) {
           if (BigDecimal.ZERO.compareTo(supplierCatalog.getPrice()) < 0) {
-            price = supplierCatalog.getPrice();
+            price =
+                unitConversionService.convert(
+                    product.getUnit(),
+                    product.getPurchasesUnit() != null
+                        ? product.getPurchasesUnit()
+                        : product.getUnit(),
+                    supplierCatalog.getPrice(),
+                    appProductionService.getNbDecimalDigitForUnitPrice(),
+                    product);
             Partner supplierPartner = supplierCatalog.getSupplierPartner();
             if (supplierPartner != null) {
               shippingCoef =
