@@ -24,7 +24,8 @@ public class TeamTaskBusinessSupportRepository extends TeamTaskBusinessProjectRe
 
   @Override
   public TeamTask copy(TeamTask entity, boolean deep) {
-    entity.setTargetVersion(null);
-    return super.copy(entity, deep);
+    TeamTask task = super.copy(entity, deep);
+    task.setTargetVersion(null);
+    return task;
   }
 }
