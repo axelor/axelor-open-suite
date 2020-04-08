@@ -11,6 +11,7 @@
 - User : Added domain filter on icalendar field in user-preferences-form
 - EBICS CERTIFICATE : Fix serial number not saved.
 - COST SHEET: properly take purchase unit into account
+- BANK ORDER REPORT: fix the ordering by sequence.
 
 ## [5.1.15] - 2020-03-23
 ## Improvements
