@@ -2,6 +2,7 @@
 ## [Unreleased 5.0.13]
 ## Improvements
 ## Bug Fixes
+- BANK ORDER REPORT: fix the ordering by sequence.
 
 ## [5.0.12] - 2020-04-02
 ## Improvements
