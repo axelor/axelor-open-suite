@@ -12,6 +12,7 @@
 - EBICS CERTIFICATE : Fix serial number not saved.
 - COST SHEET: properly take purchase unit into account
 - BANK ORDER REPORT: fix the ordering by sequence.
+- Partner: fix view marked as dirty when an archived partner exists with the same name.
 
 ## [5.1.15] - 2020-03-23
 ## Improvements

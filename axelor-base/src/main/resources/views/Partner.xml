@@ -461,10 +461,10 @@
 					</editor>
 				</field>
 				<static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
-				<field name="duplicatePartnerInArchiveText" hidden="true" type="string" showTitle="false" readonly="true">
-					<viewer depends="duplicatePartnerInArchiveText">
+				<field name="$duplicatePartnerInArchiveText" hidden="true" type="string" showTitle="false" readonly="true">
+					<viewer depends="$duplicatePartnerInArchiveText">
 					<![CDATA[
-						<span class='label label-warning' style="margin: 5px 0 !important; display: inline-table; line-height: initial;"><span  x-translate>There is a partner with this name in the archive of reference : </span> {{record.duplicatePartnerInArchiveText}}</span>
+						<span class='label label-warning' style="margin: 5px 0 !important; display: inline-table; line-height: initial;"><span x-translate>There is an archived partner with this name.</span> ({{record.$duplicatePartnerInArchiveText}})</span>
 					]]>
 					</viewer>
 				</field>
@@ -699,7 +699,6 @@
 		<action name="action-partner-attrs-name-balance"/>
 		<action name="action-partner-attrs-partner-seq-editable"/>
         <action name="action-partner-method-check-name"/>
-        <action name="action-partner-method-check-name-in-archive"/>
 	</action-group>
 
 	<action-group name="action-group-base-partner-onnew">

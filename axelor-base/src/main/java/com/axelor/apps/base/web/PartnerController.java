@@ -361,8 +361,8 @@ public class PartnerController {
       Partner partner = request.getContext().asType(Partner.class);
       Partner partnerArchived = partnerService.isThereDuplicatePartnerInArchive(partner);
       if (partnerArchived != null) {
-        response.setValue("duplicatePartnerInArchiveText", partnerArchived.getPartnerSeq());
-        response.setAttr("duplicatePartnerInArchiveText", "hidden", false);
+        response.setValue("$duplicatePartnerInArchiveText", partnerArchived.getPartnerSeq());
+        response.setAttr("$duplicatePartnerInArchiveText", "hidden", false);
       }
     } catch (Exception e) {
       TraceBackService.trace(e);
