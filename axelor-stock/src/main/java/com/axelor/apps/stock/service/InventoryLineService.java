@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.stock.service;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
@@ -27,8 +24,9 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
-import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.inject.Beans;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class InventoryLineService {
 
@@ -63,10 +61,18 @@ public class InventoryLineService {
       if (stockLocationLine != null) {
         inventoryLine.setCurrentQty(stockLocationLine.getCurrentQty());
         inventoryLine.setRack(stockLocationLine.getRack());
-        if( inventoryLine.getTrackingNumber() != null) {
-        	inventoryLine.setCurrentQty(Beans.get(StockLocationLineRepository.class).all().filter("self.product = :product and self.detailsStockLocation = :stockLocation and self.trackingNumber = :trackingNumber")
-        			.bind("product",inventoryLine.getProduct()).bind("stockLocation",stockLocation).bind("trackingNumber",inventoryLine.getTrackingNumber()).fetchStream()
-        			.map(it -> it.getCurrentQty()).reduce(BigDecimal.ZERO, (a,b) -> a.add(b)));
+        if (inventoryLine.getTrackingNumber() != null) {
+          inventoryLine.setCurrentQty(
+              Beans.get(StockLocationLineRepository.class)
+                  .all()
+                  .filter(
+                      "self.product = :product and self.detailsStockLocation = :stockLocation and self.trackingNumber = :trackingNumber")
+                  .bind("product", inventoryLine.getProduct())
+                  .bind("stockLocation", stockLocation)
+                  .bind("trackingNumber", inventoryLine.getTrackingNumber())
+                  .fetchStream()
+                  .map(it -> it.getCurrentQty())
+                  .reduce(BigDecimal.ZERO, (a, b) -> a.add(b)));
         }
       } else {
         inventoryLine.setCurrentQty(null);
