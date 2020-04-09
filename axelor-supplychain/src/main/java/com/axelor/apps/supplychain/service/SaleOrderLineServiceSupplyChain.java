@@ -70,4 +70,11 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
    * @param saleOrderLine
    */
   BigDecimal checkInvoicedOrDeliveredOrderQty(SaleOrderLine saleOrderLine);
+
+  /**
+   * Compute analytic distribution for every analytic move line
+   *
+   * @param saleOrderLine
+   */
+  public SaleOrderLine computeAnalyticDistribution(SaleOrderLine saleOrderLine);
 }
