@@ -15,6 +15,7 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - Purchase Request: Add missing translation.
 - Purchase Request Line: fix product domain.
 - Availability request: do not ask to allocate stock if the product is not managed in stock.
+- Bank statement : fix on import the problem of random bank details chosen by request.
 - SUPPLIER INVOICE : modify domain filter for Suppl. invoices to pay.
 - Company: Add missing translations.
 - OPPORTUNITY : Fix address being incorrect when creating a partner from a lead
