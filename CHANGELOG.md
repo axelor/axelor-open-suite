@@ -27,6 +27,7 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - BANK ORDER REPORT : fix the problem of empty report if bank order lines sequences are too big.
 - COST SHEET: properly take purchase unit into account.
 - Partner: fix view marked as dirty when an archived partner exists with the same name.
+- INVENTORY : Fixed an issue whith tracking number where the currrent quantity was not based on the tracking number.
 
 ## [5.3.2] - 2020-04-01
 ## Improvements
