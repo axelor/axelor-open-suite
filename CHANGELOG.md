@@ -6,6 +6,12 @@
 - SUPPLIER INVOICE : modify domain filter for Suppl. invoices to pay.
 - AnalyticMoveLine : Validate total percentage.
 - STOCK LOCATION LINE : show wap dashlet when accessing line from a product
+- CostSheet: Add exception when purchase currency is needed in computation and missing in product.
+- WORK CENTER : Fix human resource list not set to null for machine only work center
+- EmailAddress : Fix email address pattern.
+- DEMO DATA : add analytic journals to demo data.
+- BANK ORDER REPORT : fix the problem of empty report if bank order lines sequences are too big.
+- COST SHEET: properly take purchase unit into account.
 - Partner : Fix customer situation report display value of contact partner jobTitle.
 - MOVE TEMPLATE LINE : fix for analytic template and tax field are editable or required depending to the account settings.
 
