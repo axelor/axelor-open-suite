@@ -22,6 +22,7 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - DEMO DATA : add analytic journals to demo data.
 - BANK ORDER REPORT : fix the problem of empty report if bank order lines sequences are too big.
 - COST SHEET: properly take purchase unit into account.
+- Partner: fix view marked as dirty when an archived partner exists with the same name.
 
 ## [5.2.7] - 2020-03-31
 ## Improvements
