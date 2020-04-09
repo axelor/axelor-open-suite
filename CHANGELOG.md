@@ -16,12 +16,19 @@
 - Manuf Order: fix issue when printing multiple manufacturing orders.
 When printing multiple manufacturing orders, operations from all orders were printed for each one.
 - Availability request: do not ask to allocate stock if the product is not managed in stock.
+<<<<<<< HEAD
 - CostSheet: Add exception when purchase currency is needed in computation and missing in product.
 - WORK CENTER : Fix human resource list not set to null for machine only work center
 - EmailAddress : Fix email address pattern.
 - DEMO DATA : add analytic journals to demo data.
 - BANK ORDER REPORT : fix the problem of empty report if bank order lines sequences are too big.
 - COST SHEET: properly take purchase unit into account.
+=======
+- SUPPLIER INVOICE : modify domain filter for Suppl. invoices to pay.
+- Company: Add missing translations.
+- OPPORTUNITY : Fix address being incorrect when creating a partner from a lead
+- INVENTORY : Fixed an issue whith tracking number where the currrentQtty wasn't based on the trackingNumber
+>>>>>>> 2b4b0aa788... RM26879 compatibily between inventoryLine and trackingNumber added
 
 ## [5.2.7] - 2020-03-31
 ## Improvements
