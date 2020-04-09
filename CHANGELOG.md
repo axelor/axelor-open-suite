@@ -6,12 +6,6 @@
 - SUPPLIER INVOICE : modify domain filter for Suppl. invoices to pay.
 - AnalyticMoveLine : Validate total percentage.
 - STOCK LOCATION LINE : show wap dashlet when accessing line from a product
-- CostSheet: Add exception when purchase currency is needed in computation and missing in product.
-- WORK CENTER : Fix human resource list not set to null for machine only work center
-- EmailAddress : Fix email address pattern.
-- DEMO DATA : add analytic journals to demo data.
-- BANK ORDER REPORT : fix the problem of empty report if bank order lines sequences are too big.
-- COST SHEET: properly take purchase unit into account.
 - Partner : Fix customer situation report display value of contact partner jobTitle.
 - MOVE TEMPLATE LINE : fix for analytic template and tax field are editable or required depending to the account settings.
 
@@ -22,6 +16,12 @@
 - Manuf Order: fix issue when printing multiple manufacturing orders.
 When printing multiple manufacturing orders, operations from all orders were printed for each one.
 - Availability request: do not ask to allocate stock if the product is not managed in stock.
+- CostSheet: Add exception when purchase currency is needed in computation and missing in product.
+- WORK CENTER : Fix human resource list not set to null for machine only work center
+- EmailAddress : Fix email address pattern.
+- DEMO DATA : add analytic journals to demo data.
+- BANK ORDER REPORT : fix the problem of empty report if bank order lines sequences are too big.
+- COST SHEET: properly take purchase unit into account.
 - Partner: fix view marked as dirty when an archived partner exists with the same name.
 - INVENTORY : Fixed an issue whith tracking number where the currrent quantity was not based on the tracking number.
 
