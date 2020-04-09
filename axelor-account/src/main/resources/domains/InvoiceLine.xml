@@ -27,7 +27,7 @@
         <many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv" title="Tax Equiv"/>
 
         <decimal name="discountAmount" title="Discount amount" precision="20" scale="10"/>
-        <integer name="discountTypeSelect" title="Discount Type" selection="base.price.list.line.amount.type.select" default="0"/>
+        <integer name="discountTypeSelect" title="Discount type" selection="base.price.list.line.amount.type.select" default="0"/>
 
         <string name="description" title="Description" large="true"/>
         <boolean name="fixedAssets" title="Fixed Assets"/>
