@@ -12,6 +12,7 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - SUPPLIER INVOICE : modify domain filter for Suppl. invoices to pay.
 - Company: Add missing translations.
 - OPPORTUNITY : Fix address being incorrect when creating a partner from a lead
+- INVENTORY : Fixed an issue whith tracking number where the currrentQtty wasn't based on the trackingNumber
 
 ## [5.3.2] - 2020-04-01
 ## Improvements
