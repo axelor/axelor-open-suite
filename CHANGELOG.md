@@ -8,6 +8,7 @@
 - LEAD : fix for function is not displayed
 - CONTROL POINT : name - translation
 - PARTNER: fix fo invoiceCommentsPanel and descriptionToDisplayOnProformaPanel must be displayed if the Invoicing app is installed.
+- USER: fix filter for activeCompany.
 
 ## Bug Fixes
 - Manuf Order: fix issue when printing multiple manufacturing orders.
