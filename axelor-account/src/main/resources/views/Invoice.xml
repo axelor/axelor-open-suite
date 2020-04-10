@@ -512,6 +512,7 @@ InvoiceSet.length > 0))"
 			</field>
 		</panel>
 		<panel name="totalsCompanyCurrencyPanel" title="Totals company currency" showTitle="false" itemSpan="6" sidebar="true" hideIf="partner == null || company == null || currency == null || company.currency.code == currency.code">
+			<field name="company.currency" hidden="true"/>
 			<field name="company.currency.code" hidden="true"/>
 			<field name="company.currency.symbol" hidden="true"/>
 			<field name="companyInTaxTotalRemaining" hidden="true"/>
