@@ -26,6 +26,7 @@ import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
+import com.axelor.apps.production.service.manuforder.ManufOrderPrintService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
@@ -38,7 +39,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -46,6 +46,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -207,51 +208,25 @@ public class ManufOrderController {
 
     try {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
-      String manufOrderIds = "";
-
+      ManufOrderPrintService manufOrderPrintService = Beans.get(ManufOrderPrintService.class);
       @SuppressWarnings("unchecked")
-      List<Integer> lstSelectedManufOrder = (List<Integer>) request.getContext().get("_ids");
-      if (lstSelectedManufOrder != null) {
-        for (Integer it : lstSelectedManufOrder) {
-          manufOrderIds += it.toString() + ",";
-        }
-      }
+      List<Integer> selectedManufOrderList = (List<Integer>) request.getContext().get("_ids");
 
-      if (!manufOrderIds.equals("")) {
-        manufOrderIds = manufOrderIds.substring(0, manufOrderIds.length() - 1);
-        manufOrder =
-            Beans.get(ManufOrderRepository.class).find(new Long(lstSelectedManufOrder.get(0)));
-      } else if (manufOrder.getId() != null) {
-        manufOrderIds = manufOrder.getId().toString();
-      }
-
-      if (!manufOrderIds.equals("")) {
-
-        String name;
-        if (lstSelectedManufOrder == null) {
-          name =
-              String.format(
-                  "%s %s",
-                  I18n.get("Manufacturing order"),
-                  Strings.nullToEmpty(manufOrder.getManufOrderSeq()));
-        } else {
-          name = I18n.get("Manufacturing orders");
-        }
-
+      if (selectedManufOrderList != null) {
+        String name = manufOrderPrintService.getManufOrdersFilename();
         String fileLink =
-            ReportFactory.createReport(IReport.MANUF_ORDER, name + "-${date}")
-                .addParam("Locale", ReportSettings.getPrintingLocale(null))
-                .addParam("ManufOrderId", manufOrderIds)
-                .addParam(
-                    "activateBarCodeGeneration",
-                    Beans.get(AppBaseService.class).getAppBase().getActivateBarCodeGeneration())
-                .generate()
-                .getFileLink();
-
+            manufOrderPrintService.printManufOrders(
+                selectedManufOrderList
+                    .stream()
+                    .map(Integer::longValue)
+                    .collect(Collectors.toList()));
         LOG.debug("Printing {}", name);
-
         response.setView(ActionView.define(name).add("html", fileLink).map());
-
+      } else if (manufOrder != null) {
+        String name = manufOrderPrintService.getFileName(manufOrder);
+        String fileLink = manufOrderPrintService.printManufOrder(manufOrder);
+        LOG.debug("Printing {}", name);
+        response.setView(ActionView.define(name).add("html", fileLink).map());
       } else {
         response.setFlash(I18n.get(IExceptionMessage.MANUF_ORDER_1));
       }
