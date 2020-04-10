@@ -8,6 +8,7 @@
 - LEAD : fix for function is not displayed
 - CONTROL POINT : name - translation
 - PARTNER: fix fo invoiceCommentsPanel and descriptionToDisplayOnProformaPanel must be displayed if the Invoicing app is installed.
+- Project: fix for some fields not hidden properly.
 - PRODUCT: fix position Variant btn.
 
 ## Bug Fixes
@@ -16,6 +17,7 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - Purchase Request: Add missing translation.
 - Purchase Request Line: fix product domain.
 - Availability request: do not ask to allocate stock if the product is not managed in stock.
+- Bank statement : fix on import the problem of random bank details chosen by request.
 - SUPPLIER INVOICE : modify domain filter for Suppl. invoices to pay.
 - Company: Add missing translations.
 - OPPORTUNITY : Fix address being incorrect when creating a partner from a lead
@@ -26,6 +28,8 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - EmailAddress : Fix email address pattern.
 - BANK ORDER REPORT : fix the problem of empty report if bank order lines sequences are too big.
 - COST SHEET: properly take purchase unit into account.
+- Partner: fix view marked as dirty when an archived partner exists with the same name.
+- INVENTORY : Fixed an issue whith tracking number where the currrent quantity was not based on the tracking number.
 
 ## [5.3.2] - 2020-04-01
 ## Improvements
