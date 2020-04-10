@@ -103,7 +103,7 @@
 				<button name="computeCostPriceBtn" title="Compute cost price"   onClick="save,action-bill-of-material-method-compute-cost-price"/>
 				<field name="costPrice" readonly="true"/>
 				<button name="updateProductCostPriceBtn" title="Update product cost price"  onClick="save,action-bill-of-material-method-update-product-cost-price"/>
-				<panel-related name="costSheetListsPanel" field="costSheetList" colSpan="12" readonly="true" form-view="cost-sheet-bill-of-material-form" grid-view="cost-sheet-bill-of-material-grid"/>
+				<panel-related name="costSheetListsPanel" field="costSheetList" colSpan="12" readonly="false" form-view="cost-sheet-bill-of-material-form" grid-view="cost-sheet-bill-of-material-grid"/>
 			</panel>
 
 			<panel name="versionManagementPanel" title="Version management" hidden="true" showIf="versionNumber &gt; 1">
