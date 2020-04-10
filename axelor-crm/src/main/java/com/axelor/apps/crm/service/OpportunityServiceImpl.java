@@ -61,7 +61,7 @@ public class OpportunityServiceImpl implements OpportunityService {
       // avoids printing 'null'
       String addressL6 =
           lead.getPrimaryPostalCode() == null ? "" : lead.getPrimaryPostalCode() + " ";
-      addressL6 += lead.getPrimaryCity() == null ? "" : lead.getPrimaryCity();
+      addressL6 += lead.getPrimaryCity() == null ? "" : lead.getPrimaryCity().getName();
 
       address =
           addressService.createAddress(
