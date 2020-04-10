@@ -2,6 +2,14 @@
 ## [Unreleased 5.3.3]
 ## Improvements
 - INVOICE : fix for less Margins between the customer name/address zone and the invoice lines table on Birt printout
+- PAYROLL PREP : Net salary and social charges fields are now editable
+- MESSAGE : Changed the order of fields Language & Template when sending a message from an object
+- STOCK LOCATION LINE : now shows wap dashlet when accessing line from a product
+- LEAD : fix for function is not displayed
+- CONTROL POINT : name - translation
+- PARTNER: fix fo invoiceCommentsPanel and descriptionToDisplayOnProformaPanel must be displayed if the Invoicing app is installed.
+- Project: fix for some fields not hidden properly.
+- PRODUCT: fix position Variant btn.
 
 ## Bug Fixes
 - Manuf Order: fix issue when printing multiple manufacturing orders.
@@ -9,8 +17,20 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - Purchase Request: Add missing translation.
 - Purchase Request Line: fix product domain.
 - Availability request: do not ask to allocate stock if the product is not managed in stock.
+- Bank statement : fix on import the problem of random bank details chosen by request.
 - SUPPLIER INVOICE : modify domain filter for Suppl. invoices to pay.
 - Company: Add missing translations.
+- OPPORTUNITY : Fix address being incorrect when creating a partner from a lead
+- CostSheet: Add exception when purchase currency is needed in computation and missing in product.
+- INVENTORY : Fixed NPE on change product field
+- Partner : Fix customer situation report display value of contact partner jobTitle
+- SaleOrder - PurchaseOrder : generate correct quotation's title according to its status
+- EmailAddress : Fix email address pattern.
+- BANK ORDER REPORT : fix the problem of empty report if bank order lines sequences are too big.
+- COST SHEET: properly take purchase unit into account.
+- Partner: fix view marked as dirty when an archived partner exists with the same name.
+- INVENTORY : Fixed an issue whith tracking number where the currrent quantity was not based on the tracking number.
+- INVOICE : Company currency is now set on new invoice
 - Cost sheet : Fix print button being readonly
 
 ## [5.3.2] - 2020-04-01

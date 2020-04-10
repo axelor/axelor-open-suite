@@ -336,7 +336,7 @@
 					grid-view="product-activity-grid" />
 				<field name="teamTaskCategorySet" colSpan="12" widget="TagSelect" />
 				<field name="projectFolderSet" colSpan="12" widget="TagSelect" />
-				<field name="excludeTimesheetEditor" />
+				<field name="excludeTimesheetEditor" if-module="axelor-human-resource"/>
 				<field name="childProjectList" hidden="true" />
 				<field name="sequence" hidden="true" />
 				<field name="excludePlanning" if-module="axelor-business-project"
@@ -370,16 +370,14 @@
 		<panel name="characteristicsPanel" title="Characteristics" colSpan="12"
 			sidebar="true" canCollapse="true">
 			<panel name="configPanel" colSpan="12">
-				<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
-					name="isProject" colSpan="6" widget="boolean-switch" />
+				<field name="isProject" colSpan="6" widget="boolean-switch" />
 				<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
 					name="isBusinessProject" colSpan="6" widget="boolean-switch" />
 				<field name="isShowPhasesElements" hideIf="projectTypeSelect == 2" colSpan="12" widget="boolean-switch" />
 				<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
           name="$toInvoiceCounter" showTitle="false" hidden="true" colSpan="6" />
 			</panel>
-			<panel if-module="axelor-business-project" name="project"
-				showIf="isProject" colSpan="12">
+			<panel name="projectPanel" showIf="isProject" colSpan="12">
 				<field name="projectTypeSelect" onChange="action-project-record-empty-parent-project"
 					requiredIf="isProject" />
 				<field name="parentProject" showIf="projectTypeSelect == 2" canEdit="false"
