@@ -8,6 +8,7 @@
 - STOCK LOCATION LINE : show wap dashlet when accessing line from a product
 - Partner : Fix customer situation report display value of contact partner jobTitle.
 - MOVE TEMPLATE LINE : fix for analytic template and tax field are editable or required depending to the account settings.
+- PRODUCT: fix position Variant btn
 
 ## Bug Fixes
 - LEAD : Fixed the blank pdf when printing

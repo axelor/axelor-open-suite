@@ -47,7 +47,7 @@
       			</field>
     		</panel>
     		<panel name="actionsPanel" colSpan="8">
-       			<button name="$totalVariantsBtn" title="Total variants" showIf="isModel" colSpan="3" icon="fa-tags" onClick="action-product-view-total-variants" widget="info-button"/>
+       			<spacer colSpan="3"/>
 				<panel name="tagsPanel" colSpan="2" if="__config__.app.isApp('sale')" if-module="axelor-sale">
 					<field name="$viewerProductTags" showTitle="false" colSpan="12" readonly="true">
 						<viewer depends="configurator">
@@ -63,6 +63,8 @@
        	 		    <button name="$realQtyBtn" title="Real qty" colSpan="4" icon="fa-building-o" onClick="action-stock-move-line-product-default-realized" widget="info-button"/>
              	    <button name="$futureQtyBtn" title="Future qty" colSpan="4" icon="fa-line-chart" onClick="action-stock-move-line-product-default-planned" widget="info-button"/>	
                     <button name="$previewBtn" title="See stock details" colSpan="4" onClick="action-stock-location-line-view-for-a-product-from-product-view" if-module="axelor-supplychain" widget="info-button" icon="fa-cubes"/>
+                    <spacer colSpan="9"/>
+    	  			<button name="$totalVariantsBtn" title="Total variants" showIf="isModel" colSpan="3" icon="fa-tags" onClick="action-product-view-total-variants" widget="info-button"/>
     	  			<field name="isModel" hidden="true"/>
 				</panel>
       		</panel>
