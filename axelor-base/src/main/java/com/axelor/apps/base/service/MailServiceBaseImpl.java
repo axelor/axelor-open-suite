@@ -21,6 +21,8 @@ import static com.axelor.common.StringUtils.isBlank;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.MailServiceMessageImpl;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
@@ -32,16 +34,22 @@ import com.axelor.mail.db.MailAddress;
 import com.axelor.mail.db.MailFollower;
 import com.axelor.mail.db.MailMessage;
 import com.axelor.mail.db.repo.MailFollowerRepository;
+import com.axelor.mail.db.repo.MailMessageRepository;
+import com.axelor.tool.template.TemplateMaker;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import javax.inject.Singleton;
@@ -207,5 +215,36 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
       }
     }
     return Sets.filter(recipients, Predicates.notNull());
+  }
+
+  @Override
+  protected String template(MailMessage message, Model entity) throws IOException {
+    Template template =
+        Beans.get(AppBaseService.class).getAppBase().getDefaultMailMessageTemplate();
+    if (template != null) {
+      Locale locale =
+          template.getLanguage() != null
+                  && template.getLanguage().getName().equalsIgnoreCase("French")
+              ? Locale.FRENCH
+              : Locale.ENGLISH;
+      TemplateMaker maker = new TemplateMaker(locale, '$', '$');
+      final String text = message.getBody().trim();
+      if (text == null
+          || !MESSAGE_TYPE_NOTIFICATION.equals(message.getType())
+          || !(text.startsWith("{") || text.startsWith("}"))) {
+        return text;
+      }
+      Map<String, Object> details = Beans.get(MailMessageRepository.class).details(message);
+      String jsonBody = details.containsKey("body") ? (String) details.get("body") : text;
+      Map<String, Object> data =
+          Beans.get(ObjectMapper.class)
+              .readValue(jsonBody, new TypeReference<Map<String, Object>>() {});
+      data.put("entity", entity);
+      maker.addInContext(data);
+      maker.setTemplate(template.getContent());
+      return maker.make();
+    } else {
+      return super.template(message, entity);
+    }
   }
 }

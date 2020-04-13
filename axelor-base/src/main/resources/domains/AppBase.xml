@@ -77,6 +77,8 @@
 	   	
 	   	<one-to-many name="globalTrackingConfigurationLines" ref="com.axelor.apps.admin.db.GlobalTrackingConfigurationLine" mappedBy="appBase" orphanRemoval="true"/>
 	   	
+	   	<many-to-one name="defaultMailMessageTemplate" title="Default mail message template" ref="com.axelor.apps.message.db.Template"/>
+	   	
 		<extra-code>
 	   		<![CDATA[
 	   			public static final int DISCOUNT_SEPARATE = 1;
