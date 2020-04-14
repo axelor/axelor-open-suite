@@ -10,6 +10,7 @@
 - PARTNER: fix fo invoiceCommentsPanel and descriptionToDisplayOnProformaPanel must be displayed if the Invoicing app is installed.
 - Project: fix for some fields not hidden properly.
 - PRODUCT: fix position Variant btn.
+- WEEKLY PLANNING : leaveCoef now has default and init values
 
 ## Bug Fixes
 - Manuf Order: fix issue when printing multiple manufacturing orders.
