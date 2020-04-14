@@ -7,7 +7,7 @@ buildscript {
 		maven { url 'https://repository.axelor.com/nexus/public/' }
 	}
 	ext.openPlatformVersion = '5.2.5'
-	ext.appVersion = '5.3.2'
+	ext.appVersion = '5.3.3'
 	repositories repos
 	dependencies {
 		classpath "com.axelor:axelor-gradle:${openPlatformVersion}"

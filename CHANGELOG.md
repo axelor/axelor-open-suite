@@ -1,4 +1,41 @@
 # Changelog
+## [5.3.3] - 2020-04-14
+## Improvements
+- PAYROLL PREP: Net salary and social charges fields are now editable.
+- MESSAGE: Changed the order of fields Language & Template when sending a message from an object.
+- STOCK LOCATION LINE: now shows wap dashlet when accessing line from a product.
+- CONTROL POINT: change french translation of name field.
+- INVOICE: less margins between the customer name/address zone and the invoice lines table on Birt printout.
+- AnalyticMoveLine: Validate total percentage.
+
+## Bug Fixes
+- Manuf Order: fix issue when printing multiple manufacturing orders.
+When printing multiple manufacturing orders, operations from all orders were printed for each one.
+- Purchase Request: Add missing translation.
+- Purchase Request Line: fix product domain.
+- Availability request: do not ask to allocate stock if the product is not managed in stock.
+- Bank statement: fix on import the problem of random bank details chosen by request.
+- SUPPLIER INVOICE: supplier invoices to pay can now be selected when activate passed for payment config is disabled.
+- Company: Add missing translations.
+- OPPORTUNITY: Fix address being incorrect when creating a partner from a lead.
+- CostSheet: Add exception when purchase currency is needed in computation and missing in product.
+- INVENTORY: Fix NPE on change of product field.
+- Partner: Fix customer situation report display value of contact partner jobTitle.
+- SaleOrder - PurchaseOrder: generate correct quotation's title according to its status.
+- EmailAddress: Fix email address pattern.
+- BANK ORDER REPORT: fix the problem of empty report if bank order lines sequences are too big.
+- COST SHEET: properly take purchase unit into account.
+- Partner: fix view marked as dirty when an archived partner exists with the same name.
+- INVENTORY: Fixed an issue whith tracking number where the currrent quantity was not based on the tracking number.
+- INVOICE: Company currency is now visible on new invoice.
+- Cost sheet: Fix print button being readonly.
+- BANK STATEMENT LINE AFB 120: Fix wrong order by in bank statement dashlet.
+- Opportunity: Fix email not being duplicated when creating a partner from a lead.
+- LEAD: fix function not being displayed in readonly mode.
+- PRODUCT: fix position of Variant button.
+- Project: fix some fields not being hidden properly.
+- PARTNER: hide panels related to invoice when invoice app is disabled.
+
 ## [5.3.2] - 2020-04-01
 ## Improvements
 - CLIENT-PORTAL: Chart now only shows invoices corresponding the client partner.
@@ -194,6 +231,7 @@
 - PRODUCT: Fix economicManufOrderQty displayed twice.
 
 
+[5.3.3]: https://github.com/axelor/axelor-open-suite/compare/v5.3.2...v5.3.3
 [5.3.2]: https://github.com/axelor/axelor-open-suite/compare/v5.3.1...v5.3.2
 [5.3.1]: https://github.com/axelor/axelor-open-suite/compare/v5.3.0...v5.3.1
 [5.3.0]: https://github.com/axelor/axelor-open-suite/compare/v5.2.5...v5.3.0
