@@ -11,7 +11,7 @@
 			<string name="comments" title="Comments" large="true"/>
 			<one-to-many name="priceListLineList" ref="com.axelor.apps.base.db.PriceListLine" mappedBy="priceList" title="Price list content"/>
 			<boolean name="hideDiscount" title="Hide Discount on prints"/>
-			<decimal name="generalDiscount" title="General discount (%)"/>
+			<decimal name="generalDiscount" title="General discount (%)" min="0" max="100"/>
 			
 			<integer name="typeSelect" title="Type" selection="base.price.list.type.select" required="true"/>
 			<integer name="basedOnSelect" title="Based on"/>
