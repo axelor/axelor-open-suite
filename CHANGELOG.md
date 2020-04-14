@@ -33,6 +33,7 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - INVOICE : Company currency is now set on new invoice
 - Cost sheet : Fix print button being readonly
 - BANK STATEMENT LINE AFB 120 : Fix wrong order by in bank statement dashlet
+- PURCHASE : Fix fields where negative values shouldn't be allowed
 
 ## [5.3.2] - 2020-04-01
 ## Improvements
