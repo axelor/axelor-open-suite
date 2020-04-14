@@ -11,6 +11,7 @@
 - Move template : Add details button to grid view to display fields
 - Move template : Add change track on update
 - EMPLOYEE : set seniorityDate by hireDate
+- Studio : Add CSRF protection for every request header.
 
 ## Improvements
 - USER : Default User language is based on application.locale from application.properties
