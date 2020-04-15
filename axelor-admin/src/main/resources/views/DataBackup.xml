@@ -33,6 +33,7 @@
 			<field name="backupMetaFile" readonly="true" widget="binary-link"
 				colSpan="4" />
 			<field name="backupDate" readonly="true" colSpan="4" />
+			<field name="logMetaFile" readonly="true" widget="binary-link" colSpan="4" />
 		</panel>
 	</form>
 
