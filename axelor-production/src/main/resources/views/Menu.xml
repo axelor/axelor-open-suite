@@ -286,15 +286,6 @@
 	<menuitem name="manufacturing-conf" parent="manufacturing-root"
 		title="Configuration" order="50" icon="fa-cog" />
 
-	<menuitem name="manufacturing-conf-work-center" parent="manufacturing-conf"
-		title="Work centers" action="manufacturing.conf.work.center" />
-
-	<action-view name="manufacturing.conf.work.center" title="Work centers"
-		model="com.axelor.apps.production.db.WorkCenter">
-		<view type="grid" name="work-center-grid" />
-		<view type="form" name="work-center-form" />
-	</action-view>
-
 	<menuitem name="manufacturing-conf-machine" parent="manufacturing-conf"
 		title="Machines" action="manufacturing.conf.machine" />
 
@@ -519,14 +510,14 @@
 		<domain>self.defineSubBillOfMaterial = true AND self.personalized = false</domain>
 	</action-view>
 
-	<menuitem name="manufacturing-conf-work-center-group" parent="manufacturing-conf"
-		title="Work center group" />
 
 	<menuitem name="manufacturing-conf-work-center-group-model"
+<<<<<<< Updated upstream
 		parent="manufacturing-conf-work-center-group" title="Work center model" action="manufacturing.conf.work.center.group.model"/>
+=======
+		parent="manufacturing-conf" title="Work center group model" action="manufacturing.conf.work.center.group.model"/>
+>>>>>>> Stashed changes
 		
-	<menuitem name="manufacturing-conf-work-center-group-basic"
-		parent="manufacturing-conf-work-center-group" title="Work center group" action="manufacturing.conf.work.center.group.basic" />
 
 	<action-view name="manufacturing.conf.work.center.group.model" title="Work center model"
 		model="com.axelor.apps.production.db.WorkCenterGroup">
@@ -534,13 +525,5 @@
 		<view type="form" name="work-center-group-form-from-menu" />
 		<domain>self.template IS TRUE</domain>
 		<context name="_template" expr="eval: true"/>
-	</action-view>
-	
-	<action-view name="manufacturing.conf.work.center.group.basic" title="Work center group"
-		model="com.axelor.apps.production.db.WorkCenterGroup">
-		<view type="grid" name="work-center-group-grid" />
-		<view type="form" name="work-center-group-form-from-menu" />
-		<domain>self.template IS FALSE OR self.template IS NULL</domain>		
-		<context name="_template" expr="eval: false"/>
 	</action-view>
 </object-views>
