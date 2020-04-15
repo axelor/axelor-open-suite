@@ -2,6 +2,7 @@
 ## [Unreleased 5.3.4]
 ## Improvements
 ## Bug Fixes
+- City import : Fix for server error during import.
 
 ## [5.3.3] - 2020-04-14
 ## Improvements
