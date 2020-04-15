@@ -38,6 +38,8 @@
 		
 		<decimal name="budgetedTime" title="Estimated time"/>
 		<many-to-one name="metaFile" title="Signature" ref="com.axelor.meta.db.MetaFile" />
+		
+		<many-to-many name="categorySet" ref="com.axelor.apps.project.db.TeamTaskCategory" title="Tags"/>
 
 	 <track replace="true">
 	 	<field name="status"/>
