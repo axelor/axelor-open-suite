@@ -10,6 +10,7 @@
 - PARTNER: fix fo invoiceCommentsPanel and descriptionToDisplayOnProformaPanel must be displayed if the Invoicing app is installed.
 - Project: fix for some fields not hidden properly.
 - PRODUCT: fix position Variant btn.
+- Improve consistency of grid and card view menus
 
 ## Bug Fixes
 - Manuf Order: fix issue when printing multiple manufacturing orders.
