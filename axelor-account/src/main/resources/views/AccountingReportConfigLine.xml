@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+    
+	<grid title="Config lines" name="accounting-report-config-line-grid" model="com.axelor.apps.account.db.AccountingReportConfigLine"
+				canMove="true" orderBy="sequence">
+		<field name="code"/>
+		<field name="label"/>
+		<field name="typeSelect"/>
+		<field name="ruleTypeSelect"/>
+		<field name="hidden"/>
+	</grid>
+
+	<form title="Config line" name="accounting-report-config-line-form" model="com.axelor.apps.account.db.AccountingReportConfigLine"
+				onNew="action-accounting-report-config-line-record-default-on-new">
+		<panel name="accountingReportConfigLineMainPanel">
+			<field name="typeSelect" validIf="typeSelect > 0" onChange="action-accounting-report-config-line-record-type-select-onchange"/>
+			<field name="ruleTypeSelect" validIf="ruleTypeSelect > 0" readonlyIf="typeSelect == 3"
+						 onChange="action-accounting-report-config-lone-record-rule-type-select-onchange"/>
+			<field name="label" showIf="(typeSelect == 1 || typeSelect == 2)" requiredIf="typeSelect != 3"/>
+			<field name="code" showIf="(typeSelect == 1 || typeSelect == 2) &amp;&amp; ruleTypeSelect != 1"
+						 requiredIf="typeSelect != 3 &amp;&amp; ruleTypeSelect != 1"/>
+			<field name="resultSelect" showIf="ruleTypeSelect == 2" requiredIf="ruleTypeSelect == 2"/>
+			<field name="hidden" showIf="ruleTypeSelect == 2 || ruleTypeSelect == 3"/>
+			<field name="$help" title="Rule" readonly="true" showIf="ruleTypeSelect == 3" colSpan="12">
+				<viewer depends="ruleTypeSelect">
+					<![CDATA[
+						<p ng-show="record.ruleTypeSelect == 3">
+							<span x-translate>This state allows to create a custom rule to be shown in the report.</span><br>
+							<span x-translate>Any Javascript operation can be written and the computed result will be displayed, but there must be only one line.</span><br>
+							<span x-translate>A previous result can be used with the following syntax : rules["code"] where code is the "code" field of a previous config line.</span>
+						</p>
+					]]>
+				</viewer>
+			</field>
+			<field name="rule" showTitle="false" widget="code-editor" x-code-syntax="javascript" showIf="ruleTypeSelect == 3" colSpan="12"/>
+		</panel>
+		<panel-related name="accountingReportConfigLineAccountTypeSetPanel" field="accountTypeSet" colSpan="12"
+									 form-view="account-type-form" grid-view="account-type-grid" showIf="ruleTypeSelect == 2"/>
+		<panel-related name="accountingReportConfigLineAccountSetPanel" field="accountSet" colSpan="12"
+									 form-view="account-form" grid-view="account-grid" showIf="ruleTypeSelect == 2"
+									 onSelect="action-accounting-report-config-line-attrs-account-set-domain"/>
+	</form>
+
+	<action-record name="action-accounting-report-config-line-record-default-on-new" model="com.axelor.apps.account.db.AccountingReportConfigLine">
+		<field name="reportType" expr="eval: _parent" if="_parent != null &amp;&amp; _parent._model == 'com.axelor.apps.account.db.AccountingReportType'"/>
+	</action-record>
+
+	<action-record name="action-accounting-report-config-line-record-type-select-onchange" model="com.axelor.apps.account.db.AccountingReportConfigLine">
+		<field name="ruleTypeSelect" expr="1" if="typeSelect == 3"/>
+		<field name="code" expr="eval: null" if="typeSelect == 3"/>
+		<field name="label" expr="eval: null" if="typeSelect == 3"/>
+	</action-record>
+	
+	<action-record name="action-accounting-report-config-lone-record-rule-type-select-onchange" model="com.axelor.apps.account.db.AccountingReportConfigLine">
+		<field name="code" expr="eval: null" if="ruleTypeSelect == 1"/>
+		<field name="label" expr="eval: null" if="ruleTypeSelect == 1"/>
+	</action-record>
+
+	<action-attrs name="action-accounting-report-config-line-attrs-account-set-domain">
+		<attribute for="accountSet" name="domain" expr="eval: &quot; self.company = ${reportType?.company?.id} &quot;"/>
+	</action-attrs>
+
+</object-views>

@@ -1394,6 +1394,7 @@
 "Sub field doesn't exist of field(%s) for the object(%s)",,,
 "Sub field(%s) doesn't exist of field(%s) for the object(%s)",,,
 "Sub import field",,,
+"Subcontractor",,,
 "Subject",,,
 "Subject team",,,
 "Subscribe",,,

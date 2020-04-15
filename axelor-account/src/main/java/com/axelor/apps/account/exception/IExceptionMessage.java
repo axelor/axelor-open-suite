@@ -152,6 +152,7 @@ public interface IExceptionMessage {
   static final String ACCOUNTING_REPORT_6 = /*$$(*/ "Moves exported" /*)*/;
   static final String ACCOUNTING_REPORT_UNKNOWN_ACCOUNTING_REPORT_TYPE = /*$$(*/
       "Unknown accounting report type: %d" /*)*/;
+  static final String ACCOUNTING_REPORT_NO_REPORT_TYPE = /*$$(*/ "No report type selected" /*)*/;
   static final String ACCOUNTING_REPORT_ANALYTIC_REPORT = /*$$(*/
       "%s : Error : You must configure an analytic report sequence for the company %s" /*)*/;
 

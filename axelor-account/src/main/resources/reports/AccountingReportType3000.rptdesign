@@ -1,0 +1,1586 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <list-property name="propertyBindings">
+        <structure>
+            <property name="name">odaDriverClass</property>
+            <property name="id">8</property>
+            <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">odaURL</property>
+            <property name="id">8</property>
+            <expression name="value" type="javascript">params["DBName"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">odaUser</property>
+            <property name="id">8</property>
+            <expression name="value" type="javascript">params["UserName"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">odaAutoCommit</property>
+            <property name="id">8</property>
+        </structure>
+        <structure>
+            <property name="name">odaIsolationMode</property>
+            <property name="id">8</property>
+        </structure>
+        <structure>
+            <property name="name">odaPassword</property>
+            <property name="id">8</property>
+            <expression name="value" type="javascript">params["Password"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">odaJndiName</property>
+            <property name="id">8</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileName</property>
+            <property name="id">8</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileStorePath</property>
+            <property name="id">8</property>
+        </structure>
+    </list-property>
+    <property name="units">in</property>
+    <method name="initialize"><![CDATA[var rules = {};
+var temp = {};]]></method>
+    <property name="iconFile">/templates/blank_report.gif</property>
+    <property name="bidiLayoutOrientation">ltr</property>
+    <property name="imageDPI">96</property>
+    <parameters>
+        <scalar-parameter name="DBName" id="3797">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">jdbc:postgresql://localhost:5432/abs_6_1</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="Password" id="3798">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">lmdpdlaa</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="Locale" id="3740">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">fr</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="AttachmentPath" id="3849">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">/home/axelor/Downloads/apache-tomcat-8.5.50/temp/axelor</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="DefaultDriver" id="3819">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="isRequired">true</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">org.postgresql.Driver</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="AccountingReportId" id="5370">
+            <property name="valueType">static</property>
+            <property name="isRequired">true</property>
+            <property name="dataType">decimal</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">15</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="UserName" id="3034">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">axelor</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+    </parameters>
+    <data-sources>
+        <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="8">
+            <list-property name="privateDriverProperties">
+                <ex-property>
+                    <name>metadataBidiFormatStr</name>
+                    <value>ILYNN</value>
+                </ex-property>
+                <ex-property>
+                    <name>disabledMetadataBidiFormatStr</name>
+                </ex-property>
+                <ex-property>
+                    <name>contentBidiFormatStr</name>
+                    <value>ILYNN</value>
+                </ex-property>
+                <ex-property>
+                    <name>disabledContentBidiFormatStr</name>
+                </ex-property>
+            </list-property>
+            <property name="odaDriverClass">org.postgresql.Driver</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/abs_6_1</property>
+            <property name="odaUser">axelor</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsYWE=</encrypted-property>
+        </oda-data-source>
+    </data-sources>
+    <data-sets>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="RulesDS" id="9">
+            <property name="nullsOrdering">nulls lowest</property>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">type</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">type</text-property>
+                    <text-property name="heading">type</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">rule_label</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">rule_label</text-property>
+                    <text-property name="heading">rule_label</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">rule_code</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">rule_code</text-property>
+                    <text-property name="heading">rule_code</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">rule_type</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">rule_type</text-property>
+                    <text-property name="heading">rule_type</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">result</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">result</text-property>
+                    <text-property name="heading">result</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">hidden</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">hidden</text-property>
+                    <text-property name="heading">hidden</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">rule</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">rule</text-property>
+                    <text-property name="heading">rule</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">account_diff</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">account_diff</text-property>
+                    <text-property name="heading">account_diff</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">ReportId</property>
+                    <property name="paramName">AccountingReportId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">1</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">type</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">rule_label</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">rule_code</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">rule_type</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">result</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">hidden</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">rule</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">account_diff</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <method name="onFetch"><![CDATA[var value;
+if (row["rule_type"] == 2) {
+	var value = row["account_diff"];
+	
+	if (row["result"] == 2) 
+		value *= -1;
+		
+	if (value == null)
+		value = 0;
+		
+	rules[row["rule_code"]] = value;
+} else if (row["rule_type"] == 3)  {
+	rules[row["rule_code"]] = eval(row["rule"]);
+}
+	
+//for (key in temp) {
+//	value = eval(temp[key]);
+//	if (!value.isNaN()) {
+//		rules[key] = value;
+//	}
+//}]]></method>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">type</property>
+                    <property name="nativeName">type</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">rule_label</property>
+                    <property name="nativeName">rule_label</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">rule_code</property>
+                    <property name="nativeName">rule_code</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">rule_type</property>
+                    <property name="nativeName">rule_type</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">result</property>
+                    <property name="nativeName">result</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">hidden</property>
+                    <property name="nativeName">hidden</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">rule</property>
+                    <property name="nativeName">rule</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">account_diff</property>
+                    <property name="nativeName">account_diff</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[SELECT
+	ConfigLine.type_select 				  as type,
+	ConfigLine.label 					  as rule_label,
+	ConfigLine.code 					  as rule_code,
+	ConfigLine.rule_type_select 		  as rule_type,
+	ConfigLine.result_select 			  as result,
+	ConfigLine.hidden 					  as hidden,
+	ConfigLine.rule	 					  as rule,
+	SUM(MoveLine.debit - MoveLine.credit) as account_diff
+	
+FROM account_accounting_report as Report
+
+JOIN account_accounting_report_type as ReportType
+ON Report.report_type = ReportType.id
+
+LEFT JOIN account_accounting_report_config_line as ConfigLine
+ON ReportType.id = ConfigLine.report_type
+
+LEFT JOIN account_accounting_report_config_line_account_type_set as AccountTypeSet
+ON AccountTypeSet.account_accounting_report_config_line = ConfigLine.id
+
+LEFT JOIN account_account_type as AccountType
+ON AccountType.id = AccountTypeSet.account_type_set
+
+LEFT JOIN account_accounting_report_config_line_account_set as AccountSet
+ON AccountSet.account_accounting_report_config_line = ConfigLine.id
+
+LEFT JOIN account_account as Account
+ON Account.id = AccountSet.account_set OR Account.account_type = AccountType.id
+
+LEFT JOIN account_move_line as MoveLine
+ON MoveLine.account = Account.id 
+
+LEFT JOIN account_move as Move
+ON MoveLine.move = Move.id
+
+LEFT JOIN account_accounting_report_partner_set as PartnerSet
+ON PartnerSet.account_accounting_report = Report.id
+
+WHERE Report.id = ?
+	AND (Report.date_from    IS NULL OR MoveLine.date_val >= Report.date_from)
+	AND (Report.date_to      IS NULL OR MoveLine.date_val <= Report.date_to)
+	AND (Report.journal      IS NULL OR Move.journal   	  = Report.journal)
+	AND (Report.period	     IS NULL OR Move.period		  = Report.period)
+	AND (Report.payment_mode IS NULL OR Move.payment_mode  = Report.payment_mode)
+	AND (PartnerSet.account_accounting_report IS NULL OR Move.partner = PartnerSet.partner_set)
+	AND (MoveLine.id 	     IS NULL OR (
+		Report.currency	  = Move.company_currency
+		AND Report.company = Move.company
+		AND Move.ignore_in_accounting_ok IN ('false', null) 
+		AND Move.status_select IN (2, 3)
+	))
+	
+GROUP BY ConfigLine.id
+
+ORDER BY ConfigLine.sequence]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <DataSetParameters>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>1</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+  </DataSetParameters>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="ReportDS" id="5439">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">ref</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">ref</text-property>
+                    <text-property name="heading">ref</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">report_date</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">report_date</text-property>
+                    <text-property name="heading">report_date</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">date_from</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">date_from</text-property>
+                    <text-property name="heading">date_from</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">date_to</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">date_to</text-property>
+                    <text-property name="heading">date_to</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">report_title</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">report_title</text-property>
+                    <text-property name="heading">report_title</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">company_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">company_name</text-property>
+                    <text-property name="heading">company_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_height</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <text-property name="heading">logo_height</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_width</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <text-property name="heading">logo_width</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">currency</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">currency</text-property>
+                    <text-property name="heading">currency</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">journal</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">journal</text-property>
+                    <text-property name="heading">journal</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">payment_mode</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">payment_mode</text-property>
+                    <text-property name="heading">payment_mode</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">period</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">period</text-property>
+                    <text-property name="heading">period</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_path</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">logo_path</text-property>
+                    <text-property name="heading">logo_path</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">reportId</property>
+                    <property name="paramName">AccountingReportId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">ref</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">report_date</property>
+                        <property name="dataType">date-time</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">date_from</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">date_to</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">report_title</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">company_name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">logo_height</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">logo_width</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">currency</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
+                        <property name="name">journal</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">payment_mode</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">period</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">logo_path</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">ref</property>
+                    <property name="nativeName">ref</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">report_date</property>
+                    <property name="nativeName">report_date</property>
+                    <property name="dataType">date-time</property>
+                    <property name="nativeDataType">93</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">date_from</property>
+                    <property name="nativeName">date_from</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">date_to</property>
+                    <property name="nativeName">date_to</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">report_title</property>
+                    <property name="nativeName">report_title</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">company_name</property>
+                    <property name="nativeName">company_name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">logo_height</property>
+                    <property name="nativeName">logo_height</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">logo_width</property>
+                    <property name="nativeName">logo_width</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">9</property>
+                    <property name="name">currency</property>
+                    <property name="nativeName">currency</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">10</property>
+                    <property name="name">journal</property>
+                    <property name="nativeName">journal</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">11</property>
+                    <property name="name">payment_mode</property>
+                    <property name="nativeName">payment_mode</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">period</property>
+                    <property name="nativeName">period</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">13</property>
+                    <property name="name">logo_path</property>
+                    <property name="nativeName">logo_path</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[SELECT
+	Report.ref as ref,
+	Report.publication_date_time as report_date,
+	Report.date_from as date_from,
+	Report.date_to as date_to,
+	ReportType.report_title as report_title,
+	Company.name as company_name,
+	Company.height as logo_height,
+	Company.width as logo_width,
+	Currency.code as currency,
+	Journal.name as journal,
+	PaymentMode.name as payment_mode,
+	Period.name as period,
+	MetaFile.file_path as logo_path
+	
+FROM account_accounting_report as Report
+
+JOIN account_accounting_report_type as ReportType
+ON Report.report_type = ReportType.id
+
+LEFT JOIN base_company as Company
+ON Company.id = Report.Company
+
+LEFT JOIN base_currency as Currency 
+ON Report.currency = Currency.id
+
+LEFT JOIN public.account_journal as Journal 
+ON Report.journal = Journal.id
+
+LEFT JOIN account_payment_mode as PaymentMode
+ON Report.payment_mode = PaymentMode.id
+
+LEFT JOIN base_period as Period
+ON Period.id = Report.period
+
+LEFT JOIN meta_file as MetaFile 
+ON MetaFile.id = Company.logo
+
+where Report.id = ?]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3669">
+            <property name="nullsOrdering">nulls lowest</property>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">message_key</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">message_key</text-property>
+                    <text-property name="heading">message_key</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">translation</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">translation</text-property>
+                    <text-property name="heading">translation</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">-1</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="paramName">Locale</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">-1</property>
+                    <property name="position">2</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">message_key</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">translation</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">message_key</property>
+                    <property name="nativeName">message_key</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">translation</property>
+                    <property name="nativeName">translation</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
+from meta_translation as LangTranslate 
+where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <DataSetParameters>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>1</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>-1</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>2</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>-1</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+  </DataSetParameters>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
+    </data-sets>
+    <styles>
+        <style name="report" id="4">
+            <property name="fontFamily">sans-serif</property>
+            <property name="fontSize">10pt</property>
+        </style>
+        <style name="crosstab" id="5">
+            <property name="borderBottomColor">#CCCCCC</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">1pt</property>
+            <property name="borderLeftColor">#CCCCCC</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">1pt</property>
+            <property name="borderRightColor">#CCCCCC</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">1pt</property>
+            <property name="borderTopColor">#CCCCCC</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">1pt</property>
+        </style>
+        <style name="crosstab-cell" id="6">
+            <property name="borderBottomColor">#CCCCCC</property>
+            <property name="borderBottomStyle">solid</property>
+            <property name="borderBottomWidth">1pt</property>
+            <property name="borderLeftColor">#CCCCCC</property>
+            <property name="borderLeftStyle">solid</property>
+            <property name="borderLeftWidth">1pt</property>
+            <property name="borderRightColor">#CCCCCC</property>
+            <property name="borderRightStyle">solid</property>
+            <property name="borderRightWidth">1pt</property>
+            <property name="borderTopColor">#CCCCCC</property>
+            <property name="borderTopStyle">solid</property>
+            <property name="borderTopWidth">1pt</property>
+        </style>
+    </styles>
+    <page-setup>
+        <simple-master-page name="Simple MasterPage" id="2">
+            <property name="topMargin">0in</property>
+            <property name="headerHeight">0.2in</property>
+            <page-footer>
+                <grid id="10">
+                    <property name="textAlign">center</property>
+                    <property name="verticalAlign">middle</property>
+                    <column id="5523">
+                        <property name="width">10%</property>
+                    </column>
+                    <column id="5488"/>
+                    <column id="12">
+                        <property name="width">1.448in</property>
+                    </column>
+                    <column id="13">
+                        <property name="width">1.448in</property>
+                    </column>
+                    <row id="14">
+                        <cell id="5522">
+                            <text id="5524">
+                                <property name="fontSize">8pt</property>
+                                <property name="dataSet">ReportDS</property>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
+                                    </structure>
+                                </list-property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">logo_height</property>
+                                        <text-property name="displayName">logo_height</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["logo_height"]</expression>
+                                        <property name="dataType">integer</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">logo_width</property>
+                                        <text-property name="displayName">logo_width</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["logo_width"]</expression>
+                                        <property name="dataType">integer</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">logo_path</property>
+                                        <text-property name="displayName">logo_path</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<TABLE>
+	<TR>
+		<VALUE-OF format="HTML">
+			"<TD><IMG src='" + params["AttachmentPath"].value + "/" + row["logo_path"] + "' alt='' height='25' width='50'/></TD>"
+		</VALUE-OF>
+	</TR>
+</TABLE>]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="5487">
+                            <text id="5499">
+                                <property name="dataSet">ReportDS</property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">ref</property>
+                                        <text-property name="displayName">ref</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["ref"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">report_title</property>
+                                        <text-property name="displayName">report_title</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["report_title"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["report_title"] + " " + row["ref"]</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="16">
+                            <text id="43">
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<value-of>new Date()</value-of>]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="17">
+                            <grid id="5359">
+                                <property name="width">3.5189583333333334cm</property>
+                                <column id="5360">
+                                    <property name="width">6%</property>
+                                </column>
+                                <column id="5361">
+                                    <property name="width">3%</property>
+                                </column>
+                                <column id="5362">
+                                    <property name="width">6%</property>
+                                </column>
+                                <row id="5363">
+                                    <cell id="5364">
+                                        <auto-text id="5365">
+                                            <property name="textAlign">right</property>
+                                            <property name="type">page-number</property>
+                                        </auto-text>
+                                    </cell>
+                                    <cell id="5366">
+                                        <text id="5367">
+                                            <property name="textAlign">center</property>
+                                            <property name="contentType">plain</property>
+                                            <text-property name="content"><![CDATA[/]]></text-property>
+                                        </text>
+                                    </cell>
+                                    <cell id="5368">
+                                        <auto-text id="5369">
+                                            <property name="textAlign">left</property>
+                                            <property name="type">total-page</property>
+                                        </auto-text>
+                                    </cell>
+                                </row>
+                            </grid>
+                        </cell>
+                    </row>
+                </grid>
+            </page-footer>
+        </simple-master-page>
+    </page-setup>
+    <body>
+        <grid id="5390">
+            <column id="5455"/>
+            <column id="5461"/>
+            <column id="5391"/>
+            <column id="5498"/>
+            <column id="5392"/>
+            <column id="5393"/>
+            <row id="5509">
+                <cell id="5510">
+                    <property name="fontSize">24pt</property>
+                    <property name="textAlign">center</property>
+                    <text id="4220">
+                        <property name="fontSize">8pt</property>
+                        <property name="dataSet">ReportDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">logo_height</property>
+                                <text-property name="displayName">logo_height</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["logo_height"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">logo_width</property>
+                                <text-property name="displayName">logo_width</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["logo_width"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">logo_path</property>
+                                <text-property name="displayName">logo_path</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<TABLE>
+	<TR>
+		<VALUE-OF format="HTML">
+			"<TD><IMG src='" + params["AttachmentPath"].value + "/" + row["logo_path"] + "' alt='' height='50' width='100'/></TD>"
+		</VALUE-OF>
+	</TR>
+</TABLE>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="5511">
+                    <property name="colSpan">5</property>
+                    <property name="rowSpan">1</property>
+                    <property name="fontSize">24pt</property>
+                    <property name="textAlign">center</property>
+                    <text id="5500">
+                        <property name="dataSet">ReportDS</property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">ref</property>
+                                <text-property name="displayName">ref</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["ref"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">report_title</property>
+                                <text-property name="displayName">report_title</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["report_title"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["report_title"] + " " + row["ref"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+            <row id="5430">
+                <property name="height">1cm</property>
+                <cell id="5451"/>
+                <cell id="5457"/>
+                <cell id="5431"/>
+                <cell id="5491"/>
+                <cell id="5432"/>
+                <cell id="5433"/>
+            </row>
+            <row id="5398">
+                <cell id="5452">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <property name="fontSize">18pt</property>
+                    <property name="textAlign">left</property>
+                    <text id="5525">
+                        <property name="fontSize">12pt</property>
+                        <property name="display">inline</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'Company'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : ]]></text-property>
+                    </text>
+                    <text id="5501">
+                        <property name="fontSize">12pt</property>
+                        <property name="display">inline</property>
+                        <property name="dataSet">ReportDS</property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">company_name</property>
+                                <text-property name="displayName">company_name</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["company_name"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["company_name"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="5399">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <property name="fontSize">18pt</property>
+                    <property name="textAlign">left</property>
+                    <text id="5526">
+                        <property name="fontSize">12pt</property>
+                        <property name="display">inline</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'Currency'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : ]]></text-property>
+                    </text>
+                    <text id="5504">
+                        <property name="fontSize">12pt</property>
+                        <property name="display">inline</property>
+                        <property name="dataSet">ReportDS</property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">currency</property>
+                                <text-property name="displayName">currency</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["currency"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="5400">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <text id="5505">
+                        <property name="fontSize">12pt</property>
+                        <property name="dataSet">ReportDS</property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">report_date</property>
+                                <text-property name="displayName">report_date</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
+                                <property name="dataType">date-time</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[Date : <VALUE-OF format="dd/MM/yyyy">row["report_date"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+            <row id="5462">
+                <cell id="5463">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <property name="fontSize">18pt</property>
+                    <property name="textAlign">left</property>
+                    <text id="5528">
+                        <property name="fontSize">12pt</property>
+                        <property name="display">inline</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'From'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : ]]></text-property>
+                    </text>
+                    <text id="5502">
+                        <property name="fontSize">12pt</property>
+                        <property name="display">inline</property>
+                        <property name="dataSet">ReportDS</property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">date_from</property>
+                                <text-property name="displayName">date_from</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["date_from"]</expression>
+                                <property name="dataType">date</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["date_from"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="5465">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <property name="fontSize">18pt</property>
+                    <property name="textAlign">left</property>
+                    <text id="5529">
+                        <property name="fontSize">12pt</property>
+                        <property name="display">inline</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'To'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : ]]></text-property>
+                    </text>
+                    <text id="5506">
+                        <property name="fontSize">12pt</property>
+                        <property name="display">inline</property>
+                        <property name="dataSet">ReportDS</property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">date_to</property>
+                                <text-property name="displayName">date_to</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["date_to"]</expression>
+                                <property name="dataType">date</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["date_to"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="5466">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <text id="5530">
+                        <property name="fontSize">12pt</property>
+                        <property name="display">inline</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'Period'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : ]]></text-property>
+                    </text>
+                    <text id="5507">
+                        <property name="fontSize">12pt</property>
+                        <property name="display">inline</property>
+                        <property name="dataSet">ReportDS</property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">period</property>
+                                <text-property name="displayName">period</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["period"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["period"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+            <row id="5468">
+                <cell id="5469">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <property name="fontSize">18pt</property>
+                    <property name="textAlign">left</property>
+                    <text id="5503">
+                        <property name="fontSize">12pt</property>
+                        <property name="dataSet">ReportDS</property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">journal</property>
+                                <text-property name="displayName">journal</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["journal"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[Journal : <VALUE-OF>row["journal"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="5471">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <property name="fontSize">18pt</property>
+                    <property name="textAlign">left</property>
+                    <text id="5508">
+                        <property name="fontSize">12pt</property>
+                        <property name="dataSet">ReportDS</property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">payment_mode</property>
+                                <text-property name="displayName">payment_mode</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["payment_mode"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[Mode : <VALUE-OF>row["mode"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="5472"/>
+                <cell id="5473"/>
+            </row>
+            <row id="5426">
+                <property name="height">1cm</property>
+                <cell id="5453">
+                    <property name="fontSize">18pt</property>
+                    <property name="textAlign">left</property>
+                </cell>
+                <cell id="5459">
+                    <property name="fontSize">18pt</property>
+                    <property name="textAlign">left</property>
+                </cell>
+                <cell id="5427">
+                    <property name="fontSize">18pt</property>
+                    <property name="textAlign">left</property>
+                </cell>
+                <cell id="5496">
+                    <property name="fontSize">18pt</property>
+                    <property name="textAlign">left</property>
+                </cell>
+                <cell id="5428"/>
+                <cell id="5429"/>
+            </row>
+            <row id="5402">
+                <cell id="5454">
+                    <property name="colSpan">6</property>
+                    <property name="rowSpan">1</property>
+                    <table id="69">
+                        <property name="borderBottomStyle">solid</property>
+                        <property name="borderBottomWidth">thin</property>
+                        <property name="borderLeftStyle">solid</property>
+                        <property name="borderLeftWidth">thin</property>
+                        <property name="borderRightStyle">solid</property>
+                        <property name="borderRightWidth">thin</property>
+                        <property name="borderTopStyle">solid</property>
+                        <property name="borderTopWidth">thin</property>
+                        <property name="marginTop">auto</property>
+                        <property name="dataSet">RulesDS</property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">type</property>
+                                <text-property name="displayName">type</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["type"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">rule_label</property>
+                                <text-property name="displayName">rule_label</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["rule_label"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">rule_code</property>
+                                <text-property name="displayName">rule_code</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["rule_code"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">rule_type</property>
+                                <text-property name="displayName">rule_type</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["rule_type"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">result</property>
+                                <text-property name="displayName">result</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["result"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">hidden</property>
+                                <text-property name="displayName">hidden</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["hidden"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">rule</property>
+                                <text-property name="displayName">rule</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["rule"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">account_diff</property>
+                                <text-property name="displayName">account_diff</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["account_diff"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                        </list-property>
+                        <structure name="toc"/>
+                        <property name="pageBreakInterval">0</property>
+                        <column id="79">
+                            <property name="width">70%</property>
+                        </column>
+                        <column id="80"/>
+                        <header>
+                            <row id="70">
+                                <cell id="71">
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                </cell>
+                                <cell id="72"/>
+                            </row>
+                        </header>
+                        <detail>
+                            <row id="73">
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row["hidden"]</expression>
+                                    </structure>
+                                </list-property>
+                                <cell id="74">
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <text id="5372">
+                                        <property name="fontSize">12pt</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <structure name="toc"/>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">
+	if (row["type"] == 1) "<b>" + row["rule_label"] + "</b>"
+</VALUE-OF></B>
+<VALUE-OF>
+	if (row["type"] == 2) "&amp;emsp;" + row["rule_label"]
+</VALUE-OF>
+<VALUE-OF format="HTML">
+	if (row["type"] == 3) " "
+</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="75">
+                                    <text id="5373">
+                                        <property name="fontSize">12pt</property>
+                                        <property name="textAlign">right</property>
+                                        <list-property name="highlightRules">
+                                            <structure>
+                                                <property name="operator">eq</property>
+                                                <property name="fontWeight">bold</property>
+                                                <expression name="testExpr" type="javascript">row["type"]</expression>
+                                                <simple-property-list name="value1">
+                                                    <value type="javascript">1</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">
+if (row["type"] != 3)
+	rules[row["rule_code"]]
+</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                            </row>
+                        </detail>
+                        <footer>
+                            <row id="76">
+                                <cell id="77">
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                </cell>
+                                <cell id="78"/>
+                            </row>
+                        </footer>
+                    </table>
+                </cell>
+            </row>
+        </grid>
+    </body>
+</report>

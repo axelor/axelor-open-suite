@@ -82,8 +82,16 @@
 		<option order="15" value="14">General ledger (old presentation)</option>
 		<option order="17" value="16" >Acquisitions</option>
 		<option order="18" value="17" >Summary of gross values and depreciation</option>
+		<option value="1000">Export journal entry -> Administration</option>
+		<option value="1001">Export journal entry -> Acc. Soft.</option>
+		<option value="1006">Export sale -> Acc. Soft.</option>
+		<option value="1007">Export refunds -> Acc. Soft.</option>
+		<option value="1008">Export treasury -> Acc. Soft.</option>
+		<option value="1009">Export purchase -> Acc. Soft.</option>
+		<option value="1010">Export general balance -> Acc. Soft.</option>
 		<option order="2000" value="2000">Analytic balance</option>
 		<option order="2001" value="2001">Analytic general ledger</option>
+		<option order="3000" value="3000">Custom state</option>
 	</selection>
 	
 	<selection name='accounting.report.type.select.export'>
@@ -94,6 +102,28 @@
 		<option value="1008">Export treasury -> Acc. Soft.</option>
 		<option value="1009">Export purchase -> Acc. Soft.</option>
 		<option value="1010">Export general balance -> Acc. Soft.</option>
+	</selection>
+
+	<selection name='accounting.report.config.line.type.select'>
+		<option value="1">Title</option>
+		<option value="2">Detail</option>
+		<option value="3">Separator</option>
+	</selection>
+
+	<selection name='accounting.report.type.report.export.type.select'>
+		<option value="1">Accounting report</option>
+		<option value="2">Accounting export</option>
+	</selection>
+
+	<selection name='accounting.report.config.line.rule.type.select'>
+		<option value="1">No value</option>
+		<option value="2">Sum of accounts</option>
+		<option value="3">Custom rule</option>
+	</selection>
+
+	<selection name='accounting.report.config.line.sum.of.account.select'>
+		<option value="1">Debit - Credit</option>
+		<option value="2">Credit - Debit</option>
 	</selection>
 	
 	<selection name='iaccount.move.status.select'>

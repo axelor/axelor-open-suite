@@ -462,7 +462,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     writeMoveLineToCsvFile(
         company,
         fileName,
-        this.createHeaderForHeaderFile(accountingReport.getTypeSelect()),
+        this.createHeaderForHeaderFile(accountingReport.getReportType().getTypeSelect()),
         allMoveData,
         accountingReport);
   }
@@ -653,7 +653,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     writeMoveLineToCsvFile(
         company,
         fileName,
-        this.createHeaderForHeaderFile(accountingReport.getTypeSelect()),
+        this.createHeaderForHeaderFile(accountingReport.getReportType().getTypeSelect()),
         allMoveData,
         accountingReport);
   }
@@ -845,7 +845,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     writeMoveLineToCsvFile(
         company,
         fileName,
-        this.createHeaderForHeaderFile(accountingReport.getTypeSelect()),
+        this.createHeaderForHeaderFile(accountingReport.getReportType().getTypeSelect()),
         allMoveData,
         accountingReport);
   }
@@ -1061,7 +1061,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     writeMoveLineToCsvFile(
         company,
         fileName,
-        this.createHeaderForHeaderFile(accountingReport.getTypeSelect()),
+        this.createHeaderForHeaderFile(accountingReport.getReportType().getTypeSelect()),
         allMoveData,
         accountingReport);
   }
@@ -1280,7 +1280,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     String companyCode = "";
     String moveLineQueryStr = "";
 
-    int typeSelect = accountingReport.getTypeSelect();
+    int typeSelect = accountingReport.getReportType().getTypeSelect();
 
     if (company != null) {
       companyCode = company.getCode();
@@ -1644,7 +1644,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     accountingReportService.setStatus(accountingReport);
 
-    switch (accountingReport.getTypeSelect()) {
+    switch (accountingReport.getReportType().getTypeSelect()) {
       case AccountingReportRepository.EXPORT_SALES:
         this.exportMoveLineTypeSelect1006(accountingReport, false);
         break;
@@ -1680,7 +1680,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
   public void replayExportMoveLine(AccountingReport accountingReport)
       throws AxelorException, IOException {
-    switch (accountingReport.getTypeSelect()) {
+    switch (accountingReport.getReportType().getTypeSelect()) {
       case AccountingReportRepository.EXPORT_SALES:
         this.exportMoveLineTypeSelect1006(accountingReport, true);
         break;
@@ -1708,7 +1708,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     AccountingReport accountingReport = new AccountingReport();
     accountingReport.setCompany(company);
-    accountingReport.setTypeSelect(exportTypeSelect);
+    accountingReport.getReportType().setTypeSelect(exportTypeSelect);
     accountingReport.setDateFrom(startDate);
     accountingReport.setDateTo(endDate);
     accountingReport.setStatusSelect(AccountingReportRepository.STATUS_DRAFT);
