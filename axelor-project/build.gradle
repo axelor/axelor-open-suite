@@ -14,12 +14,3 @@ axelor {
 dependencies {
 	api project(":modules:axelor-base")
 }
-
-task copyWebapp(type: Copy) {
-	destinationDir = file(rootProject.buildDir)
-	into("webapp/project") {
-		from "src/main/webapp"
-	}
-}
-
-rootProject.tasks.war.dependsOn copyWebapp
