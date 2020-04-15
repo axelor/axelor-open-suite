@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  
+  <module name="account" package="com.axelor.apps.account.db"/>
+  
+  <entity name="AccountingReportType" lang="java">
+
+    <string name="name" title="Name" required="true"/>
+    <string name="reportTitle" title="Report title"/>
+    <integer name="typeSelect" title="Printing output" required="true" selection="accounting.report.type.select"/>
+    <integer name="reportExportTypeSelect" title="Type" required="true" selection="accounting.report.type.report.export.type.select"/>
+    <many-to-one name="template" title="Report template" ref="com.axelor.meta.db.MetaFile"/>
+    <one-to-many name="accountingReportConfigLineList" title="Rules" ref="com.axelor.apps.account.db.AccountingReportConfigLine"
+                 mappedBy="reportType"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true"/>
+
+  </entity>
+</domain-models>

@@ -1,5 +1,6 @@
 "key","message","comment","context"
 "%d messages has been regenerated successfully and %d errors append.","komunikaty %d zostały pomyślnie zregenerowane, a %d błędów dołączone.",,
+"Add Signature",,,
 "Address","Adres",,
 "Address Block","Blok adresowy",,
 "All messages","Wszystkie wiadomości",,
@@ -35,9 +36,10 @@
 "Group","Grupa",,
 "Host","Gospodarz",,
 "IMAP","IMAP",,
+"If you leave this field empty or fill it with an incorrect formula, the default email account's signature will be used.\nExamples of a correct formulas:\n$__user__.emailSignature$\n$first(__user__.emailAccountList).signature$",,,
 "In progress",,,
 "Incorrect login or password","Niepoprawny login lub hasło",,
-"Informations","Informacje",,
+"Information",,,
 "Json",,,
 "Language","Język",,
 "Login","Login",,

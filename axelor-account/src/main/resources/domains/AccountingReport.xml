@@ -17,7 +17,6 @@
     <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode"/>
     <many-to-many name="accountSet" ref="Account" title="Accounting.Accounts"/>
     <string name="exportTypeSelect" title="Export type" selection="iadministration.export.type.select"/>
-    <integer name="typeSelect" title="Printing output"  required="true"/>
     <many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner" title="Partners"/>
     <many-to-one name="year" ref="com.axelor.apps.base.db.Year" title="Fiscal year"/>
     <date name="date" column="date_val" title="Closing date" required="true"/>
@@ -26,7 +25,8 @@
     <boolean name="globalByPartner" title="Subtotal by partner" default="false"/>
     <boolean name="globalByDate" title="Subtotal by date" default="false"/>
     <many-to-one name="analyticJournal" ref="com.axelor.apps.account.db.AnalyticJournal" title="Analytic Journal"/>
-    
+    <many-to-one name="reportType" ref="com.axelor.apps.account.db.AccountingReportType" title="Report type"/>
+
     <boolean name="detailed" title="Detailed" default="false"/>
     <integer name="statusSelect" title="Status" selection="iaccount.accounting.report.status.select" readonly="true" default="1"/>
     
@@ -74,6 +74,7 @@
 		public static final int REPORT_ANALYTIC_GENERAL_LEDGER = 2001;
 		public static final int REPORT_ACQUISITIONS = 16;
 		public static final int REPORT_GROSS_VALUES_AND_DEPRECIATION = 17;
+		public static final int REPORT_CUSTOM_STATE = 3000;
 		
 		// EXPORT TYPE SELECT
         public static final int EXPORT_ADMINISTRATION = 1000;
