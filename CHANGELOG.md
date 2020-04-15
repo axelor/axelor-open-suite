@@ -6,6 +6,7 @@
 - Manuf Order: add missing translations.
 - BudgetLine : Resolve NPE on dates.
 - STOCK MOVE : Product translation in birt.
+- Account: Fix incomplete sequences in english data init.
 
 ## [5.2.8] - 2020-04-14
 ## Improvements
