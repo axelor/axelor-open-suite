@@ -2,6 +2,7 @@
 ## [Unreleased 5.3.4]
 ## Improvements
 ## Bug Fixes
+- WORKSHOP STOCK LOCATION : Fix config being ignored
 
 ## [5.3.3] - 2020-04-14
 ## Improvements
