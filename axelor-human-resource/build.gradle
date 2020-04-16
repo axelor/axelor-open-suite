@@ -19,3 +19,12 @@ dependencies {
 	implementation libs.commons_lang3
 	implementation libs.commons_collections4
 }
+
+task copyWebapp(type: Copy) {
+	destinationDir = file(rootProject.buildDir)
+	into("webapp/hr") {
+		from "src/main/webapp"
+	}
+}
+
+rootProject.tasks.war.dependsOn copyWebapp
