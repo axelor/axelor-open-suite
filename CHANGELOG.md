@@ -7,6 +7,7 @@
 - WORKSHOP STOCK LOCATION : Fix config being ignored
 - PURCHASE : Fix fields where negative values shouldn't be allowed
 - SALES : Fix fields where negative values shouldn't be allowed
+- Manuf Order: add missing translations.
 
 ## [5.3.3] - 2020-04-14
 ## Improvements
