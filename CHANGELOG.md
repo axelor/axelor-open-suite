@@ -2,6 +2,7 @@
 ## [Unreleased 5.3.4]
 ## Improvements
 - USER: fix filter for activeCompany
+- COST SHEET: in batch computing work in progress valuation, compute cost for ongoing manuf orders at the valuation date.
 ## Bug Fixes
 - WORKSHOP STOCK LOCATION : Fix config being ignored
 - PURCHASE : Fix fields where negative values shouldn't be allowed
