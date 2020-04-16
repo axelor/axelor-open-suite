@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.MoveTemplateType;
 import com.axelor.apps.account.db.repo.MoveTemplateRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateTypeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.move.MoveTemplateService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -39,6 +40,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -132,6 +135,16 @@ public class MoveTemplateController {
       if (!isValid) {
         response.setValue("isValid", false);
       }
+    }
+  }
+
+  public void computeTotals(ActionRequest request, ActionResponse response) {
+    try {
+      MoveTemplate moveTemplate = request.getContext().asType(MoveTemplate.class);
+      Map<String, Object> values = Beans.get(MoveTemplateService.class).computeTotals(moveTemplate);
+      response.setValues(values);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }
