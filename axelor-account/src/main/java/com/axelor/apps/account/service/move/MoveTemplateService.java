@@ -44,7 +44,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -332,21 +331,22 @@ public class MoveTemplateService {
   public Map<String, Object> computeTotals(MoveTemplate moveTemplate) {
     Map<String, Object> values = new HashMap<>();
 
-    if (moveTemplate.getMoveTemplateLineList() == null || moveTemplate.getMoveTemplateLineList().isEmpty()) {
+    if (moveTemplate.getMoveTemplateLineList() == null
+        || moveTemplate.getMoveTemplateLineList().isEmpty()) {
       return values;
     }
     values.put("$totalLines", moveTemplate.getMoveTemplateLineList().size());
 
     BigDecimal totalDebit =
-            moveTemplate.getMoveTemplateLineList().stream()
-                    .map(MoveTemplateLine::getDebit)
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+        moveTemplate.getMoveTemplateLineList().stream()
+            .map(MoveTemplateLine::getDebit)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
     values.put("$totalDebit", totalDebit);
 
     BigDecimal totalCredit =
-            moveTemplate.getMoveTemplateLineList().stream()
-                    .map(MoveTemplateLine::getCredit)
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+        moveTemplate.getMoveTemplateLineList().stream()
+            .map(MoveTemplateLine::getCredit)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
     values.put("$totalCredit", totalCredit);
 
     BigDecimal difference = totalDebit.subtract(totalCredit);

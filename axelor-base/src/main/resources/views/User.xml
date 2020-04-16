@@ -246,7 +246,7 @@
     </action-attrs>
     
     <action-attrs name="action-user-attrs-domain-active-company">
-  		<attribute name="domain" expr="eval: &quot; self.id IN (${companySet?.collect{it.id}.join(',')}) &quot; " for="activeCompany" if="companySet ?: false" />
+  		<attribute name="domain" expr="eval:companySet?.size() > 0 ? &quot; self.id IN (${companySet?.collect{it.id}.join(',')}) &quot; : &quot;self = null&quot; " for="activeCompany"/>
     </action-attrs>
 
     <action-attrs name="action-user-attrs-domain-active-team">
