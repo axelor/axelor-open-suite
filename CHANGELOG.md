@@ -3,6 +3,7 @@
 ## Improvements
 - COST SHEET: in batch computing work in progress valuation, compute cost for ongoing manuf orders at the valuation date.
 ## Bug Fixes
+- Manuf Order: add missing translations.
 
 ## [5.2.8] - 2020-04-14
 ## Improvements
