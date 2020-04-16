@@ -558,6 +558,7 @@
 "Profile","Profil",,
 "Purchase Order",,,
 "Purchase order",,,
+"Purchase currency is missing for product %s, please configure it.","La devise d'achat est manquante pour le produit %s, merci de la renseigner.",,
 "Qty","Qté",,
 "Quantity","Quantité",,
 "Quantity Wasted per Product","Quantité Gaspillée par Produit",,
