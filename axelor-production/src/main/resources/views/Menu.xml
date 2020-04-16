@@ -512,11 +512,7 @@
 
 
 	<menuitem name="manufacturing-conf-work-center-group-model"
-<<<<<<< Updated upstream
-		parent="manufacturing-conf-work-center-group" title="Work center model" action="manufacturing.conf.work.center.group.model"/>
-=======
 		parent="manufacturing-conf" title="Work center group model" action="manufacturing.conf.work.center.group.model"/>
->>>>>>> Stashed changes
 		
 
 	<action-view name="manufacturing.conf.work.center.group.model" title="Work center model"
