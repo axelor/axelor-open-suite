@@ -172,7 +172,44 @@
             <panel name="accountingPanel" title="Accounting">
                 <field name="isAnalyticCapture" colSpan="6" if-module="axelor-account" if="__config__.app.isApp('account')"/>
 							<field name="usedInDEB" title="Used in DES" showIf="productTypeSelect =='service'"/>
-                <panel-related name="accountManagementListPanel" field="accountManagementList" form-view="account-management-form" grid-view="account-management-product-grid" domain="self.typeSelect = 1" title="Accounting" showTitle="false" colSpan="12"/>
+							<panel-related name="accountManagementListPanel" field="accountManagementList" title="Accounting" showTitle="false"
+														 form-view="account-management-form" grid-view="account-management-product-grid" domain="self.typeSelect = 1"
+														 colSpan="12" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+							<field name="accountManagementList" canNew="false" showTitle="false" colSpan="12" if="!__config__.app.getApp('base').getEnableMultiCompany()">
+								<editor x-viewer="true">
+									<panel name="purchaseConfig1Panel" title="Purchases">
+										<field name="purchaseAccount"
+													 domain="self.company = :company AND (self.accountType.technicalTypeSelect = 'charge' OR self.accountType.technicalTypeSelect = 'debt')"
+													 if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+													 if="__config__.app.isApp('account')" canEdit="false"/>
+										<field name="purchaseTax" form-view="tax-form" grid-view="tax-grid" canEdit="false"/>
+									</panel>
+
+									<panel name="fixedAssetsConfig1Panel" title="Purchase of fixed assets">
+										<field name="fixedAssetCategory" if-module="axelor-account"
+													 if="__config__.app.isApp('account')" domain="self.company = :company"
+													 form-view="fixed-asset-category-form" grid-view="fixed-asset-category-grid"
+													 canEdit="false" />
+										<field name="purchFixedAssetsAccount"
+													 domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'"
+													 if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+													 if="__config__.app.isApp('account')" canEdit="false"/>
+									</panel>
+
+									<panel name="saleConfig1Panel" title="Sale">
+										<field name="saleAccount"
+													 domain="self.company = :company AND self.accountType.technicalTypeSelect = 'income'"
+													 if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+													 if="__config__.app.isApp('account')" canEdit="false"/>
+										<field name="saleTax" form-view="tax-form" grid-view="tax-grid" canEdit="false"/>
+									</panel>
+
+									<panel name="analyticsPanel" title="Analytics">
+										<field name="analyticDistributionTemplate" canNew="true" colSpan="12"
+													 if-module="axelor-account" if="__config__.app.isApp('account')"/>
+									</panel>
+								</editor>
+							</field>
             </panel>
             	<panel name="stockPanel" title="Stock" showTitle="false" showIf="productTypeSelect == 'storable'" if-module="axelor-stock" if="__config__.app.isApp('stock')" >
 	     			<panel name="procurementSettingsPanel" title="Procurement settings" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" >

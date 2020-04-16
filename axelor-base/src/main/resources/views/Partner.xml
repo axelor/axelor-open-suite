@@ -317,7 +317,49 @@
 				  <field name="proformaComments" widget="html" colSpan="12" showTitle="false"/>
 				</panel>
 			</panel>
-			<panel-related name="accountingSituationListPanel" if-module="axelor-account" if="__config__.app.isApp('account')" field="accountingSituationList" title="Accounting situation" hideIf="isContact" colSpan="12" grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form" onSelect="action-account-accounting-situation-method-update-customer-account"/>
+			<panel-related name="accountingSituationListPanel" if-module="axelor-account" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('base').getEnableMultiCompany()" field="accountingSituationList" title="Accounting situation" hideIf="isContact" colSpan="12" grid-view="accounting-situation-partner-grid" form-view="accounting-situation-partner-form" onSelect="action-account-accounting-situation-method-update-customer-account"/>
+			<panel if-module="axelor-account" if="__config__.app.isApp('account') &amp;&amp; !__config__.app.getApp('base').getEnableMultiCompany()"
+						 hideIf="isContact" colSpan="12" title="Accounting situation">
+				<field name="accountingSituationList" canNew="false" showTitle="false" colSpan="12">
+					<editor x-viewer="true">
+						<panel name="mainPanel" title="Accounts">
+							<field name="companyInBankDetails" hidden="true" widget="SuggestBox" onSelect="action-account-accounting-situation-set-inbd-domain"
+										 form-view="bank-details-form" grid-view="bank-details-grid"/>
+							<field name="companyOutBankDetails" hidden="true" widget="SuggestBox" onSelect="action-account-accounting-situation-set-outbd-domain"
+										 form-view="bank-details-form" grid-view="bank-details-grid"/>
+							<field name="customerAccount" form-view="customer-account-form" grid-view="account-grid" canNew="true"/>
+							<field name="supplierAccount" form-view="supplier-account-form" grid-view="account-grid" canNew="true"/>
+							<field name="employeeAccount" form-view="employee-account-form" grid-view="account-grid" canNew="true" />
+							<field name="pfpValidatorUser" required="true" domain=":company member of self.companySet and self.isPfpValidator = true"
+										 canEdit="false" showIf="company.accountConfig.isManagePassedForPayment"/>
+							<field name="company.accountConfig" hidden="true"/>
+							<field name="company.accountConfig.isManagePassedForPayment" hidden="true"/>
+						</panel>
+						<panel name="customerBalancePanel" title="Customer balance" itemSpan="4">
+							<field name="balanceCustAccount"/>
+							<field name="balanceDueCustAccount"/>
+							<field name="balanceDueDebtRecoveryCustAccount"/>
+						</panel>
+						<panel name="automaticMailPanel" title="Automatic mail">
+							<field name="invoiceAutomaticMailOnValidate"/>
+							<field name="invoiceMessageTemplateOnValidate" requiredIf="invoiceAutomaticMailOnValidate" showIf="invoiceAutomaticMailOnValidate" domain="self.metaModel.name = 'Invoice'"/>
+							<field name="invoiceAutomaticMail"/>
+							<field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail" showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
+						</panel>
+						<panel name="customerCreditPanel" title="Customer Credit" if-module="axelor-supplychain">
+							<field name="acceptedCredit"/>
+							<field name="usedCredit"/>
+							<field name="insurCreditDate"/>
+							<field name="description" colSpan="12"/>
+						</panel>
+						<panel name="debtRecoveryProcessPanel" title="Debt recovery process" hideIf="debtRecovery == null">
+							<field name="debtRecovery.debtRecoveryMethodLine.debtRecoveryLevelLabel" title="AccountingSituation.debtRecoveryLevelLabel" colSpan="3"/>
+							<field name="debtRecovery.balanceDueDebtRecovery" title="Balance due recoverable" colSpan="4"/>
+							<button name="customerRecoveryBtn" title="Customer recovery" onClick="action-accounting-situation-method-open-debt-recovery" colSpan="4"/>
+						</panel>
+					</editor>
+				</field>
+			</panel>
 			<panel-include if-module="axelor-account" view="incl-blocking-partner-form" from="axelor-account"  if="__config__.app.isApp('account')" />
 			<panel name="activitiesPanel" title="Activities" showIf="id != null" if-module="axelor-crm" onTabSelect="action-partner-method-view-emails" hideIf="isEmployee" if="__config__.app.isApp('crm')">
 				<button name="showAllEventsBtn" title="Show all events" css="btn-custom text-left" icon="fa-tasks" onClick="action-partner-view-events" readonlyIf="id == null"/>
@@ -733,11 +775,15 @@
 		<action name="action-partner-record-set-positive-balance" if="__config__.app.isApp('account')"/>
 		<action name="action-partner-attrs-name-balance"/>
 		<action name="action-partner-attrs-partner-seq-editable"/>
-        <action name="action-partner-method-check-name"/>
-        <action name="action-partner-method-check-name-in-archive"/>
-        <action name="action-partner-attrs-hide-invoice-and-delivery-address-text"/>
-        <action name="action-partner-attrs-set-canselect"/>
-        <action name="action-partner-attrs-set-subcontactor" if="__config__.app.isApp('production')"/>
+		<action name="action-partner-method-check-name"/>
+		<action name="action-partner-method-check-name-in-archive"/>
+		<action name="action-partner-attrs-hide-invoice-and-delivery-address-text"/>
+		<action name="action-partner-attrs-set-canselect"/>
+		<action name="action-partner-attrs-set-subcontactor" if="__config__.app.isApp('production')"/>
+		<action name="action-accounting-situation-group-form-onload"
+						if="__config__.app.isApp('account') &amp;&amp; !__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<action name="action-partner-attrs-accounting-situation-list-onload"
+						if="__config__.app.isApp('account') &amp;&amp; !__config__.app.getApp('base').getEnableMultiCompany()"/>
 	</action-group>
 
 	<action-group name="action-group-base-partner-onnew">
@@ -798,6 +844,10 @@
 
     <action-attrs name="action-partner-attrs-set-canselect">
 		<attribute name="value" for="partnerAddressList.$canSelect" expr="eval:__config__.app.getApp('base').getIsSharedAddress()"/>
+	</action-attrs>
+
+	<action-attrs name="action-partner-attrs-accounting-situation-list-onload">
+		<attribute for="pfpValidatorUser" name="hidden" expr="eval: !__config__.app.getApp('account').getActivatePassedForPayment()"/>
 	</action-attrs>
 
     <action-group name="action-partner-partner-type-select-change">
