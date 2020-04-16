@@ -363,7 +363,7 @@
         </panel>
       </panel>
 
-      <panel if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()" if-module="axelor-supplychain" name="timetablePanel" title="Timetable">
+      <panel if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()" if-module="axelor-supplychain" name="timetablePanel" title="Timetable" onTabSelect="action-sale-order-attrs-readonly-timetable">
 	      <field name="expectedRealisationDate" colSpan="12" width="50%"/>
 	      <label name="orLabel" title="OR" colSpan="12"/>
 	       <field name="timetableTemplate" onChange="action-sale-order-method-apply-timetable-template,action-sale-order-method-update-amount-to-be-spread-over-the-timetable"/>
@@ -1437,5 +1437,11 @@
 	<action-method name="action-sale-order-method-set-status-to-confirmed">
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="backToConfirmedStatus" />
 	</action-method>
+   
+   <action-attrs name="action-sale-order-attrs-readonly-timetable">
+    <attribute name="readonly" expr="eval: timetableList.any { it?.invoiced }" for="timetableTemplate"/>
+    <attribute name="readonly" expr="eval: timetableList.any { it?.invoiced }" for="computationDate"/>
+   </action-attrs>
+   
 	
 </object-views>

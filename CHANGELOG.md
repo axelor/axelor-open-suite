@@ -9,6 +9,10 @@
 - Move template : Add new field description
 - HR : Added a leave line configuration menu in leave management
 - Move Template : Add totals for amount type
+- Move template : Add details button to grid view to display fields
+- Move template : Add change track on update
+- EMPLOYEE : set seniorityDate by hireDate
+- Studio : Add CSRF protection for every request header.
 
 ## Improvements
 - USER : Default User language is based on application.locale from application.properties
@@ -17,7 +21,7 @@
 - Invoice/Orders : The printing filename has been changed to show the id of the printed order/invoice
 - Employee : renamed dateOfHire, timeOfHire, endDateContract, dateOfBirth fields to hireDate, hireTime, contractEndDate, birthDate
 - Removed block permission from demo data.
+- SaleOrder/Invoice/PurchaseOrder Line : Unit is now required
 
 ## Bug Fixes
 - HR : A leave-line cannot be saved whitout employee or leave-reason.
-

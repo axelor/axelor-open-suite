@@ -62,7 +62,11 @@
 			<panel sidebar="true" name="actionsPanel" title="Actions">
     		<field name="isValid" readonlyIf="!isValid" onChange="action-move-template-method-set-is-valid" colSpan="12"/>
     		<button name="checkValidityBtn" title="Check validity" readonlyIf="isValid" onClick="save,action-move-template-method-check-validity" colSpan="12"/>
- 	 	</panel>
+ 	 		</panel>
+			<panel-mail>
+				<mail-messages limit="4" />
+				<mail-followers />
+			</panel-mail>
 	</form>
     
     <form name="move-template-wizard-form" title="Generate move from template" model="com.axelor.apps.base.db.Wizard" width="large" 
