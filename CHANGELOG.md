@@ -1,6 +1,7 @@
 # Changelog
 ## [Unreleased 5.2.9]
 ## Improvements
+- COST SHEET: in batch computing work in progress valuation, compute cost for ongoing manuf orders at the valuation date.
 ## Bug Fixes
 
 ## [5.2.8] - 2020-04-14

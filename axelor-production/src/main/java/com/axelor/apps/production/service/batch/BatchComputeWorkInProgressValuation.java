@@ -66,9 +66,14 @@ public class BatchComputeWorkInProgressValuation extends AbstractBatch {
     List<ManufOrder> manufOrderList = null;
     Map<String, Object> bindValues = new HashMap<String, Object>();
     String domain =
-        "(self.statusSelect = :statusSelectInProgress or self.statusSelect = :statusSelectStandBy)";
+        "(self.statusSelect = :statusSelectInProgress or self.statusSelect = :statusSelectStandBy "
+            + "or (self.statusSelect = :statusSelectFinished "
+            + "AND self.realEndDateT BETWEEN :valuationDateT AND :todayDateT))";
     bindValues.put("statusSelectInProgress", ManufOrderRepository.STATUS_IN_PROGRESS);
     bindValues.put("statusSelectStandBy", ManufOrderRepository.STATUS_STANDBY);
+    bindValues.put("statusSelectFinished", ManufOrderRepository.STATUS_FINISHED);
+    bindValues.put("valuationDateT", valuationDate.atStartOfDay());
+    bindValues.put("todayDateT", appBaseService.getTodayDateTime().toLocalDateTime());
 
     if (company != null && workshopStockLocation == null) {
       domain += " and self.company.id = :companyId";
