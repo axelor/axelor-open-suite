@@ -1,6 +1,7 @@
 # Changelog
 ## [Unreleased 5.3.4]
 ## Improvements
+- USER: fix filter for activeCompany
 ## Bug Fixes
 - WORKSHOP STOCK LOCATION : Fix config being ignored
 - PURCHASE : Fix fields where negative values shouldn't be allowed
