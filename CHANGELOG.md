@@ -9,6 +9,7 @@
 - SALES : Fix fields where negative values shouldn't be allowed
 - Manuf Order: add missing translations.
 - STOCK MOVE : Product translation in birt.
+- Invoice Line; Fix hidden price field in form.
 
 ## [5.3.3] - 2020-04-14
 ## Improvements
