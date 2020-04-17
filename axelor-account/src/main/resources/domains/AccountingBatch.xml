@@ -57,7 +57,8 @@
     <boolean name="allocatePerPartner" title="Allocate per partner"/>
 	 <string name="moveDescription" title="Move description"/>
 
-
+	<!-- REALIZED FIXED ASSET LINES -->
+	<boolean name="updateAllRealizedFixedAssetLines" title="Update all realized fixed asset lines"/>
   	<extra-code><![CDATA[
 	
 	   	// ACTION TYPE
