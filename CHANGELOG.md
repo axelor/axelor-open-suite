@@ -5,6 +5,7 @@
 ## Bug Fixes
 - Manuf Order: add missing translations.
 - BudgetLine : Resolve NPE on dates.
+- STOCK MOVE : Product translation in birt.
 
 ## [5.2.8] - 2020-04-14
 ## Improvements
