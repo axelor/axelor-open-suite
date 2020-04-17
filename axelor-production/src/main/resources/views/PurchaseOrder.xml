@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+ 
+	<form id="production-purchase-order-form" name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" extension="true">
+	 
+	  <extend target="//field[@name='receiptState']">
+	  
+        <insert position="after">
+          <field name="outsourcingOrderReceiptState" showTitle="false" colSpan="1">
+            <viewer><![CDATA[
+                  <span/>
+                  <span class="label label-success" ng-show="record.outsourcingOrder" style="background-color: #00008B" x-translate>Outsourcing</span>
+            ]]></viewer>
+          </field>
+        </insert>
+        
+      </extend>
+      
+      <extend target="//panel-tabs[@name='mainPanelTab']/panel[@name='invoicingPanel']">
+        <insert position="after">
+           <panel name="outsourcing" title="Outsourcing" showIf="outsourcingOrder">
+             <panel-dashlet name="outsourcingPanel" action="action-production-view-manufacturing-order" title="Outsourcing" colSpan="12"/>
+           </panel>
+        </insert>
+      </extend>
+      
+      <extend target="//field[@name='purchaseOrderSeq']">
+       <attribute name="colSpan" value="9"/>
+      </extend>
+      
+	</form>
+	
+	<action-view name="action-production-view-manufacturing-order" model="com.axelor.apps.production.db.ManufOrder" title="Outsourcing">
+	   <view type="grid" name="manuf-order-grid"/>
+	   <view type="form" name="manuf-order-form" />
+	   <domain>self.purchaseOrder.id = :Id</domain>
+	   <context name="Id" expr="eval: id"/>
+	</action-view>
+	
+</object-views>

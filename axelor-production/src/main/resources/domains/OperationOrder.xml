@@ -55,6 +55,9 @@
     <many-to-one name="barCode" ref="com.axelor.meta.db.MetaFile" title="Barcode" readonly="true"/>
 
     <many-to-one name="machineTool" ref="com.axelor.apps.production.db.MachineTool" title="Tools" initParam="true"/>
+    <boolean name="useLineInGeneratedPurchaseOrder" title="Use this line in the generated purchase order" />
+    
+    <boolean name="outsourcing" title="Outsourcing"/>
 
 	<extra-code><![CDATA[
 		// STATUS SELECT

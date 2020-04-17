@@ -723,6 +723,8 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
                                 .add(this.computeSubTimeSpent(updateProject));
                         updateProject.setTimeSpent(timeSpent);
 
+                        projectRepo.save(updateProject);
+
                         this.computeParentTimeSpent(updateProject);
                       });
                   done = true;
@@ -767,7 +769,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   public BigDecimal computeSubTimeSpent(Project project) {
     BigDecimal sum = BigDecimal.ZERO;
     List<Project> subProjectList =
-        Beans.get(ProjectRepository.class).all().filter("self.parentProject = ?1", project).fetch();
+        projectRepo.all().filter("self.parentProject = ?1", project).fetch();
     if (subProjectList == null || subProjectList.isEmpty()) {
       return this.computeTimeSpent(project);
     }
@@ -784,6 +786,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       return;
     }
     parentProject.setTimeSpent(project.getTimeSpent().add(this.computeTimeSpent(parentProject)));
+    projectRepo.save(parentProject);
     this.computeParentTimeSpent(parentProject);
   }
 
@@ -791,7 +794,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   public BigDecimal computeTimeSpent(Project project) {
     BigDecimal sum = BigDecimal.ZERO;
     List<TimesheetLine> timesheetLineList =
-        Beans.get(TimesheetLineRepository.class)
+        timesheetlineRepo
             .all()
             .filter(
                 "self.project = ?1 AND self.timesheet.statusSelect = ?2",
@@ -1152,15 +1155,6 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
         employee != null
             ? employee.getPublicHolidayEventsPlanning()
             : config.getPublicHolidayEventsPlanning();
-
-    if (timesheet.getTimesheetLineList() != null && !timesheet.getTimesheetLineList().isEmpty()) {
-      fromDate =
-          timesheet.getTimesheetLineList().stream()
-              .map(TimesheetLine::getDate)
-              .max(LocalDate::compareTo)
-              .get()
-              .plusDays(1);
-    }
 
     for (LocalDate date = fromDate; !date.isAfter(toDate); date = date.plusDays(1)) {
       BigDecimal dayValueInHours =

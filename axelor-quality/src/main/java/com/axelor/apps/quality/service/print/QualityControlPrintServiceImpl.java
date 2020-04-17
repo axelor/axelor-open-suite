@@ -18,7 +18,6 @@
 package com.axelor.apps.quality.service.print;
 
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.quality.db.QualityControl;
 import com.axelor.apps.quality.exception.IExceptionMessage;
 import com.axelor.apps.quality.report.IReport;
@@ -27,9 +26,7 @@ import com.axelor.apps.tool.file.PdfTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import java.io.File;
-import java.time.format.DateTimeFormatter;
 
 public class QualityControlPrintServiceImpl {
 
@@ -42,13 +39,7 @@ public class QualityControlPrintServiceImpl {
       throws AxelorException {
 
     String fileName =
-        I18n.get("QualityControl")
-            + " - "
-            + Beans.get(AppBaseService.class)
-                .getTodayDate()
-                .format(DateTimeFormatter.BASIC_ISO_DATE)
-            + "."
-            + format;
+        I18n.get("QualityControl") + " - " + qualityControl.getSequence() + "." + format;
 
     return PdfTool.getFileLinkFromPdfFile(print(qualityControl, format), fileName);
   }

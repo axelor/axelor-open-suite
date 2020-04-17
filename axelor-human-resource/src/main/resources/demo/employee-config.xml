@@ -24,6 +24,12 @@
 	<input file="hr_kilometricAllowanceRule.csv" type="com.axelor.apps.hr.db.KilometricAllowanceRule" separator=";"/>
 	
 	<input file="hr_employee.csv" separator=";" type="com.axelor.apps.hr.db.Employee" search="self.importId  = :importId"/>
+	
+	<input file="hr_contract.csv" separator=";" type="com.axelor.apps.hr.db.EmploymentContract" search="self.importId = :importId"/>
+	
+	<input file="hr_employee.csv" separator=";" type="com.axelor.apps.hr.db.Employee" search="self.importId  = :importId" update="true">
+		<bind to="mainEmploymentContract" search="self.importId = :importId"/>
+	</input>
  	
  	<input file="auth_user.csv" separator=";" search="self.importId = :importId" type="com.axelor.auth.db.User" update="true" />
 	

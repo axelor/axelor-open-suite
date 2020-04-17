@@ -29,16 +29,6 @@
 "perm.project.rwc";"com.axelor.apps.project.db.*";"true";"true";"true";"false";"true";;
 "perm.cash.management.rwc";"com.axelor.apps.cash.management.db.*";"true";"true";"true";"false";"true";;
 "perm.businessproject.rwc";"com.axelor.apps.businessproject.db.*";"true";"true";"true";"false";"true";;
-"perm.base.app.block";"com.axelor.apps.base.App";"false";"false";"false";"false";"false";;
-"perm.account.config.block";"com.axelor.apps.account.db.AccountConfig";"false";"false";"false";"false";"false";;
-"perm.bankpayment.config.block";"com.axelor.apps.bankpayment.db.BankPaymentConfig";"false";"false";"false";"false";"false";;
-"perm.sale.config.block";"com.axelor.apps.sale.db.SaleConfig";"false";"false";"false";"false";"false";;
-"perm.stock.config.block";"com.axelor.apps.stock.db.StockConfig";"false";"false";"false";"false";"false";;
-"perm.purchase.config.block";"com.axelor.apps.purchase.db.PurchaseConfig";"false";"false";"false";"false";"false";;
-"perm.production.config.block";"com.axelor.apps.production.db.ProductionConfig";"false";"false";"false";"false";"false";;
-"perm.hr.config.block";"com.axelor.apps.hr.db.HRConfig";"false";"false";"false";"false";"false";;
-"perm.crm.config.block";"com.axelor.apps.crm.db.CrmConfig";"false";"false";"false";"false";"false";;
-"perm.supplychain.config.block";"com.axelor.apps.supplychain.db.SupplyChainConfig";"false";"false";"false";"false";"false";;
 "perm.base.company.r";"com.axelor.apps.base.db.Company";"true";"false";"false";"false";"false";;
 "perm.base.calendar.shared.readonly";"com.axelor.apps.base.db.Icalendar";"true";"false";"false";"false";"false";"(?1) in (SELECT setting.sharedWith FROM self.sharingSettingList setting WHERE setting.visible = true AND setting.rights = 1) OR self.user = (?1)";"__user__"
 "perm.base.calendar.shared.modification";"com.axelor.apps.base.db.Icalendar";"true";"true";"true";"true";"true";"(?1) in (SELECT setting.sharedWith FROM self.sharingSettingList setting WHERE setting.visible = true AND setting.rights = 2) OR self.user = (?1)";"__user__"

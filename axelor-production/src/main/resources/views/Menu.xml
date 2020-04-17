@@ -39,9 +39,10 @@
 
 	<action-view name="manufacturing.root.personalized.bill.of.material" title="Personalized BoM"
 				 model="com.axelor.apps.production.db.BillOfMaterial" >
-		<view type="grid" name="bill-of-material-grid" />
+		<view type="grid" name="personalized-bill-of-material-grid" />
 		<view type="form" name="bill-of-material-form" />
 		<domain>self.defineSubBillOfMaterial = true AND self.personalized = true</domain>
+		<context name="_isPersonalized" expr="eval: true"/>
 	</action-view>
 	
 	<menuitem name="manufacturing-root-prod-process" parent="manufacturing-root"
@@ -327,8 +328,8 @@
 				 model="com.axelor.apps.sale.db.Configurator" >
 		<view type="grid" name="configurator-grid" />
 		<view type="form" name="configurator-form" />
-		<domain>:__user__ MEMBER OF self.configuratorCreator.authorizedUserSet OR :groupId MEMBER OF self.configuratorCreator.authorizedGroupSet</domain>
-		<context name="groupId" expr="eval: __user__.group.id"/>
+		<domain>:__user__ MEMBER OF self.configuratorCreator.authorizedUserSet OR :_group MEMBER OF self.configuratorCreator.authorizedGroupSet</domain>
+		<context name="_group" expr="eval: __user__.group"/>
 	</action-view>
 
 	<menuitem name="manufacturing-conf-configurators-bom" parent="manufacturing-conf-configurators" order="30"

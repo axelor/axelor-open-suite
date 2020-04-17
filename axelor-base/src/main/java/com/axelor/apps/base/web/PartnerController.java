@@ -384,4 +384,14 @@ public class PartnerController {
       TraceBackService.trace(e);
     }
   }
+
+  public void setTaxNbr(ActionRequest request, ActionResponse response) {
+    try {
+      Partner partner = request.getContext().asType(Partner.class);
+      String taxNbr = Beans.get(PartnerService.class).getTaxNbrFromRegistrationCode(partner);
+      response.setValue("taxNbr", taxNbr);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+  }
 }

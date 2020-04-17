@@ -29,13 +29,17 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.auth.db.User;
+import com.axelor.db.JpaSecurity;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.rpc.filter.Filter;
+import com.axelor.rpc.filter.JPQLFilter;
 import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +52,7 @@ public class ClientViewServiceImpl implements ClientViewService {
   protected TicketRepository ticketRepo;
   protected InvoiceRepository invoiceRepo;
   protected TeamTaskRepository teamTaskRepo;
+  protected JpaSecurity security;
 
   protected static final DateTimeFormatter DATE_FORMATTER =
       DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -61,13 +66,15 @@ public class ClientViewServiceImpl implements ClientViewService {
       ProjectRepository projectRepo,
       TicketRepository ticketRepo,
       InvoiceRepository invoiceRepo,
-      TeamTaskRepository teamTaskRepo) {
+      TeamTaskRepository teamTaskRepo,
+      JpaSecurity jpaSecurity) {
     this.saleOrderRepo = saleOrderRepo;
     this.stockMoveRepo = stockMoveRepo;
     this.projectRepo = projectRepo;
     this.ticketRepo = ticketRepo;
     this.invoiceRepo = invoiceRepo;
     this.teamTaskRepo = teamTaskRepo;
+    this.security = jpaSecurity;
   }
 
   @Override
@@ -108,18 +115,21 @@ public class ClientViewServiceImpl implements ClientViewService {
 
   /* SaleOrder Indicators */
   protected Integer getOrdersInProgressIndicator(User user) {
-    List<SaleOrder> saleOrderList =
-        saleOrderRepo.all().filter(getOrdersInProgressOfUser(user)).fetch();
+    List<Filter> filters = getOrdersInProgressOfUser(user);
+    List<SaleOrder> saleOrderList = Filter.and(filters).build(SaleOrder.class).fetch();
     return !saleOrderList.isEmpty() ? saleOrderList.size() : 0;
   }
 
   protected Integer getQuotationsIndicator(User user) {
-    List<SaleOrder> saleOrderList = saleOrderRepo.all().filter(getQuotationsOfUser(user)).fetch();
+    List<Filter> filters = getQuotationsOfUser(user);
+    List<SaleOrder> saleOrderList = Filter.and(filters).build(SaleOrder.class).fetch();
     return !saleOrderList.isEmpty() ? saleOrderList.size() : 0;
   }
 
   protected String getLastOrderIndicator(User user) {
-    SaleOrder saleOrder = saleOrderRepo.all().filter(getLastOrderOfUser(user)).fetchOne();
+    List<Filter> filters = getLastOrderOfUser(user);
+    SaleOrder saleOrder =
+        Filter.and(filters).build(SaleOrder.class).order("-confirmationDateTime").fetchOne();
     if (saleOrder == null) {
       return I18n.get(CLIENT_PORTAL_NO_DATE);
     }
@@ -130,7 +140,8 @@ public class ClientViewServiceImpl implements ClientViewService {
 
   /* StockMove Indicators */
   protected String getLastDeliveryIndicator(User user) {
-    StockMove stockMove = stockMoveRepo.all().filter(getLastDeliveryOfUser(user)).fetchOne();
+    List<Filter> filters = getLastDeliveryOfUser(user);
+    StockMove stockMove = Filter.and(filters).build(StockMove.class).order("-realDate").fetchOne();
     if (stockMove == null) {
       return I18n.get(CLIENT_PORTAL_NO_DATE);
     }
@@ -140,7 +151,9 @@ public class ClientViewServiceImpl implements ClientViewService {
   }
 
   protected String getNextDeliveryIndicator(User user) {
-    StockMove stockMove = stockMoveRepo.all().filter(getNextDeliveryOfUser(user)).fetchOne();
+    List<Filter> filters = getNextDeliveryOfUser(user);
+    StockMove stockMove =
+        Filter.and(filters).build(StockMove.class).order("estimatedDate").fetchOne();
     if (stockMove == null) {
       return I18n.get(CLIENT_PORTAL_NO_DATE);
     }
@@ -150,29 +163,33 @@ public class ClientViewServiceImpl implements ClientViewService {
   }
 
   protected Integer getPlannedDeliveriesIndicator(User user) {
-    List<StockMove> stockMoveList =
-        stockMoveRepo.all().filter(getPlannedDeliveriesOfUser(user)).fetch();
+    List<Filter> filters = getPlannedDeliveriesOfUser(user);
+    List<StockMove> stockMoveList = Filter.and(filters).build(StockMove.class).fetch();
     return !stockMoveList.isEmpty() ? stockMoveList.size() : 0;
   }
 
   protected Integer getReversionsIndicator(User user) {
-    List<StockMove> stockMoveList = stockMoveRepo.all().filter(getReversionsOfUser(user)).fetch();
+    List<Filter> filters = getReversionsOfUser(user);
+    List<StockMove> stockMoveList = Filter.and(filters).build(StockMove.class).fetch();
     return !stockMoveList.isEmpty() ? stockMoveList.size() : 0;
   }
 
   /* Invoice Indicators */
   protected Integer getOverdueInvoicesIndicator(User user) {
-    List<Invoice> invoiceList = invoiceRepo.all().filter(getOverdueInvoicesOfUser(user)).fetch();
+    List<Filter> filters = getOverdueInvoicesOfUser(user);
+    List<Invoice> invoiceList = Filter.and(filters).build(Invoice.class).fetch();
     return !invoiceList.isEmpty() ? invoiceList.size() : 0;
   }
 
   protected Integer getAwaitingInvoicesIndicator(User user) {
-    List<Invoice> invoiceList = invoiceRepo.all().filter(getAwaitingInvoicesOfUser(user)).fetch();
+    List<Filter> filters = getAwaitingInvoicesOfUser(user);
+    List<Invoice> invoiceList = Filter.and(filters).build(Invoice.class).fetch();
     return !invoiceList.isEmpty() ? invoiceList.size() : 0;
   }
 
   protected String getTotalRemainingIndicator(User user) {
-    List<Invoice> invoiceList = invoiceRepo.all().filter(getTotalRemainingOfUser(user)).fetch();
+    List<Filter> filters = getTotalRemainingOfUser(user);
+    List<Invoice> invoiceList = Filter.and(filters).build(Invoice.class).fetch();
     if (!invoiceList.isEmpty()) {
       BigDecimal total =
           invoiceList.stream()
@@ -185,316 +202,484 @@ public class ClientViewServiceImpl implements ClientViewService {
   }
 
   protected Integer getRefundIndicator(User user) {
-    List<Invoice> invoiceList = invoiceRepo.all().filter(getRefundOfUser(user)).fetch();
+    List<Filter> filters = getRefundOfUser(user);
+    List<Invoice> invoiceList = Filter.and(filters).build(Invoice.class).fetch();
     return !invoiceList.isEmpty() ? invoiceList.size() : 0;
   }
 
   /* Helpdesk Indicators */
   protected Integer getCustomerTicketsIndicator(User user) {
-    List<Ticket> ticketList = ticketRepo.all().filter(getTicketsOfUser(user)).fetch();
+    List<Filter> filters = getTicketsOfUser(user);
+    List<Ticket> ticketList = Filter.and(filters).build(Ticket.class).fetch();
     return !ticketList.isEmpty() ? ticketList.size() : 0;
   }
 
   protected Integer getCompanyTicketsIndicator(User user) {
-    List<Ticket> ticketList = ticketRepo.all().filter(getCompanyTicketsOfUser(user)).fetch();
+    List<Filter> filters = getCompanyTicketsOfUser(user);
+    List<Ticket> ticketList = Filter.and(filters).build(Ticket.class).fetch();
     return !ticketList.isEmpty() ? ticketList.size() : 0;
   }
 
   protected Integer getResolvedTicketsIndicator(User user) {
-    List<Ticket> ticketList = ticketRepo.all().filter(getResolvedTicketsOfUser(user)).fetch();
+    List<Filter> filters = getResolvedTicketsOfUser(user);
+    List<Ticket> ticketList = Filter.and(filters).build(Ticket.class).fetch();
     return !ticketList.isEmpty() ? ticketList.size() : 0;
   }
 
   protected Object getLateTicketsIndicator(User user) {
-    List<Ticket> ticketList = ticketRepo.all().filter(getLateTicketsOfUser(user)).fetch();
+    List<Filter> filters = getLateTicketsOfUser(user);
+    List<Ticket> ticketList = Filter.and(filters).build(Ticket.class).fetch();
     return !ticketList.isEmpty() ? ticketList.size() : 0;
   }
 
   /* Project Indicators */
   protected Integer getTotalProjectsIndicator(User user) {
-    List<Project> projectList = projectRepo.all().filter(getTotalProjectsOfUser(user)).fetch();
+    List<Filter> filters = getTotalProjectsOfUser(user);
+    List<Project> projectList = Filter.and(filters).build(Project.class).fetch();
     return !projectList.isEmpty() ? projectList.size() : 0;
   }
 
   protected Integer getNewTasksIndicator(User user) {
-    List<TeamTask> teamTaskList = teamTaskRepo.all().filter(getNewTasksOfUser(user)).fetch();
+    List<Filter> filters = getNewTasksOfUser(user);
+    List<TeamTask> teamTaskList = Filter.and(filters).build(TeamTask.class).fetch();
     return !teamTaskList.isEmpty() ? teamTaskList.size() : 0;
   }
 
   protected Integer getTasksInProgressIndicator(User user) {
-    List<TeamTask> teamTaskList = teamTaskRepo.all().filter(getTasksInProgressOfUser(user)).fetch();
+    List<Filter> filters = getTasksInProgressOfUser(user);
+    List<TeamTask> teamTaskList = Filter.and(filters).build(TeamTask.class).fetch();
     return !teamTaskList.isEmpty() ? teamTaskList.size() : 0;
   }
 
   protected Integer getTasksDueIndicator(User user) {
-    List<TeamTask> teamTaskList = teamTaskRepo.all().filter(getTasksDueOfUser(user)).fetch();
+    List<Filter> filters = getTasksDueOfUser(user);
+    List<TeamTask> teamTaskList = Filter.and(filters).build(TeamTask.class).fetch();
     return !teamTaskList.isEmpty() ? teamTaskList.size() : 0;
   }
 
   /* SaleOrder Query */
   @Override
-  public String getOrdersInProgressOfUser(User user) {
-    String query =
-        "self.clientPartner.id = "
-            + user.getPartner().getId()
-            + " AND self.statusSelect = "
-            + SaleOrderRepository.STATUS_ORDER_CONFIRMED;
+  public List<Filter> getOrdersInProgressOfUser(User user) {
+
+    List<Filter> filters = new ArrayList<>();
+    Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, SaleOrder.class);
+    Filter filter =
+        new JPQLFilter(
+            "self.clientPartner.id = "
+                + user.getPartner().getId()
+                + " AND self.statusSelect = "
+                + SaleOrderRepository.STATUS_ORDER_CONFIRMED);
+
     if (user.getActiveCompany() != null) {
-      query = query + " AND self.company.id = " + user.getActiveCompany().getId();
+      filter =
+          Filter.and(
+              filter, new JPQLFilter(" self.company.id = " + user.getActiveCompany().getId()));
     }
-    return query;
+    filters.add(filter);
+    addPermissionFilter(filters, filterFromPermission);
+    return filters;
   }
 
   @Override
-  public String getQuotationsOfUser(User user) {
-    String query =
-        "self.clientPartner.id = "
-            + user.getPartner().getId()
-            + " AND self.statusSelect IN ("
-            + SaleOrderRepository.STATUS_DRAFT_QUOTATION
-            + ","
-            + SaleOrderRepository.STATUS_FINALIZED_QUOTATION
-            + ")";
+  public List<Filter> getQuotationsOfUser(User user) {
+    List<Filter> filters = new ArrayList<>();
+    Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, SaleOrder.class);
+    Filter filter =
+        new JPQLFilter(
+            "self.clientPartner.id = "
+                + user.getPartner().getId()
+                + " AND self.statusSelect IN ("
+                + SaleOrderRepository.STATUS_DRAFT_QUOTATION
+                + ","
+                + SaleOrderRepository.STATUS_FINALIZED_QUOTATION
+                + ")");
+
     if (user.getActiveCompany() != null) {
-      query = query + " AND self.company.id = " + user.getActiveCompany().getId();
+      filter =
+          Filter.and(
+              filter, new JPQLFilter(" self.company.id = " + user.getActiveCompany().getId()));
     }
-    return query;
+
+    filters.add(filter);
+    addPermissionFilter(filters, filterFromPermission);
+    return filters;
   }
 
   @Override
-  public String getLastOrderOfUser(User user) {
-    String query =
-        "self.clientPartner.id = "
-            + user.getPartner().getId()
-            + " AND self.statusSelect = "
-            + SaleOrderRepository.STATUS_ORDER_COMPLETED;
+  public List<Filter> getLastOrderOfUser(User user) {
+    List<Filter> filters = new ArrayList<>();
+    Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, SaleOrder.class);
+    Filter filter =
+        new JPQLFilter(
+            "self.clientPartner.id = "
+                + user.getPartner().getId()
+                + " AND self.statusSelect = "
+                + SaleOrderRepository.STATUS_ORDER_COMPLETED);
 
     if (user.getActiveCompany() != null) {
-      query = query + " AND self.company.id = " + user.getActiveCompany().getId();
+      filter =
+          Filter.and(
+              filter, new JPQLFilter(" self.company.id = " + user.getActiveCompany().getId()));
     }
-    query = query + " ORDER BY self.confirmationDateTime DESC";
-    return query;
+    filters.add(filter);
+    addPermissionFilter(filters, filterFromPermission);
+    return filters;
   }
 
   /* StockMove Query */
   @Override
-  public String getLastDeliveryOfUser(User user) {
-    String query =
-        "self.partner.id = "
-            + user.getPartner().getId()
-            + " AND self.typeSelect = "
-            + StockMoveRepository.TYPE_OUTGOING
-            + " AND self.statusSelect = "
-            + StockMoveRepository.STATUS_REALIZED
-            + " AND self.isReversion != true";
+  public List<Filter> getLastDeliveryOfUser(User user) {
+    List<Filter> filters = new ArrayList<>();
+    Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, StockMove.class);
+    Filter filter =
+        new JPQLFilter(
+            "self.partner.id = "
+                + user.getPartner().getId()
+                + " AND self.typeSelect = "
+                + StockMoveRepository.TYPE_OUTGOING
+                + " AND self.statusSelect = "
+                + StockMoveRepository.STATUS_REALIZED
+                + " AND self.isReversion != true");
+
     if (user.getActiveCompany() != null) {
-      query = query + " AND self.company.id = " + user.getActiveCompany().getId();
+      filter =
+          Filter.and(
+              filter, new JPQLFilter(" self.company.id = " + user.getActiveCompany().getId()));
     }
-    query = query + " ORDER BY self.realDate DESC";
-    return query;
+    if (filterFromPermission != null) {
+      filter = Filter.and(filter, filterFromPermission);
+    }
+    filters.add(filter);
+    addPermissionFilter(filters, filterFromPermission);
+    return filters;
   }
 
   @Override
-  public String getNextDeliveryOfUser(User user) {
-    String query =
-        "self.partner.id = "
-            + user.getPartner().getId()
-            + " AND self.typeSelect = "
-            + StockMoveRepository.TYPE_OUTGOING
-            + " AND self.statusSelect = "
-            + StockMoveRepository.STATUS_PLANNED
-            + " AND self.isReversion != true";
+  public List<Filter> getNextDeliveryOfUser(User user) {
+    List<Filter> filters = new ArrayList<>();
+    Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, StockMove.class);
+    Filter filter =
+        new JPQLFilter(
+            "self.partner.id = "
+                + user.getPartner().getId()
+                + " AND self.typeSelect = "
+                + StockMoveRepository.TYPE_OUTGOING
+                + " AND self.statusSelect = "
+                + StockMoveRepository.STATUS_PLANNED
+                + " AND self.isReversion != true");
+
     if (user.getActiveCompany() != null) {
-      query = query + " AND self.company.id = " + user.getActiveCompany().getId();
+      filter =
+          Filter.and(
+              filter, new JPQLFilter(" self.company.id = " + user.getActiveCompany().getId()));
     }
-    query = query + " ORDER BY self.estimatedDate ASC";
-    return query;
+    filters.add(filter);
+    addPermissionFilter(filters, filterFromPermission);
+    return filters;
+  }
+
+  private void addPermissionFilter(List<Filter> filters, Filter filterFromPermission) {
+    if (filterFromPermission != null) {
+      filters.add(filterFromPermission);
+    }
   }
 
   @Override
-  public String getPlannedDeliveriesOfUser(User user) {
-    String query =
-        "self.partner.id = "
-            + user.getPartner().getId()
-            + " AND self.typeSelect = "
-            + StockMoveRepository.TYPE_OUTGOING
-            + " AND self.statusSelect = "
-            + StockMoveRepository.STATUS_PLANNED
-            + " AND self.isReversion != true";
+  public List<Filter> getPlannedDeliveriesOfUser(User user) {
+    List<Filter> filters = new ArrayList<>();
+    Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, StockMove.class);
+    Filter filter =
+        new JPQLFilter(
+            "self.partner.id = "
+                + user.getPartner().getId()
+                + " AND self.typeSelect = "
+                + StockMoveRepository.TYPE_OUTGOING
+                + " AND self.statusSelect = "
+                + StockMoveRepository.STATUS_PLANNED
+                + " AND self.isReversion != true");
     if (user.getActiveCompany() != null) {
-      query = query + " AND self.company.id = " + user.getActiveCompany().getId();
+      filter =
+          Filter.and(
+              filter, new JPQLFilter(" self.company.id = " + user.getActiveCompany().getId()));
     }
-    return query;
+    filters.add(filter);
+    addPermissionFilter(filters, filterFromPermission);
+    return filters;
   }
 
   @Override
-  public String getReversionsOfUser(User user) {
-    String query =
-        "self.partner.id = "
-            + user.getPartner().getId()
-            + " AND self.typeSelect = "
-            + StockMoveRepository.TYPE_OUTGOING
-            + " AND self.isReversion = true";
+  public List<Filter> getReversionsOfUser(User user) {
+    List<Filter> filters = new ArrayList<>();
+    Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, StockMove.class);
+    Filter filter =
+        new JPQLFilter(
+            "self.partner.id = "
+                + user.getPartner().getId()
+                + " AND self.typeSelect = "
+                + StockMoveRepository.TYPE_OUTGOING
+                + " AND self.isReversion = true");
+
     if (user.getActiveCompany() != null) {
-      query = query + " AND self.company.id = " + user.getActiveCompany().getId();
+      filter =
+          Filter.and(
+              filter, new JPQLFilter(" self.company.id = " + user.getActiveCompany().getId()));
     }
-    return query;
+    filters.add(filter);
+    addPermissionFilter(filters, filterFromPermission);
+    return filters;
   }
 
   /* Invoice Query */
   @Override
-  public String getOverdueInvoicesOfUser(User user) {
-    String query =
-        "self.partner.id = "
-            + user.getPartner().getId()
-            + " AND self.dueDate < current_date() "
-            + " AND self.amountRemaining != 0 AND self.statusSelect != "
-            + InvoiceRepository.STATUS_DRAFT
-            + " AND self.statusSelect != "
-            + InvoiceRepository.STATUS_CANCELED;
+  public List<Filter> getOverdueInvoicesOfUser(User user) {
+    List<Filter> filters = new ArrayList<>();
+    Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, Invoice.class);
+    Filter filter =
+        new JPQLFilter(
+            "self.partner.id = "
+                + user.getPartner().getId()
+                + " AND self.dueDate < current_date() "
+                + " AND self.amountRemaining != 0 AND self.statusSelect != "
+                + InvoiceRepository.STATUS_DRAFT
+                + " AND self.statusSelect != "
+                + InvoiceRepository.STATUS_CANCELED);
+
     if (user.getActiveCompany() != null) {
-      query = query + " AND self.company.id = " + user.getActiveCompany().getId();
+      filter =
+          Filter.and(
+              filter, new JPQLFilter(" self.company.id = " + user.getActiveCompany().getId()));
     }
-    return query;
+    filters.add(filter);
+    addPermissionFilter(filters, filterFromPermission);
+    return filters;
   }
 
   @Override
-  public String getAwaitingInvoicesOfUser(User user) {
-    String query =
-        "self.partner.id = "
-            + user.getPartner().getId()
-            + " AND self.amountRemaining != 0 AND self.statusSelect != "
-            + InvoiceRepository.STATUS_DRAFT
-            + " AND self.statusSelect != "
-            + InvoiceRepository.STATUS_CANCELED;
+  public List<Filter> getAwaitingInvoicesOfUser(User user) {
+    List<Filter> filters = new ArrayList<>();
+    Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, Invoice.class);
+    Filter filter =
+        new JPQLFilter(
+            "self.partner.id = "
+                + user.getPartner().getId()
+                + " AND self.amountRemaining != 0 AND self.statusSelect != "
+                + InvoiceRepository.STATUS_DRAFT
+                + " AND self.statusSelect != "
+                + InvoiceRepository.STATUS_CANCELED);
+
     if (user.getActiveCompany() != null) {
-      query = query + " AND self.company.id = " + user.getActiveCompany().getId();
+      filter =
+          Filter.and(
+              filter, new JPQLFilter(" self.company.id = " + user.getActiveCompany().getId()));
     }
-    return query;
+    filters.add(filter);
+    addPermissionFilter(filters, filterFromPermission);
+    return filters;
   }
 
   @Override
-  public String getTotalRemainingOfUser(User user) {
-    String query =
-        "self.partner.id = "
-            + user.getPartner().getId()
-            + " AND self.amountRemaining != 0 AND self.statusSelect != "
-            + InvoiceRepository.STATUS_DRAFT
-            + " AND self.statusSelect != "
-            + InvoiceRepository.STATUS_CANCELED;
+  public List<Filter> getTotalRemainingOfUser(User user) {
+    List<Filter> filters = new ArrayList<>();
+    Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, Invoice.class);
+    Filter filter =
+        new JPQLFilter(
+            "self.partner.id = "
+                + user.getPartner().getId()
+                + " AND self.amountRemaining != 0 AND self.statusSelect != "
+                + InvoiceRepository.STATUS_DRAFT
+                + " AND self.statusSelect != "
+                + InvoiceRepository.STATUS_CANCELED);
+
     if (user.getActiveCompany() != null) {
-      query = query + " AND self.company.id = " + user.getActiveCompany().getId();
+      filter =
+          Filter.and(
+              filter, new JPQLFilter(" self.company.id = " + user.getActiveCompany().getId()));
     }
-    return query;
+    filters.add(filter);
+    addPermissionFilter(filters, filterFromPermission);
+
+    return filters;
   }
 
   @Override
-  public String getRefundOfUser(User user) {
-    String query =
-        "self.partner.id = "
-            + user.getPartner().getId()
-            + " AND self.operationTypeSelect = "
-            + InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND;
+  public List<Filter> getRefundOfUser(User user) {
+    List<Filter> filters = new ArrayList<>();
+    Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, Invoice.class);
+    Filter filter =
+        new JPQLFilter(
+            "self.partner.id = "
+                + user.getPartner().getId()
+                + " AND self.operationTypeSelect = "
+                + InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
+
     if (user.getActiveCompany() != null) {
-      query = query + " AND self.company.id = " + user.getActiveCompany().getId();
+      filter =
+          Filter.and(
+              filter, new JPQLFilter(" self.company.id = " + user.getActiveCompany().getId()));
     }
-    return query;
+    filters.add(filter);
+    addPermissionFilter(filters, filterFromPermission);
+
+    return filters;
   }
 
   /* Helpdesk Query */
   @Override
-  public String getTicketsOfUser(User user) {
-    return "self.customer.id = "
-        + user.getPartner().getId()
-        + " AND self.assignedToUser.id = "
-        + user.getId();
+  public List<Filter> getTicketsOfUser(User user) {
+    List<Filter> filters = new ArrayList<>();
+    Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, Ticket.class);
+    Filter filter =
+        new JPQLFilter(
+            "self.customer.id = "
+                + user.getPartner().getId()
+                + " AND self.assignedToUser.id = "
+                + user.getId());
+    filters.add(filter);
+    addPermissionFilter(filters, filterFromPermission);
+    return filters;
   }
 
   @Override
-  public String getCompanyTicketsOfUser(User user) {
-    return "self.customer.id = "
-        + user.getPartner().getId()
-        + " AND self.assignedToUser.id = "
-        + user.getActiveCompany().getId();
+  public List<Filter> getCompanyTicketsOfUser(User user) {
+    List<Filter> filters = new ArrayList<>();
+    Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, Ticket.class);
+    Filter filter =
+        new JPQLFilter(
+            "self.customer.id = "
+                + user.getPartner().getId()
+                + " AND self.assignedToUser.id = "
+                + user.getActiveCompany().getId());
+    filters.add(filter);
+    addPermissionFilter(filters, filterFromPermission);
+    return filters;
   }
 
   @Override
-  public String getResolvedTicketsOfUser(User user) {
-    return "self.customer.id = "
-        + user.getPartner().getId()
-        + " AND self.assignedToUser.id = "
-        + user.getId()
-        + " AND self.statusSelect IN ("
-        + TicketRepository.STATUS_RESOLVED
-        + ", "
-        + TicketRepository.STATUS_CLOSED
-        + ")";
+  public List<Filter> getResolvedTicketsOfUser(User user) {
+    List<Filter> filters = new ArrayList<>();
+    Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, Ticket.class);
+    Filter filter =
+        new JPQLFilter(
+            "self.customer.id = "
+                + user.getPartner().getId()
+                + " AND self.assignedToUser.id = "
+                + user.getId()
+                + " AND self.statusSelect IN ("
+                + TicketRepository.STATUS_RESOLVED
+                + ", "
+                + TicketRepository.STATUS_CLOSED
+                + ")");
+    filters.add(filter);
+    addPermissionFilter(filters, filterFromPermission);
+    return filters;
   }
 
   @Override
-  public String getLateTicketsOfUser(User user) {
-    return "self.customer.id = "
-        + user.getPartner().getId()
-        + " AND self.assignedToUser.id = "
-        + user.getId()
-        + " AND ((self.endDateT != null AND self.endDateT > self.deadlineDateT) "
-        + " OR (self.endDateT = null and self.deadlineDateT < current_date() ) )";
+  public List<Filter> getLateTicketsOfUser(User user) {
+    List<Filter> filters = new ArrayList<>();
+    Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, Ticket.class);
+    Filter filter =
+        new JPQLFilter(
+            "self.customer.id = "
+                + user.getPartner().getId()
+                + " AND self.assignedToUser.id = "
+                + user.getId()
+                + " AND ((self.endDateT != null AND self.endDateT > self.deadlineDateT) "
+                + " OR (self.endDateT = null and self.deadlineDateT < current_date() ) )");
+    filters.add(filter);
+    addPermissionFilter(filters, filterFromPermission);
+    return filters;
   }
 
   /* Project Query */
   @Override
-  public String getTotalProjectsOfUser(User user) {
-    String query =
-        "self.isProject = true AND self.clientPartner.id = "
-            + user.getPartner().getId()
-            + " AND self.statusSelect != "
-            + ProjectRepository.STATE_CANCELED;
+  public List<Filter> getTotalProjectsOfUser(User user) {
+    List<Filter> filters = new ArrayList<>();
+    Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, Project.class);
+    Filter filter =
+        new JPQLFilter(
+            "self.isProject = true AND self.clientPartner.id = "
+                + user.getPartner().getId()
+                + " AND self.statusSelect != "
+                + ProjectRepository.STATE_CANCELED);
+
     if (user.getActiveCompany() != null) {
-      query = query + " AND self.company.id = " + user.getActiveCompany().getId();
+      filter =
+          Filter.and(
+              filter, new JPQLFilter(" self.company.id = " + user.getActiveCompany().getId()));
     }
-    return query;
+    filters.add(filter);
+    addPermissionFilter(filters, filterFromPermission);
+
+    return filters;
   }
 
   @Override
-  public String getNewTasksOfUser(User user) {
-    String query =
-        "self.status = 'new' "
-            + " AND self.typeSelect = '"
-            + TeamTaskRepository.TYPE_TASK
-            + "' AND self.project.clientPartner.id = "
-            + user.getPartner().getId();
+  public List<Filter> getNewTasksOfUser(User user) {
+    List<Filter> filters = new ArrayList<>();
+    Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, TeamTask.class);
+    Filter filter =
+        new JPQLFilter(
+            "self.status = 'new' "
+                + " AND self.typeSelect = '"
+                + TeamTaskRepository.TYPE_TASK
+                + "' AND self.project.clientPartner.id = "
+                + user.getPartner().getId());
+
     if (user.getActiveCompany() != null) {
-      query = query + " AND self.project.company.id = " + user.getActiveCompany().getId();
+      filter =
+          Filter.and(
+              filter,
+              new JPQLFilter(" self.project.company.id = " + user.getActiveCompany().getId()));
     }
-    return query;
+    filters.add(filter);
+    addPermissionFilter(filters, filterFromPermission);
+    return filters;
   }
 
   @Override
-  public String getTasksInProgressOfUser(User user) {
-    String query =
-        "self.status = 'in-progress'"
-            + " AND self.typeSelect = '"
-            + TeamTaskRepository.TYPE_TASK
-            + "' AND self.project.clientPartner.id = "
-            + user.getPartner().getId();
+  public List<Filter> getTasksInProgressOfUser(User user) {
+    List<Filter> filters = new ArrayList<>();
+    Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, TeamTask.class);
+    Filter filter =
+        new JPQLFilter(
+            "self.status = 'in-progress'"
+                + " AND self.typeSelect = '"
+                + TeamTaskRepository.TYPE_TASK
+                + "' AND self.project.clientPartner.id = "
+                + user.getPartner().getId());
     if (user.getActiveCompany() != null) {
-      query = query + " AND self.project.company.id = " + user.getActiveCompany().getId();
+      filter =
+          Filter.and(
+              filter,
+              new JPQLFilter(" self.project.company.id = " + user.getActiveCompany().getId()));
     }
-    return query;
+    filters.add(filter);
+    addPermissionFilter(filters, filterFromPermission);
+    return filters;
   }
 
   @Override
-  public String getTasksDueOfUser(User user) {
-    String query =
-        "self.status IN ('in-progress','new')"
-            + " AND self.project.clientPartner.id = "
-            + user.getPartner().getId()
-            + " AND self.typeSelect = '"
-            + TeamTaskRepository.TYPE_TASK
-            + "' AND self.taskEndDate  < current_date() ";
+  public List<Filter> getTasksDueOfUser(User user) {
+    List<Filter> filters = new ArrayList<>();
+    Filter filterFromPermission = security.getFilter(JpaSecurity.CAN_READ, TeamTask.class);
+    Filter filter =
+        new JPQLFilter(
+            "self.status IN ('in-progress','new')"
+                + " AND self.project.clientPartner.id = "
+                + user.getPartner().getId()
+                + " AND self.typeSelect = '"
+                + TeamTaskRepository.TYPE_TASK
+                + "' AND self.taskEndDate  < current_date() ");
+
     if (user.getActiveCompany() != null) {
-      query = query + " AND self.project.company.id = " + user.getActiveCompany().getId();
+      filter =
+          Filter.and(
+              filter,
+              new JPQLFilter(" self.project.company.id = " + user.getActiveCompany().getId()));
     }
-    return query;
+    filters.add(filter);
+    addPermissionFilter(filters, filterFromPermission);
+    return filters;
   }
 }

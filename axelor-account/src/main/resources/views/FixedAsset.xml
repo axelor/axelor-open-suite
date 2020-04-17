@@ -50,6 +50,7 @@
 	    		<field name="periodicityInMonth" min="1" onChange="action-fixed-asset-category-record-compute-duration"/>
 	        	<field name="durationInMonth" readonly="true"/>
 	        	<field name="fixedAssetCategory.isProrataTemporis"/>
+	        	<field name="fixedAssetCategory.isUSProrataTemporis" showIf="fixedAssetCategory.isProrataTemporis"/>
     		</panel>
     	</panel-tabs>
 		
