@@ -17,19 +17,6 @@
  */
 package com.axelor.apps.account.service;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.Month;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.apache.commons.collections.CollectionUtils;
-
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FixedAsset;
@@ -51,6 +38,17 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class FixedAssetServiceImpl implements FixedAssetService {
 
@@ -506,15 +504,15 @@ public class FixedAssetServiceImpl implements FixedAssetService {
 
   @Override
   public int massValidation(List<Long> fixedAssetIds) {
-	  int count = 0;
-	  for(Long id : fixedAssetIds) {
-		  FixedAsset fixedAsset = fixedAssetRepo.find(id);
-		  if (fixedAsset.getStatusSelect() == FixedAssetRepository.STATUS_DRAFT) {
-			  validate(fixedAsset);
-			  JPA.clear();
-			  count ++;
-		  }
-	  }
+    int count = 0;
+    for (Long id : fixedAssetIds) {
+      FixedAsset fixedAsset = fixedAssetRepo.find(id);
+      if (fixedAsset.getStatusSelect() == FixedAssetRepository.STATUS_DRAFT) {
+        validate(fixedAsset);
+        JPA.clear();
+        count++;
+      }
+    }
     return count;
   }
 
@@ -523,6 +521,5 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     calendar.set(year, Calendar.FEBRUARY, 1);
     int maxDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
     return maxDays == day;
-
   }
 }

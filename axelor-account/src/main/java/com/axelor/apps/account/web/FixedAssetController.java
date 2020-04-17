@@ -28,15 +28,11 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.common.base.Function;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.tuple.Pair;
 
 @Singleton
 public class FixedAssetController {
@@ -101,24 +97,28 @@ public class FixedAssetController {
       TraceBackService.trace(response, e);
     }
   }
+
   @SuppressWarnings("unchecked")
   public void massValidation(ActionRequest request, ActionResponse response) {
     try {
-    	if (!ObjectUtils.isEmpty(request.getContext().get("_ids"))) {
-            List<Long> ids =
-                (List)
-                    (((List) request.getContext().get("_ids"))
-                        .stream()
-                            .filter(ObjectUtils::notEmpty)
-                            .map(input -> Long.parseLong(input.toString()))
-                            .collect(Collectors.toList()));
-    	int validatedFixedAssets = Beans.get(FixedAssetService.class).massValidation(ids);
-    	    response.setFlash( validatedFixedAssets + " " + I18n.get("fixed asset validated", "fixed assets validated",validatedFixedAssets));
-    		response.setReload(true);
-    	}
-    	else {
-    		response.setFlash(I18n.get("Please select something to validate"));
-    	}
+      if (!ObjectUtils.isEmpty(request.getContext().get("_ids"))) {
+        List<Long> ids =
+            (List)
+                (((List) request.getContext().get("_ids"))
+                    .stream()
+                        .filter(ObjectUtils::notEmpty)
+                        .map(input -> Long.parseLong(input.toString()))
+                        .collect(Collectors.toList()));
+        int validatedFixedAssets = Beans.get(FixedAssetService.class).massValidation(ids);
+        response.setFlash(
+            validatedFixedAssets
+                + " "
+                + I18n.get(
+                    "fixed asset validated", "fixed assets validated", validatedFixedAssets));
+        response.setReload(true);
+      } else {
+        response.setFlash(I18n.get("Please select something to validate"));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -24,9 +24,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.List;
-import org.apache.commons.lang3.tuple.Pair;
 
 public interface FixedAssetService {
 
