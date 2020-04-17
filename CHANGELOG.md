@@ -47,6 +47,7 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - PRODUCT: fix position of Variant button.
 - Project: fix some fields not being hidden properly.
 - PARTNER: hide panels related to invoice when invoice app is disabled.
+- MOVELINE: When a moveLine is manually created, equivalent account is searched as it is done on automatic moveLines creation.
 
 ## [5.3.2] - 2020-04-01
 ## Improvements
