@@ -1,9 +1,21 @@
 # Changelog
 ## [Unreleased 5.3.4]
 ## Improvements
-- Improve consistency of grid and card view menus
+- USER: fix filter for activeCompany
+- COST SHEET: in batch computing work in progress valuation, compute cost for ongoing manuf orders at the valuation date.
+- ACCOUNTING BATCH : add start and end date of realizing fixed asset line
+- Improve consistency of grid and card view menus.
 
 ## Bug Fixes
+- WORKSHOP STOCK LOCATION : Fix config being ignored
+- PURCHASE : Fix fields where negative values shouldn't be allowed
+- SALES : Fix fields where negative values shouldn't be allowed
+- Manuf Order: add missing translations.
+- STOCK MOVE : Product translation in birt.
+- Invoice Line: Fix hidden price field in form.
+- Account: Fix incomplete sequences in english data init.
+- INVOICELINE: fix hideIf for discountAmount.
+- Product form: fix typo in help message.
 
 ## [5.3.3] - 2020-04-14
 ## Improvements
@@ -41,6 +53,7 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - PRODUCT: fix position of Variant button.
 - Project: fix some fields not being hidden properly.
 - PARTNER: hide panels related to invoice when invoice app is disabled.
+- EMPLOYEE : Fixed contactPartner fullName compute.
 
 ## [5.3.2] - 2020-04-01
 ## Improvements

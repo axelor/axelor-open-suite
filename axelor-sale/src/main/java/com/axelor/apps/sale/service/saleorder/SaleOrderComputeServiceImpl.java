@@ -203,8 +203,10 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
             isShowTotal = saleOrderLine.getIsShowTotal();
           } else {
             isFirstTitleLine = true;
+            saleOrderLine.setQty(BigDecimal.ZERO);
           }
-          saleOrderLine.setExTaxTotal(isShowTotal ? totalAmount : BigDecimal.ZERO);
+          saleOrderLine.setExTaxTotal(
+              isFirstTitleLine && isShowTotal ? totalAmount : BigDecimal.ZERO);
           totalAmount = BigDecimal.ZERO;
         }
         if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL) {
