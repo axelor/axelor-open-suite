@@ -961,7 +961,7 @@
 "Next N°","Siguiente N°",,
 "Next task",,,
 "No","No",,
-"No Discount","Sin Descuento",,
+"No discount","Sin Descuento",,
 "No active company for this user, please define an active company.","Ninguna empresa activa para este usuario, por favor, defina una empresa activa.",,
 "No currency conversion found from '%s' to '%s' for date %s","No se encontró ninguna conversión de moneda de '%s' a '%s' para la fecha %s",,
 "No currency conversion rate found for the date %s to %s. Please change the conversion date","No se encontró ninguna tasa de conversión de moneda para la fecha %s a %s. Por favor, cambie la fecha de conversión",,

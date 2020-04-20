@@ -40,11 +40,11 @@
   	<decimal name="inTaxTotal" title="Total A.T.I."/>
   	
   	<string name="description" title="Description" large="true"/>
-  	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+  	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit" required="true"/>
   	
   	<many-to-one name="supplierPartner" ref="com.axelor.apps.base.db.Partner" title="Supplier"/>
   	<decimal name="discountAmount" title="Discount amount" precision="20" scale="10"/>
-  	<integer name="discountTypeSelect" title="Discount Type" selection="base.price.list.line.amount.type.select" default="0"/>
+  	<integer name="discountTypeSelect" title="Discount type" selection="base.price.list.line.amount.type.select" default="0"/>
   	  	
   	<date name="estimatedDelivDate" title="Estimated shipping date"/>
 	<date name="desiredDelivDate" title="Desired delivery date"/>

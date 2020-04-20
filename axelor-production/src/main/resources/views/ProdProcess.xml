@@ -6,7 +6,7 @@
   <grid name="prod-process-grid" title="Production process" model="com.axelor.apps.production.db.ProdProcess">
 		<field name="name"/>
 		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-    <field name="workshopStockLocation"/>
+    <field name="workshopStockLocation" if="__config__.app.getApp('production').getManageWorkshop()"/>
 		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="stockLocation" grid-view="stock-location-grid" form-view="stock-location-form"/>
     <field name="product"/>
