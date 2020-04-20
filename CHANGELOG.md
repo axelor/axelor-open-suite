@@ -11,6 +11,7 @@
 - STOCK MOVE : Product translation in birt.
 - Invoice Line: Fix hidden price field in form.
 - Account: Fix incomplete sequences in english data init.
+- INVOICELINE: fix hideIf for discountAmount.
 
 ## [5.3.3] - 2020-04-14
 ## Improvements

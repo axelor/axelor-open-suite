@@ -146,7 +146,7 @@
 				<field name="invoice" hidden="true" />
 				<panel name="discountPanel" title="Discount" colSpan="12">
 					<field name="discountTypeSelect" onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-method-compute-analytic-distribution"/>
-					<field name="discountAmount" onChange="action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution" hideIf="discountTypeSelect == 3"/>
+					<field name="discountAmount" onChange="action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution" hideIf="discountTypeSelect == 0"/>
 				</panel>
 			</panel>
 		</panel-tabs>
