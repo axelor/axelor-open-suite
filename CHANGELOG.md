@@ -9,6 +9,8 @@
 - SALES : Fix fields where negative values shouldn't be allowed
 - Manuf Order: add missing translations.
 - STOCK MOVE : Product translation in birt.
+- Invoice Line: Fix hidden price field in form.
+- Account: Fix incomplete sequences in english data init.
 - INVOICELINE: fix hideIf for discountAmount.
 
 ## [5.3.3] - 2020-04-14
@@ -47,6 +49,7 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - PRODUCT: fix position of Variant button.
 - Project: fix some fields not being hidden properly.
 - PARTNER: hide panels related to invoice when invoice app is disabled.
+- EMPLOYEE : Fixed contactPartner fullName compute.
 
 ## [5.3.2] - 2020-04-01
 ## Improvements
