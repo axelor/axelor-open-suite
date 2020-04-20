@@ -11,6 +11,9 @@
 <!--     <one-to-many name="reportedBalanceLineList" ref="com.axelor.apps.account.db.ReportedBalanceLine" mappedBy="year" title="Reported balace lines"/> -->
   
   <datetime name="closureDateTime" title="Closure date"/>
+  
+  <many-to-one name="lastAccountingYear" ref="com.axelor.apps.base.db.Year" title="Last accounting Year"/>
+  
   </entity>
 
 </domain-models>

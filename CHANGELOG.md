@@ -7,6 +7,7 @@
 - AnalyticMoveLine : Validate total percentage.
 - STOCK LOCATION LINE : show wap dashlet when accessing line from a product
 - Partner : Fix customer situation report display value of contact partner jobTitle
+- Accounting report: add the possibility to calculate provisional opening accounting moves to ledger, partner ledger and journal.
 
 ## Bug Fixes
 - LEAD : Fixed the blank pdf when printing
