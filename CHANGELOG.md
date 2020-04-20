@@ -14,6 +14,7 @@
 - Invoice Line: Fix hidden price field in form.
 - Account: Fix incomplete sequences in english data init.
 - INVOICELINE: fix hideIf for discountAmount.
+- Product form: fix typo in help message.
 
 ## [5.3.3] - 2020-04-14
 ## Improvements
