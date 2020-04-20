@@ -382,6 +382,9 @@
   </form>
 
 	<cards name="employee-card" title="Employee" model="com.axelor.apps.hr.db.Employee" css="rect-image" orderBy="name">
+    <toolbar>
+      <button name="printEmployeePhoneBookBtn" title="Employee PhoneBook" icon="fa-print" onClick="action-print-employee-phonebook"/>
+    </toolbar>
 		<field name="contactPartner.picture" />
 		<field name="contactPartner.fullName" />
 		<field name="contactPartner.fixedPhone" />

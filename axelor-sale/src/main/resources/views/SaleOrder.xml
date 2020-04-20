@@ -738,9 +738,12 @@
 	</action-attrs>
 
 	<cards name="sale-order-cards" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" width="300px"  css="rect-image" orderBy="-orderDate">
-		<toolbar>
-    		<button name="seeSaleOrderLinesBtn" title="See sale orders lines" onClick="action-view-open-sale-order-lines"/>
-		</toolbar>
+		<menubar>
+			<menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+				<item name="mergeQuotationsItem" title="Merge quotations" action="action-open-sale-quotation-merge-form"/>
+				<item name="seeQuotationLinesItem" title="See quotation lines" action="action-view-open-quotation-lines"/>
+			</menu>
+		</menubar>
 		<field name="saleOrderSeq"/>
 		<field name="externalReference"/>
 		<field name="clientPartner.fullName"/>
@@ -807,9 +810,15 @@
 	</cards>
 
 	<cards name="sale-order-quotation-cards" title="Sale order quotation" model="com.axelor.apps.sale.db.SaleOrder" width="300px"  css="rect-image" orderBy="-orderDate">
-	<toolbar>
-			<button name="mergeQuotationOrderBtn" title="Merge quotations" onClick="action-open-sale-quotation-merge-form"/>
-	</toolbar>
+		<menubar>
+			<menu name="saleOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+				<item name="printItem" title="Print" action="action-sale-order-method-show-sale-order"/>
+			</menu>
+			<menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+				<item name="mergeQuotationsItem" title="Merge quotations" action="action-open-sale-quotation-merge-form"/>
+				<item name="seeQuotationLinesItem" title="See quotation lines" action="action-view-open-quotation-lines"/>
+			</menu>
+		</menubar>
 		<field name="saleOrderSeq"/>
 		<field name="externalReference"/>
 		<field name="clientPartner.fullName"/>
