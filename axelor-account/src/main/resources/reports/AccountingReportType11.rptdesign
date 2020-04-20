@@ -28,7 +28,7 @@
             <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
-            <property name="dataType">decimal</property>
+            <property name="dataType">string</property>
             <property name="distinct">true</property>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -131,7 +131,7 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-open-suite</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
             <property name="odaUser">axelor</property>
         </oda-data-source>
     </data-sources>
@@ -227,6 +227,26 @@
                     <property name="nativeDataType">-5</property>
                     <property name="position">1</property>
                     <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="paramName">AccountingReportId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">2</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_3</property>
+                    <property name="paramName">AccountingReportId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">3</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -364,9 +384,16 @@
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select MoveLine.name as "MoveLineName", MoveLine.date_val as "MoveLineDate", MoveLine.partner_full_name as "PartnerFullName",
-Moveline.account_code as "AccountCode", Moveline.account_name as "AccountName", MoveLine.move as "MoveId",
- MoveLine.debit as "Debit", MoveLine.credit as "Credit", MoveLine.description as "Description", MoveLine.partner_seq as "PartnerSeq"
+            <xml-property name="queryText"><![CDATA[select MoveLine.name as "MoveLineName", 
+MoveLine.date_val as "MoveLineDate", 
+MoveLine.partner_full_name as "PartnerFullName",
+Moveline.account_code as "AccountCode", 
+Moveline.account_name as "AccountName", 
+MoveLine.move as "MoveId",
+MoveLine.debit as "Debit", 
+MoveLine.credit as "Credit", 
+MoveLine.description as "Description", 
+MoveLine.partner_seq as "PartnerSeq"
 
 from public.account_move_line as MoveLine 
 left outer join public.account_accounting_report as AccountingReport on (AccountingReport.id = ?) 
@@ -404,7 +431,134 @@ AND (AccountingReport.display_closing_accounting_moves is true
 AND (AccountingReport.display_opening_accounting_moves is true 
 	OR(AccountingReport.display_opening_accounting_moves is false 
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
-ORDER BY MoveLine.date_val, MoveLine.move, Account.code]]></xml-property>
+union
+
+select DISTINCT MoveLine.name as "MoveLineName", 
+bLastYear.reported_balance_date as "MoveLineDate", 
+MoveLine.partner_full_name as "PartnerFullName",
+Moveline.account_code as "AccountCode", 
+Moveline.account_name as "AccountName", 
+MoveLine.move as "MoveId",
+case when MoveLine.debit > 0 THEN MoveLine.amount_remaining ELSE 0 END as "Debit", 
+case when MoveLine.credit > 0 THEN MoveLine.amount_remaining ELSE 0 END as "Credit", 
+CONCAT('RAN',COALESCE (MoveLine.description,'')) as "Description", 
+MoveLine.partner_seq as "PartnerSeq"
+from public.account_accounting_report as AccountingReport
+left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
+left outer join public.account_move as Move on (MoveLine.move = Move.id  AND Move.ignore_in_accounting_ok = false) 
+left outer join public.account_reconcile_group as ReconcileGroup on (ReconcileGroup.id = MoveLine.reconcile_group)
+
+left outer join public.account_account as Account on (MoveLine.account  = Account.id )
+left outer join public.account_account as ParentAccount on (Account.parent_account  = ParentAccount.id )
+left outer join public.account_account as ParentAccount2 on (ParentAccount.parent_account  = ParentAccount2.id )
+left outer join public.account_account as ParentAccount3 on (ParentAccount2.parent_account  = ParentAccount3.id )
+left outer join public.account_account as ParentAccount4 on (ParentAccount3.parent_account  = ParentAccount4.id )
+left outer join public.account_account as ParentAccount5 on (ParentAccount4.parent_account  = ParentAccount5.id )
+left outer join public.account_account as ParentAccount6 on (ParentAccount5.parent_account  = ParentAccount6.id )
+
+left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
+left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
+
+left outer join public.base_company as Company on (AccountingReport.company = Company.id)
+left outer join public.account_account_config as AccountConfig on (AccountConfig.company = Company.id)
+left outer join public.base_period as Period on (Move.period = Period.id) 
+left outer join public.base_year as bYear on (Period.year = bYear.id) 
+
+left outer join public.base_year as ReportYear on AccountingReport.year = ReportYear.id
+left outer join public.base_year as bLastYear on (ReportYear.last_accounting_year = bLastYear.id) 
+
+left outer join public.account_journal as Journal on (Move.journal = Journal.id) 
+where 
+(AccountingReport.currency = Move.company_currency) AND
+MoveLine.date_val <= AccountingReport.date_val AND
+Move.company = AccountingReport.company AND
+(AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id or AccountSet.account_set = ParentAccount.id 
+    or AccountSet.account_set = ParentAccount2.id or AccountSet.account_set = ParentAccount3.id
+    or AccountSet.account_set = ParentAccount4.id or AccountSet.account_set = ParentAccount5.id 
+    or AccountSet.account_set = ParentAccount6.id or AccountSet.account_set = ParentAccount6.parent_account) AND(PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner) AND
+(bYear.id = bLastYear.id) AND
+(AccountingReport.journal IS NULL OR AccountingReport.journal  = Move.journal) AND
+(AccountingReport.payment_mode IS  NULL OR (AccountingReport.payment_mode = Move.payment_mode)) AND
+Move.ignore_in_accounting_ok = false AND (Move.status_select = 3 OR Move.status_select = 2)
+AND (AccountingReport.type_select = 1 OR (AccountingReport.type_select != 1 AND Account.use_for_partner_balance is true))
+AND (AccountingReport.display_closing_accounting_moves is true 
+	OR(AccountingReport.display_closing_accounting_moves is false 
+		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
+AND (AccountingReport.display_opening_accounting_moves is true 
+	OR(AccountingReport.display_opening_accounting_moves is false 
+		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
+AND (MoveLine.amount_remaining > 0)
+AND Account.reconcile_ok
+AND AccountingReport.calculate_provisional_opening_accounting_moves
+
+Union
+
+select 'RAN' as "MoveLineName", 
+bLastYear.reported_balance_date as "MoveLineDate", 
+MoveLine.partner_full_name as "PartnerFullName",
+Moveline.account_code as "AccountCode", 
+Moveline.account_name as "AccountName", 
+0 as "MoveId",
+case when SUM(MoveLine.debit) > SUM(MoveLine.credit) THEN SUM(MoveLine.debit) - SUM(MoveLine.credit) ELSE 0 END  as "Debit", 
+case when SUM(MoveLine.debit) < SUM(MoveLine.credit) THEN SUM(MoveLine.credit)  - SUM(MoveLine.debit) ELSE 0 END  as "Credit", 
+'RAN' as "Description", 
+MoveLine.partner_seq as "PartnerSeq"
+from public.account_accounting_report as AccountingReport
+left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
+left outer join public.account_move as Move on (MoveLine.move = Move.id  AND Move.ignore_in_accounting_ok = false) 
+left outer join public.account_reconcile_group as ReconcileGroup on (ReconcileGroup.id = MoveLine.reconcile_group)
+
+left outer join public.account_account as Account on (MoveLine.account  = Account.id )
+left outer join public.account_account as ParentAccount on (Account.parent_account  = ParentAccount.id )
+left outer join public.account_account as ParentAccount2 on (ParentAccount.parent_account  = ParentAccount2.id )
+left outer join public.account_account as ParentAccount3 on (ParentAccount2.parent_account  = ParentAccount3.id )
+left outer join public.account_account as ParentAccount4 on (ParentAccount3.parent_account  = ParentAccount4.id )
+left outer join public.account_account as ParentAccount5 on (ParentAccount4.parent_account  = ParentAccount5.id )
+left outer join public.account_account as ParentAccount6 on (ParentAccount5.parent_account  = ParentAccount6.id )
+
+left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
+left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
+
+left outer join public.base_company as Company on (AccountingReport.company = Company.id)
+left outer join public.account_account_config as AccountConfig on (AccountConfig.company = Company.id)
+left outer join public.base_period as Period on (Move.period = Period.id) 
+left outer join public.base_year as bYear on (Period.year = bYear.id) 
+
+left outer join public.base_year as ReportYear on AccountingReport.year = ReportYear.id
+left outer join public.base_year as bLastYear on (ReportYear.last_accounting_year = bLastYear.id) 
+
+left outer join public.account_journal as Journal on (Move.journal = Journal.id) 
+where 
+(AccountingReport.currency = Move.company_currency) AND
+MoveLine.date_val <= AccountingReport.date_val AND
+Move.company = AccountingReport.company AND
+(AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id or AccountSet.account_set = ParentAccount.id 
+    or AccountSet.account_set = ParentAccount2.id or AccountSet.account_set = ParentAccount3.id
+    or AccountSet.account_set = ParentAccount4.id or AccountSet.account_set = ParentAccount5.id 
+    or AccountSet.account_set = ParentAccount6.id or AccountSet.account_set = ParentAccount6.parent_account) AND(PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner) AND
+(bYear.id = bLastYear.id) AND
+(AccountingReport.journal IS NULL OR AccountingReport.journal  = Move.journal) AND
+(AccountingReport.payment_mode IS  NULL OR (AccountingReport.payment_mode = Move.payment_mode)) AND
+Move.ignore_in_accounting_ok = false AND (Move.status_select = 3 OR Move.status_select = 2)
+AND (AccountingReport.type_select = 1 OR (AccountingReport.type_select != 1 AND Account.use_for_partner_balance is true))
+AND (AccountingReport.display_closing_accounting_moves is true 
+	OR(AccountingReport.display_closing_accounting_moves is false 
+		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
+AND (AccountingReport.display_opening_accounting_moves is true 
+	OR(AccountingReport.display_opening_accounting_moves is false 
+		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
+AND (MoveLine.amount_remaining > 0)
+AND not Account.reconcile_ok
+AND AccountingReport.calculate_provisional_opening_accounting_moves
+group by "MoveLineName", 
+"MoveLineDate", 
+"PartnerFullName",
+"AccountCode", 
+"AccountName", 
+"MoveId",
+"Description", 
+"PartnerSeq"
+ORDER BY "MoveLineDate", "MoveId", "AccountCode"]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
             <property name="nullsOrdering">nulls lowest</property>
