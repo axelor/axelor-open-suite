@@ -14,6 +14,7 @@
 - BANK ORDER REPORT: fix the ordering by sequence.
 - Partner: fix view marked as dirty when an archived partner exists with the same name.
 - Account: Fix incomplete sequences in english data init.
+- Product form: fix typo in help message.
 
 ## [5.1.15] - 2020-03-23
 ## Improvements
