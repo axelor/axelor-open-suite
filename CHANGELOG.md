@@ -3,6 +3,7 @@
 ## Improvements
 ## Bug Fixes
 - BANK ORDER REPORT: fix the ordering by sequence.
+- Product form: fix typo in help message.
 
 ## [5.0.12] - 2020-04-02
 ## Improvements
