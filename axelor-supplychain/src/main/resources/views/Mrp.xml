@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
-    <grid name="mrp-grid" model="com.axelor.apps.supplychain.db.Mrp" title="Mrp">
+    <grid name="mrp-grid" model="com.axelor.apps.supplychain.db.Mrp" title="MPS">
         <hilite if="statusSelect == 1" strong="true" color="warning"/>
         <hilite if="statusSelect == 2" strong="true" color="success"/>
         <field name="mrpSeq"/>
@@ -15,7 +15,7 @@
         <field name="statusSelect"/>
 	 </grid>
     
-	<form name="mrp-form" model="com.axelor.apps.supplychain.db.Mrp" title="Mrp" width="large"
+	<form name="mrp-form" model="com.axelor.apps.supplychain.db.Mrp" title="MPS" width="large"
 		onLoad="action-attrs-mrp-generate-all-proposals" onNew="action-mrp-record-onnew">
 	     <menubar>
 	     	<menu title="Tools" showTitle="true" icon="fa-wrench">
@@ -31,10 +31,9 @@
 
 	    <panel name="infoPanel">
 			<field name="mrpSeq" showTitle="false" colSpan="12">
-				<viewer depends="mrpSeq,mrpTypeSelect"><![CDATA[
+				<viewer depends="mrpSeq"><![CDATA[
 					<h3>
-						<span ng-show="record.mrpSeq && record.mrpTypeSelect == 1" x-translate>MRP</span>
-						<span ng-show="record.mrpSeq && record.mrpTypeSelect == 2" x-translate>MPS</span>
+						<span ng-show="record.mrpSeq" x-translate>MPS</span>
 						{{record.mrpSeq}}
 					</h3>
 				]]></viewer>
@@ -73,7 +72,7 @@
 	 </form>
 
 
-	 <form name="mrp-generate-proposal-wizard-form" onNew="action-mrp-wizard-attrs-set-default-onnew" model="com.axelor.apps.base.db.Wizard" title="Mrp" >
+	 <form name="mrp-generate-proposal-wizard-form" onNew="action-mrp-wizard-attrs-set-default-onnew" model="com.axelor.apps.base.db.Wizard" title="MPS" >
 		 <panel name="wizardPanel">
 		 	<field name="$consolidateProposalsPerSupplier" title="Consolidate the proposals per supplier" type="boolean" widget="boolean-switch" />
 	 		<button name="generateProposalsBtn" title="Generate all proposals" onClick="action-method-mrp-generate-all-proposal,close"/>
