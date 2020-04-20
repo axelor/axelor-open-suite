@@ -16,6 +16,7 @@
 - Account: Fix incomplete sequences in english data init.
 - INVOICELINE: fix hideIf for discountAmount.
 - Product form: fix typo in help message.
+- Production : add missing translations
 
 ## [5.3.3] - 2020-04-14
 ## Improvements
