@@ -9,6 +9,7 @@
 - BudgetLine : Resolve NPE on dates.
 - STOCK MOVE : Product translation in birt.
 - Account: Fix incomplete sequences in english data init.
+- Product form: fix typo in help message.
 
 ## [5.2.8] - 2020-04-14
 ## Improvements
