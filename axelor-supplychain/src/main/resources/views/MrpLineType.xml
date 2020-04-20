@@ -24,6 +24,7 @@
         	<field name="statusSelect" widget="MultiSelect" selection="sale.order.status.select" showIf="elementSelect == 3"/>
         	<field name="statusSelect" widget="MultiSelect" selection="production.manuf.order.status.select" showIf="elementSelect == 6" if-module="axelor-production" if="__config__.app.isApp('production')"/>
 	   		<field name="includeElementWithoutDate" showIf="[2,3,6,7].indexOf(elementSelect) != -1"/>
+	   		<field name="applicationFieldSelect" widget="MultiSelect"/>
 	    </panel>
 	 </form>
 	 
