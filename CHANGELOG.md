@@ -4,6 +4,7 @@
 - USER: fix filter for activeCompany
 - COST SHEET: in batch computing work in progress valuation, compute cost for ongoing manuf orders at the valuation date.
 - ACCOUNTING BATCH : add start and end date of realizing fixed asset line
+- Improve consistency of grid and card view menus.
 
 ## Bug Fixes
 - WORKSHOP STOCK LOCATION : Fix config being ignored
@@ -15,6 +16,7 @@
 - Account: Fix incomplete sequences in english data init.
 - INVOICELINE: fix hideIf for discountAmount.
 - Product form: fix typo in help message.
+- Production : add missing translations
 - Studio: Fix custom model's 'formWidth' default value.
 
 ## [5.3.3] - 2020-04-14
