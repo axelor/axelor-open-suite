@@ -590,11 +590,11 @@ AND (AccountingReport.display_closing_accounting_moves is true
 AND (AccountingReport.display_opening_accounting_moves is true 
 	OR(AccountingReport.display_opening_accounting_moves is false 
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
-AND (MoveLine.amount_remaining > 0)
 AND not Account.reconcile_ok
 AND AccountingReport.calculate_provisional_opening_accounting_moves
 group by moveLine_id, move_line_name, move_line_description, bLastYear.reported_balance_date,MoveLine.partner_full_name,account,reconcile_group_code,
 journal_code,Account.code, Account.name,MoveLine.account_code,MoveLine.account_name
+HAVING SUM(MoveLine.debit) - SUM(MoveLine.credit) != 0
 
 order by account, move_line_date, move_line_name]]></xml-property>
         </oda-data-set>

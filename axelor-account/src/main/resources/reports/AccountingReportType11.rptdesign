@@ -547,7 +547,6 @@ AND (AccountingReport.display_closing_accounting_moves is true
 AND (AccountingReport.display_opening_accounting_moves is true 
 	OR(AccountingReport.display_opening_accounting_moves is false 
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
-AND (MoveLine.amount_remaining > 0)
 AND not Account.reconcile_ok
 AND AccountingReport.calculate_provisional_opening_accounting_moves
 group by "MoveLineName", 
@@ -558,6 +557,8 @@ group by "MoveLineName",
 "MoveId",
 "Description", 
 "PartnerSeq"
+HAVING SUM(MoveLine.debit) - SUM(MoveLine.credit) != 0
+
 ORDER BY "MoveLineDate", "MoveId", "AccountCode"]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
