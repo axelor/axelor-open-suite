@@ -17,6 +17,7 @@
 - INVOICELINE: fix hideIf for discountAmount.
 - Product form: fix typo in help message.
 - Production : add missing translations
+- Studio: Fix custom model's 'formWidth' default value.
 
 ## [5.3.3] - 2020-04-14
 ## Improvements
