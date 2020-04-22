@@ -5,6 +5,7 @@
 - COST SHEET: in batch computing work in progress valuation, compute cost for ongoing manuf orders at the valuation date.
 - ACCOUNTING BATCH : add start and end date of realizing fixed asset line
 - Improve consistency of grid and card view menus.
+- Stock Move: if present, use trading name logo in printing.
 
 ## Bug Fixes
 - WORKSHOP STOCK LOCATION : Fix config being ignored
@@ -18,6 +19,7 @@
 - Product form: fix typo in help message.
 - Production : add missing translations
 - Studio: Fix custom model's 'formWidth' default value.
+- Stock Move: add missing trading name in form view.
 
 ## [5.3.3] - 2020-04-14
 ## Improvements
