@@ -23,8 +23,10 @@ import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.stock.db.repo.StockConfigRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.inject.Beans;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -89,9 +91,8 @@ public class InventoryLineService {
     Product product = inventoryLine.getProduct();
 
     if (product != null) {
-      StockLocationLine stockLocationLine =
-          Beans.get(StockLocationLineService.class).getStockLocationLine(stockLocation, product);
       inventoryLine.setUnit(product.getUnit());
+
       BigDecimal gap =
           inventoryLine.getRealQty() != null
               ? inventoryLine
@@ -101,10 +102,26 @@ public class InventoryLineService {
               : BigDecimal.ZERO;
       inventoryLine.setGap(gap);
 
-      if (stockLocationLine != null) {
-        inventoryLine.setGapValue(
-            stockLocationLine.getAvgPrice().multiply(gap).setScale(2, RoundingMode.HALF_EVEN));
+      BigDecimal price;
+      int value = stockLocation.getCompany().getStockConfig().getInventoryValuationTypeSelect();
+      switch (value) {
+        case StockConfigRepository.VALUATION_TYPE_ACCOUNTING_VALUE:
+          price = product.getCostPrice();
+          break;
+        case StockConfigRepository.VALUATION_TYPE_SALE_VALUE:
+          price = product.getSalePrice();
+          break;
+        default:
+          price = product.getAvgPrice();
+          break;
       }
+
+      inventoryLine.setGapValue(gap.multiply(price).setScale(2, RoundingMode.HALF_EVEN));
+      inventoryLine.setRealValue(
+          inventoryLine.getRealQty() != null
+              ? inventoryLine.getRealQty().multiply(price).setScale(2, RoundingMode.HALF_EVEN)
+              : BigDecimal.ZERO
+      );
     }
 
     return inventoryLine;

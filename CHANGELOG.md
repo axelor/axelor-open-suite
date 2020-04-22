@@ -1,5 +1,8 @@
 # Changelog
 ## [Unreleased 5.3.4]
+## Features
+- INVENTORY : Add inventory valuation config
+
 ## Improvements
 - USER: fix filter for activeCompany
 - COST SHEET: in batch computing work in progress valuation, compute cost for ongoing manuf orders at the valuation date.

@@ -13,6 +13,7 @@
         <field name="trackingNumber" canNew="true" width="150" domain="self.product = :product" onChange="action-inventory-line-method-on-change-tracking-number"/>
         <field name="gap"/>
         <field name="gapValue"/>
+				<field name="realValue"/>
     </grid>
     
     <form name="inventory-line-form" title="Inventory line" model="com.axelor.apps.stock.db.InventoryLine"

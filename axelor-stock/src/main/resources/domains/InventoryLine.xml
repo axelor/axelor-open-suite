@@ -17,5 +17,6 @@
 	<many-to-one name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber" title="TrackingNumber"/>
     <decimal name="gap" title="Gap" readonly="true"/>
     <decimal name="gapValue" title="Gap value" readonly="true"/>
+		<decimal name="realValue" title="Real valuation" readonly="true"/>
   </entity>
 </domain-models>
