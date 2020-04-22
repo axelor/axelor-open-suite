@@ -6,6 +6,7 @@
 ## Improvements
 - COST SHEET: in batch computing work in progress valuation, compute cost for ongoing manuf orders at the valuation date.
 - ACCOUNTING BATCH : add start and end date of realizing fixed asset line
+- Stock Move: if present, use trading name logo in printing.
 
 ## Bug Fixes
 - Manuf Order: add missing translations.
@@ -13,6 +14,7 @@
 - STOCK MOVE : Product translation in birt.
 - Account: Fix incomplete sequences in english data init.
 - Product form: fix typo in help message.
+- Stock Move: add missing trading name in form view.
 
 ## [5.2.8] - 2020-04-14
 ## Improvements
