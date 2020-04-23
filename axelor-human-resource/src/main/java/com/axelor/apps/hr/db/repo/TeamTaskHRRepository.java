@@ -62,9 +62,10 @@ public class TeamTaskHRRepository extends TeamTaskProjectRepository {
 
   @Override
   public TeamTask copy(TeamTask entity, boolean deep) {
-    entity.setTotalPlannedHrs(null);
-    entity.setTotalRealHrs(null);
-    entity.clearProjectPlanningTimeList();
-    return super.copy(entity, deep);
+    TeamTask task = super.copy(entity, deep);
+    task.setTotalPlannedHrs(null);
+    task.setTotalRealHrs(null);
+    task.clearProjectPlanningTimeList();
+    return task;
   }
 }
