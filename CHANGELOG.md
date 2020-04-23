@@ -10,6 +10,7 @@
 - STOCK MOVE : Product translation in birt.
 - Account: Fix incomplete sequences in english data init.
 - Product form: fix typo in help message.
+- TeamTask : Set default invoicingType to 'No invoicing', toInvoice is true when selected InvoicingType is 'Package' and field data disappears on save fix
 
 ## [5.2.8] - 2020-04-14
 ## Improvements
