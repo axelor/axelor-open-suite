@@ -134,8 +134,13 @@
 		
 		<extend target="//button[@name='generateReversionBtn']">
 			<insert position="after">
+<<<<<<< HEAD
 				<button if="__config__.app.getApp('supplychain').getValidStepForInvOutSM()" name="delayedInvoice" title="Facturation ultérieure" showIf="statusSelect == 3 &amp;&amp; typeSelect == 2 &amp;&amp; invoicingStatusSelect != 2 &amp;&amp; invoicingStatusSelect != 3" css="btn-warning" onClick="save,action-stock-move-status-select-invoiced-delayed,save"/>
       			<button if="__config__.app.getApp('supplychain').getValidStepForInvOutSM()" name="validatedInvoice" title="Validé pour facturation" showIf="statusSelect == 3 &amp;&amp; typeSelect == 2 &amp;&amp; invoicingStatusSelect != 2 &amp;&amp; invoicingStatusSelect != 4" css="btn-success" onClick="save,action-stock-move-status-select-invoiced-validated,save"/>
+=======
+				<button if="__config__.app.getApp('supplychain').getValidStepForInvOutSM()" name="delayedInvoice" title="Facturation ultérieure" showIf="statusSelect == 3 &amp;&amp; typeSelect == 2 &amp;&amp; invoicingStatusSelect != 2 &amp;&amp; invoicingStatusSelect != 3" css="btn-success" onClick="save,action-stock-move-status-select-invoiced-delayed,save"/>
+      			<button if="__config__.app.getApp('supplychain').getValidStepForInvOutSM()" name="validatedInvoice" title="Validé pour facturation" showIf="statusSelect == 3 &amp;&amp; typeSelect == 2 &amp;&amp; invoicingStatusSelect != 2 &amp;&amp; invoicingStatusSelect != 4" css="btn-warning" onClick="save,action-stock-move-status-select-invoiced-validated,save"/>
+>>>>>>> b9225718c1279e35b687760e946420f2c1d92cb1
 			</insert>
 		</extend>
 		
