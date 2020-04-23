@@ -60,10 +60,9 @@
         <attribute name="hidden" for="createBankOrderBtn" expr="eval: !(__parent__?.actionSelect == 12 &amp;&amp; !bankOrder &amp;&amp; done)" if="__parent__?._model == 'com.axelor.apps.account.db.AccountingBatch'" />
     	<attribute name="hidden" for="showEbicsCertificatesBtn" expr="eval: false" if="_parent?._model == 'com.axelor.apps.bankpayment.db.BankPaymentBatch'"/>
 
-    	<attribute name="hidden" for="showStockMoveBtn" expr="eval: false" if="_parent?._model == 'com.axelor.apps.supplychain.db.SupplychainBatch'"/>
-    	<attribute name="hidden" for="showStockMoveLinesBtn" expr="eval: false" if="_parent?._model == 'com.axelor.apps.supplychain.db.SupplychainBatch'"/>
-    	<attribute name="hidden" for="showAccountMoveBtn" expr="eval: false" if="_parent?._model == 'com.axelor.apps.supplychain.db.SupplychainBatch' || _parent?._model == 'com.axelor.apps.account.db.AccountingBatch'"/>
-    	<attribute name="hidden" for="showAccountMoveBtn" expr="eval: false" if="_parent?._model == 'com.axelor.apps.supplychain.db.SupplychainBatch'"/>
+    	<attribute name="hidden" for="showStockMoveBtn" expr="eval: _parent?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || _parent?.actionSelect == __repo__(SupplychainBatch).ACTION_INVOICE_ORDERS"/>
+    	<attribute name="hidden" for="showStockMoveLinesBtn" expr="eval: _parent?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || _parent?.actionSelect == __repo__(SupplychainBatch).ACTION_INVOICE_ORDERS" />
+    	<attribute name="hidden" for="showAccountMoveBtn" expr="(_parent?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || _parent?.actionSelect != __repo__(SupplychainBatch).ACTION_ACCOUNTING_CUT_OFF) &amp;&amp; _parent?._model != 'com.axelor.apps.account.db.AccountingBatch'"/>
 
     </action-attrs>
 
