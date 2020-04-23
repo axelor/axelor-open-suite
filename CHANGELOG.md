@@ -22,6 +22,7 @@
 - Studio: Fix custom model's 'formWidth' default value.
 - Stock Move: add missing trading name in form view.
 - Batch Outgoing Stock Move Invoicing: fix query, process and view.
+- Sale Order: set printing settings from trading name when generated from opportunity.
 
 ## [5.3.3] - 2020-04-14
 ## Improvements
