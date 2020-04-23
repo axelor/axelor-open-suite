@@ -15,6 +15,7 @@
 - Account: Fix incomplete sequences in english data init.
 - Product form: fix typo in help message.
 - Stock Move: add missing trading name in form view.
+- TeamTask : Set default invoicingType to 'No invoicing', toInvoice is true when selected InvoicingType is 'Package' and field data disappears on save fix
 
 ## [5.2.8] - 2020-04-14
 ## Improvements
