@@ -75,7 +75,7 @@
 		<panel name="mainPanel">
 			<field name="priority" colSpan="3" readonlyIf="statusSelect == 6"/>
 			<field name="operationName" readonlyIf="statusSelect == 6" required="true"/>
-			<field name="manufOrder"  colSpan="3" hideIf="$popup()" requiredIf="!$popup()" readonlyIf="statusSelect == 6" onChange="action-operation-order-name" grid-view="manuf-order-grid" form-view="manuf-order-form"/>
+			<field name="manufOrder"  colSpan="3" requiredIf="!$popup()" readonlyIf="statusSelect == 6" onChange="action-operation-order-name" grid-view="manuf-order-grid" form-view="manuf-order-form"/>
 			<field name="prodProcessLine" colSpan="3" onSelect="action-operation-order-attrs-domain-prod-process-line" onChange="action-production-attrs-set-outsourcing" required="true" readonlyIf="statusSelect == 6" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>
 			<field name="outsourcing" colSpan="3"/>
 			<field name="isToInvoice" colSpan="3"/>
@@ -158,7 +158,7 @@
         <attribute name="value" for="outsourcing" expr="eval: prodProcessLine.outsourcing" if="prodProcessLine.outsourcing"/>
         <attribute name="value" for="useLineInGeneratedPurchaseOrder" expr="eval: prodProcessLine?.useLineInGeneratedPurchaseOrder" />
     </action-attrs>
-    
+
     <action-record name="action-operation-order-name" model="com.axelor.apps.production.db.OperationOrder">
     	<field name="name" expr="eval: manufOrder?.manufOrderSeq + ' - ' + priority"/>
     </action-record>
