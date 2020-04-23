@@ -21,6 +21,7 @@
 - Production : add missing translations
 - Studio: Fix custom model's 'formWidth' default value.
 - Stock Move: add missing trading name in form view.
+- Batch Outgoing Stock Move Invoicing: fix query, process and view.
 
 ## [5.3.3] - 2020-04-14
 ## Improvements
