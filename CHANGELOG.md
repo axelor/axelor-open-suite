@@ -8,6 +8,7 @@
 - ACCOUNTING BATCH : add start and end date of realizing fixed asset line
 - Stock Move: if present, use trading name logo in printing.
 - PRODUCTION : removed hideIf of manufOrder field in operation-order-form.
+- INVOICE: Subtract BudgetDistribution.amount from BudgetLine.amountRealized when invoice.operationTypeSelect = Supplier refund.
 
 ## Bug Fixes
 - Manuf Order: add missing translations.
