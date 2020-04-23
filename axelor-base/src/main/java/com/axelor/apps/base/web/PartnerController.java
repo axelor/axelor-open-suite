@@ -360,8 +360,8 @@ public class PartnerController {
       Partner partnerArchived =
           Beans.get(PartnerService.class).isThereDuplicatePartnerInArchive(partner);
       if (partnerArchived != null) {
-        response.setValue("duplicatePartnerInArchiveText", partnerArchived.getPartnerSeq());
-        response.setAttr("duplicatePartnerInArchiveText", "hidden", false);
+        response.setValue("$duplicatePartnerInArchiveText", partnerArchived.getPartnerSeq());
+        response.setAttr("$duplicatePartnerInArchiveText", "hidden", false);
       }
     } catch (Exception e) {
       TraceBackService.trace(e);

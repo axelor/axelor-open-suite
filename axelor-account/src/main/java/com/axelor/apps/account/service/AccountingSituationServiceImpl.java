@@ -19,6 +19,7 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
@@ -204,15 +205,15 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
           situation.getCompany().getName());
     }
 
-    Account account = new Account();
-    account.setName(partner.getFullName());
-    account.setCode(accountCode);
-    account.setParentAccount(accountConfig.getCustomerAccount());
-    account.setAccountType(accountConfig.getCustomerAccount().getAccountType());
-    account.setReconcileOk(true);
-    account.setCompany(situation.getCompany());
-    account.setUseForPartnerBalance(true);
-    account.setCompatibleAccountSet(new HashSet<>());
+    Account account =
+        this.createAccount(
+            partner.getFullName(),
+            accountCode,
+            accountConfig.getCustomerAccount(),
+            accountConfig.getCustomerAccount().getAccountType(),
+            true,
+            situation.getCompany(),
+            true);
     situation.setCustomerAccount(account);
   }
 
@@ -261,15 +262,15 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
           situation.getCompany().getName());
     }
 
-    Account account = new Account();
-    account.setName(partner.getFullName());
-    account.setCode(accountCode);
-    account.setParentAccount(accountConfig.getSupplierAccount());
-    account.setAccountType(accountConfig.getSupplierAccount().getAccountType());
-    account.setReconcileOk(true);
-    account.setCompany(situation.getCompany());
-    account.setUseForPartnerBalance(true);
-    account.setCompatibleAccountSet(new HashSet<>());
+    Account account =
+        this.createAccount(
+            partner.getFullName(),
+            accountCode,
+            accountConfig.getSupplierAccount(),
+            accountConfig.getSupplierAccount().getAccountType(),
+            true,
+            situation.getCompany(),
+            true);
     situation.setSupplierAccount(account);
   }
 
@@ -317,15 +318,15 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
           situation.getCompany().getName());
     }
 
-    Account account = new Account();
-    account.setName(partner.getFullName());
-    account.setCode(accountCode);
-    account.setParentAccount(accountConfig.getEmployeeAccount());
-    account.setAccountType(accountConfig.getEmployeeAccount().getAccountType());
-    account.setReconcileOk(true);
-    account.setCompany(situation.getCompany());
-    account.setUseForPartnerBalance(true);
-    account.setCompatibleAccountSet(new HashSet<>());
+    Account account =
+        this.createAccount(
+            partner.getFullName(),
+            accountCode,
+            accountConfig.getEmployeeAccount(),
+            accountConfig.getEmployeeAccount().getAccountType(),
+            true,
+            situation.getCompany(),
+            true);
     situation.setEmployeeAccount(account);
   }
 
@@ -446,5 +447,27 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
     }
 
     return company.getDefaultBankDetails();
+  }
+
+  protected Account createAccount(
+      String fullName,
+      String accountCode,
+      Account parentAccount,
+      AccountType accountType,
+      boolean reconcileOk,
+      Company company,
+      boolean useForPartnerBalance) {
+
+    Account account = new Account();
+    account.setName(fullName);
+    account.setCode(accountCode);
+    account.setParentAccount(parentAccount);
+    account.setAccountType(accountType);
+    account.setReconcileOk(reconcileOk);
+    account.setCompany(company);
+    account.setUseForPartnerBalance(useForPartnerBalance);
+    account.setCompatibleAccountSet(new HashSet<>());
+
+    return account;
   }
 }

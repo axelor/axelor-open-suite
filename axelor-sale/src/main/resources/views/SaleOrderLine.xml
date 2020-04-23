@@ -77,9 +77,10 @@
 
 		<panel name="productPanel" showIf="typeSelect == 1">
 			<field name="productName" colSpan="9" title="Title"/>
-			<field name="typeSelect" colSpan="3" onChange="action-sale-order-line-method-empty-line"/>
-			<field name="isShowTotal"/>
-			<field name="isHideUnitAmounts"/>
+			<field name="typeSelect" if="__config__.app.getApp('sale')?.enablePackManagement" colSpan="3" onChange="action-sale-order-line-method-empty-line"/>
+            <field name="qty"/>
+			<field name="isShowTotal" if="__config__.app.getApp('sale')?.enablePackManagement" colSpan="3"/>
+			<field name="isHideUnitAmounts" if="__config__.app.getApp('sale')?.enablePackManagement" colSpan="3"/>
 		</panel>
  
 		<panel-tabs name="mainPanelTab" hideIf="typeSelect == 1">
@@ -137,7 +138,7 @@
 				<field name="product" canEdit="false" onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="product-grid" if="!__config__.app.isApp('supplychain')"/>
 				<field name="product" canEdit="false" onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="stock-move-line-product-grid" if="__config__.app.isApp('supplychain')"/>
 				<field name="enableFreezeFields" colSpan="2"/>
-				<field name="typeSelect" colSpan="2" onChange="action-sale-order-line-method-empty-line,action-sale-order-attrs-hide-ati" selection-in="[0,1]"/>
+				<field name="typeSelect" colSpan="2" if="__config__.app.getApp('sale')?.enablePackManagement" onChange="action-sale-order-line-method-empty-line,action-sale-order-attrs-hide-ati" selection-in="[0,1]"/>
 				<field name="productName" colSpan="12"/>
 				<field name="oldQty"/>
 			</panel>
@@ -215,7 +216,8 @@
 			</panel>
 			<panel name="analyticDistributionPanel" title="Analytics" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-sale-order-line-attrs-read-only-distribution-lines">
 				<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" canEdit="false" onChange="action-sale-order-line-method-create-distribution" onSelect="action-sale-order-line-attrs-set-domain-analytic-distribution-template"/>
-				<panel-related name="analyticMoveLineListPanel" readonlyIf="$isReadOnly !== false" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
+				<panel-related name="analyticMoveLineListPanel" readonlyIf="$isReadOnly !== false" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12" onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+				<field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
 			</panel>
 			<panel name="settingsPanel" readonlyIf="$isReadOnly !== false" title="Configuration" >
 				<field name="saleSupplySelect" onChange="action-group-sale-saleorderline-salesupplyselect-onchange" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
@@ -284,7 +286,8 @@
 			</panel>
 			<panel name="analyticDistributionPanel" readonlyIf="$isReadOnly !== false" title="Analytics" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-sale-order-line-attrs-read-only-distribution-lines">
 				<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" canEdit="false" onChange="action-sale-order-line-method-create-distribution" onSelect="action-sale-order-line-attrs-set-domain-analytic-distribution-template"/>
-				<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
+				<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12" onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+				<field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
 			</panel>
 			<panel name="settingsPanel" title="Settings">
 				<field name="saleSupplySelect" onChange="action-group-sale-saleorderline-salesupplyselect-onchange" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
@@ -345,7 +348,7 @@
 	<action-method name="action-sale-order-line-method-check-stock" if-module="axelor-supplychain">
 		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="checkStocks"/>
 	</action-method>
-	
+
 	<action-attrs name="action-sale-order-line-attrs-read-only-distribution-lines">
 		<attribute name="readonly" for="analyticMoveLineList" expr="eval: !__config__.app.isApp('account')  || __config__.app.getApp('account').getAnalyticDistributionTypeSelect() != 1"/>
 	</action-attrs>

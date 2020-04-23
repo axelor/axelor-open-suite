@@ -1,0 +1,3 @@
+---
+title: "MRP: Fixed no such field 'applicationFieldSelect' in MrpLineType error when run calculation"
+type: fix
