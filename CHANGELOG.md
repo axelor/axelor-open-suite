@@ -6,6 +6,7 @@
 - ACCOUNTING BATCH : add start and end date of realizing fixed asset line
 - Improve consistency of grid and card view menus.
 - Stock Move: if present, use trading name logo in printing.
+- PRODUCTION : removed hideIf of manufOrder field in operation-order-form.
 
 ## Bug Fixes
 - WORKSHOP STOCK LOCATION : Fix config being ignored
