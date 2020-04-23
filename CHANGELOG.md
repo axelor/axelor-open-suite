@@ -17,6 +17,7 @@
 - Product form: fix typo in help message.
 - Stock Move: add missing trading name in form view.
 - TeamTask : Set default invoicingType to 'No invoicing', toInvoice is true when selected InvoicingType is 'Package' and field data disappears on save fix
+- Timesheet : Fix task name not displaying
 
 ## [5.2.8] - 2020-04-14
 ## Improvements

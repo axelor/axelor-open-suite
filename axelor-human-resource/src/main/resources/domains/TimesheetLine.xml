@@ -19,7 +19,7 @@
       <string name="comments" large="true"/>
       <boolean name="toInvoice"/>
       <boolean name="invoiced" title="Invoiced" readonly="true"/>
-	  <string name="fullName" namecolumn="true"></string>
+	  <string name="fullName" namecolumn="true"/>
 	  <boolean name="enableEditor" title="Enable editor" nullable="true" />
 	  
 	  <many-to-one name="projectPlanningTime" ref="com.axelor.apps.project.db.ProjectPlanningTime" />
