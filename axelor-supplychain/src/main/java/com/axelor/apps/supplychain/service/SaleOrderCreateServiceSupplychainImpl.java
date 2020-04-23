@@ -22,6 +22,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -79,7 +80,8 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       LocalDate orderDate,
       PriceList priceList,
       Partner clientPartner,
-      Team team)
+      Team team,
+      TradingName tradingName)
       throws AxelorException {
 
     if (!Beans.get(AppSaleService.class).isApp("supplychain")) {
@@ -94,7 +96,8 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
           orderDate,
           priceList,
           clientPartner,
-          team);
+          team,
+          tradingName);
     }
     return createSaleOrder(
         salemanUser,
@@ -108,7 +111,8 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
         orderDate,
         priceList,
         clientPartner,
-        team);
+        team,
+        tradingName);
   }
 
   public SaleOrder createSaleOrder(
@@ -123,7 +127,8 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       LocalDate orderDate,
       PriceList priceList,
       Partner clientPartner,
-      Team team)
+      Team team,
+      TradingName tradingName)
       throws AxelorException {
 
     logger.debug(
@@ -144,7 +149,8 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
             orderDate,
             priceList,
             clientPartner,
-            team);
+            team,
+            tradingName);
 
     if (stockLocation == null) {
       stockLocation = Beans.get(StockLocationService.class).getPickupDefaultStockLocation(company);
@@ -211,7 +217,8 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
             LocalDate.now(),
             priceList,
             clientPartner,
-            team);
+            team,
+            null);
 
     super.attachToNewSaleOrder(saleOrderList, saleOrderMerged);
 
