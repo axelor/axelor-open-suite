@@ -36,6 +36,9 @@
 			<field name="generateInvoiceFromStockMove" widget="boolean-switch" colSpan="4"/>
 			<field name="manageStockReservation" widget="boolean-switch" colSpan="4"/>
 			<field name="isVerifyProductStock" widget="boolean-switch" colSpan="4"/>
+		    <!-- TPL KB-0087 Redmine #27454-->
+			<field name="validStepForInvOutSM" showIf="generateInvoiceFromStockMove" widget="boolean-switch" colSpan="4" />
+			<!-- TPL-->
 		</panel>
 		<panel name="intercoPanel" title="Interco">
 			<field name="intercoFromPurchase" widget="boolean-switch"/>

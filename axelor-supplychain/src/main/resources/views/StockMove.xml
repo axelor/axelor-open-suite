@@ -40,7 +40,12 @@
     </grid>
 
 	<form name="stock-move-multi-sale-invoicing-form" model="com.axelor.apps.stock.db.StockMove" title="Mass Cust. Stock Move Invoicing" >
-		<panel-related name="$customerStockMoveToInvoicePanel" field="$customerStockMoveToInvoice" title="Customer Stock Move to invoice" colSpan="12" height="25" type="many-to-many" target="com.axelor.apps.stock.db.StockMove" domain="self.statusSelect = 3 AND ((self.typeSelect = 2 AND self.isReversion = false) OR (self.typeSelect = 3 AND self.isReversion = true)) AND self.invoicingStatusSelect = 0 AND (SELECT count(invoice.id) FROM Invoice invoice WHERE invoice.statusSelect != 4 AND invoice MEMBER OF self.invoiceSet) = 0" canNew="false" canEdit="false" grid-view="stock-move-mass-invoicing-out-grid" form-view="stock-move-form"/>
+		<panel-related name="$customerStockMoveToInvoicePanel" field="$customerStockMoveToInvoice" title="Customer Stock Move to invoice" colSpan="12" height="25" type="many-to-many" target="com.axelor.apps.stock.db.StockMove" 
+			domain="self.statusSelect = 3 
+			AND ((self.typeSelect = 2 AND self.isReversion = false) OR (self.typeSelect = 3 AND self.isReversion = true)) 
+			AND (self.invoicingStatusSelect = 0 or self.invoicingStatusSelect = 3 )
+			AND (SELECT count(invoice.id) FROM Invoice invoice WHERE invoice.statusSelect != 4 AND invoice MEMBER OF self.invoiceSet) = 0" 
+			canNew="false" canEdit="false" grid-view="stock-move-mass-invoicing-out-grid" form-view="stock-move-form"/>
 		<panel sidebar="true" name="actionsPanel" title="Actions">
 			<button name="generateInvoiceConcatStockMoveBtn" title="Generate single invoice" onClick="action-validate-supplychain-outgoing-stock-move-check-selection,action-supplychain-stock-move-method-generate-concat-cust-invoice-check-fields"/>
 			<button name="generateMultiInvoiceBtn" title="Generate one invoice per outgoing stockMove" onClick="action-validate-supplychain-outgoing-stock-move-check-selection,action-supplychain-stock-move-method-generate-multi-customer-invoice"/>
@@ -48,7 +53,13 @@
     </form>
     
     <form name="stock-move-multi-purchase-invoicing-form" model="com.axelor.apps.stock.db.StockMove" title="Mass Suppl. Stock Move Invoicing" >
-		<panel-related name="$supplierStockMoveToInvoicePanel" field="$supplierStockMoveToInvoice" title="Supplier Stock Move to invoice" colSpan="12" height="25" type="many-to-many" target="com.axelor.apps.stock.db.StockMove" domain="self.statusSelect = 3 AND ((self.typeSelect = 3 AND self.isReversion = false) OR (self.typeSelect = 2 AND self.isReversion = true)) AND self.invoicingStatusSelect = 0 AND (SELECT count(invoice.id) FROM Invoice invoice WHERE invoice.statusSelect != 4 AND invoice MEMBER OF self.invoiceSet) = 0" canNew="false" canEdit="false" grid-view="stock-move-mass-invoicing-in-grid" form-view="stock-move-form"/>
+		<panel-related name="$supplierStockMoveToInvoicePanel" field="$supplierStockMoveToInvoice" title="Supplier Stock Move to invoice" colSpan="12" 
+		height="25" type="many-to-many" target="com.axelor.apps.stock.db.StockMove" 
+		domain="self.statusSelect = 3 AND 
+				((self.typeSelect = 3 AND self.isReversion = false) OR (self.typeSelect = 2 AND self.isReversion = true)) AND 
+				self.invoicingStatusSelect = 0 AND 
+				(SELECT count(invoice.id) FROM Invoice invoice WHERE invoice.statusSelect != 4 AND invoice MEMBER OF self.invoiceSet) = 0" 
+		canNew="false" canEdit="false" grid-view="stock-move-mass-invoicing-in-grid" form-view="stock-move-form"/>
 		<panel sidebar="true" name="actionsPanel" title="Actions">
 			<button name="generateInvoiceConcatStockMoveBtn" title="Generate single invoice" onClick="action-validate-supplychain-incoming-stock-move-check-selection,action-supplychain-stock-move-method-generate-concat-suppl-invoice-check-fields"/>
 			<button name="generateMultiInvoiceBtn" title="Generate one invoice per incoming stockMove" onClick="action-validate-supplychain-incoming-stock-move-check-selection,action-supplychain-stock-move-method-generate-multi-supplier-invoice"/>
@@ -95,6 +106,41 @@
             <button name="createInvoiceBtn" title="Generate the invoice" onClick="action-supplychain-stock-move-method-generate-invoice" showIf="operationSelect &lt; 3"/>
 	    </panel>
     </form>
+    	  
+    <form id="supplychain-move-form" name="stock-move-form" title="Stock move"
+		model="com.axelor.apps.stock.db.StockMove" extension="true">
+    	<extend target="//field[@name='$invoicingTags']">
+			<replace>
+				<field name="$invoicingTags" showTitle="false" readonly="true" showIf="statusSelect == 3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+					<viewer depends="invoicingStatusSelect"><![CDATA[
+						<h4 class="text-left">
+							<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 0"  x-translate>Not invoiced</span>
+							<span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 1" x-translate>Partially invoiced</span>
+							<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 2" x-translate>Invoiced</span>
+							<span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 3" x-translate>Delayed invoicing</span>
+							<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 4" x-translate>Validated for invoicing</span>
+						</h4>
+					]]>
+					</viewer>
+				</field>
+			</replace>
+		</extend>
+		
+		<extend target="//button[@name='generateInvoiceBtn']">
+			<replace>
+				<button if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove() &amp;&amp; __config__.app.getApp('supplychain').getValidStepForInvOutSM() " if-module="axelor-supplychain" name="generateInvoiceBtn" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; typeSelect > 1 &amp;&amp;  invoicingStatusSelect!=3" icon="fa-file-o" onClick="save,action-supplychain-stock-move-method-invoicing-wizard"/>
+			</replace>
+		</extend>
+		
+		<extend target="//button[@name='generateReversionBtn']">
+			<insert position="after">
+				<button if="__config__.app.getApp('supplychain').getValidStepForInvOutSM()" name="delayedInvoice" title="Facturation ultérieure" showIf="statusSelect == 3 &amp;&amp; typeSelect == 2 &amp;&amp; invoicingStatusSelect != 2 &amp;&amp; invoicingStatusSelect != 3" css="btn-success" onClick="save,action-stock-move-status-select-invoiced-delayed,save"/>
+      			<button if="__config__.app.getApp('supplychain').getValidStepForInvOutSM()" name="validatedInvoice" title="Validé pour facturation" showIf="statusSelect == 3 &amp;&amp; typeSelect == 2 &amp;&amp; invoicingStatusSelect != 2 &amp;&amp; invoicingStatusSelect != 4" css="btn-warning" onClick="save,action-stock-move-status-select-invoiced-validated,save"/>
+			</insert>
+		</extend>
+		
+    </form>
+    
     
     <action-method name="action-supplychain-stock-move-method-invoicing-wizard">
 		<call class="com.axelor.apps.supplychain.web.StockMoveInvoiceController" method="openInvoicingWizard"/>
