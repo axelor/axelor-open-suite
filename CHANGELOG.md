@@ -1,8 +1,12 @@
 # Changelog
 ## [Unreleased 5.2.9]
+## Features
+- Studio: Add support of form width on studio designer.
+
 ## Improvements
 - COST SHEET: in batch computing work in progress valuation, compute cost for ongoing manuf orders at the valuation date.
 - ACCOUNTING BATCH : add start and end date of realizing fixed asset line
+- Stock Move: if present, use trading name logo in printing.
 
 ## Bug Fixes
 - Manuf Order: add missing translations.
@@ -10,6 +14,7 @@
 - STOCK MOVE : Product translation in birt.
 - Account: Fix incomplete sequences in english data init.
 - Product form: fix typo in help message.
+- Stock Move: add missing trading name in form view.
 - TeamTask : Set default invoicingType to 'No invoicing', toInvoice is true when selected InvoicingType is 'Package' and field data disappears on save fix
 
 ## [5.2.8] - 2020-04-14
