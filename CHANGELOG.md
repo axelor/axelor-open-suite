@@ -20,6 +20,7 @@
 - Production : add missing translations
 - Studio: Fix custom model's 'formWidth' default value.
 - Stock Move: add missing trading name in form view.
+- Product : Product name is readable even when long
 
 ## [5.3.3] - 2020-04-14
 ## Improvements
