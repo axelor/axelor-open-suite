@@ -32,6 +32,8 @@
 	  public static final int STATUS_NOT_INVOICED = 0;
 	  public static final int STATUS_PARTIALLY_INVOICED = 1;
 	  public static final int STATUS_INVOICED = 2;
+	  public static final int STATUS_DELAYED = 3;
+	  public static final int STATUS_VALIDATED = 4;
     ]]>
     </extra-code>
 

@@ -115,6 +115,10 @@
 		<option value="0">Not invoiced</option>
 		<option value="1">Partially invoiced</option>
 		<option value="2">Invoiced</option>
+		<!-- TPL KB-0087 Redmine #27454-->
+		<option value="3">Delayed invoicing</option>
+		<option value="4">Validated for invoicing</option>
+		<!-- TPL -->
 	</selection>
 
 	<selection name="supplychain.mrp.mrp.type.select">
