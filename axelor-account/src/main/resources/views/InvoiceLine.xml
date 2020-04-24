@@ -55,7 +55,7 @@
 				<field name="typeSelect" if="__config__.app.getApp('sale')?.enablePackManagement" colSpan="3" onChange="action-invoice-line-method-empty-line" selection-in="[0,1]"  />
 				<field name="productName" colSpan="12" requiredIf="typeSelect != 1"/>
 				<field name="qty" colSpan="3" required="true" onChange="action-group-account-invoice-line-qty-onchange"/>
-				<field name="unit" colSpan="3" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
+				<field name="unit" colSpan="3" canEdit="false" requiredIf="typeSelect == 0" form-view="unit-form" grid-view="unit-grid"/>
 				<field name="price" colSpan="3" required="true" onChange="action-invoice-line-method-onchange-price,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount"/>
 				<field name="inTaxPrice" colSpan="3" required="true" onChange="action-invoice-line-method-onchange-intaxprice,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount" hidden="true"/>
 				<panel name="discountPanel" colSpan="12">
@@ -138,7 +138,7 @@
 				<field name="qty" required="true" onChange="action-group-account-invoice-line-qty-onchange"/>
 				<field name="price" required="true" onChange="action-invoice-line-method-onchange-price,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"/>
 				<field name="inTaxPrice" required="true" onChange="action-invoice-line-method-onchange-intaxprice,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution" hidden="true"/>
-				<field name="unit" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
+				<field name="unit" canEdit="false" requiredIf="typeSelect == 0" form-view="unit-form" grid-view="unit-grid"/>
 				<field name="priceDiscounted" hidden="true"/>
 				<field name="taxLine" canEdit="false" onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution" grid-view="tax-line-grid" form-view="tax-line-form"/>
 				<field name="exTaxTotal" readonly="true"/>
