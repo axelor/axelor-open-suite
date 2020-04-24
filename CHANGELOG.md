@@ -23,6 +23,7 @@
 - Stock Move: add missing trading name in form view.
 - Batch Outgoing Stock Move Invoicing: fix query, process and view.
 - Sale Order: set printing settings from trading name when generated from opportunity.
+- Inventory: fix error on stock location select when company is not filled.
 
 ## [5.3.3] - 2020-04-14
 ## Improvements
