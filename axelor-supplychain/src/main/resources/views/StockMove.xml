@@ -228,4 +228,11 @@
       <attribute name="readonly" for="company" expr="true"/>
     </action-attrs>
 
+	<action-record name="action-stock-move-status-select-invoiced-delayed" model="com.axelor.apps.stock.db.StockMove">
+	  <field name="invoicingStatusSelect" expr="3"/>
+	</action-record>
+	
+	<action-record name="action-stock-move-status-select-invoiced-validated" model="com.axelor.apps.stock.db.StockMove">
+	  <field name="invoicingStatusSelect" expr="4"/>
+	</action-record>
 </object-views>
