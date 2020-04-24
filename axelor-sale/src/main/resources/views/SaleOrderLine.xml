@@ -77,9 +77,10 @@
 
 		<panel name="productPanel" showIf="typeSelect == 1">
 			<field name="productName" colSpan="9" title="Title"/>
-			<field name="typeSelect" colSpan="3" onChange="action-sale-order-line-method-empty-line"/>
-			<field name="isShowTotal"/>
-			<field name="isHideUnitAmounts"/>
+			<field name="typeSelect" if="__config__.app.getApp('sale')?.enablePackManagement" colSpan="3" onChange="action-sale-order-line-method-empty-line"/>
+            <field name="qty"/>
+			<field name="isShowTotal" if="__config__.app.getApp('sale')?.enablePackManagement" colSpan="3"/>
+			<field name="isHideUnitAmounts" if="__config__.app.getApp('sale')?.enablePackManagement" colSpan="3"/>
 		</panel>
  
 		<panel-tabs name="mainPanelTab" hideIf="typeSelect == 1">
@@ -137,7 +138,7 @@
 				<field name="product" canEdit="false" onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="product-grid" if="!__config__.app.isApp('supplychain')"/>
 				<field name="product" canEdit="false" onChange="action-group-sale-saleorderline-product-onchange" onSelect="action-sale-order-line-attrs-domain-product" form-view="product-form" grid-view="stock-move-line-product-grid" if="__config__.app.isApp('supplychain')"/>
 				<field name="enableFreezeFields" colSpan="2"/>
-				<field name="typeSelect" colSpan="2" onChange="action-sale-order-line-method-empty-line,action-sale-order-attrs-hide-ati" selection-in="[0,1]"/>
+				<field name="typeSelect" colSpan="2" if="__config__.app.getApp('sale')?.enablePackManagement" onChange="action-sale-order-line-method-empty-line,action-sale-order-attrs-hide-ati" selection-in="[0,1]"/>
 				<field name="productName" colSpan="12"/>
 				<field name="oldQty"/>
 			</panel>

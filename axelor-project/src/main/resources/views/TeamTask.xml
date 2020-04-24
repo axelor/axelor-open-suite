@@ -94,7 +94,8 @@
 				<field name="taskDate" title="Task date" colSpan="4" onChange="action-task-attrs-set-task-duration,action-team-task-record-set-date-or-frequency-changed" required="true"/>
 				<field name="taskEndDate" colSpan="4" onChange="action-task-attrs-set-task-duration"/>
 				<field name="taskDeadline" title="Task deadline" colSpan="4" if="!__config__.app.isApp('business-support')"/>
-				<field name="progressSelect" colSpan="12" widget="SelectProgress" onChange="action-task-update-planned-progress"/>
+				<field name="categorySet"  widget="tagSelect" canNew="false" onSelect="action-task-attrs-team-task-category-configurations"/>
+				<field name="progressSelect" widget="SelectProgress" onChange="action-task-update-planned-progress"/>
 			</panel>
 
 			<field name="typeSelect" hidden="true"/>

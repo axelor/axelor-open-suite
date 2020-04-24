@@ -22,6 +22,7 @@
 - Employee : renamed dateOfHire, timeOfHire, endDateContract, dateOfBirth fields to hireDate, hireTime, contractEndDate, birthDate
 - Removed block permission from demo data.
 - SaleOrder/Invoice/PurchaseOrder Line : Unit is now required
+- TeamTask: add new field categorySet.
 
 ## Bug Fixes
 - HR : A leave-line cannot be saved whitout employee or leave-reason.
