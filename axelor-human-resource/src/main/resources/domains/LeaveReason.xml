@@ -7,7 +7,7 @@
 
   <entity name="LeaveReason" cacheable="true">
 
-      <string name="leaveReason" namecolumn="true" title="Leave reason" required="true"/>
+      <string name="name" namecolumn="true" title="Leave reason" required="true"/>
       <boolean name="manageAccumulation" title="Manage Accumulation"/>
       <boolean name="allowNegativeValue" title="Allow negative value for leaves"/>
       <boolean name="allowInjection" title="Allow Injection"/>

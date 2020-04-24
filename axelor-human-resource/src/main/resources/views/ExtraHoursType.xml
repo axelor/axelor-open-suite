@@ -14,7 +14,7 @@
 			<field name="name" />
 			<field name="increase" />
 			<field name="payrollPreprationExport"/>
-			<field name="exportCode"/>
+			<field name="exportCode" requiredIf="payrollPreprationExport" hideIf="!payrollPreprationExport"/>
 		</panel>
 	</form>
 

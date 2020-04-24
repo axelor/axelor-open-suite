@@ -29,6 +29,7 @@ import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -63,25 +64,24 @@ public class BatchComputeWorkInProgressValuation extends AbstractBatch {
     }
     LocalDate valuationDate = productionBatch.getValuationDate();
 
-    List<ManufOrder> manufOrderList = null;
-    Map<String, Object> bindValues = new HashMap<String, Object>();
+    List<ManufOrder> manufOrderList;
+    Map<String, Object> bindValues = new HashMap<>();
     String domain =
-        "(self.statusSelect = :statusSelectInProgress or self.statusSelect = :statusSelectStandBy)";
+        "(self.statusSelect = :statusSelectInProgress or self.statusSelect = :statusSelectStandBy "
+            + "or (self.statusSelect = :statusSelectFinished "
+            + "AND self.realEndDateT BETWEEN :valuationDateT AND :todayDateT))";
     bindValues.put("statusSelectInProgress", ManufOrderRepository.STATUS_IN_PROGRESS);
     bindValues.put("statusSelectStandBy", ManufOrderRepository.STATUS_STANDBY);
+    bindValues.put("statusSelectFinished", ManufOrderRepository.STATUS_FINISHED);
+    bindValues.put("valuationDateT", valuationDate.atStartOfDay());
+    bindValues.put("todayDateT", appBaseService.getTodayDateTime().toLocalDateTime());
 
-    if (company != null && workshopStockLocation == null) {
+    if (company != null) {
       domain += " and self.company.id = :companyId";
       bindValues.put("companyId", company.getId());
-
-    } else if (company == null && workshopStockLocation != null) {
+    }
+    if (workshopStockLocation != null) {
       domain += " and self.workshopStockLocation.id = :stockLocationId";
-      bindValues.put("stockLocationId", workshopStockLocation.getId());
-
-    } else if (company != null && workshopStockLocation != null) {
-      domain +=
-          " and (self.company.id = :companyId and self.workshopStockLocation.id = :stockLocationId)";
-      bindValues.put("companyId", company.getId());
       bindValues.put("stockLocationId", workshopStockLocation.getId());
     }
 
@@ -96,16 +96,14 @@ public class BatchComputeWorkInProgressValuation extends AbstractBatch {
         ++offset;
         try {
           costSheetService.computeCostPrice(
-              manufOrderRepository.find(manufOrder.getId()),
-              CostSheetRepository.CALCULATION_WORK_IN_PROGRESS,
-              valuationDate);
+              manufOrder, CostSheetRepository.CALCULATION_WORK_IN_PROGRESS, valuationDate);
           incrementDone();
-          JPA.clear();
         } catch (Exception e) {
           incrementAnomaly();
-          TraceBackService.trace(e, IExceptionMessage.MANUF_ORDER_NO_GENERATION, batch.getId());
+          TraceBackService.trace(e, ExceptionOriginRepository.COST_SHEET, batch.getId());
         }
       }
+      JPA.clear();
     }
   }
 

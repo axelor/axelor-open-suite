@@ -10,6 +10,8 @@
 		<panel name="mainPanel">
 			<field name="name"/>
 		</panel>
+		
+		<panel-related name="employmentContractSubTypeListPanel" field="employmentContractSubTypeList" form-view="employment-contract-sub-type-form" grid-view="employment-contract-sub-type-grid"/>
     </form>
 
 </object-views>

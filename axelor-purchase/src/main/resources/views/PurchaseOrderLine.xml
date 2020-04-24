@@ -179,7 +179,8 @@
 			</panel>
 			<panel name="analyticDistributionPanel" title="Analytics" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-purchase-order-line-attrs-read-only-distribution-lines">
 				<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" canEdit="false" onChange="action-purchase-order-line-method-create-distribution" onSelect="action-purchase-order-line-attrs-set-domain-analytic-distribution-template"/>
-				<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
+				<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12" onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+				<field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
 			</panel>
 		</panel-tabs>
 		<panel name="attrsPanel">

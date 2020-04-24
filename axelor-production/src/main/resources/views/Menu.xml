@@ -42,9 +42,10 @@
 
 	<action-view name="manufacturing.root.personalized.bill.of.material"
 		title="Personalized BoM" model="com.axelor.apps.production.db.BillOfMaterial">
-		<view type="grid" name="bill-of-material-grid" />
+		<view type="grid" name="personalized-bill-of-material-grid" />
 		<view type="form" name="bill-of-material-form" />
 		<domain>self.defineSubBillOfMaterial = true AND self.personalized = true</domain>
+		<context name="_isPersonalized" expr="eval: true"/>
 	</action-view>
 
 	<menuitem name="manufacturing-root-prod-process" parent="manufacturing-root"
@@ -513,7 +514,7 @@
 
 	<menuitem name="manufacturing-conf-work-center-group-model"
 		parent="manufacturing-conf" title="Work center group model" action="manufacturing.conf.work.center.group.model"/>
-	
+
 
 	<action-view name="manufacturing.conf.work.center.group.model" title="Work center model"
 		model="com.axelor.apps.production.db.WorkCenterGroup">

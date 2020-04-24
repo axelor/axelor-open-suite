@@ -365,7 +365,7 @@
         </panel>
       </panel>
 
-      <panel if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()" if-module="axelor-supplychain" name="timetablePanel" title="Timetable">
+      <panel if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()" if-module="axelor-supplychain" name="timetablePanel" title="Timetable" onTabSelect="action-sale-order-attrs-readonly-timetable">
 	      <field name="expectedRealisationDate" colSpan="12" width="50%"/>
 	      <label name="orLabel" title="OR" colSpan="12"/>
 	       <field name="timetableTemplate" onChange="action-sale-order-method-apply-timetable-template,action-sale-order-method-update-amount-to-be-spread-over-the-timetable"/>
@@ -740,9 +740,12 @@
 	</action-attrs>
 
 	<cards name="sale-order-cards" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" width="300px"  css="rect-image" orderBy="-orderDate">
-		<toolbar>
-    		<button name="seeSaleOrderLinesBtn" title="See sale orders lines" onClick="action-view-open-sale-order-lines"/>
-		</toolbar>
+		<menubar>
+			<menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+				<item name="mergeQuotationsItem" title="Merge quotations" action="action-open-sale-quotation-merge-form"/>
+				<item name="seeQuotationLinesItem" title="See quotation lines" action="action-view-open-quotation-lines"/>
+			</menu>
+		</menubar>
 		<field name="saleOrderSeq"/>
 		<field name="externalReference"/>
 		<field name="clientPartner.fullName"/>
@@ -809,9 +812,15 @@
 	</cards>
 
 	<cards name="sale-order-quotation-cards" title="Sale order quotation" model="com.axelor.apps.sale.db.SaleOrder" width="300px"  css="rect-image" orderBy="-orderDate">
-	<toolbar>
-			<button name="mergeQuotationOrderBtn" title="Merge quotations" onClick="action-open-sale-quotation-merge-form"/>
-	</toolbar>
+		<menubar>
+			<menu name="saleOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+				<item name="printItem" title="Print" action="action-sale-order-method-show-sale-order"/>
+			</menu>
+			<menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+				<item name="mergeQuotationsItem" title="Merge quotations" action="action-open-sale-quotation-merge-form"/>
+				<item name="seeQuotationLinesItem" title="See quotation lines" action="action-view-open-quotation-lines"/>
+			</menu>
+		</menubar>
 		<field name="saleOrderSeq"/>
 		<field name="externalReference"/>
 		<field name="clientPartner.fullName"/>
@@ -1445,5 +1454,11 @@
 	<action-method name="action-sale-order-method-set-status-to-confirmed">
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="backToConfirmedStatus" />
 	</action-method>
+   
+   <action-attrs name="action-sale-order-attrs-readonly-timetable">
+    <attribute name="readonly" expr="eval: timetableList.any { it?.invoiced }" for="timetableTemplate"/>
+    <attribute name="readonly" expr="eval: timetableList.any { it?.invoiced }" for="computationDate"/>
+   </action-attrs>
+   
 	
 </object-views>
