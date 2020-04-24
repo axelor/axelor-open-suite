@@ -23,6 +23,7 @@
 - Stock Move: add missing trading name in form view.
 - Batch Outgoing Stock Move Invoicing: fix query, process and view.
 - Sale Order: set printing settings from trading name when generated from opportunity.
+- PRODUCT VARIANTS : fix for error in product variant creation.
 
 ## [5.3.3] - 2020-04-14
 ## Improvements

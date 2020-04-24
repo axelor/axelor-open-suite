@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -40,6 +41,8 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 
 public class ProductServiceImpl implements ProductService {
 
@@ -165,6 +168,7 @@ public class ProductServiceImpl implements ProductService {
     }
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   @Transactional
   public void generateProductVariants(Product productModel) {
@@ -173,6 +177,19 @@ public class ProductServiceImpl implements ProductService {
         this.getProductVariantList(productModel.getProductVariantConfig());
 
     int seq = 1;
+
+    String maxVariantCode =
+        JPA.em()
+            .createNativeQuery(
+                "select MAX(code) from base_product where parent_product = "
+                    + productModel.getId())
+            .getResultList().get(0).toString();
+
+    if (!StringUtils.isBlank(maxVariantCode)) {
+
+      seq = Integer.parseInt(StringUtils.substringAfterLast(maxVariantCode, "-")) + 1;
+      
+    }
 
     for (ProductVariant productVariant : productVariantList) {
 
