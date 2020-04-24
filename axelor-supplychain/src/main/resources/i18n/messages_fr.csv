@@ -222,11 +222,7 @@
 "Invoicing",,,
 "Invoicing Date","Date de facture",,
 "Invoicing batch","Batch Facturation",,
-<<<<<<< HEAD
 "Invoicing status","Statut de Facturation",,
-=======
-"Invoicing status","Status de Facturation",,
->>>>>>> b9225718c1279e35b687760e946420f2c1d92cb1
 "Is ISPM 15 required","NIMP15 requise",,
 "Is amount in %","Montant en %",,
 "Is certificate of conformity required",,,
