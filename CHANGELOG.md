@@ -13,6 +13,7 @@
 - Move template : Add change track on update
 - EMPLOYEE : set seniorityDate by hireDate
 - Studio : Add CSRF protection for every request header.
+- Add CSRF protection for timesheet line editor and project planning editor
 
 ## Improvements
 - USER : Default User language is based on application.locale from application.properties
