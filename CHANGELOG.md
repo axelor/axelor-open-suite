@@ -25,6 +25,7 @@
 - Batch Outgoing Stock Move Invoicing: fix query, process and view.
 - Sale Order: set printing settings from trading name when generated from opportunity.
 - Inventory: fix error on stock location select when company is not filled.
+- Product : Fix NPE while sending the email from product-activity-form,product-expense-form.
 
 ## [5.3.3] - 2020-04-14
 ## Improvements
