@@ -7,6 +7,7 @@
 - Improve consistency of grid and card view menus.
 - Stock Move: if present, use trading name logo in printing.
 - PRODUCTION : removed hideIf of manufOrder field in operation-order-form.
+- PRODUCTION : fix for hide workshopStockLocation in grid views based on manageWorkshop field.
 
 ## Bug Fixes
 - WORKSHOP STOCK LOCATION : Fix config being ignored
