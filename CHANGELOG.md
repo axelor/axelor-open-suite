@@ -7,6 +7,7 @@
 - Improve consistency of grid and card view menus.
 - Stock Move: if present, use trading name logo in printing.
 - PRODUCTION : removed hideIf of manufOrder field in operation-order-form.
+- PRODUCTION : fix for hide workshopStockLocation in grid views based on manageWorkshop field.
 
 ## Bug Fixes
 - WORKSHOP STOCK LOCATION : Fix config being ignored
@@ -23,6 +24,7 @@
 - Stock Move: add missing trading name in form view.
 - Batch Outgoing Stock Move Invoicing: fix query, process and view.
 - Sale Order: set printing settings from trading name when generated from opportunity.
+- Inventory: fix error on stock location select when company is not filled.
 - Product : Fix NPE while sending the email from product-activity-form,product-expense-form.
 
 ## [5.3.3] - 2020-04-14
