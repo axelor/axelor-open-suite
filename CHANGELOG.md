@@ -9,6 +9,7 @@
 - Stock Move: if present, use trading name logo in printing.
 - PRODUCTION : removed hideIf of manufOrder field in operation-order-form.
 - INVOICE: Subtract BudgetDistribution.amount from BudgetLine.amountRealized when invoice.operationTypeSelect = Supplier refund.
+- PRODUCTION : fix for hide workshopStockLocation in grid views based on manageWorkshop field.
 
 ## Bug Fixes
 - Manuf Order: add missing translations.
