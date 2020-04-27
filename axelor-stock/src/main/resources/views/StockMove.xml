@@ -304,6 +304,7 @@
 
 			<panel name="outgoingMovePanel" showIf="typeSelect == 2" itemSpan="3" colSpan="12">
 				<field name="company" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-onchange-company" canEdit="false" grid-view="company-grid" form-view="company-form"/>
+				<field if="__config__.app.getApp('base').enableTradingNamesManagement" name="tradingName" readonlyIf="statusSelect >= 2" canEdit="false" onChange="action-stock-move-method-printing-settings-default-value" domain=":company MEMBER OF self.companySet" form-view="trading-name-form" grid-view="trading-name-grid" colSpan="3"/>
 				<field name="partner" canEdit="false" domain="self.isContact = false AND :company member of self.companySet" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange" grid-view="partner-grid" form-view="partner-form"/>
 				<field name="fromStockLocation" canEdit="false" domain="self.company = :company" onChange="action-stock-move-group-from-location-onchange" readonlyIf="statusSelect != 1" grid-view="stock-location-grid" form-view="stock-location-form"/>
 				<field name="toAddress" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str,action-stock-move-record-ispm-field" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>

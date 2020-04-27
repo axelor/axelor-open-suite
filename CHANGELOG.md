@@ -1,8 +1,14 @@
 # Changelog
 ## [Unreleased 5.2.9]
+## Features
+- Studio: Add support of form width on studio designer.
+
 ## Improvements
 - COST SHEET: in batch computing work in progress valuation, compute cost for ongoing manuf orders at the valuation date.
 - ACCOUNTING BATCH : add start and end date of realizing fixed asset line
+- Stock Move: if present, use trading name logo in printing.
+- PRODUCTION : removed hideIf of manufOrder field in operation-order-form.
+- INVOICE: Subtract BudgetDistribution.amount from BudgetLine.amountRealized when invoice.operationTypeSelect = Supplier refund.
 - PRODUCTION : fix for hide workshopStockLocation in grid views based on manageWorkshop field.
 
 ## Bug Fixes
@@ -11,6 +17,11 @@
 - STOCK MOVE : Product translation in birt.
 - Account: Fix incomplete sequences in english data init.
 - Product form: fix typo in help message.
+- Stock Move: add missing trading name in form view.
+- TeamTask : Set default invoicingType to 'No invoicing', toInvoice is true when selected InvoicingType is 'Package' and field data disappears on save fix
+- Batch Outgoing Stock Move Invoicing: fix query, process and view.
+- Sale Order: set printing settings from trading name when generated from opportunity.
+- Inventory: fix error on stock location select when company is not filled.
 
 ## [5.2.8] - 2020-04-14
 ## Improvements

@@ -916,7 +916,7 @@ else row["last_modified_by"]</expression>
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
 StockMove.id, 
-MetaFile.file_path as logo_path,
+COALESCE(MetaFileTN.file_path, MetaFile.file_path) as logo_path,
 Company.height as logo_height,
 Company.width as logo_width,
 StockMove.real_date, 
@@ -986,6 +986,8 @@ left outer join purchase_purchase_order as PurchaseOrder on (StockMove.origin_id
 left outer join stock_stock_location as fromStockLocation on (StockMove.from_stock_location = FromStockLocation.id)
 left outer join stock_stock_location as ToStockLocation on (StockMove.to_stock_location = ToStockLocation.id)
 left outer join base_address as ToStockLocationAddress on (ToStockLocation.address = ToStockLocationAddress.id)
+left outer join base_trading_name TradingName on (TradingName.id = StockMove.trading_name)
+left outer join meta_file as MetaFileTN on (MetaFileTN.id = TradingName.logo)
 
 where StockMove.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
