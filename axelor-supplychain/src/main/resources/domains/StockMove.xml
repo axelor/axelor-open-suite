@@ -11,7 +11,7 @@
     <many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice" title="Invoice"  mappedBy="stockMoveSet"/>
     <string name="specificPackage" large="true"/>
 
-   	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
+   	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs" />
    	<string name="deliveryCondition" title="Delivery conditions" large="true" multiline="true"/>
    	
     <integer name="pfpValidateStatusSelect" title="PFP Status" selection="invoice.pfp.validate.status.select" readonly="true" default="1"/>
@@ -32,8 +32,8 @@
 	  public static final int STATUS_NOT_INVOICED = 0;
 	  public static final int STATUS_PARTIALLY_INVOICED = 1;
 	  public static final int STATUS_INVOICED = 2;
-	  public static final int STATUS_DELAYED = 3;
-	  public static final int STATUS_VALIDATED = 4;
+	  public static final int STATUS_DELAYED_INVOICE = 3;
+	  public static final int STATUS_VALIDATED_INVOICE = 4;
     ]]>
     </extra-code>
 
