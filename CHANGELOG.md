@@ -1,7 +1,31 @@
 # Changelog
 ## [Unreleased 5.3.4]
 ## Improvements
+- USER: fix filter for activeCompany
+- COST SHEET: in batch computing work in progress valuation, compute cost for ongoing manuf orders at the valuation date.
+- ACCOUNTING BATCH : add start and end date of realizing fixed asset line
+- Improve consistency of grid and card view menus.
+- Stock Move: if present, use trading name logo in printing.
+- PRODUCTION : removed hideIf of manufOrder field in operation-order-form.
+- PRODUCTION : fix for hide workshopStockLocation in grid views based on manageWorkshop field.
+
 ## Bug Fixes
+- WORKSHOP STOCK LOCATION : Fix config being ignored
+- PURCHASE : Fix fields where negative values shouldn't be allowed
+- SALES : Fix fields where negative values shouldn't be allowed
+- Manuf Order: add missing translations.
+- STOCK MOVE : Product translation in birt.
+- Invoice Line: Fix hidden price field in form.
+- Account: Fix incomplete sequences in english data init.
+- INVOICELINE: fix hideIf for discountAmount.
+- Product form: fix typo in help message.
+- Production : add missing translations
+- Studio: Fix custom model's 'formWidth' default value.
+- Stock Move: add missing trading name in form view.
+- Batch Outgoing Stock Move Invoicing: fix query, process and view.
+- Sale Order: set printing settings from trading name when generated from opportunity.
+- Inventory: fix error on stock location select when company is not filled.
+- Product : Fix NPE while sending the email from product-activity-form,product-expense-form.
 - City import : Fix for server error during import.
 
 ## [5.3.3] - 2020-04-14
@@ -40,6 +64,7 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - PRODUCT: fix position of Variant button.
 - Project: fix some fields not being hidden properly.
 - PARTNER: hide panels related to invoice when invoice app is disabled.
+- EMPLOYEE : Fixed contactPartner fullName compute.
 
 ## [5.3.2] - 2020-04-01
 ## Improvements
