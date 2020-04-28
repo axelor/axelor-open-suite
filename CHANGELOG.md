@@ -22,6 +22,7 @@
 - Batch Outgoing Stock Move Invoicing: fix query, process and view.
 - Sale Order: set printing settings from trading name when generated from opportunity.
 - Inventory: fix error on stock location select when company is not filled.
+- Sale order : fix duration language in report
 
 ## [5.2.8] - 2020-04-14
 ## Improvements
