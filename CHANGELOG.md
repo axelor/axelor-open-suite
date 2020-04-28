@@ -1,29 +1,31 @@
 # Changelog
-## [Unreleased 5.2.9]
+## [5.2.9] - 2020-04-28
 ## Features
 - Studio: Add support of form width on studio designer.
 
 ## Improvements
 - COST SHEET: in batch computing work in progress valuation, compute cost for ongoing manuf orders at the valuation date.
-- ACCOUNTING BATCH : add start and end date of realizing fixed asset line
+- ACCOUNTING BATCH: add start and end date of realizing fixed asset line.
 - Stock Move: if present, use trading name logo in printing.
-- PRODUCTION : removed hideIf of manufOrder field in operation-order-form.
-- INVOICE: Subtract BudgetDistribution.amount from BudgetLine.amountRealized when invoice.operationTypeSelect = Supplier refund.
-- PRODUCTION : fix for hide workshopStockLocation in grid views based on manageWorkshop field.
+- PRODUCTION: do not hide manufacturing order in operation order form opened in a popup.
 
 ## Bug Fixes
+- Budget amount: Correctly manage the case of refund invoices.
 - Manuf Order: add missing translations.
-- BudgetLine : Resolve NPE on dates.
-- STOCK MOVE : Product translation in birt.
+- BudgetLine: Resolve NPE on dates.
+- STOCK MOVE: Product translation in birt.
 - Account: Fix incomplete sequences in english data init.
 - Product form: fix typo in help message.
 - Stock Move: add missing trading name in form view.
-- TeamTask : Set default invoicingType to 'No invoicing', toInvoice is true when selected InvoicingType is 'Package' and field data disappears on save fix
+- TeamTask: Set default invoicingType to 'No invoicing'.
+- TeamTask: Set toInvoice is true when selected InvoicingType is 'Package'.
+- TeamTask: Fix fields disappearing on save.
 - Batch Outgoing Stock Move Invoicing: fix query, process and view.
 - Sale Order: set printing settings from trading name when generated from opportunity.
 - Inventory: fix error on stock location select when company is not filled.
-- StockMove : Specify french translation for Invoicing status.  
-- Sale order : fix duration language in report
+- StockMove: Specify french translation for Invoicing status.
+- Sale order: fix duration language in report
+- PRODUCTION: hide workshopStockLocation in grid views based on manageWorkshop configuration.
 
 ## [5.2.8] - 2020-04-14
 ## Improvements
@@ -592,7 +594,7 @@ In this case, the file is correctly retrieved from the bank server, but not save
 - LEAVE REQUEST: Add error when leave reason has no unit.
 - LEAVE REQUEST: Set duration value 0 if day planning of selected weekly planning is empty
 
-[Unreleased 5.2.9]: https://github.com/axelor/axelor-open-suite/compare/v5.2.8...5.2-dev
+[5.2.9]: https://github.com/axelor/axelor-open-suite/compare/v5.2.8...v5.2.9
 [5.2.8]: https://github.com/axelor/axelor-open-suite/compare/v5.2.7...v5.2.8
 [5.2.7]: https://github.com/axelor/axelor-open-suite/compare/v5.2.6...v5.2.7
 [5.2.6]: https://github.com/axelor/axelor-open-suite/compare/v5.2.5...v5.2.6
