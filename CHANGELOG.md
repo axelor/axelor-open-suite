@@ -2,6 +2,7 @@
 ## [Unreleased 5.2.10]
 ## Improvements
 ## Bug Fixes
+- PRODUCT VARIANTS : fix for error in product variant creation.
 
 ## [5.2.9] - 2020-04-28
 ## Features

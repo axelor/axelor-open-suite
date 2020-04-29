@@ -40,6 +40,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
+import org.apache.commons.lang.StringUtils;
 
 public class ProductServiceImpl implements ProductService {
 
@@ -165,6 +166,7 @@ public class ProductServiceImpl implements ProductService {
     }
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   @Transactional
   public void generateProductVariants(Product productModel) {
@@ -173,6 +175,22 @@ public class ProductServiceImpl implements ProductService {
         this.getProductVariantList(productModel.getProductVariantConfig());
 
     int seq = 1;
+
+    List<Product> productVariantsList =
+        productRepo
+            .all()
+            .filter("self.parentProduct = ?1", productModel)
+            .order("code")
+            .fetch();
+
+    if (productVariantsList != null && !productVariantsList.isEmpty()) {
+
+      seq =
+          Integer.parseInt(
+                  StringUtils.substringAfterLast(
+                      productVariantsList.get(productVariantsList.size() - 1).getCode(), "-"))
+              + 1;
+    }
 
     for (ProductVariant productVariant : productVariantList) {
 
