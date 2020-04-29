@@ -177,11 +177,7 @@ public class ProductServiceImpl implements ProductService {
     int seq = 1;
 
     List<Product> productVariantsList =
-        productRepo
-            .all()
-            .filter("self.parentProduct = ?1", productModel)
-            .order("code")
-            .fetch();
+        productRepo.all().filter("self.parentProduct = ?1", productModel).order("code").fetch();
 
     if (productVariantsList != null && !productVariantsList.isEmpty()) {
 
