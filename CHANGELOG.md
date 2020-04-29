@@ -10,6 +10,7 @@
 - PRODUCTION : fix for hide workshopStockLocation in grid views based on manageWorkshop field.
 - INVOICE: Subtract BudgetDistribution.amount from BudgetLine.amountRealized when invoice.operationTypeSelect = Supplier refund.
 - TeamTask : Set default invoicingType to 'No invoicing', toInvoice is true when selected InvoicingType is 'Package' and field data disappears on save fix
+- CONTACT : Possibility to import Google contact 
 
 ## Bug Fixes
 - WORKSHOP STOCK LOCATION : Fix config being ignored
