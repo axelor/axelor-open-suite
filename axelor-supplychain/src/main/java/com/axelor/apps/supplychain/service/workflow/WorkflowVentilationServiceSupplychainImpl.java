@@ -25,6 +25,9 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
+import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -263,7 +266,28 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
         } else {
           qty = qty.add(invoiceLine.getQty());
         }
-        if (stockMoveLine.getRealQty().compareTo(qty) >= 0) {
+
+        BigDecimal qtyToCompare = qty;
+
+        Unit movUnit = stockMoveLine.getUnit(), invUnit = invoiceLine.getUnit();
+        try {
+          qtyToCompare =
+              Beans.get(UnitConversionService.class)
+                  .convert(
+                      invUnit,
+                      movUnit,
+                      qty,
+                      Beans.get(AppBaseService.class).getNbDecimalDigitForQty(),
+                      null);
+        } catch (AxelorException e) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(IExceptionMessage.STOCK_MOVE_INVOICE_QTY_INVONVERTIBLE_UNIT)
+                  + "\n"
+                  + e.getMessage());
+        }
+
+        if (stockMoveLine.getRealQty().compareTo(qtyToCompare) >= 0) {
           stockMoveLine.setQtyInvoiced(qty);
         } else {
           throw new AxelorException(
