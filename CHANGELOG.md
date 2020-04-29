@@ -13,6 +13,7 @@
 - Improve consistency of grid and card view menus.
 - Stock Move: if present, use trading name logo in printing.
 - PRODUCTION: do not hide manufacturing order in operation order form opened in a popup.
+- Invoice : made all dashboard's charts and grid based on ventilated invoices.
 
 ## Bug Fixes
 - Budget amount: Correctly manage the case of refund invoices.
