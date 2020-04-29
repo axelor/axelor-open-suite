@@ -29,6 +29,7 @@
 - Inventory: fix error on stock location select when company is not filled.
 - Product : Fix NPE while sending the email from product-activity-form,product-expense-form.
 - City import : Fix for server error during import.
+- Sale order : fix duration language in report
 
 ## [5.3.3] - 2020-04-14
 ## Improvements
