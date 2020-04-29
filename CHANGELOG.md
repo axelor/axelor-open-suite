@@ -2,6 +2,7 @@
 ## [Unreleased 5.2.10]
 ## Improvements
 ## Bug Fixes
+- PRODUCT VARIANTS : fix for error in product variant creation.
 
 ## [5.2.9] - 2020-04-28
 ## Features
@@ -28,9 +29,6 @@
 - Sale Order: set printing settings from trading name when generated from opportunity.
 - Inventory: fix error on stock location select when company is not filled.
 - StockMove: Specify french translation for Invoicing status.
-- Sale order: fix duration language in report
-- PRODUCTION: hide workshopStockLocation in grid views based on manageWorkshop configuration.
-- PRODUCT VARIANTS : fix for error in product variant creation.
 
 ## [5.2.8] - 2020-04-14
 ## Improvements
