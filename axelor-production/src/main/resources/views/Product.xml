@@ -19,8 +19,8 @@
 			<button name="createProductionProcessBtn" title="Create a production process" colSpan="4" onClick="save,aciton-product-view-create-production-process"/>
 			<panel-dashlet name="showBOMPanel" action="action-product-view-show-bill-of-material" colSpan="12"/>
        </panel>
-	</form>    
-	
+	</form>
+
 	<action-view name="action-product-view-production-process" title="Production processes"
 		model="com.axelor.apps.production.db.ProdProcess">
 		<view type="grid" name="prod-process-grid"/>
@@ -38,15 +38,15 @@
 	<action-view name="action-product-view-create-bill-of-material" title="Bill of materials"
 		model="com.axelor.apps.production.db.BillOfMaterial">
 		<view type="form" name="bill-of-material-form"/>
-		<context name="_product" expr="eval: __this__"/>
+		<context name="_product" expr="eval: __self__"/>
 	</action-view>
 	
 	<action-view name="aciton-product-view-create-production-process" title="Production process"
 		model="com.axelor.apps.production.db.ProdProcess">
 		<view type="form" name="prod-process-form"/>
-		<context name="_product" expr="eval: __this__"/>
+		<context name="_product" expr="eval: __self__"/>
 	</action-view>
-	
+
 	<action-attrs name="action-product-attrs-bill-of-material-domain">
 		<attribute name="domain" for="defaultBillOfMaterial" expr="eval: &quot;(self.product.id = ${parentProduct?.id} OR self.product.id = ${id}) AND self.defineSubBillOfMaterial = true&quot;"/>
 	</action-attrs>
