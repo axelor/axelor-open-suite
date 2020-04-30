@@ -61,6 +61,7 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - MOVE TEMPLATE LINE: fix for analytic template and tax field being editable or required depending to the account settings.
 - Partner: Fix customer situation report display value of contact partner jobTitle.
 - PRODUCT: fix position if Variant button.
+- MOVELINE: When a moveLine is manually created, equivalent account is searched as it is done on automatic moveLines creation.
 
 ## [5.2.7] - 2020-03-31
 ## Improvements
