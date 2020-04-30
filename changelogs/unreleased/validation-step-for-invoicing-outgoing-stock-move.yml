@@ -1,0 +1,7 @@
+---
+title: STOCK MOVE : validation step for invoicing outgoing stock move
+type: feature
+description: |
+  Add new values for the select of invoicing status for move line
+  Filter changed for list the stocke move in sale's screen
+  Batch filter changed with added in the exclusion case, the value Delayed invoice
