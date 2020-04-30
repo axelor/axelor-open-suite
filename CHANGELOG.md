@@ -1,7 +1,9 @@
 # Changelog
 ## [Unreleased 5.3.5]
 ## Improvements
+
 ## Bug Fixes
+- STOCK: Fix company display condition
 
 ## [5.3.4] - 2020-04-29
 ## Improvements
