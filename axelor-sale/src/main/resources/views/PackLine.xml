@@ -6,7 +6,7 @@
     <grid name="pack-line-grid" title="PackLine" model="com.axelor.apps.sale.db.PackLine">
     	<field name="product.code"/>
     	<field name="productName"/>
-    	<field name="quantity" x-sclae="2"/>
+    	<field name="quantity" x-scale="2"/>
     	<field name="unit"/>
     	<field name="price"/>
     </grid>
@@ -39,7 +39,7 @@
     </action-record>
 
     <action-record name="action-pack-line-record-type-select-onchange" model="com.axelor.apps.sale.db.PackLine">
-    	<field name="product,unit" expr="eval: null" if="typeSelect == 1"/>
+    	<field name="product,unit,productName" expr="eval: null" if="typeSelect == 1"/>
     	<field name="quantity" expr="eval: 1.00" />
     	<field name="price" expr="eval: 0.00" if="typeSelect == 1"/>
     </action-record>
