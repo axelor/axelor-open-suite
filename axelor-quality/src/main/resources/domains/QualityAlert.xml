@@ -32,9 +32,9 @@
     	<date name="startDate" title="Start date" />
     	<date name="endDate" title="End date" />
     	<date name="deadLineDate" title="Deadline"/>
-   		<string name="description" title="Description" />
-    	<string name="correctiveActions" title="Corrective actions" />
-    	<string name="preventiveActions" title="Preventive actions"/>
+   		<string name="description" title="Description" large="true"/>
+    	<string name="correctiveActions" title="Corrective actions" large="true"/>
+    	<string name="preventiveActions" title="Preventive actions" large="true"/>
   	</entity>
   
 </domain-models>
