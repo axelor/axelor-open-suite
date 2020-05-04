@@ -4,7 +4,8 @@
 - Invoice : made all dashboard's charts and grid based on ventilated invoices.
 ## Bug Fixes
 - PRODUCT VARIANTS : fix for error in product variant creation.
-- Invoice, qty check on ventilation now deals with different units between invoice line & move line.
+- Duration : add missing translation
+- Invoice, qty check on ventilation now deals with different units between invoice line & stock move line.
 
 ## [5.2.9] - 2020-04-28
 ## Features
