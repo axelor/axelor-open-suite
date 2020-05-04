@@ -5,6 +5,7 @@
 ## Bug Fixes
 - STOCK: Fix company display condition
 - Invoice, qty check on ventilation now deals with different units between invoice line and stock move line.
+- MOVELINE: When a moveLine is manually created, equivalent account is searched as it is done on automatic moveLines creation.
 
 ## [5.3.4] - 2020-04-29
 ## Improvements
