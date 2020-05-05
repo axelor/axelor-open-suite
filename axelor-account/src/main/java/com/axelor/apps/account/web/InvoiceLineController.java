@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
@@ -40,9 +41,12 @@ import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 @Singleton
 public class InvoiceLineController {
@@ -353,19 +357,24 @@ public class InvoiceLineController {
   public void filterAccount(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
     Invoice invoice = this.getInvoice(context);
+    InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
     if (invoice != null && invoice.getCompany() != null) {
-      String domain = null;
+      List<String> technicalTypeSelectList = new ArrayList<>();
       if (InvoiceToolService.isPurchase(invoice)) {
-        domain =
-            "self.company.id = "
-                + invoice.getCompany().getId()
-                + "AND self.accountType.technicalTypeSelect IN ('debt' , 'immobilisation' , 'charge')";
+        if (invoiceLine.getFixedAssets()) {
+          technicalTypeSelectList.add(AccountTypeRepository.TYPE_IMMOBILISATION);
+        } else {
+          technicalTypeSelectList.add(AccountTypeRepository.TYPE_DEBT);
+          technicalTypeSelectList.add(AccountTypeRepository.TYPE_CHARGE);
+        }
       } else {
-        domain =
-            "self.company.id = "
-                + invoice.getCompany().getId()
-                + " AND self.accountType.technicalTypeSelect = 'income'";
+        technicalTypeSelectList.add(AccountTypeRepository.TYPE_INCOME);
       }
+      String domain =
+          "self.company.id = "
+              + invoice.getCompany().getId()
+              + " AND self.accountType.technicalTypeSelect IN "
+              + technicalTypeSelectList.stream().collect(Collectors.joining("','", "('", "')"));
       response.setAttr("account", "domain", domain);
     }
   }

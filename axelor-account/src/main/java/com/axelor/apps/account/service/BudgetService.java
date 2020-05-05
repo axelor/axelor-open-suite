@@ -101,7 +101,9 @@ public class BudgetService {
               for (BudgetLine budgetLine : budget.getBudgetLineList()) {
                 LocalDate fromDate = budgetLine.getFromDate();
                 LocalDate toDate = budgetLine.getToDate();
-                if ((fromDate.isBefore(date) || fromDate.isEqual(date))
+                if (fromDate != null
+                    && toDate != null
+                    && (fromDate.isBefore(date) || fromDate.isEqual(date))
                     && (toDate.isAfter(date) || toDate.isEqual(date))) {
                   budgetLine.setAmountRealized(
                       budgetLine.getAmountRealized().add(budgetDistribution.getAmount()));

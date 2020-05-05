@@ -1358,7 +1358,7 @@ where Timesheet.id = ?]]></xml-property>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">'To date'</value>
+                                    <value type="javascript">'Timesheet.toDate'</value>
                                 </simple-property-list>
                             </structure>
                         </list-property>
