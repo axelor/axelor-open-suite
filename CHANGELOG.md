@@ -6,6 +6,7 @@
 - PRODUCT VARIANTS : fix for error in product variant creation.
 - Duration : add missing translation
 - Invoice, qty check on ventilation now deals with different units between invoice line & stock move line.
+- Stock config : Add missing translation
 
 ## [5.2.9] - 2020-04-28
 ## Features
