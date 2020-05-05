@@ -3,6 +3,7 @@
 ## Improvements
 - WEEKLY PLANNING : leaveCoef now has default and init values
 - BudgetLine : make dates field required.
+- STOCK LOCATION LINE: Fix blank screen issue in stock correction process
 
 ## Bug Fixes
 - STOCK: Fix company display condition
