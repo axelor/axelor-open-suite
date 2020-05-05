@@ -3,6 +3,7 @@
 ## Improvements
 - WEEKLY PLANNING : leaveCoef now has default and init values
 - BudgetLine : make dates field required.
+- Product: Change french translation of value product in productTypeSelect.
 
 ## Bug Fixes
 - STOCK: Fix company display condition
