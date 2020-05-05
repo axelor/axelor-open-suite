@@ -11,6 +11,7 @@
 - Stock config : Add missing translation
 - App stock : Fix missing translation
 - SALEORDERLINE : Readonly allocate and deallocate button on already delivered lines.
+- SALEORDERLINE : Change french translation of 'Available status'.
 
 ## [5.3.4] - 2020-04-29
 ## Improvements
