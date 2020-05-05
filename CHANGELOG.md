@@ -1,26 +1,47 @@
 # Changelog
-## [Unreleased 5.3.4]
+## [Unreleased 5.3.5]
 ## Improvements
-- USER: fix filter for activeCompany
-- COST SHEET: in batch computing work in progress valuation, compute cost for ongoing manuf orders at the valuation date.
-- ACCOUNTING BATCH : add start and end date of realizing fixed asset line
-- Improve consistency of grid and card view menus.
-- Stock Move: if present, use trading name logo in printing.
+- WEEKLY PLANNING : leaveCoef now has default and init values
 
 ## Bug Fixes
-- WORKSHOP STOCK LOCATION : Fix config being ignored
-- PURCHASE : Fix fields where negative values shouldn't be allowed
-- SALES : Fix fields where negative values shouldn't be allowed
+- STOCK: Fix company display condition
+- Invoice, qty check on ventilation now deals with different units between invoice line and stock move line.
+- Product : Product name is readable even when long
+
+## [5.3.4] - 2020-04-29
+## Improvements
+- COST SHEET: in batch computing work in progress valuation, compute cost for ongoing manuf orders at the valuation date.
+- ACCOUNTING BATCH: add start and end date of realizing fixed asset line.
+- Improve consistency of grid and card view menus.
+- Stock Move: if present, use trading name logo in printing.
+- PRODUCTION: do not hide manufacturing order in operation order form opened in a popup.
+- Invoice : made all dashboard's charts and grid based on ventilated invoices.
+
+## Bug Fixes
+- Budget amount: Correctly manage the case of refund invoices.
+- USER: fix filter for activeCompany.
+- WORKSHOP STOCK LOCATION: Fix config being ignored.
+- TeamTask: Set default invoicingType to 'No invoicing'.
+- TeamTask: Set toInvoice is true when selected InvoicingType is 'Package'.
+- TeamTask: Fix fields disappearing on save.
+- PURCHASE: Fix fields where negative values shouldn't be allowed
+- SALES: Fix fields where negative values shouldn't be allowed
 - Manuf Order: add missing translations.
-- STOCK MOVE : Product translation in birt.
+- STOCK MOVE: Product translation in birt.
 - Invoice Line: Fix hidden price field in form.
 - Account: Fix incomplete sequences in english data init.
 - INVOICELINE: fix hideIf for discountAmount.
 - Product form: fix typo in help message.
-- Production : add missing translations
+- Production: add missing translations.
 - Studio: Fix custom model's 'formWidth' default value.
 - Stock Move: add missing trading name in form view.
-- Product : Product name is readable even when long
+- Batch Outgoing Stock Move Invoicing: fix query, process and view.
+- Sale Order: set printing settings from trading name when generated from opportunity.
+- Inventory: fix error on stock location select when company is not filled.
+- Product: Fix NPE while sending the email from product-activity-form,product-expense-form.
+- City import: Fix server error during import.
+- PRODUCTION: hide workshopStockLocation in grid views based on manageWorkshop configuration.
+- EMPLOYEE: Fixed contactPartner full name compute.
 
 ## [5.3.3] - 2020-04-14
 ## Improvements
@@ -58,7 +79,6 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - PRODUCT: fix position of Variant button.
 - Project: fix some fields not being hidden properly.
 - PARTNER: hide panels related to invoice when invoice app is disabled.
-- EMPLOYEE : Fixed contactPartner fullName compute.
 
 ## [5.3.2] - 2020-04-01
 ## Improvements
@@ -255,7 +275,8 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - PRODUCT: Fix economicManufOrderQty displayed twice.
 
 
-[Unreleased 5.3.4]: https://github.com/axelor/axelor-open-suite/compare/v5.3.3...dev
+[Unreleased 5.3.5]: https://github.com/axelor/axelor-open-suite/compare/v5.3.4...dev
+[5.3.4]: https://github.com/axelor/axelor-open-suite/compare/v5.3.3...v5.3.4
 [5.3.3]: https://github.com/axelor/axelor-open-suite/compare/v5.3.2...v5.3.3
 [5.3.2]: https://github.com/axelor/axelor-open-suite/compare/v5.3.1...v5.3.2
 [5.3.1]: https://github.com/axelor/axelor-open-suite/compare/v5.3.0...v5.3.1
