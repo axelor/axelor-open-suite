@@ -2,10 +2,14 @@
 ## [Unreleased 5.3.5]
 ## Improvements
 - WEEKLY PLANNING : leaveCoef now has default and init values
+- BudgetLine : make dates field required.
 
 ## Bug Fixes
 - STOCK: Fix company display condition
 - Invoice, qty check on ventilation now deals with different units between invoice line and stock move line.
+- Product : Product name is readable even when long
+- Stock config : Add missing translation
+- App stock : Fix missing translation
 - SALEORDERLINE : Readonly allocate and deallocate button on already delivered lines.
 
 ## [5.3.4] - 2020-04-29
