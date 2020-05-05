@@ -33,6 +33,7 @@
 - City import: Fix server error during import.
 - PRODUCTION: hide workshopStockLocation in grid views based on manageWorkshop configuration.
 - EMPLOYEE: Fixed contactPartner full name compute.
+- PRODUCT VARIANTS : fix for error in product variant creation.
 
 ## [5.3.3] - 2020-04-14
 ## Improvements
