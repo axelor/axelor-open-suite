@@ -42,7 +42,7 @@
           					if="__config__.app.getApp('base').getGenerateProductSequence()"/>
           				<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="5" css="label-bold bold large" placeholder="Code" 
           					if="!__config__.app.getApp('base').getGenerateProductSequence()" required="true"/>
-                  <field name="name" showTitle="false" colSpan="7" css="label-bold bold large" placeholder="Name" width="400"/>
+                  <field name="name" showTitle="false" colSpan="7" css="label-bold bold large" placeholder="Name" width="800"/>
         			</editor>
       			</field>
     		</panel>
@@ -59,12 +59,18 @@
 						</viewer>
 					</field>
 				</panel>
-      			<panel name="subActionsPanel" showTitle="false" showIf="productTypeSelect == 'storable' &amp;&amp; id &amp;&amp; stockManaged" colSpan="7" if-module="axelor-stock" if="__config__.app.isApp('stock')">
-       	 		    <button name="$realQtyBtn" title="Real qty" colSpan="4" icon="fa-building-o" onClick="action-stock-move-line-product-default-realized" widget="info-button"/>
-             	    <button name="$futureQtyBtn" title="Future qty" colSpan="4" icon="fa-line-chart" onClick="action-stock-move-line-product-default-planned" widget="info-button"/>	
-                    <button name="$previewBtn" title="See stock details" colSpan="4" onClick="action-stock-location-line-view-for-a-product-from-product-view" if-module="axelor-supplychain" widget="info-button" icon="fa-cubes"/>
-                    <spacer colSpan="7"/>
-    	  			<button name="$totalVariantsBtn" title="Total variants" showIf="isModel" colSpan="5" icon="fa-tags" onClick="action-product-view-total-variants" widget="info-button"/>
+      			<panel name="subActionsPanel" showTitle="false" showIf="productTypeSelect == 'storable' &amp;&amp; id &amp;&amp; stockManaged" colSpan="12" if-module="axelor-stock" if="__config__.app.isApp('stock')">
+							<spacer colSpan="3"/>
+							<button name="$realQtyBtn" title="Real qty" colSpan="3" icon="fa-building-o"
+											onClick="action-stock-move-line-product-default-realized" widget="info-button"/>
+             	<button name="$futureQtyBtn" title="Future qty" colSpan="3" icon="fa-line-chart"
+											onClick="action-stock-move-line-product-default-planned" widget="info-button"/>
+              <button name="$previewBtn" title="See stock details" colSpan="3"
+											onClick="action-stock-location-line-view-for-a-product-from-product-view" if-module="axelor-supplychain"
+											widget="info-button" icon="fa-cubes"/>
+              <spacer colSpan="9"/>
+    	  			<button name="$totalVariantsBtn" title="Total variants" showIf="isModel" colSpan="3" icon="fa-tags"
+											onClick="action-product-view-total-variants" widget="info-button"/>
 					<field name="isModel" hidden="true"/>
 				</panel>
       		</panel>

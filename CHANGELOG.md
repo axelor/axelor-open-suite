@@ -6,6 +6,7 @@
 ## Bug Fixes
 - STOCK: Fix company display condition
 - Invoice, qty check on ventilation now deals with different units between invoice line and stock move line.
+- Product : Product name is readable even when long
 
 ## [5.3.4] - 2020-04-29
 ## Improvements
