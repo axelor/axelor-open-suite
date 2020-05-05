@@ -3,6 +3,7 @@
 ## Improvements
 - WEEKLY PLANNING : leaveCoef now has default and init values
 - BudgetLine : make dates field required.
+- SUPPLY CHAIN: Improve title and translation of field
 
 ## Bug Fixes
 - STOCK: Fix company display condition
