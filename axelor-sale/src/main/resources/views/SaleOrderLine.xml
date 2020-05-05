@@ -15,8 +15,8 @@
 		<field name="productName"/>
 		<field name="qty" aggregate="sum" x-scale="2"/>
 		<field name="reservedQty" if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum" x-scale="2"/>
-    	<button name="allocateAll" if="__config__.app.getApp('supplychain')?.manageStockReservation" title="Allocate" icon="fa-plus-square" readonlyIf="$get('saleOrder.statusSelect') != 3 || $get('saleOrder.orderBeingEdited') || $number(reservedQty) == $number(qty)" onClick="save,action-supplychain-sale-order-line-allocate-all"/>
-		<button name="deallocate"  if="__config__.app.getApp('supplychain')?.manageStockReservation" title="Deallocate" icon="fa-minus-square" readonlyIf="$get('saleOrder.statusSelect') != 3 || $get('saleOrder.orderBeingEdited') || $number(reservedQty) == 0" onClick="save,action-supplychain-sale-order-line-deallocate-all"/>
+    	<button name="allocateAll" if="__config__.app.getApp('supplychain')?.manageStockReservation" title="Allocate" icon="fa-plus-square" readonlyIf="$get('saleOrder.statusSelect') != 3 || $get('saleOrder.orderBeingEdited') || $number(reservedQty) == $number(qty) || deliveryState == 3" onClick="save,action-supplychain-sale-order-line-allocate-all"/>
+		<button name="deallocate"  if="__config__.app.getApp('supplychain')?.manageStockReservation" title="Deallocate" icon="fa-minus-square" readonlyIf="$get('saleOrder.statusSelect') != 3 || $get('saleOrder.orderBeingEdited') || $number(reservedQty) == 0 || deliveryState == 3" onClick="save,action-supplychain-sale-order-line-deallocate-all"/>
 		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
 		<field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
 		<field name="inTaxPrice" x-scale="2"/>
