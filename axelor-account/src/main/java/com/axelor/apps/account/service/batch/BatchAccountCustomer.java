@@ -93,7 +93,7 @@ public class BatchAccountCustomer extends BatchStrategy {
                     I18n.get(IExceptionMessage.BATCH_ACCOUNT_1),
                     accountingSituationRepo.find(accountingSituation.getId()).getName()),
                 e),
-            ExceptionOriginRepository.ACCOUNT_CUSTOMER,
+            ExceptionOriginRepository.CUSTOMER_ACCOUNT,
             batch.getId());
 
         incrementAnomaly();
@@ -168,7 +168,7 @@ public class BatchAccountCustomer extends BatchStrategy {
                     I18n.get(IExceptionMessage.BATCH_ACCOUNT_1),
                     accountingSituationRepo.find(accountingSituation.getId()).getName()),
                 e),
-            ExceptionOriginRepository.ACCOUNT_CUSTOMER,
+            ExceptionOriginRepository.CUSTOMER_ACCOUNT,
             batch.getId());
 
         anomaly++;

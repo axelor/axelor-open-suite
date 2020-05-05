@@ -94,7 +94,8 @@
 				<field name="taskDate" title="Task date" colSpan="4" onChange="action-task-attrs-set-task-duration,action-team-task-record-set-date-or-frequency-changed" required="true"/>
 				<field name="taskEndDate" colSpan="4" onChange="action-task-attrs-set-task-duration"/>
 				<field name="taskDeadline" title="Task deadline" colSpan="4" if="!__config__.app.isApp('business-support')"/>
-				<field name="progressSelect" colSpan="12" widget="SelectProgress" onChange="action-task-update-planned-progress"/>
+				<field name="categorySet"  widget="tagSelect" canNew="false" onSelect="action-task-attrs-team-task-category-configurations"/>
+				<field name="progressSelect" widget="SelectProgress" onChange="action-task-update-planned-progress"/>
 			</panel>
 
 			<field name="typeSelect" hidden="true"/>
@@ -137,7 +138,7 @@
 					<field name="name"/>
 				</panel-related>
 			</panel>
-			<panel name="financialDataPanel" title="Financial Data" colSpan="12">				
+			<panel name="financialDataPanel" title="Financial Data" colSpan="12" if-module="axelor-business-project" if="__config__.app.isApp('business-project')">				
 				<field name="invoicingType" colspan="6" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" onChange="action-team-task-attrs-invoice-type-on-change"/>
 				<field name="toInvoice" colSpan="2" readonlyIf="invoiced" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>				
 				<field name="isPaid" showIf="project.invoicingSequenceSelect == 1" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" colSpan="1"/>
@@ -178,7 +179,7 @@
 				<field name="hasDateOrFrequencyChanged" hidden="true"/>
 			</panel>
 			
-			<panel name="timeSpentPanel" title="Time Spent">
+			<panel name="timeSpentPanel" title="Time Spent" if-module="axelor-human-resource" if="__config__.app.isApp('timesheet')">
 				<field name="totalRealHrs" readonly="true" colSpan="4">
 				<viewer><![CDATA[
                    	<span>{{record.totalRealHrs}} </span><span x-translate>hours</span>
@@ -188,7 +189,7 @@
 				<panel-dashlet name="waitingTimesheetLinesPanel" action="action-teamtask-dashlet-waiting-timeshet-lines" title="Waiting Timesheet lines" colSpan="12" canSearch="true"/>
 			</panel>
 
-			<panel name="timerPanel" title="Timer" showIf="id" hidden="true">
+			<panel name="timerPanel" title="Timer" showIf="id" hidden="true" if-module="axelor-helpdesk" if="__config__.app.isApp('helpdesk')">
 				<panel name="actionsPanel" title="Actions">
 					<button name="startTimerBtn" title="Start" icon="fa-play" colSpan="12" hidden="true"
 						onClick="action-team-task-method-start-timer"/>

@@ -203,8 +203,8 @@
 	</action-attrs>
 
 	<action-attrs name="action-inventory-on-change-product">
-		<attribute name="value" for="productFamily" expr="eval:__repo__(ProductFamily).find(product.productFamily.id)" if="productFamily == null &amp;&amp; product.productFamily != null"/>    		
-		<attribute name="value" for="productCategory" expr="eval:__repo__(ProductCategory).find(product.productCategory.id)" if="productCategory == null &amp;&amp; product.productCategory != null"/>    
+		<attribute name="value" for="productFamily" expr="eval:__repo__(ProductFamily).find(product.productFamily.id)" if="productFamily == null &amp;&amp; product != null &amp;&amp; product.productFamily != null"/>    		
+		<attribute name="value" for="productCategory" expr="eval:__repo__(ProductCategory).find(product.productCategory.id)" if="productCategory == null &amp;&amp; product != null &amp;&amp; product.productCategory != null"/>    
 	</action-attrs>
 	
 	<action-attrs name="action-inventory-on-select-product">

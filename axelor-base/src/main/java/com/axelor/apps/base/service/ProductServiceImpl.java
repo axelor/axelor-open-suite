@@ -122,7 +122,9 @@ public class ProductServiceImpl implements ProductService {
       }
     }
 
-    if (product.getCostPrice() != null && managePriceCoef != null) {
+    if (product.getCostPrice() != null
+        && managePriceCoef != null
+        && product.getAutoUpdateSalePrice()) {
 
       product.setSalePrice(
           (product.getCostPrice().multiply(managePriceCoef))
@@ -154,7 +156,9 @@ public class ProductServiceImpl implements ProductService {
     for (Product productVariant : productVariantList) {
 
       productVariant.setCostPrice(product.getCostPrice());
-      productVariant.setSalePrice(product.getSalePrice());
+      if (product.getAutoUpdateSalePrice()) {
+        productVariant.setSalePrice(product.getSalePrice());
+      }
       productVariant.setManagPriceCoef(product.getManagPriceCoef());
 
       this.updateSalePrice(productVariant);
