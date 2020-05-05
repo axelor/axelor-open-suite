@@ -13,8 +13,8 @@
     
     <form name="budget-line-form" title="Budget Line" model="com.axelor.apps.account.db.BudgetLine" width="large">
        <panel name="mainPanel" >
-	       <field name="fromDate" onChange="action-period-year-on-change-from-date-validate"/>
-	       <field name="toDate" onChange="action-period-year-on-change-to-date-validate"/>
+	       <field name="fromDate" onChange="action-period-year-on-change-from-date-validate" required="true"/>
+	       <field name="toDate" onChange="action-period-year-on-change-to-date-validate" required="true"/>
 	       <field name="amountExpected"/>
 	       <field name="amountCommitted" readonly="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
 	       <field name="amountRealized" readonly="true"/>
