@@ -4,6 +4,7 @@
 - WEEKLY PLANNING : leaveCoef now has default and init values
 - BudgetLine : make dates field required.
 - Product: Change french translation of value product in productTypeSelect.
+- SUPPLY CHAIN: Improve title and translation of field
 
 ## Bug Fixes
 - STOCK: Fix company display condition
