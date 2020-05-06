@@ -7,6 +7,7 @@
 - Duration : add missing translation
 - Invoice, qty check on ventilation now deals with different units between invoice line & stock move line.
 - ICalendar: fix issue when syncing between two dates.
+- Accounting: fix using wrong tax account when ventilating an invoice with reverse charge tax.
 - STOCK LOCATION LINE: Fix blank screen issue in stock correction process
 
 ## [5.2.9] - 2020-04-28
