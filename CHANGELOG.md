@@ -16,6 +16,7 @@
 - App stock : Fix missing translation
 - SALEORDERLINE : Readonly allocate and deallocate button on already delivered lines.
 - ICalendar: fix issue when syncing between two dates.
+- SALEORDERLINE : Set availableStatus empty on already delivered lines.
 
 ## [5.3.4] - 2020-04-29
 ## Improvements
