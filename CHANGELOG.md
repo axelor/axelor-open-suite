@@ -2,6 +2,8 @@
 ## [Unreleased 5.2.10]
 ## Improvements
 - Invoice : made all dashboard's charts and grid based on ventilated invoices.
+- BANK STATEMENT : Bank Statement ID added in grid view.
+- BANJ STATEMENT LINE : Bank Statement Reference added on separated grid view ans on form view.
 ## Bug Fixes
 - PRODUCT VARIANTS : fix for error in product variant creation.
 - Duration : add missing translation
