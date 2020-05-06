@@ -5,6 +5,7 @@
 - BudgetLine : make dates field required.
 - Product: Change french translation of value product in productTypeSelect.
 - SUPPLY CHAIN: Improve title and translation of field
+- STOCK LOCATION LINE: Fix blank screen issue in stock correction process
 
 ## Bug Fixes
 - STOCK: Fix company display condition
