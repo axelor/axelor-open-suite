@@ -17,6 +17,7 @@
 - SALEORDERLINE : Readonly allocate and deallocate button on already delivered lines.
 - ICalendar: fix issue when syncing between two dates.
 - SALEORDERLINE : Set availableStatus empty on already delivered lines.
+- SALEORDER : Generate 1 Invoice instead of 2 for Subscription Sale Order
 
 ## [5.3.4] - 2020-04-29
 ## Improvements
