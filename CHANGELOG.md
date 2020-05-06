@@ -8,6 +8,7 @@
 - Invoice, qty check on ventilation now deals with different units between invoice line & stock move line.
 - ICalendar: fix issue when syncing between two dates.
 - STOCK LOCATION LINE: Fix blank screen issue in stock correction process
+- SALE ORDER : Generate 1 Subscription Invoice Instead of 2 for Subscription Sale Order
 
 ## [5.2.9] - 2020-04-28
 ## Features
