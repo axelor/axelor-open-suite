@@ -7,6 +7,8 @@
 - SUPPLY CHAIN: Improve title and translation of field
 - STOCK LOCATION LINE: Fix blank screen issue in stock correction process
 - SALEORDERLINE : Change french translation of 'Available status'.
+- BANK STATEMENT : Bank Statement ID added in grid view.
+- BANJ STATEMENT LINE : Bank Statement Reference added on separated grid view ans on form view.
 
 ## Bug Fixes
 - STOCK: Fix company display condition
