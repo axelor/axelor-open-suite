@@ -9,6 +9,7 @@
 - ICalendar: fix issue when syncing between two dates.
 - Accounting: fix using wrong tax account when ventilating an invoice with reverse charge tax.
 - STOCK LOCATION LINE: Fix blank screen issue in stock correction process
+- Stock config : Add missing translation
 
 ## [5.2.9] - 2020-04-28
 ## Features
