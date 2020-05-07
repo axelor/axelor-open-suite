@@ -27,7 +27,6 @@ import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentil
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -73,6 +72,8 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
 
   private StockMoveInvoiceService stockMoveInvoiceService;
 
+  private UnitConversionService unitConversionService;
+
   @Inject
   public WorkflowVentilationServiceSupplychainImpl(
       AccountConfigService accountConfigService,
@@ -84,7 +85,8 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
       PurchaseOrderRepository purchaseOrderRepository,
       AccountingSituationSupplychainService accountingSituationSupplychainService,
       AppSupplychainService appSupplychainService,
-      StockMoveInvoiceService stockMoveInvoiceService) {
+      StockMoveInvoiceService stockMoveInvoiceService,
+      UnitConversionService unitConversionService) {
 
     super(accountConfigService, invoicePaymentRepo, invoicePaymentCreateService);
     this.saleOrderInvoiceService = saleOrderInvoiceService;
@@ -94,6 +96,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
     this.appSupplychainService = appSupplychainService;
     this.stockMoveInvoiceService = stockMoveInvoiceService;
+    this.unitConversionService = unitConversionService;
   }
 
   public void afterVentilation(Invoice invoice) throws AxelorException {
@@ -271,14 +274,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
 
         Unit movUnit = stockMoveLine.getUnit(), invUnit = invoiceLine.getUnit();
         try {
-          qtyToCompare =
-              Beans.get(UnitConversionService.class)
-                  .convert(
-                      invUnit,
-                      movUnit,
-                      qty,
-                      Beans.get(AppBaseService.class).getNbDecimalDigitForQty(),
-                      null);
+          qtyToCompare = unitConversionService.convert(invUnit, movUnit, qty, 2, null);
         } catch (AxelorException e) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
