@@ -242,6 +242,9 @@ public interface IExceptionMessage {
   static final String STOCK_MOVE_INVOICE_ERROR = /*$$(*/
       "Stock move has already been totally invoiced." /*)*/;
 
+  static final String STOCK_MOVE_INVOICE_QTY_INVONVERTIBLE_UNIT = /*$$(*/
+      "The invoice's unit is different and inconvertible into the stock move's unit." /*)*/;
+
   static final String STOCK_MOVE_INVOICE_QTY_MAX = /*$$(*/
       "The quantity to invoice is greater than the quantity in the stock move" /*)*/;
 
