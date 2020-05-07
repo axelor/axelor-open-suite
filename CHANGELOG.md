@@ -20,6 +20,7 @@
 - SALEORDERLINE : Set availableStatus empty on already delivered lines.
 - Accounting: fix using wrong tax account when ventilating an invoice with reverse charge tax.
 - Sale order : fix duration language in report
+- SALEORDER : Generate 1 Invoice instead of 2 for Subscription Sale Order
 
 ## [5.3.4] - 2020-04-29
 ## Improvements
