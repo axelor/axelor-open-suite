@@ -14,6 +14,7 @@
 - Stock config : Add missing translation
 - Product : Product name is readable even when long
 - SALE ORDER : Generate 1 Subscription Invoice Instead of 2 for Subscription Sale Order
+- BankOderEconomicReason : demo data name is now filled.
 
 ## [5.2.9] - 2020-04-28
 ## Features
