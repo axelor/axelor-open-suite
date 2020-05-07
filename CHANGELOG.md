@@ -11,6 +11,8 @@
 - STOCK LOCATION LINE: Fix blank screen issue in stock correction process
 - SALEORDERLINE : Change french translation of 'Available status'.
 - ACCOUNT : Take in consideration Numbers prefix when generating automaticaly a customer account
+- BANK STATEMENT : Bank Statement ID added in grid view.
+- BANK STATEMENT LINE : Bank Statement Reference added on separated grid view and on form view.
 
 ## Bug Fixes
 - STOCK: Fix company display condition
