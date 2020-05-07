@@ -1,5 +1,8 @@
 # Changelog
 ## [Unreleased 5.3.5]
+## Features
+- CONTACT : Possibility to import Google contact
+
 ## Improvements
 - WEEKLY PLANNING : leaveCoef now has default and init values
 - BudgetLine : make dates field required.
