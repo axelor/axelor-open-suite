@@ -18,6 +18,7 @@
 - ICalendar: fix issue when syncing between two dates.
 - SALEORDERLINE : Set availableStatus empty on already delivered lines.
 - Accounting: fix using wrong tax account when ventilating an invoice with reverse charge tax.
+- Sale order : fix duration language in report
 
 ## [5.3.4] - 2020-04-29
 ## Improvements
