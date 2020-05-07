@@ -24,6 +24,7 @@
 - Accounting: fix using wrong tax account when ventilating an invoice with reverse charge tax.
 - Sale order : fix duration language in report
 - SALEORDER : Generate 1 Invoice instead of 2 for Subscription Sale Order
+- BankOderEconomicReason : demo data name is now filled.
 
 ## [5.3.4] - 2020-04-29
 ## Improvements
