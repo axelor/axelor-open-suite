@@ -235,6 +235,8 @@ class WkfNodeService {
         this.wkfService.updateActionGroup(name, actions);
       }
 
+      wkfService.manageMenuBuilder(node);
+
       oldSequenceCounter++;
     }
 

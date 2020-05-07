@@ -23,6 +23,7 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaField;
@@ -51,11 +52,14 @@ import com.axelor.meta.schema.views.FormView;
 import com.axelor.meta.schema.views.PanelField;
 import com.axelor.rpc.Request;
 import com.axelor.rpc.Resource;
+import com.axelor.studio.db.MenuBuilder;
 import com.axelor.studio.db.Wkf;
 import com.axelor.studio.db.WkfNode;
+import com.axelor.studio.db.repo.MenuBuilderRepo;
 import com.axelor.studio.db.repo.WkfRepository;
 import com.axelor.studio.exception.IExceptionMessage;
 import com.axelor.studio.service.StudioMetaService;
+import com.axelor.studio.service.builder.MenuBuilderService;
 import com.axelor.studio.service.filter.FilterGroovyService;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
@@ -561,6 +565,11 @@ public class WkfService {
       if (!node.getMetaActionSet().isEmpty()) {
         builder.append("," + nodeService.getActionName(node.getName()));
       }
+
+      if (node.getMenuBuilder() != null && node.getMenuBuilder().getMetaMenu() != null) {
+        Beans.get(MenuBuilderRepo.class).remove(node.getMenuBuilder());
+        node.setMenuBuilder(null);
+      }
     }
     builder.append("," + trackingAction);
     actions = builder.toString();
@@ -756,6 +765,10 @@ public class WkfService {
       if (!node.getMetaActionSet().isEmpty()) {
         actions.add(nodeService.getActionName(node.getName()));
       }
+
+      if (node.getMenuBuilder() != null && node.getMenuBuilder().getMetaMenu() != null) {
+        Beans.get(MenuBuilderRepo.class).remove(node.getMenuBuilder());
+      }
     }
 
     metaService.removeMetaActions(Joiner.on(",").join(actions));
@@ -835,5 +848,42 @@ public class WkfService {
       wkfFieldType = statusMetaField.getTypeName();
     }
     return new String[] {wkfFieldName, wkfFieldType};
+  }
+
+  public void manageMenuBuilder(WkfNode node) {
+
+    if (node.getIsGenerateMenu()) {
+
+      Wkf wkf = node.getWkf();
+      MenuBuilder menuBuilder = node.getMenuBuilder();
+      if (menuBuilder != null) {
+
+        String menuName =
+            String.format("%s-%s-%s", wkf.getModel(), node.getName(), (int) (Math.random() * 100));
+        Boolean isJson = wkf.getIsJson();
+        String domain = getDomain(wkf, node.getSequence());
+        menuBuilder =
+            Beans.get(MenuBuilderService.class)
+                .updateMenuBuilder(
+                    menuBuilder,
+                    wkf.getModel(),
+                    menuName,
+                    wkf.getAppBuilder(),
+                    isJson ? MetaJsonRecord.class.getName() : wkf.getModel(),
+                    wkf.getIsJson(),
+                    domain);
+      }
+    }
+  }
+
+  private String getDomain(Wkf wkf, Integer fieldValue) {
+
+    if (wkf.getIsJson()) {
+      return String.format(
+          "json_extract_integer(self.attrs, '%s') = %s",
+          wkf.getStatusField().getName(), fieldValue);
+    } else {
+      return String.format("self.%s = %s", wkf.getStatusMetaField().getName(), fieldValue);
+    }
   }
 }

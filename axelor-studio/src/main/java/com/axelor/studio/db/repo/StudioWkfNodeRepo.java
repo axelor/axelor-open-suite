@@ -17,36 +17,17 @@
  */
 package com.axelor.studio.db.repo;
 
-import com.axelor.studio.db.Wkf;
+import com.axelor.inject.Beans;
 import com.axelor.studio.db.WkfNode;
 import com.axelor.studio.service.wkf.WkfService;
-import com.google.inject.Inject;
 
-public class StudioWkfRepository extends WkfRepository {
-
-  @Inject private WkfService wkfService;
-
-  /**
-   * Overridden to remove changes related with workflow. Like to remove buttons and status field
-   * from view and model.
-   */
-  @Override
-  public void remove(Wkf wkf) {
-
-    wkfService.clearWkf(wkf);
-
-    super.remove(wkf);
-  }
+public class StudioWkfNodeRepo extends WkfNodeRepository {
 
   @Override
-  public Wkf copy(Wkf wkf, boolean deep) {
+  public WkfNode save(WkfNode node) {
 
-    wkf = super.copy(wkf, deep);
-    for (WkfNode node : wkf.getNodes()) {
-      node.setIsGenerateMenu(false);
-      node.setMenuBuilder(null);
-    }
+    Beans.get(WkfService.class).manageMenuBuilder(node);
 
-    return wkf;
+    return super.save(node);
   }
 }
