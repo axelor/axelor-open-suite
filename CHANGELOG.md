@@ -2,6 +2,8 @@
 ## [Unreleased 5.2.10]
 ## Improvements
 - Invoice : made all dashboard's charts and grid based on ventilated invoices.
+- ACCOUNT : Take in consideration Numbers prefix when generating automaticaly a customer account
+
 ## Bug Fixes
 - PRODUCT VARIANTS : fix for error in product variant creation.
 - Duration : add missing translation
