@@ -2,12 +2,21 @@
 ## [Unreleased 5.2.10]
 ## Improvements
 - Invoice : made all dashboard's charts and grid based on ventilated invoices.
+- ACCOUNT : Take in consideration Numbers prefix when generating automaticaly a customer account
+- BANK STATEMENT : Bank Statement ID added in grid view.
+- BANK STATEMENT LINE : Bank Statement Reference added on separated grid view and on form view.
+
 ## Bug Fixes
 - PRODUCT VARIANTS : fix for error in product variant creation.
 - Duration : add missing translation
 - Invoice, qty check on ventilation now deals with different units between invoice line & stock move line.
 - ICalendar: fix issue when syncing between two dates.
-- STOCK LOCATION LINE: Fix blank screen issue in stock correction process.
+- Accounting: fix using wrong tax account when ventilating an invoice with reverse charge tax.
+- STOCK LOCATION LINE: Fix blank screen issue in stock correction process
+- Stock config : Add missing translation
+- Product : Product name is readable even when long
+- SALE ORDER : Generate 1 Subscription Invoice Instead of 2 for Subscription Sale Order
+- BankOderEconomicReason : demo data name is now filled.
 - ACCOUNTING BATCH : Fix NPE on 'close annual accounts' option.
 - ACCOUNTING BATCH : Fix issue which did block the save.
 
