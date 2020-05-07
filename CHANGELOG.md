@@ -27,6 +27,8 @@
 - Sale order : fix duration language in report
 - SALEORDER : Generate 1 Invoice instead of 2 for Subscription Sale Order
 - BankOderEconomicReason : demo data name is now filled.
+- ACCOUNTING BATCH : Fix NPE on 'close annual accounts' option.
+- ACCOUNTING BATCH : Fix issue which did block the save.
 
 ## [5.3.4] - 2020-04-29
 ## Improvements
