@@ -7,6 +7,7 @@
 - SUPPLY CHAIN: Improve title and translation of field
 - STOCK LOCATION LINE: Fix blank screen issue in stock correction process
 - SALEORDERLINE : Change french translation of 'Available status'.
+- ACCOUNT : Take in consideration Numbers prefix when generating automaticaly a customer account
 
 ## Bug Fixes
 - STOCK: Fix company display condition
