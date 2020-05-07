@@ -17,6 +17,8 @@
 - Product : Product name is readable even when long
 - SALE ORDER : Generate 1 Subscription Invoice Instead of 2 for Subscription Sale Order
 - BankOderEconomicReason : demo data name is now filled.
+- ACCOUNTING BATCH : Fix NPE on 'close annual accounts' option.
+- ACCOUNTING BATCH : Fix issue which did block the save.
 
 ## [5.2.9] - 2020-04-28
 ## Features
