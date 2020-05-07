@@ -13,6 +13,7 @@
 - STOCK LOCATION LINE: Fix blank screen issue in stock correction process
 - Stock config : Add missing translation
 - Product : Product name is readable even when long
+- SALE ORDER : Generate 1 Subscription Invoice Instead of 2 for Subscription Sale Order
 
 ## [5.2.9] - 2020-04-28
 ## Features
