@@ -3,6 +3,8 @@
 ## Improvements
 - Invoice : made all dashboard's charts and grid based on ventilated invoices.
 - ACCOUNT : Take in consideration Numbers prefix when generating automaticaly a customer account
+- BANK STATEMENT : Bank Statement ID added in grid view.
+- BANK STATEMENT LINE : Bank Statement Reference added on separated grid view and on form view.
 
 ## Bug Fixes
 - PRODUCT VARIANTS : fix for error in product variant creation.
