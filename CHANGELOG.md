@@ -7,7 +7,9 @@
 - Duration : add missing translation
 - Invoice, qty check on ventilation now deals with different units between invoice line & stock move line.
 - ICalendar: fix issue when syncing between two dates.
-- STOCK LOCATION LINE: Fix blank screen issue in stock correction process
+- STOCK LOCATION LINE: Fix blank screen issue in stock correction process.
+- ACCOUNTING BATCH : Fix NPE on 'close annual accounts' option.
+- ACCOUNTING BATCH : Fix issue which did block the save.
 
 ## [5.2.9] - 2020-04-28
 ## Features

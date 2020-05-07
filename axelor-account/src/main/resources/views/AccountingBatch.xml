@@ -60,14 +60,14 @@
 		</panel>
 		<panel name="realizedFixedAssetLinesPagnel" title="Date range of realizing fixed asset lines" itemSpan="4" hideIf="actionSelect != 20" >
 			<field name="updateAllRealizedFixedAssetLines"/>
-			<field name="startDate" requiredIf="!updateAllRealizedFixedAssetLines" showIf="!updateAllRealizedFixedAssetLines"/>
-			<field name="endDate" requiredIf="!updateAllRealizedFixedAssetLines" showIf="!updateAllRealizedFixedAssetLines"/>
+			<field name="startDate" requiredIf="!updateAllRealizedFixedAssetLines &amp;&amp; actionSelect == 20" showIf="!updateAllRealizedFixedAssetLines"/>
+			<field name="endDate" requiredIf="!updateAllRealizedFixedAssetLines &amp;&amp; actionSelect == 20" showIf="!updateAllRealizedFixedAssetLines"/>
 		</panel>
 		<panel name="yearOpeningOrClosureAccountsPagePanel" title="Close/open the accounts" hideIf="actionSelect != 21">
 <!-- 		TODO FILTER ON STATUS -->
 			<field name="closeYear"/>
 			<field name="openYear"/>
-			<field name="year" domain="self.typeSelect = 1 AND self.company = :company AND (self.statusSelect = 1 OR :closeYear is false)" canEdit="false"/>		
+			<field name="year" domain="self.typeSelect = 1 AND self.company = :company AND (self.statusSelect = 1 OR :closeYear is false)" canEdit="false" requiredIf="actionSelect == 21"/>		
 			<field name="allocatePerPartner"/>
     		<field name="year.toDate" showIf="closeYear" hidden="true"/>
     		<field name="year.reportedBalanceDate" showIf="openYear" hidden="true"/>
