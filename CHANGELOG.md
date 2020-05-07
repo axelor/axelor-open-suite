@@ -1,5 +1,8 @@
 # Changelog
 ## [Unreleased 5.3.5]
+## Features
+- CONTACT : Possibility to import Google contact
+
 ## Improvements
 - WEEKLY PLANNING : leaveCoef now has default and init values
 - BudgetLine : make dates field required.
@@ -7,8 +10,9 @@
 - SUPPLY CHAIN: Improve title and translation of field
 - STOCK LOCATION LINE: Fix blank screen issue in stock correction process
 - SALEORDERLINE : Change french translation of 'Available status'.
+- ACCOUNT : Take in consideration Numbers prefix when generating automaticaly a customer account
 - BANK STATEMENT : Bank Statement ID added in grid view.
-- BANJ STATEMENT LINE : Bank Statement Reference added on separated grid view ans on form view.
+- BANK STATEMENT LINE : Bank Statement Reference added on separated grid view and on form view.
 
 ## Bug Fixes
 - STOCK: Fix company display condition
@@ -19,6 +23,10 @@
 - SALEORDERLINE : Readonly allocate and deallocate button on already delivered lines.
 - ICalendar: fix issue when syncing between two dates.
 - SALEORDERLINE : Set availableStatus empty on already delivered lines.
+- Accounting: fix using wrong tax account when ventilating an invoice with reverse charge tax.
+- Sale order : fix duration language in report
+- SALEORDER : Generate 1 Invoice instead of 2 for Subscription Sale Order
+- BankOderEconomicReason : demo data name is now filled.
 
 ## [5.3.4] - 2020-04-29
 ## Improvements
