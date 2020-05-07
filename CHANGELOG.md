@@ -7,6 +7,7 @@
 - SUPPLY CHAIN: Improve title and translation of field
 - STOCK LOCATION LINE: Fix blank screen issue in stock correction process
 - SALEORDERLINE : Change french translation of 'Available status'.
+- ACCOUNT : Take in consideration Numbers prefix when generating automaticaly a customer account
 
 ## Bug Fixes
 - STOCK: Fix company display condition
@@ -17,6 +18,8 @@
 - SALEORDERLINE : Readonly allocate and deallocate button on already delivered lines.
 - ICalendar: fix issue when syncing between two dates.
 - SALEORDERLINE : Set availableStatus empty on already delivered lines.
+- Accounting: fix using wrong tax account when ventilating an invoice with reverse charge tax.
+- Sale order : fix duration language in report
 - SALEORDER : Generate 1 Invoice instead of 2 for Subscription Sale Order
 
 ## [5.3.4] - 2020-04-29
