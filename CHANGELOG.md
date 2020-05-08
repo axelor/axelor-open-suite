@@ -29,6 +29,7 @@
 - BankOderEconomicReason : demo data name is now filled.
 - ACCOUNTING BATCH : Fix NPE on 'close annual accounts' option.
 - ACCOUNTING BATCH : Fix issue which did block the save.
+- PRODUCT VARIANTS : fix for error in product variant creation.
 
 ## [5.3.4] - 2020-04-29
 ## Improvements
