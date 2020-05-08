@@ -221,7 +221,386 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
     <data-sets>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="SaleOrderDS" id="3669">
             <property name="nullsOrdering">nulls lowest</property>
-            <list-property name="columnHints"/>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">id</property>
+                    <property name="alias">id</property>
+                    <text-property name="displayName">id</text-property>
+                    <text-property name="heading">id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">saleOrderSeq</property>
+                    <property name="alias">saleOrderSeq</property>
+                    <text-property name="displayName">saleOrderSeq</text-property>
+                    <text-property name="heading">saleOrderSeq</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">CreationDate</property>
+                    <property name="alias">CreationDate</property>
+                    <text-property name="displayName">CreationDate</text-property>
+                    <text-property name="heading">CreationDate</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">SalemanName</property>
+                    <property name="alias">SalemanName</property>
+                    <text-property name="displayName">SalemanName</text-property>
+                    <text-property name="heading">SalemanName</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">SalemanPhone</property>
+                    <property name="alias">SalemanPhone</property>
+                    <text-property name="displayName">SalemanPhone</text-property>
+                    <text-property name="heading">SalemanPhone</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">SalemanEmail</property>
+                    <property name="alias">SalemanEmail</property>
+                    <text-property name="displayName">SalemanEmail</text-property>
+                    <text-property name="heading">SalemanEmail</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">DisplaySaleman</property>
+                    <property name="alias">DisplaySaleman</property>
+                    <text-property name="displayName">DisplaySaleman</text-property>
+                    <text-property name="heading">DisplaySaleman</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ShipmentDate</property>
+                    <property name="alias">ShipmentDate</property>
+                    <text-property name="displayName">ShipmentDate</text-property>
+                    <text-property name="heading">ShipmentDate</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ClientBox</property>
+                    <property name="alias">ClientBox</property>
+                    <text-property name="displayName">ClientBox</text-property>
+                    <text-property name="heading">ClientBox</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">LegalNote</property>
+                    <property name="alias">LegalNote</property>
+                    <text-property name="displayName">LegalNote</text-property>
+                    <text-property name="heading">LegalNote</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">DisplayDeliveryCondition</property>
+                    <property name="alias">DisplayDeliveryCondition</property>
+                    <text-property name="displayName">DisplayDeliveryCondition</text-property>
+                    <text-property name="heading">DisplayDeliveryCondition</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">CompanyName</property>
+                    <property name="alias">CompanyName</property>
+                    <text-property name="displayName">CompanyName</text-property>
+                    <text-property name="heading">CompanyName</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_path</property>
+                    <property name="alias">logo_path</property>
+                    <text-property name="displayName">logo_path</text-property>
+                    <text-property name="heading">logo_path</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_height</property>
+                    <property name="alias">logo_height</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <text-property name="heading">logo_height</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_width</property>
+                    <property name="alias">logo_width</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <text-property name="heading">logo_width</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">CustomerCode</property>
+                    <property name="alias">CustomerCode</property>
+                    <text-property name="displayName">CustomerCode</text-property>
+                    <text-property name="heading">CustomerCode</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">partner_type_select</property>
+                    <property name="alias">partner_type_select</property>
+                    <text-property name="displayName">partner_type_select</text-property>
+                    <text-property name="heading">partner_type_select</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ClientPartName</property>
+                    <property name="alias">ClientPartName</property>
+                    <text-property name="displayName">ClientPartName</text-property>
+                    <text-property name="heading">ClientPartName</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ClientPartFirstName</property>
+                    <property name="alias">ClientPartFirstName</property>
+                    <text-property name="displayName">ClientPartFirstName</text-property>
+                    <text-property name="heading">ClientPartFirstName</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ClientTitle</property>
+                    <property name="alias">ClientTitle</property>
+                    <text-property name="displayName">ClientTitle</text-property>
+                    <text-property name="heading">ClientTitle</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ContactName</property>
+                    <property name="alias">ContactName</property>
+                    <text-property name="displayName">ContactName</text-property>
+                    <text-property name="heading">ContactName</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ContactFirstName</property>
+                    <property name="alias">ContactFirstName</property>
+                    <text-property name="displayName">ContactFirstName</text-property>
+                    <text-property name="heading">ContactFirstName</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">invoicecountry</property>
+                    <property name="alias">invoicecountry</property>
+                    <text-property name="displayName">invoicecountry</text-property>
+                    <text-property name="heading">invoicecountry</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">DeliveryCountry</property>
+                    <property name="alias">DeliveryCountry</property>
+                    <text-property name="displayName">DeliveryCountry</text-property>
+                    <text-property name="heading">DeliveryCountry</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">invoicingAddress</property>
+                    <property name="alias">invoicingAddress</property>
+                    <text-property name="displayName">invoicingAddress</text-property>
+                    <text-property name="heading">invoicingAddress</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">deliveryAddress</property>
+                    <property name="alias">deliveryAddress</property>
+                    <text-property name="displayName">deliveryAddress</text-property>
+                    <text-property name="heading">deliveryAddress</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">PaymentCondName</property>
+                    <property name="alias">PaymentCondName</property>
+                    <text-property name="displayName">PaymentCondName</text-property>
+                    <text-property name="heading">PaymentCondName</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">PaymentMode</property>
+                    <property name="alias">PaymentMode</property>
+                    <text-property name="displayName">PaymentMode</text-property>
+                    <text-property name="heading">PaymentMode</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ex_tax_total</property>
+                    <property name="alias">ex_tax_total</property>
+                    <text-property name="displayName">ex_tax_total</text-property>
+                    <text-property name="heading">ex_tax_total</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">tax_total</property>
+                    <property name="alias">tax_total</property>
+                    <text-property name="displayName">tax_total</text-property>
+                    <text-property name="heading">tax_total</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">in_tax_total</property>
+                    <property name="alias">in_tax_total</property>
+                    <text-property name="displayName">in_tax_total</text-property>
+                    <text-property name="heading">in_tax_total</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">bank_address</property>
+                    <property name="alias">bank_address</property>
+                    <text-property name="displayName">bank_address</text-property>
+                    <text-property name="heading">bank_address</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">iban</property>
+                    <property name="alias">iban</property>
+                    <text-property name="displayName">iban</text-property>
+                    <text-property name="heading">iban</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">bic</property>
+                    <property name="alias">bic</property>
+                    <text-property name="displayName">bic</text-property>
+                    <text-property name="heading">bic</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">CurrencyCode</property>
+                    <property name="alias">CurrencyCode</property>
+                    <text-property name="displayName">CurrencyCode</text-property>
+                    <text-property name="heading">CurrencyCode</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">external_reference</property>
+                    <property name="alias">external_reference</property>
+                    <text-property name="displayName">external_reference</text-property>
+                    <text-property name="heading">external_reference</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">header</property>
+                    <property name="alias">header</property>
+                    <text-property name="displayName">header</text-property>
+                    <text-property name="heading">header</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">footer</property>
+                    <property name="alias">footer</property>
+                    <text-property name="displayName">footer</text-property>
+                    <text-property name="heading">footer</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">description</property>
+                    <property name="alias">description</property>
+                    <text-property name="displayName">description</text-property>
+                    <text-property name="heading">description</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">durationValue</property>
+                    <property name="alias">durationValue</property>
+                    <text-property name="displayName">durationValue</text-property>
+                    <text-property name="heading">durationValue</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">durationType</property>
+                    <property name="alias">durationType</property>
+                    <text-property name="displayName">durationType</text-property>
+                    <text-property name="heading">durationType</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">deliveryDate</property>
+                    <property name="alias">deliveryDate</property>
+                    <text-property name="displayName">deliveryDate</text-property>
+                    <text-property name="heading">deliveryDate</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">deliveryCondition</property>
+                    <property name="alias">deliveryCondition</property>
+                    <text-property name="displayName">deliveryCondition</text-property>
+                    <text-property name="heading">deliveryCondition</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">hideDiscount</property>
+                    <property name="alias">hideDiscount</property>
+                    <text-property name="displayName">hideDiscount</text-property>
+                    <text-property name="heading">hideDiscount</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">displayProductCodeOnPrinting</property>
+                    <property name="alias">displayProductCodeOnPrinting</property>
+                    <text-property name="displayName">displayProductCodeOnPrinting</text-property>
+                    <text-property name="heading">displayProductCodeOnPrinting</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">displayTaxDetailOnPrinting</property>
+                    <property name="alias">displayTaxDetailOnPrinting</property>
+                    <text-property name="displayName">displayTaxDetailOnPrinting</text-property>
+                    <text-property name="heading">displayTaxDetailOnPrinting</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">displayEstimDelivDateOnPrinting</property>
+                    <property name="alias">displayEstimDelivDateOnPrinting</property>
+                    <text-property name="displayName">displayEstimDelivDateOnPrinting</text-property>
+                    <text-property name="heading">displayEstimDelivDateOnPrinting</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">sale_order_type_select</property>
+                    <property name="alias">sale_order_type_select</property>
+                    <text-property name="displayName">sale_order_type_select</text-property>
+                    <text-property name="heading">sale_order_type_select</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">status_select</property>
+                    <property name="alias">status_select</property>
+                    <text-property name="displayName">status_select</text-property>
+                    <text-property name="heading">status_select</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">specific_notes</property>
+                    <property name="alias">specific_notes</property>
+                    <text-property name="displayName">specific_notes</text-property>
+                    <text-property name="heading">specific_notes</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">versionNumber</property>
+                    <property name="alias">versionNumber</property>
+                    <text-property name="displayName">versionNumber</text-property>
+                    <text-property name="heading">versionNumber</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logoPosition</property>
+                    <property name="alias">logoPosition</property>
+                    <text-property name="displayName">logoPosition</text-property>
+                    <text-property name="heading">logoPosition</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">salesperson_signature_path</property>
+                    <property name="alias">salesperson_signature_path</property>
+                    <text-property name="displayName">salesperson_signature_path</text-property>
+                    <text-property name="heading">salesperson_signature_path</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">periodicity_type_select</property>
+                    <property name="alias">periodicity_type_select</property>
+                    <text-property name="displayName">periodicity_type_select</text-property>
+                    <text-property name="heading">periodicity_type_select</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">number_of_periods</property>
+                    <property name="alias">number_of_periods</property>
+                    <text-property name="displayName">number_of_periods</text-property>
+                    <text-property name="heading">number_of_periods</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">subscription_text</property>
+                    <property name="alias">subscription_text</property>
+                    <text-property name="displayName">subscription_text</text-property>
+                    <text-property name="heading">subscription_text</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">end_of_validity_date</property>
+                    <property name="alias">end_of_validity_date</property>
+                    <text-property name="displayName">end_of_validity_date</text-property>
+                    <text-property name="heading">end_of_validity_date</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">in_ati</property>
+                    <property name="alias">in_ati</property>
+                    <text-property name="displayName">in_ati</text-property>
+                    <text-property name="heading">in_ati</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">isIspmRequired</property>
+                    <property name="alias">isIspmRequired</property>
+                    <text-property name="displayName">isIspmRequired</text-property>
+                    <text-property name="heading">isIspmRequired</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">displayCustomerCodeOnPrinting</property>
+                    <property name="alias">displayCustomerCodeOnPrinting</property>
+                    <text-property name="displayName">displayCustomerCodeOnPrinting</text-property>
+                    <text-property name="heading">displayCustomerCodeOnPrinting</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">displayProductPictureOnPrinting</property>
+                    <property name="alias">displayProductPictureOnPrinting</property>
+                    <text-property name="displayName">displayProductPictureOnPrinting</text-property>
+                    <text-property name="heading">displayProductPictureOnPrinting</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">ProformaComments</property>
+                    <property name="alias">ProformaComments</property>
+                    <text-property name="displayName">ProformaComments</text-property>
+                    <text-property name="heading">ProformaComments</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">enablePackMangement</property>
+                    <property name="alias">enablePackMangement</property>
+                    <text-property name="displayName">enablePackMangement</text-property>
+                    <text-property name="heading">enablePackMangement</text-property>
+                </structure>
+            </list-property>
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
@@ -545,6 +924,11 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                         <property name="position">62</property>
                         <property name="name">ProformaComments</property>
                         <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">63</property>
+                        <property name="name">enablePackMangement</property>
+                        <property name="dataType">boolean</property>
                     </structure>
                 </list-property>
             </structure>
@@ -922,6 +1306,12 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                     <property name="nativeName">ProformaComments</property>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="position">63</property>
+                    <property name="name">enablePackMangement</property>
+                    <property name="nativeName">enablePackMangement</property>
+                    <property name="dataType">boolean</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select SaleOrder.id, SaleOrder.sale_order_seq as "saleOrderSeq", SaleOrder.creation_date as "CreationDate", 
 CONCAT(SalemanPartner.name, ' ', SalemanPartner.first_name) as "SalemanName", SalemanPartner.fixed_phone as "SalemanPhone", 
@@ -957,7 +1347,8 @@ SaleOrder.in_ati,
 SaleOrder.is_ispm_required as "isIspmRequired",
 SaleConfig.display_customer_code_on_printing as "displayCustomerCodeOnPrinting",
 SaleConfig.display_product_picture_on_printing as "displayProductPictureOnPrinting",
-SaleOrder.proforma_comments as "ProformaComments"
+SaleOrder.proforma_comments as "ProformaComments",
+AppSale.enable_pack_management as "enablePackMangement"
 from sale_sale_order as SaleOrder
 left outer join base_company as Company on (SaleOrder.company = Company.id)
 left outer join base_app_sale as AppSale on true 
@@ -2307,6 +2698,12 @@ from base_app_base]]></xml-property>
                     <expression name="expression" type="javascript">dataSetRow["durationType"]</expression>
                     <property name="dataType">integer</property>
                     <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">enablePackMangement</property>
+                    <text-property name="displayName">enablePackMangement</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["enablePackMangement"]</expression>
+                    <property name="dataType">boolean</property>
                 </structure>
             </list-property>
             <method name="onPrepare"><![CDATA[String.prototype.repeat = String.prototype.repeat ||
@@ -4012,6 +4409,13 @@ row["ex_tax_total"] - row["totalDiscountAmount"]
                                 </list-property>
                                 <property name="allowExport">true</property>
                             </structure>
+                            <structure>
+                                <property name="name">enablePackMangement</property>
+                                <text-property name="displayName">enablePackMangement</text-property>
+                                <expression name="expression" type="javascript">row._outer["enablePackMangement"]</expression>
+                                <property name="dataType">boolean</property>
+                                <property name="allowExport">true</property>
+                            </structure>
                         </list-property>
                         <column id="4611">
                             <list-property name="visibility">
@@ -4516,26 +4920,26 @@ row["ex_tax_total"] - row["totalDiscountAmount"]
                                 <row id="4553">
                                     <method name="onPrepare"><![CDATA[vars["is_first_title_line"] = false;
 vars["is_pack_hide_unit_amounts"] = false;]]></method>
-                                    <method name="onCreate"><![CDATA[vars["ex_total"] = vars["temp_ex_total"];
-vars["in_total"] = vars["temp_in_total"];
-if(this.getRowData().getColumnValue("is_title_line") == true){
-   if(vars["is_first_title_line"] == false) {
-     vars["is_first_title_line"] = true;
-     vars["is_pack_hide_unit_amounts"] = this.getRowData().getColumnValue("hideUnitAmounts");
-     vars["is_pack_show_total"] = this.getRowData().getColumnValue("showTotal");
-     vars["ex_total"] = parseFloat(0.00);
-     vars["in_total"] = parseFloat(0.00);
-   }
-   else {
-      vars["is_first_title_line"] = false;
-   }
-	vars["temp_ex_total"] = parseFloat(0.00);
-	vars["temp_in_total"] = parseFloat(0.00);
-}else{
-	vars["temp_ex_total"] += parseFloat(this.getRowData().getColumnValue("ex_tax_total"));
-	vars["temp_in_total"] += parseFloat(this.getRowData().getColumnValue("in_tax_total"));
-}
-]]></method>
+                                    <method name="onCreate"><![CDATA[if (this.getRowData().getColumnValue("enablePackMangement") == true) {
+	vars["ex_total"] = vars["temp_ex_total"];
+	vars["in_total"] = vars["temp_in_total"];
+	if (this.getRowData().getColumnValue("is_title_line") == true) {
+		if (vars["is_first_title_line"] == false) {
+			vars["is_first_title_line"] = true;
+			vars["is_pack_hide_unit_amounts"] = this.getRowData().getColumnValue("hideUnitAmounts");
+			vars["is_pack_show_total"] = this.getRowData().getColumnValue("showTotal");
+			vars["ex_total"] = parseFloat(0.00);
+			vars["in_total"] = parseFloat(0.00);
+		} else {
+			vars["is_first_title_line"] = false;
+		}
+		vars["temp_ex_total"] = parseFloat(0.00);
+		vars["temp_in_total"] = parseFloat(0.00);
+	} else {
+		vars["temp_ex_total"] += parseFloat(this.getRowData().getColumnValue("ex_tax_total"));
+		vars["temp_in_total"] += parseFloat(this.getRowData().getColumnValue("in_tax_total"));
+	}
+}]]></method>
                                     <cell id="4554">
                                         <property name="borderLeftStyle">solid</property>
                                         <property name="borderLeftWidth">thin</property>
@@ -8174,9 +8578,9 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                     <property name="textAlign">right</property>
                     <image id="4328">
                         <property name="height">50px</property>
+                        <expression name="altText">""</expression>
                         <property name="source">file</property>
                         <expression name="uri" type="javascript">params["AttachmentPath"].value+row["salesperson_signature_path"]</expression>
-                        <expression name="altText">""</expression>
                     </image>
                     <text-data id="4329">
                         <expression name="valueExpr">row["SalemanName"]</expression>
