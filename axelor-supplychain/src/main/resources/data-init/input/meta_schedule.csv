@@ -1,0 +1,2 @@
+"active";"name";"job";"cron";"param_names"
+"false";"Calculation of MRP on every 2 minutes ";"com.axelor.apps.supplychain.job.MrpJob";"0 0/2 * * * ?";"code"

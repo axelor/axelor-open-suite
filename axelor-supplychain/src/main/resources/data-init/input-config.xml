@@ -33,6 +33,8 @@
     </input>
     
     <input file="meta_metaMenu.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name" update="true" />
+
+    <input file="meta_schedule.csv" separator=";" type="com.axelor.meta.db.MetaSchedule" call="com.axelor.csv.script.ImportMetaScheduleParam:importMetaScheduleParam"/>
 	
 </csv-inputs>
 

@@ -1,5 +1,8 @@
 # Changelog
 ## [Unreleased 5.1.16]
+## Features
+- MRP : add a job to run calculation of mrp using 'code' as a parameter.
+
 ## Improvements
 - LEAD : Changed the printing tab's name
 
