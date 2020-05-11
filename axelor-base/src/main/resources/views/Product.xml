@@ -370,6 +370,7 @@
 		<action name="action-product-attrs-set-cost-type-select"/>
 		<action name="action-product-record-set-barcode-type-config"/>
 		<action name="action-product-attrs-title-unit"/>
+		<action name="action-product-record-service-stock-managed"/>
     </action-group>
     
     <action-group name="action-group-base-product-producttype-onchange">
