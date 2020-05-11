@@ -1,37 +1,38 @@
 # Changelog
-## [Unreleased 5.3.5]
+## [5.3.5] - 2020-05-11
 ## Features
-- CONTACT : Possibility to import Google contact
+- CONTACT: Add import from Google contact.
 
 ## Improvements
-- WEEKLY PLANNING : leaveCoef now has default and init values
-- BudgetLine : make dates field required.
+- WEEKLY PLANNING: leaveCoef now has default and init values.
+- BudgetLine: make dates field required.
 - Product: Change french translation of value product in productTypeSelect.
-- SUPPLY CHAIN: Improve title and translation of field
-- STOCK LOCATION LINE: Fix blank screen issue in stock correction process
-- SALEORDERLINE : Change french translation of 'Available status'.
-- ACCOUNT : Take in consideration Numbers prefix when generating automaticaly a customer account
-- BANK STATEMENT : Bank Statement ID added in grid view.
-- BANK STATEMENT LINE : Bank Statement Reference added on separated grid view and on form view.
-- DETAIL PER PRODUCT : modify filter of product on supplychain-stock-details-by-product-form and changed default value for stock managed boolean of product.
-- OPPORTUNITY : set canNew false for saleOrderList.
+- SUPPLY CHAIN: Improve title and translation of field.
+- SALEORDERLINE: Change french translation of 'Available status'.
+- ACCOUNT: Take in consideration numbers prefix when generating automaticaly a customer account.
+- BANK STATEMENT: Bank Statement ID added in grid view.
+- BANK STATEMENT LINE: Bank Statement Reference added on separated grid view and on form view.
+- Invoice: made all dashboard's charts and grid based on ventilated invoices.
+- DETAIL PER PRODUCT: modify filter of product on details by product form and changed default value for stock managed boolean of product.
+- OPPORTUNITY: set canNew false for saleOrderList.
 
 ## Bug Fixes
-- STOCK: Fix company display condition
-- Invoice, qty check on ventilation now deals with different units between invoice line and stock move line.
-- Product : Product name is readable even when long
-- Stock config : Add missing translation
-- App stock : Fix missing translation
-- SALEORDERLINE : Readonly allocate and deallocate button on already delivered lines.
+- STOCK MOVE: Fix hiding company on multi company disabled.
+- Invoice: qty check on ventilation now deals with different units between invoice line and stock move line.
+- Product: Product name is readable even when too long.
+- Stock config: Add missing translation.
+- App stock: Fix missing translation.
+- SALEORDERLINE: Readonly allocate and deallocate button on already delivered lines.
 - ICalendar: fix issue when syncing between two dates.
-- SALEORDERLINE : Set availableStatus empty on already delivered lines.
+- SALEORDERLINE: Empty available status on already delivered lines.
 - Accounting: fix using wrong tax account when ventilating an invoice with reverse charge tax.
-- Sale order : fix duration language in report
-- SALEORDER : Generate 1 Invoice instead of 2 for Subscription Sale Order
-- BankOderEconomicReason : demo data name is now filled.
-- ACCOUNTING BATCH : Fix NPE on 'close annual accounts' option.
-- ACCOUNTING BATCH : Fix issue which did block the save.
-- PRODUCT VARIANTS : fix for error in product variant creation.
+- Sale order: fix duration language in report.
+- SALEORDER: Fix generating twice the same invoice from subscription sale order.
+- BankOderEconomicReason: name is now filled in demo data.
+- ACCOUNTING BATCH: Fix NPE on 'close annual accounts' option.
+- ACCOUNTING BATCH: Fix issue which did block the save.
+- PRODUCT VARIANTS: fix for error in product variant creation.
+- STOCK LOCATION LINE: Fix blank screen issue in stock correction process.
 - ACCOUNT: Fixed inconsistency of analytic distribution settings and tax settings.
 
 ## [5.3.4] - 2020-04-29
@@ -41,7 +42,6 @@
 - Improve consistency of grid and card view menus.
 - Stock Move: if present, use trading name logo in printing.
 - PRODUCTION: do not hide manufacturing order in operation order form opened in a popup.
-- Invoice : made all dashboard's charts and grid based on ventilated invoices.
 
 ## Bug Fixes
 - Budget amount: Correctly manage the case of refund invoices.
@@ -301,7 +301,7 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - PRODUCT: Fix economicManufOrderQty displayed twice.
 
 
-[Unreleased 5.3.5]: https://github.com/axelor/axelor-open-suite/compare/v5.3.4...dev
+[5.3.5]: https://github.com/axelor/axelor-open-suite/compare/v5.3.4...v5.3.5
 [5.3.4]: https://github.com/axelor/axelor-open-suite/compare/v5.3.3...v5.3.4
 [5.3.3]: https://github.com/axelor/axelor-open-suite/compare/v5.3.2...v5.3.3
 [5.3.2]: https://github.com/axelor/axelor-open-suite/compare/v5.3.1...v5.3.2
