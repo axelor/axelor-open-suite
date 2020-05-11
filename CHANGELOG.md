@@ -13,6 +13,7 @@
 - ACCOUNT : Take in consideration Numbers prefix when generating automaticaly a customer account
 - BANK STATEMENT : Bank Statement ID added in grid view.
 - BANK STATEMENT LINE : Bank Statement Reference added on separated grid view and on form view.
+- DETAIL PER PRODUCT : modify filter of product on supplychain-stock-details-by-product-form and changed default value for stock managed boolean of product.
 - OPPORTUNITY : set canNew false for saleOrderList.
 
 ## Bug Fixes
@@ -30,6 +31,8 @@
 - BankOderEconomicReason : demo data name is now filled.
 - ACCOUNTING BATCH : Fix NPE on 'close annual accounts' option.
 - ACCOUNTING BATCH : Fix issue which did block the save.
+- PRODUCT VARIANTS : fix for error in product variant creation.
+- ACCOUNT: Fixed inconsistency of analytic distribution settings and tax settings.
 
 ## [5.3.4] - 2020-04-29
 ## Improvements
