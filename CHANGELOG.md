@@ -1,25 +1,25 @@
 # Changelog
-## [Unreleased 5.2.10]
+## [5.2.10] - 2020-05-11
 ## Improvements
-- Invoice : made all dashboard's charts and grid based on ventilated invoices.
-- ACCOUNT : Take in consideration Numbers prefix when generating automaticaly a customer account
-- BANK STATEMENT : Bank Statement ID added in grid view.
-- BANK STATEMENT LINE : Bank Statement Reference added on separated grid view and on form view.
+- Invoice: made all dashboard's charts and grid based on ventilated invoices.
+- ACCOUNT: Take in consideration numbers prefix when generating automaticaly a customer account.
+- BANK STATEMENT: Bank Statement ID added in grid view.
+- BANK STATEMENT LINE: Bank Statement Reference added on separated grid view and on form view.
 - OPPORTUNITY : set canNew false for saleOrderList.
 
 ## Bug Fixes
-- PRODUCT VARIANTS : fix for error in product variant creation.
-- Duration : add missing translation
-- Invoice, qty check on ventilation now deals with different units between invoice line & stock move line.
+- PRODUCT VARIANTS: fix for error in product variant creation.
+- Duration: add missing translation.
+- Invoice: qty check on ventilation now deals with different units between invoice line and stock move line.
 - ICalendar: fix issue when syncing between two dates.
 - Accounting: fix using wrong tax account when ventilating an invoice with reverse charge tax.
-- STOCK LOCATION LINE: Fix blank screen issue in stock correction process
-- Stock config : Add missing translation
-- Product : Product name is readable even when long
-- SALE ORDER : Generate 1 Subscription Invoice Instead of 2 for Subscription Sale Order
-- BankOderEconomicReason : demo data name is now filled.
-- ACCOUNTING BATCH : Fix NPE on 'close annual accounts' option.
-- ACCOUNTING BATCH : Fix issue which did block the save.
+- STOCK LOCATION LINE: Fix blank screen issue in stock correction process.
+- Stock config: Add missing translation.
+- Product: Product name is readable even when too long.
+- SALEORDER: Fix generating twice the same invoice from subscription sale order.
+- BankOderEconomicReason: name is now filled in demo data.
+- ACCOUNTING BATCH: Fix NPE on 'close annual accounts' option.
+- ACCOUNTING BATCH: Fix issue which did block the save.
 
 ## [5.2.9] - 2020-04-28
 ## Features
@@ -616,7 +616,7 @@ In this case, the file is correctly retrieved from the bank server, but not save
 - LEAVE REQUEST: Add error when leave reason has no unit.
 - LEAVE REQUEST: Set duration value 0 if day planning of selected weekly planning is empty
 
-[Unreleased 5.2.10]: https://github.com/axelor/axelor-open-suite/compare/v5.2.9...5.2-dev
+[5.2.10]: https://github.com/axelor/axelor-open-suite/compare/v5.2.9...v5.2.10
 [5.2.9]: https://github.com/axelor/axelor-open-suite/compare/v5.2.8...v5.2.9
 [5.2.8]: https://github.com/axelor/axelor-open-suite/compare/v5.2.7...v5.2.8
 [5.2.7]: https://github.com/axelor/axelor-open-suite/compare/v5.2.6...v5.2.7
