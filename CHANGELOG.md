@@ -5,6 +5,7 @@
 - ACCOUNT : Take in consideration Numbers prefix when generating automaticaly a customer account
 - BANK STATEMENT : Bank Statement ID added in grid view.
 - BANK STATEMENT LINE : Bank Statement Reference added on separated grid view and on form view.
+- OPPORTUNITY : set canNew false for saleOrderList.
 
 ## Bug Fixes
 - PRODUCT VARIANTS : fix for error in product variant creation.
