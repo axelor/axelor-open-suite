@@ -30,6 +30,7 @@
 - ACCOUNTING BATCH : Fix NPE on 'close annual accounts' option.
 - ACCOUNTING BATCH : Fix issue which did block the save.
 - PRODUCT VARIANTS : fix for error in product variant creation.
+- ACCOUNT: Fixed inconsistency of analytic distribution settings and tax settings.
 
 ## [5.3.4] - 2020-04-29
 ## Improvements
