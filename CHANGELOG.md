@@ -14,6 +14,7 @@
 - BANK STATEMENT : Bank Statement ID added in grid view.
 - BANK STATEMENT LINE : Bank Statement Reference added on separated grid view and on form view.
 - DETAIL PER PRODUCT : modify filter of product on supplychain-stock-details-by-product-form and changed default value for stock managed boolean of product.
+- OPPORTUNITY : set canNew false for saleOrderList.
 
 ## Bug Fixes
 - STOCK: Fix company display condition
