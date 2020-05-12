@@ -15,17 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.businesssupport.db.repo;
+package com.axelor.apps.base.syncContact;
 
-import com.axelor.apps.businessproject.db.repo.TeamTaskBusinessProjectRepository;
-import com.axelor.team.db.TeamTask;
+import com.google.api.services.people.v1.model.Person;
+import java.util.List;
 
-public class TeamTaskBusinessSupportRepository extends TeamTaskBusinessProjectRepository {
+public class PeopleRequest {
 
-  @Override
-  public TeamTask copy(TeamTask entity, boolean deep) {
-    TeamTask task = super.copy(entity, deep);
-    task.setTargetVersion(null);
-    return task;
+  private List<Person> people;
+
+  public List<Person> getPeople() {
+    return people;
   }
 }

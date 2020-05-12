@@ -15,17 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.businesssupport.db.repo;
+package com.axelor.apps.marketing.service;
 
-import com.axelor.apps.businessproject.db.repo.TeamTaskBusinessProjectRepository;
-import com.axelor.team.db.TeamTask;
+import com.axelor.apps.message.db.EmailAccount;
+import com.axelor.apps.message.service.TemplateMessageService;
 
-public class TeamTaskBusinessSupportRepository extends TeamTaskBusinessProjectRepository {
+public interface TemplateMessageMarketingService extends TemplateMessageService {
 
-  @Override
-  public TeamTask copy(TeamTask entity, boolean deep) {
-    TeamTask task = super.copy(entity, deep);
-    task.setTargetVersion(null);
-    return task;
-  }
+  public void setEmailAccount(EmailAccount emailAccount);
 }

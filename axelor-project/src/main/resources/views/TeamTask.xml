@@ -3,7 +3,7 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
-	<grid id="project-team-task-grid" name="team-task-grid" title="Tasks" model="com.axelor.team.db.TeamTask" edit-icon="true" orderBy="taskDate, priority">
+	<grid id="project-team-task-grid" name="team-task-grid" title="Tasks" model="com.axelor.team.db.TeamTask" edit-icon="true" orderBy="taskDate,priority">
 		<hilite if="status == 'closed'" color="success"/>
 		<hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
 		<hilite if="priority == 'urgent'" color="warning"/>
@@ -500,8 +500,8 @@
 	</action-method>
 	
 	<action-attrs name="action-team-task-attrs-invoice-type-on-change">
-		<attribute name="value" for="toInvoice" expr="eval: true" if="invoicingType == 1"/>
-		<attribute name="value" for="toInvoice" expr="eval: false" if="invoicingType != 1"/>
+		<attribute name="value" for="toInvoice" expr="eval: true" if="invoicingType == 1 || invoicingType == 2"/>
+		<attribute name="value" for="toInvoice" expr="eval: false" if="invoicingType == 3"/>
 		<attribute name="value" for="isOrderProposed" expr="eval: true" if="invoicingType == 1"/>
 		<attribute name="value" for="isOrderProposed" expr="eval: false" if="invoicingType != 1"/>
 	</action-attrs>
