@@ -96,6 +96,7 @@
 				<field if-module="axelor-business-production" if=" __config__.app.getApp('production')?.getManageBusinessProduction()" name="user.employee.timesheetImputationSelect" hidden="true"/>
 				<field name="fromDate" onChange="action-timesheet-validate-fromDate,action-timesheet-record-to-date" colSpan="5" />
 				<field name="toDate" onChange="action-timesheet-group-to-date-onchange" colSpan="5" />
+				<field name="isCompleted" hidden="true"/>
 				<button name="createBtn" title="Create" colSpan="2" hideIf="id" if="__config__.app.getApp('timesheet').getTimesheetEditor()"  onClick="save,action-timesheet-set-show-editor,action-timesheet-attrs-refresh-editor,action-timesheet-attrs-panels,save" />
 			</panel>
 			
@@ -182,6 +183,7 @@
 		<action name="action-timesheet-attrs-panels"/>
 		<action name="action-timesheet-attrs-refresh-editor"/>
 		<action name="action-timesheet-method-timesheet-compute-period-total"/>
+		<action name="action-timesheet-attrs-on-need-validation-false" if="!(__config__.app.getApp('timesheet')?.getNeedValidation())"/>
 	</action-group>
 	
 	<action-attrs name="action-hr-timesheet-attrs-domain-product">
@@ -231,6 +233,8 @@
 		<action name="action-timesheet-attrs-title-project"/>
 		<action name="action-timesheet-attrs-from-date-on-new"/>
 		<action name="action-timesheet-attrs-panels"/>
+		<action name="action-timesheet-attrs-on-need-validation-false" if="!(__config__.app.getApp('timesheet').getNeedValidation())"/>
+		<action name="action-timesheet-record-on-need-validation-false" if="!(__config__.app.getApp('timesheet').getNeedValidation())"/>
 	</action-group>
 	
 	<action-group name="action-timesheet-group-to-date-onchange">
@@ -274,6 +278,10 @@
 	<action-record name="action-timesheet-record-to-date" model="com.axelor.apps.hr.db.Timesheet">
 		<field name="toDate" expr="eval:fromDate.with(java.time.DayOfWeek.FRIDAY)" if="toDate == null &amp;&amp; fromDate != null &amp;&amp;  __config__.app.getApp('timesheet').getDefaultEndFormat() == 1"/>
 		<field name="toDate" expr="eval:fromDate.withDayOfMonth(fromDate.lengthOfMonth())" if="toDate == null &amp;&amp; fromDate != null &amp;&amp;  __config__.app.getApp('timesheet').getDefaultEndFormat() == 2"/>
+	</action-record>
+	
+	<action-record name="action-timesheet-record-on-need-validation-false" model="com.axelor.apps.hr.db.Timesheet">
+		<field name="statusSelect" expr="eval:3"/>
 	</action-record>
 	
 	<action-validate name="action-timesheet-validate-timesheet-selected">
@@ -361,6 +369,13 @@
 
 	<action-attrs name="action-timesheet-attrs-enable-timesheet-manuforder">
 		<attribute for="$enableTimesheetManufOrder" name="value" expr="eval: __config__.app.getApp('production').getEnableTimesheetOnManufOrder()"/>
+	</action-attrs>
+	
+	<action-attrs name="action-timesheet-attrs-on-need-validation-false">
+		<attribute name="hidden" for="statusSelect" expr="eval: true"/>
+		<attribute name="hidden" for="actionsPanel" expr="eval: true"/>
+		<attribute name="readonly" for="timesheet-form" expr="eval: false"/>
+		<attribute name="hidden" for="isCompleted" expr="eval: false"/>
 	</action-attrs>
 
 	<action-record name="action-timesheet-record-from-period-date" model="com.axelor.apps.hr.db.Timesheet">

@@ -180,8 +180,8 @@
 				 if="__config__.app.isApp('timesheet')" if-module="axelor-human-resource">
 				<field name="timeSpent" title="Time Spent" readonly="true"
 					colSpan="3" />
-				<panel-dashlet name="validatedTimesheetsPanel" action="action-project-dashlet-validated-timeshet-lines" title="Validated Timesheet lines" colSpan="12" canSearch="true"/>
-				<panel-dashlet name="waitingTimesheetLinesPanel" action="action-project-dashlet-project-waiting-timeshet-lines" title="Waiting Timesheet lines" colSpan="12" canSearch="true"/>
+				<panel-dashlet name="validatedTimesheetsPanel" if="__config__.app.getApp('timesheet').needValidation" action="action-project-dashlet-validated-timeshet-lines" title="Validated Timesheet lines" colSpan="12" canSearch="true"/>
+				<panel-dashlet name="waitingTimesheetLinesPanel" if="__config__.app.getApp('timesheet').needValidation" action="action-project-dashlet-project-waiting-timeshet-lines" title="Waiting Timesheet lines" colSpan="12" canSearch="true"/>
 			</panel>
 			<panel title="Sales" name="salesPanel"  showIf="isBusinessProject"
 				if="__config__.app.isApp('business-project')

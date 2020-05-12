@@ -96,7 +96,7 @@
 					<field name="unitPrice" colSpan="4" onChange="action-team-task-group-unit-price-onchange"/>
 					<field name="exTaxTotal" readonly="true" colSpan="4"/>
 				</panel>
-				<panel-dashlet name="validatedTimesheetLinesPanel" showIf="invoicingType == 1" action="action-teamtask-dashlet-validated-timeshet-lines" title="Validated Timesheet lines" colSpan="12" canSearch="true" readonly="true"/>
+				<panel-dashlet name="validatedTimesheetLinesPanel" if="__config__.app.getApp('timesheet').needValidation" showIf="invoicingType == 1" action="action-teamtask-dashlet-validated-timeshet-lines" title="Validated Timesheet lines" colSpan="12" canSearch="true" readonly="true"/>
 			</panel>
 		</panel-tabs>
 		<panel-mail name="mailPanel">

@@ -40,7 +40,8 @@
 		<field name="project" width="200" onChange="action-timesheet-line-group-project-onchange" requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
 		<field name="teamTask" width="200" form-view="team-task-form" grid-view="team-task-grid" onSelect="action-timesheet-line-attrs-domain-team-task" onChange="action-timesheet-line-method-set-default-to-invoice"/>
 		<field name="date" width="100" onChange="action-timesheet-line-validate-date"/>
-		<field name="product" requiredIf="toInvoice" width="200" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
+		<field name="product" if="__config__.app.getApp('timesheet').enableActivity" requiredIf="toInvoice" width="200" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
+		<field name="user.employee.product" if="!(__config__.app.getApp('timesheet').enableActivity)"/>
 		<field name="duration" width="100" onChange="action-timesheet-line-method-set-stored-duration" aggregate="sum" min="0.01"/>
 		<field name="hoursDuration" hidden="true" />
 		<field name="toInvoice" width="100" if-module="axelor-business-project"  if="__config__.app.isApp('business-project')" />
@@ -89,7 +90,8 @@
 		<field name="project" onChange="action-timesheet-line-group-project-onchange" requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
 		<field name="teamTask" width="200" form-view="team-task-form" grid-view="team-task-grid" onSelect="action-timesheet-line-attrs-domain-team-task" onChange="action-timesheet-line-method-set-default-to-invoice"/>
 		<field name="date" width="85%" onChange="action-timesheet-line-validate-date"/>
-		<field name="product" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
+		<field name="product" if="__config__.app.isApp('timesheet').enableActivity" onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
+		<field name="user.employee.product" if="!(__config__.app.getApp('timesheet').enableActivity)"/>
 		<field name="duration" width="62%" onChange="action-timesheet-line-method-set-stored-duration" aggregate="sum" min="0.01"/>
 		<field name="hoursDuration" hidden="true" />
 		<field name="toInvoice" width="88%" if-module="axelor-business-project" if="__config__.app.isApp('business-project')" />
@@ -268,7 +270,7 @@
 	</action-record>
 	
 	<action-validate name="action-timesheet-line-validate-date">
-		<error message="This date is invalid. It must be included in the timesheet's period." if="date != null &amp;&amp; (date &lt; __parent__.fromDate || ( __parent__.toDate != null &amp;&amp; date &gt; __parent__.toDate))" action="action-timesheet-line-null-date"/>
+		<error message="This date is invalid. It must be included in the timesheet's period." if="date != null &amp;&amp; ( __parent__.toDate != null &amp;&amp; date &gt; __parent__.toDate)" action="action-timesheet-line-null-date"/>
 	</action-validate>
 	
 	<action-validate name="action-team-task-validate-check-timesheet-line-date">

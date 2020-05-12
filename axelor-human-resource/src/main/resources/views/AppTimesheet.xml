@@ -6,6 +6,8 @@
 	<form name="app-timesheet-config-form" title="App Timesheet" model="com.axelor.apps.base.db.AppTimesheet" canDelete="false" canNew="false" width="large">
 		<panel name="mainPanel">
 			<field name="invoicingTypeLogTimesSelect"/>
+			<field name="needValidation"/>
+			<field name="enableActivity"/>
 			<field name="consolidateTSLine" widget="boolean-switch"/>
 			<field name="enableTimer" widget="boolean-switch"/>
 			<field name="editModeTSTimer" widget="boolean-switch" showIf="enableTimer"/>
