@@ -47,3 +47,5 @@ libs.jaxb_xjc = 'com.sun.xml.bind:jaxb-xjc:2.2.2'
 
 libs.google_oauth_client_jetty = 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
 libs.google_api_services_people = 'com.google.apis:google-api-services-people:v1-rev277-1.23.0'
+
+libs.mockito = 'org.mockito:mockito-core:3.3.3'
