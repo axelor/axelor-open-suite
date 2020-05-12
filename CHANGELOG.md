@@ -1,6 +1,8 @@
 # Changelog
 ## [Unreleased 5.3.6]
 ## Improvements
+- PRODDUCT: remove dependency of autoUpdateSalePrice on updating products variants sellPrice.
+
 ## Bug Fixes
 
 ## [5.3.5] - 2020-05-11
