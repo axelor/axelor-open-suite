@@ -17,6 +17,7 @@
 - Studio : Add CSRF protection for every request header.
 - Add CSRF protection for timesheet line editor and project planning editor
 - Studio : Add support of menu creation for custom model and BPM node.
+- DURATION : add new field applicationType;
 
 ## Improvements
 - USER : Default User language is based on application.locale from application.properties

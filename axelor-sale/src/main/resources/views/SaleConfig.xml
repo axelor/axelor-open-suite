@@ -11,7 +11,7 @@
 		<panel name="mainPanel">
 			<field name="company" form-view="company-form" colSpan="4" grid-view="company-grid"/>
 			<field name="saleOrderInAtiSelect"/>
-			<field name="defaultValidityDuration" form-view="duration-form" grid-view="duration-grid"/>
+			<field name="defaultValidityDuration" domain="self.applicationTypeSelect = 1" form-view="duration-form" grid-view="duration-grid"/>
 		</panel>
 		<panel name="customerCreditPanel" title="Customer Credit" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 			<field name="acceptedCredit"/>
