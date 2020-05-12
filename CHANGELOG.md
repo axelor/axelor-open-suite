@@ -1,6 +1,8 @@
 # Changelog
 ## [Unreleased 5.3.6]
 ## Improvements
+- DURATION : rearranged fields in grid and form view.
+
 ## Bug Fixes
 
 ## [5.3.5] - 2020-05-11
