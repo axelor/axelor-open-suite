@@ -85,6 +85,8 @@ public class StockMoveInvoiceController {
                   .context("todayDate", Beans.get(AppSupplychainService.class).getTodayDate())
                   .map());
           response.setCanClose(true);
+        } else {
+          response.setError(I18n.get(IExceptionMessage.STOCK_MOVE_NO_LINES_TO_INVOICE));
         }
       }
     } catch (Exception e) {

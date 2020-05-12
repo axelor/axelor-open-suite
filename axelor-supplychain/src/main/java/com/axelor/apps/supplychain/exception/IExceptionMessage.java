@@ -259,4 +259,6 @@ public interface IExceptionMessage {
 
   String BLOCK_SPLIT_OUTGOING_STOCK_MOVE_LINES = /*$$(*/
       "Partial invoicing of outgoing stock move with tracking number activated is not supported." /*)*/;
+
+  String STOCK_MOVE_NO_LINES_TO_INVOICE = /*$$(*/ "Please fill a quantity to invoice." /*)*/;
 }
