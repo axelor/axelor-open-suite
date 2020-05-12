@@ -165,6 +165,8 @@
 		title="Durations" model="com.axelor.apps.base.db.Duration" >
 		<view type="grid" name="duration-grid" />
 		<view type="form" name="duration-form" />
+		<domain>self.applicationTypeSelect = 1</domain>
+		<context name="_applicatioTypeSelect" expr="1"/>
 	</action-view>
 	
 	<menuitem name="sale-conf-shipping-costs" parent="sc-root-sale-conf"

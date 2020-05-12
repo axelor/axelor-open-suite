@@ -191,7 +191,7 @@
                             <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                                 <field name="isPeriodicInvoicing" colSpan="3" widget="boolean-switch"/>
                                 <panel hidden="true" showIf="isPeriodicInvoicing" colSpan="9">
-                                    <field name="invoicingDuration" colSpan="4" canEdit="false" requiredIf="isPeriodicInvoicing"/>
+                                    <field name="invoicingDuration" domain="self.applicationTypeSelect = 2" colSpan="4" canEdit="false" requiredIf="isPeriodicInvoicing"/>
                                     <field name="isTimeProratedInvoice" colSpan="4" widget="boolean-switch"/>
                                     <field name="isVersionProratedInvoice" hidden="true" showIf="isTimeProratedInvoice" colSpan="4" widget="boolean-switch"/>
                                 </panel>
@@ -203,7 +203,7 @@
                     <field name="currentContractVersion" showTitle="false" colSpan="12" x-show-icons="false">
                         <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                             <field name="isTacitRenewal" colSpan="3" widget="boolean-switch"/>
-                            <field name="renewalDuration" hidden="true" showIf="isTacitRenewal" colSpan="3" requiredIf="isTacitRenewal"/>
+                            <field name="renewalDuration" domain="self.applicationTypeSelect = 2" hidden="true" showIf="isTacitRenewal" colSpan="3" requiredIf="isTacitRenewal"/>
                             <field name="isAutoEnableVersionOnRenew" hidden="true" showIf="isTacitRenewal" colSpan="6" widget="boolean-switch"/>
                         </editor>
                     </field>
@@ -212,12 +212,12 @@
                     <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                         <panel title="Engagement" >
                             <field name="isWithEngagement" colSpan="6" widget="boolean-switch"/>
-                            <field name="engagementDuration" showIf="isWithEngagement" colSpan="6" canNew="true" requiredIf="isWithEngagement"/>
+                            <field name="engagementDuration" domain="self.applicationTypeSelect = 2" showIf="isWithEngagement" colSpan="6" canNew="true" requiredIf="isWithEngagement"/>
                             <field name="engagementStartFromVersion" showIf="isWithEngagement" colSpan="12" requiredIf="isWithEngagement" widget="boolean-switch"/>
                         </panel>
                         <panel title="Prior notice" >
                             <field name="isWithPriorNotice" widget="boolean-switch"/>
-                            <field name="priorNoticeDuration" showIf="isWithPriorNotice" canNew="true" requiredIf="isWithPriorNotice"/>
+                            <field name="priorNoticeDuration" domain="self.applicationTypeSelect = 2" showIf="isWithPriorNotice" canNew="true" requiredIf="isWithPriorNotice"/>
                         </panel>
                     </editor>
                 </field>
