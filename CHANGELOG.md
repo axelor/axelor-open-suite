@@ -1,5 +1,8 @@
 # Changelog
 ## [Unreleased 5.3.6]
+## Features
+- OPPORTUNITY: add sequence.
+
 ## Improvements
 - DURATION : rearranged fields in grid and form view.
 - Add configuration to activate partial invoicing for sale order and purchase order.
