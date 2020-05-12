@@ -21,6 +21,7 @@
 - Invoice: made all dashboard's charts and grid based on ventilated invoices.
 - DETAIL PER PRODUCT: modify filter of product on details by product form and changed default value for stock managed boolean of product.
 - OPPORTUNITY: set canNew false for saleOrderList.
+- ICalendarEvent : make subject, location & subjectTeam field large.
 
 ## Bug Fixes
 - STOCK MOVE: Fix hiding company on multi company disabled.
