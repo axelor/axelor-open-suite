@@ -1,0 +1,33 @@
+name: Java CI
+
+on:
+  push:
+    branches:
+      - wip
+  pull_request:
+    branches:
+      - wip
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+    - name: Install webapp
+      run: git clone https://github.com/axelor/open-suite-webapp.git open-suite-webapp && cd open-suite-webapp && git checkout dev
+    - name: move to the right place
+      run: mkdir -p open-suite-webapp/modules/axelor-open-suite && ls | grep -v open-suite-webapp | xargs -I{} mv {} open-suite-webapp/modules/axelor-open-suite
+    - name: Grant execute permission for gradlew
+      run: chmod +x open-suite-webapp/gradlew
+    - name: Check spotless format with gradle task
+      run: cd open-suite-webapp && ./gradlew spotlessCheck
+    - name: Build without tests
+      run: cd open-suite-webapp && ./gradlew -xtest clean build
+    - name: Run tests
+      run: cd open-suite-webapp && ./gradlew test
