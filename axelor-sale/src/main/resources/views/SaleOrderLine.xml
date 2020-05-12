@@ -74,7 +74,6 @@
 	<form name="sale-order-line-form" title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine"
 		  onLoad="action-group-sale-saleorderline-onload,action-sale-order-line-attrs-hidden-fields-for-client"
 		  onNew="action-group-sale-saleorderline-onnew" width="large">
-
 		<panel name="productPanel" showIf="typeSelect == 1">
 			<field name="productName" colSpan="9" title="Title"/>
 			<field name="typeSelect" colSpan="3" onChange="action-sale-order-line-method-empty-line"/>
@@ -184,6 +183,7 @@
 				<field name="$allocatedStock" colSpan="3" readonly="true" type="decimal" title="Allocated stock" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
 				<field name="$totalStock" colSpan="3" readonly="true" type="decimal" title="Total stock" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
 				<field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
+				<field name="selectedComplementaryProductList" grid-view="complementary-product-selected-grid" form-view="complementary-product-selected-form" colSpan="12" canView="false" canEdit="false" canRemove="false" canNew="false" canSelect="false" onChange="action-sale-order-line-record-complementary-products-to-handle" hidden="true" showIf="selectedComplementaryProductList != null &amp;&amp; selectedComplementaryProductList.length &gt; 0"/>
 				<panel name="descriptionPanel" title="Description" colSpan="12" readonlyIf="$isReadOnly !== false">
 					<field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
 				</panel>
@@ -415,6 +415,7 @@
     	<action name="action-sale-order-attrs-hide-ati"/>
     	<action name="action-sale-order-line-attrs-pack" if="typeSelect == 2 || isSubLine"/>
         <action name="action-record-sale-order-line-future-qty" if="__config__.app.isApp('supplychain')"/>
+        <action name="action-sale-order-line-record-complementary-products-to-handle"/>
     </action-group>
 
     <action-group name="action-group-sale-saleorderline-qty-onchange">
@@ -426,6 +427,7 @@
 				if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getCheckSaleStocks()"/>
 		<action name="action-sale-order-line-method-check-qty"/>
 		<action name="action-sale-order-line-record-update-requested-reserved-qty-from-qty" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageStockReservation()"/>
+    	<action name="action-sale-order-line-record-complementary-products-to-handle"/>
     </action-group>
 
 	<action-group name="action-group-sale-saleorderline-tax-line-onchange">
@@ -515,6 +517,10 @@
     
     <action-record name="action-sale-order-line-record-progress" model="com.axelor.apps.sale.db.SaleOrderLine">
     	<field name="progress" expr="eval: project?.progress"/>
+    </action-record>
+    
+    <action-record name="action-sale-order-line-record-complementary-products-to-handle" model="com.axelor.apps.sale.db.SaleOrderLine">
+    	<field name="isComplementaryProductsUnhandledYet" expr="eval: true" if="product != null &amp;&amp; product.complementaryProductList != null &amp;&amp; !product.complementaryProductList.isEmpty()"/>
     </action-record>
     
    	<!-- ACTION METHOD -->

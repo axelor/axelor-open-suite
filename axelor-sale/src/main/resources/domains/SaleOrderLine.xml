@@ -49,7 +49,13 @@
   	<date name="estimatedDelivDate" title="Estimated shipping date"/>
 	<date name="desiredDelivDate" title="Desired delivery date"/>
 	<decimal name="deliveredQty" title="Delivered quantity" precision="20" scale="10"/>
-  	
+	
+	<!-- Complementary Products -->
+	<boolean name="isComplementaryProductsUnhandledYet" hidden="true"/>
+	<one-to-many name="selectedComplementaryProductList" ref="com.axelor.apps.sale.db.ComplementaryProductSelected" title="Complementary products" mappedBy="saleOrderLine"/>
+    <string name="manualId"/>
+    <string name="parentId"/>
+      	
 <!-- 	Margins -->
 	<decimal name="subTotalCostPrice" title="SubTotal cost price"/>
 	<decimal name="subTotalGrossMargin" title="Sub Total gross profit"/>
@@ -79,5 +85,7 @@
 	</extra-code>
   	
   </entity>
+  
+  <sequence name="sale.order.line.idSeq" initial="1" increment="1" padding="10"/>
 
 </domain-models>

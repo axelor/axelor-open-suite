@@ -741,4 +741,14 @@ public class SaleOrderController {
     }
     response.setAttr("clientPartner", "domain", domain);
   }
+
+  public void handleComplementaryProducts(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+    try {
+      response.setValue("saleOrderLineList", Beans.get(SaleOrderService.class).handleComplementaryProducts(saleOrder));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }
