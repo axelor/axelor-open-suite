@@ -2,6 +2,7 @@
 ## [Unreleased 5.3.6]
 ## Improvements
 - DURATION : rearranged fields in grid and form view.
+- removed massUpdate from move-line-grid.
 
 ## Bug Fixes
 
