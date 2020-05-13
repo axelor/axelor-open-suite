@@ -2,6 +2,7 @@
 ## [Unreleased 5.2.11]
 ## Improvements
 ## Bug Fixes
+- CONTRACT : fix for unit price null on invoice.
 
 ## [5.2.10] - 2020-05-11
 ## Improvements
