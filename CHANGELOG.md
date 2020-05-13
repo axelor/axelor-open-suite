@@ -1,6 +1,8 @@
 # Changelog
 ## [Unreleased 5.2.11]
 ## Improvements
+- DURATION : rearranged fields in grid and form view.
+- Add configuration to activate partial invoicing for sale order and purchase order.
 - ACCOUNTING REPORT : Printing Information panel UI light changes.
 
 ## Bug Fixes
