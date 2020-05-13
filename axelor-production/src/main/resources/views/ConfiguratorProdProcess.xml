@@ -32,7 +32,9 @@
             </panel>
             <panel name="workshopStockLocationPanel" title="Workshop" if="__config__.app.getApp('production').getManageWorkshop()">
                 <field name="defWorkshopStockLocationAsFormula" colSpan="6"/>
-                <field name="workshopStockLocation" canEdit="false" colSpan="12" grid-view="stock-location-grid" form-view="stock-location-form" domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect = 1 and self.isWorkshop = true" showIf="!defWorkshopStockLocationAsFormula"/>
+                <field name="workshopStockLocation" canEdit="false" colSpan="12" grid-view="stock-location-grid" form-view="stock-location-form"
+                       domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect = 1 and self.isWorkshop = true"
+                       showIf="!defWorkshopStockLocationAsFormula" if="__config__.app.getApp('production').getManageWorkshop()"/>
                 <field name="workshopStockLocationFormula" colSpan="12" height="120"
                        widget="CodeEditor" x-code-syntax="groovy"
                        showTitle="false" showIf="defWorkshopStockLocationAsFormula"/>

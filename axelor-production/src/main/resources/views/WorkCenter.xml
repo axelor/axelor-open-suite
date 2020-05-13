@@ -14,7 +14,7 @@
 	  <panel name="mainPanel" >
 	    <field name="name"/>
 	    <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3"/>
-	    <field name="workCenterTypeSelect" required="true"/>
+	    <field name="workCenterTypeSelect" required="true" onChange="action-work-center-record-type-select-onchange"/>
 		<field name="machine" requiredIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3" showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3" form-view="machine-form" grid-view="machine-grid"/>
 		<field name="machineTool" domain="self.machine = :machine" showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3" form-view="machine-tool-form" grid-view="machine-tool-grid" if="__config__.app.getApp('production').getEnableToolManagement()"/>
 	  </panel>
@@ -102,7 +102,11 @@
 		     <field name="costSheetGroup" expr="eval: __config__?.app.isApp('production') ? __config__?.app.getApp('production')?.workCenterCostSheetGroup : null " if="__config__.app.getApp('production')?.getManageCostSheetGroup()"/>
 		     <field name="product" expr="eval: __config__?.app.isApp('production') ? __config__?.app.getApp('production')?.workCenterProduct : null" />
     </action-record>
-    
+
+	<action-record name="action-work-center-record-type-select-onchange" model="com.axelor.apps.production.db.WorkCenter">
+		<field name="machine" expr="eval: null" if="workCenterTypeSelect == 1"/>
+		<field name="prodHumanResourceList" expr="eval: null" if="workCenterTypeSelect == 2"/>
+	</action-record>
     
 </object-views>
 

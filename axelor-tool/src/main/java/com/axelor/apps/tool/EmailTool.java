@@ -17,12 +17,17 @@
  */
 package com.axelor.apps.tool;
 
+import com.axelor.common.ObjectUtils;
 import java.util.regex.Pattern;
 
 public class EmailTool {
   public static boolean isValidEmailAddress(String email) {
+    if (ObjectUtils.isEmpty(email)) {
+      return false;
+    }
+
     final String EMAIL_PATTERN =
-        "[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})";
+        "[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
     Pattern pattern = Pattern.compile(EMAIL_PATTERN);
     return pattern.matcher(email).matches();
   }

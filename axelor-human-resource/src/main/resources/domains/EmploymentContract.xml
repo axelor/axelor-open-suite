@@ -40,6 +40,7 @@
 		<decimal name="annualGrossSalary" title="Annual gross salary"/>
 		<decimal name="monthlyGlobalCost" title="Monthly global cost"/>
 		<many-to-many name="otherCostsEmployeeSet" title="Others" ref="com.axelor.apps.hr.db.OtherCostsEmployee"/>
+		<many-to-one name="employmentContractSubType" ref="com.axelor.apps.hr.db.EmploymentContractSubType" title="Contract sub type"/>
 		
         <string name="fullName" namecolumn="true">
             <![CDATA[

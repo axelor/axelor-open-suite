@@ -557,6 +557,7 @@
 "Products to produce",,,
 "Profile",,,
 "Purchase order",,,
+"Purchase currency is missing for product %s, please configure it.",,,
 "Qty",,,
 "Quantity",,,
 "Quantity Wasted per Product",,,

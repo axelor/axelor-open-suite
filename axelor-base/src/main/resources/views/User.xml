@@ -217,7 +217,7 @@
 			<field name="email"/>
 			<field name="theme" widget="theme-select"/>
 			<field name="noHelp"/>
-			<field name="iCalendar" canNew="true" canEdit="true"/>
+			<field name="iCalendar" canNew="true" canEdit="true" domain="self.user.id=:id"/>
 			<panel-related name="companySetPanel" title="Internal companies" field="companySet" hidden="true"/>
 			<field name="followersCalUserSet" widget="TagSelect" colSpan="12" canNew="false" form-view="user-form" grid-view="user-grid" onSelect="action-user-attrs-domain-followers"/>
 			<field name="receiveEmails"/>
@@ -247,7 +247,7 @@
     </action-attrs>
     
     <action-attrs name="action-user-attrs-domain-active-company">
-  		<attribute name="domain" expr="eval: &quot; self.id IN (${companySet?.collect{it.id}.join(',')}) &quot; " for="activeCompany" if="companySet ?: false" />
+  		<attribute name="domain" expr="eval:companySet?.size() > 0 ? &quot; self.id IN (${companySet?.collect{it.id}.join(',')}) &quot; : &quot;self = null&quot; " for="activeCompany"/>
     </action-attrs>
 
     <action-attrs name="action-user-attrs-domain-active-team">

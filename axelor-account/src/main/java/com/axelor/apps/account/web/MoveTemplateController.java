@@ -39,6 +39,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -132,6 +133,16 @@ public class MoveTemplateController {
       if (!isValid) {
         response.setValue("isValid", false);
       }
+    }
+  }
+
+  public void computeTotals(ActionRequest request, ActionResponse response) {
+    try {
+      MoveTemplate moveTemplate = request.getContext().asType(MoveTemplate.class);
+      Map<String, Object> values = Beans.get(MoveTemplateService.class).computeTotals(moveTemplate);
+      response.setValues(values);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }
