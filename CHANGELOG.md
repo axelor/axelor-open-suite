@@ -4,6 +4,7 @@
 - DURATION : rearranged fields in grid and form view.
 
 ## Bug Fixes
+- CONTRACT : fix for unit price null on invoice.
 
 ## [5.3.5] - 2020-05-11
 ## Features
