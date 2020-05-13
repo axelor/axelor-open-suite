@@ -1,6 +1,8 @@
 # Changelog
 ## [Unreleased 5.2.11]
 ## Improvements
+- ACCOUNTING REPORT : Printing Information panel UI light changes.
+
 ## Bug Fixes
 - CONTRACT : fix for unit price null on invoice.
 
