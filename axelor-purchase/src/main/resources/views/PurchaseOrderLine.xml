@@ -19,10 +19,10 @@
         <field name="exTaxTotal" aggregate="sum"/>
 	    <field name="inTaxTotal" aggregate="sum"/>
         <field name="isTitleLine" hidden="true"/>
-	<field name="desiredDelivDate"/>
+	    <field name="desiredDelivDate"/>
     	<field name="estimatedDelivDate"/>
     </grid>
-    
+
     <grid name="purchase-order-line-invoicing-project-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine" orderBy="-purchaseOrder.orderDate" canMove="true">
        	<field name="purchaseOrder" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
     	<field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
@@ -330,8 +330,8 @@
 	
     <action-record name="action-purchase-order-line-record-new" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     	<field name="qty" expr="eval: 1"/>
-    	<field name="desiredDelivDate" expr="eval: _parent?.deliveryDate"/>
     	<field name="$isFilterOnSupplier" expr="eval: true"/>
+    	<field name="desiredDelivDate" expr="eval: _parent?.desiredDeliveryDate"/>
     	<field name="estimatedDelivDate" expr="eval: _parent?.deliveryDate" if="_parent != null &amp;&amp; _parent._model == 'com.axelor.apps.purchase.db.PurchaseOrder' &amp;&amp; receiptState &lt; 2"/>
     </action-record>
     

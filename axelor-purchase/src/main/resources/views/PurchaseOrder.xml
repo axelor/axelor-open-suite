@@ -133,7 +133,8 @@
 				<panel-related name="purchaseOrderLineTaxListPanel" field="purchaseOrderLineTaxList" readonly="true" title="Tax Lines" colSpan="12" grid-view="purchase-order-line-tax-grid" form-view="purchase-order-line-tax-form"/>
 			</panel>
 			<panel name="deliveryPanel" title="Delivery" colSpan="12">
-				<field name="deliveryDate" colSpan="3" onChange="action-purchase-order-method-update-purchase-order-lines-estimated-deliv-date"/>
+				<field name="desiredDeliveryDate" colSpan="3" onChange="action-purchase-order-method-update-purchase-order-lines-desired-deliv-date"/>
+		        <field name="deliveryDate" colSpan="3" onChange="action-purchase-order-method-update-purchase-order-lines-estimated-deliv-date"/>
 		        <field name="stockLocation"  canEdit="false" domain="self.company = :company and self.typeSelect in (1,2) and self.usableOnPurchaseOrder = true" if-module="axelor-supplychain" colSpan="3" form-view="stock-location-form" grid-view="stock-location-grid" if="__config__.app.isApp('supplychain')" />
 		        <field name="stockLocation.address" if-module="axelor-supplychain" form-view="address-form" grid-view="address-grid" if="__config__.app.isApp('supplychain')" />
 	  		    <field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-form" grid-view="shipment-mode-grid" onChange="action-purchase-order-record-empty-freight-carrier-mode" if="__config__.app.isApp('stock')" />
@@ -650,7 +651,11 @@
 	<action-method name="action-purchase-order-method-update-purchase-order-lines-estimated-deliv-date" if-module="axelor-supplychain">
 		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="updateEstimatedDelivDate"/>
 	</action-method>
-
+	
+	<action-method name="action-purchase-order-method-update-purchase-order-lines-desired-deliv-date" if-module="axelor-supplychain">
+		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="updateDesiredDelivDate"/>
+	</action-method>
+	
 	<action-record name="action-record-load-dummy-field-confirm-merge-purchaseorder" model="com.axelor.apps.base.db.Wizard">
 		<field name="priceListToCheck" expr="eval: contextPriceListToCheck"/>
 		<field name="contactPartnerToCheck" expr="eval: contextContactPartnerToCheck"/>

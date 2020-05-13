@@ -25,6 +25,7 @@
   	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team" />
 	<many-to-one name="buyerUser" ref="com.axelor.auth.db.User" title="Buyer"/>
   	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency" required="true"/>
+	<date name="desiredDeliveryDate" title="Desired delivery Date"/>
 	<date name="deliveryDate" title="Estimated delivery Date"/>
 	<date name="orderDate" title="Order Date"/>
   	<one-to-many name="purchaseOrderLineList"  mappedBy="purchaseOrder" ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Products list"/>

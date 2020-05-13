@@ -388,6 +388,25 @@ public class PurchaseOrderController {
     response.setValue("purchaseOrderLineList", purchaseOrderLineList);
   }
 
+  // TPL DEBUT
+  public void updateDesiredDelivDate(ActionRequest request, ActionResponse response) {
+    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+
+    List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
+    if (purchaseOrderLineList != null) {
+      for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+        Integer receiptState = purchaseOrderLine.getReceiptState();
+        if (receiptState != null
+            && !receiptState.equals(PurchaseOrderLineRepository.RECEIPT_STATE_RECEIVED)
+            && !receiptState.equals(PurchaseOrderLineRepository.RECEIPT_STATE_PARTIALLY_RECEIVED)) {
+          purchaseOrderLine.setDesiredDelivDate(purchaseOrder.getDesiredDeliveryDate());
+        }
+      }
+    }
+    response.setValue("purchaseOrderLineList", purchaseOrderLineList);
+  }
+  // TPL FIN
+
   /**
    * Called from purchase order form view when validating purchase order and analytic distribution
    * is required from company's purchase config.
