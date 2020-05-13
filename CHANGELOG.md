@@ -7,6 +7,7 @@
 
 ## Bug Fixes
 - CONTRACT : fix for unit price null on invoice.
+- USER : Fix electronic signature on quotations confg not being used
 
 ## [5.2.10] - 2020-05-11
 ## Improvements
