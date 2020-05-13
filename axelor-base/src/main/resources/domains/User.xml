@@ -29,7 +29,8 @@
    	<many-to-many name="followersCalUserSet" ref="com.axelor.auth.db.User" title="Followed users"/>
     <one-to-many name="calendarManagementList" ref="com.axelor.apps.base.db.CalendarManagement" title="Calendars permissions" mappedBy="parentUser"/>
 	<many-to-one name="electronicSignature" ref="com.axelor.meta.db.MetaFile" />
-    <boolean name="useSignatureForQuotations" title="Use signature for quotations"/>
+    <boolean name="useSignatureForSalesQuotations" title="Use signature for sales quotations"/>
+    <boolean name="useSignatureForPurchaseQuotations" title="Use signature for purchase quotations"/>
     <many-to-one name="group" ref="com.axelor.auth.db.Group" column="group_id" massUpdate="true"/>
    	<string name="language" selection="select.language" massUpdate="true"/>
    	<boolean name="singleTab" help="Whether to use tabbed ui." massUpdate="true"/>

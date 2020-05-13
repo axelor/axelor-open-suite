@@ -1,5 +1,8 @@
 # Changelog
 ## [Unreleased 5.3.6]
+## Features
+- USER : Add boolean to display the electronic signature on quotations
+
 ## Improvements
 - DURATION : rearranged fields in grid and form view.
 

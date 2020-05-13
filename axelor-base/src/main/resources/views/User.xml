@@ -164,9 +164,10 @@
         	</panel>
 		    <panel name="electronicSignaturePanel" title="Electronic signature" if="__config__.app.isApp('sale') || __config__.app.isApp('purchase') || __config__.app.isApp('stock')"  showIf="[2,5].indexOf(stepStatusSelect) > -1">
 		    	<field name="electronicSignature" widget="Image" />
-					<field name="useSignatureForQuotations" if="__config__.app.isApp('sale') || __config__.app.isApp('purchase')"/>
 					<field name="useSignatureForStock" if="__config__.app.isApp('stock')"/>
-		    </panel>
+					<field name="useSignatureForSalesQuotations" if="__config__.app.isApp('sale')"/>
+					<field name="useSignatureForPurchaseQuotations" if="__config__.app.isApp('purchase')"/>
+				</panel>
 		    <panel-related name="emailAccountListPanel" field="emailAccountList" if="__config__.app.getApp('base').getEmailAccountByUser()" colSpan="12" form-view="mail-account-form" grid-view="mail-account-grid" showIf="[2,5].indexOf(stepStatusSelect) > -1"/>
 		    <panel-related name="projectSetPanel" field="projectSet" canEdit="false" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('project')" colSpan="12"/>
         	<panel name="substitutePfpValidatorTabPanel" title="PFP Validator" if-module="axelor-account" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()" showIf="activeCompany.accountConfig.isManagePassedForPayment">
