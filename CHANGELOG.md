@@ -2,6 +2,7 @@
 ## [Unreleased 5.3.6]
 ## Improvements
 - DURATION : rearranged fields in grid and form view.
+- PURCHASE ORDER SUPPLIER LINE : fix for decimal digit scale and precision.
 
 ## Bug Fixes
 
