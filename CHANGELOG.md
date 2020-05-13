@@ -4,6 +4,7 @@
 - DURATION : rearranged fields in grid and form view.
 
 ## Bug Fixes
+- CONTRACT : Add filter on payment mode.
 - CONTRACT : fix for unit price null on invoice.
 
 ## [5.3.5] - 2020-05-11
@@ -22,6 +23,7 @@
 - Invoice: made all dashboard's charts and grid based on ventilated invoices.
 - DETAIL PER PRODUCT: modify filter of product on details by product form and changed default value for stock managed boolean of product.
 - OPPORTUNITY: set canNew false for saleOrderList.
+- ICalendarEvent : make subject, location & subjectTeam field large.
 
 ## Bug Fixes
 - STOCK MOVE: Fix hiding company on multi company disabled.
