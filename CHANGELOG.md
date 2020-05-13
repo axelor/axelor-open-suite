@@ -2,6 +2,7 @@
 ## [Unreleased 5.1.16]
 ## Improvements
 - LEAD : Changed the printing tab's name
+- CONTRACT : fix for unit price null on invoice
 
 ## Bug Fixes
 - Account Config: display correct form view on clicking products.
