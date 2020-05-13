@@ -4,6 +4,7 @@
 - DURATION : rearranged fields in grid and form view.
 
 ## Bug Fixes
+- CONTRACT : Add filter on payment mode.
 
 ## [5.3.5] - 2020-05-11
 ## Features
