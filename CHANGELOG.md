@@ -2,9 +2,14 @@
 ## [Unreleased 5.3.6]
 ## Improvements
 - DURATION : rearranged fields in grid and form view.
-- removed massUpdate from move-line-grid.
+- Add configuration to activate partial invoicing for sale order and purchase order.
+- ACCOUNTING REPORT : Printing Information panel UI light changes.
+- PURCHASE ORDER SUPPLIER LINE : fix for decimal digit scale and precision.
+- MOVE LINE: removed massUpdate from move-line-grid.
 
 ## Bug Fixes
+- CONTRACT : Add filter on payment mode.
+- CONTRACT : fix for unit price null on invoice.
 
 ## [5.3.5] - 2020-05-11
 ## Features
