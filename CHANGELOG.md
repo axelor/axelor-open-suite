@@ -4,6 +4,7 @@
 - DURATION : rearranged fields in grid and form view.
 - Add configuration to activate partial invoicing for sale order and purchase order.
 - ACCOUNTING REPORT : Printing Information panel UI light changes.
+- PURCHASE ORDER SUPPLIER LINE : fix for decimal digit scale and precision.
 
 ## Bug Fixes
 - CONTRACT : Add filter on payment mode.
