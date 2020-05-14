@@ -5,6 +5,7 @@
 - Add configuration to activate partial invoicing for sale order and purchase order.
 - ACCOUNTING REPORT : Printing Information panel UI light changes.
 - PURCHASE ORDER SUPPLIER LINE : fix for decimal digit scale and precision.
+- MOVE LINE: removed massUpdate from move-line-grid.
 
 ## Bug Fixes
 - CONTRACT : Add filter on payment mode.
