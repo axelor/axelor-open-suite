@@ -2,6 +2,7 @@
 ## [5.3.5] - 2020-05-11
 ## Features
 - CONTACT: Add import from Google contact.
+- MOVE LINE: removed massUpdate from move-line-grid.
 
 ## Improvements
 - WEEKLY PLANNING: leaveCoef now has default and init values.
