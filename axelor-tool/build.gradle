@@ -28,4 +28,6 @@ dependencies {
   
     implementation libs.jaxws_runtime
 	implementation libs.jaxb_impl
+
+    implementation libs.weld_servlet
 }

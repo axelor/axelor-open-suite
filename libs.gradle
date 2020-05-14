@@ -54,3 +54,5 @@ libs.google_api_services_people = dependencies.create('com.google.apis:google-ap
 }
 
 libs.mockito = 'org.mockito:mockito-core:3.3.3'
+
+libs.weld_servlet = 'org.jboss.weld.servlet:weld-servlet-core:3.1.4.Final'
