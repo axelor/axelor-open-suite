@@ -5,6 +5,7 @@
 - Add configuration to activate partial invoicing for sale order and purchase order.
 - ACCOUNTING REPORT : Printing Information panel UI light changes.
 - MOVE LINE: removed massUpdate from move-line-grid.
+- Business Project : Fixed set toInvoice for timesheet line based on parent task instead of a task.
 
 ## Bug Fixes
 - CONTRACT : fix for unit price null on invoice.
