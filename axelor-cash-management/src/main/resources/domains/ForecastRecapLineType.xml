@@ -11,6 +11,7 @@
     <integer name="operationTypeSelect" title="Operaton Type" selection="iinvoice.operation.type.select"/>  
     <integer name="timetableLinkedSelect" title="Timetable Linked To" selection="forecast.recap.line.type.timetable.linked.select"/>
     <string name="statusSelect" title="Statuses to take into account" />
+    <string name="name" title="Name"/>
 	<extra-code><![CDATA[
   
       // ELEMENT SELECT
