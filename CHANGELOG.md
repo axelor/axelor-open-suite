@@ -10,6 +10,7 @@
 ## Bug Fixes
 - CONTRACT : Add filter on payment mode.
 - CONTRACT : fix for unit price null on invoice.
+- SALEORDER : copy description when generating Task by line from SaleOrder
 
 ## [5.3.5] - 2020-05-11
 ## Features
