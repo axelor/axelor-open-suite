@@ -171,6 +171,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
                 saleOrder.getClientPartner())
             : project;
     saleOrder.setProject(project);
+    project.setDescription(saleOrder.getDescription());
     return project;
   }
 
