@@ -3,6 +3,7 @@
 ## Features
 - CONTACT: Add import from Google contact.
 - MOVE LINE: removed massUpdate from move-line-grid.
+- Business Project : Fixed set toInvoice for timesheet line based on parent task instead of a task.
 
 ## Improvements
 - WEEKLY PLANNING: leaveCoef now has default and init values.
