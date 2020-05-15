@@ -18,6 +18,7 @@
 - Add CSRF protection for timesheet line editor and project planning editor
 - Studio : Add support of menu creation for custom model and BPM node.
 - DURATION : add new field applicationType;
+- BPM : Add overview of the result of the wkf.
 
 ## Improvements
 - USER : Default User language is based on application.locale from application.properties
