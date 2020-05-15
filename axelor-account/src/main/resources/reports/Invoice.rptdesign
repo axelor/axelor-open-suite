@@ -550,6 +550,12 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                     <text-property name="displayName">enablePackMangement</text-property>
                     <text-property name="heading">enablePackMangement</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">contactPartnerTitleSelect</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">contactPartnerTitleSelect</text-property>
+                    <text-property name="heading">contactPartnerTitleSelect</text-property>
+                </structure>
             </list-property>
             <list-property name="filter"/>
             <list-property name="parameters">
@@ -819,6 +825,11 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                     <structure>
                         <property name="position">51</property>
                         <property name="name">enablePackMangement</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">52</property>
+                        <property name="name">contactPartnerTitleSelect</property>
                         <property name="dataType">integer</property>
                     </structure>
                 </list-property>
@@ -1182,6 +1193,13 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
+                <structure>
+                    <property name="position">52</property>
+                    <property name="name">contactPartnerTitleSelect</property>
+                    <property name="nativeName">contactPartnerTitleSelect</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Invoice.id as inv_id, 
 	coalesce(MetaFileTN.file_path, MetaFile.file_path) as logo_path, 
@@ -1233,7 +1251,8 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
 	Invoice.proforma_comments,
 	Invoice.head_office_address,
 	AccountConfig.display_head_office_addr_on_invoice_printing as "displayHeadOfficeAddress",
-    AppSale.enable_pack_management as "enablePackMangement"
+    AppSale.enable_pack_management as "enablePackMangement",
+    ContactPartner.title_select as "contactPartnerTitleSelect"
 from account_invoice as Invoice 
 left outer join base_company as Company on (Invoice.company = Company.id)
 left outer join base_app_sale as AppSale on true
@@ -3523,6 +3542,12 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                     <expression name="expression" type="javascript">dataSetRow["enablePackMangement"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
+                <structure>
+                    <property name="name">contactPartnerTitleSelect</property>
+                    <text-property name="displayName">contactPartnerTitleSelect</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["contactPartnerTitleSelect"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
             </list-property>
             <method name="onPrepare"><![CDATA[String.prototype.repeat = String.prototype.repeat ||
   function(n) {
@@ -4092,7 +4117,14 @@ row["partnerFirstName"]
                         <property name="fontSize">12pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["contactName"]</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row["contactFirstName"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["contactPartnerTitleSelect"] != null){
+if(row["contactPartnerTitleSelect"] == "1"){"M."}
+else if(row["contactPartnerTitleSelect"] == "2"){"Ms."}
+else if(row["contactPartnerTitleSelect"] == "3"){"Dr"}
+else if(row["contactPartnerTitleSelect"] == "4"){"Prof."}
+}</VALUE-OF> 
+<VALUE-OF format="^">"  "</VALUE-OF>
+<VALUE-OF>row["contactName"]</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row["contactFirstName"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="4467">
