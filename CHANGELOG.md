@@ -9,6 +9,7 @@
 - ACCOUNTING REPORT : Printing Information panel UI light changes.
 - PURCHASE ORDER SUPPLIER LINE : fix for decimal digit scale and precision.
 - MOVE LINE: removed massUpdate from move-line-grid.
+- LEAVE LINE: remove fields length constraints
 
 ## Bug Fixes
 - CONTRACT : Add filter on payment mode.
