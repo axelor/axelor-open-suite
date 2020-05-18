@@ -6,8 +6,10 @@
   <module name="production" package="com.axelor.apps.production.db"/>
 
   <entity name="ManufOrder" lang="java">
+  
+  	<many-to-one name="manufOrderMergeResult" ref="com.axelor.apps.production.db.ManufOrder" title="Manuf order merge result" />
 
-  	<many-to-one name="productionOrder" ref="com.axelor.apps.production.db.ProductionOrder" title="Production order"/>
+  	<many-to-many name="productionOrderSet" ref="com.axelor.apps.production.db.ProductionOrder" title="Production orders"/>
   	
   	<one-to-many name="operationOrderList" ref="com.axelor.apps.production.db.OperationOrder" mappedBy="manufOrder" title="Operation orders" orderBy="priority"/>
   
@@ -15,7 +17,7 @@
   
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" initParam="true"/>
   	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer" />
-	<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale order" />
+	<many-to-many name="saleOrderSet" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale orders" />
 
     <string name="manufOrderSeq" title="MO" namecolumn="true" initParam="true"/>
     <integer name="prioritySelect" title="Priority" selection="production.order.priority.select" default="2" initParam="true"/><boolean name="isPermanent"/> <!-- Permanent manuf orders are used to log time and have a planned quantity set to 0 -->
@@ -45,7 +47,7 @@
     <datetime name="plannedStartDateT" title="Planned start date" initParam="true"/>
   	<datetime name="plannedEndDateT" title="Planned end date" initParam="true"/>
 
-    <many-to-one name="workshopStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Workshop"/>
+    <many-to-one name="workshopStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Workshop" required="true"/>
 
  	<datetime name="realStartDateT" title="Real start date"/>
   	<datetime name="realEndDateT" title="Real end date"/>
@@ -78,6 +80,7 @@
 		public static final int STATUS_IN_PROGRESS = 4;
 		public static final int STATUS_STANDBY = 5;
 		public static final int STATUS_FINISHED = 6;
+		public static final int STATUS_FUSIONNED = 7;
 	]]></extra-code>
     
     <track>

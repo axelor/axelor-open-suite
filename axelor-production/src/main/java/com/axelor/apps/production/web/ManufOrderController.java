@@ -31,6 +31,7 @@ import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -454,6 +455,47 @@ public class ManufOrderController {
               .context("_showRecord", String.valueOf(costSheet.getId()))
               .map());
 
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkMergeValues(ActionRequest request, ActionResponse response) {
+    try {
+      if (request.getContext().get("id") != null) {
+        response.setError(I18n.get("Please select more than one OF"));
+      } else {
+        Object _ids = request.getContext().get("_ids");
+        if (!ObjectUtils.isEmpty(_ids)) {
+          List<Long> ids = (List<Long>) _ids;
+          if (ids.size() < 2) {
+            response.setError(I18n.get("Please select more than one OF"));
+          } else {
+            boolean canMerge = Beans.get(ManufOrderWorkflowService.class).canMerge(ids);
+            if (canMerge) {
+              response.setAlert(I18n.get("Are you sur you want to merge those manuf orders?"));
+            } else {
+              response.setError(
+                  I18n.get(
+                      "The merge must concerns only manuf order with Draft or Planned status, with the same products and same workshop stock location and will all bill of material compatibles."));
+            }
+          }
+        } else {
+          response.setError(I18n.get("Please select something to validate"));
+        }
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void generateMergeManufOrder(ActionRequest request, ActionResponse response) {
+    try {
+      Object _ids = request.getContext().get("_ids");
+      List<Long> ids = (List<Long>) _ids;
+      Beans.get(ManufOrderWorkflowService.class).merge(ids);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

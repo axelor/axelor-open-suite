@@ -139,11 +139,11 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
 
     if (manufOrder != null) {
       if (saleOrder != null) {
-        manufOrder.setSaleOrder(saleOrder);
+        manufOrder.addSaleOrderSetItem(saleOrder);
         manufOrder.setClientPartner(saleOrder.getClientPartner());
         manufOrder.setMoCommentFromSaleOrder(saleOrder.getProductionNote());
       }
-      productionOrder.addManufOrderListItem(manufOrder);
+      productionOrder.addManufOrderSetItem(manufOrder);
     }
     return productionOrderRepo.save(productionOrder);
   }
