@@ -3142,7 +3142,7 @@ where ControlPoint.quality_control = ? and (MetaFile.file_path is not null or Co
                     <property name="rowSpan">1</property>
                     <property name="backgroundColor">white</property>
                     <label id="6367">
-                        <property name="pageBreakAfter">always</property>
+                        <property name="pageBreakAfter">auto</property>
                         <text-property name="text"></text-property>
                     </label>
                 </cell>
@@ -3336,6 +3336,7 @@ where ControlPoint.quality_control = ? and (MetaFile.file_path is not null or Co
                 </cell>
             </row>
             <row id="5856">
+                <property name="pageBreakAfter">always</property>
                 <property name="height">20pt</property>
                 <cell id="5857">
                     <property name="colSpan">2</property>
