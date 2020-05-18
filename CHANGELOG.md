@@ -9,6 +9,7 @@
 - ACCOUNTING REPORT : Printing Information panel UI light changes.
 - MOVE LINE: removed massUpdate from move-line-grid.
 - Business Project : Fixed set toInvoice for timesheet line based on parent task instead of a task.
+- LEAVE LINE: remove fields length constraint
 
 ## Bug Fixes
 - CONTRACT : fix for unit price null on invoice.
