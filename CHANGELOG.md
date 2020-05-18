@@ -1,5 +1,8 @@
 # Changelog
 ## [Unreleased 5.2.11]
+## Features
+- Add civility for partner contact in birt report printing.
+
 ## Improvements
 - DURATION : rearranged fields in grid and form view.
 - Add configuration to activate partial invoicing for sale order and purchase order.
