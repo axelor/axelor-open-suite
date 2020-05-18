@@ -6,6 +6,8 @@
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
 
   <entity name="Mrp" lang="java">
+      <string name="code" title="Code" unique="true"/>
+      <string name="name" title="Name"/>
 
     <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
       title="Stock location" required="true"/>
