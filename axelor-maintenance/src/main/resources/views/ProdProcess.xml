@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+  <grid name="maintenance-prod-process-grid" title="Production process" model="com.axelor.apps.production.db.ProdProcess">
+		<field name="name"/>
+		<field name="company"/>
+		<field name="workshopStockLocation"/>
+		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+		<field name="machineType"/>
+		<field name="statusSelect"/>
+  </grid>
+  
+  <form id="maintenance-prod-process-form" name="prod-process-form" title="Production process" model="com.axelor.apps.production.db.ProdProcess"
+          onNew="action-maintenance-prod-process-group-onnew"
+          onLoad="action-maintenance-prod-process-group-onload"
+          onSave="action-prod-process-method-validate-prod-process" width="large">
+    <toolbar>
+      <button name="printBtn" title="Print" icon="fa-print" onClick="save,action-maintenance-production-process-group-print"/>
+      <button name="newVersionBtn" title="Generate new version"  if="__config__.app.getApp('production').manageProdProcessVersion" onClick="action-production-process-check-other-version,action-production-process-generate-new-version"/>
+    </toolbar>
+    <panel name="mainPanel">
+	    <field name="statusSelect" showTitle="false" colSpan="12" readonly="false" widget="NavSelect"/>
+	    <panel name="namePanel" stacked="true" colSpan="8">
+	      <field name="fullName" hidden="true" showIf="$readonly()" showTitle="false" css="label-bold bold large"/>
+	      <field name="name" hidden="true" showIf="!$readonly()" css="label-bold bold large"/>
+	    </panel>
+	    <field name="$numberOfPhases" showTitle="false" readonly="true" showIf="$numberOfPhases > 0" colSpan="4">
+      <viewer depends="$numberOfPhases">
+        <![CDATA[
+	        <h4 class="text-right">
+	            <span class="label label-default" style="background-color: #2185D0; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.4em;" x-translate>Number of phases</span><span class="label label-default" style="background-color: #23C6C8; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0;">{{record.$numberOfPhases}}</span>
+	        </h4>
+        ]]>
+      </viewer>
+	    </field>
+      <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+      <panel stacked="true" colSpan="6">
+        <field name="product" requiredIf="!isEnabledForAllProducts" canEdit="false" grid-view="product-grid" form-view="product-form" domain="self.productTypeSelect = 'storable'" colSpan="12"/>
+        <field name="machineType" form-view="machine-type-form" grid-view="machine-type-grid" hidden="true" colSpan="12"/>
+      </panel>
+      <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+      <field name="workshopStockLocation" canEdit="false" domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect = 1 and self.isWorkshop = true" if="__config__.app.getApp('production').getManageWorkshop()"/>
+      <field name="type" hidden="true"/>
+    </panel>
+    <panel-tabs>
+      <panel-related title="Phases" name="prodProcessLineListPanel" field="prodProcessLineList" colSpan="12" height="15" onChange="action-prod-process-record-count-number-of-phases" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>
+      <panel title="Details" name="detailsPanel">
+        <field name="stockLocation" canEdit="false" grid-view="stock-location-grid" form-view="stock-location-form" onChange="action-prod-process-record-set-second-location" domain="self.usableOnProduction = True AND self.company = :company"/>
+        <field name="producedProductStockLocation" canEdit="false" grid-view="stock-location-grid" form-view="stock-location-form" domain="self.usableOnProduction = True AND self.company = :company"/>
+        <field name="launchQty"/>
+        <field name="stockMoveRealizeOrderSelect" colSpan="4"/>
+        <field name="isConsProOnOperation" onChange="action-prod-process-validate-is-cons-pro" readonlyIf="isEnabledForAllProducts"/>
+        <field name="outsourcing" colSpan="4" onChange="action-prod-process-method-change-prodprocesslist-outsourcing"/>
+        <field name="isEnabledForAllProducts" colSpan="4" readonlyIf="isConsProOnOperation"/>
+      </panel>      
+      <panel-dashlet name="viewBillOfMaterialsPanel" action="action-prod-process-view-bill-of-materials" title="Bills of material"/>
+    </panel-tabs>
+    <panel name="versionManagementPanel" title="Version management" hidden="true" showIf="versionNumber &gt; 1">
+	    <field name="versionNumber" colSpan="3" />
+	    <field name="originalProdProcess" grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3" readonly="true"/>
+    </panel>            
+  </form>
+
+  <action-group name="action-maintenance-prod-process-group-onnew">
+    <action name="action-prod-process-group-on-new"/>
+    <action name="action-maintenance-prod-process-attrs-set-default"/>
+    <action name="action-maintenance-prod-process-attrs-set-attributes"/>  
+  </action-group>
+  
+  <action-group name="action-maintenance-prod-process-group-onload">
+    <action name="action-prod-process-record-count-number-of-phases"/>
+    <action name="action-maintenance-prod-process-attrs-set-attributes"/>
+  </action-group>
+  
+  <action-group name="action-maintenance-production-process-group-print">
+    <action name="action-production-process-print" if="type == 1"/>
+    <action name="action-maintenance-production-process-method-print" if="type == 2"/>
+  </action-group>
+  
+  <action-method name="action-maintenance-production-process-method-print">
+    <call class="com.axelor.apps.maintenance.web.MaintenanceProdProcessController" method="print"/>
+  </action-method>
+  
+  <action-attrs name="action-maintenance-prod-process-attrs-set-default">
+    <attribute name="value" for="type" expr="eval: 2" if="_maintenance || (_parent != null &amp;&amp; _parent?._maintenance)"/>
+    <attribute name="value" for="type" expr="eval: 1" if="!_maintenance || (_parent != null &amp;&amp; !_parent?._maintenance) || _maintenance == null"/>
+    <attribute name="value" for="isEnabledForAllProducts" expr="eval: true" if="_maintenance || (_parent != null &amp;&amp; _parent?._maintenance)"/>
+    <attribute name="required" for="stockLocation" expr="eval: false" if="_maintenance || (_parent != null &amp;&amp; _parent?._maintenance)"/>
+  </action-attrs>
+  
+  <action-attrs name="action-maintenance-prod-process-attrs-set-attributes">
+    <attribute name="hidden" for="product" expr="eval: true" if="_maintenance || (_parent != null &amp;&amp; _parent?._maintenance)"/>
+    <attribute name="hidden" for="machineType" expr="eval: false" if="_maintenance || (_parent != null &amp;&amp; _parent?._maintenance)"/>
+    <attribute name="hidden" for="detailsPanel" expr="eval: true" if="_maintenance || (_parent != null &amp;&amp; _parent?._maintenance)"/>
+  </action-attrs>
+  
+</object-views>

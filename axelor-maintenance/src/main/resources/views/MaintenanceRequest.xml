@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+    
+    <grid name="maintenance-request-grid" title="Maintenance Request" model="com.axelor.apps.maintenance.db.MaintenanceRequest">
+	    <field name="equipementMaintenance"/>
+	    <field name="requestDate"/>
+	    <field name="requestBy"/>
+	    <field name="expectedDate"/>
+	    <field name="durationHours"/>
+	    <field name="assignedTo"/>
+	    <field name="actionSelect"/>
+	    <field name="doneOn"/>
+	    <field name="statusSelect"/>
+    </grid>
+
+	<form name="maintenance-request-form" title="Maintenance Request" model="com.axelor.apps.maintenance.db.MaintenanceRequest"
+			onNew="action-maintenance-request-record-default" width="large">
+		<panel name="main">
+   		<field name="statusSelect" colSpan="12" widget="NavSelect" readonly="true"/>
+   		<field name="equipementMaintenance" colSpan="4" requiredIf="!$popup()" hideIf="$popup()" onChange="action-maintenance-request-attrs-equi-maintenance-onchange"/>
+			<field name="machine" readonly="true" colSpan="4"/>
+			<field name="requestDate" colSpan="4" onChange="action-maintenance-request-record-action-select-onchange"/>
+			<field name="requestBy" canEdit="false"/>
+			<field name="expectedDate" onChange="action-maintenance-request-record-action-select-onchange"/>
+			<field name="assignedTo" canEdit="false"/>
+			<field name="durationHours"/>
+			<field name="mtnTask" colSpan="12" widget="html"/>
+			<field name="actionSelect" widget="RadioSelect" onChange="action-maintenance-request-record-action-select-onchange"/>
+			<field name="manufOrder" readonlyIf="!equipementMaintenance || !expectedDate" canNew="true" domain="self.type = 2"/>
+			<field name="doneOn" onChange="action-maintenance-request-record-action-select-onchange"/>
+		</panel>
+		<panel name="actions" sidebar="true" title="Actions" stacked="true">
+			<button name="start" title="Start" showIf="statusSelect == 0" readonlyIf="!equipementMaintenance &amp;&amp; !expectedDate" onClick="save,action-maintenance-request-method-start" />
+			<button name="complete" title="Complete" showIf="statusSelect == 1"  onClick="acttion-maintenance-request-method-complete" />
+      <button name="cancel" title="Cancel" showIf="id &amp;&amp; statusSelect != 3"  onClick="acttion-maintenance-request-method-cancel" />
+    	<button name="replan" title="Replan" showIf="statusSelect == 3" onClick="acttion-maintenance-request-method-replan" />
+    </panel>
+    <panel-mail name="panel-mail">
+		  <mail-messages limit="4" />
+		  <mail-followers />
+		</panel-mail>
+	</form>
+    
+    <kanban name="maintenance-request-kanban"  title="Maintenance Request" columnBy="statusSelect" sequenceBy="sequence"
+    	onNew="action-maintenance-request-record-default" limit="10" model="com.axelor.apps.maintenance.db.MaintenanceRequest">
+		<field name="equipementMaintenance.name"/>
+		<field name="equipementMaintenance.maintenanceCategory"/>
+		<field name="statusSelect"/>
+	    <field name="requestDate"/>
+	    <field name="requestBy"/>
+	    <field name="expectedDate"/>
+	    <field name="assignedTo"/>
+	    <field name="actionSelect"/>
+	    <field name="doneOn"/>
+		<hilite color="danger" if="doneOn == null"/>
+		<hilite color="success" if="doneOn != null"/>
+        <template>
+            <![CDATA[
+            <h4>{{record.equipementMaintenance.maintenanceCategory.name || ''}}</h4>
+            <div class="card-body">
+                <dl> 
+                	<p>{{record.equipementMaintenance.name || ''}}</p>
+                    <dt ng-if="record.requestDate" x-translate>Request date</dt><dd><i  ng-if="record.requestDate" class='fa fa-clock-o'></i> <span  ng-if="record.requestDate">{{record.requestDate|date:'dd/MM/yyyy'}}</span></dd>
+                    <dt ng-if="record.requestBy" x-translate>Request By</dt><dd><span  ng-if="record.requestBy">{{record.requestBy.fullName}}</span></dd>
+                    <dt ng-if="record.assignedTo" x-translate>Assigned to</dt><dd><span ng-if="record.assignedTo">{{record.assignedTo.fullName}}</span></dd>
+                    <dt ng-if="record.expectedDate" x-translate>Expected date</dt><dd><i ng-if="record.expectedDate" class='fa fa-clock-o'></i> <span ng-if="record.expectedDate">{{record.expectedDate|date:'dd/MM/yyyy'}}</span></dd>
+                    <dt ng-if="record.doneOn" x-translate>Done on</dt><dd><i ng-if="record.doneOn"  class='fa fa-clock-o'></i> <span ng-if="record.doneOn" >{{record.doneOn|date:'dd/MM/yyyy'}}</span></dd>
+                </dl>
+            </div>
+            ]]>
+        </template>
+	</kanban>
+    
+    
+    <calendar name="maintenance-request-calendar-per-user" title="Maintenance Request" mode="month" colorBy="assignedTo" editable="false"
+    	eventStart="startDate" eventStop="endDate"  eventLength="1"  model="com.axelor.apps.maintenance.db.MaintenanceRequest">
+    	<field name="equipementMaintenance.name" />
+ 	</calendar>
+
+ 	<calendar name="maintenance-request-calendar-per-machine" title="Maintenance Request" mode="month" colorBy="statusSelect" editable="false"
+    	eventStart="startDate" eventStop="endDate"  eventLength="1"  model="com.axelor.apps.maintenance.db.MaintenanceRequest">
+    	<field name="equipementMaintenance.name" />
+ 	</calendar>
+
+	<action-record name="action-maintenance-request-record-action-select-onchange" model="com.axelor.apps.maintenance.db.MaintenanceRequest">
+		<field name="endDate" expr="eval: doneOn != null ? doneOn.plusDays(1) : expectedDate.plusDays(1)" if="actionSelect == 0"/>
+		<field name="startDate" expr="eval: requestDate" if="actionSelect == 0"/>
+		<field name="endDate" expr="eval: doneOn != null ? doneOn : expectedDate" if="actionSelect == 1"/>
+		<field name="startDate" expr="eval: doneOn != null ? doneOn : expectedDate" if="actionSelect == 1"/>
+	</action-record>
+
+    <action-record name="action-maintenance-request-record-default" model="com.axelor.apps.maintenance.db.MaintenanceRequest">
+    	<field name="assignedTo"  expr="eval:__user__"/>
+    	<field name="requestBy"  expr="eval:__user__"/>
+    	<field name="requestDate"  expr="eval:__config__.app.getTodayDate()"/>
+    	<field name="machine" expr="eval: _parent?.machine" if="_parent?._model == 'com.axelor.apps.maintenance.db.EquipementMaintenance'"/>
+    	<field name="equipementMaintenance" expr="eval: _parent" if="_parent?._model == 'com.axelor.apps.maintenance.db.EquipementMaintenance'"/>
+    </action-record>
+    
+    <action-attrs name="action-maintenance-request-attrs-equi-maintenance-onchange">
+    	<attribute name="value" for="machine" expr="eval: equipementMaintenance?.machine"/>
+    </action-attrs>
+    
+    <action-method name="action-maintenance-request-method-start">
+    	<call class="com.axelor.apps.maintenance.web.MaintenanceRequestController" method="start"/>
+    </action-method>
+    
+    <action-method name="acttion-maintenance-request-method-complete">
+    	<call class="com.axelor.apps.maintenance.web.MaintenanceRequestController" method="complete"/>
+    </action-method>
+    
+    <action-method name="acttion-maintenance-request-method-cancel">
+    	<call class="com.axelor.apps.maintenance.web.MaintenanceRequestController" method="cancel"/>
+    </action-method>
+    
+    <action-method name="acttion-maintenance-request-method-replan">
+    	<call class="com.axelor.apps.maintenance.web.MaintenanceRequestController" method="replan"/>
+    </action-method>
+    
+</object-views>

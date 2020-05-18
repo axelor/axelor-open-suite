@@ -1,0 +1,2 @@
+"name";"description";"permissions"
+"role.admin";"Access to all objects for all modules";"perm.maintenance.all"

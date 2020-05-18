@@ -1,0 +1,16 @@
+apply plugin: "com.axelor.app-module"
+
+apply {
+	version = "5.0.0-SNAPSHOT"
+}
+
+axelor {
+	title "Axelor :: Maintenance"
+	description "Computerized Maintenance Management System"
+
+	removable true
+}
+
+dependencies {
+	compile project(":modules:axelor-production")
+}

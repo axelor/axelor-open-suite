@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  
+  <module name="production" package="com.axelor.apps.production.db"/>
+
+  <entity name="BillOfMaterial" lang="java">
+    <integer name="type" default="1" title="Type" selection="maintenance.type.select"/>
+
+    <many-to-one name="machineType" ref="com.axelor.apps.production.db.MachineType" title="Machine type"/>
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="false"/>
+  </entity>
+
+</domain-models>
