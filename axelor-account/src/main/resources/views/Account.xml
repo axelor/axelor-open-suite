@@ -43,7 +43,8 @@
 				<field name="name" colSpan="9" css="bold"/>
 			</panel>
 			<panel name="balancePanel" colSpan="4" showIf="id">
-				<button name="$balanceBtn" title="Total balance" icon="fa-money" widget="info-button" onClick="action-account-view-show-move-lines" x-currency="company.currency.symbol"/>
+				<button name="$balanceBtn" title="Total balance" icon="fa-money" widget="info-button"
+                onClick="action-account-view-show-move-lines" x-currency="company.currency.symbol"/>
 			</panel>
 			<panel name="settingsPanel" title="Settings" colSpan="12">
 				<field name="accountType" form-view="account-type-form" grid-view="account-type-grid"/>
@@ -60,8 +61,8 @@
 				<field name="isTaxRequiredOnMoveLine" showIf="isTaxAuthorizedOnMoveLine" widget="boolean-switch" colSpan="4"/>
 			</panel>
 			<panel name="showMoveLinesPanel" colSpan="12" showIf="id">
-				<button name="showMoveLineBtn" title="Show move lines" colSpan="3" onClick="action-account-view-show-move-lines"/>      
-      		</panel>
+				<button name="showMoveLineBtn" title="Show move lines" colSpan="3" onClick="action-account-view-show-move-lines"/>
+      </panel>
 		</panel>
 		<panel-mail name="mailPanel">
 			<mail-messages limit="4"/>

@@ -13,6 +13,7 @@
 - SALEORDER : copy description when generating Task by line from SaleOrder
 - Business Project : Fixed set toInvoice for timesheet line based on parent task instead of a task.
 - FORECAST RECAP : many anomalies resolved.
+- ACCOUNT : Fix wrong move line grid view
 
 ## [5.3.5] - 2020-05-11
 ## Features
