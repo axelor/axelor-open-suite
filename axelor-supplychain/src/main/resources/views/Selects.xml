@@ -49,6 +49,7 @@
 	
 	<selection name="meta.schedule.job.select" id="supplychain.meta.schedule.job.select">
 		<option value="com.axelor.apps.supplychain.job.BillSubJob">com.axelor.apps.supplychain.job.BillSubJob</option>
+		<option value="com.axelor.apps.supplychain.job.MrpJob">com.axelor.apps.supplychain.job.MrpJob</option>
 	</selection>
 
 	<selection name="meta.schedule.batch.service.select" id="supplychain.meta.schedule.batch.service.select">
