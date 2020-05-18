@@ -1,4 +1,8 @@
 # Changelog
+## [Unreleased 5.3.6]
+## Features
+- Add civility for partner contact in birt report printing.
+
 ## [5.3.5] - 2020-05-11
 ## Features
 - CONTACT: Add import from Google contact.
