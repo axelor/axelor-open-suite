@@ -11,7 +11,7 @@
   	
   	<one-to-many name="operationOrderList" ref="com.axelor.apps.production.db.OperationOrder" mappedBy="manufOrder" title="Operation orders" orderBy="priority"/>
   
-  	<decimal name="qty" title="Qty" initParam="true"/>
+  	<decimal name="qty" title="Qty" initParam="true" precision="20" scale="10"/>
   
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" initParam="true"/>
   	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer" />
@@ -63,6 +63,8 @@
     <string name="note" large="true"/>
     <many-to-one name="cancelReason" title="Cancel reason" ref="com.axelor.apps.base.db.CancelReason"/>
     <string name="cancelReasonStr" title="Cancel Reason" large="true"/>
+    
+    <string name="moCommentFromSaleOrder" title="MO's comment from sale order" large="true"/>
     
     <unique-constraint columns="manufOrderSeq,company"/>
 

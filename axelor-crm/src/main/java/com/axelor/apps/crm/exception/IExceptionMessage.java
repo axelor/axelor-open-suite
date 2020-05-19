@@ -69,7 +69,7 @@ public interface IExceptionMessage {
 
   /** Configuration */
   static final String CRM_CONFIG_1 = /*$$(*/
-      "Please configure informations for CRM for company %s" /*)*/;
+      "Please configure information for CRM for company %s" /*)*/;
 
   static final String CRM_CONFIG_USER_EMAIL = /*$$(*/
       "User %s does not have an email address configured nor is it linked to a partner with an email address configured." /*)*/;

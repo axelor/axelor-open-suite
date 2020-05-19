@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.CostSheetGroup;
 import com.axelor.apps.production.db.CostSheetLine;
@@ -36,10 +37,13 @@ import com.axelor.apps.production.db.UnitCostCalculation;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.CostSheetGroupRepository;
 import com.axelor.apps.production.db.repo.CostSheetLineRepository;
+import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -54,6 +58,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  protected AppBaseService appBaseService;
   protected AppProductionService appProductionService;
   protected CostSheetGroupRepository costSheetGroupRepository;
   protected UnitConversionService unitConversionService;
@@ -65,6 +70,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
 
   @Inject
   public CostSheetLineServiceImpl(
+      AppBaseService appBaseService,
       AppProductionService appProductionService,
       CostSheetGroupRepository costSheetGroupRepository,
       UnitConversionService unitConversionService,
@@ -73,6 +79,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       UnitCostCalcLineServiceImpl unitCostCalcLineServiceImpl,
       CurrencyService currencyService,
       ShippingCoefService shippingCoefService) {
+    this.appBaseService = appBaseService;
     this.appProductionService = appProductionService;
     this.costSheetGroupRepository = costSheetGroupRepository;
     this.unitConversionService = unitConversionService;
@@ -106,7 +113,8 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
 
     CostSheetLine costSheetLine = new CostSheetLine(code, name);
     costSheetLine.setBomLevel(bomLevel);
-    costSheetLine.setConsumptionQty(consumptionQty);
+    costSheetLine.setConsumptionQty(
+        consumptionQty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN));
     costSheetLine.setCostSheetGroup(costSheetGroup);
     costSheetLine.setProduct(product);
     costSheetLine.setTypeSelect(typeSelect);
@@ -216,7 +224,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
           }
         }
         // If we didn't have a computed price in cost calculation session, so we compute the price
-        // from its bill of material
+        // from its bill of materials
       case CostSheetService.ORIGIN_BILL_OF_MATERIAL:
         costPrice =
             this.getComponentCostPrice(
@@ -226,6 +234,9 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       default:
         costPrice = BigDecimal.ZERO;
     }
+
+    consumptionQty =
+        consumptionQty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN);
 
     costPrice = costPrice.multiply(consumptionQty);
     costPrice =
@@ -290,13 +301,26 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
     }
 
     if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
-      price = product.getPurchasePrice();
+
+      price =
+          unitConversionService.convert(
+              product.getUnit(),
+              product.getPurchasesUnit() != null ? product.getPurchasesUnit() : product.getUnit(),
+              product.getPurchasePrice(),
+              appProductionService.getNbDecimalDigitForUnitPrice(),
+              product);
 
       BigDecimal shippingCoef =
           shippingCoefService.getShippingCoef(
               product, product.getDefaultSupplierPartner(), company, new BigDecimal(9999999));
+      price = price.multiply(shippingCoef);
 
-      price = product.getPurchasePrice().multiply(shippingCoef);
+      if (product.getPurchaseCurrency() == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.MISSING_PRODUCT_PURCHASE_CURRENCY),
+            product.getFullName());
+      }
 
       price =
           currencyService.getAmountCurrencyConvertedAtDate(
@@ -308,7 +332,15 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
         for (SupplierCatalog supplierCatalog : product.getSupplierCatalogList()) {
           if (BigDecimal.ZERO.compareTo(supplierCatalog.getPrice()) < 0) {
-            price = supplierCatalog.getPrice();
+            price =
+                unitConversionService.convert(
+                    product.getUnit(),
+                    product.getPurchasesUnit() != null
+                        ? product.getPurchasesUnit()
+                        : product.getUnit(),
+                    supplierCatalog.getPrice(),
+                    appProductionService.getNbDecimalDigitForUnitPrice(),
+                    product);
             Partner supplierPartner = supplierCatalog.getSupplierPartner();
             if (supplierPartner != null) {
               shippingCoef =
@@ -351,7 +383,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
             .multiply(wasteRate)
             .divide(
                 new BigDecimal("100"),
-                appProductionService.getNbDecimalDigitForBomQty(),
+                appBaseService.getNbDecimalDigitForQty(),
                 BigDecimal.ROUND_HALF_EVEN);
 
     BigDecimal costPrice = null;
@@ -392,7 +424,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
         product.getName(),
         product.getCode(),
         bomLevel,
-        qty.setScale(appProductionService.getNbDecimalDigitForBomQty(), RoundingMode.HALF_EVEN),
+        qty,
         costPrice.setScale(
             appProductionService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_EVEN),
         product.getCostSheetGroup(),

@@ -166,11 +166,12 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
             ? this.generateProject(
                 null,
                 saleOrder.getFullName() + "_project",
-                saleOrder.getSalemanUser(),
+                saleOrder.getSalespersonUser(),
                 saleOrder.getCompany(),
                 saleOrder.getClientPartner())
             : project;
     saleOrder.setProject(project);
+    project.setDescription(saleOrder.getDescription());
     return project;
   }
 
@@ -183,9 +184,15 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       Partner clientPartner) {
     Project project =
         super.generateProject(parentProject, fullName, assignedTo, company, clientPartner);
+
+    if (!Beans.get(AppBusinessProjectService.class).isApp("business-project")) {
+      return project;
+    }
+
     if (assignedTo != null) {
       project.addMembersUserSetItem(assignedTo);
     }
+
     project.setImputable(true);
     if (parentProject != null && parentProject.getIsInvoicingTimesheet()) {
       project.setIsInvoicingTimesheet(true);
@@ -199,7 +206,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
         generateProject(
             parent,
             saleOrderLine.getFullName(),
-            saleOrderLine.getSaleOrder().getSalemanUser(),
+            saleOrderLine.getSaleOrder().getSalespersonUser(),
             parent.getCompany(),
             parent.getClientPartner());
     project.setProjectTypeSelect(ProjectRepository.TYPE_PHASE);

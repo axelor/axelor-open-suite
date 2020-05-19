@@ -525,14 +525,17 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
 
   public InvoiceLine generate(Invoice invoice, ContractLine line) throws AxelorException {
+
+    BigDecimal inTaxPriceComputed =
+        invoiceLineService.convertUnitPrice(false, line.getTaxLine(), line.getPrice());
     InvoiceLineGenerator invoiceLineGenerator =
         new InvoiceLineGenerator(
             invoice,
             line.getProduct(),
             line.getProductName(),
             line.getPrice(),
-            invoiceLineService.convertUnitPrice(false, line.getTaxLine(), line.getPrice()),
-            null,
+            inTaxPriceComputed,
+            invoice.getInAti() ? inTaxPriceComputed : line.getPrice(),
             line.getDescription(),
             line.getQty(),
             line.getUnit(),
@@ -542,9 +545,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
             PriceListLineRepository.AMOUNT_TYPE_NONE,
             line.getExTaxTotal(),
             line.getInTaxTotal(),
-            false,
-            false,
-            0) {
+            false) {
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
             InvoiceLine invoiceLine = this.createInvoiceLine();

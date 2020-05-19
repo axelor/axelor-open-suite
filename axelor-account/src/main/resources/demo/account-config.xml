@@ -37,6 +37,8 @@
 	
 	<input file="account_analyticAxis.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAxis" search="self.importId = :importId" />
 	
+	<input file="account_analyticJournal.csv" separator=";" type="com.axelor.apps.account.db.AnalyticJournal" search="self.importId = :importId" />
+	
 	<input file="account_analyticAccount.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAccount" search="self.importId = :importId" />
 	
 	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId" update="true" call="com.axelor.csv.script.UpdateAll:updatePeriod">
@@ -113,9 +115,7 @@
 		<bind to="language" search="self.code = :languageCode"/>
 	</input>
 	
-	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId" update="true">
-		<bind column="bankDetailsSet_id" to="bankDetailsSet" search="self.importId in :bankDetailsSet_id" update="true" />
-	</input> 
+	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId" update="true" /> 
  	
  	<input file="base_appAccount.csv" separator=";" search="self.code = :code" update="true" type="com.axelor.apps.base.db.AppAccount" />
  	

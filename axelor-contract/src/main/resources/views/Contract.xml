@@ -177,7 +177,7 @@
                         <field name="currentContractVersion" showTitle="false" colSpan="12" x-show-icons="false">
                             <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                                 <panel colSpan="6">
-                                    <field name="paymentMode" colSpan="6" widget="SuggestBox" canEdit="false" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+                                    <field name="paymentMode" colSpan="6" widget="SuggestBox" canEdit="false" form-view="payment-mode-form" grid-view="payment-mode-grid" onSelect="action-contract-attrs-set-payment-mode-domain"/>
                                     <field name="paymentCondition" colSpan="6" widget="SuggestBox" canEdit="false" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
                                 </panel>
                                 <panel  colSpan="6">
@@ -294,7 +294,7 @@
     </action-method>
 
     <form name="contract-archived-version-form" title="Version" model="com.axelor.apps.contract.db.ContractVersion">
-        <panel title="Informations" name="informationsPanel">
+        <panel title="Information" name="informationsPanel">
             <field name="statusSelect" colSpan="12" readonly="true" widget="NavSelect" showTitle="false"/>
             <panel showIf="id" colSpan="12" name="creationDetailsPanel">
                 <field name="createdOn"/>
@@ -358,7 +358,8 @@
     </action-attrs>
 
     <action-attrs name="action-contract-attrs-partner-payment-config">
-        <attribute for="currentContractVersion.paymentMode" name="value" expr="eval: partner?.inPaymentMode"/>
+        <attribute for="currentContractVersion.paymentMode" name="value" expr="eval: partner?.inPaymentMode" if="targetTypeSelect == 1"/>
+        <attribute for="currentContractVersion.paymentMode" name="value" expr="eval: partner?.outPaymentMode" if="targetTypeSelect == 2"/>
         <attribute for="currentContractVersion.paymentCondition" name="value" expr="eval: partner?.paymentCondition"/>
     </action-attrs>
 
@@ -401,5 +402,10 @@
 		<attribute name="domain" for="partner" expr="eval: &quot; :company member of self.companySet AND (self.isProspect = true OR self.isCustomer = true) &quot;" if="_xTargetType == 1"/>
 		<attribute name="domain" for="partner" expr="eval: &quot; :company member of self.companySet AND self.isSupplier = true &quot;" if="_xTargetType == 2"/>
     </action-attrs>
-
+    
+    <action-attrs name="action-contract-attrs-set-payment-mode-domain">
+    	<attribute name="domain" for="paymentMode" expr="self.inOutSelect = 1" if="__parent__?.targetTypeSelect == 1"/>
+    	<attribute name="domain" for="paymentMode" expr="self.inOutSelect = 2" if="__parent__?.targetTypeSelect == 2"/>
+    </action-attrs>
+    
 </object-views>

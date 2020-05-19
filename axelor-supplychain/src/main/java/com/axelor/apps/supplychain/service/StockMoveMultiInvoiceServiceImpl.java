@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
 import com.axelor.apps.base.db.Partner;
@@ -376,6 +377,9 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
 
     for (StockMove stockMoveLocal : stockMoveList) {
+
+      stockMoveInvoiceService.checkSplitSalePartiallyInvoicedStockMoveLines(
+          stockMoveLocal, stockMoveLocal.getStockMoveLineList());
       List<InvoiceLine> createdInvoiceLines =
           stockMoveInvoiceService.createInvoiceLines(
               invoice, stockMoveLocal.getStockMoveLineList(), null);
@@ -528,6 +532,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     refund.setTaxTotal(refund.getTaxTotal().negate());
     refund.setAmountRemaining(refund.getAmountRemaining().negate());
     refund.setCompanyTaxTotal(refund.getCompanyTaxTotal().negate());
+    refund.setPaymentMode(Beans.get(InvoiceToolService.class).getPaymentMode(refund));
     return invoiceRepository.save(refund);
   }
 
@@ -611,7 +616,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
    * This method will throw an exception if a stock move has already been invoiced. The exception
    * message will give every already invoiced stock move.
    */
-  protected void checkForAlreadyInvoicedStockMove(List<StockMove> stockMoveList)
+  @Override
+  public void checkForAlreadyInvoicedStockMove(List<StockMove> stockMoveList)
       throws AxelorException {
     StringBuilder invoiceAlreadyGeneratedMessage = new StringBuilder();
 

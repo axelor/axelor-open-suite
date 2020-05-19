@@ -45,6 +45,7 @@
 	    		<field name="periodicityInMonth" min="1" onChange="action-fixed-asset-category-record-compute-duration"/>
 	        	<field name="durationInMonth" readonly="true"/>
 	        	<field name="fixedAssetCategory.isProrataTemporis"/>
+	        	<field name="fixedAssetCategory.isUSProrataTemporis" showIf="fixedAssetCategory.isProrataTemporis"/>
     		</panel>
     	</panel-tabs>
 		
@@ -125,7 +126,7 @@
     
     <action-validate name="action-fixed-asset-validate-check-first-depreciation-date">
     	<error if="acquisitionDate &amp;&amp; firstDepreciationDate &amp;&amp; firstDepreciationDate.isBefore(acquisitionDate)" message="First depreciation date cannot be before Acquisition date."/>
-    	<error if="java.time.temporal.ChronoUnit.MONTHS.between(acquisitionDate.withDayOfMonth(1), firstDepreciationDate.withDayOfMonth(1)) &gt;= periodicityInMonth" message="Acquisition date and first depreciation date should not be more than one depreciation period apart."/>
+    	<error if="java.time.temporal.ChronoUnit.MONTHS.between(acquisitionDate, firstDepreciationDate) &gt;= periodicityInMonth" message="Acquisition date and first depreciation date should not be more than one depreciation period apart."/>
     </action-validate>
     
     <action-validate name="action-fixed-asset-validate-check-puchase-account">

@@ -23,6 +23,7 @@
      <boolean name="openRecord" title="Open record" />
      <string name="displayMsg" title="Display message" />
      <integer name="emailSendOptionSelect" title="Send option" selection="studio.action.builder.email.send.option.select"/>
+     <string name="conditionText" title="Condition" />
      
      <!-- Action view fields -->
      <one-to-many name="actionBuilderViews" title="Views" ref="ActionBuilderView" mappedBy="actionBuilder" orderBy="sequence"/>

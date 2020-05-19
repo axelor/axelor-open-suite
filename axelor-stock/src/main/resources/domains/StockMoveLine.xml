@@ -12,14 +12,13 @@
 
 	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
 	<boolean name="filterOnAvailableProducts" title="Filter on available products" default="true" transient="true"/>
-	<decimal name="qty" min="0" title="Expected Qty"/>
-	<decimal name="realQty" min="0" title="Real Qty"/>
-	<decimal name="oldQty" hidden="true"/>
-	<decimal name="availableQty" title="Available qty" transient="true"/>
-	<decimal name="availableQtyForProduct" title="Available qty for product" transient="true"/>
+	<decimal name="qty" min="0" title="Expected Qty" precision="20" scale="10"/>
+	<decimal name="realQty" min="0" title="Real Qty" precision="20" scale="10"/>
+	<decimal name="oldQty" hidden="true" precision="20" scale="10"/>
+	<decimal name="availableQty" title="Available qty" transient="true" precision="20" scale="10"/>
+	<decimal name="availableQtyForProduct" title="Available qty for product" transient="true" precision="20" scale="10"/>
 	<string name="availableStatus" title="Availability" transient="true"/>
 	<integer name="availableStatusSelect" title="Status" transient="true" selection="stock.move.line.available.status.select"/>
-	<boolean name="isSubLine" title="Sub line" readonly="true"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     <decimal name="netMass" title="Net mass" precision="20" scale="10" />
     <decimal name="totalNetMass" title="Total net mass"/>
@@ -29,7 +28,7 @@
     <integer name="conformitySelect" title="Conformity" selection="stock.move.line.conformity.select"/>
     
 <!--     TODO a deplacer dans Supplier management -->
-    <decimal name="shippedQty" title="Shipped qty"/>
+    <decimal name="shippedQty" title="Shipped qty" precision="20" scale="10"/>
     <date name="shippedDate" title="Shipped date"/>
     
     <many-to-one name="productModel" ref="com.axelor.apps.base.db.Product" title="Product model"/>
@@ -44,6 +43,7 @@
     <decimal name="companyUnitPriceUntaxed" precision="20" scale="10" title="Company Unit price W.T."/>
 
     <decimal name="wapPrice" precision="20" scale="10" readonly="true" nullable="true" title="Price used for WAP"/>
+    <decimal name="companyPurchasePrice" help="Purchase price in company currency, used for declaration of exchange." precision="20" scale="10" title="Purchase price"/>
 
     <string name="productTypeSelect" title="Product type" selection="product.product.type.select"/>
     <integer name="sequence" title="Seq."/>
@@ -63,7 +63,6 @@
     <string name="customsCode"/>
     <one-to-many name="logisticalFormLineList" ref="com.axelor.apps.stock.db.LogisticalFormLine" mappedBy="stockMoveLine" title="Logistical form lines" />
     <integer name="lineTypeSelect" title="Type" selection="line.type.select"/>
-    <integer name="packPriceSelect" title="Pack price select" selection="product.pack.price.select"/>
 
     <enum name="regime" ref="com.axelor.apps.stock.db.Regime"/>
     <enum name="natureOfTransaction" ref="com.axelor.apps.stock.db.NatureOfTransaction"/>
@@ -77,10 +76,6 @@
         
         public static final int TYPE_NORMAL = 0;
 		public static final int TYPE_TITLE = 1;
-		public static final int TYPE_PACK = 2;
-		
-		public static final int PACK_PRICE_ONLY = 0;
-		public static final int SUBLINE_PRICE_ONLY = 1;
 		
 		// AVAILABLE STATUS SELECT
 		public static final int STATUS_AVAILABLE = 1;

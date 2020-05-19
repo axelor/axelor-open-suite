@@ -21,7 +21,7 @@ package com.axelor.apps.hr.exception;
 public interface IExceptionMessage {
 
   static final String HR_CONFIG = /*$$(*/
-      "Please configure informations for human resources for the company %s" /*)*/;
+      "Please configure information for human resources for the company %s" /*)*/;
   static final String HR_CONFIG_EXPENSE_TYPE = /*$$(*/
       "Please configure the expense type for kilometric allowance in HR config for the company %s" /*)*/;
   static final String HR_CONFIG_SENT_EXPENSE_TEMPLATE = /*$$(*/
@@ -208,4 +208,7 @@ public interface IExceptionMessage {
 
   static final String EMPLOYEE_TIMESHEET_REMINDER_TEMPLATE = /*$$(*/
       "Please configure the template for email reminder" /*)*/;
+
+  static final String NO_TIMESHEET_FOUND_FOR_EMPLOYEE = /*$$(*/
+      "No time sheet found for employee %s" /*)*/;
 }

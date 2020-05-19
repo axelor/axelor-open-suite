@@ -11,14 +11,14 @@
 	<many-to-one name="supplierPartner" ref="com.axelor.apps.base.db.Partner" required="true" title="Supplier"/>
 	<string name="productSupplierName" title="Product name on catalog"/>
 	<string name="productSupplierCode" title="Product code on catalog"/>
-	<decimal name="price" title="Unit price" precision="20" scale="10"/>
+	<decimal name="price" title="Unit price" precision="20" scale="10" min="0"/>
 	<date name="updateDate" title="Last update"/>
   	<string name="description" title="Description" large="true"/>
 	<decimal name="calculatedPrice" title="Calculated price/Qty"/>
 	<one-to-many name="shippingCoefList" mappedBy="supplierCatalog"
 				 title="Shipping Coefficients"
 				 ref="com.axelor.apps.base.db.ShippingCoef"/>
-	<decimal name="minQty" title="Quantity min"/>
+	<decimal name="minQty" title="Quantity min" precision="20" scale="10" min="0"/>
   </entity>
 
 </domain-models>

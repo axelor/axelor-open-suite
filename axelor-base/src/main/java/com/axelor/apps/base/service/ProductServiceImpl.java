@@ -40,6 +40,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
 public class ProductServiceImpl implements ProductService {
 
@@ -122,7 +123,9 @@ public class ProductServiceImpl implements ProductService {
       }
     }
 
-    if (product.getCostPrice() != null && managePriceCoef != null) {
+    if (product.getCostPrice() != null
+        && managePriceCoef != null
+        && product.getAutoUpdateSalePrice()) {
 
       product.setSalePrice(
           (product.getCostPrice().multiply(managePriceCoef))
@@ -154,7 +157,9 @@ public class ProductServiceImpl implements ProductService {
     for (Product productVariant : productVariantList) {
 
       productVariant.setCostPrice(product.getCostPrice());
-      productVariant.setSalePrice(product.getSalePrice());
+      if (product.getAutoUpdateSalePrice()) {
+        productVariant.setSalePrice(product.getSalePrice());
+      }
       productVariant.setManagPriceCoef(product.getManagPriceCoef());
 
       this.updateSalePrice(productVariant);
@@ -169,6 +174,18 @@ public class ProductServiceImpl implements ProductService {
         this.getProductVariantList(productModel.getProductVariantConfig());
 
     int seq = 1;
+
+    List<Product> productVariantsList =
+        productRepo.all().filter("self.parentProduct = ?1", productModel).order("code").fetch();
+
+    if (productVariantsList != null && !productVariantsList.isEmpty()) {
+
+      seq =
+          Integer.parseInt(
+                  StringUtils.substringAfterLast(
+                      productVariantsList.get(productVariantsList.size() - 1).getCode(), "-"))
+              + 1;
+    }
 
     for (ProductVariant productVariant : productVariantList) {
 

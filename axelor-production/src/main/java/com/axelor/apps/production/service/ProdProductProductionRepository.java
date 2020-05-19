@@ -18,7 +18,9 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.production.db.repo.ProdProductRepository;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.db.JPA;
+import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +30,12 @@ public class ProdProductProductionRepository extends ProdProductRepository {
 
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+
+    if (!Beans.get(AppProductionService.class).isApp("production")) {
+
+      return super.populate(json, context);
+    }
+
     Object productFromView = json.get("product");
     Object qtyFromView = json.get("qty");
     Object toProduceManufOrderIdFromView;

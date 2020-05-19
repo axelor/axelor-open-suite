@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
@@ -76,8 +77,8 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       saleOrder.setCompany(company);
       saleOrder.setCurrency(company.getCurrency());
     }
-    saleOrder.setSalemanUser(AuthUtils.getUser());
-    saleOrder.setTeam(saleOrder.getSalemanUser().getActiveTeam());
+    saleOrder.setSalespersonUser(AuthUtils.getUser());
+    saleOrder.setTeam(saleOrder.getSalespersonUser().getActiveTeam());
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_DRAFT_QUOTATION);
     saleOrderService.computeEndOfValidityDate(saleOrder);
     return saleOrder;
@@ -85,7 +86,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
 
   @Override
   public SaleOrder createSaleOrder(
-      User salemanUser,
+      User salespersonUser,
       Company company,
       Partner contactPartner,
       Currency currency,
@@ -95,12 +96,15 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       LocalDate orderDate,
       PriceList priceList,
       Partner clientPartner,
-      Team team)
+      Team team,
+      TradingName tradingName)
       throws AxelorException {
 
     logger.debug(
         "Création d'un devis client : Société = {},  Reference externe = {}, Client = {}",
-        new Object[] {company, externalReference, clientPartner.getFullName()});
+        company,
+        externalReference,
+        clientPartner.getFullName());
 
     SaleOrder saleOrder = new SaleOrder();
     saleOrder.setClientPartner(clientPartner);
@@ -112,20 +116,20 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
     saleOrder.setOrderDate(orderDate);
 
     saleOrder.setPrintingSettings(
-        Beans.get(TradingNameService.class).getDefaultPrintingSettings(null, company));
+        Beans.get(TradingNameService.class).getDefaultPrintingSettings(tradingName, company));
 
-    if (salemanUser == null) {
-      salemanUser = AuthUtils.getUser();
+    if (salespersonUser == null) {
+      salespersonUser = AuthUtils.getUser();
     }
-    saleOrder.setSalemanUser(salemanUser);
+    saleOrder.setSalespersonUser(salespersonUser);
 
     if (team == null) {
-      team = salemanUser.getActiveTeam();
+      team = salespersonUser.getActiveTeam();
     }
     saleOrder.setTeam(team);
 
     if (company == null) {
-      company = salemanUser.getActiveCompany();
+      company = salespersonUser.getActiveCompany();
     }
     saleOrder.setCompany(company);
 
@@ -248,8 +252,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
     if (saleOrderLineList != null) {
       for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-        Beans.get(SaleOrderLineService.class)
-            .fillPrice(saleOrderLine, saleOrder, saleOrderLine.getPackPriceSelect());
+        Beans.get(SaleOrderLineService.class).fillPrice(saleOrderLine, saleOrder);
         Beans.get(SaleOrderLineService.class).computeValues(saleOrder, saleOrderLine);
       }
     }

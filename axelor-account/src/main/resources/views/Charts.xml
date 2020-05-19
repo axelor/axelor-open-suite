@@ -10,7 +10,7 @@
 				coalesce(SUM(_invoice._total),0.00) AS _amount,
 				_meta._type AS _invoice_type
 			FROM
-				(SELECT company_in_tax_total_remaining AS _total, operation_type_select FROM account_invoice) AS _invoice
+				(SELECT company_in_tax_total_remaining AS _total, operation_type_select FROM account_invoice WHERE status_select=3) AS _invoice
 			RIGHT JOIN
 				(SELECT cast(value as int) AS _select_item, title AS _type 
 				FROM meta_select_item 
@@ -31,13 +31,16 @@
 	    <dataset type="sql">
 	    <![CDATA[
 			SELECT
-				SUM(_invoice.ex_tax_total) AS _turn_over,
+				SUM(CASE _invoice.operation_type_select
+						WHEN 3 THEN _invoice.ex_tax_total
+						WHEN 4 THEN -_invoice.ex_tax_total
+						END) AS _turn_over,
 				DATE_PART('year',_invoice.invoice_date) AS _year
 			FROM
 				account_invoice AS _invoice	
 			WHERE
-				_invoice.status_select != 1
-				AND _invoice.operation_type_select=3
+				_invoice.status_select = 3
+				AND (_invoice.operation_type_select=3 OR _invoice.operation_type_select=4)
 				AND DATE_PART('year',_invoice.invoice_date) 
 				IN (DATE_PART('year',CURRENT_DATE) - 1, DATE_PART('year',CURRENT_DATE) )
 			GROUP BY
@@ -63,10 +66,14 @@
 		 SELECT 
 		    to_char(_invoice.invoice_date,'yyyy-MM') AS _month_no,
 		    coalesce(_product._product_type,'other') AS product,
-		    coalesce(SUM(_invoice._turn_over), 00) AS _turn_over
+		    coalesce(SUM(CASE _operation_type
+						WHEN 3 THEN _invoice._turn_over
+						WHEN 4 THEN -_invoice._turn_over
+						END), 00) AS _turn_over
 		  FROM
 		    (SELECT 
 		      _invoice.id AS _invoice_id,
+		      _invoice.operation_type_select AS _operation_type,
 		      _invoice.invoice_date as invoice_date,
 		      date_part('mon', _invoice.invoice_date) AS _month,
 		      _line.ex_tax_total AS _turn_over,
@@ -81,9 +88,9 @@
 			ON _user.id = :__user__
 			AND _invoice.company = _user.active_company	
 		    WHERE
-		      _invoice.status_select != 1
+		      _invoice.status_select = 3
 		      AND _invoice.invoice_date BETWEEN DATE(:fromDate) AND  DATE(:fromDate) + CAST(:monthSelect as int) * INTERVAL '1 month' 
-		      AND _invoice.operation_type_select=3
+		      AND (_invoice.operation_type_select=3 OR _invoice.operation_type_select=4)
 		      
 		    GROUP BY 
 		      _invoice_id, _line_product, _turn_over, _month) AS _invoice
@@ -138,7 +145,7 @@
 			ON _user.id = :__user__
 			AND _invoice.company = _user.active_company	  
 	     WHERE
-	      _invoice.status_select != 1
+	      _invoice.status_select = 3
 	      AND _invoice.invoice_date BETWEEN DATE(:fromDate) AND  DATE(:fromDate) + CAST(:monthSelect as int) * INTERVAL '1 month' 
 	      AND _invoice.operation_type_select=3
 	      
@@ -177,12 +184,15 @@
 	  <![CDATA[
 		SELECT 
 		_category.name AS _product_category, 
-			coalesce(SUM(_line.ex_tax_total), 0) AS _revenue
+			coalesce(SUM(CASE _invoice.operation_type_select
+						WHEN 3 THEN _line.ex_tax_total
+						WHEN 4 THEN -_line.ex_tax_total
+						END), 0) AS _revenue
 		FROM
 			account_invoice_line AS _line
 		JOIN
 			account_invoice AS _invoice ON _invoice.id = _line.invoice 
-			AND _invoice.operation_type_select=3
+			AND (_invoice.operation_type_select=3 OR _invoice.operation_type_select=4)
 			AND _invoice.invoice_date BETWEEN DATE(:fromDate) AND  DATE(:toDate) 
 		JOIN
 			auth_user AS _user
@@ -192,7 +202,7 @@
 			base_product AS _product ON _line.product = _product.id
 		JOIN
 			base_product_category AS _category ON _category.id = _product.product_category
-		WHERE _invoice.status_select != 1
+		WHERE _invoice.status_select = 3
 		GROUP BY
 			_category.name
 		ORDER BY
@@ -208,15 +218,19 @@
 	  <![CDATA[
 		SELECT 
 			_country.name AS _geo_region, 
-			coalesce(SUM(_line.ex_tax_total), 0.00) AS _revenue
+			coalesce(SUM(CASE _invoice.operation_type_select
+						WHEN 3 THEN _line.ex_tax_total
+						WHEN 4 THEN -_line.ex_tax_total
+						END), 0.00) AS _revenue
 		FROM
 			account_invoice_line AS _line
 		JOIN
-			account_invoice AS _invoice ON _invoice.id = _line.invoice AND _invoice.operation_type_select=3
+			account_invoice AS _invoice ON _invoice.id = _line.invoice AND (_invoice.operation_type_select=3 OR _invoice.operation_type_select=4)
 		LEFT JOIN
 			base_address AS _address ON _address.id = _invoice.address
 		LEFT JOIN
 			base_country AS _country ON _country.id = _address.addressl7country
+		WHERE _invoice.status_select = 3 
 		GROUP BY
 			_geo_region  
 	  ]]>
@@ -245,7 +259,7 @@
 	          account_invoice_line AS _line 
 	          ON _line.invoice=_invoice.id
 	        WHERE
-	          _invoice.status_select != 1
+	          _invoice.status_select = 3
 	          AND _invoice.invoice_date &gt;= now() - INTERVAL '12 month' 
 	          AND _invoice.operation_type_select=1
 	        GROUP BY 
@@ -289,7 +303,7 @@
 	      account_invoice_line AS _line 
 	      ON _line.invoice=_invoice.id
 	    WHERE
-	      _invoice.status_select != 1
+	      _invoice.status_select = 3
 	      AND _invoice.invoice_date &gt;= now() - INTERVAL '12 month' 
 	      AND _invoice.operation_type_select=1
 	      
@@ -329,8 +343,8 @@
 	            account_invoice AS _invoice
 	        WHERE
 	          _invoice.invoice_date &gt;= now() - INTERVAL '12 month' 
-	        AND 
-	          _invoice.operation_type_select=1
+	          AND _invoice.operation_type_select=1
+	          AND _invoice.status_select = 3 
 	        GROUP BY 
 	           _invoice_date) AS _invoices
 	    GROUP BY
@@ -500,7 +514,7 @@
 	          base_company AS _company
 	          ON  _company.id = _user.active_company
 	          AND _company.id = self.company
-	    WHERE self.status_select != 1 AND self.operation_type_select=3 AND self.invoice_date &lt; DATE(:todayDate) 
+	    WHERE self.status_select = 3 AND self.operation_type_select=3 AND self.invoice_date &lt; DATE(:todayDate) 
 	        AND self.invoice_date &gt; DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month'  
 	    GROUP BY 
 	          _month
@@ -532,7 +546,7 @@
 		      		    base_company AS _company
 		        		ON  _company.id = _user.active_company
 		        		AND _company.id = _invoice.company
-			     	WHERE _invoice.operation_type_select = 3 AND _invoice.status_select != 1
+			     	WHERE _invoice.operation_type_select = 3 AND _invoice.status_select = 3
 			     		AND _invoice.invoice_date &lt; DATE(:todayDate) 
 			     		AND _invoice.invoice_date > DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' 
 			   ) AS _account_invoice
@@ -564,7 +578,7 @@
 	                    base_company AS _company
 	                    ON  _company.id = _user.active_company
 	                    AND _company.id = _invoice.company
-	                WHERE _invoice.operation_type_select = 3 AND _invoice.status_select != 1
+	                WHERE _invoice.operation_type_select = 3 AND _invoice.status_select = 3
 	                	AND _invoice.invoice_date &lt; DATE(:todayDate) 
 	                	AND _invoice.invoice_date > DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month'
 	            ) AS _account_invoice
@@ -596,7 +610,7 @@
 	      ON  _company.id = _user.active_company
 	      AND _company.id = self.company
 	  WHERE 
-	     self.status_select != 1 AND self.operation_type_select=1 AND self.invoice_date &lt; DATE(:todayDate) 
+	     self.status_select = 3 AND self.operation_type_select=1 AND self.invoice_date &lt; DATE(:todayDate) 
 	     AND self.invoice_date &gt; DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month'   
 	  GROUP BY _month
 	  ORDER BY
@@ -630,7 +644,7 @@
 		        base_company AS _company
 		        ON  _company.id = _user.active_company
 		        AND _company.id = _invoice.company
-		    WHERE _invoice.status_select != 1 AND _invoice.operation_type_select=1 AND _invoice.invoice_date &lt; DATE(:todayDate) 
+		    WHERE _invoice.status_select = 3 AND _invoice.operation_type_select=1 AND _invoice.invoice_date &lt; DATE(:todayDate) 
 		    AND _invoice.invoice_date > DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' 
 		   ) AS _account_invoice
 	   WHERE _currency.id=_account_invoice._currency	 
@@ -661,7 +675,7 @@
 	                     base_company AS _company
 	                     ON  _company.id = _user.active_company
 	                     AND _company.id = _invoice.company
-	                WHERE _invoice.status_select != 1 AND _invoice.operation_type_select=1 AND _invoice.invoice_date &lt; DATE(:todayDate) AND _invoice.invoice_date > DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month'
+	                WHERE _invoice.status_select = 3 AND _invoice.operation_type_select=1 AND _invoice.invoice_date &lt; DATE(:todayDate) AND _invoice.invoice_date > DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month'
 	            ) AS _account_invoice
 	    WHERE 
 	        _payment_condition.id=_account_invoice._payment_condition	 
@@ -697,7 +711,7 @@
 	        ON  _company.id = _user.active_company
 	        AND _company.id = self.company
 	      WHERE
-	        self.status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
+	        self.status_select = 3 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
 	        self.operation_type_select=3 
 	      )	 
 	    UNION ALL
@@ -714,7 +728,7 @@
 	        ON  _company.id = _user.active_company
 	        AND _company.id = self.company
 	      WHERE
-	        self.status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
+	        self.status_select = 3 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
 	        self.operation_type_select=3 
 	      )	 
 	    UNION ALL
@@ -731,7 +745,7 @@
 	        ON  _company.id = _user.active_company
 	        AND _company.id = self.company
 	      WHERE
-	        self.status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
+	        self.status_select = 3 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
 	        self.operation_type_select=4 
 	      )
 	    UNION ALL
@@ -748,7 +762,7 @@
 	        ON  _company.id = _user.active_company
 	        AND _company.id = self.company
 	      WHERE
-	        self.status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
+	        self.status_select = 3 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
 	        self.operation_type_select=4 
 	      )
 	    ) situation
@@ -789,7 +803,7 @@
 	        ON  _company.id = _user.active_company
 	        AND _company.id = self.company
 	      WHERE
-	        self.status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
+	        self.status_select = 3 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
 	        self.operation_type_select=3 
 	      )	 
 	    UNION ALL
@@ -806,7 +820,7 @@
 	        ON  _company.id = _user.active_company
 	        AND _company.id = self.company
 	      WHERE
-	        self.status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
+	        self.status_select = 3 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
 	        self.operation_type_select=3 
 	      )	 
 	    UNION ALL
@@ -823,7 +837,7 @@
 	        ON  _company.id = _user.active_company
 	        AND _company.id = self.company
 	      WHERE
-	        self.status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
+	        self.status_select = 3 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND 
 	        self.due_date &lt; CURRENT_DATE AND
 	        self.operation_type_select=3
 	      )
@@ -865,7 +879,7 @@
 	        ON  _company.id = _user.active_company
 	        AND _company.id = self.company
 	      WHERE
-	        self.status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND
+	        self.status_select = 3 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND
 	        self.operation_type_select=1
 	      )	 
 	    UNION ALL
@@ -882,7 +896,7 @@
 	        ON  _company.id = _user.active_company
 	        AND _company.id = self.company
 	      WHERE
-	        self.status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND
+	        self.status_select = 3 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND
 	        self.operation_type_select=1 
 	      )	 
 	    UNION ALL
@@ -899,7 +913,7 @@
 	        ON  _company.id = _user.active_company
 	        AND _company.id = self.company
 	      WHERE
-	        self.status_select != 1 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND
+	        self.status_select = 3 AND self.invoice_date BETWEEN DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month' AND DATE(:todayDate) AND
 	        self.due_date &lt; DATE(:todayDate) AND
 	        self.operation_type_select=1
 	      )

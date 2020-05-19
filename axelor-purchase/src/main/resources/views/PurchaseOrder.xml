@@ -179,7 +179,7 @@
 			<button name="showInvoiceBtn" title="Show invoice" showIf="statusSelect == 3 || statusSelect == 4"   onClick="action-purchase-order-show-invoice" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
             <button name="finishManuallyPurchaseOrderBtn" title="Finish the order" prompt="Warning, a completed order can't be changed anymore, do you want to continue?" showIf="statusSelect == 3" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowFinishManuallyPurchaseOrder) || (!__config__.app.isApp('supplychain'))" onClick="save,action-purchase-order-method-finish-purchase-order" if-module="axelor-supplychain" />
 			<button name="cancelBtn" title="Cancel" css="btn-danger" icon="fa-times" showIf="statusSelect &lt;= 3  || invoice.statusSelect &lt;= 2"   onClick="save,action-group-purchase-order-cancel"/>
-			<button name="backToValidatedBtn" title="Back to validated order" showIf="statusSelect == 4" if-module="axelor-supplychain" onClick="action-purchase-order-attrs-set-status-to-validated,save" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowFinishManuallyPurchaseOrder"/>
+			<button name="backToValidatedBtn" title="Back to validated order" showIf="statusSelect == 4" if-module="axelor-supplychain" onClick="save,action-purchase-order-method-set-status-to-validated" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowFinishManuallyPurchaseOrder"/>
 		</panel>
   
 		<panel name="intaxTotalPanel" sidebar="true"  hideIf="supplierPartner == null">
@@ -241,6 +241,15 @@
 	</form>
 
 	<cards name="purchase-quotations-order-cards" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" width="300px" css="rect-image" orderBy="-orderDate">
+		<menubar>
+			<menu name="purchaseOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+				<item name="printItem" title="Print" action="action-purchase-order-method-show-purchase-order"/>
+			</menu>
+			<menu name="purchaseOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+				<item name="mergeQuotationsItem" title="Merge quotations"  action="purchase.order.merge"/>
+				<item name="seeQuotationLinesItem" title="See quotation lines" action="purchase-order-see-quotation-lines" />
+			</menu>
+		</menubar>
 		<field name="purchaseOrderSeq"/>
 		<field name="externalReference"/>
 		<field name="supplierPartner.fullName"/>
@@ -301,10 +310,12 @@
 	</cards>
 
 	<cards name="purchase-order-cards" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" width="300px" css="rect-image" orderBy="-orderDate">
-		<toolbar>
-    			<button name="seePurchaseOrderLinesBtn" title="See purchase orders lines" onClick="purchase-order-see-purchase-order-lines"/>
-    			<button name="seeBudgetDistributionLinesBtn" title="See budget distribution lines" onClick="action-purchase-order-see-budget-distribution-lines"/>
-		</toolbar>
+		<menubar>
+			<menu name="purchaseOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+				<item name="seePurchaseOrderLinesItem" title="See purchase order lines" action="purchase-order-see-purchase-order-lines" />
+				<item title="See budget distribution lines" action="action-purchase-order-see-budget-distribution-lines"/>
+			</menu>
+		</menubar>
 		<field name="purchaseOrderSeq"/>
 		<field name="externalReference"/>
 		<field name="supplierPartner.fullName"/>
@@ -695,8 +706,9 @@
   <action-method name="action-purchase-order-method-check-analytic-distribution-template">
     <call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="checkPurchaseOrderAnalyticDistributionTemplate" if="company?.purchaseConfig?.isAnalyticDistributionRequired"/>
   </action-method>
-  	
-  	<action-attrs name="action-purchase-order-attrs-set-status-to-validated">
-  		<attribute name="value" for="statusSelect" expr="eval: __repo__(PurchaseOrder).STATUS_VALIDATED"/>
-  	</action-attrs>
+
+	<action-method name="action-purchase-order-method-set-status-to-validated">
+		<call class="com.axelor.apps.supplychain.web.PurchaseOrderController" method="backToValidatedStatus" />
+	</action-method>
+	
 </object-views>

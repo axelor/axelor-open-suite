@@ -18,6 +18,7 @@
 package com.axelor.apps.businessproduction.service;
 
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.production.db.CostSheetLine;
 import com.axelor.apps.production.db.OperationOrder;
@@ -28,6 +29,7 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.costsheet.CostSheetLineService;
 import com.axelor.apps.production.service.costsheet.CostSheetServiceImpl;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -45,9 +47,15 @@ public class CostSheetServiceBusinessImpl extends CostSheetServiceImpl {
       AppProductionService appProductionService,
       UnitConversionService unitConversionService,
       CostSheetLineService costSheetLineService,
+      AppBaseService appBaseService,
       BillOfMaterialRepository billOfMaterialRepo) {
 
-    super(appProductionService, unitConversionService, costSheetLineService, billOfMaterialRepo);
+    super(
+        appProductionService,
+        unitConversionService,
+        costSheetLineService,
+        appBaseService,
+        billOfMaterialRepo);
   }
 
   @Override
@@ -60,7 +68,11 @@ public class CostSheetServiceBusinessImpl extends CostSheetServiceImpl {
 
     Employee employee = prodHumanResource.getEmployee();
 
-    if (employee != null) {
+    AppProductionService appProductionService = Beans.get(AppProductionService.class);
+
+    if (appProductionService.isApp("production")
+        && appProductionService.getAppProduction().getManageBusinessProduction()
+        && employee != null) {
 
       BigDecimal durationHours =
           new BigDecimal(prodHumanResource.getDuration())
@@ -94,6 +106,15 @@ public class CostSheetServiceBusinessImpl extends CostSheetServiceImpl {
       CostSheetLine parentCostSheetLine,
       LocalDate previousCostSheetDate)
       throws AxelorException {
+    AppProductionService appProductionService = Beans.get(AppProductionService.class);
+
+    if (!appProductionService.isApp("production")
+        || !appProductionService.getAppProduction().getManageBusinessProduction()) {
+      super.computeRealHumanResourceCost(
+          operationOrder, priority, bomLevel, parentCostSheetLine, previousCostSheetDate);
+      return;
+    }
+
     if (operationOrder.getTimesheetLineList() != null) {
       Long duration = 0L;
       if (parentCostSheetLine.getCostSheet().getCalculationTypeSelect()

@@ -86,6 +86,7 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
     if (task.getUnitPrice() == null) {
       task.setUnitPrice(saleOrderLine.getProduct().getSalePrice());
     }
+    task.setDescription(saleOrderLine.getDescription());
     task.setQuantity(saleOrderLine.getQty());
     task.setSaleOrderLine(saleOrderLine);
     task.setToInvoice(
@@ -217,9 +218,7 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
             teamTask.getDiscountTypeSelect(),
             teamTask.getExTaxTotal(),
             BigDecimal.ZERO,
-            false,
-            false,
-            0) {
+            false) {
 
           @Override
           public List<InvoiceLine> creates() throws AxelorException {
@@ -274,14 +273,14 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
         case ProjectRepository.INVOICING_SEQ_INVOICE_PRE_TASK:
           teamTask.setToInvoice(
               !Strings.isNullOrEmpty(appBusinessProject.getPreTaskStatusSet())
-                  && Arrays.asList(appBusinessProject.getPreTaskStatusSet().split(","))
+                  && Arrays.asList(appBusinessProject.getPreTaskStatusSet().split(", "))
                       .contains(teamTask.getStatus()));
           break;
 
         case ProjectRepository.INVOICING_SEQ_INVOICE_POST_TASK:
           teamTask.setToInvoice(
               !Strings.isNullOrEmpty(appBusinessProject.getPostTaskStatusSet())
-                  && Arrays.asList(appBusinessProject.getPostTaskStatusSet().split(","))
+                  && Arrays.asList(appBusinessProject.getPostTaskStatusSet().split(", "))
                       .contains(teamTask.getStatus()));
           break;
       }

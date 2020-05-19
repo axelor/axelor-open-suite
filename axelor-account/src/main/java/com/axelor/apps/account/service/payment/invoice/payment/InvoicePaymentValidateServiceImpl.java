@@ -29,8 +29,8 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -111,19 +111,20 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     Company company = invoicePayment.getInvoice().getCompany();
 
     if (accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment()) {
-      this.createMoveForInvoicePayment(invoicePayment);
+      invoicePayment = this.createMoveForInvoicePayment(invoicePayment);
     } else {
       Beans.get(AccountingSituationService.class)
           .updateCustomerCredit(invoicePayment.getInvoice().getPartner());
+      invoicePayment = invoicePaymentRepository.save(invoicePayment);
     }
 
+    invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
     if (invoicePayment.getInvoice() != null
         && invoicePayment.getInvoice().getOperationSubTypeSelect()
             == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
       invoicePayment.setTypeSelect(InvoicePaymentRepository.TYPE_ADVANCEPAYMENT);
     }
     invoicePaymentRepository.save(invoicePayment);
-    invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
   }
 
   protected void checkConditionBeforeValidate(InvoicePayment invoicePayment)
@@ -153,7 +154,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
-  public Move createMoveForInvoicePayment(InvoicePayment invoicePayment) throws AxelorException {
+  public InvoicePayment createMoveForInvoicePayment(InvoicePayment invoicePayment)
+      throws AxelorException {
 
     Invoice invoice = invoicePayment.getInvoice();
     Company company = invoice.getCompany();
@@ -254,6 +256,6 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
 
     invoicePaymentRepository.save(invoicePayment);
 
-    return move;
+    return invoicePayment;
   }
 }

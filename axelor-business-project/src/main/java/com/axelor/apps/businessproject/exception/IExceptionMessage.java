@@ -60,6 +60,8 @@ public interface IExceptionMessage {
 
   static final String BATCH_TASK_UPDATION_2 = /*$$(*/ "Tasks updation completed : " /*)*/;
 
+  static final String BATCH_TIMESHEETLINE_UPDATION_1 = /*$$(*/ "Timesheet line %s" /*)*/;
+
   static final String BATCH_INVOICING_PROJECT_1 = /*$$(*/ "Project %s" /*)*/;
 
   static final String BATCH_INVOICING_PROJECT_2 = /*$$(*/ "Generated invoicing project" /*)*/;

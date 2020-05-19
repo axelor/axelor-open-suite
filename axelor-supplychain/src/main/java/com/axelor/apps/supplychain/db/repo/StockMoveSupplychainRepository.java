@@ -32,13 +32,19 @@ public class StockMoveSupplychainRepository extends StockMoveManagementRepositor
 
     copy.setInvoiceSet(null);
     copy.setOriginTypeSelect(null);
+    copy.setOrigin(null);
+    copy.setOriginId(null);
     if (copy.getStockMoveLineList() != null) {
       for (StockMoveLine stockMoveLine : copy.getStockMoveLineList()) {
         stockMoveLine.setReservedQty(BigDecimal.ZERO);
+        stockMoveLine.setRequestedReservedQty(BigDecimal.ZERO);
+        stockMoveLine.setIsQtyRequested(false);
+        stockMoveLine.setReservationDateTime(null);
         stockMoveLine.setQtyInvoiced(null);
+        stockMoveLine.setSaleOrderLine(null);
+        stockMoveLine.setPurchaseOrderLine(null);
       }
     }
-    copy.setReservationDateTime(null);
     copy.setInvoicingStatusSelect(StockMoveRepository.STATUS_NOT_INVOICED);
 
     return copy;

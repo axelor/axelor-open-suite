@@ -39,6 +39,7 @@ import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -49,10 +50,9 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
@@ -105,6 +105,11 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public String realize(StockMove stockMove, boolean check) throws AxelorException {
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return super.realize(stockMove, check);
+    }
+
     LOG.debug("Réalisation du mouvement de stock : {} ", stockMove.getStockMoveSeq());
     String newStockSeq = super.realize(stockMove, check);
     AppSupplychain appSupplychain = appSupplyChainService.getAppSupplychain();
@@ -185,6 +190,12 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void cancel(StockMove stockMove) throws AxelorException {
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      super.cancel(stockMove);
+      return;
+    }
+
     if (stockMove.getStatusSelect() == StockMoveRepository.STATUS_REALIZED) {
       if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
         updateSaleOrderOnCancel(stockMove);
@@ -204,7 +215,10 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   @Transactional(rollbackOn = {Exception.class})
   public void plan(StockMove stockMove) throws AxelorException {
     super.plan(stockMove);
-    if (appSupplyChainService.getAppSupplychain().getManageStockReservation()) {
+    AppSupplychainService appSupplychainService = Beans.get(AppSupplychainService.class);
+
+    if (appSupplychainService.getAppSupplychain().getManageStockReservation()
+        && appSupplychainService.isApp("supplychain")) {
       Beans.get(ReservedQtyService.class)
           .updateReservedQuantity(stockMove, StockMoveRepository.STATUS_PLANNED);
     }
@@ -329,59 +343,6 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     }
   }
 
-  @Override
-  public List<StockMoveLine> addSubLines(List<StockMoveLine> moveLines) {
-
-    if (moveLines == null) {
-      return moveLines;
-    }
-
-    List<StockMoveLine> lines = new ArrayList<StockMoveLine>();
-    lines.addAll(moveLines);
-    for (StockMoveLine line : lines) {
-      if (line.getSubLineList() == null) {
-        continue;
-      }
-      for (StockMoveLine subLine : line.getSubLineList()) {
-        if (subLine.getStockMove() == null) {
-          moveLines.add(subLine);
-        }
-      }
-    }
-    return moveLines;
-  }
-
-  @Override
-  public List<StockMoveLine> removeSubLines(List<StockMoveLine> moveLines) {
-
-    if (moveLines == null) {
-      return moveLines;
-    }
-
-    List<StockMoveLine> subLines = new ArrayList<StockMoveLine>();
-    for (StockMoveLine packLine : moveLines) {
-      if (packLine != null
-          && packLine.getLineTypeSelect() != null
-          && packLine.getLineTypeSelect() == 2
-          && packLine.getSubLineList() != null) {
-        packLine.getSubLineList().removeIf(it -> it.getId() != null && !moveLines.contains(it));
-        subLines.addAll(packLine.getSubLineList());
-      }
-    }
-    Iterator<StockMoveLine> lines = moveLines.iterator();
-
-    while (lines.hasNext()) {
-      StockMoveLine subLine = lines.next();
-      if (subLine.getId() != null
-          && subLine.getParentLine() != null
-          && !subLines.contains(subLine)) {
-        lines.remove();
-      }
-    }
-
-    return moveLines;
-  }
-
   /**
    * The splitted stock move line needs an allocation and will be planned before the previous stock
    * move line is realized. To solve this issue, we deallocate here in the previous stock move line
@@ -397,7 +358,10 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       throws AxelorException {
     StockMoveLine newStockMoveLine = super.copySplittedStockMoveLine(stockMoveLine);
 
-    if (appSupplyChainService.getAppSupplychain().getManageStockReservation()) {
+    AppSupplychainService appSupplychainService = Beans.get(AppSupplychainService.class);
+
+    if (appSupplychainService.getAppSupplychain().getManageStockReservation()
+        && appSupplychainService.isApp("supplychain")) {
       BigDecimal requestedReservedQty =
           stockMoveLine
               .getRequestedReservedQty()
@@ -439,5 +403,47 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
                 notAvailableProducts.toString()));
       }
     }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public Optional<StockMove> generateReversion(StockMove stockMove) throws AxelorException {
+
+    Optional<StockMove> newStockMove = super.generateReversion(stockMove);
+    List<StockMoveLine> stockMoveLineList =
+        newStockMove.isPresent() ? newStockMove.get().getStockMoveLineList() : null;
+    if (stockMoveLineList != null && !stockMoveLineList.isEmpty()) {
+      for (StockMoveLine stockMoveLine : stockMoveLineList) {
+        stockMoveLine.setQtyInvoiced(BigDecimal.ZERO);
+      }
+    }
+    return newStockMove;
+  }
+
+  @Override
+  public boolean isAllocatedStockMoveLineRemoved(StockMove stockMove) {
+
+    StockMove storedStockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
+    Boolean isAllocatedStockMoveLineRemoved = false;
+
+    if (ObjectUtils.notEmpty(storedStockMove)) {
+      List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+      List<StockMoveLine> storedStockMoveLineList = storedStockMove.getStockMoveLineList();
+      if (stockMoveLineList != null && storedStockMoveLineList != null) {
+        for (StockMoveLine stockMoveLine : storedStockMoveLineList) {
+          if (Beans.get(StockMoveLineServiceSupplychain.class)
+                  .isAllocatedStockMoveLine(stockMoveLine)
+              && !stockMoveLineList.contains(stockMoveLine)) {
+            stockMoveLineList.add(stockMoveLine);
+            isAllocatedStockMoveLineRemoved = true;
+          }
+          if (isAllocatedStockMoveLineRemoved) {
+            stockMove.setStockMoveLineList(stockMoveLineList);
+          }
+        }
+      }
+    }
+
+    return isAllocatedStockMoveLineRemoved;
   }
 }

@@ -22,6 +22,8 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ConfiguratorBOM;
 import com.axelor.apps.production.service.configurator.ConfiguratorBomService;
 import com.axelor.apps.sale.db.Configurator;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.exception.AxelorException;
@@ -32,7 +34,7 @@ import com.google.inject.persist.Transactional;
 public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
 
   /**
-   * In this implementation, we also create a bill of material.
+   * In this implementation, we also create a bill of materials.
    *
    * @param configurator
    * @param jsonAttributes
@@ -55,10 +57,26 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
     }
   }
 
+  /** In this implementation, we also create a bill of material. */
+  @Override
+  protected SaleOrderLine generateSaleOrderLine(
+      Configurator configurator,
+      JsonContext jsonAttributes,
+      JsonContext jsonIndicators,
+      SaleOrder saleOrder)
+      throws AxelorException {
+    ConfiguratorBOM configuratorBOM = configurator.getConfiguratorCreator().getConfiguratorBom();
+    if (configuratorBOM != null && checkConditions(configuratorBOM, jsonAttributes)) {
+      Beans.get(ConfiguratorBomService.class)
+          .generateBillOfMaterial(configuratorBOM, jsonAttributes, 0, null);
+    }
+    return super.generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
+  }
+
   protected boolean checkConditions(ConfiguratorBOM configuratorBOM, JsonContext jsonAttributes)
       throws AxelorException {
     String condition = configuratorBOM.getUseCondition();
-    // no condition = we always generate the bill of material
+    // no condition = we always generate the bill of materials
     if (condition == null) {
       return true;
     }

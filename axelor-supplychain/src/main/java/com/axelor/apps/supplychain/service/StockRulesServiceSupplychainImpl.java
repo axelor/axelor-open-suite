@@ -23,7 +23,6 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.db.repo.TemplateRepository;
@@ -40,6 +39,7 @@ import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.repo.StockConfigRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -85,6 +85,11 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
       Product product, BigDecimal qty, StockLocationLine stockLocationLine, int type)
       throws AxelorException {
 
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      super.generatePurchaseOrder(product, qty, stockLocationLine, type);
+      return;
+    }
+
     StockLocation stockLocation = stockLocationLine.getStockLocation();
 
     // TODO à supprimer après suppression des variantes
@@ -102,48 +107,12 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
 
     if (this.useMinStockRules(stockLocationLine, stockRules, qty, type)) {
 
-      if (stockRules.getOrderAlertSelect() == StockRulesRepository.ORDER_ALERT_ALERT) {
+      if (stockRules.getOrderAlertSelect().equals(StockRulesRepository.ORDER_ALERT_ALERT)) {
+        this.generateAndSendMessage(stockRules);
 
-        Template template = stockRules.getStockRuleMessageTemplate();
-
-        if (template == null) {
-          StockConfig stockConfig =
-              stockConfigRepo
-                  .all()
-                  .filter(
-                      "self.company = ?1 AND self.stockRuleMessageTemplate IS NOT NULL",
-                      stockRules.getStockLocation().getCompany())
-                  .fetchOne();
-          if (stockConfig != null) {
-            template = stockConfig.getStockRuleMessageTemplate();
-          } else {
-            template =
-                templateRepo
-                    .all()
-                    .filter(
-                        "self.metaModel.fullName = ?1 AND self.isSystem != true",
-                        StockRules.class.getName())
-                    .fetchOne();
-          }
-        }
-
-        if (template != null) {
-          try {
-            Message message = templateMessageService.generateAndSendMessage(stockRules, template);
-          } catch (ClassNotFoundException
-              | InstantiationException
-              | IllegalAccessException
-              | MessagingException
-              | IOException e) {
-            throw new AxelorException(e, TraceBackRepository.TYPE_TECHNICAL);
-          }
-        }
-
-      } else if (stockRules.getOrderAlertSelect()
-          == StockRulesRepository.ORDER_ALERT_PRODUCTION_ORDER) {
-
-      } else if (stockRules.getOrderAlertSelect()
-          == StockRulesRepository.ORDER_ALERT_PURCHASE_ORDER) {
+      } else if (stockRules
+          .getOrderAlertSelect()
+          .equals(StockRulesRepository.ORDER_ALERT_PURCHASE_ORDER)) {
 
         BigDecimal minReorderQty = getDefaultSupplierMinQty(product);
         BigDecimal qtyToOrder =
@@ -182,7 +151,48 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
           purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
 
           purchaseOrderRepo.save(purchaseOrder);
+          if (stockRules.getAlert()) {
+            this.generateAndSendMessage(stockRules);
+          }
         }
+      }
+    }
+  }
+
+  public void generateAndSendMessage(StockRules stockRules) throws AxelorException {
+
+    Template template = stockRules.getStockRuleMessageTemplate();
+
+    if (template == null) {
+      StockConfig stockConfig =
+          stockConfigRepo
+              .all()
+              .filter(
+                  "self.company = ?1 AND self.stockRuleMessageTemplate IS NOT NULL",
+                  stockRules.getStockLocation().getCompany())
+              .fetchOne();
+      if (stockConfig != null) {
+        template = stockConfig.getStockRuleMessageTemplate();
+      } else {
+        template =
+            templateRepo
+                .all()
+                .filter(
+                    "self.metaModel.fullName = ?1 AND self.isSystem != true",
+                    StockRules.class.getName())
+                .fetchOne();
+      }
+    }
+
+    if (template != null) {
+      try {
+        templateMessageService.generateAndSendMessage(stockRules, template);
+      } catch (ClassNotFoundException
+          | InstantiationException
+          | IllegalAccessException
+          | MessagingException
+          | IOException e) {
+        throw new AxelorException(e, TraceBackRepository.TYPE_TECHNICAL);
       }
     }
   }

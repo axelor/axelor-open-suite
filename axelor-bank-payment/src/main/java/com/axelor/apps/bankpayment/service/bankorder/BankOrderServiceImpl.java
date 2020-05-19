@@ -313,7 +313,11 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     generateFile(bankOrder);
 
-    if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEbicsModule()) {
+    PaymentMode paymentMode = bankOrder.getPaymentMode();
+
+    if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEbicsModule()
+        && paymentMode != null
+        && paymentMode.getAutomaticTransmission()) {
 
       bankOrder.setConfirmationDateTime(
           Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
@@ -802,7 +806,7 @@ public class BankOrderServiceImpl implements BankOrderService {
       Collection<BankDetails> bankDetailsCollection;
 
       if (bankOrderLine.getReceiverCompany() != null) {
-        bankDetailsCollection = bankOrderLine.getReceiverCompany().getBankDetailsSet();
+        bankDetailsCollection = bankOrderLine.getReceiverCompany().getBankDetailsList();
       } else if (bankOrderLine.getPartner() != null) {
         bankDetailsCollection = bankOrderLine.getPartner().getBankDetailsList();
       } else {
@@ -826,5 +830,20 @@ public class BankOrderServiceImpl implements BankOrderService {
             .add("form", formViewName)
             .domain(viewDomain);
     return actionViewBuilder;
+  }
+
+  @Transactional
+  @Override
+  public void setStatusToDraft(BankOrder bankOrder) {
+    bankOrder.setStatusSelect(BankOrderRepository.STATUS_DRAFT);
+    bankOrderRepo.save(bankOrder);
+  }
+
+  @Transactional
+  @Override
+  public void setStatusToRejected(BankOrder bankOrder) {
+    bankOrder.setRejectStatusSelect(BankOrderRepository.REJECT_STATUS_TOTALLY_REJECTED);
+    bankOrder.setStatusSelect(BankOrderRepository.STATUS_REJECTED);
+    bankOrderRepo.save(bankOrder);
   }
 }

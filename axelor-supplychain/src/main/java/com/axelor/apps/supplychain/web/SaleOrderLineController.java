@@ -55,7 +55,7 @@ public class SaleOrderLineController {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
     if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
       saleOrderLine =
-          Beans.get(SaleOrderLineServiceSupplyChainImpl.class)
+          Beans.get(SaleOrderLineServiceSupplyChain.class)
               .computeAnalyticDistribution(saleOrderLine);
       response.setValue(
           "analyticDistributionTemplate", saleOrderLine.getAnalyticDistributionTemplate());
@@ -121,6 +121,13 @@ public class SaleOrderLineController {
     }
   }
 
+  /**
+   * Called from sale order line request quantity wizard view. Call {@link
+   * ReservedQtyService#updateReservedQty(SaleOrderLine, BigDecimal)}.
+   *
+   * @param request
+   * @param response
+   */
   public void changeReservedQty(ActionRequest request, ActionResponse response) {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
     BigDecimal newReservedQty = saleOrderLine.getReservedQty();

@@ -5,8 +5,8 @@
     <module name="stock" package="com.axelor.apps.stock.db"/>
 
     <entity name="StockLocationLine" lang="java">
-        <decimal name="reservedQty" title="Allocated qty"/>
-        <decimal name="requestedReservedQty" title="Requested reserved qty"/>
+        <decimal name="reservedQty" title="Allocated qty" precision="20" scale="10"/>
+        <decimal name="requestedReservedQty" title="Requested reserved qty" precision="20" scale="10"/>
 
         <track on="UPDATE">
           <field name="requestedReservedQty"/>

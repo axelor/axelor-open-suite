@@ -6,7 +6,7 @@
   <grid name="prod-process-grid" title="Production process" model="com.axelor.apps.production.db.ProdProcess">
 		<field name="name"/>
 		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-    <field name="workshopStockLocation"/>
+    <field name="workshopStockLocation" if="__config__.app.getApp('production').getManageWorkshop()"/>
 		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="stockLocation" grid-view="stock-location-grid" form-view="stock-location-form"/>
     <field name="product"/>
@@ -15,7 +15,7 @@
     
     <form name="prod-process-form" title="Production process" model="com.axelor.apps.production.db.ProdProcess"
           onNew="action-prod-process-group-on-new"
-          onLoad="action-prod-process-record-count-number-of-phases"
+          onLoad="action-prod-process-record-count-number-of-phases,action-prod-process-attrs-scale-and-precision"
           onSave="action-prod-process-method-validate-prod-process" width="large">
 
     	<toolbar>
@@ -72,11 +72,16 @@
 			<mail-followers/>
 		</panel-mail> 
     </form>
+    
+    <action-attrs name="action-prod-process-attrs-scale-and-precision">
+    	<attribute name="scale" for="launchQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+	</action-attrs>
 
-  <action-group name="action-prod-process-group-on-new">
-    <action name="action-prod-process-record-set-default-company"/>
-    <action name="action-prod-process-record-set-realize-order-select"/>
-  </action-group>
+	<action-group name="action-prod-process-group-on-new">
+		<action name="action-prod-process-record-set-default-company"/>
+		<action name="action-prod-process-record-set-realize-order-select"/>
+		<action name="action-prod-process-attrs-scale-and-precision"/>
+	</action-group>
     
     <action-validate name="action-prod-process-validate-is-cons-pro">
     	<error message="You can't manage the consumed products on phases because this production process is related to several bills of material"

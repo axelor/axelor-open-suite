@@ -55,7 +55,10 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
       Invoice invoice, List<InvoiceLine> invoiceLineList, PurchaseOrderLine purchaseOrderLine)
       throws AxelorException {
     super.processPurchaseOrderLine(invoice, invoiceLineList, purchaseOrderLine);
-    invoiceLineList.get(invoiceLineList.size() - 1).setProject(purchaseOrderLine.getProject());
+
+    if (Beans.get(AppBusinessProjectService.class).isApp("business-project")) {
+      invoiceLineList.get(invoiceLineList.size() - 1).setProject(purchaseOrderLine.getProject());
+    }
   }
 
   @Override
@@ -120,9 +123,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
               discountTypeSelect,
               null,
               null,
-              false,
-              false,
-              0) {
+              false) {
             @Override
             public List<InvoiceLine> creates() throws AxelorException {
 
@@ -168,9 +169,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
               discountTypeSelect,
               null,
               null,
-              false,
-              false,
-              0) {
+              false) {
             @Override
             public List<InvoiceLine> creates() throws AxelorException {
 
@@ -197,9 +196,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
               false,
               null,
               purchaseOrderLine,
-              null,
-              false,
-              0) {
+              null) {
             @Override
             public List<InvoiceLine> creates() throws AxelorException {
 

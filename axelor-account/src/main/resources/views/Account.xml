@@ -36,7 +36,7 @@
     </tree>
 
 	<form name="account-form" title="Accounting.Account" model="com.axelor.apps.account.db.Account" width="large"
-		onNew="action-account-record-new" onLoad="action-account-method-compute-balance">
+		onNew="action-account-record-new" onLoad="action-account-method-compute-balance" onSave="action-account-method-check-if-code-already-exist-for-company">
 		<panel name="mainPanel">
 			<panel name="accountDetailsPanel" colSpan="8">
 				<field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"/>
@@ -53,10 +53,10 @@
 				<field name="useForPartnerBalance" colSpan="3"/>
 				<field name="reconcileOk" colSpan="3"/>
 				<field name="compatibleAccountSet" widget="TagSelect" showIf="reconcileOk"/>
-				<field name="analyticDistributionAuthorized" widget="boolean-switch" colSpan="4"/>
+				<field name="analyticDistributionAuthorized" widget="boolean-switch" colSpan="4" onChange="action-account-record-uncheck-analytic-distribution-required"/>
 				<field name="analyticDistributionRequiredOnInvoiceLines" widget="boolean-switch" colSpan="4" showIf="analyticDistributionAuthorized"/>
 				<field name="analyticDistributionRequiredOnMoveLines" widget="boolean-switch" colSpan="4" showIf="analyticDistributionAuthorized"/>
-				<field name="isTaxAuthorizedOnMoveLine" widget="boolean-switch" colSpan="4"/>
+				<field name="isTaxAuthorizedOnMoveLine" widget="boolean-switch" colSpan="4" onChange="action-account-record-uncheck-tax-required"/>
 				<field name="isTaxRequiredOnMoveLine" showIf="isTaxAuthorizedOnMoveLine" widget="boolean-switch" colSpan="4"/>
 			</panel>
 			<panel name="showMoveLinesPanel" colSpan="12" showIf="id">
@@ -118,10 +118,10 @@
         <action  name="action-account-record-new-from-partner"/>
         <action  name="action-account-record-new-employee-account"/>
     </action-group>
-    
+
     <action-record name="action-account-record-new" model="com.axelor.apps.account.db.Account">
-    	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
-    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+        <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
+        <field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
     </action-record>
 
     <action-validate name="action-account-validate">
@@ -151,9 +151,22 @@
         <field name="parentAccount" expr="eval:__repo__(AccountConfig).all().filter('self.company = ?', __parent__.company).fetchOne().employeeAccount"/>
         <field name="accountType" expr="eval:__repo__(AccountConfig).all().filter('self.company = ?', __parent__.company).fetchOne().employeeAccount?.accountType"/>
     </action-record>
+
+    <action-record name="action-account-record-uncheck-analytic-distribution-required" model="com.axelor.apps.account.db.Account">
+        <field name="analyticDistributionRequiredOnInvoiceLines"  expr="eval: false" if="!analyticDistributionAuthorized"/>
+        <field name="analyticDistributionRequiredOnMoveLines"  expr="eval: false" if="!analyticDistributionAuthorized"/>
+    </action-record>
+
+    <action-record name="action-account-record-uncheck-tax-required" model="com.axelor.apps.account.db.Account">
+        <field name="isTaxRequiredOnMoveLine"  expr="eval: false" if="!isTaxAuthorizedOnMoveLine"/>
+    </action-record>
     
     <action-method name="action-account-method-compute-balance">
     	<call class="com.axelor.apps.account.web.AccountController" method="computeBalance"/>
+    </action-method>
+    
+    <action-method name="action-account-method-check-if-code-already-exist-for-company">
+    	<call class="com.axelor.apps.account.web.AccountController" method="checkIfCodeAccountAlreadyExistForCompany"/>
     </action-method>
     
 </object-views>

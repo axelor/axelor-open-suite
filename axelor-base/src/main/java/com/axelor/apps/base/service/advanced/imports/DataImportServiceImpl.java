@@ -26,6 +26,7 @@ import com.axelor.apps.base.service.readers.DataReaderFactory;
 import com.axelor.apps.base.service.readers.DataReaderService;
 import com.axelor.apps.tool.service.TranslationService;
 import com.axelor.common.Inflector;
+import com.axelor.common.StringUtils;
 import com.axelor.data.XStreamUtils;
 import com.axelor.data.adapter.DataAdapter;
 import com.axelor.data.adapter.JavaTimeAdapter;
@@ -200,7 +201,7 @@ public class DataImportServiceImpl implements DataImportService {
 
         for (int line = startIndex; line < totalLines; line++) {
           String[] dataRow = reader.read(fileTab.getName(), line, row.length);
-          if (dataRow == null) {
+          if (dataRow == null || Arrays.stream(dataRow).allMatch(StringUtils::isBlank)) {
             continue;
           }
           String[] data = this.createData(dataRow, fileTab, isConfig, mapper);
@@ -422,10 +423,10 @@ public class DataImportServiceImpl implements DataImportService {
 
   private CSVInput createCSVInput(FileTab fileTab, String fileName) {
     boolean update = false;
-    int importType = fileTab.getImportType();
+    String searchCall = fileTab.getSearchCall();
 
-    if ((importType == FileFieldRepository.IMPORT_TYPE_FIND)
-        && !CollectionUtils.isEmpty(fileTab.getSearchFieldSet())) {
+    if (CollectionUtils.isNotEmpty(fileTab.getSearchFieldSet())
+        || StringUtils.notBlank(searchCall)) {
       update = true;
     }
 
@@ -438,6 +439,7 @@ public class DataImportServiceImpl implements DataImportService {
     input.setCallable(INPUT_CALLABLE);
     input.setSearch(null);
     input.setBindings(new ArrayList<>());
+    input.setSearchCall(searchCall);
 
     return input;
   }

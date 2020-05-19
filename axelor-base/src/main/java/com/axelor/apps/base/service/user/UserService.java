@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Optional;
 import javax.mail.MessagingException;
 
-/** UserService is a class that implement all methods for user informations */
+/** UserService is a class that implement all methods for user information */
 public interface UserService {
 
   /**

@@ -12,7 +12,7 @@
 		<field name="receiptState" hidden="true" if="__config__.app.isApp('supplychain')" />
     	<field name="productName"/>
     	<field name="productCode"/>
-        <field name="qty" aggregate="sum"/>
+        <field name="qty" aggregate="sum" x-scale="2"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
         <field name="inTaxPrice" x-scale="2"/>
@@ -27,7 +27,7 @@
        	<field name="purchaseOrder" form-view="purchase-order-form" grid-view="purchase-order-grid"/>
     	<field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
     	<field name="productName"/>
-        <field name="qty" aggregate="sum"/>
+        <field name="qty" aggregate="sum" x-scale="2"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="priceDiscounted" title="Unit price W.T."/>
         <field name="inTaxPrice" x-scale="2"/>
@@ -44,7 +44,7 @@
 		<field name="productCode"/>
 		<field name="product.code" title="Code" width="120"/>
 		<field name="productName"/>
-		<field name="qty" aggregate="sum"/>
+		<field name="qty" aggregate="sum" x-scale="2"/>
 		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
 		<field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
 		<field name="inTaxPrice" x-scale="2"/>
@@ -61,8 +61,8 @@
       <field name="purchaseOrder.clientPartner"/>
       <field name="product.code"/>
       <field name="productName"/>
-      <field name="qty" aggregate="sum"/>
-      <field name="receivedQty" aggregate="sum"/>
+      <field name="qty" aggregate="sum" x-scale="2"/>
+      <field name="receivedQty" aggregate="sum" x-scale="2"/>
       <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
       <field name="price" x-scale="2"/>
       <field name="inTaxPrice" x-scale="2"/>
@@ -97,8 +97,9 @@
        			<spacer name="receiptStateSpacer"  if="__config__.app.isApp('supplychain')"/>
 				<field name="product"  canEdit="false" onChange="action-group-purchase-purchase-orderline-product-onchange"
 				  onSelect="action-purchase-order-line-attrs-product-domain" form-view="product-form" grid-view="product-grid"/>
+				<field name="enableFreezeFields" colSpan="2"/>
 				<field name="$isFilterOnSupplier" type="boolean" title="Filter on supplier" widget="boolean-switch" colSpan="2" if="__config__.app.getApp('purchase').getManageSupplierCatalog()"/>
-				<field name="isTitleLine" colSpan="2" colOffset="2" onChange="action-purchase-order-line-method-empty-line" widget="boolean-switch"/>
+				<field name="isTitleLine" colSpan="2" onChange="action-purchase-order-line-method-empty-line" widget="boolean-switch"/>
 				<field name="productCode" colSpan="3"/>
 				<field name="productName" colSpan="9"/>
 				<panel name="orderDetailsPanel" colSpan="12">
@@ -179,7 +180,8 @@
 			</panel>
 			<panel name="analyticDistributionPanel" title="Analytics" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-purchase-order-line-attrs-read-only-distribution-lines">
 				<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" canEdit="false" onChange="action-purchase-order-line-method-create-distribution" onSelect="action-purchase-order-line-attrs-set-domain-analytic-distribution-template"/>
-				<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
+				<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12" onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+				<field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
 			</panel>
 		</panel-tabs>
 		<panel name="attrsPanel">
@@ -405,6 +407,9 @@
 		<attribute name="scale" for="priceDiscounted" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="discountAmount" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="saleMinPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+		
+		<attribute name="scale" for="qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+		<attribute name="scale" for="receivedQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
 	</action-attrs>
 	
 	<action-attrs name="action-purchase-order-line-attrs-readonly-form">

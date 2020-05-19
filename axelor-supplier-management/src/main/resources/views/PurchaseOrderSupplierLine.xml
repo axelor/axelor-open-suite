@@ -11,7 +11,7 @@
 		<hilite if="stateSelect == 5" color="danger" />
 		<field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
 		<field name="purchaseOrderLine.product" form-view="product-form" grid-view="product-grid" />
-		<field name="availableQty" aggregate="sum"/>
+		<field name="availableQty" aggregate="sum" x-scale="2"/>
 		<field name="purchaseOrderLine.unit" form-view="unit-form" grid-view="unit-grid"/>
 		<field name="price"/>
 		<field name="estimatedDelivDate"/>
@@ -19,14 +19,15 @@
 	</grid>
 
 	<form name="purchase-order-supplier-line-form" title="Supplier request" model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine"
-		onNew="action-purchase-order-supplier-line-record-request,action-purchase-order-supplier-line-attrs-new" canNew="false">
+		onNew="action-purchase-order-supplier-line-record-request,action-purchase-order-supplier-line-attrs-new,action-purchase-order-supplier-line-scale-and-precision"
+		onLoad="action-purchase-order-supplier-line-scale-and-precision" canNew="false">
 		<menubar>
 			<menu name="purchaseOrderSupplierLineToolsMenu" title="Tools">
 				<item name="writeToSupplierItem" title="Write to the supplier" action="save,action-send-by-email-with-template"/>
 			</menu>		
 		</menubar>
 				
-		<panel name="statusPanel" title="Status">
+		<panel name="statusPanel">
 			<field name="stateSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>	
 		</panel>
 	   <panel name="mainPanel" >
@@ -56,9 +57,9 @@
 	
 	<grid name="purchase-order-supplier-line-supplier-grid" title="Suppliers requests" model="com.axelor.apps.suppliermanagement.db.PurchaseOrderSupplierLine">
 		<field name="purchaseOrderLine.product" form-view="product-form" grid-view="product-grid"/>
-		<field name="purchaseOrderLine.qty"/>
+		<field name="purchaseOrderLine.qty" x-scale="2"/>
 		<field name="purchaseOrderLine.desiredDelivDate"/>
-		<field name="availableQty" aggregate="sum"/>
+		<field name="availableQty" aggregate="sum" x-scale="2"/>
 		<field name="purchaseOrderLine.unit" form-view="unit-form" grid-view="unit-grid"/>
 		<field name="price"/>
 		<field name="estimatedDelivDate"/>
@@ -111,5 +112,10 @@
 	<action-attrs name="action-purchase-order-supplier-line-attrs-new">
 		<attribute name="readonly" for="supplierPartner" expr="eval: false"/>
 	</action-attrs>
+	
+	<action-attrs name="action-purchase-order-supplier-line-scale-and-precision">
+		<attribute name="scale" for="purchaseOrderLine.price" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="purchaseOrderLine.qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    </action-attrs>
 	
 </object-views>

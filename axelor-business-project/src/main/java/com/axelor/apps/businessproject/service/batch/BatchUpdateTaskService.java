@@ -63,8 +63,6 @@ public class BatchUpdateTaskService extends AbstractBatch {
 
   @Override
   protected void process() {
-    AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
-
     Map<String, Object> contextValues = null;
     try {
       contextValues = ProjectInvoicingAssistantBatchService.createJsonContext(batch);
@@ -72,6 +70,12 @@ public class BatchUpdateTaskService extends AbstractBatch {
       TraceBackService.trace(e);
     }
 
+    this.updateTasks(contextValues);
+    this.updateTimesheetLines(contextValues);
+  }
+
+  private void updateTasks(Map<String, Object> contextValues) {
+    AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
     List<Object> updatedTaskList = new ArrayList<Object>();
 
     String filter =
@@ -81,7 +85,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
                 + ")"
             : "self.id NOT IN (0)";
 
-    Query<TeamTask> query =
+    Query<TeamTask> taskQuery =
         teamTaskRepo
             .all()
             .filter(
@@ -97,7 +101,7 @@ public class BatchUpdateTaskService extends AbstractBatch {
     int offset = 0;
     List<TeamTask> taskList;
 
-    while (!(taskList = query.fetch(FETCH_LIMIT, offset)).isEmpty()) {
+    while (!(taskList = taskQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
       findBatch();
       offset += taskList.size();
       for (TeamTask teamTask : taskList) {
@@ -110,9 +114,6 @@ public class BatchUpdateTaskService extends AbstractBatch {
             map.put("id", teamTask.getId());
             updatedTaskList.add(map);
           }
-
-          this.updateTimesheetLines(teamTask, contextValues);
-
         } catch (Exception e) {
           incrementAnomaly();
           TraceBackService.trace(
@@ -131,37 +132,54 @@ public class BatchUpdateTaskService extends AbstractBatch {
         batch, updatedTaskList, "updatedTaskSet", contextValues);
   }
 
-  private void updateTimesheetLines(TeamTask teamTask, Map<String, Object> contextValues) {
+  private void updateTimesheetLines(Map<String, Object> contextValues) {
 
-    if (!teamTask.getToInvoice()
-        || teamTask.getInvoicingType() != TeamTaskRepository.INVOICING_TYPE_TIME_SPENT) {
-      return;
-    }
     List<Object> updatedTimesheetLineList = new ArrayList<Object>();
 
-    List<TimesheetLine> timesheetLineList =
+    Query<TimesheetLine> timesheetLineQuery =
         timesheetLineRepo
             .all()
-            .filter("self.teamTask.id = :taskId AND self.toInvoice = :toInvoice")
-            .bind("taskId", teamTask.getId())
-            .bind("toInvoice", false)
-            .order("id")
-            .fetch();
+            .filter(
+                "(self.teamTask.parentTask.invoicingType = :_invoicingType OR "
+                    + "self.teamTask.invoicingType = :_invoicingType) "
+                    + "AND self.teamTask.toInvoice = :_teamTaskToInvoice "
+                    + "AND self.toInvoice = :_toInvoice")
+            .bind("_invoicingType", TeamTaskRepository.INVOICING_TYPE_TIME_SPENT)
+            .bind("_teamTaskToInvoice", true)
+            .bind("_toInvoice", false)
+            .order("id");
 
-    for (TimesheetLine timesheetLine : timesheetLineList) {
-      try {
-        timesheetLine = timesheetLineBusinessService.updateTimesheetLines(timesheetLine);
+    int offset = 0;
+    List<TimesheetLine> timesheetLineList;
 
-        if (timesheetLine.getToInvoice()) {
-          Map<String, Object> map = new HashMap<String, Object>();
-          map.put("id", timesheetLine.getId());
-          updatedTimesheetLineList.add(map);
+    while (!(timesheetLineList = timesheetLineQuery.fetch(FETCH_LIMIT, offset)).isEmpty()) {
+      findBatch();
+      offset += timesheetLineList.size();
+      for (TimesheetLine timesheetLine : timesheetLineList) {
+        try {
+          timesheetLine = timesheetLineBusinessService.updateTimesheetLines(timesheetLine);
+
+          if (timesheetLine.getToInvoice()) {
+            offset--;
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("id", timesheetLine.getId());
+            updatedTimesheetLineList.add(map);
+          }
+        } catch (Exception e) {
+          incrementAnomaly();
+          TraceBackService.trace(
+              new Exception(
+                  String.format(
+                      I18n.get(IExceptionMessage.BATCH_TIMESHEETLINE_UPDATION_1),
+                      timesheetLine.getId()),
+                  e),
+              ExceptionOriginRepository.INVOICE_ORIGIN,
+              batch.getId());
         }
-      } catch (Exception e) {
-        incrementAnomaly();
-        TraceBackService.trace(e, ExceptionOriginRepository.INVOICE_ORIGIN, batch.getId());
       }
+      JPA.clear();
     }
+    findBatch();
     ProjectInvoicingAssistantBatchService.updateJsonObject(
         batch, updatedTimesheetLineList, "updatedTimesheetLineSet", contextValues);
   }

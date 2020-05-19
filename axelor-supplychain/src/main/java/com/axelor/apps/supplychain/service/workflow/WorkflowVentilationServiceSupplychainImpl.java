@@ -25,6 +25,9 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
+import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -33,12 +36,15 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -70,6 +76,14 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
 
   private StockMoveInvoiceService stockMoveInvoiceService;
 
+  private UnitConversionService unitConversionService;
+
+  private AppBaseService appBaseService;
+
+  private SupplyChainConfigService supplyChainConfigService;
+
+  private StockMoveLineRepository stockMoveLineRepository;
+
   @Inject
   public WorkflowVentilationServiceSupplychainImpl(
       AccountConfigService accountConfigService,
@@ -81,7 +95,11 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
       PurchaseOrderRepository purchaseOrderRepository,
       AccountingSituationSupplychainService accountingSituationSupplychainService,
       AppSupplychainService appSupplychainService,
-      StockMoveInvoiceService stockMoveInvoiceService) {
+      StockMoveInvoiceService stockMoveInvoiceService,
+      UnitConversionService unitConversionService,
+      AppBaseService appBaseService,
+      SupplyChainConfigService supplyChainConfigService,
+      StockMoveLineRepository stockMoveLineRepository) {
 
     super(accountConfigService, invoicePaymentRepo, invoicePaymentCreateService);
     this.saleOrderInvoiceService = saleOrderInvoiceService;
@@ -91,6 +109,10 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
     this.appSupplychainService = appSupplychainService;
     this.stockMoveInvoiceService = stockMoveInvoiceService;
+    this.unitConversionService = unitConversionService;
+    this.appBaseService = appBaseService;
+    this.supplyChainConfigService = supplyChainConfigService;
+    this.stockMoveLineRepository = stockMoveLineRepository;
   }
 
   public void afterVentilation(Invoice invoice) throws AxelorException {
@@ -254,14 +276,64 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     // update qty invoiced in stock move line
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
       StockMoveLine stockMoveLine = invoiceLine.getStockMoveLine();
-      if (stockMoveLine != null) {
-        BigDecimal qty = stockMoveLine.getQtyInvoiced().add(invoiceLine.getQty());
-        if (stockMoveLine.getRealQty().compareTo(qty) >= 0) {
+      if (stockMoveLine == null) {
+        continue;
+      }
+      if (isStockMoveInvoicingPartiallyActivated(invoice, stockMoveLine)) {
+        BigDecimal qty = stockMoveLine.getQtyInvoiced();
+        StockMove stockMove = stockMoveLine.getStockMove();
+
+        if (stockMoveInvoiceService.isInvoiceRefundingStockMove(stockMove, invoice)) {
+          qty = qty.subtract(invoiceLine.getQty());
+        } else {
+          qty = qty.add(invoiceLine.getQty());
+        }
+
+        BigDecimal qtyToCompare = qty;
+
+        Unit movUnit = stockMoveLine.getUnit(), invUnit = invoiceLine.getUnit();
+        try {
+          qtyToCompare =
+              unitConversionService.convert(
+                  invUnit, movUnit, qty, appBaseService.getNbDecimalDigitForQty(), null);
+        } catch (AxelorException e) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(IExceptionMessage.STOCK_MOVE_INVOICE_QTY_INVONVERTIBLE_UNIT)
+                  + "\n"
+                  + e.getMessage());
+        }
+
+        if (stockMoveLine.getRealQty().compareTo(qtyToCompare) >= 0) {
           stockMoveLine.setQtyInvoiced(qty);
         } else {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
               I18n.get(IExceptionMessage.STOCK_MOVE_INVOICE_QTY_MAX));
+        }
+      } else {
+        // set qty invoiced to the maximum for all stock move lines
+        stockMoveLine.setQtyInvoiced(stockMoveLine.getRealQty());
+        // search in sale/purchase order lines to set split stock move lines to invoiced.
+        if (stockMoveLine.getSaleOrderLine() != null) {
+          stockMoveLineRepository
+              .all()
+              .filter(
+                  "self.saleOrderLine.id = :saleOrderLineId AND self.stockMove.id = :stockMoveId")
+              .bind("saleOrderLineId", stockMoveLine.getSaleOrderLine().getId())
+              .bind("stockMoveId", stockMoveLine.getStockMove().getId())
+              .fetch()
+              .forEach(stockMvLine -> stockMvLine.setQtyInvoiced(stockMvLine.getRealQty()));
+        }
+        if (stockMoveLine.getPurchaseOrderLine() != null) {
+          stockMoveLineRepository
+              .all()
+              .filter(
+                  "self.purchaseOrderLine.id = :purchaseOrderLineId AND self.stockMove.id = :stockMoveId")
+              .bind("purchaseOrderLineId", stockMoveLine.getPurchaseOrderLine().getId())
+              .bind("stockMoveId", stockMoveLine.getStockMove().getId())
+              .fetch()
+              .forEach(stockMvLine -> stockMvLine.setQtyInvoiced(stockMvLine.getRealQty()));
         }
       }
     }
@@ -270,5 +342,15 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     for (StockMove stockMove : invoice.getStockMoveSet()) {
       stockMoveInvoiceService.computeStockMoveInvoicingStatus(stockMove);
     }
+  }
+
+  private boolean isStockMoveInvoicingPartiallyActivated(
+      Invoice invoice, StockMoveLine stockMoveLine) throws AxelorException {
+    SupplyChainConfig supplyChainConfig =
+        supplyChainConfigService.getSupplyChainConfig(invoice.getCompany());
+    return stockMoveLine.getSaleOrderLine() != null
+            && supplyChainConfig.getActivateOutStockMovePartialInvoicing()
+        || stockMoveLine.getPurchaseOrderLine() != null
+            && supplyChainConfig.getActivateIncStockMovePartialInvoicing();
   }
 }

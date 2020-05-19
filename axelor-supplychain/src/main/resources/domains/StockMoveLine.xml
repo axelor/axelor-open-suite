@@ -12,14 +12,17 @@
 		<many-to-one name="purchaseOrderLine"
 			ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Purchase order line" />
 
-		<decimal name="reservedQty" title="Allocated Qty" />
-		<decimal name="requestedReservedQty" title="Requested reserved qty"/>
+		<decimal name="reservedQty" title="Allocated Qty" precision="20" scale="10"/>
+		<decimal name="requestedReservedQty" title="Requested reserved qty" precision="20" scale="10"/>
 		
-		<decimal name="qtyInvoiced" title="Invoiced Qty"/>
+		<decimal name="qtyInvoiced" title="Invoiced Qty" precision="20" scale="10"/>
 
-		<many-to-one name="parentLine" ref="com.axelor.apps.stock.db.StockMoveLine" />
-		<one-to-many name="subLineList" ref="com.axelor.apps.stock.db.StockMoveLine"
-			mappedBy="parentLine" title="Pack lines" />
+		<boolean name="isQtyRequested" readonly="true" title="Quantity requested"/>
+
+		<!-- Is not used in view but needed for java service -->
+		<boolean name="isMergedStockMoveLine" transient="true"/>
+
+		<datetime name="reservationDateTime" readonly="true"/>
 
 		<finder-method name="findAllBySaleOrder"
 			using="com.axelor.apps.sale.db.SaleOrder:saleOrder" all="true"

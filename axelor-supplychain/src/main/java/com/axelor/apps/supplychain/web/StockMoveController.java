@@ -36,32 +36,6 @@ import java.util.Optional;
 
 public class StockMoveController {
 
-  public void addSubLines(ActionRequest request, ActionResponse response) {
-    try {
-      StockMove stockMove = request.getContext().asType(StockMove.class);
-      response.setValue(
-          "stockMoveLineList",
-          Beans.get(StockMoveServiceSupplychain.class)
-              .addSubLines(stockMove.getStockMoveLineList()));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-      response.setReload(true);
-    }
-  }
-
-  public void removeSubLines(ActionRequest request, ActionResponse response) {
-    try {
-      StockMove stockMove = request.getContext().asType(StockMove.class);
-      response.setValue(
-          "stockMoveLineList",
-          Beans.get(StockMoveServiceSupplychain.class)
-              .removeSubLines(stockMove.getStockMoveLineList()));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-      response.setReload(true);
-    }
-  }
-
   public void verifyProductStock(ActionRequest request, ActionResponse response) {
     try {
       StockMove stockMove = request.getContext().asType(StockMove.class);
@@ -110,6 +84,16 @@ public class StockMoveController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
       response.setReload(true);
+    }
+  }
+
+  public void isAllocatedStockMoveLineRemoved(ActionRequest request, ActionResponse response) {
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+    if (stockMove.getId() != null
+        && Beans.get(StockMoveServiceSupplychain.class)
+            .isAllocatedStockMoveLineRemoved(stockMove)) {
+      response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
+      response.setFlash(I18n.get(IExceptionMessage.ALLOCATED_STOCK_MOVE_LINE_DELETED_ERROR));
     }
   }
 }

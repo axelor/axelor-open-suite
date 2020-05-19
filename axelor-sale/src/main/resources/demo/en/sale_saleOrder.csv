@@ -1,4 +1,4 @@
-"importId";"externalReference";"clientPartner.importId";"contactPartner.importId";"mainInvoicingAddress.importId";"deliveryAddress.importId";"salemanUser.importId";"team.importId";"paymentMode.importId";"paymentCondition.importId";"currency.code";"creationDate";"statusSelect";"company.importId";"confirmedByUser.importId";"confirmationDateTime";"shipmentDate";"printingSettings.importId"
+"importId";"externalReference";"clientPartner.importId";"contactPartner.importId";"mainInvoicingAddress.importId";"deliveryAddress.importId";"salespersonUser.importId";"team.importId";"paymentMode.importId";"paymentCondition.importId";"currency.code";"creationDate";"statusSelect";"company.importId";"confirmedByUser.importId";"confirmationDateTime";"shipmentDate";"printingSettings.importId"
 6;"CF-2014-342";88;89;590;590;9;1;6;2;"EUR";"TODAY[-1M-7d]";2;1;;;;1
 8;;132;133;940;940;8;3;6;2;"EUR";"TODAY[-14d]";2;1;;;;1
 9;;136;139;950;950;8;3;6;2;"EUR";"TODAY[-7d]";2;1;;;;1

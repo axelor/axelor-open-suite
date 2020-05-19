@@ -6,10 +6,10 @@
 	<menuitem name="forecast-root" title="Cash management" order="-86"  if="__config__.app.isApp('cash-management')"
 		icon="fa-money"  icon-background="#e0a83c"/>
 	
-	<menuitem name="forecast-root-forecast" order="10" parent="forecast-root"
-		title="Forecasts" action="forecast.root.forecast" />
+	<menuitem name="forecast-config-manual-forecast" order="10" parent="forecast-conf"
+		title="Manual forecasts" action="forecast-config-manual-forecast" />
 
-	<action-view name="forecast.root.forecast" title="Forecasts"
+	<action-view name="forecast-config-manual-forecast" title="Manual forecasts"
 		model="com.axelor.apps.cash.management.db.Forecast" >
 		<view type="grid" name="forecast-grid" />
 		<view type="form" name="forecast-form" />
@@ -53,6 +53,13 @@
 		<view type="grid" name="forecast-reason-grid" />
 		<view type="form" name="forecast-reason-form" />
 	</action-view>
+  
+    <menuitem name="forecast-conf-forecast-recap-line-type" parent="forecast-conf" title="Forecast Recap line Types" action="forecast.conf.forecast.recap.line.type"/>
+  
+    <action-view name="forecast.conf.forecast.recap.line.type" title="Forecast Recap line Types" model="com.axelor.apps.cash.management.db.ForecastRecapLineType">
+      <view type="grid" name="forecast-recap-line-type-grid"/>
+      <view type="form" name="forecast-recap-line-type-form"/>
+    </action-view>
 	
 	
 </object-views>

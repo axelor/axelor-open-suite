@@ -21,8 +21,11 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
+import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
+import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
@@ -31,13 +34,16 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSupplychainImpl;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.axelor.team.db.TeamTask;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -62,7 +68,11 @@ public class WorkflowVentilationProjectServiceImpl
       AppSupplychainService appSupplychainService,
       InvoicingProjectRepository invoicingProjectRepo,
       TimesheetLineRepository timesheetLineRepo,
-      StockMoveInvoiceService stockMoveInvoiceService) {
+      StockMoveInvoiceService stockMoveInvoiceService,
+      UnitConversionService unitConversionService,
+      AppBaseService appBaseService,
+      SupplyChainConfigService supplyChainConfigService,
+      StockMoveLineRepository stockMoveLineRepository) {
     super(
         accountConfigService,
         invoicePaymentRepo,
@@ -73,7 +83,11 @@ public class WorkflowVentilationProjectServiceImpl
         purchaseOrderRepository,
         accountingSituationSupplychainService,
         appSupplychainService,
-        stockMoveInvoiceService);
+        stockMoveInvoiceService,
+        unitConversionService,
+        appBaseService,
+        supplyChainConfigService,
+        stockMoveLineRepository);
     this.invoicingProjectRepo = invoicingProjectRepo;
     this.timesheetLineRepo = timesheetLineRepo;
   }
@@ -82,6 +96,11 @@ public class WorkflowVentilationProjectServiceImpl
   @Transactional(rollbackOn = {Exception.class})
   public void afterVentilation(Invoice invoice) throws AxelorException {
     super.afterVentilation(invoice);
+
+    if (!Beans.get(AppBusinessProjectService.class).isApp("business-project")) {
+      return;
+    }
+
     InvoicingProject invoicingProject =
         invoicingProjectRepo.all().filter("self.invoice.id = ?", invoice.getId()).fetchOne();
 

@@ -44,7 +44,7 @@ public interface IExceptionMessage {
 
   static final String IN_OR_OUT_INVALID_ARG = /*$$(*/ "inOrOut is invalid" /*)*/;
 
-  /** Bill of Material Service */
+  /** Bill of Materials Service */
   static final String BOM_1 = /*$$(*/ "Personalized" /*)*/;
 
   /** Production Order Wizard and controller */
@@ -88,35 +88,44 @@ public interface IExceptionMessage {
 
   /** ProdProcess service */
   static final String PROD_PROCESS_USELESS_PRODUCT = /*$$(*/
-      "The product %s is not in the bill of material related to this production process" /*)*/;
+      "The product %s is not in the bill of materials related to this production process" /*)*/;
 
   static final String PROD_PROCESS_MISS_PRODUCT = /*$$(*/
       "Not enough quantity in products to consume for: %s" /*)*/;
 
   static final String CHARGE_MACHINE_DAYS = /*$$(*/ "Too many days" /*)*/;
 
-  /** Bill of material service */
+  /** Bill of materials service */
   static final String COST_TYPE_CANNOT_BE_CHANGED = /*$$(*/
       "The product cost cannot be changed because the product cost type is not manual" /*)*/;
 
   static final String MAX_DEPTH_REACHED = /*$$(*/ "Max depth reached when copying BOM." /*)*/;
 
   /** Configurator Controller */
-  String BILL_OF_MATERIAL_GENERATED = /*$$(*/ "The bill of material %s has been generated" /*)*/;
+  String BILL_OF_MATERIAL_GENERATED = /*$$(*/ "The bill of materials %s has been generated" /*)*/;
 
   /** Configurator Bom Service */
   String CONFIGURATOR_BOM_TOO_MANY_CALLS = /*$$(*/
-      "Too many recursive calls to create the bill of material." /*)*/;
+      "Too many recursive calls to create the bill of materials." /*)*/;
 
   String CONFIGURATOR_BOM_IMPORT_TOO_MANY_CALLS = /*$$(*/
       "Too many recursive calls to import the bill of material configurator." /*)*/;
+
+  String CONFIGURATOR_BOM_IMPORT_GENERATED_PRODUCT_NULL = /*$$(*/
+      "Error while generating bill of material: the product of the bill of material is supposed to be generated from the configurator but the configurator did not generate a product." /*)*/;
+
+  String CONFIGURATOR_BOM_IMPORT_FORMULA_PRODUCT_NULL = /*$$(*/
+      "Error while generating bill of material: the product of the bill of material is supposed to be computed from a script but the script did not return a product." /*)*/;
+
+  String CONFIGURATOR_BOM_IMPORT_FILLED_PRODUCT_NULL = /*$$(*/
+      "Error while generating bill of material: the product of the bill of material is supposed to be filled in the configurator BOM but it was empty." /*)*/;
 
   /** Stock move line production controller */
   String STOCK_MOVE_LINE_UNKNOWN_PARENT_CONTEXT = /*$$(*/ "Unknown parent context class." /*)*/;
 
   /** Production Order Controller */
   static final String MANUF_ORDER_NO_GENERATION = /*$$(*/
-      "Cannot add a manufacturing order without a production process. Please check that your chosen bill of material has a valid production process." /*)*/;
+      "Cannot add a manufacturing order without a production process. Please check that your chosen bill of materials has a valid production process." /*)*/;
 
   static final String MANUF_ORDER_MISSING_TEMPLATE = /*$$(*/
       "The template to send message for manufacturing order is missing." /*)*/;
@@ -147,4 +156,8 @@ public interface IExceptionMessage {
 
   static final String UNIT_COST_CALCULATION_NO_PRODUCT = /*$$(*/
       "Please select an element (a product, a product category or a product family) to run calculation" /*)*/;
+
+  // CostSheetLine service
+  static final String MISSING_PRODUCT_PURCHASE_CURRENCY = /*$$(*/
+      "Purchase currency is missing for product %s, please configure it." /*)*/;
 }

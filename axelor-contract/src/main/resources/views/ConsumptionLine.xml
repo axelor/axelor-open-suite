@@ -18,8 +18,7 @@
         <field name="isError" hidden="true"/>
     </grid>
 
-    <form name="consumption-line-form" title="Consumption Line"
-          model="com.axelor.apps.contract.db.ConsumptionLine">
+    <form name="consumption-line-form" title="Consumption Line" model="com.axelor.apps.contract.db.ConsumptionLine">
         <panel readonlyIf="isInvoiced" name="mainPanel">
             <field name="product" required="true" canEdit="false"
                    onChange="action-consumption-line-method-change-product"/>

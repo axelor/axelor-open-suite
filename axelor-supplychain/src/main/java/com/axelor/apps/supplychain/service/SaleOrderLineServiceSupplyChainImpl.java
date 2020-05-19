@@ -63,13 +63,16 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
   @Inject protected AnalyticMoveLineService analyticMoveLineService;
 
   @Override
-  public void computeProductInformation(
-      SaleOrderLine saleOrderLine, SaleOrder saleOrder, Integer packPriceSelect)
+  public void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
-    super.computeProductInformation(saleOrderLine, saleOrder, packPriceSelect);
+    super.computeProductInformation(saleOrderLine, saleOrder);
     saleOrderLine.setSaleSupplySelect(saleOrderLine.getProduct().getSaleSupplySelect());
 
-    this.getAndComputeAnalyticDistribution(saleOrderLine, saleOrder);
+    if (Beans.get(AppAccountService.class).isApp("supplychain")) {
+      saleOrderLine.setSaleSupplySelect(saleOrderLine.getProduct().getSaleSupplySelect());
+
+      this.getAndComputeAnalyticDistribution(saleOrderLine, saleOrder);
+    }
   }
 
   public SaleOrderLine getAndComputeAnalyticDistribution(
@@ -95,6 +98,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     return saleOrderLine;
   }
 
+  @Override
   public SaleOrderLine computeAnalyticDistribution(SaleOrderLine saleOrderLine) {
 
     List<AnalyticMoveLine> analyticMoveLineList = saleOrderLine.getAnalyticMoveLineList();
@@ -126,6 +130,11 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
 
   @Override
   public BigDecimal getAvailableStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+
+    if (!Beans.get(AppAccountService.class).isApp("supplychain")) {
+      return super.getAvailableStock(saleOrder, saleOrderLine);
+    }
+
     StockLocationLine stockLocationLine =
         Beans.get(StockLocationLineService.class)
             .getStockLocationLine(saleOrder.getStockLocation(), saleOrderLine.getProduct());
@@ -138,6 +147,11 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
 
   @Override
   public BigDecimal getAllocatedStock(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+
+    if (!Beans.get(AppAccountService.class).isApp("supplychain")) {
+      return super.getAllocatedStock(saleOrder, saleOrderLine);
+    }
+
     StockLocationLine stockLocationLine =
         Beans.get(StockLocationLineService.class)
             .getStockLocationLine(saleOrder.getStockLocation(), saleOrderLine.getProduct());

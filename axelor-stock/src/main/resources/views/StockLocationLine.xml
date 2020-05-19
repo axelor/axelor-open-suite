@@ -6,17 +6,17 @@
     <grid name="stock-location-line-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.StockLocationLine" orderBy="product">
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
-        <field name="currentQty" aggregate="sum"/>
-        <field name="futureQty" aggregate="sum"/>
-        <field name="requestedReservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" aggregate="sum"/>
-        <field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" aggregate="sum"/>
+        <field name="currentQty" aggregate="sum" x-scale="2"/>
+        <field name="futureQty" aggregate="sum" x-scale="2"/>
+        <field name="requestedReservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" aggregate="sum" x-scale="2"/>
+        <field name="reservedQty" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" aggregate="sum" x-scale="2"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="avgPrice" x-scale="2"/>
         <field name="rack"/>
         <button name="stockCorrectionBtn" icon="fa-pencil-square-o" onClick="action-stock-location-line-view-open-stock-correction-form"/>
     </grid>
     
-    <form name="stock-location-line-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" width="large" onSave="action-stock-location-line-record-is-avg-price-changed" onLoad="action-stock-location-line-group-onload">
+    <form name="stock-location-line-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" width="large" onSave="action-stock-location-line-record-is-avg-price-changed" onLoad="action-stock-location-line-group-onload" onNew="action-stock-location-line-group-onnew">
     	<panel name="mainPanel">
 	        <field name="product" canEdit="false" form-view="product-form" grid-view="product-grid"/>
 	        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
@@ -55,14 +55,14 @@
     <grid name="stock-location-line-bad-line-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.StockLocationLine" orderBy="product,stockLocation">
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
-        <field name="currentQty" aggregate="sum"/>
-        <field name="futureQty" aggregate="sum"/>
+        <field name="currentQty" aggregate="sum" x-scale="2"/>
+        <field name="futureQty" aggregate="sum" x-scale="2"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="avgPrice" x-scale="2"/>
         <field name="rack"/>
     </grid>
 
-    <form name="stock-location-line-bad-line-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" onSave="action-stock-location-line-record-is-avg-price-changed" onLoad="action-stock-location-line-atts-avg-price-scale">
+    <form name="stock-location-line-bad-line-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" onSave="action-stock-location-line-record-is-avg-price-changed" onLoad="action-stock-location-line-atts-avg-price-scale" onNew="action-stock-location-line-group-onnew">
         <panel name="mainPanel">
             <field name="product" form-view="product-form" grid-view="product-grid"/>
             <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
@@ -79,15 +79,15 @@
     
     <grid name="stock-location-line-product-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.StockLocationLine">
         <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
-        <field name="currentQty" aggregate="sum"/>
-        <field name="futureQty" aggregate="sum"/>
+        <field name="currentQty" aggregate="sum" x-scale="2"/>
+        <field name="futureQty" aggregate="sum" x-scale="2"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="avgPrice" x-scale="2"/>
         <field name="lastFutureStockMoveDate"/>
         <field name="rack"/>
     </grid>
     
-    <form name="stock-location-line-product-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" onSave="action-stock-location-line-record-is-avg-price-changed" onLoad="action-stock-location-line-group-onload"> 
+    <form name="stock-location-line-product-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" onSave="action-stock-location-line-record-is-avg-price-changed" onLoad="action-stock-location-line-group-onload" onNew="action-stock-location-line-group-onnew"> 
 		<panel name="mainPanel">
 	        <field name="product" form-view="product-form" grid-view="product-grid"/>
 	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
@@ -111,12 +111,13 @@
         	<button name="showDetailedStockBtn" title="Show detailed stock" onClick="action-stock-location-line-view-show-detailed-stock" colSpan="3"/>
         </panel>
         <panel-dashlet name="productQtyInOtherStockLocationPanel" action="action-stock-location-line-view-product-qty" title="Product quantity in other stock locations"/>
+      <panel-dashlet name="wapHistoryPanel" action="action-stock-location-line-view-wap-history" title="WAP history"/>
     </form>
     
      <grid name="stock-location-line-product-group-by-variant-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.StockLocationLine" groupBy="product">
         <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
-        <field name="currentQty" aggregate="sum"/>
-        <field name="futureQty" aggregate="sum"/>
+        <field name="currentQty" aggregate="sum" x-scale="2"/>
+        <field name="futureQty" aggregate="sum" x-scale="2"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="avgPrice" x-scale="2"/>
         <field name="lastFutureStockMoveDate"/>
@@ -126,15 +127,15 @@
     <grid name="stock-location-line-details-grid" title="Stock Locations content" model="com.axelor.apps.stock.db.StockLocationLine" orderBy="product, trackingNumber">
         <field name="product" form-view="product-form" grid-view="product-grid"/>
         <field name="detailsStockLocation" title="Stock location" form-view="stock-location-form" grid-view="stock-location-grid"/>
-        <field name="currentQty" aggregate="sum"/>
-        <field name="futureQty" aggregate="sum"/>
+        <field name="currentQty" aggregate="sum" x-scale="2"/>
+        <field name="futureQty" aggregate="sum" x-scale="2"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         <field name="trackingNumber" domain="self.product = :product"/>
         <field name="rack"/>
         <button name="stockCorrectionBtn" icon="fa-pencil-square-o" onClick="action-stock-location-line-view-open-stock-correction-form"/>
     </grid>
     
-    <form name="stock-location-line-details-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" onLoad="action-stock-location-line-atts-avg-price-scale">
+    <form name="stock-location-line-details-form" title="Stock Location content" model="com.axelor.apps.stock.db.StockLocationLine" onLoad="action-stock-location-line-atts-avg-price-scale" onNew="action-stock-location-line-group-onnew">
 		<panel name="mainPanel">
 	        <field name="product" canEdit="false" form-view="product-form" grid-view="product-grid"/>
 	        <field name="currentQty"/>
@@ -160,7 +161,12 @@
     
     <action-group name="action-stock-location-line-group-onload">
     	<action name="action-stock-location-line-atts-avg-price-scale"/>
+    	<action name="action-stock-location-line-attrs-scale-and-precision"/>
     	<action name="action-stock-location-line-record-total-quantities"/>
+    </action-group>
+    
+    <action-group name="action-stock-location-line-group-onnew">
+    	<action name="action-stock-location-line-attrs-scale-and-precision"/>
     </action-group>
     
     <action-view name="action-stock-location-line-view-product-qty" title="Location content" model="com.axelor.apps.stock.db.StockLocationLine">
@@ -200,6 +206,13 @@
     	<attribute name="value" for="$isAvgPriceEditable" expr="eval:false"/>
     </action-attrs>
     
+    <action-attrs name="action-stock-location-line-attrs-scale-and-precision">
+		<attribute name="scale" for="currentQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+		<attribute name="scale" for="futureQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+		<attribute name="scale" for="lastInventoryRealQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+		<attribute name="scale" for="reservedQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+	</action-attrs>
+    
     <action-attrs name="action-stock-location-line-attrs-update-avg-price">
     	<attribute name="value" for="$isAvgPriceEditable" expr="eval:true"/>
     </action-attrs>
@@ -229,7 +242,7 @@
   </action-view>
 
     <action-view name="action-stock-location-line-view-open-stock-correction-form" title="Stock Correction" model="com.axelor.apps.stock.db.StockCorrection">
-		<view type="form" name="stock_correction-form"/>
+		<view type="form" name="stock-correction-form"/>
 		<context name="_stockLocationLineId" expr="eval: id"/>
     </action-view>
 

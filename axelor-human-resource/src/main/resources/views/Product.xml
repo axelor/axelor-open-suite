@@ -16,7 +16,7 @@
 
    <form name="product-expense-form" onNew="action-group-base-product-expense-onnew" title="Expense type" model="com.axelor.apps.base.db.Product" onLoad="action-product-attrs-scale-and-precision">
         <toolbar>
-    		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+    		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
 			<button name="showProductSheetBtn" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
     	</toolbar>
 	    <panel name="mainPanel">
@@ -84,7 +84,7 @@
    onNew="action-group-base-product-onnew, action-product-activity-record-default-activity" 
    onLoad="action-product-attrs-scale-and-precision" width="large">
     <toolbar>
-    		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+    		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
 			<button name="showProductSheetBtn" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
     	</toolbar>
 	    <panel name="mainPanel">
@@ -157,11 +157,11 @@
 		<template><![CDATA[
 			<div class="span12"><strong>{{fullName}}</strong></div>
 			<div>
-			  <div class="span4 card-image">
-				<img ng-show="picture" ng-src="{{$image('picture', 'content')}}" />
+			  <div class="span4 card-image" style="width: 128px; height: 64px;">
+				<img ng-show="picture" ng-src="{{$image('picture', 'content')}}" style="width: 100%; height: 100%; object-fit: contain;" />
 				<img ng-show="!picture" src="img/product-default.png" />
 			  </div>
-			  <div class="span8">
+			  <div class="span8" style="width: 60%;">
 				<span>{{$fmt('salePrice')}} {{saleCurrency.symbol}}<br/>
 				{{unit.name}}<br/>
 				{{productFamily.name}}<br/>

@@ -199,12 +199,13 @@
 	</action-method>
 	
 	<action-attrs  name="action-inventory-attrs-set-location-domain">
-  		<attribute name="domain" for="stockLocation" expr="eval:&quot;(self.typeSelect = 1 OR self.typeSelect = 2) AND self.company.id = $company.id &quot;" />
+		<attribute name="domain" if="!company" for="stockLocation" expr="eval:&quot; self.id = 0 &quot;" />
+		<attribute name="domain" if="company" for="stockLocation" expr="eval:&quot;(self.typeSelect = 1 OR self.typeSelect = 2) AND self.company.id = $company.id &quot;" />
 	</action-attrs>
 
 	<action-attrs name="action-inventory-on-change-product">
-		<attribute name="value" for="productFamily" expr="eval:__repo__(ProductFamily).find(product.productFamily.id)" if="productFamily == null &amp;&amp; product.productFamily != null"/>    		
-		<attribute name="value" for="productCategory" expr="eval:__repo__(ProductCategory).find(product.productCategory.id)" if="productCategory == null &amp;&amp; product.productCategory != null"/>    
+		<attribute name="value" for="productFamily" expr="eval:__repo__(ProductFamily).find(product.productFamily.id)" if="productFamily == null &amp;&amp; product != null &amp;&amp; product.productFamily != null"/>    		
+		<attribute name="value" for="productCategory" expr="eval:__repo__(ProductCategory).find(product.productCategory.id)" if="productCategory == null &amp;&amp; product != null &amp;&amp; product.productCategory != null"/>    
 	</action-attrs>
 	
 	<action-attrs name="action-inventory-on-select-product">

@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -30,12 +31,13 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface SaleOrderCreateService {
+
   /**
    * Initialize a new sale order
    *
-   * @param salemanUser User recorded as salesman on order, if <code>null</code>, will be set to
-   *     current user.
-   * @param company Company bound to the order, if <code>null</code>, will be bound to salesman
+   * @param salespersonUser User recorded as salesperson on order, if <code>null</code>, will be set
+   *     to current user.
+   * @param company Company bound to the order, if <code>null</code>, will be bound to salesperson
    *     active company.
    * @param contactPartner Customer contact to assign to the user, might be <code>null</code>.
    * @param currency Order's currency, should not be <code>null</code>.
@@ -46,13 +48,13 @@ public interface SaleOrderCreateService {
    * @param priceList Pricelist to use, if <code>null</code>, will default to partner's default
    *     price list.
    * @param clientPartner Customer bound to the order, should not be <code>null</code>
-   * @param team Team managing the order, if <code>null</code>, will default to salesman active
+   * @param team Team managing the order, if <code>null</code>, will default to salesperson active
    *     team.
    * @return The created order
    * @throws AxelorException
    */
-  public SaleOrder createSaleOrder(
-      User salemanUser,
+  default SaleOrder createSaleOrder(
+      User salespersonUser,
       Company company,
       Partner contactPartner,
       Currency currency,
@@ -63,6 +65,57 @@ public interface SaleOrderCreateService {
       PriceList priceList,
       Partner clientPartner,
       Team team)
+      throws AxelorException {
+    return createSaleOrder(
+        salespersonUser,
+        company,
+        contactPartner,
+        currency,
+        deliveryDate,
+        internalReference,
+        externalReference,
+        orderDate,
+        priceList,
+        clientPartner,
+        team,
+        null);
+  }
+
+  /**
+   * Initialize a new sale order
+   *
+   * @param salespersonUser User recorded as salesperson on order, if <code>null</code>, will be set
+   *     to current user.
+   * @param company Company bound to the order, if <code>null</code>, will be bound to salesperson
+   *     active company.
+   * @param contactPartner Customer contact to assign to the user, might be <code>null</code>.
+   * @param currency Order's currency, should not be <code>null</code>.
+   * @param deliveryDate Expected delivery date for order (might be <code>null</code>).
+   * @param internalReference Unused (…)
+   * @param externalReference Client reference for order, if any
+   * @param orderDate Date of order (if <code>null</code>, will be set to today's date).
+   * @param priceList Pricelist to use, if <code>null</code>, will default to partner's default
+   *     price list.
+   * @param clientPartner Customer bound to the order, should not be <code>null</code>
+   * @param team Team managing the order, if <code>null</code>, will default to salesperson active
+   *     team.
+   * @param tradingName
+   * @return The created order
+   * @throws AxelorException
+   */
+  public SaleOrder createSaleOrder(
+      User salespersonUser,
+      Company company,
+      Partner contactPartner,
+      Currency currency,
+      LocalDate deliveryDate,
+      String internalReference,
+      String externalReference,
+      LocalDate orderDate,
+      PriceList priceList,
+      Partner clientPartner,
+      Team team,
+      TradingName tradingName)
       throws AxelorException;
 
   public SaleOrder createSaleOrder(Company company) throws AxelorException;

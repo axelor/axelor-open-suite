@@ -95,7 +95,7 @@
 				<field name="user.employee" hidden="true" />
 				<field if-module="axelor-business-production" if=" __config__.app.getApp('production')?.getManageBusinessProduction()" name="user.employee.timesheetImputationSelect" hidden="true"/>
 				<field name="fromDate" onChange="action-timesheet-validate-fromDate,action-timesheet-record-to-date" colSpan="5" />
-				<field name="toDate" onChange="action-timesheet-validate-toDate" colSpan="5" />
+				<field name="toDate" onChange="action-timesheet-group-to-date-onchange" colSpan="5" />
 				<button name="createBtn" title="Create" colSpan="2" hideIf="id" if="__config__.app.getApp('timesheet').getTimesheetEditor()"  onClick="save,action-timesheet-set-show-editor,action-timesheet-attrs-refresh-editor,action-timesheet-attrs-panels,save" />
 			</panel>
 			
@@ -232,7 +232,14 @@
 		<action name="action-timesheet-attrs-from-date-on-new"/>
 		<action name="action-timesheet-attrs-panels"/>
 	</action-group>
-
+	
+	<action-group name="action-timesheet-group-to-date-onchange">
+		<action name="action-timesheet-validate-toDate"/>
+		<action name="action-timesheet-method-remove-after-to-date-timesheetlines" if="id &amp;&amp; toDate != null"/>
+		<action name="action-timesheet-prefill-lines" if="toDate != null &amp;&amp; (__config__.app.getApp('timesheet').getCreateLinesForLeaves() || __config__.app.getApp('timesheet').getCreateLinesForHolidays())"/>
+		<action name="action-timesheet-attrs-refresh-editor" if="showEditor"/>
+	</action-group>
+	
 	<action-method name="action-timesheet-prefill-lines">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="prefillLines" />
 	</action-method>
@@ -416,6 +423,10 @@
     	<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="openTimesheetEditor"/>
     </action-method>
 
+	<action-method name="action-timesheet-method-remove-after-to-date-timesheetlines">
+		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="removeAfterToDateTimesheetLines"/>
+	</action-method>
+	
 	<action-view name="action-timesheet-view-total-hours-per-day" title="">
   		<view name="chart.total.hours.per.day" type="chart"/>
     	<context name="timesheet_id" expr="eval: id"/>
@@ -457,7 +468,7 @@
 	</action-method>
 
 	<action-attrs name="action-hr-attrs-set-user-domain">
-		<attribute for="user" name="domain" if="company &amp;&amp; __user__?.employee?.hrManager" expr="eval: &quot; self.employee.id IN (${(__repo__(EmploymentContract).all().filter('self.payCompany.id = :companyId').bind('companyId', company.id).fetch().collect{it -> it?.employee.id ?: 0}+[0]).join(',')}) &quot;"/>
+		<attribute for="user" name="domain" if="company &amp;&amp; __user__?.employee?.hrManager" expr="eval: &quot; self.employee.id IN (${(__repo__(EmploymentContract).all().filter('self.payCompany.id = :companyId').bind('companyId', company.id).fetch().collect{it -> it?.employee?.id ?: 0}+[0]).join(',')}) &quot;"/>
 		<attribute for="user" name="domain" if="company &amp;&amp; !__user__?.employee?.hrManager" expr="eval: &quot; self.employee.id IN (${(__repo__(EmploymentContract).all().filter('self.payCompany.id = :companyId').bind('companyId', company.id).fetch().collect{it -> it.employee}.findAll{it -> it?.managerUser?.id == __user__.id || it?.id == __user__?.employee?.id}.collect{it -> it.id}+[0]).join(',')}) &quot;"/>
 		<attribute for="user" name="domain" if="!company" expr="eval: &quot; self.employee.id IN (0) &quot;"/>
 	</action-attrs>

@@ -15,14 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service.invoice;
+package com.axelor.apps.base.service.advanced.imports;
 
-import com.axelor.apps.account.db.InvoiceLine;
-import java.util.List;
+public interface SearchCallService {
 
-public interface InvoiceServiceSupplychain {
-
-  public List<InvoiceLine> addSubLines(List<InvoiceLine> lines);
-
-  public List<InvoiceLine> removeSubLines(List<InvoiceLine> lines);
+  public Boolean validate(String searchCall);
 }

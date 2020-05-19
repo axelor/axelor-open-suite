@@ -240,11 +240,12 @@
 				<panel name="postalAddressesPanel" title="Postal addresses" colSpan="12" hideIf="isEmployee">
 					<static name="invoiceAndDeliveryAddressText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>Please add an invoice address and a delivery address by default.</span>]]></static>
 					<field name="partnerAddressList" colSpan="12" form-view="partner-address-form" grid-view="partner-address-grid">
-						<editor x-show-titles="false">            
+						<editor x-show-titles="false" onNew="action-partner-address-attrs-set-canselect">            
           					<panel colSpan="12"  css="field-append">
+          						<field name="$canSelect" hidden="true" colSpan="12"/>
            						<label colSpan="12"  title="The following address is invalid. Please use '+' button to create a new one :" showIf="address == null || address.addressL4 == null" hidden="true" css="label-bold" name="addressHelperLabel"/>              
                 				<panel colSpan="12" stacked="true" css="field-append">
-                					<field name="address" form-view="address-form" grid-view="address-grid" canNew="true"/>
+                					<field name="address" canEdit="!$canSelect" canNew="true" form-view="address-form" grid-view="address-grid" canSelect="$canSelect"/>
                 					<field name="isInvoicingAddr" widget="toggle" hideIf="$readonly()" x-icon="fa-list-alt" />
                 					<field name="isDeliveryAddr" widget="toggle" hideIf="$readonly()" x-icon="fa-shopping-cart" />
                 					<field name="isDefaultAddr" widget="toggle" hideIf="$readonly()" x-icon="fa-star-o"  />
@@ -265,7 +266,7 @@
 							<field name="address" colSpan="12" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
 						</editor>
 					</field>
-					<field name="webSite" placeholder="http://www.url.com" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
+					<field name="webSite" placeholder="http://www.url.com" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$" widget="url"/>
 				</panel>
 				<panel name="partnerDetailsPanel" title="Partner Details" hideIf="isEmployee" colSpan="12" >
 					<panel colSpan="6" name="partnerCategoryPanel">
@@ -302,8 +303,8 @@
 					<field name="description" colSpan="12" height="8" showTitle="false" widget="Html"/>
 				</panel>
 			</panel>
-			<panel name="paymentPanel" title="Invoicing/Payment" hideIf="isContact" if-module="axelor-account" colSpan="12"  if="__config__.app.isApp('account')">
-				<panel-include view="incl-invoice-payment-partner-form" from="axelor-account"  if="__config__.app.isApp('invoice')" />
+			<panel name="paymentPanel" title="Invoicing/Payment" hideIf="isContact" if-module="axelor-account" colSpan="12"  if="__config__.app.isApp('invoice')">
+				<panel-include view="incl-invoice-payment-partner-form" from="axelor-account"/>
 				<panel-include if-module="axelor-account" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment"  view="incl-sepa-direct-debit-partner-form" from="axelor-account"/>
 				<panel name="invoiceCommentsPanel" title="Comment to display on invoice" colSpan="12">
 				  <field name="invoiceComments" widget="html" colSpan="12" showTitle="false"/>
@@ -408,7 +409,7 @@
 			</panel>
 		</panel>
 		<panel-tabs name="mainPanelTab">
-			<panel name="informationPanel" title="Informations">
+			<panel name="informationPanel" title="Information">
 				<panel name="departmentPanel" title="Partner details" colSpan="12"  hideIf="partnerTypeSelect == 2">
 					<field name="department" form-view="department-form" grid-view="department-grid"/>
 					<field name="source" canEdit="false" hideIf="isContact" form-view="source-form" grid-view="source-grid"/>
@@ -433,7 +434,7 @@
 					<field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fax"/>
 					<field name="fixedPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fixedPhone"/>
 					<field name="mobilePhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-mobilePhone"/>
-					<field name="webSite" placeholder="http://www.url.com" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
+					<field name="webSite" placeholder="http://www.url.com" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$" widget="url"/>
 				</panel>
 			</panel>
 		</panel-tabs>
@@ -485,10 +486,10 @@
 					</editor>
 				</field>
 				<static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
-				<field name="duplicatePartnerInArchiveText" hidden="true" type="string" showTitle="false" readonly="true">
-					<viewer depends="duplicatePartnerInArchiveText">
+				<field name="$duplicatePartnerInArchiveText" hidden="true" type="string" showTitle="false" readonly="true">
+					<viewer depends="$duplicatePartnerInArchiveText">
 					<![CDATA[
-						<span class='label label-warning' style="margin: 5px 0 !important; display: inline-table; line-height: initial;"><span  x-translate>There is a partner with this name in the archive of reference : </span> {{record.duplicatePartnerInArchiveText}}</span>
+						<span class='label label-warning' style="margin: 5px 0 !important; display: inline-table; line-height: initial;"><span x-translate>There is an archived partner with this name.</span> ({{record.$duplicatePartnerInArchiveText}})</span>
 					]]>
 					</viewer>
 				</field>
@@ -557,11 +558,18 @@
 			<field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fax"/>
 			<field name="fixedPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fixedPhone"/>
 			<field name="mobilePhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-mobilePhone"/>
-			<field name="webSite" placeholder="http://www.url.com" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
+			<field name="webSite" placeholder="http://www.url.com" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$" widget="url"/>
 		</panel>
 	</form>
 
 	<cards name="partner-cards" model="com.axelor.apps.base.db.Partner" title="Partners" css="rect-image">
+		<toolbar>
+			<button name="printPhoneBookBtn" title="Contact PhoneBook" icon="fa-print" onClick="action-print-phonebook"/>
+			<button name="printCompanyPhoneBookBtn" title="Company PhoneBook" icon="fa-print" onClick="action-print-company-phonebook" if="__config__.app.isApp('employee')"/>
+			<button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
+			<button name="replaceDuplicateBtn" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
+			<button name="advancedExportBtn" title="Advanced export" onClick="action-method-advanced-export-wizard-view"/>
+		</toolbar>
 		<field name="fullName" />
 		<field name="picture" />
 		<field name="fixedPhone"/>
@@ -578,8 +586,8 @@
 				<div class="span12"><strong>{{fullName}}</strong></div>
 		 	</div>
 			<div>
-			  <div class="span4 card-image">
-                <img ng-show="picture" ng-src="{{$image('picture', 'content')}}" />
+			  <div class="span4 card-image" style="width: 128px; height: 64px;">
+                <img ng-show="picture" ng-src="{{$image('picture', 'content')}}" style="width: 100%; height: 100%; object-fit: contain;"/>
                 <img ng-show="!picture && partnerTypeSelect != 2" src="img/company-default.jpg" />
                 <img ng-show="!picture && partnerTypeSelect == 2 && titleSelect == 1" src="img/partner-m-default.png" />
                 <img ng-show="!picture && partnerTypeSelect == 2 && titleSelect == 2" src="img/partner-w-default.png" />
@@ -605,6 +613,7 @@
 	<cards name="partner-contact-cards" model="com.axelor.apps.base.db.Partner" title="Contacts" css="rect-image">
 		<toolbar>
 			<button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
+			<button name="replaceDuplicateBtn" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 		</toolbar>
 		<field name="fullName" />
 		<field name="picture" />
@@ -620,8 +629,8 @@
 				<div class="span12"><strong>{{fullName}}</strong></div>
 		 	</div>
 			<div>
-			  <div class="span4 card-image">
-			    <img ng-show="picture" ng-src="{{$image('picture', 'content')}}" />
+			  <div class="span4 card-image" style="width: 128px; height: 64px;">
+			    <img ng-show="picture" ng-src="{{$image('picture', 'content')}}"  style="width: 100%; height: 100%; object-fit: contain;"/>
                 <img ng-show="!picture && titleSelect == 1" src="img/partner-m-default.png" />
                 <img ng-show="!picture && titleSelect == 2" src="img/partner-w-default.png" />
                 <img ng-show="!picture && (titleSelect > 2 || !titleSelect)" src="img/partner-default.png" />
@@ -729,8 +738,8 @@
 		<action name="action-partner-attrs-name-balance"/>
 		<action name="action-partner-attrs-partner-seq-editable"/>
         <action name="action-partner-method-check-name"/>
-        <action name="action-partner-method-check-name-in-archive"/>
         <action name="action-partner-attrs-hide-invoice-and-delivery-address-text"/>
+        <action name="action-partner-attrs-set-canselect"/>
 	</action-group>
 
 	<action-group name="action-group-base-partner-onnew">
@@ -741,6 +750,7 @@
 		<action name="action-partner-record-set-payment-modes"/>
 		<action name="action-partner-record-payment-condition"/>
 		<action name="action-partner-attrs-partner-seq-editable"/>
+		<action name="action-partner-attrs-set-canselect"/>
 	</action-group>
 
 	<action-group name="action-group-base-partner-contact-name-onchange">
@@ -787,6 +797,10 @@
    	<action-attrs name="action-partner-attrs-hide-invoice-and-delivery-address-text">
 			<attribute name="hidden" for="invoiceAndDeliveryAddressText" expr="eval: partnerAddressList?.findAll{it.isInvoicingAddr}?.size() &gt; 0 &amp;&amp; partnerAddressList?.findAll{it.isDeliveryAddr}?.size() &gt; 0" />
     </action-attrs>
+    
+    <action-attrs name="action-partner-attrs-set-canselect">
+		<attribute name="value" for="partnerAddressList.$canSelect" expr="eval:__config__.app.getApp('base').getIsSharedAddress()"/>
+	</action-attrs>
 
     <action-group name="action-partner-partner-type-select-change">
         <action name="action-partner-attrs-change-name"/>
@@ -895,6 +909,7 @@
 		<field name="user"  expr="#{__user__}" if="#{_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'}"/>
 		<field name="team"  expr="#{__user__.activeTeam}" if="#{_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'}"/>
 		<field name="companySet" expr="eval: __repo__(Company).all().fetchOne()" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="mainPartner" expr="eval: __parent__" if="#{_parent != null &amp;&amp; _parent._model == 'com.axelor.apps.base.db.Partner'}"/>
 	</action-record>
 
 	<action-record name="action-partner-employee-record-default" model="com.axelor.apps.base.db.Partner">
