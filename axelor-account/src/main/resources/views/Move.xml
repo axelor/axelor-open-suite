@@ -1,35 +1,44 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
-    <grid name="move-grid" orderBy="-date" canArchive="false" title="Account moves" model="com.axelor.apps.account.db.Move" canDelete="false">
-        <toolbar>
-            <button name="validateMoveBtn" title="Validate" prompt="The validation of a move brings irrevocable integration of a move in Moves book" onClick="action-move-method-validate-multiple-moves"/>
-            <button name="deleteMovesBtn" title="Delete" icon="fa-trash" onClick="action-move-method-delete-multiple-moves"/>
-        	<button name="moveLinesBtn" title="See Move Lines" onClick="action-move-method-show-move-lines" />
-        </toolbar>
-        
-        <hilite color="info" if="statusSelect == 1"/>
-        <hilite color="danger" if="statusSelect == 4"/>
+	<grid name="move-grid" orderBy="-date" canArchive="false"  title="Account moves" model="com.axelor.apps.account.db.Move" canDelete="false">
+		<toolbar>
+			<button name="validateMoveBtn" title="Validate" prompt="The validation of a move brings irrevocable integration of a move in Moves book" onClick="action-move-method-validate-multiple-moves"/>
+			<button name="deleteMovesBtn" title="Delete" icon="fa-trash" onClick="action-move-method-delete-multiple-moves"/>
+			<button name="moveLinesBtn" title="See Move Lines" onClick="action-move-method-show-move-lines" />
+		</toolbar>
+		<hilite color="info" if="statusSelect == 1"/>
+		<hilite color="danger" if="statusSelect == 4"/>
+		<field name="reference" width="200"/>
+		<field name="journal" form-view="journal-form" grid-view="journal-grid" width="200"/>
+		<field name="period" form-view="period-form" grid-view="period-grid" width="120" canEdit="false" canView="false"/>
+		<field name="date" width="90"/>
+		<field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" width="140" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="invoice"  form-view="invoice-form" grid-view="invoice-grid" width="140"/>
+		<field name="statusSelect" width="90"/>
+	</grid>
+	<grid name="move-grid-period" orderBy="date,id" title="Account moves to validate" model="com.axelor.apps.account.db.Move" canDelete="false" canNew="false">
+        <field name="date" width="90"/>
         <field name="reference" width="200"/>
         <field name="journal" form-view="journal-form" grid-view="journal-grid" width="200"/>
         <field name="period" form-view="period-form" grid-view="period-grid" width="120" canEdit="false" canView="false"/>
-        <field name="date" width="90"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="company" form-view="company-form" grid-view="company-grid" width="140"/>
-        <field name="invoice"  form-view="invoice-form" grid-view="invoice-grid" width="140"/>
+        <field name="invoice" form-view="invoice-form" grid-view="invoice-grid" width="140"/>
         <field name="statusSelect" width="90"/>
     </grid>
 
     <form name="move-form" title="Account move" canArchive="false" model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
           onNew="action-account-move-onnew-group"
           onLoad="action-account-move-group-onload" 
-          onSave="save,action-move-method-update-in-day-book-mode">
+          onSave="action-move-method-check-remove-lines,save,action-move-method-update-in-day-book-mode">
 
         <toolbar>
             <button name="printBtn" title="Print Move" icon="fa-print" onClick="save,action-account-move-method-print-move"/>
-            <button name="reverseBtn" title="Reverse" icon="fa-exchange" onClick="save,action-move-method-generate-reverse-move" showIf="id != null"/>
+            <button name="reverseBtn" title="Reverse" icon="fa-exchange" onClick="save,action-move-view-open-generate-reverse-wizard" showIf="id != null"/>
             <button name="deleteMoveBtn" title="delete" icon="fa-trash" onClick="action-move-method-delete-move" showIf="id != null"/>
         </toolbar>
 
@@ -85,12 +94,12 @@
 		</panel>
 		
 		<panel>
-			<panel-related name="moveLineListPanel" field="moveLineList" editable="true" colSpan="12" showIf="(statusSelect &lt; 3) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="true" canRemove="true" grid-view="move-line-move-grid" form-view="move-line-move-form" onChange="action-account-move-method-compute-totals"/>
-			<panel-related name="moveLineListPanel" field="moveLineList" editable="false" colSpan="12" showIf="statusSelect &gt; 2 &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="false" canRemove="false" grid-view="move-line-move-grid" form-view="move-line-move-form" onChange="action-account-move-method-compute-totals"/>
-			<field name="$viewerTags" colSpan="12" readonly="true" showTitle="false">
+			<panel-related name="moveLineListPanel" field="moveLineList" editable="true" colSpan="12" height="6" showIf="(statusSelect &lt; 3) &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="true" canRemove="true" grid-view="move-line-move-grid" form-view="move-line-move-form" onChange="action-account-move-method-compute-totals"/>
+			<panel-related name="moveLineListPanel" field="moveLineList" editable="false" colSpan="12" height="6" showIf="statusSelect &gt; 2 &amp;&amp; journal &amp;&amp; company &amp;&amp; date &amp;&amp; period" canNew="false" canRemove="false" grid-view="move-line-move-grid" form-view="move-line-move-form" onChange="action-account-move-method-compute-totals"/>
+			<field name="$reconcileTags" colSpan="12" hidden="true" readonly="true" showTitle="false">
                     <viewer depends="moveLineList">
                         <![CDATA[
-                            <h4 class="text-right">
+                            <h4 class="text-left">
 						 		<span class="label label-info" style="background-color: #EF9D3F; margin: 5px 0 !important; display: inline-table; line-height: initial;"  x-translate>It is not possible to edit the amount of a reconciled and/or lettered accounting move line.</span>
                             </h4>
                         ]]>
@@ -162,7 +171,26 @@
 			<mail-followers />
 		</panel-mail>
     </form>
-	
+
+    <form name="move-wizard-generate-reverse-form" title="Generate Reverse Move" onLoad="action-move-attrs-set-generate-reverse-wizard-defaults" model="com.axelor.apps.account.db.Move">
+    	<panel name="mainPanel">
+    		<field name="isAutomaticReconcile" title="Automatic reconcile" type="boolean"/>
+    		<field name="dateOfReversionSelect" title="Date of reversion" type="integer" selection="account.move.date.of.reversion.type.select" onChange="action-move-record-set-date-of-revision"/>
+    		<field name="isAutomaticAccounting" title="Automatic accounting" type="boolean"/>
+    		<field name="dateOfReversion" type="date" showTitle="false" requiredIf="dateOfReversionSelect == 3" showIf="dateOfReversionSelect == 3"
+    			onChange="action-move-validate-check-date-of-reversion"/>
+    		<field name="isUnreconcileOriginalMove" title="Unreconcile original move" type="boolean"/>
+    		<field name="isHiddenMoveLinesInBankReconciliation" title="Hide move lines in bank reconciliation" type="boolean" if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')" colSpan="12"/>
+    		<button name="generateReverseBtn" title="Reverse" icon="fa-exchange" onClick="action-move-validate-check-date-of-reversion,action-move-method-generate-reverse-move"
+    			readonlyIf="dateOfReversionSelect == 3 &amp;&amp; !dateOfReversion"/>
+    	</panel>
+    </form>
+
+    <action-record name="action-move-record-set-date-of-revision" model="com.axelor.apps.account.db.Move">
+        <field name="dateOfReversion" expr="eval: __date__" if="dateOfReversionSelect == 1"/>
+        <field name="dateOfReversion" expr="eval: _moveDate" if="dateOfReversionSelect == 2"/>
+    </action-record>
+
 	<!-- ACTION GROUPs -->
 	<action-group name="action-account-move-onnew-group">
 		<action name="default-move-record"/>
@@ -191,6 +219,11 @@
 
     <action-validate name="action-account-validate-prompt">
       <alert message="The validation of a move brings irrevocable integration of a move in Moves book"/>
+    </action-validate>
+
+    <action-validate name="action-move-validate-check-date-of-reversion">
+      <error message="Reverse move date should not be prior to the original move date (${LocalDate.parse(_moveDate).format(java.time.format.DateTimeFormatter.ofPattern('dd/MM/yyyy'))})."
+      		if="dateOfReversionSelect==3 &amp;&amp; dateOfReversion &amp;&amp; LocalDate.parse(dateOfReversion).isBefore(LocalDate.parse(_moveDate))"/>
     </action-validate>
 
    	<!-- ACTION RECORD -->
@@ -222,7 +255,7 @@
 	</action-attrs>
 
 	<action-attrs name="action-move-attrs-adjusting-move">
-		<attribute for="adjustingMove" name="readonly" expr="eval: period.statusSelect != 3" if="eval: statusSelect &lt; 3"/>
+		<attribute for="adjustingMove" name="readonly" expr="eval: period?.statusSelect != 3" if="eval: statusSelect &lt; 3"/>
 		<attribute for="adjustingMove" name="readonly" expr="true" if="eval: statusSelect &gt; 2"/>
 	</action-attrs>
 
@@ -236,6 +269,15 @@
 		<attribute name="title" for="validateBtn" expr="eval: com.axelor.i18n.I18n.get('Accounting.toAccount')" if="eval: company?.accountConfig?.accountingDaybook &amp;&amp; statusSelect != MoveRepository.STATUS_DAYBOOK"/>
 	</action-attrs>
 	
+	<action-attrs name="action-move-attrs-set-generate-reverse-wizard-defaults">
+		<attribute name="value" for="isAutomaticReconcile" expr="eval: true"/>
+		<attribute name="value" for="dateOfReversionSelect" expr="eval: 2"/>
+		<attribute name="value" for="isAutomaticAccounting" expr="eval: true"/>
+		<attribute name="value" for="isUnreconcileOriginalMove" expr="eval: true"/>
+		<attribute name="value" for="isHiddenMoveLinesInBankReconciliation" expr="eval: true"/>
+		<attribute name="value" for="dateOfReversion" expr="eval: _moveDate"/>
+	</action-attrs>
+
 	<!-- ACTION METHOD -->
 	<action-method name="action-move-method-validate">
 		<call class="com.axelor.apps.account.web.MoveController" method="validate"/>
@@ -244,7 +286,11 @@
 	<action-method name="action-move-method-update-in-day-book-mode">
 		<call class="com.axelor.apps.account.web.MoveController" method="updateInDayBookMode"/>
 	</action-method>
-
+	
+	<action-method name="action-move-method-check-remove-lines">
+		<call class="com.axelor.apps.account.web.MoveController" method="checkRemoveLines"/>
+	</action-method>
+	
 	<action-method name="action-move-method-generate-reverse-move">
 		<call class="com.axelor.apps.account.web.MoveController" method="generateReverse"/> 
 	</action-method>
@@ -280,15 +326,29 @@
 	<action-method name="action-account-move-method-automatic-taxline-generation">
 		<call class="com.axelor.apps.account.web.MoveController" method="autoTaxLineGenerate"/>
 	</action-method>
-
-	<action-method name="action-account-move-method-filter-partner">
+<action-method name="action-account-move-method-filter-partner">
 		<call class="com.axelor.apps.account.web.MoveController" method="filterPartner"/>
 	</action-method>
-	
-	<action-method name="action-move-is-hidden-move-line-list-viewer-attrs-method">
+<action-method name="action-move-is-hidden-move-line-list-viewer-attrs-method">
 		<call class="com.axelor.apps.account.web.MoveController" method="isHiddenMoveLineListViewer"/>
-	</action-method>
-	
+	</action-method>	<!-- ACTION VIEW -->
+	<action-view name="action-move-view-open-generate-reverse-wizard" title="Generate Reverse Move" model="com.axelor.apps.account.db.Move">
+		<view type="form" name="move-wizard-generate-reverse-form"/>
+		<view-param name="popup" value="reload"/>
+		<view-param name="forceEdit" value="true"/>
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="show-confirm" value="false" />
+		<view-param name="popup-save" value="false"/>
+		<context name="_showRecord" expr="eval: __this__.id"/>
+		<context name="_moveDate" expr="eval: date"/>
+	</action-view>
+	<action-view name="action-move-view-period-moves-to-validate" title="Move list to validate" model="com.axelor.apps.account.db.Move">
+		<view type="grid" name="move-grid-period"/>
+		<view type="form" name="move-form"/>
+		<view-param name="showArchived" value="true"/>
+		<domain>self.period = :_id AND (self.statusSelect NOT IN (1,3,4) OR  (self.statusSelect = 1 AND (self.archived = false OR self.archived is null) ))</domain>
+	</action-view>
+
 	<search-filters name="move-filters" model="com.axelor.apps.account.db.Move" title="Move filters">
 		<filter title="Current Period Entries">
 			<domain>self.period IS NULL OR (CURRENT_DATE &gt;= self.period.fromDate and CURRENT_DATE &lt;= self.period.toDate)</domain>

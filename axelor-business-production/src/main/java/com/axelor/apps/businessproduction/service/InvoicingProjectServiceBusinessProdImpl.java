@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,7 +24,9 @@ import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.service.ProjectServiceImpl;
+import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.google.inject.persist.Transactional;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -100,5 +102,20 @@ public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectSer
     toInvoiceCount += productionOrderCount;
 
     return toInvoiceCount;
+  }
+
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Override
+  public InvoicingProject generateInvoicingProject(Project project) {
+
+    InvoicingProject invoicingProject = super.generateInvoicingProject(project);
+
+    if (invoicingProject != null
+        && invoicingProject.getId() == null
+        && !invoicingProject.getManufOrderSet().isEmpty()) {
+      return invoicingProjectRepo.save(invoicingProject);
+    }
+
+    return invoicingProject;
   }
 }

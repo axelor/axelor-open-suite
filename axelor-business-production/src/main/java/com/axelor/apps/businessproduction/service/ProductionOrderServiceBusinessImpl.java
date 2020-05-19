@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -42,13 +42,14 @@ public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceIm
     super(manufOrderService, sequenceService, productionOrderRepo);
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public ProductionOrder generateProductionOrder(
       Product product,
       BillOfMaterial billOfMaterial,
       BigDecimal qtyRequested,
       Project project,
       LocalDateTime startDate,
+      LocalDateTime endDate,
       SaleOrder saleOrder)
       throws AxelorException {
 
@@ -61,6 +62,7 @@ public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceIm
         billOfMaterial,
         qtyRequested,
         startDate,
+        endDate,
         saleOrder,
         ManufOrderService.ORIGIN_TYPE_OTHER);
 

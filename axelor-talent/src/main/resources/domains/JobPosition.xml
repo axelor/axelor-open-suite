@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
 	<module name="talent" package="com.axelor.apps.talent.db"/>
 
-	<entity name="JobPosition" lang="java" cachable="true">
+	<entity name="JobPosition" lang="java" cacheable="true">
 		<string name="jobTitle" title="Job title" required="true"  namecolumn="true"/>
 		<string name="jobReference" title="Job reference" readonly="true"/>
 		<many-to-one name="companyDepartment" ref="com.axelor.apps.base.db.CompanyDepartment" title="Department" />
@@ -30,7 +30,8 @@
 	   			public static final Integer STATUS_OPEN = 1;
 	   			public static final Integer STATUS_ON_HOLD = 2;
 	   			public static final Integer STATUS_CLOSED = 3;
-	   			public static final Integer STATUS_CANCELED = 3;
+	   			public static final Integer STATUS_CANCELED = 3;	   			
+	   			
 	   		]]>
    		</extra-code>
 	</entity>

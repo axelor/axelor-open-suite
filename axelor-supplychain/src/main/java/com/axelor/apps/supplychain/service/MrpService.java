@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.exception.AxelorException;
 import java.time.LocalDate;
@@ -25,7 +28,7 @@ public interface MrpService {
 
   public void runCalculation(Mrp mrp) throws AxelorException;
 
-  public void generateProposals(Mrp mrp) throws AxelorException;
+  public void generateProposals(Mrp mrp, boolean isProposalsPerSupplier) throws AxelorException;
 
   public void reset(Mrp mrp);
 
@@ -37,4 +40,8 @@ public interface MrpService {
    * @return the mrp end date
    */
   public LocalDate findMrpEndDate(Mrp mrp);
+
+  public Mrp createProjectedStock(
+      Mrp mrp, Product product, Company company, StockLocation stockLocation)
+      throws AxelorException;
 }

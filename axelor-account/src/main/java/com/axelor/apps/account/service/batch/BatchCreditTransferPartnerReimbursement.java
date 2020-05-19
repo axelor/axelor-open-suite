@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -30,7 +30,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -80,7 +80,7 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
         }
       } catch (Exception ex) {
         incrementAnomaly();
-        TraceBackService.trace(ex, IException.CREDIT_TRANSFER, batch.getId());
+        TraceBackService.trace(ex, ExceptionOriginRepository.CREDIT_TRANSFER, batch.getId());
         ex.printStackTrace();
         log.error(
             String.format(
@@ -122,7 +122,7 @@ public class BatchCreditTransferPartnerReimbursement extends BatchStrategy {
    * @return
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected Reimbursement createReimbursement(Partner partner, Company company)
       throws AxelorException {
     List<MoveLine> moveLineList =

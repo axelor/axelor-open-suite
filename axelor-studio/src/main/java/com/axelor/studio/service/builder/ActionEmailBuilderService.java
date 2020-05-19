@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,8 +25,11 @@ import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.CallMethod;
 import com.axelor.meta.db.MetaAction;
+import com.axelor.meta.db.MetaJsonModel;
 import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.db.repo.MetaJsonModelRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionResponse;
@@ -40,6 +43,8 @@ public class ActionEmailBuilderService {
 
   @Inject private MetaModelRepository metaModelRepo;
 
+  @Inject private MetaJsonModelRepository metaJsonModelRepo;
+
   @Inject private StudioMetaService studioMetaService;
 
   @Inject private TemplateRepository templateRepo;
@@ -50,8 +55,11 @@ public class ActionEmailBuilderService {
 
   public MetaAction build(ActionBuilder builder) {
     String name = builder.getName();
-    MetaModel model =
-        metaModelRepo.all().filter("self.fullName = ?", builder.getModel()).fetchOne();
+    Object model =
+        builder.getIsJson()
+            ? metaJsonModelRepo.all().filter("self.name = ?", builder.getModel()).fetchOne()
+            : metaModelRepo.all().filter("self.fullName = ?", builder.getModel()).fetchOne();
+
     int sendOption = builder.getEmailSendOptionSelect();
     Template template = builder.getEmailTemplate();
 
@@ -62,9 +70,13 @@ public class ActionEmailBuilderService {
             + name
             + "\">\n\t"
             + "<call class=\"com.axelor.studio.service.builder.ActionEmailBuilderService\" method=\"sendEmail(id, '"
-            + model.getFullName()
+            + (builder.getIsJson()
+                ? ((MetaJsonModel) model).getName()
+                : ((MetaModel) model).getFullName())
             + "', '"
-            + model.getName()
+            + (builder.getIsJson()
+                ? ((MetaJsonModel) model).getName()
+                : ((MetaModel) model).getName())
             + "', '"
             + template.getId()
             + "', '"
@@ -76,6 +88,7 @@ public class ActionEmailBuilderService {
     return studioMetaService.updateMetaAction(name, "action-method", xml, null);
   }
 
+  @CallMethod
   public ActionResponse sendEmail(
       Long objectId, String model, String tag, Long templateId, int sendOption)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,

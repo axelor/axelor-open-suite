@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,6 +32,7 @@ public interface IExceptionMessage {
       "An error occurred while importing the file data, product not found with code :" /*)*/;
   static final String INVENTORY_5 = /*$$(*/
       "There is currently no such file in the specified folder or the folder may not exists." /*)*/;
+  static final String INVENTORY_6 = /*$$(*/ "Company missing for stock location %s" /*)*/;
   static final String INVENTORY_7 = /*$$(*/ "Incorrect product in inventory line" /*)*/;
   static final String INVENTORY_8 = /*$$(*/ "File %s successfully imported." /*)*/;
   static final String INVENTORY_9 = /*$$(*/ "There's no product in stock location." /*)*/;
@@ -175,6 +176,9 @@ public interface IExceptionMessage {
       "Detail line(s) not inside a parcel/pallet" /*)*/;
   String LOGISTICAL_FORM_UNKNOWN_ACCOUNT_SELECTION = /*$$(*/ "Unknown account selection" /*)*/;
 
+  String LOGISTICAL_FORM_MISSING_TEMPLATE = /*$$(*/
+      "The template to send message on save is missing." /*)*/;
+
   String CANCEL_REASON_MISSING = /*$$(*/ "A cancel reason must be selected" /*)*/;
   String CANCEL_REASON_BAD_TYPE = /*$$(*/
       "The type of cancel reason doesn't match with stock move" /*)*/;
@@ -191,5 +195,13 @@ public interface IExceptionMessage {
 
   String TRACK_NUMBER_WIZARD_TITLE = /*$$(*/ "Enter tracking numbers" /*)*/;
   String TRACK_NUMBER_WIZARD_NO_RECORD_ADDED_ERROR = /*$$(*/ "No Tracking Numbers Added" /*)*/;
+
   String TRACK_NUMBER_DATE_MISSING = /*$$(*/ "Please filled estimated delivery date" /*)*/;
+
+  /** Stock correction service and controller */
+  public static final String STOCK_CORRECTION_1 = /*$$(*/
+      "Incorrect product for stock correction" /*)*/;
+
+  public static final String STOCK_CORRECTION_2 = /*$$(*/
+      "No stock correction needed, current quantity in stock equals real quantity." /*)*/;
 }

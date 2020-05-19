@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,20 +20,63 @@ package com.axelor.apps.base.service.weeklyplanning;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.service.user.UserService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
 
+  public DayOfWeek getFirstDayOfWeek() {
+    WeeklyPlanning planning =
+        Beans.get(UserService.class).getUserActiveCompany().getWeeklyPlanning();
+
+    if (planning != null && ObjectUtils.notEmpty(planning.getWeekDays())) {
+      Optional<DayPlanning> min =
+          planning.getWeekDays().stream().min(Comparator.comparing(DayPlanning::getSequence));
+
+      if (min.isPresent()) {
+        return getDayOfWeek(min.get());
+      }
+    }
+
+    return DayOfWeek.MONDAY;
+  }
+
+  private DayOfWeek getDayOfWeek(DayPlanning day) {
+    switch (day.getName()) {
+      case "monday":
+        return DayOfWeek.MONDAY;
+      case "tuesday":
+        return DayOfWeek.TUESDAY;
+      case "wednesday":
+        return DayOfWeek.WEDNESDAY;
+      case "thursday":
+        return DayOfWeek.THURSDAY;
+      case "friday":
+        return DayOfWeek.FRIDAY;
+      case "saturday":
+        return DayOfWeek.SATURDAY;
+      case "sunday":
+        return DayOfWeek.SUNDAY;
+      default:
+        return DayOfWeek.SUNDAY;
+    }
+  }
+
   @Override
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public WeeklyPlanning initPlanning(WeeklyPlanning planning) {
     String[] dayTab =
         new String[] {"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"};
@@ -128,6 +171,10 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
       WeeklyPlanning weeklyPlanning, LocalDate date, LocalTime from, LocalTime to) {
     double value = 0;
     DayPlanning dayPlanning = this.findDayPlanning(weeklyPlanning, date);
+
+    if (dayPlanning == null) {
+      return BigDecimal.valueOf(value);
+    }
 
     // Compute morning leave duration
     LocalTime morningFrom = dayPlanning.getMorningFrom();

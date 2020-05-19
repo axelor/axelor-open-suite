@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,17 +21,13 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class ReconcileController {
-
-  @Inject private ReconcileService reconcileService;
-
-  @Inject private ReconcileRepository reconcileRepo;
 
   // Unreconcile button
   public void unreconcile(ActionRequest request, ActionResponse response) {
@@ -39,7 +35,8 @@ public class ReconcileController {
     Reconcile reconcile = request.getContext().asType(Reconcile.class);
 
     try {
-      reconcileService.unreconcile(reconcileRepo.find(reconcile.getId()));
+      Beans.get(ReconcileService.class)
+          .unreconcile(Beans.get(ReconcileRepository.class).find(reconcile.getId()));
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -52,7 +49,8 @@ public class ReconcileController {
     Reconcile reconcile = request.getContext().asType(Reconcile.class);
 
     try {
-      reconcileService.confirmReconcile(reconcileRepo.find(reconcile.getId()), true);
+      Beans.get(ReconcileService.class)
+          .confirmReconcile(Beans.get(ReconcileRepository.class).find(reconcile.getId()), true);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

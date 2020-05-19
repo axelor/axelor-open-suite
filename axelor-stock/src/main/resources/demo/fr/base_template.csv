@@ -29,3 +29,9 @@ Axelor Team</p>";"$StockMove.partner.emailAddress.address$";;;2
 <p>Nous constatons une rupture de stock pour le produit $StockRules.product.fullName$ dans l'emplacement $StockRules.stockLocation.name$.</p>
 
 <p>Cordialement</p>";"$StockMove.partner.emailAddress.address$";;;2
+"Fiche logistique";"LogisticalForm";"2";;;;"true";;"Nouvelle fiche logistique saisie ($LogisticalForm.deliveryNumber$)";"<p>Bonjour,</p>
+
+<p>Une nouvelle fiche logistique a été saisie.</p>
+<p>Son numéro d'expédition est $LogisticalForm.deliveryNumber$ et le client livré est $LogisticalForm.deliverToCustomerPartner.fullName$.</p>
+
+<p>Cordialement</p>";"";;;"2"

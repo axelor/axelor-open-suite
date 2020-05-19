@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+	<grid name="timesheet-reminder-line-grid" title="Timesheet reminder lines" model="com.axelor.apps.hr.db.TimesheetReminderLine" canNew="false" canEdit="false" canSave="false">
+	  <field name="fromDate"/>
+	  <field name="toDate"/>
+	  <field name="missingHours"/>
+	  <field name="extraHours"/>
+	  <field name="requiredHours"/>
+	</grid>
+
+	<form name="timesheet-reminder-line-form" title="Timesheet reminder line" model="com.axelor.apps.hr.db.TimesheetReminderLine" canNew="false" canEdit="false" canCopy="false" canSave="false">
+	  <panel title="Overview" readonly="true">
+	    <field name="fromDate"/>
+	    <field name="toDate"/>
+	    <field name="missingHours"/>
+	    <field name="extraHours"/>
+	    <field name="requiredHours"/>
+	  </panel>
+	</form>
+
+</object-views>

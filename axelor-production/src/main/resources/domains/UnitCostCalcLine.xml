@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+
+  <module name="production" package="com.axelor.apps.production.db"/>
+
+  <entity name="UnitCostCalcLine" lang="java">
+
+	<many-to-one name="unitCostCalculation" ref="com.axelor.apps.production.db.UnitCostCalculation" title="Cost price calculation"/>
+	<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+	<decimal name="previousCost" title="Previous cost" precision="20" scale="10"/>
+	<decimal name="computedCost" title="Comput. cost" precision="20" scale="10"/>
+	<decimal name="costToApply" title="Cost to apply" precision="20" scale="10"/>
+   	<integer name="maxLevel" title="Maximum level"/>
+	<many-to-one name="costSheet" ref="com.axelor.apps.production.db.CostSheet" title="Cost sheet"/>
+  </entity>
+</domain-models>

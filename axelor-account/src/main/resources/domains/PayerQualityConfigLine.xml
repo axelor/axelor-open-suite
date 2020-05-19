@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
   
   <module name="account" package="com.axelor.apps.account.db"/>
   
-  <entity name="PayerQualityConfigLine" lang="java" cachable="true">
+  <entity name="PayerQualityConfigLine" lang="java" cacheable="true">
   
     <integer name="incidentTypeSelect" title="Incident type" selection="payer.quality.config.line.incident.type.select"/>
     <many-to-one name="debtRecoveryLevel" ref="com.axelor.apps.account.db.DebtRecoveryLevel" title="Debt recovery level"/>

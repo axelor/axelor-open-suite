@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -42,7 +42,6 @@ import com.axelor.rpc.filter.Filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.File;
 import java.io.FileInputStream;
@@ -61,11 +60,7 @@ import org.slf4j.LoggerFactory;
 public class AdvancedExportController {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  @Inject private AdvancedExportService advancedExportService;
-  @Inject private MetaModelRepository metaModelRepo;
-  @Inject private AdvancedExportRepository advancedExportRepo;
 
-  @Inject private MetaFieldRepository metaFieldRepo;
   private Inflector inflector;
 
   public void getModelAllFields(ActionRequest request, ActionResponse response)
@@ -76,6 +71,8 @@ public class AdvancedExportController {
 
     if (advancedExport.getMetaModel() != null) {
       List<Map<String, Object>> allFieldList = new ArrayList<>();
+      MetaModelRepository metaModelRepository = Beans.get(MetaModelRepository.class);
+      MetaFieldRepository metaFieldRepository = Beans.get(MetaFieldRepository.class);
 
       for (MetaField field : advancedExport.getMetaModel().getMetaFields()) {
         Map<String, Object> allFieldMap = new HashMap<>();
@@ -83,13 +80,13 @@ public class AdvancedExportController {
 
         if (!Strings.isNullOrEmpty(field.getRelationship())) {
           MetaModel metaModel =
-              metaModelRepo.all().filter("self.name = ?", field.getTypeName()).fetchOne();
+              metaModelRepository.all().filter("self.name = ?", field.getTypeName()).fetchOne();
 
           Class<?> klass = Class.forName(metaModel.getFullName());
           Mapper mapper = Mapper.of(klass);
           String fieldName = mapper.getNameField() == null ? "id" : mapper.getNameField().getName();
           MetaField metaField =
-              metaFieldRepo
+              metaFieldRepository
                   .all()
                   .filter("self.name = ?1 AND self.metaModel = ?2", fieldName, metaModel)
                   .fetchOne();
@@ -182,8 +179,9 @@ public class AdvancedExportController {
 
   private void advancedExport(ActionRequest request, ActionResponse response, String fileType)
       throws AxelorException, IOException {
+
     AdvancedExport advancedExport = request.getContext().asType(AdvancedExport.class);
-    advancedExport = advancedExportRepo.find(advancedExport.getId());
+    advancedExport = Beans.get(AdvancedExportRepository.class).find(advancedExport.getId());
 
     getAdvancedExportFile(request, response, advancedExport, fileType);
   }
@@ -194,6 +192,7 @@ public class AdvancedExportController {
       AdvancedExport advancedExport,
       String fileType)
       throws AxelorException, IOException {
+    AdvancedExportService advancedExportService = Beans.get(AdvancedExportService.class);
 
     if (!advancedExport.getAdvancedExportLineList().isEmpty()) {
       List<Long> recordIds = createCriteria(request, advancedExport);
@@ -233,7 +232,9 @@ public class AdvancedExportController {
         ActionRequest parentRequest =
             mapper.convertValue(request.getContext().get("_criteria"), ActionRequest.class);
         Class<? extends Model> klass = (Class<? extends Model>) parentRequest.getBeanClass();
-        Filter filter = advancedExportService.getJpaSecurityFilter(advancedExport.getMetaModel());
+        Filter filter =
+            Beans.get(AdvancedExportService.class)
+                .getJpaSecurityFilter(advancedExport.getMetaModel());
         Stream<? extends Model> listObj =
             parentRequest
                 .getCriteria()
@@ -251,13 +252,16 @@ public class AdvancedExportController {
 
     LOG.debug("Call advanced export wizard for model : {} ", request.getModel());
     MetaModel metaModel =
-        metaModelRepo.all().filter("self.fullName = ?", request.getModel()).fetchOne();
+        Beans.get(MetaModelRepository.class)
+            .all()
+            .filter("self.fullName = ?", request.getModel())
+            .fetchOne();
     String criteria = "";
     if (request.getContext().get("_ids") != null)
       criteria = request.getContext().get("_ids").toString();
     else {
       Class<? extends Model> klass = (Class<? extends Model>) request.getBeanClass();
-      Filter filter = advancedExportService.getJpaSecurityFilter(metaModel);
+      Filter filter = Beans.get(AdvancedExportService.class).getJpaSecurityFilter(metaModel);
       int recordCount = (int) request.getCriteria().createQuery(klass, filter).count();
       if (recordCount > 0) criteria = String.valueOf(recordCount);
     }
@@ -288,9 +292,10 @@ public class AdvancedExportController {
         return;
       }
       AdvancedExport advancedExport =
-          advancedExportRepo.find(
-              Long.valueOf(
-                  ((Map) request.getContext().get("_xAdvancedExport")).get("id").toString()));
+          Beans.get(AdvancedExportRepository.class)
+              .find(
+                  Long.valueOf(
+                      ((Map) request.getContext().get("_xAdvancedExport")).get("id").toString()));
       String fileType = request.getContext().get("exportFormatSelect").toString();
 
       getAdvancedExportFile(request, response, advancedExport, fileType);

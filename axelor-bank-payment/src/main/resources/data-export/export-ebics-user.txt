@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ebics-users>
 <% __ids__.each({ u = com.axelor.inject.Beans.get('com.axelor.apps.bankpayment.db.repo.EbicsUserRepository' as Class).find(it)
-	
+
+   allEbicsRequestLog = com.axelor.inject.Beans.get('com.axelor.apps.bankpayment.db.repo.EbicsRequestLogRepository' as Class).all()
+
 	bankCerts = "" 
 	u.ebicsPartner?.ebicsBank?.ebicsCertificateList.each( {c->
 	    bankCerts += "<ebicsCertificate>"
@@ -10,25 +12,31 @@
 		bankCerts += "</ebicsCertificate>"
 	})
 	
-	requestLog = ""
-	u.ebicsRequestLogList?.each( { log ->
-		requestLog +="<requestLog>"
-		requestLog +="<requestType>${log.requestType}</requestType>"
-		requestLog +="<requestTime>${log.requestTime}</requestTime>"
-		requestLog +="<responseCode>${log.responseCode}</responseCode>"
-		requestLog +="<requestTraceText>${log.requestTraceText}</requestTraceText>"
-		requestLog +="<responseTraceText>${log.responseTraceText}</responseTraceText>"
-		requestLog +="</requestLog>"
+	boEbicsPartnerService = ""
+	u.ebicsPartner?.boEbicsPartnerServiceList.each( {bo->
+	    boEbicsPartnerService += "<boEbicsPartnerService>"
+		boEbicsPartnerService += "  <importId>${bo.importId}</importId>"
+		boEbicsPartnerService += "  <bankOrderFileFormat>"
+		boEbicsPartnerService += "     <name>${bo.bankOrderFileFormat?.name}</name>"
+		boEbicsPartnerService += "     <orderTypeSelect>${bo.bankOrderFileFormat?.orderTypeSelect}</orderTypeSelect>"
+		boEbicsPartnerService += "     <orderFileFormatSelect>${bo.bankOrderFileFormat?.orderFileFormatSelect}</orderFileFormatSelect>"
+		boEbicsPartnerService += "     <description>${bo.bankOrderFileFormat?.description}</description>"
+		boEbicsPartnerService += "  </bankOrderFileFormat>"
+		boEbicsPartnerService += "  <ebicsCodification>${bo.ebicsCodification}</ebicsCodification>"
+		boEbicsPartnerService += "</boEbicsPartnerService>"
 	})
-	
-	bankStatementFileFormat = ""
-	u.ebicsPartner?.bankStatementFileFormatSet.each( {b->
-	    bankStatementFileFormat += "<bankStatementFileFormat>"
-		bankStatementFileFormat += "<importId>${b.importId}</importId>"
-		bankStatementFileFormat += "<statementFileFormatSelect>${b.statementFileFormatSelect}</statementFileFormatSelect>"
-		bankStatementFileFormat += "<name>${b.name}</name>"
-		bankStatementFileFormat += "<description>${b.description}</description>"
-		bankStatementFileFormat += "</bankStatementFileFormat>"
+
+	bsEbicsPartnerService = ""
+	u.ebicsPartner?.bsEbicsPartnerServiceList.each( {bs->
+	    bsEbicsPartnerService += "<bsEbicsPartnerService>"
+		bsEbicsPartnerService += "  <importId>${bs.importId}</importId>"
+		bsEbicsPartnerService += "  <bankStatementFileFormat>"
+		bsEbicsPartnerService += "     <name>${bs.bankStatementFileFormat?.name}</name>"
+		bsEbicsPartnerService += "     <statementFileFormatSelect>${bs.bankStatementFileFormat?.statementFileFormatSelect}</statementFileFormatSelect>"
+		bsEbicsPartnerService += "     <description>${bs.bankStatementFileFormat?.description}</description>"
+		bsEbicsPartnerService += "  </bankStatementFileFormat>"
+		bsEbicsPartnerService += "  <ebicsCodification>${bs.ebicsCodification}</ebicsCodification>"
+		bsEbicsPartnerService += "</bsEbicsPartnerService>"
 	})
 	
 	receiverBankDetails = ""
@@ -47,9 +55,9 @@
 		receiverBankDetails += "<fullName>${b.fullName}</fullName>"
 		receiverBankDetails += "<active>${b.active}</active>"
 		receiverBankDetails += "<bankAddress>"
-		receiverBankDetails += "<code>${b.bankAddress.code}</code>"
-		receiverBankDetails += "<address>${b.bankAddress.address}</address>"
-		receiverBankDetails += "<label>${b.bankAddress.label}</label>"
+		receiverBankDetails += "<code>${b.bankAddress?.code}</code>"
+		receiverBankDetails += "<address>${b.bankAddress?.address}</address>"
+		receiverBankDetails += "<label>${b.bankAddress?.label}</label>"
 		receiverBankDetails += "</bankAddress>"
 		receiverBankDetails += "</bankDetails>"
 	})
@@ -69,13 +77,27 @@
 		bankDetails += "<fullName>${b.fullName}</fullName>"
 		bankDetails += "<active>${b.active}</active>"
 		bankDetails += "<bankAddress>"
-		bankDetails += "<code>${b.bankAddress.code}</code>"
-		bankDetails += "<address>${b.bankAddress.address}</address>"
-		bankDetails += "<label>${b.bankAddress.label}</label>"
+		bankDetails += "<code>${b.bankAddress?.code}</code>"
+		bankDetails += "<address>${b.bankAddress?.address}</address>"
+		bankDetails += "<label>${b.bankAddress?.label}</label>"
 		bankDetails += "</bankAddress>"
 		bankDetails += "</bankDetails>"
 	})
 	
+
+	allEbicsRequestLog = allEbicsRequestLog.filter('self.ebicsUser.id in ?1',it)
+
+	ebicsRequestLog = ""
+	allEbicsRequestLog.fetch().each( { log ->
+		ebicsRequestLog +="<ebicsRequestLog>"
+		ebicsRequestLog +="<ebicsUser>${log.ebicsUser?.userId}</ebicsUser>"
+		ebicsRequestLog +="<requestType>${log.requestType}</requestType>"
+		ebicsRequestLog +="<requestTime>${log.requestTime}</requestTime>"
+		ebicsRequestLog +="<responseCode>${log.responseCode}</responseCode>"
+		ebicsRequestLog +="<requestTraceText>${log.requestTraceText}</requestTraceText>"
+		ebicsRequestLog +="<responseTraceText>${log.responseTraceText}</responseTraceText>"
+		ebicsRequestLog +="</ebicsRequestLog>"
+		 })
 	out << 
 	"""
 	<ebics-user>
@@ -88,9 +110,12 @@
 			<partnerId>${u.ebicsPartner?.partnerId}</partnerId>
 			<ebicsTypeSelect>${u.ebicsPartner?.ebicsTypeSelect}</ebicsTypeSelect>
 			<testMode>${u.ebicsPartner?.testMode}</testMode>
-			<bankStatementFileFormatSet>
-					$bankStatementFileFormat
-			</bankStatementFileFormatSet>
+			<boEbicsPartnerServiceList>
+				$boEbicsPartnerService
+			</boEbicsPartnerServiceList>
+			<bsEbicsPartnerServiceList>
+				$bsEbicsPartnerService
+			</bsEbicsPartnerServiceList>
 			<pSRBankStatementFileFormat>
 				<importId>${u.ebicsPartner?.pSRBankStatementFileFormat?.importId}</importId>
 				<statementFileFormatSelect>${u.ebicsPartner?.pSRBankStatementFileFormat?.statementFileFormatSelect}</statementFileFormatSelect>
@@ -118,10 +143,14 @@
 				<language>${u.ebicsPartner?.ebicsBank?.language?.code}</language>
 				<protocolSelect>${u.ebicsPartner?.ebicsBank?.protocolSelect}</protocolSelect>
 				<certValidityPeriodSelect>${u.ebicsPartner?.ebicsBank?.certValidityPeriodSelect}</certValidityPeriodSelect>
-				<useX509ExtentionForAutoSignedCert>${u.ebicsPartner?.ebicsBank?.useX509ExtentionForAutoSignedCert}</useX509ExtentionForAutoSignedCert>
+				<useX509ExtensionBasicConstraints>${u.ebicsPartner?.ebicsBank?.useX509ExtensionBasicConstraints}</useX509ExtensionBasicConstraints>
+				<useX509ExtensionSubjectKeyIdentifier>${u.ebicsPartner?.ebicsBank?.useX509ExtensionSubjectKeyIdentifier}</useX509ExtensionSubjectKeyIdentifier>
+				<useX509ExtensionAuthorityKeyIdentifier>${u.ebicsPartner?.ebicsBank?.useX509ExtensionAuthorityKeyIdentifier}</useX509ExtensionAuthorityKeyIdentifier>
+				<useX509ExtensionExtendedKeyUsage>${u.ebicsPartner?.ebicsBank?.useX509ExtensionExtendedKeyUsage}</useX509ExtensionExtendedKeyUsage>
 				<bank>
 					<bankName>${u.ebicsPartner?.ebicsBank?.bank.bankName}</bankName>
 					<code>${u.ebicsPartner?.ebicsBank?.bank.code}</code>
+					<bankDetailsTypeSelect>${u.ebicsPartner?.ebicsBank?.bank.bankDetailsTypeSelect}</bankDetailsTypeSelect>
 				</bank>
 				<ebicsCertificateList>
 				 $bankCerts
@@ -144,10 +173,11 @@
 			<pem>${u.x002Certificate?.pemString}</pem>
 			<privateKey>${org.apache.commons.codec.binary.Base64.encodeBase64String(u.x002Certificate?.privateKey)}</privateKey>
 		</x002Certificate>
-		<ebicsRequestLogList>
-		 $requestLog
-		</ebicsRequestLogList>
 	</ebics-user>
+
+	<ebicsRequestLogList>
+		 $ebicsRequestLog
+	</ebicsRequestLogList>
 	"""
 }) %>
 

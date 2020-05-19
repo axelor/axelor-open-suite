@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,10 +26,10 @@ import com.axelor.apps.base.service.CurrencyConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -43,13 +43,6 @@ import wslite.json.JSONException;
 public class CurrencyConversionLineController {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  @Inject private CurrencyConversionService ccs;
-
-  @Inject private CurrencyConversionLineRepository cclRepo;
-
-  @Inject private AppBaseService appBaseService;
-
-  @Inject private CurrencyRepository currencyRepo;
 
   public void checkDate(ActionRequest request, ActionResponse response) {
 
@@ -58,7 +51,7 @@ public class CurrencyConversionLineController {
     LOG.debug("Currency Conversion Line Id : {}", ccl.getId());
 
     if (ccl.getId() != null
-        && cclRepo
+        && Beans.get(CurrencyConversionLineRepository.class)
                 .all()
                 .filter(
                     "self.startCurrency.id = ?1 and self.endCurrency.id = ?2 and (self.toDate = null OR  self.toDate >= ?3) and self.id != ?4)",
@@ -71,7 +64,7 @@ public class CurrencyConversionLineController {
       response.setFlash(I18n.get(IExceptionMessage.CURRENCY_3));
       //			response.setValue("fromDate", "");
     } else if (ccl.getId() == null
-        && cclRepo
+        && Beans.get(CurrencyConversionLineRepository.class)
                 .all()
                 .filter(
                     "self.startCurrency.id = ?1 and self.endCurrency.id = ?2 and (self.toDate = null OR  self.toDate >= ?3))",
@@ -98,6 +91,7 @@ public class CurrencyConversionLineController {
     Context context = request.getContext();
     Currency fromCurrency = null;
     Currency toCurrency = null;
+    CurrencyRepository currencyRepository = Beans.get(CurrencyRepository.class);
 
     if (context.get("startCurrency") instanceof Currency) {
       fromCurrency = (Currency) context.get("startCurrency");
@@ -106,8 +100,8 @@ public class CurrencyConversionLineController {
       Map<String, Object> startCurrency = (Map<String, Object>) context.get("startCurrency");
       Map<String, Object> endCurrency = (Map<String, Object>) context.get("endCurrency");
 
-      fromCurrency = currencyRepo.find(Long.parseLong(startCurrency.get("id").toString()));
-      toCurrency = currencyRepo.find(Long.parseLong(endCurrency.get("id").toString()));
+      fromCurrency = currencyRepository.find(Long.parseLong(startCurrency.get("id").toString()));
+      toCurrency = currencyRepository.find(Long.parseLong(endCurrency.get("id").toString()));
     }
 
     CurrencyConversionLine prevLine = null;
@@ -116,7 +110,7 @@ public class CurrencyConversionLineController {
 
       if (context.get("id") != null)
         prevLine =
-            cclRepo
+            Beans.get(CurrencyConversionLineRepository.class)
                 .all()
                 .filter(
                     "startCurrency.id = ?1 AND endCurrency.id = ?2 AND id != ?3",
@@ -127,7 +121,7 @@ public class CurrencyConversionLineController {
                 .fetchOne();
       else
         prevLine =
-            cclRepo
+            Beans.get(CurrencyConversionLineRepository.class)
                 .all()
                 .filter(
                     "startCurrency.id = ?1 AND endCurrency.id = ?2",
@@ -137,10 +131,11 @@ public class CurrencyConversionLineController {
                 .fetchOne();
 
       LOG.debug("Previous currency conversion line: {}", prevLine);
-      fromCurrency = currencyRepo.find(fromCurrency.getId());
-      toCurrency = currencyRepo.find(toCurrency.getId());
+      fromCurrency = currencyRepository.find(fromCurrency.getId());
+      toCurrency = currencyRepository.find(toCurrency.getId());
       try {
-        BigDecimal rate = ccs.convert(fromCurrency, toCurrency);
+        BigDecimal rate =
+            Beans.get(CurrencyConversionService.class).convert(fromCurrency, toCurrency);
         if (rate.compareTo(new BigDecimal(-1)) == 0)
           response.setFlash(I18n.get(IExceptionMessage.CURRENCY_6));
         else {
@@ -148,9 +143,12 @@ public class CurrencyConversionLineController {
           if (context.get("_model").equals("com.axelor.apps.base.db.Wizard"))
             response.setValue("newExchangeRate", rate);
           else response.setValue("exchangeRate", rate);
-          response.setValue("fromDate", appBaseService.getTodayDateTime());
+          response.setValue("fromDate", Beans.get(AppBaseService.class).getTodayDateTime());
           if (prevLine != null)
-            response.setValue("variations", ccs.getVariations(rate, prevLine.getExchangeRate()));
+            response.setValue(
+                "variations",
+                Beans.get(CurrencyConversionService.class)
+                    .getVariations(rate, prevLine.getExchangeRate()));
         }
       } catch (AxelorException axelorException) {
         response.setFlash(axelorException.getMessage());

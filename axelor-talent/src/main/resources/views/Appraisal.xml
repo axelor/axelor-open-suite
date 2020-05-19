@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
 	<grid name="appraisal-grid" title="Appraisals" model="com.axelor.apps.talent.db.Appraisal">
 		<field name="employee" />
-		<field name="company" />
+		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="appraisalType" />
 		<field name="toDate" />
 		<field name="reviewerEmployee" />
@@ -13,7 +13,7 @@
 	</grid>
 	
 	<grid name="appraisal-template-grid" title="Appraisal templates" model="com.axelor.apps.talent.db.Appraisal">
-		<field name="company" />
+		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="appraisalType" />
 		<field name="toDate" />
 		<field name="reviewerEmployee" />
@@ -112,34 +112,25 @@
 		<field name="company" expr="eval:employee?.mainEmploymentContract?.payCompany"/>
 	</action-record>
 	
-	<search-filters name="my-appraisal-fitlers" model="com.axelor.apps.talent.db.Appraisal" title="My Appraisal filters">
-		<filter title="My upcoming appraisal">
-			<domain>self.employee.user.id = :_userId and self.isTemplate = false and self.statusSelect = 1</domain>
-			<context name="_userId" value="eval:__user__.id"/>
-		</filter>
-		<filter title="My completed appraisals">
-			<domain>self.employee.user.id = :_userId and self.isTemplate = false and self.statusSelect = 2</domain>
-			<context name="_userId" value="eval:__user__.id"/>
-		</filter>
-	</search-filters>
-	
-	<search-filters name="my-team-appraisal-fitlers" model="com.axelor.apps.talent.db.Appraisal" title="My team Appraisal filters">
-		<filter title="Upcoming appraisals of all employees of a team">
-			<domain>self.employee.user.id in :_teamUserIds and self.isTemplate = false and self.statusSelect = 1</domain>
-			<context name="_teamUserIds" value="eval:([0] + __user__.teamSet.members.id).flatten()" />
-		</filter>
-		<filter title="Completed trainings of all employees of a team">
-			<domain>self.employee.user.id in :_teamUserIds and self.isTemplate = false and self.statusSelect = 2</domain>
-			<context name="_teamUserIds" value="eval:([0] + __user__.teamSet.members.id).flatten()" />
-		</filter>
-	</search-filters>
-	
+
 	<search-filters name="appraisal-fitlers" model="com.axelor.apps.talent.db.Appraisal" title="Appraisal filters">
 		<filter title="New appraisal">
 			<domain>self.isTemplate = false and self.statusSelect = 0</domain>
 		</filter>
 		<filter title="Upcoming appraisal">
 			<domain>self.isTemplate = false and self.statusSelect = 1</domain>
+		</filter>
+		<filter title="My upcoming appraisal">
+			<domain>self.employee.user.id = :_userId and self.isTemplate = false and self.statusSelect = 1</domain>
+		</filter>
+		<filter title="My completed appraisals">
+			<domain>self.employee.user.id = :_userId and self.isTemplate = false and self.statusSelect = 2</domain>
+		</filter>
+		<filter title="Upcoming appraisals of all employees of a team">
+			<domain>self.employee.user.id in :_teamUserIds and self.isTemplate = false and self.statusSelect = 1</domain>
+		</filter>
+		<filter title="Completed trainings of all employees of a team">
+			<domain>self.employee.user.id in :_teamUserIds and self.isTemplate = false and self.statusSelect = 2</domain>
 		</filter>
 	</search-filters>
 	

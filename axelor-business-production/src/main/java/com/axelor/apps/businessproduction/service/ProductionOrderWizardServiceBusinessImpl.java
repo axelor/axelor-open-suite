@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -79,7 +79,7 @@ public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWiz
       product = billOfMaterial.getProduct();
     }
 
-    ZonedDateTime startDateT;
+    ZonedDateTime startDateT, endDateT = null;
     if (context.containsKey("_startDate") && context.get("_startDate") != null) {
       startDateT =
           ZonedDateTime.parse(
@@ -87,6 +87,13 @@ public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWiz
               DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.systemDefault()));
     } else {
       startDateT = appProductionService.getTodayDateTime();
+    }
+
+    if (context.containsKey("_endDate") && context.get("_endDate") != null) {
+      endDateT =
+          ZonedDateTime.parse(
+              context.get("_endDate").toString(),
+              DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.systemDefault()));
     }
 
     Project project = null;
@@ -98,7 +105,13 @@ public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWiz
 
     ProductionOrder productionOrder =
         productionOrderServiceBusinessImpl.generateProductionOrder(
-            product, billOfMaterial, qty, project, startDateT.toLocalDateTime(), null);
+            product,
+            billOfMaterial,
+            qty,
+            project,
+            startDateT.toLocalDateTime(),
+            endDateT != null ? endDateT.toLocalDateTime() : null,
+            null);
 
     if (productionOrder != null) {
       return productionOrder.getId();

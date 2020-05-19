@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -78,9 +78,7 @@ public class TemplateService {
 
     maker.setTemplate(template.getSubject());
     maker.setContext(bean, context, beanName);
-    String result = maker.make();
-
-    return result;
+    return maker.make();
   }
 
   public String processContent(
@@ -89,8 +87,6 @@ public class TemplateService {
 
     maker.setTemplate(template.getContent());
     maker.setContext(bean, context, beanName);
-    String result = maker.make();
-
-    return result;
+    return maker.make();
   }
 }

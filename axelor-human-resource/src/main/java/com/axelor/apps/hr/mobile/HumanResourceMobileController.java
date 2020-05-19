@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -68,6 +68,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.net.URLConnection;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -85,7 +86,7 @@ public class HumanResourceMobileController {
    * @param response
    * @throws AxelorException
    *     <p>POST
-   *     /abs-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:insertKMExpenses
+   *     /open-suite-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:insertKMExpenses
    *     Content-Type: application/json
    *     <p>URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:insertKMExpenses fields:
    *     kmNumber, locationFrom, locationTo, allowanceTypeSelect, comments, date, projectTask,
@@ -95,7 +96,7 @@ public class HumanResourceMobileController {
    *     350.00, "locationFrom": "Paris", "locationTo": "Marseille", "allowanceTypeSelect": 1,
    *     "comments": "no", "date": "2018-02-22", "expenseProduct": 43 } }
    */
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void insertKMExpenses(ActionRequest request, ActionResponse response)
       throws AxelorException {
     User user = AuthUtils.getUser();
@@ -149,7 +150,7 @@ public class HumanResourceMobileController {
    * @param response
    * @throws AxelorException
    *     <p>POST
-   *     /abs-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:removeLines
+   *     /open-suite-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:removeLines
    *     Content-Type: application/json
    *     <p>URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:removeLines no field
    *     <p>payload: { "data": { "action":
@@ -207,7 +208,7 @@ public class HumanResourceMobileController {
    * @param request
    * @param response
    *
-   * POST /abs-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:insertOrUpdateExpenseLine
+   * POST /open-suite-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:insertOrUpdateExpenseLine
    * Content-Type: application/json
    *
    * URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:insertOrUpdateExpenseLine
@@ -313,7 +314,7 @@ public class HumanResourceMobileController {
    * @param request
    * @param response
    *
-   * POST /abs-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:getActivities
+   * POST /open-suite-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:getActivities
    * Content-Type: application/json
    *
    * URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:getActivities
@@ -349,7 +350,7 @@ public class HumanResourceMobileController {
    * @param request
    * @param response
    *
-   * POST /abs-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:insertOrUpdateTSLine
+   * POST /open-suite-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:insertOrUpdateTSLine
    * Content-Type: application/json
    *
    * URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:insertOrUpdateTSLine
@@ -444,24 +445,24 @@ public class HumanResourceMobileController {
    * @param request
    * @param response
    *
-   * POST /abs-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:insertLeave
+   * POST /open-suite-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:insertLeave
    * Content-Type: application/json
    *
    * URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:insertLeave
-   * fields: leaveReason, fromDate, startOn, toDate, endOn, comment
+   * fields: leaveReason, fromDateT, startOn, toDateT, endOn, comment
    *
    * payload:
    * { "data": {
    * 		"action": "com.axelor.apps.hr.mobile.HumanResourceMobileController:insertLeave",
    * 		"leaveReason": 10,
-   * 		"fromDate": "2018-02-22",
+   * 		"fromDateT": "2018-02-22T10:30:00",
    * 		"startOn": 1,
-   * 		"toDate": "2018-02-24",
+   * 		"toDateT": "2018-02-24T:19:30:00",
    *	 	"endOn": 1,
    * 		"comment": "no"
    * } }
    */
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void insertLeave(ActionRequest request, ActionResponse response) throws AxelorException {
     AppBaseService appBaseService = Beans.get(AppBaseService.class);
     User user = AuthUtils.getUser();
@@ -498,16 +499,16 @@ public class HumanResourceMobileController {
       }
       leave.setLeaveLine(leaveLine);
       leave.setRequestDate(appBaseService.getTodayDate());
-      if (requestData.get("fromDate") != null) {
+      if (requestData.get("fromDateT") != null) {
         leave.setFromDateT(
-            LocalDate.parse(requestData.get("fromDate").toString(), DateTimeFormatter.ISO_DATE)
-                .atStartOfDay());
+            LocalDateTime.parse(
+                requestData.get("fromDateT").toString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
       }
       leave.setStartOnSelect(new Integer(requestData.get("startOn").toString()));
-      if (requestData.get("toDate") != null) {
+      if (requestData.get("toDateT") != null) {
         leave.setToDateT(
-            LocalDate.parse(requestData.get("toDate").toString(), DateTimeFormatter.ISO_DATE)
-                .atStartOfDay());
+            LocalDateTime.parse(
+                requestData.get("toDateT").toString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
       }
       leave.setEndOnSelect(new Integer(requestData.get("endOn").toString()));
       leave.setDuration(Beans.get(LeaveService.class).computeDuration(leave));
@@ -517,11 +518,6 @@ public class HumanResourceMobileController {
       }
       leave = Beans.get(LeaveRequestRepository.class).save(leave);
       response.setTotal(1);
-      HashMap<String, Object> data = new HashMap<>();
-      data.put("id", leave.getId());
-      response.setData(data);
-      Beans.get(LeaveRequestRepository.class).save(leave);
-
       response.setValue("id", leave.getId());
     }
   }
@@ -532,7 +528,7 @@ public class HumanResourceMobileController {
    * @param request
    * @param response
    *
-   * POST /abs-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:getLeaveReason
+   * POST /open-suite-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:getLeaveReason
    * Content-Type: application/json
    *
    * URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:getLeaveReason
@@ -597,7 +593,7 @@ public class HumanResourceMobileController {
    * @param request
    * @param response
    *
-   * POST /abs-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:getExpensesTypes
+   * POST /open-suite-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:getExpensesTypes
    * Content-Type: application/json
    *
    * URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:getExpensesTypes
@@ -637,7 +633,7 @@ public class HumanResourceMobileController {
    * @param request
    * @param response
    *
-   * POST /abs-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:getKilometricAllowParam
+   * POST /open-suite-webapp/ws/action/com.axelor.apps.hr.mobile.HumanResourceMobileController:getKilometricAllowParam
    * Content-Type: application/json
    *
    * URL: com.axelor.apps.hr.mobile.HumanResourceMobileController:getKilometricAllowParam

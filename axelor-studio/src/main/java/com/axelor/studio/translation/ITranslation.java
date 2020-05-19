@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,7 +20,6 @@ package com.axelor.studio.translation;
 public interface ITranslation {
 
   public static final String EDITOR_CHOOSE_APP = /*$$(*/ "Choose App name"; /*)*/
-  public static final String EDITOR_APP_NAME = /*$$(*/ "App name"; /*)*/
   public static final String EDITOR_BASE_MODEL = /*$$(*/ "Base model"; /*)*/
   public static final String EDITOR_CUSTOM_MODEL = /*$$(*/ "Custom Model"; /*)*/
   public static final String EDITOR_CUSTOM_FIELD = /*$$(*/ "Custom Field"; /*)*/
@@ -63,11 +62,13 @@ public interface ITranslation {
   public static final String EDITOR_TARGET_JSON = /*$$(*/ "Target Json Model"; /*)*/
   public static final String EDITOR_SELECT_OPT = /*$$(*/ "Select Option"; /*)*/
   public static final String EDITOR_PROP = /*$$(*/ "Properties"; /*)*/
+  public static final String EDITOR_APP_NAME = /*$$(*/ "App name"; /*)*/
+  public static final String EDITOR_SHOW_TITLE = /*$$(*/ "Show Title"; /*)*/
+  public static final String EDITOR_NAME_COLUMN = /*$$(*/ "Name Column"; /*)*/
   public static final String EDITOR_CAN_COLLAPSE = /*$$(*/ "Can Collapse"; /*)*/
   public static final String EDITOR_COLLAPSE_IF = /*$$(*/ "Collapse if"; /*)*/
   public static final String EDITOR_FIELD_OPTIONS = /*$$(*/ "Field options"; /*)*/
   public static final String EDITOR_UI_OPTIONS = /*$$(*/ "UI options"; /*)*/
-  public static final String EDITOR_SHOW_TITLE = /*$$(*/ "Show Title"; /*)*/
   public static final String EDITOR_IS_JSON_RELATIONAL_FIELD = /*$$(*/
       "Is Json Relational Field"; /*)*/
 

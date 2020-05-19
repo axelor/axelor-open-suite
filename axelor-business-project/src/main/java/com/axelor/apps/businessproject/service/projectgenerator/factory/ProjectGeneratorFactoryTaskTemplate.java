@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,14 +17,21 @@
  */
 package com.axelor.apps.businessproject.service.projectgenerator.factory;
 
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.businessproject.service.ProductTaskTemplateService;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
+import com.axelor.apps.businessproject.service.TeamTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
-import com.axelor.apps.project.service.TeamTaskService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.team.db.TeamTask;
@@ -42,7 +49,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
 
   private ProjectBusinessService projectBusinessService;
   private ProjectRepository projectRepository;
-  private TeamTaskService teamTaskService;
+  private TeamTaskBusinessProjectService teamTaskService;
   private TeamTaskRepository teamTaskRepository;
   private ProductTaskTemplateService productTaskTemplateService;
 
@@ -50,7 +57,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
   public ProjectGeneratorFactoryTaskTemplate(
       ProjectBusinessService projectBusinessService,
       ProjectRepository projectRepository,
-      TeamTaskService teamTaskService,
+      TeamTaskBusinessProjectService teamTaskService,
       TeamTaskRepository teamTaskRepository,
       ProductTaskTemplateService productTaskTemplateService) {
     this.projectBusinessService = projectBusinessService;
@@ -61,45 +68,100 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
   }
 
   @Override
-  @Transactional
   public Project create(SaleOrder saleOrder) {
     Project project = projectBusinessService.generateProject(saleOrder);
     project.setIsProject(true);
     project.setIsBusinessProject(true);
-    return projectRepository.save(project);
+    return project;
   }
 
   @Override
-  @Transactional
-  public ActionViewBuilder fill(Project project, SaleOrder saleOrder, LocalDateTime startDate) {
+  @Transactional(rollbackOn = {Exception.class, AxelorException.class})
+  public ActionViewBuilder fill(Project project, SaleOrder saleOrder, LocalDateTime startDate)
+      throws AxelorException {
     List<TeamTask> tasks = new ArrayList<>();
+    TeamTask root;
 
-    TeamTask root =
-        teamTaskService.create(saleOrder.getFullName(), project, project.getAssignedTo());
-    root.setTaskDate(startDate.toLocalDate());
-    tasks.add(teamTaskRepository.save(root));
+    root =
+        teamTaskRepository
+            .all()
+            .filter(
+                "self.project = ? AND self.assignedTo = ? AND self.name = ?",
+                project,
+                project.getAssignedTo(),
+                saleOrder.getFullName())
+            .fetchOne();
+
+    projectRepository.save(project);
 
     for (SaleOrderLine orderLine : saleOrder.getSaleOrderLineList()) {
-      if (!CollectionUtils.isEmpty(orderLine.getProduct().getTaskTemplateList())) {
+      Product product = orderLine.getProduct();
+      if (product != null
+          && !((ProductRepository.PROCUREMENT_METHOD_PRODUCE.equals(
+                      product.getProcurementMethodSelect())
+                  || orderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE)
+              && ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect()))) {
+        continue;
+      }
+      boolean isTaskGenerated =
+          teamTaskRepository
+                  .all()
+                  .filter("self.saleOrderLine = ? AND self.project = ?", orderLine, project)
+                  .fetch()
+                  .size()
+              > 0;
+      if (root == null) {
+        root = teamTaskService.create(saleOrder.getFullName(), project, project.getAssignedTo());
+        root.setTaskDate(startDate.toLocalDate());
+        tasks.add(teamTaskRepository.save(root));
+      }
+      if (!CollectionUtils.isEmpty(product.getTaskTemplateSet()) && !(isTaskGenerated)) {
         List<TeamTask> convertedTasks =
             productTaskTemplateService.convert(
-                orderLine
-                    .getProduct()
-                    .getTaskTemplateList()
+                product
+                    .getTaskTemplateSet()
                     .stream()
                     .filter(template -> Objects.isNull(template.getParentTaskTemplate()))
                     .collect(Collectors.toList()),
                 project,
                 root,
                 startDate,
-                orderLine.getQty());
+                orderLine.getQty(),
+                orderLine);
+        convertedTasks.stream().forEach(task -> task.setSaleOrderLine(orderLine));
         tasks.addAll(convertedTasks);
+      } else if (CollectionUtils.isEmpty(product.getTaskTemplateSet()) && !(isTaskGenerated)) {
+        TeamTask childTask =
+            teamTaskService.create(orderLine.getFullName(), project, project.getAssignedTo());
+        this.updateTask(root, childTask, orderLine);
+
+        tasks.add(teamTaskRepository.save(childTask));
       }
     }
-    return ActionView.define("Parent Task")
+    if (root == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(IExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_2));
+    }
+    return ActionView.define("Tasks")
         .model(TeamTask.class.getName())
-        .add("form", "team-task-form")
         .add("grid", "team-task-grid")
-        .context("_showRecord", root.getId());
+        .add("form", "team-task-form")
+        .domain("self.parentTask = " + root.getId());
+  }
+
+  private void updateTask(TeamTask root, TeamTask childTask, SaleOrderLine orderLine) {
+    childTask.setParentTask(root);
+    childTask.setQuantity(orderLine.getQty());
+    Product product = orderLine.getProduct();
+    childTask.setProduct(product);
+    childTask.setExTaxTotal(orderLine.getExTaxTotal());
+    childTask.setUnitPrice(product != null ? product.getSalePrice() : null);
+    childTask.setUnit(product != null ? product.getUnit() : null);
+    childTask.setSaleOrderLine(orderLine);
+    if (orderLine.getSaleOrder().getToInvoiceViaTask()) {
+      childTask.setToInvoice(true);
+      childTask.setInvoicingType(TeamTaskRepository.INVOICING_TYPE_PACKAGE);
+    }
   }
 }

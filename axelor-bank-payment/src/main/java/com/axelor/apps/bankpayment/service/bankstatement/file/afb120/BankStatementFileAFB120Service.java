@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -31,11 +31,11 @@ import com.axelor.apps.base.db.repo.CurrencyRepository;
 import com.axelor.apps.tool.file.FileTool;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
-import com.beust.jcommander.internal.Lists;
-import com.beust.jcommander.internal.Maps;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -95,7 +95,8 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
         createBankStatementLine(structuredContentLine, sequence++);
       } catch (Exception e) {
         TraceBackService.trace(
-            new Exception(String.format("Line %s : %s", sequence, e), e), IException.IMPORT);
+            new Exception(String.format("Line %s : %s", sequence, e), e),
+            ExceptionOriginRepository.IMPORT);
         findBankStatement();
       } finally {
         if (sequence % 10 == 0) {
@@ -108,7 +109,7 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
     JPA.clear();
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void createBankStatementLine(Map<String, Object> structuredContentLine, int sequence) {
 
     String description = (String) structuredContentLine.get("description");
@@ -181,41 +182,50 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
     for (String lineContent : fileContent) {
 
       log.info("Read line : {}", lineContent);
+      String lineData = null;
+      int i = 0;
 
-      // Code enregistrement
-      String operationCode =
-          cfonbToolService.readZone(
-              "Record code",
-              lineContent,
-              cfonbToolService.STATUS_MANDATORY,
-              cfonbToolService.FORMAT_NUMERIC,
-              1,
-              2);
+      while (i < lineContent.length()) {
 
-      switch (operationCode) {
-        case PREVIOUS_BALANCE_OPERATION_CODE:
-          structuredContent.add(readPreviousBalanceRecord(lineContent));
-          break;
-        case MOVEMENT_OPERATION_CODE:
-          structuredContent.add(readMovementRecord(lineContent));
-          break;
-        case COMPLEMENT_MOVEMENT_OPERATION_CODE:
-          Map<String, Object> movementLine = structuredContent.get(structuredContent.size() - 1);
-          String additionalInformation = "";
-          if (movementLine.containsKey("additionalInformation")) {
-            additionalInformation = (String) movementLine.get("additionalInformation") + "\n";
-          }
-          additionalInformation +=
-              (String) readAdditionalMovementRecord(lineContent).get("additionalInformation");
+        lineData = lineContent.substring(i, i + 120);
 
-          movementLine.put("additionalInformation", additionalInformation);
+        // Code enregistrement
+        String operationCode =
+            cfonbToolService.readZone(
+                "Record code",
+                lineData,
+                cfonbToolService.STATUS_MANDATORY,
+                cfonbToolService.FORMAT_NUMERIC,
+                1,
+                2);
 
-          break;
-        case NEW_BALANCE_OPERATION_CODE:
-          structuredContent.add(readNewBalanceRecord(lineContent));
-          break;
-        default:
-          break;
+        switch (operationCode) {
+          case PREVIOUS_BALANCE_OPERATION_CODE:
+            structuredContent.add(readPreviousBalanceRecord(lineData));
+            break;
+          case MOVEMENT_OPERATION_CODE:
+            structuredContent.add(readMovementRecord(lineData));
+            break;
+          case COMPLEMENT_MOVEMENT_OPERATION_CODE:
+            Map<String, Object> movementLine = structuredContent.get(structuredContent.size() - 1);
+            String additionalInformation = "";
+            if (movementLine.containsKey("additionalInformation")) {
+              additionalInformation = (String) movementLine.get("additionalInformation") + "\n";
+            }
+            additionalInformation +=
+                (String) readAdditionalMovementRecord(lineData).get("additionalInformation");
+
+            movementLine.put("additionalInformation", additionalInformation);
+
+            break;
+          case NEW_BALANCE_OPERATION_CODE:
+            structuredContent.add(readNewBalanceRecord(lineData));
+            break;
+          default:
+            break;
+        }
+
+        i = i + 120;
       }
     }
 

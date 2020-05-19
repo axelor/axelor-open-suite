@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
     <grid name="invoice-payment-grid" title="Payments" model="com.axelor.apps.account.db.InvoicePayment" orderBy="paymentDate">
 		<hilite if="$moment(paymentDate).diff(invoice.dueDate,'days') &gt; 0" color="warning"/>
@@ -34,8 +34,10 @@
             <field name="companyBankDetails" canEdit="false"
                 onSelect="action-invoice-payment-method-bank-details-domain"
                 form-view="bank-details-form" grid-view="bank-details-grid"/>
-            <field name="bankDepositDate" showIf="paymentMode.typeSelect == 7"/>
-            <field name="chequeNumber" showIf="paymentMode.typeSelect == 7"/>
+            <field name="invoicePaymentRef" showIf="paymentMode.typeSelect == 6"/>
+            <field name="bankDepositDate" showIf="paymentMode.typeSelect == 7 || paymentMode.typeSelect == 4 || paymentMode.typeSelect == 3"/>
+            <field name="chequeNumber" showIf="paymentMode.typeSelect == 7 || paymentMode.typeSelect == 4"/>
+            <field name="description" colSpan="12"/>
             <field name="paymentMode.typeSelect" hidden="true"/>
             <field name="invoice" hidden="true" />
 		</panel>
@@ -45,6 +47,9 @@
 			<field name="statusSelect" showIf="(paymentMode.typeSelect == 2 || paymentMode.typeSelect  == 9) &amp;&amp; paymentMode.inOutSelect == 2"/>
 			<field name="statusSelect" hideIf="(paymentMode.typeSelect == 2 || paymentMode.typeSelect  == 9) &amp;&amp; paymentMode.inOutSelect == 2" selection-in="[0,1,2]"/>
 			<button name="cancelBtn" title="Cancel" readonlyIf="statusSelect == 2" icon="fa-times-circle" onClick="action-invoice-payment-method-cancel"/>
+		</panel>
+		<panel name="newInvoicePaymentPanel"  hideIf="id">
+			<button name="saveBtn" title="OK" colOffset="11" colspan="1" width="50"  onClick="action-invoice-payment-method-check-and-save,save,close"/>
 		</panel>
 	</form>
 
@@ -62,8 +67,11 @@
                 onSelect="action-invoice-payment-method-bank-details-domain"
                 form-view="bank-details-form" grid-view="bank-details-grid"/>
             <field name="paymentDate"/>
-            <field name="bankDepositDate" showIf="paymentMode.typeSelect == 7"/>
-            <field name="chequeNumber" showIf="paymentMode.typeSelect == 7"/>
+            
+            <field name="invoicePaymentRef" showIf="paymentMode.typeSelect == 6"/>
+            <field name="bankDepositDate" showIf="paymentMode.typeSelect == 7 || paymentMode.typeSelect == 4 || paymentMode.typeSelect == 3"/>
+            <field name="chequeNumber" showIf="paymentMode.typeSelect == 7 || paymentMode.typeSelect == 4"/>
+            <field name="description" colSpan="12"/>
             <field name="paymentMode.typeSelect" hidden="true"/>
             <field name="invoicesSelected" hidden="true"/>
        		<button name="validateBtn" title="Validate" onClick="action-invoice-payment-method-validate-mass-payment,close"/>
@@ -124,6 +132,10 @@
 	
 	<action-method name="action-invoice-payment-method-validate-mass-payment">
 		<call class="com.axelor.apps.account.web.InvoicePaymentController" method="validateMassPayment"/>
+	</action-method>
+	
+	<action-method name="action-invoice-payment-method-check-and-save">
+		<call class="com.axelor.apps.account.web.InvoicePaymentController" method="checkConditionBeforeSave"/>
 	</action-method>
 	
 </object-views>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,7 +26,6 @@ import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -35,8 +34,6 @@ import org.apache.commons.io.FileUtils;
 
 @Singleton
 public class ImportCityController {
-
-  @Inject private ImportCityService importCityService;
 
   /**
    * Import cities
@@ -54,7 +51,8 @@ public class ImportCityController {
         Beans.get(MetaFileRepository.class).find(((Integer) map.get("id")).longValue());
 
     try {
-      ImportHistory importHistory = importCityService.importCity(typeSelect, dataFile);
+      ImportHistory importHistory =
+          Beans.get(ImportCityService.class).importCity(typeSelect, dataFile);
       response.setAttr("importHistoryList", "value:add", importHistory);
       File readFile = MetaFiles.getPath(importHistory.getLogMetaFile()).toFile();
       response.setNotify(

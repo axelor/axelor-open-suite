@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
 	<form name="app-base-config-form" title="App base" model="com.axelor.apps.base.db.AppBase" width="large" canDelete="false" canNew="false">
 		<toolbar>
@@ -18,24 +18,24 @@
 		</panel>
 		<panel-tabs name="mainPanelTab">
 			<panel name="configurationPanel" title="Configuration" colSpan="12">
-		    	<field name="defaultPartnerLanguage" />
-				<field name="enableTradingNamesManagement" widget="boolean-switch"/>
-		    	<field name="activateSendingEmail" widget="boolean-switch"/>
-		    	<field name="emailAccountByUser" widget="boolean-switch"/>
-		    	<field name="productInAtiSelect"/>
-		    	<field name="nbDecimalDigitForUnitPrice"/>
-		    	<field name="computeMethodDiscountSelect"/>
-		    	<field name="timeLoggingPreferenceSelect"/>
-		    	<field name="dailyWorkHours"/>
-		    	<field name="unitDays" form-view="unit-form" grid-view="unit-grid"/>
-		    	<field name="unitHours" form-view="unit-form" grid-view="unit-grid"/>
-		    	<field name="unitMinutes" form-view="unit-form" grid-view="unit-grid"/>
-		    	<field name="teamManagement" widget="boolean-switch"/>
-		    	<panel name="productBarCodePanel" title="Product BarCode">
-		    		<field name="activateBarCodeGeneration" widget="Boolean-switch"/>
-		    		<field name="editProductBarcodeType" showIf="activateBarCodeGeneration==true" widget="boolean-switch"/>
-     			 	<field name="barcodeTypeConfig" showIf="activateBarCodeGeneration==true" requiredIf="activateBarCodeGeneration &amp;&amp; !editProductBarcodeType"/>
-				</panel>
+    	    	<field name="defaultPartnerLanguage" />
+    		    <field name="enableTradingNamesManagement" widget="boolean-switch"/>
+    	    	<field name="activateSendingEmail" widget="boolean-switch"/>
+    	    	<field name="emailAccountByUser" widget="boolean-switch"/>
+    	    	<field name="productInAtiSelect"/>
+    	    	<field name="nbDecimalDigitForUnitPrice"/>
+    	    	<field name="computeMethodDiscountSelect"/>
+    	    	<field name="timeLoggingPreferenceSelect"/>
+    	    	<field name="dailyWorkHours"/>
+    	    	<field name="unitDays" form-view="unit-form" grid-view="unit-grid"/>
+    	    	<field name="unitHours" form-view="unit-form" grid-view="unit-grid"/>
+    	    	<field name="unitMinutes" form-view="unit-form" grid-view="unit-grid"/>
+    	    	<field name="teamManagement" widget="boolean-switch"/>
+    	    	<panel name="productBarCodePanel" title="Product BarCode">
+    	    		<field name="activateBarCodeGeneration" widget="Boolean-switch"/>
+    	    		<field name="editProductBarcodeType" showIf="activateBarCodeGeneration==true" widget="boolean-switch"/>
+       			 	<field name="barcodeTypeConfig" showIf="activateBarCodeGeneration==true" requiredIf="activateBarCodeGeneration &amp;&amp; !editProductBarcodeType"/>
+			    </panel>
                 <field name="generatePartnerSequence" widget="boolean-switch"/>
 				<field name="generateProductSequence" widget="boolean-switch"/>
 				<field name="manageProductVariants" widget="boolean-switch"/>
@@ -44,12 +44,17 @@
 				<field name="enableCalendars" widget="boolean-switch"/>
 				<field name="document" widget="boolean-switch"/>
                 <field name="passwordChangedTemplate"/>
+                <field name="limitNumberTasksGenerated"/>
+                <field name="enableMultiCompany" widget="boolean-switch" onChange="action-base-validate-multi-company-boolean"/>
+                <field name="storeStreets" widget="boolean-switch" />
 			</panel>
 		    <panel name="interfacesPanel" title="Interfaces"  colSpan="12">
 				<panel name="mapPanel" title="Mapping"  colSpan="12">
 					<field name="mapApiSelect"/>
 					<button name="checkMapApiBtn" title="Test mapping service connection"   onClick="save,com.axelor.apps.base.web.AppBaseController:checkMapApi" hideIf="mapApiSelect == 2"/>
 					<field name="googleMapsApiKey" widget="password" hideIf="mapApiSelect == 2"/>
+					<spacer hidden="true" colSpan="6" />
+					<field name="osmRoutingServiceApiSelect" hideIf="mapApiSelect == 1" requiredIf="mapApiSelect == 2" help="Use YOUR navigation (http://www.yournavigation.org/api/1.0/gosmore.php) or OSRM (https://router.project-osrm.org/route/v1/driving) Open source routing APIs to get routing information based upon a given start/end location."/>
 				</panel>
 				<panel name="qasPanel" title="Addresses validation"  colSpan="12">
 					<field name="qasWsdlUrl"/>
@@ -85,4 +90,13 @@
 		<call class="com.axelor.apps.base.web.MailBatchController" method="remindTimesheetGeneral"/>
 	</action-method>
 	
+	<!-- ACTION VALIDATE -->
+	<action-validate name="action-base-validate-multi-company-boolean">
+		<error if="!enableMultiCompany &amp;&amp; __repo__(Company).all().count() &gt; 1" action="action-base-record-set-enable-multi-company" message="You can not turn-off this configuration because more than one company is configurated in the system."/>
+	</action-validate>
+	
+	<!-- ACTION RECORD -->
+	<action-record name="action-base-record-set-enable-multi-company" model="com.axelor.apps.base.db.AppBase">
+  		<field if="!enableMultiCompany &amp;&amp; __repo__(Company).all().count() &gt; 1" name="enableMultiCompany" expr="eval: true"/>
+	</action-record>
 </object-views>

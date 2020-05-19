@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -61,10 +61,13 @@ public interface ITranslation {
   public static final String PROJECT_TOTAL = /*$$(*/ "Project.total"; /*)*/
   public static final String PROJECT_RESULT = /*$$(*/ "Project.result"; /*)*/
   public static final String PROJECT_CHART_TITLE = /*$$(*/ "Project.turnoverAndCostPerMonth"; /*)*/
-
   public static final String PROJECT_MANUAL_ELEMENT = /*$$(*/ "Project.manualElement"; /*)*/
   public static final String PROJECT_MANUAL_ELEMENT_TITLE = /*$$(*/
       "Project.manualElementTitle"; /*)*/
+  public static final String PROJECT_REPORT_TITLE_FOR_PLANIFICATION_AND_COST = /*$$(*/
+      "Project planification and costs"; /*)*/
+  public static final String PROJECT_REPORT_TITLE_FOR_FINANCIAL = /*$$(*/
+      "Projects financial report"; /*)*/
 
   public static final String INVOICE_PURCHASE_INVOICE_NO_ANNEX = /*$$(*/
       "Invoice.purchaseInvoiceNoAnnex"; /*)*/
@@ -106,4 +109,103 @@ public interface ITranslation {
       "Project.chartTimeRemainingPerMonth"; /*)*/
   public static final String PROJECT_CHART_MONTH_REMAINING_COST = /*$$(*/
       "Project.chartCostRemainingPerMonth"; /*)*/
+
+  // InvoicingProject
+  public static final String INVOICING_PROJECT_ANNEX_DEADLINE = /*$$(*/
+      "InvoicingProjectAnnex.deadline"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_INVOICE_GENERATED = /*$$(*/
+      "InvoicingProjectAnnex.invoiceGenerated"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_BUSINESS_PROJECT = /*$$(*/
+      "InvoicingProjectAnnex.businessProject"; /*)*/
+  // Titles
+  public static final String INVOICING_PROJECT_ANNEX_TITLE = /*$$(*/
+      "InvoicingProjectAnnex.annex"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_TITLE_SALES = /*$$(*/
+      "InvoicingProjectAnnex.sales"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_TITLE_PURCHASES = /*$$(*/
+      "InvoicingProjectAnnex.purchases"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_TITLE_TIME_SPENT = /*$$(*/
+      "InvoicingProjectAnnex.timeSpent"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_TITLE_EXPENSES = /*$$(*/
+      "InvoicingProjectAnnex.expenses"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_TITLE_PROJECTS = /*$$(*/
+      "InvoicingProjectAnnex.projects"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_TITLE_TASKS = /*$$(*/
+      "InvoicingProjectAnnex.tasks"; /*)*/
+  // InvoicingProject - Sales
+  public static final String INVOICING_PROJECT_ANNEX_CODE = /*$$(*/
+      "InvoicingProjectAnnex.code"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_PRODUCT_NAME = /*$$(*/
+      "InvoicingProjectAnnex.productName"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_UNIT = /*$$(*/
+      "InvoicingProjectAnnex.unit"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_QTY = /*$$(*/
+      "InvoicingProjectAnnex.qty"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_UNIT_PRICE_WT = /*$$(*/
+      "InvoicingProjectAnnex.unitPriceWT"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_UNIT_PRICE_ATI = /*$$(*/
+      "InvoicingProjectAnnex.unitPriceATI"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_TOTAL_ATI = /*$$(*/
+      "InvoicingProjectAnnex.totalATI"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_TOTAL_WT = /*$$(*/
+      "InvoicingProjectAnnex.totalWT"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_ESTIMATED_SHIPPING_DATE = /*$$(*/
+      "InvoicingProjectAnnex.estimatedShippingDate"; /*)*/
+  // InvoicingProject - Purchases
+  public static final String INVOICING_PROJECT_ANNEX_PURCHASE_ORDER = /*$$(*/
+      "InvoicingProjectAnnex.purchaseOrder"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_SUPPLIER = /*$$(*/
+      "InvoicingProjectAnnex.supplier"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_TO_INVOICE = /*$$(*/
+      "InvoicingProjectAnnex.toInvoice"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_INVOICED = /*$$(*/
+      "InvoicingProjectAnnex.invoiced"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_CURRENCY = /*$$(*/
+      "InvoicingProjectAnnex.currency"; /*)*/
+  // InvoicingProject - TimeSpent
+  public static final String INVOICING_PROJECT_ANNEX_USER = /*$$(*/
+      "InvoicingProjectAnnex.user"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_TASK = /*$$(*/
+      "InvoicingProjectAnnex.task"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_DATE = /*$$(*/
+      "InvoicingProjectAnnex.date"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_ACTIVITY = /*$$(*/
+      "InvoicingProjectAnnex.activity"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_DURATION = /*$$(*/
+      "InvoicingProjectAnnex.duration"; /*)*/
+  // InvoicingProject - Expenses
+  public static final String INVOICING_PROJECT_ANNEX_PROJECT = /*$$(*/
+      "InvoicingProjectAnnex.project"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_EXPENSE_TYPE = /*$$(*/
+      "InvoicingProjectAnnex.expenseType"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_EXPENSE_DATE = /*$$(*/
+      "InvoicingProjectAnnex.expenseDate"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_TOTAL_TAX = /*$$(*/
+      "InvoicingProjectAnnex.totalTax"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_COMMENTS = /*$$(*/
+      "InvoicingProjectAnnex.comments"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_TOTAL_AMOUNT_WITH_TAX = /*$$(*/
+      "InvoicingProjectAnnex.totalAmountWT"; /*)*/
+  // InvoicingProject - Project
+  public static final String INVOICING_PROJECT_ANNEX_NAME = /*$$(*/
+      "InvoicingProjectAnnex.name"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_PARENT_PROJECT = /*$$(*/
+      "InvoicingProjectAnnex.parentProject"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_CUSTOMER = /*$$(*/
+      "InvoicingProjectAnnex.customer"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_ASSIGNED_TO = /*$$(*/
+      "InvoicingProjectAnnex.assignedTo"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_FROM_DATE = /*$$(*/
+      "InvoicingProjectAnnex.fromDate"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_TO_DATE = /*$$(*/
+      "InvoicingProjectAnnex.toDate"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_DUE_DATE = /*$$(*/
+      "InvoicingProjectAnnex.dueDate"; /*)*/
+  // InvoicingProject - Tasks
+  public static final String INVOICING_PROJECT_ANNEX_TASK_DATE = /*$$(*/
+      "InvoicingProjectAnnex.taskDate"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_STATUS = /*$$(*/
+      "InvoicingProjectAnnex.status"; /*)*/
+  public static final String INVOICING_PROJECT_ANNEX_PROGRESS = /*$$(*/
+      "InvoicingProjectAnnex.progress"; /*)*/
 }

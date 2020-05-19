@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Country" lang="java" cachable="true">
+  <entity name="Country" lang="java" cacheable="true">
   
     <string name="alpha3Code" title="Alpha-3 code (ISO)" min="3" max="3"/>
     <string name="alpha2Code" title="Alpha-2 code (ISO)" min="2" max="2"/>
@@ -15,6 +15,8 @@
     <string name="phonePrefix" title="Calling code"/>
 
     <many-to-one name="economicArea" ref="com.axelor.apps.base.db.EconomicArea"/>
+    
+    <many-to-one name="citizenship" title="Citizenship" ref="com.axelor.apps.base.db.Citizenship"/>
 
   </entity>
 

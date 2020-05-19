@@ -95,7 +95,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-business-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -393,7 +393,13 @@ AND MoveLine.date_val <= AccountingReport.date_to
 AND (Move.status_select = 3 OR Move.status_select = 2) 
 AND MoveLine.tax_line is not null
 AND Tax.type_select = 2
-AND  Move.ignore_in_accounting_ok = false 
+AND (AccountingReport.display_closing_accounting_moves is true
+	OR(AccountingReport.display_closing_accounting_moves is false
+		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
+AND (AccountingReport.display_opening_accounting_moves is true
+	OR(AccountingReport.display_opening_accounting_moves is false
+		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
+AND  Move.ignore_in_accounting_ok = false
 order by MoveLine.date_val ASC, MoveLine.name ASC]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
@@ -723,8 +729,14 @@ AND MoveLine.date_val <= AccountingReport.date_to
 AND (Move.status_select = 3 OR Move.status_select = 2) 
 AND MoveLine.tax_line is not null
 AND Tax.type_select = 2
-AND  Move.ignore_in_accounting_ok = false 
-group by Tax.id, TaxLine.value 
+AND (AccountingReport.display_closing_accounting_moves is true
+	OR(AccountingReport.display_closing_accounting_moves is false
+		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
+AND (AccountingReport.display_opening_accounting_moves is true
+	OR(AccountingReport.display_opening_accounting_moves is false
+		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
+AND  Move.ignore_in_accounting_ok = false
+group by Tax.id, TaxLine.value
 order by Tax.code ASC]]></xml-property>
         </oda-data-set>
     </data-sets>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -36,6 +36,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Set;
 import javax.mail.MessagingException;
 
@@ -146,7 +147,7 @@ public class CampaignServiceImpl implements CampaignService {
     return errors.toString();
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   protected void generateAndSendMessage(Campaign campaign, Model model, Template template)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           MessagingException, IOException, AxelorException {
@@ -186,20 +187,31 @@ public class CampaignServiceImpl implements CampaignService {
     return null;
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void generateEvents(Campaign campaign) {
+
+    LocalDateTime eventStartDateTime = campaign.getEventStartDateTime();
+    Long duration = campaign.getDuration();
+    LocalDateTime eventEndDateTime = eventStartDateTime.plusSeconds(duration);
 
     for (Partner partner : campaign.getPartnerSet()) {
       Event event = new Event();
-      event.setPartner(partner);
+
+      if (partner.getIsContact()) {
+        event.setContactPartner(partner);
+      } else {
+        event.setPartner(partner);
+      }
+
       event.setUser(
           campaign.getGenerateEventPerPartnerOrLead()
               ? partner.getUser()
               : campaign.getEventUser());
       event.setSubject(campaign.getSubject());
       event.setTypeSelect(campaign.getEventTypeSelect());
-      event.setStartDateTime(campaign.getEventStartDateTime());
-      event.setDuration(campaign.getDuration());
+      event.setStartDateTime(eventStartDateTime);
+      event.setEndDateTime(eventEndDateTime);
+      event.setDuration(duration);
       event.setTeam(
           campaign.getGenerateEventPerPartnerOrLead() ? partner.getTeam() : campaign.getTeam());
       event.setCampaign(campaign);
@@ -214,8 +226,9 @@ public class CampaignServiceImpl implements CampaignService {
           campaign.getGenerateEventPerPartnerOrLead() ? lead.getUser() : campaign.getEventUser());
       event.setSubject(campaign.getSubject());
       event.setTypeSelect(campaign.getEventTypeSelect());
-      event.setStartDateTime(campaign.getEventStartDateTime());
-      event.setDuration(campaign.getDuration());
+      event.setStartDateTime(eventStartDateTime);
+      event.setEndDateTime(eventEndDateTime);
+      event.setDuration(duration);
       event.setTeam(
           campaign.getGenerateEventPerPartnerOrLead() ? lead.getTeam() : campaign.getTeam());
       event.setCampaign(campaign);
@@ -224,7 +237,7 @@ public class CampaignServiceImpl implements CampaignService {
     }
   }
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void generateTargets(Campaign campaign) {
 
     TargetListService targetListService = Beans.get(TargetListService.class);
@@ -237,7 +250,7 @@ public class CampaignServiceImpl implements CampaignService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void inviteSelectedTargets(Campaign campaign, Campaign campaignContext) {
 
     Set<Partner> partners = campaign.getPartners();
@@ -264,7 +277,7 @@ public class CampaignServiceImpl implements CampaignService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void inviteAllTargets(Campaign campaign) {
 
     Set<Partner> partners = campaign.getPartners();
@@ -288,7 +301,7 @@ public class CampaignServiceImpl implements CampaignService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void addParticipatingTargets(Campaign campaign, Campaign campaignContext) {
 
     for (Partner partner : campaignContext.getInvitedPartnerSet()) {
@@ -309,7 +322,7 @@ public class CampaignServiceImpl implements CampaignService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void addNotParticipatingTargets(Campaign campaign, Campaign campaignContext) {
 
     for (Partner partner : campaignContext.getInvitedPartnerSet()) {
@@ -330,7 +343,7 @@ public class CampaignServiceImpl implements CampaignService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void markLeadPresent(Campaign campaign, Lead lead) {
 
     campaign.addPresentLeadSetItem(lead);
@@ -338,7 +351,7 @@ public class CampaignServiceImpl implements CampaignService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional
   public void markPartnerPresent(Campaign campaign, Partner partner) {
 
     campaign.addPresentPartnerSetItem(partner);

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,6 +33,9 @@ import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.axelor.rpc.filter.Filter;
+import com.axelor.rpc.filter.JPQLFilter;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
@@ -40,6 +43,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.persistence.Query;
 
 @RequestScoped
@@ -85,22 +89,29 @@ public class StockLocationServiceImpl implements StockLocationService {
     }
   }
 
-  public List<StockLocation> getNonVirtualStockLocations() {
-    return stockLocationRepo
-        .all()
-        .filter("self.typeSelect != ?1", StockLocationRepository.TYPE_VIRTUAL)
+  protected List<StockLocation> getNonVirtualStockLocations(Long companyId) {
+    List<Filter> queryFilter =
+        Lists.newArrayList(new JPQLFilter("self.typeSelect != :stockLocationTypSelect"));
+    if (companyId != null && companyId != 0L) {
+      queryFilter.add(new JPQLFilter("self.company.id = :companyId "));
+    }
+    return Filter.and(queryFilter)
+        .build(StockLocation.class)
+        .bind("stockLocationTypSelect", StockLocationRepository.TYPE_VIRTUAL)
+        .bind("companyId", companyId)
         .fetch();
   }
 
   @Override
-  public BigDecimal getQty(Long productId, Long locationId, String qtyType) throws AxelorException {
+  public BigDecimal getQty(Long productId, Long locationId, Long companyId, String qtyType)
+      throws AxelorException {
     if (productId != null) {
       Product product = productRepo.find(productId);
       Unit productUnit = product.getUnit();
       UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
 
-      if (locationId == null) {
-        List<StockLocation> stockLocations = getNonVirtualStockLocations();
+      if (locationId == null || locationId == 0L) {
+        List<StockLocation> stockLocations = getNonVirtualStockLocations(companyId);
         if (!stockLocations.isEmpty()) {
           BigDecimal qty = BigDecimal.ZERO;
           for (StockLocation stockLocation : stockLocations) {
@@ -149,17 +160,19 @@ public class StockLocationServiceImpl implements StockLocationService {
       }
     }
 
-    return null;
+    return BigDecimal.ZERO;
   }
 
   @Override
-  public BigDecimal getRealQty(Long productId, Long locationId) throws AxelorException {
-    return getQty(productId, locationId, "real");
+  public BigDecimal getRealQty(Long productId, Long locationId, Long companyId)
+      throws AxelorException {
+    return getQty(productId, locationId, companyId, "real");
   }
 
   @Override
-  public BigDecimal getFutureQty(Long productId, Long locationId) throws AxelorException {
-    return getQty(productId, locationId, "future");
+  public BigDecimal getFutureQty(Long productId, Long locationId, Long companyId)
+      throws AxelorException {
+    return getQty(productId, locationId, companyId, "future");
   }
 
   public List<Long> getBadStockLocationLineId() {
@@ -215,7 +228,9 @@ public class StockLocationServiceImpl implements StockLocationService {
       StockLocation stockLocation, boolean isVirtualInclude) {
 
     List<StockLocation> resultList = new ArrayList<>();
-
+    if (stockLocation == null) {
+      return resultList;
+    }
     if (isVirtualInclude) {
       for (StockLocation subLocation :
           stockLocationRepo
@@ -250,10 +265,10 @@ public class StockLocationServiceImpl implements StockLocationService {
     Query query =
         JPA.em()
             .createQuery(
-                "SELECT SUM( self.currentQty * CASE WHEN (location.company.stockConfig.stockLocationValue = 1) THEN "
-                    + "(self.avgPrice)  WHEN (location.company.stockConfig.stockLocationValue = 2) THEN "
+                "SELECT SUM( self.currentQty * CASE WHEN (location.company.stockConfig.stockValuationTypeSelect = 1) THEN "
+                    + "(self.avgPrice)  WHEN (location.company.stockConfig.stockValuationTypeSelect = 2) THEN "
                     + "CASE WHEN (self.product.costTypeSelect = 3) THEN (self.avgPrice) ELSE (self.product.costPrice) END "
-                    + "WHEN (location.company.stockConfig.stockLocationValue = 3) THEN "
+                    + "WHEN (location.company.stockConfig.stockValuationTypeSelect = 3) THEN "
                     + "(self.product.salePrice) ELSE (self.avgPrice) END ) AS value "
                     + "FROM StockLocationLine AS self "
                     + "LEFT JOIN StockLocation AS location "
@@ -265,6 +280,19 @@ public class StockLocationServiceImpl implements StockLocationService {
     return (result.get(0) == null || ((BigDecimal) result.get(0)).signum() == 0)
         ? BigDecimal.ZERO
         : ((BigDecimal) result.get(0)).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+  }
+
+  @Override
+  public List<Long> getAllLocationAndSubLocationId(
+      StockLocation stockLocation, boolean isVirtualInclude) {
+    List<StockLocation> stockLocationList =
+        getAllLocationAndSubLocation(stockLocation, isVirtualInclude);
+    List<Long> stockLocationListId = null;
+    if (stockLocationList != null) {
+      stockLocationListId =
+          stockLocationList.stream().map(StockLocation::getId).collect(Collectors.toList());
+    }
+    return stockLocationListId;
   }
 
   @Override

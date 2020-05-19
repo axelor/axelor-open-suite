@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,24 +23,21 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.IndicatorGeneratorService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class IndicatorGeneratorController {
-
-  @Inject private IndicatorGeneratorService indicatorGeneratorService;
-
-  @Inject private IndicatorGeneratorRepository indicatorGeneratorRepo;
 
   public void run(ActionRequest request, ActionResponse response) {
 
     IndicatorGenerator indicatorGenerator = request.getContext().asType(IndicatorGenerator.class);
 
     try {
-      indicatorGeneratorService.run(indicatorGeneratorRepo.find(indicatorGenerator.getId()));
+      Beans.get(IndicatorGeneratorService.class)
+          .run(Beans.get(IndicatorGeneratorRepository.class).find(indicatorGenerator.getId()));
       response.setReload(true);
       response.setFlash(I18n.get(IExceptionMessage.INDICATOR_GENERATOR_3));
     } catch (Exception e) {

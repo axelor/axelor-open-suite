@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -114,6 +114,21 @@ public class ContractController {
     }
   }
 
+  public void close(ActionRequest request, ActionResponse response) {
+    Contract contract =
+        Beans.get(ContractRepository.class)
+            .find(request.getContext().asType(Contract.class).getId());
+
+    ContractService service = Beans.get(ContractService.class);
+    try {
+      service.checkCanTerminateContract(contract);
+      service.close(contract, contract.getTerminatedDate());
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void renew(ActionRequest request, ActionResponse response) {
     Contract contract =
         Beans.get(ContractRepository.class)
@@ -144,10 +159,6 @@ public class ContractController {
         });
 
     response.setReload(true);
-  }
-
-  private LocalDate getToDay() {
-    return Beans.get(AppBaseService.class).getTodayDate();
   }
 
   public void saveNextVersion(ActionRequest request, ActionResponse response) {

@@ -22,26 +22,6 @@
             <property name="id">7</property>
             <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
         </structure>
-        <structure>
-            <property name="name">odaAutoCommit</property>
-            <property name="id">7</property>
-        </structure>
-        <structure>
-            <property name="name">odaIsolationMode</property>
-            <property name="id">7</property>
-        </structure>
-        <structure>
-            <property name="name">odaJndiName</property>
-            <property name="id">7</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileName</property>
-            <property name="id">7</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileStorePath</property>
-            <property name="id">7</property>
-        </structure>
     </list-property>
     <property name="units">in</property>
     <method name="beforeFactory"><![CDATA[if(params["HeaderHeight"].value != 0 ) {
@@ -202,58 +182,62 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">logo_path</property>
-                    <property name="analysis">measure</property>
+                    <property name="analysis">dimension</property>
                     <text-property name="displayName">logo_path</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">logo_path</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_height</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <text-property name="heading">logo_height</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_width</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <text-property name="heading">logo_width</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">message_id</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">message_id</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">message_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">pdf_header</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">pdf_header</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">pdf_header</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">media_type_select</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">media_type_select</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">media_type_select</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">subject</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">subject</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">subject</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">content</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">content</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">content</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">pdf_footer</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">pdf_footer</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">pdf_footer</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">address_block</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">address_block</text-property>
-                    <property name="onColumnLayout">false</property>
                     <text-property name="heading">address_block</text-property>
                 </structure>
             </list-property>
@@ -268,36 +252,46 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                     </structure>
                     <structure>
                         <property name="position">2</property>
+                        <property name="name">logo_height</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">logo_width</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
                         <property name="name">message_id</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">3</property>
+                        <property name="position">5</property>
                         <property name="name">pdf_header</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">4</property>
+                        <property name="position">6</property>
                         <property name="name">media_type_select</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">5</property>
+                        <property name="position">7</property>
                         <property name="name">subject</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">6</property>
+                        <property name="position">8</property>
                         <property name="name">content</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">7</property>
+                        <property name="position">9</property>
                         <property name="name">pdf_footer</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
+                        <property name="position">10</property>
                         <property name="name">address_block</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -311,52 +305,66 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">-5</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
+                    <property name="name">logo_height</property>
+                    <property name="nativeName">logo_height</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">logo_width</property>
+                    <property name="nativeName">logo_width</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
                     <property name="name">message_id</property>
                     <property name="nativeName">message_id</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
-                    <property name="position">3</property>
+                    <property name="position">5</property>
                     <property name="name">pdf_header</property>
                     <property name="nativeName">pdf_header</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">4</property>
+                    <property name="position">6</property>
                     <property name="name">media_type_select</property>
                     <property name="nativeName">media_type_select</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">5</property>
+                    <property name="position">7</property>
                     <property name="name">subject</property>
                     <property name="nativeName">subject</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">6</property>
+                    <property name="position">8</property>
                     <property name="name">content</property>
                     <property name="nativeName">content</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">7</property>
+                    <property name="position">9</property>
                     <property name="name">pdf_footer</property>
                     <property name="nativeName">pdf_footer</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">8</property>
+                    <property name="position">10</property>
                     <property name="name">address_block</property>
                     <property name="nativeName">address_block</property>
                     <property name="dataType">string</property>
@@ -364,7 +372,9 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 
-    MetaFile.file_path AS logo_path,	
+    MetaFile.file_path AS logo_path,
+	baseCompany.height AS logo_height,
+	baseCompany.width AS logo_width,	
     self.id AS message_id,
     basePrintingSettings.pdf_header AS pdf_header,
     metaSelectItem.title AS media_type_select,
@@ -626,6 +636,20 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <expression name="expression" type="javascript">dataSetRow["address_block"]</expression>
                             <property name="dataType">string</property>
                         </structure>
+                        <structure>
+                            <property name="name">logo_height</property>
+                            <text-property name="displayName">logo_height</text-property>
+                            <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0){dataSetRow["logo_height"]+'px'}else{'60px'}</expression>
+                            <property name="dataType">string</property>
+                            <property name="allowExport">true</property>
+                        </structure>
+                        <structure>
+                            <property name="name">logo_width</property>
+                            <text-property name="displayName">logo_width</text-property>
+                            <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'154px'}</expression>
+                            <property name="dataType">string</property>
+                            <property name="allowExport">true</property>
+                        </structure>
                     </list-property>
                     <column id="287"/>
                     <column id="288"/>
@@ -644,11 +668,23 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </text>
                         </cell>
                         <cell id="4638">
-                            <image id="4639">
-                                <property name="height">100px</property>
-                                <property name="source">file</property>
-                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
-                            </image>
+                            <text id="4640">
+                                <property name="fontSize">8pt</property>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<TABLE>
+	<TR>
+		<VALUE-OF format="HTML">
+			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
+		</VALUE-OF>
+	</TR>
+</TABLE>]]></text-property>
+                            </text>
                         </cell>
                     </row>
                 </grid>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -200,6 +200,7 @@ public abstract class InvoiceGenerator {
     if (accountingSituation != null) {
       invoice.setInvoiceAutomaticMail(accountingSituation.getInvoiceAutomaticMail());
       invoice.setInvoiceMessageTemplate(accountingSituation.getInvoiceMessageTemplate());
+      invoice.setPfpValidatorUser(accountingSituation.getPfpValidatorUser());
     }
 
     if (paymentCondition == null) {
@@ -278,19 +279,32 @@ public abstract class InvoiceGenerator {
           companyBankDetails = accountingSituation.getCompanyInBankDetails();
         }
       }
-      if (companyBankDetails == null) {
-        companyBankDetails = company.getDefaultBankDetails();
-        List<BankDetails> allowedBDs =
-            Beans.get(PaymentModeService.class).getCompatibleBankDetailsList(paymentMode, company);
-        if (!allowedBDs.contains(companyBankDetails)) {
-          companyBankDetails = null;
-        }
+    }
+    if (companyBankDetails == null) {
+      companyBankDetails = company.getDefaultBankDetails();
+      List<BankDetails> allowedBDs =
+          Beans.get(PaymentModeService.class).getCompatibleBankDetailsList(paymentMode, company);
+      if (!allowedBDs.contains(companyBankDetails)) {
+        companyBankDetails = null;
       }
     }
     invoice.setCompanyBankDetails(companyBankDetails);
 
-    if (companyBankDetails != null
+    if (partner != null
+        && !Strings.isNullOrEmpty(partner.getInvoiceComments())
+        && companyBankDetails != null
         && !Strings.isNullOrEmpty(companyBankDetails.getSpecificNoteOnInvoice())) {
+      invoice.setNote(
+          partner.getInvoiceComments() + "\n" + companyBankDetails.getSpecificNoteOnInvoice());
+    } else if (partner != null
+        && Strings.isNullOrEmpty(partner.getInvoiceComments())
+        && companyBankDetails != null
+        && !Strings.isNullOrEmpty(companyBankDetails.getSpecificNoteOnInvoice())) {
+      invoice.setNote(partner.getInvoiceComments());
+    } else if (partner != null
+        && !Strings.isNullOrEmpty(partner.getInvoiceComments())
+        && companyBankDetails != null
+        && Strings.isNullOrEmpty(companyBankDetails.getSpecificNoteOnInvoice())) {
       invoice.setNote(companyBankDetails.getSpecificNoteOnInvoice());
     }
 

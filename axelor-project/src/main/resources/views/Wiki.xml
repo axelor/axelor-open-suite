@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	
 	<grid name="wiki-grid" title="Wiki" model="com.axelor.apps.project.db.Wiki">
@@ -14,7 +14,7 @@
 		<field name="content"/>
 	</grid>
 	
-	<form name="wiki-form" title="Wiki"  model="com.axelor.apps.project.db.Wiki" width="large">
+	<form name="wiki-form" title="Wiki"  model="com.axelor.apps.project.db.Wiki" width="large" onNew="action-business-support-attrs-project-default">
 		<panel name="mainPanel">
 			<field name="title" colSpan="6"/>
 			<field name="project" colSpan="6" canEdit="false"/>

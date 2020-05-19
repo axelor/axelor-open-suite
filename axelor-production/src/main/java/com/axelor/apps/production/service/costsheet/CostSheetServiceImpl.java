@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.production.service.costsheet;
 
-import com.axelor.app.production.db.IWorkCenter;
 import com.axelor.apps.base.db.AppProduction;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
@@ -34,10 +33,12 @@ import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.ProdResidualProduct;
+import com.axelor.apps.production.db.UnitCostCalculation;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
+import com.axelor.apps.production.db.repo.WorkCenterRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -101,8 +102,10 @@ public class CostSheetServiceImpl implements CostSheetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public CostSheet computeCostPrice(BillOfMaterial billOfMaterial) throws AxelorException {
+  @Transactional(rollbackOn = {Exception.class})
+  public CostSheet computeCostPrice(
+      BillOfMaterial billOfMaterial, int origin, UnitCostCalculation unitCostCalculation)
+      throws AxelorException {
 
     this.init();
 
@@ -120,7 +123,13 @@ public class CostSheetServiceImpl implements CostSheetService {
       costSheet.setCurrency(company.getCurrency());
     }
 
-    this._computeCostPrice(billOfMaterial.getCompany(), billOfMaterial, 0, producedCostSheetLine);
+    this._computeCostPrice(
+        billOfMaterial.getCompany(),
+        billOfMaterial,
+        0,
+        producedCostSheetLine,
+        origin,
+        unitCostCalculation);
 
     this.computeResidualProduct(billOfMaterial);
 
@@ -132,7 +141,7 @@ public class CostSheetServiceImpl implements CostSheetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  @Transactional(rollbackOn = {Exception.class})
   public CostSheet computeCostPrice(
       ManufOrder manufOrder, int calculationTypeSelect, LocalDate calculationDate)
       throws AxelorException {
@@ -258,13 +267,16 @@ public class CostSheetServiceImpl implements CostSheetService {
       Company company,
       BillOfMaterial billOfMaterial,
       int bomLevel,
-      CostSheetLine parentCostSheetLine)
+      CostSheetLine parentCostSheetLine,
+      int origin,
+      UnitCostCalculation unitCostCalculation)
       throws AxelorException {
 
     bomLevel++;
 
     // Cout des composants
-    this._computeToConsumeProduct(company, billOfMaterial, bomLevel, parentCostSheetLine);
+    this._computeToConsumeProduct(
+        company, billOfMaterial, bomLevel, parentCostSheetLine, origin, unitCostCalculation);
 
     // Cout des operations
     this._computeProcess(
@@ -279,7 +291,9 @@ public class CostSheetServiceImpl implements CostSheetService {
       Company company,
       BillOfMaterial billOfMaterial,
       int bomLevel,
-      CostSheetLine parentCostSheetLine)
+      CostSheetLine parentCostSheetLine,
+      int origin,
+      UnitCostCalculation unitCostCalculation)
       throws AxelorException {
 
     if (billOfMaterial.getBillOfMaterialSet() != null) {
@@ -298,7 +312,8 @@ public class CostSheetServiceImpl implements CostSheetService {
                   bomLevel,
                   parentCostSheetLine,
                   billOfMaterialLine.getQty(),
-                  CostSheetLineService.ORIGIN_BILL_OF_MATERIAL);
+                  origin,
+                  unitCostCalculation);
 
           BigDecimal wasteRate = billOfMaterialLine.getWasteRate();
 
@@ -310,11 +325,14 @@ public class CostSheetServiceImpl implements CostSheetService {
                 bomLevel,
                 parentCostSheetLine,
                 billOfMaterialLine.getQty(),
-                wasteRate);
+                wasteRate,
+                origin,
+                unitCostCalculation);
           }
 
           if (billOfMaterialLine.getDefineSubBillOfMaterial()) {
-            this._computeCostPrice(company, billOfMaterialLine, bomLevel, costSheetLine);
+            this._computeCostPrice(
+                company, billOfMaterialLine, bomLevel, costSheetLine, origin, unitCostCalculation);
           }
         }
       }
@@ -339,14 +357,14 @@ public class CostSheetServiceImpl implements CostSheetService {
 
           int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
 
-          if (workCenterTypeSelect == IWorkCenter.WORK_CENTER_HUMAN
-              || workCenterTypeSelect == IWorkCenter.WORK_CENTER_BOTH) {
+          if (workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_HUMAN
+              || workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
 
             this._computeHumanResourceCost(
                 workCenter, prodProcessLine.getPriority(), bomLevel, parentCostSheetLine);
           }
-          if (workCenterTypeSelect == IWorkCenter.WORK_CENTER_MACHINE
-              || workCenterTypeSelect == IWorkCenter.WORK_CENTER_BOTH) {
+          if (workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_MACHINE
+              || workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
 
             this._computeMachineCost(
                 prodProcessLine, producedQty, pieceUnit, bomLevel, parentCostSheetLine);
@@ -420,7 +438,7 @@ public class CostSheetServiceImpl implements CostSheetService {
 
     int costType = workCenter.getCostTypeSelect();
 
-    if (costType == IWorkCenter.COST_PER_CYCLE) {
+    if (costType == WorkCenterRepository.COST_TYPE_PER_CYCLE) {
 
       costSheetLineService.createWorkCenterMachineCostSheetLine(
           workCenter,
@@ -431,7 +449,7 @@ public class CostSheetServiceImpl implements CostSheetService {
           workCenter.getCostAmount(),
           cycleUnit);
 
-    } else if (costType == IWorkCenter.COST_PER_HOUR) {
+    } else if (costType == WorkCenterRepository.COST_TYPE_PER_HOUR) {
 
       BigDecimal qty =
           new BigDecimal(prodProcessLine.getDurationPerCycle())
@@ -452,7 +470,7 @@ public class CostSheetServiceImpl implements CostSheetService {
           costPrice,
           hourUnit);
 
-    } else if (costType == IWorkCenter.COST_PER_PIECE) {
+    } else if (costType == WorkCenterRepository.COST_TYPE_PER_PIECE) {
 
       BigDecimal costPrice = workCenter.getCostAmount().multiply(producedQty);
 
@@ -597,7 +615,8 @@ public class CostSheetServiceImpl implements CostSheetService {
           bomLevel,
           parentCostSheetLine,
           valuationQty,
-          CostSheetLineService.ORIGIN_MANUF_ORDER);
+          CostSheetService.ORIGIN_MANUF_ORDER,
+          null);
     }
   }
 
@@ -726,8 +745,8 @@ public class CostSheetServiceImpl implements CostSheetService {
         continue;
       }
       int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
-      if (workCenterTypeSelect == IWorkCenter.WORK_CENTER_HUMAN
-          || workCenterTypeSelect == IWorkCenter.WORK_CENTER_BOTH) {
+      if (workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_HUMAN
+          || workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
 
         this.computeRealHumanResourceCost(
             operationOrder,
@@ -736,8 +755,8 @@ public class CostSheetServiceImpl implements CostSheetService {
             parentCostSheetLine,
             previousCostSheetDate);
       }
-      if (workCenterTypeSelect == IWorkCenter.WORK_CENTER_MACHINE
-          || workCenterTypeSelect == IWorkCenter.WORK_CENTER_BOTH) {
+      if (workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_MACHINE
+          || workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
 
         this.computeRealMachineCost(
             operationOrder,
@@ -850,7 +869,7 @@ public class CostSheetServiceImpl implements CostSheetService {
       LocalDate previousCostSheetDate) {
     int costType = workCenter.getCostTypeSelect();
 
-    if (costType == IWorkCenter.COST_PER_CYCLE) {
+    if (costType == WorkCenterRepository.COST_TYPE_PER_CYCLE) {
       costSheetLineService.createWorkCenterMachineCostSheetLine(
           workCenter,
           operationOrder.getPriority(),
@@ -859,7 +878,7 @@ public class CostSheetServiceImpl implements CostSheetService {
           this.getNbCycle(producedQty, workCenter.getMaxCapacityPerCycle()),
           workCenter.getCostAmount(),
           cycleUnit);
-    } else if (costType == IWorkCenter.COST_PER_HOUR) {
+    } else if (costType == WorkCenterRepository.COST_TYPE_PER_HOUR) {
       BigDecimal qty = BigDecimal.ZERO;
 
       if (workCenter.getIsRevaluationAtActualPrices()) {
@@ -906,7 +925,7 @@ public class CostSheetServiceImpl implements CostSheetService {
           qty,
           costPrice,
           hourUnit);
-    } else if (costType == IWorkCenter.COST_PER_PIECE) {
+    } else if (costType == WorkCenterRepository.COST_TYPE_PER_PIECE) {
 
       BigDecimal costPrice = workCenter.getCostAmount().multiply(producedQty);
       costSheetLineService.createWorkCenterMachineCostSheetLine(

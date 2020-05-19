@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -21,10 +21,19 @@ import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 public interface WeeklyPlanningService {
+
+  /**
+   * Gets the first day of the week, according to the weekly planning of the active company of the
+   * user. If no day can be found, default value is MONDAY.
+   *
+   * @return
+   */
+  DayOfWeek getFirstDayOfWeek();
 
   public WeeklyPlanning initPlanning(WeeklyPlanning planning);
 

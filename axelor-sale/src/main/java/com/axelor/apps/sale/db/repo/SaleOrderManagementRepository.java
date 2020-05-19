@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -58,9 +58,11 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
       copy.clearAdvancePaymentList();
     }
 
-    for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {
-      saleOrderLine.setDesiredDelivDate(null);
-      saleOrderLine.setEstimatedDelivDate(null);
+    if (copy.getSaleOrderLineList() != null) {
+      for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {
+        saleOrderLine.setDesiredDelivDate(null);
+        saleOrderLine.setEstimatedDelivDate(null);
+      }
     }
 
     return copy;
@@ -98,10 +100,13 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 
   public void computeFullName(SaleOrder saleOrder) {
     try {
-      if (!Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq()))
-        saleOrder.setFullName(
-            saleOrder.getSaleOrderSeq() + "-" + saleOrder.getClientPartner().getName());
-      else saleOrder.setFullName(saleOrder.getClientPartner().getName());
+      if (saleOrder.getClientPartner() != null) {
+        String fullName = saleOrder.getClientPartner().getName();
+        if (!Strings.isNullOrEmpty(saleOrder.getSaleOrderSeq())) {
+          fullName = saleOrder.getSaleOrderSeq() + "-" + fullName;
+        }
+        saleOrder.setFullName(fullName);
+      }
     } catch (Exception e) {
       throw new PersistenceException(e.getLocalizedMessage());
     }

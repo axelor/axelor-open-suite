@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -452,9 +452,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           qty = stockMoveLine.getQty();
         }
 
-        if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
-          this.updateAveragePriceLocationLine(toStockLocation, stockMoveLine, fromStatus, toStatus);
-        }
         this.updateLocations(
             stockMoveLine,
             fromStockLocation,
@@ -465,6 +462,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             toStatus,
             lastFutureStockMoveDate,
             stockMoveLine.getTrackingNumber());
+        if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+          this.updateAveragePriceLocationLine(toStockLocation, stockMoveLine, fromStatus, toStatus);
+        }
         weightedAveragePriceService.computeAvgPriceForProduct(stockMoveLine.getProduct());
       }
     }
@@ -489,13 +489,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   protected void computeNewAveragePriceLocationLine(
       StockLocationLine stockLocationLine, StockMoveLine stockMoveLine) throws AxelorException {
     BigDecimal oldAvgPrice = stockLocationLine.getAvgPrice();
-    BigDecimal oldQty = stockLocationLine.getCurrentQty();
     // avgPrice in stock move line is a bigdecimal but is nullable.
+    BigDecimal newQty = stockMoveLine.getRealQty();
+    BigDecimal oldQty = stockLocationLine.getCurrentQty().subtract(newQty);
     BigDecimal newPrice =
         stockMoveLine.getWapPrice() != null
             ? stockMoveLine.getWapPrice()
             : stockMoveLine.getCompanyUnitPriceUntaxed();
-    BigDecimal newQty = stockMoveLine.getRealQty();
     BigDecimal newAvgPrice;
     if (oldAvgPrice == null
         || oldQty == null
@@ -541,7 +541,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     } else {
       newAvgPrice = oldAvgPrice;
     }
-    stockLocationLine.setAvgPrice(newAvgPrice);
+    stockLocationLineService.updateWap(stockLocationLine, newAvgPrice, stockMoveLine);
   }
 
   @Override

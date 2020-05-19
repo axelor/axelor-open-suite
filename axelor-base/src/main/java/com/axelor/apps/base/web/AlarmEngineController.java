@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,15 +24,10 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class AlarmEngineController {
-
-  @SuppressWarnings("rawtypes")
-  @Inject
-  private AlarmEngineService aes;
 
   @SuppressWarnings("unchecked")
   public void validateQuery(ActionRequest request, ActionResponse response) {
@@ -41,8 +36,9 @@ public class AlarmEngineController {
 
     try {
       if (alarmEngine.getQuery() != null) {
-        aes.results(
-            alarmEngine.getQuery(), Class.forName(alarmEngine.getMetaModel().getFullName()));
+        Beans.get(AlarmEngineService.class)
+            .results(
+                alarmEngine.getQuery(), Class.forName(alarmEngine.getMetaModel().getFullName()));
       }
     } catch (Exception e) {
       response.setValue(

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -71,4 +71,12 @@ public interface ContractLineService {
    * @return ContractLine with ex/in tax total computed.
    */
   ContractLine computeTotal(ContractLine contractLine);
+
+  /**
+   * Create analytic move lines using analytic distribution template
+   *
+   * @param contractLine
+   * @return ContractLine filled with analytic move lines
+   */
+  ContractLine createAnalyticDistributionWithTemplate(ContractLine contractLine, Contract contract);
 }

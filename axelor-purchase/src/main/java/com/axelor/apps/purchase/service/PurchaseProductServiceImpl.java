@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,10 +24,10 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.UnitConversionService;
-import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
@@ -62,8 +62,8 @@ public class PurchaseProductServiceImpl implements PurchaseProductService {
                     + "AND (self.purchaseOrder.statusSelect = :validated "
                     + "OR self.purchaseOrder.statusSelect = :finished)")
             .bind("productId", product.getId())
-            .bind("validated", IPurchaseOrder.STATUS_VALIDATED)
-            .bind("finished", IPurchaseOrder.STATUS_FINISHED)
+            .bind("validated", PurchaseOrderRepository.STATUS_VALIDATED)
+            .bind("finished", PurchaseOrderRepository.STATUS_FINISHED)
             .order("-purchaseOrder.validationDate")
             .fetchOne();
     if (lastPurchaseOrderLine != null) {

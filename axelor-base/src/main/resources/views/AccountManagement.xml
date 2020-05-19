@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	<grid name="account-management-grid" title="Account management list"
 		model="com.axelor.apps.account.db.AccountManagement">
 		<field name="typeSelect" />
-		<field name="company" form-view="company-form" grid-view="company-grid" />
+		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="saleAccount" if-module="axelor-account" form-view="account-form" canEdit="false"
 			grid-view="account-grid" if="__config__.app.isApp('account')" />
 		<field name="purchaseAccount" if-module="axelor-account"
@@ -22,7 +22,8 @@
 		onNew="action-account-management-record-default, action-account-management-attrs-type">
 		<field name="typeSelect" hidden="true"/>
 		<field name="company" form-view="company-form" grid-view="company-grid"
-			onChange="action-group-account-account-management-onchange-common" canEdit="false"/>
+			onChange="action-group-account-account-management-onchange-common" canEdit="false"
+			if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="fixedAssetCategory" if-module="axelor-account"
 			if="__config__.app.isApp('account')" domain="self.company = :company"
 			form-view="fixed-asset-category-form" grid-view="fixed-asset-category-grid"

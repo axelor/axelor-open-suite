@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -33,14 +33,13 @@ import groovy.util.slurpersupport.GPathResult;
 import groovy.util.slurpersupport.Node;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import javax.ws.rs.core.UriBuilder;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wslite.json.JSONArray;
@@ -244,13 +243,13 @@ public class MapService {
       switch (appBaseService.getAppBase().getMapApiSelect()) {
         case AppBaseRepository.MAP_API_GOOGLE:
           final String uri = "map/gmaps.html";
-          URIBuilder ub = new URIBuilder(uri);
-          ub.addParameter("key", getGoogleMapsApiKey());
-          ub.addParameter("x", String.valueOf(latitude));
-          ub.addParameter("y", String.valueOf(longitude));
-          ub.addParameter("z", String.valueOf(18));
-          ub.addParameter("title", title);
-          return ub.toString();
+          UriBuilder ub = UriBuilder.fromUri(uri);
+          ub.queryParam("key", getGoogleMapsApiKey());
+          ub.queryParam("x", String.valueOf(latitude));
+          ub.queryParam("y", String.valueOf(longitude));
+          ub.queryParam("z", String.valueOf(18));
+          ub.queryParam("title", title);
+          return ub.build().toString();
 
         case AppBaseRepository.MAP_API_OPEN_STREET_MAP:
           return "map/oneMarker.html?x=" + latitude + "&y=" + longitude + "&z=18";
@@ -258,7 +257,7 @@ public class MapService {
         default:
           return null;
       }
-    } catch (URISyntaxException e) {
+    } catch (Exception e) {
       TraceBackService.trace(e);
       return getErrorURI(e.getMessage());
     }
@@ -416,14 +415,14 @@ public class MapService {
     final String uri = "map/gmap-objs.html";
 
     try {
-      URIBuilder ub = new URIBuilder(uri);
-      ub.addParameter("key", getGoogleMapsApiKey());
-      ub.addParameter("object", name);
+      UriBuilder ub = UriBuilder.fromUri(uri);
+      ub.queryParam("key", getGoogleMapsApiKey());
+      ub.queryParam("object", name);
 
       if (id != null) {
-        ub.addParameter("id", String.valueOf(id));
+        ub.queryParam("id", id);
       }
-      return ub.toString();
+      return ub.build().toString();
     } catch (Exception e) {
       TraceBackService.trace(e);
       return getErrorURI(e.getMessage());
@@ -434,11 +433,11 @@ public class MapService {
     final String uri = "map/error.html";
 
     try {
-      URIBuilder ub = new URIBuilder(uri);
-      ub.addParameter("msg", msg);
+      UriBuilder ub = UriBuilder.fromUri(uri);
+      ub.queryParam("msg", msg);
 
-      return ub.toString();
-    } catch (URISyntaxException e) {
+      return ub.build().toString();
+    } catch (Exception e) {
       TraceBackService.trace(e);
     }
 
@@ -473,13 +472,13 @@ public class MapService {
     final String uri = "map/osm-objs.html";
 
     try {
-      URIBuilder ub = new URIBuilder(uri);
-      ub.addParameter("object", name);
+      UriBuilder ub = UriBuilder.fromUri(uri);
+      ub.queryParam("object", name);
 
       if (id != null) {
-        ub.addParameter("id", String.valueOf(id));
+        ub.queryParam("id", id);
       }
-      return ub.toString();
+      return ub.build().toString();
     } catch (Exception e) {
       TraceBackService.trace(e);
       return getErrorURI(e.getMessage());

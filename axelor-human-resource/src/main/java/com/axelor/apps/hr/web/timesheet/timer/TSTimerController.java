@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,22 +22,18 @@ import com.axelor.apps.hr.db.repo.TSTimerRepository;
 import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class TSTimerController {
 
-  @Inject protected TSTimerRepository TsTimerRepo;
-
-  @Inject protected TimesheetTimerService tsTimerService;
-
   public void editTimesheetTimer(ActionRequest request, ActionResponse response) {
-    TSTimer tsTimer = tsTimerService.getCurrentTSTimer();
+    TSTimer tsTimer = Beans.get(TimesheetTimerService.class).getCurrentTSTimer();
     if (tsTimer == null) {
       response.setView(
           ActionView.define(I18n.get("TSTimer"))
@@ -68,7 +64,7 @@ public class TSTimerController {
             .param("show-toolbar", "false")
             .param("popup-save", "true");
 
-    TSTimer tsTimer = tsTimerService.getCurrentTSTimer();
+    TSTimer tsTimer = Beans.get(TimesheetTimerService.class).getCurrentTSTimer();
     if (tsTimer != null) {
       actionView.context("_showRecord", String.valueOf(tsTimer.getId()));
     }
@@ -79,9 +75,9 @@ public class TSTimerController {
   public void pause(ActionRequest request, ActionResponse response) {
     try {
       TSTimer timerView = request.getContext().asType(TSTimer.class);
-      TSTimer timer = TsTimerRepo.find(timerView.getId());
+      TSTimer timer = Beans.get(TSTimerRepository.class).find(timerView.getId());
 
-      tsTimerService.pause(timer);
+      Beans.get(TimesheetTimerService.class).pause(timer);
 
       response.setReload(true);
     } catch (Exception e) {
@@ -92,9 +88,9 @@ public class TSTimerController {
   public void stop(ActionRequest request, ActionResponse response) {
     try {
       TSTimer timerView = request.getContext().asType(TSTimer.class);
-      TSTimer timer = TsTimerRepo.find(timerView.getId());
+      TSTimer timer = Beans.get(TSTimerRepository.class).find(timerView.getId());
 
-      tsTimerService.stop(timer);
+      Beans.get(TimesheetTimerService.class).stop(timer);
 
       response.setReload(true);
     } catch (Exception e) {

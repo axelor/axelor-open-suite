@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -26,10 +26,10 @@ import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -43,10 +43,6 @@ public class MessageController extends com.axelor.apps.message.web.MessageContro
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  @Inject private MessageRepository messageRepo;
-
-  @Inject private MessageService messageService;
-
   /**
    * Method that generate message as a pdf
    *
@@ -59,7 +55,7 @@ public class MessageController extends com.axelor.apps.message.web.MessageContro
   public void printMessage(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Message message = request.getContext().asType(Message.class);
-    String pdfPath = messageService.printMessage(message);
+    String pdfPath = Beans.get(MessageService.class).printMessage(message);
 
     if (pdfPath != null) {
 
@@ -84,7 +80,7 @@ public class MessageController extends com.axelor.apps.message.web.MessageContro
 
     if (!messageIds.equals("")) {
       messageIds = messageIds.substring(0, messageIds.length() - 1);
-      message = messageRepo.find(new Long(lstSelectedMessages.get(0)));
+      message = Beans.get(MessageRepository.class).find(new Long(lstSelectedMessages.get(0)));
     } else if (message.getId() != null) {
       messageIds = message.getId().toString();
     }

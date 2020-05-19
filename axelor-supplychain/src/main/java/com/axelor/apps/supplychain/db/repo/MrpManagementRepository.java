@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,9 +17,18 @@
  */
 package com.axelor.apps.supplychain.db.repo;
 
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.supplychain.db.Mrp;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.MrpService;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
+import javax.persistence.PersistenceException;
 
 public class MrpManagementRepository extends MrpRepository {
 
@@ -29,5 +38,32 @@ public class MrpManagementRepository extends MrpRepository {
     Beans.get(MrpService.class).reset(entity);
 
     super.save(entity);
+  }
+
+  @Override
+  public Mrp save(Mrp entity) {
+
+    try {
+      if (Strings.isNullOrEmpty(entity.getMrpSeq())) {
+        Company company = entity.getStockLocation().getCompany();
+        String seq =
+            Beans.get(SequenceService.class)
+                .getSequenceNumber(SequenceRepository.SUPPLYCHAIN_MRP, company);
+
+        if (seq == null) {
+          throw new AxelorException(
+              company,
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(IExceptionMessage.SUPPLYCHAIN_MRP_SEQUENCE_ERROR),
+              company.getName());
+        }
+
+        entity.setMrpSeq(seq);
+      }
+    } catch (AxelorException e) {
+      throw new PersistenceException(e.getLocalizedMessage());
+    }
+
+    return super.save(entity);
   }
 }

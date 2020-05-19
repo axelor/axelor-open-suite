@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -65,6 +65,8 @@ public class InvoiceManagementRepository extends InvoiceRepository {
     copy.setValidatedDate(null);
     copy.setVentilatedByUser(null);
     copy.setVentilatedDate(null);
+    copy.setPfpValidateStatusSelect(PFP_STATUS_AWAITING);
+    copy.setDecisionPfpTakenDate(null);
     return copy;
   }
 
@@ -86,10 +88,18 @@ public class InvoiceManagementRepository extends InvoiceRepository {
     try {
       if (context.get("_model") != null
           && context.get("_model").toString().contains("SubrogationRelease")) {
-        long id = (long) context.get("id");
-        SubrogationRelease subrogationRelease =
-            Beans.get(SubrogationReleaseRepository.class).find(id);
-        json.put("$subrogationStatusSelect", subrogationRelease.getStatusSelect());
+        if (context.get("id") != null) {
+          long id = (long) context.get("id");
+          SubrogationRelease subrogationRelease =
+              Beans.get(SubrogationReleaseRepository.class).find(id);
+          if (subrogationRelease != null && subrogationRelease.getStatusSelect() != null) {
+            json.put("$subrogationStatusSelect", subrogationRelease.getStatusSelect());
+          } else {
+            json.put("$subrogationStatusSelect", SubrogationReleaseRepository.STATUS_NEW);
+          }
+        }
+      } else {
+        json.put("$subrogationStatusSelect", SubrogationReleaseRepository.STATUS_NEW);
       }
     } catch (Exception e) {
       TraceBackService.trace(e);

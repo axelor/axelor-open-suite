@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.hr.service.batch;
 
-import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.db.LeaveLine;
@@ -31,28 +30,22 @@ import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.IException;
+import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
-import com.beust.jcommander.internal.Lists;
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import javax.validation.constraints.Digits;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class BatchLeaveManagement extends BatchStrategy {
-
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   int total;
   int noValueAnomaly;
@@ -75,18 +68,18 @@ public class BatchLeaveManagement extends BatchStrategy {
   }
 
   @Override
-  protected void start() throws IllegalAccessException, AxelorException {
+  protected void start() throws IllegalAccessException {
 
     super.start();
 
     if (batch.getHrBatch().getDayNumber() == null
-        || batch.getHrBatch().getDayNumber().compareTo(BigDecimal.ZERO) == 0
+        || batch.getHrBatch().getDayNumber().signum() == 0
         || batch.getHrBatch().getLeaveReason() == null) {
       TraceBackService.trace(
           new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               I18n.get(IExceptionMessage.BATCH_MISSING_FIELD)),
-          IException.LEAVE_MANAGEMENT,
+          ExceptionOriginRepository.LEAVE_MANAGEMENT,
           batch.getId());
     }
     total = 0;
@@ -109,29 +102,13 @@ public class BatchLeaveManagement extends BatchStrategy {
     if (hrBatch.getEmployeeSet() != null && !hrBatch.getEmployeeSet().isEmpty()) {
       String employeeIds =
           Joiner.on(',')
-              .join(
-                  Iterables.transform(
-                      hrBatch.getEmployeeSet(),
-                      new Function<Employee, String>() {
-                        @Override
-                        public String apply(Employee obj) {
-                          return obj.getId().toString();
-                        }
-                      }));
+              .join(Iterables.transform(hrBatch.getEmployeeSet(), obj -> obj.getId().toString()));
       query.add("self.id IN (" + employeeIds + ")");
     }
     if (hrBatch.getEmployeeSet() != null && !hrBatch.getPlanningSet().isEmpty()) {
       String planningIds =
           Joiner.on(',')
-              .join(
-                  Iterables.transform(
-                      hrBatch.getPlanningSet(),
-                      new Function<WeeklyPlanning, String>() {
-                        @Override
-                        public String apply(WeeklyPlanning obj) {
-                          return obj.getId().toString();
-                        }
-                      }));
+              .join(Iterables.transform(hrBatch.getPlanningSet(), obj -> obj.getId().toString()));
 
       query.add("self.weeklyPlanning.id IN (" + planningIds + ")");
     }
@@ -161,7 +138,7 @@ public class BatchLeaveManagement extends BatchStrategy {
       try {
         createLeaveManagement(employeeRepository.find(employee.getId()));
       } catch (AxelorException e) {
-        TraceBackService.trace(e, IException.LEAVE_MANAGEMENT, batch.getId());
+        TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
         incrementAnomaly();
         if (e.getCategory() == TraceBackRepository.CATEGORY_NO_VALUE) {
           noValueAnomaly++;
@@ -176,7 +153,7 @@ public class BatchLeaveManagement extends BatchStrategy {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void createLeaveManagement(Employee employee) throws AxelorException {
 
     batch = batchRepo.find(batch.getId());

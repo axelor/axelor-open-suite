@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
   
-     <grid name="bank-reconciliation-grid" title="Bank reconciliations" model="com.axelor.apps.bankpayment.db.BankReconciliation" orderBy="-fromDate,-toDate,company.code,bankDetails.iban">
-			<field name="name" />
-			<field name="fromDate" />
-			<field name="toDate" />
-			<field name="company"/>
-			<field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid"/>
-			<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
-			<field name="journal" form-view="journal-form" grid-view="journal-grid"/>
-			<field name="startingBalance" />
-			<field name="endingBalance" />
-            <field name="statusSelect"/> 
-     </grid>
+	<grid name="bank-reconciliation-grid" title="Bank reconciliations" model="com.axelor.apps.bankpayment.db.BankReconciliation" orderBy="-fromDate,-toDate,company.code,bankDetails.iban">
+		<field name="name"/>
+		<field name="fromDate"/>
+		<field name="toDate"/>
+		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid"/>
+		<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid"/>
+		<field name="journal" form-view="journal-form" grid-view="journal-grid"/>
+		<field name="startingBalance" />
+		<field name="endingBalance" />
+    <field name="statusSelect"/> 
+  </grid>
   
 	<form name="bank-reconciliation-form" title="Bank reconciliation" model="com.axelor.apps.bankpayment.db.BankReconciliation" width="large" 
 	onNew="action-bank-reconciliation-onnew-group" >

@@ -1,9 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
 	<grid name="ebics-user-grid" title="Ebics user" model="com.axelor.apps.bankpayment.db.EbicsUser" >
+		<toolbar>
+  			<button name="exportUsersBtn" title="Export" onClick="action-export-ebics-user" />
+    		<button name="importUsersBtn" title="Import" onClick="action-ebics-open-import-ebics-users" />
+  		</toolbar>
+		<hilite if="statusSelect &lt; 3" color="primary"/>
+	    <hilite if="statusSelect == 3" color="success"/>
+	    <hilite if="statusSelect == 4" color="danger"/>
+		<field name="name" />
+		<field name="userId" />
+		<field name="ebicsPartner"/>
+		<field name="ebicsPartner.ebicsTypeSelect"/>
+		<field name="ebicsPartner.ebicsBank"/>
+		<field name="userTypeSelect"/>
+		<field name="statusSelect"/>
+	</grid>
+	
+	<grid name="ebics-user-group-grid" title="Ebics user" model="com.axelor.apps.bankpayment.db.EbicsUser" groupBy="ebicsPartner.ebicsBank,ebicsPartner" orderBy="ebicsPartner.ebicsBank,ebicsPartner,userId">
 		<toolbar>
   			<button name="exportUsersBtn" title="Export" onClick="action-export-ebics-user" />
     		<button name="importUsersBtn" title="Import" onClick="action-ebics-open-import-ebics-users" />
@@ -24,7 +41,8 @@
 		<panel name="generalInformationPanel" title="General information" colSpan="12">
 			<field name="statusSelect" colSpan="12"/>
 			<field name="fullName" colSpan="12" hidden="true"/>
-			<field name="name" onChange="action-ebics-user-record-set-fullname"/>
+			<field name="name" onChange="action-ebics-user-record-set-fullname" colSpan="4"/>
+			<field name="serialNumber" colSpan="2"/>
 			<field name="$changePassword" type="boolean" title="Change password" hideIf="!id" colSpan="2"/>
 			<field name="password" showIf="$changePassword || !id" colSpan="4" requiredIf="$changePassword"/>
 			<field name="userId" help="Name of the user or service" x-bind="{{userId|uppercase}}" pattern='^[A-Z0-9]+$' readonlyIf="statusSelect &gt; 2"/>
@@ -60,7 +78,7 @@
 					<field name="x002Certificate" readonly="true" form-view="ebics-certificate-form" showTitle="false"/>
 				</panel>
 			</panel>
-			<panel-related name="ebicsRequestLogListPanel" field="ebicsRequestLogList" form-view="ebics-request-log-form" grid-view="ebics-request-log-grid" readonly="true"/>
+			<panel-dashlet action="action-ebics-user-view-ebics-request-log" name="ebicsRequestLogPanel" title="Request log" readonly="true"/>
 		</panel-tabs>
 		
 		<panel name="actionBtnsPanel" sidebar="true">
@@ -168,6 +186,12 @@
     	<view-param name="show-toolbar" value="false"/>
     </action-view>
     
+    <action-view name="action-ebics-user-view-ebics-request-log" title="Request log" model="com.axelor.apps.bankpayment.db.EbicsRequestLog">
+        <view type="grid" name="ebics-request-log-grid"/>
+        <view type="form" name="ebics-request-log-form"/>
+        <domain>self.ebicsUser = :id</domain>
+    </action-view>
+
     <action-export name="action-export-ebics-user" output="${date}${time}" download="true">
 	  <export name="EbicsExport-${__datetime__.format(java.time.format.DateTimeFormatter.ofPattern('ddMMyyyyHHmmSS'))}.xml"
 	    	  template="data-export/export-ebics-user.txt"

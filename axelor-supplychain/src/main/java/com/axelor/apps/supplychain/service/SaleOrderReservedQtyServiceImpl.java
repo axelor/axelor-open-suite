@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -43,7 +43,7 @@ public class SaleOrderReservedQtyServiceImpl implements SaleOrderReservedQtyServ
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void allocateAll(SaleOrder saleOrder) throws AxelorException {
     for (SaleOrderLine saleOrderLine : getNonDeliveredLines(saleOrder)) {
       reservedQtyService.allocateAll(saleOrderLine);
@@ -51,7 +51,7 @@ public class SaleOrderReservedQtyServiceImpl implements SaleOrderReservedQtyServ
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void deallocateAll(SaleOrder saleOrder) throws AxelorException {
     for (SaleOrderLine saleOrderLine : getNonDeliveredLines(saleOrder)) {
       reservedQtyService.updateReservedQty(saleOrderLine, BigDecimal.ZERO);
@@ -59,7 +59,7 @@ public class SaleOrderReservedQtyServiceImpl implements SaleOrderReservedQtyServ
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void reserveAll(SaleOrder saleOrder) throws AxelorException {
     for (SaleOrderLine saleOrderLine : getNonDeliveredLines(saleOrder)) {
       reservedQtyService.requestQty(saleOrderLine);
@@ -67,7 +67,7 @@ public class SaleOrderReservedQtyServiceImpl implements SaleOrderReservedQtyServ
   }
 
   @Override
-  @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
+  @Transactional(rollbackOn = {Exception.class})
   public void cancelReservation(SaleOrder saleOrder) throws AxelorException {
     for (SaleOrderLine saleOrderLine : getNonDeliveredLines(saleOrder)) {
       reservedQtyService.cancelReservation(saleOrderLine);

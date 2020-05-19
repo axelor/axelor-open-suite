@@ -916,9 +916,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     </structure>
                                 </list-property>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[
-<VALUE-OF>(row["translation"] || row["en_translation"]) + " " + row._outer["code"] + (row._outer["name"] ? " - " + row._outer["name"] : "")</VALUE-OF>
-]]></text-property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>(row["translation"] || row["en_translation"]) + " " + row._outer["code"] + " - " + row._outer["name"]</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
                         <cell id="4827">

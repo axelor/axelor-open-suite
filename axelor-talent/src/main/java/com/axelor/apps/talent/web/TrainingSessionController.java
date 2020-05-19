@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -20,24 +20,20 @@ package com.axelor.apps.talent.web;
 import com.axelor.apps.talent.db.TrainingSession;
 import com.axelor.apps.talent.db.repo.TrainingSessionRepository;
 import com.axelor.apps.talent.service.TrainingSessionService;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 public class TrainingSessionController {
 
-  @Inject private TrainingSessionService trainingSessionService;
-
-  @Inject private TrainingSessionRepository trainingSessionRepo;
-
   public void closeSession(ActionRequest request, ActionResponse response) {
 
     TrainingSession trainingSession = request.getContext().asType(TrainingSession.class);
-    trainingSession = trainingSessionRepo.find(trainingSession.getId());
+    trainingSession = Beans.get(TrainingSessionRepository.class).find(trainingSession.getId());
 
-    trainingSessionService.closeSession(trainingSession);
+    Beans.get(TrainingSessionService.class).closeSession(trainingSession);
 
     response.setReload(true);
   }

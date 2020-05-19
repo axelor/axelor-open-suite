@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,7 +32,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.time.LocalDate;
 import java.util.List;
@@ -40,12 +39,6 @@ import java.util.Map;
 
 @Singleton
 public class ProductStockController {
-
-  @Inject private StockMoveService stockMoveService;
-
-  @Inject private ProductRepository productRepo;
-
-  @Inject private StockLocationLineService stockLocationLineService;
 
   public void setStockPerDay(ActionRequest request, ActionResponse response) {
 
@@ -57,7 +50,7 @@ public class ProductStockController {
     LocalDate toDate = LocalDate.parse(context.get("stockToDate").toString());
 
     List<Map<String, Object>> stocks =
-        stockMoveService.getStockPerDate(locationId, productId, fromDate, toDate);
+        Beans.get(StockMoveService.class).getStockPerDate(locationId, productId, fromDate, toDate);
     response.setValue("$stockPerDayList", stocks);
   }
 
@@ -88,10 +81,11 @@ public class ProductStockController {
   public void updateStockLocation(ActionRequest request, ActionResponse response) {
     try {
       Product product = request.getContext().asType(Product.class);
+      StockLocationLineService stockLocationLineService = Beans.get(StockLocationLineService.class);
       if (product.getId() == null) {
         return;
       }
-      product = productRepo.find(product.getId());
+      product = Beans.get(ProductRepository.class).find(product.getId());
       List<StockLocationLine> stockLocationLineList =
           stockLocationLineService.getStockLocationLines(product);
 

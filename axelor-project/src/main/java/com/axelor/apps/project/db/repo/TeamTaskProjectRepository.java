@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,8 +17,8 @@
  */
 package com.axelor.apps.project.db.repo;
 
+import com.axelor.apps.base.db.repo.TeamTaskBaseRepository;
 import com.axelor.team.db.TeamTask;
-import com.axelor.team.db.repo.TeamTaskRepository;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -28,7 +28,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TeamTaskProjectRepository extends TeamTaskRepository {
+public class TeamTaskProjectRepository extends TeamTaskBaseRepository {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -99,5 +99,13 @@ public class TeamTaskProjectRepository extends TeamTaskRepository {
     }
 
     return super.validate(json, context);
+  }
+
+  @Override
+  public TeamTask copy(TeamTask entity, boolean deep) {
+    entity.setProgressSelect(null);
+    entity.setTaskEndDate(null);
+    entity.setMetaFile(null);
+    return super.copy(entity, deep);
   }
 }

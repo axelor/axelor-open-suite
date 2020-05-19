@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -23,12 +23,12 @@ import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.util.Collection;
@@ -37,10 +37,6 @@ import java.util.Map;
 
 @Singleton
 public class ProjectPlanningTimeController {
-
-  @Inject private ProjectPlanningTimeService projectPlanningTimeService;
-
-  @Inject private ProjectPlanningTimeRepository projectPlanningTimeRepo;
 
   public void showPlanning(ActionRequest request, ActionResponse response) {
 
@@ -79,8 +75,7 @@ public class ProjectPlanningTimeController {
       throws AxelorException {
 
     Context context = request.getContext();
-
-    projectPlanningTimeService.addMultipleProjectPlanningTime(context);
+    Beans.get(ProjectPlanningTimeService.class).addMultipleProjectPlanningTime(context);
 
     response.setCanClose(true);
   }
@@ -99,12 +94,13 @@ public class ProjectPlanningTimeController {
       ProjectPlanningTime projectPlanningTime =
           request.getContext().asType(ProjectPlanningTime.class);
 
-      projectPlanningTime = projectPlanningTimeRepo.find(projectPlanningTime.getId());
+      projectPlanningTime =
+          Beans.get(ProjectPlanningTimeRepository.class).find(projectPlanningTime.getId());
 
       projectPlanningTime.setIsIncludeInTurnoverForecast(
           !projectPlanningTime.getIsIncludeInTurnoverForecast());
 
-      projectPlanningTimeRepo.save(projectPlanningTime);
+      Beans.get(ProjectPlanningTimeRepository.class).save(projectPlanningTime);
 
       response.setValue(
           "isIncludeInTurnoverForecast", projectPlanningTime.getIsIncludeInTurnoverForecast());
@@ -113,18 +109,14 @@ public class ProjectPlanningTimeController {
     }
   }
 
-  @Transactional
   public void removeProjectPlanningTime(ActionRequest request, ActionResponse response) {
 
-    List<Map<String, Object>> lines =
+    List<Map<String, Object>> projectPlanningTimeLines =
         (List<Map<String, Object>>) request.getContext().get("projectPlanningTimeSet");
 
-    if (lines != null) {
-      for (Map<String, Object> line : lines) {
-        ProjectPlanningTime projectPlanningTime =
-            projectPlanningTimeRepo.find(Long.parseLong(line.get("id").toString()));
-        projectPlanningTimeRepo.remove(projectPlanningTime);
-      }
+    if (projectPlanningTimeLines != null) {
+      Beans.get(ProjectPlanningTimeService.class)
+          .removeProjectPlanningLines(projectPlanningTimeLines);
     }
 
     response.setReload(true);

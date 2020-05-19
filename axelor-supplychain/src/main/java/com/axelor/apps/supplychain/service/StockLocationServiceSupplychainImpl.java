@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -44,14 +44,15 @@ public class StockLocationServiceSupplychainImpl extends StockLocationServiceImp
   }
 
   @Override
-  public BigDecimal getReservedQty(Long productId, Long locationId) throws AxelorException {
+  public BigDecimal getReservedQty(Long productId, Long locationId, Long companyId)
+      throws AxelorException {
     if (productId != null) {
       Product product = productRepo.find(productId);
       Unit productUnit = product.getUnit();
       UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
 
-      if (locationId == null) {
-        List<StockLocation> stockLocations = getNonVirtualStockLocations();
+      if (locationId == null || locationId == 0L) {
+        List<StockLocation> stockLocations = getNonVirtualStockLocations(companyId);
         if (!stockLocations.isEmpty()) {
           BigDecimal reservedQty = BigDecimal.ZERO;
           for (StockLocation stockLocation : stockLocations) {
@@ -96,6 +97,6 @@ public class StockLocationServiceSupplychainImpl extends StockLocationServiceImp
         }
       }
     }
-    return null;
+    return BigDecimal.ZERO;
   }
 }

@@ -1,12 +1,13 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="TimesheetLine" cachable="true">
+  <entity name="TimesheetLine" cacheable="true">
 
+      <integer name="sequence" title="Sequence" readonly="true"/>
       <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
       <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Activity"/>
       <many-to-one name="user" title="User" ref="com.axelor.auth.db.User" readonly="true" column="user_id"/>
@@ -14,6 +15,7 @@
       <many-to-one name="timesheet" ref="com.axelor.apps.hr.db.Timesheet" title="Time Sheet" readonly="true"/>
 	  <decimal name="hoursDuration" title="Duration"/>
 	  <decimal name="duration" title="Duration"/>
+	  <decimal name="durationForCustomer" title="Duration adjust for customer" nullable="true"/>
       <string name="comments" large="true"/>
       <boolean name="toInvoice"/>
       <boolean name="invoiced" title="Invoiced" readonly="true"/>
@@ -21,6 +23,8 @@
 	  <boolean name="enableEditor" title="Enable editor" nullable="true" />
 	  
 	  <many-to-one name="projectPlanningTime" ref="com.axelor.apps.project.db.ProjectPlanningTime" />
+	  
+	  <many-to-one name="teamTask" ref="com.axelor.team.db.TeamTask" title="Task" />
 	  
 	  <unique-constraint columns="timesheet,project,product,date,enableEditor"/>
   </entity>
