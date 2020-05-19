@@ -615,7 +615,7 @@
 	  	<action name="save"/>
     	<action name="action-stock-move-check-stock-move-line-real-qty"/>
     	<action name="action-stock-move-validate-shipment-informations" if="typeSelect == __repo__(StockMove).TYPE_INCOMING &amp;&amp; !isReversion"/>
-	    <action name="action-stock-move-method-manage-backorder" if="stockMoveLineList.any{it?.realQty.compareTo(it?.qty) != 0} &amp;&amp; !isWithBackorder"/> <!-- first condition = is it necessary to split SM -->
+	    <action name="action-stock-move-method-manage-backorder" if="stockMoveLineList.any{it?.realQty.compareTo(it?.qty) == -1} &amp;&amp; !isWithBackorder"/> <!-- first condition = is it necessary to split SM -->
 	    <action name="action-stock-move-method-realize" if="!stockMoveLineList.any{it?.realQty.compareTo(it?.qty) != 0} || isWithBackorder"/>
     	<action name="save"/>
 	</action-group>
