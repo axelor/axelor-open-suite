@@ -256,9 +256,9 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     BigDecimal depreciationRate =
         numberOfDepreciation == 0
             ? BigDecimal.ZERO
-            : BigDecimal.ONE
-                .divide(BigDecimal.valueOf(numberOfDepreciation), BigDecimal.ROUND_HALF_EVEN)
-                .multiply(BigDecimal.valueOf(100))
+            : (BigDecimal.ONE
+                    .multiply(BigDecimal.valueOf(100))
+                    .divide(BigDecimal.valueOf(numberOfDepreciation), BigDecimal.ROUND_HALF_EVEN))
                 .setScale(calculationScale);
     BigDecimal ddRate = BigDecimal.ONE;
     BigDecimal prorataTemporis = this.computeProrataTemporis(fixedAsset, isFirstYear);
