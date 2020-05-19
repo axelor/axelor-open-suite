@@ -6,13 +6,13 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Partner" lang="java" cacheable="true">
-    <integer name="deliveryDelay" title="Delivery delay (days)"/>
+    <integer name="deliveryDelay" title="Delivery delay (days)" min="0"/>
     <many-to-one name="shipmentMode" ref="com.axelor.apps.stock.db.ShipmentMode" index="false"/>
     <many-to-one name="freightCarrierMode" ref="com.axelor.apps.stock.db.FreightCarrierMode" index="false"/>
     <many-to-one name="carrierPartner" title="Carrier" ref="com.axelor.apps.base.db.Partner" index="false"/>
     <decimal name="supplierQualityRating" title="Supplier quality rating"/>
     <decimal name="supplierQualityRatingSelect" title="Supplier quality rating" selection="rating.icon.select"/>
-    <decimal name="supplierArrivalProductQty" title="Supplier arrival product qty"/>
+    <decimal name="supplierArrivalProductQty" title="Supplier arrival product qty" min="0"/>
     <boolean name="isCarrier" title="Carrier"/>
     <one-to-many name="partnerProductQualityRatingList" ref="com.axelor.apps.stock.db.PartnerProductQualityRating" mappedBy="partner" title="Partner product quality rating"/>
     <one-to-many name="freightCarrierModeList" ref="com.axelor.apps.stock.db.FreightCarrierMode" mappedBy="carrierPartner"/>

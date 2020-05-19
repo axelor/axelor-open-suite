@@ -19,7 +19,17 @@
 	    <![CDATA[
     		return code+" - " + name;
 	    ]]>
-	</string>
+		</string>
+		
+		<track on="UPDATE">
+			<field name="name"/>
+			<field name="code"/>
+			<field name="moveTemplateType"/>
+			<field name="company"/>
+			<field name="journal"/>
+			<field name="endOfValidityDate"/>
+			<message if="!isValid">Move template updated</message>
+		</track>
   </entity>
  
 </domain-models>

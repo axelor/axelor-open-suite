@@ -473,9 +473,9 @@
 				</panel>
 			</panel>
 			<panel name="paymentPanel" title="Invoicing/Payment" hideIf="isContact"
-				if-module="axelor-account" colSpan="12" if="__config__.app.isApp('account')">
+				if-module="axelor-account" colSpan="12" if="__config__.app.isApp('invoice')">
 				<panel-include view="incl-invoice-payment-partner-form"
-					from="axelor-account" if="__config__.app.isApp('invoice')" />
+					from="axelor-account"  />
 				<panel-include if-module="axelor-account"
 					if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
 					view="incl-sepa-direct-debit-partner-form" from="axelor-account" />
@@ -763,11 +763,11 @@
 					</editor>
 				</field>
 				<static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
-				<field name="duplicatePartnerInArchiveText" hidden="true"
+				<field name="$duplicatePartnerInArchiveText" hidden="true"
 					type="string" showTitle="false" readonly="true">
-					<viewer depends="duplicatePartnerInArchiveText">
+					<viewer depends="$duplicatePartnerInArchiveText">
 					<![CDATA[
-						<span class='label label-warning' style="margin: 5px 0 !important; display: inline-table; line-height: initial;"><span  x-translate>There is a partner with this name in the archive of reference : </span> {{record.duplicatePartnerInArchiveText}}</span>
+						<span class='label label-warning' style="margin: 5px 0 !important; display: inline-table; line-height: initial;"><span x-translate>There is an archived partner with this name.</span> ({{record.$duplicatePartnerInArchiveText}})</span>
 					]]>
 					</viewer>
 				</field>
@@ -877,6 +877,13 @@
 
 	<cards name="partner-cards" model="com.axelor.apps.base.db.Partner"
 		title="Partners" css="rect-image">
+		<toolbar>
+			<button name="printPhoneBookBtn" title="Contact PhoneBook" icon="fa-print" onClick="action-print-phonebook"/>
+			<button name="printCompanyPhoneBookBtn" title="Company PhoneBook" icon="fa-print" onClick="action-print-company-phonebook" if="__config__.app.isApp('employee')"/>
+			<button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
+			<button name="replaceDuplicateBtn" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
+			<button name="advancedExportBtn" title="Advanced export" onClick="action-method-advanced-export-wizard-view"/>
+		</toolbar>
 		<field name="fullName" />
 		<field name="picture" />
 		<field name="fixedPhone" />
@@ -922,6 +929,7 @@
 		<toolbar>
 			<button name="checkDuplicateBtn" title="Check Duplicate"
 				onClick="action-general-check-duplicate-records" />
+			<button name="replaceDuplicateBtn" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 		</toolbar>
 		<field name="fullName" />
 		<field name="picture" />
@@ -1087,8 +1095,7 @@
 		<action name="action-partner-attrs-name-balance" />
 		<action name="action-partner-attrs-partner-seq-editable" />
 		<action name="action-partner-method-check-name" />
-		<action name="action-partner-method-check-name-in-archive" />
-		<action name="action-partner-attrs-hide-invoice-and-delivery-address-text" />
+		<action  name="action-partner-attrs-hide-invoice-and-delivery-address-text" />
 		<action name="action-partner-attrs-set-canselect" />
 		<action name="action-partner-attrs-set-subcontactor" if="__config__.app.isApp('production')" />
 	</action-group>

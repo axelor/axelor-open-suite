@@ -9,7 +9,7 @@
 	  <extend target="//field[@name='receiptState']">
 	  
         <insert position="after">
-          <field name="outsourcingOrderReceiptState" showTitle="false" colSpan="1">
+          <field name="outsourcingOrderReceiptState" readonly="true" showTitle="false" colSpan="2">
             <viewer><![CDATA[
                   <span/>
                   <span class="label label-success" ng-show="record.outsourcingOrder" style="background-color: #00008B" x-translate>Outsourcing</span>
@@ -23,12 +23,13 @@
         <insert position="after">
            <panel name="outsourcing" title="Outsourcing" showIf="outsourcingOrder">
              <panel-dashlet name="outsourcingPanel" action="action-production-view-manufacturing-order" title="Outsourcing" colSpan="12"/>
+             <field name="outsourcingOrder" hidden="true" />
            </panel>
         </insert>
       </extend>
       
       <extend target="//field[@name='purchaseOrderSeq']">
-       <attribute name="colSpan" value="9"/>
+       <attribute name="colSpan" value="8"/>
       </extend>
       
 	</form>

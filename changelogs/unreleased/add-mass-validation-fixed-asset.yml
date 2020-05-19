@@ -1,0 +1,4 @@
+title: Fixed assets mass validation
+type: feature
+description: |
+	It is now possible to mass validate fixed assets through their grid view 

@@ -155,7 +155,7 @@
 	</selection>
 
 	<selection name="base.price.list.line.amount.type.select">
-		<option value="0">No Discount</option>
+		<option value="0">No discount</option>
 		<option value="1">In %</option>
 		<option value="2">Fixed</option>
 	</selection>

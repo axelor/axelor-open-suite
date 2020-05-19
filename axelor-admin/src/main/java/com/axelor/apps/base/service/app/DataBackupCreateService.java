@@ -27,13 +27,16 @@ import com.axelor.data.csv.CSVInput;
 import com.axelor.db.JpaRepository;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
+import com.axelor.db.internal.DBHelper;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Files;
@@ -46,6 +49,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -60,6 +68,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import javax.naming.NamingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,6 +81,7 @@ public class DataBackupCreateService {
   private static final int BUFFER_SIZE = 1000;
 
   @Inject private MetaModelRepository metaModelRepo;
+  @Inject private MetaFiles metaFiles;
 
   private Logger LOG = LoggerFactory.getLogger(getClass());
 
@@ -107,6 +117,7 @@ public class DataBackupCreateService {
           .build();
 
   List<String> fileNameList;
+  StringBuilder sb = new StringBuilder();
 
   /* Generate csv Files for each individual MetaModel and single config file */
   public File create(DataBackup dataBackup) throws InterruptedException {
@@ -182,6 +193,26 @@ public class DataBackupCreateService {
 
     fileNameList.add(DataBackupServiceImpl.CONFIG_FILE_NAME);
     File zippedFile = generateZIP(tempDirectoryPath, fileNameList);
+
+    if (!Strings.isNullOrEmpty(sb.toString())) {
+      try {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmSS");
+        String logFileName = "DataBackupLog_" + LocalDateTime.now().format(formatter) + ".log";
+
+        File file = new File(tempDir.getAbsolutePath(), logFileName);
+        PrintWriter pw = new PrintWriter(file);
+
+        pw.write(sb.toString());
+        pw.close();
+
+        if (file != null) {
+          dataBackup.setLogMetaFile(metaFiles.upload(file));
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+
     return zippedFile;
   }
 
@@ -230,6 +261,9 @@ public class DataBackupCreateService {
           subClassMap.put(superClass.getName(), subClasses);
         }
       } catch (ClassNotFoundException e) {
+        String strError = "Class not found issue: ";
+        sb.append(strError)
+            .append(e.getLocalizedMessage() + "-----------------------------------------\n");
         e.printStackTrace();
       }
     }
@@ -282,6 +316,40 @@ public class DataBackupCreateService {
       query = JpaRepository.of(klass).all();
       if (StringUtils.notEmpty(whereStr)) {
         query.filter(whereStr);
+      }
+
+      try {
+        Connection connection = DBHelper.getConnection();
+        DatabaseMetaData dbmd = connection.getMetaData();
+
+        List<Property> properties = model.fields();
+        for (Property property : properties) {
+          if (property.isRequired()) {
+            ResultSet res =
+                dbmd.getColumns(
+                    null,
+                    null,
+                    metaModel.getTableName().toLowerCase(),
+                    property.getName().replaceAll("([^_A-Z])([A-Z])", "$1_$2").toLowerCase());
+
+            while (res.next()) {
+              if (res.getInt("NULLABLE") == 1) {
+                String strErr = "Required field issue in table: ";
+                sb.append(strErr)
+                    .append(
+                        "Model: "
+                            + metaModel.getName()
+                            + ", Field: "
+                            + property.getName()
+                            + "-----------------------------------------\n");
+                query = null;
+              }
+            }
+          }
+        }
+        connection.close();
+      } catch (SQLException | NamingException e) {
+        e.printStackTrace();
       }
     }
     return query;

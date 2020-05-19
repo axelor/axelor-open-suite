@@ -12,7 +12,9 @@
 		<boolean name="allowSusbcriptionSaleOrder" title="Allow Subscriptions for Sale orders" default="false"/>
 		<boolean name="checkSaleStocks" title="Check stocks in a sale order" default="false"/>
 		<boolean name="generateInvoiceFromStockMove" title="Generate invoice from stock move" default="false"/>
-		
+
+		<boolean name="validStepForInvOutSM" title="Validation step for invoicing outgoing stock move" default="false" />
+
 		<boolean name="terminateSaleOrderOnDelivery" title="Terminate sale order on delivery" default="false"/>
 		<boolean name="completeSaleOrderOnInvoicing" title="Complete sale order when all has been invoiced"/>
 		<boolean name="terminatePurchaseOrderOnReceipt" title="Terminate purchase order on Receipt" default="false"/>

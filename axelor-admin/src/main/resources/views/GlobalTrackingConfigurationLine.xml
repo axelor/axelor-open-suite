@@ -25,11 +25,11 @@
 		
 			<field name="metaModel" title="Model" />
 			<field name="metaField" title="Field" showIf="metaModel != null" domain="self.metaModel = :metaModel" />
-			<field name="trackCreation" colSpan="2" widget="inline-checkbox" colOffset="1" />
-			<field name="trackDeletion" colSpan="2" widget="inline-checkbox" />
-			<field name="trackUpdate" colSpan="2" widget="inline-checkbox" />
-			<field name="trackExport" colSpan="2" widget="inline-checkbox" />
-			<field name="trackReading" colSpan="2" widget="inline-checkbox" />
+			<field name="trackCreation" colSpan="4" widget="inline-checkbox" />
+			<field name="trackDeletion" colSpan="4" widget="inline-checkbox" />
+			<field name="trackUpdate" colSpan="4" widget="inline-checkbox" />
+			<field name="trackExport" colSpan="4" widget="inline-checkbox" />
+			<field name="trackReading" colSpan="4" widget="inline-checkbox" />
 			<field name="trackingCondition" colSpan="12" widget="code-editor" x-code-syntax="groovy" />
 			
 		</panel>

@@ -244,6 +244,15 @@
 	</form>
 
 	<cards name="purchase-quotations-order-cards" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" width="300px" css="rect-image" orderBy="-orderDate">
+		<menubar>
+			<menu name="purchaseOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+				<item name="printItem" title="Print" action="action-purchase-order-method-show-purchase-order"/>
+			</menu>
+			<menu name="purchaseOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+				<item name="mergeQuotationsItem" title="Merge quotations"  action="purchase.order.merge"/>
+				<item name="seeQuotationLinesItem" title="See quotation lines" action="purchase-order-see-quotation-lines" />
+			</menu>
+		</menubar>
 		<field name="purchaseOrderSeq"/>
 		<field name="externalReference"/>
 		<field name="supplierPartner.fullName"/>
@@ -304,10 +313,12 @@
 	</cards>
 
 	<cards name="purchase-order-cards" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" width="300px" css="rect-image" orderBy="-orderDate">
-		<toolbar>
-    			<button name="seePurchaseOrderLinesBtn" title="See purchase orders lines" onClick="purchase-order-see-purchase-order-lines"/>
-    			<button name="seeBudgetDistributionLinesBtn" title="See budget distribution lines" onClick="action-purchase-order-see-budget-distribution-lines"/>
-		</toolbar>
+		<menubar>
+			<menu name="purchaseOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+				<item name="seePurchaseOrderLinesItem" title="See purchase order lines" action="purchase-order-see-purchase-order-lines" />
+				<item title="See budget distribution lines" action="action-purchase-order-see-budget-distribution-lines"/>
+			</menu>
+		</menubar>
 		<field name="purchaseOrderSeq"/>
 		<field name="externalReference"/>
 		<field name="supplierPartner.fullName"/>
