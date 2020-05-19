@@ -139,6 +139,14 @@ public interface SaleOrderLineService {
    */
   public void fillPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException;
 
+  /**
+   * Fill the complementaryProductList of the saleOrderLine from the possible complementary products
+   * of the product of the line
+   *
+   * @param saleOrderLine
+   */
+  public void fillComplementaryProductList(SaleOrderLine saleOrderLine);
+
   public SaleOrderLine createSaleOrderLine(
       PackLine packLine,
       SaleOrder saleOrder,

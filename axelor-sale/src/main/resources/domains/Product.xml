@@ -9,6 +9,8 @@
     <one-to-one name="configurator" ref="com.axelor.apps.sale.db.Configurator" orphanRemoval="true" mappedBy="product"/>
   	<one-to-many name="customerCatalogList" ref="com.axelor.apps.sale.db.CustomerCatalog" mappedBy="product" title="Customer catalog lines" />
   	
+	<one-to-many name="complementaryProductList" ref="com.axelor.apps.sale.db.ComplementaryProduct" mappedBy="originalProduct"/>
+  	
   </entity>
 
 </domain-models>

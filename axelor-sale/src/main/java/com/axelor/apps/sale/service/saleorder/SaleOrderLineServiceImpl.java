@@ -32,6 +32,8 @@ import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.apps.sale.db.ComplementaryProduct;
+import com.axelor.apps.sale.db.ComplementaryProductSelected;
 import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -46,7 +48,9 @@ import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,6 +84,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
     saleOrderLine.setTypeSelect(SaleOrderLineRepository.TYPE_NORMAL);
     fillPrice(saleOrderLine, saleOrder);
+    fillComplementaryProductList(saleOrderLine);
   }
 
   @Override
@@ -102,6 +107,28 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
         saleOrderLine.setPrice(exTaxPrice);
         saleOrderLine.setInTaxPrice(
             convertUnitPrice(false, saleOrderLine.getTaxLine(), exTaxPrice));
+      }
+    }
+  }
+
+  @Override
+  public void fillComplementaryProductList(SaleOrderLine saleOrderLine) {
+    if (saleOrderLine.getProduct() != null
+        && saleOrderLine.getProduct().getComplementaryProductList() != null) {
+      List<ComplementaryProductSelected> complementaryProducts =
+          new ArrayList<ComplementaryProductSelected>();
+      saleOrderLine.setSelectedComplementaryProductList(complementaryProducts);
+      for (ComplementaryProduct complProduct :
+          saleOrderLine.getProduct().getComplementaryProductList()) {
+        ComplementaryProductSelected newComplProductLine = new ComplementaryProductSelected();        
+        
+        newComplProductLine.setProduct(complProduct.getProduct());
+        newComplProductLine.setQty(complProduct.getQty());
+        newComplProductLine.setOptional(complProduct.getOptional());
+        
+        newComplProductLine.setIsSelected(!complProduct.getOptional());
+        newComplProductLine.setSaleOrderLine(saleOrderLine);
+        complementaryProducts.add(newComplProductLine);
       }
     }
   }
@@ -178,6 +205,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     if (appSaleService.getAppSale().getIsEnabledProductDescriptionCopy()) {
       line.setDescription(null);
     }
+    line.setSelectedComplementaryProductList(null);
     return line;
   }
 
