@@ -12,6 +12,7 @@
 - CONTRACT : fix for unit price null on invoice.
 - SALEORDER : copy description when generating Task by line from SaleOrder
 - Business Project : Fixed set toInvoice for timesheet line based on parent task instead of a task.
+- Back Order : corrected link between back order and origin.
 
 ## [5.3.5] - 2020-05-11
 ## Features
