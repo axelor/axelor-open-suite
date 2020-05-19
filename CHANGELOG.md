@@ -16,6 +16,7 @@
 - EMPLOYEE : set seniorityDate by hireDate
 - Studio : Add CSRF protection for every request header.
 - Add CSRF protection for timesheet line editor and project planning editor
+- SUPPLIER PORTAL : Creation of new Supplier portal
 
 ## Improvements
 - USER : Default User language is based on application.locale from application.properties
