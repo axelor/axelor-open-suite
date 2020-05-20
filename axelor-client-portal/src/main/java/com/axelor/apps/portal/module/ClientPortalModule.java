@@ -17,14 +17,10 @@
  */
 package com.axelor.apps.portal.module;
 
-import com.axelor.app.AxelorModule;
-import com.axelor.apps.portal.service.ClientViewService;
-import com.axelor.apps.portal.service.ClientViewServiceImpl;
+import javax.interceptor.Interceptor;
 
-public class ClientPortalModule extends AxelorModule {
+public class ClientPortalModule {
+  private ClientPortalModule() {}
 
-  @Override
-  protected void configure() {
-    bind(ClientViewService.class).to(ClientViewServiceImpl.class);
-  }
+  public static final int PRIORITY = Interceptor.Priority.APPLICATION + 2200;
 }
