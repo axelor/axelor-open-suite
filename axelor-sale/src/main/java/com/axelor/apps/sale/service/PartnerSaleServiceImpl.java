@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.PartnerServiceImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.module.SaleModule;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
@@ -34,7 +35,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 
+@Alternative
+@Priority(SaleModule.PRIORITY)
 public class PartnerSaleServiceImpl extends PartnerServiceImpl implements PartnerSaleService {
 
   @Inject

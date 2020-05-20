@@ -19,7 +19,12 @@ package com.axelor.apps.sale.db.repo;
 
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.OpportunityManagementRepository;
+import com.axelor.apps.sale.module.SaleModule;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(SaleModule.PRIORITY)
 public class OpportunitySaleRepository extends OpportunityManagementRepository {
 
   public Opportunity copy(Opportunity entity, boolean deep) {

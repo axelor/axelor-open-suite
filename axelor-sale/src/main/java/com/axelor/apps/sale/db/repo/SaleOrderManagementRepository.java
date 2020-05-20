@@ -21,6 +21,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.module.SaleModule;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
@@ -28,10 +29,15 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
+import java.math.BigDecimal;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import javax.persistence.PersistenceException;
 
+@Alternative
+@Priority(SaleModule.PRIORITY)
 public class SaleOrderManagementRepository extends SaleOrderRepository {
 
   @Inject SaleOrderComputeService saleOrderComputeService;

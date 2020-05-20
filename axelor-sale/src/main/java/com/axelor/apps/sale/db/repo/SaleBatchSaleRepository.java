@@ -18,7 +18,12 @@
 package com.axelor.apps.sale.db.repo;
 
 import com.axelor.apps.sale.db.SaleBatch;
+import com.axelor.apps.sale.module.SaleModule;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(SaleModule.PRIORITY)
 public class SaleBatchSaleRepository extends SaleBatchRepository {
 
   @Override

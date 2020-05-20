@@ -19,10 +19,15 @@ package com.axelor.apps.sale.db.repo;
 
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.module.SaleModule;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.inject.Beans;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.persistence.PersistenceException;
 
+@Alternative
+@Priority(SaleModule.PRIORITY)
 public class AdvancePaymentSaleRepository extends AdvancePaymentRepository {
 
   @Override
