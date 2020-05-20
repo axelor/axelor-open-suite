@@ -21,13 +21,19 @@ import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaView;
 import com.axelor.meta.db.repo.MetaViewRepository;
 import com.axelor.studio.db.ChartBuilder;
+import com.axelor.studio.module.StudioModule;
 import com.axelor.studio.service.builder.ChartBuilderService;
+import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.List;
 import javax.validation.ValidationException;
 import javax.xml.bind.JAXBException;
 
+@Alternative
+@Priority(StudioModule.PRIORITY)
 public class ChartBuilderRepo extends ChartBuilderRepository {
 
   @Inject private MetaViewRepository metaViewRepo;

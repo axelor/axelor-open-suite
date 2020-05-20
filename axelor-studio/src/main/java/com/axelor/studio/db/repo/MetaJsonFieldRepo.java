@@ -24,9 +24,14 @@ import com.axelor.meta.db.repo.MetaJsonFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.db.AppBuilder;
 import com.axelor.studio.service.JsonFieldService;
+import com.axelor.studio.module.StudioModule;
 import com.axelor.studio.service.StudioMetaService;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
+@Alternative
+@Priority(StudioModule.PRIORITY)
 public class MetaJsonFieldRepo extends MetaJsonFieldRepository {
 
   @Inject MetaModelRepository metaModelRepo;

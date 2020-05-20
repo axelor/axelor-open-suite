@@ -17,41 +17,11 @@
  */
 package com.axelor.studio.module;
 
-import com.axelor.app.AxelorModule;
-import com.axelor.meta.db.repo.MetaJsonFieldRepository;
-import com.axelor.meta.db.repo.MetaJsonModelRepository;
-import com.axelor.studio.db.repo.ActionBuilderRepo;
-import com.axelor.studio.db.repo.ActionBuilderRepository;
-import com.axelor.studio.db.repo.AppBuilderRepo;
-import com.axelor.studio.db.repo.AppBuilderRepository;
-import com.axelor.studio.db.repo.ChartBuilderRepo;
-import com.axelor.studio.db.repo.ChartBuilderRepository;
-import com.axelor.studio.db.repo.DashboardBuilderRepo;
-import com.axelor.studio.db.repo.DashboardBuilderRepository;
-import com.axelor.studio.db.repo.MenuBuilderRepo;
-import com.axelor.studio.db.repo.MenuBuilderRepository;
-import com.axelor.studio.db.repo.MetaJsonFieldRepo;
-import com.axelor.studio.db.repo.MetaJsonModelRepo;
-import com.axelor.studio.db.repo.SelectionBuilderRepo;
-import com.axelor.studio.db.repo.SelectionBuilderRepository;
-import com.axelor.studio.db.repo.StudioWkfNodeRepo;
-import com.axelor.studio.db.repo.StudioWkfRepository;
-import com.axelor.studio.db.repo.WkfNodeRepository;
-import com.axelor.studio.db.repo.WkfRepository;
+import javax.interceptor.Interceptor;
 
-public class StudioModule extends AxelorModule {
+public class StudioModule {
 
-  @Override
-  protected void configure() {
-    bind(WkfRepository.class).to(StudioWkfRepository.class);
-    bind(ChartBuilderRepository.class).to(ChartBuilderRepo.class);
-    bind(ActionBuilderRepository.class).to(ActionBuilderRepo.class);
-    bind(MenuBuilderRepository.class).to(MenuBuilderRepo.class);
-    bind(DashboardBuilderRepository.class).to(DashboardBuilderRepo.class);
-    bind(AppBuilderRepository.class).to(AppBuilderRepo.class);
-    bind(MetaJsonFieldRepository.class).to(MetaJsonFieldRepo.class);
-    bind(MetaJsonModelRepository.class).to(MetaJsonModelRepo.class);
-    bind(WkfNodeRepository.class).to(StudioWkfNodeRepo.class);
-    bind(SelectionBuilderRepository.class).to(SelectionBuilderRepo.class);
-  }
+  private StudioModule() {}
+
+  public static final int PRIORITY = Interceptor.Priority.APPLICATION + 2100;
 }

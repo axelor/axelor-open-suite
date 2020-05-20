@@ -22,10 +22,15 @@ import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaMenu;
 import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.MenuBuilder;
+import com.axelor.studio.module.StudioModule;
 import com.axelor.studio.service.StudioMetaService;
 import com.axelor.studio.service.builder.MenuBuilderService;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
+@Alternative
+@Priority(StudioModule.PRIORITY)
 public class MenuBuilderRepo extends MenuBuilderRepository {
 
   @Inject private MenuBuilderService menuBuilderService;

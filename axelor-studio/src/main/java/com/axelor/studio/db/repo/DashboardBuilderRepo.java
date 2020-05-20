@@ -20,9 +20,14 @@ package com.axelor.studio.db.repo;
 import com.axelor.meta.db.MetaView;
 import com.axelor.meta.db.repo.MetaViewRepository;
 import com.axelor.studio.db.DashboardBuilder;
+import com.axelor.studio.module.StudioModule;
 import com.axelor.studio.service.builder.DashboardBuilderService;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
+@Alternative
+@Priority(StudioModule.PRIORITY)
 public class DashboardBuilderRepo extends DashboardBuilderRepository {
 
   @Inject private DashboardBuilderService dashboardBuilderService;

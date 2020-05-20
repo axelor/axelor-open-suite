@@ -19,8 +19,13 @@ package com.axelor.studio.db.repo;
 
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.WkfNode;
+import com.axelor.studio.module.StudioModule;
 import com.axelor.studio.service.wkf.WkfService;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(StudioModule.PRIORITY)
 public class StudioWkfNodeRepo extends WkfNodeRepository {
 
   @Override

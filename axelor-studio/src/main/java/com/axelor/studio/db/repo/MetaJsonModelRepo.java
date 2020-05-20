@@ -23,8 +23,13 @@ import com.axelor.meta.db.MetaJsonRecord;
 import com.axelor.meta.db.repo.MetaJsonModelRepository;
 import com.axelor.studio.db.AppBuilder;
 import com.axelor.studio.db.MenuBuilder;
+import com.axelor.studio.module.StudioModule;
 import com.axelor.studio.service.builder.MenuBuilderService;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(StudioModule.PRIORITY)
 public class MetaJsonModelRepo extends MetaJsonModelRepository {
 
   @Override

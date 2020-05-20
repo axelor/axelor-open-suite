@@ -20,5 +20,6 @@ dependencies {
 //	implementation libs.flying_saucer_pdf
 	implementation libs.tidy
 	implementation libs.commons_exec
+    implementation libs.commons_io
 //	implementation libs.bcprov_jdk15on
 }

@@ -19,10 +19,15 @@ package com.axelor.studio.db.repo;
 
 import com.axelor.meta.MetaStore;
 import com.axelor.studio.db.ActionBuilder;
+import com.axelor.studio.module.StudioModule;
 import com.axelor.studio.service.StudioMetaService;
 import com.axelor.studio.service.builder.ActionBuilderService;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
+@Alternative
+@Priority(StudioModule.PRIORITY)
 public class ActionBuilderRepo extends ActionBuilderRepository {
 
   @Inject private StudioMetaService metaService;
