@@ -17,11 +17,16 @@
  */
 package com.axelor.apps.businessproject.db.repo;
 
+import com.axelor.apps.businessproject.module.BusinessProjectModule;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
 import com.axelor.inject.Beans;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(BusinessProjectModule.PRIORITY)
 public class SaleOrderProjectRepository extends SaleOrderSupplychainRepository {
   @Override
   public SaleOrder copy(SaleOrder entity, boolean deep) {

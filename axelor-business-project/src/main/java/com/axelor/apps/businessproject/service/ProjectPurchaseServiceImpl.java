@@ -18,6 +18,7 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.businessproject.module.BusinessProjectModule;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
@@ -28,10 +29,15 @@ import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.List;
 
+@Alternative
+@Priority(BusinessProjectModule.PRIORITY)
 public class ProjectPurchaseServiceImpl extends SaleOrderPurchaseServiceImpl {
 
   @Inject

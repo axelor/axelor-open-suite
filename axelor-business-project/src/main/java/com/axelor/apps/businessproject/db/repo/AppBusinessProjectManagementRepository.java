@@ -21,12 +21,17 @@ import com.axelor.apps.base.db.AppBusinessProject;
 import com.axelor.apps.base.db.repo.AppBusinessProjectRepository;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.businessproject.module.BusinessProjectModule;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.persistence.PersistenceException;
 
+@Alternative
+@Priority(BusinessProjectModule.PRIORITY)
 public class AppBusinessProjectManagementRepository extends AppBusinessProjectRepository {
 
   @Inject private ProjectTaskRepository projectTaskRepo;

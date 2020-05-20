@@ -18,9 +18,14 @@
 package com.axelor.apps.businessproject.db.repo;
 
 import com.axelor.apps.businessproject.db.InvoicingProject;
+import com.axelor.apps.businessproject.module.BusinessProjectModule;
 import com.axelor.i18n.I18n;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.persistence.PersistenceException;
 
+@Alternative
+@Priority(BusinessProjectModule.PRIORITY)
 public class InvoicingProjectManagementRepository extends InvoicingProjectRepository {
 
   @Override

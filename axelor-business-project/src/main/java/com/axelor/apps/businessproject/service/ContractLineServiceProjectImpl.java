@@ -22,13 +22,19 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.businessproject.module.BusinessProjectModule;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.service.ContractLineServiceImpl;
 import com.axelor.apps.project.db.Project;
+import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import java.util.List;
 
+@Alternative
+@Priority(BusinessProjectModule.PRIORITY)
 public class ContractLineServiceProjectImpl extends ContractLineServiceImpl {
 
   @Inject
