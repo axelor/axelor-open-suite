@@ -25,9 +25,14 @@ import com.axelor.apps.base.service.ProductServiceImpl;
 import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.purchase.module.PurchaseModule;
 import com.axelor.inject.Beans;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
+@Alternative
+@Priority(PurchaseModule.PRIORITY)
 public class ProductServicePurchaseImpl extends ProductServiceImpl {
 
   @Inject

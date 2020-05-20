@@ -17,44 +17,11 @@
  */
 package com.axelor.apps.purchase.module;
 
-import com.axelor.app.AxelorModule;
-import com.axelor.apps.base.service.ProductServiceImpl;
-import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
-import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.purchase.db.repo.PurchaseRequestManagementRepository;
-import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
-import com.axelor.apps.purchase.service.ProductServicePurchaseImpl;
-import com.axelor.apps.purchase.service.PurchaseOrderLineService;
-import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
-import com.axelor.apps.purchase.service.PurchaseOrderService;
-import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
-import com.axelor.apps.purchase.service.PurchaseOrderWorkflowService;
-import com.axelor.apps.purchase.service.PurchaseOrderWorkflowServiceImpl;
-import com.axelor.apps.purchase.service.PurchaseProductService;
-import com.axelor.apps.purchase.service.PurchaseProductServiceImpl;
-import com.axelor.apps.purchase.service.PurchaseRequestService;
-import com.axelor.apps.purchase.service.PurchaseRequestServiceImpl;
-import com.axelor.apps.purchase.service.SupplierCatalogService;
-import com.axelor.apps.purchase.service.SupplierCatalogServiceImpl;
-import com.axelor.apps.purchase.service.app.AppPurchaseService;
-import com.axelor.apps.purchase.service.app.AppPurchaseServiceImpl;
-import com.axelor.apps.purchase.service.print.PurchaseOrderPrintService;
-import com.axelor.apps.purchase.service.print.PurchaseOrderPrintServiceImpl;
+import javax.interceptor.Interceptor;
 
-public class PurchaseModule extends AxelorModule {
+public class PurchaseModule {
 
-  @Override
-  protected void configure() {
-    bind(PurchaseOrderRepository.class).to(PurchaseOrderManagementRepository.class);
-    bind(PurchaseOrderService.class).to(PurchaseOrderServiceImpl.class);
-    bind(AppPurchaseService.class).to(AppPurchaseServiceImpl.class);
-    bind(PurchaseRequestService.class).to(PurchaseRequestServiceImpl.class);
-    bind(PurchaseProductService.class).to(PurchaseProductServiceImpl.class);
-    bind(PurchaseOrderPrintService.class).to(PurchaseOrderPrintServiceImpl.class);
-    bind(ProductServiceImpl.class).to(ProductServicePurchaseImpl.class);
-    bind(PurchaseRequestRepository.class).to(PurchaseRequestManagementRepository.class);
-    bind(PurchaseOrderLineService.class).to(PurchaseOrderLineServiceImpl.class);
-    bind(SupplierCatalogService.class).to(SupplierCatalogServiceImpl.class);
-    bind(PurchaseOrderWorkflowService.class).to(PurchaseOrderWorkflowServiceImpl.class);
-  }
+  private PurchaseModule() {}
+
+  public static final int PRIORITY = Interceptor.Priority.APPLICATION + 1000;
 }

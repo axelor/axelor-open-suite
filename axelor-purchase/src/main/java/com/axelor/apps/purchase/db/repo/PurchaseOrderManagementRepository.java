@@ -19,10 +19,15 @@ package com.axelor.apps.purchase.db.repo;
 
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.module.PurchaseModule;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.inject.Beans;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.persistence.PersistenceException;
 
+@Alternative
+@Priority(PurchaseModule.PRIORITY)
 public class PurchaseOrderManagementRepository extends PurchaseOrderRepository {
 
   @Override
