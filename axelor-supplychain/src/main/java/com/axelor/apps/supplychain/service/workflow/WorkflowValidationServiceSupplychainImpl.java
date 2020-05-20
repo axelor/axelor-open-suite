@@ -19,10 +19,15 @@ package com.axelor.apps.supplychain.service.workflow;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationServiceImpl;
+import com.axelor.apps.supplychain.module.SupplychainModule;
 import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.exception.AxelorException;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
+@Alternative
+@Priority(SupplychainModule.PRIORITY)
 public class WorkflowValidationServiceSupplychainImpl extends WorkflowValidationServiceImpl {
 
   protected IntercoService intercoService;

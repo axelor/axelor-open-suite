@@ -26,14 +26,20 @@ import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.supplychain.module.SupplychainModule;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
+@Alternative
+@Priority(SupplychainModule.PRIORITY)
 public class FixedAssetServiceSupplyChainImpl extends FixedAssetServiceImpl {
 
   @Inject

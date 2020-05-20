@@ -32,11 +32,16 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.module.SupplychainModule;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import java.lang.invoke.MethodHandles;
+import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -44,6 +49,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Alternative
+@Priority(SupplychainModule.PRIORITY)
 public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowServiceImpl {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -118,7 +125,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
   @Override
   @Transactional(
       rollbackOn = {AxelorException.class, RuntimeException.class},
-      ignore = {BlockedSaleOrderException.class})
+      dontRollbackOn = {BlockedSaleOrderException.class})
   public void finalizeQuotation(SaleOrder saleOrder) throws AxelorException {
 
     if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {

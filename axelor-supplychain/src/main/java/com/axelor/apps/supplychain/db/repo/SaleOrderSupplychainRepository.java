@@ -22,11 +22,16 @@ import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
+import com.axelor.apps.supplychain.module.SupplychainModule;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(SupplychainModule.PRIORITY)
 public class SaleOrderSupplychainRepository extends SaleOrderManagementRepository {
 
   @Override

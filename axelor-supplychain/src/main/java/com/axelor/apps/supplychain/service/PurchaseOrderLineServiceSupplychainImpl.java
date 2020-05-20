@@ -34,6 +34,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.apps.supplychain.module.SupplychainModule;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
@@ -45,7 +46,14 @@ import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+@Alternative
+@Priority(SupplychainModule.PRIORITY)
 public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineServiceImpl
     implements PurchaseOrderLineServiceSupplyChain {
 

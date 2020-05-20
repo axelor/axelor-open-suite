@@ -44,6 +44,7 @@ import com.axelor.apps.stock.service.TrackingNumberService;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.module.SupplychainModule;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -52,10 +53,16 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import javax.inject.Inject;
-import com.google.inject.servlet.RequestScoped;
+import javax.enterprise.context.RequestScoped;
 import java.math.BigDecimal;
 import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 
+@Alternative
+@Priority(SupplychainModule.PRIORITY)
 @RequestScoped
 public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImpl
     implements StockMoveLineServiceSupplychain {

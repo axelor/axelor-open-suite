@@ -26,12 +26,18 @@ import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationServiceImpl;
+import com.axelor.apps.supplychain.module.SupplychainModule;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 
+@Alternative
+@Priority(SupplychainModule.PRIORITY)
 public class StockLocationServiceSupplychainImpl extends StockLocationServiceImpl
     implements StockLocationServiceSupplychain {
 

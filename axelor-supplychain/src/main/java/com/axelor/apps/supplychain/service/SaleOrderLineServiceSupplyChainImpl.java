@@ -44,6 +44,7 @@ import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.supplychain.module.SupplychainModule;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
@@ -63,8 +64,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 import javax.persistence.Query;
 
+@Alternative
+@Priority(SupplychainModule.PRIORITY)
 public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImpl
     implements SaleOrderLineServiceSupplyChain {
 

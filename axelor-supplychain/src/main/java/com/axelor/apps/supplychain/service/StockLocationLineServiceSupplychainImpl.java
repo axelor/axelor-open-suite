@@ -29,15 +29,22 @@ import com.axelor.apps.stock.db.repo.WapHistoryRepository;
 import com.axelor.apps.stock.service.StockLocationLineServiceImpl;
 import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.module.SupplychainModule;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import java.math.BigDecimal;
+import javax.annotation.Priority;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
-import com.google.inject.servlet.RequestScoped;
+import javax.enterprise.context.RequestScoped;
 import java.math.BigDecimal;
 
+@Alternative
+@Priority(SupplychainModule.PRIORITY)
 @RequestScoped
 public class StockLocationLineServiceSupplychainImpl extends StockLocationLineServiceImpl {
 

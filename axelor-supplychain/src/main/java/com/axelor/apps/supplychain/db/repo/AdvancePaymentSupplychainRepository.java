@@ -20,11 +20,16 @@ package com.axelor.apps.supplychain.db.repo;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.repo.AdvancePaymentSaleRepository;
+import com.axelor.apps.supplychain.module.SupplychainModule;
 import com.axelor.apps.supplychain.service.AdvancePaymentServiceSupplychainImpl;
 import com.axelor.inject.Beans;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.persistence.PersistenceException;
 
+@Alternative
+@Priority(SupplychainModule.PRIORITY)
 public class AdvancePaymentSupplychainRepository extends AdvancePaymentSaleRepository {
 
   @Inject private AppService appService;

@@ -19,8 +19,13 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.service.StockCorrectionServiceImpl;
+import com.axelor.apps.supplychain.module.SupplychainModule;
 import java.util.Map;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(SupplychainModule.PRIORITY)
 public class StockCorrectionServiceSupplychainImpl extends StockCorrectionServiceImpl {
 
   @Override

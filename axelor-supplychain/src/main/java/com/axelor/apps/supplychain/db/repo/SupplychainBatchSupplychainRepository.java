@@ -18,7 +18,12 @@
 package com.axelor.apps.supplychain.db.repo;
 
 import com.axelor.apps.supplychain.db.SupplychainBatch;
+import com.axelor.apps.supplychain.module.SupplychainModule;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(SupplychainModule.PRIORITY)
 public class SupplychainBatchSupplychainRepository extends SupplychainBatchRepository {
 
   @Override

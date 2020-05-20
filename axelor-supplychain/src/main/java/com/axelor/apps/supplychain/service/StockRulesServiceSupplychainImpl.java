@@ -40,6 +40,7 @@ import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.repo.StockConfigRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
+import com.axelor.apps.supplychain.module.SupplychainModule;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
@@ -51,8 +52,13 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 import javax.mail.MessagingException;
 
+@Alternative
+@Priority(SupplychainModule.PRIORITY)
 public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
 
   protected PurchaseOrderLineService purchaseOrderLineService;

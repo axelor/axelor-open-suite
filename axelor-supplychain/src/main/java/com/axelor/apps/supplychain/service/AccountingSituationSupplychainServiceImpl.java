@@ -33,6 +33,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.module.SupplychainModule;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -43,7 +44,14 @@ import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
+@Alternative
+@Priority(SupplychainModule.PRIORITY)
 @ApplicationScoped
 public class AccountingSituationSupplychainServiceImpl extends AccountingSituationServiceImpl
     implements AccountingSituationSupplychainService {
@@ -115,7 +123,7 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
   @Override
   @Transactional(
       rollbackOn = {AxelorException.class, Exception.class},
-      ignore = {BlockedSaleOrderException.class})
+      dontRollbackOn = {BlockedSaleOrderException.class})
   public void updateCustomerCreditFromSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
     if (!appAccountService.getAppAccount().getManageCustomerCredit()) {

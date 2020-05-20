@@ -19,7 +19,12 @@ package com.axelor.apps.supplychain.db.repo;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
+import com.axelor.apps.supplychain.module.SupplychainModule;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(SupplychainModule.PRIORITY)
 public class AnalyticMoveLineSupplychainRepository extends AnalyticMoveLineMngtRepository {
   @Override
   public AnalyticMoveLine copy(AnalyticMoveLine entity, boolean deep) {
