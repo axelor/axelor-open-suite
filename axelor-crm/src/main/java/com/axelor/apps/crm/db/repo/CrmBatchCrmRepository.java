@@ -18,7 +18,12 @@
 package com.axelor.apps.crm.db.repo;
 
 import com.axelor.apps.crm.db.CrmBatch;
+import com.axelor.apps.crm.module.CrmModule;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(CrmModule.PRIORITY)
 public class CrmBatchCrmRepository extends CrmBatchRepository {
 
   @Override

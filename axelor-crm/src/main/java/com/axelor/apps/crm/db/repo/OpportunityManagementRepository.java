@@ -21,7 +21,12 @@ import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.service.OpportunityService;
 import com.axelor.inject.Beans;
 import javax.persistence.PersistenceException;
+import com.axelor.apps.crm.module.CrmModule;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(CrmModule.PRIORITY)
 public class OpportunityManagementRepository extends OpportunityRepository {
   @Override
   public Opportunity copy(Opportunity entity, boolean deep) {

@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.repo.ICalendarRepository;
 import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.crm.db.repo.EventRepository;
+import com.axelor.apps.crm.module.CrmModule;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
 import com.axelor.team.db.Team;
@@ -32,7 +33,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 
+@Alternative
+@Priority(CrmModule.PRIORITY)
 public class CalendarService extends ICalendarService {
 
   @Inject private ICalendarRepository icalRepo;

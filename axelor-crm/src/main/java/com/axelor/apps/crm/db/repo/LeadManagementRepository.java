@@ -18,9 +18,14 @@
 package com.axelor.apps.crm.db.repo;
 
 import com.axelor.apps.crm.db.Lead;
+import com.axelor.apps.crm.module.CrmModule;
 import com.axelor.apps.crm.service.LeadService;
 import com.axelor.inject.Beans;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(CrmModule.PRIORITY)
 public class LeadManagementRepository extends LeadRepository {
 
   @Override
