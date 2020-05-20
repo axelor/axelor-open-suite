@@ -19,6 +19,7 @@ package com.axelor.apps.marketing.service;
 
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
+import com.axelor.apps.marketing.module.MarketingModule;
 import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.MessageRepository;
@@ -26,11 +27,16 @@ import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateContextService;
 import com.axelor.inject.Beans;
+import java.lang.invoke.MethodHandles;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Alternative
+@Priority(MarketingModule.PRIORITY)
 public class TemplateMessageServiceMarketingImpl extends TemplateMessageServiceBaseImpl
     implements TemplateMessageMarketingService {
 
