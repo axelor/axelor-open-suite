@@ -44,7 +44,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import com.google.inject.servlet.RequestScoped;
+import javax.enterprise.context.RequestScoped;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;

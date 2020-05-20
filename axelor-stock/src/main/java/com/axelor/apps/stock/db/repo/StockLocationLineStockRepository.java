@@ -19,10 +19,15 @@ package com.axelor.apps.stock.db.repo;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.StockLocationLine;
+import com.axelor.apps.stock.module.StockModule;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.inject.Beans;
 import javax.persistence.PersistenceException;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(StockModule.PRIORITY)
 public class StockLocationLineStockRepository extends StockLocationLineRepository {
 
   @Override

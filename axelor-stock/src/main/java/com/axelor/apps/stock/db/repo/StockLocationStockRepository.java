@@ -18,11 +18,16 @@
 package com.axelor.apps.stock.db.repo;
 
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.module.StockModule;
 import com.axelor.apps.stock.service.StockLocationSaveService;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.inject.Beans;
 import java.util.Map;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(StockModule.PRIORITY)
 public class StockLocationStockRepository extends StockLocationRepository {
 
   /**

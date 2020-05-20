@@ -38,7 +38,7 @@ import com.axelor.rpc.filter.Filter;
 import com.axelor.rpc.filter.JPQLFilter;
 import com.google.common.collect.Lists;
 import javax.inject.Inject;
-import com.google.inject.servlet.RequestScoped;
+import javax.enterprise.context.RequestScoped;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;

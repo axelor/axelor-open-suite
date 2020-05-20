@@ -18,7 +18,12 @@
 package com.axelor.apps.stock.db.repo;
 
 import com.axelor.apps.stock.db.StockCorrection;
+import com.axelor.apps.stock.module.StockModule;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(StockModule.PRIORITY)
 public class StockCorrectionStockRepository extends StockCorrectionRepository {
 
   @Override

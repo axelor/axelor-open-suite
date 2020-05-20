@@ -19,10 +19,15 @@ package com.axelor.apps.stock.db.repo;
 
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.module.StockModule;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.inject.Beans;
 import java.util.Map;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(StockModule.PRIORITY)
 public class StockMoveLineStockRepository extends StockMoveLineRepository {
 
   @Override

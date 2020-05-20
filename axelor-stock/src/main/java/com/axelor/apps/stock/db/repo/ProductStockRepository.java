@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.ProductCompany;
 import com.axelor.apps.base.db.repo.ProductBaseRepository;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.module.StockModule;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.app.AppStockService;
@@ -36,7 +37,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 
+@Alternative
+@Priority(StockModule.PRIORITY)
 public class ProductStockRepository extends ProductBaseRepository {
 
   @Inject private StockMoveService stockMoveService;

@@ -25,6 +25,7 @@ import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.module.StockModule;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -32,8 +33,12 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.persistence.PersistenceException;
 
+@Alternative
+@Priority(StockModule.PRIORITY)
 public class LogisticalFormStockRepository extends LogisticalFormRepository {
 
   @Override

@@ -27,6 +27,8 @@ public class AddressServiceStockImpl extends AddressServiceImpl {
     registerCheckUsedFunc(AddressServiceStockImpl::checkAddressUsedStock);
   }
 
+  public static void init() {}
+
   private static boolean checkAddressUsedStock(Long addressId) {
     return JPA.all(StockMove.class)
                 .filter("self.fromAddress.id = ?1 OR self.toAddress.id = ?1", addressId)

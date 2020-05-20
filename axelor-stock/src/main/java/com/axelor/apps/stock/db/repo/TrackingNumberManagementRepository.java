@@ -19,11 +19,17 @@ package com.axelor.apps.stock.db.repo;
 
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.stock.module.StockModule;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.Map;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 
+@Alternative
+@Priority(StockModule.PRIORITY)
 public class TrackingNumberManagementRepository extends TrackingNumberRepository {
 
   @Inject private StockLocationRepository stockLocationRepo;

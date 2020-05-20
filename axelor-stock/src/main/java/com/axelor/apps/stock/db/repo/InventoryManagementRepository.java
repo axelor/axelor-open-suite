@@ -19,12 +19,17 @@ package com.axelor.apps.stock.db.repo;
 
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.db.Inventory;
+import com.axelor.apps.stock.module.StockModule;
 import com.axelor.apps.stock.service.InventoryService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.persistence.PersistenceException;
 
+@Alternative
+@Priority(StockModule.PRIORITY)
 public class InventoryManagementRepository extends InventoryRepository {
   @Override
   public Inventory copy(Inventory entity, boolean deep) {

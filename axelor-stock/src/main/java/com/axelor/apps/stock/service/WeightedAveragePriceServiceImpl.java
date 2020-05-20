@@ -31,7 +31,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import com.google.inject.servlet.RequestScoped;
+import javax.enterprise.context.RequestScoped;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
