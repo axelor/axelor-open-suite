@@ -18,6 +18,7 @@
 - Business Project : Fixed set toInvoice for timesheet line based on parent task instead of a task.
 - FORECAST RECAP : many anomalies resolved.
 - Bank details: corrected the possibility to get an inactive bank details.
+- Back Order : corrected link between back order and origin.
 
 ## [5.3.5] - 2020-05-11
 ## Features
