@@ -24,6 +24,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.exception.IExceptionMessage;
+import com.axelor.apps.project.module.ProjectModule;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -32,8 +33,12 @@ import com.axelor.inject.Beans;
 import com.axelor.team.db.Team;
 import com.google.common.base.Strings;
 import java.math.BigDecimal;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.persistence.PersistenceException;
 
+@Alternative
+@Priority(ProjectModule.PRIORITY)
 public class ProjectManagementRepository extends ProjectRepository {
 
   private void setAllProjectFullName(Project project) {

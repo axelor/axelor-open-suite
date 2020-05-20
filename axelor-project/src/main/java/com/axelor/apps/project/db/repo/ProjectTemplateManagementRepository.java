@@ -18,8 +18,13 @@
 package com.axelor.apps.project.db.repo;
 
 import com.axelor.apps.project.db.ProjectTemplate;
+import com.axelor.apps.project.module.ProjectModule;
 import com.google.common.base.Strings;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(ProjectModule.PRIORITY)
 public class ProjectTemplateManagementRepository extends ProjectTemplateRepository {
 
   private void setProjectTemplateFullName(ProjectTemplate entity) {
