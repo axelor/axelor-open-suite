@@ -17,29 +17,10 @@
  */
 package com.axelor.apps.contract.module;
 
-import com.axelor.app.AxelorModule;
-import com.axelor.apps.contract.db.repo.AbstractContractRepository;
-import com.axelor.apps.contract.db.repo.ContractBatchContractRepository;
-import com.axelor.apps.contract.db.repo.ContractBatchRepository;
-import com.axelor.apps.contract.db.repo.ContractRepository;
-import com.axelor.apps.contract.service.ConsumptionLineService;
-import com.axelor.apps.contract.service.ConsumptionLineServiceImpl;
-import com.axelor.apps.contract.service.ContractLineService;
-import com.axelor.apps.contract.service.ContractLineServiceImpl;
-import com.axelor.apps.contract.service.ContractService;
-import com.axelor.apps.contract.service.ContractServiceImpl;
-import com.axelor.apps.contract.service.ContractVersionService;
-import com.axelor.apps.contract.service.ContractVersionServiceImpl;
+import javax.interceptor.Interceptor;
 
-public class ContractModule extends AxelorModule {
+public class ContractModule {
+  private ContractModule() {}
 
-  @Override
-  protected void configure() {
-    bind(AbstractContractRepository.class).to(ContractRepository.class);
-    bind(ContractService.class).to(ContractServiceImpl.class);
-    bind(ContractVersionService.class).to(ContractVersionServiceImpl.class);
-    bind(ContractLineService.class).to(ContractLineServiceImpl.class);
-    bind(ConsumptionLineService.class).to(ConsumptionLineServiceImpl.class);
-    bind(ContractBatchRepository.class).to(ContractBatchContractRepository.class);
-  }
+  public static final int PRIORITY = Interceptor.Priority.APPLICATION + 1500;
 }

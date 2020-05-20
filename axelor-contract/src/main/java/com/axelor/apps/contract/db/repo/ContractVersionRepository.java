@@ -20,10 +20,15 @@ package com.axelor.apps.contract.db.repo;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
+import com.axelor.apps.contract.module.ContractModule;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.inject.Beans;
 import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(ContractModule.PRIORITY)
 public class ContractVersionRepository extends AbstractContractVersionRepository {
 
   public ContractVersion copy(Contract contract) {

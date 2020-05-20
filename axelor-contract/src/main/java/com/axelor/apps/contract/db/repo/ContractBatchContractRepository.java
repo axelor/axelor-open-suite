@@ -18,7 +18,12 @@
 package com.axelor.apps.contract.db.repo;
 
 import com.axelor.apps.contract.db.ContractBatch;
+import com.axelor.apps.contract.module.ContractModule;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(ContractModule.PRIORITY)
 public class ContractBatchContractRepository extends ContractBatchRepository {
 
   @Override
