@@ -17,17 +17,10 @@
  */
 package com.axelor.apps.fleet.module;
 
-import com.axelor.app.AxelorModule;
-import com.axelor.apps.fleet.service.VehicleFuelLogService;
-import com.axelor.apps.fleet.service.VehicleFuelLogServiceImpl;
-import com.axelor.apps.fleet.service.VehicleService;
-import com.axelor.apps.fleet.service.VehicleServiceImpl;
+import javax.interceptor.Interceptor;
 
-public class FleetModule extends AxelorModule {
+public class FleetModule {
+  private FleetModule() {}
 
-  @Override
-  protected void configure() {
-    bind(VehicleService.class).to(VehicleServiceImpl.class);
-    bind(VehicleFuelLogService.class).to(VehicleFuelLogServiceImpl.class);
-  }
+  public static final int PRIORITY = Interceptor.Priority.APPLICATION + 1800;
 }
