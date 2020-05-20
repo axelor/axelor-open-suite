@@ -18,9 +18,14 @@
 package com.axelor.apps.helpdesk.db.repo;
 
 import com.axelor.apps.helpdesk.db.Ticket;
+import com.axelor.apps.helpdesk.module.HelpdeskModule;
 import com.axelor.apps.helpdesk.service.TicketService;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
+@Alternative
+@Priority(HelpdeskModule.PRIORITY)
 public class TicketManagementRepository extends TicketRepository {
 
   @Inject private TicketService ticketService;
