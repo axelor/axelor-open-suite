@@ -18,10 +18,15 @@
 package com.axelor.apps.bankpayment.service.extract;
 
 import com.axelor.apps.account.service.extract.ExtractContextMoveServiceImpl;
+import com.axelor.apps.bankpayment.module.BankPaymentModule;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.Context;
 import java.util.Map;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(BankPaymentModule.PRIORITY)
 public class ExtractContextMoveServiceBankPaymentImpl extends ExtractContextMoveServiceImpl {
 
   @Override

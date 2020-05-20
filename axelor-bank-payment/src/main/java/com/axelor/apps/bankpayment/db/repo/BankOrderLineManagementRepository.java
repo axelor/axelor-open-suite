@@ -19,11 +19,16 @@ package com.axelor.apps.bankpayment.db.repo;
 
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.BankOrderLineOrigin;
+import com.axelor.apps.bankpayment.module.BankPaymentModule;
 import com.axelor.apps.tool.StringTool;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(BankPaymentModule.PRIORITY)
 public class BankOrderLineManagementRepository extends BankOrderLineRepository {
 
   @Override

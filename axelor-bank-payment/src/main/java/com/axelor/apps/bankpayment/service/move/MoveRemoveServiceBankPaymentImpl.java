@@ -25,14 +25,20 @@ import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.module.BankPaymentModule;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.tool.service.ArchivingToolService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import java.math.BigDecimal;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 
+@Alternative
+@Priority(BankPaymentModule.PRIORITY)
 public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveService {
 
   @Inject

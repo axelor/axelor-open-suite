@@ -41,6 +41,7 @@ import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
+import com.axelor.apps.bankpayment.module.BankPaymentModule;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
@@ -61,7 +62,13 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
+@Alternative
+@Priority(BankPaymentModule.PRIORITY)
 public class PaymentScheduleLineBankPaymentServiceImpl extends PaymentScheduleLineServiceImpl
     implements PaymentScheduleLineBankPaymentService {
 

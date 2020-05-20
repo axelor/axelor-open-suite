@@ -23,13 +23,18 @@ import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.service.AccountingReportServiceImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.bankpayment.module.BankPaymentModule;
 import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
+@Alternative
+@Priority(BankPaymentModule.PRIORITY)
 public class AccountingReportBankPaymentServiceImpl extends AccountingReportServiceImpl
     implements AccountingReportBankPaymentService {
 

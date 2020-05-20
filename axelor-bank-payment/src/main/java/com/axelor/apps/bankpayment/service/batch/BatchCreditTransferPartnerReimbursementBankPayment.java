@@ -27,6 +27,7 @@ import com.axelor.apps.account.service.batch.BatchCreditTransferPartnerReimburse
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.bankpayment.module.BankPaymentModule;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
@@ -42,11 +43,17 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Alternative
+@Priority(BankPaymentModule.PRIORITY)
 public class BatchCreditTransferPartnerReimbursementBankPayment
     extends BatchCreditTransferPartnerReimbursement {
   private static final Logger logger =

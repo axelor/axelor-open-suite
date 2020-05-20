@@ -28,8 +28,11 @@ dependencies {
 	implementation libs.bcprov_jdk15on
 	implementation libs.bcpkix_jdk15on
 
+    implementation libs.commons_io
 	implementation libs.commons_codec
 	implementation libs.commons_httpclient
+
+    implementation libs.httpclient
 
 	implementation libs.xmlsec
 	implementation libs.xalan

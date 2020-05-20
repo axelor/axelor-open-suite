@@ -23,15 +23,21 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.batch.BatchCreditTransferSupplierPayment;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
+import com.axelor.apps.bankpayment.module.BankPaymentModule;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import javax.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Alternative
+@Priority(BankPaymentModule.PRIORITY)
 public class BatchCreditTransferSupplierPaymentBankPayment
     extends BatchCreditTransferSupplierPayment {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

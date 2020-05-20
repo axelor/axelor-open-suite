@@ -18,7 +18,12 @@
 package com.axelor.apps.bankpayment.db.repo;
 
 import com.axelor.apps.bankpayment.db.BankPaymentBatch;
+import com.axelor.apps.bankpayment.module.BankPaymentModule;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(BankPaymentModule.PRIORITY)
 public class BankPaymentBatchBankRepository extends BankPaymentBatchRepository {
 
   @Override

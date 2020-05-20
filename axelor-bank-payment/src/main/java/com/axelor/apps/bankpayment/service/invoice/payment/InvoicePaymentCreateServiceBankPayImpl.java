@@ -27,6 +27,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToo
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.module.BankPaymentModule;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.CurrencyService;
@@ -40,8 +41,13 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 import javax.persistence.TypedQuery;
 
+@Alternative
+@Priority(BankPaymentModule.PRIORITY)
 public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreateServiceImpl
     implements InvoicePaymentCreateServiceBankPay {
 

@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.web.InvoicePaymentController;
 import com.axelor.apps.bankpayment.db.BankOrder;
+import com.axelor.apps.bankpayment.module.BankPaymentModule;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -33,7 +34,12 @@ import com.google.common.collect.Lists;
 import javax.enterprise.context.ApplicationScoped;
 import java.util.List;
 import javax.annotation.Nullable;
+import javax.annotation.Priority;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(BankPaymentModule.PRIORITY)
 @ApplicationScoped
 public class InvoicePaymentBankPayController extends InvoicePaymentController {
 

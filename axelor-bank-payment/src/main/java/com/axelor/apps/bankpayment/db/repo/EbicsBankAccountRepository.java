@@ -19,8 +19,13 @@ package com.axelor.apps.bankpayment.db.repo;
 
 import com.axelor.apps.bankpayment.db.EbicsBank;
 import com.axelor.apps.bankpayment.ebics.service.EbicsBankService;
+import com.axelor.apps.bankpayment.module.BankPaymentModule;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
+@Alternative
+@Priority(BankPaymentModule.PRIORITY)
 public class EbicsBankAccountRepository extends EbicsBankRepository {
 
   @Inject EbicsBankService ebicsBankService;

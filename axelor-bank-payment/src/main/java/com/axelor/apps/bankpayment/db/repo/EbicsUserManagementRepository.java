@@ -19,9 +19,14 @@ package com.axelor.apps.bankpayment.db.repo;
 
 import com.axelor.apps.bankpayment.db.EbicsRequestLog;
 import com.axelor.apps.bankpayment.db.EbicsUser;
+import com.axelor.apps.bankpayment.module.BankPaymentModule;
 import com.axelor.inject.Beans;
 import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(BankPaymentModule.PRIORITY)
 public class EbicsUserManagementRepository extends EbicsUserRepository {
 
   @Override

@@ -32,12 +32,19 @@ import com.axelor.apps.account.service.move.MoveServiceImpl;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.payment.PaymentService;
+import com.axelor.apps.bankpayment.module.BankPaymentModule;
 import com.axelor.exception.AxelorException;
+import java.time.LocalDate;
+import java.util.Map;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.Map;
 
+@Alternative
+@Priority(BankPaymentModule.PRIORITY)
 public class MoveServiceBankPaymentImpl extends MoveServiceImpl {
 
   @Inject

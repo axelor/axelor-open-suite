@@ -20,12 +20,17 @@ package com.axelor.apps.bankpayment.service.batch;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.service.batch.AccountingBatchService;
+import com.axelor.apps.bankpayment.module.BankPaymentModule;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(BankPaymentModule.PRIORITY)
 public class AccountingBatchBankPaymentService extends AccountingBatchService {
 
   @Override

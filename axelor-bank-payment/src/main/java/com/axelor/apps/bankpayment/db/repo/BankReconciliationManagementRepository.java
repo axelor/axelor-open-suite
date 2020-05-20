@@ -18,11 +18,16 @@
 package com.axelor.apps.bankpayment.db.repo;
 
 import com.axelor.apps.bankpayment.db.BankReconciliation;
+import com.axelor.apps.bankpayment.module.BankPaymentModule;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationCreateService;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import java.math.BigDecimal;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(BankPaymentModule.PRIORITY)
 public class BankReconciliationManagementRepository extends BankReconciliationRepository {
   @Override
   public BankReconciliation copy(BankReconciliation entity, boolean deep) {

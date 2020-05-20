@@ -20,9 +20,14 @@ package com.axelor.apps.bankpayment.db.repo;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveManagementRepository;
+import com.axelor.apps.bankpayment.module.BankPaymentModule;
 import java.math.BigDecimal;
 import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(BankPaymentModule.PRIORITY)
 public class MoveBankPaymentRepository extends MoveManagementRepository {
 
   @Override

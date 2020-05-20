@@ -19,11 +19,16 @@ package com.axelor.apps.bankpayment.db.repo;
 
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.module.BankPaymentModule;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.persistence.PersistenceException;
 
+@Alternative
+@Priority(BankPaymentModule.PRIORITY)
 public class BankOrderManagementRepository extends BankOrderRepository {
 
   @Override
