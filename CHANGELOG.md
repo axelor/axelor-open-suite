@@ -11,6 +11,7 @@
 - Business Project : Fixed set toInvoice for timesheet line based on parent task instead of a task.
 - LEAVE LINE: remove fields length constraint
 - QUALITY CONTROL : Displayed signatures on the first page.
+- LEAVE REQUEST: remove field duration lenght constraint
 
 ## Bug Fixes
 - CONTRACT : fix for unit price null on invoice.
