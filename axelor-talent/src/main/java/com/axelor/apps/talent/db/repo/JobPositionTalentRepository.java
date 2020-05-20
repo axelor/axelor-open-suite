@@ -20,8 +20,13 @@ package com.axelor.apps.talent.db.repo;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.talent.db.JobPosition;
+import com.axelor.apps.talent.module.TalentModule;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
+@Alternative
+@Priority(TalentModule.PRIORITY)
 public class JobPositionTalentRepository extends JobPositionRepository {
 
   @Inject private SequenceService sequenceService;

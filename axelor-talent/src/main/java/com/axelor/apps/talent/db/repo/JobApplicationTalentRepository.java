@@ -18,9 +18,14 @@
 package com.axelor.apps.talent.db.repo;
 
 import com.axelor.apps.talent.db.JobApplication;
+import com.axelor.apps.talent.module.TalentModule;
 import com.axelor.apps.talent.service.JobApplicationService;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
+@Alternative
+@Priority(TalentModule.PRIORITY)
 public class JobApplicationTalentRepository extends JobApplicationRepository {
 
   @Inject private JobApplicationService jobApplicationService;

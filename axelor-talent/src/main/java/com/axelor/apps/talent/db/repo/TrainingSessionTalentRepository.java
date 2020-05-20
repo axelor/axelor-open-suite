@@ -19,11 +19,16 @@ package com.axelor.apps.talent.db.repo;
 
 import com.axelor.apps.talent.db.TrainingSession;
 import com.axelor.apps.talent.exception.IExceptionMessage;
+import com.axelor.apps.talent.module.TalentModule;
 import com.axelor.apps.talent.service.TrainingSessionService;
 import com.axelor.i18n.I18n;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.validation.ValidationException;
 
+@Alternative
+@Priority(TalentModule.PRIORITY)
 public class TrainingSessionTalentRepository extends TrainingSessionRepository {
 
   @Inject private TrainingSessionService trainingSessionService;

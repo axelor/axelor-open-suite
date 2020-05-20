@@ -23,12 +23,18 @@ import com.axelor.apps.base.service.message.MailAccountServiceBaseImpl;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.Message;
+import com.axelor.apps.talent.module.TalentModule;
 import com.axelor.mail.MailParser;
+import java.util.Date;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.Date;
 import javax.mail.MessagingException;
 
+@Alternative
+@Priority(TalentModule.PRIORITY)
 public class MailAccountServiceTalentImpl extends MailAccountServiceBaseImpl {
 
   @Inject
