@@ -10,6 +10,7 @@
 - PURCHASE ORDER SUPPLIER LINE : fix for decimal digit scale and precision.
 - MOVE LINE: removed massUpdate from move-line-grid.
 - LEAVE LINE: remove fields length constraints
+- LEAVE REQUEST: remove field duration lenght constraint
 
 ## Bug Fixes
 - CONTRACT : Add filter on payment mode.
