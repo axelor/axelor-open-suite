@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.businessproduction.service;
 
+import com.axelor.apps.businessproduction.module.BusinessProductionModule;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.production.db.ManufOrder;
@@ -31,8 +32,13 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.transaction.Transactional;
 import org.apache.commons.collections.CollectionUtils;
 
+@Alternative
+@Priority(BusinessProductionModule.PRIORITY)
 public class InvoicingProjectServiceBusinessProdImpl extends InvoicingProjectService {
 
   @Override

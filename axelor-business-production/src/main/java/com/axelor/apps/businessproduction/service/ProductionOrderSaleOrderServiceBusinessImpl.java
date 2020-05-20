@@ -18,6 +18,7 @@
 package com.axelor.apps.businessproduction.service;
 
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.businessproduction.module.BusinessProductionModule;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
@@ -27,12 +28,17 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import java.lang.invoke.MethodHandles;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Alternative
+@Priority(BusinessProductionModule.PRIORITY)
 public class ProductionOrderSaleOrderServiceBusinessImpl
     extends ProductionOrderSaleOrderServiceImpl {
 

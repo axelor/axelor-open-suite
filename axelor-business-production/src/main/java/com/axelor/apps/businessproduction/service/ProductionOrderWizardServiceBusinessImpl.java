@@ -19,6 +19,7 @@ package com.axelor.apps.businessproduction.service;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.businessproduction.module.BusinessProductionModule;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
@@ -40,9 +41,14 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Alternative
+@Priority(BusinessProductionModule.PRIORITY)
 public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWizardServiceImpl {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

@@ -19,6 +19,7 @@ package com.axelor.apps.businessproduction.service;
 
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.businessproduction.module.BusinessProductionModule;
 import com.axelor.apps.businessproject.service.TimesheetProjectServiceImpl;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
@@ -35,9 +36,14 @@ import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.axelor.team.db.repo.TeamTaskRepository;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+@Alternative
+@Priority(BusinessProductionModule.PRIORITY)
 public class TimesheetBusinessProductionServiceImpl extends TimesheetProjectServiceImpl {
 
   @Inject

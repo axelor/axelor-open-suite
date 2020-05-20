@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.businessproduction.service;
 
+import com.axelor.apps.businessproduction.module.BusinessProductionModule;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.production.db.OperationOrder;
@@ -31,7 +32,12 @@ import com.axelor.inject.Beans;
 import javax.inject.Inject;
 import java.time.Duration;
 import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 
+@Alternative
+@Priority(BusinessProductionModule.PRIORITY)
 public class OperationOrderWorkflowServiceBusinessImpl extends OperationOrderWorkflowService {
 
   @Inject

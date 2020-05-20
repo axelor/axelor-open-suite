@@ -19,6 +19,7 @@ package com.axelor.apps.businessproduction.service;
 
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.businessproduction.module.BusinessProductionModule;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.production.db.CostSheetLine;
@@ -36,9 +37,14 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Alternative
+@Priority(BusinessProductionModule.PRIORITY)
 public class CostSheetServiceBusinessImpl extends CostSheetServiceImpl {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

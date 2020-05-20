@@ -23,6 +23,7 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.businessproduction.module.BusinessProductionModule;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
@@ -39,9 +40,15 @@ import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Alternative
+@Priority(BusinessProductionModule.PRIORITY)
 public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

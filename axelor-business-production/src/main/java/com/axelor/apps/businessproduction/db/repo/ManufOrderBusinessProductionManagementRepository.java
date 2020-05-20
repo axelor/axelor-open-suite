@@ -17,9 +17,14 @@
  */
 package com.axelor.apps.businessproduction.db.repo;
 
+import com.axelor.apps.businessproduction.module.BusinessProductionModule;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.repo.ManufOrderManagementRepository;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(BusinessProductionModule.PRIORITY)
 public class ManufOrderBusinessProductionManagementRepository
     extends ManufOrderManagementRepository {
 
