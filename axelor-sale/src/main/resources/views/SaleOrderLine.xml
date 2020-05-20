@@ -144,12 +144,12 @@
 			</panel>
 				<panel name="productDetailPanel" colSpan="12">
 					<field name="qty" colSpan="3" onChange="action-group-sale-saleorderline-qty-onchange" readonlyIf="$availabiltyRequest || ($isReadOnly !== false &amp;&amp; !$get('saleOrder.orderBeingEdited'))" validIf="$qtyValid != false"/>
-					<field name="unit" colSpan="3" readonlyIf="typeSelect == 2 || $isReadOnly !== false || deliveryState == 3" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
-					<field name="price" colSpan="3" readonlyIf="$isReadOnly !== false || deliveryState == 3" onChange="action-sale-order-line-method-onchange-price,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" hidden="true"/>
+					<field name="unit" colSpan="3" readonlyIf="typeSelect == 2 || $isReadOnly !== false || deliveryState == 3 || $nonNegotiable" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
+					<field name="price" colSpan="3" readonlyIf="$isReadOnly !== false || deliveryState == 3 || $nonNegotiable" onChange="action-sale-order-line-method-onchange-price,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" hidden="true"/>
 					<field name="inTaxPrice" colSpan="3" readonlyIf="$isReadOnly !== false || deliveryState == 3" onChange="action-sale-order-line-method-onchange-intaxprice,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" hidden="true"/>
 					<panel name="discountPanel" colSpan="12" readonlyIf="$isReadOnly !== false || deliveryState == 3">
-						<field name="discountTypeSelect" colSpan="3" onChange="action-sale-order-line-method-compute,action-sale-order-line-attrs-discountamount-title,action-sale-order-line-method-compute-analytic-distribution"/>
-						<field name="discountAmount" colSpan="3" onChange="action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" hideIf="discountTypeSelect == 0"/>
+						<field name="discountTypeSelect" colSpan="3" readonlyIf="$nonNegotiable" onChange="action-sale-order-line-method-compute,action-sale-order-line-attrs-discountamount-title,action-sale-order-line-method-compute-analytic-distribution"/>
+						<field name="discountAmount" colSpan="3" readonlyIf="$nonNegotiable" onChange="action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" hideIf="discountTypeSelect == 0"/>
 						<field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"/>
 					</panel>
 					<label name="multipleQtyNotRespectedLabel" hidden="true" colSpan="12"/>
@@ -372,6 +372,7 @@
     
     <action-group name="action-group-sale-saleorderline-onnew">
       <action name="action-sale-order-line-record-is-form-readonly"/>
+    	<action name="action-sale-order-line-record-non-negotiable"/>
     	<action name="action-sale-order-line-attrs-hide-qty-warning-label"/>
     	<action name="action-sale-order-line-attrs-title-project"/>
     	<action name="action-sale-order-line-attrs-show-priceDiscounted"/>
@@ -390,6 +391,7 @@
     <action-group name="action-group-sale-saleorderline-onload">
     	<action name="action-sale-order-line-attrs-show-availabilty-request" if="__config__.app.isApp('supplychain')"/>
       	<action name="action-sale-order-line-record-is-form-readonly"/>
+    	<action name="action-sale-order-line-record-non-negotiable"/>
     	<action name="action-sale-order-line-attrs-title-project"/>
     	<action name="action-sale-order-line-attrs-show-priceDiscounted"/>
     	<action name="action-sale-order-line-attrs-scale-and-precision"/>
@@ -500,6 +502,10 @@
 
 	<action-record name="action-sale-order-line-record-is-form-readonly" model="com.axelor.apps.sale.db.SaleOrderLine">
 		<field name="$isReadOnly" expr="eval: saleOrder?.statusSelect == 2 || saleOrder?.statusSelect == 3 &amp;&amp; (!saleOrder?.orderBeingEdited || (exTaxTotal &amp;&amp; exTaxTotal != 0 &amp;&amp; amountInvoiced == exTaxTotal) || availabiltyRequest) || saleOrder?.statusSelect == 4"/>
+	</action-record>
+
+	<action-record name="action-sale-order-line-record-non-negotiable" model="com.axelor.apps.sale.db.SaleOrderLine">
+		<field name="$nonNegotiable" expr="eval: __parent__?.priceList?.nonNegotiable" if="__parent__ != null &amp;&amp; __parent__?.priceList != null"/>
 	</action-record>
 
     <action-record name="action-sale-order-line-record-new" model="com.axelor.apps.sale.db.SaleOrderLine">
