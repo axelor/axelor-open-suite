@@ -22,6 +22,7 @@ import static com.axelor.common.StringUtils.isBlank;
 import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
+import com.axelor.apps.message.module.MessageModule;
 import com.axelor.auth.AuditableRunner;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
@@ -52,7 +53,10 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -60,6 +64,8 @@ import javax.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Alternative
+@Priority(MessageModule.PRIORITY)
 @ApplicationScoped
 public class MailServiceMessageImpl extends MailServiceImpl {
 

@@ -18,7 +18,12 @@
 package com.axelor.apps.message.db.repo;
 
 import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.module.MessageModule;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(MessageModule.PRIORITY)
 public class MessageManagementRepository extends MessageRepository {
   @Override
   public Message copy(Message entity, boolean deep) {
