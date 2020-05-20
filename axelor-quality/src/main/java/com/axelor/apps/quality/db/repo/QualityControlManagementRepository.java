@@ -20,9 +20,14 @@ package com.axelor.apps.quality.db.repo;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.quality.db.QualityControl;
+import com.axelor.apps.quality.module.QualityModule;
 import com.google.common.base.Strings;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
+@Alternative
+@Priority(QualityModule.PRIORITY)
 public class QualityControlManagementRepository extends QualityControlRepository {
 
   @Inject private SequenceService sequenceService;
