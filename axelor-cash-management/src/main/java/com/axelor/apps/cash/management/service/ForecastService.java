@@ -76,7 +76,6 @@ public class ForecastService {
     forecast.setForecastGenerator(forecastGenerator);
     forecast.setCompany(company);
     forecast.setBankDetails(bankDetails);
-    forecast.setTypeSelect(typeSelect);
     forecast.setAmount(amount);
     forecast.setEstimatedDate(estimatedDate);
     forecast.setForecastReason(reason);
