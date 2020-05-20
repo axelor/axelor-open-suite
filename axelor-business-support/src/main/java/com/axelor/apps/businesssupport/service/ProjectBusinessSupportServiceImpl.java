@@ -18,12 +18,18 @@
 package com.axelor.apps.businesssupport.service;
 
 import com.axelor.apps.businessproject.service.ProjectBusinessServiceImpl;
+import com.axelor.apps.businesssupport.module.BusinessSupportModule;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.team.db.TeamTask;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
+@Alternative
+@Priority(BusinessSupportModule.PRIORITY)
 public class ProjectBusinessSupportServiceImpl extends ProjectBusinessServiceImpl {
 
   @Inject

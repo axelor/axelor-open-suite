@@ -17,21 +17,11 @@
  */
 package com.axelor.apps.businesssupport.module;
 
-import com.axelor.app.AxelorModule;
-import com.axelor.apps.businessproject.db.repo.ProjectTaskBusinessProjectRepository;
-import com.axelor.apps.businessproject.service.ProjectBusinessServiceImpl;
-import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectServiceImpl;
-import com.axelor.apps.businesssupport.db.repo.ProjectTaskBusinessSupportRepository;
-import com.axelor.apps.businesssupport.service.ProjectBusinessSupportServiceImpl;
-import com.axelor.apps.businesssupport.service.ProjectTaskBusinessSupportServiceImpl;
+import javax.interceptor.Interceptor;
 
-public class BusinessSupportModule extends AxelorModule {
+public class BusinessSupportModule {
 
-  @Override
-  protected void configure() {
-    bind(ProjectTaskBusinessProjectServiceImpl.class)
-        .to(ProjectTaskBusinessSupportServiceImpl.class);
-    bind(ProjectTaskBusinessProjectRepository.class).to(ProjectTaskBusinessSupportRepository.class);
-    bind(ProjectBusinessServiceImpl.class).to(ProjectBusinessSupportServiceImpl.class);
-  }
+  private BusinessSupportModule() {}
+
+  public static final int PRIORITY = Interceptor.Priority.APPLICATION + 1700;
 }
