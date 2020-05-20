@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.production.module.ProductionModule;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.stock.db.StockLocation;
@@ -42,7 +43,12 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 
+@Alternative
+@Priority(ProductionModule.PRIORITY)
 public class ProductionProductStockLocationServiceImpl extends ProductStockLocationServiceImpl {
 
   protected AppProductionService appProductionService;

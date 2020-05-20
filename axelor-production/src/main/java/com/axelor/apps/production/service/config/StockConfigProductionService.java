@@ -18,13 +18,18 @@
 package com.axelor.apps.production.service.config;
 
 import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.module.ProductionModule;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(ProductionModule.PRIORITY)
 public class StockConfigProductionService extends StockConfigService {
 
   public StockLocation getProductionVirtualStockLocation(

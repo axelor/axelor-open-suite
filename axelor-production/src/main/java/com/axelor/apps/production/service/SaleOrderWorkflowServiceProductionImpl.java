@@ -20,6 +20,7 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.production.module.ProductionModule;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -31,9 +32,14 @@ import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.SaleOrderWorkflowServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+@Alternative
+@Priority(ProductionModule.PRIORITY)
 public class SaleOrderWorkflowServiceProductionImpl
     extends SaleOrderWorkflowServiceSupplychainImpl {
 

@@ -17,10 +17,15 @@
  */
 package com.axelor.apps.production.db.repo;
 
+import com.axelor.apps.production.module.ProductionModule;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.db.repo.StockMoveSupplychainRepository;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(ProductionModule.PRIORITY)
 public class StockMoveProductionRepository extends StockMoveSupplychainRepository {
 
   @Override

@@ -21,15 +21,20 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.module.ProductionModule;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
+@Alternative
+@Priority(ProductionModule.PRIORITY)
 public class ManufOrderManagementRepository extends ManufOrderRepository {
 
   @Inject OperationOrderService operationOrderService;

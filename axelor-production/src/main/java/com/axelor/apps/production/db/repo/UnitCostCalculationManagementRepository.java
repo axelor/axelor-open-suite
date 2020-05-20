@@ -19,11 +19,16 @@ package com.axelor.apps.production.db.repo;
 
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.UnitCostCalculation;
+import com.axelor.apps.production.module.ProductionModule;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.persistence.PersistenceException;
 
+@Alternative
+@Priority(ProductionModule.PRIORITY)
 public class UnitCostCalculationManagementRepository extends UnitCostCalculationRepository {
 
   @Override

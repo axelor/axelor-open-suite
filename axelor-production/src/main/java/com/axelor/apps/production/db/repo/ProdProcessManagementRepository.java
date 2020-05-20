@@ -19,7 +19,12 @@ package com.axelor.apps.production.db.repo;
 
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
+import com.axelor.apps.production.module.ProductionModule;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(ProductionModule.PRIORITY)
 public class ProdProcessManagementRepository extends ProdProcessRepository {
 
   @Override

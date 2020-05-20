@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.apps.message.service.TemplateMessageService;
+import com.axelor.apps.production.module.ProductionModule;
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
@@ -35,7 +36,12 @@ import com.axelor.inject.Beans;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 
+@Alternative
+@Priority(ProductionModule.PRIORITY)
 public class StockRulesServiceProductionImpl extends StockRulesServiceSupplychainImpl {
 
   @Inject

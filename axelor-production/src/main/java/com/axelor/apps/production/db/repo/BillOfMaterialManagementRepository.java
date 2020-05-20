@@ -18,9 +18,14 @@
 package com.axelor.apps.production.db.repo;
 
 import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.module.ProductionModule;
 import java.math.BigDecimal;
 import java.util.Set;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(ProductionModule.PRIORITY)
 public class BillOfMaterialManagementRepository extends BillOfMaterialRepository {
 
   @Override

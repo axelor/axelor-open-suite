@@ -18,9 +18,14 @@
 package com.axelor.apps.production.db.repo;
 
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.module.ProductionModule;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
+@Alternative
+@Priority(ProductionModule.PRIORITY)
 public class OperationOrderManagementRepository extends OperationOrderRepository {
 
   @Inject OperationOrderService operationOrderService;

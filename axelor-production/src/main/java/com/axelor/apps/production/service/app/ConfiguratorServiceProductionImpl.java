@@ -20,6 +20,7 @@ package com.axelor.apps.production.service.app;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ConfiguratorBOM;
+import com.axelor.apps.production.module.ProductionModule;
 import com.axelor.apps.production.service.configurator.ConfiguratorBomService;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -29,8 +30,12 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.JsonContext;
 import javax.inject.Inject;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.transaction.Transactional;
 
+@Alternative
+@Priority(ProductionModule.PRIORITY)
 public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
 
   @Inject

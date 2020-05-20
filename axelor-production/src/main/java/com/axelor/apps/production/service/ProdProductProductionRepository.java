@@ -19,6 +19,7 @@ package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.repo.ProdProductRepository;
+import com.axelor.apps.production.module.ProductionModule;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
@@ -27,7 +28,11 @@ import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(ProductionModule.PRIORITY)
 public class ProdProductProductionRepository extends ProdProductRepository {
 
   @Override

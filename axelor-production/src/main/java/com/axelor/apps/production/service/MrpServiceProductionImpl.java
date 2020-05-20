@@ -28,6 +28,7 @@ import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.module.ProductionModule;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -63,9 +64,15 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Alternative
+@Priority(ProductionModule.PRIORITY)
 public class MrpServiceProductionImpl extends MrpServiceImpl {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

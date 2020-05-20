@@ -20,6 +20,7 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.production.module.ProductionModule;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
@@ -33,8 +34,12 @@ import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
+@Alternative
+@Priority(ProductionModule.PRIORITY)
 public class StockMoveProductionServiceImpl extends StockMoveServiceSupplychainImpl {
 
   @Inject

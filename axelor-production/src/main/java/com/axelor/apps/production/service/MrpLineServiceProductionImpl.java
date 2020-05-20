@@ -24,6 +24,8 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.db.repo.ProductionOrderRepository;
+import com.axelor.apps.production.module.ProductionModule;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
@@ -44,12 +46,18 @@ import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import java.time.LocalDate;
+import java.util.Map;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 
+@Alternative
+@Priority(ProductionModule.PRIORITY)
 public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
 
   protected ManufOrderService manufOrderService;

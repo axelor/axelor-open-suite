@@ -18,9 +18,14 @@
 package com.axelor.apps.production.db.repo;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.production.module.ProductionModule;
 import com.axelor.apps.stock.db.repo.ProductStockRepository;
 import java.math.BigDecimal;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(ProductionModule.PRIORITY)
 public class ProductProductionRepository extends ProductStockRepository {
 
   @Override

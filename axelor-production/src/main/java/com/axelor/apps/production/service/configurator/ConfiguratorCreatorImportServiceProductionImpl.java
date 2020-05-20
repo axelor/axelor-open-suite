@@ -22,6 +22,7 @@ import com.axelor.apps.production.db.ConfiguratorProdProcess;
 import com.axelor.apps.production.db.ConfiguratorProdProcessLine;
 import com.axelor.apps.production.db.repo.ConfiguratorBOMRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.module.ProductionModule;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportServiceImpl;
@@ -38,7 +39,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 
+@Alternative
+@Priority(ProductionModule.PRIORITY)
 public class ConfiguratorCreatorImportServiceProductionImpl
     extends ConfiguratorCreatorImportServiceImpl {
 
