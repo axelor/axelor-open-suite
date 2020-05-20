@@ -18,8 +18,13 @@
 package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.module.HumanResourceModule;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.persistence.PersistenceException;
 
+@Alternative
+@Priority(HumanResourceModule.PRIORITY)
 public class TimesheetLineHRRepository extends TimesheetLineRepository {
 
   @Override

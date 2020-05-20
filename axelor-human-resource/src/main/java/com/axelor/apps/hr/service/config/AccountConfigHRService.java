@@ -22,10 +22,15 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.module.HumanResourceModule;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(HumanResourceModule.PRIORITY)
 public class AccountConfigHRService extends AccountConfigService {
 
   public Journal getExpenseJournal(AccountConfig accountConfig) throws AxelorException {

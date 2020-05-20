@@ -19,10 +19,15 @@ package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.module.HumanResourceModule;
 import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerService;
 import com.axelor.inject.Beans;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
+@Alternative
+@Priority(HumanResourceModule.PRIORITY)
 public class TimesheetTimerHRRepository extends TSTimerRepository {
 
   @Inject private TimesheetTimerService tsTimerService;

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.hr.db.repo;
 
+import com.axelor.apps.hr.module.HumanResourceModule;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
@@ -24,8 +25,14 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.team.db.TeamTask;
+import com.axelor.team.db.repo.TeamTaskRepository;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
+@Alternative
+@Priority(HumanResourceModule.PRIORITY)
 public class ProjectPlanningTimeHRRepository extends ProjectPlanningTimeRepository {
 
   @Inject private ProjectPlanningTimeService planningTimeService;

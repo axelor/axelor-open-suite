@@ -23,9 +23,16 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.i18n.I18n;
+import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.module.HumanResourceModule;
+import com.axelor.inject.Beans;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.persistence.PersistenceException;
 
+@Alternative
+@Priority(HumanResourceModule.PRIORITY)
 public class PartnerHRRepository extends PartnerAccountRepository {
 
   @Inject

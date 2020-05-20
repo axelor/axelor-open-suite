@@ -19,6 +19,7 @@ package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.module.HumanResourceModule;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.project.db.Project;
@@ -29,7 +30,12 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 
+@Alternative
+@Priority(HumanResourceModule.PRIORITY)
 public class TimesheetHRRepository extends TimesheetRepository {
 
   @Inject private TimesheetService timesheetService;

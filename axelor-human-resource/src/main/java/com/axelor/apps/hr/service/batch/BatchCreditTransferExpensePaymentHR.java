@@ -27,6 +27,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
+import com.axelor.apps.hr.module.HumanResourceModule;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -41,9 +42,15 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Alternative
+@Priority(HumanResourceModule.PRIORITY)
 public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpensePayment {
 
   protected final Logger log = LoggerFactory.getLogger(getClass());

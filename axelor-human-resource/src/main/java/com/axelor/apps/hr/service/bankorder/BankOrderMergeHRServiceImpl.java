@@ -27,6 +27,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.ExpenseHRRepository;
+import com.axelor.apps.hr.module.HumanResourceModule;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import javax.inject.Inject;
@@ -34,7 +35,13 @@ import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
+@Alternative
+@Priority(HumanResourceModule.PRIORITY)
 public class BankOrderMergeHRServiceImpl extends BankOrderMergeServiceImpl {
 
   protected ExpenseHRRepository expenseHRRepository;

@@ -20,10 +20,16 @@ package com.axelor.apps.hr.service.bankorder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderLineOriginRepository;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginServiceImpl;
 import com.axelor.apps.hr.db.Expense;
+import com.axelor.apps.hr.module.HumanResourceModule;
 import com.axelor.db.Model;
+import java.time.LocalDate;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import java.time.LocalDate;
 
+@Alternative
+@Priority(HumanResourceModule.PRIORITY)
 public class BankOrderLineOriginServiceHRImpl extends BankOrderLineOriginServiceImpl {
 
   @Inject

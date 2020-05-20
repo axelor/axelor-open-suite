@@ -18,7 +18,12 @@
 package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.hr.db.HrBatch;
+import com.axelor.apps.hr.module.HumanResourceModule;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(HumanResourceModule.PRIORITY)
 public class HrBatchHRRepository extends HrBatchRepository {
 
   @Override

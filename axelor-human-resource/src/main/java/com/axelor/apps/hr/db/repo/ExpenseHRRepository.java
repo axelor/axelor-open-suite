@@ -18,10 +18,15 @@
 package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.hr.db.Expense;
+import com.axelor.apps.hr.module.HumanResourceModule;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.inject.Beans;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.persistence.PersistenceException;
 
+@Alternative
+@Priority(HumanResourceModule.PRIORITY)
 public class ExpenseHRRepository extends ExpenseRepository {
   @Override
   public Expense save(Expense expense) {

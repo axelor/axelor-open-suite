@@ -19,9 +19,14 @@ package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.base.db.repo.UserBaseRepository;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.module.HumanResourceModule;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(HumanResourceModule.PRIORITY)
 public class UserHRRepository extends UserBaseRepository {
 
   @Override

@@ -32,13 +32,19 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
+import com.axelor.apps.hr.module.HumanResourceModule;
 import com.axelor.apps.hr.service.expense.ExpenseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.List;
 
+@Alternative
+@Priority(HumanResourceModule.PRIORITY)
 public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
 
   protected ExpenseService expenseService;

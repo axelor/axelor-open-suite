@@ -21,11 +21,16 @@ import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.MailBatch;
 import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.service.batch.MailBatchService;
+import com.axelor.apps.hr.module.HumanResourceModule;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(HumanResourceModule.PRIORITY)
 public class MailBatchServiceHR extends MailBatchService {
 
   @Override
