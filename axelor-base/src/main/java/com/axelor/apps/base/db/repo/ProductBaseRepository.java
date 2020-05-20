@@ -18,6 +18,7 @@
 package com.axelor.apps.base.db.repo;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.module.BaseModule;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -30,9 +31,14 @@ import com.google.common.base.Strings;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 import javax.persistence.PersistenceException;
 import javax.validation.ValidationException;
 
+@Alternative
+@Priority(BaseModule.PRIORITY)
 public class ProductBaseRepository extends ProductRepository {
 
   @Inject private MetaFiles metaFiles;

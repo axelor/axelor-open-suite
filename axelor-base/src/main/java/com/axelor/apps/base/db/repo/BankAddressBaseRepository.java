@@ -18,9 +18,14 @@
 package com.axelor.apps.base.db.repo;
 
 import com.axelor.apps.base.db.BankAddress;
+import com.axelor.apps.base.module.BaseModule;
 import com.axelor.apps.base.service.BankAddressService;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
+@Alternative
+@Priority(BaseModule.PRIORITY)
 public class BankAddressBaseRepository extends BankAddressRepository {
 
   @Inject BankAddressService bankAddressService;

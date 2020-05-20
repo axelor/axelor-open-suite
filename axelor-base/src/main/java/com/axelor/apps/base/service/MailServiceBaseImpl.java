@@ -26,6 +26,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.TemplateRepository;
+import com.axelor.apps.base.module.BaseModule;
 import com.axelor.apps.message.service.MailServiceMessageImpl;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.db.User;
@@ -76,11 +77,16 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.mail.MessagingException;
+import javax.annotation.Priority;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Alternative;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Alternative
+@Priority(BaseModule.PRIORITY)
 @ApplicationScoped
 public class MailServiceBaseImpl extends MailServiceMessageImpl {
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

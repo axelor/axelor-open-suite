@@ -19,14 +19,19 @@ package com.axelor.apps.base.db.repo;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
+import com.axelor.apps.base.module.BaseModule;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.persistence.PersistenceException;
 
+@Alternative
+@Priority(BaseModule.PRIORITY)
 public class PartnerBaseRepository extends PartnerRepository {
 
   @Override

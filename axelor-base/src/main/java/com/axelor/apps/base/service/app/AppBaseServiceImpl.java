@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.Language;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.tool.date.DateTool;
+import com.axelor.apps.base.module.BaseModule;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
@@ -34,8 +35,13 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
+import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Alternative;
+import javax.transaction.Transactional;
 
+@Alternative
+@Priority(BaseModule.PRIORITY)
 @ApplicationScoped
 public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService {
 

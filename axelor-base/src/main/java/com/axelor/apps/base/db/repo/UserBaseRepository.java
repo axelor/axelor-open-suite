@@ -19,14 +19,19 @@ package com.axelor.apps.base.db.repo;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.module.BaseModule;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.persistence.PersistenceException;
 
+@Alternative
+@Priority(BaseModule.PRIORITY)
 public class UserBaseRepository extends UserRepository {
 
   @Override

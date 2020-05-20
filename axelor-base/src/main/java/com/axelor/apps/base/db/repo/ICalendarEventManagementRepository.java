@@ -20,13 +20,18 @@ package com.axelor.apps.base.db.repo;
 import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.ical.ICalendarService;
+import com.axelor.apps.base.module.BaseModule;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
+@Alternative
+@Priority(BaseModule.PRIORITY)
 public class ICalendarEventManagementRepository extends ICalendarEventRepository {
 
   @Inject private ICalendarService calendarService;

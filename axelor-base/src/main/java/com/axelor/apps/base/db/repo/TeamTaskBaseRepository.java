@@ -18,13 +18,18 @@
 package com.axelor.apps.base.db.repo;
 
 import com.axelor.apps.base.db.Frequency;
+import com.axelor.apps.base.module.BaseModule;
 import com.axelor.apps.base.service.TeamTaskService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.persistence.PersistenceException;
 
+@Alternative
+@Priority(BaseModule.PRIORITY)
 public class TeamTaskBaseRepository extends TeamTaskRepository {
 
   @Override

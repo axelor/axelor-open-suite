@@ -16,6 +16,7 @@ dependencies {
     api project(":modules:axelor-admin")
 	api project(":modules:axelor-message")
 
+    implementation libs.commons_io
 	implementation libs.commons_lang3
 	implementation libs.commons_math3
 	implementation libs.commons_validator

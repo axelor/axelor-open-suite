@@ -18,6 +18,7 @@
 package com.axelor.apps.base.service.message;
 
 import com.axelor.apps.base.db.AppBase;
+import com.axelor.apps.base.module.BaseModule;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.EmailAccount;
@@ -28,9 +29,14 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Lists;
+import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import java.util.List;
 
+@Alternative
+@Priority(BaseModule.PRIORITY)
 public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
 
   protected UserService userService;

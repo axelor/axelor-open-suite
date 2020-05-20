@@ -19,7 +19,12 @@ package com.axelor.apps.base.db.repo;
 
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.TaxRepository;
+import com.axelor.apps.base.module.BaseModule;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(BaseModule.PRIORITY)
 public class TaxBaseRepository extends TaxRepository {
 
   @Override

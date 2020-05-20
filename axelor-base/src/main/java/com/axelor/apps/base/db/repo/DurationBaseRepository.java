@@ -18,9 +18,14 @@
 package com.axelor.apps.base.db.repo;
 
 import com.axelor.apps.base.db.Duration;
+import com.axelor.apps.base.module.BaseModule;
 import com.axelor.i18n.I18n;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.persistence.PersistenceException;
 
+@Alternative
+@Priority(BaseModule.PRIORITY)
 public class DurationBaseRepository extends DurationRepository {
 
   @Override

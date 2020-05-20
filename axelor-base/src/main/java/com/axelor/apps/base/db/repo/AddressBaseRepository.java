@@ -18,10 +18,15 @@
 package com.axelor.apps.base.db.repo;
 
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.module.BaseModule;
 import com.axelor.apps.base.service.AddressService;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.persistence.PersistenceException;
 
+@Alternative
+@Priority(BaseModule.PRIORITY)
 public class AddressBaseRepository extends AddressRepository {
 
   @Inject protected AddressService addressService;

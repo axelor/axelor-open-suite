@@ -18,7 +18,12 @@
 package com.axelor.apps.base.db.repo;
 
 import com.axelor.apps.base.db.BaseBatch;
+import com.axelor.apps.base.module.BaseModule;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(BaseModule.PRIORITY)
 public class BaseBatchBaseRepository extends BaseBatchRepository {
 
   @Override
