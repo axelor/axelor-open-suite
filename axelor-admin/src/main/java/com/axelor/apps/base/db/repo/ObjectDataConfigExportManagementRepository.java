@@ -17,12 +17,17 @@
  */
 package com.axelor.apps.base.db.repo;
 
+import com.axelor.apps.admin.module.AdminModule;
 import com.axelor.apps.base.db.ObjectDataConfigExport;
 import com.axelor.db.JpaRepository;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.service.TraceBackService;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(AdminModule.PRIORITY)
 public class ObjectDataConfigExportManagementRepository extends ObjectDataConfigExportRepository {
 
   @Override
