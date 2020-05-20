@@ -18,7 +18,12 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.module.AccountModule;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(AccountModule.PRIORITY)
 public class JournalManagementRepository extends JournalRepository {
 
   @Override

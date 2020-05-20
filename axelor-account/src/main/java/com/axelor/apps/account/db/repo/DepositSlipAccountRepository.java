@@ -19,6 +19,7 @@ package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.DepositSlip;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.module.AccountModule;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -28,8 +29,12 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.persistence.PersistenceException;
 
+@Alternative
+@Priority(AccountModule.PRIORITY)
 public class DepositSlipAccountRepository extends DepositSlipRepository {
 
   @Override

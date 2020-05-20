@@ -27,7 +27,7 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.exception.AxelorException;
 import com.google.common.base.Preconditions;
 import javax.inject.Inject;
-import com.google.inject.servlet.RequestScoped;
+import javax.enterprise.context.RequestScoped;
 
 @RequestScoped
 public class VentilateAdvancePaymentState extends VentilateState {

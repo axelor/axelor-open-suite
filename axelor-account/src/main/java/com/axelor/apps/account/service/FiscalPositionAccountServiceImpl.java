@@ -20,8 +20,13 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountEquiv;
 import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.module.AccountModule;
 import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(AccountModule.PRIORITY)
 public class FiscalPositionAccountServiceImpl extends FiscalPositionServiceImpl
     implements FiscalPositionAccountService {
 

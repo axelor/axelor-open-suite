@@ -27,6 +27,8 @@ public class AddressServiceAccountImpl extends AddressServiceImpl {
     registerCheckUsedFunc(AddressServiceAccountImpl::checkAddressUsedAccount);
   }
 
+  public static void init() {}
+
   private static boolean checkAddressUsedAccount(Long addressId) {
     return JPA.all(Invoice.class).filter("self.address.id = ?1", addressId).fetchOne() != null
         || JPA.all(Umr.class).filter("self.debtorAddress.id = ?1", addressId).fetchOne() != null;

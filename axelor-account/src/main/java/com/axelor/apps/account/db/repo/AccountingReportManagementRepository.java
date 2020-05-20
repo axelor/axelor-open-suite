@@ -18,13 +18,19 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.AccountingReport;
+import com.axelor.apps.account.module.AccountModule;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.db.JPA;
 import com.axelor.exception.service.TraceBackService;
+import java.math.BigDecimal;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import javax.persistence.PersistenceException;
 
+@Alternative
+@Priority(AccountModule.PRIORITY)
 public class AccountingReportManagementRepository extends AccountingReportRepository {
 
   @Inject protected AccountingReportService accountingReportService;

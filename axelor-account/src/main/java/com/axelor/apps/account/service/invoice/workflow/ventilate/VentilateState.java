@@ -40,7 +40,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import javax.inject.Inject;
-import com.google.inject.servlet.RequestScoped;
+import javax.enterprise.context.RequestScoped;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;

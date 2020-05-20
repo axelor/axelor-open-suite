@@ -18,12 +18,17 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.module.AccountModule;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherSequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.persistence.PersistenceException;
 
+@Alternative
+@Priority(AccountModule.PRIORITY)
 public class PaymentVoucherManagementRepository extends PaymentVoucherRepository {
 
   @Override

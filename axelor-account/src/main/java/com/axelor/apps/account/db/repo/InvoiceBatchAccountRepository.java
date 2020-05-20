@@ -18,7 +18,12 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.InvoiceBatch;
+import com.axelor.apps.account.module.AccountModule;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(AccountModule.PRIORITY)
 public class InvoiceBatchAccountRepository extends InvoiceBatchRepository {
 
   @Override

@@ -19,6 +19,7 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.module.AccountModule;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
@@ -27,9 +28,14 @@ import com.axelor.apps.base.service.AdjustHistoryService;
 import com.axelor.apps.base.service.PeriodServiceImpl;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
+import javax.annotation.Priority;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.enterprise.context.ApplicationScoped;
 
+@Alternative
+@Priority(AccountModule.PRIORITY)
 @ApplicationScoped
 public class PeriodServiceAccountImpl extends PeriodServiceImpl implements PeriodServiceAccount {
 

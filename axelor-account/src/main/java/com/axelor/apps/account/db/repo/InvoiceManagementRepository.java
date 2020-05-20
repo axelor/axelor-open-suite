@@ -20,6 +20,7 @@ package com.axelor.apps.account.db.repo;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.SubrogationRelease;
+import com.axelor.apps.account.module.AccountModule;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.exception.service.TraceBackService;
@@ -27,9 +28,13 @@ import com.axelor.inject.Beans;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
+@Alternative
+@Priority(AccountModule.PRIORITY)
 public class InvoiceManagementRepository extends InvoiceRepository {
   @Override
   public Invoice copy(Invoice entity, boolean deep) {

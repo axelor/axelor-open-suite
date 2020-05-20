@@ -18,10 +18,15 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.module.AccountModule;
 import com.axelor.db.JPA;
 import java.util.Set;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.persistence.PersistenceException;
 
+@Alternative
+@Priority(AccountModule.PRIORITY)
 public class AccountAccountRepository extends AccountRepository {
 
   @Override

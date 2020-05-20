@@ -18,13 +18,18 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.module.AccountModule;
 import com.axelor.apps.account.service.FixedAssetService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import java.math.BigDecimal;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.persistence.PersistenceException;
 
+@Alternative
+@Priority(AccountModule.PRIORITY)
 public class FixedAssetManagementRepository extends FixedAssetRepository {
 
   @Override

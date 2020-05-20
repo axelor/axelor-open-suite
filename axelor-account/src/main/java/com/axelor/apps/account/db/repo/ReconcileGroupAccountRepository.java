@@ -18,11 +18,16 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.ReconcileGroup;
+import com.axelor.apps.account.module.AccountModule;
 import com.axelor.apps.account.service.ReconcileGroupSequenceService;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.persistence.PersistenceException;
 
+@Alternative
+@Priority(AccountModule.PRIORITY)
 public class ReconcileGroupAccountRepository extends ReconcileGroupRepository {
 
   /** On first reconcile group save (e.g. when the code is not filled), we fill the sequence. */
