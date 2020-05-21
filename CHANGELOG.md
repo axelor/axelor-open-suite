@@ -2,6 +2,7 @@
 ## [Unreleased 5.3.6]
 ## Features
 - Add civility for partner contact in birt report printing.
+- OPPORTUNITY: add sequence
 
 ## Improvements
 - DURATION : rearranged fields in grid and form view.
