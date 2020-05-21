@@ -23,6 +23,9 @@
     	    	<field name="productInAtiSelect"/>
     	    	<field name="nbDecimalDigitForUnitPrice" colSpan="3"/>
    	    		<field name="nbDecimalDigitForQty" colSpan="3"/>
+   	    		<field name="isRegroupProductsOnPrintings" widget="boolean-switch" required="true" colSpan="3" help="Enable the possibility to group lines by product on generated printing documents (sale orders, purchase orders, stock moves, invoices)"/>
+   	    		<field name="regroupProductsTypeSelect" widget="MultiSelect" showIf="isRegroupProductsOnPrintings" requiredIf="isRegroupProductsOnPrintings" colSpan="3"/>
+   	    		<field name="regroupProductsLevelSelect" showIf="isRegroupProductsOnPrintings" requiredIf="isRegroupProductsOnPrintings" colSpan="3"/>
     	    	<field name="computeMethodDiscountSelect"/>
     	    	<field name="timeLoggingPreferenceSelect"/>
     	    	<field name="dailyWorkHours"/>

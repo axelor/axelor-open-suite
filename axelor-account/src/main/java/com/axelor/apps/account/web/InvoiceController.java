@@ -342,6 +342,7 @@ public class InvoiceController {
                     .getCode()
                 : null;
 
+                logger.debug("groupProducts = {}", context.get("groupProducts"));
         fileLink =
             Beans.get(InvoicePrintService.class)
                 .printInvoice(
@@ -350,7 +351,9 @@ public class InvoiceController {
                     false,
                     format,
                     reportType,
-                    locale);
+                    locale,
+                    true
+                );
         title = I18n.get("Invoice");
         response.setCanClose(true);
       } else {
@@ -374,13 +377,20 @@ public class InvoiceController {
             : null;
 
     try {
+        logger.debug("groupProducts = {}", context.get("groupProducts"));
       response.setCanClose(true);
       response.setView(
           ActionView.define(I18n.get("Invoice"))
               .add(
                   "html",
                   Beans.get(InvoicePrintService.class)
-                      .printInvoice(invoice, true, "pdf", reportType, null))
+                  .printInvoice(
+                    invoice, 
+                    true, 
+                    "pdf", 
+                    reportType, 
+                    null, 
+                    true))             
               .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -35,6 +35,10 @@
 		<integer name="nbDecimalDigitForQty" title="Nb of digits for quantities" min="0" max="10" default="2"/>
 		<integer name="globalTrackingLogPersistence" title="Tracking logs persistence (in months)" min="0" default="1"/>
 		
+    <boolean name="isRegroupProductsOnPrintings" title="Regroup products on printings" default="false" />
+		<string name="regroupProductsTypeSelect" title="Product types to group" selection="base.app.base.regroup.products.type.select"/>
+    <string name="regroupProductsLevelSelect" title="Level of grouping" selection="base.app.base.regroup.products.level.select"/>
+
 		<integer name="computeMethodDiscountSelect" title="Compute Method for Discounts" selection="base.compute.method.discount.select" default="1"/>
 
 		<string name="timeLoggingPreferenceSelect" title="Time logging preference" selection="hr.time.logging.preference.select" default="days"/>
