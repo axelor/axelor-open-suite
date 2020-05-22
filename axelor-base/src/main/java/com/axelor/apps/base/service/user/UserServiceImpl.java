@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.module.BaseModule;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.TemplateMessageService;
@@ -52,6 +53,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 import javax.mail.MessagingException;
 import javax.validation.ValidationException;
 import org.apache.commons.lang3.tuple.Pair;
@@ -61,6 +65,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** UserService is a class that implement all methods for user information */
+@Alternative
+@Priority(BaseModule.PRIORITY)
 public class UserServiceImpl implements UserService {
 
   @Inject private UserRepository userRepo;

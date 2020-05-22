@@ -26,7 +26,15 @@ import com.axelor.apps.hr.db.Employee;
 import javax.inject.Inject;
 import java.time.LocalDate;
 import java.util.List;
+import com.axelor.apps.hr.module.HumanResourceModule;
+import java.time.LocalDate;
+import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 
+@Alternative
+@Priority(HumanResourceModule.PRIORITY)
 public class PublicHolidayHrService extends PublicHolidayService {
 
   @Inject

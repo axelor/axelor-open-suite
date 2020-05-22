@@ -32,6 +32,7 @@ import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.module.HumanResourceModule;
 import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.exception.AxelorException;
@@ -46,7 +47,13 @@ import java.time.Period;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
+@Alternative
+@Priority(HumanResourceModule.PRIORITY)
 public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeService {
 
   @Inject protected WeeklyPlanningService weeklyPlanningService;

@@ -18,12 +18,17 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
+import com.axelor.apps.account.module.AccountModule;
 import com.axelor.apps.base.service.user.UserServiceImpl;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.transaction.Transactional;
 
+@Alternative
+@Priority(AccountModule.PRIORITY)
 public class UserServiceAccountImpl extends UserServiceImpl {
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
