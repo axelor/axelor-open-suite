@@ -20,6 +20,7 @@
 - FORECAST RECAP : many anomalies resolved.
 - Bank details: corrected the possibility to get an inactive bank details.
 - Back Order : corrected link between back order and origin.
+- DEMO DATA : fixed issue in demo data.
 - PARTNER : industrySector to display when customer is individual.
 
 ## [5.3.5] - 2020-05-11
