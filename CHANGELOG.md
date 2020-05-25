@@ -18,6 +18,7 @@
 - SALEORDER : copy description when generating Task by line from SaleOrder
 - Back Order : corrected link between back order and origin.
 - PARTNER : industrySector to display when customer is individual.
+- Fixed asset: corrected amortization calculation process. 
 
 ## [5.2.10] - 2020-05-11
 ## Improvements
