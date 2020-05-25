@@ -472,8 +472,8 @@
     	<field name="startDate" expr="eval:__config__.app.getTodayDate()" if="startDate == null"/>
     	<field name="salePrice" expr="0"/>
     	<field name="purchasePrice" expr="0"/>
-    	<field name="saleCurrency" expr="eval: _activeCompany?.currency"/>
-    	<field name="purchaseCurrency" expr="eval: _activeCompany?.currency"/>
+    	<field name="saleCurrency" expr="eval: __user__.activeCompany?.currency"/>
+    	<field name="purchaseCurrency" expr="eval: __user__.activeCompany?.currency"/>
     	<field name="managPriceCoef" expr="1"/>
     	<field name="isModel" expr="eval: _isModel"/>
     	<field name="isShippingCostsProduct" expr="eval: _isShippingCostsProduct"/>
