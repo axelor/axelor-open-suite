@@ -19,7 +19,7 @@ package com.axelor.apps.maintenance.report;
 
 public interface IReport {
 
-  public static final String MANUF_ORDER = "MaintenanceManufOrder.rptdesign";
-  public static final String PROD_PROCESS = "MaintenanceProdProcess.rptdesign";
-  public static final String BILL_OF_MATERIAL = "MaintenanceBillOfMaterial.rptdesign";
+  public static final String MAINTENANCE_MANUF_ORDER = "MaintenanceManufOrder.rptdesign";
+  public static final String MAINTENANCE_PROD_PROCESS = "MaintenanceProdProcess.rptdesign";
+  public static final String MAINTENANCE_BILL_OF_MATERIAL = "MaintenanceBillOfMaterial.rptdesign";
 }

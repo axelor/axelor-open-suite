@@ -58,7 +58,7 @@ public class MaintenanceManufOrderWorkFlowService extends ManufOrderWorkflowServ
   @Transactional
   @Override
   public ManufOrder plan(ManufOrder manufOrder) throws AxelorException {
-    if (manufOrder.getType() != 2) {
+    if (manufOrder.getTypeSelect() != ManufOrderRepository.TYPE_MAINTENANCE) {
       return super.plan(manufOrder);
     }
 
@@ -110,7 +110,8 @@ public class MaintenanceManufOrderWorkFlowService extends ManufOrderWorkflowServ
    * @param manufOrder
    * @return
    */
-  private List<OperationOrder> getSortedOperationOrderList(ManufOrder manufOrder) {
+  @Override
+  protected List<OperationOrder> getSortedOperationOrderList(ManufOrder manufOrder) {
     List<OperationOrder> operationOrderList =
         MoreObjects.firstNonNull(manufOrder.getOperationOrderList(), Collections.emptyList());
     Comparator<OperationOrder> byPriority =
@@ -120,17 +121,16 @@ public class MaintenanceManufOrderWorkFlowService extends ManufOrderWorkflowServ
         Comparator.comparing(
             OperationOrder::getId, Comparator.nullsFirst(Comparator.naturalOrder()));
 
-    return operationOrderList
-        .stream()
+    return operationOrderList.stream()
         .sorted(byPriority.thenComparing(byId))
         .collect(Collectors.toList());
   }
 
   @Transactional
   @Override
-  public void finish(ManufOrder manufOrder) throws AxelorException {
-    if (manufOrder.getType() != 2) {
-      super.finish(manufOrder);
+  public boolean finish(ManufOrder manufOrder) throws AxelorException {
+    if (manufOrder.getTypeSelect() != ManufOrderRepository.TYPE_MAINTENANCE) {
+      return super.finish(manufOrder);
     } else {
       if (manufOrder.getOperationOrderList() != null) {
         for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
@@ -152,15 +152,17 @@ public class MaintenanceManufOrderWorkFlowService extends ManufOrderWorkflowServ
               ChronoUnit.MINUTES.between(
                   manufOrder.getPlannedEndDateT(), manufOrder.getRealEndDateT())));
       manufOrderRepo.save(manufOrder);
+      return true;
     }
   }
 
   @Override
-  public void partialFinish(ManufOrder manufOrder) throws AxelorException {
-    if (manufOrder.getType() != 2) {
-      super.partialFinish(manufOrder);
+  public boolean partialFinish(ManufOrder manufOrder) throws AxelorException {
+    if (manufOrder.getTypeSelect() != ManufOrderRepository.TYPE_MAINTENANCE) {
+      return super.partialFinish(manufOrder);
     } else {
       Beans.get(ManufOrderStockMoveService.class).partialFinish(manufOrder);
+      return true;
     }
   }
 }

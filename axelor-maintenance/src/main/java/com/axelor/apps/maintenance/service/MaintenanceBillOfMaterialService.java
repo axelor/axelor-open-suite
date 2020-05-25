@@ -20,6 +20,7 @@ package com.axelor.apps.maintenance.service;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.maintenance.report.IReport;
 import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
 import com.axelor.exception.AxelorException;
 
@@ -40,11 +41,11 @@ public class MaintenanceBillOfMaterialService extends BillOfMaterialServiceImpl 
 
     String reportLink;
 
-    if (billOfMaterial.getType() == 1) {
+    if (billOfMaterial.getTypeSelect() == BillOfMaterialRepository.TYPE_PRODUCTION) {
       reportLink = super.getReportLink(billOfMaterial, name, language, format);
     } else {
       reportLink =
-          ReportFactory.createReport(IReport.BILL_OF_MATERIAL, name + "-${date}")
+          ReportFactory.createReport(IReport.MAINTENANCE_BILL_OF_MATERIAL, name + "-${date}")
               .addParam("Locale", language)
               .addParam("BillOfMaterialId", billOfMaterial.getId())
               .addFormat(format)

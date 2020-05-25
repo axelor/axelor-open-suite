@@ -13,98 +13,40 @@
 	  <field name="statusSelect"/>
 	</grid>
 
-  <form id="maintenance-bill-of-material-form" name="bill-of-material-form" title="Bill of material" model="com.axelor.apps.production.db.BillOfMaterial" width="large"
-          onSave="save,action-bill-of-material-method-name,action-bill-of-material-method-validate-prod-process"
-          onNew="action-maintenance-bill-of-material-group-onnew"
-          onLoad="action-maintenance-bill-of-material-group-onload">
-    <menubar>
-      <menu title="Reports">
-        <item title="Print" action="action-bill-of-material-method-print"/>       
-      </menu>
-      <menu title="Options">
-	      <item title="Generate new version"
-	          action="action-bill-of-material-check-other-version,action-bill-of-material-generate-new-version"
-	          if="__config__.app.getApp('production').manageBillOfMaterialVersion"/>
-	      <item title="Define as default bill of material of product"
-	          action="save,action-bill-of-material-method-set-bill-of-material-as-default-on-product"
-	          hideIf="type != 1 || product.defaultBillOfMaterial.id == id"/>
-      </menu>
-    </menubar>
+  <form id="maintenance-bill-of-material-form" name="bill-of-material-form" title="Bill of material" model="com.axelor.apps.production.db.BillOfMaterial" width="large" extension="true">
+    <extend target="/">
+      <attribute name="onNew" value="action-maintenance-bill-of-material-group-onnew"/>
+      <attribute name="onLoad" value="action-maintenance-bill-of-material-group-onload"/>
+    </extend>
 
-    <panel name="mainPanel">
-      <field name="statusSelect" showTitle="false" colSpan="8" readonly="false" widget="NavSelect"/>
-      <field name="$defaultBOMOnProduct" readonly="true" showTitle="false" colSpan="4">
-	      <viewer depends="$defaultBOMOnProduct, product.defaultBillOfMaterial">
-	        <![CDATA[
-	            <h4 class="text-right">
-	                <span class="label label-default" style="background-color: #009900; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.product.defaultBillOfMaterial.id == record.id" x-translate>Default Bill of material</span>
-	                <span class="label label-default" style="background-color: #B6473F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.product.defaultBillOfMaterial.id != record.id" x-translate>Alternative Bill of material</span>
-	            </h4>
-          ]]>
-        </viewer>
-      </field>
-      <field name="fullName" showTitle="false" colSpan="12">
-        <viewer depends="name">
-          <![CDATA[
-            <h3>
-              <span  style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.fullName}}</span>
-            </h3>
-          ]]>
-        </viewer>
-        <editor>
-          <field name="name" showTitle="true" css="label-bold bold large"/>
-        </editor>
-      </field>
-      <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
-      <field name="workshopStockLocation" canEdit="false" domain="self.company = :company and self.typeSelect = 1 and self.isWorkshop = true" if="__config__.app.getApp('production').getManageWorkshop()"/>
-      <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form" canNew="true" onChange="action-bill-of-material-method-validate-prod-process"/>
-      <field name="product" canEdit="false" onChange="action-bill-of-material-record-product-unit" domain="self.productTypeSelect = 'storable' AND self.productSubTypeSelect != 3" form-view="product-form" grid-view="product-grid"/>
-      <field name="machineType" form-view="machine-type-form" grid-view="machine-type-grid" hidden="true"/>
-      <field name="qty" colSpan="3"/>
-      <field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
-      <field name="product.defaultBillOfMaterial" hidden="true" colSpan="1"/>
-      <field name="type" hidden="true"/>
-    </panel>
-    <panel-tabs name="mainPanelTab">
-      <panel name="componentsPanel" title="Components" hideIf="type == 2">
-        <button name="openBomTreeBtn" title="Open tree" onClick="save,action-bill-of-material-method-open-bom-tree" colSpan="3" css="btn-custom"/>
-        <field name="$numberOfComponents" showTitle="false" readonly="true" colSpan="9" showIf="$numberOfComponents > 0">
-          <viewer depends="$numberOfComponents">
-            <![CDATA[
-              <h4 class="text-right">
-                <span class="label label-default" style="background-color: #2185D0; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.4em;" x-translate>Number of components</span><span class="label label-default" style="background-color: #23C6C8; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0;">{{record.$numberOfComponents}}</span>
-               </h4>
-            ]]>
-          </viewer>
-        </field>
-        <panel-related name="billOfMaterialSetPanel" field="billOfMaterialSet" title="Components" colSpan="12" height="15" orderBy="priority" form-view="bill-of-material-line-form" onChange="action-bill-of-material-record-count-number-of-components"/>
-        <button name="addComponentsEnMasseBtn" title="Add components en masse" onClick="action-bill-of-material-attrs-show-component-panel"/>
-        <panel name="addComponentsEnMassePanel" showTitle="false" colSpan="12" hidden="true">
-          <button name="addToComponents" title="Add to components" colSpan="3" css="btn-custom" onClick="save,action-bill-of-material-method-add-raw-materials"/>
-          <field name="$rawMaterials" title="Raw materials to add to components" type="one-to-many" x-target="com.axelor.apps.base.db.Product" colSpan="12" domain="self.productTypeSelect = 'storable'" canNew="false" canEdit="false" canSelect="true" form-view="product-form" grid-view="product-grid"/>
-        </panel>
-      </panel>
-      <panel-related name="prodResidualProductListPanel" hideIf="type == 2" field="prodResidualProductList" title="Residual products" colSpan="12" grid-view="prod-residual-product-grid" form-view="prod-residual-product-form" if="__config__.app.getApp('production').getManageResidualProductOnBom()"/>
-      <panel name="costPanel" title="Cost" hideIf="type == 2">
-        <button name="computeCostPriceBtn" title="Compute cost price"   onClick="save,action-bill-of-material-method-compute-cost-price"/>
-        <field name="costPrice" readonly="true"/>
-        <button name="updateProductCostPriceBtn" title="Update product cost price"  onClick="save,action-bill-of-material-method-update-product-cost-price"/>
-        <panel-related name="costSheetListsPanel" field="costSheetList" colSpan="12" readonly="true" form-view="cost-sheet-bill-of-material-form" grid-view="cost-sheet-bill-of-material-grid"/>
-      </panel>
-      <panel name="versionManagementPanel" title="Version management" hidden="true" showIf="versionNumber &gt; 1">
-        <field name="versionNumber" colSpan="3" />
-        <field name="originalBillOfMaterial" grid-view="bill-of-material-grid" form-view="bill-of-material-form" colSpan="3" readonly="true"/>
-      </panel>
-      <panel name="notePanel" title="Note">
-        <field name="note" showTitle="false" colSpan="12"/>
-      </panel>
-    </panel-tabs>
+    <extend target="//item[@name='defineDefaultBomProductItem']">
+      <attribute name="hideIf" value="typeSelect != 1 || product.defaultBillOfMaterial.id == id"/>
+    </extend>
+
+    <extend target="//field[@name='product']">
+      <insert position="after">
+        <field name="machineType" form-view="machine-type-form" grid-view="machine-type-grid" hidden="true"/>
+      </insert>
+    </extend>
+
+    <extend target="//panel[@name='componentsPanel']">
+      <attribute name="hideIf" value="typeSelect != 1"/>
+    </extend>
+
+    <extend target="//field[@name='product.defaultBillOfMaterial']">
+      <insert position="after">
+        <field name="typeSelect" hidden="true"/>
+      </insert>
+    </extend>
+
+    <extend target="//panel-related[@name='prodResidualProductListPanel']">
+      <attribute name="hideIf" value="typeSelect == 2"/>
+    </extend>
+
   </form>
-  
+
   <action-group name="action-maintenance-bill-of-material-group-onnew">
-    <action name="action-bill-of-material-default-record"/>
-    <action name="action-bill-of-material-attrs-price-and-qty-digits"/>
-    <action name="action-bill-of-material-record-count-number-of-components"/>
+    <action name="action-bill-of-material-group-on-new"/>
     <action name="action-maintenance-bill-of-material-attrs-set-default"/>
     <action name="action-maintenance-bill-of-material-attrs-set-attributes"/>
   </action-group>
@@ -116,21 +58,18 @@
   </action-group>
   
   <action-attrs name="action-maintenance-bill-of-material-attrs-set-default">
-    <attribute name="value" for="type" expr="eval: _maintenance?2:1"/>
+    <attribute name="value" for="typeSelect" expr="eval: _maintenance ? __repo__(ProdProcess).TYPE_MAINTENANCE : __repo__(ProdProcess).TYPE_PRODUCTION"/>
     <attribute name="required" for="product" expr="eval: !_maintenance"/>
     <attribute name="required" for="machineType" expr="eval: _maintenance"/>
-    <attribute name="domain" for="billOfMaterialSetPanel" expr="eval: &quot;self.defineSubBillOfMaterial = true AND self.personalized = false and (:id is null or self.id != :id) AND self.type = 2&quot;" if="_maintenance"/>
-    <attribute name="domain" for="billOfMaterialSetPanel" expr="eval: &quot;self.defineSubBillOfMaterial = true AND self.personalized = false and (:id is null or self.id != :id) AND self.type = 2&quot;" if="!_maintenance || _maintenance == null"/>
-    <attribute name="domain" for="prodProcess" expr="eval: &quot;(self.product = :product OR self.isEnabledForAllProducts = true) AND self.company = :company AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) AND self.type = 1&quot;" if="!_maintenance || _maintenance == null"/>
-    <attribute name="domain" for="prodProcess" expr="eval: &quot;self.machineType = :machineType AND self.company = :company AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) AND self.type = 2&quot;" if="_maintenance"/>
+    <attribute name="domain" for="billOfMaterialSetPanel" expr="eval: &quot;self.defineSubBillOfMaterial = true AND self.personalized = false and (:id is null or self.id != :id) AND self.typeSelect = 2&quot;" if="_maintenance"/>
+    <attribute name="domain" for="billOfMaterialSetPanel" expr="eval: &quot;self.defineSubBillOfMaterial = true AND self.personalized = false and (:id is null or self.id != :id) AND self.typeSelect = 2&quot;" if="!_maintenance || _maintenance == null"/>
+    <attribute name="domain" for="prodProcess" expr="eval: &quot;(self.product = :product OR self.isEnabledForAllProducts = true) AND self.company = :company AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) AND self.typeSelect = 1&quot;" if="!_maintenance || _maintenance == null"/>
+    <attribute name="domain" for="prodProcess" expr="eval: &quot;self.machineType = :machineType AND self.company = :company AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) AND self.typeSelect = 2&quot;" if="_maintenance"/>
   </action-attrs>
   
   <action-attrs name="action-maintenance-bill-of-material-attrs-set-attributes">
     <attribute name="hidden" for="product" expr="eval: true" if="_maintenance || (_parent != null &amp;&amp; _parent?._maintenance)"/>
     <attribute name="hidden" for="machineType" expr="eval: false" if="_maintenance || (_parent != null &amp;&amp; _parent?._maintenance)"/>
   </action-attrs>
-  
-  <action-method name="action-maintenance-bill-of-material-method-name">
-    <call class="com.axelor.apps.maintenance.web.MaintenanceBillOfMaterialController" method="computeName"/>
-  </action-method>
+
 </object-views>

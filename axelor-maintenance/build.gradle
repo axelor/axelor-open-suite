@@ -1,16 +1,16 @@
 apply plugin: "com.axelor.app-module"
 
+apply from: "../version.gradle"
+
 apply {
-	version = "5.0.0-SNAPSHOT"
+	version = openSuiteVersion
 }
 
 axelor {
-	title "Axelor :: Maintenance"
+	title "Axelor Maintenance"
 	description "Computerized Maintenance Management System"
-
-	removable true
 }
 
 dependencies {
-	compile project(":modules:axelor-production")
+	api project(":modules:axelor-production")
 }

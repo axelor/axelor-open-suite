@@ -17,14 +17,11 @@
  */
 package com.axelor.apps.production.web;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
-import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.production.service.ProdProcessService;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
@@ -85,20 +82,15 @@ public class ProdProcessController {
     }
   }
 
-  public void print(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void print(ActionRequest request, ActionResponse response) {
 
-    ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
-    String prodProcessId = prodProcess.getId().toString();
-    String prodProcessLabel = prodProcess.getName().toString();
-
-    String fileLink =
-        ReportFactory.createReport(IReport.PROD_PROCESS, prodProcessLabel + "-${date}")
-            .addParam("Locale", ReportSettings.getPrintingLocale(null))
-            .addParam("ProdProcessId", prodProcessId)
-            .generate()
-            .getFileLink();
-
-    response.setView(ActionView.define(prodProcessLabel).add("html", fileLink).map());
+    try {
+      ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
+      String fileLink = Beans.get(ProdProcessService.class).print(prodProcess);
+      response.setView(ActionView.define(prodProcess.getName()).add("html", fileLink).map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void checkOriginalProductionProcess(ActionRequest request, ActionResponse response) {

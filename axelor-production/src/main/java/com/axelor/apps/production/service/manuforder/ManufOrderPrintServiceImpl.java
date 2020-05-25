@@ -64,7 +64,8 @@ public class ManufOrderPrintServiceImpl implements ManufOrderPrintService {
     return reportSettings.generate().getFile();
   }
 
-  public ReportSettings prepareReportSettings(ManufOrder manufOrder) throws AxelorException {
+  @Override
+  public ReportSettings prepareReportSettings(ManufOrder manufOrder) {
     String title = getFileName(manufOrder);
     ReportSettings reportSetting = ReportFactory.createReport(IReport.MANUF_ORDER, title);
     return reportSetting

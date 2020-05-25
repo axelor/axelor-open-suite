@@ -81,9 +81,8 @@
 	  </field>
   </grid>
 
-	<form onNew="action-manuf-order-default-record,action-manuf-order-attrs-price-digits,action-manuf-order-attrs-scale-and-precision"
-	      name="manuf-order-form" title="Manufacturing order" model="com.axelor.apps.production.db.ManufOrder"
-	      onLoad="action-manuf-order-attrs-isConsProOnOperation,action-manuf-order-attrs-price-digits,action-manuf-order-attrs-scale-and-precision,action-production-attrs-hide-purchaseOrder" width="large">
+	<form name="manuf-order-form" title="Manufacturing order" model="com.axelor.apps.production.db.ManufOrder"
+		onNew="action-manuf-order-group-onnew" onLoad="action-manuf-order-group-onload" width="large">
 <!--     TODO avec propagation -->
 		<menubar>
             <menu name="manufOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
@@ -363,6 +362,19 @@
 		<action name="action-production-attrs-hide-purchaseOrder"/>
 	</action-group>
 	
+	<action-group name="action-manuf-order-group-onnew">
+		<action name="action-manuf-order-default-record"/>
+		<action name="action-manuf-order-attrs-price-digits"/>
+		<action name="action-manuf-order-attrs-scale-and-precision"/>
+	</action-group>
+
+	<action-group name="action-manuf-order-group-onload">
+		<action name="action-manuf-order-attrs-isConsProOnOperation"/>
+    <action name="action-manuf-order-attrs-price-digits"/>
+    <action name="action-manuf-order-attrs-scale-and-precision"/>
+		<action name="action-production-attrs-hide-purchaseOrder"/>
+	</action-group>
+
 	<action-attrs name="action-production-attrs-hide-purchaseOrder" >
 	    <attribute name="hidden" for="purchaseOrder" expr="eval: !(outsourcing &amp;&amp; prodProcess?.generatePurchaseOrderOnMoPlanning)"/>
 	</action-attrs>

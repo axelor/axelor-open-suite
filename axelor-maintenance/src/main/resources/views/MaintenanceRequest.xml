@@ -27,7 +27,7 @@
 			<field name="durationHours"/>
 			<field name="mtnTask" colSpan="12" widget="html"/>
 			<field name="actionSelect" widget="RadioSelect" onChange="action-maintenance-request-record-action-select-onchange"/>
-			<field name="manufOrder" readonlyIf="!equipementMaintenance || !expectedDate" canNew="true" domain="self.type = 2"/>
+			<field name="manufOrder" readonlyIf="!equipementMaintenance || !expectedDate" canNew="true" domain="self.typeSelect = 2"/>
 			<field name="doneOn" onChange="action-maintenance-request-record-action-select-onchange"/>
 		</panel>
 		<panel name="actions" sidebar="true" title="Actions" stacked="true">

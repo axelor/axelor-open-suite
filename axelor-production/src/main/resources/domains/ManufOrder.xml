@@ -18,7 +18,8 @@
 	<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale order" />
 
     <string name="manufOrderSeq" title="MO" namecolumn="true" initParam="true"/>
-    <integer name="prioritySelect" title="Priority" selection="production.order.priority.select" default="2" initParam="true"/><boolean name="isPermanent"/> <!-- Permanent manuf orders are used to log time and have a planned quantity set to 0 -->
+    <integer name="prioritySelect" title="Priority" selection="production.order.priority.select" default="2" initParam="true"/>
+    <boolean name="isPermanent"/> <!-- Permanent manuf orders are used to log time and have a planned quantity set to 0 -->
     
     
     <one-to-many name="toConsumeProdProductList" ref="com.axelor.apps.production.db.ProdProduct" mappedBy="toConsumeManufOrder" title="Products to consume"/>
