@@ -18,6 +18,7 @@
             <field name="enablePackManagement" widget="boolean-switch"/>
             <field name="isDisplaySaleOrderLineNumber" widget="boolean-switch"/>
             <field name="enableSalesProductByTradName" widget="boolean-switch"/>
+			<field name="saleUnit" form-view="unit-form" grid-view="unit-grid"/>
 	
 		</panel>
 		<panel name="actionsPanel">

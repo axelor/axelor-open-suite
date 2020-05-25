@@ -1,0 +1,8 @@
+---
+title: "Config:  add default unit values"
+type: feature
+description: |
+	add AppSale saleUnit M2O field
+	add AppStock stockUnit M2O field
+	add AppPurchase purchaseUnit M2O field
+	set product's default units values

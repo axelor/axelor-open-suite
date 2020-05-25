@@ -9,6 +9,7 @@
 			<field name="requireToFillConformityOnReceipt" widget="boolean-switch" colSpan="4"/>
 			<field name="isSeparateShipmentOperations" widget="boolean-switch" colSpan="4"/>
 			<field name="isRequiredShipmentSupplierDetails" widget="boolean-switch" colSpan="4"/>
+			<field name="stockUnit" colSpan="4" form-view="unit-form" grid-view="unit-grid"/>
 		</panel>
 		<panel name="customsPanel" title="Customs">
           	<field name="economicArea"/>
