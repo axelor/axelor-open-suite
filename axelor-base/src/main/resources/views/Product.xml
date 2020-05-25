@@ -477,6 +477,9 @@
     	<field name="managPriceCoef" expr="1"/>
     	<field name="isModel" expr="eval: _isModel"/>
     	<field name="isShippingCostsProduct" expr="eval: _isShippingCostsProduct"/>
+    	<field name="salesUnit" expr="eval: __config__.app.getApp('sale')?.getSaleUnit()" if="__config__.app.isApp('sale')"/>
+    	<field name="purchasesUnit" expr="eval: __config__.app.getApp('purchase')?.getPurchaseUnit()" if="__config__.app.isApp('purchase')"/>
+    	<field name="unit" expr="eval: __config__.app.getApp('stock')?.getStockUnit()" if="__config__.app.isApp('stock')"/>
     </action-record>
     
     <action-record name="action-product-record-product-sub-type-select-onchange" model="com.axelor.apps.base.db.Product">

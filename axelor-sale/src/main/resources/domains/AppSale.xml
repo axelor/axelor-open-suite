@@ -19,7 +19,8 @@
 		<boolean name="enableCustomerCatalogMgt" title="Enable customer catalog management"/>
 		<boolean name="enablePackManagement" title="Pack Management"/>
 		<boolean name="isDisplaySaleOrderLineNumber" title="Display sale order line number"/>
-		<boolean name="enableSalesProductByTradName" title="Filter products by trading name" default="false"/>
+		<boolean name="enableSalesProductByTradName" title="Filter products by trading name" default="false"/>		
+        <many-to-one name="saleUnit" title="Default unit" ref="com.axelor.apps.base.db.Unit"></many-to-one>
 
 		<track>
 			<field name="manageSaleOrderVersion" on="UPDATE"/>
