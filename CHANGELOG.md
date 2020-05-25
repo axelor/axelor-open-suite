@@ -22,6 +22,7 @@
 - Back Order : corrected link between back order and origin.
 - DEMO DATA : fixed issue in demo data.
 - PARTNER : industrySector to display when customer is individual.
+- Fixed asset: corrected amortization calculation process. 
 
 ## [5.3.5] - 2020-05-11
 ## Features
