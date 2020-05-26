@@ -1,4 +1,8 @@
 # Changelog
+## [Unreleased 5.2.12]
+## Improvements
+## Bug Fixes
+
 ## [5.2.11] - 2020-05-26
 ## Improvements
 - Add civility for partner contact in birt report printing.
@@ -636,6 +640,7 @@ In this case, the file is correctly retrieved from the bank server, but not save
 - LEAVE REQUEST: Add error when leave reason has no unit.
 - LEAVE REQUEST: Set duration value 0 if day planning of selected weekly planning is empty
 
+[Unreleased 5.2.12]: https://github.com/axelor/axelor-open-suite/compare/v5.2.11...5.2-dev
 [5.2.11]: https://github.com/axelor/axelor-open-suite/compare/v5.2.10...v5.2.11
 [5.2.10]: https://github.com/axelor/axelor-open-suite/compare/v5.2.9...v5.2.10
 [5.2.9]: https://github.com/axelor/axelor-open-suite/compare/v5.2.8...v5.2.9
