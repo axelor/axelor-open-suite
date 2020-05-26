@@ -1,16 +1,29 @@
 # Changelog
 ## [Unreleased 5.3.6]
+## Features
+- Add civility for partner contact in birt report printing.
+- OPPORTUNITY: add sequence
+
 ## Improvements
 - DURATION : rearranged fields in grid and form view.
 - Add configuration to activate partial invoicing for sale order and purchase order.
 - ACCOUNTING REPORT : Printing Information panel UI light changes.
 - PURCHASE ORDER SUPPLIER LINE : fix for decimal digit scale and precision.
 - MOVE LINE: removed massUpdate from move-line-grid.
+- LEAVE LINE: remove fields length constraints
 
 ## Bug Fixes
 - CONTRACT : Add filter on payment mode.
 - CONTRACT : fix for unit price null on invoice.
-- BANK STATEMENT : Fix order by
+- SALEORDER : copy description when generating Task by line from SaleOrder
+- Business Project : Fixed set toInvoice for timesheet line based on parent task instead of a task.
+- FORECAST RECAP : many anomalies resolved.
+- Bank details: corrected the possibility to get an inactive bank details.
+- Back Order : corrected link between back order and origin.
+- DEMO DATA : fixed issue in demo data.
+- PARTNER : industrySector to display when customer is individual.
+- Fixed asset: corrected amortization calculation process. 
+- BANK STATEMENT : Fix order by in bank statement line
 
 ## [5.3.5] - 2020-05-11
 ## Features

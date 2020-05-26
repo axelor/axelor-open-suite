@@ -92,4 +92,6 @@ public interface IExceptionMessage {
       "The number of repetitions must be greater than 0" /*)*/;
   static final String RECURRENCE_END_DATE = /*$$(*/
       "The end date must be after the start date" /*)*/;
+  public static final String OPPORTUNITY_1 = /*$$(*/
+      "There's no configured sequence for opportunities for the company %s" /*)*/;
 }

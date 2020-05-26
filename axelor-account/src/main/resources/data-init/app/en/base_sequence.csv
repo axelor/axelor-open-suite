@@ -37,7 +37,7 @@
 137;"moveLineExport";"Accounting Export";"NUMBERS";"UPPERCASE";1;4;"ACCEXP_%YY_";;1;1
 138;"moveLineReport";"Accounting Report";"NUMBERS";"UPPERCASE";1;4;"ACCREPORT_%YY_";;1;1
 139;"paymentSchedule";"Installment N°";"NUMBERS";"UPPERCASE";1;4;"INSTAL_%YY_";;1;1
-140;"paymentVoucher";"N° for payments received in Cash""NUMBERS";"UPPERCASE";;1;4;"CSH_IN_ESP_%YY_";;1;1
+140;"paymentVoucher";"N° for payments received in Cash";"NUMBERS";"UPPERCASE";1;4;"CSH_IN_ESP_%YY_";;1;1
 141;"paymentVoucher";"N° for payments received in Cheque";"NUMBERS";"UPPERCASE";1;4;"CSH_IN_CHQ_%YY_";;1;1
 142;"paymentVoucher";"N° for payments received in Credit Card";"NUMBERS";"UPPERCASE";1;4;"CSH_IN_CC_%YY_";;1;1
 143;"paymentVoucher";"N° for payments received through Internet";"NUMBERS";"UPPERCASE";1;4;"CSH_IN_WEB_%YY_";;1;1

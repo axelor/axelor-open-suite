@@ -81,6 +81,7 @@ public class ForecastRecapService {
 
   @Inject protected CurrencyService currencyService;
   @Inject protected ForecastRecapLineTypeRepository forecastRecapLineTypeRepository;
+  @Inject protected ForecastRecapRepository forecastRecapRepo;
 
   @Transactional
   public void populate(ForecastRecap forecastRecap) throws AxelorException {
@@ -105,10 +106,12 @@ public class ForecastRecapService {
     this.populateWithForecasts(forecastRecap);
     this.populateWithExpenses(forecastRecap);
 
+    forecastRecapRepo.save(forecastRecap);
+    
     this.computeForecastRecapLineBalance(forecastRecap);
     forecastRecap.setEndingBalance(forecastRecap.getCurrentBalance());
     forecastRecap.setCalculationDate(appBaseService.getTodayDate());
-    Beans.get(ForecastRecapRepository.class).save(forecastRecap);
+    forecastRecapRepo.save(forecastRecap);
   }
 
   public void populateWithOpportunities(ForecastRecap forecastRecap) throws AxelorException {
@@ -949,7 +952,7 @@ public class ForecastRecapService {
       forecastRecap.addForecastRecapLineListItem(
           this.createForecastRecapLine(
               forecast.getEstimatedDate(),
-              forecast.getTypeSelect(),
+              forecast.getAmount().compareTo(BigDecimal.ZERO) == -1 ? 2 : 1,
               forecast.getAmount(),
               ForecastReason.class.getName(),
               forecastReason.getId(),
@@ -995,7 +998,7 @@ public class ForecastRecapService {
       forecastRecap.addForecastRecapLineListItem(
           this.createForecastRecapLine(
               forecast.getEstimatedDate(),
-              forecast.getTypeSelect(),
+              forecast.getAmount().compareTo(BigDecimal.ZERO) == -1 ? 2 : 1,
               forecast.getAmount(),
               ForecastReason.class.getName(),
               forecastReason.getId(),
@@ -1034,7 +1037,7 @@ public class ForecastRecapService {
               .fetch();
     }
     for (Forecast forecast : forecastList) {
-      if (forecast.getTypeSelect() == 1) {
+      if (forecast.getAmount().compareTo(BigDecimal.ZERO) != -1) {
         if (forecast.getRealizedSelect() == 2) {
           if (mapExpected.containsKey(forecast.getEstimatedDate())) {
             mapExpected.put(
