@@ -20,7 +20,7 @@ package com.axelor.apps.maintenance.service;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.maintenance.report.IReport;
 import com.axelor.apps.production.db.BillOfMaterial;
-import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
+import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
 import com.axelor.exception.AxelorException;
 
@@ -41,7 +41,7 @@ public class MaintenanceBillOfMaterialService extends BillOfMaterialServiceImpl 
 
     String reportLink;
 
-    if (billOfMaterial.getTypeSelect() == BillOfMaterialRepository.TYPE_PRODUCTION) {
+    if (billOfMaterial.getTypeSelect() == ManufOrderRepository.TYPE_PRODUCTION) {
       reportLink = super.getReportLink(billOfMaterial, name, language, format);
     } else {
       reportLink =

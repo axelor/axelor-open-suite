@@ -6,18 +6,11 @@
   <module name="production" package="com.axelor.apps.production.db"/>
 
   <entity name="BillOfMaterial" lang="java">
-    <integer name="typeSelect" default="1" title="Type" selection="maintenance.type.select"/>
+    <integer name="typeSelect" default="1" title="Type" selection="manuf.order.type.select"/>
 
     <many-to-one name="machineType" ref="com.axelor.apps.production.db.MachineType" title="Machine type"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" required="false"/>
 
-    <extra-code><![CDATA[
-
-		//TYPE SELECT
-		public static final int TYPE_PRODUCTION = 1;
-		public static final int TYPE_MAINTENANCE = 2;
-		public static final int TYPE_PERMANENT = 3;
-	]]></extra-code>
   </entity>
 
 </domain-models>

@@ -44,62 +44,44 @@
       <attribute name="onSelect" value="action-maintenance-manuf-order-group-filter-prodProcess"/>
     </extend>
     <extend target="//field[@name='product']">
-      <attribute name="hideIf" value="typeSelect == 2"/>
-      <attribute name="requiredIf" value="typeSelect != 2"/>
+      <attribute name="hideIf" value="typeSelect == 3"/>
+      <attribute name="requiredIf" value="typeSelect != 3"/>
       <attribute name="required" value="false"/>
     </extend>
     <extend target="//field[@name='product']">
-      <attribute name="hideIf" value="typeSelect == 2"/>
-      <attribute name="requiredIf" value="typeSelect != 2"/>
+      <attribute name="hideIf" value="typeSelect == 3"/>
+      <attribute name="requiredIf" value="typeSelect != 3"/>
       <attribute name="required" value="false"/>
       <insert position="after">
-        <field name="machineType" colSpan="3" showIf="typeSelect == 2" requiredIf="typeSelect == 2" form-view="machine-type-form" grid-view="machine-type-grid" hidden="true"/>
-        <field name="machine" colSpan="3" showIf="typeSelect == 2" requiredIf="typeSelect == 2" domain="self.machineType = :machineType" form-view="machine-form" grid-view="machine-grid" hidden="true"/>
+        <field name="machineType" colSpan="3" showIf="typeSelect == 3" requiredIf="typeSelect == 3" form-view="machine-type-form" grid-view="machine-type-grid" hidden="true"/>
+        <field name="machine" colSpan="3" showIf="typeSelect == 3" requiredIf="typeSelect == 3" domain="self.machineType = :machineType" form-view="machine-form" grid-view="machine-grid" hidden="true"/>
       </insert>
     </extend>
     <extend target="//field[@name='qty']">
-      <attribute name="showIf" value="typeSelect == 1"/>
-      <attribute name="readonlyIf" value="statusSelect &gt; 1 || typeSelect == 3"/>
+      <attribute name="hideIf" value="typeSelect != 1"/>
       <attribute name="validIf" value="typeSelect == 2 || typeSelect == 3 || qty > 0"/>
     </extend>
 
-    <extend target="//field[@name='product.isModel']">
-      <insert position="after">
-        <field name="typeSelect" hidden="true"/>
-      </insert>
-    </extend>
-    
     <extend target="//button[@name='realizeBtn']">
-      <attribute name="hideIf" value="typeSelect == 2"/>
+      <attribute name="hideIf" value="typeSelect == 3"/>
     </extend>
 
     <extend target="//panel[@name='stockMovesPanel']">
-      <attribute name="showIf" value="statusSelect &gt;= 3 &amp;&amp; typeSelect != 2"/>
+      <attribute name="showIf" value="statusSelect &gt;= 3 &amp;&amp; typeSelect != 3"/>
     </extend>
     
     <extend target="//panel[@name='consumedProductsPanel']">
-      <attribute name="hideIf" value="typeSelect == 2 || isConsProOnOperation || statusSelect &lt; 3"/>
-    </extend>
-
-    <extend target="//button[@name='updatePlannedQtyBtn']">
-      <attribute name="showIf" value="statusSelect != 6 &amp;&amp; typeSelect != 3"/>
-    </extend>
-
-    <extend target="//button[@name='updateRealQtyBtn']">
-      <attribute name="showIf" value="$contains([4,5],statusSelect) &amp;&amp; typeSelect != 3"/>
+      <attribute name="hideIf" value="typeSelect == 3 || isConsProOnOperation || statusSelect &lt; 3"/>
     </extend>
 
     <extend target="//panel[@name='finishedProductsPanel']">
-      <attribute name="showIf" value="typeSelect != 2 &amp;&amp; statusSelect &gt;= 3"/>
+      <attribute name="showIf" value="typeSelect != 3 &amp;&amp; statusSelect &gt;= 3"/>
     </extend>
 
     <extend target="//panel[@name='costPanel']">
-      <attribute name="showIf" value="typeSelect != 2 &amp;&amp; statusSelect &gt; 3"/>
+      <attribute name="showIf" value="typeSelect != 3 &amp;&amp; statusSelect &gt; 3"/>
     </extend>
 
-    <extend target="//field[@name='$viewerIsPermanent']">
-      <attribute name="showIf" value="typeSelect == 3 &amp;&amp; $readonly()"/>
-    </extend>
   </form>
 
   <action-group name="action-maintenance-manuf-order-group-onnew">
@@ -114,12 +96,12 @@
   </action-group>
 
   <action-group name="action-maintenance-manuf-order-group-bom-onchange">
-    <action name="action-maintenance-maunf-order-group-onchange" if="type == 2"/>
-    <action name="action-manuf-order-group-onchange" if="type != 2"/>
+    <action name="action-maintenance-maunf-order-group-onchange" if="typeSelect == 3"/>
+    <action name="action-manuf-order-group-onchange" if="typeSelect != 3"/>
   </action-group>
 
   <action-group name="action-maintenance-manuf-order-group-prod-process-onchange">
-    <action name="action-manuf-order-group-prod-process-onchange" if="type != 2"/>
+    <action name="action-manuf-order-group-prod-process-onchange" if="typeSelect != 3"/>
   </action-group>
 
   <action-group name="action-maintenance-maunf-order-group-onchange">
@@ -129,8 +111,8 @@
   </action-group>
 
   <action-group name="action-maintenance-manuf-order-group-filter-prodProcess">
-    <action name="action-manuf-order-attrs-filter-prodProcess" if="type != 2"/>
-    <action name="action-maintenance-maunf-order-attrs-filter-prodProcess" if="type == 2"/>
+    <action name="action-manuf-order-attrs-filter-prodProcess" if="typeSelect != 3"/>
+    <action name="action-maintenance-maunf-order-attrs-filter-prodProcess" if="typeSelect == 3"/>
   </action-group>
 
   <action-record name="action-maintenance-manuf-order-record-on-change-bill-of-material" model="com.axelor.apps.production.db.ManufOrder">
@@ -139,26 +121,26 @@
   </action-record>
   
   <action-attrs id="action-maintenance-manuf-order-attrs-filter-prodProcess" name="action-manuf-order-attrs-filter-prodProcess">
-    <attribute name="domain" for="prodProcess" expr="eval: &quot; (self.id = ${billOfMaterial?.prodProcess?.id} OR self.product.id = ${billOfMaterial?.product?.id}) AND self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) AND self.typeSelect = 1 &quot;" if="prodProcess != null &amp;&amp; billOfMaterial != null"/>
-    <attribute name="domain" for="prodProcess" expr="eval: &quot; self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) AND self.typeSelect = 1 &quot;" if="billOfMaterial == null"/>
+    <attribute name="domain" for="prodProcess" expr="eval: &quot; (self.id = ${billOfMaterial?.prodProcess?.id} OR self.product.id = ${billOfMaterial?.product?.id}) AND self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) AND self.typeSelect = ${__repo__(ManufOrder).TYPE_PRODUCTION} &quot;" if="prodProcess != null &amp;&amp; billOfMaterial != null"/>
+    <attribute name="domain" for="prodProcess" expr="eval: &quot; self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) AND self.typeSelect = ${__repo__(ManufOrder).TYPE_PRODUCTION} &quot;" if="billOfMaterial == null"/>
   </action-attrs>
 
   <action-attrs name="action-maintenance-maunf-order-attrs-filter-prodProcess">
-    <attribute name="domain" for="prodProcess" expr="eval: &quot; (self.id = ${billOfMaterial?.prodProcess?.id} OR self.machineType.id = ${billOfMaterial?.machineType?.id}) AND self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) AND self.typeSelect = 2 &quot;" if="prodProcess != null &amp;&amp; billOfMaterial != null"/>
-    <attribute name="domain" for="prodProcess" expr="eval: &quot; self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) AND self.typeSelect = 2 &quot;" if="billOfMaterial == null &amp;&amp; !_parent"/>
-    <attribute name="domain" for="prodProcess" expr="eval: &quot; self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) AND self.typeSelect = 2 AND self.machineType = :machineType &quot;" if="billOfMaterial == null &amp;&amp; _parent"/>
+    <attribute name="domain" for="prodProcess" expr="eval: &quot; (self.id = ${billOfMaterial?.prodProcess?.id} OR self.machineType.id = ${billOfMaterial?.machineType?.id}) AND self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) AND self.typeSelect = ${__repo__(ManufOrder).TYPE_MAINTENANCE} &quot;" if="prodProcess != null &amp;&amp; billOfMaterial != null"/>
+    <attribute name="domain" for="prodProcess" expr="eval: &quot; self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) AND self.typeSelect = ${__repo__(ManufOrder).TYPE_MAINTENANCE} &quot;" if="billOfMaterial == null &amp;&amp; !_parent"/>
+    <attribute name="domain" for="prodProcess" expr="eval: &quot; self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) AND self.typeSelect = ${__repo__(ManufOrder).TYPE_MAINTENANCE} AND self.machineType = :machineType &quot;" if="billOfMaterial == null &amp;&amp; _parent"/>
   </action-attrs>
 
 	<action-attrs name="action-maintenance-manuf-order-attrs-filter-bom">
-		<attribute name="domain" for="billOfMaterial" expr="eval: &quot;(self.defineSubBillOfMaterial = true AND self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation)) AND self.typeSelect = 2 AND self.machineType = :machineType&quot;" if="_parent"/>
-    <attribute name="domain" for="billOfMaterial" expr="eval: &quot;(self.defineSubBillOfMaterial = true AND self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation)) AND self.typeSelect = 2&quot;" if="_maintenance &amp;&amp; !_parent"/>
-    <attribute name="domain" for="billOfMaterial" expr="eval: &quot;(self.defineSubBillOfMaterial = true AND self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation)) AND self.typeSelect = 1&quot;" if="!_maintenance &amp;&amp; !_parent"/>
+		<attribute name="domain" for="billOfMaterial" expr="eval: &quot;(self.defineSubBillOfMaterial = true AND self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation)) AND self.typeSelect = ${__repo__(ManufOrder).TYPE_MAINTENANCE} AND self.machineType = :machineType&quot;" if="_parent"/>
+    <attribute name="domain" for="billOfMaterial" expr="eval: &quot;(self.defineSubBillOfMaterial = true AND self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation)) AND self.typeSelect = ${__repo__(ManufOrder).TYPE_MAINTENANCE}&quot;" if="_maintenance &amp;&amp; !_parent"/>
+    <attribute name="domain" for="billOfMaterial" expr="eval: &quot;(self.defineSubBillOfMaterial = true AND self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation)) AND self.typeSelect = ${__repo__(ManufOrder).TYPE_PRODUCTION}&quot;" if="!_maintenance &amp;&amp; !_parent"/>
 	</action-attrs>
 
   <action-attrs name="action-maintenance-manuf-order-attrs-set-default">
-    <attribute name="value" for="typeSelect" expr="eval: 3" if="_createPermanent"/>
-    <attribute name="value" for="typeSelect" expr="eval: _maintenance?2:1" if="!_createPermanent"/>
-    <attribute name="value" for="typeSelect" expr="eval: 2" if="_parent?._model == 'com.axelor.apps.maintenance.db.MaintenanceRequest'"/>
+    <attribute name="value" for="typeSelect" expr="eval: __repo__(ManufOrder).TYPE_PERMANENT" if="_createPermanent"/>
+    <attribute name="value" for="typeSelect" expr="eval: _maintenance ? __repo__(ManufOrder).TYPE_MAINTENANCE : __repo__(ManufOrder).TYPE_PRODUCTION" if="!_createPermanent"/>
+    <attribute name="value" for="typeSelect" expr="eval: __repo__(ManufOrder).TYPE_MAINTENANCE" if="_parent?._model == 'com.axelor.apps.maintenance.db.MaintenanceRequest'"/>
     <attribute name="value" for="qty" expr="eval: 0" if="_maintenance"/>
     <attribute name="value" for="machine" expr="eval: _parent?.machine" if="_parent?._model == 'com.axelor.apps.maintenance.db.MaintenanceRequest'"/>
 		<attribute name="value" for="plannedStartDateT" expr="eval: _parent?.doneOn != null ? _parent?.doneOn : _parent?.expectedDate" if="_parent?._model == 'com.axelor.apps.maintenance.db.MaintenanceRequest'"/>

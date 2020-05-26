@@ -73,7 +73,7 @@
     <view type="grid" name="maintenance-manuf-order-grid" />
     <view type="form" name="manuf-order-form" />
     <view-param name="search-filters" value="manuf-order-filters"/>
-    <domain>(self.isPermanent is null OR self.isPermanent = false) AND self.typeSelect = 2</domain>
+    <domain>self.typeSelect = 3</domain>
     <context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
     <context name="_maintenance" expr="eval: true"/>
 	</action-view>
@@ -99,7 +99,7 @@
     model="com.axelor.apps.production.db.ProdProcess" >
     <view type="grid" name="maintenance-prod-process-grid" />
     <view type="form" name="prod-process-form" />
-    <domain>self.typeSelect = 2</domain>
+    <domain>self.typeSelect = 3</domain>
     <context name="_maintenance" expr="eval: true"/>
   </action-view>
 
@@ -110,7 +110,7 @@
     model="com.axelor.apps.production.db.BillOfMaterial" >
     <view type="grid" name="maintenance-bill-of-material-grid" />
     <view type="form" name="bill-of-material-form" />
-    <domain>self.defineSubBillOfMaterial = true AND self.personalized = false AND self.typeSelect = 2</domain>
+    <domain>self.defineSubBillOfMaterial = true AND self.personalized = false AND self.typeSelect = 3</domain>
     <context name="_maintenance" expr="eval: true"/>
   </action-view>
 
@@ -128,22 +128,4 @@
     <domain>self.typeSelect = 1</domain>
   </action-view>
 
-  <action-view id="addons.maintenance.manufacturing.root.manuf.order" name="manufacturing.root.manuf.order" title="Manufacturing orders"
-    model="com.axelor.apps.production.db.ManufOrder" >
-    <view type="grid" name="manuf-order-grid" />
-    <view type="form" name="manuf-order-form" />
-    <view-param name="search-filters" value="manuf-order-filters"/>
-    <domain>(self.isPermanent is null OR self.isPermanent = false) AND self.typeSelect = 1</domain>
-    <context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
-  </action-view>
-
-  <action-view id="addons.maintenance.manufacturing.conf.manuf.order" name="manufacturing.conf.manuf.order" title="Permanent manufacturing orders"
-    model="com.axelor.apps.production.db.ManufOrder" >
-    <view type="grid" name="manuf-order-grid" />
-    <view type="form" name="manuf-order-form" />
-    <view-param name="search-filters" value="manuf-order-filters"/>
-    <domain>self.typeSelect = 3</domain>
-    <context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
-    <context name="_createPermanent" expr="eval: true"/>
-  </action-view>
 </object-views>

@@ -40,7 +40,7 @@
     </extend>
 
     <extend target="//panel-related[@name='prodResidualProductListPanel']">
-      <attribute name="hideIf" value="typeSelect == 2"/>
+      <attribute name="hideIf" value="typeSelect == 3"/>
     </extend>
 
   </form>
@@ -58,13 +58,13 @@
   </action-group>
   
   <action-attrs name="action-maintenance-bill-of-material-attrs-set-default">
-    <attribute name="value" for="typeSelect" expr="eval: _maintenance ? __repo__(ProdProcess).TYPE_MAINTENANCE : __repo__(ProdProcess).TYPE_PRODUCTION"/>
+    <attribute name="value" for="typeSelect" expr="eval: _maintenance ? __repo__(ManufOrder).TYPE_MAINTENANCE : __repo__(ManufOrder).TYPE_PRODUCTION"/>
     <attribute name="required" for="product" expr="eval: !_maintenance"/>
     <attribute name="required" for="machineType" expr="eval: _maintenance"/>
-    <attribute name="domain" for="billOfMaterialSetPanel" expr="eval: &quot;self.defineSubBillOfMaterial = true AND self.personalized = false and (:id is null or self.id != :id) AND self.typeSelect = 2&quot;" if="_maintenance"/>
-    <attribute name="domain" for="billOfMaterialSetPanel" expr="eval: &quot;self.defineSubBillOfMaterial = true AND self.personalized = false and (:id is null or self.id != :id) AND self.typeSelect = 2&quot;" if="!_maintenance || _maintenance == null"/>
-    <attribute name="domain" for="prodProcess" expr="eval: &quot;(self.product = :product OR self.isEnabledForAllProducts = true) AND self.company = :company AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) AND self.typeSelect = 1&quot;" if="!_maintenance || _maintenance == null"/>
-    <attribute name="domain" for="prodProcess" expr="eval: &quot;self.machineType = :machineType AND self.company = :company AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) AND self.typeSelect = 2&quot;" if="_maintenance"/>
+    <attribute name="domain" for="billOfMaterialSetPanel" expr="eval: &quot;self.defineSubBillOfMaterial = true AND self.personalized = false and (:id is null or self.id != :id) AND self.typeSelect = ${__repo__(ManufOrder).TYPE_MAINTENANCE}&quot;" if="_maintenance"/>
+    <attribute name="domain" for="billOfMaterialSetPanel" expr="eval: &quot;self.defineSubBillOfMaterial = true AND self.personalized = false and (:id is null or self.id != :id) AND self.typeSelect = ${__repo__(ManufOrder).TYPE_PRODUCTION}&quot;" if="!_maintenance || _maintenance == null"/>
+    <attribute name="domain" for="prodProcess" expr="eval: &quot;(self.product = :product OR self.isEnabledForAllProducts = true) AND self.company = :company AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) AND self.typeSelect = ${__repo__(ManufOrder).TYPE_PRODUCTION}&quot;" if="!_maintenance || _maintenance == null"/>
+    <attribute name="domain" for="prodProcess" expr="eval: &quot;self.machineType = :machineType AND self.company = :company AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) AND self.typeSelect = ${__repo__(ManufOrder).TYPE_MAINTENANCE}&quot;" if="_maintenance"/>
   </action-attrs>
   
   <action-attrs name="action-maintenance-bill-of-material-attrs-set-attributes">

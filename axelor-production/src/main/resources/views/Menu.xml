@@ -72,7 +72,7 @@
 		<view type="grid" name="manuf-order-grid" />
 		<view type="form" name="manuf-order-form" />
 		<view-param name="search-filters" value="manuf-order-filters"/>
-		<domain>self.isPermanent is null OR self.isPermanent = false</domain>
+		<domain>self.typeSelect = 1</domain>
 		<context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
 	</action-view>	
 	
@@ -304,7 +304,7 @@
 		<view type="grid" name="manuf-order-grid" />
 		<view type="form" name="manuf-order-form" />
 		<view-param name="search-filters" value="manuf-order-filters"/>
-		<domain>self.isPermanent = true</domain>
+		<domain>self.typeSelect = 2</domain>
 		<context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
 		<context name="_createPermanent" expr="eval: true"/>
 	</action-view>

@@ -3,6 +3,7 @@ package com.axelor.apps.maintenance.service;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.maintenance.report.IReport;
 import com.axelor.apps.production.db.ProdProcess;
+import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.service.ProdProcessService;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -18,7 +19,7 @@ public class ProdProcessMaintenanceService extends ProdProcessService {
 
   public String print(ProdProcess prodProcess) throws AxelorException {
     return ReportFactory.createReport(
-            prodProcess.getTypeSelect() == ProdProcessRepository.TYPE_MAINTENANCE
+            prodProcess.getTypeSelect() == ManufOrderRepository.TYPE_MAINTENANCE
                 ? IReport.MAINTENANCE_PROD_PROCESS
                 : com.axelor.apps.production.report.IReport.PROD_PROCESS,
             prodProcess.getName() + "-${date}")

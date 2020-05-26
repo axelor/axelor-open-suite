@@ -23,10 +23,8 @@
 		<option value="maintenance">Maintenance</option>
 	</selection>
 
-  <selection name="maintenance.type.select">
-    <option value="1">Production</option>
-    <option value="2">Maintenance</option>
-    <option value="3">Permanent</option>
+  <selection id="maintenance.manuf.order.type.select" name="manuf.order.type.select">
+    <option value="3">Maintenance</option>
   </selection>
 
 </object-views>

@@ -43,8 +43,8 @@
   </action-group>
   
   <action-attrs name="action-maintenance-prod-process-attrs-set-default">
-    <attribute name="value" for="typeSelect" expr="eval: __repo__(ProdProcess).TYPE_MAINTENANCE" if="_maintenance || (_parent != null &amp;&amp; _parent?._maintenance)"/>
-    <attribute name="value" for="typeSelect" expr="eval: __repo__(ProdProcess).TYPE_PRODUCTION" if="!_maintenance || (_parent != null &amp;&amp; !_parent?._maintenance) || _maintenance == null"/>
+    <attribute name="value" for="typeSelect" expr="eval: __repo__(ManufOrder).TYPE_MAINTENANCE" if="_maintenance || (_parent != null &amp;&amp; _parent?._maintenance)"/>
+    <attribute name="value" for="typeSelect" expr="eval: __repo__(ManufOrder).TYPE_PRODUCTION" if="!_maintenance || (_parent != null &amp;&amp; !_parent?._maintenance) || _maintenance == null"/>
     <attribute name="value" for="isEnabledForAllProducts" expr="eval: true" if="_maintenance || (_parent != null &amp;&amp; _parent?._maintenance)"/>
     <attribute name="required" for="stockLocation" expr="eval: false" if="_maintenance || (_parent != null &amp;&amp; _parent?._maintenance)"/>
   </action-attrs>
