@@ -48,9 +48,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import javax.enterprise.context.RequestScoped;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
+@RequestScoped
 public class WkfController {
 
   public void processXml(ActionRequest request, ActionResponse response) throws AxelorException {

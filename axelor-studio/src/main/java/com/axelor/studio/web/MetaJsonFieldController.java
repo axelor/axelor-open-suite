@@ -23,7 +23,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.repo.MetaJsonFieldRepo;
 import com.axelor.studio.service.StudioMetaService;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class MetaJsonFieldController {
 
   public void trackJsonField(ActionRequest request, ActionResponse response) {

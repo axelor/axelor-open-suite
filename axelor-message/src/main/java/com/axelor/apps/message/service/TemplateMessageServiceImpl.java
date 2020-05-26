@@ -57,10 +57,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequestScoped
 public class TemplateMessageServiceImpl implements TemplateMessageService {
 
   private static final String RECIPIENT_SEPARATOR = ";|,";

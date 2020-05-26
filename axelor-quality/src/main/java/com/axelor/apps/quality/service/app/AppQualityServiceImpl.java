@@ -20,8 +20,10 @@ package com.axelor.apps.quality.service.app;
 import com.axelor.apps.base.db.AppQuality;
 import com.axelor.apps.base.db.repo.AppQualityRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
+@RequestScoped
 public class AppQualityServiceImpl extends AppBaseServiceImpl implements AppQualityService {
 
   private AppQualityRepository appQualityRepo;

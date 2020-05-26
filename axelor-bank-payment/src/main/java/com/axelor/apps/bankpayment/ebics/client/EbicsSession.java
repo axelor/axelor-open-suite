@@ -25,7 +25,9 @@ import java.io.IOException;
 import java.security.interfaces.RSAPublicKey;
 import java.util.HashMap;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class EbicsSession {
 
   private EbicsUser user;

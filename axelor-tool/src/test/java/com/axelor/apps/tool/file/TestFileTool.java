@@ -19,9 +19,11 @@ package com.axelor.apps.tool.file;
 
 import java.io.File;
 import java.io.IOException;
+import javax.enterprise.context.RequestScoped;
 import org.junit.Assert;
 import org.junit.Test;
 
+@RequestScoped
 public class TestFileTool {
 
   @Test

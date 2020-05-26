@@ -37,8 +37,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
 import org.apache.commons.lang3.StringEscapeUtils;
 
+@RequestScoped
 public class TemplateMaker {
   private Map<String, Object> context;
   private Map<String, Object> localContext;

@@ -18,7 +18,9 @@
 package com.axelor.apps.account.service.batch;
 
 import com.axelor.i18n.I18n;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class BatchCreditTransferExpensePayment extends BatchStrategy {
 
   @Override

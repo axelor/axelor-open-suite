@@ -27,9 +27,12 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import java.math.BigDecimal;
+import javax.enterprise.context.RequestScoped;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 
+@RequestScoped
 public class TimesheetLineController {
 
   private static final String HOURS_DURATION_FIELD = "hoursDuration";

@@ -37,8 +37,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import org.apache.commons.collections.CollectionUtils;
 
+@RequestScoped
 public class ReconcileGroupServiceImpl implements ReconcileGroupService {
 
   protected ReconcileGroupRepository reconcileGroupRepository;

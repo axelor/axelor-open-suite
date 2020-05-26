@@ -23,7 +23,9 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class TaxPaymentMoveLineServiceImpl implements TaxPaymentMoveLineService {
 
   @Override

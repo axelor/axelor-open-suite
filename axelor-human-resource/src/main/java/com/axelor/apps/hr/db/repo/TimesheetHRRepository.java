@@ -31,11 +31,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import javax.annotation.Priority;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
 @Alternative
 @Priority(HumanResourceModule.PRIORITY)
+@RequestScoped
 public class TimesheetHRRepository extends TimesheetRepository {
 
   @Inject private TimesheetService timesheetService;

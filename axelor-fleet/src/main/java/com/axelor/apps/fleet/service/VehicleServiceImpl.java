@@ -18,7 +18,9 @@
 package com.axelor.apps.fleet.service;
 
 import com.axelor.apps.fleet.db.Vehicle;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class VehicleServiceImpl implements VehicleService {
 
   @Override

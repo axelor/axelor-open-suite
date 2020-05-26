@@ -50,9 +50,13 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequestScoped
 public class ReimbursementExportService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

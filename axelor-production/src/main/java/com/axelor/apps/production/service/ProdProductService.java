@@ -20,7 +20,9 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.production.db.ProdProduct;
 import java.math.BigDecimal;
 import java.util.List;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class ProdProductService {
 
   // TODO add conversion unit

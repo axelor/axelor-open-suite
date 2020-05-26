@@ -31,10 +31,13 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import java.io.IOException;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.io.IOException;
 
+@RequestScoped
 public class BankStatementService {
 
   protected BankStatementRepository bankStatementRepository;

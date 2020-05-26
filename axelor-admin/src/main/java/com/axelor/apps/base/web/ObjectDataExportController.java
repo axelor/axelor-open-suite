@@ -30,7 +30,9 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class ObjectDataExportController {
 
   public void export(ActionRequest request, ActionResponse response) throws AxelorException {

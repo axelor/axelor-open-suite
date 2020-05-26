@@ -37,7 +37,11 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
+@RequestScoped
 public class PriceListService {
 
   @Inject private PriceListLineRepository priceListLineRepo;

@@ -34,7 +34,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class LogisticalFormLineServiceImpl implements LogisticalFormLineService {
 
   private static final Pattern DIMENSIONS_PATTERN =

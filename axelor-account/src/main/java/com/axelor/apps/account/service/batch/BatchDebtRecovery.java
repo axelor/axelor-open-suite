@@ -37,10 +37,13 @@ import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import java.util.List;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.util.List;
 import javax.persistence.Table;
 
+@RequestScoped
 public class BatchDebtRecovery extends BatchStrategy {
 
   protected boolean stopping = false;

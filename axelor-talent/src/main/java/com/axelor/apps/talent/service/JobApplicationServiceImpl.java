@@ -35,7 +35,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
+@RequestScoped
 public class JobApplicationServiceImpl implements JobApplicationService {
 
   protected JobApplicationRepository jobApplicationRepo;

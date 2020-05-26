@@ -34,9 +34,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
+import javax.transaction.Transactional;
 import org.apache.commons.io.FileUtils;
 import org.apache.xmlbeans.impl.common.IOUtil;
 
+@RequestScoped
 public class AppBuilderController {
 
   @Transactional

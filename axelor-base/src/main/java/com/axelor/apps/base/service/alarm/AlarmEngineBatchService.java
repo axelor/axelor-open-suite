@@ -32,9 +32,13 @@ import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequestScoped
 public class AlarmEngineBatchService extends AbstractBatch {
 
   static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

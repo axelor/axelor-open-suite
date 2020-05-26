@@ -41,7 +41,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 
+@RequestScoped
 public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService {
 
   protected AppPurchaseService appPurchaseService;

@@ -21,9 +21,11 @@ import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.AddressServiceSaleImpl;
 import com.axelor.events.StartupEvent;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.interceptor.Interceptor;
 
+@ApplicationScoped
 public class SaleModule {
 
   private SaleModule() {}

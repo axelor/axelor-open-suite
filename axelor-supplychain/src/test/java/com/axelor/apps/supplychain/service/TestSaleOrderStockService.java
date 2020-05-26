@@ -27,10 +27,12 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.exception.AxelorException;
 import java.util.ArrayList;
+import javax.enterprise.context.RequestScoped;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+@RequestScoped
 public class TestSaleOrderStockService {
 
   private SaleOrderStockServiceImpl saleOrderStockService;

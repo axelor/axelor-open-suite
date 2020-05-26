@@ -22,8 +22,10 @@ import com.axelor.apps.base.job.UncheckedJobExecutionException;
 import com.axelor.apps.crm.db.repo.CrmBatchRepository;
 import com.axelor.apps.crm.service.batch.CrmBatchService;
 import com.axelor.inject.Beans;
+import javax.enterprise.context.RequestScoped;
 import org.quartz.JobExecutionContext;
 
+@RequestScoped
 public class EventReminderJob extends ThreadedJob {
 
   @Override

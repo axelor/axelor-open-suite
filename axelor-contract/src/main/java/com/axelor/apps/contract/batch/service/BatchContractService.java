@@ -24,7 +24,9 @@ import com.axelor.apps.contract.db.ContractBatch;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class BatchContractService extends AbstractBatchService {
 
   @Override

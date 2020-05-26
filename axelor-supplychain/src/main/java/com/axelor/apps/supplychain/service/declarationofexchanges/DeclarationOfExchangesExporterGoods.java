@@ -54,7 +54,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesExporter {
   protected static final String NAME_GOODS = /*$$(*/ "Declaration of exchanges of goods" /*)*/;
 

@@ -30,10 +30,13 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import java.math.BigDecimal;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 
+@RequestScoped
 public class PurchaseOrderSupplierLineService {
 
   @Inject PurchaseOrderSupplierLineRepository poSupplierLineRepo;

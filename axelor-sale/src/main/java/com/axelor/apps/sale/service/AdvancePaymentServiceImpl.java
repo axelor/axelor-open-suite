@@ -19,9 +19,11 @@ package com.axelor.apps.sale.service;
 
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.repo.AdvancePaymentRepository;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+@RequestScoped
 public class AdvancePaymentServiceImpl implements AdvancePaymentService {
 
   @Inject protected AdvancePaymentRepository advancePaymentRepository;

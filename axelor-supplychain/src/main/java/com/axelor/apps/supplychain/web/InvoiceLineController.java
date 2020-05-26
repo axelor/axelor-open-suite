@@ -31,7 +31,9 @@ import com.axelor.rpc.Context;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class InvoiceLineController {
 
   public List<InvoiceLine> updateQty(

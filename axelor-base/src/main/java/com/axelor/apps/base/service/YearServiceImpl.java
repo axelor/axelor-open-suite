@@ -29,7 +29,10 @@ import javax.inject.Inject;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 
+@RequestScoped
 public class YearServiceImpl implements YearService {
 
   protected YearRepository yearRepository;

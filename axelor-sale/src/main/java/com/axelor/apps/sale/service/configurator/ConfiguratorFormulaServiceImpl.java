@@ -28,7 +28,9 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptBindings;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class ConfiguratorFormulaServiceImpl implements ConfiguratorFormulaService {
 
   @Override

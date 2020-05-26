@@ -39,8 +39,11 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Set;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.mail.MessagingException;
 
+@RequestScoped
 public class CampaignServiceImpl implements CampaignService {
 
   protected TemplateMessageMarketingService templateMessageMarketingService;

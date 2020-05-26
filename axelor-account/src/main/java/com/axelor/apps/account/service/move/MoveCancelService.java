@@ -26,10 +26,13 @@ import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import java.math.BigDecimal;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 
+@RequestScoped
 public class MoveCancelService {
 
   protected MoveRepository moveRepository;

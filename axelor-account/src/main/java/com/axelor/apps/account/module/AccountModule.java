@@ -21,9 +21,11 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.AddressServiceAccountImpl;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.events.StartupEvent;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.interceptor.Interceptor;
 
+@ApplicationScoped
 public class AccountModule {
 
   private AccountModule() {}

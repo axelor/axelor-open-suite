@@ -33,9 +33,11 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+@RequestScoped
 public class OpportunityServiceImpl implements OpportunityService {
 
   @Inject protected OpportunityRepository opportunityRepo;

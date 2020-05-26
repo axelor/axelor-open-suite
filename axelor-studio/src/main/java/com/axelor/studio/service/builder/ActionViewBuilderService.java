@@ -24,10 +24,13 @@ import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.db.ActionBuilderLine;
 import com.axelor.studio.db.ActionBuilderView;
 import com.axelor.studio.service.StudioMetaService;
+import java.util.List;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.util.List;
 import org.apache.commons.lang3.StringEscapeUtils;
 
+@RequestScoped
 public class ActionViewBuilderService {
 
   private static final String INDENT = "\t";

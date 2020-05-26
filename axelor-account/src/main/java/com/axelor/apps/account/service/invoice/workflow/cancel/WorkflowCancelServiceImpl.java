@@ -19,7 +19,9 @@ package com.axelor.apps.account.service.invoice.workflow.cancel;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.exception.AxelorException;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class WorkflowCancelServiceImpl implements WorkflowCancelService {
   @Override
   public void beforeCancel(Invoice invoice) {}

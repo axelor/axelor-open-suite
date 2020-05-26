@@ -18,8 +18,11 @@
 package com.axelor.apps.base.test;
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
+import javax.enterprise.context.RequestScoped;
 import org.junit.Test;
 
+@RequestScoped
 public class TestImportDateTime {
   @Test
   public void testDateTimeImport() {

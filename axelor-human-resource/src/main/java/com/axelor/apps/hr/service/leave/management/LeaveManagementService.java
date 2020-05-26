@@ -27,7 +27,11 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
+@RequestScoped
 public class LeaveManagementService {
 
   @Inject protected AppBaseService appBaseService;

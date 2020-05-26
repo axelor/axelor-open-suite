@@ -32,7 +32,10 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.enterprise.context.RequestScoped;
+import javax.transaction.Transactional;
 
+@RequestScoped
 public class SaleOrderLineProjectController {
 
   /**

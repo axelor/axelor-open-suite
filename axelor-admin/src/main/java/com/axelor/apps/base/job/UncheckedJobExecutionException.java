@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.base.job;
 
+import javax.enterprise.context.RequestScoped;
+
+@RequestScoped
 public class UncheckedJobExecutionException extends RuntimeException {
 
   private static final long serialVersionUID = -3636564667401795286L;

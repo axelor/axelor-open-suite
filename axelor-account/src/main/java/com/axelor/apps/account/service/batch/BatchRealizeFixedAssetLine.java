@@ -34,7 +34,10 @@ import javax.inject.Inject;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 
+@RequestScoped
 public class BatchRealizeFixedAssetLine extends AbstractBatch {
 
   private FixedAssetLineService fixedAssetLineService;

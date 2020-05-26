@@ -17,8 +17,10 @@
  */
 package com.axelor.studio.module;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.interceptor.Interceptor;
 
+@ApplicationScoped
 public class StudioModule {
 
   private StudioModule() {}

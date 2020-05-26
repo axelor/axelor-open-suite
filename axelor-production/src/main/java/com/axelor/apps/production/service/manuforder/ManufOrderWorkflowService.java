@@ -75,8 +75,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import org.apache.commons.collections.CollectionUtils;
 
+@RequestScoped
 public class ManufOrderWorkflowService {
   protected OperationOrderWorkflowService operationOrderWorkflowService;
   protected OperationOrderRepository operationOrderRepo;

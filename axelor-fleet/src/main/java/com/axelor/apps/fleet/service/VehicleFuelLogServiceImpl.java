@@ -19,7 +19,9 @@ package com.axelor.apps.fleet.service;
 
 import com.axelor.apps.fleet.db.VehicleFuelLog;
 import java.math.BigDecimal;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class VehicleFuelLogServiceImpl implements VehicleFuelLogService {
 
   @Override

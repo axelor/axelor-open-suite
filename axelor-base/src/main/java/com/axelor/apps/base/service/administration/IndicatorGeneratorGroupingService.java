@@ -30,7 +30,11 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
+@RequestScoped
 public class IndicatorGeneratorGroupingService {
 
   @Inject private IndicatorGeneratorService indicatorGeneratorService;

@@ -29,9 +29,12 @@ import com.axelor.i18n.I18n;
 import javax.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequestScoped
 public class BatchInvoicing extends BatchStrategy {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

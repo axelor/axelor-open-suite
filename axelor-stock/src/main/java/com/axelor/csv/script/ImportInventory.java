@@ -21,10 +21,13 @@ import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.service.InventoryService;
 import com.axelor.exception.AxelorException;
+import java.util.Map;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.Map;
 
+@RequestScoped
 public class ImportInventory {
 
   @Inject InventoryService inventoryService;

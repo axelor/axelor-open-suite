@@ -33,7 +33,9 @@ import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class PurchaseProductServiceImpl implements PurchaseProductService {
 
   @Override

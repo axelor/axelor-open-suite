@@ -47,7 +47,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
+@RequestScoped
 public class EbicsPartnerServiceImpl implements EbicsPartnerService {
 
   protected BankStatementCreateService bankStatementCreateService;

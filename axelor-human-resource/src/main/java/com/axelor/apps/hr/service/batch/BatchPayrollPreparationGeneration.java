@@ -39,6 +39,9 @@ import com.axelor.i18n.I18n;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import java.lang.invoke.MethodHandles;
+import java.util.List;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -48,6 +51,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequestScoped
 public class BatchPayrollPreparationGeneration extends BatchStrategy {
 
   protected final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

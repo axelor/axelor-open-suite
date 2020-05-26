@@ -28,9 +28,11 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.util.Optional;
 
+@RequestScoped
 public class ConsumptionLineServiceImpl implements ConsumptionLineService {
 
   protected AppBaseService appBaseService;

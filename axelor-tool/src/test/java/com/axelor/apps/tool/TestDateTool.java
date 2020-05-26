@@ -19,9 +19,11 @@ package com.axelor.apps.tool;
 
 import com.axelor.apps.tool.date.DateTool;
 import java.time.LocalDate;
+import javax.enterprise.context.RequestScoped;
 import org.junit.Assert;
 import org.junit.Test;
 
+@RequestScoped
 public class TestDateTool {
 
   @Test

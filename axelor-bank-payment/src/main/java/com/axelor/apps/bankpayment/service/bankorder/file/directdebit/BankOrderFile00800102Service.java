@@ -70,7 +70,6 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
   protected ObjectFactory factory;
   protected String sepaType;
 
-  @Inject
   public BankOrderFile00800102Service(BankOrder bankOrder, String sepaType) {
     super(bankOrder);
 

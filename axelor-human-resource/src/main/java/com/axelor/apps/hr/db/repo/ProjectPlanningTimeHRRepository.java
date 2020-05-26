@@ -28,11 +28,13 @@ import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
 import javax.annotation.Priority;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
 @Alternative
 @Priority(HumanResourceModule.PRIORITY)
+@RequestScoped
 public class ProjectPlanningTimeHRRepository extends ProjectPlanningTimeRepository {
 
   @Inject private ProjectPlanningTimeService planningTimeService;

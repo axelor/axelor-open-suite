@@ -28,9 +28,11 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+@RequestScoped
 public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderService {
 
   @Inject protected SaleOrderCreateService saleOrderCreateService;

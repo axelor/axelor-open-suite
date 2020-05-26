@@ -21,10 +21,16 @@ import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.service.config.SaleConfigServiceImpl;
+import com.axelor.apps.supplychain.module.SupplychainModule;
+import java.util.List;
+import javax.annotation.Priority;
+import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.List;
 
+@Alternative
+@Priority(SupplychainModule.PRIORITY)
 public class SupplychainSaleConfigServiceImpl extends SaleConfigServiceImpl
     implements SupplychainSaleConfigService {
 

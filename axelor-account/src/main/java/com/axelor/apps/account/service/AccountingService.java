@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.account.service;
 
+import javax.enterprise.context.RequestScoped;
+
+@RequestScoped
 public class AccountingService {
 
   private static boolean DEFAULT_UPDATE_CUSTOMER_ACCOUNT = true;

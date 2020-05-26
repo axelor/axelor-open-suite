@@ -27,7 +27,9 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class FrequencyServiceImpl implements FrequencyService {
 
   @Override

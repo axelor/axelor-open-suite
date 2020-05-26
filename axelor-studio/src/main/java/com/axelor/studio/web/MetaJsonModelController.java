@@ -32,9 +32,12 @@ import com.axelor.studio.db.repo.MenuBuilderRepository;
 import com.axelor.studio.db.repo.MetaJsonModelRepo;
 import com.axelor.studio.db.repo.WkfRepository;
 import com.axelor.studio.service.StudioMetaService;
+import java.util.stream.Collectors;
+import javax.enterprise.context.RequestScoped;
 import javax.transaction.Transactional;
 import java.util.stream.Collectors;
 
+@RequestScoped
 public class MetaJsonModelController {
 
   public void openWorkflow(ActionRequest request, ActionResponse response) {

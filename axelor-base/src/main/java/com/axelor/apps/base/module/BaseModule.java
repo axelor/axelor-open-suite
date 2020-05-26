@@ -20,9 +20,11 @@ package com.axelor.apps.base.module;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.events.StartupEvent;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.interceptor.Interceptor;
 
+@ApplicationScoped
 public class BaseModule {
   private BaseModule() {}
 

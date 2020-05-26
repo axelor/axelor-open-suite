@@ -75,6 +75,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.xml.bind.JAXBException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.ListUtils;
@@ -89,6 +92,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author axelor
  */
+@RequestScoped
 public class WkfService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

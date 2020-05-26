@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.base.syncContact;
 
+import javax.enterprise.context.RequestScoped;
+
+@RequestScoped
 public class SyncContactResponse {
 
   private String clientid;

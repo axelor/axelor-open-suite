@@ -26,7 +26,9 @@ import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class InvoiceGeneratorContract extends InvoiceGenerator {
 
   protected Contract contract;

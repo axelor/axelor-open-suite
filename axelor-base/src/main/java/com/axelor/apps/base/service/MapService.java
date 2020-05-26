@@ -36,6 +36,8 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.ws.rs.core.UriBuilder;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -49,6 +51,7 @@ import wslite.rest.ContentType;
 import wslite.rest.RESTClient;
 import wslite.rest.Response;
 
+@RequestScoped
 public class MapService {
 
   @Inject protected AppBaseService appBaseService;

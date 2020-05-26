@@ -32,9 +32,11 @@ import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.repo.MetaActionRepository;
 import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.axelor.meta.schema.actions.ActionView;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+@RequestScoped
 public class CalendarConfigurationService {
 
   private static final String NAME = "ical-calendar-";

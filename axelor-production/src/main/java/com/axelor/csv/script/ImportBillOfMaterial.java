@@ -22,10 +22,13 @@ import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.exception.AxelorException;
+import java.util.Map;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.Map;
 
+@RequestScoped
 public class ImportBillOfMaterial {
 
   @Inject BillOfMaterialService billOfMaterialService;

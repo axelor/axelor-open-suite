@@ -50,9 +50,11 @@ import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
+import javax.enterprise.context.RequestScoped;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequestScoped
 public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
 
   private static final Logger logger =

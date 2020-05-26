@@ -21,7 +21,9 @@ import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class AppCrmController {
 
   public void generateCrmConfigurations(ActionRequest request, ActionResponse response) {

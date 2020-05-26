@@ -25,11 +25,15 @@ import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.service.InventoryLineService;
 import com.axelor.apps.stock.service.TrackingNumberService;
 import com.axelor.exception.AxelorException;
+import java.math.BigDecimal;
+import java.util.Map;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.Map;
 
+@RequestScoped
 public class ImportInventoryLine {
 
   @Inject private InventoryLineRepository inventoryLineRepo;

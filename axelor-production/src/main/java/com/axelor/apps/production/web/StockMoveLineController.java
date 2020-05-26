@@ -34,7 +34,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import java.util.Optional;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class StockMoveLineController {
 
   public void compute(ActionRequest request, ActionResponse response) throws AxelorException {

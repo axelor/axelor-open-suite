@@ -28,9 +28,11 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.math.BigDecimal;
 import java.util.Optional;
+import javax.enterprise.context.RequestScoped;
 import org.apache.commons.lang3.tuple.Pair;
 import wslite.json.JSONException;
 
+@RequestScoped
 public class MapRestServiceImpl implements MapRestService {
 
   @Override

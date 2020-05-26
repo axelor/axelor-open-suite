@@ -23,8 +23,10 @@ import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.google.common.base.Strings;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
+@RequestScoped
 public class FileFieldServiceImpl implements FileFieldService {
 
   @Inject private MetaModelRepository metaModelRepo;

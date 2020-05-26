@@ -29,9 +29,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
+import javax.enterprise.context.RequestScoped;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 
+@RequestScoped
 public class ExportService {
 
   private ExportService() {

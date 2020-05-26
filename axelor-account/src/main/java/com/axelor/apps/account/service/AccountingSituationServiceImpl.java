@@ -43,7 +43,11 @@ import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
+@RequestScoped
 public class AccountingSituationServiceImpl implements AccountingSituationService {
 
   protected AccountConfigService accountConfigService;

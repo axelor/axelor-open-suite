@@ -103,6 +103,18 @@ public class SyncContactService {
   private static final String SYNC_CONTACT_NO_IMPORT = /*$$(*/ "No contact to import." /*)*/;
   private static final String SYNC_CONTACT_IMPORT_SUCCESSFUL = /*$$(*/ "Import successful." /*)*/;
 
+  public SyncContactService() {
+    this.partnerRepo = Beans.get(PartnerRepository.class);
+    this.companyRepo = Beans.get(CompanyRepository.class);
+    this.cityRepo = Beans.get(CityRepository.class);
+    this.countryRepo = Beans.get(CountryRepository.class);
+    this.addressRepo = Beans.get(AddressRepository.class);
+    this.syncContactRepo = Beans.get(SyncContactRepository.class);
+    this.emailAddressRepo = Beans.get(EmailAddressRepository.class);
+    this.userService = Beans.get(UserService.class);
+    this.functionRepo = Beans.get(FunctionRepository.class);
+  }
+
   @Inject
   public SyncContactService(
       PartnerRepository partnerRepo,

@@ -75,7 +75,6 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
    */
   protected static final String OPERATION_CODE_VF = "VF";
 
-  @Inject
   public BankOrderFileAFB320XCTService(BankOrder bankOrder) throws AxelorException {
 
     super(bankOrder);

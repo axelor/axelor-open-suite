@@ -19,7 +19,9 @@ package com.axelor.apps.base.syncContact;
 
 import com.google.api.services.people.v1.model.Person;
 import java.util.List;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class PeopleRequest {
 
   private List<Person> people;

@@ -27,9 +27,12 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
+import java.util.List;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.util.List;
 
+@RequestScoped
 public class BatchContract extends BatchStrategy {
 
   protected ContractRepository repository;

@@ -21,7 +21,9 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.EventAttendee;
 import com.axelor.apps.crm.db.Lead;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class EventAttendeeService {
 
   public EventAttendee createEventAttendee(Event event, Lead lead, Partner contactPartner) {

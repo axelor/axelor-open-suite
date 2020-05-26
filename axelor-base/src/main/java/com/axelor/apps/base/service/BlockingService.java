@@ -24,7 +24,9 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.inject.Beans;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class BlockingService {
 
   /**

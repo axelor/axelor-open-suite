@@ -38,8 +38,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import org.apache.commons.collections.CollectionUtils;
 
+@RequestScoped
 public class ProjectGeneratorFactoryPhase implements ProjectGeneratorFactory {
 
   private ProjectBusinessService projectBusinessService;

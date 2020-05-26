@@ -28,7 +28,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.util.LinkedHashMap;
 import java.util.Set;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class UserController {
 
   @SuppressWarnings("unchecked")

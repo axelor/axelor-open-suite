@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.base.service.readers;
 
+import javax.enterprise.context.RequestScoped;
+
+@RequestScoped
 public class DataReaderFactory {
 
   public DataReaderService getDataReader(String type) {

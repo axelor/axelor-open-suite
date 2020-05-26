@@ -23,7 +23,9 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.io.IOException;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class DataBackupController {
 
   public void createBackup(ActionRequest req, ActionResponse res) throws IOException {

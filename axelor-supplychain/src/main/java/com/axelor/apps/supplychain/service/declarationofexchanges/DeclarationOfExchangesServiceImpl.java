@@ -34,8 +34,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.ResourceBundle;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import org.apache.commons.lang3.tuple.Pair;
 
+@RequestScoped
 public class DeclarationOfExchangesServiceImpl implements DeclarationOfExchangesService {
 
   protected Map<String, Map<String, Class<? extends DeclarationOfExchangesExporter>>>

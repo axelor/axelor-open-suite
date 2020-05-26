@@ -48,6 +48,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import javax.activation.DataSource;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.mail.AuthenticationFailedException;
 import javax.mail.FetchProfile;
 import javax.mail.Flags;
@@ -63,6 +65,7 @@ import javax.mail.search.FlagTerm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequestScoped
 public class MailAccountServiceImpl implements MailAccountService {
 
   private final Logger log = LoggerFactory.getLogger(MailAccountServiceImpl.class);

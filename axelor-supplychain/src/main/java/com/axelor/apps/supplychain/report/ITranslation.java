@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.supplychain.report;
 
+import javax.enterprise.context.RequestScoped;
+
+@RequestScoped
 public class ITranslation {
 
   /** MrpWeeks.rptdesign */

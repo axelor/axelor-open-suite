@@ -35,10 +35,13 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.ActionBuilder;
 import com.axelor.studio.service.StudioMetaService;
+import java.io.IOException;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.io.IOException;
 import javax.mail.MessagingException;
 
+@RequestScoped
 public class ActionEmailBuilderService {
 
   @Inject private MetaModelRepository metaModelRepo;

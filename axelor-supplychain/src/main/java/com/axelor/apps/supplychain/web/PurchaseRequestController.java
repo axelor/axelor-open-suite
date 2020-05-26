@@ -22,7 +22,9 @@ import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class PurchaseRequestController {
 
   public void getStockLocation(ActionRequest request, ActionResponse response) {

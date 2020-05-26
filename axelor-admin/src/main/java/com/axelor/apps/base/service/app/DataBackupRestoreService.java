@@ -40,10 +40,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import javax.enterprise.context.RequestScoped;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequestScoped
 public class DataBackupRestoreService {
 
   /* Restore the Data using provided zip File and prepare Log File and Return it*/

@@ -43,7 +43,11 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
+@RequestScoped
 public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
 
   private ProjectBusinessService projectBusinessService;

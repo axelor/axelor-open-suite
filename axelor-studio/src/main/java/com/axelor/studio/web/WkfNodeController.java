@@ -25,8 +25,10 @@ import com.axelor.studio.db.WkfNode;
 import com.axelor.studio.db.repo.MenuBuilderRepo;
 import com.axelor.studio.db.repo.MenuBuilderRepository;
 import com.axelor.studio.db.repo.WkfNodeRepository;
+import javax.enterprise.context.RequestScoped;
 import javax.transaction.Transactional;
 
+@RequestScoped
 public class WkfNodeController {
 
   @Transactional

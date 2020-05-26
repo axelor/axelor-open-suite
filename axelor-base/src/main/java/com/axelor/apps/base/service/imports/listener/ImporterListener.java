@@ -26,9 +26,11 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import java.lang.invoke.MethodHandles;
+import javax.enterprise.context.RequestScoped;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequestScoped
 public class ImporterListener implements Listener {
 
   protected Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

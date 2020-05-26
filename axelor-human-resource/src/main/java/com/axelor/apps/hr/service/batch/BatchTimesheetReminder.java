@@ -43,8 +43,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.mail.MessagingException;
 
+@RequestScoped
 public class BatchTimesheetReminder extends BatchStrategy {
 
   protected TimesheetRepository timesheetRepo;

@@ -42,7 +42,11 @@ import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
+@RequestScoped
 public class LeadServiceImpl implements LeadService {
 
   @Inject protected SequenceService sequenceService;

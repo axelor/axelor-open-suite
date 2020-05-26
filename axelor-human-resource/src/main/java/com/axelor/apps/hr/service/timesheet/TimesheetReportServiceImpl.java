@@ -70,8 +70,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import org.apache.commons.collections4.CollectionUtils;
 
+@RequestScoped
 public class TimesheetReportServiceImpl implements TimesheetReportService {
 
   protected TimesheetReminderRepository timesheetReminderRepo;

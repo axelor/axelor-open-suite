@@ -59,7 +59,6 @@ public abstract class BankOrderFileAFB160Service extends BankOrderFileService {
   // Virements de Trésorerie (VSOT)
   protected final String OPERATION_TREASURY_TRANSFER = "76";
 
-  @Inject
   public BankOrderFileAFB160Service(BankOrder bankOrder) throws AxelorException {
 
     super(bankOrder);

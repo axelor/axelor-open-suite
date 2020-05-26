@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.purchase.module;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.interceptor.Interceptor;
 
+@ApplicationScoped
 public class PurchaseModule {
 
   private PurchaseModule() {}

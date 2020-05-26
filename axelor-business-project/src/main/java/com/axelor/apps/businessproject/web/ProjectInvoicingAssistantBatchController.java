@@ -33,7 +33,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.util.HashMap;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class ProjectInvoicingAssistantBatchController {
 
   public void actionUpdateTask(ActionRequest request, ActionResponse response) {

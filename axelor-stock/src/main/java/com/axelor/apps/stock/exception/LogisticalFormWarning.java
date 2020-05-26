@@ -20,7 +20,9 @@ package com.axelor.apps.stock.exception;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class LogisticalFormWarning extends AxelorException {
 
   private static final long serialVersionUID = 7036277936135855411L;

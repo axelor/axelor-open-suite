@@ -94,6 +94,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.mail.MessagingException;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.LockModeType;
@@ -101,6 +103,7 @@ import javax.persistence.PersistenceException;
 import org.apache.commons.collections4.ListUtils;
 
 /** @author axelor */
+@RequestScoped
 public class TimesheetServiceImpl extends JpaSupport implements TimesheetService {
 
   protected PriceListService priceListService;

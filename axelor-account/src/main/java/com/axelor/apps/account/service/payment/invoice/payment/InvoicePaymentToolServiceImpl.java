@@ -42,9 +42,13 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequestScoped
 public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService {
 
   protected InvoiceRepository invoiceRepo;

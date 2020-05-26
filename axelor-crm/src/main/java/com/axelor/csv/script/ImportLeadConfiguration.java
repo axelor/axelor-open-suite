@@ -24,9 +24,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequestScoped
 public class ImportLeadConfiguration {
 
   public static final String IMPORT_LEAD_CONFIG = "import-lead-config.xml";

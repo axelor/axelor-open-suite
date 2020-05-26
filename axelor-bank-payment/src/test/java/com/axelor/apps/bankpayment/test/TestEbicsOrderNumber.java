@@ -19,9 +19,11 @@ package com.axelor.apps.bankpayment.test;
 
 import com.axelor.apps.bankpayment.ebics.service.EbicsUserService;
 import com.axelor.exception.AxelorException;
+import javax.enterprise.context.RequestScoped;
 import org.junit.Assert;
 import org.junit.Test;
 
+@RequestScoped
 public class TestEbicsOrderNumber {
 
   @Test

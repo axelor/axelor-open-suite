@@ -39,7 +39,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 
+@RequestScoped
 public class ActionServiceImpl implements ActionService {
 
   @Inject protected ActionExecutor executor;

@@ -38,8 +38,12 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import org.apache.commons.io.FileUtils;
 
+@RequestScoped
 public class AccountChartService {
 
   @Inject private FactoryImporter factoryImporter;

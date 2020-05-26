@@ -35,7 +35,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
+@RequestScoped
 public class PurchaseRequestServiceImpl implements PurchaseRequestService {
 
   @Inject private PurchaseRequestRepository purchaseRequestRepo;

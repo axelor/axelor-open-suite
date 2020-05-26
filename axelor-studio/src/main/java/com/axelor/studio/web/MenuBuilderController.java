@@ -28,7 +28,9 @@ import com.axelor.studio.service.builder.MenuBuilderService;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class MenuBuilderController {
 
   @SuppressWarnings("unchecked")

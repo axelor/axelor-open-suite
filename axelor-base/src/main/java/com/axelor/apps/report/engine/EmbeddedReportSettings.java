@@ -23,8 +23,10 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.inject.Beans;
 import com.axelor.report.ReportGenerator;
 import java.io.IOException;
+import javax.enterprise.context.RequestScoped;
 import org.eclipse.birt.core.exception.BirtException;
 
+@RequestScoped
 public class EmbeddedReportSettings extends ReportSettings {
 
   public EmbeddedReportSettings(String rptdesign, String outputName) {

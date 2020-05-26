@@ -21,9 +21,11 @@ import com.axelor.apps.base.db.repo.ICalendarRepository;
 import com.axelor.apps.base.ical.ICalendarEventFactory;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.events.StartupEvent;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.interceptor.Interceptor;
 
+@ApplicationScoped
 public class CrmModule {
   private CrmModule() {}
 

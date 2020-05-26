@@ -20,9 +20,12 @@ package com.axelor.csv.script;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.exception.AxelorException;
+import java.util.Map;
+import javax.enterprise.context.RequestScoped;
 import javax.transaction.Transactional;
 import java.util.Map;
 
+@RequestScoped
 public class ImportTrackingNumberConfig {
 
   @Transactional(rollbackOn = {Exception.class})

@@ -28,7 +28,9 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.Filter;
 import com.axelor.studio.service.filter.FilterSqlService;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class FilterController {
 
   public void updateTargetField(ActionRequest request, ActionResponse response) {

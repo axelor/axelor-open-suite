@@ -19,7 +19,9 @@ package com.axelor.apps.tool.date;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class DurationTool {
 
   private DurationTool() {

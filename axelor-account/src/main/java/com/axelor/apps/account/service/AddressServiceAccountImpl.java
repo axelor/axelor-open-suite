@@ -19,9 +19,16 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Umr;
+import com.axelor.apps.account.module.AccountModule;
 import com.axelor.apps.base.service.AddressServiceImpl;
 import com.axelor.db.JPA;
+import javax.annotation.Priority;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(AccountModule.PRIORITY)
+@RequestScoped
 public class AddressServiceAccountImpl extends AddressServiceImpl {
   static {
     registerCheckUsedFunc(AddressServiceAccountImpl::checkAddressUsedAccount);

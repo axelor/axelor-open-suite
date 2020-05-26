@@ -22,9 +22,11 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import javax.enterprise.context.RequestScoped;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequestScoped
 public class SaleOrderMarginServiceImpl implements SaleOrderMarginService {
 
   protected final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

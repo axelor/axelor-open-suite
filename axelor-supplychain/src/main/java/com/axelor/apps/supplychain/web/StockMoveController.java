@@ -30,7 +30,10 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import java.util.Optional;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class StockMoveController {
 
   public void verifyProductStock(ActionRequest request, ActionResponse response) {

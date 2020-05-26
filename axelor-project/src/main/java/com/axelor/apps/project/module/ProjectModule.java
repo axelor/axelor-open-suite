@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.project.module;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.interceptor.Interceptor;
 
+@ApplicationScoped
 public class ProjectModule {
 
   private ProjectModule() {}

@@ -51,6 +51,8 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import org.apache.commons.io.IOUtils;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -59,6 +61,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequestScoped
 public class ObjectDataExportServiceImpl implements ObjectDataExportService {
 
   private final Logger logger = LoggerFactory.getLogger(ObjectDataExportServiceImpl.class);

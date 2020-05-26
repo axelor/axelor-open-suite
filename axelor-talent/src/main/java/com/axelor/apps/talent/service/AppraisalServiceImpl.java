@@ -38,8 +38,11 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.mail.MessagingException;
 
+@RequestScoped
 public class AppraisalServiceImpl implements AppraisalService {
 
   @Inject private AppraisalRepository appraisalRepo;

@@ -26,7 +26,9 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class BankReconciliationLineService {
 
   public BankReconciliationLine createBankReconciliationLine(

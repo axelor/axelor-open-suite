@@ -58,7 +58,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
+@RequestScoped
 public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceService {
 
   private InvoiceRepository invoiceRepository;

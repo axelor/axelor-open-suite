@@ -36,7 +36,11 @@ import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
+@RequestScoped
 public class WorkflowVentilationServiceImpl implements WorkflowVentilationService {
 
   protected AccountConfigService accountConfigService;

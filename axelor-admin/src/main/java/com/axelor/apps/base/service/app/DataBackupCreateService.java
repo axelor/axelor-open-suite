@@ -71,9 +71,12 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.naming.NamingException;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequestScoped
 public class DataBackupCreateService {
 
   private static final char SEPARATOR = ',';

@@ -54,7 +54,6 @@ public class DeclarationOfExchangesExporterServices extends DeclarationOfExchang
   protected static final String FISC_VAL = /*$$(*/ "Fiscal value" /*$$(*/;
   protected static final String TAKER = /*$$(*/ "Taker" /*$$(*/;
 
-  @Inject
   public DeclarationOfExchangesExporterServices(
       DeclarationOfExchanges declarationOfExchanges, ResourceBundle bundle) {
     super(

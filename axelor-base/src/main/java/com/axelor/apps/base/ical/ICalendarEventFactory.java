@@ -23,7 +23,9 @@ import com.axelor.apps.base.db.repo.ICalendarRepository;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class ICalendarEventFactory {
 
   private static final Map<String, Supplier<ICalendarEvent>> map = new HashMap<>();

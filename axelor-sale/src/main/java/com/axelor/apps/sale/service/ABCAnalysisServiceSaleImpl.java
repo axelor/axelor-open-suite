@@ -41,7 +41,10 @@ import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 
+@RequestScoped
 public class ABCAnalysisServiceSaleImpl extends ABCAnalysisServiceImpl {
   protected SaleOrderLineRepository saleOrderLineRepository;
 

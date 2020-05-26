@@ -56,8 +56,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 
+@RequestScoped
 public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorService {
 
   private ConfiguratorCreatorRepository configuratorCreatorRepo;

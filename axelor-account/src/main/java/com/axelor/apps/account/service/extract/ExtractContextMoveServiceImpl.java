@@ -29,7 +29,9 @@ import com.axelor.rpc.Context;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class ExtractContextMoveServiceImpl implements ExtractContextMoveService {
 
   @Override

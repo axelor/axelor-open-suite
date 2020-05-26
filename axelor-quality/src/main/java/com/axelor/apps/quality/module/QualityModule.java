@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.quality.module;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.interceptor.Interceptor;
 
+@ApplicationScoped
 public class QualityModule {
   private QualityModule() {}
 

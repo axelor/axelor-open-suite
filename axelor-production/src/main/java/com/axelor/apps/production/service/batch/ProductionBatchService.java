@@ -27,7 +27,9 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class ProductionBatchService extends AbstractBatchService {
 
   @Override

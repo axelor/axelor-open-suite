@@ -20,10 +20,17 @@ package com.axelor.apps.sale.service.config;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.apps.sale.module.SaleModule;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import javax.annotation.Priority;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(SaleModule.PRIORITY)
+@RequestScoped
 public class SaleConfigServiceImpl implements SaleConfigService {
 
   public SaleConfig getSaleConfig(Company company) throws AxelorException {

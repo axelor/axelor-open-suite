@@ -31,11 +31,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import javax.enterprise.context.RequestScoped;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 
+@RequestScoped
 public class BatchJob extends ThreadedJob {
 
   @Override

@@ -23,8 +23,10 @@ import com.axelor.db.JPA;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
 import javax.persistence.Query;
 
+@RequestScoped
 public class JournalService {
 
   /**

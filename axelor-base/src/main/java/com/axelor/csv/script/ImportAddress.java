@@ -19,9 +19,12 @@ package com.axelor.csv.script;
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.service.AddressService;
+import java.util.Map;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.util.Map;
 
+@RequestScoped
 public class ImportAddress {
 
   @Inject protected AddressService addressService;

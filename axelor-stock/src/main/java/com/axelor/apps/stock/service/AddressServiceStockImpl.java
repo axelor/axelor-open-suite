@@ -20,8 +20,15 @@ package com.axelor.apps.stock.service;
 import com.axelor.apps.base.service.AddressServiceImpl;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.module.StockModule;
 import com.axelor.db.JPA;
+import javax.annotation.Priority;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(StockModule.PRIORITY)
+@RequestScoped
 public class AddressServiceStockImpl extends AddressServiceImpl {
   static {
     registerCheckUsedFunc(AddressServiceStockImpl::checkAddressUsedStock);

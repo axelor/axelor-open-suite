@@ -50,8 +50,12 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import org.apache.commons.collections.CollectionUtils;
 
+@RequestScoped
 public class OperationOrderWorkflowService {
   protected OperationOrderStockMoveService operationOrderStockMoveService;
   protected OperationOrderRepository operationOrderRepo;

@@ -23,10 +23,13 @@ import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
+import java.io.IOException;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.io.IOException;
 
+@RequestScoped
 public class TemplateMessageAccountServiceImpl implements TemplateMessageAccountService {
 
   protected TemplateMessageService templateMessageService;

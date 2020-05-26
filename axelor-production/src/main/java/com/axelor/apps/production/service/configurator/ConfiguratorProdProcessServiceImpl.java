@@ -26,9 +26,12 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.exception.AxelorException;
 import com.axelor.rpc.JsonContext;
+import java.util.List;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.util.List;
 
+@RequestScoped
 public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProcessService {
 
   protected ConfiguratorProdProcessLineService confProdProcessLineService;

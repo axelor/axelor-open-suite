@@ -20,9 +20,11 @@ package com.axelor.apps.account.service.invoice.factory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.workflow.validate.ValidateState;
 import com.axelor.inject.Beans;
+import javax.enterprise.context.RequestScoped;
 
 // import com.axelor.apps.base.service.alarm.AlarmEngineService;
 
+@RequestScoped
 public class ValidateFactory {
 
   //	@Inject

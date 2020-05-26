@@ -33,7 +33,9 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class QuerieService {
 
   public List<Long> getQuerieResult(Set<Querie> querieSet) throws AxelorException {

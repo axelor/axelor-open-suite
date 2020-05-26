@@ -59,11 +59,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.utils.URIBuilder;
 import wslite.json.JSONException;
 import wslite.json.JSONObject;
 
+@RequestScoped
 public class KilometricService {
 
   private AppBaseService appBaseService;

@@ -30,11 +30,15 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@RequestScoped
 public class TrackingNumberService {
 
   @Inject private SequenceService sequenceService;

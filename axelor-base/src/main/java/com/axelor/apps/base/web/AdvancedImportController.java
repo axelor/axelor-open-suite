@@ -30,7 +30,9 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class AdvancedImportController {
 
   public void apply(ActionRequest request, ActionResponse response) throws AxelorException {

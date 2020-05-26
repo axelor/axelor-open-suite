@@ -19,7 +19,9 @@ package com.axelor.apps.base.service.advanced.imports;
 
 import com.axelor.common.ObjectUtils;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class SearchCallServiceImpl implements SearchCallService {
 
   @Override

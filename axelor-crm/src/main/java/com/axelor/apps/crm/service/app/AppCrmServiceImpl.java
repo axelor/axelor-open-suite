@@ -21,10 +21,13 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.crm.db.CrmConfig;
 import com.axelor.apps.crm.db.repo.CrmConfigRepository;
+import java.util.List;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.List;
 
+@RequestScoped
 public class AppCrmServiceImpl implements AppCrmService {
 
   @Inject private CompanyRepository companyRepo;

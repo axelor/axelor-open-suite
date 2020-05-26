@@ -23,7 +23,9 @@ import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class PurchaseConfigService {
 
   public PurchaseConfig getPurchaseConfig(Company company) throws AxelorException {

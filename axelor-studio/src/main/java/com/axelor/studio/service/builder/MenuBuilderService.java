@@ -42,9 +42,13 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.xml.bind.JAXBException;
 import org.apache.commons.lang3.StringUtils;
 
+@RequestScoped
 public class MenuBuilderService {
 
   @Inject private ActionBuilderService actionBuilderService;

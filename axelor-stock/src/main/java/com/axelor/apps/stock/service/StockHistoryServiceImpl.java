@@ -34,7 +34,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 
+@RequestScoped
 public class StockHistoryServiceImpl implements StockHistoryService {
 
   protected StockMoveLineRepository stockMoveLineRepository;

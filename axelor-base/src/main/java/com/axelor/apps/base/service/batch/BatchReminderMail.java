@@ -19,7 +19,9 @@ package com.axelor.apps.base.service.batch;
 
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.i18n.I18n;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class BatchReminderMail extends AbstractBatch {
 
   @Override

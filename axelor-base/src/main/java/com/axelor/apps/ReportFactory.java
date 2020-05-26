@@ -20,7 +20,9 @@ package com.axelor.apps;
 import com.axelor.apps.report.engine.EmbeddedReportSettings;
 import com.axelor.apps.report.engine.ExternalReportSettings;
 import com.axelor.apps.report.engine.ReportSettings;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class ReportFactory {
 
   public static ReportSettings createReport(String rptdesign, String outputName) {

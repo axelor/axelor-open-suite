@@ -24,7 +24,9 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class WorkflowValidationServiceImpl implements WorkflowValidationService {
 
   @Override

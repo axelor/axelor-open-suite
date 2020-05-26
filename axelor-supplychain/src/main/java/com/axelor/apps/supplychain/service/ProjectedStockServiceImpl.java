@@ -37,7 +37,11 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
+@RequestScoped
 public class ProjectedStockServiceImpl implements ProjectedStockService {
 
   @Inject StockLocationRepository stockLocationRepository;

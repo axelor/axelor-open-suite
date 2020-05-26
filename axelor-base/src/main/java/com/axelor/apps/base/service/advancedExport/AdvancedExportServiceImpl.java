@@ -56,11 +56,14 @@ import java.util.Optional;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.persistence.Query;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequestScoped
 public class AdvancedExportServiceImpl implements AdvancedExportService {
 
   private static final Logger log = LoggerFactory.getLogger(AdvancedExportServiceImpl.class);

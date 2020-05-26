@@ -35,7 +35,10 @@ import com.axelor.inject.Beans;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
+import javax.enterprise.context.RequestScoped;
+import javax.transaction.Transactional;
 
+@RequestScoped
 public class DepositSlipServiceImpl implements DepositSlipService {
 
   @Override

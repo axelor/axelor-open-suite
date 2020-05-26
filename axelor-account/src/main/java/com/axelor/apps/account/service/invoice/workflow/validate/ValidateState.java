@@ -35,8 +35,10 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
+@RequestScoped
 public class ValidateState extends WorkflowInvoice {
 
   protected UserService userService;

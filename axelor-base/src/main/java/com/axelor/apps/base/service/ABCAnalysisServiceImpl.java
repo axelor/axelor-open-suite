@@ -48,7 +48,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
+@RequestScoped
 public class ABCAnalysisServiceImpl implements ABCAnalysisService {
   protected ABCAnalysisLineRepository abcAnalysisLineRepository;
   protected UnitConversionService unitConversionService;

@@ -22,7 +22,9 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.VentilateAdvancePaymentState;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.VentilateState;
 import com.axelor.inject.Beans;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class VentilateFactory {
 
   public VentilateState getVentilator(Invoice invoice) {

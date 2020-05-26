@@ -20,7 +20,9 @@ package com.axelor.apps.tool;
 import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.loader.XMLViews;
 import com.axelor.meta.schema.actions.Action;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class MetaActionTool {
 
   /**

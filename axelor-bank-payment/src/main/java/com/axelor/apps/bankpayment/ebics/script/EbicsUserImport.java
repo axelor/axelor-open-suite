@@ -29,7 +29,10 @@ import java.io.IOException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 
+@RequestScoped
 public class EbicsUserImport {
 
   @Inject private EbicsCertificateService certificateService;

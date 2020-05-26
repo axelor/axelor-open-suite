@@ -20,8 +20,10 @@ package com.axelor.apps.account.service.umr;
 import com.axelor.apps.base.db.Partner;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import javax.enterprise.context.RequestScoped;
 import net.fortuna.ical4j.model.Date;
 
+@RequestScoped
 public class UmrNumberServiceImpl implements UmrNumberService {
 
   @Override

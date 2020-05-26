@@ -21,7 +21,9 @@ import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.repo.CountryRepository;
 import com.axelor.inject.Beans;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class BankServiceImpl implements BankService {
   @Override
   public void splitBic(Bank bank) {

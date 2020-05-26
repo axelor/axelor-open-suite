@@ -39,10 +39,13 @@ import javax.inject.Inject;
 import java.time.LocalDate;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequestScoped
 public class BatchCloseAnnualAccounts extends BatchStrategy {
   protected final Logger log = LoggerFactory.getLogger(getClass());
   protected PartnerRepository partnerRepository;

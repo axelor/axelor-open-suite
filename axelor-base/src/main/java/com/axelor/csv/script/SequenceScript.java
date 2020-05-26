@@ -21,7 +21,9 @@ import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.inject.Beans;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class SequenceScript {
   public Object computeFullname(Object bean, Map<String, Object> values) {
     assert bean instanceof Sequence;

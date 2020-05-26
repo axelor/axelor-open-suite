@@ -40,7 +40,11 @@ import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
+@RequestScoped
 public class StockCorrectionServiceImpl implements StockCorrectionService {
 
   @Inject private StockConfigService stockConfigService;

@@ -36,7 +36,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.filter.Filter;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class ClientViewController {
 
   public void completeClientViewIndicators(ActionRequest request, ActionResponse response) {

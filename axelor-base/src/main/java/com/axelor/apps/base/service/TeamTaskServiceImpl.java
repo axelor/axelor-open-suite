@@ -28,7 +28,11 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
+@RequestScoped
 public class TeamTaskServiceImpl implements TeamTaskService {
 
   protected TeamTaskRepository teamTaskRepo;

@@ -20,10 +20,13 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.project.db.Project;
+import java.util.List;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.List;
 
+@RequestScoped
 public class ExpenseLineProjectServiceImpl implements ExpenseLineProjectService {
 
   @Inject private ExpenseLineRepository expenseLineRepo;

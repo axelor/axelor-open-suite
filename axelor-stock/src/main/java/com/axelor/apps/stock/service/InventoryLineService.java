@@ -28,7 +28,9 @@ import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class InventoryLineService {
 
   public InventoryLine createInventoryLine(

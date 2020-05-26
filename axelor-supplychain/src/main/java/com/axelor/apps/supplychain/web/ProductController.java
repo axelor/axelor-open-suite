@@ -31,7 +31,9 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class ProductController {
 
   public void setIndicatorsOfProduct(ActionRequest request, ActionResponse response) {

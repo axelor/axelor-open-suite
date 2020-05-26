@@ -37,7 +37,10 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 
+@RequestScoped
 public class BatchEbicsCertificate extends AbstractBatch {
 
   protected BankPaymentBatch bankPaymentBatch;

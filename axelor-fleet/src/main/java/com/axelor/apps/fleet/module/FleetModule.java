@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.fleet.module;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.interceptor.Interceptor;
 
+@ApplicationScoped
 public class FleetModule {
   private FleetModule() {}
 

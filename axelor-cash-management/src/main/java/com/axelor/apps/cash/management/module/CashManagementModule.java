@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.cash.management.module;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.interceptor.Interceptor;
 
+@ApplicationScoped
 public class CashManagementModule {
 
   private CashManagementModule() {}

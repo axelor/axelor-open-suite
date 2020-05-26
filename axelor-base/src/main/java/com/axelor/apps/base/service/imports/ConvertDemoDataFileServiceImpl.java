@@ -36,12 +36,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+@RequestScoped
 public class ConvertDemoDataFileServiceImpl implements ConvertDemoDataFileService {
 
   @Inject private ExcelToCSV excelToCSV;

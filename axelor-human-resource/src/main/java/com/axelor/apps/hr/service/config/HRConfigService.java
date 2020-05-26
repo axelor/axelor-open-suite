@@ -27,7 +27,9 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class HRConfigService {
 
   public HRConfig getHRConfig(Company company) throws AxelorException {

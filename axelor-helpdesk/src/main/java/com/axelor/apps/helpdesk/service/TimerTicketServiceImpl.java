@@ -33,7 +33,11 @@ import javax.transaction.Transactional;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
+@RequestScoped
 public class TimerTicketServiceImpl extends AbstractTimerService implements TimerTicketService {
 
   protected TicketRepository repository;

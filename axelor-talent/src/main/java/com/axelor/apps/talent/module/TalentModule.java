@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.talent.module;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.interceptor.Interceptor;
 
+@ApplicationScoped
 public class TalentModule {
   private TalentModule() {}
 

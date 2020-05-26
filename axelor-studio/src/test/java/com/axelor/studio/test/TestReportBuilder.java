@@ -22,9 +22,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import javax.enterprise.context.RequestScoped;
 import org.junit.Test;
 import org.w3c.tidy.Tidy;
 
+@RequestScoped
 public class TestReportBuilder {
 
   @Test

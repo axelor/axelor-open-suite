@@ -77,7 +77,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
+import javax.transaction.Transactional;
 
+@RequestScoped
 public class HumanResourceMobileController {
 
   /**

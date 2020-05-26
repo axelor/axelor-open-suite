@@ -33,7 +33,10 @@ import com.axelor.inject.Beans;
 import javax.inject.Inject;
 import java.math.RoundingMode;
 import java.util.List;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 
+@RequestScoped
 public class LunchVoucherMgtLineServiceImpl implements LunchVoucherMgtLineService {
 
   @Inject protected EmployeeService employeeService;

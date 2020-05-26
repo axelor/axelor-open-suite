@@ -43,7 +43,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 
+@RequestScoped
 public class ClientViewServiceImpl implements ClientViewService {
 
   protected SaleOrderRepository saleOrderRepo;

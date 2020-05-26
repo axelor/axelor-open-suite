@@ -23,9 +23,12 @@ import com.axelor.apps.stock.db.PartnerStockSettings;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.PartnerStockSettingsRepository;
 import com.axelor.inject.Beans;
+import java.util.List;
+import javax.enterprise.context.RequestScoped;
 import javax.transaction.Transactional;
 import java.util.List;
 
+@RequestScoped
 public class StockLocationSaveService {
 
   /**

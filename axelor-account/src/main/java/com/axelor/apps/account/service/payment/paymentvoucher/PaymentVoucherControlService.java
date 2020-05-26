@@ -30,7 +30,10 @@ import com.axelor.i18n.I18n;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 
+@RequestScoped
 public class PaymentVoucherControlService {
 
   protected PaymentVoucherSequenceService paymentVoucherSequenceService;

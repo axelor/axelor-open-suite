@@ -25,9 +25,12 @@ import com.axelor.apps.bankpayment.db.BankOrderLineOrigin;
 import com.axelor.apps.bankpayment.db.repo.BankOrderLineOriginRepository;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
+import java.time.LocalDate;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.time.LocalDate;
 
+@RequestScoped
 public class BankOrderLineOriginServiceImpl implements BankOrderLineOriginService {
 
   protected BankOrderLineOriginRepository bankOrderLineOriginRepository;

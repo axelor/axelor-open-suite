@@ -29,9 +29,11 @@ import java.io.UnsupportedEncodingException;
 import java.lang.invoke.MethodHandles;
 import java.net.URLEncoder;
 import java.nio.file.Path;
+import javax.enterprise.context.RequestScoped;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequestScoped
 public class ExternalReportSettings extends ReportSettings {
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 

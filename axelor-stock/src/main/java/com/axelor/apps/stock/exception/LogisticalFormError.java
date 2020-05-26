@@ -21,7 +21,9 @@ import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.LogisticalFormLine;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class LogisticalFormError extends AxelorException {
 
   private static final long serialVersionUID = 354779411257144849L;

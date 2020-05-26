@@ -19,7 +19,9 @@ package com.axelor.apps.account.util;
 
 import com.axelor.apps.account.db.InvoiceLine;
 import java.util.Comparator;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class InvoiceLineComparator implements Comparator<InvoiceLine> {
 
   @Override

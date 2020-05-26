@@ -28,7 +28,9 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class ProductionProjectedStockController {
 
   public static final String VIEW_BUILDING_QTY_TITLE = /*$$(*/ "%s building" /*)*/;

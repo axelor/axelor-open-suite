@@ -55,7 +55,6 @@ public class BankOrderFile00100103Service extends BankOrderFileService {
 
   protected static final String BIC_NOT_PROVIDED = "NOTPROVIDED";
 
-  @Inject
   public BankOrderFile00100103Service(BankOrder bankOrder) {
 
     super(bankOrder);

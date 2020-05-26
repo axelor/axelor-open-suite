@@ -32,10 +32,13 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
+import java.util.List;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.util.List;
 import javax.persistence.TypedQuery;
 
+@RequestScoped
 public class BatchOutgoingStockMoveInvoicing extends BatchStrategy {
 
   private StockMoveInvoiceService stockMoveInvoiceService;

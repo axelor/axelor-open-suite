@@ -32,8 +32,11 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.persistence.Query;
 
+@RequestScoped
 public class BankReconciliationCreateService {
 
   protected BankReconciliationRepository bankReconciliationRepository;

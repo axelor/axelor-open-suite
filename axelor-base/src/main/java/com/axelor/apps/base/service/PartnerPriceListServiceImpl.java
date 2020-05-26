@@ -39,7 +39,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 
+@RequestScoped
 public class PartnerPriceListServiceImpl implements PartnerPriceListService {
 
   protected AppBaseService appBaseService;

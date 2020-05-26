@@ -22,7 +22,9 @@ import com.axelor.apps.base.service.FrequencyService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class FrequencyController {
 
   /** Computes summary of the {@code Frequency} in context. */

@@ -47,10 +47,15 @@ import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wslite.json.JSONException;
 
+@RequestScoped
 public class SaleOrderServiceImpl implements SaleOrderService {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

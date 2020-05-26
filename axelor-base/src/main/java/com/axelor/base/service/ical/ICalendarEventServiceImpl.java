@@ -27,8 +27,11 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.mail.MessagingException;
 
+@RequestScoped
 public class ICalendarEventServiceImpl implements ICalendarEventService {
 
   @Inject protected UserRepository userRepository;

@@ -25,9 +25,12 @@ import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.service.ContractService;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
+import java.time.format.DateTimeFormatter;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.time.format.DateTimeFormatter;
 
+@RequestScoped
 public class BatchContractFactoryCurrentActivation extends BatchContractFactory {
 
   @Inject

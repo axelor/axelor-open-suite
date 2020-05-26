@@ -21,10 +21,13 @@ import com.axelor.apps.base.db.AdjustHistory;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.AdjustHistoryRepository;
+import java.time.LocalDateTime;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 
+@RequestScoped
 public class AdjustHistoryService {
   private AdjustHistoryRepository adjustHistoryRepo;
 

@@ -29,9 +29,12 @@ import com.google.common.base.Strings;
 import javax.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequestScoped
 public class FilterGroovyService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

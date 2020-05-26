@@ -67,9 +67,12 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.persistence.TypedQuery;
 import org.apache.commons.lang3.tuple.Pair;
 
+@RequestScoped
 public class LogisticalFormServiceImpl implements LogisticalFormService {
 
   @Inject ProductRepository productRepository;

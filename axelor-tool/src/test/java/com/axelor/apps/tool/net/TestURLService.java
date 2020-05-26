@@ -19,9 +19,11 @@ package com.axelor.apps.tool.net;
 
 import com.axelor.apps.tool.exception.IExceptionMessage;
 import com.axelor.i18n.I18n;
+import javax.enterprise.context.RequestScoped;
 import org.junit.Assert;
 import org.junit.Test;
 
+@RequestScoped
 public class TestURLService {
 
   @Test

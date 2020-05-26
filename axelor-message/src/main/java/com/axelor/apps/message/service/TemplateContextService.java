@@ -21,7 +21,9 @@ import com.axelor.apps.message.db.TemplateContext;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class TemplateContextService {
 
   public Object computeTemplateContext(String groovyScript, Context values) {

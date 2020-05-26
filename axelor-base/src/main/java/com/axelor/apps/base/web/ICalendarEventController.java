@@ -30,8 +30,10 @@ import com.axelor.rpc.ActionResponse;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
 import javax.mail.MessagingException;
 
+@RequestScoped
 public class ICalendarEventController {
 
   @SuppressWarnings("unchecked")

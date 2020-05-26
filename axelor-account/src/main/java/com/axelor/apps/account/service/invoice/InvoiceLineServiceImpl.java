@@ -60,7 +60,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 
+@RequestScoped
 public class InvoiceLineServiceImpl implements InvoiceLineService {
 
   protected AccountManagementAccountService accountManagementAccountService;

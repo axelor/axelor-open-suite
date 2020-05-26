@@ -41,8 +41,12 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import org.apache.commons.collections.CollectionUtils;
 
+@RequestScoped
 public class OperationOrderStockMoveService {
 
   protected StockMoveService stockMoveService;

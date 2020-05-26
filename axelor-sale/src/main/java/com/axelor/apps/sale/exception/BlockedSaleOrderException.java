@@ -20,7 +20,9 @@ package com.axelor.apps.sale.exception;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class BlockedSaleOrderException extends AxelorException {
 
   private static final long serialVersionUID = 4628915492959133388L;

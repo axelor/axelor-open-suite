@@ -38,7 +38,10 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 
+@RequestScoped
 public class BatchComputeWorkInProgressValuation extends AbstractBatch {
 
   protected CostSheetService costSheetService;

@@ -17,8 +17,10 @@
  */
 package com.axelor.exception.db;
 
+import javax.enterprise.context.RequestScoped;
 import org.junit.Test;
 
+@RequestScoped
 public class TraceBackTest {
 
   @Test

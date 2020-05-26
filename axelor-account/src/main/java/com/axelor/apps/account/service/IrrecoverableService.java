@@ -71,10 +71,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.persistence.EntityTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequestScoped
 public class IrrecoverableService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

@@ -20,11 +20,15 @@ package com.axelor.apps.tool.service;
 import com.axelor.common.StringUtils;
 import com.axelor.meta.db.MetaTranslation;
 import com.axelor.meta.db.repo.MetaTranslationRepository;
+import java.util.Collection;
+import java.util.HashSet;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.HashSet;
 
+@RequestScoped
 public class TranslationServiceImpl implements TranslationService {
   protected MetaTranslationRepository metaTranslationRepo;
 

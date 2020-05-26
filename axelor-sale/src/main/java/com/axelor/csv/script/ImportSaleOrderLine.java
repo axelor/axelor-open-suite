@@ -22,7 +22,9 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class ImportSaleOrderLine {
 
   public Object importSaleOrderLine(Object bean, Map<String, Object> values)

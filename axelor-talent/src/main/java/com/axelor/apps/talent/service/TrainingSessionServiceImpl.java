@@ -25,12 +25,16 @@ import com.axelor.apps.talent.db.TrainingSession;
 import com.axelor.apps.talent.db.repo.TrainingRegisterRepository;
 import com.axelor.apps.talent.db.repo.TrainingSessionRepository;
 import com.axelor.inject.Beans;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+@RequestScoped
 public class TrainingSessionServiceImpl implements TrainingSessionService {
 
   @Inject private TrainingSessionRepository trainingSessionRepo;

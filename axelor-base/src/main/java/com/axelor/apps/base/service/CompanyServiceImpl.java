@@ -23,7 +23,9 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.inject.Beans;
 import java.util.List;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class CompanyServiceImpl implements CompanyService {
 
   /** {@inheritDoc} */

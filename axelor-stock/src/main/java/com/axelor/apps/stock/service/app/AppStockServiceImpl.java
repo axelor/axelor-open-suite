@@ -23,10 +23,13 @@ import com.axelor.apps.base.db.repo.AppStockRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.repo.StockConfigRepository;
+import java.util.List;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.List;
 
+@RequestScoped
 public class AppStockServiceImpl implements AppStockService {
 
   @Inject private CompanyRepository companyRepo;

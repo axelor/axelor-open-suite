@@ -37,9 +37,13 @@ import java.security.Signature;
 import java.time.LocalDateTime;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.jdom.JDOMException;
 
+@RequestScoped
 public class EbicsUserService {
 
   @Inject private EbicsService ebicsService;

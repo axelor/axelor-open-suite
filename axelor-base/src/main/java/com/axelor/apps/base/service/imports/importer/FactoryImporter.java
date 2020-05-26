@@ -21,7 +21,9 @@ import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
 import com.axelor.inject.Beans;
 import java.io.File;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class FactoryImporter {
 
   public Importer createImporter(ImportConfiguration importConfiguration) {

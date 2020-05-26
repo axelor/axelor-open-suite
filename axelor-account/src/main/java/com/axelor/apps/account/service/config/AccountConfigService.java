@@ -33,7 +33,9 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import java.util.List;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class AccountConfigService {
 
   public AccountConfig getAccountConfig(Company company) throws AxelorException {

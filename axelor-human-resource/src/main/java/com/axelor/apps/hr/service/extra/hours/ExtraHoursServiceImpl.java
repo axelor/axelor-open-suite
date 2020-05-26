@@ -32,8 +32,11 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.mail.MessagingException;
 
+@RequestScoped
 public class ExtraHoursServiceImpl implements ExtraHoursService {
 
   protected ExtraHoursRepository extraHoursRepo;

@@ -23,9 +23,11 @@ import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentVoucher;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import javax.enterprise.context.RequestScoped;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequestScoped
 public class PayVoucherElementToPayService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

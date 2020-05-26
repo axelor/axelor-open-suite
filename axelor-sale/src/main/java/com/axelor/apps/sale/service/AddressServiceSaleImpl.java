@@ -19,8 +19,15 @@ package com.axelor.apps.sale.service;
 
 import com.axelor.apps.base.service.AddressServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.module.SaleModule;
 import com.axelor.db.JPA;
+import javax.annotation.Priority;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Alternative;
 
+@Alternative
+@Priority(SaleModule.PRIORITY)
+@RequestScoped
 public class AddressServiceSaleImpl extends AddressServiceImpl {
   static {
     registerCheckUsedFunc(AddressServiceSaleImpl::checkAddressUsedSale);

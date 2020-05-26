@@ -29,7 +29,10 @@ import com.axelor.inject.Beans;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import javax.enterprise.context.RequestScoped;
+import javax.transaction.Transactional;
 
+@RequestScoped
 public class PartnerStockSettingsServiceImpl implements PartnerStockSettingsService {
 
   @Override

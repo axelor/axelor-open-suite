@@ -21,7 +21,9 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.auth.db.User;
 import com.axelor.meta.schema.actions.ActionView;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class HRMenuValidateService {
 
   public void createValidateDomain(

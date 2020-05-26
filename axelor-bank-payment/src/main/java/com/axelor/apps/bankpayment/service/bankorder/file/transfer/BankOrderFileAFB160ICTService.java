@@ -19,11 +19,9 @@ package com.axelor.apps.bankpayment.service.bankorder.file.transfer;
 
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.exception.AxelorException;
-import javax.inject.Inject;
 
 public class BankOrderFileAFB160ICTService extends BankOrderFileAFB160Service {
 
-  @Inject
   public BankOrderFileAFB160ICTService(BankOrder bankOrder) throws AxelorException {
 
     super(bankOrder);

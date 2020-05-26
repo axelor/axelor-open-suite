@@ -19,7 +19,9 @@ package com.axelor.apps.businessproduction.service;
 
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.inject.Beans;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class ManufOrderValidateBusinessServiceImpl implements ManufOrderValidateBusinessService {
 
   @Override

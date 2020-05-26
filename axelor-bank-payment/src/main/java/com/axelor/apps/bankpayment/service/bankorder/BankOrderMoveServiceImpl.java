@@ -43,9 +43,12 @@ import com.axelor.i18n.I18n;
 import javax.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@RequestScoped
 public class BankOrderMoveServiceImpl implements BankOrderMoveService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

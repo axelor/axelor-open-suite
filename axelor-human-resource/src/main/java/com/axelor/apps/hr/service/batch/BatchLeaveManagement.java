@@ -38,6 +38,10 @@ import com.axelor.i18n.I18n;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.transaction.Transactional;
@@ -48,6 +52,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.validation.constraints.Digits;
 
+@RequestScoped
 public class BatchLeaveManagement extends BatchStrategy {
 
   int total;

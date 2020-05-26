@@ -25,7 +25,10 @@ import com.axelor.apps.base.db.repo.ShippingCoefRepository;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 
+@RequestScoped
 public class ShippingCoefService {
 
   protected ShippingCoefRepository shippingCoefRepo;

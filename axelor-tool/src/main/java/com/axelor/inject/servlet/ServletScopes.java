@@ -2,8 +2,10 @@ package com.axelor.inject.servlet;
 
 import com.axelor.inject.Beans;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
 import org.jboss.weld.context.bound.BoundRequestContext;
 
+@RequestScoped
 public class ServletScopes {
 
   public static RequestScoper scopeRequest(Map<String, Object> storage) {

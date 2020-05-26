@@ -36,8 +36,11 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.mail.MessagingException;
 
+@RequestScoped
 public class QualityControlServiceImpl implements QualityControlService {
 
   @Inject ControlPointRepository controlPointRepo;

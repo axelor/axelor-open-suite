@@ -30,7 +30,9 @@ import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class ObjectDataCommonService {
 
   public static ResourceBundle getResourceBundle(String language) {

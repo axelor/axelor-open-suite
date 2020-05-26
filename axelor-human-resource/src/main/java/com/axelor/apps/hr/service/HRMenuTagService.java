@@ -22,7 +22,9 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class HRMenuTagService {
 
   /**

@@ -27,11 +27,13 @@ import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import javax.annotation.Priority;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 
 @Alternative
 @Priority(BaseModule.PRIORITY)
+@RequestScoped
 public class ICalendarEventManagementRepository extends ICalendarEventRepository {
 
   @Inject private ICalendarService calendarService;

@@ -38,12 +38,14 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.team.db.repo.TeamTaskRepository;
 import javax.annotation.Priority;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 @Alternative
 @Priority(BusinessProductionModule.PRIORITY)
+@RequestScoped
 public class TimesheetBusinessProductionServiceImpl extends TimesheetProjectServiceImpl {
 
   @Inject

@@ -35,8 +35,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.enterprise.context.RequestScoped;
 import org.apache.commons.collections.CollectionUtils;
 
+@RequestScoped
 public class ProjectInvoicingAssistantBatchService extends AbstractBatchService {
 
   @Override

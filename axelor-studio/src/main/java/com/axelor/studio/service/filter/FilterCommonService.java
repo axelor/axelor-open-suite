@@ -19,7 +19,9 @@ package com.axelor.studio.service.filter;
 
 import com.axelor.meta.db.MetaField;
 import java.util.Arrays;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class FilterCommonService {
 
   /**

@@ -43,8 +43,11 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.xml.bind.JAXBException;
 
+@RequestScoped
 public class ImportService {
 
   @Inject private ChartBuilderRepository chartBuilderRepo;

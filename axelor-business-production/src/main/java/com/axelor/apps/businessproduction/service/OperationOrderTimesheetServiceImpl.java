@@ -33,7 +33,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import javax.enterprise.context.RequestScoped;
+import javax.transaction.Transactional;
 
+@RequestScoped
 public class OperationOrderTimesheetServiceImpl implements OperationOrderTimesheetService {
 
   @Override

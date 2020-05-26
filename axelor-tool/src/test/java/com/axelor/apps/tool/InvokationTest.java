@@ -25,10 +25,12 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+@RequestScoped
 public class InvokationTest {
 
   protected static final Member INVALID_MEMBER;

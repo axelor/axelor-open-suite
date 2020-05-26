@@ -25,7 +25,9 @@ import com.axelor.db.JPA;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class TradingNameServiceImpl implements TradingNameService {
   @Override
   public List<PrintingSettings> getPrintingSettingsList(TradingName tradingName, Company company) {

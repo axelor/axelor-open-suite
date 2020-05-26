@@ -24,11 +24,15 @@ import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBuilder;
 import com.axelor.studio.exception.IExceptionMessage;
+import java.util.HashSet;
+import java.util.Set;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.Set;
 
+@RequestScoped
 public class AppBuilderService {
 
   @Inject private AppRepository appRepo;

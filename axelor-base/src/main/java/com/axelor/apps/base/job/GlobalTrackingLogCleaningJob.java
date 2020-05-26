@@ -21,8 +21,10 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.tracking.GlobalTrackingLogService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import javax.enterprise.context.RequestScoped;
 import org.quartz.JobExecutionContext;
 
+@RequestScoped
 public class GlobalTrackingLogCleaningJob extends ThreadedJob {
 
   @Override

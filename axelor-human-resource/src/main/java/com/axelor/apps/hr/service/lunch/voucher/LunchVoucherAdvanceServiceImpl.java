@@ -24,9 +24,11 @@ import com.axelor.apps.hr.db.repo.LunchVoucherAdvanceRepository;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+@RequestScoped
 public class LunchVoucherAdvanceServiceImpl implements LunchVoucherAdvanceService {
 
   protected HRConfigService hrConfigService;

@@ -43,8 +43,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.persistence.TypedQuery;
 
+@RequestScoped
 public class NotificationServiceImpl implements NotificationService {
 
   protected MoveService moveService;

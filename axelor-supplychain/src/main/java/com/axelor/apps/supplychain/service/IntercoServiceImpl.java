@@ -68,7 +68,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import javax.enterprise.context.RequestScoped;
+import javax.transaction.Transactional;
 
+@RequestScoped
 public class IntercoServiceImpl implements IntercoService {
 
   protected static int DEFAULT_INVOICE_COPY = 1;

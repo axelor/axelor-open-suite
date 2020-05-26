@@ -30,7 +30,10 @@ import com.google.common.base.Strings;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 
+@RequestScoped
 public class BankStatementLineAFB120Service extends BankStatementLineService {
 
   @Inject

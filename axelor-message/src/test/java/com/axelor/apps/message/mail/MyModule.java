@@ -19,7 +19,9 @@ package com.axelor.apps.message.mail;
 
 import com.axelor.db.JpaModule;
 import com.google.inject.AbstractModule;
+import javax.enterprise.context.ApplicationScoped;
 
+@ApplicationScoped
 public class MyModule extends AbstractModule {
 
   @Override

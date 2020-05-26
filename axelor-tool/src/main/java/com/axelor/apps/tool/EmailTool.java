@@ -19,7 +19,9 @@ package com.axelor.apps.tool;
 
 import com.axelor.common.ObjectUtils;
 import java.util.regex.Pattern;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class EmailTool {
   public static boolean isValidEmailAddress(String email) {
     if (ObjectUtils.isEmpty(email)) {

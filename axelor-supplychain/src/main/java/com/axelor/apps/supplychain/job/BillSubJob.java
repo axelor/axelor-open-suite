@@ -22,8 +22,10 @@ import com.axelor.apps.base.job.UncheckedJobExecutionException;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
 import com.axelor.apps.supplychain.service.batch.SupplychainBatchService;
 import com.axelor.inject.Beans;
+import javax.enterprise.context.RequestScoped;
 import org.quartz.JobExecutionContext;
 
+@RequestScoped
 public class BillSubJob extends ThreadedJob {
   @Override
   public void executeInThread(JobExecutionContext context) {

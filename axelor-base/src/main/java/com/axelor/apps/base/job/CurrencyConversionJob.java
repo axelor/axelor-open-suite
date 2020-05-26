@@ -19,11 +19,13 @@ package com.axelor.apps.base.job;
 
 import com.axelor.apps.base.service.CurrencyConversionService;
 import com.axelor.exception.AxelorException;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
+@RequestScoped
 public class CurrencyConversionJob implements Job {
 
   @Inject private CurrencyConversionService currencyConversionService;

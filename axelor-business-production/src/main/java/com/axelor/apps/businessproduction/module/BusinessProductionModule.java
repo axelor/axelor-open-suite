@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.businessproduction.module;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.interceptor.Interceptor;
 
+@ApplicationScoped
 public class BusinessProductionModule {
 
   private BusinessProductionModule() {}

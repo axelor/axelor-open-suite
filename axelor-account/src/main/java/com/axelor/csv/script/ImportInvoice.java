@@ -24,8 +24,10 @@ import com.axelor.apps.base.service.AddressService;
 import com.axelor.exception.AxelorException;
 import javax.transaction.Transactional;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
+@RequestScoped
 public class ImportInvoice {
 
   @Inject private AddressService addressService;

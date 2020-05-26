@@ -26,8 +26,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
 
+@RequestScoped
 public class ProdProcessLineServiceImpl implements ProdProcessLineService {
 
   protected ProdProcessLineRepository prodProcessLineRepo;

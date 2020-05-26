@@ -33,8 +33,10 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
 import org.apache.commons.lang3.StringUtils;
 
+@RequestScoped
 public class FileTabController {
 
   public void updateFields(ActionRequest request, ActionResponse response) {

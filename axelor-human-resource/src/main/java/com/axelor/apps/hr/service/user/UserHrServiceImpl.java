@@ -30,9 +30,11 @@ import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.inject.Beans;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+@RequestScoped
 public class UserHrServiceImpl implements UserHrService {
 
   @Inject UserRepository userRepo;

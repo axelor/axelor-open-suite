@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.message.module;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.interceptor.Interceptor;
 
+@ApplicationScoped
 public class MessageModule {
 
   private MessageModule() {}

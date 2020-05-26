@@ -24,11 +24,15 @@ import com.axelor.apps.account.service.AccountingService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
+import java.util.ArrayList;
+import java.util.List;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+@RequestScoped
 public class MoveCustAccountService {
 
   protected AccountCustomerService accountCustomerService;

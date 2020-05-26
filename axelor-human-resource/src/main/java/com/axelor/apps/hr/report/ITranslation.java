@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.hr.report;
 
+import javax.enterprise.context.RequestScoped;
+
+@RequestScoped
 public class ITranslation {
 
   public static final String EXPENSE_EXPENSE_OF = /*$$(*/ "Expense.expenseOf"; /*)*/

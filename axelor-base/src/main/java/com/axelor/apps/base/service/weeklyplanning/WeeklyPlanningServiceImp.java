@@ -35,7 +35,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import javax.enterprise.context.RequestScoped;
+import javax.transaction.Transactional;
 
+@RequestScoped
 public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
 
   public DayOfWeek getFirstDayOfWeek() {

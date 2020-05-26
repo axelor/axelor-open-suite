@@ -20,8 +20,10 @@ package com.axelor.apps.base.job;
 import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.service.batch.MailBatchService;
 import com.axelor.inject.Beans;
+import javax.enterprise.context.RequestScoped;
 import org.quartz.JobExecutionContext;
 
+@RequestScoped
 public class MailJob extends ThreadedJob {
   @Override
   public void executeInThread(JobExecutionContext context) {

@@ -41,9 +41,13 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import org.apache.commons.io.FileUtils;
 import org.apache.xmlbeans.impl.common.IOUtil;
 
+@RequestScoped
 public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreatorImportService {
 
   protected ConfiguratorCreatorService configuratorCreatorService;

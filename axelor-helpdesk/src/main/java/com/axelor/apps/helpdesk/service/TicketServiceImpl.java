@@ -31,11 +31,15 @@ import com.axelor.apps.helpdesk.db.repo.TicketRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.google.common.base.Strings;
+import java.time.LocalDateTime;
+import java.util.List;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@RequestScoped
 public class TicketServiceImpl implements TicketService {
 
   @Inject private SequenceService sequenceService;

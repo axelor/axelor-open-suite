@@ -26,7 +26,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class QueryBuilder<T extends Model> {
   private final List<String> filterList;
   private final Map<String, Object> bindingMap;

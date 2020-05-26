@@ -17,9 +17,11 @@
  */
 package com.axelor.apps.tool;
 
+import javax.enterprise.context.RequestScoped;
 import org.junit.Assert;
 import org.junit.Test;
 
+@RequestScoped
 public class TestStringTool {
 
   @Test

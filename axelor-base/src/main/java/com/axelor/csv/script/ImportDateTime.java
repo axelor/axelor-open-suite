@@ -31,7 +31,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class ImportDateTime {
   String pat = "((\\+|\\-)?[0-9]{1,%s}%s)";
   String dt = "[0-9]{4}-[0-9]{2}-[0-9]{2}";

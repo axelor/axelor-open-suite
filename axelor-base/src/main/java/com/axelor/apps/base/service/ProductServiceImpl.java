@@ -42,8 +42,12 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
 
+@RequestScoped
 public class ProductServiceImpl implements ProductService {
 
   protected ProductVariantService productVariantService;

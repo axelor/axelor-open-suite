@@ -42,7 +42,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.enterprise.context.RequestScoped;
 
+@RequestScoped
 public class ProjectedStockController {
 
   public static final String VIEW_AVAILABLE_STOCK_QTY_TITLE = /*$$(*/ "%s stock location" /*)*/;

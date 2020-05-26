@@ -25,8 +25,10 @@ import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
+@RequestScoped
 public class MailBatchService extends AbstractBatchService {
 
   @Inject protected BatchReminderMail batchReminderMail;

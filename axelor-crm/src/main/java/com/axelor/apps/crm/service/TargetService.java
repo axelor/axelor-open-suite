@@ -35,8 +35,11 @@ import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.persistence.Query;
 
+@RequestScoped
 public class TargetService {
 
   @Inject private EventRepository eventRepo;

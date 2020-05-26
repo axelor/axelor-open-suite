@@ -21,9 +21,12 @@ import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
+import java.util.Map;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.util.Map;
 
+@RequestScoped
 public class ImportLead {
 
   @Inject private UserRepository userRepo;

@@ -44,9 +44,13 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 
+@RequestScoped
 public class EmployeeBonusService {
 
   @Inject EmployeeBonusMgtRepository employeeBonusMgtRepo;

@@ -27,10 +27,13 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
+import java.time.LocalDateTime;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 
+@RequestScoped
 public class ProjectGeneratorFactoryAlone implements ProjectGeneratorFactory {
 
   private ProjectBusinessService projectBusinessService;
