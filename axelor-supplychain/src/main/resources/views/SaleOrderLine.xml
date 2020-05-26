@@ -4,10 +4,12 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
     <form name="sale-order-line-form" id="supplychain-sale-order-line-form" title="SO line"
-        model="com.axelor.apps.sale.db.SaleOrderLine" onNew="action-group-sale-saleorderline-onnew,action-record-sale-order-line-fill-request-qty"
-		onLoad="action-group-sale-saleorderline-onload,action-sale-order-line-attrs-hidden-fields-for-client"
-        width="large">
-        <panel-include view="sale-order-line-form" from="axelor-sale" />
+        model="com.axelor.apps.sale.db.SaleOrderLine" 
+        width="large" extension="true">
+        
+        <extend target="/">
+    		<attribute name="onNew" value="action-group-sale-saleorderline-onnew,action-record-sale-order-line-fill-request-qty"/>
+    	</extend>
     </form>
 
 
