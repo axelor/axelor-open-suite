@@ -12,6 +12,7 @@
 - LEAVE LINE: remove fields length constraint
 - QUALITY CONTROL : Displayed signatures on the first page.
 - Accounting Partner General Ledger : MAnage title visibility.
+- CRM/SALES : fix for contacts with mainPartner isProspect do not display
 
 ## Bug Fixes
 - CONTRACT : fix for unit price null on invoice.
