@@ -1,30 +1,29 @@
 # Changelog
-## [Unreleased 5.3.6]
-## Features
-- Add civility for partner contact in birt report printing.
-- OPPORTUNITY: add sequence
-
+## [5.3.6] - 2020-05-26
 ## Improvements
-- DURATION : rearranged fields in grid and form view.
+- OPPORTUNITY: add sequence.
+- Add civility for partner contact in birt report printing.
+- DURATION: rearranged fields in grid and form view.
 - Add configuration to activate partial invoicing for sale order and purchase order.
-- ACCOUNTING REPORT : Printing Information panel UI light changes.
-- PURCHASE ORDER SUPPLIER LINE : fix for decimal digit scale and precision.
+- ACCOUNTING REPORT: Printing Information panel UI light changes.
+- PURCHASE ORDER SUPPLIER LINE: fix for decimal digit scale and precision.
 - MOVE LINE: removed massUpdate from move-line-grid.
-- LEAVE LINE: remove fields length constraints
-- Accounting Partner General Ledger : MAnage title visibility. 
+- LEAVE LINE: remove fields length constraints.
+- Accounting Partner General Ledger: Manage title visibility.
 
 ## Bug Fixes
-- CONTRACT : Add filter on payment mode.
-- CONTRACT : fix for unit price null on invoice.
-- SALEORDER : copy description when generating Task by line from SaleOrder
-- Business Project : Fixed set toInvoice for timesheet line based on parent task instead of a task.
-- FORECAST RECAP : many anomalies resolved.
+- CONTRACT: Add filter on payment mode.
+- CONTRACT: fix for unit price null on invoice.
+- SALEORDER: copy description when generating task by line from sale order.
+- Business Project: set toInvoice for timesheet line based on parent task instead of a task.
+- FORECAST RECAP: many anomalies resolved.
 - Bank details: corrected the possibility to get an inactive bank details.
-- Back Order : corrected link between back order and origin.
-- DEMO DATA : fixed issue in demo data.
-- PARTNER : industrySector to display when customer is individual.
-- Fixed asset: corrected amortization calculation process. 
-- BANK STATEMENT : Fix order by in bank statement line
+- Back Order: corrected link between back order and origin.
+- DEMO DATA: fixed issue in demo data.
+- PARTNER: industrySector is now displayed when customer is individual.
+- Fixed asset: corrected amortization calculation process.
+- BANK STATEMENT: Fix order by in afb120 bank statement lines.
+- ICalendarEvent: make subject, location & subjectTeam field large.
 
 ## [5.3.5] - 2020-05-11
 ## Features
@@ -42,7 +41,6 @@
 - Invoice: made all dashboard's charts and grid based on ventilated invoices.
 - DETAIL PER PRODUCT: modify filter of product on details by product form and changed default value for stock managed boolean of product.
 - OPPORTUNITY: set canNew false for saleOrderList.
-- ICalendarEvent : make subject, location & subjectTeam field large.
 
 ## Bug Fixes
 - STOCK MOVE: Fix hiding company on multi company disabled.
@@ -329,7 +327,7 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - PRODUCT: Fix economicManufOrderQty displayed twice.
 
 
-[Unreleased 5.3.6]: https://github.com/axelor/axelor-open-suite/compare/v5.3.5...dev
+[5.3.6]: https://github.com/axelor/axelor-open-suite/compare/v5.3.5...v5.3.6
 [5.3.5]: https://github.com/axelor/axelor-open-suite/compare/v5.3.4...v5.3.5
 [5.3.4]: https://github.com/axelor/axelor-open-suite/compare/v5.3.3...v5.3.4
 [5.3.3]: https://github.com/axelor/axelor-open-suite/compare/v5.3.2...v5.3.3
