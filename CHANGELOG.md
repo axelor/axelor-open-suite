@@ -23,6 +23,7 @@
 - DEMO DATA : fixed issue in demo data.
 - PARTNER : industrySector to display when customer is individual.
 - Fixed asset: corrected amortization calculation process. 
+- BANK STATEMENT : Fix order by in bank statement line
 
 ## [5.3.5] - 2020-05-11
 ## Features
