@@ -1,0 +1,2 @@
+"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
+"Maintenance";"maintenance";50;"Computerized Maintenance Management System";"app-maintenance.png";"axelor-maintenance";"production";52

@@ -1,0 +1,7 @@
+---
+title: Add maintenance module
+type: feature
+description: |
+  Add a new module which was previously in axelor-addons. The module add the
+  maintenance app, which will add new fields and new types to production
+  processes, bills of materials and manufacturing orders.
