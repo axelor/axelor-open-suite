@@ -24,7 +24,7 @@ import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
 import com.axelor.exception.AxelorException;
 
-public class MaintenanceBillOfMaterialService extends BillOfMaterialServiceImpl {
+public class BillOfMaterialServiceMaintenanceImpl extends BillOfMaterialServiceImpl {
 
   @Override
   public String computeName(BillOfMaterial bom) {

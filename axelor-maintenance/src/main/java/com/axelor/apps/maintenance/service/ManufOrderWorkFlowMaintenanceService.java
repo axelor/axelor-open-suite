@@ -40,10 +40,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
-public class MaintenanceManufOrderWorkFlowService extends ManufOrderWorkflowService {
+public class ManufOrderWorkFlowMaintenanceService extends ManufOrderWorkflowService {
 
   @Inject
-  public MaintenanceManufOrderWorkFlowService(
+  public ManufOrderWorkFlowMaintenanceService(
       OperationOrderWorkflowService operationOrderWorkflowService,
       OperationOrderRepository operationOrderRepo,
       ManufOrderStockMoveService manufOrderStockMoveService,
