@@ -11,6 +11,7 @@
 - PURCHASE ORDER SUPPLIER LINE : fix for decimal digit scale and precision.
 - MOVE LINE: removed massUpdate from move-line-grid.
 - LEAVE LINE: remove fields length constraints
+- Accounting Partner General Ledger : MAnage title visibility. 
 
 ## Bug Fixes
 - CONTRACT : Add filter on payment mode.
