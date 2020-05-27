@@ -194,7 +194,8 @@ public class InventoryController {
           ActionView.define(I18n.get("Internal Stock Moves"))
               .model(StockMove.class.getName())
               .add("grid", "stock-move-grid")
-              .add("form", "stock-move-form");
+              .add("form", "stock-move-form")
+              .param("search-filters", "internal-stock-move-filters");
       if (stockMoveList.isEmpty()) {
         response.setFlash(I18n.get("No stock moves found for this inventory."));
       } else {

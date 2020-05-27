@@ -81,4 +81,7 @@
     	<error message="From date must be less than the to date" if="fromDate > toDate"/>
     </action-validate>
     
+    <search-filters name="target-filters" model="com.axelor.apps.crm.db.Target" title="Targer filters">
+    	<field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
+    </search-filters>
 </object-views>

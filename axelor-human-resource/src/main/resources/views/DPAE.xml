@@ -40,4 +40,7 @@
     </panel>
   </form>
 
+	<search-filters name="dpae-filters" model="com.axelor.apps.hr.db.DPAE" title="DPAE filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
 </object-views>

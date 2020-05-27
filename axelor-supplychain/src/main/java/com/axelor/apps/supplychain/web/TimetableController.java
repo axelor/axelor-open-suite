@@ -70,6 +70,7 @@ public class TimetableController {
             .model("com.axelor.apps.account.db.Invoice")
             .add("form", "invoice-form")
             .add("grid", "invoice-grid")
+            .param("search-filters", "customer-invoices-filters")
             .param("forceEdit", "true")
             .context("_showRecord", invoice.getId().toString())
             .map());

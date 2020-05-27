@@ -288,5 +288,11 @@
     <action-validate name="action-account-report-alert-typeselect">
 		<alert message="Make sure that all accounting moves are validated." if="typeSelect == 12 || typeSelect == 15"/>
     </action-validate>
+    
+    <search-filters name="accounting-report-filters" model="com.axelor.apps.account.db.AccountingReport" title="Accounting report filters">
+    	<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    	<field name="journalSet" hidden="true" if="!__config__.app.isApp('bank-payment')"/>
+    	<field name="bankDetailsSet" hidden="true" if="!__config__.app.isApp('bank-payment')"/>
+	</search-filters>
 
 </object-views>

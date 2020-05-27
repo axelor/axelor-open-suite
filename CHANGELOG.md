@@ -2,6 +2,7 @@
 ## [Unreleased 5.3.7]
 ## Improvements
 ## Bug Fixes
+- ADVANCED SEARCH : Added display condition on fields using app config settings
 
 ## [5.3.6] - 2020-05-26
 ## Improvements

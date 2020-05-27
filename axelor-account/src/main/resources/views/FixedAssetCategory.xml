@@ -60,4 +60,9 @@
     	<attribute name="value" for="degressiveCoef" expr="eval: 2.25" if="computationMethodSelect == 'degressive' &amp;&amp; numberOfDepreciation &gt; 6"/>
     </action-attrs>
     
+    <search-filters name="fixed-asset-category-filters" model="com.axelor.apps.account.db.FixedAssetCategory" title="Fixed asset category filters">
+    	<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    	<field name="analyticDistributionTemplate" hidden="true" if="!__config__.app.getApp('account').getManageAnalyticAccounting()"/>
+    </search-filters>
+    
 </object-views>

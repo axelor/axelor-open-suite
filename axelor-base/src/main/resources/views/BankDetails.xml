@@ -204,5 +204,10 @@
 		<domain>self.bankDetails.id = :bankDetailsId AND self.lineTypeSelect = 2</domain>
 		<context name="bankDetailsId" expr="eval: id"/>
 	</action-view>
+	
+	<search-filters name="bank-detail-filters" model="com.axelor.apps.base.db.BankDetails" title="Bank detail filters">
+		<field name="balance" hidden="true" if="!__config__.app.isApp('bank-payment')"/>
+		<field name="balanceUpdatedDate" hidden="true" if="!__config__.app.isApp('bank-payment')"/>
+	</search-filters>
 
 </object-views>

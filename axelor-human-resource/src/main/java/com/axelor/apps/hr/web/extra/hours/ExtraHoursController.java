@@ -95,7 +95,8 @@ public class ExtraHoursController {
         ActionView.define(I18n.get("Extra hours to Validate"))
             .model(ExtraHours.class.getName())
             .add("grid", "extra-hours-validate-grid")
-            .add("form", "extra-hours-form");
+            .add("form", "extra-hours-form")
+            .param("search-filters", "extra-hours-filters");
 
     Beans.get(HRMenuValidateService.class).createValidateDomain(user, employee, actionView);
 
@@ -125,7 +126,8 @@ public class ExtraHoursController {
         ActionView.define(I18n.get("Historic colleague extra hours"))
             .model(ExtraHours.class.getName())
             .add("grid", "extra-hours-grid")
-            .add("form", "extra-hours-form");
+            .add("form", "extra-hours-form")
+            .param("search-filters", "extra-hours-filters");
 
     actionView
         .domain(
@@ -150,7 +152,8 @@ public class ExtraHoursController {
         ActionView.define(I18n.get("Extra hours to be Validated by your subordinates"))
             .model(ExtraHours.class.getName())
             .add("grid", "extra-hours-grid")
-            .add("form", "extra-hours-form");
+            .add("form", "extra-hours-form")
+            .param("search-filters", "extra-hours-filters");
 
     String domain =
         "self.user.employee.managerUser.employee.managerUser = :_user AND self.company = :_activeCompany AND self.statusSelect = 2";

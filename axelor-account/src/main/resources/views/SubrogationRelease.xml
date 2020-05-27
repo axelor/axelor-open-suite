@@ -119,4 +119,8 @@
 		<field name="statusSelect" expr="eval: __repo__(SubrogationRelease).STATUS_NEW" />
 	</action-record>
 
+	<search-filters name="subrogation-release-filters" model="com.axelor.apps.account.db.SubrogationRelease" title="Subrogation release filters">
+    	<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
+    
 </object-views>

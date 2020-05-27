@@ -77,6 +77,7 @@ public class PurchaseOrderController {
                   .model(StockMove.class.getName())
                   .add("grid", "stock-move-grid")
                   .add("form", "stock-move-form")
+                  .param("search-filters", "internal-stock-move-filters")
                   .param("forceEdit", "true")
                   .domain("self.id = " + stockMoveList.get(0))
                   .context("_showRecord", String.valueOf(stockMoveList.get(0)))
@@ -87,6 +88,7 @@ public class PurchaseOrderController {
                   .model(StockMove.class.getName())
                   .add("grid", "stock-move-grid")
                   .add("form", "stock-move-form")
+                  .param("search-filters", "internal-stock-move-filters")
                   .domain("self.id in (" + Joiner.on(",").join(stockMoveList) + ")")
                   .map());
         } else {
@@ -335,6 +337,7 @@ public class PurchaseOrderController {
                 .model(PurchaseOrder.class.getName())
                 .add("grid", "purchase-order-grid")
                 .add("form", "purchase-order-form")
+                .param("search-filters", "purchase-order-filters")
                 .param("forceEdit", "true")
                 .context("_showRecord", String.valueOf(purchaseOrder.getId()))
                 .map());

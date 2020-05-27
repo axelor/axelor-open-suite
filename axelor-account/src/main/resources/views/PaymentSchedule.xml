@@ -166,6 +166,8 @@
 
 	<search-filters name="payment-schedule-filters"
 		model="com.axelor.apps.account.db.PaymentSchedule" title="Payment schedule filters">
+		<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="companyBankDetails" hidden="true" if="!__config__.app.getApp('base').getManageMultiBanks()" />
 		<filter title="Ongoing Schedules">
 			<domain>self.startDate &lt; CURRENT_DATE</domain>
 		</filter>

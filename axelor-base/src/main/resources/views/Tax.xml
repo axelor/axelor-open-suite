@@ -28,4 +28,9 @@
 		<attribute name="domain" for="activeTaxLine" expr="eval: &quot; self.tax.id = ${__this__.id} &quot;"/>
 	</action-attrs>
     
+    <search-filters name="tax-filters" model="com.axelor.apps.account.db.Tax" title="Tax filters">
+    	<field name="typeSelect" hidden="true" if="!__config__.app.isApp('account')"/>
+    	<field name="accountManagementList" hidden="true" if="!__config__.app.isApp('account')" />
+    </search-filters>
+
 </object-views>

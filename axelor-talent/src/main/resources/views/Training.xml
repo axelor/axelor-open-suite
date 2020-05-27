@@ -39,4 +39,7 @@
 		<context name="_training" expr="eval:__self__"/>
 	</action-view>
 	
+	<search-filters name="training-filters" model="com.axelor.apps.talent.db.Training" title="Training filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
 </object-views>

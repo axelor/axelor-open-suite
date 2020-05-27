@@ -188,7 +188,8 @@ public class ExpenseController {
         ActionView.define(I18n.get("Expenses to Validate"))
             .model(Expense.class.getName())
             .add("grid", "expense-validate-grid")
-            .add("form", "expense-form");
+            .add("form", "expense-form")
+            .param("search-filters", "expense-filters");
 
     Beans.get(HRMenuValidateService.class).createValidateDomain(user, employee, actionView);
 
@@ -204,7 +205,8 @@ public class ExpenseController {
         ActionView.define(I18n.get("Historic colleague Expenses"))
             .model(Expense.class.getName())
             .add("grid", "expense-grid")
-            .add("form", "expense-form");
+            .add("form", "expense-form")
+            .param("search-filters", "expense-filters");
 
     actionView
         .domain(
@@ -229,7 +231,8 @@ public class ExpenseController {
         ActionView.define(I18n.get("Expenses to be Validated by your subordinates"))
             .model(Expense.class.getName())
             .add("grid", "expense-grid")
-            .add("form", "expense-form");
+            .add("form", "expense-form")
+            .param("search-filters", "expense-filters");
 
     String domain =
         "self.user.employee.managerUser.employee.managerUser = :_user AND self.company = :_activeCompany AND self.statusSelect = 2";
@@ -284,6 +287,7 @@ public class ExpenseController {
                 .model(Move.class.getName())
                 .add("grid", "move-grid")
                 .add("form", "move-form")
+                .param("search-filters", "move-filters")
                 .context("_showRecord", String.valueOf(move.getId()))
                 .map());
       }
