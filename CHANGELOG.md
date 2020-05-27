@@ -14,6 +14,7 @@
 - MOVE LINE: removed massUpdate from move-line-grid.
 - LEAVE LINE: remove fields length constraints.
 - Accounting Partner General Ledger: Manage title visibility.
+- CRM/SALES : fix for contacts with mainPartner isProspect do not display
 
 ## Bug Fixes
 - CONTRACT: Add filter on payment mode.
