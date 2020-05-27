@@ -18,9 +18,12 @@
 package com.axelor.apps.crm.service;
 
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
@@ -91,5 +94,19 @@ public class OpportunityServiceImpl implements OpportunityService {
     opportunityRepo.save(opportunity);
 
     return partner;
+  }
+
+  @Override
+  public void setSequence(Opportunity opportunity) throws AxelorException {
+    Company company = opportunity.getCompany();
+    String seq =
+        Beans.get(SequenceService.class).getSequenceNumber(SequenceRepository.OPPORTUNITY, company);
+    if (seq == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.OPPORTUNITY_1),
+          company != null ? company.getName() : null);
+    }
+    opportunity.setOpportunitySeq(seq);
   }
 }

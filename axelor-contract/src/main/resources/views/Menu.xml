@@ -44,6 +44,8 @@
 	<action-view name="duration.all" title="Duration" model="com.axelor.apps.base.db.Duration">
 		<view type="grid" name="duration-grid"/>
 		<view type="form" name="duration-form"/>
+		<domain>self.applicationTypeSelect = 2</domain>
+		<context name="_applicatioTypeSelect" expr="2"/>
 	</action-view>
 
 	<menuitem name="admin-root-batch-contract" parent="admin-root-batch"

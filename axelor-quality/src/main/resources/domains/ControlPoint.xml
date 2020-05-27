@@ -11,7 +11,7 @@
 		<string name="name" title="Control point name" required="true"/>
 		<many-to-one name="responsible" ref="com.axelor.apps.hr.db.Employee" title="quality.responsible" />
 		<decimal name="controlFrequency" title="Control Frequency"/>
-		<string name="notes" title="Notes"/>
+		<string name="notes" title="Notes" large="true"/>
 		<date name="controlPointDate" title="Date"/>
 		<one-to-many name="measuringPointList" title="Measuring point list" ref="QualityMeasuringPoint" mappedBy="controlPoint"/>
 		<integer name="sequence" title="Sequence"/>

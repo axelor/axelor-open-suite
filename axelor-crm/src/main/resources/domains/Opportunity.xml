@@ -33,6 +33,7 @@
   	<many-to-one name="lostReason" ref="LostReason" title="Lost reason" />
     <string name="lostReasonStr" title="Lost reason" large="true"/>
 	  <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"/>
+	  <string name="opportunitySeq" title="Reference" readonly="true" unique="true"/>
 
 	<extra-code>
 		<![CDATA[

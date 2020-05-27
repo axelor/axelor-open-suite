@@ -9,7 +9,7 @@
   	  <string name="name" required="true" namecolumn="true"/>
   	  <one-to-many name="weekDays" ref="com.axelor.apps.base.db.DayPlanning" mappedBy="weeklyPlann"/>
   	  <decimal name="bonusCoef" title="Coefficient for bonus" />
-  	  <decimal name="leaveCoef" title="Coefficient for leave" />
+  	  <decimal name="leaveCoef" title="Coefficient for leave" default="1"/>
   </entity>
   
   <entity name="DayPlanning">
