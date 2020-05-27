@@ -34,8 +34,8 @@
 		<view type="form" name="partner-contact-form" />
 	  	<view-param name="limit" value="39"/>
 		<view-param name="search-filters" value="partner-filters"/>
-		<domain>self.isContact = true AND self.mainPartner.isCustomer = true</domain>
-		<context name="_domain" expr="self.isContact = true AND self.mainPartner.isCustomer = true"/>
+		<domain>self.isContact = true AND (self.mainPartner.isCustomer = true OR self.mainPartner.isProspect = true)</domain>
+		<context name="_domain" expr="self.isContact = true AND (self.mainPartner.isCustomer = true OR self.mainPartner.isProspect = true)"/>
 	</action-view>
 	
 	<menuitem name="sc-root-sale-products" parent="sc-root-sale" order="15"

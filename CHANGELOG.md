@@ -13,6 +13,7 @@
 - LEAVE LINE: remove fields length constraint
 - QUALITY CONTROL: Displayed signatures on the first page.
 - Accounting Partner General Ledger: Manage title visibility.
+- CRM/SALES : fix for contacts with mainPartner isProspect do not display
 
 ## Bug Fixes
 - Business Project: set toInvoice for timesheet line based on parent task instead of a task.
