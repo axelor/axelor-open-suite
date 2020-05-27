@@ -63,7 +63,6 @@ import java.util.Optional;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
-@RequestScoped
 public class InvoiceLineServiceImpl implements InvoiceLineService {
 
   protected AccountManagementAccountService accountManagementAccountService;

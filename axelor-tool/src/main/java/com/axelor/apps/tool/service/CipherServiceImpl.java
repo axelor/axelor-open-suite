@@ -30,9 +30,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESedeKeySpec;
-import javax.enterprise.context.RequestScoped;
 
-@RequestScoped
 public class CipherServiceImpl implements CipherService {
 
   private static final String UNICODE_FORMAT = "UTF8";

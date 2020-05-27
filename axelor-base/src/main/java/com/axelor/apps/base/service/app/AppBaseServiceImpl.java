@@ -36,13 +36,11 @@ import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
 import javax.annotation.Priority;
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 import javax.transaction.Transactional;
 
 @Alternative
 @Priority(BaseModule.PRIORITY)
-@ApplicationScoped
 public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService {
 
   protected static String DEFAULT_LOCALE = "en";

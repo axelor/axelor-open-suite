@@ -33,12 +33,10 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@RequestScoped
 public class ImportAccountChart {
 
   private final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());

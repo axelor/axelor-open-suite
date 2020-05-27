@@ -24,9 +24,7 @@ import com.axelor.inject.Beans;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import javax.enterprise.context.RequestScoped;
 
-@RequestScoped
 public class ImportJournal {
   public Object importAccountType(Object bean, Map<String, Object> values) {
     assert bean instanceof Journal;
