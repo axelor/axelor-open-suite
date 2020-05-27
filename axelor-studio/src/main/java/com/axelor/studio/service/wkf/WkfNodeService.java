@@ -21,18 +21,13 @@ import com.axelor.auth.db.Permission;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.repo.PermissionRepository;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.MetaSelect;
 import com.axelor.meta.db.MetaSelectItem;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaSelectRepository;
-import com.axelor.meta.schema.views.Selection.Option;
 import com.axelor.studio.db.WkfNode;
-import com.axelor.studio.exception.IExceptionMessage;
-import com.axelor.studio.web.WkfController;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -44,7 +39,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -178,37 +172,17 @@ class WkfNodeService {
         nodeList,
         (WkfNode node1, WkfNode node2) -> node1.getSequence().compareTo(node2.getSequence()));
 
-    List<Option> oldSeqenceOptions =
-        Beans.get(WkfController.class).getSelect(wkfService.workflow.getStatusMetaField());
-    int oldSequenceCounter = 0;
-
-    if (!CollectionUtils.isEmpty(oldSeqenceOptions)
-        && oldSeqenceOptions.size() != nodeList.size()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, IExceptionMessage.CANNOT_ALTER_NODES);
-    }
-
     for (WkfNode node : nodeList) {
-
-      if (!CollectionUtils.isEmpty(oldSeqenceOptions)
-          && !oldSeqenceOptions.get(oldSequenceCounter).getTitle().equals(node.getTitle())) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, IExceptionMessage.CANNOT_ALTER_NODES);
-      }
-
       log.debug("Procesing node: {}", node.getName());
       String option = node.getSequence().toString();
       MetaSelectItem metaSelectItem = getMetaSelectItem(metaSelect, option);
       if (metaSelectItem == null) {
         metaSelectItem = new MetaSelectItem();
-        metaSelectItem.setValue(
-            !CollectionUtils.isEmpty(oldSeqenceOptions)
-                ? oldSeqenceOptions.get(oldSequenceCounter).getValue()
-                : option);
+        metaSelectItem.setValue(option);
         metaSelect.addItem(metaSelectItem);
       }
 
-      metaSelectItem.setTitle(node.getTitle());
+      metaSelectItem.setTitle(node.getName());
       metaSelectItem.setOrder(node.getSequence());
 
       if (defaultValue == null) {
@@ -234,8 +208,7 @@ class WkfNodeService {
         nodeActions.add(new String[] {name, condition});
         this.wkfService.updateActionGroup(name, actions);
       }
-
-      oldSequenceCounter++;
+      wkfService.manageMenuBuilder(node);
     }
 
     return defaultValue;
@@ -245,7 +218,7 @@ class WkfNodeService {
 
     String name = wkfService.inflector.simplify(node);
     name = name.toLowerCase().replace(" ", "-");
-    name = "action-group-" + wkfService.wkfId + "-" + name;
+    name = "action-group-" + wkfService.wkfCode + "-" + name;
 
     return name;
   }

@@ -341,7 +341,7 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
   protected String getPrefixedAccountCode(String prefix, Partner partner) {
     return (prefix + StringUtils.stripAccent(partner.getFullName()))
         .toUpperCase()
-        .replaceAll("[^A-Z]", "");
+        .replaceAll("[^A-Z0-9]", "");
   }
 
   /**

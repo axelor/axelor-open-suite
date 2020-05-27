@@ -36,5 +36,11 @@
     
     <input file="meta_metaMenu.csv" separator=";" type="com.axelor.meta.db.MetaMenu" search="self.name = :name" update="true" />
     
+    <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence" search="self.importId = :importId" call="com.axelor.csv.script.SequenceScript:computeFullname">
+    	<bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/>
+    	<bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
+    	<bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
+    	<bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
+    </input>
 
 </csv-inputs>

@@ -45,22 +45,22 @@
 		  onLoad="action-group-account-invoice-line-onload">
 		<panel name="titlePanel" hideIf="typeSelect != 1">
 			<field name="productName"  title="Title" requiredIf="typeSelect == 1"  colSpan="9"/>
-			<field name="typeSelect" if="__config__.app.getApp('sale')?.enablePackManagement" colSpan="3" onChange="action-invoice-line-method-empty-line" selection-in="[0,1]" />
+			<field name="typeSelect" colSpan="3" onChange="action-invoice-line-method-empty-line" selection-in="[0,1]" />
             <field name="qty"/>
 		</panel>
 		<panel-tabs name="mainPanelTab" hideIf="typeSelect == 1">
 			<panel name="informationsPanel" title="Information">
 				<field name="product" canEdit="false" onChange="action-group-account-invoice-line-product-onchange" onSelect="action-invoice-line-attrs-set-product-domain-onselect" form-view="product-form" grid-view="product-grid"/>
 				<field name="$isFilterOnSupplier" title="Filter on supplier" type="boolean" widget="boolean-switch"  colSpan="2" if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog()"/>
-				<field name="typeSelect" if="__config__.app.getApp('sale')?.enablePackManagement" colSpan="3" onChange="action-invoice-line-method-empty-line" selection-in="[0,1]"  />
+				<field name="typeSelect" colSpan="3" onChange="action-invoice-line-method-empty-line" selection-in="[0,1]"  />
 				<field name="productName" colSpan="12" requiredIf="typeSelect != 1"/>
 				<field name="qty" colSpan="3" required="true" onChange="action-group-account-invoice-line-qty-onchange"/>
-				<field name="unit" colSpan="3" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
+				<field name="unit" colSpan="3" canEdit="false" requiredIf="typeSelect == 0" form-view="unit-form" grid-view="unit-grid"/>
 				<field name="price" colSpan="3" required="true" onChange="action-invoice-line-method-onchange-price,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount"/>
 				<field name="inTaxPrice" colSpan="3" required="true" onChange="action-invoice-line-method-onchange-intaxprice,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount" hidden="true"/>
 				<panel name="discountPanel" colSpan="12">
 					<field name="discountTypeSelect" colSpan="3" onChange="action-invoice-line-method-compute,action-invoice-line-attrs-discountamount-title,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount"/>
-					<field name="discountAmount" colSpan="3" onChange="action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount" hideIf="discountTypeSelect == 3"/>
+					<field name="discountAmount" colSpan="3" onChange="action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount" hideIf="discountTypeSelect == 0"/>
 					<field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"/>
 				</panel>
 				<field name="taxLine" canEdit="false" onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount" grid-view="tax-line-grid" form-view="tax-line-form" domain="self.endDate = null or self.endDate &gt; :__date__"/>
@@ -138,7 +138,7 @@
 				<field name="qty" required="true" onChange="action-group-account-invoice-line-qty-onchange"/>
 				<field name="price" required="true" onChange="action-invoice-line-method-onchange-price,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution"/>
 				<field name="inTaxPrice" required="true" onChange="action-invoice-line-method-onchange-intaxprice,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution" hidden="true"/>
-				<field name="unit" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
+				<field name="unit" canEdit="false" requiredIf="typeSelect == 0" form-view="unit-form" grid-view="unit-grid"/>
 				<field name="priceDiscounted" hidden="true"/>
 				<field name="taxLine" canEdit="false" onChange="action-invoice-line-method-convert-tax,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution" grid-view="tax-line-grid" form-view="tax-line-form"/>
 				<field name="exTaxTotal" readonly="true"/>
