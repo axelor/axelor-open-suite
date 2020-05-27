@@ -31,7 +31,6 @@
 			<field name="salemanSelect" on="UPDATE"/>
 			<field name="enableCustomerCatalogMgt" on="UPDATE"/>
 			<field name="isDisplaySaleOrderLineNumber" on="UPDATE"/>
-			<field name="isEnabledProductDescriptionCopy" on="UPDATE"/>
 		</track>
 	</entity>
 

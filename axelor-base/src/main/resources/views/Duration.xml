@@ -4,14 +4,14 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
     <grid name="duration-grid" title="Durations" model="com.axelor.apps.base.db.Duration">
+        <field name="value"/>
         <field name="typeSelect"/>
-       	<field name="value"/>
     </grid>
     
     <form name="duration-form" title="Duration" model="com.axelor.apps.base.db.Duration" onNew="action-duration-application-type-select-record">
     	<panel name="mainPanel">
+    	    <field name="value"/>
         	<field name="typeSelect"/>
-        	<field name="value"/>
         	<field name="applicationTypeSelect" hidden="true"/>
         </panel>
     </form>
@@ -21,5 +21,5 @@
       <field name="applicationTypeSelect" expr="2" if="_parent != null &amp;&amp; _parent?._model=='com.axelor.apps.contract.db.ContractVersion'"/>
       <field name="applicationTypeSelect" expr="eval: _applicatioTypeSelect" if="_parent == null &amp;&amp; _applicatioTypeSelect != null"/>
     </action-record>
-    
+
 </object-views>
