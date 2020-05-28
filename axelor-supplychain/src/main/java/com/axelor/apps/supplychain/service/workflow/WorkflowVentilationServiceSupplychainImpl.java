@@ -293,9 +293,11 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
 
         Unit movUnit = stockMoveLine.getUnit(), invUnit = invoiceLine.getUnit();
         try {
-          qtyToCompare =
-              unitConversionService.convert(
-                  invUnit, movUnit, qty, appBaseService.getNbDecimalDigitForQty(), null);
+          if (stockMoveLine.getLineTypeSelect() != StockMoveLineRepository.TYPE_TITLE) {
+            qtyToCompare =
+                unitConversionService.convert(
+                    invUnit, movUnit, qty, appBaseService.getNbDecimalDigitForQty(), null);
+          }
         } catch (AxelorException e) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,

@@ -46,7 +46,9 @@
 		<panel name="titlePanel" hideIf="typeSelect != 1">
 			<field name="productName"  title="Title" requiredIf="typeSelect == 1"  colSpan="9"/>
 			<field name="typeSelect" colSpan="3" onChange="action-invoice-line-method-empty-line" selection-in="[0,1]" />
-            <field name="qty"/>
+            <field name="qty" colSpan="6" />
+            <field name="isShowTotal" if="__config__.app.getApp('sale')?.enablePackManagement" colSpan="3" />
+            <field name="isHideUnitAmounts" if="__config__.app.getApp('sale')?.enablePackManagement" colSpan="3" />
 		</panel>
 		<panel-tabs name="mainPanelTab" hideIf="typeSelect == 1">
 			<panel name="informationsPanel" title="Information">
@@ -364,10 +366,6 @@
 	<action-record name="action-invoice-line-record-project" model="com.axelor.apps.account.db.InvoiceLine" if-module="axelor-business-project">
 		<field name="project" expr="eval: _parent?.project" if="__config__.app.isApp('business-project')" />
 	</action-record>
-
-	<action-attrs name="action-invoice-line-attrs-compute-total-pack">
-		<attribute name="value" for="totalPack" expr="eval:subLineList.collect{it->it.inTaxTotal}.sum()" if="typeSelect == 2 &amp;&amp; subLineList != null &amp;&amp; (__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
-	</action-attrs>
 
 	<action-view name="action-invoice-line-view-team-tasks" title="Related tasks" model="com.axelor.team.db.TeamTask">
 		<view type="grid" name="team-task-grid"/>

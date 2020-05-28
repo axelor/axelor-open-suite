@@ -37,6 +37,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.StockMoveLineService;
+import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
@@ -71,6 +72,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   protected StockMoveLineRepository stockMoveLineRepository;
   protected AppBaseService appBaseService;
   protected SaleOrderRepository saleOrderRepository;
+  protected StockMoveLineServiceImpl stockMoveLineServiceImpl;
 
   @Inject
   public SaleOrderStockServiceImpl(
@@ -82,7 +84,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       StockMoveLineServiceSupplychain stockMoveLineSupplychainService,
       StockMoveLineRepository stockMoveLineRepository,
       AppBaseService appBaseService,
-      SaleOrderRepository saleOrderRepository) {
+      SaleOrderRepository saleOrderRepository,
+      StockMoveLineServiceImpl stockMoveLineServiceImpl) {
 
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
@@ -93,6 +96,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.appBaseService = appBaseService;
     this.saleOrderRepository = saleOrderRepository;
+    this.stockMoveLineServiceImpl = stockMoveLineServiceImpl;
   }
 
   @Override
@@ -156,6 +160,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
         if (qty.signum() > 0 && !existActiveStockMoveForSaleOrderLine(saleOrderLine)) {
           createStockMoveLine(stockMove, saleOrderLine, qty);
         }
+      } else if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE
+          && !existActiveStockMoveForSaleOrderLine(saleOrderLine)) {
+        createStockMoveLineFromTitleSaleOrderLine(stockMove, saleOrderLine);
       }
     }
 
@@ -208,7 +215,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
 
-      if (saleOrderLineServiceSupplyChain.computeUndeliveredQty(saleOrderLine).signum() <= 0) {
+      if (saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_TITLE
+          && saleOrderLineServiceSupplyChain.computeUndeliveredQty(saleOrderLine).signum() <= 0) {
         continue;
       }
 
@@ -504,5 +512,34 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     } else {
       return Optional.empty();
     }
+  }
+
+  @Override
+  public StockMoveLine createStockMoveLineFromTitleSaleOrderLine(
+      StockMove stockMove, SaleOrderLine saleOrderLine) throws AxelorException {
+
+    StockMoveLine stockMoveLine =
+        stockMoveLineServiceImpl.createStockMoveLine(
+            null,
+            saleOrderLine.getProductName(),
+            null,
+            saleOrderLine.getQty(),
+            BigDecimal.ZERO,
+            BigDecimal.ZERO,
+            BigDecimal.ZERO,
+            BigDecimal.ZERO,
+            null,
+            stockMove,
+            null);
+
+    stockMoveLine.setLineTypeSelect(StockMoveLineRepository.TYPE_TITLE);
+    stockMoveLine.setIsShowTotal(saleOrderLine.getIsShowTotal());
+    stockMoveLine.setIsHideUnitAmounts(saleOrderLine.getIsHideUnitAmounts());
+    if (saleOrderLine.getDeliveryState() == 0) {
+      saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
+    }
+    stockMoveLine.setSaleOrderLine(saleOrderLine);
+
+    return stockMoveLine;
   }
 }

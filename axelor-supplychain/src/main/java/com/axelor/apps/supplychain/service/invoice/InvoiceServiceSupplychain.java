@@ -15,38 +15,36 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service;
+package com.axelor.apps.supplychain.service.invoice;
 
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.sale.db.Pack;
-import com.axelor.apps.stock.db.StockMove;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
 
-public interface StockMoveServiceSupplychain {
+public interface InvoiceServiceSupplychain {
 
   /**
-   * For all lines in this stock move with quantity equal to 0, we empty the link to sale order
-   * lines, allowing to delete non delivered sale order lines.
+   * Calculate pack total in invoice lines
    *
-   * @param stockMove
+   * @param invoice
    */
-  void detachNonDeliveredStockMoveLines(StockMove stockMove);
+  public void computePackTotal(Invoice invoice);
 
-  void verifyProductStock(StockMove stockMove) throws AxelorException;
-
-  public boolean isAllocatedStockMoveLineRemoved(StockMove stockMove);
   /**
-   * Convert PackLines of Pack into StockMoveLines.
+   * Reset pack total in invoice lines
    *
-   * @param stockMove
+   * @param invoice
+   */
+  public void resetPackTotal(Invoice invoice);
+
+  /**
+   * Convert PackLines of pack into InvoiceLines.
+   *
+   * @param invoice
    * @param pack
    * @param packQty
-   * @return
+   * @throws AxelorException
    */
-  public StockMove addPack(StockMove stockMove, Pack pack, BigDecimal packQty)
-      throws AxelorException;
-
-  public void computePack(StockMove stockMove);
-
-  public void resetPack(StockMove stockMove);
+  public Invoice addPack(Invoice invoice, Pack pack, BigDecimal packQty) throws AxelorException;
 }

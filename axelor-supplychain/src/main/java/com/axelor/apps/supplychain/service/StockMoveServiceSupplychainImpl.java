@@ -24,8 +24,11 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.sale.db.Pack;
+import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.PackLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
@@ -50,6 +53,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -183,7 +187,10 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     stockMove
         .getStockMoveLineList()
         .stream()
-        .filter(line -> line.getRealQty().signum() == 0)
+        .filter(
+            line ->
+                line.getLineTypeSelect() != StockMoveLineRepository.TYPE_TITLE
+                    && line.getRealQty().signum() == 0)
         .forEach(line -> line.setSaleOrderLine(null));
   }
 
@@ -258,13 +265,17 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       if (stockMoveLine.getSaleOrderLine() != null) {
         SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
 
-        BigDecimal realQty =
-            unitConversionService.convert(
-                stockMoveLine.getUnit(),
-                saleOrderLine.getUnit(),
-                stockMoveLine.getRealQty(),
-                stockMoveLine.getRealQty().scale(),
-                saleOrderLine.getProduct());
+        BigDecimal realQty = stockMoveLine.getRealQty();
+        if (saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_TITLE
+            && stockMoveLine.getLineTypeSelect() != StockMoveLineRepository.TYPE_TITLE) {
+          realQty =
+              unitConversionService.convert(
+                  stockMoveLine.getUnit(),
+                  saleOrderLine.getUnit(),
+                  stockMoveLine.getRealQty(),
+                  stockMoveLine.getRealQty().scale(),
+                  saleOrderLine.getProduct());
+        }
 
         if (stockMove.getTypeSelect() != StockMoveRepository.TYPE_INTERNAL) {
           if (qtyWasDelivered) {
@@ -445,5 +456,67 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     }
 
     return isAllocatedStockMoveLineRemoved;
+  }
+
+  @Override
+  @Transactional
+  public StockMove addPack(StockMove stockMove, Pack pack, BigDecimal packQty)
+      throws AxelorException {
+    for (PackLine packLine :
+        pack.getComponents()
+            .stream()
+            .sorted(Comparator.comparing(PackLine::getSequence))
+            .collect(Collectors.toList())) {
+
+      if (packLine.getTypeSelect() == PackLineRepository.TYPE_TITLE) {
+        stockMoveLineServiceSupplychain.createTitleStockMoveLine(packLine, stockMove, packQty);
+      } else {
+        stockMoveLineServiceSupplychain.createStockMoveLine(packLine, stockMove, packQty);
+      }
+    }
+
+    stockMove.setExTaxTotal(stockMoveToolService.compute(stockMove));
+    stockMove.setConformitySelect(changeConformityStockMoveLine(stockMove));
+
+    return stockMoveRepo.save(stockMove);
+  }
+
+  @Override
+  public void computePack(StockMove stockMove) {
+    List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+
+    if (ObjectUtils.notEmpty(stockMoveLineList)) {
+      stockMoveLineList.sort(Comparator.comparing(StockMoveLine::getSequence));
+      boolean isFirstTitleLine = true;
+      for (StockMoveLine stockMoveLine : stockMoveLineList) {
+        if (stockMoveLine.getLineTypeSelect() == StockMoveLineRepository.TYPE_TITLE) {
+          if (!isFirstTitleLine) {
+            stockMoveLine.setQty(BigDecimal.ZERO);
+            stockMoveLine.setRealQty(BigDecimal.ZERO);
+          }
+          isFirstTitleLine = !isFirstTitleLine;
+        }
+      }
+      stockMove.setStockMoveLineList(stockMoveLineList);
+    }
+  }
+
+  @Override
+  public void resetPack(StockMove stockMove) {
+    List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+
+    if (ObjectUtils.notEmpty(stockMoveLineList)) {
+      stockMoveLineList
+          .stream()
+          .filter(
+              stockMoveLine ->
+                  stockMoveLine.getLineTypeSelect() == StockMoveLineRepository.TYPE_TITLE)
+          .forEach(
+              stockMoveLine -> {
+                stockMoveLine.setIsHideUnitAmounts(Boolean.FALSE);
+                stockMoveLine.setIsShowTotal(Boolean.FALSE);
+              });
+      stockMove.setStockMoveLineList(stockMoveLineList);
+    }
   }
 }

@@ -20,25 +20,34 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
+import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -176,5 +185,158 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       }
     }
     invoiceLine.setBudgetDistributionSumAmount(budgetDistributionSumAmount);
+  }
+
+  /**
+   * To create standard InvoiceLine from standard PackLine
+   *
+   * @param packLine
+   * @param invoice
+   * @param packQty
+   * @param sequence
+   * @return
+   * @throws AxelorException
+   */
+  public List<InvoiceLine> createInvoiceLine(
+      PackLine packLine, Invoice invoice, BigDecimal packQty, Integer sequence)
+      throws AxelorException {
+
+    Product product = packLine.getProduct();
+    BigDecimal qty = packLine.getQuantity().multiply(packQty);
+    boolean isPurchase = InvoiceToolService.isPurchase(invoice);
+    String description = null;
+
+    if ((isPurchase
+            && appAccountService.getAppInvoice().getIsEnabledProductDescriptionCopyForCustomers())
+        || (!isPurchase
+            && appAccountService
+                .getAppInvoice()
+                .getIsEnabledProductDescriptionCopyForSuppliers())) {
+      description = packLine.getProduct().getDescription();
+    }
+
+    TaxLine taxLine =
+        accountManagementAccountService.getTaxLine(
+            appAccountService.getTodayDate(),
+            product,
+            invoice.getCompany(),
+            invoice.getPartner().getFiscalPosition(),
+            isPurchase);
+    BigDecimal price = null;
+    Currency productCurrency;
+
+    if (isPurchase) {
+      price = product.getPurchasePrice();
+      productCurrency = product.getPurchaseCurrency();
+    } else {
+      price = product.getSalePrice();
+      productCurrency = product.getSaleCurrency();
+    }
+
+    if (Boolean.TRUE.equals(product.getInAti())) {
+      price = this.convertUnitPrice(product.getInAti(), taxLine, price);
+    }
+    price =
+        currencyService
+            .getAmountCurrencyConvertedAtDate(
+                productCurrency, invoice.getCurrency(), price, invoice.getInvoiceDate())
+            .setScale(appAccountService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+
+    BigDecimal inTaxPrice = this.convertUnitPrice(false, taxLine, price);
+    BigDecimal unitPrice = invoice.getInAti() ? inTaxPrice : price;
+
+    PriceListLine priceListLine =
+        priceListService.getPriceListLine(product, qty, invoice.getPriceList(), unitPrice);
+    BigDecimal priceDiscounted = unitPrice;
+    BigDecimal discountAmount = BigDecimal.ZERO;
+    int discountTypeSelect = PriceListLineRepository.AMOUNT_TYPE_NONE;
+
+    if (priceListLine != null) {
+      priceDiscounted =
+          priceListService.computeDiscount(
+              unitPrice, priceListLine.getAmountTypeSelect(), priceListLine.getAmount());
+      discountAmount = priceListLine.getAmount();
+      discountTypeSelect = priceListLine.getAmountTypeSelect();
+    }
+
+    InvoiceLineGenerator invoiceLineGenerator =
+        new InvoiceLineGenerator(
+            invoice,
+            packLine.getProduct(),
+            packLine.getProductName(),
+            price,
+            inTaxPrice,
+            priceDiscounted,
+            description,
+            qty,
+            packLine.getUnit(),
+            taxLine,
+            sequence,
+            discountAmount,
+            discountTypeSelect,
+            null,
+            null,
+            false) {
+
+          @Override
+          public List<InvoiceLine> creates() throws AxelorException {
+
+            InvoiceLine invoiceLine = this.createInvoiceLine();
+
+            List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
+            invoiceLines.add(invoiceLine);
+
+            return invoiceLines;
+          }
+        };
+    return invoiceLineGenerator.creates();
+  }
+
+  /**
+   * To create title InvoiceLine from title PackLine
+   *
+   * @param packLine
+   * @param invoice
+   * @param packQty
+   * @param sequence
+   * @return
+   */
+  public List<InvoiceLine> createTitleInvoiceLine(
+      PackLine packLine, Invoice invoice, BigDecimal packQty, Integer sequence)
+      throws AxelorException {
+
+    InvoiceLineGenerator invoiceLineGenerator =
+        new InvoiceLineGenerator(
+            invoice,
+            null,
+            packLine.getProductName(),
+            BigDecimal.ZERO,
+            BigDecimal.ZERO,
+            BigDecimal.ZERO,
+            null,
+            packQty.multiply(packLine.getQuantity()),
+            null,
+            null,
+            sequence,
+            BigDecimal.ZERO,
+            PriceListLineRepository.AMOUNT_TYPE_NONE,
+            BigDecimal.ZERO,
+            BigDecimal.ZERO,
+            false) {
+
+          @Override
+          public List<InvoiceLine> creates() throws AxelorException {
+
+            InvoiceLine invoiceLine = this.createInvoiceLine();
+            invoiceLine.setTypeSelect(InvoiceLineRepository.TYPE_TITLE);
+            invoiceLine.setIsShowTotal(packLine.getIsShowTotal());
+            invoiceLine.setIsHideUnitAmounts(packLine.getIsHideUnitAmounts());
+            List<InvoiceLine> invoiceLines = new ArrayList<InvoiceLine>();
+            invoiceLines.add(invoiceLine);
+
+            return invoiceLines;
+          }
+        };
+    return invoiceLineGenerator.creates();
   }
 }
