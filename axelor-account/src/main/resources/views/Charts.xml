@@ -230,7 +230,7 @@
 			base_address AS _address ON _address.id = _invoice.address
 		LEFT JOIN
 			base_country AS _country ON _country.id = _address.addressl7country
-		WHERE _invoice.status_select = 3 
+		WHERE _invoice.status_select = 3 and _line.type_select = 0
 		GROUP BY
 			_geo_region  
 	  ]]>

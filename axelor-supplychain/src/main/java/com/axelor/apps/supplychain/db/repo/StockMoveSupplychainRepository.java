@@ -17,13 +17,20 @@
  */
 package com.axelor.apps.supplychain.db.repo;
 
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.supplychain.service.StockMoveServiceSupplychain;
+import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
+import javax.persistence.PersistenceException;
 
 public class StockMoveSupplychainRepository extends StockMoveManagementRepository {
+
+  @Inject StockMoveServiceSupplychain stockMoveServiceSupplychain;
 
   @Override
   public StockMove copy(StockMove entity, boolean deep) {
@@ -48,5 +55,20 @@ public class StockMoveSupplychainRepository extends StockMoveManagementRepositor
     copy.setInvoicingStatusSelect(StockMoveRepository.STATUS_NOT_INVOICED);
 
     return copy;
+  }
+
+  @Override
+  public StockMove save(StockMove stockMove) {
+    try {
+      if (Boolean.TRUE.equals(
+          Beans.get(AppSaleService.class).getAppSale().getEnablePackManagement())) {
+        stockMoveServiceSupplychain.computePack(stockMove);
+      } else {
+        stockMoveServiceSupplychain.resetPack(stockMove);
+      }
+      return super.save(stockMove);
+    } catch (Exception e) {
+      throw new PersistenceException(e.getLocalizedMessage());
+    }
   }
 }

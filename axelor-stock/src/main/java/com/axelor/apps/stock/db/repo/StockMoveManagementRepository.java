@@ -102,6 +102,11 @@ public class StockMoveManagementRepository extends StockMoveRepository {
 
     int available = 0, availableForProduct = 0, missing = 0;
     for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+
+      if (stockMoveLine.getLineTypeSelect() == StockMoveLineRepository.TYPE_TITLE) {
+        continue;
+      }
+
       Beans.get(StockMoveLineService.class)
           .updateAvailableQty(stockMoveLine, stockMove.getFromStockLocation());
       Product product = stockMoveLine.getProduct();

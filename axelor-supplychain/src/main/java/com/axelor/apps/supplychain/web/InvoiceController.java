@@ -20,14 +20,18 @@ package com.axelor.apps.supplychain.web;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.PackRepository;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
+import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceService;
 import com.axelor.db.JPA;
 import com.axelor.exception.service.TraceBackService;
@@ -37,9 +41,12 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
@@ -304,6 +311,29 @@ public class InvoiceController {
                   com.axelor.apps.supplychain.exception.IExceptionMessage
                       .SUBSCRIPTION_INVOICE_GENERATION_ERROR),
               e.getMessage()));
+      TraceBackService.trace(e);
+    }
+  }
+
+  public void addPack(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+
+      String invoiceId = context.get("_id").toString();
+      Invoice invoice = Beans.get(InvoiceRepository.class).find(Long.parseLong(invoiceId));
+      @SuppressWarnings("unchecked")
+      LinkedHashMap<String, Object> packMap =
+          (LinkedHashMap<String, Object>) request.getContext().get("pack");
+      String packId = packMap.get("id").toString();
+      Pack pack = Beans.get(PackRepository.class).find(Long.parseLong(packId));
+
+      String qty = context.get("qty").toString();
+      BigDecimal packQty = new BigDecimal(qty);
+
+      Beans.get(InvoiceServiceSupplychain.class).addPack(invoice, pack, packQty);
+
+      response.setCanClose(true);
+    } catch (Exception e) {
       TraceBackService.trace(e);
     }
   }

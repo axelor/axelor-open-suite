@@ -316,6 +316,7 @@ else row["last_modified_by"]</expression>
                 </structure>
                 <structure>
                     <property name="columnName">picking_comment</property>
+                    <property name="alias">picking_comment</property>
                     <property name="analysis">dimension</property>
                 </structure>
                 <structure>
@@ -439,6 +440,7 @@ else row["last_modified_by"]</expression>
                 </structure>
                 <structure>
                     <property name="columnName">picking_order_comments</property>
+                    <property name="alias">picking_order_comments</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">picking_order_comments</text-property>
                     <text-property name="heading">picking_order_comments</text-property>
@@ -1235,6 +1237,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="displayName">isTitleLine</text-property>
                     <text-property name="heading">isTitleLine</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">pack_id</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">pack_id</text-property>
+                    <text-property name="heading">pack_id</text-property>
+                </structure>
             </list-property>
             <list-property name="filter"/>
             <list-property name="parameters">
@@ -1319,7 +1327,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <structure>
                         <property name="position">14</property>
                         <property name="name">isTitleLine</property>
-                        <property name="dataType">integer</property>
+                        <property name="dataType">boolean</property>
+                    </structure>
+                    <structure>
+                        <property name="position">15</property>
+                        <property name="name">pack_id</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                 </list-property>
             </structure>
@@ -1420,8 +1433,15 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="position">14</property>
                     <property name="name">isTitleLine</property>
                     <property name="nativeName">isTitleLine</property>
-                    <property name="dataType">integer</property>
+                    <property name="dataType">boolean</property>
                     <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">15</property>
+                    <property name="name">pack_id</property>
+                    <property name="nativeName">pack_id</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select StockMove.id as stock_move_id, StockMoveLine.id, Product.code as product_code, StockMoveLine.product_name as product_name,
@@ -1429,7 +1449,9 @@ BarCodeFile.file_path as barcode_picture,Product.bar_code as bar_code,
 StockMoveLine.real_qty, Unit.label_to_printing as unit_code, TrackingNumber.tracking_number_seq,
 StockMoveLine.description, StockLocationLine.rack, SaleOrderLine.picking_order_info,
 StockMoveLine.sequence,
-( SaleOrderLine.type_select = 2 or PurchaseOrderLine.is_title_line) as "isTitleLine"
+StockMoveLine.line_type_select = 1 as "isTitleLine",
+(SELECT id from stock_stock_move_line as SML WHERE SML.stock_move = StockMoveLine.stock_move 
+AND SML.line_type_select = 1 AND SML.sequence <= StockMoveLine.sequence order by SML.sequence DESC limit 1) as "pack_id"
 from stock_stock_move as StockMove
 inner join stock_stock_move_line as StockMoveLine on (StockMoveLine.stock_move = StockMove.id)
 left join base_product as Product on (StockMoveLine.product = Product.id)
@@ -2557,7 +2579,8 @@ row["first_name"]
                                 <property name="name">isTitleLine</property>
                                 <text-property name="displayName">isTitleLine</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["isTitleLine"]</expression>
-                                <property name="dataType">integer</property>
+                                <property name="dataType">boolean</property>
+                                <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">pickingOrderInfo</property>
@@ -2600,9 +2623,20 @@ row["first_name"]
                                 <expression name="expression" type="javascript">dataSetRow["real_qty"]</expression>
                                 <property name="dataType">decimal</property>
                             </structure>
+                            <structure>
+                                <property name="name">isTitleLine_1</property>
+                                <text-property name="displayName">isTitleLine</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["isTitleLine"]</expression>
+                                <property name="dataType">boolean</property>
+                            </structure>
+                            <structure>
+                                <property name="name">pack_id</property>
+                                <text-property name="displayName">pack_id</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["pack_id"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
                         </list-property>
-                        <method name="onCreate"><![CDATA[rowNum=0;
-rowNumD=0;]]></method>
+                        <method name="onCreate"><![CDATA[rowNum=0;]]></method>
                         <list-property name="filter">
                             <structure>
                                 <property name="operator">in</property>
@@ -3044,7 +3078,7 @@ rowNumD=0;]]></method>
                         </header>
                         <group id="3805">
                             <property name="groupName">ProductGroup</property>
-                            <expression name="keyExpr" type="javascript">row["product_code"]+row["product_name"]+row["unit_code"]</expression>
+                            <expression name="keyExpr" type="javascript">(row["isTitleLine"] || row._outer["display_line_details_on_printing"]) ? row["id"] : row["pack_id"] != null ? row["pack_id"] + row["product_code"]+row["product_name"]+row["unit_code"] : row["product_code"]+row["product_name"]+row["unit_code"]</expression>
                             <property name="hideDetail">false</property>
                             <list-property name="sort">
                                 <structure>
@@ -3055,14 +3089,21 @@ rowNumD=0;]]></method>
                             </list-property>
                             <header>
                                 <row id="3806">
-                                    <method name="onCreate"><![CDATA[rowNum++;]]></method>
+                                    <method name="onPrepare"><![CDATA[vars["is_first_title_line"] = false;]]></method>
+                                    <method name="onCreate"><![CDATA[if (this.getRowData().getColumnValue("isTitleLine") == true) {
+      vars["is_first_title_line"] = !vars["is_first_title_line"];
+}
+if (this.getRowData().getColumnValue("isTitleLine") == false || vars["is_first_title_line"]) {
+rowNum++;
+}
+]]></method>
                                     <property name="backgroundColor">#EEEEEE</property>
                                     <property name="fontWeight">bold</property>
                                     <property name="height">0.6879166666666666cm</property>
                                     <list-property name="visibility">
                                         <structure>
                                             <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">row._outer["display_line_details_on_printing"]</expression>
+                                            <expression name="valueExpr" type="javascript">row._outer["display_line_details_on_printing"] || (row["isTitleLine"] &amp;&amp; vars["is_first_title_line"])</expression>
                                         </structure>
                                     </list-property>
                                     <cell id="4150">
@@ -3159,6 +3200,12 @@ rowNumD=0;]]></method>
                                             <property name="marginLeft">0pt</property>
                                             <property name="textAlign">left</property>
                                             <property name="dataSet">TranslateDS</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row._outer["isTitleLine"]</expression>
+                                                </structure>
+                                            </list-property>
                                             <list-property name="paramBindings">
                                                 <structure>
                                                     <property name="paramName">param_1</property>
@@ -3246,7 +3293,7 @@ rowNumD=0;]]></method>
                                     <list-property name="visibility">
                                         <structure>
                                             <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">!row._outer["picking_order_printing_detailed"] || row._outer["display_line_details_on_printing"]</expression>
+                                            <expression name="valueExpr" type="javascript">!row._outer["picking_order_printing_detailed"] || row._outer["display_line_details_on_printing"] || (row["isTitleLine"] &amp;&amp; !vars["is_first_title_line"])</expression>
                                         </structure>
                                     </list-property>
                                     <cell id="4151">
@@ -3469,6 +3516,12 @@ rowNumD=0;]]></method>
                                             <property name="borderTopStyle">none</property>
                                             <property name="textAlign">center</property>
                                             <property name="dataSet">TranslateDS</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row._outer["isTitleLine"] &amp;&amp; vars["is_first_title_line"]</expression>
+                                                </structure>
+                                            </list-property>
                                             <list-property name="paramBindings">
                                                 <structure>
                                                     <property name="paramName">param_1</property>
@@ -3732,7 +3785,7 @@ rowNumD=0;]]></method>
                                     <list-property name="visibility">
                                         <structure>
                                             <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">!row._outer["picking_order_printing_detailed"] || row._outer["display_line_details_on_printing"]</expression>
+                                            <expression name="valueExpr" type="javascript">!row._outer["picking_order_printing_detailed"] || row._outer["display_line_details_on_printing"] || (row["isTitleLine"] &amp;&amp; !vars["is_first_title_line"])</expression>
                                         </structure>
                                     </list-property>
                                     <cell id="4152">
@@ -3942,13 +3995,12 @@ rowNumD=0;]]></method>
                         </group>
                         <detail>
                             <row id="4086">
-                                <method name="onCreate"><![CDATA[rowNumD++;]]></method>
                                 <property name="backgroundColor">#EEEEEE</property>
                                 <property name="height">0.688cm</property>
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">!row._outer["display_line_details_on_printing"]</expression>
+                                        <expression name="valueExpr" type="javascript">!row._outer["display_line_details_on_printing"] || (row["isTitleLine"] &amp;&amp; !vars["is_first_title_line"])</expression>
                                     </structure>
                                 </list-property>
                                 <cell id="4153">
@@ -3966,7 +4018,7 @@ rowNumD=0;]]></method>
                                         <property name="fontWeight">bold</property>
                                         <property name="textAlign">right</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>rowNumD</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>rowNum</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="4289">
@@ -4051,6 +4103,12 @@ rowNumD=0;]]></method>
                                         <property name="fontWeight">bold</property>
                                         <property name="marginLeft">0pt</property>
                                         <property name="textAlign">left</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row["isTitleLine"]</expression>
+                                            </structure>
+                                        </list-property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[- <VALUE-OF>row["unit_code"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -4119,7 +4177,7 @@ rowNumD=0;]]></method>
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">!row._outer["picking_order_printing_detailed"] || !row._outer["display_line_details_on_printing"]</expression>
+                                        <expression name="valueExpr" type="javascript">!row._outer["picking_order_printing_detailed"] || !row._outer["display_line_details_on_printing"] || (row["isTitleLine"] &amp;&amp; !vars["is_first_title_line"])</expression>
                                     </structure>
                                 </list-property>
                                 <cell id="4301">
@@ -4336,6 +4394,12 @@ rowNumD=0;]]></method>
                                         <property name="borderTopStyle">none</property>
                                         <property name="textAlign">center</property>
                                         <property name="dataSet">TranslateDS</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row._outer["isTitleLine"] &amp;&amp; vars["is_first_title_line"]</expression>
+                                            </structure>
+                                        </list-property>
                                         <list-property name="paramBindings">
                                             <structure>
                                                 <property name="paramName">param_1</property>
@@ -4599,7 +4663,7 @@ rowNumD=0;]]></method>
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">!row._outer["picking_order_printing_detailed"] || !row._outer["display_line_details_on_printing"]</expression>
+                                        <expression name="valueExpr" type="javascript">!row._outer["picking_order_printing_detailed"] || !row._outer["display_line_details_on_printing"] || (row["isTitleLine"] &amp;&amp; !vars["is_first_title_line"])</expression>
                                     </structure>
                                 </list-property>
                                 <cell id="4314">
@@ -4865,6 +4929,12 @@ row["picking_comment"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bott
             </row>
         </grid>
     </body>
+    <property name="pageVariables">
+        <variable-element name="is_first_title_line">
+            <expression name="value" type="javascript">new Boolean()</expression>
+            <property name="type">report</property>
+        </variable-element>
+    </property>
     <list-property name="images">
         <structure>
             <property name="name">checkbox.png</property>

@@ -75,4 +75,7 @@ public interface SaleOrderStockService {
    * @return the found sale order, or an empty optional if no sale order was found.
    */
   Optional<SaleOrder> findSaleOrder(StockMove stockMove);
+
+  public StockMoveLine createStockMoveLineFromTitleSaleOrderLine(
+      StockMove stockMove, SaleOrderLine saleOrderLine) throws AxelorException;
 }

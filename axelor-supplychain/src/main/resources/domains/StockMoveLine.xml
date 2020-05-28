@@ -16,6 +16,8 @@
 		<decimal name="requestedReservedQty" title="Requested reserved qty" precision="20" scale="10"/>
 		
 		<decimal name="qtyInvoiced" title="Invoiced Qty" precision="20" scale="10"/>
+		<boolean name="isShowTotal" title="Show Total"/>
+  	    <boolean name="isHideUnitAmounts" title="Hide Unit Amounts"/>
 
 		<boolean name="isQtyRequested" readonly="true" title="Quantity requested"/>
 

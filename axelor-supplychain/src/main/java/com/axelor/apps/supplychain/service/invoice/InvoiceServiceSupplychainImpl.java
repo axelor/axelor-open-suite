@@ -18,7 +18,9 @@
 package com.axelor.apps.supplychain.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -32,23 +34,33 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.sale.db.AdvancePayment;
+import com.axelor.apps.sale.db.Pack;
+import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.PackLineRepository;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
+import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl {
+public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
+    implements InvoiceServiceSupplychain {
+
+  protected InvoiceLineSupplychainService invoiceLineSupplychainService;
 
   @Inject
   public InvoiceServiceSupplychainImpl(
@@ -60,7 +72,8 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl {
       AppAccountService appAccountService,
       PartnerService partnerService,
       InvoiceLineService invoiceLineService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      InvoiceLineSupplychainService invoiceLineSupplychainService) {
     super(
         validateFactory,
         ventilateFactory,
@@ -71,6 +84,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl {
         partnerService,
         invoiceLineService,
         accountConfigService);
+    this.invoiceLineSupplychainService = invoiceLineSupplychainService;
   }
 
   @Override
@@ -171,5 +185,90 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl {
           .flatMap(move -> move.getMoveLineList().stream())
           .collect(Collectors.toList());
     }
+  }
+
+  @Override
+  public void computePackTotal(Invoice invoice) {
+    List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
+
+    if (ObjectUtils.notEmpty((invoiceLineList))) {
+
+      invoiceLineList.sort(Comparator.comparing(InvoiceLine::getSequence));
+
+      BigDecimal totalExTaxTotal = BigDecimal.ZERO;
+      BigDecimal totalInTaxTotal = BigDecimal.ZERO;
+      boolean isShowTotal = false;
+      boolean isFirstTitleLine = true;
+      for (InvoiceLine invoiceLine : invoiceLineList) {
+        if (invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_TITLE) {
+          if (isFirstTitleLine) {
+            isShowTotal = invoiceLine.getIsShowTotal();
+          } else {
+            invoiceLine.setQty(BigDecimal.ZERO);
+          }
+          isFirstTitleLine = !isFirstTitleLine;
+          invoiceLine.setExTaxTotal(
+              isFirstTitleLine && isShowTotal ? totalExTaxTotal : BigDecimal.ZERO);
+          invoiceLine.setInTaxTotal(
+              isFirstTitleLine && isShowTotal ? totalInTaxTotal : BigDecimal.ZERO);
+          totalExTaxTotal = BigDecimal.ZERO;
+          totalInTaxTotal = BigDecimal.ZERO;
+        } else {
+          totalExTaxTotal = totalExTaxTotal.add(invoiceLine.getExTaxTotal());
+          totalInTaxTotal = totalInTaxTotal.add(invoiceLine.getInTaxTotal());
+        }
+      }
+    }
+    invoice.setInvoiceLineList(invoiceLineList);
+  }
+
+  @Override
+  public void resetPackTotal(Invoice invoice) {
+    List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
+    if (ObjectUtils.notEmpty(invoiceLineList)) {
+      invoiceLineList
+          .stream()
+          .filter(invoiceLine -> invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_TITLE)
+          .forEach(
+              invoiceLine -> {
+                invoiceLine.setIsHideUnitAmounts(Boolean.FALSE);
+                invoiceLine.setIsShowTotal(Boolean.FALSE);
+                invoiceLine.setExTaxTotal(BigDecimal.ZERO);
+                invoiceLine.setInTaxTotal(BigDecimal.ZERO);
+              });
+      invoice.setInvoiceLineList(invoiceLineList);
+    }
+  }
+
+  @Override
+  @Transactional
+  public Invoice addPack(Invoice invoice, Pack pack, BigDecimal packQty) throws AxelorException {
+    Integer sequence = 0;
+    List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
+    if (ObjectUtils.notEmpty(invoiceLineList)) {
+      sequence = invoiceLineList.stream().mapToInt(InvoiceLine::getSequence).max().getAsInt();
+    }
+    List<InvoiceLine> invoiceLineListGenerated = null;
+    for (PackLine packLine :
+        pack.getComponents()
+            .stream()
+            .sorted(Comparator.comparing(PackLine::getSequence))
+            .collect(Collectors.toList())) {
+      if (packLine.getTypeSelect() == PackLineRepository.TYPE_TITLE) {
+        invoiceLineListGenerated =
+            invoiceLineSupplychainService.createTitleInvoiceLine(
+                packLine, invoice, packQty, ++sequence);
+      } else {
+        invoiceLineListGenerated =
+            invoiceLineSupplychainService.createInvoiceLine(packLine, invoice, packQty, ++sequence);
+      }
+      invoiceLineList.addAll(invoiceLineListGenerated);
+    }
+    if (ObjectUtils.notEmpty(invoiceLineList)) {
+      invoice = this.compute(invoice);
+      invoiceRepo.save(invoice);
+    }
+
+    return invoice;
   }
 }
