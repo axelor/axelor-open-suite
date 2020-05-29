@@ -66,6 +66,7 @@
     </action-method>
 
     <search-filters name="reconcile-filters" model="com.axelor.apps.account.db.Reconcile" title="Reconcile filters">
+    	<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<filter title="Draft">
 			<domain>self.statusSelect = 1</domain>
 		</filter>

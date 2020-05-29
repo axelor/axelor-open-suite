@@ -669,6 +669,21 @@
 	
 
 	<search-filters name="purchase-order-filters" model="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchases Order filters">
+		<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="versionNumber" hidden="true" if="!__config__.app.getApp('purchase').getManagePurchaseOrderVersion()"/>
+		<field name="project" hidden="true" if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
+		<field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
+		<field name="tradingName" hidden="true" if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+		<field name="companyBankDetails" hidden="true" if="!__config__.app.getApp('base').getManageMultiBanks()"/>
+		<field name="stockLocation" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="interco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="createdByInterco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="expectedRealisationDate" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="amountToBeSpreadOverTheTimetable" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="timetableList" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="budget" hidden="true" if="!__config__.app.isApp('budget')"/>
+		<field name="paymentMode" hidden="true" if="!__config__.app.isApp('supplychain')"/> 
+		<field name="paymentCondition" hidden="true" if="!__config__.app.isApp('supplychain')"/>
 		<filter title="My RFQs">
 			<domain>(self.statusSelect = 1 or self.statusSelect = 2) and self.buyerUser.id = :_internalUser</domain>
 		</filter>

@@ -149,5 +149,9 @@
 		<call class="com.axelor.apps.account.web.FixedAssetController" method="createAnalyticDistributionWithTemplate"/>
 	</action-method>
     
+	<search-filters name="fixed-asset-filters" model="com.axelor.apps.account.db.FixedAsset" title="Fixed asset filters">
+    	<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    	<field name="analyticDistributionTemplate" hidden="true" if="!__config__.app.getApp('account').getManageAnalyticAccounting()"/>
+    </search-filters>
 
 </object-views>

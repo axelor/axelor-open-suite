@@ -99,4 +99,14 @@
 	  <attribute name="hidden" expr="eval:_businessProject" for="createProjectBtn"/>
 	</action-attrs>
 	
+	<search-filters name="project-template-filters" model="com.axelor.apps.project.db.ProjectTemplate" title="Project template filters">
+		<field name="isInvoicingExpenses" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="isInvoicingPurchases" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="invoicingTypeSelect" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="invoicingComment" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="productSet" hidden="true" if="!__config__.app.isApp('employee')"/>
+		<field name="imputable" hidden="true" if="!__config__.app.isApp('employee')"/>
+		<field name="isBusinessProject" hidden="true" if="!__config__.app.isApp('business-project')"/>
+	</search-filters>
+
 </object-views>

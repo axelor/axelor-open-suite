@@ -149,6 +149,7 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
         .model(TeamTask.class.getName())
         .add("grid", "team-task-grid")
         .add("form", "team-task-form")
+        .param("search-filters", "team-task-filters")
         .domain("self.parentTask = " + root.getId());
   }
 

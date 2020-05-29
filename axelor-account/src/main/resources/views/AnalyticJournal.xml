@@ -22,5 +22,8 @@
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
     </action-record>
     
+    <search-filters name="analytic-journal-filters" model="com.axelor.apps.account.db.AnalyticJournal" title="Analytic journal filters">
+    	<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
     
 </object-views>

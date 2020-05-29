@@ -624,5 +624,13 @@
 	<action-method name="action-stock-move-line-method-set-available-status">
 		<call class="com.axelor.apps.stock.web.StockMoveLineController" method="setAvailableStatus"/>
 	</action-method>
+	
+	<search-filters name="stock-move-line-filters" model="com.axelor.apps.stock.db.StockMoveLine" title="Stock move line filters">
+        <field name="reservationDateTime" hidden="true" if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation())"/>
+		<field name="reservedQty" hidden="true" if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation())"/>
+		<field name="requestedReservedQty" hidden="true" if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageStockReservation())"/>
+		<field name="productModel" hidden="true" if="!__config__.app.getApp('base').getManageProductVariants()"/>
+		<field name="isQtyRequested" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    </search-filters>
 
 </object-views>

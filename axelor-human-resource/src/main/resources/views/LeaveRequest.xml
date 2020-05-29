@@ -274,4 +274,8 @@
 	    <field name="leaveLine" expr="eval: null"/>
 	</action-record>
 	
+	<search-filters name="leave-request-filters" model="com.axelor.apps.hr.db.LeaveRequest" title="Leave request filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
+	
 </object-views>

@@ -204,5 +204,9 @@
 	<action-validate name="action-bank-reconciliation-check-incomplete-bankreconciliation-line">
    		<alert message="There is at least one incomplete bank reconciliation. Are you sure you want to continue ?" if="bankReconciliationLineList != null &amp;&amp; bankReconciliationLineList.find{it.moveLine == null} != null" />
    	</action-validate>
+   	
+   	<search-filters name="bank-reconciliation-filters" model="com.axelor.apps.bankpayment.db.BankReconciliation" title="Bank reconciliation filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
     
 </object-views>

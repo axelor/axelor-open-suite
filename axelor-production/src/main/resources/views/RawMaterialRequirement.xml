@@ -37,5 +37,9 @@
   <action-method name="action-product-need-report-method-print">
     <call class="com.axelor.apps.production.web.RawMaterialRequirementController" method="print"/>
   </action-method>
+  
+  <search-filters name="raw-material-requirement-filters" model="com.axelor.apps.production.db.RawMaterialRequirement" title="Raw material requirement filters">
+  	<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+  </search-filters>
 
 </object-views>

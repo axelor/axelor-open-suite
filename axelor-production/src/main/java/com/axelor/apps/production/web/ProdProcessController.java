@@ -140,6 +140,7 @@ public class ProdProcessController {
             .model(ProdProcess.class.getName())
             .add("form", "prod-process-form")
             .add("grid", "prod-process-grid")
+            .param("search-filters", "prod-process-filters")
             .context("_showRecord", String.valueOf(copy.getId()))
             .map());
   }
