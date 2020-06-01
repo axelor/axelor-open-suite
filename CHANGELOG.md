@@ -5,6 +5,7 @@
 - CRM/SALES : fix for contacts with mainPartner isProspect do not display
 - Mail message: fix an issue where some emails are not being sent in a batch.
 - ADVANCED SEARCH : Added display condition on fields using app config settings
+- BANK STATEMENT LINE : change orderBy of afb120 bank statement line grid.
 
 ## [5.3.6] - 2020-05-26
 ## Improvements
