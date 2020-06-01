@@ -172,4 +172,11 @@
         <field name="addressL7Country" expr="eval: street.city.country" if="street" />
     </action-record>
 
+	<search-filters name="address-filters" model="com.axelor.apps.base.db.Address" title="Address filters">
+        <field name="streetNumber" hidden="true" if="!__config__.app.getApp('base').getStoreStreets()" />
+        <field name="street" hidden="true" if="!__config__.app.getApp('base').getStoreStreets()" />
+        <field name="addressL4" hidden="true" if="__config__.app.getApp('base').getStoreStreets()" />
+        <field name="certifiedOk" hidden="true" if="!__config__.app.getApp('base').getHasQasValidation()"/>
+        <field name="pickList" hidden="true" if="!__config__.app.getApp('base').getHasQasValidation()"/>
+    </search-filters>
 </object-views>

@@ -169,5 +169,9 @@
         <view type="grid" name="configurator-grid"/>
         <context name="_configuratorCreator" expr="eval: __self__"/>
     </action-view>
+    
+    <search-filters name="configurator-creator-filters" model="com.axelor.apps.sale.db.ConfiguratorCreator" title="Configurator creator filters">
+        <field name="configuratorBom" hidden="true" if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getEnableConfigurator())"/>
+    </search-filters>
 
 </object-views>

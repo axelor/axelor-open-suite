@@ -102,4 +102,8 @@
 		<attribute name="hidden" for="refreshButton" expr="true"/>
 	</action-attrs>
 	
+	<search-filters name="payroll-preparation-filters" model="com.axelor.apps.hr.db.PayrollPreparation" title="Payroll preparation filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
+	
 </object-views>

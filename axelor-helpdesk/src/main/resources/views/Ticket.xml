@@ -287,4 +287,10 @@
 	<action-method name="action-ticket-method-compute-real-total-duration">
 		<call class="com.axelor.apps.helpdesk.web.TicketController" method="computeRealDuration"/>
 	</action-method>
+	
+	<search-filters name="ticket-filters" model="com.axelor.apps.helpdesk.db.Ticket" title="Ticket filters">
+        <field name="realTotalDuration" hidden="true" if="!__config__.app.getApp('helpdesk').getManageTimer()"/>
+		<field name="timerState" hidden="true" if="!__config__.app.getApp('helpdesk').getManageTimer()"/>
+		<field name="lead" hidden="true" if="!__config__.app.isApp('crm')"/>
+    </search-filters>
 </object-views>

@@ -49,5 +49,12 @@
 		<field name="name"/>
 		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
   </grid>
+  
+  <search-filters name="configurator-prod-process-filters" model="com.axelor.apps.production.db.ConfiguratorProdProcess" title="Configurator Prod Process filters">
+  	<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+  	<field name="defWorkshopStockLocationAsFormula" hidden="true" if="!__config__.app.getApp('production').getManageWorkshop()"/>
+    <field name="workshopStockLocation" hidden="true" if="!__config__.app.getApp('production').getManageWorkshop()"/>
+    <field name="workshopStockLocationFormula" hidden="true" if="!__config__.app.getApp('production').getManageWorkshop()"/>                
+  </search-filters>
     
 </object-views>

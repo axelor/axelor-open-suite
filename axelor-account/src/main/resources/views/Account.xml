@@ -169,4 +169,8 @@
     	<call class="com.axelor.apps.account.web.AccountController" method="checkIfCodeAccountAlreadyExistForCompany"/>
     </action-method>
     
+    <search-filters name="account-filters" model="com.axelor.apps.account.db.Account" title="Account filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
+    
 </object-views>

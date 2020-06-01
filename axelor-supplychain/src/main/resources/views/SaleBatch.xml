@@ -59,4 +59,8 @@
 	    <attribute name="hidden" expr="eval: actionSelect != 1" for="InvoicingPage"/>
 	</action-attrs>
 	
+	<search-filters name="sale-batch-filters" model="com.axelor.apps.sale.db.SaleBatch" title="Sale batch filters">
+		<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+	</search-filters>
+	
 </object-views>

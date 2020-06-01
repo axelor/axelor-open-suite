@@ -120,12 +120,14 @@
 		model="com.axelor.apps.crm.db.TargetConfiguration" >
 		<view type="grid" name="target-configuration-grid"/>
 		<view type="form" name="target-configuration-form"/>
+		<view-param name="search-filters" value="target-configuration-filters"/>
 	</action-view>
 	
 	<action-view name="crm.conf.target" title="Objectives"
 		model="com.axelor.apps.crm.db.Target" >
 		<view type="grid" name="target-grid"/>
 		<view type="form" name="target-form"/>
+		<view-param name="search-filters" value="target-filters"/>
 	</action-view>
 	
 	<menuitem name="crm-conf-lost-reason" parent="crm-conf"
@@ -153,6 +155,7 @@
 		model="com.axelor.apps.crm.db.CrmBatch" >
 		<view type="grid" name="crm-batch-grid"/>
 		<view type="form" name="crm-batch-form"/>
+		<view-param name="search-filters" value="crm-batch-filters"/>
 	</action-view>
 
 	<!-- Top Menu for Activity and Create Entry for opportunity.... -->
@@ -167,6 +170,7 @@
 		<view type="grid" name="event-grid"/>
 		<view type="form" name="event-form"/>
 		<view type="calendar" name="event-calendar-color-by-calendar"/>
+		<view-param name="search-filters" value="event-filters"/>
 		<domain>self.typeSelect = 2</domain>
 		<context name="_internalUserId" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
@@ -182,6 +186,7 @@
 		<view type="grid" name="event-grid"/>
 		<view type="form" name="event-form"/>
 		<view type="calendar" name="event-calendar-color-by-calendar"/>
+		<view-param name="search-filters" value="event-filters"/>
 		<domain>self.typeSelect = 1</domain>
 		<context name="_internalUserId" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
@@ -197,6 +202,7 @@
 		<view type="grid" name="event-grid"/>
 		<view type="form" name="event-form"/>
 		<view type="calendar" name="event-calendar-color-by-calendar"/>
+		<view-param name="search-filters" value="event-filters"/>
 		<domain>self.typeSelect = 3</domain>
 		<context name="_internalUserId" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>

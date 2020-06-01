@@ -106,4 +106,7 @@
     <attribute for="declarationOfExchangesPanel.unitPriceUntaxed" name="hidden" expr="eval: stockMoveTypeSelect == 3"/>
   </action-attrs>
 
+	<search-filters name="declaration-of-exchanges-filters" model="com.axelor.apps.supplychain.db.DeclarationOfExchanges" title="Declaration of exchange filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
 </object-views>

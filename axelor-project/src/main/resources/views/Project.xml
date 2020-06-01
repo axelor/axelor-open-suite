@@ -833,4 +833,29 @@
         <view type="form" name="task-form" />
     </action-view>
 
+	<search-filters name="project-filters" model="com.axelor.apps.project.db.Project" title="Project filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+        <field name="resourceBookingList" hidden="true" if="!__config__.app.getApp('project').resourceManagement"/>
+        <field name="productionOrderList" hidden="true" if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowProductionOrderRelatedToProject())"/>
+        <field name="clientPartner" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="currency" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="priceList" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="contactPartner" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="customerAddress" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="totalPlannedHrs" hidden="true" if="!__config__.app.isApp('employee')"/>
+		<field name="timeSpent" hidden="true" if="!__config__.app.isApp('timesheet')"/>
+		<field name="toInvoice" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="isInvoicingTimesheet" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="isInvoicingExpenses" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="isInvoicingPurchases" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="invoicingSequenceSelect" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="consolidatePhaseWhenInvoicing" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="invoicingComment" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="manualElementList" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="roadmapList" hidden="true" if="!__config__.app.isApp('business-support')"/>
+		<field name="announcementList" hidden="true" if="!__config__.app.isApp('business-support')"/>
+		<field name="productSet" hidden="true" if="!__config__.app.isApp('employee')"/>
+		<field name="imputable" hidden="true" if="!__config__.app.isApp('employee')"/>
+		<field name="isBusinessProject" hidden="true" if="!__config__.app.isApp('business-project')"/>
+    </search-filters>
 </object-views>
