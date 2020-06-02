@@ -52,11 +52,11 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
   }
 
   @Override
-  public String printSaleOrder(SaleOrder saleOrder, boolean proforma, String format, boolean groupProducts)
+  public String printSaleOrder(SaleOrder saleOrder, boolean proforma, String format)
       throws AxelorException, IOException {
     String fileName = saleOrderService.getFileName(saleOrder) + "." + format;
 
-    return PdfTool.getFileLinkFromPdfFile(print(saleOrder, proforma, format, groupProducts), fileName);
+    return PdfTool.getFileLinkFromPdfFile(print(saleOrder, proforma, format), fileName);
   }
 
   @Override
@@ -68,7 +68,7 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
         new ThrowConsumer<SaleOrder>() {
           @Override
           public void accept(SaleOrder saleOrder) throws Exception {
-            printedSaleOrders.add(print(saleOrder, false, ReportSettings.FORMAT_PDF, saleOrder.getGroupProductsOnPrintings()));
+            printedSaleOrders.add(print(saleOrder, false, ReportSettings.FORMAT_PDF));
           }
         });
     Integer status = Beans.get(SaleOrderRepository.class).find(ids.get(0)).getStatusSelect();
@@ -76,13 +76,13 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
     return PdfTool.mergePdfToFileLink(printedSaleOrders, fileName);
   }
 
-  public File print(SaleOrder saleOrder, boolean proforma, String format, boolean groupProducts) throws AxelorException {
-    ReportSettings reportSettings = prepareReportSettings(saleOrder, proforma, format, groupProducts);
+  public File print(SaleOrder saleOrder, boolean proforma, String format) throws AxelorException {
+    ReportSettings reportSettings = prepareReportSettings(saleOrder, proforma, format);
     return reportSettings.generate().getFile();
   }
 
   @Override
-  public ReportSettings prepareReportSettings(SaleOrder saleOrder, boolean proforma, String format, boolean groupProducts)
+  public ReportSettings prepareReportSettings(SaleOrder saleOrder, boolean proforma, String format)
       throws AxelorException {
 
     if (saleOrder.getPrintingSettings() == null) {
@@ -108,7 +108,6 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
         .addParam("SaleOrderId", saleOrder.getId())
         .addParam("Locale", locale)
         .addParam("ProformaInvoice", proforma)
-        .addParam("GroupProducts", groupProducts)
         .addParam("HeaderHeight", saleOrder.getPrintingSettings().getPdfHeaderHeight())
         .addParam("FooterHeight", saleOrder.getPrintingSettings().getPdfFooterHeight())
         .addFormat(format);

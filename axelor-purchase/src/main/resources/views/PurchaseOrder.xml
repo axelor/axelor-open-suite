@@ -78,10 +78,10 @@
 
 	<form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" onLoad="action-group-purchase-order-on-load-actions"
 	  onNew="action-group-purchase-order-on-new-actions" >
+		<toolbar>
+			<button name="reportsBtn" title="Reports" icon="fa-print" hideIf="supplierPartner == null" readonlyIf="!id" onClick="save,action-purchase-order-method-show-purchase-order"/>
+		</toolbar>
 		<menubar>
-            <menu name="purchaseOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-			  <item name="printItem" title="Print" action="save,action-purchase-order-method-show-purchase-order" hideIf="supplierPartner == null"/>
-			</menu>
 			<menu name="purchaseOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
 			  <item name="sendEmailItem"  title="Send email" action="save,action-send-by-email-with-template" hideIf="supplierPartner == null"/>
 			  <item name="cancelReceiptItem" title="Cancel receipt" showIf="statusSelect &gt;= 3" action="save,action-purchase-order-method-cancel-receipt" hideIf="supplierPartner == null"/>
@@ -160,7 +160,7 @@
 			</panel>
 			<panel name="printingPanel" title="Printing">
 				<field name="printingSettings" onSelect="action-purchase-order-method-filter-printing-settings" canEdit="false"/>
-        <field name="groupProductsOnPrintings" if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()" colSpan="6"/>
+                <field name="groupProductsOnPrintings" if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()" colSpan="6"/>
 				<field name="displayPriceOnQuotationRequest" colSpan="12"/>
 				<field name="priceRequest" hideIf="displayPriceOnQuotationRequest" colSpan="12" x-height="5"/>
 			</panel>

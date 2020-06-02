@@ -564,8 +564,6 @@ InvoiceSet.length > 0))"
 				<field name="$reportType" title="Invoice type" type="integer" selection-in="[2,3,4]" selection="invoice.report.type" colSpan="12"
 					required="true" onChange="action-invoice-reports-wizard-attrs-set-format-select"
 					showIf="(_statusSelect == 3 || (_operationSubTypeSelect == 2 &amp;&amp; _statusSelect == 2)) &amp;&amp; _printedPDF != null"/>
-				<field name="$groupProducts" title="Grouped printing" type="boolean" colSpan="12"
-					if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()"/>
 			</panel>
 			<panel name="formatPanel" colSpan="6">
 				<field name="$format" title="Format" type="integer" selection="invoice.report.format" colSpan="12" required="true"/>
@@ -1116,7 +1114,6 @@ InvoiceSet.length > 0))"
 
     <action-attrs name="action-invoice-reports-wizard-attrs-set-report-type-select">
     	<attribute name="value" for="$reportType" expr="eval: 1" if="_statusSelect == 1 || (_statusSelect == 2 &amp;&amp; _operationSubTypeSelect != 2)"/>
-    	<attribute name="value" for="$groupProducts" expr="eval: _groupProducts" />
     	<attribute name="value" for="$format" expr="pdf" if = "_statusSelect == 3"/>
     	<attribute name="readonly" for="$format" expr="eval: _statusSelect == 3"/>
     	<attribute name="value" expr="eval: _language" for="$language" />
@@ -1333,7 +1330,6 @@ InvoiceSet.length > 0))"
 		<context name="_statusSelect" expr="eval: statusSelect"/>
 		<context name="_operationSubTypeSelect" expr="eval: operationSubTypeSelect"/>
 		<context name="_printedPDF" expr="eval: printedPDF"/>
-    <context name="_groupProducts" expr="eval: groupProductsOnPrintings" if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()"/>
 		<context name="id" expr="eval: id"/>
 		<context name="_language" expr="eval: language"/>
 	</action-view>

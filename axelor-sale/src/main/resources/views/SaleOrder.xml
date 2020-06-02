@@ -165,12 +165,6 @@
 			<button name="reportsBtn" title="Reports" icon="fa-print" hideIf="clientPartner == null" readonlyIf="!id" onClick="save,action-sale-order-view-reports-wizard"/>
 		</toolbar>
 	  <menubar>
-	    <menu name="saleOrderReportsMenu" title="Reports">
-	      <item name="printItem" title="Print" hideIf="clientPartner == null" action="save,action-sale-order-method-show-sale-order"/>
-	      <item name="printProformaInvoiceItem" title="Print proforma invoice" hideIf="clientPartner == null" action="save,action-sale-order-method-print-proforma-invoice"/>
-	      <item name="excelExportItem" title="Excel Export" hideIf="clientPartner == null" action="save,action-sale-order-method-export-sale-order-excel"/>
-	      <item name="wordExportItem" title="Word Export" hideIf="clientPartner == null" action="save,action-sale-order-method-export-sale-order-word"/>
-	    </menu>
 	    <menu name="saleOrderToolsMenu" title="Tools">
 	      <item name="scheduleEventItem" title="Schedule Event" hideIf="clientPartner == null" action="action-sale-order-view-schedule-event"/>
 	      <item name="sendEmailItem" title="Send email" hideIf="clientPartner == null" action="save,action-send-by-email-with-template"/>
@@ -748,8 +742,6 @@
 			<panel name="ReportTypePanel" colSpan="6">
 				<field name="$reportType" title="Report type" type="integer" selection="sale.order.report.type" required="true"
 					onChange="action-sale-order-reports-wizard-proforma-invoice-attrs" colSpan="12" />
-				<field name="$groupProducts" title="Grouped printing" type="boolean" colSpan="12"
-					if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()"/>
 			</panel>
 			<panel name="formatPanel" colSpan="6">
 				<field name="$format" title="Format" selection="sale.order.report.format" colSpan="12" required="true" readonlyIf="$reportType == 2"/>
@@ -765,13 +757,11 @@
         <view-param name="show-toolbar" value="false" />
         <view-param name="show-confirm" value="false" />
         <context name="_printedPDF" expr="eval: printedPDF"/>
-        <context name="_groupProducts" expr="eval: groupProductsOnPrintings" if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()"/>
         <context name="id" expr="eval: id"/>
     </action-view>
 
     <action-attrs name="action-sale-order-reports-wizard-attrs">
     	<attribute name="value" for="$reportType" expr="eval: 1" />
-    	<attribute name="value" for="$groupProducts" expr="eval: _groupProducts" />
     	<attribute name="value" for="$format" expr="pdf" />
     </action-attrs>
 

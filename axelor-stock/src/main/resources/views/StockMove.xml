@@ -159,7 +159,6 @@
 			 <menu name="stockMoveReportsMenu" title="Reports" icon="fa-files-o">
                 <item name="printInternalMoveItem" title="Print Internal Move" action="save,action-print-stock-move" readonlyIf="statusSelect == 1" showIf="typeSelect == 1"/>
                 <item name="printOutgoingMoveItem" title="Print Outgoing Move" action="save,action-print-stock-move" readonlyIf="statusSelect == 1" showIf="typeSelect == 2"/>
-                <item name="groupedPrintOutgoingMoveItem" title="Print Grouped Outgoing Move" action="save,action-stock-move-view-reports-wizard" readonlyIf="statusSelect == 1" hideIf="typeSelect != 2 || __config__.app.getApp('base').getIsRegroupProductsOnPrintings() == false"/>
                 <item name="printIncomingMoveItem" title="Print Incoming Move" action="save,action-print-stock-move" readonlyIf="statusSelect == 1" showIf="typeSelect == 3"/>
                 <item name="printPickingOrderItem" title="Print picking order" action="save,action-print-picking-stock-move" showIf="statusSelect != 1 &amp;&amp; typeSelect == 2"/>
 				<item name="printCertificateOfConformityItem" title="Print certificate of conformity" action="save,action-method-print-conformity-certificate" showIf="statusSelect != 1 &amp;&amp; isNeedingConformityCertificate"/>
@@ -437,7 +436,7 @@
             <panel name="configPanel" title="Configuration" itemSpan="6">
 				<field name="isWithBackorder" colSpan="12"/>
                 <field name="printingSettings" onSelect="action-stock-move-method-filter-printing-settings" canEdit="false"/>
-                <field name="groupProductsOnPrintings" if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()" colSpan="6"/>
+                <field name="groupProductsOnPrintings" if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings() &amp;&amp; typeSelect == 2" colSpan="6"/>
                 <field name="isWithReturnSurplus" showIf="typeSelect == 3"/>
                 <field name="$reservedQtyChanged" type="boolean" hidden="true"/>
                 <panel name="plannedStockMovePanel" colSpan="12" showIf="typeSelect == 2">
@@ -458,33 +457,6 @@
 			<mail-followers/>
 		</panel-mail>
     </form>
-
-	<form name="stock-move-reports-wizard-form" title="Reports"  model="com.axelor.apps.base.db.Wizard" onNew="action-stock-move-reports-wizard-attrs-set">
-		<panel name="mainPanel">
-      <field name="$groupProducts" title="Grouped printing" type="boolean" colSpan="12"	if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()"/>
-			<button name="printBtn" title="Print" onClick="action-stock-move-group-report-print"/>
-		</panel>
-	</form>
-
-	<action-view name="action-stock-move-view-reports-wizard" title="Reports" model="com.axelor.apps.base.db.Wizard">
-		<view type="form" name="stock-move-reports-wizard-form"/>
-		<view-param name="popup" value="reload"/>
-		<view-param name="popup-save" value="false"/>
-		<view-param name="show-toolbar" value="false" />
-		<view-param name="show-confirm" value="false" />
-    <context name="_groupProducts" expr="eval: groupProductsOnPrintings" if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()"/>
-		<context name="id" expr="eval: id"/>
-	</action-view>
-
-  <action-attrs name="action-stock-move-reports-wizard-attrs-set">
-    <attribute name="value" for="$groupProducts" expr="eval: _groupProducts" />
-  </action-attrs>
-
-	<action-group name="action-stock-move-group-report-print">
-		<action name="action-invoice-method-show-invoice" if="reportType != null &amp;&amp; reportType != 4"/>
-		<action name="action-invoice-validate-regenerate-invoice" if="reportType != null &amp;&amp; reportType == 4"/>
-		<action name="action-invoice-method-regenerate-and-show-invoice" if="reportType != null &amp;&amp; reportType == 4"/>
-	</action-group>
 
   <action-method name="action-invoice-method-show-invoice">
     <call class="com.axelor.apps.account.web.InvoiceController" method="showInvoice"/>

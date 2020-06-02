@@ -41,7 +41,7 @@ public interface InvoicePrintService {
    * @throws AxelorException
    */
   String printInvoice(
-      Invoice invoice, boolean forceRefresh, String format, Integer reportType, String locale, boolean groupProducts)
+      Invoice invoice, boolean forceRefresh, String format, Integer reportType, String locale)
       throws AxelorException, IOException;
 
   /**
@@ -59,7 +59,7 @@ public interface InvoicePrintService {
    * @throws IOException
    */
   File printCopiesToFile(
-      Invoice invoice, boolean forceRefresh, Integer reportType, String format, String locale, boolean groupProducts)
+      Invoice invoice, boolean forceRefresh, Integer reportType, String format, String locale)
       throws AxelorException, IOException;
 
   /**
@@ -76,7 +76,7 @@ public interface InvoicePrintService {
    * @return a file with the invoice as PDF.
    */
   File getPrintedInvoice(
-      Invoice invoice, boolean forceRefresh, Integer reportType, String format, String locale, boolean groupProducts)
+      Invoice invoice, boolean forceRefresh, Integer reportType, String format, String locale)
       throws AxelorException;
 
   /**
@@ -89,7 +89,7 @@ public interface InvoicePrintService {
    * @return a file of the invoice printing.
    * @throws AxelorException
    */
-  public File print(Invoice invoice, Integer reportType, String format, String locale, boolean groupProducts)
+  public File print(Invoice invoice, Integer reportType, String format, String locale)
       throws AxelorException;
 
   /**
@@ -102,7 +102,7 @@ public interface InvoicePrintService {
    * @return a metafile of the invoice printing.
    * @throws AxelorException
    */
-  File printAndSave(Invoice invoice, Integer reportType, String format, String locale, boolean groupProducts)
+  File printAndSave(Invoice invoice, Integer reportType, String format, String locale)
       throws AxelorException;
 
   /**
@@ -126,5 +126,5 @@ public interface InvoicePrintService {
    * @throws AxelorException
    */
   ReportSettings prepareReportSettings(
-      Invoice invoice, Integer reportType, String format, String locale, boolean groupProducts) throws AxelorException;
+      Invoice invoice, Integer reportType, String format, String locale) throws AxelorException;
 }

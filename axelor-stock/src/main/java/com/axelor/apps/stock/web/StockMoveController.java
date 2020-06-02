@@ -169,8 +169,8 @@ public class StockMoveController {
         fileLink = stockMovePrintService.printStockMoves(ids);
         title = I18n.get("Stock Moves");
       } else if (context.get("id") != null) {
-        StockMove stockMove = request.getContext().asType(StockMove.class);
-        stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
+        StockMove stockMove = Beans.get(StockMoveRepository.class).find(
+            Long.parseLong(context.get("id").toString()));
         title = stockMovePrintService.getFileName(stockMove);
         fileLink = stockMovePrintService.printStockMove(stockMove, ReportSettings.FORMAT_PDF);
         logger.debug("Printing " + title);

@@ -342,7 +342,6 @@ public class InvoiceController {
                     .getCode()
                 : null;
 
-                logger.debug("groupProducts = {}", context.get("groupProducts"));
         fileLink =
             Beans.get(InvoicePrintService.class)
                 .printInvoice(
@@ -351,8 +350,7 @@ public class InvoiceController {
                     false,
                     format,
                     reportType,
-                    locale,
-                    true
+                    locale
                 );
         title = I18n.get("Invoice");
         response.setCanClose(true);
@@ -361,7 +359,6 @@ public class InvoiceController {
             TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_3));
       }
       response.setView(ActionView.define(title).add("html", fileLink).map());
-      response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -377,7 +374,6 @@ public class InvoiceController {
             : null;
 
     try {
-        logger.debug("groupProducts = {}", context.get("groupProducts"));
       response.setCanClose(true);
       response.setView(
           ActionView.define(I18n.get("Invoice"))
@@ -389,8 +385,7 @@ public class InvoiceController {
                     true, 
                     "pdf", 
                     reportType, 
-                    null, 
-                    true))             
+                    null))             
               .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);

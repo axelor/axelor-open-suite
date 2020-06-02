@@ -171,7 +171,6 @@ public class SaleOrderController {
         title = I18n.get("Sale orders");
 
       } else if (context.get("id") != null) {
-        logger.debug("groupProducts = {}", context.get("groupProducts"));
 
         SaleOrder saleOrder = Beans.get(SaleOrderRepository.class)
                 .find(Long.parseLong(context.get("id").toString()));
@@ -179,9 +178,9 @@ public class SaleOrderController {
         fileLink = saleOrderPrintService.printSaleOrder(
             saleOrder, 
             proforma, 
-            format, 
-            true
+            format
         );
+        response.setCanClose(true);
 
         logger.debug("Printing " + title);
       } else {
