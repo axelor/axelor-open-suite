@@ -7,6 +7,7 @@
 - ADVANCED SEARCH : Added display condition on fields using app config settings
 - BANK STATEMENT LINE : change orderBy of afb120 bank statement line grid.
 - BANK DETAILS : Display balance in card view and form view.
+- Configurator creator: fix demo data import.
 
 ## [5.3.6] - 2020-05-26
 ## Improvements

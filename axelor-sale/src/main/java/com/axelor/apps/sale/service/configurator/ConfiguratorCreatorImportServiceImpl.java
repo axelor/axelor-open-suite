@@ -23,16 +23,17 @@ import com.axelor.data.Listener;
 import com.axelor.data.xml.XMLImporter;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
+import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaJsonField;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
@@ -61,15 +62,30 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
   @Override
   public String importConfiguratorCreators(String filePath, String configFilePath)
       throws IOException {
+    Path path = MetaFiles.getPath(filePath);
+    try (InputStream fileInPutStream = new FileInputStream(path.toFile())) {
+      return importConfiguratorCreators(fileInPutStream, configFilePath);
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public String importConfiguratorCreators(InputStream xmlInputStream) throws IOException {
+    return importConfiguratorCreators(xmlInputStream, CONFIG_FILE_PATH);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public String importConfiguratorCreators(InputStream xmlInputStream, String configFilePath)
+      throws IOException {
     InputStream inputStream = this.getClass().getResourceAsStream(configFilePath);
     File configFile = File.createTempFile("config", ".xml");
     FileOutputStream fout = new FileOutputStream(configFile);
     IOUtil.copyCompletely(inputStream, fout);
 
-    Path path = Paths.get(filePath);
     File tempDir = Files.createTempDir();
     File importFile = new File(tempDir, "configurator-creator.xml");
-    Files.copy(path.toFile(), importFile);
+    FileUtils.copyInputStreamToFile(xmlInputStream, importFile);
 
     XMLImporter importer = new XMLImporter(configFile.getAbsolutePath(), tempDir.getAbsolutePath());
     final StringBuilder importLog = new StringBuilder();
