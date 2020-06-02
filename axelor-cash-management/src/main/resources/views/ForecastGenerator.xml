@@ -63,4 +63,7 @@
 		<context name="forecastGeneratorId" expr="eval: __self__?.id"/>
 	</action-view>
     
+    <search-filters name="forecast-generator-filters" model="com.axelor.apps.cash.management.db.ForecastGenerator" title="Forecast Assistant filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
 </object-views>

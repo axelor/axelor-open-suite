@@ -16,4 +16,8 @@
 		</panel>
 	</form>
 	
+	<search-filters name="team-task-category-filters" model="com.axelor.apps.project.db.TeamTaskCategory" title="Team task category filters">
+		<field name="defaultInvoicingType" hidden="true" if="!__config__.app.isApp('business-project')"/>
+	</search-filters>
+
 </object-views>

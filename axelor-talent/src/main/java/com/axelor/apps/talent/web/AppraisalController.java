@@ -129,6 +129,7 @@ public class AppraisalController {
               .model(Appraisal.class.getName())
               .add("grid", "appraisal-grid")
               .add("form", "appraisal-form")
+              .param("search-filters", "appraisal-fitlers")
               .domain("self.id in :createdIds")
               .context("createdIds", createdIds)
               .map());

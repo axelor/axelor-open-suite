@@ -516,6 +516,7 @@ public class SaleOrderController {
                 .model(SaleOrder.class.getName())
                 .add("grid", "sale-order-grid")
                 .add("form", "sale-order-form")
+                .param("search-filters", "sale-order-filters")
                 .param("forceEdit", "true")
                 .context("_showRecord", String.valueOf(saleOrder.getId()))
                 .map());

@@ -60,4 +60,9 @@
 		<attribute name="domain" for="workshopStockLocation" expr="eval: company != null ? &quot; self.company = :company &quot; : null"/>
 	</action-attrs>
 	
+	<search-filters name="production-batch-filters" model="com.axelor.apps.production.db.ProductionBatch" title="Production batch filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+        <field name="workshopStockLocation" hidden="true" if="!__config__.app.getApp('production').getManageWorkshop()" />
+    </search-filters>
+	
 </object-views>

@@ -149,5 +149,10 @@
     <action-method name="action-forecast-recap-method-print">
 		<call class="com.axelor.apps.cash.management.web.ForecastRecapController" method="print"/>
     </action-method>
+    
+    <search-filters name="forecast-recap-filters" model="com.axelor.apps.cash.management.db.ForecastRecap" title="Forecast recap filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+        <field name="bankDetails" hidden="true" if="!__config__.app.getApp('base').getManageMultiBanks()"/>
+    </search-filters>
 
 </object-views>

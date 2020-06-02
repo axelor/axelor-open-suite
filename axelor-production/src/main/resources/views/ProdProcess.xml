@@ -136,4 +136,8 @@
 		<context name="prodProcessId" expr="eval: id"/>
     </action-view>
 
+	<search-filters name="prod-process-filters" model="com.axelor.apps.production.db.ProdProcess" title="Prod process filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+        <field name="workshopStockLocation" hidden="true" if="!__config__.app.getApp('production').getManageWorkshop()"/>
+    </search-filters>
 </object-views>

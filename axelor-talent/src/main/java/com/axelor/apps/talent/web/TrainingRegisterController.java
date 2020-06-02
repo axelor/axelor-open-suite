@@ -45,6 +45,7 @@ public class TrainingRegisterController {
             .model(Event.class.getCanonicalName())
             .add("form", "event-form")
             .add("grid", "event-grid")
+            .param("search-filters", "event-filters")
             .context("_showRecord", event.getId())
             .context("_user", trainingRegister.getEmployee().getUser())
             .map());

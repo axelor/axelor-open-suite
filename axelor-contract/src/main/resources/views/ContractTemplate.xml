@@ -117,4 +117,12 @@
     	<attribute name="value" for="paymentMode" expr="eval: null"/>
     </action-attrs>
 
+    <search-filters name="contract-template-filters" model="com.axelor.apps.contract.db.ContractTemplate" title="Contract template filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+        <field name="currency" hidden="true" if="!__config__.app.getApp('contract').getIsInvoicingManagement()"/>
+        <field name="isInvoicingManagement" hidden="true" if="!__config__.app.getApp('contract').isInvoicingManagement"/>
+        <field name="isAdditionaBenefitManagement" hidden="true" if="!__config__.app.getApp('contract')isAdditionalBenefitManagement"/>
+        <field name="isConsumptionManagement" hidden="true" if="!__config__.app.getApp('contract').isConsumptionManagement"/>
+    </search-filters>
+
 </object-views>

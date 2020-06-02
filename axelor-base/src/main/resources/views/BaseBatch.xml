@@ -72,4 +72,8 @@
 			   error="This code is already use by another batch."/>
 	</action-condition>
 
+	<search-filters name="base-batch-filters" model="com.axelor.apps.base.db.BaseBatch" title="Base batch filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
+    
 </object-views>

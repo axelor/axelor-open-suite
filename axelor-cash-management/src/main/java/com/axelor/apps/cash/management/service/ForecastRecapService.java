@@ -107,7 +107,7 @@ public class ForecastRecapService {
     this.populateWithExpenses(forecastRecap);
 
     forecastRecapRepo.save(forecastRecap);
-    
+
     this.computeForecastRecapLineBalance(forecastRecap);
     forecastRecap.setEndingBalance(forecastRecap.getCurrentBalance());
     forecastRecap.setCalculationDate(appBaseService.getTodayDate());

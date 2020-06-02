@@ -85,6 +85,7 @@
 	<action-view name="training.training.all" model="com.axelor.apps.talent.db.Training" title="Trainings">
 		<view name="training-grid" type="grid" />
 		<view name="training-form" type="form" />
+		<view-param name="search-filters" value="training-filters"/>
 	</action-view>
 	
 	<menuitem name="training-session-all" parent="training-conf" title="Training sessions" action="training.session.all" />	
