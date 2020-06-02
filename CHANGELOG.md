@@ -1,6 +1,8 @@
 # Changelog
 ## [Unreleased 5.3.7]
 ## Improvements
+- LEAVE REQUEST: remove field duration lenght constraint
+
 ## Bug Fixes
 - CRM/SALES : fix for contacts with mainPartner isProspect do not display
 - Mail message: fix an issue where some emails are not being sent in a batch.
