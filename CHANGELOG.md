@@ -1,22 +1,32 @@
 # Changelog
-## [Unreleased 5.2.11]
-## Features
-- Add civility for partner contact in birt report printing.
-
+## [Unreleased 5.2.12]
 ## Improvements
-- DURATION : rearranged fields in grid and form view.
-- Add configuration to activate partial invoicing for sale order and purchase order.
-- ACCOUNTING REPORT : Printing Information panel UI light changes.
-- MOVE LINE: removed massUpdate from move-line-grid.
-- Business Project : Fixed set toInvoice for timesheet line based on parent task instead of a task.
-- LEAVE LINE: remove fields length constraint
-- QUALITY CONTROL : Displayed signatures on the first page.
 - LEAVE REQUEST: remove field duration lenght constraint
 
 ## Bug Fixes
-- CONTRACT : fix for unit price null on invoice.
-- USER : Fix electronic signature on quotations confg not being used
-- SALEORDER : copy description when generating Task by line from SaleOrder
+- CRM/SALES : fix for contacts with mainPartner isProspect do not display
+- Mail message: fix an issue where some emails are not being sent in a batch.
+- Configurator creator: fix demo data import.
+
+## [5.2.11] - 2020-05-26
+## Improvements
+- Add civility for partner contact in birt report printing.
+- DURATION: rearranged fields in grid and form view.
+- Add configuration to activate partial invoicing for sale order and purchase order.
+- ACCOUNTING REPORT: Printing Information panel UI light changes.
+- MOVE LINE: removed massUpdate from move-line-grid.
+- LEAVE LINE: remove fields length constraint
+- QUALITY CONTROL: Displayed signatures on the first page.
+- Accounting Partner General Ledger: Manage title visibility.
+
+## Bug Fixes
+- Business Project: set toInvoice for timesheet line based on parent task instead of a task.
+- CONTRACT: fix for unit price null on invoice.
+- USER: Fix electronic signature on quotations config not being used
+- SALEORDER: copy description when generating task by line from SaleOrder
+- Back Order: corrected link between back order and origin.
+- PARTNER: industrySector is now displayed when customer is individual.
+- Fixed asset: corrected amortization calculation process.
 
 ## [5.2.10] - 2020-05-11
 ## Improvements
@@ -635,7 +645,8 @@ In this case, the file is correctly retrieved from the bank server, but not save
 - LEAVE REQUEST: Add error when leave reason has no unit.
 - LEAVE REQUEST: Set duration value 0 if day planning of selected weekly planning is empty
 
-[Unreleased 5.2.11]: https://github.com/axelor/axelor-open-suite/compare/v5.2.10...v5.2-dev
+[Unreleased 5.2.12]: https://github.com/axelor/axelor-open-suite/compare/v5.2.11...5.2-dev
+[5.2.11]: https://github.com/axelor/axelor-open-suite/compare/v5.2.10...v5.2.11
 [5.2.10]: https://github.com/axelor/axelor-open-suite/compare/v5.2.9...v5.2.10
 [5.2.9]: https://github.com/axelor/axelor-open-suite/compare/v5.2.8...v5.2.9
 [5.2.8]: https://github.com/axelor/axelor-open-suite/compare/v5.2.7...v5.2.8

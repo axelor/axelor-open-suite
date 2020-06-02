@@ -19,9 +19,12 @@ package com.axelor.csv.script;
 
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.meta.MetaScanner;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Map;
 
 public class ImportConfiguratorCreator {
@@ -31,8 +34,16 @@ public class ImportConfiguratorCreator {
   @Transactional
   public Object importConfiguratorCreator(Object bean, Map values)
       throws AxelorException, IOException {
-    configuratorCreatorImportService.importConfiguratorCreators(
-        "./production_configuratorCreator.xml");
+    URL url =
+        MetaScanner.findAll("production_configuratorCreator.xml")
+            .stream()
+            .findAny()
+            .orElseThrow(
+                () ->
+                    new AxelorException(
+                        TraceBackRepository.CATEGORY_INCONSISTENCY,
+                        "Error when importing configurator creators demo data."));
+    configuratorCreatorImportService.importConfiguratorCreators(url.openStream());
     return null;
   }
 }
