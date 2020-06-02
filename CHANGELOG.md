@@ -4,6 +4,7 @@
 ## Bug Fixes
 - CRM/SALES : fix for contacts with mainPartner isProspect do not display
 - Mail message: fix an issue where some emails are not being sent in a batch.
+- Configurator creator: fix demo data import.
 
 ## [5.2.11] - 2020-05-26
 ## Improvements
