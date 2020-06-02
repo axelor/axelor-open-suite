@@ -38,13 +38,13 @@
 	<action-view name="action-product-view-create-bill-of-material" title="Bill of materials"
 		model="com.axelor.apps.production.db.BillOfMaterial">
 		<view type="form" name="bill-of-material-form"/>
-		<context name="_product" expr="eval: __this__"/>
+		<context name="_product" expr="eval: __self__"/>
 	</action-view>
 	
 	<action-view name="aciton-product-view-create-production-process" title="Production process"
 		model="com.axelor.apps.production.db.ProdProcess">
 		<view type="form" name="prod-process-form"/>
-		<context name="_product" expr="eval: __this__"/>
+		<context name="_product" expr="eval: __self__"/>
 	</action-view>
 	
 	<action-attrs name="action-product-attrs-bill-of-material-domain">
