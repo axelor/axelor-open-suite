@@ -10,6 +10,7 @@
 - BANK STATEMENT LINE : change orderBy of afb120 bank statement line grid.
 - BANK DETAILS : Display balance in card view and form view.
 - Configurator creator: fix demo data import.
+- INTERBANK CODE : added translation of Reject/Return code.
 
 ## [5.3.6] - 2020-05-26
 ## Improvements
