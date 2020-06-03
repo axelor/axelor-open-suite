@@ -42,4 +42,8 @@ public interface AppService {
   public App importRoles(App app) throws AxelorException;
 
   public void importRoles() throws AxelorException;
+
+  public String getDataExportDir() throws AxelorException;
+
+  public String getFileUploadDir() throws AxelorException;
 }

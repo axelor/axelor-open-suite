@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.app.AppService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -55,6 +56,7 @@ public class ReimbursementImportService {
   protected RejectImportService rejectImportService;
   protected AccountConfigService accountConfigService;
   protected ReimbursementRepository reimbursementRepo;
+  protected AppService appService;
 
   @Inject
   public ReimbursementImportService(
@@ -63,7 +65,8 @@ public class ReimbursementImportService {
       MoveLineService moveLineService,
       RejectImportService rejectImportService,
       AccountConfigService accountConfigService,
-      ReimbursementRepository reimbursementRepo) {
+      ReimbursementRepository reimbursementRepo,
+      AppService appService) {
 
     this.moveService = moveService;
     this.moveRepo = moveRepo;
@@ -71,10 +74,13 @@ public class ReimbursementImportService {
     this.rejectImportService = rejectImportService;
     this.accountConfigService = accountConfigService;
     this.reimbursementRepo = reimbursementRepo;
+    this.appService = appService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
   public void runReimbursementImport(Company company) throws AxelorException, IOException {
+
+    String dataUploadDir = appService.getFileUploadDir();
 
     this.testCompanyField(company);
 
@@ -82,8 +88,8 @@ public class ReimbursementImportService {
 
     this.createReimbursementRejectMove(
         rejectImportService.getCFONBFile(
-            accountConfig.getReimbursementImportFolderPathCFONB(),
-            accountConfig.getTempReimbImportFolderPathCFONB(),
+            dataUploadDir + accountConfig.getReimbursementImportFolderPathCFONB(),
+            dataUploadDir + accountConfig.getTempReimbImportFolderPathCFONB(),
             company,
             0),
         company);
