@@ -33,6 +33,7 @@
 ## [5.3.5] - 2020-05-11
 ## Features
 - CONTACT: Add import from Google contact.
+- EMPLOYMENT CONTRACT : Add new sequence on save.
 
 ## Improvements
 - WEEKLY PLANNING: leaveCoef now has default and init values.
