@@ -7,6 +7,7 @@
 - CRM/SALES : fix for contacts with mainPartner isProspect do not display
 - Mail message: fix an issue where some emails are not being sent in a batch.
 - Configurator creator: fix demo data import.
+- PAYMENT MODE : Fix wrong translation
 
 ## [5.2.11] - 2020-05-26
 ## Improvements
