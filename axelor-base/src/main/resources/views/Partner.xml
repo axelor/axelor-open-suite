@@ -238,8 +238,6 @@
 							<field name="addressL7Country" required="true" form-view="country-form" grid-view="country-grid"/>
 						</editor>
 					</field>
-					<spacer/>
-					<field name="headOfficeAddress" if="__user__.activeCompany?.accountConfig?.displayHeadOfficeAddrOnInvoicePrinting"/>
 				</panel>
 				<panel name="postalAddressesPanel" title="Postal addresses" colSpan="12" hideIf="isEmployee">
 					<field name="partnerAddressList" colSpan="12" form-view="partner-address-form" grid-view="partner-address-grid">
@@ -256,6 +254,8 @@
           					</panel>           
           				</editor>
 					</field>
+					<spacer/>
+					<field name="headOfficeAddress" if="__user__.activeCompany?.accountConfig?.displayHeadOfficeAddrOnInvoicePrinting"  colSpan="12"/>
 				</panel>
 				<panel name="generalContactDetailsPanel" title="General contact details" colSpan="12">
 					<field name="fixedPhone" colSpan="3" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fixedPhone"/>

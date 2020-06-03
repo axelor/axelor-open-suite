@@ -27,7 +27,7 @@
 		<![CDATA[
     		BigDecimal total = new BigDecimal("0.0");
 	    	
-	    	if (moveLineSet != null || !moveLineSet.isEmpty()){
+	    	if (moveLineSet != null && !moveLineSet.isEmpty()){
 	    		for (MoveLine line : moveLineSet){
 	    			total = total.add(line.getAmountRemaining());
 	    		}

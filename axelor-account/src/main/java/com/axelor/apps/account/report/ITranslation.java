@@ -499,4 +499,6 @@ public interface ITranslation {
       /*$$(*/ "AccountingReportType17.year_start_value"; /*)*/
   public static final String ACCOUNTING_REPORT_17_DEPRECIATION_CHARGE =
       /*$$(*/ "AccountingReportType17.depreciation_charge"; /*)*/
+  public static final String INVOICE_REPORT_HEAD_OFFICE_ADDR = /*$$(*/
+      "Invoice.headOfficeAddress"; /*)*/
 }

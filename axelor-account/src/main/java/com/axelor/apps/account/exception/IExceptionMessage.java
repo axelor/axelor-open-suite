@@ -52,9 +52,11 @@ public interface IExceptionMessage {
   static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK = /*$$(*/
       "Error in move deleting or archiving, please check the log" /*)*/;
   static final String MOVE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH = /*$$(*/
-      "This move %s can not be archive because it is linked to another piece named %s." /*)*/;
+      "This move %s can not be archived because it is linked to another piece named %s." /*)*/;
   static final String MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_LINK_WITH = /*$$(*/
-      "This move line %s can not be archive because it is linked to another piece named %s." /*)*/;
+      "This move line %s can not be archived because it is linked to another piece named %s." /*)*/;
+  static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK_NB = /*$$(*/
+      "%d moves couldn't be deleted or archived, please check the logs." /*)*/;
 
   /** Account management service */
   static final String ACCOUNT_MANAGEMENT_1_ACCOUNT = /*$$(*/
@@ -629,6 +631,9 @@ public interface IExceptionMessage {
 
   static final String INVOICE_PAYMENT_CANCEL = /*$$(*/
       "The bank order linked to this invoice payment has already been carried out/rejected, and thus can't be canceled" /*)*/;
+
+  public static final String INVOICE_PAYMENT_NO_AMOUNT_REMAINING = /*$$(*/
+      "The payment cannot be done because the amount remaining on the invoice %s is inferior or equal to 0." /*)*/;
 
   /** Ventilate state */
   static final String VENTILATE_STATE_1 = /*$$(*/

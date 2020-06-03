@@ -15,10 +15,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.crm.translation;
+package com.axelor.apps.bankpayment.db.repo;
 
-public interface ITranslation {
+import com.axelor.apps.bankpayment.db.BankPaymentBatch;
 
-  public static final String CRM_APP_NAME = /*$$(*/ "value:CRM"; /*)*/
-  public static final String SALE_QUOTATION = /*$$(*/ "Sale quotation" /*)*/;
+public class BankPaymentBatchBankRepository extends BankPaymentBatchRepository {
+
+  @Override
+  public BankPaymentBatch copy(BankPaymentBatch entity, boolean deep) {
+    BankPaymentBatch copy = super.copy(entity, deep);
+    copy.clearBatchList();
+    return copy;
+  }
 }

@@ -9,13 +9,34 @@
 - MOVE : changed position of reconciliation tag in move form.
 - BANK STATEMENT: add caption under bank statement line grid in bank statement form in order to explain the colors used in bank statement line grid.
 - STOCK MOVE: empty reservationDateTime on duplicate stock move
+- MOVE : Improved messages when there is an exception on trying to remove an accounting move. 
+- STOCK MOVE : to and from stock location set on company change.
+- STOCK MOVE : hide reserved qty when it is a supplier arrival or a customer return
+- BATCH : set batchList empty on copy for BankPaymentBatch and ContractBatch
+- ACCOUNTING REPORT : display popup message on click of 'exportBtn'
+- SALE ORDER LINE : Rename "sale.order.line.type.select" selection to "line.type.select" and move it to base module.
 
 ## Bug Fixes
+- INVOICE PARTIAL: take in consideration refund
 - REFUND : avoid blocking message when ventilation of the invoice
 - MOVE : corrected display of status tag in move form.
 - Manuf Order: fix real quantity not updating when a new line in consumed products is created.
 - INVOICE PAYMENT CANCELLATION : corrected error when boolean allow removal validate move in account configuration is true.
 - INVOICE : stopped the creation of invoice payment when a reconciliation is made with accounts not used in partner balance.
+- PURCHASE ORDER LINE : isFilterOnSupplier is always = true and can be set false manually.
+- HR: changed fromDate and toDate to fromDateT and toDateT in insertLeave method of HumanResourceMobileController
+- MOVE LINE: fix amount paid display in move line form.
+- Ebics User : resolve error getting on export & Modify import config and export template to include BankOrderList and BankStatementList of EbicsPartner.
+- Sale order/quotation: fix tab title when generating a quotation from an opportunity.
+- BankOrder : Fix NPE on click of confirm for International transfer
+- BANK ORDER : corrected the possibility to generate two times the same move.
+- BANK ORDER : corrected the behavior of bank order, now the bank order moves can be generated on validation or realization.
+- Invoice Payment : resolve invoice amount due update when the generate accounting move option is not active
+- Fixed Asset : Fix issue of infinite value of depriciation rate"
+- EBICS USER : fix for strange import - log
+- LEAVE REQUEST: Updated calendar filter.
+- SUBROGATION RELEASE / INVOICE : corrected npe.
+- FIXED ASSET: set Deprecation Date in Move generated from FixedAsset and fix last Day Of Month FixedAsset
 - INVOICE : corrected the possibility to add a payment when the amount remaining is inferior or equal to 0.
 
 ## [5.1.13] - 2019-11-29
