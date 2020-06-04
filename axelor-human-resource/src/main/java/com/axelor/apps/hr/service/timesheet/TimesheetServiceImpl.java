@@ -53,6 +53,7 @@ import com.axelor.apps.hr.service.leave.LeaveService;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.message.db.Message;
+import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
@@ -160,10 +161,11 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
           IllegalAccessException, MessagingException, IOException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
+    Template template = hrConfig.getSentTimesheetTemplate();
 
-    if (hrConfig.getTimesheetMailNotification()) {
+    if (hrConfig.getTimesheetMailNotification() && template != null) {
       return templateMessageService.generateAndSendMessage(
-          timesheet, hrConfigService.getSentTimesheetTemplate(hrConfig));
+          timesheet, template);
     }
 
     return null;
@@ -246,11 +248,12 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
           IllegalAccessException, MessagingException, IOException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
+    Template template = hrConfig.getValidatedTimesheetTemplate();
 
-    if (hrConfig.getTimesheetMailNotification()) {
+    if (hrConfig.getTimesheetMailNotification() && template != null) {
 
       return templateMessageService.generateAndSendMessage(
-          timesheet, hrConfigService.getValidatedTimesheetTemplate(hrConfig));
+          timesheet, template);
     }
 
     return null;
@@ -281,11 +284,12 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
           IllegalAccessException, MessagingException, IOException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
+    Template template = hrConfig.getRefusedTimesheetTemplate();
 
-    if (hrConfig.getTimesheetMailNotification()) {
+    if (hrConfig.getTimesheetMailNotification() && template != null) {
 
       return templateMessageService.generateAndSendMessage(
-          timesheet, hrConfigService.getRefusedTimesheetTemplate(hrConfig));
+          timesheet, template);
     }
 
     return null;
@@ -319,11 +323,12 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
           IllegalAccessException, MessagingException, IOException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
+    Template template = hrConfig.getCanceledTimesheetTemplate();
 
-    if (hrConfig.getTimesheetMailNotification()) {
+    if (hrConfig.getTimesheetMailNotification() && template != null) {
 
       return templateMessageService.generateAndSendMessage(
-          timesheet, hrConfigService.getCanceledTimesheetTemplate(hrConfig));
+          timesheet, template);
     }
 
     return null;
