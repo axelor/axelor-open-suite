@@ -13,6 +13,7 @@
 - INTERBANK CODE : added translation of Reject/Return code.
 - PAYMENT MODE : Fix wrong translation
 - ACCOUNT : Fix wrong move line grid view
+- TIMESHEET : Fix error message showing when there was no mail template
 
 ## [5.3.6] - 2020-05-26
 ## Improvements
