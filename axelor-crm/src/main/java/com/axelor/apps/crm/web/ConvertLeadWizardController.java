@@ -169,6 +169,7 @@ public class ConvertLeadWizardController {
             .model(Partner.class.getName())
             .add("form", form)
             .add("grid", grid)
+            .param("search-filters", "partner-filters")
             .context("_showRecord", partner.getId())
             .map());
   }

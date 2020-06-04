@@ -41,4 +41,8 @@
     	<call class="com.axelor.apps.hr.web.EmployeeBonusController" method="print"/>
     </action-method>
     
+    <search-filters name="employee-bonus-mgt-filters" model="com.axelor.apps.hr.db.EmployeeBonusMgt" title="Employee bonus management filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
+    
 </object-views>

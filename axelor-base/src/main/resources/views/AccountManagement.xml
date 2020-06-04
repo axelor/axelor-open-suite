@@ -183,4 +183,13 @@
 			if="eval: __parent__?._model == 'com.axelor.apps.account.db.Tax' || __parent__?._model == 'com.axelor.apps.base.db.Product' || __parent__?._model == 'com.axelor.apps.base.db.ProductFamily' || __parent__?._model == 'com.axelor.apps.account.db.PaymentMode'" />
 	</action-attrs>
 	
+	<search-filters name="account-management-filters" model="com.axelor.apps.account.db.AccountManagement" title="Account management filters">
+		<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="saleAccount" hidden="true" if="!__config__.app.isApp('account')" />
+		<field name="purchaseAccount" hidden="true" if="!__config__.app.isApp('account')"/>
+		<field name="cashAccount" hidden="true" if="!__config__.app.isApp('account')"/>
+		<field name="analyticDistributionTemplate" hidden="true" if="!__config__.app.isApp('account')"/>
+		<field name="fixedAssetCategory" hidden="true" if="!__config__.app.isApp('account')"/>
+		<field name="purchFixedAssetsAccount" hidden="true" if="!__config__.app.isApp('account')"/>
+	</search-filters>
 </object-views>

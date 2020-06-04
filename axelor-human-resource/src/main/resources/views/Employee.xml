@@ -502,6 +502,18 @@
 	
     <search-filters name="employee-filters" model="com.axelor.apps.hr.db.Employee"
         title="Employee filters">
+        <field name="bankDetails" hidden="true" if="!__config__.app.getApp('base').getManageMultiBanks()"/>
+        <field name="timesheetImputationSelect" hidden="true" if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getEnableTimesheetOnManufOrder())"/>
+        <field name="lunchVoucherFormatSelect" hidden="true" if="!(__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getLunchVoucher())"/>
+        <field name="lunchVoucherAdvanceList" hidden="true" if="!(__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getLunchVoucher())"/>
+        <field name="employeeAdvanceList" hidden="true" if="!(__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getAdvanceManagement())"/>
+        <field name="leaveLineList" hidden="true" if="!__config__.app.isApp('leave')"/>
+      	<field name="negativeValueLeave" hidden="true" if="!__config__.app.isApp('leave')"/>
+    	<field name="timeLoggingPreferenceSelect" hidden="true" if="!__config__.app.isApp('timesheet')"/>
+      	<field name="product" hidden="true" if="!__config__.app.isApp('timesheet')"/>
+      	<field name="timesheetReminder" hidden="true" if="!__config__.app.isApp('timesheet')"/> 
+      	<field name="kilometricLogList" hidden="true" if="!__config__.app.isApp('timesheet')"/>
+      	<field name="employeeVehicleList" hidden="true" if="!__config__.app.isApp('expense')"/> 
         <field name="mainEmploymentContract.payCompany"
             title="Pay company main employment contract"/>
         <field name="mainEmploymentContract.executiveStatusSelect"

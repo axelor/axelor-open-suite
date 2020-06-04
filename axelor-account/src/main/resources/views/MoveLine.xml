@@ -464,8 +464,10 @@
 		<field name="move.period" title="Period"/>
 		<field name="move.journal" title="Journal"/>
 		<field name="move.statusSelect" title="Status"/>
-		<field name="move.company" title="Company"/>
+		<field name="move.company" title="Company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="account.reconcileOk" title="Reconcilable"/>
+		<field name="analyticMoveLineList" hidden="true" if="!__config__.app.getApp('account').getManageAnalyticAccounting()"/>
+		<field name="analyticDistributionTemplate" hidden="true" if="!__config__.app.getApp('account').getManageAnalyticAccounting()"/>
 		<filter title="Sale Entries">
 			<domain>self.move.invoice.operationTypeSelect = 3 OR self.move.invoice.operationTypeSelect = 4</domain>
 		</filter>

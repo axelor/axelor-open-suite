@@ -131,6 +131,7 @@ public class BillOfMaterialController {
             .model(BillOfMaterial.class.getName())
             .add("form", "bill-of-material-form")
             .add("grid", "bill-of-material-grid")
+            .param("search-filters", "bill-of-material-filters")
             .domain("self.defineSubBillOfMaterial = true AND self.personalized = false")
             .context("_showRecord", String.valueOf(copy.getId()))
             .map());

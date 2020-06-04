@@ -499,6 +499,7 @@
 <!-- 	FILTERS -->
 	
 	<search-filters name="crm-tasks-filters" model="com.axelor.apps.crm.db.Event" title="Tasks filters">
+		<field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
 		<filter title="My Tasks">
 			<domain>self.user = :__user__</domain>
 		</filter>
@@ -514,6 +515,7 @@
 	</search-filters>
 	
 	<search-filters name="meeting-filters" model="com.axelor.apps.crm.db.Event" title="Meeting filters">
+		<field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
 		<filter title="My Meetings">
 			<domain>self.user = :__user__</domain>
 		</filter>
@@ -526,6 +528,7 @@
 	</search-filters>
 	
 	<search-filters name="call-filters" model="com.axelor.apps.crm.db.Event" title="Call filters">
+		<field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
 		<filter title="My Calls">
 			<domain>self.user = :__user__</domain>
 		</filter>
@@ -538,6 +541,7 @@
 	</search-filters>
 	
 	<search-filters name="event-filters" model="com.axelor.apps.crm.db.Event" title="Event filters">
+		<field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
 		<filter title="My upcoming events">
 			<domain>self.user = :__user__ AND self.startDateTime &gt;= :_currentDate</domain>
 		</filter>

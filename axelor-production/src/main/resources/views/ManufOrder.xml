@@ -503,6 +503,10 @@
 	</action-validate>
 
   	<search-filters name="manuf-order-filters" model="com.axelor.apps.production.db.ManufOrder" title="Manufacturing order filters">
+  		<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+  		<field name="workshopStockLocation" hidden="true" if="!__config__.app.getApp('production').getManageWorkshop()"/>
+		<field name="isToInvoice" hidden="true" if="!__config__.app.getApp('production').getManageBusinessProduction()" />
+		<field name="invoiced" hidden="true" if="!__config__.app.getApp('production').getManageBusinessProduction()" />
 		<filter title="Draft MOs">
 			<domain>self.statusSelect = 1</domain>
 		</filter>
