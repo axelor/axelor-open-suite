@@ -12,6 +12,7 @@
 - Configurator creator: fix demo data import.
 - INTERBANK CODE : added translation of Reject/Return code.
 - PAYMENT MODE : Fix wrong translation
+- ACCOUNT : Fix wrong move line grid view
 
 ## [5.3.6] - 2020-05-26
 ## Improvements
@@ -38,6 +39,7 @@
 - Fixed asset: corrected amortization calculation process.
 - BANK STATEMENT: Fix order by in afb120 bank statement lines.
 - ICalendarEvent: make subject, location & subjectTeam field large.
+
 ## [5.3.5] - 2020-05-11
 ## Features
 - CONTACT: Add import from Google contact.
