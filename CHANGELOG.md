@@ -8,6 +8,7 @@
 - Mail message: fix an issue where some emails are not being sent in a batch.
 - Configurator creator: fix demo data import.
 - PAYMENT MODE : Fix wrong translation
+- ACCOUNT : Fix wrong move line grid view
 - TIMESHEET : Fix error message showing when there was no mail template
 
 ## [5.2.11] - 2020-05-26
