@@ -110,4 +110,8 @@
 		<action name="action-analytic-move-line-condition-valid-analytic-move-line-list"/>
 	</action-group>
 	
+	<search-filters name="analytic-move-line-filters" model="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic move line filters">
+    	<field name="project" hidden="true" if="!__config__.app.isApp('business-project')"/>
+    </search-filters>
+
 </object-views>

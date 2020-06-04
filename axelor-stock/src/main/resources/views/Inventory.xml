@@ -222,6 +222,7 @@
 	</action-method>
 
     <search-filters name="inventories-filters" model="com.axelor.apps.stock.db.Inventory" title="Inventories filters">
+		<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<filter title="Planned Inventories">
 			<domain>self.statusSelect = 1</domain>
 		</filter>

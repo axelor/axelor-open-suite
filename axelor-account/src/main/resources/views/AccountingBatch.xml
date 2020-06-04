@@ -178,5 +178,10 @@
     <action-attrs name="action-accounting-batch-attrs-set-empty-year-and-accountset-value">
     	<attribute name="value" expr="eval: null" for="year,accountSet"/>
     </action-attrs>
+    
+    <search-filters name="accounting-batch-filters" model="com.axelor.apps.account.db.AccountingBatch" title="Accounting batch filters">
+    	<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+        <field name="includeOtherBankAccounts" hidden="true" if="!__config__.app.getApp('base').getManageMultiBanks()"/>
+    </search-filters>
 
 </object-views>

@@ -611,5 +611,9 @@
 	<action-method name="action-bank-order-method-display-bank-order-lines-bank-to-bank">
 		<call class="com.axelor.apps.bankpayment.web.BankOrderController" method="displayBankOrderLinesBankToBank"/>
 	</action-method>
+	
+	<search-filters name="bank-order-filters" model="com.axelor.apps.bankpayment.db.BankOrder" title="Bank Order filters">
+        <field name="signatoryEbicsUser" hidden="true" if="eval: !__config__.app.getApp('bank-payment').enableEbicsModule"/>
+	</search-filters>
 
 </object-views>

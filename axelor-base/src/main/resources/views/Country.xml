@@ -28,5 +28,9 @@
 		</panel>
     </form>
     
+    <search-filters name="country-filters" model="com.axelor.apps.base.db.Country" title="Country filters">
+    	<field name="isIspmRequired" hidden="true" if="!__config__.app.isApp('stock')"/>
+    </search-filters>
+    
 </object-views>
 

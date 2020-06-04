@@ -10,8 +10,7 @@
      <extra-code><![CDATA[
         
         //SEQUENCE SELECT
-  		public static final String EXPENSE = "expense";
-  		public static final String EMPLOYMENT_CONTRACT = "employmentContract";
+  		public static final String OPPORTUNITY = "opportunity";
         
      ]]></extra-code>
     

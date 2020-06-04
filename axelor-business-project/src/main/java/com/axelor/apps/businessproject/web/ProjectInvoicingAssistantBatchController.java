@@ -64,6 +64,7 @@ public class ProjectInvoicingAssistantBatchController {
       values.put("model", TeamTask.class.getName());
       values.put("grid", "business-project-team-task-grid");
       values.put("form", "team-task-form");
+      values.put("search-filters", "team-task-filters");
 
       this.showRecords(request, response, values);
 
@@ -117,6 +118,7 @@ public class ProjectInvoicingAssistantBatchController {
       values.put("model", InvoicingProject.class.getName());
       values.put("grid", "invoicing-project-grid");
       values.put("form", "invoicing-project-form");
+      values.put("search-filters", "invoicing-project-filters");
 
       this.showRecords(request, response, values);
 

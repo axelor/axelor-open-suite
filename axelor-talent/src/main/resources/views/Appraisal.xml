@@ -114,6 +114,7 @@
 	
 
 	<search-filters name="appraisal-fitlers" model="com.axelor.apps.talent.db.Appraisal" title="Appraisal filters">
+		<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<filter title="New appraisal">
 			<domain>self.isTemplate = false and self.statusSelect = 0</domain>
 		</filter>

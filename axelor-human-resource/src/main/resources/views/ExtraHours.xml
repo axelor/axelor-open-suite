@@ -148,4 +148,7 @@
     	<context name="_showRecord" expr="eval: id"/>
     </action-view>
 	
+	<search-filters name="extra-hours-filters" model="com.axelor.apps.hr.db.ExtraHours" title="Extra hours filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
 </object-views>

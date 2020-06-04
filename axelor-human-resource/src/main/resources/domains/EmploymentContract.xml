@@ -7,6 +7,8 @@
 
     <entity name="EmploymentContract" lang="java">
     
+    	<string name="ref" title="Ref."/>
+    	
         <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee"/>
         <many-to-one name="payCompany" ref="com.axelor.apps.base.db.Company" title="Pay Company" required="true"/>
 		<many-to-one name="companyDepartment" ref="com.axelor.apps.base.db.CompanyDepartment" title="Company department" />
