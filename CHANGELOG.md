@@ -1,12 +1,20 @@
 # Changelog
 ## [Unreleased 5.3.7]
 ## Improvements
+- LEAVE REQUEST: remove field duration lenght constraint
+
 ## Bug Fixes
 - CRM/SALES : fix for contacts with mainPartner isProspect do not display
 - Mail message: fix an issue where some emails are not being sent in a batch.
 - ADVANCED SEARCH : Added display condition on fields using app config settings
 - BANK STATEMENT LINE : change orderBy of afb120 bank statement line grid.
 - BANK DETAILS : Display balance in card view and form view.
+- Configurator creator: fix demo data import.
+- INTERBANK CODE : added translation of Reject/Return code.
+- PAYMENT MODE : Fix wrong translation
+- ACCOUNT : Fix wrong move line grid view
+- TIMESHEET : Fix error message showing when there was no mail template
+- SALE ORDER : Set duration when created from opportunity.
 - Advance import: Fix multiple search on same field
 
 ## [5.3.6] - 2020-05-26
@@ -34,9 +42,11 @@
 - Fixed asset: corrected amortization calculation process.
 - BANK STATEMENT: Fix order by in afb120 bank statement lines.
 - ICalendarEvent: make subject, location & subjectTeam field large.
+
 ## [5.3.5] - 2020-05-11
 ## Features
 - CONTACT: Add import from Google contact.
+- EMPLOYMENT CONTRACT : Add new sequence on save.
 
 ## Improvements
 - WEEKLY PLANNING: leaveCoef now has default and init values.
