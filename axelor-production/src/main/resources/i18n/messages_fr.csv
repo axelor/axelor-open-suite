@@ -428,6 +428,7 @@
 "Planned start","Début planifié",,
 "Planned start date","Date de début planifiée",,
 "Please fill the machine in the workcenter %s.","Merci de remplir la machine à utiliser dans le poste de charge %s.",,
+"Please fill unit for product %s.","Veuillez renseigner l'unité du produit %s.",,
 "Please select an element (a product, a product category or a product family) to run calculation",,,
 "Please select the Manufacturing order(s) to print.","Merci de sélectionner les ordres de fabrication à imprimer",,
 "Please select the Operation order(s) to print.","Merci de sélectionner les opérations de fabrication à imprimer",,

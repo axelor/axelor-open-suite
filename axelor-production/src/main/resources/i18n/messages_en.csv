@@ -428,6 +428,7 @@
 "Planned start",,,
 "Planned start date",,,
 "Please fill the machine in the workcenter %s.",,,
+"Please fill unit for product %s.",,,
 "Please select an element (a product, a product category or a product family) to run calculation",,,
 "Please select the Manufacturing order(s) to print.",,,
 "Please select the Operation order(s) to print.",,,

@@ -11,6 +11,7 @@
 - ACCOUNT : Fix wrong move line grid view
 - TIMESHEET : Fix error message showing when there was no mail template
 - SALE ORDER : Set duration when created from opportunity.
+- Bill of Material: Replace NPE by an explicit message to the user when product unit is not configured.
 
 ## [5.2.11] - 2020-05-26
 ## Improvements

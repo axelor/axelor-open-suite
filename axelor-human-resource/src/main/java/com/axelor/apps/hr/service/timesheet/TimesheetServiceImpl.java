@@ -164,8 +164,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     Template template = hrConfig.getSentTimesheetTemplate();
 
     if (hrConfig.getTimesheetMailNotification() && template != null) {
-      return templateMessageService.generateAndSendMessage(
-          timesheet, template);
+      return templateMessageService.generateAndSendMessage(timesheet, template);
     }
 
     return null;
@@ -252,8 +251,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
 
     if (hrConfig.getTimesheetMailNotification() && template != null) {
 
-      return templateMessageService.generateAndSendMessage(
-          timesheet, template);
+      return templateMessageService.generateAndSendMessage(timesheet, template);
     }
 
     return null;
@@ -288,8 +286,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
 
     if (hrConfig.getTimesheetMailNotification() && template != null) {
 
-      return templateMessageService.generateAndSendMessage(
-          timesheet, template);
+      return templateMessageService.generateAndSendMessage(timesheet, template);
     }
 
     return null;
@@ -327,8 +324,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
 
     if (hrConfig.getTimesheetMailNotification() && template != null) {
 
-      return templateMessageService.generateAndSendMessage(
-          timesheet, template);
+      return templateMessageService.generateAndSendMessage(timesheet, template);
     }
 
     return null;
