@@ -1,0 +1,7 @@
+---
+title: "Add tradingName into move after invoice payment"
+type: feature
+description: |
+	add tradingName M2O field on Move
+	add tradingName M2O field on PaymentVoucher
+	set tradingName on created move from invoicePayment and paymentVoucher
