@@ -18,7 +18,8 @@
     
     <form name="invoice-payment-form" title="Payment"
         model="com.axelor.apps.account.db.InvoicePayment"
-        onNew="action-invoice-payment-group-new">
+        onNew="action-invoice-payment-group-new"
+        onLoad="action-attrs-invoice-payment-hide-trading-name">
 		<panel name="mainPanel" readonlyIf="statusSelect != 0">
             <field name="amount"/>
             <field name="currency" canEdit="false"
@@ -38,6 +39,7 @@
             <field name="chequeNumber" showIf="paymentMode.typeSelect == 7 || paymentMode.typeSelect == 4"/>
             <field name="description" colSpan="12"/>
             <field name="paymentMode.typeSelect" hidden="true"/>
+            <field name="invoice.tradingName"></field>
             <field name="invoice" hidden="true" />
 		</panel>
 		<panel name="otherDetailsPanel" showIf="id">
@@ -79,7 +81,12 @@
 		<action name="action-invoice-payment-record-new"/>
 		<action name="action-invoice-payment-attrs-new"/>
 		<action name="action-invoice-payment-method-new"/>
+		<action name="action-attrs-invoice-payment-hide-trading-name"/>
 	</action-group>
+	
+	<action-attrs name="action-attrs-invoice-payment-hide-trading-name" model="com.axelor.apps.account.db.InvoicePayment">
+		<attribute name="hidden" for="invoice.tradingName" expr="eval: !__config__.app.getApp('base').getEnableTradingNamesManagement()"/>
+	</action-attrs>
 	
 	<action-record name="action-invoice-payment-record-new" model="com.axelor.apps.account.db.InvoicePayment">
     	<field name="currency" expr="eval: _invoice?.currency"/>

@@ -216,6 +216,7 @@ public class PaymentVoucherConfirmService {
                   MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
       move.setPaymentVoucher(paymentVoucher);
+      move.setTradingName(paymentVoucher.getTradingName());
 
       paymentVoucher.setGeneratedMove(move);
       // Create move lines for payment lines
