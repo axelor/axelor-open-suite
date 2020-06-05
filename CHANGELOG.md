@@ -20,6 +20,7 @@
 - DURATION : add new field applicationType;
 - MRP: add configuration to ignore end date on incoming mrp line type.
 - BPM : Add overview of the result of the wkf.
+- SUPPLIER PORTAL : Creation of new Supplier portal
 
 ## Improvements
 - USER : Default User language is based on application.locale from application.properties

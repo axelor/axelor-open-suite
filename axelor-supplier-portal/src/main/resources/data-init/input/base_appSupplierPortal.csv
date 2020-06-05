@@ -1,0 +1,2 @@
+name;code;installOrder;description;imagePath;modules;dependsOn;sequence
+Supplier Portal;supplier-portal;34;Supplier Portal configuration;app-portal.png;Axelor-supplier-portal;supplychain;32
