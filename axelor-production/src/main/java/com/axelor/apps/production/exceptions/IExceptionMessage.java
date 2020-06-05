@@ -47,6 +47,9 @@ public interface IExceptionMessage {
   /** Bill of Materials Service */
   static final String BOM_1 = /*$$(*/ "Personalized" /*)*/;
 
+  static final String BOM_MISSING_UNIT_ON_PRODUCT = /*$$(*/
+      "Please fill unit for product %s." /*)*/;
+
   /** Production Order Wizard and controller */
   static final String PRODUCTION_ORDER_1 = /*$$(*/ "Production's order created" /*)*/;
 

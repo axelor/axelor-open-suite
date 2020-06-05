@@ -218,7 +218,7 @@ public class BillOfMaterialController {
         response.setReload(true);
       }
     } catch (Exception e) {
-      TraceBackService.trace(e);
+      TraceBackService.trace(response, e);
     }
   }
 }
