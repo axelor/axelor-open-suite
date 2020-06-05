@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
 
-  <module name="admin" package="com.axelor.apps.admin.db"/>
+  <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="GlobalTrackingLog" cacheable="true">
   
@@ -12,7 +12,7 @@
     <long name="relatedId" title="Related id" readonly="true" nullable="true" />
     <datetime name="dateT" title="Date time" readonly="true" />
     <integer name="typeSelect" title="Type" selection="global.tracking.log.type.select" readonly="true" />
-    <one-to-many name="globalTrackingLogLineList" title="Global tracking log line list" orphanRemoval="true" ref="com.axelor.apps.admin.db.GlobalTrackingLogLine" mappedBy="globalTrackingLog"  readonly="true" />
+    <one-to-many name="globalTrackingLogLineList" title="Global tracking log line list" orphanRemoval="true" ref="com.axelor.apps.base.db.GlobalTrackingLogLine" mappedBy="globalTrackingLog"  readonly="true" />
     <many-to-one name="metaFile" title="Meta file" ref="com.axelor.meta.db.MetaFile" readonly="true" />
     <string name="metaModelName" transient="true" />
     

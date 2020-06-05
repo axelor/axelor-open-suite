@@ -1,7 +1,7 @@
 package com.axelor.apps.base.job;
 
-import com.axelor.apps.admin.service.GlobalTrackingLogService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.tracking.GlobalTrackingLogService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import org.quartz.JobExecutionContext;

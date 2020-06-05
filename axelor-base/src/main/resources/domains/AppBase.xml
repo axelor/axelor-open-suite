@@ -75,7 +75,7 @@
     
 		<boolean name="isSharedAddress" title="Shared address" default="false"/>
 	   	
-	   	<one-to-many name="globalTrackingConfigurationLines" ref="com.axelor.apps.admin.db.GlobalTrackingConfigurationLine" mappedBy="appBase" orphanRemoval="true"/>
+	   	<one-to-many name="globalTrackingConfigurationLines" ref="com.axelor.apps.base.db.GlobalTrackingConfigurationLine" mappedBy="appBase" orphanRemoval="true"/>
 	   	
 		<extra-code>
 	   		<![CDATA[
