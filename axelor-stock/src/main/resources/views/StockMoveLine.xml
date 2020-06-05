@@ -80,13 +80,13 @@
         
         <panel name="productPanel" showIf="lineTypeSelect == 1">
             <field name="productName" colSpan="9"/>
-            <field name="lineTypeSelect" if="__config__.app.getApp('sale')?.enablePackManagement" colSpan="3" onChange="action-stock-move-line-method-empty-line" />
+            <field name="lineTypeSelect" colSpan="3" onChange="action-stock-move-line-method-empty-line" />
             <field name="qty" readonlyIf="lineTypeSelect != 1"/>
             <field name="realQty"/>
         </panel>
         
         <panel name="mainPanel" hideIf="lineTypeSelect == 1" >
-        	<field name="lineTypeSelect" if="__config__.app.getApp('sale')?.enablePackManagement" onChange="action-stock-move-line-method-empty-line" />
+        	<field name="lineTypeSelect" onChange="action-stock-move-line-method-empty-line" />
         	<field name="availableStatus" readonly="true" hidden="true" colSpan="2">
 				<viewer><![CDATA[
 					<h4>

@@ -628,7 +628,7 @@ public class MrpServiceImpl implements MrpService {
 
     maturityDate = this.computeMaturityDate(maturityDate, purchaseOrderMrpLineType);
 
-    if (this.isBeforeEndDate(maturityDate)) {
+    if (this.isBeforeEndDate(maturityDate) || purchaseOrderMrpLineType.getIgnoreEndDate()) {
 
       Unit unit = purchaseOrderLine.getProduct().getUnit();
       BigDecimal qty = purchaseOrderLine.getQty().subtract(purchaseOrderLine.getReceivedQty());

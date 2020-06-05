@@ -27,6 +27,15 @@
       <field name="formWidth" />
       <field name="orderBy" />
     </panel>
+    <panel name="menuPanel">
+    	<field name="isGenerateMenu" onChange="action-studio-json-model-group-isgeneratemenu-onchange"/>
+    	<field name="menuBuilder" showIf="isGenerateMenu" colSpan="12" showTitle="false" requiredIf="isGenerateMenu">
+	    	<editor>
+		    	<field name="title" title="Menu title"/>
+		    	<field name="parentMenu" form-view="meta-menu-form" grid-view="meta-menu-grid" domain="self.action IS NULL"/>
+	    	</editor>
+    	</field>
+    </panel>
 
     <!-- Menu panel removed -->
 
@@ -60,9 +69,17 @@
     <call class="com.axelor.studio.web.MetaJsonModelController" method="setJsonFieldTracking"/>
   </action-method>
 
+  <action-method name="action-studio-json-model-method-isgeneratemenu-onchange">
+  	<call class="com.axelor.studio.web.MetaJsonModelController" method="removeMenuBuilder"/>
+  </action-method>
+
   <action-group name="action-studio-json-model-onsave-group">
      <action name="save" if="!id"/>
      <action name="action-studio-json-model-method-json-field-tracking"/>
   </action-group>
 
+  <action-group name="action-studio-json-model-group-isgeneratemenu-onchange">
+    <action if="id != null &amp;&amp; !isGenerateMenu" name="save"/>
+  	<action if="id != null &amp;&amp; menuBuilder != null" name="action-studio-json-model-method-isgeneratemenu-onchange"/>
+  </action-group>
 </object-views>

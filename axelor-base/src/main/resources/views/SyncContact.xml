@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+	<grid name="sync-contact-grid" model="com.axelor.apps.base.db.SyncContact" title="Import contact">
+	  <field name="name" />
+	  <field name="createdOn"/>
+	</grid>
+	
+	<form name="sync-contact-form" model="com.axelor.apps.base.db.SyncContact" title="Import contact" width="large" onLoad="action-sync-contact-attrs-sync-contact-build-url" onSave="action-sync-contact-attrs-reload-google-btn-panel">
+		<panel name="mainPanel" colSpan="12">
+			<panel name="mainPanel" colSpan="12">
+				<field name="name" />
+				<field name="updateContactField" widget="boolean-switch"/>
+				<field name="$url" hidden="true"/>
+			</panel>
+			<panel name="connectionSettingsPanel" title="Connection settings" colSpan="12">
+				<panel name="detailsPanel" colSpan="12">
+					<field name="cid" />
+					<field name="googleApiKey" widget="password"/>
+					<panel name="googleBtnPanel" colSpan="12" >
+				        <field name="$googleButton" showTitle="false" showIf="id" readonly="true">
+				        <viewer depends="$url" ><![CDATA[
+				              <iframe id="googleSignInButton" title="Google Sign in" width="100" height="70" frameBorder="0"
+				              src="{{record.$url}}">
+				          </iframe>
+				           ]]></viewer>
+				        </field>
+			       </panel>
+				</panel>
+			</panel>
+			<field name="syncContactHistoricList" colSpan="12" readonly="true" form-view="sync-contact-historic-form" grid-view="sync-contact-historic-grid"/>
+		</panel>
+	</form>
+	
+	<action-attrs name="action-sync-contact-attrs-sync-contact-build-url">
+		<attribute name="value" for="$url" expr="eval: 'synccontact/importGoogleContact.html?id=' + id"/>
+	</action-attrs>	
+	
+	<!-- Need to refresh to reload the IFrame informations -->
+	<action-attrs name="action-sync-contact-attrs-reload-google-btn-panel">
+		<attribute name="refresh" for="googleBtnPanel" expr="eval: true"/>
+	</action-attrs>
+	
+	
+</object-views>

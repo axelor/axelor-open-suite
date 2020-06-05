@@ -20,6 +20,8 @@
 				<field name="autoAllocateOnAllocation" widget="boolean-switch" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="6"/>
 				<field name="autoRequestReservedQty" widget="boolean-switch" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="6"/>
 				<field name="autoAllocateOnAvailabilityRequest" widget="boolean-switch" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="6"/>
+				<field name="activateIncStockMovePartialInvoicing" widget="boolean-switch" colSpan="6"/>
+				<field name="activateOutStockMovePartialInvoicing" widget="boolean-switch" colSpan="6"/>
 		</panel>
 	  	
 	  	<panel name="datePanel">

@@ -22,6 +22,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -215,5 +216,20 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
       }
     }
     saleOrder.setSaleOrderLineList(saleOrderLineList);
+  }
+
+  @Override
+  public void resetPackTotal(SaleOrder saleOrder) {
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (ObjectUtils.notEmpty(saleOrderLineList)) {
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+        if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE) {
+          saleOrderLine.setIsHideUnitAmounts(Boolean.FALSE);
+          saleOrderLine.setIsShowTotal(Boolean.FALSE);
+          saleOrderLine.setExTaxTotal(BigDecimal.ZERO);
+        }
+      }
+      saleOrder.setSaleOrderLineList(saleOrderLineList);
+    }
   }
 }

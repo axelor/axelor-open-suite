@@ -47,6 +47,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -115,6 +116,8 @@ public class ExportDbObjectService {
       metaFile = Beans.get(MetaFileRepository.class).save(metaFile);
 
       SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+
+      saxParserFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
       updateObjectMap(
           Arrays.asList(moduleDir.listFiles()), saxParserFactory.newSAXParser(), new XmlHandler());
 
@@ -220,12 +223,14 @@ public class ExportDbObjectService {
 
     String url = AppSettings.get().getBaseURL() + "#/ds";
     String viewType = getActionViewType(action.getXml());
-    if (viewType.equals("grid")) {
-      url = url + "/" + action.getName() + "/list/1";
-    } else if (viewType.equals("form")) {
-      url = url + "/" + action.getName() + "/edit";
-    } else if (viewType.equals("calendar")) {
-      url = url + "/" + action.getName() + "/calendar";
+    if (viewType != null) {
+      if (viewType.equals("grid")) {
+        url = url + "/" + action.getName() + "/list/1";
+      } else if (viewType.equals("form")) {
+        url = url + "/" + action.getName() + "/edit";
+      } else if (viewType.equals("calendar")) {
+        url = url + "/" + action.getName() + "/calendar";
+      }
     }
 
     return url;

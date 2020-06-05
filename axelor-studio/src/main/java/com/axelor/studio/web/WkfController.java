@@ -21,6 +21,7 @@ import com.axelor.common.Inflector;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -51,12 +52,17 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class WkfController {
 
-  public void processXml(ActionRequest request, ActionResponse response) {
+  public void processXml(ActionRequest request, ActionResponse response) throws AxelorException {
     try {
       Wkf workflow = request.getContext().asType(Wkf.class);
       workflow = Beans.get(WkfRepository.class).find(workflow.getId());
       Beans.get(WkfDesignerService.class).processXml(workflow);
+
     } catch (Exception e) {
+      if (e.getMessage().equals(IExceptionMessage.CANNOT_ALTER_NODES)) {
+        this.setDefaultNodes(request, response);
+        response.setValue("$isError", true);
+      }
       TraceBackService.trace(response, e);
     }
   }
@@ -66,11 +72,8 @@ public class WkfController {
       Wkf workflow = request.getContext().asType(Wkf.class);
       workflow = Beans.get(WkfRepository.class).find(workflow.getId());
       Beans.get(WkfService.class).process(workflow);
-      response.setReload(true);
+      response.setSignal("refresh-app", true);
     } catch (Exception e) {
-      if (e.getMessage().equals(IExceptionMessage.CANNOT_ALTER_NODES)) {
-        this.setDefaultNodes(request, response);
-      }
       TraceBackService.trace(response, e);
     }
   }

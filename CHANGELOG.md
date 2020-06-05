@@ -16,6 +16,10 @@
 - EMPLOYEE : set seniorityDate by hireDate
 - Studio : Add CSRF protection for every request header.
 - Add CSRF protection for timesheet line editor and project planning editor
+- Studio : Add support of menu creation for custom model and BPM node.
+- DURATION : add new field applicationType;
+- MRP: add configuration to ignore end date on incoming mrp line type.
+- BPM : Add overview of the result of the wkf.
 - SUPPLIER PORTAL : Creation of new Supplier portal
 
 ## Improvements

@@ -16,6 +16,7 @@
       
       <boolean name="includeElementWithoutDate" title="Include element without date" 
       help="Purchase order or sale order without estimated delivery date and manufacturing order without planned date. In this case, we use the MRP start date (today)"/>
+      <boolean name="ignoreEndDate" title="Ignore end date" help="Include elements with a date later than MRP end date."/>
 
       <extra-code><![CDATA[
 	

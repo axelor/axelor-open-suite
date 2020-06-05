@@ -95,11 +95,16 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
             ? teamTaskaRepo.find(timesheetLine.getTeamTask().getId())
             : null;
 
-    Boolean toInvoice = false;
-    if (teamTask != null) {
-      toInvoice = teamTask.getInvoicingType() == TeamTaskRepository.INVOICING_TYPE_TIME_SPENT;
-    } else if (project != null) {
-      toInvoice = project.getIsInvoicingTimesheet();
+    if (teamTask == null && project != null) {
+      timesheetLine.setToInvoice(project.getIsInvoicingTimesheet());
+      return timesheetLine;
+    }
+
+    Boolean toInvoice = teamTask.getToInvoice();
+    if (teamTask.getParentTask() != null) {
+      toInvoice =
+          teamTask.getParentTask().getInvoicingType()
+              == TeamTaskRepository.INVOICING_TYPE_TIME_SPENT;
     }
     timesheetLine.setToInvoice(toInvoice);
     return timesheetLine;

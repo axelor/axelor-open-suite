@@ -24,7 +24,7 @@
 		<field name="amountRemainToReconcile" width="80"/>
 	</grid>
 
-	<grid name="bank-statement-line-afb-120-grid-dashlet" title="Bank Statement lines" model="com.axelor.apps.bankpayment.db.BankStatementLineAFB120" orderBy="-sequence" edit-icon="true">
+	<grid name="bank-statement-line-afb-120-grid-dashlet" title="Bank Statement lines" model="com.axelor.apps.bankpayment.db.BankStatementLineAFB120" orderBy="sequence" edit-icon="true">
 		<hilite color="info" if="lineTypeSelect == 1"/>
 		<hilite color="primary" if="lineTypeSelect == 3"/>
 		<hilite color="danger" if="amountRemainToReconcile > 0 &amp;&amp; amountRemainToReconcile >= debit + credit"/>
