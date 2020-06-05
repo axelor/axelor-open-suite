@@ -30,10 +30,8 @@ import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
-@RequestScoped
 public class ImportPartner {
 
   @Inject protected PartnerRepository partnerRepo;

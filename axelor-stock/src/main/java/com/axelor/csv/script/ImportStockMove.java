@@ -20,11 +20,9 @@ package com.axelor.csv.script;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import java.util.Map;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.util.Map;
 
-@RequestScoped
 public class ImportStockMove {
 
   protected StockMoveToolService stockMoveToolService;

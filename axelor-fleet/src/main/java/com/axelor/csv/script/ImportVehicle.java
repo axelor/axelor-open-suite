@@ -26,10 +26,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
-@RequestScoped
 public class ImportVehicle {
 
   @Inject private MetaFiles metaFiles;

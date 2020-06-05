@@ -25,10 +25,8 @@ import com.axelor.exception.AxelorException;
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Map;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
-@RequestScoped
 public class ImportService {
 
   @Inject private FactoryImporter factoryImporter;

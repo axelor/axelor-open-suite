@@ -50,11 +50,9 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-@RequestScoped
 public class ImportSupplyChain {
 
   @Inject protected PurchaseOrderService purchaseOrderService;

@@ -21,11 +21,9 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import java.util.Map;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.util.Map;
 
-@RequestScoped
 public class ImportPurchaseOrder {
 
   @Inject private SequenceService sequenceService;
