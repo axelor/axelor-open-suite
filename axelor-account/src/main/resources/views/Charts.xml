@@ -146,7 +146,7 @@
 	     WHERE
 	      _invoice.status_select = 3
 	      AND _invoice.invoice_date BETWEEN DATE(:fromDate) AND  DATE(:fromDate) + CAST(:monthSelect as int) * INTERVAL '1 month' 
-	      AND _invoice.operation_type_select=3
+	      AND (_invoice.operation_type_select=3 OR _invoice.operation_type_select=4)
 	      
 	    GROUP BY 
 	      _invoice_id, _line_product, _turn_over
@@ -260,7 +260,7 @@
 	        WHERE
 	          _invoice.status_select = 3
 	          AND _invoice.invoice_date &gt;= now() - INTERVAL '12 month' 
-	          AND _invoice.operation_type_select=1
+	          AND (_invoice.operation_type_select=1 OR _invoice.operation_type_select=2)
 	        GROUP BY 
 	          _invoice_id, _line_product, _qty, _invoice_date
 	        ORDER BY 
@@ -304,7 +304,7 @@
 	    WHERE
 	      _invoice.status_select = 3
 	      AND _invoice.invoice_date &gt;= now() - INTERVAL '12 month' 
-	      AND _invoice.operation_type_select=1
+	      AND (_invoice.operation_type_select=1 OR _invoice.operation_type_select=2)
 	      
 	    GROUP BY 
 	      _invoice_id, _line_product, _turn_over, _invoice_date
@@ -342,7 +342,7 @@
 	            account_invoice AS _invoice
 	        WHERE
 	          _invoice.invoice_date &gt;= now() - INTERVAL '12 month' 
-	          AND _invoice.operation_type_select=1
+	          AND (_invoice.operation_type_select=1 OR _invoice.operation_type_select=2)
 	          AND _invoice.status_select = 3 
 	        GROUP BY 
 	           _invoice_date) AS _invoices
