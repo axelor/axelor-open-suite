@@ -14,6 +14,7 @@
 - PAYMENT MODE : Fix wrong translation
 - ACCOUNT : Fix wrong move line grid view
 - TIMESHEET : Fix error message showing when there was no mail template
+- SALE ORDER : Set duration when created from opportunity.
 
 ## [5.3.6] - 2020-05-26
 ## Improvements
