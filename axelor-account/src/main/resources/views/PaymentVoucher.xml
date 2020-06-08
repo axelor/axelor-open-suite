@@ -265,7 +265,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-attrs-payment-voucher-hide-trading-name" model="com.axelor.apps.account.db.PaymentVoucher">
-		<attribute name="hidden" for="trading-name"  expr="eval: !__config__.app.getApp('base').getEnableTradingNamesManagement()"/>
+		<attribute name="hidden" for="tradingName"  expr="eval: !__config__.app.getApp('base').getEnableTradingNamesManagement()"/>
 	</action-attrs>
 
 </object-views>
