@@ -18,11 +18,9 @@
 package com.axelor.apps.production.web;
 
 import com.axelor.apps.production.db.ProdProcessLine;
-import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.WorkCenterGroup;
 import com.axelor.apps.production.db.repo.ProdProcessLineRepository;
 import com.axelor.apps.production.service.ProdProcessLineService;
-import com.axelor.apps.production.service.ProdProcessLineServiceImpl;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -36,32 +34,6 @@ public class ProdProcessLineController {
   @Inject
   public ProdProcessLineController(ProdProcessLineService prodProcessLineService) {
     this.prodProcessLineService = prodProcessLineService;
-  }
-
-  public void updateDuration(ActionRequest request, ActionResponse response) {
-    ProdProcessLine prodProcess = request.getContext().asType(ProdProcessLine.class);
-    WorkCenter workCenter = prodProcess.getWorkCenter();
-    if (workCenter != null) {
-      response.setValue(
-          "durationPerCycle",
-          Beans.get(ProdProcessLineServiceImpl.class)
-              .getProdProcessLineDurationFromWorkCenter(workCenter));
-    }
-  }
-
-  public void updateCapacitySettings(ActionRequest request, ActionResponse response) {
-    ProdProcessLine prodProcess = request.getContext().asType(ProdProcessLine.class);
-    WorkCenter workCenter = prodProcess.getWorkCenter();
-    if (workCenter != null) {
-      response.setValue(
-          "minCapacityPerCycle",
-          Beans.get(ProdProcessLineServiceImpl.class)
-              .getProdProcessLineMinCapacityPerCycleFromWorkCenter(workCenter));
-      response.setValue(
-          "maxCapacityPerCycle",
-          Beans.get(ProdProcessLineServiceImpl.class)
-              .getProdProcessLineMaxCapacityPerCycleFromWorkCenter(workCenter));
-    }
   }
 
   public void copyWorkCenterGroup(ActionRequest request, ActionResponse response) {

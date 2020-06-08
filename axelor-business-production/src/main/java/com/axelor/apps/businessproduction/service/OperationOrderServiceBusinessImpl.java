@@ -24,6 +24,7 @@ import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
+import com.axelor.apps.production.db.WorkCenterGroup;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.operationorder.OperationOrderServiceImpl;
@@ -48,13 +49,26 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
       return super.createOperationOrder(manufOrder, prodProcessLine);
     }
 
+    WorkCenterGroup workCenterGroup = prodProcessLine.getWorkCenterGroup();
+
+    WorkCenter workCenter = null;
+
+    if (workCenterGroup != null
+        && workCenterGroup.getWorkCenterSet() != null
+        && !workCenterGroup.getWorkCenterSet().isEmpty()) {
+      workCenter = workCenterGroup.getWorkCenterSet().iterator().next();
+    }
+
+    if (workCenter == null) {
+      return null;
+    }
     OperationOrder operationOrder =
         this.createOperationOrder(
             manufOrder,
             prodProcessLine.getPriority(),
             manufOrder.getIsToInvoice(),
-            prodProcessLine.getWorkCenter(),
-            prodProcessLine.getWorkCenter().getMachine(),
+            workCenter,
+            workCenter.getMachine(),
             prodProcessLine.getMachineTool(),
             prodProcessLine);
 

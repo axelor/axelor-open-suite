@@ -8,8 +8,7 @@
   <entity name="ProdProcessLine" lang="java">
 
  	<many-to-one name="prodProcess" ref="com.axelor.apps.production.db.ProdProcess" title="Production process"/>
-  	<many-to-one required="true" name="workCenter" ref="com.axelor.apps.production.db.WorkCenter" title="Work center"/>
-    <string name="name" title="Label"/>
+  	<string name="name" title="Label"/>
     <integer name="priority" title="Priority"/>
     <string name="description" title="Description" large="true"/>
     <decimal name="minCapacityPerCycle" title="Min. capacity / cycle"/>

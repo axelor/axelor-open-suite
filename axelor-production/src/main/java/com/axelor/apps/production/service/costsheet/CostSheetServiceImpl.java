@@ -35,6 +35,7 @@ import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.ProdResidualProduct;
 import com.axelor.apps.production.db.UnitCostCalculation;
 import com.axelor.apps.production.db.WorkCenter;
+import com.axelor.apps.production.db.WorkCenterGroup;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
@@ -352,7 +353,15 @@ public class CostSheetServiceImpl implements CostSheetService {
 
       for (ProdProcessLine prodProcessLine : prodProcess.getProdProcessLineList()) {
 
-        WorkCenter workCenter = prodProcessLine.getWorkCenter();
+        WorkCenterGroup workCenterGroup = prodProcessLine.getWorkCenterGroup();
+
+        WorkCenter workCenter = null;
+
+        if (workCenterGroup != null
+            && workCenterGroup.getWorkCenterSet() != null
+            && !workCenterGroup.getWorkCenterSet().isEmpty()) {
+          workCenter = workCenterGroup.getWorkCenterSet().iterator().next();
+        }
 
         if (workCenter != null) {
 
@@ -435,54 +444,64 @@ public class CostSheetServiceImpl implements CostSheetService {
       int bomLevel,
       CostSheetLine parentCostSheetLine) {
 
-    WorkCenter workCenter = prodProcessLine.getWorkCenter();
+    WorkCenterGroup workCenterGroup = prodProcessLine.getWorkCenterGroup();
 
-    int costType = workCenter.getCostTypeSelect();
+    WorkCenter workCenter = null;
 
-    if (costType == WorkCenterRepository.COST_TYPE_PER_CYCLE) {
+    if (workCenterGroup != null
+        && workCenterGroup.getWorkCenterSet() != null
+        && !workCenterGroup.getWorkCenterSet().isEmpty()) {
+      workCenter = workCenterGroup.getWorkCenterSet().iterator().next();
+    }
 
-      costSheetLineService.createWorkCenterMachineCostSheetLine(
-          workCenter,
-          prodProcessLine.getPriority(),
-          bomLevel,
-          parentCostSheetLine,
-          this.getNbCycle(producedQty, prodProcessLine.getMaxCapacityPerCycle()),
-          workCenter.getCostAmount(),
-          cycleUnit);
+    if (workCenter != null) {
+      int costType = workCenter.getCostTypeSelect();
 
-    } else if (costType == WorkCenterRepository.COST_TYPE_PER_HOUR) {
+      if (costType == WorkCenterRepository.COST_TYPE_PER_CYCLE) {
 
-      BigDecimal qty =
-          new BigDecimal(prodProcessLine.getDurationPerCycle())
-              .divide(
-                  new BigDecimal(3600),
-                  appProductionService.getNbDecimalDigitForUnitPrice(),
-                  BigDecimal.ROUND_HALF_EVEN)
-              .multiply(this.getNbCycle(producedQty, prodProcessLine.getMaxCapacityPerCycle()));
-      qty = qty.setScale(appBaseService.getNbDecimalDigitForQty(), BigDecimal.ROUND_HALF_EVEN);
-      BigDecimal costPrice = workCenter.getCostAmount().multiply(qty);
+        costSheetLineService.createWorkCenterMachineCostSheetLine(
+            workCenter,
+            prodProcessLine.getPriority(),
+            bomLevel,
+            parentCostSheetLine,
+            this.getNbCycle(producedQty, prodProcessLine.getMaxCapacityPerCycle()),
+            workCenter.getCostAmount(),
+            cycleUnit);
 
-      costSheetLineService.createWorkCenterMachineCostSheetLine(
-          workCenter,
-          prodProcessLine.getPriority(),
-          bomLevel,
-          parentCostSheetLine,
-          qty,
-          costPrice,
-          hourUnit);
+      } else if (costType == WorkCenterRepository.COST_TYPE_PER_HOUR) {
 
-    } else if (costType == WorkCenterRepository.COST_TYPE_PER_PIECE) {
+        BigDecimal qty =
+            new BigDecimal(prodProcessLine.getDurationPerCycle())
+                .divide(
+                    new BigDecimal(3600),
+                    appProductionService.getNbDecimalDigitForUnitPrice(),
+                    BigDecimal.ROUND_HALF_EVEN)
+                .multiply(this.getNbCycle(producedQty, prodProcessLine.getMaxCapacityPerCycle()));
+        qty = qty.setScale(appBaseService.getNbDecimalDigitForQty(), BigDecimal.ROUND_HALF_EVEN);
+        BigDecimal costPrice = workCenter.getCostAmount().multiply(qty);
 
-      BigDecimal costPrice = workCenter.getCostAmount().multiply(producedQty);
+        costSheetLineService.createWorkCenterMachineCostSheetLine(
+            workCenter,
+            prodProcessLine.getPriority(),
+            bomLevel,
+            parentCostSheetLine,
+            qty,
+            costPrice,
+            hourUnit);
 
-      costSheetLineService.createWorkCenterMachineCostSheetLine(
-          workCenter,
-          prodProcessLine.getPriority(),
-          bomLevel,
-          parentCostSheetLine,
-          producedQty,
-          costPrice,
-          pieceUnit);
+      } else if (costType == WorkCenterRepository.COST_TYPE_PER_PIECE) {
+
+        BigDecimal costPrice = workCenter.getCostAmount().multiply(producedQty);
+
+        costSheetLineService.createWorkCenterMachineCostSheetLine(
+            workCenter,
+            prodProcessLine.getPriority(),
+            bomLevel,
+            parentCostSheetLine,
+            producedQty,
+            costPrice,
+            pieceUnit);
+      }
     }
   }
 
@@ -823,16 +842,16 @@ public class CostSheetServiceImpl implements CostSheetService {
       Long realDuration)
       throws AxelorException {
     BigDecimal costPerHour = BigDecimal.ZERO;
-    //    if (prodHumanResource.getProduct() != null) {
-    //      Product product = prodHumanResource.getProduct();
-    //      costPerHour =
-    //          unitConversionService.convert(
-    //              hourUnit,
-    //              product.getUnit(),
-    //              product.getCostPrice(),
-    //              appProductionService.getNbDecimalDigitForUnitPrice(),
-    //              product);
-    //    }
+    // if (prodHumanResource.getProduct() != null) {
+    // Product product = prodHumanResource.getProduct();
+    // costPerHour =
+    // unitConversionService.convert(
+    // hourUnit,
+    // product.getUnit(),
+    // product.getCostPrice(),
+    // appProductionService.getNbDecimalDigitForUnitPrice(),
+    // product);
+    // }
     costPerHour = workCenter.getCostAmount();
     BigDecimal durationHours =
         new BigDecimal(realDuration)

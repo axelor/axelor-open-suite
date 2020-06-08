@@ -29,11 +29,9 @@
 					<panel colSpan="12" itemSpan="12">
 						<field name="name" readonly="true"></field>
 						<field name="workCenterSet" readonly="true" grid-view="work-center-grid"
-							form-view="work-center-form" canNew="true"
-							onChange="action-prod-process-line-group-work-center-onchange" showIf="workCenterTypeSelect == 3" />
+							form-view="work-center-form" canNew="true" showIf="workCenterTypeSelect == 3" />
 						<field name="workCenterSet" readonly="true" grid-view="work-center-grid-small"
-							form-view="work-center-form" canNew="true"
-							onChange="action-prod-process-line-group-work-center-onchange" showIf="workCenterTypeSelect != 3" />
+							form-view="work-center-form" canNew="true" showIf="workCenterTypeSelect != 3" />
 					</panel>
 
 				</editor>
@@ -45,13 +43,6 @@
 				onSelect="action-prod-process-line-attrs-machine-tool-domain"
 				if="__config__.app.getApp('production').getEnableToolManagement()" />
 			<field name="stockLocation" />
-			<panel name="capacitySettingsPanel" title="Capacity settings"
-				colSpan="12">
-				<field name="minCapacityPerCycle" colSpan="3" />
-				<field name="maxCapacityPerCycle" colSpan="3" />
-				<field name="durationPerCycle" colSpan="3" widget="duration"
-					x-big="true" x-seconds="true" />
-			</panel>
 			<panel name="descriptionPanel" title="Description" colSpan="12">
 				<field name="description" showTitle="false" height="5"
 					colSpan="12" />
@@ -97,21 +88,6 @@
 		</panel>
 
 	</form>
-
-	<action-group name="action-prod-process-line-group-work-center-onchange">
-		<action name="action-prod-process-line-method-duration" />
-		<action name="action-prod-process-line-method-capacity-settings" />
-	</action-group>
-
-	<action-method name="action-prod-process-line-method-duration">
-		<call class="com.axelor.apps.production.web.ProdProcessLineController"
-			method="updateDuration" />
-	</action-method>
-
-	<action-method name="action-prod-process-line-method-capacity-settings">
-		<call class="com.axelor.apps.production.web.ProdProcessLineController"
-			method="updateCapacitySettings" />
-	</action-method>
 
 	<action-record name="action-prod-process-line-record-default"
 		model="com.axelor.apps.production.db.ProdProcessLine">

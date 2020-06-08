@@ -28,6 +28,7 @@ import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.WorkCenter;
+import com.axelor.apps.production.db.WorkCenterGroup;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
@@ -81,16 +82,30 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   public OperationOrder createOperationOrder(ManufOrder manufOrder, ProdProcessLine prodProcessLine)
       throws AxelorException {
 
-    OperationOrder operationOrder =
-        this.createOperationOrder(
-            manufOrder,
-            prodProcessLine.getPriority(),
-            prodProcessLine.getWorkCenter(),
-            prodProcessLine.getWorkCenter().getMachine(),
-            prodProcessLine.getMachineTool(),
-            prodProcessLine);
+    WorkCenterGroup workCenterGroup = prodProcessLine.getWorkCenterGroup();
+    WorkCenter workCenter = null;
 
-    return Beans.get(OperationOrderRepository.class).save(operationOrder);
+    if (workCenterGroup != null
+        && workCenterGroup.getWorkCenterSet() != null
+        && !workCenterGroup.getWorkCenterSet().isEmpty()) {
+      workCenter = workCenterGroup.getWorkCenterSet().iterator().next();
+    }
+    if (workCenter != null) {
+      OperationOrder operationOrder =
+          this.createOperationOrder(
+              manufOrder,
+              prodProcessLine.getPriority(),
+              workCenter,
+              workCenter.getMachine(),
+              prodProcessLine.getMachineTool(),
+              prodProcessLine);
+
+      return Beans.get(OperationOrderRepository.class).save(operationOrder);
+    }
+
+    throw new AxelorException(
+        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+        I18n.get(IExceptionMessage.WORKCENTER_NO_MACHINE));
   }
 
   @Transactional(rollbackOn = {Exception.class})
