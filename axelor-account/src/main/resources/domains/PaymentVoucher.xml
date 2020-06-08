@@ -36,6 +36,8 @@
 <!-- 	 	<integer name="operationTypeSelect" title="Type de saisie paiement" required="true" selection="ipayment.operation.type.select"/> -->
 	 	<integer name="operationTypeSelect" title="Payment type" required="true" selection="iinvoice.operation.type.select"/>
 	 	
+	 	<many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName" title="TradingName" />
+	 	
 		<decimal name="remainingAmount" title="Amount remaining to allocate">
 			<![CDATA[
             BigDecimal totalElementToPay = BigDecimal.ZERO;

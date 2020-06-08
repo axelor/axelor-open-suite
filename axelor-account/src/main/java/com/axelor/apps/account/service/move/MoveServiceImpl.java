@@ -169,6 +169,8 @@ public class MoveServiceImpl implements MoveService {
 
         move.setInvoice(invoice);
 
+        move.setTradingName(invoice.getTradingName());
+
         boolean isPurchase = InvoiceToolService.isPurchase(invoice);
 
         boolean isDebitCustomer = moveToolService.isDebitCustomer(invoice, false);

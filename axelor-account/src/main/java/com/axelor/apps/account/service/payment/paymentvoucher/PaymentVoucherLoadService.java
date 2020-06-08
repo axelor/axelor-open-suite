@@ -88,7 +88,8 @@ public class PaymentVoucherLoadService {
             + "and (self.move.statusSelect = ?3 OR self.move.statusSelect = ?4)"
             + "and self.move.ignoreInDebtRecoveryOk = 'f' "
             + "and self.move.company = ?2 "
-            + "and self.move.invoice.pfpValidateStatusSelect != ?5";
+            + "and self.move.invoice.pfpValidateStatusSelect != ?5 "
+            + "and self.move.tradingName = ?6";
 
     if (paymentVoucherToolService.isDebitToPay(paymentVoucher)) {
       query += " and self.debit > 0 ";
@@ -105,7 +106,8 @@ public class PaymentVoucherLoadService {
                 paymentVoucher.getCompany(),
                 MoveRepository.STATUS_VALIDATED,
                 MoveRepository.STATUS_DAYBOOK,
-                InvoiceRepository.PFP_STATUS_LITIGATION)
+                InvoiceRepository.PFP_STATUS_LITIGATION,
+                paymentVoucher.getTradingName())
             .fetch();
 
     return moveLines;
