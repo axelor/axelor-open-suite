@@ -97,12 +97,22 @@ public class BatchReimbursementImport extends BatchStrategy {
       Map<List<String[]>, String> data = null;
 
       try {
-        rejectImportService.createFilePath(accountConfig.getReimbursementImportFolderPathCFONB());
+
+        String dataImportDir = appBaseService.getFileUploadDir();
+
+        String reimbursementImportFolderPathCFONB =
+            accountConfig.getReimbursementImportFolderPathCFONB() == null
+                ? null
+                : dataImportDir + accountConfig.getReimbursementImportFolderPathCFONB();
+
+        rejectImportService.createFilePath(reimbursementImportFolderPathCFONB);
 
         data =
             rejectImportService.getCFONBFileByLot(
-                accountConfig.getReimbursementImportFolderPathCFONB(),
-                accountConfig.getTempReimbImportFolderPathCFONB(),
+                reimbursementImportFolderPathCFONB,
+                accountConfig.getTempReimbImportFolderPathCFONB() == null
+                    ? null
+                    : dataImportDir + accountConfig.getTempReimbImportFolderPathCFONB(),
                 company,
                 0);
 

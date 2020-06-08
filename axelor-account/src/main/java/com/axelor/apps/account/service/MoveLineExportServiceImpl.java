@@ -47,7 +47,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
@@ -1478,6 +1477,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       throws AxelorException, IOException {
 
     String filePath = accountConfigService.getAccountConfig(company).getExportPath();
+    String dataExportDir = appAccountService.getDataExportDir();
 
     for (String[] iteams : allMoveData) {
       for (String iteam : iteams) {
@@ -1487,11 +1487,9 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       }
     }
 
-    if (filePath == null) {
-      filePath = Files.createTempDir().getAbsolutePath();
-    } else {
-      new File(filePath).mkdirs();
-    }
+    filePath = filePath == null ? dataExportDir : dataExportDir + filePath;
+    new File(filePath).mkdirs();
+
     log.debug("Full path to export : {}{}", filePath, fileName);
     CsvTool.csvWriter(filePath, fileName, '|', columnHeader, allMoveData);
     Path path = Paths.get(filePath, fileName);

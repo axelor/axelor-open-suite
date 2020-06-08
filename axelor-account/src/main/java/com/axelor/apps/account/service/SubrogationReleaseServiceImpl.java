@@ -169,6 +169,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
   @Override
   public String exportToCSV(SubrogationRelease subrogationRelease)
       throws AxelorException, IOException {
+    String dataExportDir = appBaseService.getDataExportDir();
     List<String[]> allMoveLineData = new ArrayList<>();
 
     Comparator<Invoice> byInvoiceDate =
@@ -201,11 +202,9 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
     AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
     String filePath =
         accountConfigService.getAccountConfig(subrogationRelease.getCompany()).getExportPath();
-    if (filePath == null) {
-      filePath = com.google.common.io.Files.createTempDir().getAbsolutePath();
-    } else {
-      new File(filePath).mkdirs();
-    }
+    filePath = filePath == null ? dataExportDir : dataExportDir + filePath;
+    new File(filePath).mkdirs();
+
     String fileName =
         String.format(
             "%s %s.csv", I18n.get("Subrogation release"), subrogationRelease.getSequenceNumber());
