@@ -470,16 +470,14 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       if (this.isStockMoveProduct(saleOrderLine, saleOrder)) {
 
         if (saleOrderLine.getDeliveryState() == SaleOrderLineRepository.DELIVERY_STATE_DELIVERED) {
-          if (deliveryState == SaleOrderRepository.DELIVERY_STATE_NOT_DELIVERED
-              || deliveryState == SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED) {
+          if (deliveryState == SaleOrderRepository.DELIVERY_STATE_NOT_DELIVERED) {
             return SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED;
           } else {
             deliveryState = SaleOrderRepository.DELIVERY_STATE_DELIVERED;
           }
         } else if (saleOrderLine.getDeliveryState()
             == SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED) {
-          if (deliveryState == SaleOrderRepository.DELIVERY_STATE_DELIVERED
-              || deliveryState == SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED) {
+          if (deliveryState == SaleOrderRepository.DELIVERY_STATE_DELIVERED) {
             return SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED;
           } else {
             deliveryState = SaleOrderRepository.DELIVERY_STATE_NOT_DELIVERED;

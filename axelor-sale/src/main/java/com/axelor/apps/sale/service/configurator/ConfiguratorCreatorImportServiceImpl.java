@@ -23,7 +23,6 @@ import com.axelor.data.Listener;
 import com.axelor.data.xml.XMLImporter;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
-import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaJsonField;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
@@ -33,6 +32,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
@@ -66,7 +66,7 @@ public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreator
     FileOutputStream fout = new FileOutputStream(configFile);
     IOUtil.copyCompletely(inputStream, fout);
 
-    Path path = MetaFiles.getPath(filePath);
+    Path path = Paths.get(filePath);
     File tempDir = Files.createTempDir();
     File importFile = new File(tempDir, "configurator-creator.xml");
     Files.copy(path.toFile(), importFile);

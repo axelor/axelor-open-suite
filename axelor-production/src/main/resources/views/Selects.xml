@@ -33,7 +33,12 @@
 		<option value="0">On Start</option>
 		<option value="1">On Finish</option>
 	</selection>
-	
+
+	<selection name="manuf.order.type.select">
+		<option value="1">Production</option>
+		<option value="2">Permanent</option>
+	</selection>
+
 	<selection name="production.order.priority.select">
 		<option value="1">Low</option>
 		<option value="2">Normal</option>

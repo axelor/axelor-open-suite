@@ -177,7 +177,7 @@
                         <field name="currentContractVersion" showTitle="false" colSpan="12" x-show-icons="false">
                             <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                                 <panel colSpan="6">
-                                    <field name="paymentMode" colSpan="6" widget="SuggestBox" canEdit="false" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+                                    <field name="paymentMode" colSpan="6" widget="SuggestBox" canEdit="false" form-view="payment-mode-form" grid-view="payment-mode-grid" onSelect="action-contract-attrs-set-payment-mode-domain"/>
                                     <field name="paymentCondition" colSpan="6" widget="SuggestBox" canEdit="false" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
                                 </panel>
                                 <panel  colSpan="6">
@@ -191,7 +191,7 @@
                             <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                                 <field name="isPeriodicInvoicing" colSpan="3" widget="boolean-switch"/>
                                 <panel hidden="true" showIf="isPeriodicInvoicing" colSpan="9">
-                                    <field name="invoicingDuration" colSpan="4" canEdit="false" requiredIf="isPeriodicInvoicing"/>
+                                    <field name="invoicingDuration" domain="self.applicationTypeSelect = 2" colSpan="4" canEdit="false" requiredIf="isPeriodicInvoicing"/>
                                     <field name="isTimeProratedInvoice" colSpan="4" widget="boolean-switch"/>
                                     <field name="isVersionProratedInvoice" hidden="true" showIf="isTimeProratedInvoice" colSpan="4" widget="boolean-switch"/>
                                 </panel>
@@ -203,7 +203,7 @@
                     <field name="currentContractVersion" showTitle="false" colSpan="12" x-show-icons="false">
                         <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                             <field name="isTacitRenewal" colSpan="3" widget="boolean-switch"/>
-                            <field name="renewalDuration" hidden="true" showIf="isTacitRenewal" colSpan="3" requiredIf="isTacitRenewal"/>
+                            <field name="renewalDuration" domain="self.applicationTypeSelect = 2" hidden="true" showIf="isTacitRenewal" colSpan="3" requiredIf="isTacitRenewal"/>
                             <field name="isAutoEnableVersionOnRenew" hidden="true" showIf="isTacitRenewal" colSpan="6" widget="boolean-switch"/>
                         </editor>
                     </field>
@@ -212,12 +212,12 @@
                     <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                         <panel title="Engagement" >
                             <field name="isWithEngagement" colSpan="6" widget="boolean-switch"/>
-                            <field name="engagementDuration" showIf="isWithEngagement" colSpan="6" canNew="true" requiredIf="isWithEngagement"/>
+                            <field name="engagementDuration" domain="self.applicationTypeSelect = 2" showIf="isWithEngagement" colSpan="6" canNew="true" requiredIf="isWithEngagement"/>
                             <field name="engagementStartFromVersion" showIf="isWithEngagement" colSpan="12" requiredIf="isWithEngagement" widget="boolean-switch"/>
                         </panel>
                         <panel title="Prior notice" >
                             <field name="isWithPriorNotice" widget="boolean-switch"/>
-                            <field name="priorNoticeDuration" showIf="isWithPriorNotice" canNew="true" requiredIf="isWithPriorNotice"/>
+                            <field name="priorNoticeDuration" domain="self.applicationTypeSelect = 2" showIf="isWithPriorNotice" canNew="true" requiredIf="isWithPriorNotice"/>
                         </panel>
                     </editor>
                 </field>
@@ -358,7 +358,8 @@
     </action-attrs>
 
     <action-attrs name="action-contract-attrs-partner-payment-config">
-        <attribute for="currentContractVersion.paymentMode" name="value" expr="eval: partner?.inPaymentMode"/>
+        <attribute for="currentContractVersion.paymentMode" name="value" expr="eval: partner?.inPaymentMode" if="targetTypeSelect == 1"/>
+        <attribute for="currentContractVersion.paymentMode" name="value" expr="eval: partner?.outPaymentMode" if="targetTypeSelect == 2"/>
         <attribute for="currentContractVersion.paymentCondition" name="value" expr="eval: partner?.paymentCondition"/>
     </action-attrs>
 
@@ -401,5 +402,10 @@
 		<attribute name="domain" for="partner" expr="eval: &quot; :company member of self.companySet AND (self.isProspect = true OR self.isCustomer = true) &quot;" if="_xTargetType == 1"/>
 		<attribute name="domain" for="partner" expr="eval: &quot; :company member of self.companySet AND self.isSupplier = true &quot;" if="_xTargetType == 2"/>
     </action-attrs>
-
+    
+    <action-attrs name="action-contract-attrs-set-payment-mode-domain">
+    	<attribute name="domain" for="paymentMode" expr="self.inOutSelect = 1" if="__parent__?.targetTypeSelect == 1"/>
+    	<attribute name="domain" for="paymentMode" expr="self.inOutSelect = 2" if="__parent__?.targetTypeSelect == 2"/>
+    </action-attrs>
+    
 </object-views>

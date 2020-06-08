@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+			  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<form id="cmms-machine-form" name="machine-form" title="Machine" model="com.axelor.apps.production.db.Machine" width="large"
+		  extension="true">
+		  <panel-dashlet action="dashlet.cmms.machine.maintenance.requests" showIf="id != null"/>
+	</form>
+	
+	<action-view name="dashlet.cmms.machine.maintenance.requests" title="Maintenance Request"
+		model="com.axelor.apps.cmms.db.MaintenanceRequest" >
+		<view type="grid" name="maintenance-request-grid" />
+		<view type="kanban" name="maintenance-request-kanban" />
+		<view type="calendar" name="maintenance-request-calendar-per-user" />
+		<view type="form" name="maintenance-request-form" />
+		<domain>self.equipementMaintenance.machine.id = :id</domain>
+		<context name="_todayDate" expr="eval:__config__.app.getTodayDate()"/>
+	</action-view>
+	
+</object-views>
