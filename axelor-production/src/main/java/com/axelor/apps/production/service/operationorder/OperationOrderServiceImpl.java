@@ -82,10 +82,8 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   @Transactional(rollbackOn = {Exception.class})
   public OperationOrder createOperationOrder(ManufOrder manufOrder, ProdProcessLine prodProcessLine)
       throws AxelorException {
-    System.out.println("prodProcessLine :::: " + prodProcessLine);
     WorkCenterGroup workCenterGroup = prodProcessLine.getWorkCenterGroup();
     WorkCenter workCenter = null;
-    System.out.println("workCenterGroup ::: " + workCenterGroup);
     if (workCenterGroup != null
         && workCenterGroup.getWorkCenterSet() != null
         && !workCenterGroup.getWorkCenterSet().isEmpty()) {
@@ -93,7 +91,6 @@ public class OperationOrderServiceImpl implements OperationOrderService {
           workCenterGroup.getWorkCenterSet().stream()
               .min(Comparator.comparing(WorkCenter::getSequence))
               .get();
-      System.out.println("workCenter :::: " + workCenter);
     }
     if (workCenter != null) {
       OperationOrder operationOrder =
