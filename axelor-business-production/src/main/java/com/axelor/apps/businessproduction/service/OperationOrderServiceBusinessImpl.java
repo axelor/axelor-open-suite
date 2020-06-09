@@ -32,6 +32,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
+import java.util.Comparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,7 +57,10 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
     if (workCenterGroup != null
         && workCenterGroup.getWorkCenterSet() != null
         && !workCenterGroup.getWorkCenterSet().isEmpty()) {
-      workCenter = workCenterGroup.getWorkCenterSet().iterator().next();
+      workCenter =
+          workCenterGroup.getWorkCenterSet().stream()
+              .min(Comparator.comparing(WorkCenter::getSequence))
+              .get();
     }
 
     if (workCenter == null) {

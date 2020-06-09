@@ -50,6 +50,7 @@ import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -464,13 +465,16 @@ public class OperationOrderWorkflowService {
     if (workCenterGroup != null
         && workCenterGroup.getWorkCenterSet() != null
         && !workCenterGroup.getWorkCenterSet().isEmpty()) {
-      workCenter = workCenterGroup.getWorkCenterSet().iterator().next();
+      workCenter =
+          workCenterGroup.getWorkCenterSet().stream()
+              .min(Comparator.comparing(WorkCenter::getSequence))
+              .get();
     }
 
     long duration = 0;
 
     if (workCenter != null) {
-      BigDecimal maxCapacityPerCycle = prodProcessLine.getMaxCapacityPerCycle();
+      BigDecimal maxCapacityPerCycle = workCenter.getMaxCapacityPerCycle();
 
       BigDecimal nbCycles;
       if (maxCapacityPerCycle.compareTo(BigDecimal.ZERO) == 0) {
@@ -500,7 +504,7 @@ public class OperationOrderWorkflowService {
                 .longValue();
       }
 
-      BigDecimal durationPerCycle = new BigDecimal(prodProcessLine.getDurationPerCycle());
+      BigDecimal durationPerCycle = new BigDecimal(workCenter.getDurationPerCycle());
       duration += nbCycles.multiply(durationPerCycle).longValue();
     }
 

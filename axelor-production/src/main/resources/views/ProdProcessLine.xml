@@ -29,7 +29,7 @@
 					<panel colSpan="12" itemSpan="12">
 						<field name="name" readonly="true"></field>
 						<field name="workCenterSet" readonly="true" grid-view="work-center-grid"
-							form-view="work-center-form" canNew="true" showIf="workCenterTypeSelect == 3" />
+							form-view="work-center-form" canNew="true" showIf="workCenterTypeSelect == 3"  />
 						<field name="workCenterSet" readonly="true" grid-view="work-center-grid-small"
 							form-view="work-center-form" canNew="true" showIf="workCenterTypeSelect != 3" />
 					</panel>

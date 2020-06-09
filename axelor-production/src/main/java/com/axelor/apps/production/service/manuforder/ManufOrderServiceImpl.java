@@ -262,7 +262,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     logger.debug("Création d'un OF {}", priority);
 
     ProdProcess prodProcess = billOfMaterial.getProdProcess();
-
+    System.out.println("prodProcess ::: " + prodProcess);
     ManufOrder manufOrder =
         new ManufOrder(
             qty,

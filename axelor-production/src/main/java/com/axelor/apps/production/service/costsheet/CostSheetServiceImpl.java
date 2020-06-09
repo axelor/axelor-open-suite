@@ -56,6 +56,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -360,7 +361,10 @@ public class CostSheetServiceImpl implements CostSheetService {
         if (workCenterGroup != null
             && workCenterGroup.getWorkCenterSet() != null
             && !workCenterGroup.getWorkCenterSet().isEmpty()) {
-          workCenter = workCenterGroup.getWorkCenterSet().iterator().next();
+          workCenter =
+              workCenterGroup.getWorkCenterSet().stream()
+                  .min(Comparator.comparing(WorkCenter::getSequence))
+                  .get();
         }
 
         if (workCenter != null) {
@@ -451,7 +455,10 @@ public class CostSheetServiceImpl implements CostSheetService {
     if (workCenterGroup != null
         && workCenterGroup.getWorkCenterSet() != null
         && !workCenterGroup.getWorkCenterSet().isEmpty()) {
-      workCenter = workCenterGroup.getWorkCenterSet().iterator().next();
+      workCenter =
+          workCenterGroup.getWorkCenterSet().stream()
+              .min(Comparator.comparing(WorkCenter::getSequence))
+              .get();
     }
 
     if (workCenter != null) {
