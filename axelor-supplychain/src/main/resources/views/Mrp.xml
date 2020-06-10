@@ -11,13 +11,13 @@
         <field name="createdOn"/>
         <field name="createdBy"/>
         <field name="stockLocationFullNames" colSpan="6"/>
-        <field name="stockLocationCompanies"/>
+        <field name="company" form-view="company-form" grid-view="company-grid"/>
         <field name="endDate" colSpan="6"/>
         <field name="statusSelect"/>
 	 </grid>
     
 	<form name="mrp-form" model="com.axelor.apps.supplychain.db.Mrp" title="Mrp" width="large"
-		onLoad="action-attrs-mrp-generate-all-proposals" >
+		onLoad="action-mrp-group-onload" onNew="action-mrp-group-onnew,save">
 	     <menubar>
 	     	<menu title="Tools" showTitle="true" icon="fa-wrench">
 	    		<item name="runCalculationItem" title="Run calculation"  showIf="statusSelect != 1" action="save,action-method-mrp-run-calculation" prompt="Are you sure you want run the calculation ? Calculation can take a long time."/>
@@ -42,9 +42,11 @@
 			<field name="createdOn" colSpan="4"/>
 			<field name="createdBy" colSpan="4"/>
 			<field name="endDate" colSpan="4"/>
-			<field name="stockLocationSet" widget="TagSelect" canNew="false" form-view="stock-location-form" grid-view="stock-location-grid" domain="self.typeSelect != 3 AND (self.isNotInMrp = false OR self.isNotInMrp = null)" canEdit="false" onChange="action-mrp-record-set-stocklocation-fullname-and-companies-fullname"/>
-			<field name="stockLocationCompanies" readonly="true"/>
-	    </panel>
+				<field name="company" form-view="company-form" grid-view="company-grid"/>
+				<field name="stockLocationSet" widget="TagSelect" canNew="false" form-view="stock-location-form" grid-view="stock-location-grid"
+							 colSpan="6" domain="self.typeSelect != 3 AND (self.isNotInMrp = false OR self.isNotInMrp = null) AND self.company = :company"
+							 canEdit="false" onChange="action-mrp-record-set-stocklocation-fullname" showIf="company != null"/>
+			</panel>
 	    <panel name="filtersPanel" title="Filters" collapseIf="statusSelect != 0" colSpan="12">
 			<field name="id"/><spacer/>
 	        <field name="createdOn" colSpan="4"/>
@@ -52,8 +54,10 @@
 	        <field name="endDateTime" colSpan="4" readonly="true"/>
 	        <field name="createdBy"/>
 	        <field name="endDate" colSpan="6"/>
-	        <field name="stockLocationSet" widget="TagSelect" canNew="false" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="6" domain="self.typeSelect != 3 AND (self.isNotInMrp = false OR self.isNotInMrp = null)" canEdit="false" onChange="action-mrp-record-set-stocklocation-fullname-and-companies-fullname"/>
-	        <field name="stockLocationCompanies" readonly="true"/>
+				<field name="company" form-view="company-form" grid-view="company-grid"/>
+				<field name="stockLocationSet" widget="TagSelect" canNew="false" form-view="stock-location-form" grid-view="stock-location-grid"
+							 colSpan="6" domain="self.typeSelect != 3 AND (self.isNotInMrp = false OR self.isNotInMrp = null) AND self.company = :company"
+							 canEdit="false" onChange="action-mrp-record-set-stocklocation-fullname" showIf="company != null"/>
 	        <field name="displayProductWithoutProposal" widget="boolean-switch"/>
 	        <panel-related name="productSetPanel" field="productSet" canEdit="false" form-view="product-form" grid-view="product-grid" canNew="false" colSpan="12" domain="self.productTypeSelect = 'storable' AND self.excludeFromMrp = false AND self.stockManaged = true"/>
 	        <panel-related name="productCategorySetPanel" field="productCategorySet" canEdit="false" form-view="product-category-form" grid-view="product-category-grid" canNew="false" colSpan="12"/>
@@ -75,6 +79,16 @@
 	 		<button name="generateProposalsBtn" title="Generate all proposals" onClick="action-method-mrp-generate-all-proposal,close"/>
 		 </panel>
 	 </form>
+
+	<action-group name="action-mrp-group-onnew">
+		<action name="action-mrp-record-set-company"/>
+		<action name="action-mrp-attrs-company-readonly"/>
+	</action-group>
+
+	<action-group name="action-mrp-group-onload">
+		<action name="action-attrs-mrp-generate-all-proposals"/>
+		<action name="action-mrp-attrs-company-readonly"/>
+	</action-group>
 	 
 	<action-method name="action-method-mrp-run-calculation">
 	    <call class="com.axelor.apps.supplychain.web.MrpController" method="runCalculation"/>
@@ -117,6 +131,10 @@
 		<attribute name="value" for="$consolidateProposalsPerSupplier" expr="eval:true"/>
 	</action-attrs>
 	
+	<action-attrs name="action-mrp-attrs-company-readonly">
+		<attribute for="company" name="readonly" expr="eval: !__config__.app.getApp('base').getEnableMultiCompany()"/>
+	</action-attrs>
+	
 	<action-attrs name="action-attrs-mrp-generate-all-proposals"
 		model="com.axelor.apps.supplychain.db.Mrp">
 		<attribute name="readonly" for="generateAllProposalsBtn"
@@ -131,11 +149,12 @@
 		<call class="com.axelor.apps.supplychain.web.MrpController" method="undoManualChanges"/>
 	</action-method>
 	
-	<action-record name="action-mrp-record-set-stocklocation-fullname-and-companies-fullname" model="com.axelor.apps.supplychain.db.Mrp">
+	<action-record name="action-mrp-record-set-stocklocation-fullname" model="com.axelor.apps.supplychain.db.Mrp">
 		<field name="stockLocationFullNames" expr="eval: stockLocationSet?.collect{it -> it.name}.flatten().join(',')"/>
-		<field name="stockLocationCompanies" expr="eval: stockLocationSet?.collect{it -> it.company?.name}.flatten().join(',')"/>
-	</action-record>  
+	</action-record>
+
+	<action-record name="action-mrp-record-set-company" model="com.axelor.apps.supplychain.db.Mrp">
+		<field name="company" expr="eval: __user__.activeCompany"/>
+	</action-record>
 	
 </object-views>
-
-
