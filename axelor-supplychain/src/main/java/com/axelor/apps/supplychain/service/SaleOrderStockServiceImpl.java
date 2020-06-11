@@ -147,6 +147,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     StockMove stockMove =
         this.createStockMove(saleOrder, saleOrder.getCompany(), estimatedDeliveryDate);
     stockMove.setDeliveryCondition(saleOrder.getDeliveryCondition());
+    stockMove.setGroupProductsOnPrintings(saleOrder.getClientPartner().getGroupProductsOnPrintings());
 
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
       if (saleOrderLine.getProduct() != null) {
@@ -281,6 +282,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     stockMove.setSpecificPackage(saleOrder.getSpecificPackage());
     stockMove.setNote(saleOrder.getDeliveryComments());
     stockMove.setPickingOrderComments(saleOrder.getPickingOrderComments());
+    stockMove.setGroupProductsOnPrintings(saleOrder.getClientPartner().getGroupProductsOnPrintings());
     if (stockMove.getPartner() != null) {
       setDefaultAutoMailSettings(stockMove);
     }

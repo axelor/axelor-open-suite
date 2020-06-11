@@ -579,6 +579,7 @@
 		<action name="action-record-supply-chain-stock-move-onnew"  if="__parent__?._model == 'com.axelor.apps.account.db.Invoice'"/>
 		<action name="action-attrs-supply-chain-stock-move-onnew" if="__parent__?._model == 'com.axelor.apps.account.db.Invoice'"/>
 		<action name="action-stock-move-attrs-filter-on-available-products"/>
+		<action name="action-stock-move-record-set-group-product-on-printing"/>
     </action-group>
 
     <action-group name="action-group-stock-stockmove-onload">
@@ -635,6 +636,7 @@
 		<action name="action-stock-move-record-ispm-field"/>
 	   	<action name="action-stock-move-record-partner-shipment-informations"/>
 	   	<action name="action-stock-move-attrs-check-delivery-address" if="partner?.partnerAddressList?.size() > 1"/>
+		<action name="action-stock-move-record-set-group-product-on-printing"/>
 	</action-group>
 
     <action-group name="action-stock-move-group-onchange-company">
@@ -999,6 +1001,10 @@
     	<field name="freightCarrierMode" expr="eval: clientPartner?.freightCarrierMode"/>
 		<field name="carrierPartner" expr="eval: clientPartner?.freightCarrierMode?.carrierPartner"/>
 	</action-record>
+
+    <action-record name="action-stock-move-record-set-group-product-on-printing" model="com.axelor.apps.stock.db.StockMove">
+        <field name="groupProductsOnPrintings" expr="eval: partner?.groupProductsOnPrintings" if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()" />
+    </action-record>
 	
 	<action-attrs name="action-stock-move-attrs-check-delivery-address">
 		<attribute name="hidden" for="deliveryAddressText" expr="eval: partner?.partnerAddressList?.findAll{it.isDeliveryAddr}?.size() &gt; 0 " />

@@ -976,6 +976,7 @@
         <action name="action-sale-order-attrs-availability"/>
         <action name="action-sale-order-group-set-defualts-from-opportunity" if="_parent != null &amp;&amp; _parent?._model=='com.axelor.apps.crm.db.Opportunity'"/>
 		<action name="action-sale-order-record-load-trading-name-config"/>
+		<action name="action-sale-order-record-set-group-product-on-printing"/>
     </action-group>
 
 	<action-group name="action-sale-order-group-set-defualts-from-opportunity">
@@ -1045,6 +1046,7 @@
 		<action name="action-sale-order-method-compute" if="template"/>
 		<action name="action-sale-order-attrs-set-is-ispm-required"
 				if="__config__.app.isApp('supplychain')"/>
+		<action name="action-sale-order-record-set-group-product-on-printing"/>
 	</action-group>
 
   <action-group name="action-group-sale-order-validate-changes">
@@ -1079,6 +1081,10 @@
     	<field name="clientPartner" expr="eval: __repo__(Partner).find(_partner.mainPartner.id)" if="_partner.isContact == true &amp; _partner.mainPartner != null"/>
     	<field name="contactPartner" expr="eval: _partner" if="_partner.isContact == true"/>
     	<field name="contactPartner" expr="eval: _partner?.contactPartnerSet?.size() == 1 ? _partner?.contactPartnerSet[0] : null" if="_partner.isContact == false"/>
+    </action-record>
+
+    <action-record name="action-sale-order-record-set-group-product-on-printing" model="com.axelor.apps.sale.db.SaleOrder">
+        <field name="groupProductsOnPrintings" expr="eval: clientPartner?.groupProductsOnPrintings" if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()" />
     </action-record>
 
     <action-record name="action-sale-order-record-in-ati" model="com.axelor.apps.sale.db.SaleOrder">

@@ -195,6 +195,79 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="GroupProducts" id="5393">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">boolean</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">true</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">check-box</property>
+            <structure name="format"/>
+        </scalar-parameter>
+        <scalar-parameter name="GroupProductTypes" id="5394">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant"></value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="GroupProductLevel" id="5395">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">global</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="GroupProductProductTitle" id="5396">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">Products</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="GroupProductServiceTitle" id="5397">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">Services</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="209">
@@ -1671,15 +1744,73 @@ where SaleOrder.id = ?]]></xml-property>
                     <text-property name="displayName">hideUnitAmounts</text-property>
                     <text-property name="heading">hideUnitAmounts</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">isgrouped</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">isgrouped</text-property>
+                    <text-property name="heading">isgrouped</text-property>
+                </structure>
+            </list-property>
+            <list-property name="filter">
+                <structure>
+                    <property name="operator">is-true</property>
+                    <expression name="expr" type="javascript">if (!params["GroupProducts"].value) {
+	row["isgrouped"] == 1
+} else {
+	if (row["product_type_select"] == "service") {
+		if (BirtStr.search("*services*", params["GroupProductTypes"].value) == -1) {
+			row["isgrouped"] == 1
+		} else {
+			if (BirtStr.search("*global*", params["GroupProductLevel"].value) == -1) {
+				row["isgrouped"] == 2
+			} else {
+				row["isgrouped"] == 3
+			}
+		}
+	} else {
+		if (BirtStr.search("*products*", params["GroupProductTypes"].value) == -1) {
+			row["isgrouped"] == 1
+		} else {
+			if (BirtStr.search("*global*", params["GroupProductLevel"].value) == -1) {
+				row["isgrouped"] == 2
+			} else {
+				row["isgrouped"] == 3
+			}
+		}
+	}
+}</expression>
+                </structure>
             </list-property>
             <list-property name="parameters">
+                <structure>
+                    <property name="name">product_title</property>
+                    <property name="paramName">GroupProductProductTitle</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
+                    <property name="position">1</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">service_title</property>
+                    <property name="paramName">GroupProductServiceTitle</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
+                    <property name="position">2</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
                 <structure>
                     <property name="name">param_1</property>
                     <property name="paramName">SaleOrderId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
-                    <property name="position">1</property>
+                    <property name="position">3</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -1804,6 +1935,11 @@ where SaleOrder.id = ?]]></xml-property>
                     <structure>
                         <property name="position">24</property>
                         <property name="name">hideUnitAmounts</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">25</property>
+                        <property name="name">isgrouped</property>
                         <property name="dataType">integer</property>
                     </structure>
                 </list-property>
@@ -1954,50 +2090,154 @@ where SaleOrder.id = ?]]></xml-property>
                     <property name="nativeName">hideUnitAmounts</property>
                     <property name="dataType">integer</property>
                 </structure>
+                <structure>
+                    <property name="position">25</property>
+                    <property name="name">isgrouped</property>
+                    <property name="nativeName">isgrouped</property>
+                    <property name="dataType">integer</property>
+                </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select 
-	SOLine.id, 
-	SOLine.description, 
-	SOLine.qty as "quantity", 
-	Unit.label_to_printing as "UnitCode", 
-	SOLine.product_name as "ProductName", 
-	(CASE WHEN SaleOrder.in_ati
-		THEN SOLine.in_tax_price
-		ELSE SOLine.price END)
-		as "unit_price",
-	SOLine.ex_tax_total, 
-	SOLine.in_tax_total,
-	Currency.code as "CurrencyCode",
-	TaxLine.value as "tax_line",
-	Product.code as "productCode",
-  MetaFile.file_path as "productPicture",
-	(SOLine.price_discounted 
-		- (CASE WHEN SaleOrder.in_ati 
-			THEN SOLine.in_tax_price
-			ELSE SOLine.price END))
-		* SOLine.qty 
-		as "totalDiscountAmount",
-	SOLine.sequence,
-	SaleOrder.sale_order_type_select, 
-	SaleOrder.in_ati,
-	Product.product_type_select,
-	SOLine.type_select = 1 as "is_title_line",
-	CustomerCatalog.product_customer_code as "CustomerProductCode",
-	CustomerCatalog.product_customer_name as "CustomerProductName",
-	SOLine.estimated_deliv_date as "EstimatedDeliveryDate",
-	SOLine.price_discounted as "price_discounted",
-	SOLine.is_show_total as "showTotal",
-	SOLine.is_hide_unit_amounts as "hideUnitAmounts"
-	
+            <xml-property name="queryText"><![CDATA[
+
+WITH SOL AS (
+SELECT
+    SOLine.id, 
+    SOLine.product_name as "ProductName",
+    ProductCategory.name as product_category_name,
+    CASE WHEN (Product.product_type_select LIKE 'storable')
+        THEN ?
+        ELSE ? END as grouped_title,
+    SOLine.description, 
+    Product.product_type_select,
+    SOLine.qty as "quantity", 
+    (CASE WHEN SaleOrder.in_ati
+        THEN SOLine.in_tax_price
+        ELSE SOLine.price END)
+        as "unit_price",
+    (SOLine.price_discounted 
+        - (CASE WHEN SaleOrder.in_ati 
+        THEN SOLine.in_tax_price
+        ELSE SOLine.price END))
+        * SOLine.qty 
+        as "totalDiscountAmount",
+    SOLine.ex_tax_total, 
+    SOLine.in_tax_total,
+    Currency.code as "CurrencyCode",
+    TaxLine.value as "tax_line",
+    MetaFile.file_path as "productPicture",
+    SOLine.sequence,
+    SOLine.type_select = 1 as "is_title_line",
+    SaleOrder.in_ati,
+    Product.code as "productCode",
+    ProductCategory.code as product_category_code,
+    SaleOrder.sale_order_type_select, 
+    CustomerCatalog.product_customer_code as "CustomerProductCode",
+    CustomerCatalog.product_customer_name as "CustomerProductName",
+    SOLine.estimated_deliv_date as "EstimatedDeliveryDate",
+    SOLine.price_discounted as "price_discounted",
+    SOLine.is_show_total as "showTotal",
+    SOLine.is_hide_unit_amounts as "hideUnitAmounts",
+    Unit.label_to_printing as "UnitCode"
+
 from sale_sale_order as SaleOrder
 left outer join sale_sale_order_line as SOLine on (SOLine.sale_order = SaleOrder.id)
 left outer join base_product as Product on (SOLine.product = Product.id)
+left outer join base_product_category as ProductCategory on (Product.product_category = ProductCategory.id)
 left outer join base_unit as Unit on (SOLine.unit = Unit.id)
 left outer join base_currency as Currency on (SaleOrder.currency = Currency.id)
 left outer join account_tax_line as TaxLine on (SOLine.tax_line = TaxLine.id)
 left outer join sale_customer_catalog as CustomerCatalog on (CustomerCatalog.product = Product.id and CustomerCatalog.customer_partner = SaleOrder.client_partner)
 left outer join meta_file as MetaFile on (MetaFile.id = Product.picture)
-where SaleOrder.id = ?]]></xml-property>
+where SaleOrder.id = ?)
+
+SELECT 
+    id, 
+    "ProductName", 
+    description, 
+    product_type_select,
+    "quantity", 
+    "unit_price",
+    "totalDiscountAmount",
+    ex_tax_total, 
+    in_tax_total,
+    "CurrencyCode",
+    "tax_line",
+    "productPicture",
+    sequence,
+    sale_order_type_select, 
+    "is_title_line",
+    in_ati,
+    "productCode",
+    "CustomerProductCode",
+    "CustomerProductName",
+    "EstimatedDeliveryDate",
+    "price_discounted",
+    1 as isgrouped,
+    "showTotal",
+    "hideUnitAmounts",
+    "UnitCode"
+FROM SOL
+
+UNION
+SELECT 
+    MIN(id) as id, 
+    product_category_name as "ProductName", 
+    null as description, 
+    product_type_select,
+    SUM("quantity") as "quantity", 
+    (SUM("unit_price" * "quantity") / SUM("quantity")) as "unit_price",
+    SUM("totalDiscountAmount") as "totalDiscountAmount",
+    SUM(ex_tax_total) as ex_tax_total, 
+    SUM(in_tax_total) as in_tax_total,
+    "CurrencyCode",
+    null as "tax_line",
+    null as "productPicture",
+    MIN(sequence) as sequence,
+    null as sale_order_type_select, 
+    BOOL_AND("is_title_line") as "is_title_line",
+    BOOL_AND(in_ati) as in_ati,
+    product_category_code as "productCode",
+    null as "CustomerProductCode",
+    null as "CustomerProductName",
+    MAX("EstimatedDeliveryDate") as "EstimatedDeliveryDate",
+    SUM("price_discounted") as "price_discounted",
+    2 as isgrouped,
+    BOOL_AND("showTotal") as "showTotal",
+    BOOL_OR("hideUnitAmounts") as "hideUnitAmounts",
+    "UnitCode"
+FROM SOL
+group by product_category_name, product_category_code, product_type_select, "UnitCode", "CurrencyCode"
+
+UNION
+SELECT 
+    MIN(id) as id, 
+    grouped_title as "ProductName", 
+    null as description, 
+    product_type_select,
+    SUM("quantity") as "quantity", 
+    (SUM("unit_price" * "quantity") / SUM("quantity")) as "unit_price",
+    SUM("totalDiscountAmount") as "totalDiscountAmount",
+    SUM(ex_tax_total) as ex_tax_total, 
+    SUM(in_tax_total) as in_tax_total,
+    "CurrencyCode",
+    null as "tax_line",
+    null as "productPicture",
+    MIN(sequence) as sequence,
+    null as sale_order_type_select, 
+    BOOL_AND("is_title_line") as "is_title_line",
+    BOOL_AND(in_ati) as in_ati,
+    null as "productCode",
+    null as "CustomerProductCode",
+    null as "CustomerProductName",
+    MAX("EstimatedDeliveryDate") as "EstimatedDeliveryDate",
+    SUM("price_discounted") as "price_discounted",
+    3 as isgrouped,
+    BOOL_AND("showTotal") as "showTotal",
+    BOOL_OR("hideUnitAmounts") as "hideUnitAmounts",
+    "UnitCode"
+FROM SOL
+group by grouped_title, product_type_select, "UnitCode", "CurrencyCode";;
+]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="SaleOrderLineTaxDS" id="3422">
             <list-property name="columnHints">

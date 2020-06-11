@@ -406,6 +406,7 @@
 		<action name="action-purchase-order-attrs-interco"/>
 		<action name="action-purchase-order-attrs-external-reference"/>
 		<action name="action-purchase-order-record-load-trading-name-config"/>
+		<action name="action-purchase-order-record-set-group-product-on-printing"/>
 	</action-group>
 
     <action-group name="action-group-purchase-order-company-change-actions">
@@ -436,6 +437,7 @@
 		<action name="action-purchase-order-method-fill-price-list"/>
 		<action name="action-purchase-order-attrs-interco"/>
 		<action name="action-purchase-order-record-interco"/>
+		<action name="action-purchase-order-record-set-group-product-on-printing"/>
 	</action-group>
 	
 	<action-group name="action-group-purchase-order-cancel">
@@ -515,6 +517,10 @@
     	<field name="notes" expr="eval: supplierPartner?.purchaseOrderComments"/>
     	<field name="stockLocation" expr="call: com.axelor.apps.stock.service.PartnerStockSettingsService:getDefaultStockLocation(supplierPartner, company)" if="__config__.app.isApp('supplychain')"/>
  	</action-record>
+
+    <action-record name="action-purchase-order-record-set-group-product-on-printing" model="com.axelor.apps.purchase.db.PurchaseOrder">
+    	<field name="groupProductsOnPrintings" expr="eval: supplierPartner?.groupProductsOnPrintings" if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()" />
+    </action-record>
 
 	<action-record name="action-purchase-order-record-payment-mode" model="com.axelor.apps.purchase.db.PurchaseOrder">
 		<field name="paymentMode" expr="eval: supplierPartner?.outPaymentMode" if="supplierPartner?.outPaymentMode != null"/>

@@ -15,6 +15,18 @@
             <property name="id">3422</property>
         </structure>
         <structure>
+            <property name="name">queryText</property>
+            <property name="id">3692</property>
+        </structure>
+        <structure>
+            <property name="name">queryTimeOut</property>
+            <property name="id">3692</property>
+        </structure>
+        <structure>
+            <property name="name">rowFetchSize</property>
+            <property name="id">3692</property>
+        </structure>
+        <structure>
             <property name="name">odaURL</property>
             <property name="id">209</property>
             <expression name="value" type="javascript">params["DBName"].value</expression>
@@ -33,18 +45,6 @@
             <property name="name">odaDriverClass</property>
             <property name="id">209</property>
             <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
-        </structure>
-        <structure>
-            <property name="name">queryText</property>
-            <property name="id">3692</property>
-        </structure>
-        <structure>
-            <property name="name">queryTimeOut</property>
-            <property name="id">3692</property>
-        </structure>
-        <structure>
-            <property name="name">rowFetchSize</property>
-            <property name="id">3692</property>
         </structure>
     </list-property>
     <property name="units">cm</property>
@@ -180,6 +180,79 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
             <property name="valueType">static</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="GroupProducts" id="4633">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">boolean</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">False</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">check-box</property>
+            <structure name="format"/>
+        </scalar-parameter>
+        <scalar-parameter name="GroupProductTypes" id="4634">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant"></value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="GroupProductLevel" id="4635">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant"></value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="GroupProductProductTitle" id="4636">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant"></value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="GroupProductServiceTitle" id="4637">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant"></value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -1442,48 +1515,16 @@ where PurchaseOrder.id = ?]]></xml-property>
             <property name="nullsOrdering">nulls lowest</property>
             <list-property name="columnHints">
                 <structure>
-                    <property name="columnName">product_code</property>
-                    <property name="alias">product_code</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">product_code</text-property>
-                    <text-property name="heading">product_code</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">product_name</property>
-                    <property name="alias">product_name</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">product_name</text-property>
-                    <text-property name="heading">product_name</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">product_standard</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">product_standard</text-property>
-                    <text-property name="heading">product_standard</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">purchase_id</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">purchase_id</text-property>
                     <text-property name="heading">purchase_id</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">purchase_line_id</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">purchase_line_id</text-property>
-                    <text-property name="heading">purchase_line_id</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">supplier_product_code</property>
+                    <property name="columnName">product_name</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">supplier_product_code</text-property>
-                    <text-property name="heading">supplier_product_code</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">supplier_product_name</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">supplier_product_name</text-property>
-                    <text-property name="heading">supplier_product_name</text-property>
+                    <text-property name="displayName">product_name</text-property>
+                    <text-property name="heading">product_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">description</property>
@@ -1492,28 +1533,22 @@ where PurchaseOrder.id = ?]]></xml-property>
                     <text-property name="heading">description</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">producttype</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">producttype</text-property>
+                    <text-property name="heading">producttype</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">TaxValue</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">TaxValue</text-property>
+                    <text-property name="heading">TaxValue</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">qty</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">qty</text-property>
                     <text-property name="heading">qty</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">desired_deliv_date</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">desired_deliv_date</text-property>
-                    <text-property name="heading">desired_deliv_date</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">sequence</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">sequence</text-property>
-                    <text-property name="heading">sequence</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">UnitCode</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">UnitCode</text-property>
-                    <text-property name="heading">UnitCode</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">UnitPrice</property>
@@ -1540,10 +1575,10 @@ where PurchaseOrder.id = ?]]></xml-property>
                     <text-property name="heading">in_tax_total</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">in_ati</property>
+                    <property name="columnName">sequence</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">in_ati</text-property>
-                    <text-property name="heading">in_ati</text-property>
+                    <text-property name="displayName">sequence</text-property>
+                    <text-property name="heading">sequence</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">isTitleLine</property>
@@ -1552,20 +1587,126 @@ where PurchaseOrder.id = ?]]></xml-property>
                     <text-property name="heading">isTitleLine</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">TaxValue</property>
+                    <property name="columnName">in_ati</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">TaxValue</text-property>
-                    <text-property name="heading">TaxValue</text-property>
+                    <text-property name="displayName">in_ati</text-property>
+                    <text-property name="heading">in_ati</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">product_code</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">product_code</text-property>
+                    <text-property name="heading">product_code</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">product_standard</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">product_standard</text-property>
+                    <text-property name="heading">product_standard</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">supplier_product_code</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">supplier_product_code</text-property>
+                    <text-property name="heading">supplier_product_code</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">supplier_product_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">supplier_product_name</text-property>
+                    <text-property name="heading">supplier_product_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">productcategory</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">productcategory</text-property>
+                    <text-property name="heading">productcategory</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">isgrouped</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">isgrouped</text-property>
+                    <text-property name="heading">isgrouped</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">purchase_line_id</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">purchase_line_id</text-property>
+                    <text-property name="heading">purchase_line_id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">desired_deliv_date</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">desired_deliv_date</text-property>
+                    <text-property name="heading">desired_deliv_date</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">UnitCode</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">UnitCode</text-property>
+                    <text-property name="heading">UnitCode</text-property>
+                </structure>
+            </list-property>
+            <list-property name="filter">
+                <structure>
+                    <property name="operator">is-true</property>
+                    <expression name="expr" type="javascript">if (!params["GroupProducts"].value) {
+	row["isgrouped"] == 1
+} else {
+	if (row["producttype"] == "service") {
+		if (BirtStr.search("*services*", params["GroupProductTypes"].value) == -1) {
+			row["isgrouped"] == 1
+		} else {
+			if (BirtStr.search("*global*", params["GroupProductLevel"].value) == -1) {
+				row["isgrouped"] == 2
+			} else {
+				row["isgrouped"] == 3
+			}
+		}
+	} else {
+		if (BirtStr.search("*products*", params["GroupProductTypes"].value) == -1) {
+			row["isgrouped"] == 1
+		} else {
+			if (BirtStr.search("*global*", params["GroupProductLevel"].value) == -1) {
+				row["isgrouped"] == 2
+			} else {
+				row["isgrouped"] == 3
+			}
+		}
+	}
+}</expression>
                 </structure>
             </list-property>
             <list-property name="parameters">
+                <structure>
+                    <property name="name">product_title</property>
+                    <property name="paramName">GroupProductProductTitle</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                    <property name="position">1</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">service_title</property>
+                    <property name="paramName">GroupProductServiceTitle</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                    <property name="position">2</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
                 <structure>
                     <property name="name">param_1</property>
                     <property name="paramName">PurchaseOrderId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
-                    <property name="position">1</property>
+                    <property name="position">3</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -1574,8 +1715,8 @@ where PurchaseOrder.id = ?]]></xml-property>
                 <list-property name="resultSet">
                     <structure>
                         <property name="position">1</property>
-                        <property name="name">product_code</property>
-                        <property name="dataType">string</property>
+                        <property name="name">purchase_id</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">2</property>
@@ -1584,43 +1725,43 @@ where PurchaseOrder.id = ?]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
-                        <property name="name">product_standard</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">4</property>
-                        <property name="name">purchase_id</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">5</property>
-                        <property name="name">purchase_line_id</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">6</property>
-                        <property name="name">supplier_product_code</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">7</property>
-                        <property name="name">supplier_product_name</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">8</property>
                         <property name="name">description</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">9</property>
+                        <property name="position">4</property>
+                        <property name="name">producttype</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">TaxValue</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
                         <property name="name">qty</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
+                        <property name="position">7</property>
+                        <property name="name">UnitPrice</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">totalDiscountAmount</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">ex_tax_total</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
                         <property name="position">10</property>
-                        <property name="name">desired_deliv_date</property>
-                        <property name="dataType">date</property>
+                        <property name="name">in_tax_total</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">11</property>
@@ -1629,43 +1770,58 @@ where PurchaseOrder.id = ?]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">12</property>
-                        <property name="name">UnitCode</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">13</property>
-                        <property name="name">UnitPrice</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">14</property>
-                        <property name="name">totalDiscountAmount</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">15</property>
-                        <property name="name">ex_tax_total</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">16</property>
-                        <property name="name">in_tax_total</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">17</property>
-                        <property name="name">in_ati</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">18</property>
                         <property name="name">isTitleLine</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">19</property>
-                        <property name="name">TaxValue</property>
+                        <property name="position">13</property>
+                        <property name="name">in_ati</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
+                        <property name="name">product_code</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">15</property>
+                        <property name="name">product_standard</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">16</property>
+                        <property name="name">supplier_product_code</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">17</property>
+                        <property name="name">supplier_product_name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">18</property>
+                        <property name="name">productcategory</property>
                         <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">19</property>
+                        <property name="name">isgrouped</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">20</property>
+                        <property name="name">purchase_line_id</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">21</property>
+                        <property name="name">desired_deliv_date</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">22</property>
+                        <property name="name">UnitCode</property>
+                        <property name="dataType">string</property>
                     </structure>
                 </list-property>
             </structure>
@@ -1673,173 +1829,286 @@ where PurchaseOrder.id = ?]]></xml-property>
             <list-property name="resultSet">
                 <structure>
                     <property name="position">1</property>
-                    <property name="name">product_code</property>
-                    <property name="nativeName">product_code</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="name">purchase_id</property>
+                    <property name="nativeName">purchase_id</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">product_name</property>
                     <property name="nativeName">product_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
-                    <property name="name">product_standard</property>
-                    <property name="nativeName">product_standard</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">4</property>
-                    <property name="name">purchase_id</property>
-                    <property name="nativeName">purchase_id</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">5</property>
-                    <property name="name">purchase_line_id</property>
-                    <property name="nativeName">purchase_line_id</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">6</property>
-                    <property name="name">supplier_product_code</property>
-                    <property name="nativeName">supplier_product_code</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">7</property>
-                    <property name="name">supplier_product_name</property>
-                    <property name="nativeName">supplier_product_name</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">8</property>
                     <property name="name">description</property>
                     <property name="nativeName">description</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">9</property>
+                    <property name="position">4</property>
+                    <property name="name">producttype</property>
+                    <property name="nativeName">producttype</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">TaxValue</property>
+                    <property name="nativeName">TaxValue</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
                     <property name="name">qty</property>
                     <property name="nativeName">qty</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">UnitPrice</property>
+                    <property name="nativeName">UnitPrice</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">totalDiscountAmount</property>
+                    <property name="nativeName">totalDiscountAmount</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">9</property>
+                    <property name="name">ex_tax_total</property>
+                    <property name="nativeName">ex_tax_total</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
-                    <property name="name">desired_deliv_date</property>
-                    <property name="nativeName">desired_deliv_date</property>
-                    <property name="dataType">date</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="name">in_tax_total</property>
+                    <property name="nativeName">in_tax_total</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">sequence</property>
                     <property name="nativeName">sequence</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
-                    <property name="name">UnitCode</property>
-                    <property name="nativeName">UnitCode</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">13</property>
-                    <property name="name">UnitPrice</property>
-                    <property name="nativeName">UnitPrice</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">14</property>
-                    <property name="name">totalDiscountAmount</property>
-                    <property name="nativeName">totalDiscountAmount</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">15</property>
-                    <property name="name">ex_tax_total</property>
-                    <property name="nativeName">ex_tax_total</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">16</property>
-                    <property name="name">in_tax_total</property>
-                    <property name="nativeName">in_tax_total</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">17</property>
-                    <property name="name">in_ati</property>
-                    <property name="nativeName">in_ati</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">0</property>
-                </structure>
-                <structure>
-                    <property name="position">18</property>
                     <property name="name">isTitleLine</property>
                     <property name="nativeName">isTitleLine</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">13</property>
+                    <property name="name">in_ati</property>
+                    <property name="nativeName">in_ati</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">14</property>
+                    <property name="name">product_code</property>
+                    <property name="nativeName">product_code</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">15</property>
+                    <property name="name">product_standard</property>
+                    <property name="nativeName">product_standard</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">16</property>
+                    <property name="name">supplier_product_code</property>
+                    <property name="nativeName">supplier_product_code</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">17</property>
+                    <property name="name">supplier_product_name</property>
+                    <property name="nativeName">supplier_product_name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">18</property>
+                    <property name="name">productcategory</property>
+                    <property name="nativeName">productcategory</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">19</property>
-                    <property name="name">TaxValue</property>
-                    <property name="nativeName">TaxValue</property>
+                    <property name="name">isgrouped</property>
+                    <property name="nativeName">isgrouped</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">20</property>
+                    <property name="name">purchase_line_id</property>
+                    <property name="nativeName">purchase_line_id</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">-5</property>
+                </structure>
+                <structure>
+                    <property name="position">21</property>
+                    <property name="name">desired_deliv_date</property>
+                    <property name="nativeName">desired_deliv_date</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+                <structure>
+                    <property name="position">22</property>
+                    <property name="name">UnitCode</property>
+                    <property name="nativeName">UnitCode</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select 
-	Product.code as product_code,
-	Product.name as product_name,
-	Product.product_standard,
-	PurchaseOrder.id as purchase_id, 
-	PurchaseOrderLine.id as purchase_line_id, 
-	PurchaseOrderLine.product_code as supplier_product_code, 
-	PurchaseOrderLine.product_name as supplier_product_name, 
-	PurchaseOrderLine.description, 
-	PurchaseOrderLine.qty, 
-	PurchaseOrderLine.desired_deliv_date,
-	PurchaseOrderLine.sequence, 
-	Unit.label_to_printing as "UnitCode", 
-	(CASE WHEN PurchaseOrder.in_ati 
-		THEN PurchaseOrderLine.in_tax_price
-		ELSE PurchaseOrderLine.price END)
-		as "UnitPrice", 
-	(PurchaseOrderLine.price_discounted 
-		- (CASE WHEN PurchaseOrder.in_ati 
-			THEN PurchaseOrderLine.in_tax_price
-			ELSE PurchaseOrderLine.price END))
-		* PurchaseOrderLine.qty 
-		as "totalDiscountAmount",
-	PurchaseOrderLine.ex_tax_total,
-	PurchaseOrderLine.in_tax_total,
-	PurchaseOrder.in_ati,
-	PurchaseOrderLine.is_title_line as "isTitleLine",
-	TaxLine.value as "TaxValue"
+            <xml-property name="queryText"><![CDATA[
+WITH POL AS (
+SELECT
+    PurchaseOrder.id as purchase_id,
+    Product.name as product_name,
+    ProductCategory.name as product_category_name,
+    CASE WHEN (Product.product_type_select LIKE 'storable')
+        THEN ?
+        ELSE ? END as grouped_title,
+    PurchaseOrderLine.description,
+    Product.product_type_select as productType,
+    TaxLine.value as "TaxValue",
+    PurchaseOrderLine.qty,
+    (CASE WHEN PurchaseOrder.in_ati
+        THEN PurchaseOrderLine.in_tax_price
+        ELSE PurchaseOrderLine.price END)
+        as "UnitPrice",
+    (PurchaseOrderLine.price_discounted
+        - (CASE WHEN PurchaseOrder.in_ati
+            THEN PurchaseOrderLine.in_tax_price
+            ELSE PurchaseOrderLine.price END))
+        * PurchaseOrderLine.qty
+        as "totalDiscountAmount",
+    PurchaseOrderLine.ex_tax_total,
+    PurchaseOrderLine.in_tax_total,
+    Currency.code as currencyCode,
+    PurchaseOrderLine.sequence, 
+    PurchaseOrderLine.is_title_line as "isTitleLine",
+    PurchaseOrder.in_ati,
+    Product.code as product_code,
+    ProductCategory.code as product_category_code,
+    Product.product_standard,
+    PurchaseOrderLine.product_code as supplier_product_code,
+    PurchaseOrderLine.product_name as supplier_product_name,
+    ProductCategory.id as productCategory,
+    PurchaseOrderLine.id as purchase_line_id, 
+    PurchaseOrderLine.desired_deliv_date,
+    Unit.label_to_printing as "UnitCode"
 from purchase_purchase_order_line as PurchaseOrderLine
 inner join purchase_purchase_order as PurchaseOrder on (PurchaseOrderLine.purchase_order = PurchaseOrder.id)
 left outer join base_product as Product on (PurchaseOrderLine.product = Product.id)
+left outer join base_product_category as ProductCategory on (Product.product_category = ProductCategory.id)
 left outer join base_unit as Unit on (PurchaseOrderLine.unit = Unit.id)
+left outer join base_currency as Currency on (PurchaseOrder.currency = Currency.id)
 left outer join account_tax_line as TaxLine on (PurchaseOrderLine.tax_line = TaxLine.id)
 where PurchaseOrder.id = ?
-order by PurchaseOrderLine.sequence]]></xml-property>
+order by PurchaseOrderLine.sequence)
+
+SELECT 
+    purchase_id,
+    product_name,
+    description,
+    productType,
+    "TaxValue",
+    qty,
+    "UnitPrice",
+    "totalDiscountAmount",
+    ex_tax_total,
+    in_tax_total,
+    sequence, 
+    "isTitleLine",
+    in_ati,
+    product_code,
+    product_standard,
+    supplier_product_code,
+    product_name as supplier_product_name,
+    productCategory,
+    1 as isgrouped,
+    purchase_line_id, 
+    desired_deliv_date,
+    "UnitCode" 
+FROM POL
+
+UNION
+SELECT 
+    MIN(purchase_id) as purchase_id,
+    product_category_name as product_name,
+    null as description,
+    productType,
+    "TaxValue",
+    SUM(qty) as qty,
+    (SUM("UnitPrice" * qty) / SUM(qty)) as "UnitPrice",
+    SUM("totalDiscountAmount") as "totalDiscountAmount",
+    SUM(ex_tax_total),
+    SUM(in_tax_total),
+    MIN(sequence) as sequence, 
+    BOOL_AND("isTitleLine") as "isTitleLine",
+    BOOL_AND(in_ati) as in_ati,
+    product_category_code as product_code,
+    null as product_standard,
+    null as supplier_product_code,
+    product_category_name as supplier_product_name,
+    productCategory,
+    2 as isgrouped,
+    MIN(purchase_line_id), 
+    MIN(desired_deliv_date),
+    "UnitCode"
+FROM POL
+group by product_category_name, productCategory, product_category_code, productType, "TaxValue", "UnitCode", currencyCode
+
+UNION
+SELECT 
+    MIN(purchase_id) as purchase_id,
+    grouped_title as product_name,
+    null as description,
+    productType,
+    "TaxValue",
+    SUM(qty) as qty,
+    (SUM("UnitPrice" * qty) / SUM(qty)) as "UnitPrice",
+    SUM("totalDiscountAmount") as "totalDiscountAmount",
+    SUM(ex_tax_total),
+    SUM(in_tax_total),
+    MIN(sequence) as sequence, 
+    BOOL_AND("isTitleLine") as "isTitleLine",
+    BOOL_AND(in_ati) as in_ati,
+    null as product_code,
+    null as product_standard,
+    null as supplier_product_code,
+    grouped_title as supplier_product_name,
+    null as productCategory,
+    3 as isgrouped,
+    MIN(purchase_line_id), 
+    MIN(desired_deliv_date),
+    "UnitCode"
+FROM POL
+group by grouped_title, productType, "TaxValue", "UnitCode", currencyCode;
+]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -4057,6 +4326,18 @@ row["first_name"]
                             </structure>
                         </list-property>
                         <structure name="toc"/>
+                        <list-property name="sort">
+                            <structure>
+                                <expression name="key" type="javascript">row["productType"]</expression>
+                                <property name="direction">desc</property>
+                                <property name="strength">-1</property>
+                            </structure>
+                            <structure>
+                                <expression name="key" type="javascript">row["sequence"]</expression>
+                                <property name="direction">asc</property>
+                                <property name="strength">-1</property>
+                            </structure>
+                        </list-property>
                         <column id="4617">
                             <property name="repeat">1</property>
                             <list-property name="visibility">
