@@ -77,10 +77,10 @@
 		model="com.axelor.apps.production.db.ManufOrder">
 		<view type="grid" name="manuf-order-grid" />
 		<view type="form" name="manuf-order-form" />
-		<view-param name="search-filters" value="manuf-order-filters" />
-		<domain>self.isPermanent is null OR self.isPermanent = false</domain>
-		<context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()" />
-	</action-view>
+		<view-param name="search-filters" value="manuf-order-filters"/>
+		<domain>self.typeSelect = 1</domain>
+		<context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
+	</action-view>	
 
 	<menuitem name="manufacturing-root-operation-order" parent="manufacturing-root"
 		title="Operations orders" action="manufacturing.root.operation.order"
@@ -333,10 +333,17 @@
 		model="com.axelor.apps.production.db.ManufOrder">
 		<view type="grid" name="manuf-order-grid" />
 		<view type="form" name="manuf-order-form" />
+<<<<<<< HEAD
 		<view-param name="search-filters" value="manuf-order-filters" />
 		<domain>self.isPermanent = true</domain>
 		<context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()" />
 		<context name="_createPermanent" expr="eval: true" />
+=======
+		<view-param name="search-filters" value="manuf-order-filters"/>
+		<domain>self.typeSelect = 2</domain>
+		<context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
+		<context name="_createPermanent" expr="eval: true"/>
+>>>>>>> wip-6.1
 	</action-view>
 
 	<menuitem name="manufacturing-conf-configurators" parent="manufacturing-conf"

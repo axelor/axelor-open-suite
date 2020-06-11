@@ -7,6 +7,7 @@
 			<toolbar>
 				<button name="showBankStatementLinesBtn" title="See bank statement lines" onClick="account-bank-statement-view-bank-statement-lines" />
 			</toolbar>
+			<field name="id" hidden="false" width="120"/>
 		  	<field name="ebicsPartner.ebicsBank" width="250" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
 		  	<field name="ebicsPartner" width="150" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
 		  	<field name="bankStatementFileFormat" />
@@ -50,6 +51,8 @@
 		    <label name="warningLabel" title="Partially reconciled bank statement line" colSpan="12" css="btn-warning"/>
 		    <label name="dangerLabel" title="Unreconciled bank statement line" colSpan="12" css="btn-danger"/>        
 		</panel>
+		
+		<panel-dashlet name="moveLinePanel" action="action-bank-statement-view-move-lines" canAttach="false"/>
 	</form>
 	
 	<action-view name="account-bank-statement-view-bank-statement-lines"
@@ -77,6 +80,18 @@
  		<domain>self.bankStatement.id = :_id</domain>
  		<context name="_id" expr="eval: id"/>
  	</action-view>
+
+	<action-view name="action-bank-statement-view-move-lines" title="Move lines" model="com.axelor.apps.account.db.MoveLine">
+		<view type="grid" name="move-line-grid"/>
+		<view type="form" name="move-line-form"/>
+ 		<domain>self.id IN 
+ 		(SELECT brl.moveLine
+ 		FROM BankReconciliationLine AS brl
+ 		JOIN BankReconciliation as br
+ 		ON brl.bankReconciliation = br.id
+ 		WHERE br.bankStatement = :_id)</domain>
+ 		<context name="_id" expr="eval: id"/>
+	</action-view>
 
     <action-method name="action-bank-statement-method-print">
         <call class="com.axelor.apps.bankpayment.web.BankStatementController" method="print"/>

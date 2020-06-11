@@ -75,9 +75,6 @@ public class BatchTimesheetReminder extends BatchStrategy {
     } catch (Exception e) {
       TraceBackService.trace(e, metaModel.getName(), batch.getId());
       incrementAnomaly();
-
-    } finally {
-      incrementDone();
     }
   }
 
@@ -104,6 +101,7 @@ public class BatchTimesheetReminder extends BatchStrategy {
                 "self.timesheetReminder = 't' AND self.mainEmploymentContract.payCompany = :companyId")
             .bind("companyId", batch.getHrBatch().getCompany().getId())
             .fetch();
+
     employees.removeIf(employee -> hasRecentTimesheet(now, daysBeforeReminder, employee));
     return employees;
   }
@@ -134,6 +132,7 @@ public class BatchTimesheetReminder extends BatchStrategy {
     for (Employee employee : getEmployeesWithoutRecentTimesheet()) {
       Message message = templateMessageService.generateMessage(employee, template);
       messageService.sendByEmail(message);
+      incrementDone();
     }
   }
 
@@ -152,6 +151,7 @@ public class BatchTimesheetReminder extends BatchStrategy {
             I18n.get(IExceptionMessage.NO_TIMESHEET_FOUND_FOR_EMPLOYEE),
             employee.getName());
       }
+      incrementDone();
     }
   }
 }

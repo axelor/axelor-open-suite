@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<selection name="maintenance.maintenance.create.mtn.select">
+		<option value="0">First reached</option>
+		<option value="1">All reached</option>
+	</selection>
+	
+	<selection name="maintenance.maintenance.request.status.select">
+		<option value="0">maintenance.request.planned</option>
+		<option value="1">In progress</option>
+		<option value="2">Completed</option>
+		<option value="3">Canceled</option>
+	</selection>
+	
+	<selection name="maintenance.maintenance.request.action.select">
+		<option value="0">Corrective</option>
+		<option value="1">Preventive</option>
+	</selection>
+	
+	<selection id="maintenance.sequence.generic.code.select" name="sequence.generic.code.select">
+		<option value="maintenance">Maintenance</option>
+	</selection>
+
+  <selection id="maintenance.manuf.order.type.select" name="manuf.order.type.select">
+    <option value="3">Maintenance</option>
+  </selection>
+
+</object-views>

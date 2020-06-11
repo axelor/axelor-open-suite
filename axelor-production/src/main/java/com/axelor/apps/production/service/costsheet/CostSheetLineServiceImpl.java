@@ -223,6 +223,11 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
             break;
           }
         }
+
+        costPrice =
+            this.getComponentCostPrice(
+                product, parentProduct.getBomCompValuMethodSelect(), company);
+        break;
         // If we didn't have a computed price in cost calculation session, so we compute the price
         // from its bill of materials
       case CostSheetService.ORIGIN_BILL_OF_MATERIAL:
@@ -399,6 +404,11 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
             break;
           }
         }
+
+        costPrice =
+            this.getComponentCostPrice(
+                product, parentProduct.getBomCompValuMethodSelect(), company);
+        break;
 
       case CostSheetService.ORIGIN_BILL_OF_MATERIAL:
         costPrice =

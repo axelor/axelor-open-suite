@@ -6,7 +6,7 @@
   <grid name="bill-of-material-grid" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
 		<field name="fullName"/>
 		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-    <field name="workshopStockLocation"/>
+    <field name="workshopStockLocation" if="__config__.app.getApp('production').getManageWorkshop()"/>
 		<field name="product" domain="self.productTypeSelect = 'storable'"  onChange="action-bill-of-material-group-product" form-view="product-form" grid-view="product-grid"/>
 		<field name="qty" aggregate="sum" x-scale="2"/>
 		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>

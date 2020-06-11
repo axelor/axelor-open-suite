@@ -81,9 +81,8 @@
 	  </field>
   </grid>
 
-	<form onNew="action-manuf-order-default-record,action-manuf-order-attrs-price-digits,action-manuf-order-attrs-scale-and-precision"
-	      name="manuf-order-form" title="Manufacturing order" model="com.axelor.apps.production.db.ManufOrder"
-	      onLoad="action-manuf-order-attrs-isConsProOnOperation,action-manuf-order-attrs-price-digits,action-manuf-order-attrs-scale-and-precision,action-production-attrs-hide-purchaseOrder" width="large">
+	<form name="manuf-order-form" title="Manufacturing order" model="com.axelor.apps.production.db.ManufOrder"
+		onNew="action-manuf-order-group-onnew" onLoad="action-manuf-order-group-onload" width="large">
 <!--     TODO avec propagation -->
 		<menubar>
             <menu name="manufOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
@@ -106,8 +105,8 @@
 					]]>
 				</viewer>
 			</field>
-			<field name="$viewerIsPermanent" showTitle="false" colSpan="2" showIf="isPermanent &amp;&amp; $readonly()">
-				<viewer depends="isPermanent">
+			<field name="$viewerIsPermanent" showTitle="false" colSpan="2" showIf="typeSelect == 2 &amp;&amp; $readonly()">
+				<viewer depends="typeSelect">
 					<![CDATA[
 						<h4 style="text-align: left;">
 							<span class="label label-default" style="background-color: green; margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate>Permanent</span>
@@ -120,7 +119,7 @@
 			<field name="prodProcess" onChange="action-manuf-order-group-prod-process-onchange" onSelect="action-manuf-order-attrs-filter-prodProcess" readonlyIf="statusSelect &gt; 1" grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3" canEdit="false"/>
 			<field name="outsourcing" colSpan="3" onChange="action-production-attrs-hide-purchaseOrder"/>
 			<field name="product" canEdit="false" required="true" readonlyIf="statusSelect &gt; 1 || !product.isModel" form-view="product-form" grid-view="product-grid" onSelect="action-manuf-order-attrs-filter-product"/>
-			<field name="qty" readonlyIf="statusSelect &gt; 1 || isPermanent" validIf="isPermanent || qty > 0" colSpan="3"/>
+			<field name="qty" readonlyIf="statusSelect &gt; 1 || typeSelect == 2" validIf="typeSelect == 2 || qty > 0" colSpan="3"/>
 			<field name="product.economicManufOrderQty" colSpan="3"/>
 			<field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
 			<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" domain="self.isCustomer=true AND :company member of self.companySet" onChange="action-manuf-order-atts-sale-order-onchange-client-partner" canEdit="false"/>
@@ -131,6 +130,7 @@
 			<field name="invoiced" showIf="isToInvoice" if-module="axelor-business-production" if="__config__.app.getApp('production').getManageBusinessProduction()" />
 			<button name="preFillOperationsBtn" colSpan="4" title="Pre-fill operations" hideIf="statusSelect &gt; 1  &#124;&#124; operationOrderList.length &gt; 0" onClick="save,action-manuf-order-method-pre-fill-operations" />
 			<field name="product.isModel" hidden="true"/>
+			<field name="typeSelect" hidden="true"/>
 		</panel>
 		<panel name="actionsPanel" title="Actions" colSpan="4">
 			<button name="planBtn" icon="fa-calendar" title="Plan" colSpan="12" showIf="statusSelect == 1 || statusSelect == 2" onClick="save,action-manuf-order-method-plan" />
@@ -172,23 +172,23 @@
 				</panel>
 			</panel>
 			<panel name="consumedProductsPanel" title="Consumed products" hideIf="isConsProOnOperation || statusSelect &lt; 3">
-				<button name="updatePlannedQtyBtn" title="Update planned quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6 &amp;&amp; !isPermanent" onClick="save,action-manuf-order-update-planned-qty-popup-form-view" css="btn-custom"/>
+				<button name="updatePlannedQtyBtn" title="Update planned quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6 &amp;&amp; typeSelect != 2" onClick="save,action-manuf-order-update-planned-qty-popup-form-view" css="btn-custom"/>
 				<panel-related name="toConsumeProdProductListPanel" field="toConsumeProdProductList" readonly="true" colSpan="12" grid-view="prod-product-consume-manuf-order-grid" form-view="prod-product-form" orderBy="product.code"/>
-				<button name="updateRealQtyBtn" title="Update real quantities (Components and FP)" colSpan="12" showIf="$contains([4,5],statusSelect) &amp;&amp; !isPermanent" onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
+				<button name="updateRealQtyBtn" title="Update real quantities (Components and FP)" colSpan="12" showIf="$contains([4,5],statusSelect) &amp;&amp; typeSelect != 2" onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
 				<panel-related name="consumedStockMoveLineListPanel" field="consumedStockMoveLineList" onChange="action-manuf-order-method-check-consumed-stock-move,save,action-manuf-order-method-update-consumed-stock-move" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-consumed-production-grid"/>
 				<panel-related name="diffStockMoveLineListPanel" field="diffConsumeProdProductList" readonly="true" colSpan="12" grid-view="prod-product-diff-manuf-order-grid" form-view="prod-product-form"/>
 			</panel>
    			<panel name="consumedProductsPanel" title="Consumed products" showIf="isConsProOnOperation &amp;&amp; statusSelect &gt;= 3">
-				<button name="updatePlannedQtyBtn" title="Update planned quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6 &amp;&amp; !isPermanent" onClick="save,action-manuf-order-update-planned-qty-popup-form-view" css="btn-custom"/>
+				<button name="updatePlannedQtyBtn" title="Update planned quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6 &amp;&amp; typeSelect != 2" onClick="save,action-manuf-order-update-planned-qty-popup-form-view" css="btn-custom"/>
 				<panel-dashlet name="operationOrderToConsumeProductPanel" readonly="true" colSpan="12" action="action-manuf-order-view-operation-order-to-consume-product"/>
-				<button name="updateRealQtyBtn" title="Update real quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6 &amp;&amp; !isPermanent" onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
+				<button name="updateRealQtyBtn" title="Update real quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6 &amp;&amp; typeSelect != 2" onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
 				<panel-dashlet name="operationOrderConsumedProductPanel" readonly="true" colSpan="12" action="action-manuf-order-view-operation-order-consumed-product"/>
 				<panel-dashlet name="operationOrderDiffConsumeProductPanel" readonly="true" colSpan="12" action="action-manuf-order-view-operation-order-diff-consume-product"/>
 			</panel>
 			<panel name="finishedProductsPanel" title="Finished products" showIf="statusSelect &gt;= 3">
-				<button name="updatePlannedQtyBtn" title="Update planned quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6 &amp;&amp; !isPermanent" onClick="save,action-manuf-order-update-planned-qty-popup-form-view" css="btn-custom"/>
+				<button name="updatePlannedQtyBtn" title="Update planned quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6 &amp;&amp; typeSelect != 2" onClick="save,action-manuf-order-update-planned-qty-popup-form-view" css="btn-custom"/>
 				<panel-related name="toProduceProdProductListPanel" field="toProduceProdProductList" readonlyIf="statusSelect &gt;= 3" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
-				<button name="updateRealQtyBtn" title="Update real quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6 &amp;&amp; !isPermanent" onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
+				<button name="updateRealQtyBtn" title="Update real quantities (Components and FP)" colSpan="12" showIf="statusSelect != 6 &amp;&amp; typeSelect != 2" onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
 				<panel-related name="producedStockMoveLineListPanel" field="producedStockMoveLineList" onChange="action-manuf-order-method-check-produced-stock-move,save,action-manuf-order-method-update-produced-stock-move" readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form" grid-view="stock-move-line-produced-production-grid"/>
 				<panel-related name="wasteProdProductListPanel" field="wasteProdProductList" colSpan="12" grid-view="prod-product-grid" form-view="prod-product-form"/>
 				<panel name="descriptionPanel" title="Waste description" colSpan="12">
@@ -329,7 +329,7 @@
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
-    	<field name="isPermanent" expr="eval: _createPermanent"/>
+    	<field name="typeSelect" expr="eval: _createPermanent ? __repo__(ManufOrder).TYPE_PERMANENT : __repo__(ManufOrder).TYPE_PRODUCTION"/>
     	<field name="qty" expr="eval: 0" if="_createPermanent"/>
     	<field name="workshopStockLocation" expr="eval:__user__.workshopStockLocation" if="__config__.app.getApp('production').getManageWorkshop() &amp;&amp; __user__.workshopStockLocation != null"/>
     </action-record>
@@ -363,6 +363,19 @@
 		<action name="action-production-attrs-hide-purchaseOrder"/>
 	</action-group>
 	
+	<action-group name="action-manuf-order-group-onnew">
+		<action name="action-manuf-order-default-record"/>
+		<action name="action-manuf-order-attrs-price-digits"/>
+		<action name="action-manuf-order-attrs-scale-and-precision"/>
+	</action-group>
+
+	<action-group name="action-manuf-order-group-onload">
+		<action name="action-manuf-order-attrs-isConsProOnOperation"/>
+    <action name="action-manuf-order-attrs-price-digits"/>
+    <action name="action-manuf-order-attrs-scale-and-precision"/>
+		<action name="action-production-attrs-hide-purchaseOrder"/>
+	</action-group>
+
 	<action-attrs name="action-production-attrs-hide-purchaseOrder" >
 	    <attribute name="hidden" for="purchaseOrder" expr="eval: !(outsourcing &amp;&amp; prodProcess?.generatePurchaseOrderOnMoPlanning)"/>
 	</action-attrs>

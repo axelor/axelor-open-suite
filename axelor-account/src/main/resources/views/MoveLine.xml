@@ -216,6 +216,8 @@
 			<field name="move.journal" colSpan="6"/>
 			<field name="move.period" canView="false" colSpan="6"/>
 		</panel>
+		
+		<panel-dashlet name="bankReconciliationLinePanel" action="action-move-line-view-bank-reconciliation-lines" canAttach="false"/>
 	</form>
     
     <form name="move-line-move-form" title="Move line" model="com.axelor.apps.account.db.MoveLine" 
@@ -457,6 +459,13 @@
 		<view type="grid" name="move-line-move-grid"/>
 		<view type="form" name="move-line-move-form"/>
 		<domain>self.account.id = :_id</domain>
+	</action-view>
+
+	<action-view name="action-move-line-view-bank-reconciliation-lines" title="Bank reconciliation Lines" model="com.axelor.apps.bankpayment.db.BankReconciliationLine">
+		<view type="grid" name="bank-reconciliation-line-grid"/>
+		<view type="form" name="bank-reconciliation-line-form"/>
+		<domain>self.moveLine = :_id</domain>
+ 		<context name="_id" expr="eval: id"/>
 	</action-view>
 
 	<action-attrs name="action-move-line-attrs-show-tax-amount" model="com.axelor.apps.account.db.MoveLine">
