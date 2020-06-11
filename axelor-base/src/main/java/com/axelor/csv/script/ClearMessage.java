@@ -21,7 +21,6 @@ import com.axelor.mail.db.MailMessage;
 import com.axelor.mail.db.repo.MailMessageRepository;
 import java.lang.invoke.MethodHandles;
 import java.util.Map;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -29,7 +28,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@RequestScoped
 public class ClearMessage {
 
   @Inject MailMessageRepository mailRepo;

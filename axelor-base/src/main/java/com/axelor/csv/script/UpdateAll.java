@@ -27,11 +27,9 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Map;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-@RequestScoped
 public class UpdateAll {
 
   @Inject private YearRepository yearRepo;

@@ -18,9 +18,7 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.BankAddress;
-import javax.enterprise.context.RequestScoped;
 
-@RequestScoped
 public class BankAddressService {
 
   public String computeFullAddress(String label, String address, String code) {
