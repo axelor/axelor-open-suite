@@ -34,3 +34,4 @@
 
 ## Bug Fixes
 - HR : A leave-line cannot be saved whitout employee or leave-reason.
+- EMPLOYEE : add translation of "Employee PhoneBook".
