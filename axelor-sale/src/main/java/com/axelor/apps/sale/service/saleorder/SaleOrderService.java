@@ -81,12 +81,13 @@ public interface SaleOrderService {
    * @param saleOrder
    */
   SaleOrder addPack(SaleOrder saleOrder, Pack pack, BigDecimal packQty);
-  
+
   /**
    * Handle the creation / updating of complementary products. Called onChange of saleOrderLineList.
-   * 
+   *
    * @param saleOrder
    * @return
    */
-  public List<SaleOrderLine> handleComplementaryProducts(SaleOrder saleOrder) throws AxelorException;
+  public List<SaleOrderLine> handleComplementaryProducts(SaleOrder saleOrder)
+      throws AxelorException;
 }

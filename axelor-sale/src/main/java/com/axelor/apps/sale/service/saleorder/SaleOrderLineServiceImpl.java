@@ -120,12 +120,12 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       saleOrderLine.setSelectedComplementaryProductList(complementaryProducts);
       for (ComplementaryProduct complProduct :
           saleOrderLine.getProduct().getComplementaryProductList()) {
-        ComplementaryProductSelected newComplProductLine = new ComplementaryProductSelected();        
-        
+        ComplementaryProductSelected newComplProductLine = new ComplementaryProductSelected();
+
         newComplProductLine.setProduct(complProduct.getProduct());
         newComplProductLine.setQty(complProduct.getQty());
         newComplProductLine.setOptional(complProduct.getOptional());
-        
+
         newComplProductLine.setIsSelected(!complProduct.getOptional());
         newComplProductLine.setSaleOrderLine(saleOrderLine);
         complementaryProducts.add(newComplProductLine);

@@ -333,17 +333,10 @@
 		model="com.axelor.apps.production.db.ManufOrder">
 		<view type="grid" name="manuf-order-grid" />
 		<view type="form" name="manuf-order-form" />
-<<<<<<< HEAD
-		<view-param name="search-filters" value="manuf-order-filters" />
-		<domain>self.isPermanent = true</domain>
-		<context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()" />
-		<context name="_createPermanent" expr="eval: true" />
-=======
 		<view-param name="search-filters" value="manuf-order-filters"/>
 		<domain>self.typeSelect = 2</domain>
 		<context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
 		<context name="_createPermanent" expr="eval: true"/>
->>>>>>> wip-6.1
 	</action-view>
 
 	<menuitem name="manufacturing-conf-configurators" parent="manufacturing-conf"
