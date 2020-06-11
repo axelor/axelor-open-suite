@@ -1,11 +1,11 @@
 package com.axelor.inject.servlet;
 
 import com.axelor.inject.Beans;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
-import javax.enterprise.context.RequestScoped;
 import org.jboss.weld.context.bound.BoundRequestContext;
 
-@RequestScoped
 public class ServletScopes {
 
   public static RequestScoper scopeRequest(Map<String, Object> storage) {
@@ -17,8 +17,9 @@ public class ServletScopes {
     private final Map<String, Object> requestDataStore;
 
     public RequestScoperImpl(Map<String, Object> requestDataStore) {
+      final Map<String, Object> emptyMap = Collections.emptyMap();
       this.requestContext = Beans.get(BoundRequestContext.class);
-      this.requestDataStore = requestDataStore;
+      this.requestDataStore = requestDataStore != emptyMap ? requestDataStore : new HashMap<>();
     }
 
     @Override
