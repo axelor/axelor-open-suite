@@ -715,7 +715,7 @@ Company.width as logo_width,
 Lead.created_on, Lead.updated_on, Lead.created_by, Lead.updated_by, Lead.title_select,
 Lead.name as lead_name, Lead.first_name as lead_first_name, Lead.status_select, Source.name AS source_name,
 IndustrySector.name as industry_sector_select, Lead.fax,messageEmailAddress.address AS email, Lead.fixed_phone, Lead.mobile_phone, Lead.web_site, Lead.enterprise_name,
-Lead.primary_address, Lead.primary_state, Lead.primary_city, Lead.primary_postal_code, PrimaryCountry.name as primary_country,Function.name as job_title, AuthUser.full_name as user_name, Company.name as company_name
+Lead.primary_address, Region.name as primary_state, City.name as primary_city, Lead.primary_postal_code, PrimaryCountry.name as primary_country,Function.name as job_title, AuthUser.full_name as user_name, Company.name as company_name
 from crm_lead as Lead 
 left join base_function as Function on (Lead.job_title_function = Function.id)
 left join auth_user as AuthUser on (Lead.user_id = AuthUser.id)
@@ -726,6 +726,8 @@ left join base_industry_sector as IndustrySector on (IndustrySector.id = Lead.in
 left join base_source as Source on (Lead.source = Source.id)
 left join base_country as PrimaryCountry on (Lead.primary_country = PrimaryCountry.id)
 left join message_email_address as messageEmailAddress On messageEmailAddress.id=Lead.email_address
+left join base_city as City on (Lead.primary_city = City.id)
+left join base_region as Region on (Lead.primary_state = Region.id)
 where Lead.id in (@INJECTID)]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
