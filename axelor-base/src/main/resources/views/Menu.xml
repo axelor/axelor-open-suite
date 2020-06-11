@@ -386,9 +386,17 @@
 		<view type="grid" name="stop-reason-grid" />
 		<view type="form" name="stop-reason-form" />
 	</action-view>
+	
+	<menuitem name="referential-conf-sync-contact" parent="referential-conf"
+		title="Contact synchronisation" action="referential.conf.sync.contact" order="210"/>
 
-	<menuitem name="referential-report" parent="referential-root"
-		order="90" title="Reportings" icon="fa-bar-chart" />
+	<action-view name="referential.conf.sync.contact" title="Contact synchronisation"
+		model="com.axelor.apps.base.db.SyncContact" >
+		<view type="grid" name="sync-contact-grid"/>
+    	<view type="form" name="sync-contact-form"/>
+	</action-view>
+	
+	<menuitem name="referential-report" parent="referential-root" order="90" title="Reportings" icon="fa-bar-chart"/>
 
 	<menuitem name="referential-report-dashboards-customers"
 		parent="referential-report" title="Customers" icon="fa-bar-chart"

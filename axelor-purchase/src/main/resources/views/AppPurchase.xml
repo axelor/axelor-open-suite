@@ -13,6 +13,7 @@
 			<field name="manageSupplierCatalog" widget="boolean-switch"/>
 			<field name="isDisplayPurchaseOrderLineNumber" widget="boolean-switch"/>
 			<field name="enablePurchasesProductByTradName" widget="boolean-switch"/>
+			<field name="purchaseUnit" form-view="unit-form" grid-view="unit-grid"/>
 		</panel>
 		<panel name="actionsPanel">
 			<button name="generatePurchaseConfigurationsBtn" colSpan="4" title="Generate purchase configurations" onClick="save,com.axelor.apps.purchase.web.AppPurchaseController:generatePurchaseConfigurations" />

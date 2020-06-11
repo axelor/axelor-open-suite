@@ -30,6 +30,7 @@
 			<field name="isActive" colSpan="2"/>
 			<field name="applicationBeginDate" onChange="action-price-list-method-check-dates"/>
 			<field name="applicationEndDate" onChange="action-price-list-method-check-dates"/>
+			<field name="nonNegotiable" showIf="typeSelect == 1"/>
 			<field name="hideDiscount"/>
     	</panel>
 		<panel name="priceListLinePanel" title="Price list lines" >

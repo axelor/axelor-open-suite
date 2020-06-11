@@ -4,16 +4,18 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
   
   <grid name="wkf-grid" title="Process studio" model="com.axelor.studio.db.Wkf">
+	  <field name="code" x-bind="{{code|unaccent|uppercase}}" x-pattern="[a-zA-Z][a-zA-Z0-9_\\$]+"/>
       <field name="name"/>
       <field name="model"/>
       <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
   </grid>
     
   <form name="wkf-form" title="Process studio" model="com.axelor.studio.db.Wkf" width="large" 
-  	onSave="action-wkf-group-on-save" onNew="action-wkf-set-default">
+  	onSave="action-wkf-group-on-save" onNew="action-wkf-set-default" onLoad="action-wkf-group-on-load">
      <panel name="mainPanel">
-        <field name="name" colSpan="5"/>
-        <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form" onChange="action-wkf-reset-model" colSpan="5"/>
+        <field name="code" colSpan="3" x-bind="{{code|unaccent|uppercase}}" x-pattern="[a-zA-Z][a-zA-Z0-9_\\$]+" required="true"/>
+        <field name="name" colSpan="3"/>
+        <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form" onChange="action-wkf-reset-model" colSpan="4"/>
         <field name="isTrackFlow" colSpan="2"/>
         <field name="isJson" colSpan="1" onChange="action-wkf-attrs-json-change,action-wkf-reset-model"/>
         <panel name="modelPanel" colSpan="4">
@@ -27,17 +29,21 @@
 			<field name="statusField" showIf="isJson || jsonField != null" requiredIf="isJson || jsonField != null" form-view="studio-meta-json-field-form" grid-view="studio-meta-json-field-grid" canNew="true"  canEdit="true" colSpan="12"
           onSelect="action-wkf-attrs-set-status-field-domain" onChange="action-wkf-validate-status-field,action-wkf-method-set-default-nodes" />
     		<field name="statusMetaField" showIf="!isJson &amp;&amp; jsonField == null" requiredIf="!isJson &amp;&amp; jsonField == null" colSpan="12" onSelect="action-wkf-attrs-set-status-field-domain" onChange="action-wkf-validate-status-field,action-wkf-method-set-default-nodes" />    
-    	</panel>
+		</panel>
       	<field name="displayTypeSelect" colSpan="4" />
       	<button name="openDashboardBtn" title="Dashboard" onClick="open.wkf.dashboard" colSpan="4" />
       	<field name="generatedMetaView" hidden="true"/>
       	<field name="wkfModel" hidden="true"/>
-      </panel>
+	  </panel>
+      <panel title="Process result" colSpan="12" showIf="id">
+		<field name="attrs" colSpan="12"/>
+	  </panel>
       <panel-tabs>
       	<panel title="Process">
       	<field name="bpmnXml" showTitle="false" colSpan="12" widget="BpmnEditor" />
         <field name="description" widget="html" colSpan="12" />
       	<field name="$bpmnDefault" hidden="true" type="string" />
+      	<field name="$isError" hidden="true" type="boolean" />
       	</panel>
       	<panel-related name="conditionsPanel" field="conditions" colSpan="12" editable="true" onNew="action-filter-line-defaults" showIf="isJson">
 	        <field name="logicOp" />
@@ -70,9 +76,14 @@
       <action name="action-wkf-validate-bpmn-xml" />
       <action name="save" />
       <action name="action-wfk-method-process-xml" />
-      <action name="action-wfk-method-process-wkf" />
+      <action name="action-wfk-method-process-wkf" if="!$isError"/>
   </action-group>
   
+   <action-group name="action-wkf-group-on-load">
+      <action name="action-wkf-attrs-set-status-field-value"/>
+      <action name="save" if="bpmnXml != null"/>
+   </action-group>
+
   <action-record name="action-wkf-set-default" model="com.axelor.studio.db.Wkf">
   	<field name="name" expr="eval:_jsonModel + ' workflow'" if="_jsonModel != null"/>
   	<field name="model" expr="eval:_jsonModel"/>

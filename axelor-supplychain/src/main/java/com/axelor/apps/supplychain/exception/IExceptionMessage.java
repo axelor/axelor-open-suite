@@ -239,6 +239,12 @@ public interface IExceptionMessage {
   static final String STOCK_MOVE_INVOICE_ERROR = /*$$(*/
       "Stock move has already been totally invoiced." /*)*/;
 
+  static final String STOCK_MOVE_INVOICE_QTY_INVONVERTIBLE_UNIT = /*$$(*/
+      "The invoice's unit is different and inconvertible into the stock move's unit." /*)*/;
+
+  static final String STOCK_MOVE_PARTIAL_INVOICE_ERROR = /*$$(*/
+      "Stock move has already been invoiced." /*)*/;
+
   static final String STOCK_MOVE_INVOICE_QTY_MAX = /*$$(*/
       "The quantity to invoice is greater than the quantity in the stock move" /*)*/;
 
@@ -247,4 +253,9 @@ public interface IExceptionMessage {
 
   public static final String ALLOCATED_STOCK_MOVE_LINE_DELETED_ERROR = /*$$(*/
       "It is not possible to delete a stock move line with allocated or reserved quantity." /*)*/;
+
+  String BLOCK_SPLIT_OUTGOING_STOCK_MOVE_LINES = /*$$(*/
+      "Partial invoicing of outgoing stock move with tracking number activated is not supported." /*)*/;
+
+  String STOCK_MOVE_NO_LINES_TO_INVOICE = /*$$(*/ "Please fill a quantity to invoice." /*)*/;
 }

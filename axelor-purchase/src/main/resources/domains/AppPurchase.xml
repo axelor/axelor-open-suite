@@ -12,6 +12,7 @@
 		<boolean name="manageSupplierCatalog" title="Manage supplier catalog"/>
 		<boolean name="isDisplayPurchaseOrderLineNumber" title="Display purchase order line number"/>		
 		<boolean name="enablePurchasesProductByTradName" title="Filter products by trading name" default="false"/>
+        <many-to-one name="purchaseUnit" title="Default unit" ref="com.axelor.apps.base.db.Unit"></many-to-one>
 		
 		<track>
 			<field name="managePurchaseOrderVersion" on="UPDATE"/>

@@ -17,7 +17,7 @@
     <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode"/>
     <many-to-many name="accountSet" ref="Account" title="Accounting.Accounts"/>
     <string name="exportTypeSelect" title="Export type" selection="iadministration.export.type.select"/>
-    <integer name="typeSelect" title="Printing output"  required="true"/>
+    <integer name="typeSelect" title="Printing output"  required="true"  selection="accounting.report.type.select" />
     <many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner" title="Partners"/>
     <many-to-one name="year" ref="com.axelor.apps.base.db.Year" title="Fiscal year"/>
     <date name="date" column="date_val" title="Closing date" required="true"/>

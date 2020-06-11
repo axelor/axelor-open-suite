@@ -3,6 +3,16 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
+	<form id="sale-product-form" name="product-form" title="Product"
+		model="com.axelor.apps.base.db.Product" extension="true">
+		<extend target="panel-tabs[@name='productSpecificAttributes']/*[1]">
+			<insert position="after">
+				<panel-related field="complementaryProductList" name="complementaryProductPanel" title="Complementary product(s)" 
+				colSpan="12" grid-view="complementary-product-grid" form-view="complementary-product-form"/>
+			</insert>
+		</extend>
+	</form>
+	
 	<action-attrs name="action-product-attrs-readonly-sellable">
 		<attribute name="readonly" for="sellable" expr="eval:true"/>
 	</action-attrs>

@@ -182,7 +182,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
       Product product = prodProduct.getProduct();
 
-      if (this.isBeforeEndDate(maturityDate) && this.isMrpProduct(product)) {
+      if ((this.isBeforeEndDate(maturityDate) || manufOrderMrpLineType.getIgnoreEndDate())
+          && this.isMrpProduct(product)) {
         MrpLine mrpLine =
             this.createMrpLine(
                 mrp,

@@ -51,6 +51,7 @@ public class MoveTemplateService {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected MoveService moveService;
+  protected MoveValidateService moveValidateService;
   protected MoveRepository moveRepo;
   protected MoveLineService moveLineService;
   protected PartnerRepository partnerRepo;
@@ -62,12 +63,14 @@ public class MoveTemplateService {
   @Inject
   public MoveTemplateService(
       MoveService moveService,
+      MoveValidateService moveValidateService,
       MoveRepository moveRepo,
       MoveLineService moveLineService,
       PartnerRepository partnerRepo,
       AnalyticMoveLineService analyticMoveLineService,
       TaxService taxService) {
     this.moveService = moveService;
+    this.moveValidateService = moveValidateService;
     this.moveRepo = moveRepo;
     this.moveLineService = moveLineService;
     this.partnerRepo = partnerRepo;
@@ -196,6 +199,11 @@ public class MoveTemplateService {
 
           counter++;
         }
+
+        if (moveTemplate.getAutomaticallyValidate()) {
+          moveValidateService.validate(move);
+        }
+
         moveRepo.save(move);
         moveList.add(move.getId());
       }
@@ -262,6 +270,11 @@ public class MoveTemplateService {
 
           counter++;
         }
+
+        if (moveTemplate.getAutomaticallyValidate()) {
+          moveValidateService.validate(move);
+        }
+
         moveRepo.save(move);
         moveList.add(move.getId());
       }

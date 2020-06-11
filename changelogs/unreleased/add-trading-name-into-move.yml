@@ -1,0 +1,5 @@
+---
+title: "Add trading name into move after invoice payment"
+type: feature
+description: |
+	Upgrade the accounting entries to be able to distribute charges and turnover by trading name

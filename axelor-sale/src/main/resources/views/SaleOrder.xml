@@ -477,7 +477,7 @@
 	    <field name="orderDate" showIf="statusSelect == 3" colSpan="6"/>
 	    <field name="orderNumber" showIf="statusSelect == 3" colSpan="6"/>
 	    <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" name="shipmentDate" showIf="statusSelect == 3" colSpan="6"/>
-	    <field name="duration" canEdit="false" readonlyIf="statusSelect >= 2" colSpan="6" widget="SuggestBox" canNew="true" onChange="action-sale-order-record-compute-end-of-validity-date"/>
+	    <field name="duration" domain="self.applicationTypeSelect = 1" canEdit="false" readonlyIf="statusSelect >= 2" colSpan="6" widget="SuggestBox" canNew="true" onChange="action-sale-order-record-compute-end-of-validity-date"/>
 	    <field name="endOfValidityDate" readonly="true" colSpan="6">
 	      <hilite color="danger" if="$moment().diff(endOfValidityDate, 'days') > 0 &amp;&amp; statusSelect != 3"/>
 	    </field>
@@ -980,6 +980,7 @@
     </action-group>
 
     <action-group name="action-sale-order-line-change-group">
+    	<action name="action-sale-order-method-complementary-products"/>
     	<action name="action-sale-order-method-compute"/>
     	<action name="action-sale-order-method-compute-margin"/>
     	<action name="action-sale-order-record-set-advance-payment" if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
@@ -1103,6 +1104,10 @@
 	
 	<action-method name="action-sale-order-method-notify-stock-move-created">
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="notifyStockMoveCreated"/>
+	</action-method>
+	
+	<action-method name="action-sale-order-method-complementary-products">
+		<call class="com.axelor.apps.sale.web.SaleOrderController" method="handleComplementaryProducts"/>
 	</action-method>
 	
     <action-record name="action-sale-record-newVersion" model="com.axelor.apps.sale.db.SaleOrder">

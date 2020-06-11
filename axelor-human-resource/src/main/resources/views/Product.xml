@@ -16,7 +16,7 @@
 
    <form name="product-expense-form" onNew="action-group-base-product-expense-onnew" title="Expense type" model="com.axelor.apps.base.db.Product" onLoad="action-product-attrs-scale-and-precision">
         <toolbar>
-    		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+    		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
 			<button name="showProductSheetBtn" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
     	</toolbar>
 	    <panel name="mainPanel">
@@ -84,7 +84,7 @@
    onNew="action-group-base-product-onnew, action-product-activity-record-default-activity" 
    onLoad="action-product-attrs-scale-and-precision" width="large">
     <toolbar>
-    		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+    		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
 			<button name="showProductSheetBtn" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
     	</toolbar>
 	    <panel name="mainPanel">
@@ -191,14 +191,17 @@
     	<field name="startDate" expr="eval:__config__.app.getTodayDate()" if="startDate == null"/>
     	<field name="salePrice" expr="1"/>
     	<field name="purchasePrice" expr="1"/>
-    	<field name="saleCurrency" expr="eval: _activeCompany?.currency"/>
-    	<field name="purchaseCurrency" expr="eval: _activeCompany?.currency"/>
+    	<field name="saleCurrency" expr="eval: __user__.activeCompany?.currency"/>
+    	<field name="purchaseCurrency" expr="eval: __user__.activeCompany?.currency"/>
     	<field name="managPriceCoef" expr="1"/>
     	<field name="isModel" expr="eval: _isModel"/>
     	<field name="expense" expr="true"/>
     	<field name="productTypeSelect" expr="service"/>
     	<field name="saleSupplySelect" expr="0"/>
 		<field name="sellable" expr="false"/>
+    	<field name="salesUnit" expr="eval: __config__.app.getApp('sale')?.getSaleUnit()" if="__config__.app.isApp('sale')"/>
+    	<field name="purchasesUnit" expr="eval: __config__.app.getApp('purchase')?.getPurchaseUnit()" if="__config__.app.isApp('purchase')"/>
+    	<field name="unit" expr="eval: __config__.app.getApp('stock')?.getStockUnit()" if="__config__.app.isApp('stock')"/>
     </action-record>
     
     <action-record name="hr-action-product-record-default-new" model="com.axelor.apps.base.db.Product">
