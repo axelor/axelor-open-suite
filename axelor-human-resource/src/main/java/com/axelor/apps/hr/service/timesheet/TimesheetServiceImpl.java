@@ -615,7 +615,8 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.TIMESHEET_PRODUCT));
     }
-    BigDecimal price = (BigDecimal) productCompanyService.get(product, "salePrice", invoice.getCompany());
+    BigDecimal price =
+        (BigDecimal) productCompanyService.get(product, "salePrice", invoice.getCompany());
     BigDecimal discountAmount = BigDecimal.ZERO;
     BigDecimal priceDiscounted = price;
 

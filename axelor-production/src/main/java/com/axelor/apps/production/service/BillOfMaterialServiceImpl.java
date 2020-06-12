@@ -60,7 +60,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   @Inject private TempBomTreeRepository tempBomTreeRepo;
 
   @Inject private ProductRepository productRepo;
-  
+
   @Inject protected ProductCompanyService productCompanyService;
 
   private List<Long> processedBom;
@@ -77,21 +77,27 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
     Product product = billOfMaterial.getProduct();
 
-    if ((Integer) productCompanyService.get(product, "costTypeSelect", billOfMaterial.getCompany()) != ProductRepository.COST_TYPE_STANDARD) {
+    if ((Integer) productCompanyService.get(product, "costTypeSelect", billOfMaterial.getCompany())
+        != ProductRepository.COST_TYPE_STANDARD) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.COST_TYPE_CANNOT_BE_CHANGED));
     }
 
-    productCompanyService.set(product, "costPrice", billOfMaterial
+    productCompanyService.set(
+        product,
+        "costPrice",
+        billOfMaterial
             .getCostPrice()
             .divide(
                 billOfMaterial.getQty(),
                 Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice(),
-                BigDecimal.ROUND_HALF_UP), billOfMaterial.getCompany());
+                BigDecimal.ROUND_HALF_UP),
+        billOfMaterial.getCompany());
 
-    if ((Boolean) productCompanyService.get(product, "autoUpdateSalePrice", billOfMaterial.getCompany())) {
-    	Beans.get(ProductService.class).updateSalePrice(product, billOfMaterial.getCompany());
+    if ((Boolean)
+        productCompanyService.get(product, "autoUpdateSalePrice", billOfMaterial.getCompany())) {
+      Beans.get(ProductService.class).updateSalePrice(product, billOfMaterial.getCompany());
     }
 
     billOfMaterialRepo.save(billOfMaterial);

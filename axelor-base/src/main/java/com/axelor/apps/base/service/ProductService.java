@@ -38,7 +38,8 @@ public interface ProductService {
   @Transactional
   public void generateProductVariants(Product productModel) throws AxelorException;
 
-  public Product createProduct(Product productModel, ProductVariant productVariant, int seq) throws AxelorException;
+  public Product createProduct(Product productModel, ProductVariant productVariant, int seq)
+      throws AxelorException;
 
   /**
    * @param productVariant

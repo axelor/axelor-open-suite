@@ -51,7 +51,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
   @Inject private PurchaseOrderLineServiceImpl purchaseOrderLineServiceImpl;
 
   @Inject protected AppBusinessProjectService appBusinessProjectService;
-  
+
   @Inject protected ProductCompanyService productCompanyService;
 
   @Override
@@ -70,7 +70,10 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
       throws AxelorException {
 
     Product product = purchaseOrderLine.getProduct();
-    Company company = purchaseOrderLine.getPurchaseOrder() != null ? purchaseOrderLine.getPurchaseOrder().getCompany() : null;
+    Company company =
+        purchaseOrderLine.getPurchaseOrder() != null
+            ? purchaseOrderLine.getPurchaseOrder().getCompany()
+            : null;
     BigDecimal price = (BigDecimal) productCompanyService.get(product, "costPrice", company);
     BigDecimal discountAmount = price;
     int discountTypeSelect = 1;

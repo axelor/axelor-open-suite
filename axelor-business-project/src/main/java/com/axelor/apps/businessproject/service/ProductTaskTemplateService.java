@@ -44,5 +44,6 @@ public interface ProductTaskTemplateService {
       TeamTask parent,
       LocalDateTime startDate,
       BigDecimal qty,
-      SaleOrderLine saleOrderLine) throws AxelorException;
+      SaleOrderLine saleOrderLine)
+      throws AxelorException;
 }

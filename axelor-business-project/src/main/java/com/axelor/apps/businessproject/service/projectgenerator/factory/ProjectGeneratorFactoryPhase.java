@@ -69,7 +69,8 @@ public class ProjectGeneratorFactoryPhase implements ProjectGeneratorFactory {
 
   @Override
   @Transactional
-  public ActionViewBuilder fill(Project project, SaleOrder saleOrder, LocalDateTime startDate) throws AxelorException {
+  public ActionViewBuilder fill(Project project, SaleOrder saleOrder, LocalDateTime startDate)
+      throws AxelorException {
     List<Project> projects = new ArrayList<>();
     projectRepository.save(project);
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {

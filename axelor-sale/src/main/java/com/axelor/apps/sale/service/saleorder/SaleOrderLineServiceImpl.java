@@ -68,7 +68,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   @Inject protected AppSaleService appSaleService;
 
   @Inject protected AccountManagementService accountManagementService;
-  
+
   @Inject protected ProductCompanyService productCompanyService;
 
   @Override
@@ -223,9 +223,16 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     }
 
     if (saleOrderLine.getProduct() != null
-        && ((BigDecimal) productCompanyService.get(saleOrderLine.getProduct(), "costPrice", saleOrder.getCompany())).compareTo(BigDecimal.ZERO) != 0) {
+        && ((BigDecimal)
+                    productCompanyService.get(
+                        saleOrderLine.getProduct(), "costPrice", saleOrder.getCompany()))
+                .compareTo(BigDecimal.ZERO)
+            != 0) {
       subTotalCostPrice =
-          ((BigDecimal) productCompanyService.get(saleOrderLine.getProduct(), "costPrice", saleOrder.getCompany())).multiply(saleOrderLine.getQty());
+          ((BigDecimal)
+                  productCompanyService.get(
+                      saleOrderLine.getProduct(), "costPrice", saleOrder.getCompany()))
+              .multiply(saleOrderLine.getQty());
     }
 
     saleOrderLine.setInTaxTotal(inTaxTotal);
@@ -303,9 +310,11 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       throws AxelorException {
     Product product = saleOrderLine.getProduct();
 
-    Boolean productInAti = (Boolean) productCompanyService.get(product, "inAti", saleOrder.getCompany());
-    BigDecimal productSalePrice = (BigDecimal) productCompanyService.get(product, "salePrice", saleOrder.getCompany());
-    
+    Boolean productInAti =
+        (Boolean) productCompanyService.get(product, "inAti", saleOrder.getCompany());
+    BigDecimal productSalePrice =
+        (BigDecimal) productCompanyService.get(product, "salePrice", saleOrder.getCompany());
+
     BigDecimal price =
         (productInAti == resultInAti)
             ? productSalePrice
@@ -313,7 +322,10 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
     return currencyService
         .getAmountCurrencyConvertedAtDate(
-    		(Currency) productCompanyService.get(product, "saleCurrency", saleOrder.getCompany()), saleOrder.getCurrency(), price, saleOrder.getCreationDate())
+            (Currency) productCompanyService.get(product, "saleCurrency", saleOrder.getCompany()),
+            saleOrder.getCurrency(),
+            price,
+            saleOrder.getCreationDate())
         .setScale(appSaleService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
   }
 
@@ -351,7 +363,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
     return currencyService
         .getAmountCurrencyConvertedAtDate(
-    		(Currency) productCompanyService.get(product, "purchaseCurrency", saleOrder.getCompany()),
+            (Currency)
+                productCompanyService.get(product, "purchaseCurrency", saleOrder.getCompany()),
             saleOrder.getCompany().getCurrency(),
             (BigDecimal) productCompanyService.get(product, "costPrice", saleOrder.getCompany()),
             saleOrder.getCreationDate())
@@ -487,7 +500,11 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     BigDecimal totalWT = BigDecimal.ZERO;
 
     if (saleOrderLine.getProduct() != null
-        && ((BigDecimal) productCompanyService.get(saleOrderLine.getProduct(), "costPrice", saleOrder.getCompany())).compareTo(BigDecimal.ZERO) != 0
+        && ((BigDecimal)
+                    productCompanyService.get(
+                        saleOrderLine.getProduct(), "costPrice", saleOrder.getCompany()))
+                .compareTo(BigDecimal.ZERO)
+            != 0
         && saleOrderLine.getExTaxTotal().compareTo(BigDecimal.ZERO) != 0) {
 
       totalWT =

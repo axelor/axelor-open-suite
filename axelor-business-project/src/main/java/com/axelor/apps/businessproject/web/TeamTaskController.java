@@ -87,17 +87,17 @@ public class TeamTaskController {
     TeamTask task = request.getContext().asType(TeamTask.class);
     TeamTaskCategory teamTaskCategory = task.getTeamTaskCategory();
     try {
-	    task = businessProjectService.resetTeamTaskValues(task);
-	    if (teamTaskCategory != null) {
-	      task = businessProjectService.computeDefaultInformation(task);
-	    }
-	
-	    if (task.getInvoicingType() == TeamTaskRepository.INVOICING_TYPE_TIME_SPENT) {
-	      task.setToInvoice(true);
-	    }
-	    response.setValues(task);
+      task = businessProjectService.resetTeamTaskValues(task);
+      if (teamTaskCategory != null) {
+        task = businessProjectService.computeDefaultInformation(task);
+      }
+
+      if (task.getInvoicingType() == TeamTaskRepository.INVOICING_TYPE_TIME_SPENT) {
+        task.setToInvoice(true);
+      }
+      response.setValues(task);
     } catch (Exception e) {
-    TraceBackService.trace(response, e);
-  }
+      TraceBackService.trace(response, e);
+    }
   }
 }

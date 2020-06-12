@@ -582,11 +582,14 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       Product product = stockMoveLine.getProduct();
 
       if (product != null
-          && ((String) productCompanyService.get(product, "productTypeSelect", stockMove.getCompany())).equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
+          && ((String)
+                  productCompanyService.get(product, "productTypeSelect", stockMove.getCompany()))
+              .equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
         try {
           checkConformitySelection(stockMoveLine, stockMove);
         } catch (Exception e) {
-          productsWithErrors.add((String) productCompanyService.get(product, "name", stockMove.getCompany()));
+          productsWithErrors.add(
+              (String) productCompanyService.get(product, "name", stockMove.getCompany()));
         }
       }
     }
@@ -808,7 +811,10 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           || (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
               && !stockMove.getIsReversion())) {
         // customer delivery or customer return
-        unitPriceUntaxed = (BigDecimal) productCompanyService.get(stockMoveLine.getProduct(), "salePrice", stockMove.getCompany());
+        unitPriceUntaxed =
+            (BigDecimal)
+                productCompanyService.get(
+                    stockMoveLine.getProduct(), "salePrice", stockMove.getCompany());
         BigDecimal wapPrice =
             computeFromStockLocation(stockMoveLine, stockMove.getToStockLocation());
         stockMoveLine.setWapPrice(wapPrice);
@@ -823,7 +829,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
                 stockMove.getPartner(),
                 stockMove.getCompany(),
                 stockMoveLine.getRealQty());
-        companyPurchasePrice = (BigDecimal) productCompanyService.get(stockMoveLine.getProduct(), "purchasePrice", stockMove.getCompany());;
+        companyPurchasePrice =
+            (BigDecimal)
+                productCompanyService.get(
+                    stockMoveLine.getProduct(), "purchasePrice", stockMove.getCompany());
+        ;
         unitPriceUntaxed = companyPurchasePrice.multiply(shippingCoef);
       } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL
           && stockMove.getFromStockLocation() != null
@@ -832,7 +842,10 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         unitPriceUntaxed =
             computeFromStockLocation(stockMoveLine, stockMove.getFromStockLocation());
       } else {
-        unitPriceUntaxed = (BigDecimal) productCompanyService.get(stockMoveLine.getProduct(), "costPrice", stockMove.getCompany());
+        unitPriceUntaxed =
+            (BigDecimal)
+                productCompanyService.get(
+                    stockMoveLine.getProduct(), "costPrice", stockMove.getCompany());
       }
     }
     stockMoveLine.setCompanyPurchasePrice(companyPurchasePrice);

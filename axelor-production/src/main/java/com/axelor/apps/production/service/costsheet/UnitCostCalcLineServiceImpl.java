@@ -29,7 +29,6 @@ import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,8 +42,8 @@ public class UnitCostCalcLineServiceImpl implements UnitCostCalcLineService {
 
   @Inject
   public UnitCostCalcLineServiceImpl(
-		  UnitCostCalcLineRepository unitCostCalcLineRepository,
-		  ProductCompanyService productCompanyService) {
+      UnitCostCalcLineRepository unitCostCalcLineRepository,
+      ProductCompanyService productCompanyService) {
     this.unitCostCalcLineRepository = unitCostCalcLineRepository;
     this.productCompanyService = productCompanyService;
   }
@@ -55,7 +54,8 @@ public class UnitCostCalcLineServiceImpl implements UnitCostCalcLineService {
     UnitCostCalcLine unitCostCalcLine = new UnitCostCalcLine();
     unitCostCalcLine.setProduct(product);
     unitCostCalcLine.setCompany(company);
-    unitCostCalcLine.setPreviousCost((BigDecimal) productCompanyService.get(product, "costPrice", company));
+    unitCostCalcLine.setPreviousCost(
+        (BigDecimal) productCompanyService.get(product, "costPrice", company));
     unitCostCalcLine.setCostSheet(costSheet);
     unitCostCalcLine.setComputedCost(costSheet.getCostPrice());
     unitCostCalcLine.setCostToApply(costSheet.getCostPrice());

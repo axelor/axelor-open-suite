@@ -350,7 +350,8 @@ public class MrpServiceImpl implements MrpService {
         reorderQty = reorderQty.max(stockRules.getReOrderQty());
       }
 
-      MrpLineType mrpLineTypeProposal = this.getMrpLineTypeForProposal(stockRules, product, mrpLine.getCompany());
+      MrpLineType mrpLineTypeProposal =
+          this.getMrpLineTypeForProposal(stockRules, product, mrpLine.getCompany());
 
       long duplicateCount =
           mrpLineRepository
@@ -483,8 +484,8 @@ public class MrpServiceImpl implements MrpService {
     return BigDecimal.ZERO;
   }
 
-  protected MrpLineType getMrpLineTypeForProposal(StockRules stockRules, Product product, Company company)
-      throws AxelorException {
+  protected MrpLineType getMrpLineTypeForProposal(
+      StockRules stockRules, Product product, Company company) throws AxelorException {
 
     return this.getMrpLineType(MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL);
   }

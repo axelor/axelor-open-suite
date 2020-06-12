@@ -24,23 +24,27 @@ import com.axelor.exception.AxelorException;
 public interface ProductCompanyService {
 
   /**
-	 * A generic get method. Serves as a getter for any field of a product, which might or
-	 * might not be overridden by a company-specific version of the product.
-	 * @param originalProduct the product which field we want to get
-	 * @param fieldName the field we want to obtain from the product
-	 * @param company the company to search for a company-specific version of the product
-	 * @return the value of the field, either the value specified for the company, or the default value
-	*/
-  public Object get(Product originalProduct, String fieldName, Company company) throws AxelorException;
-  
+   * A generic get method. Serves as a getter for any field of a product, which might or might not
+   * be overridden by a company-specific version of the product.
+   *
+   * @param originalProduct the product which field we want to get
+   * @param fieldName the field we want to obtain from the product
+   * @param company the company to search for a company-specific version of the product
+   * @return the value of the field, either the value specified for the company, or the default
+   *     value
+   */
+  public Object get(Product originalProduct, String fieldName, Company company)
+      throws AxelorException;
+
   /**
-	 * A generic set method. Serves as a setter for any field of a product, which might or
-	 * might not be overridden by a company-specific version of the product.
-	 * @param originalProduct the product which field we want to set
-	 * @param fieldName the field of the product we want to set
-	 * @param fieldValue the value to set
-	 * @param company the company to search for a company-specific version of the product
-	*/
-  public void set(Product originalProduct, String fieldName, Object fieldValue, Company company) throws AxelorException;
-  
+   * A generic set method. Serves as a setter for any field of a product, which might or might not
+   * be overridden by a company-specific version of the product.
+   *
+   * @param originalProduct the product which field we want to set
+   * @param fieldName the field of the product we want to set
+   * @param fieldValue the value to set
+   * @param company the company to search for a company-specific version of the product
+   */
+  public void set(Product originalProduct, String fieldName, Object fieldValue, Company company)
+      throws AxelorException;
 }

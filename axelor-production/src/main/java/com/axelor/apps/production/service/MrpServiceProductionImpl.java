@@ -68,7 +68,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
   protected AppBaseService appBaseService;
 
   protected ManufOrderRepository manufOrderRepository;
-  
+
   protected ProductCompanyService productCompanyService;
 
   @Inject
@@ -330,8 +330,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
    * manufacturing order is generated.
    */
   @Override
-  protected MrpLineType getMrpLineTypeForProposal(StockRules stockRules, Product product, Company company)
-      throws AxelorException {
+  protected MrpLineType getMrpLineTypeForProposal(
+      StockRules stockRules, Product product, Company company) throws AxelorException {
 
     if (!Beans.get(AppProductionService.class).isApp("production")) {
       return super.getMrpLineTypeForProposal(stockRules, product, company);
@@ -345,7 +345,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       }
     }
 
-    if (((String) productCompanyService.get(product, "procurementMethodSelect", company)).equals(ProductRepository.PROCUREMENT_METHOD_BUY)) {
+    if (((String) productCompanyService.get(product, "procurementMethodSelect", company))
+        .equals(ProductRepository.PROCUREMENT_METHOD_BUY)) {
       return this.getMrpLineType(MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL);
     } else {
       return this.getMrpLineType(MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL);

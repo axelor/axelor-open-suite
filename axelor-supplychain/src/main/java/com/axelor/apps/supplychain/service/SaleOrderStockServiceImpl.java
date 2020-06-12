@@ -348,7 +348,14 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       BigDecimal requestedReservedQty =
           saleOrderLine.getRequestedReservedQty().subtract(saleOrderLine.getDeliveredQty());
 
-      BigDecimal companyUnitPriceUntaxed = (BigDecimal) productCompanyService.get(saleOrderLine.getProduct(), "costPrice", saleOrderLine.getSaleOrder() != null ? saleOrderLine.getSaleOrder().getCompany() : null);
+      BigDecimal companyUnitPriceUntaxed =
+          (BigDecimal)
+              productCompanyService.get(
+                  saleOrderLine.getProduct(),
+                  "costPrice",
+                  saleOrderLine.getSaleOrder() != null
+                      ? saleOrderLine.getSaleOrder().getCompany()
+                      : null);
       if (unit != null && !unit.equals(saleOrderLine.getUnit())) {
         qty =
             unitConversionService.convert(

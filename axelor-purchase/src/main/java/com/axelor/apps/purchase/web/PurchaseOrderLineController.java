@@ -27,7 +27,6 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.db.mapper.Mapper;
@@ -39,7 +38,6 @@ import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -162,9 +160,13 @@ public class PurchaseOrderLineController {
                 ? (String) catalogInfo.get("productCode")
                 : (String) productCompanyService.get(product, "code", purchaseOrder.getCompany());
       } else {
-        price = (BigDecimal) productCompanyService.get(product, "purchasePrice", purchaseOrder.getCompany());
-        productName = (String) productCompanyService.get(product, "name", purchaseOrder.getCompany());
-        productCode = (String) productCompanyService.get(product, "code", purchaseOrder.getCompany());
+        price =
+            (BigDecimal)
+                productCompanyService.get(product, "purchasePrice", purchaseOrder.getCompany());
+        productName =
+            (String) productCompanyService.get(product, "name", purchaseOrder.getCompany());
+        productCode =
+            (String) productCompanyService.get(product, "code", purchaseOrder.getCompany());
       }
       if (purchaseOrderLine.getProductName() == null) {
         response.setValue("productName", productName);

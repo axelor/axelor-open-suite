@@ -227,7 +227,11 @@ public class InventoryService {
 
         InventoryLine inventoryLine = new InventoryLine();
         List<Product> productList =
-            productRepo.all().filter("self.code = :code AND dtype = 'Product'").bind("code", code).fetch();
+            productRepo
+                .all()
+                .filter("self.code = :code AND dtype = 'Product'")
+                .bind("code", code)
+                .fetch();
         if (productList != null && !productList.isEmpty()) {
           if (productList.size() > 1) {
             throw new AxelorException(

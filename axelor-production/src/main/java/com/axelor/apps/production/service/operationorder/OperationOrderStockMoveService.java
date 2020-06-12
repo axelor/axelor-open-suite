@@ -134,11 +134,17 @@ public class OperationOrderStockMoveService {
 
     return stockMoveLineService.createStockMoveLine(
         prodProduct.getProduct(),
-        (String) productCompanyService.get(prodProduct.getProduct(), "name", stockMove.getCompany()),
-        (String) productCompanyService.get(prodProduct.getProduct(), "name", stockMove.getCompany()),
+        (String)
+            productCompanyService.get(prodProduct.getProduct(), "name", stockMove.getCompany()),
+        (String)
+            productCompanyService.get(prodProduct.getProduct(), "name", stockMove.getCompany()),
         prodProduct.getQty(),
-        (BigDecimal) productCompanyService.get(prodProduct.getProduct(), "costPrice", stockMove.getCompany()),
-        (BigDecimal) productCompanyService.get(prodProduct.getProduct(), "costPrice", stockMove.getCompany()),
+        (BigDecimal)
+            productCompanyService.get(
+                prodProduct.getProduct(), "costPrice", stockMove.getCompany()),
+        (BigDecimal)
+            productCompanyService.get(
+                prodProduct.getProduct(), "costPrice", stockMove.getCompany()),
         prodProduct.getUnit(),
         stockMove,
         StockMoveLineService.TYPE_IN_PRODUCTIONS,

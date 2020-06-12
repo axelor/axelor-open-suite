@@ -65,7 +65,7 @@ public class ManufOrderStockMoveService {
   protected StockMoveLineService stockMoveLineService;
   protected AppBaseService appBaseService;
   protected ProductCompanyService productCompanyService;
-  
+
   @Inject
   public ManufOrderStockMoveService(
       StockMoveService stockMoveService,
@@ -198,7 +198,12 @@ public class ManufOrderStockMoveService {
 
       for (ProdProduct prodProduct : manufOrder.getToProduceProdProductList()) {
 
-	    BigDecimal productCostPrice = prodProduct.getProduct() != null ? (BigDecimal) productCompanyService.get(prodProduct.getProduct(), "costPrice", manufOrder.getCompany()) : BigDecimal.ZERO; 
+        BigDecimal productCostPrice =
+            prodProduct.getProduct() != null
+                ? (BigDecimal)
+                    productCompanyService.get(
+                        prodProduct.getProduct(), "costPrice", manufOrder.getCompany())
+                : BigDecimal.ZERO;
         this._createStockMoveLine(
             prodProduct,
             stockMove,
@@ -277,9 +282,13 @@ public class ManufOrderStockMoveService {
   public StockMoveLine _createStockMoveLine(
       ProdProduct prodProduct, StockMove stockMove, int inOrOutType, BigDecimal qty)
       throws AxelorException {
-	  BigDecimal productCostPrice = prodProduct.getProduct() != null ? (BigDecimal) productCompanyService.get(prodProduct.getProduct(), "costPrice", stockMove.getCompany()) : BigDecimal.ZERO; 
-    return _createStockMoveLine(
-        prodProduct, stockMove, inOrOutType, qty, productCostPrice);
+    BigDecimal productCostPrice =
+        prodProduct.getProduct() != null
+            ? (BigDecimal)
+                productCompanyService.get(
+                    prodProduct.getProduct(), "costPrice", stockMove.getCompany())
+            : BigDecimal.ZERO;
+    return _createStockMoveLine(prodProduct, stockMove, inOrOutType, qty, productCostPrice);
   }
 
   protected StockMoveLine _createStockMoveLine(
@@ -292,8 +301,11 @@ public class ManufOrderStockMoveService {
 
     return stockMoveLineService.createStockMoveLine(
         prodProduct.getProduct(),
-        (String) productCompanyService.get(prodProduct.getProduct(), "name", stockMove.getCompany()),
-        (String) productCompanyService.get(prodProduct.getProduct(), "description", stockMove.getCompany()),
+        (String)
+            productCompanyService.get(prodProduct.getProduct(), "name", stockMove.getCompany()),
+        (String)
+            productCompanyService.get(
+                prodProduct.getProduct(), "description", stockMove.getCompany()),
         qty,
         costPrice,
         costPrice,
@@ -602,13 +614,14 @@ public class ManufOrderStockMoveService {
     // create a new list
     for (ProdProduct prodProduct : manufOrder.getToProduceProdProductList()) {
       BigDecimal qty = getFractionQty(manufOrder, prodProduct, qtyToUpdate);
-      BigDecimal productCostPrice = prodProduct.getProduct() != null ? (BigDecimal) productCompanyService.get(prodProduct.getProduct(), "costPrice", manufOrder.getCompany()) : BigDecimal.ZERO; 
+      BigDecimal productCostPrice =
+          prodProduct.getProduct() != null
+              ? (BigDecimal)
+                  productCompanyService.get(
+                      prodProduct.getProduct(), "costPrice", manufOrder.getCompany())
+              : BigDecimal.ZERO;
       _createStockMoveLine(
-          prodProduct,
-          stockMove,
-          StockMoveLineService.TYPE_OUT_PRODUCTIONS,
-          qty,
-          productCostPrice);
+          prodProduct, stockMove, StockMoveLineService.TYPE_OUT_PRODUCTIONS, qty, productCostPrice);
 
       // Update produced StockMoveLineList with created stock move lines
       stockMove.getStockMoveLineList().stream()

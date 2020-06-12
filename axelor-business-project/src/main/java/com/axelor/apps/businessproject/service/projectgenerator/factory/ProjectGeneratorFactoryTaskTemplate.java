@@ -41,7 +41,6 @@ import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -106,7 +105,9 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
       Product product = orderLine.getProduct();
       if (product != null
           && !((ProductRepository.PROCUREMENT_METHOD_PRODUCE.equals(
-        		      (String) productCompanyService.get(product, "procurementMethodSelect", saleOrder.getCompany()))
+                      (String)
+                          productCompanyService.get(
+                              product, "procurementMethodSelect", saleOrder.getCompany()))
                   || orderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE)
               && ProductRepository.PRODUCT_TYPE_SERVICE.equals(product.getProductTypeSelect()))) {
         continue;
@@ -158,15 +159,21 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
         .domain("self.parentTask = " + root.getId());
   }
 
-  private void updateTask(TeamTask root, TeamTask childTask, SaleOrderLine orderLine) throws AxelorException {
+  private void updateTask(TeamTask root, TeamTask childTask, SaleOrderLine orderLine)
+      throws AxelorException {
     childTask.setParentTask(root);
     childTask.setQuantity(orderLine.getQty());
     Product product = orderLine.getProduct();
     childTask.setProduct(product);
     childTask.setExTaxTotal(orderLine.getExTaxTotal());
-    Company company = orderLine.getSaleOrder() != null ? orderLine.getSaleOrder().getCompany() : null;
-    childTask.setUnitPrice(product != null ? (BigDecimal) productCompanyService.get(product, "salePrice", company) : null);
-    childTask.setUnit(product != null ? (Unit) productCompanyService.get(product, "unit", company) : null);
+    Company company =
+        orderLine.getSaleOrder() != null ? orderLine.getSaleOrder().getCompany() : null;
+    childTask.setUnitPrice(
+        product != null
+            ? (BigDecimal) productCompanyService.get(product, "salePrice", company)
+            : null);
+    childTask.setUnit(
+        product != null ? (Unit) productCompanyService.get(product, "unit", company) : null);
     childTask.setSaleOrderLine(orderLine);
     if (orderLine.getSaleOrder().getToInvoiceViaTask()) {
       childTask.setToInvoice(true);

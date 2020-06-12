@@ -330,7 +330,10 @@ public class HumanResourceMobileController {
     List<Map<String, String>> dataList = new ArrayList<>();
     try {
       List<Product> productList =
-          Beans.get(ProductRepository.class).all().filter("self.isActivity = true AND dtype = 'Product'").fetch();
+          Beans.get(ProductRepository.class)
+              .all()
+              .filter("self.isActivity = true AND dtype = 'Product'")
+              .fetch();
       for (Product product : productList) {
         Map<String, String> map = new HashMap<>();
         map.put("name", product.getName());

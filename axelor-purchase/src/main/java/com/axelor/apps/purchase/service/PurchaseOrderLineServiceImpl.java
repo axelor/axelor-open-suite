@@ -76,7 +76,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   @Inject protected AppPurchaseService appPurchaseService;
 
   @Inject protected SupplierCatalogService supplierCatalogService;
-  
+
   @Inject protected ProductCompanyService productCompanyService;
 
   @Deprecated private int sequence = 0;
@@ -182,7 +182,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     }
 
     SupplierCatalog supplierCatalog =
-        supplierCatalogService.getSupplierCatalog(product, purchaseOrder.getSupplierPartner(), purchaseOrder.getCompany());
+        supplierCatalogService.getSupplierCatalog(
+            product, purchaseOrder.getSupplierPartner(), purchaseOrder.getCompany());
 
     if (supplierCatalog != null) {
       productName = supplierCatalog.getProductSupplierName();
@@ -238,19 +239,25 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     Currency purchaseCurrency = null;
     Product product = purchaseOrderLine.getProduct();
     SupplierCatalog supplierCatalog =
-        supplierCatalogService.getSupplierCatalog(product, purchaseOrder.getSupplierPartner(), purchaseOrder.getCompany());
+        supplierCatalogService.getSupplierCatalog(
+            product, purchaseOrder.getSupplierPartner(), purchaseOrder.getCompany());
 
     if (supplierCatalog != null) {
       purchasePrice = supplierCatalog.getPrice();
       purchaseCurrency = supplierCatalog.getSupplierPartner().getCurrency();
     } else {
       if (product != null) {
-        purchasePrice = (BigDecimal) productCompanyService.get(product, "purchasePrice", purchaseOrder.getCompany());
-        purchaseCurrency = (Currency) productCompanyService.get(product, "purchaseCurrency", purchaseOrder.getCompany());
+        purchasePrice =
+            (BigDecimal)
+                productCompanyService.get(product, "purchasePrice", purchaseOrder.getCompany());
+        purchaseCurrency =
+            (Currency)
+                productCompanyService.get(product, "purchaseCurrency", purchaseOrder.getCompany());
       }
     }
 
-    Boolean inAti = (Boolean) productCompanyService.get(product, "inAti", purchaseOrder.getCompany());
+    Boolean inAti =
+        (Boolean) productCompanyService.get(product, "inAti", purchaseOrder.getCompany());
     BigDecimal price =
         (inAti == resultInAti)
             ? purchasePrice
@@ -377,7 +384,9 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
       Product product = purchaseOrderLine.getProduct();
 
-      if (product == null || !((Boolean) productCompanyService.get(product, "sellable", purchaseOrder.getCompany()))) {
+      if (product == null
+          || !((Boolean)
+              productCompanyService.get(product, "sellable", purchaseOrder.getCompany()))) {
         return BigDecimal.ZERO;
       }
 
@@ -390,15 +399,24 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
               false);
 
       BigDecimal price;
-      if (purchaseOrder.getInAti() != (Boolean) productCompanyService.get(product, "inAti", purchaseOrder.getCompany())) {
-        price = this.convertUnitPrice((Boolean) productCompanyService.get(product, "inAti", purchaseOrder.getCompany()), saleTaxLine, (BigDecimal) productCompanyService.get(product, "salePrice", purchaseOrder.getCompany()));
+      if (purchaseOrder.getInAti()
+          != (Boolean) productCompanyService.get(product, "inAti", purchaseOrder.getCompany())) {
+        price =
+            this.convertUnitPrice(
+                (Boolean) productCompanyService.get(product, "inAti", purchaseOrder.getCompany()),
+                saleTaxLine,
+                (BigDecimal)
+                    productCompanyService.get(product, "salePrice", purchaseOrder.getCompany()));
       } else {
-        price = (BigDecimal) productCompanyService.get(product, "salePrice", purchaseOrder.getCompany());
+        price =
+            (BigDecimal)
+                productCompanyService.get(product, "salePrice", purchaseOrder.getCompany());
       }
 
       return currencyService
           .getAmountCurrencyConvertedAtDate(
-    		  (Currency) productCompanyService.get(product, "saleCurrency", purchaseOrder.getCompany()),
+              (Currency)
+                  productCompanyService.get(product, "saleCurrency", purchaseOrder.getCompany()),
               purchaseOrder.getCurrency(),
               price,
               purchaseOrder.getOrderDate())
@@ -413,15 +431,21 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   public BigDecimal getSalePrice(PurchaseOrder purchaseOrder, Product product, BigDecimal price)
       throws AxelorException {
 
-    if (product == null || !((Boolean) productCompanyService.get(product, "sellable", purchaseOrder.getCompany()))) {
+    if (product == null
+        || !((Boolean)
+            productCompanyService.get(product, "sellable", purchaseOrder.getCompany()))) {
       return BigDecimal.ZERO;
     }
 
-    price = price.multiply((BigDecimal) productCompanyService.get(product, "managPriceCoef", purchaseOrder.getCompany()));
+    price =
+        price.multiply(
+            (BigDecimal)
+                productCompanyService.get(product, "managPriceCoef", purchaseOrder.getCompany()));
 
     return currencyService
         .getAmountCurrencyConvertedAtDate(
-    		(Currency) productCompanyService.get(product, "saleCurrency", purchaseOrder.getCompany()),
+            (Currency)
+                productCompanyService.get(product, "saleCurrency", purchaseOrder.getCompany()),
             purchaseOrder.getCurrency(),
             price,
             purchaseOrder.getOrderDate())
@@ -594,7 +618,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   }
 
   @Override
-  public BigDecimal getQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException {
+  public BigDecimal getQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine)
+      throws AxelorException {
 
     SupplierCatalog supplierCatalog = this.getSupplierCatalog(purchaseOrder, purchaseOrderLine);
 
@@ -613,7 +638,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     Product product = purchaseOrderLine.getProduct();
 
     SupplierCatalog supplierCatalog =
-        supplierCatalogService.getSupplierCatalog(product, purchaseOrder.getSupplierPartner(), purchaseOrder.getCompany());
+        supplierCatalogService.getSupplierCatalog(
+            product, purchaseOrder.getSupplierPartner(), purchaseOrder.getCompany());
 
     //		If there is no catalog for supplier, then we don't take the default catalog.
 
@@ -690,7 +716,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   }
 
   @Override
-  public BigDecimal getMinQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException {
+  public BigDecimal getMinQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine)
+      throws AxelorException {
     SupplierCatalog supplierCatalog = getSupplierCatalog(purchaseOrder, purchaseOrderLine);
     return supplierCatalog != null ? supplierCatalog.getMinQty() : BigDecimal.ONE;
   }
@@ -700,7 +727,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
       PurchaseOrder purchaseOrder,
       PurchaseOrderLine purchaseOrderLine,
       ActionRequest request,
-      ActionResponse response) throws AxelorException {
+      ActionResponse response)
+      throws AxelorException {
 
     BigDecimal minQty = this.getMinQty(purchaseOrder, purchaseOrderLine);
 

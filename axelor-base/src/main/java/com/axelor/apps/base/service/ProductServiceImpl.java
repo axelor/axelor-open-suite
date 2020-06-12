@@ -92,7 +92,8 @@ public class ProductServiceImpl implements ProductService {
 
   @Override
   public void updateSalePrice(Product product, Company company) throws AxelorException {
-    BigDecimal managePriceCoef = (BigDecimal) productCompanyService.get(product, "managPriceCoef", company);
+    BigDecimal managePriceCoef =
+        (BigDecimal) productCompanyService.get(product, "managPriceCoef", company);
 
     if ((BigDecimal) productCompanyService.get(product, "costPrice", company) != null) {
 
@@ -109,12 +110,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     if ((BigDecimal) productCompanyService.get(product, "costPrice", company) != null
-    	&& managePriceCoef != null
-    	&& (Boolean) productCompanyService.get(product, "autoUpdateSalePrice", company)) {
+        && managePriceCoef != null
+        && (Boolean) productCompanyService.get(product, "autoUpdateSalePrice", company)) {
 
-	  productCompanyService.set(product, "salePrice",
-          (((BigDecimal) productCompanyService.get(product, "costPrice", company)).multiply(managePriceCoef))
-              .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP), company);
+      productCompanyService.set(
+          product,
+          "salePrice",
+          (((BigDecimal) productCompanyService.get(product, "costPrice", company))
+                  .multiply(managePriceCoef))
+              .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP),
+          company);
 
       if (product.getProductVariant() != null) {
 
@@ -169,7 +174,8 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
-  public Product createProduct(Product productModel, ProductVariant productVariant, int seq) throws AxelorException {
+  public Product createProduct(Product productModel, ProductVariant productVariant, int seq)
+      throws AxelorException {
 
     String description = "";
     String internalDescription = "";
