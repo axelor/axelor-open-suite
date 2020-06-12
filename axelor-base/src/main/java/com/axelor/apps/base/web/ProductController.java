@@ -64,7 +64,7 @@ public class ProductController {
   }
 
   public void updateProductCompanyList(ActionRequest request, ActionResponse response) {
-    Product product = request.getContext().asType(Product.class); 
+    Product product = request.getContext().asType(Product.class);
     response.setReload(Beans.get(ProductService.class).updateProductCompanyList(product));
   }
 

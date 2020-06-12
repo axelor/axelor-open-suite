@@ -86,12 +86,12 @@ public class ProductServiceImpl implements ProductService {
   @Override
   @Transactional
   public boolean updateProductCompanyList(Product product) {
-	boolean newInput = false;
+    boolean newInput = false;
     product = productRepo.find(product.getId());
     List<Company> companyList = companyRepo.all().fetch();
     for (Company company : companyList) {
       if (!this.containsCompany(product.getProductCompanyList(), company)) {
-    	  newInput = true;
+        newInput = true;
         ProductCompany productCompany = new ProductCompany();
         productCompany.setCompany(company);
         product.addProductCompanyListItem(productCompany);
