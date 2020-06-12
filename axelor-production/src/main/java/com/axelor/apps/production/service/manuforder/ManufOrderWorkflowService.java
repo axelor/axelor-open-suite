@@ -665,25 +665,28 @@ public class ManufOrderWorkflowService {
             .filter("self.id in (" + Joiner.on(",").join(ids) + ")")
             .fetch();
     ManufOrder mergedManufOrder = new ManufOrder();
-    int priority = 0;
-    int versionNumber = 0;
-    BillOfMaterial billOfMaterial = null;
+
     Product product = manufOrderList.get(0).getProduct();
     StockLocation stockLocation = manufOrderList.get(0).getWorkshopStockLocation();
     Company company = manufOrderList.get(0).getCompany();
     BigDecimal qty = BigDecimal.ZERO;
-    for (ManufOrder manufOrder : manufOrderList) {
-      if (manufOrder.getPrioritySelect() > priority) {
-        priority = manufOrder.getPrioritySelect();
-      }
-      if (manufOrder.getBillOfMaterial().getVersionNumber() > versionNumber) {
-        billOfMaterial = manufOrder.getBillOfMaterial();
-      }
-    }
+    BillOfMaterial billOfMaterial =
+        manufOrderList.stream()
+            .filter(x -> x.getBillOfMaterial().getVersionNumber() == 1)
+            .findFirst()
+            .get()
+            .getBillOfMaterial();
+    System.out.println("BILL OF MATERIAL ::: " + billOfMaterial);
+    int priority = manufOrderList.stream().mapToInt(mo -> mo.getPrioritySelect()).max().getAsInt();
+    System.out.println("PRIORITY ::: " + priority);
 
     Unit unit = billOfMaterial.getUnit();
+    System.out.println("UNIT ::: " + unit);
     String note = "";
     for (ManufOrder manufOrder : manufOrderList) {
+      System.out.println("Manuf ORDER id" + manufOrder.getId());
+      System.out.println("Manuf ORDER qty" + manufOrder.getQty());
+      System.out.println("QTY DÉPART ::: " + qty);
       manufOrder.setStatusSelect(ManufOrderRepository.STATUS_FUSIONNED);
 
       manufOrder.setManufOrderMergeResult(mergedManufOrder);
@@ -694,7 +697,8 @@ public class ManufOrderWorkflowService {
         mergedManufOrder.addSaleOrderSetItem(saleOrder);
       }
       if (manufOrder.getUnit().equals(unit)) {
-        qty.add(manufOrder.getQty());
+        qty = qty.add(manufOrder.getQty());
+        System.out.println("QTY :::  " + qty);
       } else {
         BigDecimal qtyConverted =
             Beans.get(UnitConversionService.class)
@@ -704,14 +708,15 @@ public class ManufOrderWorkflowService {
                     manufOrder.getQty(),
                     AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
                     null);
-        qty.add(qtyConverted);
+        qty = qty.add(qtyConverted);
+        System.out.println("QTY after conversion :::  " + qty);
       }
       if (manufOrder.getNote() != null && manufOrder.getNote() != "") {
         note += manufOrder.getManufOrderSeq() + " : " + manufOrder.getNote() + "\n";
       }
     }
-    System.out.println("Qty ::: " + qty);
-    System.out.println("Note ::: " + note);
+
+    System.out.println("QTY finale :::  " + qty);
     mergedManufOrder.setStatusSelect(ManufOrderRepository.STATUS_DRAFT);
     mergedManufOrder.setProduct(product);
     mergedManufOrder.setUnit(unit);
@@ -760,10 +765,21 @@ public class ManufOrderWorkflowService {
     if (!allSameProducts) {
       return false;
     }
+
+    // Check if one of the workShopStockLocation is null
+    boolean oneWorkShopIsNull =
+        manufOrderList.stream().anyMatch(x -> x.getWorkshopStockLocation() == null);
+    if (oneWorkShopIsNull) {
+      return false;
+    }
     // I check if all the stockLocation are the same. If not i return false
     StockLocation stockLocation = manufOrderList.get(0).getWorkshopStockLocation();
     boolean allSameLocation =
-        manufOrderList.stream().allMatch(x -> x.getWorkshopStockLocation().equals(stockLocation));
+        manufOrderList.stream()
+            .allMatch(
+                x ->
+                    x.getWorkshopStockLocation() != null
+                        && x.getWorkshopStockLocation().equals(stockLocation));
     if (!allSameLocation) {
       return false;
     }

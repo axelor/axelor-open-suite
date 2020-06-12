@@ -133,6 +133,9 @@ public interface IExceptionMessage {
   /** Operation Order Workflow Service */
   String WORKCENTER_NO_MACHINE = /*$$(*/ "Please fill the machine in the workcenter %s." /*)*/;
 
+  String NO_WORK_CENTER_GROUP = /*$$(*/
+      "Please fill the work center group will at least one work center." /*)*/;
+
   /** Raw Material RequirementService */
   String RAW_MATERIAL_REQUIREMENT_NO_SEQUENCE = /*$$(*/
       "Error : You must configure a raw material requirement reporting sequence for the company %s" /*)*/;

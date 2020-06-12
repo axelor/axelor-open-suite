@@ -140,7 +140,8 @@
 			<field name="product.economicManufOrderQty" colSpan="3"/>
 			<field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
 			<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" domain="self.isCustomer=true AND :company member of self.companySet" onChange="action-manuf-order-atts-sale-order-onchange-client-partner" canEdit="false"/>
-			<field name="saleOrder" form-view="sale-order-form" grid-view="sale-order-grid" onSelect="action-manuf-order-attrs-sale-order-onselect" onChange="action-manuf-order-record-client-partner-onchange-sale-order" canEdit="false"/>
+			<field name="saleOrderSet" widget="TagSelect" form-view="sale-order-form" grid-view="sale-order-grid" onSelect="action-manuf-order-attrs-sale-order-onselect"  canEdit="false"/>
+			<field name="manufOrderMergeResult" showIf="manufOrderMergeResult" form-view="manuf-order-form" grid-view="manuf-order-grid" canNew="false" canEdit="false" canView="true"></field>
 			<field name="purchaseOrder" form-view="purchase-order-form" grid-view="purchase-order-grid" canEdit="false" canSelect="false" showIf="false"/>
 			<field name="isConsProOnOperation" hidden="true"/>
 			<field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice" if-module="axelor-business-production" showIf="__config__.app.getApp('production').getManageBusinessProduction()" />
@@ -373,7 +374,7 @@
 	<action-attrs name="action-manuf-order-attrs-sale-order-onselect">
 		<attribute if="clientPartner != null" name="domain"
 			expr="self.clientPartner = :clientPartner AND self.statusSelect = 3"
-			for="saleOrder" />
+			for="saleOrderSet" />
 		<attribute if="clientPartner == null" name="domain"
 			expr="self.statusSelect = 3" for="saleOrder" />
 	</action-attrs>
