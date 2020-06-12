@@ -2,6 +2,7 @@
 ## [Unreleased 5.2.12]
 ## Improvements
 - LEAVE REQUEST: remove field duration lenght constraint
+- EMPLOYEE : add translation of "Employee PhoneBook".
 
 ## Bug Fixes
 - CRM/SALES : fix for contacts with mainPartner isProspect do not display
