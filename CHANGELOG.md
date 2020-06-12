@@ -6,6 +6,7 @@
 ## Improvements
 - LEAVE REQUEST: remove field duration lenght constraint
 - EMPLOYEE : add translation of "Employee PhoneBook".
+- INVENTAIRE: no more than one line for same product and same tracking number.
 
 ## Bug Fixes
 - CRM/SALES : fix for contacts with mainPartner isProspect do not display
