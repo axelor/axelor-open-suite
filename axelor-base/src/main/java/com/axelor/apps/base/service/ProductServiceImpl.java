@@ -19,10 +19,12 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductCompany;
 import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.ProductVariantAttr;
 import com.axelor.apps.base.db.ProductVariantConfig;
 import com.axelor.apps.base.db.ProductVariantValue;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.ProductVariantRepository;
 import com.axelor.apps.base.db.repo.ProductVariantValueRepository;
@@ -50,6 +52,7 @@ public class ProductServiceImpl implements ProductService {
   protected AppBaseService appBaseService;
   protected ProductRepository productRepo;
   protected ProductCompanyService productCompanyService;
+  protected CompanyRepository companyRepo;
 
   @Inject
   public ProductServiceImpl(
@@ -58,13 +61,15 @@ public class ProductServiceImpl implements ProductService {
       SequenceService sequenceService,
       AppBaseService appBaseService,
       ProductRepository productRepo,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      CompanyRepository companyRepo) {
     this.productVariantService = productVariantService;
     this.productVariantRepo = productVariantRepo;
     this.sequenceService = sequenceService;
     this.appBaseService = appBaseService;
     this.productRepo = productRepo;
     this.productCompanyService = productCompanyService;
+    this.companyRepo = companyRepo;
   }
 
   @Inject private MetaFiles metaFiles;
@@ -76,6 +81,33 @@ public class ProductServiceImpl implements ProductService {
     this.updateSalePrice(product, null);
 
     productRepo.save(product);
+  }
+
+  @Override
+  @Transactional
+  public boolean updateProductCompanyList(Product product) {
+	boolean newInput = false;
+    product = productRepo.find(product.getId());
+    List<Company> companyList = companyRepo.all().fetch();
+    for (Company company : companyList) {
+      if (!this.containsCompany(product.getProductCompanyList(), company)) {
+    	  newInput = true;
+        ProductCompany productCompany = new ProductCompany();
+        productCompany.setCompany(company);
+        product.addProductCompanyListItem(productCompany);
+      }
+    }
+    productRepo.save(product);
+    return newInput;
+  }
+
+  private boolean containsCompany(List<ProductCompany> productCompanyList, Company company) {
+    for (ProductCompany productCompany : productCompanyList) {
+      if (productCompany.getCompany().equals(company)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public String getSequence() throws AxelorException {

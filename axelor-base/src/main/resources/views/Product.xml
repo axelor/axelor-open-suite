@@ -407,8 +407,13 @@
         <action name="action-product-attrs-readonly-purchasable" if="__context__?._fromPurchase"/>
 		<action name="action-product-attrs-cost-price-variant"/>
 		<action name="action-product-attrs-enable-product-company-list"/>
+		<action name="action-product-method-update-company-product-list" if="!__config__.app.getApp('base').getCompanySpecificProductFieldsList().isEmpty()"/>
     </action-group>
-
+    
+    <action-method name="action-product-method-update-company-product-list">
+    	<call class="com.axelor.apps.base.web.ProductController" method="updateProductCompanyList"/>
+    </action-method>
+	
 	<action-group name="action-product-group-cost-type-select-onchange">
 		<action name="action-product-attrs-update-cost-price"/>
 		<action name="action-product-record-compute-sale-price"/>

@@ -48,6 +48,8 @@ public interface ProductService {
    */
   public BigDecimal getProductExtraPrice(ProductVariant productVariant, int applicationPriceSelect);
 
+  public boolean updateProductCompanyList(Product product);
+
   public ProductVariant createProductVariant(
       ProductVariantConfig productVariantConfig,
       ProductVariantValue productVariantValue1,
