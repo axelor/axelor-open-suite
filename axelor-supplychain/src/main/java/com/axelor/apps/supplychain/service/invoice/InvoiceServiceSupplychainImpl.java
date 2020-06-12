@@ -29,6 +29,7 @@ import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.PartnerService;
@@ -62,7 +63,8 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       AppAccountService appAccountService,
       PartnerService partnerService,
       InvoiceLineService invoiceLineService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      MoveToolService moveToolService) {
     super(
         validateFactory,
         ventilateFactory,
@@ -72,7 +74,8 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
         appAccountService,
         partnerService,
         invoiceLineService,
-        accountConfigService);
+        accountConfigService,
+        moveToolService);
   }
 
   @Override
@@ -153,7 +156,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
           .map(AdvancePayment::getMove)
           .filter(Objects::nonNull)
           .distinct()
-          .flatMap(move -> move.getMoveLineList().stream())
+          .flatMap(move -> moveToolService.getToReconcileCreditMoveLines(move).stream())
           .collect(Collectors.toList());
     }
   }

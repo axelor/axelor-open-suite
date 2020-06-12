@@ -167,11 +167,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       if (move == null || move.getMoveLineList() == null || move.getMoveLineList().isEmpty()) {
         continue;
       }
-      for (MoveLine moveLine : move.getMoveLineList()) {
-        if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
-          moveLines.add(moveLine);
-        }
-      }
+      moveLines.addAll(moveToolService.getToReconcileCreditMoveLines(move));
     }
     return moveLines;
   }
