@@ -52,7 +52,10 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
 
     Invoice refund = Beans.get(InvoiceRepository.class).copy(invoice, true);
 
+    // Not all properties should be copied
     refund.setOperationTypeSelect(this.inverseOperationType(refund.getOperationTypeSelect()));
+    refund.setVentilatedByUser(null);
+    refund.setVentilatedDate(null);
 
     List<InvoiceLine> refundLines = new ArrayList<InvoiceLine>();
     if (refund.getInvoiceLineList() != null) {
