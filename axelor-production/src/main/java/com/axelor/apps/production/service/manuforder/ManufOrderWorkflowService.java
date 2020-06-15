@@ -664,29 +664,25 @@ public class ManufOrderWorkflowService {
             .all()
             .filter("self.id in (" + Joiner.on(",").join(ids) + ")")
             .fetch();
-    ManufOrder mergedManufOrder = new ManufOrder();
 
+    /** Init all the necessary values to create the new Manuf Order */
     Product product = manufOrderList.get(0).getProduct();
     StockLocation stockLocation = manufOrderList.get(0).getWorkshopStockLocation();
     Company company = manufOrderList.get(0).getCompany();
-    BigDecimal qty = BigDecimal.ZERO;
     BillOfMaterial billOfMaterial =
         manufOrderList.stream()
             .filter(x -> x.getBillOfMaterial().getVersionNumber() == 1)
             .findFirst()
             .get()
             .getBillOfMaterial();
-    System.out.println("BILL OF MATERIAL ::: " + billOfMaterial);
     int priority = manufOrderList.stream().mapToInt(mo -> mo.getPrioritySelect()).max().getAsInt();
-    System.out.println("PRIORITY ::: " + priority);
-
     Unit unit = billOfMaterial.getUnit();
-    System.out.println("UNIT ::: " + unit);
+    BigDecimal qty = BigDecimal.ZERO;
     String note = "";
+
+    ManufOrder mergedManufOrder = new ManufOrder();
+
     for (ManufOrder manufOrder : manufOrderList) {
-      System.out.println("Manuf ORDER id" + manufOrder.getId());
-      System.out.println("Manuf ORDER qty" + manufOrder.getQty());
-      System.out.println("QTY DÉPART ::: " + qty);
       manufOrder.setStatusSelect(ManufOrderRepository.STATUS_FUSIONNED);
 
       manufOrder.setManufOrderMergeResult(mergedManufOrder);
@@ -696,9 +692,11 @@ public class ManufOrderWorkflowService {
       for (SaleOrder saleOrder : manufOrder.getSaleOrderSet()) {
         mergedManufOrder.addSaleOrderSetItem(saleOrder);
       }
+      /**
+       * If unit are the same, then add the qty If not, convert the unit and get the converted qty
+       */
       if (manufOrder.getUnit().equals(unit)) {
         qty = qty.add(manufOrder.getQty());
-        System.out.println("QTY :::  " + qty);
       } else {
         BigDecimal qtyConverted =
             Beans.get(UnitConversionService.class)
@@ -709,14 +707,13 @@ public class ManufOrderWorkflowService {
                     AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
                     null);
         qty = qty.add(qtyConverted);
-        System.out.println("QTY after conversion :::  " + qty);
       }
       if (manufOrder.getNote() != null && manufOrder.getNote() != "") {
         note += manufOrder.getManufOrderSeq() + " : " + manufOrder.getNote() + "\n";
       }
     }
 
-    System.out.println("QTY finale :::  " + qty);
+    /** Update the created manuf order */
     mergedManufOrder.setStatusSelect(ManufOrderRepository.STATUS_DRAFT);
     mergedManufOrder.setProduct(product);
     mergedManufOrder.setUnit(unit);
@@ -730,6 +727,10 @@ public class ManufOrderWorkflowService {
 
     AppProductionService appProductionService = Beans.get(AppProductionService.class);
 
+    /**
+     * Check the config to see if you directly plan the created manuf order or just prefill the
+     * opertations
+     */
     if (appProductionService.isApp("production")
         && appProductionService.getAppProduction().getIsAutomaticallyPlanified()) {
       Beans.get(ManufOrderWorkflowService.class).plan(mergedManufOrder);
