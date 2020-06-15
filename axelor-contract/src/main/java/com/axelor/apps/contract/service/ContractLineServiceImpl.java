@@ -78,7 +78,12 @@ public class ContractLineServiceImpl implements ContractLineService {
   @Override
   public ContractLine fill(ContractLine contractLine, Product product) throws AxelorException {
     Preconditions.checkNotNull(product, I18n.get(IExceptionMessage.CONTRACT_EMPTY_PRODUCT));
-    Company company = contractLine.getContractVersion() != null ? contractLine.getContractVersion().getContract() != null ? contractLine.getContractVersion().getContract().getCompany() : null : null;
+    Company company =
+        contractLine.getContractVersion() != null
+            ? contractLine.getContractVersion().getContract() != null
+                ? contractLine.getContractVersion().getContract().getCompany()
+                : null
+            : null;
     contractLine.setProductName((String) productCompanyService.get(product, "name", company));
     Unit unit = (Unit) productCompanyService.get(product, "salesUnit", company);
     if (unit != null) {
@@ -87,7 +92,8 @@ public class ContractLineServiceImpl implements ContractLineService {
       contractLine.setUnit((Unit) productCompanyService.get(product, "unit", company));
     }
     contractLine.setPrice((BigDecimal) productCompanyService.get(product, "salePrice", company));
-    contractLine.setDescription((String) productCompanyService.get(product, "description", company));
+    contractLine.setDescription(
+        (String) productCompanyService.get(product, "description", company));
     return contractLine;
   }
 
@@ -111,7 +117,8 @@ public class ContractLineServiceImpl implements ContractLineService {
             false);
     contractLine.setTaxLine(taxLine);
 
-    if (taxLine != null && (Boolean) productCompanyService.get(product, "inAti", contract.getCompany())) {
+    if (taxLine != null
+        && (Boolean) productCompanyService.get(product, "inAti", contract.getCompany())) {
       BigDecimal price = contractLine.getPrice();
       price = price.divide(taxLine.getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
       contractLine.setPrice(price);
@@ -120,7 +127,9 @@ public class ContractLineServiceImpl implements ContractLineService {
     BigDecimal price = contractLine.getPrice();
     BigDecimal convert =
         currencyService.getCurrencyConversionRate(
-            (Currency) productCompanyService.get(product, "saleCurrency", contract.getCompany()), contract.getCurrency(), appBaseService.getTodayDate());
+            (Currency) productCompanyService.get(product, "saleCurrency", contract.getCompany()),
+            contract.getCurrency(),
+            appBaseService.getTodayDate());
     contractLine.setPrice(price.multiply(convert));
 
     return contractLine;

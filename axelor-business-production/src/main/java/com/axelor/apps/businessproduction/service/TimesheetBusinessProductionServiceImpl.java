@@ -56,7 +56,7 @@ public class TimesheetBusinessProductionServiceImpl extends TimesheetProjectServ
       TimesheetLineRepository timesheetLineRepo,
       TimesheetRepository timeSheetRepository) {
     super(
-        priceListService, 
+        priceListService,
         appHumanResourceService,
         hrConfigService,
         templateMessageService,

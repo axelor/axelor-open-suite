@@ -83,10 +83,11 @@ public interface PurchaseOrderLineService {
       Unit unit)
       throws AxelorException;
 
-  public BigDecimal getQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException ;
+  public BigDecimal getQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine)
+      throws AxelorException;
 
   public SupplierCatalog getSupplierCatalog(
-      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException ;
+      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
 
   public BigDecimal convertUnitPrice(Boolean priceIsAti, TaxLine taxLine, BigDecimal price);
 
@@ -108,13 +109,15 @@ public interface PurchaseOrderLineService {
    * @param purchaseOrderLine
    * @return
    */
-  public BigDecimal getMinQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException ;
+  public BigDecimal getMinQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine)
+      throws AxelorException;
 
   public void checkMinQty(
       PurchaseOrder purchaseOrder,
       PurchaseOrderLine purchaseOrderLine,
       ActionRequest request,
-      ActionResponse response) throws AxelorException ;
+      ActionResponse response)
+      throws AxelorException;
 
   public void checkMultipleQty(PurchaseOrderLine purchaseOrderLine, ActionResponse response);
 

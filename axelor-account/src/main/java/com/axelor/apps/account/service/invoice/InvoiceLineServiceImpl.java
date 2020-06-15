@@ -184,15 +184,23 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     Currency productCurrency;
 
     if (isPurchase) {
-      price = (BigDecimal) productCompanyService.get(product, "purchasePrice", invoice.getCompany());
-      productCurrency = (Currency) productCompanyService.get(product, "purchaseCurrency", invoice.getCompany());
+      price =
+          (BigDecimal) productCompanyService.get(product, "purchasePrice", invoice.getCompany());
+      productCurrency =
+          (Currency) productCompanyService.get(product, "purchaseCurrency", invoice.getCompany());
     } else {
       price = (BigDecimal) productCompanyService.get(product, "salePrice", invoice.getCompany());
-      productCurrency = (Currency) productCompanyService.get(product, "saleCurrency", invoice.getCompany());
+      productCurrency =
+          (Currency) productCompanyService.get(product, "saleCurrency", invoice.getCompany());
     }
 
-    if ((Boolean) productCompanyService.get(product, "inAti", invoice.getCompany()) != resultInAti) {
-      price = this.convertUnitPrice((Boolean) productCompanyService.get(product, "inAti", invoice.getCompany()), taxLine, price);
+    if ((Boolean) productCompanyService.get(product, "inAti", invoice.getCompany())
+        != resultInAti) {
+      price =
+          this.convertUnitPrice(
+              (Boolean) productCompanyService.get(product, "inAti", invoice.getCompany()),
+              taxLine,
+              price);
     }
 
     return currencyService

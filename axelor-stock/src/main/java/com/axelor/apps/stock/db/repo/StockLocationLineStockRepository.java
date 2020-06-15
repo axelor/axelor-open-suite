@@ -17,25 +17,24 @@
  */
 package com.axelor.apps.stock.db.repo;
 
-import javax.persistence.PersistenceException;
-
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.inject.Beans;
+import javax.persistence.PersistenceException;
 
 public class StockLocationLineStockRepository extends StockLocationLineRepository {
 
   @Override
   public StockLocationLine save(StockLocationLine entity) {
-	try {
-	    Product product = entity.getProduct();
-	    if (entity.getIsAvgPriceChanged()) {
-	      Beans.get(WeightedAveragePriceService.class).computeAvgPriceForProduct(product);
-	    }
-	    return super.save(entity);
+    try {
+      Product product = entity.getProduct();
+      if (entity.getIsAvgPriceChanged()) {
+        Beans.get(WeightedAveragePriceService.class).computeAvgPriceForProduct(product);
+      }
+      return super.save(entity);
     } catch (Exception e) {
-        throw new PersistenceException(e);
+      throw new PersistenceException(e);
     }
   }
 }

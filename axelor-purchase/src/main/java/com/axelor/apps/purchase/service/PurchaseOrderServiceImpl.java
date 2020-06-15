@@ -76,7 +76,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   @Inject protected AppPurchaseService appPurchaseService;
 
   @Inject protected PurchaseOrderRepository purchaseOrderRepo;
-  
+
   @Inject protected ProductCompanyService productCompanyService;
 
   @Override
@@ -398,19 +398,36 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   @Transactional(rollbackOn = {Exception.class})
   public void updateCostPrice(PurchaseOrder purchaseOrder) throws AxelorException {
     if (purchaseOrder.getPurchaseOrderLineList() != null) {
-      CurrencyService currencyService =	Beans.get(CurrencyService.class);
+      CurrencyService currencyService = Beans.get(CurrencyService.class);
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
         Product product = purchaseOrderLine.getProduct();
         if (product != null) {
-          BigDecimal lastPurchasePrice = (Boolean) productCompanyService.get(product, "inAti", purchaseOrder.getCompany())
-                    ? purchaseOrderLine.getInTaxPrice()
-                    : purchaseOrderLine.getPrice();
-          lastPurchasePrice = currencyService.getAmountCurrencyConvertedAtDate(purchaseOrder.getCurrency(), purchaseOrder.getCompany().getCurrency(), lastPurchasePrice, currencyService.getDateToConvert(null));
-          productCompanyService.set(product, "lastPurchasePrice", lastPurchasePrice, purchaseOrder.getCompany());
-          if ((Boolean) productCompanyService.get(product, "defShipCoefByPartner", purchaseOrder.getCompany())) {
-            Unit productPurchaseUnit = (Unit) productCompanyService.get(product, "purchasesUnit", purchaseOrder.getCompany());
+          Currency lastPurchaseCurrency = purchaseOrder.getCurrency();
+          BigDecimal lastPurchasePrice =
+              (Boolean) productCompanyService.get(product, "inAti", purchaseOrder.getCompany())
+                  ? purchaseOrderLine.getInTaxPrice()
+                  : purchaseOrderLine.getPrice();
+          lastPurchasePrice =
+              currencyService.getAmountCurrencyConvertedAtDate(
+                  purchaseOrder.getCurrency(),
+                  purchaseOrder.getCompany().getCurrency(),
+                  lastPurchasePrice,
+                  currencyService.getDateToConvert(null));
+
+          productCompanyService.set(
+              product, "lastPurchasePrice", lastPurchasePrice, purchaseOrder.getCompany());
+          productCompanyService.set(
+              product, "lastPurchaseCurrency", lastPurchaseCurrency, purchaseOrder.getCompany());
+          if ((Boolean)
+              productCompanyService.get(
+                  product, "defShipCoefByPartner", purchaseOrder.getCompany())) {
+            Unit productPurchaseUnit =
+                (Unit)
+                    productCompanyService.get(product, "purchasesUnit", purchaseOrder.getCompany());
             productPurchaseUnit =
-            		productPurchaseUnit != null ? productPurchaseUnit : (Unit) productCompanyService.get(product, "unit", purchaseOrder.getCompany());
+                productPurchaseUnit != null
+                    ? productPurchaseUnit
+                    : (Unit) productCompanyService.get(product, "unit", purchaseOrder.getCompany());
             BigDecimal convertedQty =
                 Beans.get(UnitConversionService.class)
                     .convert(
@@ -427,12 +444,18 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                         purchaseOrder.getCompany(),
                         convertedQty);
             if (shippingCoef.compareTo(BigDecimal.ZERO) != 0) {
-              productCompanyService.set(product, "shippingCoef", shippingCoef, purchaseOrder.getCompany());
+              productCompanyService.set(
+                  product, "shippingCoef", shippingCoef, purchaseOrder.getCompany());
             }
           }
-          if ((Integer) productCompanyService.get(product, "costTypeSelect", purchaseOrder.getCompany()) == ProductRepository.COST_TYPE_LAST_PURCHASE_PRICE) {
-        	  productCompanyService.set(product, "costPrice", lastPurchasePrice, purchaseOrder.getCompany());
-            if ((Boolean) productCompanyService.get(product, "autoUpdateSalePrice", purchaseOrder.getCompany())) {
+          if ((Integer)
+                  productCompanyService.get(product, "costTypeSelect", purchaseOrder.getCompany())
+              == ProductRepository.COST_TYPE_LAST_PURCHASE_PRICE) {
+            productCompanyService.set(
+                product, "costPrice", lastPurchasePrice, purchaseOrder.getCompany());
+            if ((Boolean)
+                productCompanyService.get(
+                    product, "autoUpdateSalePrice", purchaseOrder.getCompany())) {
               Beans.get(ProductService.class).updateSalePrice(product, purchaseOrder.getCompany());
             }
           }

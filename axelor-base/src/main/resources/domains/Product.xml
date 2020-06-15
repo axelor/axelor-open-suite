@@ -49,6 +49,7 @@
 			precision="20" scale="10"/>
 		<many-to-one name="purchaseCurrency" ref="com.axelor.apps.base.db.Currency"
 			title="Purchase / Cost currency" initParam="true" />
+		<many-to-one name="lastPurchaseCurrency" ref="com.axelor.apps.base.db.Currency" title="Last purchase currency"/>
 		<boolean name="autoUpdateSalePrice" default="false"
 			title="Update sale price from cost price" />
 

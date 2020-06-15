@@ -45,7 +45,9 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
 
   @Inject
   public WeightedAveragePriceServiceImpl(
-      ProductRepository productRepo, AppBaseService appBaseService, ProductCompanyService productCompanyService) {
+      ProductRepository productRepo,
+      AppBaseService appBaseService,
+      ProductCompanyService productCompanyService) {
     this.productRepo = productRepo;
     this.appBaseService = appBaseService;
     this.productCompanyService = productCompanyService;
@@ -55,46 +57,48 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
   @Transactional
   public void computeAvgPriceForProduct(Product product) throws AxelorException {
 
-	Boolean avgPriceHandledByCompany = false;
-    Set<MetaField> companySpecificFields = appBaseService.getAppBase().getCompanySpecificProductFieldsList();
+    Boolean avgPriceHandledByCompany = false;
+    Set<MetaField> companySpecificFields =
+        appBaseService.getAppBase().getCompanySpecificProductFieldsList();
     for (MetaField field : companySpecificFields) {
-	  if (field.getName().equals("avgPrice")) {
-	    avgPriceHandledByCompany = true;
-	    break;
-	  }
+      if (field.getName().equals("avgPrice")) {
+        avgPriceHandledByCompany = true;
+        break;
+      }
     }
-    if (avgPriceHandledByCompany && 
-    		product.getProductCompanyList() != null && 
-    		!product.getProductCompanyList().isEmpty()) {
-    	for (ProductCompany productCompany : product.getProductCompanyList()) {
-    		Company company = productCompany.getCompany();
-    		BigDecimal productAvgPrice = this.computeAvgPriceForCompany(product, company);
-    		if (productAvgPrice.compareTo(BigDecimal.ZERO) == 0) {
-		      continue;
-		    }
-    		
-    		productCompanyService.set(product, "avgPrice", productAvgPrice, company);
-    		if ((Integer) productCompanyService.get(product, "costTypeSelect", company) == ProductRepository.COST_TYPE_AVERAGE_PRICE) {
-    			  productCompanyService.set(product, "costPrice", productAvgPrice, company);
-    		      if ((Boolean) productCompanyService.get(product, "autoUpdateSalePrice", company)) {
-    		        Beans.get(ProductService.class).updateSalePrice(product, company);
-    		      }
-    		    }
-    	}
-    } else  {
-    	BigDecimal productAvgPrice = this.computeAvgPriceForCompany(product, null);
-    	
-	    if (productAvgPrice.compareTo(BigDecimal.ZERO) == 0) {
-	      return;
-	    }
-	
-	    product.setAvgPrice(productAvgPrice);
-	    if (product.getCostTypeSelect() == ProductRepository.COST_TYPE_AVERAGE_PRICE) {
-	      product.setCostPrice(productAvgPrice);
-	      if (product.getAutoUpdateSalePrice()) {
-	        Beans.get(ProductService.class).updateSalePrice(product, null);
-	      }
-	    }
+    if (avgPriceHandledByCompany
+        && product.getProductCompanyList() != null
+        && !product.getProductCompanyList().isEmpty()) {
+      for (ProductCompany productCompany : product.getProductCompanyList()) {
+        Company company = productCompany.getCompany();
+        BigDecimal productAvgPrice = this.computeAvgPriceForCompany(product, company);
+        if (productAvgPrice.compareTo(BigDecimal.ZERO) == 0) {
+          continue;
+        }
+
+        productCompanyService.set(product, "avgPrice", productAvgPrice, company);
+        if ((Integer) productCompanyService.get(product, "costTypeSelect", company)
+            == ProductRepository.COST_TYPE_AVERAGE_PRICE) {
+          productCompanyService.set(product, "costPrice", productAvgPrice, company);
+          if ((Boolean) productCompanyService.get(product, "autoUpdateSalePrice", company)) {
+            Beans.get(ProductService.class).updateSalePrice(product, company);
+          }
+        }
+      }
+    } else {
+      BigDecimal productAvgPrice = this.computeAvgPriceForCompany(product, null);
+
+      if (productAvgPrice.compareTo(BigDecimal.ZERO) == 0) {
+        return;
+      }
+
+      product.setAvgPrice(productAvgPrice);
+      if (product.getCostTypeSelect() == ProductRepository.COST_TYPE_AVERAGE_PRICE) {
+        product.setCostPrice(productAvgPrice);
+        if (product.getAutoUpdateSalePrice()) {
+          Beans.get(ProductService.class).updateSalePrice(product, null);
+        }
+      }
     }
     productRepo.save(product);
   }

@@ -17,9 +17,7 @@
  */
 package com.axelor.apps.base.db.repo;
 
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.ProductCompany;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -32,7 +30,6 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
-
 import javax.persistence.PersistenceException;
 import javax.validation.ValidationException;
 
@@ -116,5 +113,4 @@ public class ProductBaseRepository extends ProductRepository {
     }
     return copy;
   }
-  
 }

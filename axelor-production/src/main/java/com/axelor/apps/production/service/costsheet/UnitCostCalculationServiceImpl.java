@@ -303,7 +303,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
               .all()
               .filter(
                   "self.productFamily in (?1) AND self.productTypeSelect = ?2 AND self.productSubTypeSelect in (?3)"
-                      + " AND self.defaultBillOfMaterial.company in (?4) AND self.procurementMethodSelect in (?5, ?6)" 
+                      + " AND self.defaultBillOfMaterial.company in (?4) AND self.procurementMethodSelect in (?5, ?6)"
                       + " AND dtype = 'Product'",
                   unitCostCalculation.getProductFamilySet(),
                   ProductRepository.PRODUCT_TYPE_STORABLE,
@@ -458,11 +458,14 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
 
     Product product = unitCostCalcLine.getProduct();
 
-    productCompanyService.set(product, "costPrice", unitCostCalcLine
+    productCompanyService.set(
+        product,
+        "costPrice",
+        unitCostCalcLine
             .getCostToApply()
             .setScale(
                 appProductionService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP),
-            unitCostCalcLine.getCompany());
+        unitCostCalcLine.getCompany());
 
     productService.updateSalePrice(product, unitCostCalcLine.getCompany());
   }

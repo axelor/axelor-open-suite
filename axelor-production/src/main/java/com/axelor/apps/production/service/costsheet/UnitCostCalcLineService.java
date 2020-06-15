@@ -26,5 +26,5 @@ import com.axelor.exception.AxelorException;
 public interface UnitCostCalcLineService {
 
   public UnitCostCalcLine createUnitCostCalcLine(
-      Product product, Company company, int maxLevel, CostSheet costSheet) throws AxelorException ;
+      Product product, Company company, int maxLevel, CostSheet costSheet) throws AxelorException;
 }

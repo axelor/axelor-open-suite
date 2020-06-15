@@ -426,7 +426,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         || company == null
         || manufOrder.getWasteProdProductList().isEmpty()) {
       return wasteStockMove;
-    } 
+    }
 
     StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
     StockMoveService stockMoveService = Beans.get(StockMoveService.class);

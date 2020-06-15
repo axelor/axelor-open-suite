@@ -62,7 +62,7 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
   private PriceListLineRepository priceListLineRepository;
 
   private PriceListService priceListService;
-  
+
   private ProductCompanyService productCompanyService;
 
   @Inject
@@ -78,7 +78,8 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
   }
 
   @Override
-  public TeamTask create(SaleOrderLine saleOrderLine, Project project, User assignedTo) throws AxelorException {
+  public TeamTask create(SaleOrderLine saleOrderLine, Project project, User assignedTo)
+      throws AxelorException {
     TeamTask task = create(saleOrderLine.getFullName() + "_task", project, assignedTo);
     task.setProduct(saleOrderLine.getProduct());
     task.setUnit(saleOrderLine.getUnit());
@@ -92,8 +93,10 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
       }
     }
     if (task.getUnitPrice() == null) {
-      Company company = saleOrderLine.getSaleOrder() != null ? saleOrderLine.getSaleOrder().getCompany() : null;
-      task.setUnitPrice((BigDecimal) productCompanyService.get(saleOrderLine.getProduct(), "salePrice", company));
+      Company company =
+          saleOrderLine.getSaleOrder() != null ? saleOrderLine.getSaleOrder().getCompany() : null;
+      task.setUnitPrice(
+          (BigDecimal) productCompanyService.get(saleOrderLine.getProduct(), "salePrice", company));
     }
     task.setQuantity(saleOrderLine.getQty());
     task.setSaleOrderLine(saleOrderLine);
@@ -270,7 +273,8 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   @Override
-  public TeamTask updateTask(TeamTask teamTask, AppBusinessProject appBusinessProject) throws AxelorException {
+  public TeamTask updateTask(TeamTask teamTask, AppBusinessProject appBusinessProject)
+      throws AxelorException {
 
     teamTask = computeDefaultInformation(teamTask);
 
@@ -326,7 +330,8 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
     }
     Company company = teamTask.getProject() != null ? teamTask.getProject().getCompany() : null;
     Unit salesUnit = (Unit) productCompanyService.get(product, "salesUnit", company);
-    teamTask.setUnit(salesUnit != null ? salesUnit : (Unit) productCompanyService.get(product, "unit", company));
+    teamTask.setUnit(
+        salesUnit != null ? salesUnit : (Unit) productCompanyService.get(product, "unit", company));
     teamTask.setCurrency((Currency) productCompanyService.get(product, "saleCurrency", company));
     teamTask.setQuantity(teamTask.getBudgetedTime());
 
@@ -338,7 +343,8 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
   private BigDecimal computeUnitPrice(TeamTask teamTask) throws AxelorException {
     Product product = teamTask.getProduct();
     Company company = teamTask.getProject() != null ? teamTask.getProject().getCompany() : null;
-    BigDecimal unitPrice = (BigDecimal) productCompanyService.get(product, "salePrice", company);;
+    BigDecimal unitPrice = (BigDecimal) productCompanyService.get(product, "salePrice", company);
+    ;
 
     PriceList priceList =
         Beans.get(PartnerPriceListService.class)

@@ -39,7 +39,6 @@ import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -90,7 +89,10 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
                   .fetch()
                   .size()
               > 0;
-      if (product != null && ProductRepository.PRODUCT_TYPE_SERVICE.equals((String) productCompanyService.get(product, "productTypeSelect", saleOrder.getCompany()))
+      if (product != null
+          && ProductRepository.PRODUCT_TYPE_SERVICE.equals(
+              (String)
+                  productCompanyService.get(product, "productTypeSelect", saleOrder.getCompany()))
           && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE
           && !(isTaskGenerated)) {
 
@@ -102,7 +104,8 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
         }
 
         task.setTaskDate(startDate.toLocalDate());
-        task.setUnitPrice((BigDecimal) productCompanyService.get(product, "salePrice", saleOrder.getCompany()));
+        task.setUnitPrice(
+            (BigDecimal) productCompanyService.get(product, "salePrice", saleOrder.getCompany()));
         task.setExTaxTotal(saleOrderLine.getExTaxTotal());
         if (project.getIsInvoicingTimesheet()) {
           task.setToInvoice(true);

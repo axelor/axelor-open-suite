@@ -44,20 +44,27 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
   @Inject protected AppPurchaseService appPurchaseService;
 
   @Inject protected CurrencyService currencyService;
-  
+
   @Inject protected ProductCompanyService productCompanyService;
 
   @SuppressWarnings("unchecked")
   @Override
   public Map<String, Object> updateInfoFromCatalog(
-      Product product, BigDecimal qty, Partner partner, Currency currency, LocalDate date, Company company)
+      Product product,
+      BigDecimal qty,
+      Partner partner,
+      Currency currency,
+      LocalDate date,
+      Company company)
       throws AxelorException {
 
     Map<String, Object> info = null;
     List<SupplierCatalog> supplierCatalogList = null;
 
     if (appPurchaseService.getAppPurchase().getManageSupplierCatalog()) {
-      supplierCatalogList = (List<SupplierCatalog>) productCompanyService.get(product, "supplierCatalogList", company);
+      supplierCatalogList =
+          (List<SupplierCatalog>)
+              productCompanyService.get(product, "supplierCatalogList", company);
     }
     if (supplierCatalogList != null && !supplierCatalogList.isEmpty()) {
       SupplierCatalog supplierCatalog =
@@ -89,7 +96,10 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
             "price",
             currencyService
                 .getAmountCurrencyConvertedAtDate(
-            		(Currency) productCompanyService.get(product, "purchaseCurrency", company), currency, (BigDecimal) productCompanyService.get(product, "purchasePrice", company), date)
+                    (Currency) productCompanyService.get(product, "purchaseCurrency", company),
+                    currency,
+                    (BigDecimal) productCompanyService.get(product, "purchasePrice", company),
+                    date)
                 .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
         info.put("productName", null);
         info.put("productCode", null);
@@ -100,11 +110,13 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
   }
 
   @Override
-  public SupplierCatalog getSupplierCatalog(Product product, Partner supplierPartner, Company company) throws AxelorException {
+  public SupplierCatalog getSupplierCatalog(
+      Product product, Partner supplierPartner, Company company) throws AxelorException {
 
-	@SuppressWarnings("unchecked")
-	List<SupplierCatalog> supplierCatalogList = (List<SupplierCatalog>) productCompanyService.get(product, "supplierCatalogList", company);
-	  
+    @SuppressWarnings("unchecked")
+    List<SupplierCatalog> supplierCatalogList =
+        (List<SupplierCatalog>) productCompanyService.get(product, "supplierCatalogList", company);
+
     if (appPurchaseService.getAppPurchase().getManageSupplierCatalog()
         && product != null
         && supplierCatalogList != null) {

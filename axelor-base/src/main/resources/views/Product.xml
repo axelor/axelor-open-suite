@@ -85,7 +85,7 @@
                     <field name="isShippingCostsProduct" colSpan="4" hideIf="productTypeSelect != 'storable' || productSubTypeSelect || _fromProduction || _fromStock || _fromSale || _fromPurchase"/>
 			        <field name="isActivity" showIf="productTypeSelect == 'service' &amp;&amp; !isShippingCostsProduct" if-module="axelor-human-resource" if="__config__.app.isApp('employee')" />
                     <field name="procurementMethodSelect" colSpan="6"
-                        requiredIf="productTypeSelect == 'storable'"
+                        requiredIf="productTypeSelect == 'storable' &amp;&amp; __config__.app.getApp('base').getCompanySpecificProductFieldsList().isEmpty()"
                         onChange="action-product-record-tick-checkbox-purchasable" hideIf="isShippingCostsProduct" readonlyIf="productSubTypeSelect == 3"/>
 			        <field name="standardDelay" colSpan="12" showIf="saleSupplySelect == 2 || saleSupplySelect == 3" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
       			</panel>
@@ -152,8 +152,10 @@
 		      	<panel name="purchasePanel" title="Purchases" colSpan="6">
 			        <field name="purchasable" colSpan="12"/>
 			        <field name="purchasePrice" showIf="purchasable" colSpan="3"/>
-			        <field name="lastPurchasePrice" showIf="purchasable" colSpan="3" readonly="true"/>
 			        <field name="purchaseCurrency" canEdit="false" showIf="purchasable" colSpan="6" form-view="currency-form" grid-view="currency-grid"/>
+			        <spacer colSpan="3"/>
+			        <field name="lastPurchasePrice" showIf="purchasable" colSpan="3" readonly="true"/>
+			        <field name="lastPurchaseCurrency" showIf="purchasable" colSpan="6" readonly="true"/>
 			        <field name="defaultSupplierPartner" canEdit="false" showIf="purchasable" colSpan="6" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
 			        <field name="supplierDeliveryTime" showIf="purchasable" colSpan="6"/>
                     <panel name="purchaseMultipleQtyPanel" title="Multiple quantities" colSpan="12" if="__config__.app.getApp('purchase')?.getManageMultiplePurchaseQuantity()">
@@ -365,14 +367,19 @@
 		<action name="action-product-record-set-barcode-type-config"/>
 		<action name="action-product-attrs-title-unit"/>
 		<action name="action-product-attrs-enable-product-company-list"/>
+		<action name="action-product-method-fill-product-company-list" if="!__config__.app.getApp('base').getCompanySpecificProductFieldsList().isEmpty()"/>
     </action-group>
-    
+  
     <action-group name="action-group-base-product-producttype-onchange">
     	<action name="action-product-record-sale-supply-select"/>
     	<action name="action-product-validate-sale-supply-select"/>
     	<action name="action-product-record-product-sub-type-select"/>
       <action name="action-product-record-service-stock-managed"/>
     </action-group>
+        
+ 	<action-method name="action-product-method-fill-product-company-list">
+    	<call class="com.axelor.apps.base.web.ProductController" method="fillProductCompanyList"/>
+    </action-method>
     
     <action-record name="action-product-record-set-barcode-type-config" model="com.axelor.apps.base.db.Product">
     	<field name="barcodeTypeConfig" expr="eval: __config__.app.getApp('base').getBarcodeTypeConfig()" if="__config__.app.getApp('base').getActivateBarCodeGeneration()"/>
@@ -401,7 +408,7 @@
 		<action name="action-product-attrs-cost-price-variant"/>
 		<action name="action-product-attrs-enable-product-company-list"/>
     </action-group>
-
+    
 	<action-group name="action-product-group-cost-type-select-onchange">
 		<action name="action-product-attrs-update-cost-price"/>
 		<action name="action-product-record-compute-sale-price"/>

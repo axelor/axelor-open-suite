@@ -34,7 +34,8 @@
 			<field name="avgPrice" readonly="true"/>
 			<field name="company.currency" title="Company currency" readonly="true"/>
 			<field name="autoUpdateSalePrice"/>
-			<field name="lastPurchasePrice" hidden="true"/>
+			<field name="lastPurchasePrice" readonly="true" colSpan="3"/>
+			<field name="lastPurchaseCurrency" readonly="true" colSpan="3"/>
 		</panel>
 	</form> 
 	
@@ -52,6 +53,7 @@
   <action-attrs name="action-product-company-attrs-scale-and-precision">
 		<attribute name="scale" for="salePrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="purchasePrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="lastPurchasePrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="costPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="avgPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 	</action-attrs>

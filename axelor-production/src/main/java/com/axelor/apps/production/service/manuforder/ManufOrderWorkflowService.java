@@ -218,24 +218,32 @@ public class ManufOrderWorkflowService {
     // update price in product
     Product product = manufOrder.getProduct();
     Company company = manufOrder.getCompany();
-    if (((Integer) productCompanyService.get(product, "realOrEstimatedPriceSelect", company)) == ProductRepository.PRICE_METHOD_FORECAST) {
-	  productCompanyService.set(product, "lastProductionPrice", manufOrder.getBillOfMaterial().getCostPrice(), company);
-    } else if (((Integer) productCompanyService.get(product, "realOrEstimatedPriceSelect", company)) == ProductRepository.PRICE_METHOD_REAL) {
+    if (((Integer) productCompanyService.get(product, "realOrEstimatedPriceSelect", company))
+        == ProductRepository.PRICE_METHOD_FORECAST) {
+      productCompanyService.set(
+          product, "lastProductionPrice", manufOrder.getBillOfMaterial().getCostPrice(), company);
+    } else if (((Integer) productCompanyService.get(product, "realOrEstimatedPriceSelect", company))
+        == ProductRepository.PRICE_METHOD_REAL) {
       BigDecimal costPrice = computeOneUnitProductionPrice(manufOrder);
       if (costPrice.signum() != 0) {
-    	  productCompanyService.set(product, "lastProductionPrice", costPrice, company);
+        productCompanyService.set(product, "lastProductionPrice", costPrice, company);
       }
     } else {
       // default value is forecast
-      productCompanyService.set(product, "realOrEstimatedPriceSelect", ProductRepository.PRICE_METHOD_FORECAST, company);
-      productCompanyService.set(product, "lastProductionPrice", manufOrder.getBillOfMaterial().getCostPrice(), company);
+      productCompanyService.set(
+          product, "realOrEstimatedPriceSelect", ProductRepository.PRICE_METHOD_FORECAST, company);
+      productCompanyService.set(
+          product, "lastProductionPrice", manufOrder.getBillOfMaterial().getCostPrice(), company);
     }
 
     // update costprice in product
-    if (((Integer) productCompanyService.get(product, "costTypeSelect", company)) == ProductRepository.COST_TYPE_LAST_PRODUCTION_PRICE) {
-      productCompanyService.set(product, "costPrice", 
-    		  (BigDecimal) productCompanyService.get(product, "lastProductionPrice", company)
-    		  , company);
+    if (((Integer) productCompanyService.get(product, "costTypeSelect", company))
+        == ProductRepository.COST_TYPE_LAST_PRODUCTION_PRICE) {
+      productCompanyService.set(
+          product,
+          "costPrice",
+          (BigDecimal) productCompanyService.get(product, "lastProductionPrice", company),
+          company);
       if ((Boolean) productCompanyService.get(product, "autoUpdateSalePrice", company)) {
         Beans.get(ProductService.class).updateSalePrice(product, company);
       }

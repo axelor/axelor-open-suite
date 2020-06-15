@@ -34,7 +34,8 @@ import java.util.List;
 
 public interface TeamTaskBusinessProjectService extends TeamTaskProjectService {
 
-  TeamTask create(SaleOrderLine saleOrderLine, Project project, User assignedTo) throws AxelorException ;
+  TeamTask create(SaleOrderLine saleOrderLine, Project project, User assignedTo)
+      throws AxelorException;
 
   TeamTask create(TaskTemplate template, Project project, LocalDateTime date, BigDecimal qty);
 
@@ -48,10 +49,11 @@ public interface TeamTaskBusinessProjectService extends TeamTaskProjectService {
   List<InvoiceLine> createInvoiceLine(Invoice invoice, TeamTask teamTask, int priority)
       throws AxelorException;
 
-  TeamTask computeDefaultInformation(TeamTask teamTask) throws AxelorException ;
+  TeamTask computeDefaultInformation(TeamTask teamTask) throws AxelorException;
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  TeamTask updateTask(TeamTask teamTask, AppBusinessProject appBusinessProject) throws AxelorException ;
+  TeamTask updateTask(TeamTask teamTask, AppBusinessProject appBusinessProject)
+      throws AxelorException;
 
   TeamTask resetTeamTaskValues(TeamTask teamTask);
 }

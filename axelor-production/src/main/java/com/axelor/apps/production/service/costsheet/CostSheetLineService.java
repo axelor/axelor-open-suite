@@ -48,7 +48,8 @@ public interface CostSheetLineService {
       Product product, Unit unit, BigDecimal consumptionQty);
 
   public CostSheetLine createResidualProductCostSheetLine(
-      Product product, Unit unit, BigDecimal consumptionQty, Company company) throws AxelorException;
+      Product product, Unit unit, BigDecimal consumptionQty, Company company)
+      throws AxelorException;
 
   public CostSheetLine createConsumedProductCostSheetLine(
       Company company,

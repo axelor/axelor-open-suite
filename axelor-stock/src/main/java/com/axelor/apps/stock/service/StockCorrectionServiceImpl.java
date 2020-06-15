@@ -44,7 +44,7 @@ import java.util.Map;
 public class StockCorrectionServiceImpl implements StockCorrectionService {
 
   @Inject private StockConfigService stockConfigService;
-  
+
   @Inject private ProductCompanyService productCompanyService;
 
   @Override
@@ -147,8 +147,9 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
     stockMove.setOriginId(stockCorrection.getId());
     stockMove.setStockCorrectionReason(stockCorrection.getStockCorrectionReason());
 
-    BigDecimal productCostPrice = (BigDecimal) productCompanyService.get(product, "costPrice", company);
-    
+    BigDecimal productCostPrice =
+        (BigDecimal) productCompanyService.get(product, "costPrice", company);
+
     StockMoveLine stockMoveLine =
         stockMoveLineService.createStockMoveLine(
             product,

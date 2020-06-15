@@ -161,7 +161,8 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
   }
 
   public CostSheetLine createResidualProductCostSheetLine(
-      Product product, Unit unit, BigDecimal consumptionQty, Company company) throws AxelorException {
+      Product product, Unit unit, BigDecimal consumptionQty, Company company)
+      throws AxelorException {
 
     if (appProductionService.getAppProduction().getSubtractProdResidualOnCostSheet()) {
       consumptionQty = consumptionQty.negate();
@@ -178,8 +179,8 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
             .multiply(consumptionQty);
 
     return this.createCostSheetLine(
-		(String) productCompanyService.get(product, "name", company),
-		(String) productCompanyService.get(product, "code", company),
+        (String) productCompanyService.get(product, "name", company),
+        (String) productCompanyService.get(product, "code", company),
         0,
         consumptionQty,
         costPrice,
@@ -306,20 +307,27 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
 
       BigDecimal shippingCoef =
           shippingCoefService.getShippingCoef(
-              product, (Partner) productCompanyService.get(product, "defaultSupplierPartner", company), company, new BigDecimal(9999999));
+              product,
+              (Partner) productCompanyService.get(product, "defaultSupplierPartner", company),
+              company,
+              new BigDecimal(9999999));
 
-      price = ((BigDecimal) productCompanyService.get(product, "purchasePrice", company)).multiply(shippingCoef);
+      price =
+          ((BigDecimal) productCompanyService.get(product, "purchasePrice", company))
+              .multiply(shippingCoef);
 
       price =
           currencyService.getAmountCurrencyConvertedAtDate(
-        		  (Currency) productCompanyService.get(product, "purchaseCurrency", company),
+              (Currency) productCompanyService.get(product, "purchaseCurrency", company),
               companyCurrency,
               price,
               appProductionService.getTodayDate());
 
       if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
-    	@SuppressWarnings("unchecked")
-		List<SupplierCatalog> supplierCatalogList = (List<SupplierCatalog>) productCompanyService.get(product, "supplierCatalogList", company);
+        @SuppressWarnings("unchecked")
+        List<SupplierCatalog> supplierCatalogList =
+            (List<SupplierCatalog>)
+                productCompanyService.get(product, "supplierCatalogList", company);
         for (SupplierCatalog supplierCatalog : supplierCatalogList) {
           if (BigDecimal.ZERO.compareTo(supplierCatalog.getPrice()) < 0) {
             price = supplierCatalog.getPrice();

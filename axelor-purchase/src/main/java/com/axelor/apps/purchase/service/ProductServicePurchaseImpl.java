@@ -38,7 +38,13 @@ public class ProductServicePurchaseImpl extends ProductServiceImpl {
       AppBaseService appBaseService,
       ProductRepository productRepo,
       ProductCompanyService productCompanyService) {
-    super(productVariantService, productVariantRepo, sequenceService, appBaseService, productRepo, productCompanyService);
+    super(
+        productVariantService,
+        productVariantRepo,
+        sequenceService,
+        appBaseService,
+        productRepo,
+        productCompanyService);
   }
 
   @Override

@@ -56,7 +56,8 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
       TeamTask parent,
       LocalDateTime startDate,
       BigDecimal qty,
-      SaleOrderLine saleOrderLine) throws AxelorException {
+      SaleOrderLine saleOrderLine)
+      throws AxelorException {
     List<TeamTask> tasks = new ArrayList<>();
     Product product = saleOrderLine.getProduct();
 
@@ -72,7 +73,8 @@ public class ProductTaskTemplateServiceImpl implements ProductTaskTemplateServic
         task.setProduct(product);
         task.setQuantity(!template.getIsUniqueTaskForMultipleQuantity() ? BigDecimal.ONE : qty);
         task.setUnit(product.getUnit());
-        task.setUnitPrice((BigDecimal) productCompanyService.get(product, "salePrice", project.getCompany()));
+        task.setUnitPrice(
+            (BigDecimal) productCompanyService.get(product, "salePrice", project.getCompany()));
         task.setExTaxTotal(task.getUnitPrice().multiply(task.getQuantity()));
         if (saleOrderLine.getSaleOrder().getToInvoiceViaTask()) {
           task.setToInvoice(true);
