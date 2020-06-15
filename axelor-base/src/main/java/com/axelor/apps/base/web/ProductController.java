@@ -63,11 +63,6 @@ public class ProductController {
     }
   }
 
-  public void updateProductCompanyList(ActionRequest request, ActionResponse response) {
-    Product product = request.getContext().asType(Product.class);
-    response.setReload(Beans.get(ProductService.class).updateProductCompanyList(product));
-  }
-
   public void fillProductCompanyList(ActionRequest request, ActionResponse response) {
     Product product = request.getContext().asType(Product.class);
     List<Company> companyList = Beans.get(CompanyRepository.class).all().fetch();
