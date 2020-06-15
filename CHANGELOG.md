@@ -20,6 +20,7 @@
 - Account: Fix incomplete sequences in english data init.
 - Product form: fix typo in help message.
 - Inventory: fix error on stock location select when company is not filled.
+- Stock move : Fix copy still being invoiced
 
 ## [5.1.15] - 2020-03-23
 ## Improvements

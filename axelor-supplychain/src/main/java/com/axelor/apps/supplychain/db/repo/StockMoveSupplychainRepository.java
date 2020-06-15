@@ -35,6 +35,8 @@ public class StockMoveSupplychainRepository extends StockMoveManagementRepositor
       }
     }
     copy.setReservationDateTime(null);
+    copy.setInvoice(null);
+    copy.setOriginTypeSelect(null);
 
     return copy;
   }
