@@ -85,6 +85,7 @@ public class ManufOrderWorkflowService {
   protected ManufOrderRepository manufOrderRepo;
 
   @Inject ProductionConfigRepository productionConfigRepo;
+  @Inject AppBaseService appBaseService;
 
   @Inject
   public ManufOrderWorkflowService(
@@ -167,7 +168,6 @@ public class ManufOrderWorkflowService {
     }
 
     for (ManufOrder manufOrder : manufOrderList) {
-      // manufOrder.setPlannedStartDateT(this.computePlannedStartDateT(manufOrder));
       if (manufOrder.getPlannedEndDateT() == null) {
         manufOrder.setPlannedEndDateT(this.computePlannedEndDateT(manufOrder));
       }
@@ -654,16 +654,19 @@ public class ManufOrderWorkflowService {
     Beans.get(PurchaseOrderService.class).computePurchaseOrder(purchaseOrder);
     manufOrder.setPurchaseOrder(purchaseOrder);
 
-    Beans.get(ManufOrderRepository.class).save(manufOrder);
+    manufOrderRepo.save(manufOrder);
   }
 
   @Transactional(rollbackOn = {Exception.class})
   public void merge(List<Long> ids) throws AxelorException {
+    if (!canMerge(ids)) {
+      throw new AxelorException(
+          ManufOrder.class,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.MANUF_ORDER_NO_GENERATION));
+    }
     List<ManufOrder> manufOrderList =
-        Beans.get(ManufOrderRepository.class)
-            .all()
-            .filter("self.id in (" + Joiner.on(",").join(ids) + ")")
-            .fetch();
+        manufOrderRepo.all().filter("self.id in (" + Joiner.on(",").join(ids) + ")").fetch();
 
     /** Init all the necessary values to create the new Manuf Order */
     Product product = manufOrderList.get(0).getProduct();
@@ -683,7 +686,7 @@ public class ManufOrderWorkflowService {
     ManufOrder mergedManufOrder = new ManufOrder();
 
     for (ManufOrder manufOrder : manufOrderList) {
-      manufOrder.setStatusSelect(ManufOrderRepository.STATUS_FUSIONNED);
+      manufOrder.setStatusSelect(ManufOrderRepository.STATUS_MERGED);
 
       manufOrder.setManufOrderMergeResult(mergedManufOrder);
       for (ProductionOrder productionOrder : manufOrder.getProductionOrderSet()) {
@@ -692,7 +695,7 @@ public class ManufOrderWorkflowService {
       for (SaleOrder saleOrder : manufOrder.getSaleOrderSet()) {
         mergedManufOrder.addSaleOrderSetItem(saleOrder);
       }
-      /**
+      /*
        * If unit are the same, then add the qty If not, convert the unit and get the converted qty
        */
       if (manufOrder.getUnit().equals(unit)) {
@@ -704,7 +707,7 @@ public class ManufOrderWorkflowService {
                     manufOrder.getUnit(),
                     unit,
                     manufOrder.getQty(),
-                    AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                    appBaseService.getNbDecimalDigitForQty(),
                     null);
         qty = qty.add(qtyConverted);
       }
@@ -713,7 +716,7 @@ public class ManufOrderWorkflowService {
       }
     }
 
-    /** Update the created manuf order */
+    /* Update the created manuf order */
     mergedManufOrder.setStatusSelect(ManufOrderRepository.STATUS_DRAFT);
     mergedManufOrder.setProduct(product);
     mergedManufOrder.setUnit(unit);
@@ -727,27 +730,24 @@ public class ManufOrderWorkflowService {
 
     AppProductionService appProductionService = Beans.get(AppProductionService.class);
 
-    /**
+    /*
      * Check the config to see if you directly plan the created manuf order or just prefill the
      * opertations
      */
     if (appProductionService.isApp("production")
-        && appProductionService.getAppProduction().getIsAutomaticallyPlanified()) {
-      Beans.get(ManufOrderWorkflowService.class).plan(mergedManufOrder);
+        && appProductionService.getAppProduction().getIsAutomaticallyPlanned()) {
+      plan(mergedManufOrder);
     } else {
       ManufOrderService moService = Beans.get(ManufOrderService.class);
       moService.preFillOperations(mergedManufOrder);
     }
 
-    Beans.get(ManufOrderRepository.class).save(mergedManufOrder);
+    manufOrderRepo.save(mergedManufOrder);
   }
 
   public boolean canMerge(List<Long> ids) {
     List<ManufOrder> manufOrderList =
-        Beans.get(ManufOrderRepository.class)
-            .all()
-            .filter("self.id in (" + Joiner.on(",").join(ids) + ")")
-            .fetch();
+        manufOrderRepo.all().filter("self.id in (" + Joiner.on(",").join(ids) + ")").fetch();
 
     // I check if all the status of the manuf order in the list are Draft or
     // Planned. If not i can return false
@@ -773,6 +773,7 @@ public class ManufOrderWorkflowService {
     if (oneWorkShopIsNull) {
       return false;
     }
+
     // I check if all the stockLocation are the same. If not i return false
     StockLocation stockLocation = manufOrderList.get(0).getWorkshopStockLocation();
     boolean allSameLocation =
@@ -782,6 +783,20 @@ public class ManufOrderWorkflowService {
                     x.getWorkshopStockLocation() != null
                         && x.getWorkshopStockLocation().equals(stockLocation));
     if (!allSameLocation) {
+      return false;
+    }
+
+    // Check if one of the billOfMaterial is null
+    boolean oneBillOfMaterialIsNull =
+        manufOrderList.stream().anyMatch(x -> x.getBillOfMaterial() == null);
+    if (oneBillOfMaterialIsNull) {
+      return false;
+    }
+
+    // Check if one of the billOfMaterial has his version equal to 1
+    boolean oneBillOfMaterialWithFirstVersion =
+        manufOrderList.stream().anyMatch(x -> x.getBillOfMaterial().getVersionNumber() == 1);
+    if (!oneBillOfMaterialWithFirstVersion) {
       return false;
     }
 

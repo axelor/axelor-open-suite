@@ -464,25 +464,23 @@ public class ManufOrderController {
   public void checkMergeValues(ActionRequest request, ActionResponse response) {
     try {
       if (request.getContext().get("id") != null) {
-        response.setError(I18n.get("Please select more than one OF"));
+        response.setError(I18n.get(IExceptionMessage.MANUF_ORDER_ONLY_ONE_SELECTED));
       } else {
         Object _ids = request.getContext().get("_ids");
         if (!ObjectUtils.isEmpty(_ids)) {
           List<Long> ids = (List<Long>) _ids;
           if (ids.size() < 2) {
-            response.setError(I18n.get("Please select more than one OF"));
+            response.setError(I18n.get(IExceptionMessage.MANUF_ORDER_ONLY_ONE_SELECTED));
           } else {
             boolean canMerge = Beans.get(ManufOrderWorkflowService.class).canMerge(ids);
             if (canMerge) {
-              response.setAlert(I18n.get("Are you sur you want to merge those manuf orders?"));
+              response.setAlert(I18n.get(IExceptionMessage.MANUF_ORDER_MERGE_VALIDATION));
             } else {
-              response.setError(
-                  I18n.get(
-                      "The merge must concerns only manuf order with Draft or Planned status, with the same products and same workshop stock location and will all bill of material compatibles."));
+              response.setError(I18n.get(IExceptionMessage.MANUF_ORDER_MERGE_ERROR));
             }
           }
         } else {
-          response.setError(I18n.get("Please select something to validate"));
+          response.setError(I18n.get(IExceptionMessage.MANUF_ORDER_NO_ONE_SELECTED));
         }
       }
 

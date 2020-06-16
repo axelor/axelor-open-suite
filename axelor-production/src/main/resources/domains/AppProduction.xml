@@ -35,7 +35,7 @@
 		<boolean name="manageMpsCharge" title="Manage Master Production Scheduling Charge"/>
 		<boolean name="enableToolManagement" title="Enable Tool Management"/>
 		
-		<boolean name="isAutomaticallyPlanified" title="Automatically planified after fusion"></boolean>
+		<boolean name="isAutomaticallyPlanned" title="Automatically plan after fusion" />
 
 		<track>
 			<field name="prodOrderMgtOnSO" on="UPDATE"/>

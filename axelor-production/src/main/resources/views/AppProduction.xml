@@ -32,7 +32,7 @@
 				<field name="barcodeTypeConfig" title="Barcode Type"/>
 			</panel>
 			<panel name="manufOrderPanel" title="Manuf order">
-				<field name="isAutomaticallyPlanified" title="Automatically planified after fusion" widget="boolean-switch"/>
+				<field name="isAutomaticallyPlanned" title="Automatically plan after fusion" widget="boolean-switch"/>
 			</panel>
 			<panel name="costSheetPanel" title="Cost sheet">
 				<field name="cycleUnit" form-view="unit-form" grid-view="unit-grid"/>

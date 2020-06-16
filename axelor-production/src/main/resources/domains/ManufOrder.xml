@@ -7,7 +7,7 @@
 
   <entity name="ManufOrder" lang="java">
   
-  	<many-to-one name="manufOrderMergeResult" ref="com.axelor.apps.production.db.ManufOrder" title="Manuf order merge result" />
+  	<many-to-one name="manufOrderMergeResult" ref="com.axelor.apps.production.db.ManufOrder" title="Manufacturing order merge result" />
 
   	<many-to-many name="productionOrderSet" ref="com.axelor.apps.production.db.ProductionOrder" title="Production orders"/>
   	
@@ -82,7 +82,7 @@
 		public static final int STATUS_IN_PROGRESS = 4;
 		public static final int STATUS_STANDBY = 5;
 		public static final int STATUS_FINISHED = 6;
-		public static final int STATUS_FUSIONNED = 7;
+		public static final int STATUS_MERGED = 7;
 
 		//TYPE SELECT
 		public static final int TYPE_PRODUCTION = 1;

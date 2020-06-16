@@ -13,7 +13,7 @@
 		<option value="4">In progress</option>
 		<option value="5">Standby</option>
 		<option value="6">Finished</option>	
-		<option value="7">Fusionned</option>	
+		<option value="7">Merged</option>	
 	</selection>
 
     <selection name="production.bill.of.material.status.select">

@@ -75,6 +75,18 @@ public interface IExceptionMessage {
   static final String MANUF_ORDER_1 = /*$$(*/
       "Please select the Manufacturing order(s) to print." /*)*/;
 
+  static final String MANUF_ORDER_ONLY_ONE_SELECTED = /*$$(*/
+      "Please select more than one OF" /*)*/;
+
+  static final String MANUF_ORDER_MERGE_VALIDATION = /*$$(*/
+      "Are you sure you want to merge those manufacturing orders?" /*)*/;
+
+  static final String MANUF_ORDER_NO_ONE_SELECTED = /*$$(*/
+      "Please select something to merge" /*)*/;
+
+  static final String MANUF_ORDER_MERGE_ERROR = /*$$(*/
+      "The merge must concern only manuf order with Draft or Planned status, with the same products and same workshop stock location and will all bill of material compatibles." /*)*/;
+
   /** Operation Order Controller */
   static final String OPERATION_ORDER_1 = /*$$(*/
       "Please select the Operation order(s) to print." /*)*/;
@@ -134,7 +146,7 @@ public interface IExceptionMessage {
   String WORKCENTER_NO_MACHINE = /*$$(*/ "Please fill the machine in the workcenter %s." /*)*/;
 
   String NO_WORK_CENTER_GROUP = /*$$(*/
-      "Please fill the work center group will at least one work center." /*)*/;
+      "Please fill the work center group with at least one work center." /*)*/;
 
   /** Raw Material RequirementService */
   String RAW_MATERIAL_REQUIREMENT_NO_SEQUENCE = /*$$(*/
