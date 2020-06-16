@@ -51,6 +51,13 @@
                 <field name="enableMultiCompany" widget="boolean-switch" onChange="action-base-validate-multi-company-boolean"/>
                 <field name="storeStreets" widget="boolean-switch" />
                 <field name="isSharedAddress" widget="boolean-switch" />
+                <panel name="printingsPanel" title="Printings" colSpan="12">
+                    <field name="isRegroupProductsOnPrintings" widget="boolean-switch" required="true" colSpan="3" help="Enable the possibility to group lines by product on generated printing documents (sale orders, purchase orders, stock moves, invoices)"/>
+                    <field name="regroupProductsTypeSelect" widget="MultiSelect" showIf="isRegroupProductsOnPrintings" requiredIf="isRegroupProductsOnPrintings" colSpan="3"/>
+                    <field name="regroupProductsLevelSelect" showIf="isRegroupProductsOnPrintings" requiredIf="isRegroupProductsOnPrintings" colSpan="3"/>
+                    <field name="regroupProductsLabelServices" showIf="isRegroupProductsOnPrintings &amp;&amp; regroupProductsLevelSelect == 'global' &amp;&amp; regroupProductsTypeSelect.indexOf('services') !== -1" colspan="6" />
+                    <field name="regroupProductsLabelProducts" showIf="isRegroupProductsOnPrintings &amp;&amp; regroupProductsLevelSelect == 'global' &amp;&amp; regroupProductsTypeSelect.indexOf('products') !== -1" colspan="6" />
+                </panel>
 			</panel>
 		    <panel name="interfacesPanel" title="Interfaces"  colSpan="12">
 				<panel name="mapPanel" title="Mapping"  colSpan="12">

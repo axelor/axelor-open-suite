@@ -72,6 +72,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
+
+import org.apache.xml.resolver.helpers.Debug;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -170,9 +172,15 @@ public class SaleOrderController {
 
       } else if (context.get("id") != null) {
 
-        SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+        SaleOrder saleOrder = Beans.get(SaleOrderRepository.class)
+                .find(Long.parseLong(context.get("id").toString()));
         title = Beans.get(SaleOrderService.class).getFileName(saleOrder);
-        fileLink = saleOrderPrintService.printSaleOrder(saleOrder, proforma, format);
+        fileLink = saleOrderPrintService.printSaleOrder(
+            saleOrder, 
+            proforma, 
+            format
+        );
+        response.setCanClose(true);
 
         logger.debug("Printing " + title);
       } else {

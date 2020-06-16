@@ -566,6 +566,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     invoiceGenerator.populate(
         invoice, this.createInvoiceLines(invoice, saleOrderLineList, qtyToInvoiceMap));
     invoice.setAddressStr(saleOrder.getMainInvoicingAddressStr());
+    invoice.setGroupProductsOnPrintings(saleOrder.getClientPartner().getGroupProductsOnPrintings());
 
     return invoice;
   }

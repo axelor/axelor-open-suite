@@ -472,6 +472,7 @@
 
 				<panel name="settingsPanel" title="Settings" colSpan="12">
 					<field name="language" colSpan="6" canEdit="false" />
+	        <field name="groupProductsOnPrintings" showIf="(isCustomer || isSupplier)" if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()" widget="boolean-switch" colSpan="12"/>
 					<panel name="assignedToPanel" title="Assigned to" colSpan="12">
 						<field name="user" colSpan="6" form-view="user-form"
 							onSelect="action-partner-attrs-user-group" grid-view="user-grid"

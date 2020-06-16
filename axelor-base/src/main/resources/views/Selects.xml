@@ -143,6 +143,17 @@
 			value="https://sdw-wsrest.ecb.europa.eu/service/data/EXR/D.%s+%s.EUR.SP00.A?startPeriod=%s&amp;endPeriod=%s">ECB</option>
 	</selection>
 
+	<selection name="base.app.base.regroup.products.type.select">
+    <option value="services">Services</option>
+    <option value="products">Products</option>
+  </selection>
+
+  <selection name="base.app.base.regroup.products.level.select">
+    <option value="global">Global</option>
+    <option value="category">Category</option>
+  </selection>
+
+
 	<selection name="base.price.list.type.select">
 		<option value="1">Sale</option>
 		<option value="2">Purchase</option>

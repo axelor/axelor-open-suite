@@ -321,7 +321,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
               invoice,
               InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE,
               ReportSettings.FORMAT_PDF,
-              null);
+			  null);
     }
   }
 

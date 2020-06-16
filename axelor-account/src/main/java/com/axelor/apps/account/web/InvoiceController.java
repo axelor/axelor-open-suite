@@ -350,7 +350,8 @@ public class InvoiceController {
                     false,
                     format,
                     reportType,
-                    locale);
+                    locale
+                );
         title = I18n.get("Invoice");
         response.setCanClose(true);
       } else {
@@ -358,7 +359,6 @@ public class InvoiceController {
             TraceBackRepository.CATEGORY_MISSING_FIELD, I18n.get(IExceptionMessage.INVOICE_3));
       }
       response.setView(ActionView.define(title).add("html", fileLink).map());
-      response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -380,7 +380,12 @@ public class InvoiceController {
               .add(
                   "html",
                   Beans.get(InvoicePrintService.class)
-                      .printInvoice(invoice, true, "pdf", reportType, null))
+                  .printInvoice(
+                    invoice, 
+                    true, 
+                    "pdf", 
+                    reportType, 
+                    null))             
               .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);

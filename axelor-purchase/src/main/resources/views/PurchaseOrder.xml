@@ -78,10 +78,10 @@
 
 	<form name="purchase-order-form" title="Supplier RFQ/PO" model="com.axelor.apps.purchase.db.PurchaseOrder" onLoad="action-group-purchase-order-on-load-actions"
 	  onNew="action-group-purchase-order-on-new-actions" >
+		<toolbar>
+			<button name="reportsBtn" title="Reports" icon="fa-print" hideIf="supplierPartner == null" readonlyIf="!id" onClick="save,action-purchase-order-method-show-purchase-order"/>
+		</toolbar>
 		<menubar>
-            <menu name="purchaseOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-			  <item name="printItem" title="Print" action="save,action-purchase-order-method-show-purchase-order" hideIf="supplierPartner == null"/>
-			</menu>
 			<menu name="purchaseOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
 			  <item name="sendEmailItem"  title="Send email" action="save,action-send-by-email-with-template" hideIf="supplierPartner == null"/>
 			  <item name="cancelReceiptItem" title="Cancel receipt" showIf="statusSelect &gt;= 3" action="save,action-purchase-order-method-cancel-receipt" hideIf="supplierPartner == null"/>
@@ -160,6 +160,7 @@
 			</panel>
 			<panel name="printingPanel" title="Printing">
 				<field name="printingSettings" onSelect="action-purchase-order-method-filter-printing-settings" canEdit="false"/>
+                <field name="groupProductsOnPrintings" if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()" colSpan="6"/>
 				<field name="displayPriceOnQuotationRequest" colSpan="12"/>
 				<field name="priceRequest" hideIf="displayPriceOnQuotationRequest" colSpan="12" x-height="5"/>
 			</panel>
@@ -405,6 +406,7 @@
 		<action name="action-purchase-order-attrs-interco"/>
 		<action name="action-purchase-order-attrs-external-reference"/>
 		<action name="action-purchase-order-record-load-trading-name-config"/>
+		<action name="action-purchase-order-record-set-group-product-on-printing"/>
 	</action-group>
 
     <action-group name="action-group-purchase-order-company-change-actions">
@@ -435,6 +437,7 @@
 		<action name="action-purchase-order-method-fill-price-list"/>
 		<action name="action-purchase-order-attrs-interco"/>
 		<action name="action-purchase-order-record-interco"/>
+		<action name="action-purchase-order-record-set-group-product-on-printing"/>
 	</action-group>
 	
 	<action-group name="action-group-purchase-order-cancel">
@@ -514,6 +517,10 @@
     	<field name="notes" expr="eval: supplierPartner?.purchaseOrderComments"/>
     	<field name="stockLocation" expr="call: com.axelor.apps.stock.service.PartnerStockSettingsService:getDefaultStockLocation(supplierPartner, company)" if="__config__.app.isApp('supplychain')"/>
  	</action-record>
+
+    <action-record name="action-purchase-order-record-set-group-product-on-printing" model="com.axelor.apps.purchase.db.PurchaseOrder">
+    	<field name="groupProductsOnPrintings" expr="eval: supplierPartner?.groupProductsOnPrintings" if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()" />
+    </action-record>
 
 	<action-record name="action-purchase-order-record-payment-mode" model="com.axelor.apps.purchase.db.PurchaseOrder">
 		<field name="paymentMode" expr="eval: supplierPartner?.outPaymentMode" if="supplierPartner?.outPaymentMode != null"/>
