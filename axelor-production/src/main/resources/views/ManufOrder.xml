@@ -6,6 +6,7 @@
   <grid name="manuf-order-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq">
 		<toolbar>
 			<button name="printBtn" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
+			<button name="mergeBtn" title="Merge" icon="fa-object-ungroup" onClick="action-manuf-order-group-merge" />
 		</toolbar>
 		<hilite color="danger" if="prioritySelect == 4"/>
 		<hilite color="warning" if="prioritySelect == 3"/>
@@ -123,7 +124,8 @@
 			<field name="product.economicManufOrderQty" colSpan="3"/>
 			<field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
 			<field name="clientPartner" form-view="partner-form" grid-view="partner-grid" domain="self.isCustomer=true AND :company member of self.companySet" onChange="action-manuf-order-atts-sale-order-onchange-client-partner" canEdit="false"/>
-			<field name="saleOrder" form-view="sale-order-form" grid-view="sale-order-grid" onSelect="action-manuf-order-attrs-sale-order-onselect" onChange="action-manuf-order-record-client-partner-onchange-sale-order" canEdit="false"/>
+			<field name="saleOrderSet" widget="TagSelect" form-view="sale-order-form" grid-view="sale-order-grid" onSelect="action-manuf-order-attrs-sale-order-onselect"  canEdit="false"/>
+			<field name="manufOrderMergeResult" showIf="manufOrderMergeResult" form-view="manuf-order-form" grid-view="manuf-order-grid" canNew="false" canEdit="false" canView="true"></field>
 			<field name="purchaseOrder" form-view="purchase-order-form" grid-view="purchase-order-grid" canEdit="false" canSelect="false" showIf="false"/>
 			<field name="isConsProOnOperation" hidden="true"/>
 			<field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice" if-module="axelor-business-production" showIf="__config__.app.getApp('production').getManageBusinessProduction()" />
@@ -200,6 +202,9 @@
                 <field name="costPrice" readonly="true"/>
                 <field name="costSheetList" colSpan="12" readonly="true" form-view="cost-sheet-bill-of-material-form" grid-view="cost-sheet-bill-of-material-grid"/>
 			</panel>
+			<panel-related name="productionOrderSetPanel" field="productionOrderSet"
+				readonly="true" colSpan="12" height="15" form-view="production-order-form"
+				grid-view="production-order-grid" />
 			<panel name="notePanel" title="Note">
 				<field name="note" colSpan="12" showTitle="false"/>
 				<panel name="moCommentFromSaleOrderPanel" title="MO's comment from sale order" colSpan="12">
@@ -210,7 +215,8 @@
 				<field name="billOfMaterial.prodResidualProductList" title="Residual products" colSpan="12" grid-view="prod-residual-product-grid" form-view="prod-residual-product-form"/>
 			</panel>
 		</panel-tabs>
-		
+		<panel-dashlet name="mergedManufOrderDashlet" readonly="true"
+				colSpan="12" action="action-manuf-order-view-merged-manuf-orders" />
 		<panel-mail name="mailPanel">
 		  <mail-messages limit="4" />
 		  <mail-followers />
@@ -530,6 +536,26 @@
 	   <alert message="The planned end date is inferior to the actual date"
 	       if="plannedEndDateT.isBefore(__config__.app.getTodayDateTime().toLocalDateTime())"/>
 	</action-validate>
+	
+	<action-group name="action-manuf-order-group-merge">
+		<action name="action-manuf-order-method-check-merge-values" />
+		<action name="action-manuf-order-method-generate-merge-manuf-order" />
+	</action-group>
+
+	<action-method name="action-manuf-order-method-check-merge-values" model="com.axelor.apps.production.db.ManufOrder">
+		<call class="com.axelor.apps.production.web.ManufOrderController" method="checkMergeValues" />
+	</action-method>
+
+	<action-method name="action-manuf-order-method-generate-merge-manuf-order" model="com.axelor.apps.production.db.ManufOrder">
+		<call class="com.axelor.apps.production.web.ManufOrderController" method="generateMergeManufOrder" />
+	</action-method>
+
+	<action-view name="action-manuf-order-view-merged-manuf-orders" title="Merged manuf order" model="com.axelor.apps.production.db.ManufOrder">
+		<view type="grid" name="manuf-order-grid" />
+		<view type="form" name="manuf-order-form" />
+		<view-param name="popup" value="true" />
+		<domain>self.statusSelect = 7 and self.manufOrderMergeResult = :id</domain>
+	</action-view>
 
   	<search-filters name="manuf-order-filters" model="com.axelor.apps.production.db.ManufOrder" title="Manufacturing order filters">
 		<filter title="Draft MOs">

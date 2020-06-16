@@ -1,0 +1,9 @@
+---
+title: "Manuf order: Add the possibility to merge manuf order"
+type: feature
+description: |
+	In manuf order, we can now merge manuf order into one.
+	For that we need to have the same product, workshop, and the draft or planned status.
+	We add a merged status.
+	On the merged manuf order we can see the list of manuf order that were merged.
+	On each of the manuf order that were merged, we can see the result of the fusion.

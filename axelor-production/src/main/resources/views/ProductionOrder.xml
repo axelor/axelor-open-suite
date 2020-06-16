@@ -38,7 +38,7 @@
         </panel>
 	<!--         <button name="generateSaleOrder" title="Generate sale order" colSpan="2" onClick="action-production-order-method-generate-sale-order" showIf="businessProject"/> -->
         <panel-tabs name="mainPanelTab">
-            <panel-related name="manufOrderListPanel" field="manufOrderList" colSpan="12" edit-window="blank" canNew="false" form-view="manuf-order-form">
+            <panel-related name="manufOrderListPanel" field="manufOrderSet" colSpan="12" edit-window="blank" canNew="false" form-view="manuf-order-form">
                 <field name="manufOrderSeq"/>
                 <field name="product" form-view="product-form" grid-view="product-grid"/>
                 <field name="qty"/>
@@ -105,7 +105,7 @@
     <action-view name="action-production-order-view-operation-order" title="Operation orders" model="com.axelor.apps.production.db.OperationOrder">
   		<view type="grid" name="operation-order-group-grid"/>
 		<view type="form" name="operation-order-form"/>
-  		<domain>self.manufOrder.productionOrder.id = :id</domain>
+  		<domain>:id member of self.manufOrder.productionOrderSet</domain>
   		<context name="id" expr="eval: id"/>
   	</action-view>
 

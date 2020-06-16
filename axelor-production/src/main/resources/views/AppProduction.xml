@@ -31,6 +31,9 @@
 			<panel name="barcodeTypeConfigPanel">
 				<field name="barcodeTypeConfig" title="Barcode Type"/>
 			</panel>
+			<panel name="manufOrderPanel" title="Manuf order">
+				<field name="isAutomaticallyPlanned" title="Automatically plan after fusion" widget="boolean-switch"/>
+			</panel>
 			<panel name="costSheetPanel" title="Cost sheet">
 				<field name="cycleUnit" form-view="unit-form" grid-view="unit-grid"/>
 				<field name="manageCostSheetGroup" widget="boolean-switch"/>

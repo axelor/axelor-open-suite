@@ -107,7 +107,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
 
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(IExceptionMessage.WORKCENTER_NO_MACHINE));
+        I18n.get(IExceptionMessage.NO_WORK_CENTER_GROUP));
   }
 
   @Transactional(rollbackOn = {Exception.class})

@@ -13,13 +13,13 @@
  	<many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner" title="Customer" />
 	<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale order" />
   	
-    <one-to-many name="manufOrderList" ref="com.axelor.apps.production.db.ManufOrder" mappedBy="productionOrder" title="Manufacturing orders" orderBy="prioritySelect"/>
+    <many-to-many name="manufOrderSet" ref="com.axelor.apps.production.db.ManufOrder" title="Manufacturing orders" orderBy="prioritySelect"/>
     
     <boolean name="isClosed" >
 	    <![CDATA[
-	    if(manufOrderList == null || manufOrderList.isEmpty())
+	    if(manufOrderSet == null || manufOrderSet.isEmpty())
 	      	return false;
-	   	for(ManufOrder mf : manufOrderList){
+	   	for(ManufOrder mf : manufOrderSet){
 	   		if(mf.getStatusSelect() != 2 && mf.getStatusSelect() != 6 )
 	   		   return false;
 	    }    
