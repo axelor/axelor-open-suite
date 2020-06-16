@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
-	<grid name="manuf-order-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq">
+  <grid name="manuf-order-grid" title="Manufacturing orders" model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq">
 		<toolbar>
 			<button name="printBtn" title="Print" icon="fa-print" onClick="action-manuf-order-method-print"/>
 			<button name="mergeBtn" title="Merge" icon="fa-object-ungroup" onClick="action-manuf-order-group-merge" />
@@ -86,18 +86,26 @@
 		onNew="action-manuf-order-group-onnew" onLoad="action-manuf-order-group-onload" width="large">
 <!--     TODO avec propagation -->
 		<menubar>
-			 <menu name="manufOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+            <menu name="manufOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
 	            <item name="printItem" title="Print" action="save,action-manuf-order-method-print" showIf="statusSelect > 1" />
 	            <item name="printProductionProcessItem" title="Print Production Process" action="save,action-production-process-method-print"  />
 	        </menu>
 		</menubar>
 		<panel name="mainPanel">
-			<panel name="detailsPanel" colSpan="8">
+		<panel name="detailsPanel" colSpan="8">
 			<field name="manufOrderSeq"  readonly="true" css="bold" colSpan="2"/>
 			<field name="prioritySelect" readonlyIf="statusSelect == 6" colSpan="2"/>
 			<field name="company" widget="SuggestBox" onChange="action-manuf-order-record-empty-workshop" canEdit="false" readonlyIf="statusSelect &gt; 1" colSpan="2" form-view="company-form" grid-view="company-grid"/>
 			<field name="workshopStockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="2" canEdit="false" onChange="action-manuf-order-record-workshop-onchange" readonlyIf="statusSelect &gt; 1" if="__config__.app.getApp('production').getManageWorkshop()" domain="self.company = :company and self.typeSelect = 1 and self.isWorkshop = true"/>
-			<field name="$viewerIsOutsourcing" showTitle="false" readonly="true" showIf="$readonly()" colSpan="2" depends="prodProcess.outsourcing" />
+			<field name="$viewerIsOutsourcing" showTitle="false" readonly="true" showIf="$readonly()" colSpan="2" depends="prodProcess.outsourcing">
+				<viewer>
+					<![CDATA[
+						<h4 class="text-right">
+							<span class="label label-default" style="background-color: #E0A83C; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.prodProcess.outsourcing" x-translate>Outsourced</span>
+						</h4>
+					]]>
+				</viewer>
+			</field>
 			<field name="$viewerIsPermanent" showTitle="false" colSpan="2" showIf="typeSelect == 2 &amp;&amp; $readonly()">
 				<viewer depends="typeSelect">
 					<![CDATA[
@@ -155,15 +163,10 @@
 					<field name="$totalRealDuration" title="Total Real Duration" type="long" readonly="true" widget="duration" x-seconds="true" x-big="true"/>
 				</panel>
 			</panel>
-			<panel name="stockMovesPanel" title="Stock moves" showIf="statusSelect &gt;= 3"
-				readonly="true">
-				<panel name="stockMoveListPanel" title="Moves In/Out"
-					readonlyIf="statusSelect == 6" colSpan="12">
-					<field name="inStockMoveList" form-view="stock-move-form"
-						grid-view="stock-move-manuf-order-grid" hideIf="isConsProOnOperation"
-						colSpan="12" />
-					<field name="outStockMoveList" form-view="stock-move-form"
-						grid-view="stock-move-manuf-order-grid" colSpan="12" />
+			<panel name="stockMovesPanel" title="Stock moves" showIf="statusSelect &gt;= 3" readonly="true">
+				<panel name="stockMoveListPanel" title="Moves In/Out" readonlyIf="statusSelect == 6" colSpan="12">
+					<field name="inStockMoveList" form-view="stock-move-form" grid-view="stock-move-manuf-order-grid" hideIf="isConsProOnOperation" colSpan="12"/>
+					<field name="outStockMoveList" form-view="stock-move-form" grid-view="stock-move-manuf-order-grid" colSpan="12"/>
 				</panel>
 				<panel name="productionWastePanel" title="Production waste" colSpan="12" showIf="statusSelect &gt;= 4">
 					<button name="generateWasteStockMoveBtn" title="Generate waste stock move" readonlyIf="wasteStockMove != null" onClick="save,action-manuf-order-method-generate-waste-stock-move"/>
@@ -195,7 +198,7 @@
 				</panel>
 			</panel>
 			<panel name="costPanel" title="Cost" showIf="statusSelect &gt; 3">
-				<button name="computeCostPriceBtn" title="Compute cost price" onClick="save,action-manuf-order-method-compute-cost-price"/>
+                <button name="computeCostPriceBtn" title="Compute cost price" onClick="save,action-manuf-order-method-compute-cost-price"/>
                 <field name="costPrice" readonly="true"/>
                 <field name="costSheetList" colSpan="12" readonly="true" form-view="cost-sheet-bill-of-material-form" grid-view="cost-sheet-bill-of-material-grid"/>
 			</panel>
@@ -215,12 +218,12 @@
 		<panel-dashlet name="mergedManufOrderDashlet" readonly="true"
 				colSpan="12" action="action-manuf-order-view-merged-manuf-orders" />
 		<panel-mail name="mailPanel">
-		 	<mail-messages limit="4" />
-		  	<mail-followers />
+		  <mail-messages limit="4" />
+		  <mail-followers />
 	  	</panel-mail>
-
+		
 	</form>
-
+	
 	<form title="Update planned quantities (Components and FP)" name="popup-manuf-order-form-update-planned-qty" model="com.axelor.apps.production.db.ManufOrder"
 		  onNew="action-manuf-order-attrs-scale-and-precision" onLoad="action-manuf-order-attrs-scale-and-precision">
 		<panel name="mainPanel">
@@ -236,14 +239,14 @@
 			<button name="okBtn" colSpan="4" title="OK" onClick="save,action-manuf-order-method-update-real-qty,close"/>
 		</panel>
 	</form>
-
+	
 	<form name="manuf-order-cancel-wizard-form" model="com.axelor.apps.production.db.ManufOrder" title="Cancellation confirmation" >
 		<panel name="mainPanel">
 			<field name="cancelReason" domain="self.applicationType = :_xApplicationType" colOffset="4" colSpan="4" widget="SuggestBox" canNew="false" canEdit="false" onChange="action-attrs-sale-other-reason"/>
 			<field name="cancelReasonStr" colOffset="4" colSpan="4" hidden="true"/>
 			<button name="cancelConfirmBtn" title="Confirm cancellation" onClick="action-manuf-order-group-cancel-confirm" colOffset="4" colSpan="4"/>
 		</panel>
-	</form>
+    </form>
 
 	<action-view name="action-manuf-order-update-planned-qty-popup-form-view" title="Update planned quantities (Components and FP)" model="com.axelor.apps.production.db.ManufOrder">
 		<view type="form" name="popup-manuf-order-form-update-planned-qty"/>
@@ -264,7 +267,7 @@
 		<view-param name="popup-save" value="false"/>
 		<context name="_showRecord" expr="eval: id"/>
 	</action-view>
-
+	
 	<action-view name="action-manuf-order-view-cancel" title="Cancellation" model="com.axelor.apps.production.db.ManufOrder">
 	  	<view type="form" name="manuf-order-cancel-wizard-form"/>
 	  	<view-param name="popup" value="reload"/>
@@ -296,56 +299,36 @@
 		<call class="com.axelor.apps.businessproduction.web.ManufOrderBusinessController" method="propagateIsToInvoice"/>
 	</action-method>
 
-	<action-record name="action-manuf-order-record-isConsProOnOperation" model="com.axelor.apps.production.db.ManufOrder">
+    <action-record name="action-manuf-order-record-isConsProOnOperation" model="com.axelor.apps.production.db.ManufOrder">
     	<field name="isConsProOnOperation" expr="eval: prodProcess?.isConsProOnOperation"/>
     </action-record>
-
+    
     <action-attrs name="action-manuf-order-attrs-isConsProOnOperation">
     	<attribute for="isConsProOnOperation" name="hidden" expr="eval: !(prodProcess?.isConsProOnOperation)"/>
     </action-attrs>
-
+    
     <action-attrs name="action-manuf-order-attrs-sale-order-onselect">
 	  <attribute if="clientPartner != null" name="domain" expr="self.clientPartner = :clientPartner AND self.statusSelect = 3" for="saleOrder"/>
 	  <attribute if="clientPartner == null" name="domain" expr="self.statusSelect = 3" for="saleOrder"/>
 	</action-attrs>
-
+	
 	<action-attrs name="action-manuf-order-attrs-set-unit">
 		<attribute name="value" for="unit" expr="eval: billOfMaterial.unit"/>
 	</action-attrs>
-
+	
 	<action-attrs name="action-manuf-order-atts-sale-order-onchange-client-partner">
 	  <attribute name="value" expr="eval:null" for="saleOrder" if="saleOrder?.clientPartner != clientPartner"/>
 	</action-attrs>
-
+	
     <action-attrs name="action-manuf-order-attrs-scale-and-precision">
     	<attribute name="scale" for="qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
 		<attribute name="scale" for="$qtyToUpdate" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
 		<attribute name="scale" for="product.economicManufOrderQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
 	</action-attrs>
 
-  	<action-record name="action-manuf-order-record-client-partner-onchange-sale-order" model="com.axelor.apps.production.db.ManufOrder">
-	  	<field name="clientPartner" expr="eval: saleOrder?.clientPartner"/>
-	  	<field name="moCommentFromSaleOrder" expr="eval: saleOrder?.productionNote"/>
-	</action-record>
-
-	<action-record name="action-manuf-order-default-record"	model="com.axelor.apps.production.db.ManufOrder">
-		<field name="statusSelect" expr="eval: 1" />
-		<field name="company" expr="eval:__user__.activeCompany" if="__user__.activeCompany != null" />
-		<field name="company" expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1" />
-		<field name="isPermanent" expr="eval: _createPermanent" />
-		<field name="qty" expr="eval: 0" if="_createPermanent" />
-		<field name="workshopStockLocation" expr="eval:__user__.workshopStockLocation" if="__config__.app.getApp('production').getManageWorkshop() &amp;&amp; __user__.workshopStockLocation != null" />
-	</action-record>
-
-	<action-record name="action-manuf-order-record-update-qty-from-prod-process" model="com.axelor.apps.production.db.ManufOrder">
-		<field name="qty" expr="eval: prodProcess.launchQty" if="prodProcess?.launchQty > 0" />
-		<field name="outsourcing" expr="eval: prodProcess?.outsourcing" />
-	</action-record>
-
-	<action-record name="action-manuf-order-on-change-bill-of-material" model="com.axelor.apps.production.db.ManufOrder">
-		<field name="product" expr="eval:billOfMaterial.product" if="billOfMaterial != null" />
-		<field name="qty" if="billOfMaterial != null" expr="eval: (billOfMaterial.prodProcess?.launchQty &amp;&amp; billOfMaterial.prodProcess.launchQty > 0) ? billOfMaterial.prodProcess.launchQty : billOfMaterial.qty" />
-		<field name="prodProcess" expr="eval:billOfMaterial.prodProcess" if="billOfMaterial != null" />
+    <action-record name="action-manuf-order-record-client-partner-onchange-sale-order" model="com.axelor.apps.production.db.ManufOrder">
+	  <field name="clientPartner" expr="eval: saleOrder?.clientPartner"/>
+	  <field name="moCommentFromSaleOrder" expr="eval: saleOrder?.productionNote"/>
 	</action-record>
     
     <action-record name="action-manuf-order-default-record" model="com.axelor.apps.production.db.ManufOrder">
@@ -364,7 +347,8 @@
 
     <action-record name="action-manuf-order-on-change-bill-of-material" model="com.axelor.apps.production.db.ManufOrder">
         <field name="product" expr="eval:billOfMaterial.product" if="billOfMaterial != null"/>
-        <field name="qty" if="billOfMaterial != null" expr="eval: (billOfMaterial.prodProcess?.launchQty &amp;&amp; billOfMaterial.prodProcess.launchQty > 0) ? billOfMaterial.prodProcess.launchQty : billOfMaterial.qty"/>
+        <field name="qty" if="billOfMaterial != null"
+					expr="eval: (billOfMaterial.prodProcess?.launchQty &amp;&amp; billOfMaterial.prodProcess.launchQty > 0) ? billOfMaterial.prodProcess.launchQty : billOfMaterial.qty"/>
         <field name="prodProcess" expr="eval:billOfMaterial.prodProcess" if="billOfMaterial != null"/>
     </action-record>
 
@@ -373,16 +357,16 @@
 	</action-record>
 
 	<action-record name="action-manuf-order-record-workshop-onchange" model="com.axelor.apps.production.db.ManufOrder">
-		<field name="prodProcess" expr="eval: null" />
-		<field name="billOfMaterial" expr="eval: null" />
+		<field name="prodProcess" expr="eval: null"/>
+		<field name="billOfMaterial" expr="eval: null"/>
 	</action-record>
 
 	<action-group name="action-manuf-order-group-prod-process-onchange">
-		<action name="action-manuf-order-attrs-isConsProOnOperation" />
-		<action name="action-manuf-order-record-isConsProOnOperation" />
-		<action name="action-manuf-order-record-update-qty-from-prod-process" />
-		<action name="action-production-attrs-set-outsourcing-value" />
-		<action name="action-production-attrs-hide-purchaseOrder" />
+    <action name="action-manuf-order-attrs-isConsProOnOperation"/>
+		<action name="action-manuf-order-record-isConsProOnOperation"/>
+		<action name="action-manuf-order-record-update-qty-from-prod-process"/>
+		<action name="action-production-attrs-set-outsourcing-value"/>
+		<action name="action-production-attrs-hide-purchaseOrder"/>
 	</action-group>
 	
 	<action-group name="action-manuf-order-group-onnew">
@@ -393,164 +377,166 @@
 
 	<action-group name="action-manuf-order-group-onload">
 		<action name="action-manuf-order-attrs-isConsProOnOperation"/>
-    	<action name="action-manuf-order-attrs-price-digits"/>
-    	<action name="action-manuf-order-attrs-scale-and-precision"/>
+    <action name="action-manuf-order-attrs-price-digits"/>
+    <action name="action-manuf-order-attrs-scale-and-precision"/>
 		<action name="action-production-attrs-hide-purchaseOrder"/>
 	</action-group>
 
 	<action-attrs name="action-production-attrs-hide-purchaseOrder" >
 	    <attribute name="hidden" for="purchaseOrder" expr="eval: !(outsourcing &amp;&amp; prodProcess?.generatePurchaseOrderOnMoPlanning)"/>
 	</action-attrs>
-
-	<action-attrs name="action-production-attrs-set-outsourcing-value">
-		<attribute name="value" for="outsourcing" expr="eval: prodProcess?.outsourcing" />
+	
+	<action-attrs name="action-production-attrs-set-outsourcing-value" >
+	    <attribute name="value" for="outsourcing" expr="eval: prodProcess?.outsourcing" />
 	</action-attrs>
 
 	<action-group name="action-manuf-order-group-finish">
-		<action name="action-businessproduction-manuf-order-method-check-timesheet" if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()" />
-		<action name="action-manuf-order-method-finish" />
+		<action name="action-businessproduction-manuf-order-method-check-timesheet" if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"/>
+		<action name="action-manuf-order-method-finish"/>
 	</action-group>
-
-	<action-group name="action-manuf-order-method-start-or-resume">
-		<action name="action-manuf-order-method-start" if="statusSelect == 3" />
-		<action name="action-manuf-order-method-resume" if="statusSelect == 5" />
-	</action-group>
+    
+    <action-group name="action-manuf-order-method-start-or-resume">
+    	<action name="action-manuf-order-method-start" if="statusSelect == 3"/>
+    	<action name="action-manuf-order-method-resume" if="statusSelect == 5"/>
+    </action-group>
 
 	<action-group name="action-manuf-order-group-onchange">
-		<action name="action-manuf-order-on-change-bill-of-material" />
-		<action name="action-manuf-order-attrs-isConsProOnOperation" />
-		<action name="action-manuf-order-record-isConsProOnOperation" />
-		<action name="action-manuf-order-reset" />
-		<action name="action-manuf-order-attrs-set-unit" if="billOfMaterial != null" />
-		<action name="action-production-attrs-set-outsourcing-value" />
-		<action name="action-production-attrs-hide-purchaseOrder" />
+		<action name="action-manuf-order-on-change-bill-of-material"/>
+        <action name="action-manuf-order-attrs-isConsProOnOperation"/>
+		<action name="action-manuf-order-record-isConsProOnOperation"/>
+        <action name="action-manuf-order-reset"/>
+        <action name="action-manuf-order-attrs-set-unit"  if="billOfMaterial != null"/>
+        <action name="action-production-attrs-set-outsourcing-value"/>
+		<action name="action-production-attrs-hide-purchaseOrder"/>
 	</action-group>
-
+	
 	<action-group name="action-manuf-order-group-cancel-confirm">
-		<action name="action-sale-order-cancel-reason-check" if="statusSelect > 3" />
-		<action name="action-manuf-order-method-cancel" />
+		<action name="action-sale-order-cancel-reason-check" if="statusSelect > 3"/>
+		<action name="action-manuf-order-method-cancel"/>
 	</action-group>
 
-	<action-method name="action-manuf-order-method-print">
-		<call class="com.axelor.apps.production.web.ManufOrderController" method="print" />
+    <action-method name="action-manuf-order-method-print">
+		<call class="com.axelor.apps.production.web.ManufOrderController" method="print"/>
 	</action-method>
 
 	<action-method name="action-production-process-method-print">
-		<call class="com.axelor.apps.production.web.ManufOrderController" method="printProdProcess" />
+		<call class="com.axelor.apps.production.web.ManufOrderController" method="printProdProcess"/>
 	</action-method>
-
-	<action-method name="action-manuf-order-method-start">
-		<call class="com.axelor.apps.production.web.ManufOrderController" method="start" />
-	</action-method>
-
-	<action-method name="action-manuf-order-method-pause">
-		<call class="com.axelor.apps.production.web.ManufOrderController" method="pause" />
-	</action-method>
-
-	<action-method name="action-manuf-order-method-resume">
-		<call class="com.axelor.apps.production.web.ManufOrderController" method="resume" />
-	</action-method>
-
-	<action-method name="action-manuf-order-method-finish">
-		<call class="com.axelor.apps.production.web.ManufOrderController" method="finish" />
-	</action-method>
-
-	<action-method name="action-manuf-order-method-cancel">
-		<call class="com.axelor.apps.production.web.ManufOrderController" method="cancel" />
-	</action-method>
-
-	<action-method name="action-manuf-order-method-plan">
-		<call class="com.axelor.apps.production.web.ManufOrderController" method="plan" />
-	</action-method>
+    
+    <action-method name="action-manuf-order-method-start">
+    	<call class="com.axelor.apps.production.web.ManufOrderController" method="start"/>
+    </action-method>
+    
+    <action-method name="action-manuf-order-method-pause">
+    	<call class="com.axelor.apps.production.web.ManufOrderController" method="pause"/>
+    </action-method>
+    
+    <action-method name="action-manuf-order-method-resume">
+    	<call class="com.axelor.apps.production.web.ManufOrderController" method="resume"/>
+    </action-method>
+    
+    <action-method name="action-manuf-order-method-finish">
+    	<call class="com.axelor.apps.production.web.ManufOrderController" method="finish"/>
+    </action-method>
+    
+    <action-method name="action-manuf-order-method-cancel">
+    	<call class="com.axelor.apps.production.web.ManufOrderController" method="cancel"/>
+    </action-method>
+    
+    <action-method name="action-manuf-order-method-plan">
+        <call class="com.axelor.apps.production.web.ManufOrderController" method="plan"/>
+    </action-method>
 
 	<action-method name="action-manuf-order-method-part-finish">
-		<call class="com.axelor.apps.production.web.ManufOrderController" method="partialFinish" />
+		<call class="com.axelor.apps.production.web.ManufOrderController" method="partialFinish"/>
 	</action-method>
 
-	<action-method name="action-manuf-order-method-pre-fill-operations">
-		<call class="com.axelor.apps.production.web.ManufOrderController" method="preFillOperations" />
-	</action-method>
-
-	<action-method name="action-manuf-order-method-generate-waste-stock-move">
-		<call class="com.axelor.apps.production.web.ManufOrderController" method="generateWasteStockMove" />
-	</action-method>
+    <action-method name="action-manuf-order-method-pre-fill-operations">
+		<call class="com.axelor.apps.production.web.ManufOrderController" method="preFillOperations"/>
+    </action-method>
+    
+    <action-method name="action-manuf-order-method-generate-waste-stock-move">
+    	<call class="com.axelor.apps.production.web.ManufOrderController" method="generateWasteStockMove"/>
+    </action-method>
 
 	<action-method name="action-manuf-order-method-update-planned-dates">
-		<call class="com.axelor.apps.production.web.ManufOrderController" method="updatePlannedDates" />
+    	<call class="com.axelor.apps.production.web.ManufOrderController" method="updatePlannedDates"/>
 	</action-method>
 
 	<action-method name="action-manuf-order-method-check-consumed-stock-move">
-		<call class="com.axelor.apps.production.web.ManufOrderController" method="checkConsumedStockMoveLineList" />
+		<call class="com.axelor.apps.production.web.ManufOrderController" method="checkConsumedStockMoveLineList"/>
 	</action-method>
 
 	<action-method name="action-manuf-order-method-update-consumed-stock-move">
-		<call class="com.axelor.apps.production.web.ManufOrderController" method="updateConsumedStockMoveFromManufOrder" />
+		<call class="com.axelor.apps.production.web.ManufOrderController" method="updateConsumedStockMoveFromManufOrder"/>
 	</action-method>
 
 	<action-method name="action-manuf-order-method-check-produced-stock-move">
-		<call class="com.axelor.apps.production.web.ManufOrderController" method="checkProducedStockMoveLineList" />
+		<call class="com.axelor.apps.production.web.ManufOrderController" method="checkProducedStockMoveLineList"/>
 	</action-method>
 
 	<action-method name="action-manuf-order-method-update-produced-stock-move">
-		<call class="com.axelor.apps.production.web.ManufOrderController" method="updateProducedStockMoveFromManufOrder" />
+		<call class="com.axelor.apps.production.web.ManufOrderController" method="updateProducedStockMoveFromManufOrder"/>
 	</action-method>
 
-	<action-view name="action-manuf-order-view-operation-order-to-consume-product" title="To consume products" model="com.axelor.apps.production.db.ProdProduct">
-		<view type="grid" name="prod-product-consume-manuf-order-grid" />
-		<view type="form" name="prod-product-form" />
-		<view-param name="popup" value="true" />
-		<domain>self.toConsumeOperationOrder.manufOrder.id = :id</domain>
-		<context name="companyIdFromParent" expr="eval: company.id" />
-	</action-view>
-
-	<action-view name="action-manuf-order-view-operation-order-diff-consume-product" title="Differences" model="com.axelor.apps.production.db.ProdProduct">
-		<view type="grid" name="prod-product-diff-manuf-order-grid" />
-		<view type="form" name="prod-product-form" />
-		<view-param name="popup" value="true" />
-		<domain>self.diffConsumeOperationOrder.manufOrder.id = :id</domain>
-		<context name="companyIdFromParent" expr="eval: company.id" />
-	</action-view>
-
-	<action-view name="action-manuf-order-view-operation-order-consumed-product" title="Consumed products" model="com.axelor.apps.stock.db.StockMoveLine">
-		<view type="grid" name="stock-move-line-consumed-production-grid" />
-		<view type="form" name="stock-move-line-production-form" />
-		<domain>self.consumedOperationOrder.manufOrder.id = :id</domain>
-		<context name="id" expr="eval: id" />
-	</action-view>
-
-	<action-attrs name="action-manuf-order-reset">
-		<attribute name="value" for="operationOrderList" expr="eval: null" />
-		<attribute name="value" for="toConsumeProdProductList" expr="eval: null" />
-		<attribute name="value" for="toProduceProdProductList" expr="eval: null" />
-	</action-attrs>
+   	<action-view name="action-manuf-order-view-operation-order-to-consume-product" title="To consume products" model="com.axelor.apps.production.db.ProdProduct">
+  		<view type="grid" name="prod-product-consume-manuf-order-grid"/>
+		<view type="form" name="prod-product-form"/>
+			<view-param name="popup" value="true"/>
+  		<domain>self.toConsumeOperationOrder.manufOrder.id = :id</domain>
+			<context name="companyIdFromParent" expr="eval: company.id"/>
+  	</action-view>
+  	
+  	<action-view name="action-manuf-order-view-operation-order-diff-consume-product" title="Differences" model="com.axelor.apps.production.db.ProdProduct">
+  		<view type="grid" name="prod-product-diff-manuf-order-grid"/>
+		<view type="form" name="prod-product-form"/>
+			<view-param name="popup" value="true"/>
+  		<domain>self.diffConsumeOperationOrder.manufOrder.id = :id</domain>
+			<context name="companyIdFromParent" expr="eval: company.id"/>
+  	</action-view>
+  	
+  	<action-view name="action-manuf-order-view-operation-order-consumed-product" title="Consumed products" model="com.axelor.apps.stock.db.StockMoveLine">
+  		<view type="grid" name="stock-move-line-consumed-production-grid"/>
+		<view type="form" name="stock-move-line-production-form"/>
+  		<domain>self.consumedOperationOrder.manufOrder.id = :id</domain>
+  		<context name="id" expr="eval: id"/>
+  	</action-view>
+    
+    <action-attrs name="action-manuf-order-reset">
+   		<attribute name="value" for="operationOrderList" expr="eval: null"/>
+   		<attribute name="value" for="toConsumeProdProductList" expr="eval: null"/>
+   		<attribute name="value" for="toProduceProdProductList" expr="eval: null"/>
+   	</action-attrs>
 
 	<action-attrs name="action-manuf-order-attrs-filter-prodProcess">
-		<attribute name="domain" for="prodProcess" expr="eval: &quot; (self.id = ${billOfMaterial?.prodProcess?.id} OR self.product.id = ${billOfMaterial?.product?.id}) AND self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) &quot;" if="prodProcess != null &amp;&amp; billOfMaterial != null" />
-		<attribute name="domain" for="prodProcess" expr="eval: &quot; self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) &quot;" if="billOfMaterial == null" />
+		<attribute name="domain" for="prodProcess" expr="eval: &quot; (self.id = ${billOfMaterial?.prodProcess?.id} OR self.product.id = ${billOfMaterial?.product?.id}) AND self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) &quot;" if="prodProcess != null &amp;&amp; billOfMaterial != null"/>
+		<attribute name="domain" for="prodProcess" expr="eval: &quot; self.statusSelect = 3 AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) &quot;" if="billOfMaterial == null"/>
 	</action-attrs>
 
 	<action-attrs name="action-manuf-order-attrs-filter-product">
-		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.product.id = '${billOfMaterial?.product?.id}' AND self.defaultBillOfMaterial.prodProcess.id = '${prodProcess?.id}' &quot;" if="billOfMaterial?.product != null &amp;&amp; prodProcess != null" />
-		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.product.id = '${billOfMaterial?.product?.id}' &quot;" if="billOfMaterial?.product != null &amp;&amp; prodProcess == null" />
-		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.prodProcess.id = '${prodProcess?.id}' &quot;" if="billOfMaterial?.product == null &amp;&amp; prodProcess != null" />
-		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) &quot;" if="billOfMaterial?.product == null &amp;&amp; prodProcess == null" />
+		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.product.id = '${billOfMaterial?.product?.id}' AND self.defaultBillOfMaterial.prodProcess.id = '${prodProcess?.id}' &quot;" if="billOfMaterial?.product != null &amp;&amp; prodProcess != null"/>
+		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.product.id = '${billOfMaterial?.product?.id}' &quot;" if="billOfMaterial?.product != null &amp;&amp; prodProcess == null"/>
+		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.prodProcess.id = '${prodProcess?.id}' &quot;" if="billOfMaterial?.product == null &amp;&amp; prodProcess != null"/>
+		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) &quot;" if="billOfMaterial?.product == null &amp;&amp; prodProcess == null"/>
 	</action-attrs>
 
 	<action-attrs name="action-manuf-order-attrs-filter-bill-of-material">
-		<attribute name="domain" for="billOfMaterial" expr="eval: &quot; self.defineSubBillOfMaterial = true AND self.product.id = ${product?.id} &quot;" if="product != null" />
-		<attribute name="domain" for="billOfMaterial" expr="eval: &quot; self.defineSubBillOfMaterial = true &quot;" if="product == null" />
+		<attribute name="domain" for="billOfMaterial" expr="eval: &quot; self.defineSubBillOfMaterial = true AND self.product.id = ${product?.id} &quot;" if="product != null"/>
+		<attribute name="domain" for="billOfMaterial" expr="eval: &quot; self.defineSubBillOfMaterial = true &quot;" if="product == null"/>
 	</action-attrs>
 
 	<action-attrs name="action-manuf-order-attrs-price-digits">
-		<attribute name="scale" for="costPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()" />
-		<attribute name="value" for="$totalPlannedDuration" expr="eval: operationOrderList.collect{it->it.plannedDuration}.sum()" if="operationOrderList != null &amp;&amp; !operationOrderList.isEmpty()" />
-		<attribute name="value" for="$totalRealDuration" expr="eval: operationOrderList.collect{it->it.realDuration}.sum()" if="operationOrderList != null &amp;&amp; !operationOrderList.isEmpty()" />
+		<attribute name="scale" for="costPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="value" for="$totalPlannedDuration" expr="eval: operationOrderList.collect{it->it.plannedDuration}.sum()" if="operationOrderList != null &amp;&amp; !operationOrderList.isEmpty()"/>
+		<attribute name="value" for="$totalRealDuration" expr="eval: operationOrderList.collect{it->it.realDuration}.sum()" if="operationOrderList != null &amp;&amp; !operationOrderList.isEmpty()"/>
 	</action-attrs>
 
-	<action-validate name="action-manuf-order-validate-planned-end-date" model="com.axelor.apps.production.db.ManufOrder">
-		<alert message="The planned end date is inferior to the actual date" if="plannedEndDateT.isBefore(__config__.app.getTodayDateTime().toLocalDateTime())" />
+	<action-validate name="action-manuf-order-validate-planned-end-date"
+	   model="com.axelor.apps.production.db.ManufOrder">
+	   <alert message="The planned end date is inferior to the actual date"
+	       if="plannedEndDateT.isBefore(__config__.app.getTodayDateTime().toLocalDateTime())"/>
 	</action-validate>
-
+	
 	<action-group name="action-manuf-order-group-merge">
 		<action name="action-manuf-order-method-check-merge-values" />
 		<action name="action-manuf-order-method-generate-merge-manuf-order" />
@@ -571,7 +557,7 @@
 		<domain>self.statusSelect = 7 and self.manufOrderMergeResult = :id</domain>
 	</action-view>
 
-	<search-filters name="manuf-order-filters" model="com.axelor.apps.production.db.ManufOrder" title="Manufacturing order filters">
+  	<search-filters name="manuf-order-filters" model="com.axelor.apps.production.db.ManufOrder" title="Manufacturing order filters">
 		<filter title="Draft MOs">
 			<domain>self.statusSelect = 1</domain>
 		</filter>
@@ -600,4 +586,5 @@
 			<domain>self.statusSelect = 6 AND self.plannedEndDateT &lt; self.realEndDateT</domain>
 		</filter>
 	</search-filters>
+    
 </object-views>
