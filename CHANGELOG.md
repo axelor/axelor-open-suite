@@ -31,6 +31,7 @@
 - Bill of Material: Replace NPE by an explicit message to the user when product unit is not configured.
 - EMPLOYEE: add button for Employee.rptdesign report on form.
 - Employee email address: prevent the selection of existing email addresses.
+- Move line : Correctly display reconcile tab (credit or debit) when the account is reconcilable.
 
 ## [5.2.11] - 2020-05-26
 ## Improvements
