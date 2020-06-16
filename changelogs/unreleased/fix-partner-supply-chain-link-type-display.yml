@@ -1,0 +1,5 @@
+---
+title: "PartnerSupplyChainLink: Fix display"
+type: fix
+description: |
+	Fix display of partner supply chain link type on partner relation
