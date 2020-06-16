@@ -32,11 +32,6 @@
 					</h3>
 				]]></viewer>
 			</field>
-			<field name="createdOn" colSpan="4"/>
-			<field name="createdBy" colSpan="4"/>
-			<field name="endDate" colSpan="4"/>
-			<field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="4" domain="self.typeSelect != 3" canEdit="false"/>
-			<field name="stockLocation.company" colSpan="4"/>
 	    </panel>
 	    <panel name="filtersPanel" title="Filters" collapseIf="statusSelect != 0" colSpan="12">
 			<field name="id"/><spacer/>
