@@ -234,7 +234,7 @@ public class MoveToolService {
    */
   public boolean isSameAccount(List<MoveLine> moveLineList, Account account) {
     for (MoveLine moveLine : moveLineList) {
-      if (!moveLine.getAccount().equals(account)) {
+      if (moveLine != null && !moveLine.getAccount().equals(account)) {
         return false;
       }
     }
