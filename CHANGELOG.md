@@ -7,6 +7,7 @@
 - LEAVE REQUEST: remove field duration lenght constraint
 - EMPLOYEE : add translation of "Employee PhoneBook".
 - INVENTAIRE: no more than one line for same product and same tracking number.
+- Studio: Added selection for context field and context field value. 
 
 ## Bug Fixes
 - CRM/SALES : fix for contacts with mainPartner isProspect do not display
