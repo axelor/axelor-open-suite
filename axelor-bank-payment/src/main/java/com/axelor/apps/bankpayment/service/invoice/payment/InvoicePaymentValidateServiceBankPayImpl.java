@@ -97,7 +97,6 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
     }
 
     Invoice invoice = invoicePayment.getInvoice();
-
     PaymentMode paymentMode = invoicePayment.getPaymentMode();
     if (paymentMode == null) {
       throw new AxelorException(
