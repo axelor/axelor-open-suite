@@ -29,7 +29,6 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -40,8 +39,6 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -101,8 +98,6 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       return;
     }
 
-    checkConditionBeforeValidate(invoicePayment);
-
     invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
 
     // TODO assign an automatic reference
@@ -123,17 +118,6 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
     }
     invoicePaymentRepository.save(invoicePayment);
     invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
-  }
-
-  protected void checkConditionBeforeValidate(InvoicePayment invoicePayment)
-      throws AxelorException {
-    if (invoicePayment.getInvoice() != null
-        && invoicePayment.getInvoice().getAmountRemaining().compareTo(BigDecimal.ZERO) <= 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.INVOICE_PAYMENT_NO_AMOUNT_REMAINING),
-          invoicePayment.getInvoice().getInvoiceId());
-    }
   }
 
   @Override
