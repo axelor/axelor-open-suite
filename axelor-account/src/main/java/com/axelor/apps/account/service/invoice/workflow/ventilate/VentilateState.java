@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.module.AccountModule;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.FixedAssetService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -46,10 +47,16 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.Priority;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @RequestScoped
+@Alternative
+@Priority(AccountModule.PRIORITY)
 public class VentilateState extends WorkflowInvoice {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
