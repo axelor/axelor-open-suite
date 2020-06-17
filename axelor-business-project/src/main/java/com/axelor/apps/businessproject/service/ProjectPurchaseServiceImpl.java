@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -25,6 +26,7 @@ import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainIm
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseServiceImpl;
 import com.axelor.exception.AxelorException;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -46,7 +48,9 @@ public class ProjectPurchaseServiceImpl extends SaleOrderPurchaseServiceImpl {
     PurchaseOrder purchaseOrder =
         super.createPurchaseOrder(supplierPartner, saleOrderLineList, saleOrder);
 
-    if (purchaseOrder != null && saleOrder != null) {
+    if (purchaseOrder != null
+        && saleOrder != null
+        && Beans.get(AppBusinessProjectService.class).isApp("business-project")) {
       purchaseOrder.setProject(saleOrder.getProject());
     }
 

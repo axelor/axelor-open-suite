@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.businessproject.db.repo;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.supplychain.db.repo.InvoiceSupplychainRepository;
 import com.axelor.inject.Beans;
 
@@ -26,10 +27,12 @@ public class InvoiceProjectRepository extends InvoiceSupplychainRepository {
   @Override
   public void remove(Invoice entity) {
 
-    Beans.get(InvoicingProjectRepository.class)
-        .all()
-        .filter("self.invoice.id = ?", entity.getId())
-        .remove();
+    if (Beans.get(AppBusinessProjectService.class).isApp("business-project")) {
+      Beans.get(InvoicingProjectRepository.class)
+          .all()
+          .filter("self.invoice.id = ?", entity.getId())
+          .remove();
+    }
 
     super.remove(entity);
   }

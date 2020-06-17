@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,6 +25,7 @@ import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.message.service.TemplateMessageService;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.db.repo.UserRepository;
@@ -62,39 +63,64 @@ public class TimesheetBusinessProductionServiceImpl extends TimesheetProjectServ
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void confirm(Timesheet timesheet) throws AxelorException {
     super.confirm(timesheet);
-    Beans.get(OperationOrderTimesheetServiceImpl.class)
-        .updateAllRealDuration(timesheet.getTimesheetLineList());
+    AppProductionService appProductionService = Beans.get(AppProductionService.class);
+
+    if (appProductionService.isApp("production")
+        && appProductionService.getAppProduction().getManageBusinessProduction()) {
+      Beans.get(OperationOrderTimesheetServiceImpl.class)
+          .updateAllRealDuration(timesheet.getTimesheetLineList());
+    }
   }
 
   @Override
   @Transactional
   public void validate(Timesheet timesheet) {
     super.validate(timesheet);
-    Beans.get(OperationOrderTimesheetServiceImpl.class)
-        .updateAllRealDuration(timesheet.getTimesheetLineList());
+    AppProductionService appProductionService = Beans.get(AppProductionService.class);
+
+    if (appProductionService.isApp("production")
+        && appProductionService.getAppProduction().getManageBusinessProduction()) {
+      Beans.get(OperationOrderTimesheetServiceImpl.class)
+          .updateAllRealDuration(timesheet.getTimesheetLineList());
+    }
   }
 
   @Override
   @Transactional
   public void refuse(Timesheet timesheet) {
     super.refuse(timesheet);
-    Beans.get(OperationOrderTimesheetServiceImpl.class)
-        .updateAllRealDuration(timesheet.getTimesheetLineList());
+    AppProductionService appProductionService = Beans.get(AppProductionService.class);
+
+    if (appProductionService.isApp("production")
+        && appProductionService.getAppProduction().getManageBusinessProduction()) {
+      Beans.get(OperationOrderTimesheetServiceImpl.class)
+          .updateAllRealDuration(timesheet.getTimesheetLineList());
+    }
   }
 
   @Override
   @Transactional
   public void cancel(Timesheet timesheet) {
     super.cancel(timesheet);
-    Beans.get(OperationOrderTimesheetServiceImpl.class)
-        .updateAllRealDuration(timesheet.getTimesheetLineList());
+    AppProductionService appProductionService = Beans.get(AppProductionService.class);
+
+    if (appProductionService.isApp("production")
+        && appProductionService.getAppProduction().getManageBusinessProduction()) {
+      Beans.get(OperationOrderTimesheetServiceImpl.class)
+          .updateAllRealDuration(timesheet.getTimesheetLineList());
+    }
   }
 
   @Override
   @Transactional
   public void draft(Timesheet timesheet) {
     super.draft(timesheet);
-    Beans.get(OperationOrderTimesheetServiceImpl.class)
-        .updateAllRealDuration(timesheet.getTimesheetLineList());
+    AppProductionService appProductionService = Beans.get(AppProductionService.class);
+
+    if (appProductionService.isApp("production")
+        && appProductionService.getAppProduction().getManageBusinessProduction()) {
+      Beans.get(OperationOrderTimesheetServiceImpl.class)
+          .updateAllRealDuration(timesheet.getTimesheetLineList());
+    }
   }
 }

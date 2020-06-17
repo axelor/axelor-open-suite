@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -39,6 +39,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.file.CsvTool;
+import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -119,10 +120,38 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
           I18n.get(IExceptionMessage.SUBROGATION_RELEASE_MISSING_SEQUENCE),
           subrogationRelease.getCompany().getName());
     }
+    this.checkIfAnOtherSubrogationAlreadyExist(subrogationRelease);
 
     subrogationRelease.setSequenceNumber(sequenceNumber);
     subrogationRelease.setStatusSelect(SubrogationReleaseRepository.STATUS_TRANSMITTED);
     subrogationRelease.setTransmissionDate(appBaseService.getTodayDate());
+  }
+
+  protected void checkIfAnOtherSubrogationAlreadyExist(SubrogationRelease subrogationRelease)
+      throws AxelorException {
+
+    List<String> invoicesIDList =
+        JPA.em()
+            .createQuery(
+                "SELECT Invoice.invoiceId "
+                    + " FROM SubrogationRelease SubrogationRelease "
+                    + " LEFT JOIN Invoice Invoice on  Invoice member of  SubrogationRelease.invoiceSet "
+                    + " LEFT JOIN SubrogationRelease SubrogationRelease2 on Invoice member of  SubrogationRelease2.invoiceSet "
+                    + " WHERE SubrogationRelease.id = :subroID "
+                    + " AND SubrogationRelease2.id != :subroID"
+                    + " AND SubrogationRelease2.statusSelect IN (:statusTransmitted ,:statusAccounted,:statusCleared )")
+            .setParameter("subroID", subrogationRelease.getId())
+            .setParameter("statusTransmitted", SubrogationReleaseRepository.STATUS_TRANSMITTED)
+            .setParameter("statusAccounted", SubrogationReleaseRepository.STATUS_ACCOUNTED)
+            .setParameter("statusCleared", SubrogationReleaseRepository.STATUS_CLEARED)
+            .getResultList();
+    if (invoicesIDList != null && !invoicesIDList.isEmpty()) {
+      throw new AxelorException(
+          SubrogationRelease.class,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.SUBROGATION_RELEASE_SUBROGATION_ALREADY_EXIST_FOR_INVOICES),
+          invoicesIDList);
+    }
   }
 
   @Override
@@ -212,10 +241,9 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
       subrogationRelease.setAccountingDate(appBaseService.getTodayDate());
     }
 
+    this.checkIfAnOtherSubrogationAlreadyExist(subrogationRelease);
+
     for (Invoice invoice : subrogationRelease.getInvoiceSet()) {
-      if (invoice.getCompanyInTaxTotalRemaining().compareTo(BigDecimal.ZERO) == 0) {
-        continue;
-      }
 
       boolean isRefund = false;
       if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {

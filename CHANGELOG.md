@@ -1,43 +1,93 @@
 # Changelog
-
-## [Unreleased 5.1.14]
+## [Unreleased 5.1.16]
 ## Features
-- PURCHASE REQUEST: add new columns in 'purchase-request-grid'
-- RM#23133 INVOICE : new mandatory labelling
+- MRP : add a job to run calculation of mrp using 'code' as a parameter.
 
 ## Improvements
-- MOVE : changed position of reconciliation tag in move form.
-- BANK STATEMENT: add caption under bank statement line grid in bank statement form in order to explain the colors used in bank statement line grid.
-- STOCK MOVE: empty reservationDateTime on duplicate stock move
-- MOVE : Improved messages when there is an exception on trying to remove an accounting move. 
-- STOCK MOVE : to and from stock location set on company change.
-- STOCK MOVE : hide reserved qty when it is a supplier arrival or a customer return
-- BATCH : set batchList empty on copy for BankPaymentBatch and ContractBatch
-- ACCOUNTING REPORT : display popup message on click of 'exportBtn'
-- SALE ORDER LINE : Rename "sale.order.line.type.select" selection to "line.type.select" and move it to base module.
+- LEAD : Changed the printing tab's name
+- CONTRACT : fix for unit price null on invoice
 
 ## Bug Fixes
-- INVOICE PARTIAL: take in consideration refund
-- REFUND : avoid blocking message when ventilation of the invoice
-- MOVE : corrected display of status tag in move form.
-- Manuf Order: fix real quantity not updating when a new line in consumed products is created.
-- INVOICE PAYMENT CANCELLATION : corrected error when boolean allow removal validate move in account configuration is true.
-- INVOICE : stopped the creation of invoice payment when a reconciliation is made with accounts not used in partner balance.
-- PURCHASE ORDER LINE : isFilterOnSupplier is always = true and can be set false manually.
-- HR: changed fromDate and toDate to fromDateT and toDateT in insertLeave method of HumanResourceMobileController
-- MOVE LINE: fix amount paid display in move line form.
-- Ebics User : resolve error getting on export & Modify import config and export template to include BankOrderList and BankStatementList of EbicsPartner.
-- Sale order/quotation: fix tab title when generating a quotation from an opportunity.
-- BankOrder : Fix NPE on click of confirm for International transfer
-- BANK ORDER : corrected the possibility to generate two times the same move.
-- BANK ORDER : corrected the behavior of bank order, now the bank order moves can be generated on validation or realization.
-- Invoice Payment : resolve invoice amount due update when the generate accounting move option is not active
-- Fixed Asset : Fix issue of infinite value of depriciation rate"
-- EBICS USER : fix for strange import - log
-- LEAVE REQUEST: Updated calendar filter.
-- SUBROGATION RELEASE / INVOICE : corrected npe.
-- FIXED ASSET: set Deprecation Date in Move generated from FixedAsset and fix last Day Of Month FixedAsset
+- Account Config: display correct form view on clicking products.
+- Fix a french word in an english message file.
+- Accounting Situation: fix computation of balance due debt recovery.
+- LEAD : Fix display issue for description field on lead-event-grid
+- User : Added domain filter on icalendar field in user-preferences-form
+- EBICS CERTIFICATE : Fix serial number not saved.
+- COST SHEET: properly take purchase unit into account
+- BANK ORDER REPORT: fix the ordering by sequence.
+- Partner: fix view marked as dirty when an archived partner exists with the same name.
+- Account: Fix incomplete sequences in english data init.
+- Product form: fix typo in help message.
+- Inventory: fix error on stock location select when company is not filled.
 - INVOICE : corrected the possibility to add a payment when the amount remaining is inferior or equal to 0.
+
+## [5.1.15] - 2020-03-23
+## Improvements
+- PurchaseRequestLine: cacheable removed for this entity.
+- Check and modify all service code according to app configuration.
+- BANKPAYMENT: Update condition to display field ics number.
+- Subrogation release: improved visibility of unpaid invoices.
+- PRODUCT: display button 'Update stock location' only for storable and stock managed products.
+- STUDIO: Add panel on custom model demo data.
+- Partner: rename 'Create order' button & translation
+
+## Bug Fixes
+- STOCKMOVE: display qty per tracking number and not total available qty for tracking number.
+- MOVE LINE: removed the possibility to delete a move line in a move when the move line is reconcile.
+- FIXED ASSET: correction of prorata temporis.
+- INVOICE: now the date verification of the ventilation process depends of invoices of the same company.
+- MOVE: corrected sequence generation, now use correctly the date of the move and not the date of validation.
+- Subrogative release: corrected the possibility to create two subrogations transmitted or accounted with the same invoices.
+- Invoice payment: fix issue in invoice payment form when invoice due date is empty.
+- SALE CONFIG: Fixed "Action not allowed" error when we try to update customer's accepted credit.
+- INVOICE: fix the NPE when payment mode is null in invoice.
+- Move: Fix exception message when saving a new record.
+- SALEORDER: fixed bug causing the margins to be rounded to the unit.
+- SUPPLIER INVOICE: fix the problem of amount not updated in supplier invoice after use of mass invoice payment function.
+- CAMPAIGN: add exception message on partner and lead at invalid domain in target list.
+- LEAVE REQUEST: corrected error when trying to change user.
+- MANUF ORDER: add missing translation.
+- BANKSTATEMENT: reset status on copy.
+- GEONAME: fix city import.
+- MRP: Reset fields values on copy of MRP form.
+
+## [5.1.14] - 2020-01-17
+## Improvements
+- PURCHASE REQUEST: add new columns in grid view.
+- MOVE: change position of reconciliation tag in move form.
+- BANK STATEMENT: add caption under bank statement line grid in bank statement form in order to explain the colors used in bank statement line grid.
+- STOCK MOVE: empty reservation date on stock move copy.
+- MOVE: Improved messages when there is an exception on trying to remove an accounting move. 
+- STOCK MOVE: to and from stock location set on company change.
+- STOCK MOVE: hide reserved qty when it is a supplier arrival or a customer return.
+- BATCH: set batchList empty on copy for BankPaymentBatch and ContractBatch.
+- ACCOUNTING REPORT: display popup message on click of 'exportBtn'.
+- SALE ORDER LINE: Rename "sale.order.line.type.select" selection to "line.type.select" and move it to base module.
+- INVOICE: new mandatory labelling: Head office address.
+
+## Bug Fixes
+- Sale Order Invoicing: take in consideration refund when checking if the sale order has been invoiced.
+- Sale Order Invoicing: avoid blocking message during the invoice ventilation.
+- MOVE: corrected display of status tag in move form.
+- Manuf Order: fix real quantity not updating when a new line in consumed products is created.
+- INVOICE PAYMENT CANCELLATION: corrected error when boolean allow removal validate move in account configuration is true.
+- INVOICE: stopped the creation of invoice payment when a reconciliation is made with accounts not used in partner balance.
+- PURCHASE ORDER LINE: by default, filtering product on supplier is always true and can only be set to false by the user.
+- HR: changed date fields to datetime in insert leave method called from mobile application.
+- MOVE LINE: fix amount paid display in move line form.
+- Ebics User: resolve error getting on export.
+- Ebics User: Modify import config and export template to include bank order list and bank statement list of Ebics partner.
+- Sale order/quotation: fix tab title when generating a quotation from an opportunity.
+- BankOrder: Fix NPE on click of confirm for International transfer.
+- BANK ORDER: corrected the possibility to generate twice the same move.
+- BANK ORDER: corrected the behavior of bank order, now the bank order moves can be generated on validation or realization.
+- Invoice Payment: resolve invoice amount due update when the generate accounting move option is not active.
+- Fixed Asset: Fix issue of infinite value of depreciation rate.
+- EBICS USER: fix import log display.
+- LEAVE REQUEST: Update calendar filter.
+- SUBROGATION RELEASE / INVOICE : corrected npe appearing in logs on new subrogation release.
+- FIXED ASSET: set deprecation date in move generated from fixed asset and fix last day of month fixed asset.
 
 ## [5.1.13] - 2019-11-29
 ## Improvements
@@ -1525,19 +1575,21 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Purchase Order: remove save on loading purchase order form.
 
 
-[5.1.14]: https://github.com/axelor/axelor-business-suite/compare/v5.1.13...5.1-dev
-[5.1.13]: https://github.com/axelor/axelor-business-suite/compare/v5.1.12...v5.1.13
-[5.1.12]: https://github.com/axelor/axelor-business-suite/compare/v5.1.11...v5.1.12
-[5.1.11]: https://github.com/axelor/axelor-business-suite/compare/v5.1.10...v5.1.11
-[5.1.10]: https://github.com/axelor/axelor-business-suite/compare/v5.1.9...v5.1.10
-[5.1.9]: https://github.com/axelor/axelor-business-suite/compare/v5.1.8...v5.1.9
-[5.1.8]: https://github.com/axelor/axelor-business-suite/compare/v5.1.7...v5.1.8
-[5.1.7]: https://github.com/axelor/axelor-business-suite/compare/v5.1.6...v5.1.7
-[5.1.6]: https://github.com/axelor/axelor-business-suite/compare/v5.1.5...v5.1.6
-[5.1.5]: https://github.com/axelor/axelor-business-suite/compare/v5.1.4...v5.1.5
-[5.1.4]: https://github.com/axelor/axelor-business-suite/compare/v5.1.3...v5.1.4
-[5.1.3]: https://github.com/axelor/axelor-business-suite/compare/v5.1.2...v5.1.3
-[5.1.2]: https://github.com/axelor/axelor-business-suite/compare/v5.1.1...v5.1.2
-[5.1.1]: https://github.com/axelor/axelor-business-suite/compare/v5.1.0...v5.1.1
-[5.1.0]: https://github.com/axelor/axelor-business-suite/compare/5.0...v5.1.0
+[Unreleased 5.1.16]: https://github.com/axelor/axelor-open-suite/compare/v5.1.15...5.1-dev
+[5.1.15]: https://github.com/axelor/axelor-open-suite/compare/v5.1.14...v5.1.15
+[5.1.14]: https://github.com/axelor/axelor-open-suite/compare/v5.1.13...v5.1.14
+[5.1.13]: https://github.com/axelor/axelor-open-suite/compare/v5.1.12...v5.1.13
+[5.1.12]: https://github.com/axelor/axelor-open-suite/compare/v5.1.11...v5.1.12
+[5.1.11]: https://github.com/axelor/axelor-open-suite/compare/v5.1.10...v5.1.11
+[5.1.10]: https://github.com/axelor/axelor-open-suite/compare/v5.1.9...v5.1.10
+[5.1.9]: https://github.com/axelor/axelor-open-suite/compare/v5.1.8...v5.1.9
+[5.1.8]: https://github.com/axelor/axelor-open-suite/compare/v5.1.7...v5.1.8
+[5.1.7]: https://github.com/axelor/axelor-open-suite/compare/v5.1.6...v5.1.7
+[5.1.6]: https://github.com/axelor/axelor-open-suite/compare/v5.1.5...v5.1.6
+[5.1.5]: https://github.com/axelor/axelor-open-suite/compare/v5.1.4...v5.1.5
+[5.1.4]: https://github.com/axelor/axelor-open-suite/compare/v5.1.3...v5.1.4
+[5.1.3]: https://github.com/axelor/axelor-open-suite/compare/v5.1.2...v5.1.3
+[5.1.2]: https://github.com/axelor/axelor-open-suite/compare/v5.1.1...v5.1.2
+[5.1.1]: https://github.com/axelor/axelor-open-suite/compare/v5.1.0...v5.1.1
+[5.1.0]: https://github.com/axelor/axelor-open-suite/compare/5.0...v5.1.0
 

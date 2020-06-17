@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.bankpayment.service.invoice.payment;
 
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -31,10 +32,13 @@ import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateServiceImpl;
 import com.axelor.apps.bankpayment.db.BankOrder;
+import com.axelor.apps.bankpayment.exception.IExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -92,9 +96,15 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
       return;
     }
 
-    checkConditionBeforeValidate(invoicePayment);
+    Invoice invoice = invoicePayment.getInvoice();
 
     PaymentMode paymentMode = invoicePayment.getPaymentMode();
+    if (paymentMode == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(IExceptionMessage.INVOICE_PAYMENT_MODE_MISSING),
+          invoice.getInvoiceId());
+    }
     int typeSelect = paymentMode.getTypeSelect();
     int inOutSelect = paymentMode.getInOutSelect();
 
@@ -109,24 +119,22 @@ public class InvoicePaymentValidateServiceBankPayImpl extends InvoicePaymentVali
 
     // TODO assign an automatic reference
 
-    Company company = invoicePayment.getInvoice().getCompany();
+    Company company = invoice.getCompany();
 
     if (accountConfigService.getAccountConfig(company).getGenerateMoveForInvoicePayment()
         && !paymentMode.getGenerateBankOrder()) {
       this.createMoveForInvoicePayment(invoicePayment);
     } else {
-      Beans.get(AccountingSituationService.class)
-          .updateCustomerCredit(invoicePayment.getInvoice().getPartner());
+      Beans.get(AccountingSituationService.class).updateCustomerCredit(invoice.getPartner());
     }
     if (paymentMode.getGenerateBankOrder()) {
       invoicePayment = invoicePaymentRepository.save(invoicePayment);
       this.createBankOrder(invoicePayment);
     }
 
-    invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
-    if (invoicePayment.getInvoice() != null
-        && invoicePayment.getInvoice().getOperationSubTypeSelect()
-            == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+    invoicePaymentToolService.updateAmountPaid(invoice);
+    if (invoice != null
+        && invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
       invoicePayment.setTypeSelect(InvoicePaymentRepository.TYPE_ADVANCEPAYMENT);
     }
     invoicePaymentRepository.save(invoicePayment);
