@@ -37,7 +37,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.invoke.MethodHandles;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,11 +48,16 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import org.apache.commons.io.FileUtils;
 import org.apache.xmlbeans.impl.common.IOUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RequestScoped
 public class ConfiguratorCreatorImportServiceImpl implements ConfiguratorCreatorImportService {
 
   protected ConfiguratorCreatorService configuratorCreatorService;
+
+  private static final Logger logger =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
   public ConfiguratorCreatorImportServiceImpl(

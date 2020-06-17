@@ -22,6 +22,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.meta.MetaScanner;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
