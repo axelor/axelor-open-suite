@@ -42,6 +42,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.enterprise.context.ApplicationScoped;
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 
 @ApplicationScoped
 public class AppController {
@@ -99,6 +102,7 @@ public class AppController {
     response.setSignal("refresh-app", true);
   }
 
+  @Transactional(value = TxType.NOT_SUPPORTED)
   public void bulkInstall(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Context context = request.getContext();

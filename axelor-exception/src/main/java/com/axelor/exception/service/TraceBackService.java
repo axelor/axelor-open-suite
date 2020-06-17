@@ -32,6 +32,10 @@ import java.io.StringWriter;
 import java.lang.invoke.MethodHandles;
 import java.time.ZonedDateTime;
 import java.util.Optional;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.spi.CDI;
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -124,7 +128,7 @@ public class TraceBackService {
    */
   public static void trace(final Throwable e, final String origin) {
 
-    JPA.runInTransaction(
+    runInNewTransaction(
         () -> {
           if (e instanceof AxelorException) {
 
@@ -144,7 +148,7 @@ public class TraceBackService {
    */
   public static void trace(final AxelorException e, final String origin, final long batchId) {
 
-    JPA.runInTransaction(() -> LOG.trace(_create(e, origin, batchId).getTrace()));
+    runInNewTransaction(() -> LOG.trace(_create(e, origin, batchId).getTrace()));
   }
 
   /**
@@ -154,7 +158,7 @@ public class TraceBackService {
    */
   public static void trace(final Throwable e, final String origin, final long batchId) {
 
-    JPA.runInTransaction(() -> LOG.error(_create(e, origin, 0, batchId).getTrace()));
+    runInNewTransaction(() -> LOG.error(_create(e, origin, 0, batchId).getTrace()));
   }
 
   /**
@@ -270,5 +274,18 @@ public class TraceBackService {
                 + "AND self.exception LIKE 'com.axelor.apps.message.exception.AxelorMessageException%'")
         .bind("modelClass", model.getClass().getCanonicalName())
         .bind("modelId", model.getId());
+  }
+
+  private static void runInNewTransaction(Runnable task) {
+    CDI.current().select(NewTxRunner.class).get().run(task);
+  }
+
+  @ApplicationScoped
+  static class NewTxRunner {
+
+    @Transactional(value = TxType.REQUIRES_NEW)
+    public void run(Runnable task) {
+      task.run();
+    }
   }
 }

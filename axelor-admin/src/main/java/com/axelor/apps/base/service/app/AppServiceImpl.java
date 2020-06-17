@@ -55,6 +55,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 import javax.persistence.Query;
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,6 +88,7 @@ public class AppServiceImpl implements AppService {
   @Inject private MetaModelRepository metaModelRepo;
 
   @Override
+  @Transactional(value = TxType.NOT_SUPPORTED)
   public App importDataDemo(App app) throws AxelorException {
 
     if (app.getDemoDataLoaded()) {
@@ -111,9 +114,13 @@ public class AppServiceImpl implements AppService {
     return saveApp(app);
   }
 
-  @Transactional
   public App saveApp(App app) {
-    return appRepo.save(app);
+    final var result =
+        new Object() {
+          private App app;
+        };
+    JPA.runInTransaction(() -> result.app = appRepo.save(app));
+    return result.app;
   }
 
   private void importData(App app, String dataDir, boolean useLang) {
