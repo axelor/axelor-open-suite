@@ -128,5 +128,9 @@
 		<call class="com.axelor.apps.account.web.InvoicePaymentController" method="validateMassPayment"/>
 	</action-method>
 	
+	<action-method name="action-invoice-payment-method-check-and-save">
+		<call class="com.axelor.apps.account.web.InvoicePaymentController" method="checkConditionBeforeSave"/>
+	</action-method>
+	
 </object-views>
 	

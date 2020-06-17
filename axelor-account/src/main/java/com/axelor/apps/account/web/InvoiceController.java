@@ -31,7 +31,6 @@ import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
-import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -861,21 +860,5 @@ public class InvoiceController {
         "$partnerBankDetailsListWarning",
         "hidden",
         invoiceService.checkPartnerBankDetailsList(invoice));
-  }
-
-  /**
-   * Method that check the invoice payment before save and save. Only use when add payment is used
-   * in invoice
-   *
-   * @param request
-   * @param response
-   */
-  public void checkConditionBeforeSave(ActionRequest request, ActionResponse response) {
-    try {
-      InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
-      Beans.get(InvoicePaymentToolService.class).checkConditionBeforeSave(invoicePayment);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
   }
 }
