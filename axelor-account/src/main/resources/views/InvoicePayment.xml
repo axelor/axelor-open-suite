@@ -45,6 +45,9 @@
 			<field name="statusSelect" hideIf="(paymentMode.typeSelect == 2 || paymentMode.typeSelect  == 9) &amp;&amp; paymentMode.inOutSelect == 2" selection-in="[0,1,2]"/>
 			<button name="cancelBtn" title="Cancel" readonlyIf="statusSelect == 2" icon="fa-times-circle" onClick="action-invoice-payment-method-cancel"/>
 		</panel>
+		<panel name="newInvoicePaymentPanel"  hideIf="id">
+			<button name="saveBtn" title="OK" colOffset="11" colspan="1" width="50"  onClick="action-invoice-payment-method-check-and-save,save,close"/>
+		</panel>
 	</form>
 
 	<form name="invoice-payment-mass-form" title="Mass payment"
@@ -123,6 +126,10 @@
 	
 	<action-method name="action-invoice-payment-method-validate-mass-payment">
 		<call class="com.axelor.apps.account.web.InvoicePaymentController" method="validateMassPayment"/>
+	</action-method>
+	
+	<action-method name="action-invoice-payment-method-check-and-save">
+		<call class="com.axelor.apps.account.web.InvoicePaymentController" method="checkConditionBeforeSave"/>
 	</action-method>
 	
 </object-views>
