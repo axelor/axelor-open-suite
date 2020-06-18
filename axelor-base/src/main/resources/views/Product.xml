@@ -375,10 +375,6 @@
     	<action name="action-product-record-product-sub-type-select"/>
       <action name="action-product-record-service-stock-managed"/>
     </action-group>
-        
- 	<action-method name="action-product-method-fill-product-company-list">
-    	<call class="com.axelor.apps.base.web.ProductController" method="fillProductCompanyList"/>
-    </action-method>
     
     <action-record name="action-product-record-set-barcode-type-config" model="com.axelor.apps.base.db.Product">
     	<field name="barcodeTypeConfig" expr="eval: __config__.app.getApp('base').getBarcodeTypeConfig()" if="__config__.app.getApp('base').getActivateBarCodeGeneration()"/>
