@@ -121,6 +121,24 @@ public class EmployeeController {
     response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
+  public void printEmployeeReport(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    Employee employee = request.getContext().asType(Employee.class);
+
+    String name = I18n.get("Employee");
+
+    String fileLink =
+        ReportFactory.createReport(IReport.EMPLOYEE, name + "-${date}")
+            .addParam("EmployeeId", Long.valueOf(employee.getId()))
+            .generate()
+            .getFileLink();
+
+    LOG.debug("Printing " + name);
+
+    response.setView(ActionView.define(name).add("html", fileLink).map());
+  }
+
   public void generateNewDPAE(ActionRequest request, ActionResponse response) {
     Employee employee = request.getContext().asType(Employee.class);
     employee = Beans.get(EmployeeRepository.class).find(employee.getId());
