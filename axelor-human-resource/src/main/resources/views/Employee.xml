@@ -29,6 +29,7 @@
 
     <toolbar>
       <button name="annualReportBtn" title="Show expenses annual report" showIf="id" onClick="action-employee-view-annual-report-wizard"/>
+      <button name="employeeReportBtn" title="Print" showIf="id" onClick="save,action-employee-method-print-employee-report"/>
     </toolbar>
 
     <!-- New employee wizard -->
@@ -496,6 +497,10 @@
 		<call class="com.axelor.apps.hr.web.EmployeeController" method="printEmployeePhonebook"/>
 	</action-method>
 
+	<action-method name="action-employee-method-print-employee-report" >
+		<call class="com.axelor.apps.hr.web.EmployeeController" method="printEmployeeReport"/>
+	</action-method>
+	
 	<action-condition name="action-employee-validate-dates">
 		<check error="Invalid date" field="endDate" if="startDate != null &amp;&amp; endDate != null  &amp;&amp; (endDate &lt; startDate)"/>
 	</action-condition>
