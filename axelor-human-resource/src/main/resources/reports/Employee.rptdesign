@@ -1,10 +1,117 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
     <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <list-property name="propertyBindings">
+        <structure>
+            <property name="name">odaDriverClass</property>
+            <property name="id">4</property>
+            <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">odaURL</property>
+            <property name="id">4</property>
+            <expression name="value" type="javascript">params["DBName"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">odaUser</property>
+            <property name="id">4</property>
+            <expression name="value" type="javascript">params["UserName"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">odaAutoCommit</property>
+            <property name="id">4</property>
+        </structure>
+        <structure>
+            <property name="name">odaIsolationMode</property>
+            <property name="id">4</property>
+        </structure>
+        <structure>
+            <property name="name">odaPassword</property>
+            <property name="id">4</property>
+            <expression name="value" type="javascript">params["Password"].value</expression>
+        </structure>
+        <structure>
+            <property name="name">odaJndiName</property>
+            <property name="id">4</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileName</property>
+            <property name="id">4</property>
+        </structure>
+        <structure>
+            <property name="name">OdaConnProfileStorePath</property>
+            <property name="id">4</property>
+        </structure>
+    </list-property>
     <property name="units">in</property>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
+    <parameters>
+        <scalar-parameter name="EmployeeId" id="399">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">decimal</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="DBName" id="400">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="UserName" id="401">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="Password" id="402">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="DefaultDriver" id="403">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">org.postgresql.Driver</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+    </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="4">
             <list-property name="privateDriverProperties">
@@ -24,13 +131,11 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/axelor-open-suite-wip-4.1</property>
-            <property name="odaUser">axelor</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">bG1kcGRsMTEhIQ==</encrypted-property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
-        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="Data Set" id="5">
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="EmployeeDS" id="5">
             <property name="nullsOrdering">nulls lowest</property>
             <list-property name="columnHints">
                 <structure>
@@ -170,6 +275,7 @@
                 </structure>
                 <structure>
                     <property name="columnName">PayCompany</property>
+                    <property name="alias">PayCompany</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">PayCompany</text-property>
                     <text-property name="heading">PayCompany</text-property>
@@ -183,12 +289,21 @@
                 </structure>
                 <structure>
                     <property name="columnName">ContractType</property>
+                    <property name="alias">ContractType</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">ContractType</text-property>
                     <text-property name="heading">ContractType</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">Company</property>
+                    <property name="columnName">Country</property>
+                    <property name="alias">Country</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">Country</text-property>
+                    <text-property name="heading">Country</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">CompanyName</property>
+                    <property name="alias">CompanyName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">Company</text-property>
                     <text-property name="heading">Company</text-property>
@@ -202,7 +317,19 @@
                     <text-property name="heading">MaritalStatus</text-property>
                 </structure>
             </list-property>
-            <list-property name="parameters"/>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="paramName">EmployeeId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
+                    <property name="position">1</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
                     <structure>
@@ -223,7 +350,7 @@
                     <structure>
                         <property name="position">4</property>
                         <property name="name">Department</property>
-                        <property name="dataType">decimal</property>
+                        <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">5</property>
@@ -303,15 +430,20 @@
                     <structure>
                         <property name="position">20</property>
                         <property name="name">ContractType</property>
-                        <property name="dataType">integer</property>
+                        <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">21</property>
-                        <property name="name">Company</property>
+                        <property name="name">Country</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">22</property>
+                        <property name="name">CompanyName</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">23</property>
                         <property name="name">MaritalStatus</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -344,7 +476,7 @@
                     <property name="position">4</property>
                     <property name="name">Department</property>
                     <property name="nativeName">Department</property>
-                    <property name="dataType">decimal</property>
+                    <property name="dataType">string</property>
                     <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
@@ -456,18 +588,25 @@
                     <property name="position">20</property>
                     <property name="name">ContractType</property>
                     <property name="nativeName">ContractType</property>
-                    <property name="dataType">integer</property>
+                    <property name="dataType">string</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">21</property>
-                    <property name="name">Company</property>
-                    <property name="nativeName">Company</property>
+                    <property name="name">Country</property>
+                    <property name="nativeName">Country</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">22</property>
+                    <property name="name">CompanyName</property>
+                    <property name="nativeName">CompanyName</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">23</property>
                     <property name="name">MaritalStatus</property>
                     <property name="nativeName">MaritalStatus</property>
                     <property name="dataType">string</property>
@@ -477,7 +616,7 @@
             <xml-property name="queryText"><![CDATA[select Employee.name as "Name",
 Employee.weekly_work_hours as "WeeklyWorkHours",
 Employee.daily_work_hours as "DailyWorkHours",
-Contract.company_department as "Department",
+CompanyDept.name as "Department",
 Employee.birth_date as "BirthDate",
 Employee.date_of_hire as "DateOfHire",
 Employee.hourly_rate as "HourlyRate",
@@ -493,8 +632,9 @@ Contract.end_date as "EndDate",
 Contract.monthly_global_cost as "MonthlyCost",
 Contract.pay_company as "PayCompany",
 Contract.position as "Position",
-Contract.contract_type as "ContractType",
-Company.name as "Company",
+ContractType.name as "ContractType",
+Citizenship.name as "Country",
+Company.name as "CompanyName",
 SlctItem.title as "MaritalStatus"
 from hr_employee as Employee
 left outer join base_partner as Partner on (Employee.contact_partner = Partner.id)
@@ -503,7 +643,10 @@ left outer join hr_employment_contract as Contract on (Employee.id = Contract.em
 left outer join base_company as Company on (Contract.pay_company = Company.id)
 left outer join meta_select as Slct on (Slct.name = 'hr.employee.marital.status')
 left outer join meta_select_item as SlctItem on (Slct.id = SlctItem.select_id) and (SlctItem.value = Employee.marital_status)
-]]></xml-property>
+left outer join base_company_department as CompanyDept on (CompanyDept.id = Contract.company_department)
+left outer join hr_employment_contract_type as ContractType on (ContractType.id = Contract.contract_type)
+left outer join base_citizenship as Citizenship on (Citizenship.id = Employee.citizenship)
+where Employee.id = ? ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -1054,7 +1197,7 @@ left outer join meta_select_item as SlctItem on (Slct.id = SlctItem.select_id) a
     </page-setup>
     <body>
         <data id="374">
-            <property name="dataSet">Data Set</property>
+            <property name="dataSet">EmployeeDS</property>
             <list-property name="boundDataColumns">
                 <structure>
                     <property name="name">StartDate</property>
@@ -1092,7 +1235,7 @@ EMPLOYEE RESUME
                         <property name="fontSize">12pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="textAlign">center</property>
-                        <property name="dataSet">Data Set</property>
+                        <property name="dataSet">EmployeeDS</property>
                         <list-property name="boundDataColumns">
                             <structure>
                                 <property name="name">Name</property>
@@ -1105,7 +1248,7 @@ EMPLOYEE RESUME
                     </data>
                     <data id="127">
                         <property name="textAlign">center</property>
-                        <property name="dataSet">Data Set</property>
+                        <property name="dataSet">EmployeeDS</property>
                         <list-property name="boundDataColumns">
                             <structure>
                                 <property name="name">Phone</property>
@@ -1118,7 +1261,7 @@ EMPLOYEE RESUME
                     </data>
                     <data id="123">
                         <property name="textAlign">center</property>
-                        <property name="dataSet">Data Set</property>
+                        <property name="dataSet">EmployeeDS</property>
                         <list-property name="boundDataColumns">
                             <structure>
                                 <property name="name">EmailAddress</property>
@@ -1132,9 +1275,9 @@ EMPLOYEE RESUME
                 </cell>
                 <cell id="111"/>
             </row>
-            <row id="116">
-                <property name="height">0.3333333333333333in</property>
-                <cell id="117">
+            <row id="240">
+                <property name="height">2.5in</property>
+                <cell id="241">
                     <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
                     <text id="183">
@@ -1149,13 +1292,6 @@ EMPLOYEE RESUME
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<H2>Contract</H2>]]></text-property>
                     </text>
-                </cell>
-            </row>
-            <row id="240">
-                <property name="height">2in</property>
-                <cell id="241">
-                    <property name="colSpan">3</property>
-                    <property name="rowSpan">1</property>
                     <grid id="189">
                         <column id="190"/>
                         <column id="191"/>
@@ -1170,7 +1306,7 @@ EMPLOYEE RESUME
                             </cell>
                             <cell id="232">
                                 <data id="239">
-                                    <property name="dataSet">Data Set</property>
+                                    <property name="dataSet">EmployeeDS</property>
                                     <list-property name="boundDataColumns">
                                         <structure>
                                             <property name="name">DailyWorkHours</property>
@@ -1195,7 +1331,7 @@ EMPLOYEE RESUME
                             </cell>
                             <cell id="223">
                                 <data id="225">
-                                    <property name="dataSet">Data Set</property>
+                                    <property name="dataSet">EmployeeDS</property>
                                     <list-property name="boundDataColumns">
                                         <structure>
                                             <property name="name">DateOfHire</property>
@@ -1220,7 +1356,7 @@ EMPLOYEE RESUME
                             <cell id="219">
                                 <data id="126">
                                     <property name="display">inline</property>
-                                    <property name="dataSet">Data Set</property>
+                                    <property name="dataSet">EmployeeDS</property>
                                     <list-property name="boundDataColumns">
                                         <structure>
                                             <property name="name">EndDate</property>
@@ -1244,13 +1380,13 @@ EMPLOYEE RESUME
                             </cell>
                             <cell id="215">
                                 <data id="229">
-                                    <property name="dataSet">Data Set</property>
+                                    <property name="dataSet">EmployeeDS</property>
                                     <list-property name="boundDataColumns">
                                         <structure>
                                             <property name="name">Department</property>
                                             <text-property name="displayName">Department</text-property>
                                             <expression name="expression" type="javascript">dataSetRow["Department"]</expression>
-                                            <property name="dataType">decimal</property>
+                                            <property name="dataType">string</property>
                                         </structure>
                                     </list-property>
                                     <property name="resultSetColumn">Department</property>
@@ -1277,7 +1413,7 @@ EMPLOYEE RESUME
                             <cell id="195">
                                 <data id="125">
                                     <property name="display">inline</property>
-                                    <property name="dataSet">Data Set</property>
+                                    <property name="dataSet">EmployeeDS</property>
                                     <list-property name="boundDataColumns">
                                         <structure>
                                             <property name="name">StartDate</property>
@@ -1301,7 +1437,21 @@ EMPLOYEE RESUME
                                     <text-property name="content"><![CDATA[End date : ]]></text-property>
                                 </text>
                             </cell>
-                            <cell id="199"/>
+                            <cell id="199">
+                                <data id="404">
+                                    <property name="display">inline</property>
+                                    <property name="dataSet">EmployeeDS</property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">EndDate</property>
+                                            <text-property name="displayName">EndDate</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["EndDate"]</expression>
+                                            <property name="dataType">date</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="resultSetColumn">EndDate</property>
+                                </data>
+                            </cell>
                             <cell id="200"/>
                         </row>
                         <row id="201">
@@ -1316,7 +1466,7 @@ EMPLOYEE RESUME
                             <cell id="203">
                                 <data id="128">
                                     <property name="display">inline</property>
-                                    <property name="dataSet">Data Set</property>
+                                    <property name="dataSet">EmployeeDS</property>
                                     <list-property name="boundDataColumns">
                                         <structure>
                                             <property name="name">WeeklyWorkHours</property>
@@ -1347,7 +1497,7 @@ EMPLOYEE RESUME
                             <cell id="207">
                                 <data id="129">
                                     <property name="display">inline</property>
-                                    <property name="dataSet">Data Set</property>
+                                    <property name="dataSet">EmployeeDS</property>
                                     <list-property name="boundDataColumns">
                                         <structure>
                                             <property name="name">DailyWorkHours</property>
@@ -1400,7 +1550,7 @@ EMPLOYEE RESUME
                             </cell>
                             <cell id="287">
                                 <data id="306">
-                                    <property name="dataSet">Data Set</property>
+                                    <property name="dataSet">EmployeeDS</property>
                                     <list-property name="boundDataColumns">
                                         <structure>
                                             <property name="name">BirthDate</property>
@@ -1422,7 +1572,20 @@ EMPLOYEE RESUME
                                     <text-property name="content"><![CDATA[Country :]]></text-property>
                                 </text>
                             </cell>
-                            <cell id="291"/>
+                            <cell id="291">
+                                <data id="407">
+                                    <property name="dataSet">EmployeeDS</property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">Column Binding</property>
+                                            <text-property name="displayName">Country</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["Country"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="resultSetColumn">Column Binding</property>
+                                </data>
+                            </cell>
                             <cell id="292"/>
                         </row>
                         <row id="293">
@@ -1435,7 +1598,7 @@ EMPLOYEE RESUME
                             </cell>
                             <cell id="295">
                                 <data id="309">
-                                    <property name="dataSet">Data Set</property>
+                                    <property name="dataSet">EmployeeDS</property>
                                     <list-property name="boundDataColumns">
                                         <structure>
                                             <property name="name">MaritalStatus</property>
@@ -1460,7 +1623,7 @@ EMPLOYEE RESUME
                             </cell>
                             <cell id="299">
                                 <data id="311">
-                                    <property name="dataSet">Data Set</property>
+                                    <property name="dataSet">EmployeeDS</property>
                                     <list-property name="boundDataColumns">
                                         <structure>
                                             <property name="name">PhoneAtCustomer</property>
@@ -1484,7 +1647,7 @@ EMPLOYEE RESUME
                             </cell>
                             <cell id="303">
                                 <data id="314">
-                                    <property name="dataSet">Data Set</property>
+                                    <property name="dataSet">EmployeeDS</property>
                                     <list-property name="boundDataColumns">
                                         <structure>
                                             <property name="name">EmergencyContact</property>
@@ -1508,7 +1671,7 @@ EMPLOYEE RESUME
                             </cell>
                             <cell id="317">
                                 <data id="320">
-                                    <property name="dataSet">Data Set</property>
+                                    <property name="dataSet">EmployeeDS</property>
                                     <list-property name="boundDataColumns">
                                         <structure>
                                             <property name="name">EmergencyNumber</property>
@@ -1530,9 +1693,9 @@ EMPLOYEE RESUME
                     </grid>
                 </cell>
             </row>
-            <row id="325">
-                <property name="height">0.333in</property>
-                <cell id="326">
+            <row id="354">
+                <property name="height">2.5in</property>
+                <cell id="355">
                     <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
                     <text id="329">
@@ -1547,15 +1710,8 @@ EMPLOYEE RESUME
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<H2>Position list</H2>]]></text-property>
                     </text>
-                </cell>
-            </row>
-            <row id="354">
-                <property name="height">0.333in</property>
-                <cell id="355">
-                    <property name="colSpan">3</property>
-                    <property name="rowSpan">1</property>
                     <table id="358">
-                        <property name="dataSet">Data Set</property>
+                        <property name="dataSet">EmployeeDS</property>
                         <list-property name="boundDataColumns">
                             <structure>
                                 <property name="name">StartDate</property>
@@ -1584,7 +1740,7 @@ EMPLOYEE RESUME
                             <structure>
                                 <property name="name">Company</property>
                                 <text-property name="displayName">Company</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["Company"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["CompanyName"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
