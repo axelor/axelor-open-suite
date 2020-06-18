@@ -17,11 +17,14 @@
  */
 package com.axelor.apps.base.web;
 
+import java.lang.invoke.MethodHandles;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.ProductCompany;
-import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.report.IReport;
@@ -40,10 +43,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
-import java.lang.invoke.MethodHandles;
-import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Singleton
 public class ProductController {
@@ -61,17 +60,6 @@ public class ProductController {
       response.setFlash(I18n.get(IExceptionMessage.PRODUCT_1));
       response.setReload(true);
     }
-  }
-
-  public void fillProductCompanyList(ActionRequest request, ActionResponse response) {
-    Product product = request.getContext().asType(Product.class);
-    List<Company> companyList = Beans.get(CompanyRepository.class).all().fetch();
-    for (Company company : companyList) {
-      ProductCompany productCompany = new ProductCompany();
-      productCompany.setCompany(company);
-      product.addProductCompanyListItem(productCompany);
-    }
-    response.setValues(product);
   }
 
   public void updateProductsPrices(ActionRequest request, ActionResponse response)

@@ -367,7 +367,6 @@
 		<action name="action-product-record-set-barcode-type-config"/>
 		<action name="action-product-attrs-title-unit"/>
 		<action name="action-product-attrs-enable-product-company-list"/>
-		<action name="action-product-method-fill-product-company-list" if="!__config__.app.getApp('base').getCompanySpecificProductFieldsList().isEmpty()"/>
     </action-group>
   
     <action-group name="action-group-base-product-producttype-onchange">
