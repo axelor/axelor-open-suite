@@ -7,6 +7,7 @@
 - MRP : Remove duplicate information
 - ACCOUNTING INFORMATION : Add missing translation
 - TeamTaskCategory : Added translation for title of grid-view and fields
+- INVOICE : corrected the possibility to add a payment when the amount remaining is inferior or equal to 0.
 
 ## [5.3.7] - 2020-06-26
 ## Improvements
