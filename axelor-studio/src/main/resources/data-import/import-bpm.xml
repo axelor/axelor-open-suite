@@ -14,14 +14,16 @@
  		</bind>
  		<bind node="appBuilder" type="com.axelor.studio.db.AppBuilder" search="self.code = :code" create="false" update="true" call="com.axelor.studio.service.ImportService:importAppBuilder">
  			<bind node="code" to="code" />
-			<bind node="depends" alias="depends" />
-			<bind to="dependsOnSet" alias="deps"  search="self.code in :deps"  eval="depends != null ? depends.split(',') as List : []" create="false"/>
+			<bind node="depends/depend" to="dependsOnSet" search="self.code in :code" create="false">
+				<bind node="@code" to="code"/>
+			</bind>
  		</bind>
  		<bind node="models/model" type="com.axelor.meta.db.MetaJsonModel" search="self.name = :name" update="true">
  			<bind node="name" to="name" />
             <bind node="title" to="title" />
             <bind node="onNew" to="onNew" />
             <bind node="onSave" to="onSave" />
+            <bind node="formWidth" to="formWidth" />
             <bind node="menuTitle" to="menuTitle" />
             <bind node="menuIcon" to="menuIcon" />
             <bind node="menuBackground" to="menuBackground" />
@@ -58,6 +60,8 @@
  			<bind node="required" to="required" />
  			<bind node="requiredIf" to="requiredIf" />
  			<bind node="readonly" to="readonly" />
+ 			<bind node="readonlyIf" to="readonlyIf" />
+ 			<bind node="includeIf" to="includeIf"/>
  			<bind node="scale" to="scale" />
  			<bind node="selection" to="selection" />
  			<bind node="sequence" to="sequence" />
@@ -100,6 +104,8 @@
  			<bind node="required" to="required" />
  			<bind node="requiredIf" to="requiredIf" />
  			<bind node="readonly" to="readonly" />
+ 			<bind node="readonlyIf" to="readonlyIf" />
+ 			<bind node="includeIf" to="includeIf"/>
  			<bind node="scale" to="scale" />
  			<bind node="selection" to="selection" />
  			<bind node="sequence" to="sequence" />
