@@ -54,10 +54,12 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
   protected InvoiceRepository invoiceRepo;
   protected AccountConfigRepository accountConfigRepo;
   protected AppBaseService appBaseService;
-  
+
   @Inject
   public InvoicePrintServiceImpl(
-      InvoiceRepository invoiceRepo, AccountConfigRepository accountConfigRepo, AppBaseService appBaseService) {
+      InvoiceRepository invoiceRepo,
+      AccountConfigRepository accountConfigRepo,
+      AppBaseService appBaseService) {
     this.invoiceRepo = invoiceRepo;
     this.accountConfigRepo = accountConfigRepo;
     this.appBaseService = appBaseService;
@@ -164,12 +166,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
           @Override
           public void accept(Invoice invoice) throws Exception {
             printedInvoices.add(
-                printCopiesToFile(
-					invoice, 
-					false, 
-					null, 
-					ReportSettings.FORMAT_PDF, 
-					null));
+                printCopiesToFile(invoice, false, null, ReportSettings.FORMAT_PDF, null));
           }
         });
 
@@ -234,18 +231,18 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
               ? companyLanguageCode
               : partnerLanguageCode;
     }
-    
+
     AppBase appBase = appBaseService.getAppBase();
 
     return reportSetting
         .addParam("InvoiceId", invoice.getId())
         .addParam("Locale", locale)
         .addParam("ReportType", reportType == null ? 0 : reportType)
-		.addParam("GroupProducts", invoice.getGroupProductsOnPrintings())
-		.addParam("GroupProductTypes", appBase.getRegroupProductsTypeSelect())
-		.addParam("GroupProductLevel", appBase.getRegroupProductsLevelSelect())
-		.addParam("GroupProductProductTitle", appBase.getRegroupProductsLabelProducts())
-		.addParam("GroupProductServiceTitle", appBase.getRegroupProductsLabelServices())
+        .addParam("GroupProducts", invoice.getGroupProductsOnPrintings())
+        .addParam("GroupProductTypes", appBase.getRegroupProductsTypeSelect())
+        .addParam("GroupProductLevel", appBase.getRegroupProductsLevelSelect())
+        .addParam("GroupProductProductTitle", appBase.getRegroupProductsLabelProducts())
+        .addParam("GroupProductServiceTitle", appBase.getRegroupProductsLabelServices())
         .addParam("HeaderHeight", invoice.getPrintingSettings().getPdfHeaderHeight())
         .addParam("FooterHeight", invoice.getPrintingSettings().getPdfFooterHeight())
         .addFormat(format);

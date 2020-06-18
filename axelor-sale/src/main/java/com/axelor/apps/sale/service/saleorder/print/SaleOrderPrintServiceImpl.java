@@ -18,8 +18,8 @@
 package com.axelor.apps.sale.service.saleorder.print;
 
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.db.AppBase;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;

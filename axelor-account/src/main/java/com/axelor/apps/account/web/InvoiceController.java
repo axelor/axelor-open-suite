@@ -350,8 +350,7 @@ public class InvoiceController {
                     false,
                     format,
                     reportType,
-                    locale
-                );
+                    locale);
         title = I18n.get("Invoice");
         response.setCanClose(true);
       } else {
@@ -380,12 +379,7 @@ public class InvoiceController {
               .add(
                   "html",
                   Beans.get(InvoicePrintService.class)
-                  .printInvoice(
-                    invoice, 
-                    true, 
-                    "pdf", 
-                    reportType, 
-                    null))             
+                      .printInvoice(invoice, true, "pdf", reportType, null))
               .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);

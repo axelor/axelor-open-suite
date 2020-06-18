@@ -18,8 +18,8 @@
 package com.axelor.apps.stock.service.stockmove.print;
 
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.db.AppBase;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.exception.IExceptionMessage;

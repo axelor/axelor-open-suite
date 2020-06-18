@@ -139,8 +139,9 @@ public class PurchaseOrderController {
         fileLink = purchaseOrderPrintService.printPurchaseOrders(ids);
         title = I18n.get("Purchase orders");
       } else if (context.get("id") != null) {
-        PurchaseOrder purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(
-			Long.parseLong(context.get("id").toString()));
+        PurchaseOrder purchaseOrder =
+            Beans.get(PurchaseOrderRepository.class)
+                .find(Long.parseLong(context.get("id").toString()));
         title = purchaseOrderPrintService.getFileName(purchaseOrder);
         fileLink =
             purchaseOrderPrintService.printPurchaseOrder(purchaseOrder, ReportSettings.FORMAT_PDF);

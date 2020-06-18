@@ -491,9 +491,9 @@ public class InvoicingProjectService {
 
     if (invoicingProject.getAttachAnnexToInvoice()) {
       List<File> fileList = new ArrayList<>();
-	  MetaFiles metaFiles = Beans.get(MetaFiles.class);
-	  
-	  Invoice invoice = invoicingProject.getInvoice();
+      MetaFiles metaFiles = Beans.get(MetaFiles.class);
+
+      Invoice invoice = invoicingProject.getInvoice();
 
       fileList.add(
           Beans.get(InvoicePrintServiceImpl.class)

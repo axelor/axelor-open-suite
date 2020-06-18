@@ -18,8 +18,8 @@
 package com.axelor.apps.purchase.service.print;
 
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.db.AppBase;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
@@ -46,7 +46,8 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
   protected AppBaseService appBaseService;
 
   @Inject
-  public PurchaseOrderPrintServiceImpl(AppPurchaseService appPurchaseService, AppBaseService appBaseService) {
+  public PurchaseOrderPrintServiceImpl(
+      AppPurchaseService appPurchaseService, AppBaseService appBaseService) {
     this.appPurchaseService = appPurchaseService;
     this.appBaseService = appBaseService;
   }
@@ -99,11 +100,11 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
     return reportSetting
         .addParam("PurchaseOrderId", purchaseOrder.getId())
         .addParam("Locale", locale)
-		.addParam("GroupProducts", purchaseOrder.getGroupProductsOnPrintings())
-		.addParam("GroupProductTypes", appBase.getRegroupProductsTypeSelect())
-		.addParam("GroupProductLevel", appBase.getRegroupProductsLevelSelect())
-		.addParam("GroupProductProductTitle", appBase.getRegroupProductsLabelProducts())
-		.addParam("GroupProductServiceTitle", appBase.getRegroupProductsLabelServices())
+        .addParam("GroupProducts", purchaseOrder.getGroupProductsOnPrintings())
+        .addParam("GroupProductTypes", appBase.getRegroupProductsTypeSelect())
+        .addParam("GroupProductLevel", appBase.getRegroupProductsLevelSelect())
+        .addParam("GroupProductProductTitle", appBase.getRegroupProductsLabelProducts())
+        .addParam("GroupProductServiceTitle", appBase.getRegroupProductsLabelServices())
         .addParam("HeaderHeight", purchaseOrder.getPrintingSettings().getPdfHeaderHeight())
         .addParam("FooterHeight", purchaseOrder.getPrintingSettings().getPdfFooterHeight())
         .addFormat(formatPdf);

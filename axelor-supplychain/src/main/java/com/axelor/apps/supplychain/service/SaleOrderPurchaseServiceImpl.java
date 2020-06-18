@@ -138,7 +138,6 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
     purchaseOrder.setGeneratedSaleOrderId(saleOrder.getId());
     purchaseOrder.setGroupProductsOnPrintings(supplierPartner.getGroupProductsOnPrintings());
 
-
     Integer atiChoice =
         Beans.get(PurchaseConfigService.class)
             .getPurchaseConfig(saleOrder.getCompany())
