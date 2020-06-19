@@ -17,10 +17,8 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.exception.AxelorException;
-import java.math.BigDecimal;
 
 public interface StockMoveServiceSupplychain {
 
@@ -35,18 +33,4 @@ public interface StockMoveServiceSupplychain {
   void verifyProductStock(StockMove stockMove) throws AxelorException;
 
   public boolean isAllocatedStockMoveLineRemoved(StockMove stockMove);
-  /**
-   * Convert PackLines of Pack into StockMoveLines.
-   *
-   * @param stockMove
-   * @param pack
-   * @param packQty
-   * @return
-   */
-  public StockMove addPack(StockMove stockMove, Pack pack, BigDecimal packQty)
-      throws AxelorException;
-
-  public void computePack(StockMove stockMove);
-
-  public void resetPack(StockMove stockMove);
 }

@@ -187,7 +187,6 @@ public class SaleOrderController {
           List<SaleOrderLine> saleOrderLinesSelected =
               JPA.all(SaleOrderLine.class)
                   .filter("self.id IN (:saleOderLineIdList)")
-                  .order("sequence")
                   .bind("saleOderLineIdList", saleOrderLineIdSelected)
                   .fetch();
           PurchaseOrder purchaseOrder =

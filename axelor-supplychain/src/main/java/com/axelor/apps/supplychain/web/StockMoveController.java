@@ -18,11 +18,8 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.repo.PackRepository;
 import com.axelor.apps.stock.db.StockMove;
-import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.SaleOrderReservedQtyService;
@@ -35,9 +32,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.rpc.Context;
-import java.math.BigDecimal;
-import java.util.LinkedHashMap;
 import java.util.Optional;
 
 public class StockMoveController {
@@ -100,27 +94,6 @@ public class StockMoveController {
             .isAllocatedStockMoveLineRemoved(stockMove)) {
       response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
       response.setFlash(I18n.get(IExceptionMessage.ALLOCATED_STOCK_MOVE_LINE_DELETED_ERROR));
-    }
-  }
-
-  @SuppressWarnings("unchecked")
-  public void addPack(ActionRequest request, ActionResponse response) {
-    try {
-      Context context = request.getContext();
-      String stockMoveId = context.get("_id").toString();
-      StockMove stockMove = Beans.get(StockMoveRepository.class).find(Long.parseLong(stockMoveId));
-      LinkedHashMap<String, Object> packMap =
-          (LinkedHashMap<String, Object>) request.getContext().get("pack");
-      String packId = packMap.get("id").toString();
-      Pack pack = Beans.get(PackRepository.class).find(Long.parseLong(packId));
-
-      String qty = context.get("qty").toString();
-      BigDecimal packQty = new BigDecimal(qty);
-
-      Beans.get(StockMoveServiceSupplychain.class).addPack(stockMove, pack, packQty);
-      response.setCanClose(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
     }
   }
 }
