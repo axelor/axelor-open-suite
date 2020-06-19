@@ -62,7 +62,7 @@
 	apps = ""
 	allApps.fetch().each({ 
 		depends = ""
-		it.dependsOnSet?.each({ depend -> depends +="${depend.code}," })
+		it.dependsOnSet?.each({ depend -> depends +="\n\t\t\t<depend code=\"${depend.code}\"/> " })
 		
 		apps += """\n\t<appBuilder>
 		<name>${it.name}</name>
@@ -81,6 +81,7 @@
 				\n\t\t\t<title>${model.title}</title>
                 \n\t\t\t<onNew>${model.onNew}</onNew>
 				\n\t\t\t<onSave>${model.onSave}</onSave>
+				\n\t\t\t<formWidth>${model.formWidth}</formWidth>
                 \n\t\t\t<menuTitle>${model.menuTitle}</menuTitle>
                 \n\t\t\t<menuIcon>${model.menuIcon}</menuIcon>
                 \n\t\t\t<menuBackground>${model.menuBackground}</menuBackground>
@@ -93,7 +94,16 @@
 	
 	fields = ""
 	allFields.fetch().each({
-		field -> fields += """\n\t\t<field>
+		field -> 
+				widgetAttrs = ""
+				if (field.widgetAttrs != null) {
+                	widgetAttrs += field.widgetAttrs
+                }
+                valueExpr = ""
+				if (field.valueExpr != null) {
+                	valueExpr += field.valueExpr
+                }
+				fields += """\n\t\t<field>
 				\n\t\t\t<name>${field.name}</name>
 				\n\t\t\t<title>${field.title}</title>
 				\n\t\t\t<type>${field.type}</type>
@@ -119,14 +129,16 @@
 				\n\t\t\t<required>${field.required}</required>
 				\n\t\t\t<requiredIf>${field.requiredIf}</requiredIf>
 				\n\t\t\t<readonly>${field.readonly}</readonly>
+				\n\t\t\t<readonlyIf>${field.readonlyIf}</readonlyIf>
+				\n\t\t\t<includeIf>${field.includeIf}</includeIf>
 				\n\t\t\t<scale>${field.scale}</scale>
 				\n\t\t\t<selection>${field.selection}</selection>
 				\n\t\t\t<sequence>${field.sequence}</sequence>
 				\n\t\t\t<showIf>${field.showIf}</showIf>
 				\n\t\t\t<targetModel>${field.targetModel}</targetModel>
 				\n\t\t\t<widget>${field.widget}</widget>
-				\n\t\t\t<widgetAttrs>""" + field.widgetAttrs + """</widgetAttrs>
-				\n\t\t\t<valueExpr>${field.valueExpr != null ? """ + field.valueExpr + """ : ""}</valueExpr>
+				\n\t\t\t<widgetAttrs>""" + widgetAttrs + """</widgetAttrs>
+				\n\t\t\t<valueExpr>""" + valueExpr + """</valueExpr>
 				\n\t\t\t<jsonModel>${field.jsonModel?.name}</jsonModel>
 				\n\t\t\t<targetJsonModel>${field.targetJsonModel?.name}</targetJsonModel>
 				\n\t\t\t<appBuilder>${field.appBuilder?.code}</appBuilder>
