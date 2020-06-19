@@ -3,6 +3,7 @@
 ## Improvements
 ## Bug Fixes
 - EXTRA HOURS : Fix missing translation
+- ACCOUNTING REPORT : Add missing translations in report
 
 ## [5.3.7] - 2020-06-26
 ## Improvements
