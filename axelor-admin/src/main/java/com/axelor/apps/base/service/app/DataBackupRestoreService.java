@@ -26,7 +26,6 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import java.io.BufferedInputStream;
@@ -66,7 +65,7 @@ public class DataBackupRestoreService {
 
             @Override
             public void handle(Model bean, Exception e) {
-              if (Objects.equal("null", e.getMessage())) {
+              if (e.getMessage() != null && !e.getMessage().equals("null")) {
                 if (bean != null) {
                   sb1.append(bean.getClass().getSimpleName() + " : \n" + e.getMessage() + "\n\n");
                 } else {

@@ -60,7 +60,7 @@ public class WkfController {
       Beans.get(WkfDesignerService.class).processXml(workflow);
 
     } catch (Exception e) {
-      if (Objects.equal(IExceptionMessage.CANNOT_ALTER_NODES, e.getMessage())) {
+      if (Objects.equal(e.getMessage(), IExceptionMessage.CANNOT_ALTER_NODES)) {
         this.setDefaultNodes(request, response);
         response.setValue("$isError", true);
       }
