@@ -14,6 +14,7 @@
 - TIMESHEET : Fix error message showing when there was no mail template
 - SALE ORDER : Set duration when created from opportunity.
 - Bill of Material: Replace NPE by an explicit message to the user when product unit is not configured.
+- EMPLOYEE : add button for Employee.rptdesign report on form.
 - Employee Emailaddreess : prevent to select existing emailAddress. 
 
 ## [5.2.11] - 2020-05-26
