@@ -442,7 +442,6 @@ InvoiceSet.length > 0))"
         <panel name="actionsPanel" hideIf="partner == null" sidebar="true">
             <field name="amountRemaining" hidden="true"/>
             <field name="hasPendingPayments" hidden="true"/>
-            <button name="addPackBtn" title="Add a pack" onClick="save,action-wizard-view-add-pack" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('sale')?.enablePackManagement" hideIf="partner == null || statusSelect &gt; 1"/>
             <button name="validateBtn" hidden="true" title="Validate" onClick="save,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-validate"/>
             <button name="ventilateBtn" hidden="true" title="Ventilate" showIf="statusSelect == 2 &amp;&amp; operationSubTypeSelect != 2" onClick="save,action-invoice-method-check-not-lettered-advance-payment-move-lines,action-invoice-method-check-not-imputed-refunds,action-invoice-method-ventilate,save" prompt="Are you sure you want to ventilate the invoice ?"/>
             <button name="validateAndVentilateBtn" hidden="true" title="Validate" onClick="save,action-validate-invoice-ckeck-invoice-line-tax-list,action-validate-invoice-ckeck-invoice-line-tax-list,action-invoice-method-check-not-lettered-advance-payment-move-lines,action-invoice-method-check-not-imputed-refunds,action-invoice-method-validate-and-ventilate"/>

@@ -263,7 +263,6 @@
 				</panel>
 			</panel>
 			<panel name="actionPanel" colSpan="3" itemSpan="12">
-			<button name="addPackBtn" title="Add a pack" onClick="save,action-wizard-view-add-pack" if-module="axelor-supplychain" if="__config__.app.getApp('sale')?.enablePackManagement &amp;&amp; __config__.app.isApp('supplychain')" hideIf="partner == null || statusSelect &gt; 1"/>
 				<button name="planBtn" title="Plan" icon="fa-calendar" showIf="statusSelect == 1" onClick="action-group-stock-stockmove-plan-click"/>
 				<button name="passedForPaymentAuthorizedBtn" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; ( typeSelect == 3 &amp;&amp; !isReversion) &amp;&amp; pfpValidateStatusSelect != 2" title="PFP authorized" onClick="save,action-stock-move-record-pfp-validate,save" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()"/>
 				<button name="refusalToPayLitigationBtn" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; ( typeSelect == 3 &amp;&amp; !isReversion) &amp;&amp; pfpValidateStatusSelect != 3" title="PFP litigation" onClick="save,action-stock-move-record-pfp-refusal-to-pay,save" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()"/>

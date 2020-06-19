@@ -1,8 +1,5 @@
 # Changelog
 ## [Unreleased 5.3.7]
-## Features
-- Add pack feature in invoice and stock move.
-
 ## Improvements
 - LEAVE REQUEST: remove field duration lenght constraint
 - EMPLOYEE : add translation of "Employee PhoneBook".

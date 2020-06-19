@@ -12,8 +12,6 @@
 	<many-to-one name="incomingStockMove" ref="com.axelor.apps.stock.db.StockMove" title="Supplier arrival"/>
   	<many-to-one name="parentLine" ref="com.axelor.apps.account.db.InvoiceLine" />
    	<one-to-many name="subLineList" ref="com.axelor.apps.account.db.InvoiceLine" mappedBy="parentLine" title="Pack lines"/>
-  	<boolean name="isShowTotal" title="Show Total"/>
-  	<boolean name="isHideUnitAmounts" title="Hide Unit Amounts"/>
   	
   </entity>
   
