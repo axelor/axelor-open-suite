@@ -4,6 +4,7 @@
 ## Bug Fixes
 - EXTRA HOURS : Fix missing translation
 - ACCOUNTING REPORT : Add missing translations in report
+- MRP : Remove duplicate information
 
 ## [5.3.7] - 2020-06-26
 ## Improvements
@@ -27,8 +28,6 @@
 - SALE ORDER: Set duration when created from opportunity.
 - Advance import: Fix multiple search on same field.
 - Bill of Material: Replace NPE by an explicit message to the user when product unit is not configured.
-- EMPLOYEE: add button for Employee.rptdesign report on form.
-- Employee email address: prevent the selection of existing email addresses.
 
 ## [5.3.6] - 2020-05-26
 ## Improvements
