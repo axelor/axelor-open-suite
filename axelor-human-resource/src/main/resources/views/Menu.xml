@@ -389,6 +389,17 @@
 		<context name="_productTypeSelect" expr="storable"/>
 	</action-view>
 
+<<<<<<< HEAD
+=======
+	<menuitem name="extra-hours-type" parent="extra-hours-root" title="Extra hours type" action="extra.hours.type"/>
+
+	<action-view name="extra.hours.type" model="com.axelor.apps.hr.db.ExtraHoursType"
+		title="Extra hours type">
+		<view name="extra-hours-type-grid" type="grid" />
+		<view name="extra-hours-type-form" type="form" />
+	</action-view>
+
+>>>>>>> dc3c84519b... RM29045 : Fix missing missing translation for extra hours (#5534)
 	<menuitem name="admin-root-batch-hr" parent="admin-root-batch" if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
 		title="HR batches" action="admin.root.batch.hr" />
 

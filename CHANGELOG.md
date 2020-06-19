@@ -3,6 +3,7 @@
 ## Improvements
 ## Bug Fixes
 - MRP : Remove duplicate information
+- EXTRA HOURS : Fix missing translation
 
 ## [5.2.12] - 2020-06-19
 ## Improvements
