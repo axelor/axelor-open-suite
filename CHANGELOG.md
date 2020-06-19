@@ -2,6 +2,7 @@
 ## [Unreleased 5.3.8]
 ## Improvements
 ## Bug Fixes
+- EXTRA HOURS : Fix missing translation
 
 ## [5.3.7] - 2020-06-26
 ## Improvements
