@@ -2,6 +2,7 @@
 ## [Unreleased 5.2.13]
 ## Improvements
 ## Bug Fixes
+- MRP : Remove duplicate information
 
 ## [5.2.12] - 2020-06-19
 ## Improvements
