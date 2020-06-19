@@ -17,14 +17,6 @@
 		<boolean name="isShowTotal" title="Show Total"/>
 		<boolean name="isHideUnitAmounts" title="Hide Unit Amounts"/>
 
-		<extra-code>
-			<![CDATA[
-				//TYPE SELECT
-				public static final int TYPE_NORMAL = 0;
-				public static final int TYPE_TITLE = 1;
-			]]>
-		</extra-code>
-
 	</entity>
 
 </domain-models>
