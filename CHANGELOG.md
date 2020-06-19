@@ -1,29 +1,34 @@
 # Changelog
-## [Unreleased 5.3.7]
-## Features
-- Add pack feature in invoice and stock move.
-
+## [Unreleased 5.3.8]
 ## Improvements
-- LEAVE REQUEST: remove field duration lenght constraint
-- EMPLOYEE : add translation of "Employee PhoneBook".
-- INVENTAIRE: no more than one line for same product and same tracking number.
-- Studio: Added selection for context field and context field value. 
+## Bug Fixes
+- EXTRA HOURS : Fix missing translation
+- ACCOUNTING REPORT : Add missing translations in report
+
+## [5.3.7] - 2020-06-26
+## Improvements
+- LEAVE REQUEST: remove field duration length constraint
+- Studio: Added selection for context field and context field value.
+- EMPLOYMENT CONTRACT: Add new sequence on save.
 
 ## Bug Fixes
-- CRM/SALES : fix for contacts with mainPartner isProspect do not display
+- INVENTORY: prevent having more than one line for the same product and the same tracking number.
+- EMPLOYEE: add translation of "Employee PhoneBook".
+- CRM/SALES: Contact menu also shows contacts from prospects.
 - Mail message: fix an issue where some emails are not being sent in a batch.
-- ADVANCED SEARCH : Added display condition on fields using app config settings
-- BANK STATEMENT LINE : change orderBy of afb120 bank statement line grid.
-- BANK DETAILS : Display balance in card view and form view.
+- ADVANCED SEARCH: Added display condition on fields using app config settings.
+- BANK STATEMENT LINE: change orderBy of afb120 bank statement line grid.
+- BANK DETAILS: Display balance in card view and form view.
 - Configurator creator: fix demo data import.
-- INTERBANK CODE : added translation of Reject/Return code.
-- PAYMENT MODE : Fix wrong translation
-- ACCOUNT : Fix wrong move line grid view
-- TIMESHEET : Fix error message showing when there was no mail template
-- SALE ORDER : Set duration when created from opportunity.
-- Advance import: Fix multiple search on same field
+- INTERBANK CODE: added translation of Reject/Return code.
+- PAYMENT MODE: Fix wrong translation.
+- ACCOUNT: Fix wrong move line grid view.
+- TIMESHEET: Fix error message showing when there were no mail templates.
+- SALE ORDER: Set duration when created from opportunity.
+- Advance import: Fix multiple search on same field.
 - Bill of Material: Replace NPE by an explicit message to the user when product unit is not configured.
-- ACCOUNTING REPORT : Add missing translations in report
+- EMPLOYEE: add button for Employee.rptdesign report on form.
+- Employee email address: prevent the selection of existing email addresses.
 
 ## [5.3.6] - 2020-05-26
 ## Improvements
@@ -54,7 +59,6 @@
 ## [5.3.5] - 2020-05-11
 ## Features
 - CONTACT: Add import from Google contact.
-- EMPLOYMENT CONTRACT : Add new sequence on save.
 
 ## Improvements
 - WEEKLY PLANNING: leaveCoef now has default and init values.
@@ -354,7 +358,8 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - PRODUCT: Fix economicManufOrderQty displayed twice.
 
 
-[Unreleased 5.3.7]: https://github.com/axelor/axelor-open-suite/compare/v5.3.6...dev
+[Unreleased 5.3.8]: https://github.com/axelor/axelor-open-suite/compare/v5.3.7...dev
+[5.3.7]: https://github.com/axelor/axelor-open-suite/compare/v5.3.6...v5.3.7
 [5.3.6]: https://github.com/axelor/axelor-open-suite/compare/v5.3.5...v5.3.6
 [5.3.5]: https://github.com/axelor/axelor-open-suite/compare/v5.3.4...v5.3.5
 [5.3.4]: https://github.com/axelor/axelor-open-suite/compare/v5.3.3...v5.3.4

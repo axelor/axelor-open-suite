@@ -32,7 +32,6 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -54,7 +53,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -378,18 +376,20 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     } else {
       stockMoveLineToInvoiceList = getConsolidatedStockMoveLineList(stockMoveLineList);
     }
-    stockMoveLineToInvoiceList.sort(Comparator.comparing(StockMoveLine::getId));
     for (StockMoveLine stockMoveLine : stockMoveLineToInvoiceList) {
 
       InvoiceLine invoiceLineCreated;
-      BigDecimal qty = null;
       Long id = stockMoveLine.getId();
       if (qtyToInvoiceMap != null) {
-        qty = qtyToInvoiceMap.get(id);
+        invoiceLineCreated =
+            this.createInvoiceLine(invoice, stockMoveLine, qtyToInvoiceMap.get(id));
       } else {
-        qty = stockMoveLine.getRealQty().subtract(computeNonCanceledInvoiceQty(stockMoveLine));
+        invoiceLineCreated =
+            this.createInvoiceLine(
+                invoice,
+                stockMoveLine,
+                stockMoveLine.getRealQty().subtract(computeNonCanceledInvoiceQty(stockMoveLine)));
       }
-      invoiceLineCreated = this.createInvoiceLine(invoice, stockMoveLine, qty);
 
       if (invoiceLineCreated != null) {
         invoiceLineList.add(invoiceLineCreated);
@@ -405,25 +405,17 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     Product product = stockMoveLine.getProduct();
     boolean isTitleLine = false;
 
-    int sequence;
+    int sequence = InvoiceLineGenerator.DEFAULT_SEQUENCE;
     SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
     PurchaseOrderLine purchaseOrderLine = stockMoveLine.getPurchaseOrderLine();
 
     if (saleOrderLine != null) {
-      if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE) {
-        isTitleLine = Boolean.TRUE;
-      }
       sequence = saleOrderLine.getSequence();
     } else if (purchaseOrderLine != null) {
       if (purchaseOrderLine.getIsTitleLine()) {
         isTitleLine = true;
       }
       sequence = purchaseOrderLine.getSequence();
-    } else {
-      if (stockMoveLine.getLineTypeSelect() == StockMoveLineRepository.TYPE_TITLE) {
-        isTitleLine = Boolean.TRUE;
-      }
-      sequence = stockMoveLine.getSequence();
     }
 
     // do not create lines with no qties

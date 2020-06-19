@@ -54,7 +54,6 @@
 				ON _user.id = :__user__
 			WHERE
 				self.status_select in (3,4)
-				AND _line.type_select = 0
 				AND self.company = _user.active_company  
 				AND(
 				    ( DATE(self.confirmation_date_time) &gt;= TO_DATE(DATE_PART('year',DATE(:toDate)) || '-01-01','YYYY-MM-DD')
@@ -117,7 +116,6 @@
 			ON _line.sale_order = _order.id
 		WHERE
 			_order.status_select in (3,4)
-			AND _line.type_select = 0
 			AND DATE_PART('year',_order.confirmation_date_time)
 			IN (DATE_PART('year',CURRENT_DATE) - 1, DATE_PART('year',CURRENT_DATE) )
 		GROUP BY
@@ -587,8 +585,7 @@
 			FROM
 				SaleOrderLine self
 			WHERE
-				self.typeSelect = 0
-				AND self.saleOrder.statusSelect in (3,4)
+				self.saleOrder.statusSelect in (3,4)
 				AND self.saleOrder.salespersonUser =:salespersonUser
 				AND self.saleOrder.confirmationDateTime BETWEEN DATE(:fromDate) AND DATE(:fromDate) + 180
 				AND self.saleOrder.company = :activeCompany
@@ -619,8 +616,7 @@
 			FROM
 				SaleOrderLine self
 			WHERE
-				self.typeSelect = 0
-				AND self.saleOrder.statusSelect in (3,4)
+				self.saleOrder.statusSelect in (3,4)
 				AND self.saleOrder.salespersonUser =:salespersonUser
 				AND self.saleOrder.confirmationDateTime BETWEEN DATE(:fromDate) AND DATE(:fromDate) + 120
 				AND self.saleOrder.company = :activeCompany
@@ -652,8 +648,7 @@
 				SaleOrderLine self,
 				MetaSelectItem item
 			WHERE
-				self.typeSelect = 0
-				AND self.saleOrder.statusSelect in (3,4)
+				self.saleOrder.statusSelect in (3,4)
 				AND self.saleOrder.confirmationDateTime BETWEEN DATE(:fromDate) AND DATE(:toDate)
 				AND self.saleOrder.company = :activeCompany
 				AND item.select.name='partner.partner.type.select'
@@ -677,8 +672,7 @@
 		    FROM
 		    	SaleOrderLine self
 		    WHERE
-		    	self.typeSelect = 0
-			    AND self.saleOrder.statusSelect in (3,4)
+			    self.saleOrder.statusSelect in (3,4)
 			    AND self.saleOrder.confirmationDateTime BETWEEN DATE(:fromDate) AND DATE(:toDate)
 			    AND self.saleOrder.company = :activeCompany
 		    GROUP BY
@@ -701,8 +695,7 @@
 				SaleOrderLine self,
 				IndustrySector industrySector
 			WHERE
-				self.typeSelect = 0
-				AND self.saleOrder.statusSelect in (3,4)
+				self.saleOrder.statusSelect in (3,4)
 				AND self.saleOrder.confirmationDateTime BETWEEN DATE(:fromDate) AND DATE(:toDate)
 				AND self.saleOrder.company = :activeCompany
 				AND industrySector.id = self.saleOrder.clientPartner.industrySector.id

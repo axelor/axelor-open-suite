@@ -82,7 +82,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   protected StockMoveRepository stockMoveRepo;
   protected PartnerProductQualityRatingService partnerProductQualityRatingService;
   protected ProductRepository productRepository;
-  protected StockMoveToolService stockMoveToolService;
+  private StockMoveToolService stockMoveToolService;
   private StockMoveLineRepository stockMoveLineRepo;
 
   @Inject

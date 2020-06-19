@@ -20,7 +20,6 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -85,18 +84,4 @@ public interface StockMoveLineServiceSupplychain {
   void setInvoiceStatus(StockMoveLine stockMoveLine);
 
   public boolean isAllocatedStockMoveLine(StockMoveLine stockMoveLine);
-
-  public StockMoveLine createTitleStockMoveLine(
-      PackLine packLine, StockMove stockMove, BigDecimal packQty) throws AxelorException;
-
-  /**
-   * Create StockMoveLine from PackLine
-   *
-   * @param packLine
-   * @param stockMove
-   * @param packQty
-   * @return
-   */
-  public StockMoveLine createStockMoveLine(
-      PackLine packLine, StockMove stockMove, BigDecimal packQty) throws AxelorException;
 }

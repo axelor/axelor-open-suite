@@ -60,7 +60,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -236,13 +235,11 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
               .plusDays(supplychainConfig.getNumberOfDaysForPurchaseOrder().longValue()));
     }
 
-    purchaseOrderLineList.sort(Comparator.comparing(PurchaseOrderLine::getSequence));
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
       BigDecimal qty =
           purchaseOrderLineServiceSupplychainImpl.computeUndeliveredQty(purchaseOrderLine);
 
-      if ((purchaseOrderLine.getIsTitleLine() || qty.signum() > 0)
-          && !existActiveStockMoveForPurchaseOrderLine(purchaseOrderLine)) {
+      if (qty.signum() > 0 && !existActiveStockMoveForPurchaseOrderLine(purchaseOrderLine)) {
         this.createStockMoveLine(stockMove, qualityStockMove, purchaseOrderLine, qty);
       }
     }
@@ -290,11 +287,8 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
 
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
 
-      if (!purchaseOrderLine.getIsTitleLine()
-          && purchaseOrderLineServiceSupplychainImpl
-                  .computeUndeliveredQty(purchaseOrderLine)
-                  .signum()
-              <= 0) {
+      if (purchaseOrderLineServiceSupplychainImpl.computeUndeliveredQty(purchaseOrderLine).signum()
+          <= 0) {
         continue;
       }
 
@@ -434,25 +428,22 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
   protected StockMoveLine createTitleStockMoveLine(
       PurchaseOrderLine purchaseOrderLine, StockMove stockMove) throws AxelorException {
 
-    StockMoveLine stockMoveLine =
-        stockMoveLineServiceSupplychain.createStockMoveLine(
-            purchaseOrderLine.getProduct(),
-            purchaseOrderLine.getProductName(),
-            purchaseOrderLine.getDescription(),
-            BigDecimal.ZERO,
-            BigDecimal.ZERO,
-            BigDecimal.ZERO,
-            BigDecimal.ZERO,
-            BigDecimal.ZERO,
-            null,
-            stockMove,
-            2,
-            purchaseOrderLine.getPurchaseOrder().getInAti(),
-            null,
-            null,
-            purchaseOrderLine);
-    stockMoveLine.setLineTypeSelect(StockMoveLineRepository.TYPE_TITLE);
-    return stockMoveLine;
+    return stockMoveLineServiceSupplychain.createStockMoveLine(
+        purchaseOrderLine.getProduct(),
+        purchaseOrderLine.getProductName(),
+        purchaseOrderLine.getDescription(),
+        BigDecimal.ZERO,
+        BigDecimal.ZERO,
+        BigDecimal.ZERO,
+        BigDecimal.ZERO,
+        BigDecimal.ZERO,
+        null,
+        stockMove,
+        2,
+        purchaseOrderLine.getPurchaseOrder().getInAti(),
+        null,
+        null,
+        purchaseOrderLine);
   }
 
   public void cancelReceipt(PurchaseOrder purchaseOrder) throws AxelorException {

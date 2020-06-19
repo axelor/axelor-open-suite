@@ -26,7 +26,6 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
@@ -478,55 +477,5 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
   public boolean isAllocatedStockMoveLine(StockMoveLine stockMoveLine) {
     return stockMoveLine.getReservedQty().compareTo(BigDecimal.ZERO) > 0
         || stockMoveLine.getRequestedReservedQty().compareTo(BigDecimal.ZERO) > 0;
-  }
-
-  @Override
-  public StockMoveLine createTitleStockMoveLine(
-      PackLine packLine, StockMove stockMove, BigDecimal packQty) throws AxelorException {
-    StockMoveLine stockMoveLine =
-        this.createStockMoveLine(
-            null,
-            packLine.getProductName(),
-            null,
-            packQty,
-            BigDecimal.ZERO,
-            BigDecimal.ZERO,
-            BigDecimal.ZERO,
-            BigDecimal.ZERO,
-            null,
-            stockMove,
-            null);
-
-    stockMoveLine.setLineTypeSelect(StockMoveLineRepository.TYPE_TITLE);
-    stockMoveLine.setIsShowTotal(packLine.getIsShowTotal());
-    stockMoveLine.setIsHideUnitAmounts(packLine.getIsHideUnitAmounts());
-    return stockMoveLine;
-  }
-
-  @Override
-  public StockMoveLine createStockMoveLine(
-      PackLine packLine, StockMove stockMove, BigDecimal packQty) throws AxelorException {
-    Product product = packLine.getProduct();
-    if (product == null) {
-      return null;
-    }
-    StockMoveLine stockMoveLine =
-        this.createStockMoveLine(
-            product,
-            packLine.getProductName(),
-            null,
-            packLine.getQuantity().multiply(packQty),
-            BigDecimal.ZERO,
-            BigDecimal.ZERO,
-            product.getCostPrice(),
-            BigDecimal.ZERO,
-            packLine.getUnit(),
-            stockMove,
-            null);
-    this.setProductInfo(stockMove, stockMoveLine, stockMove.getCompany());
-    this.compute(stockMoveLine, stockMove);
-    this.setAvailableStatus(stockMoveLine);
-
-    return stockMoveLine;
   }
 }
