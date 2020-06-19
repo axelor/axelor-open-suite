@@ -319,5 +319,10 @@
     <action-method name="action-expense-method-update-moveDate-and-period">
 		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="updateMoveDateAndPeriod"/>
     </action-method>
+    
+    <search-filters name="expense-filters" model="com.axelor.apps.hr.db.Expense" title="Expense filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+        <field name="bankDetails" hidden="true" if="!__config__.app.getApp('base').getManageMultiBanks()" />
+    </search-filters>
 
 </object-views>

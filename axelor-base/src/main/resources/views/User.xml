@@ -336,7 +336,23 @@
     </action-method>
 
     <search-filters name="user-filters" model="com.axelor.auth.db.User" title="User filters">
-    	<filter title="Active users">
+    	<field name="workshopStockLocation" hidden="true" if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop())"/>
+    	<field name="activeTeam" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
+    	<field name="teamSet" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
+    	<field name="emailAccountList" hidden="true" if="!__config__.app.getApp('base').getEmailAccountByUser()"/>
+    	<field name="isPfpValidator" hidden="true" if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment())"/>
+        <field name="isSuperPfpUser" hidden="true" if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment())"/>
+        <field name="substitutePfpValidatorList" hidden="true" if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment())"/>
+        <field name="activeCompany.accountConfig" hidden="true" if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment())"/>
+        <field name="activeCompany.accountConfig.isManagePassedForPayment" hidden="true" if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment())"/>
+        <field name="employee" hidden="true" if="!__config__.app.isApp('employee')"/>
+        <field name="appPermissions" hidden="true" if="!__config__.app.isApp('mobile')"/>
+        <field name="projectSet" hidden="true" if="!__config__.app.isApp('project')"/>
+		<field name="electronicSignature" hidden="true" if="!(__config__.app.isApp('sale') || __config__.app.isApp('purchase') || __config__.app.isApp('stock'))"/>
+		<field name="useSignatureForQuotations" hidden="true" if="!(__config__.app.isApp('sale') || __config__.app.isApp('purchase'))"/>
+		<field name="useSignatureForStock" hidden="true" if="!__config__.app.isApp('stock')"/>
+		<field name="projectSet" hidden="true" if="!__config__.app.isApp('project')"/>
+        <filter title="Active users">
     		<domain>self.blocked = false AND (self.activateOn IS NULL OR self.activateOn &lt;= :_today) AND (self.expiresOn IS NULL OR self.expiresOn &gt;= :_today)</domain>
     	</filter>
     </search-filters>

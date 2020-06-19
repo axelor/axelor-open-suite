@@ -52,4 +52,7 @@
 	</action-method>
 	
 	
+    <search-filters name="mail-batch-filters" model="com.axelor.apps.base.db.MailBatch" title="Mail batch filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
 </object-views>

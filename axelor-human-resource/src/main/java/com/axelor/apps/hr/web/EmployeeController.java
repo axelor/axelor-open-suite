@@ -151,6 +151,7 @@ public class EmployeeController {
               .model(DPAE.class.getName())
               .add("grid", "dpae-grid")
               .add("form", "dpae-form")
+              .param("search-filters", "dpae-filters")
               .context("_showRecord", dpaeId);
       response.setView(builder.map());
     } catch (AxelorException e) {

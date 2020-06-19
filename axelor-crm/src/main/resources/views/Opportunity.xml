@@ -302,6 +302,13 @@
         <field name="partner.fixedPhone" title="Customer fixed phone" />
         <field name="partner.mobilePhone" title="Customer mobile phone" />
         <field name="amount" />
+        <field name="customerDescription" hidden="true" if="!__config__.app.getApp('crm')?.displayCustomerDescriptionInOpportunity"/>
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="tradingName" hidden="true" if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+		<field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
+        <field name="tradingName" hidden="true" if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+		<field name="bankDetails" hidden="true" if="!__config__.app.getApp('base').getManageMultiBanks()"/>
+		<field name="saleOrderList" hidden="true" if="!__config__.app.isApp('sale')"/>
 		<filter title="My opportunities">
 			<domain>self.user.id = :_internalUserId</domain>
 		</filter>

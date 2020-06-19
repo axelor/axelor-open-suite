@@ -141,5 +141,10 @@
 		<domain>self.budget.id = :_budgetId AND self.invoiceLine != null</domain>
 		<context name="_budgetId" expr="eval: __this__.id"/>
 	</action-view>
+	
+	<search-filters name="budget-filters" model="com.axelor.apps.account.db.Budget" title="Budget filters">
+    	<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    	<field name="totalAmountCommitted" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    </search-filters>
 
 </object-views>

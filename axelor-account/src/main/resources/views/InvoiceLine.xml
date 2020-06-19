@@ -380,6 +380,15 @@
 		<field name="invoice.paymentDate" title="Payment date"/>
 		<field name="invoice.company" title="Company"/>
 		<field name="invoice.statusSelect" title="Status select"/>
+		<field name="companyExTaxTotal" hidden="true" if="!(__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget())"/>
+		<field name="budgetDistributionSumAmount" hidden="true" if="!(__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget())"/>
+		<field name="budget" hidden="true" if="!(__config__.app.isApp('budget') &amp; &amp; !__config__.app.getApp('budget').getManageMultiBudget())"/>
+		<field name="budgetDistributionList" hidden="true" if="!(__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget())"/>
+		<field name="project" hidden="true" if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectInvoiceLines())"/>
+		<field name="analyticDistributionTemplate" hidden="true" if="!__config__.app.getApp('account').getManageAnalyticAccounting()"/>
+		<field name="analyticMoveLineList" hidden="true" if="!__config__.app.getApp('account').getManageAnalyticAccounting()"/>	
+		<field name="saleOrderLine" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="purchaseOrderLine" hidden="true" if="!__config__.app.isApp('supplychain')"/>
 	</search-filters>
 
 </object-views>

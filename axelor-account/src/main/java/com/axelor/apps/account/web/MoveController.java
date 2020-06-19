@@ -146,6 +146,7 @@ public class MoveController {
                 .model(Move.class.getName())
                 .add("grid", "move-grid")
                 .add("form", "move-form")
+                .param("search-filters", "move-filters")
                 .map());
         response.setCanClose(true);
       }

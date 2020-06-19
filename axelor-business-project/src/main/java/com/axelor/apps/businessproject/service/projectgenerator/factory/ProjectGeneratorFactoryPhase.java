@@ -98,6 +98,7 @@ public class ProjectGeneratorFactoryPhase implements ProjectGeneratorFactory {
         .model(Project.class.getName())
         .add("grid", "project-grid")
         .add("form", "project-form")
+        .param("search-filters", "project-filters")
         .domain(String.format("self.id in (%s)", StringTool.getIdListString(projects)));
   }
 }

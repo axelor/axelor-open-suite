@@ -210,4 +210,9 @@
 		<error message="Supplier is required to generate a purchase order." />
 	</action-validate>
 	
+	<search-filters name="purchase-request-filters" model="com.axelor.apps.purchase.db.PurchaseRequest" title="Purchase request filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+        <field name="stockLocation" hidden="true" if="!__config__.app.isApp('supplychain')" />
+    </search-filters>
+	
 </object-views>

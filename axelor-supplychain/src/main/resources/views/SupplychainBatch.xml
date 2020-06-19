@@ -133,5 +133,8 @@
 	</action-view>
 	
 	
+	<search-filters name="supplychain-batch-filters" model="com.axelor.apps.supplychain.db.SupplychainBatch" title="Supplychain batch filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
 
 </object-views>

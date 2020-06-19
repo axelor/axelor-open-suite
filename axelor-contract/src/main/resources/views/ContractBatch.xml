@@ -33,4 +33,7 @@
         <call class="com.axelor.apps.contract.web.ContractBatchController" method="runBatch"/>
     </action-method>
 
+	<search-filters name="contract-batch-filters" model="com.axelor.apps.contract.db.ContractBatch" title="Contract batch filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
 </object-views>

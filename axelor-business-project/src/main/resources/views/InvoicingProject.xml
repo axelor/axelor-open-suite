@@ -141,4 +141,7 @@
   		<context name="list" expr="eval: logTimesSet.collect{it.id}"/>
 	</action-view>
 	
+	<search-filters name="invoicing-project-filters" model="com.axelor.apps.businessproject.db.InvoicingProject" title="Invoicing project filters">
+		<field name="manufOrderSet" hidden="true" if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageBusinessProduction())"/>
+	</search-filters>
 </object-views>

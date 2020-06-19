@@ -59,4 +59,8 @@
 	<action-condition name="action-target-configuration-condition-dates">
 		<check field="toDate" if="toDate != null &amp;&amp; toDate &lt; fromDate" error="End date cannot be inferior to start date"/>
 	</action-condition>
+	
+	<search-filters name="target-configuration-filters" model="com.axelor.apps.crm.db.Target" title="Targer filters">
+    	<field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
+    </search-filters>
 </object-views>

@@ -125,5 +125,13 @@
   <action-method name="action-company-logo-onchange-update-dimension">
     <call class="com.axelor.apps.base.web.CompanyController" method="updateDimension"/>
   </action-method>
+  
+  <search-filters name="company-filters" model="com.axelor.apps.base.db.Company" title="Company filters">
+  	<field name="tradingNameSet" hidden="true" if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+	<field name="tradingNamePrintingSettingsList" hidden="true" if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+	<field name="customerPaymentDelay" hidden="true" if="!__config__.app.isApp('cash-management')"/>
+	<field name="supplierPaymentDelay" hidden="true" if="!__config__.app.isApp('cash-management')"/>
+	<field name="orderBloquedMessage" hidden="true" if="!__config__.app.isApp('sale')"/>						
+  </search-filters>
 
 </object-views>

@@ -33,4 +33,7 @@
 	 	<field name="bankDetails" expr="eval: company?.defaultBankDetails" if="company?.defaultBankDetails?.active"/>
 	 </action-record>
     
+    <search-filters name="forecast-filters" model="com.axelor.apps.cash.management.db.Forecast" title="Forecast filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
 </object-views>

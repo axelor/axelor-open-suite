@@ -80,5 +80,11 @@
   <action-method name="action-payment-schedule-line-reject">
     <call class="com.axelor.apps.bankpayment.web.PaymentScheduleLineController" method="reject"/>
   </action-method>
+  
+  <search-filters name="payment-schedule-line-reject-filters" model="com.axelor.apps.account.db.PaymentScheduleLine" title="Payment schedule line rejection filters">
+  	<field name="debitBlockingOk" hidden="true" if="!__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"/>
+    <field name="debitNumber" hidden="true" if="!__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"/>
+    <field name="fromReject" hidden="true" if="!__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"/>
+  </search-filters>
 
 </object-views>
