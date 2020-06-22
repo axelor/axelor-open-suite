@@ -47,7 +47,7 @@
 
     <menuitem name="app-builder-config" title="Configuration" parent="app-builder-root" order="40" />
 
-    <menuitem name="app-builder-app-builders" title="App builders" parent="app-builder-config" order="0" action="action.app.builders.view" />
+    <menuitem name="app-builder-app-builders" title="App builders" parent="app-builder-config" order="0" action="action.app.builders.view" if="__config__.app.getApp('bpm').getEnableAppBuilder()" />
 
     <action-view name="action.app.builders.view" title="App builders" model="com.axelor.studio.db.AppBuilder">
         <view type="grid" name="app-builder-grid" />
@@ -55,6 +55,12 @@
     </action-view>
 
     <menuitem name="app-builder-custom-models" title="Custom models" parent="app-builder-config" action="custom.models.all" order="41" />
+
+    <action-view id="studio.custom.models.all" name="custom.models.all" title="Custom Models" model="com.axelor.meta.db.MetaJsonModel">
+        <view type="grid" name="json-model-grid" if="__config__.app.getApp('bpm').getEnableAppBuilder()" />
+        <view type="grid" name="json-model-disable-appbuilder-grid" if="!__config__.app.getApp('bpm').getEnableAppBuilder()"/>
+        <view type="form" name="json-model-form" />
+    </action-view>
 
     <menuitem name="app-builder-custom-fields" title="Custom fields" parent="app-builder-config" action="custom.fields.all" order="42" />
 
@@ -76,7 +82,8 @@
 	<menuitem title="Selections" name="app-builder-config-selections" parent="app-builder-config" action="action.studio.meta.select.view" order="46"/>
 	
 	<action-view name="action.studio.meta.select.view" title="Selections" model="com.axelor.meta.db.MetaSelect">
-		<view name="studio-meta-select-grid" type="grid"/>
+		<view name="studio-meta-select-grid" type="grid" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
+		<view name="studio-meta-select-disable-appbuilder-grid" type="grid" if="!__config__.app.getApp('bpm').getEnableAppBuilder()"/>
   		<view name="meta-select-form" type="form"/>
   		<domain>self.isCustom = true</domain>
   		<context name="_fromStudio" expr="eval:true"/>
@@ -85,7 +92,8 @@
 	<menuitem title="Actions" name="app-builder-config-actions" parent="app-builder-config" action="action.studio.meta.action.view" order="47"/>
 
 	<action-view name="action.studio.meta.action.view" title="Actions" model="com.axelor.meta.db.MetaAction">
-		<view type="grid" name="studio-meta-action-grid"/>
+		<view type="grid" name="studio-meta-action-grid" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
+		<view type="grid" name="studio-meta-action-disable-appbuild-grid" if="!__config__.app.getApp('bpm').getEnableAppBuilder()"/>
 		<view type="form" name="meta-action-form"/>
 		<domain>self.isCustom = true</domain>
 		<context name="_fromStudio" expr="eval:true"/>

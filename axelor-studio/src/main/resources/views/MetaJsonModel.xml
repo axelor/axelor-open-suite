@@ -8,13 +8,18 @@
 		<field name="name"/>
 		<field name="appBuilder" hidden="true"/>
   	</grid>
-  
+
+	<grid name="json-model-disable-appbuilder-grid" title="Custom models" model="com.axelor.meta.db.MetaJsonModel">
+		<field name="title"/>
+		<field name="name"/>
+  	</grid>
+
   <form id="studio-json-model-form" name="json-model-form" title="Custom model" model="com.axelor.meta.db.MetaJsonModel" onSave="action-studio-json-model-onsave-group">
     <!-- Studio changes -->
     <toolbar>
     	<button name="openWorkflowBtn" title="Open workflow" onClick="save,action-studio-json-model-method-open-workflow"/>
     </toolbar>
-    <panel name="appBuilderPanel">
+    <panel name="appBuilderPanel" if="__config__.app.getApp('bpm').getEnableAppBuilder()">
       <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
     </panel>
     <!-- /Studio changes -->

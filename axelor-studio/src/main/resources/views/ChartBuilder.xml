@@ -8,14 +8,14 @@
   	<field name="title" />
   	<field name="model" />
   	<field name="chartType" />
-  	<field name="appBuilder"  grid-view="app-builder-grid" form-view="app-builder-form"/>
+  	<field name="appBuilder"  grid-view="app-builder-grid" form-view="app-builder-form" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
   </grid>
   
   <form name="chart-builder-form" title="Chart builder" model="com.axelor.studio.db.ChartBuilder" width="large"
       onLoad="action-chart-builder-on-load">
       <panel name="mainPanel">
-      	<field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
-      	<spacer name="appBuilderSpacer"/>
+      	<field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
+      	<spacer name="appBuilderSpacer" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
         <field name="name"/>
         <field name="title"/>
         <field name="chartType" required="true"/>

@@ -9,11 +9,18 @@
      <field name="priority"/>
      <field name="appBuilder" hidden="true"/>
    </grid>
+
+   <grid model="com.axelor.meta.db.MetaSelect" title="Selection" name="studio-meta-select-disable-appbuilder-grid">
+     <field name="name"/>
+     <field name="module"/>
+     <field name="priority"/>
+   </grid>
+
   	<form id="studio-meta-select-form" name="meta-select-form" title="Selection" model="com.axelor.meta.db.MetaSelect"
   		onNew="action-studio-meta-select-record-onnew,action-studio-meta-select-attrs-onnew-onload" 
   		onLoad="action-studio-meta-select-attrs-onnew-onload">
 		<panel name="appBuilderPanel">
-      		<field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
+      		<field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
  			<field name="isCustom" hidden="true"/>
     	</panel>
 	    <panel-include view="meta-select-form" from="axelor-core"/>
