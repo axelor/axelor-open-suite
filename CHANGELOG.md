@@ -3,6 +3,7 @@
 ## Improvements
 ## Bug Fixes
 - MRP : Remove duplicate information
+- ACCOUNTING INFORMATION : Add missing translation
 
 ## [5.2.12] - 2020-06-19
 ## Improvements
