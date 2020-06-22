@@ -12,12 +12,20 @@
       <field name="appBuilder" hidden="true"/>
   </grid>
 
+  <grid model="com.axelor.meta.db.MetaAction" title="All Action" name="studio-meta-action-disable-appbuild-grid">
+      <field name="name"/>
+      <field name="type"/>
+      <field name="model"/>
+      <field name="module"/>
+      <field name="priority"/>
+  </grid>
+
   <form model="com.axelor.meta.db.MetaAction" title="All Action" name="meta-action-form" id="studio-meta-action-form" extension="true">
   
 	<extend target="//panel[@title='Overview']">
 		<insert position="before">
 			<panel name="actionAppBuilderPanel">
-      			<field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
+      			<field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
  				<field name="isCustom" hidden="true"/>
     		</panel>
 		</insert>

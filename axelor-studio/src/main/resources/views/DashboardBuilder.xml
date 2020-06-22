@@ -6,14 +6,14 @@
   <grid name="dashboard-builder-grid" title="Dashboard builder" model="com.axelor.studio.db.DashboardBuilder">
       <field name="name"/>
       <field name="title"/>
-      <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
+      <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
   </grid>
 	    
   <form name="dashboard-builder-form" title="Dashboard builder" model="com.axelor.studio.db.DashboardBuilder" width="large"
       onNew="action-view-builder-record-default">
       <panel name="mainPanel">
-      	<field name="appBuilder"  grid-view="app-builder-grid" form-view="app-builder-form"/>
-      	<spacer name="appBuilderSpacer"/>
+      	<field name="appBuilder"  grid-view="app-builder-grid" form-view="app-builder-form" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
+      	<spacer name="appBuilderSpacer" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
         <field name="name"/>
         <field name="title"/>
         <field name="viewType" hidden="true" />

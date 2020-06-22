@@ -4,6 +4,9 @@
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppBpm" lang="java" cacheable="true" extends="App" />
+	<entity name="AppBpm" lang="java" cacheable="true" extends="App">
+		<boolean name="enableAppBuilder" title="Enable app builder"
+			default="true" />
+	</entity>
 
 </domain-models>
