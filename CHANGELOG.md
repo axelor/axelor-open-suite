@@ -5,6 +5,7 @@
 - EXTRA HOURS : Fix missing translation
 - ACCOUNTING REPORT : Add missing translations in report
 - MRP : Remove duplicate information
+- ACCOUNTING INFORMATION : Add missing translation
 
 ## [5.3.7] - 2020-06-26
 ## Improvements
