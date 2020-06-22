@@ -3,6 +3,7 @@
 ## Improvements
 ## Bug Fixes
 - MRP : Remove duplicate information
+- BANK ORDER : Fix NPE when validating a bank order
 
 ## [5.2.12] - 2020-06-19
 ## Improvements
