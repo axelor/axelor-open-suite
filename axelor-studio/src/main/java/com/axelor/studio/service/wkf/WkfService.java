@@ -184,7 +184,7 @@ public class WkfService {
       MetaStore.clear();
 
     } catch (Exception e) {
-      if (Objects.equal(IExceptionMessage.CANNOT_ALTER_NODES, e.getMessage())) {
+      if (Objects.equal(e.getMessage(), IExceptionMessage.CANNOT_ALTER_NODES)) {
         throw e;
       }
       e.printStackTrace();
