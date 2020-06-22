@@ -5,6 +5,7 @@
 - EXTRA HOURS : Fix missing translation
 - ACCOUNTING REPORT : Add missing translations in report
 - MRP : Remove duplicate information
+- TeamTaskCategory : Added translation for title of grid-view and fields
 
 ## [5.3.7] - 2020-06-26
 ## Improvements
