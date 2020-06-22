@@ -1362,7 +1362,7 @@
 	<action-view name="action-sale-order-view-manuf-orders" title="Manufacturing Orders" model="com.axelor.apps.production.db.ManufOrder">
 		<view type="grid" name="manuf-order-grid"/>
 		<view type="form" name="manuf-order-form"/>
-		<domain>self.saleOrder.id = :id</domain>
+		<domain>:id member of self.saleOrderSet</domain>		
 	</action-view>
 
 	<action-view name="action-sale-order-view-show-generated-po" title="Generated purchase orders" model="com.axelor.apps.purchase.db.PurchaseOrder">
