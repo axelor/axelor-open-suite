@@ -144,6 +144,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
         manufOrder.setMoCommentFromSaleOrder(saleOrder.getProductionNote());
       }
       productionOrder.addManufOrderSetItem(manufOrder);
+      manufOrder.addProductionOrderSetItem(productionOrder);
     }
     return productionOrderRepo.save(productionOrder);
   }
