@@ -3,6 +3,7 @@
 ## Improvements
 ## Bug Fixes
 - MRP : Remove duplicate information
+- BANK PAYMENT : fix ICS number being linked to EBICS
 
 ## [5.2.12] - 2020-06-19
 ## Improvements
