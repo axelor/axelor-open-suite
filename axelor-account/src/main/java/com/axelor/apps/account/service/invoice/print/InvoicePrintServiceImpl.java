@@ -191,7 +191,6 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
   @Override
   public ReportSettings prepareReportSettings(
       Invoice invoice, Integer reportType, String format, String locale) throws AxelorException {
-
     if (invoice.getPrintingSettings() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
@@ -232,6 +231,11 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
         .addParam("Locale", locale)
         .addParam("ReportType", reportType == null ? 0 : reportType)
         .addParam("HeaderHeight", invoice.getPrintingSettings().getPdfHeaderHeight())
+        .addParam(
+            "Watermark",
+            MetaFiles.getPath(
+                    accountConfigRepo.findByCompany(invoice.getCompany()).getInvoiceWatermark())
+                .toString())
         .addParam("FooterHeight", invoice.getPrintingSettings().getPdfFooterHeight())
         .addFormat(format);
   }
