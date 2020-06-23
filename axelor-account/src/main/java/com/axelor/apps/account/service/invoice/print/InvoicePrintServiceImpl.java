@@ -225,17 +225,20 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
               ? companyLanguageCode
               : partnerLanguageCode;
     }
+    String watermark = null;
+    if (accountConfigRepo.findByCompany(invoice.getCompany()).getInvoiceWatermark() != null) {
+      watermark =
+          MetaFiles.getPath(
+                  accountConfigRepo.findByCompany(invoice.getCompany()).getInvoiceWatermark())
+              .toString();
+    }
 
     return reportSetting
         .addParam("InvoiceId", invoice.getId())
         .addParam("Locale", locale)
         .addParam("ReportType", reportType == null ? 0 : reportType)
         .addParam("HeaderHeight", invoice.getPrintingSettings().getPdfHeaderHeight())
-        .addParam(
-            "Watermark",
-            MetaFiles.getPath(
-                    accountConfigRepo.findByCompany(invoice.getCompany()).getInvoiceWatermark())
-                .toString())
+        .addParam("Watermark", watermark)
         .addParam("FooterHeight", invoice.getPrintingSettings().getPdfFooterHeight())
         .addFormat(format);
   }
