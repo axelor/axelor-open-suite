@@ -1,0 +1,5 @@
+---
+title: "ManufOrder: Add production order in manuf order"
+type: feature
+description: |
+	We add the production order to the manuf order
