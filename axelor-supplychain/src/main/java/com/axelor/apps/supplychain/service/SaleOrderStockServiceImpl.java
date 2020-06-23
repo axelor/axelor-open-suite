@@ -147,8 +147,6 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     StockMove stockMove =
         this.createStockMove(saleOrder, saleOrder.getCompany(), estimatedDeliveryDate);
     stockMove.setDeliveryCondition(saleOrder.getDeliveryCondition());
-    stockMove.setGroupProductsOnPrintings(
-        saleOrder.getClientPartner().getGroupProductsOnPrintings());
 
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
       if (saleOrderLine.getProduct() != null) {
