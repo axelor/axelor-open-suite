@@ -764,6 +764,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     newStockMove.setOrigin(stockMove.getOrigin());
     newStockMove.setOriginId(stockMove.getOriginId());
     newStockMove.setOriginTypeSelect(stockMove.getOriginTypeSelect());
+    newStockMove.setGroupProductsOnPrintings(stockMove.getGroupProductsOnPrintings());
 
     return Optional.of(stockMoveRepo.save(newStockMove));
   }

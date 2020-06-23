@@ -238,7 +238,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
         .addParam("InvoiceId", invoice.getId())
         .addParam("Locale", locale)
         .addParam("ReportType", reportType == null ? 0 : reportType)
-        .addParam("GroupProducts", invoice.getGroupProductsOnPrintings())
+        .addParam("GroupProducts", appBase.getIsRegroupProductsOnPrintings() && invoice.getGroupProductsOnPrintings())
         .addParam("GroupProductTypes", appBase.getRegroupProductsTypeSelect())
         .addParam("GroupProductLevel", appBase.getRegroupProductsLevelSelect())
         .addParam("GroupProductProductTitle", appBase.getRegroupProductsLabelProducts())

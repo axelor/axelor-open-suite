@@ -91,7 +91,7 @@ public class StockMovePrintServiceImpl implements StockMovePrintService {
     return reportSetting
         .addParam("StockMoveId", stockMove.getId())
         .addParam("Locale", locale)
-        .addParam("GroupProducts", stockMove.getGroupProductsOnPrintings())
+        .addParam("GroupProducts", appBase.getIsRegroupProductsOnPrintings() && stockMove.getGroupProductsOnPrintings())
         .addParam("GroupProductTypes", appBase.getRegroupProductsTypeSelect())
         .addParam("GroupProductLevel", appBase.getRegroupProductsLevelSelect())
         .addParam("GroupProductProductTitle", appBase.getRegroupProductsLabelProducts())
