@@ -94,21 +94,26 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
       Preconditions.checkNotNull(
           companyBankDetails.getCurrency(),
           I18n.get("Currency in company bank details is missing."));
-      Preconditions.checkArgument(
-          new File(accountingBatch.getPaymentMode().getBankOrderExportFolderPath()).exists(),
-          String.format(
-              I18n.get("Bank order export folder does not exist: %s"),
-              accountingBatch.getPaymentMode().getBankOrderExportFolderPath()));
 
-      BankPaymentConfigService bankPaymentConfigService = Beans.get(BankPaymentConfigService.class);
-
+      String bankOrderExportPath = accountingBatch.getPaymentMode().getBankOrderExportFolderPath();
+      String dataExpotDir;
       try {
+        dataExpotDir = appBaseService.getDataExportDir();
+
+        BankPaymentConfigService bankPaymentConfigService =
+            Beans.get(BankPaymentConfigService.class);
+
         BankPaymentConfig bankPaymentConfig =
             bankPaymentConfigService.getBankPaymentConfig(accountingBatch.getCompany());
         bankPaymentConfigService.getIcsNumber(bankPaymentConfig);
       } catch (AxelorException e) {
         throw new RuntimeException(e);
       }
+      Preconditions.checkArgument(
+          bankOrderExportPath != null && new File(dataExpotDir + bankOrderExportPath).exists(),
+          String.format(
+              I18n.get("Bank order export folder does not exist: %s"),
+              dataExpotDir + bankOrderExportPath));
     }
 
     QueryBuilder<PaymentScheduleLine> queryBuilder = QueryBuilder.of(PaymentScheduleLine.class);

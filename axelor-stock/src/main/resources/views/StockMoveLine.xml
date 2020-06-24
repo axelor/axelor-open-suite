@@ -14,11 +14,11 @@
             form-view="product-form"
             grid-view="stock-move-line-product-grid"
             width="250px"
-            readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3"/>
+            readonlyIf="lineTypeSelect == 1 || (($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3)"/>
         <field name="productModel" domain="self.isModel = true "
             form-view="product-form" grid-view="product-grid"
             if="__config__.app.getApp('base').getManageProductVariants()"
-            readonlyIf="product"/>
+            readonlyIf="lineTypeSelect == 1 || product"/>
         <field name="productName" required="true" width="200px"
         readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3"/>
         <field name="qty" aggregate="sum"
@@ -39,28 +39,28 @@
 		<button name="deallocate"  if="__config__.app.getApp('supplychain')?.manageStockReservation" hidden="true" title="Deallocate" icon="fa-minus-square" readonlyIf="$get('stockMove.statusSelect') != 2 || $number(reservedQty) == 0" onClick="save,action-supplychain-stock-move-line-deallocate-all"/>
 		<field name="qtyInvoiced" readonly="true" x-scale="2"/>
         <field name="unitPriceUntaxed" x-scale="2" width="120px"
-            readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3"/>
+            readonlyIf="lineTypeSelect == 1 || (($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3)"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"
             width="70px"
-            readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3"/>
+            readonlyIf="lineTypeSelect == 1 || (($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3)"/>
         <field name="netMass"
             onChange="action-stock-move-line-group-net-mass-onchange"
-            width="100px"/>
+            width="100px" readonlyIf="lineTypeSelect == 1"/>
 		<field name="wapPrice" x-scale="2" hidden="true"/>
         <field name="trackingNumber"
 			canNew="$get('stockMove.fromStockLocation.typeSelect') == 3 &amp;&amp; ($get('stockMove.toStockLocation.typeSelect') == 1 || $get('stockMove.toStockLocation.typeSelect') == 2)"
 			onSelect="action-stock-move-line-attrs-tracking-number-domain"
 			form-view="tracking-number-stock-move-line-form" grid-view="tracking-number-grid" 
-			readonlyIf="$get('stockMove.statusSelect') > 2" />
+			readonlyIf="lineTypeSelect == 1 || $get('stockMove.statusSelect') > 2" />
 		<field name="stockMove.fromStockLocation.typeSelect" hidden="true"/>
 		<field name="stockMove.toStockLocation.typeSelect" hidden="true"/>
 		<field name="product.trackingNumberConfiguration.isPurchaseTrackingManaged" hidden="true"/>
 		<field name="product.trackingNumberConfiguration.isProductionTrackingManaged" hidden="true"/>
 		<field name="product.trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
 		<field name="stockMove.typeSelect" hidden="true"/>
-        <field name="conformitySelect"/>
-        <field name="availableStatus" width="150">
+        <field name="conformitySelect" readonlyIf="lineTypeSelect == 1"/>
+        <field name="availableStatus" width="150" readonlyIf="lineTypeSelect == 1">
         	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
         	<hilite strong="true" color="info" if="availableStatusSelect == 2"/>
         	<hilite color="danger" strong="true" if="availableStatusSelect == 3"/>
@@ -71,13 +71,21 @@
         <field name="stockMove.statusSelect" hidden="true"/>
         <button name="trackNumberWizardBtn" title="Split by tracking numbers"
 			icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard"
-			readonlyIf="$get('stockMove.statusSelect') > 1 || !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; (!$get('product.trackingNumberConfiguration.isSaleTrackingManaged') || $get('stockMove.typeSelect') != 2)" />
+			readonlyIf="lineTypeSelect == 1 || ($get('stockMove.statusSelect') > 1 || !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; (!$get('product.trackingNumberConfiguration.isSaleTrackingManaged') || $get('stockMove.typeSelect') != 2))" />
     </grid>
 
     <form name="stock-move-line-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine" readonlyIf="$isReadOnly"
     	onNew="action-stock-move-line-group-onnew" onLoad="action-stock-move-line-group-onload" width="large"
     	canNew="false" canDelete="false">
-        <panel name="mainPanel" >
+        
+        <panel name="productPanel" showIf="lineTypeSelect == 1">
+            <field name="productName" colSpan="9"/>
+            <field name="lineTypeSelect" colSpan="3" onChange="action-stock-move-line-method-empty-line" />
+            <field name="qty" readonlyIf="lineTypeSelect != 1"/>
+            <field name="realQty"/>
+        </panel>
+        
+        <panel name="mainPanel" hideIf="lineTypeSelect == 1" >
         	<field name="lineTypeSelect" onChange="action-stock-move-line-method-empty-line" />
         	<field name="availableStatus" readonly="true" hidden="true" colSpan="2">
 				<viewer><![CDATA[
@@ -90,7 +98,7 @@
 					</h4>
 				]]></viewer>
 			</field>
-			<field name="$invoiced" colSpan="2" showTitle="false" readonly="true" showIf="id &amp;&amp; stockMove.statusSelect == 3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+			<field name="$invoiced" colSpan="2" showTitle="false" readonly="true" showIf="id &amp;&amp; stockMove.statusSelect == 3  &amp;&amp; stockMove.typeSelect != 1" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 				<viewer depends="qtyInvoiced,realQty"><![CDATA[
                         <h4>
                             <span class="label label-success" ng-show="record.qtyInvoiced > 0 && record.qtyInvoiced == record.realQty" x-translate>Invoiced</span>
@@ -165,12 +173,12 @@
 		<field name="productModel" readonly="true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()" readonlyIf="product || $get('stockMove.statusSelect') > 1"/>
 		<field name="productName" readonly="true" />
 		<field name="qty" aggregate="sum" onChange="action-stock-move-line-validate-check-split-quantity" x-scale="2"/>
-		<field name="unitPriceUntaxed" x-scale="2"/>
+		<field name="unitPriceUntaxed" x-scale="2" readonlyIf="lineTypeSelect == 1"/>
 		<field name="unitPriceTaxed" x-scale="2" hidden="true"/>
 		<field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
 		<field name="trackingNumber" readonly="true" form-view="tracking-number-form" grid-view="tracking-number-grid" domain="self.product = :product"/>
 		<field name="conformitySelect" readonly="true"/>
-		<field name="availableStatus" width="150">
+		<field name="availableStatus" width="150" readonlyIf="lineTypeSelect == 1">
         	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
         	<hilite strong="true" color="info" if="availableStatusSelect == 2"/>
         	<hilite color="danger" strong="true" if="availableStatusSelect == 3"/>

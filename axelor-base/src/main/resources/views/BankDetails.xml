@@ -64,6 +64,9 @@
 	</form>
 
 	<cards name="bank-details-cards" model="com.axelor.apps.base.db.BankDetails" title="Bank details" width="410px">
+		<toolbar>
+			<button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
+		</toolbar>
 		<field name="iban"/>
 		<field name="bank.code"/>
 		<field name="bank.bankName"/>

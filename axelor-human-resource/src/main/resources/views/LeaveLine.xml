@@ -40,7 +40,7 @@
 	</action-method>
 	
 	<action-record name="action-leave-line-record-set-name" model="com.axelor.apps.hr.db.LeaveLine">
-		<field name="name" expr="eval: leaveReason?.leaveReason"/>
+		<field name="name" expr="eval: leaveReason?.name"/>
 	</action-record>
 	
 </object-views>

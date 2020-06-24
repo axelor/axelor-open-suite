@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
     
-	<form name="mrp-manuf-order-form" model="com.axelor.apps.supplychain.db.Mrp" title="Master Production Scheduling" width="large"
+	<form name="mrp-manuf-order-form" model="com.axelor.apps.supplychain.db.Mrp" title="MPS" width="large"
 		onLoad="action-attrs-mrp-generate-all-proposals" onNew="action-mrp-manuf-order-record-onnew">
 		<panel-include view="mrp-form"/>
 	</form>

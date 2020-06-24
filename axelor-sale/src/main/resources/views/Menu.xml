@@ -34,8 +34,8 @@
 		<view type="form" name="partner-contact-form" />
 	  	<view-param name="limit" value="39"/>
 		<view-param name="search-filters" value="partner-filters"/>
-		<domain>self.isContact = true AND self.mainPartner.isCustomer = true</domain>
-		<context name="_domain" expr="self.isContact = true AND self.mainPartner.isCustomer = true"/>
+		<domain>self.isContact = true AND (self.mainPartner.isCustomer = true OR self.mainPartner.isProspect = true)</domain>
+		<context name="_domain" expr="self.isContact = true AND (self.mainPartner.isCustomer = true OR self.mainPartner.isProspect = true)"/>
 	</action-view>
 	
 	<menuitem name="sc-root-sale-pack" parent="sc-root-sale" order="12"
@@ -165,6 +165,8 @@
 		title="Durations" model="com.axelor.apps.base.db.Duration" >
 		<view type="grid" name="duration-grid" />
 		<view type="form" name="duration-form" />
+		<domain>self.applicationTypeSelect = 1</domain>
+		<context name="_applicatioTypeSelect" expr="1"/>
 	</action-view>
 	
 	<menuitem name="sale-conf-shipping-costs" parent="sc-root-sale-conf"

@@ -6,7 +6,6 @@
 	<form name="app-leave-config-form" title="App Leave" model="com.axelor.apps.base.db.AppLeave" canDelete="false" canNew="false" width="large">
 		<panel name="mainPanel">
 			<field name="allowNegativeLeaveEmployees" widget="boolean-switch" />
-			<field name="overtimeManagement" widget="boolean-switch" />
 		</panel>
 				
 		<panel-mail name="mailPanel">

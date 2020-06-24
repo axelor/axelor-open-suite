@@ -21,6 +21,8 @@
       <integer name="sequence" title="Sequence" />
       <integer name="nodeType" title="Node type" selection="studio.node.type.select" default="1" />
       <many-to-many name="metaActionSet" ref="com.axelor.meta.db.MetaAction" title="Actions" orderBy="sequence"/>
+      <boolean name="isGenerateMenu" title="Generate menu"/>
+      <many-to-one name="menuBuilder" ref="com.axelor.studio.db.MenuBuilder" title="Menu builder" />
       <unique-constraint columns="wkf,sequence"/>
       
       <extra-code>

@@ -256,10 +256,11 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     BigDecimal depreciationRate =
         numberOfDepreciation == 0
             ? BigDecimal.ZERO
-            : BigDecimal.ONE
-                .divide(BigDecimal.valueOf(numberOfDepreciation), BigDecimal.ROUND_HALF_EVEN)
-                .multiply(BigDecimal.valueOf(100))
-                .setScale(calculationScale);
+            : BigDecimal.valueOf(100)
+                .divide(
+                    BigDecimal.valueOf(numberOfDepreciation),
+                    calculationScale,
+                    BigDecimal.ROUND_HALF_EVEN);
     BigDecimal ddRate = BigDecimal.ONE;
     BigDecimal prorataTemporis = this.computeProrataTemporis(fixedAsset, isFirstYear);
     if (fixedAsset
@@ -420,8 +421,11 @@ public class FixedAssetServiceImpl implements FixedAssetService {
             ? fixedAsset.getNumberOfDepreciation() - 1
             : fixedAsset.getNumberOfDepreciation();
     BigDecimal depreciationRate =
-        BigDecimal.ONE.divide(
-            BigDecimal.valueOf(numberOfDepreciation * 100), BigDecimal.ROUND_HALF_EVEN);
+        BigDecimal.valueOf(100)
+            .divide(
+                BigDecimal.valueOf(numberOfDepreciation),
+                calculationScale,
+                BigDecimal.ROUND_HALF_EVEN);
     BigDecimal ddRate = BigDecimal.ONE;
     if (fixedAsset
         .getComputationMethodSelect()

@@ -8,6 +8,8 @@
     <entity name="MetaJsonModel" table="META_JSON_MODEL">
         <many-to-one name="appBuilder" ref="com.axelor.studio.db.AppBuilder" title="App builder" />
         <boolean name="showProcessTracking" title="Show process tracking" />
+        <boolean name="isGenerateMenu" title="Generate menu"/>
+        <many-to-one name="menuBuilder" ref="com.axelor.studio.db.MenuBuilder" title="Menu builder" />
     </entity>
 
 </domain-models>

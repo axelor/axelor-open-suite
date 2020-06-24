@@ -12,14 +12,14 @@
     
     <form name="email-address-form" title="Email address" model="com.axelor.apps.message.db.EmailAddress">
     	<panel name="mainPanel" >
-			<field name="address" pattern="^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@+[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$" widget="Email" placeholder="user@mydomain.com" />
+			<field name="address" pattern="^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$" widget="Email" placeholder="user@mydomain.com" />
 			<field name="partner" if-module="axelor-base" form-view="partner-form" grid-view="partner-grid"/>
 		</panel>
     </form>
     
     <form name="email-address-simple-form" title="Email address" model="com.axelor.apps.message.db.EmailAddress">
     	<panel name="mainPanel" >
-			<field name="address" pattern="^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@+[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$" widget="Email"  placeholder="user@mydomain.com" />
+			<field name="address" pattern="^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$" widget="Email"  placeholder="user@mydomain.com" />
 		</panel>	
     </form>
     

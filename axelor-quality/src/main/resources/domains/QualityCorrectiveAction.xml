@@ -8,7 +8,7 @@
 
 		<string name="name" title="Name"/>
 		<boolean name="isApplicable" title="Applicable"/>
-		<string name="details" title="Details"/>
+		<string name="details" title="Details" large="true"/>
 		<many-to-one name="qualityControl" title="Quality control" ref="com.axelor.apps.quality.db.QualityControl"/>
 
 	</entity>

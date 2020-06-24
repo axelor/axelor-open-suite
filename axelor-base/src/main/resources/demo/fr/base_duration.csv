@@ -1,5 +1,9 @@
-"importId";"typeSelect";"value";"name"
-1;1;1;"1 mois"
-2;1;2;"2 mois"
-3;1;6;"6 mois"
-4;2;15;"15 jours"
+"importId";"typeSelect";"value";"name";"applicationTypeSelect"
+1;1;1;"1 mois";1
+2;1;2;"2 mois";1
+3;1;6;"6 mois";1
+4;2;15;"15 jours";1
+5;1;1;"1 mois";2
+6;1;2;"2 mois";2
+7;1;6;"6 mois";2
+8;2;15;"15 jours";2

@@ -51,7 +51,7 @@
 
 	<selection name='product.product.type.select'>
 		<option value='service'>Service</option>
-		<option value='storable'>Product</option>
+		<option value='storable'>ProductType.product</option>
 	</selection>
 
 	<selection name='product.procurement.method.select'>
@@ -153,7 +153,7 @@
 	</selection>
 
 	<selection name="base.price.list.line.amount.type.select">
-        <option value="0">No Discount</option>
+        <option value="0">No discount</option>
 		<option value="1">In %</option>
 		<option value="2">Fixed</option>
 	</selection>
@@ -249,6 +249,11 @@
 	<selection name="base.duration.type.select">
 		<option value="1">Month</option>
 		<option value="2">Day</option>
+	</selection>
+	
+	<selection name="base.duration.application.type.select">
+		<option value="1">Sale order</option>
+		<option value="2">Contract</option>
 	</selection>
 	
 	<selection name="base.compute.method.discount.select">

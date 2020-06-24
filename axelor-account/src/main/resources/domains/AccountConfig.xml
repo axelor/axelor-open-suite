@@ -100,8 +100,6 @@
 		<many-to-one name="rejectionPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode after rejection"/>
 		<integer name="paymentScheduleRejectNumLimit" title="Max Nbr. for payment schedule rejection"/>
 		<integer name="invoiceRejectNumLimit" title="Max Nbr. of invoices rejection"/>
-		<string name="rejectImportPathAndFileName" title="Filepath to import rejected records"/>
-		<string name="tempImportPathAndFileName" title="Temporary filepath to import rejected records"/>
 		<many-to-one name="rejectPaymentScheduleTemplate" ref="com.axelor.apps.message.db.Template" title="Email template for invoice and payment schedule rejections"/>
 
 		<!-- Onglet Apurements -->
@@ -257,8 +255,6 @@
 		<field name="rejectionPaymentMode" on="UPDATE"/>
 		<field name="paymentScheduleRejectNumLimit" on="UPDATE"/>
 		<field name="invoiceRejectNumLimit" on="UPDATE"/>
-		<field name="rejectImportPathAndFileName" on="UPDATE"/>
-		<field name="tempImportPathAndFileName" on="UPDATE"/>
 		<field name="rejectPaymentScheduleTemplate" on="UPDATE"/>
 		
 		<field name="profitAccount" on="UPDATE"/>

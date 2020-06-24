@@ -12,6 +12,7 @@
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="1" />
   	<many-to-one name="journal" ref="Journal" title="Journal" />
   	<boolean name="isValid" title="Valid" />
+		<boolean name="automaticallyValidate" title="Validate automatically the generated moves"/>
 		<string name="description" title="Description" large="true"/>
   	<one-to-many name="moveTemplateLineList" ref="MoveTemplateLine" mappedBy="moveTemplate" title="Template Move Lines"/>
   	<date name="endOfValidityDate" title="End of validity date"/>
@@ -19,7 +20,17 @@
 	    <![CDATA[
     		return code+" - " + name;
 	    ]]>
-	</string>
+		</string>
+		
+		<track on="UPDATE">
+			<field name="name"/>
+			<field name="code"/>
+			<field name="moveTemplateType"/>
+			<field name="company"/>
+			<field name="journal"/>
+			<field name="endOfValidityDate"/>
+			<message if="!isValid">Move template updated</message>
+		</track>
   </entity>
  
 </domain-models>

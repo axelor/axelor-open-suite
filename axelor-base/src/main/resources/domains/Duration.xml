@@ -8,8 +8,9 @@
 	<entity name="Duration" lang="java">
 		
 		<integer name="typeSelect" title="Month/days" selection="base.duration.type.select" initParam="true"/>
-		<integer name="value" title="Value" initParam="true"/>
+		<integer name="value" title="Value" initParam="true" min="0"/>
 		<string name="name" title="Name"/>
+		<integer name="applicationTypeSelect" selection="base.duration.application.type.select"/>
 
 		<extra-code><![CDATA[
 		

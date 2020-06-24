@@ -231,8 +231,6 @@
 					<field name="paymentScheduleRejectNumLimit"/>
 					<field name="invoiceRejectNumLimit"/>
 					<field name="rejectPaymentScheduleTemplate" form-view="template-form" grid-view="template-grid"/>
-					<field name="rejectImportPathAndFileName"/>
-					<field name="tempImportPathAndFileName"/>
 				</panel>
 			</panel>
 			<panel name="accClearancePanel" title="Acc. Clearance">

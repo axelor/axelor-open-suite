@@ -182,7 +182,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(IExceptionMessage.EMPLOYEE_NO_LEAVE_MANAGEMENT),
           employee.getName(),
-          batch.getHrBatch().getLeaveReason().getLeaveReason());
+          batch.getHrBatch().getLeaveReason().getName());
     }
     if (count > 1) {
       throw new AxelorException(
@@ -190,7 +190,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.EMPLOYEE_DOUBLE_LEAVE_MANAGEMENT),
           employee.getName(),
-          batch.getHrBatch().getLeaveReason().getLeaveReason());
+          batch.getHrBatch().getLeaveReason().getName());
     }
     if (count == 1) {
 

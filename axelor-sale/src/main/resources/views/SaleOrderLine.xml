@@ -15,8 +15,8 @@
 		<field name="productName"/>
 		<field name="qty" aggregate="sum" x-scale="2"/>
 		<field name="reservedQty" if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum" x-scale="2"/>
-    	<button name="allocateAll" if="__config__.app.getApp('supplychain')?.manageStockReservation" title="Allocate" icon="fa-plus-square" readonlyIf="$get('saleOrder.statusSelect') != 3 || $get('saleOrder.orderBeingEdited') || $number(reservedQty) == $number(qty)" onClick="save,action-supplychain-sale-order-line-allocate-all"/>
-		<button name="deallocate"  if="__config__.app.getApp('supplychain')?.manageStockReservation" title="Deallocate" icon="fa-minus-square" readonlyIf="$get('saleOrder.statusSelect') != 3 || $get('saleOrder.orderBeingEdited') || $number(reservedQty) == 0" onClick="save,action-supplychain-sale-order-line-deallocate-all"/>
+    	<button name="allocateAll" if="__config__.app.getApp('supplychain')?.manageStockReservation" title="Allocate" icon="fa-plus-square" readonlyIf="$get('saleOrder.statusSelect') != 3 || $get('saleOrder.orderBeingEdited') || $number(reservedQty) == $number(qty) || deliveryState == 3" onClick="save,action-supplychain-sale-order-line-allocate-all"/>
+		<button name="deallocate"  if="__config__.app.getApp('supplychain')?.manageStockReservation" title="Deallocate" icon="fa-minus-square" readonlyIf="$get('saleOrder.statusSelect') != 3 || $get('saleOrder.orderBeingEdited') || $number(reservedQty) == 0 || deliveryState == 3" onClick="save,action-supplychain-sale-order-line-deallocate-all"/>
 		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
 		<field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
 		<field name="inTaxPrice" x-scale="2"/>
@@ -78,8 +78,9 @@
 		<panel name="productPanel" showIf="typeSelect == 1">
 			<field name="productName" colSpan="9" title="Title"/>
 			<field name="typeSelect" colSpan="3" onChange="action-sale-order-line-method-empty-line"/>
-			<field name="isShowTotal"/>
-			<field name="isHideUnitAmounts"/>
+            <field name="qty"/>
+			<field name="isShowTotal" if="__config__.app.getApp('sale')?.enablePackManagement" colSpan="3"/>
+			<field name="isHideUnitAmounts" if="__config__.app.getApp('sale')?.enablePackManagement" colSpan="3"/>
 		</panel>
  
 		<panel-tabs name="mainPanelTab" hideIf="typeSelect == 1">
@@ -143,7 +144,8 @@
 			</panel>
 				<panel name="productDetailPanel" colSpan="12">
 					<field name="qty" colSpan="3" onChange="action-group-sale-saleorderline-qty-onchange" readonlyIf="$availabiltyRequest || ($isReadOnly !== false &amp;&amp; !$get('saleOrder.orderBeingEdited'))" validIf="$qtyValid != false"/>
-					<field name="unit" colSpan="3" readonlyIf="typeSelect == 2 || $isReadOnly !== false || deliveryState == 3" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
+					<field name="unit" colSpan="3" readonlyIf="typeSelect == 2 || $isReadOnly !== false || deliveryState == 3"
+								 requiredIf="typeSelect == 0" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
 					<field name="price" colSpan="3" readonlyIf="$isReadOnly !== false || deliveryState == 3" onChange="action-sale-order-line-method-onchange-price,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" hidden="true"/>
 					<field name="inTaxPrice" colSpan="3" readonlyIf="$isReadOnly !== false || deliveryState == 3" onChange="action-sale-order-line-method-onchange-intaxprice,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" hidden="true"/>
 					<panel name="discountPanel" colSpan="12" readonlyIf="$isReadOnly !== false || deliveryState == 3">
@@ -215,7 +217,8 @@
 			</panel>
 			<panel name="analyticDistributionPanel" title="Analytics" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-sale-order-line-attrs-read-only-distribution-lines">
 				<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" canEdit="false" onChange="action-sale-order-line-method-create-distribution" onSelect="action-sale-order-line-attrs-set-domain-analytic-distribution-template"/>
-				<panel-related name="analyticMoveLineListPanel" readonlyIf="$isReadOnly !== false" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
+				<panel-related name="analyticMoveLineListPanel" readonlyIf="$isReadOnly !== false" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12" onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+				<field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
 			</panel>
 			<panel name="settingsPanel" readonlyIf="$isReadOnly !== false" title="Configuration" >
 				<field name="saleSupplySelect" onChange="action-group-sale-saleorderline-salesupplyselect-onchange" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
@@ -253,7 +256,8 @@
 			<field name="productName"/>
 			<panel name="productDetailsPanel" colSpan="12">
 				<field name="qty"  onChange="action-group-sale-saleorderline-qty-onchange" readonlyIf="isSubLine"/>
-				<field name="unit" readonlyIf="isSubLine || typeSelect == 2" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
+				<field name="unit" readonlyIf="isSubLine || typeSelect == 2" canEdit="false" requiredIf="typeSelect == 0"
+							 form-view="unit-form" grid-view="unit-grid"/>
 				<field name="price"  onChange="action-sale-order-line-method-onchange-price,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" colSpan="4" hidden="true"/>
 				<field name="inTaxPrice" onChange="action-sale-order-line-method-onchange-intaxprice,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" colSpan="4" hidden="true"/>
 				<panel name="discountPanel" title="Discount">
@@ -284,7 +288,8 @@
 			</panel>
 			<panel name="analyticDistributionPanel" readonlyIf="$isReadOnly !== false" title="Analytics" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-sale-order-line-attrs-read-only-distribution-lines">
 				<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" canEdit="false" onChange="action-sale-order-line-method-create-distribution" onSelect="action-sale-order-line-attrs-set-domain-analytic-distribution-template"/>
-				<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
+				<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12" onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+				<field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
 			</panel>
 			<panel name="settingsPanel" title="Settings">
 				<field name="saleSupplySelect" onChange="action-group-sale-saleorderline-salesupplyselect-onchange" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
@@ -345,7 +350,7 @@
 	<action-method name="action-sale-order-line-method-check-stock" if-module="axelor-supplychain">
 		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="checkStocks"/>
 	</action-method>
-	
+
 	<action-attrs name="action-sale-order-line-attrs-read-only-distribution-lines">
 		<attribute name="readonly" for="analyticMoveLineList" expr="eval: !__config__.app.isApp('account')  || __config__.app.getApp('account').getAnalyticDistributionTypeSelect() != 1"/>
 	</action-attrs>

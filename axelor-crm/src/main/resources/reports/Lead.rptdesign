@@ -715,9 +715,9 @@ Company.width as logo_width,
 Lead.created_on, Lead.updated_on, Lead.created_by, Lead.updated_by, Lead.title_select,
 Lead.name as lead_name, Lead.first_name as lead_first_name, Lead.status_select, Source.name AS source_name,
 IndustrySector.name as industry_sector_select, Lead.fax,messageEmailAddress.address AS email, Lead.fixed_phone, Lead.mobile_phone, Lead.web_site, Lead.enterprise_name,
-Lead.primary_address, Lead.primary_state, Lead.primary_city, Lead.primary_postal_code, PrimaryCountry.name as primary_country,
-Lead.job_title, AuthUser.full_name as user_name, Company.name as company_name
+Lead.primary_address, Lead.primary_state, Lead.primary_city, Lead.primary_postal_code, PrimaryCountry.name as primary_country,Function.name as job_title, AuthUser.full_name as user_name, Company.name as company_name
 from crm_lead as Lead 
+left join base_function as Function on (Lead.job_title_function = Function.id)
 left join auth_user as AuthUser on (Lead.user_id = AuthUser.id)
 left join base_company as Company on (AuthUser.active_company = Company.id)
 left join meta_file as MetaFile on (MetaFile.id = Company.logo)
@@ -1005,27 +1005,6 @@ where Lead.id in (@INJECTID)]]></xml-property>
         <design:resultColumnDefinitions>
           <design:attributes>
             <design:identifier>
-              <design:name>generated_email_file_path</design:name>
-              <design:position>14</design:position>
-            </design:identifier>
-            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
-            <design:precision>255</design:precision>
-            <design:scale>0</design:scale>
-            <design:nullability>Nullable</design:nullability>
-            <design:uiHints>
-              <design:displayName>generated_email_file_path</design:displayName>
-            </design:uiHints>
-          </design:attributes>
-          <design:usageHints>
-            <design:label>generated_email_file_path</design:label>
-            <design:formattingHints>
-              <design:displaySize>255</design:displaySize>
-            </design:formattingHints>
-          </design:usageHints>
-        </design:resultColumnDefinitions>
-        <design:resultColumnDefinitions>
-          <design:attributes>
-            <design:identifier>
               <design:name>generated_mail_file_name</design:name>
               <design:position>15</design:position>
             </design:identifier>
@@ -1039,27 +1018,6 @@ where Lead.id in (@INJECTID)]]></xml-property>
           </design:attributes>
           <design:usageHints>
             <design:label>generated_mail_file_name</design:label>
-            <design:formattingHints>
-              <design:displaySize>255</design:displaySize>
-            </design:formattingHints>
-          </design:usageHints>
-        </design:resultColumnDefinitions>
-        <design:resultColumnDefinitions>
-          <design:attributes>
-            <design:identifier>
-              <design:name>generated_mail_file_path</design:name>
-              <design:position>16</design:position>
-            </design:identifier>
-            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
-            <design:precision>255</design:precision>
-            <design:scale>0</design:scale>
-            <design:nullability>Nullable</design:nullability>
-            <design:uiHints>
-              <design:displayName>generated_mail_file_path</design:displayName>
-            </design:uiHints>
-          </design:attributes>
-          <design:usageHints>
-            <design:label>generated_mail_file_path</design:label>
             <design:formattingHints>
               <design:displaySize>255</design:displaySize>
             </design:formattingHints>
@@ -1803,27 +1761,6 @@ where Lead.id in (@INJECTID)]]></xml-property>
         <design:resultColumnDefinitions>
           <design:attributes>
             <design:identifier>
-              <design:name>reject_import_path_and_file_name</design:name>
-              <design:position>52</design:position>
-            </design:identifier>
-            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
-            <design:precision>255</design:precision>
-            <design:scale>0</design:scale>
-            <design:nullability>Nullable</design:nullability>
-            <design:uiHints>
-              <design:displayName>reject_import_path_and_file_name</design:displayName>
-            </design:uiHints>
-          </design:attributes>
-          <design:usageHints>
-            <design:label>reject_import_path_and_file_name</design:label>
-            <design:formattingHints>
-              <design:displaySize>255</design:displaySize>
-            </design:formattingHints>
-          </design:usageHints>
-        </design:resultColumnDefinitions>
-        <design:resultColumnDefinitions>
-          <design:attributes>
-            <design:identifier>
               <design:name>sender_name_code_exportcfonb</design:name>
               <design:position>53</design:position>
             </design:identifier>
@@ -1921,27 +1858,6 @@ where Lead.id in (@INJECTID)]]></xml-property>
           </design:attributes>
           <design:usageHints>
             <design:label>six_month_debt_pass_reason</design:label>
-            <design:formattingHints>
-              <design:displaySize>255</design:displaySize>
-            </design:formattingHints>
-          </design:usageHints>
-        </design:resultColumnDefinitions>
-        <design:resultColumnDefinitions>
-          <design:attributes>
-            <design:identifier>
-              <design:name>temp_import_path_and_file_name</design:name>
-              <design:position>58</design:position>
-            </design:identifier>
-            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
-            <design:precision>255</design:precision>
-            <design:scale>0</design:scale>
-            <design:nullability>Nullable</design:nullability>
-            <design:uiHints>
-              <design:displayName>temp_import_path_and_file_name</design:displayName>
-            </design:uiHints>
-          </design:attributes>
-          <design:usageHints>
-            <design:label>temp_import_path_and_file_name</design:label>
             <design:formattingHints>
               <design:displaySize>255</design:displaySize>
             </design:formattingHints>

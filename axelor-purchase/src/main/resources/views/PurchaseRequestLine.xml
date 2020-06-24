@@ -31,13 +31,14 @@
 	</action-record>
 	
 	<action-attrs name="action-purchase-request-line-attrs-product-domain">
-		<attribute name="domain" for="product" expr="eval: &quot; self.id IN (SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = ${_parent?.supplierUser?.id}) &quot;"/>
+		<attribute name="domain" for="product" if="_parent?.supplierUser?.id" expr="eval: &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true and self.id IN (SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = ${_parent?.supplierUser?.id}) &quot;"/>
+		<attribute name="domain" for="product" if="!_parent?.supplierUser?.id" expr="eval: &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true &quot;"/>
 	</action-attrs>
-	
+
     <action-attrs name="action-purchase-request-line-attrs-set-scale">
 		<attribute name="scale" for="quantity" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
 	</action-attrs>
-	
+
 	<action-record name="action-purchase-request-line-record-default" model="com.axelor.apps.purchase.db.PurchaseRequestLine">
   		<field name="quantity" expr="eval:1"/>
   		<field name="product" expr="eval:_parent?._product"/>
