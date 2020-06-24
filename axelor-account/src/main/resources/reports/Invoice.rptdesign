@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -29,6 +29,9 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
 }
 if(params["FooterHeight"].value != 0) {
 reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty("footerHeight",params["FooterHeight"].value+"cm");
+}
+if(params["Watermark"].value != null){
+reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().backgroundImage=params["Watermark"].value;
 }]]></method>
     <property name="layoutPreference">fixed layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -164,6 +167,21 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
             <property name="valueType">static</property>
             <property name="dataType">integer</property>
             <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="Watermark" id="5644">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant"></value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -3007,6 +3025,11 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
             <property name="borderTopStyle">solid</property>
             <property name="borderTopWidth">thin</property>
         </style>
+        <style name="NewStyle2" id="5645">
+            <property name="backgroundPositionX">center</property>
+            <property name="backgroundPositionY">center</property>
+            <property name="backgroundRepeat">no-repeat</property>
+        </style>
     </styles>
     <page-setup>
         <simple-master-page name="Simple MasterPage" id="2">
@@ -3015,6 +3038,7 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
             <property name="leftMargin">0.4in</property>
             <property name="bottomMargin">0in</property>
             <property name="rightMargin">0.15625in</property>
+            <property name="style">NewStyle2</property>
             <property name="headerHeight">0cm</property>
             <property name="footerHeight">2.4cm</property>
             <page-footer>
