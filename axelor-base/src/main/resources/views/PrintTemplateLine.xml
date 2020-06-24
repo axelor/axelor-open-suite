@@ -5,16 +5,17 @@
 
     <grid name="print-template-line-grid" title="Print template lines" model="com.axelor.apps.base.db.PrintTemplateLine">
         <field name="sequence" width="100"/>
-        <field name="title"/>
+        <field name="title" widget="html"/>
     </grid>
 
-    <form name="print-template-line-form" title="Print template line" model="com.axelor.apps.base.db.PrintTemplateLine">
+    <form name="print-template-line-form" title="Print template line" model="com.axelor.apps.base.db.PrintTemplateLine" width="large">
         <panel>
             <field name="sequence"/>
-            <field name="title" widget="html" colSpan="12"/>
-            <field name="content" widget="html" colSpan="12"/>            
-            <field name="conditions"/>
-            <field name="isEditable"/>            
+            <field name="isEditable"/>
+            <field name="title" widget="html" colSpan="12" help="String template"/>
+            <field name="content" widget="html" colSpan="12" help="String template"/>
+            <panel-related name="templateContextPanel" field="templateContextList" colSpan="12"/>
+            <field name="conditions" widget="CodeEditor" x-code-syntax="groovy" colSpan="12" help="Groovy conditions"/>
             <panel-related name="printTemplateLineListPanel" field="printTemplateLineList" grid-view="print-template-line-grid" form-view="print-template-line-form" colSpan="12" orderBy="sequence" canMove="true"/>
             <field name="parent" hidden="true"/>
         </panel>

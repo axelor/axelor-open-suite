@@ -393,4 +393,20 @@ public interface IExceptionMessage {
       "Unable to connect to Geonames server" /*)*/;
   public static final String PRINT_TEMPLATE_CONDITIONS_MUST_BE_BOOLEAN = /*$$(*/
       "The groovy conditions result must be a boolean" /*)*/;
+  public static final String PRINT_ERROR = /*$$(*/
+      "Error in print. Please check report configuration and print settings." /*)*/;
+
+  /* DocuSign */
+  public static final String DOCUSIGN_ACCOUNT_EMPTY = /*$$(*/ "The DocuSign account is empty" /*)*/;
+  public static final String DOCUSIGN_EMAIL_ADDRESS_EMPTY = /*$$(*/
+      "The email address is empty for the partner" /*)*/;
+  public static final String DOCUSIGN_PARAM_ITEM_UNKNOWN_TYPE = /*$$(*/
+      "Param item unknown type" /*)*/;
+  public static final String DOCUSIGN_ENVELOPE_ID_NULL = /*$$(*/
+      "DocuSign Service return any envelope id" /*)*/;
+  public static final String DOCUSIGN_IN_PERSON_SIGNER_NOT_FOUND = /*$$(*/
+      "The in person signer is not found" /*)*/;
+  public static final String DOCUSIGN_SIGNER_NOT_FOUND = /*$$(*/ "The signer is not found" /*)*/;
+  public static final String DOCUSIGN_ENVELOPE_SETTING_EMPTY = /*$$(*/
+      "The envelope setting is empty" /*)*/;
 }

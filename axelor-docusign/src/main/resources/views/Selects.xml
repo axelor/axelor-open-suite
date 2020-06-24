@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+   
+   <selection name="docusign.envelope.status.select">
+       <option value="any">Any</option>
+       <option value="created">Created</option>
+       <option value="sent">Sent</option>
+       <option value="delivered">Delivered</option>
+       <option value="signed">Signed</option>
+       <option value="completed">Completed</option>
+       <option value="declined">Declined</option>
+       <option value="timedout">Timedout</option>
+       <option value="voided">Voided</option>
+       <option value="deleted">Deleted</option>
+   </selection>
+   
+    <selection name="docusign.field.setting.type.select">
+       <option value="1">Sign Here</option>
+       <option value="2">Full name</option>
+       <option value="3">Email</option>
+       <option value="4">Company</option>       
+       <option value="5">Checkbox</option>
+       <option value="6">Radio group</option>
+       <option value="7">Radio button</option>
+       <option value="8">List</option>
+       <option value="9">List item</option>
+       <option value="10">Approve</option>
+       <option value="11">Decline</option>      
+    </selection>
+    
+</object-views>

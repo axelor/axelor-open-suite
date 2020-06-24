@@ -5,7 +5,7 @@
 
     <grid name="print-line-grid" title="Print lines" model="com.axelor.apps.base.db.PrintLine">
         <field name="rank" width="100"/>
-        <field name="title"/>
+        <field name="title" widget="html"/>
     </grid>
 
     <form name="print-line-form" title="Print line" model="com.axelor.apps.base.db.PrintLine">

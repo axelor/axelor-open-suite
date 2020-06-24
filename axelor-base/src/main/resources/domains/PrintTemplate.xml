@@ -9,6 +9,7 @@
 
         <string name="name" title="Name" namecolumn="true"/>
         <many-to-one name="metaModel" title="Model" ref="com.axelor.meta.db.MetaModel"/>
+        <string name="documentName" title="Document name"/>
         <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"/>
         <many-to-one name="printSettings" title="Print settings" ref="com.axelor.apps.base.db.PrintingSettings"/>
         <one-to-many name="printTemplateLineList" title="Content lines" ref="com.axelor.apps.base.db.PrintTemplateLine" mappedBy="printTemplate" orderBy="sequence"/>
@@ -16,7 +17,12 @@
         <many-to-many name="birtTemplateSet" title="Birt templates" ref="com.axelor.apps.base.db.BirtTemplate"/>
         <boolean name="hidePrintSettings" title="Hide Print Settings"/>
         <string name="formatSelect" title="Format" selection="base.print.template.format.select"/>
-        <integer name="displayTypeSelect" title="Display type" selection="base.print.display.type.select" default="1"/>        
+        <integer name="displayTypeSelect" title="Display type" selection="base.print.display.type.select" default="1"/>
+        <boolean name="isEditable" title="Editable"/>
+        <boolean name="attach" title="Attach"/>
+        <string name="metaFileField" title="File field name"/>
+        <many-to-many name="printTemplateSet" title="Print template sublist" ref="com.axelor.apps.base.db.PrintTemplate"/>
+        <string name="metaModelDefaultPath" title="Model default Path" large="true"/>
 
     </entity>
 

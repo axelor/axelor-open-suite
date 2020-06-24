@@ -9,6 +9,7 @@
 
         <string name="title" title="Title" namecolumn="true" large="true"/>
         <string name="content" title="Content" large="true"/>
+        <one-to-many name="templateContextList" title="Context" ref="com.axelor.apps.message.db.TemplateContext" mappedBy="printTemplateLine"/>
         <many-to-one name="printTemplate" title="Print template" ref="com.axelor.apps.base.db.PrintTemplate"/>
         <integer name="sequence" title="Seq."/>        
         <string name="conditions" title="Conditions" large="true"/>

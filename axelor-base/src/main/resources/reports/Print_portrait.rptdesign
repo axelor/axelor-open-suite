@@ -755,6 +755,12 @@ WHERE LangTranslate.message_key = ?
                                 <property name="fontFamily">sans-serif</property>
                                 <property name="fontSize">8pt</property>
                                 <property name="dataSet">PrintingSettingsDS</property>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">(row["footer"]==null) || (row["footer"]=='')</expression>
+                                    </structure>
+                                </list-property>
                                 <list-property name="boundDataColumns">
                                     <structure>
                                         <property name="name">footer</property>
@@ -909,6 +915,7 @@ WHERE LangTranslate.message_key = ?
                                 <property name="pageBreakInside">auto</property>
                                 <cell id="3855">
                                     <text id="3862">
+                                        <property name="fontSize">8pt</property>
                                         <property name="paddingBottom">0.25cm</property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<value-of format="HTML">

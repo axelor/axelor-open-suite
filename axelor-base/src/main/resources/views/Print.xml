@@ -14,15 +14,16 @@
             <button name="print" title="Print" icon="fa-print" onClick="save,action-print-method-print" readonlyIf="id == null"/>
         </toolbar>
         <panel>
-            <field name="name"/>
-            <field name="metaModel" grid-view="meta-model-grid" form-view="meta-model-form"/>
-            <field name="company" grid-view="company-grid" form-view="company-form"/>
-            <field name="printSettings" grid-view="printing-setting-grid" form-view="printing-setting-form" hideIf="hidePrintSettings"/>
-            <field name="language" grid-view="language-grid" form-view="language-form"/>
-            <field name="hidePrintSettings"/>
+            <field name="documentName" title="Document name"/>
             <field name="formatSelect"/>
             <field name="displayTypeSelect"/>
             <panel-related name="printLineListPanel" field="printLineList" grid-view="print-line-grid" form-view="print-line-form" colSpan="12" orderBy="rank"/>
+            <field name="metaModel" grid-view="meta-model-grid" form-view="meta-model-form" hidden="true"/>
+            <field name="company" grid-view="company-grid" form-view="company-form" hidden="true"/>
+            <field name="hidePrintSettings" hidden="true"/>
+            <field name="printSettings" grid-view="printing-setting-grid" form-view="printing-setting-form" hidden="true"/>
+            <field name="language" grid-view="language-grid" form-view="language-form" hidden="true"/>
+            <panel-related name="printSetPanel" field="printSet" grid-view="print-grid" form-view="print-form" colSpan="12"/>
         </panel>
     </form>
 

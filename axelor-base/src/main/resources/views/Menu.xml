@@ -807,7 +807,9 @@
   </action-view>
   
   <!-- Print -->
-  <menuitem name="mail-conf-print-templates" parent="mail-conf" order="40" title="Print templates" action="action.print.template.view.all"/>
+  <menuitem name="print-conf" parent="admin-root" if="__config__.app.isApp('base')" title="Printing"  order="41" />
+
+  <menuitem name="print-conf-print-templates" parent="print-conf" title="Print templates" action="action.print.template.view.all"/>
 
   <action-view name="action.print.template.view.all" title="Print templates" model="com.axelor.apps.base.db.PrintTemplate">
      <view type="grid" name="print-template-grid"/>

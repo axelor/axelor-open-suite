@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.PrintTemplateLine;
 import com.axelor.apps.base.db.repo.PrintRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
+import com.axelor.apps.message.db.TemplateContext;
 import com.axelor.apps.message.service.TemplateContextService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -35,10 +36,8 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaModel;
-import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.Context;
 import com.axelor.tool.template.TemplateMaker;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -46,7 +45,6 @@ import java.lang.invoke.MethodHandles;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -56,8 +54,8 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
 
   private final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  private static final char TEMPLATE_DELIMITER = '$';
-  private static final String TEMPLATE_CONTEXT_SEQUENCE_KEY_PREFIX = "Sequence_";
+  protected static final char TEMPLATE_DELIMITER = '$';
+  protected static final String TEMPLATE_CONTEXT_SEQUENCE_KEY_PREFIX = "Seq_";
 
   protected PrintRepository printRepo;
   protected PrintService printService;
@@ -77,16 +75,39 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
     this.templateContextService = templateContextService;
   }
 
+  /*
+  @SuppressWarnings("unchecked")
   @Override
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public Map<String, Object> generatePrint(
       Long objectId, String model, String simpleModel, PrintTemplate printTemplate)
       throws AxelorException, IOException, ClassNotFoundException {
+
+    Print print = createPrint(objectId, model, simpleModel, printTemplate);
+
+    if (printTemplate.getIsEditable()) {
+      return ActionView.define("Create print")
+          .model(Print.class.getName())
+          .add("form", "print-form")
+          .param("forceEdit", "true")
+          .context("_showRecord", print.getId().toString())
+          .map();
+    } else {
+      return printService.generatePDF(print);
+    }
+  }*/
+
+  @SuppressWarnings("unchecked")
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public Print generatePrint(Long objectId, PrintTemplate printTemplate)
+      throws AxelorException, IOException, ClassNotFoundException {
     MetaModel metaModel = printTemplate.getMetaModel();
     if (metaModel == null) {
       return null;
     }
-
+    String model = metaModel.getFullName();
+    String simpleModel = metaModel.getName();
     // debug
     LOG.debug("");
     LOG.debug("model : {}", model);
@@ -98,15 +119,30 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
     TemplateMaker maker = initMaker(objectId, model, simpleModel);
 
     Print print = new Print();
+    if (StringUtils.notEmpty(printTemplate.getDocumentName())) {
+      maker.setTemplate(printTemplate.getDocumentName());
+      print.setDocumentName(maker.make());
+    }
     print.setMetaModel(metaModel);
+    print.setObjectId(objectId);
     print.setCompany(printTemplate.getCompany());
     print.setPrintSettings(printTemplate.getPrintSettings());
     print.setLanguage(printTemplate.getLanguage());
     print.setHidePrintSettings(printTemplate.getHidePrintSettings());
     print.setFormatSelect(printTemplate.getFormatSelect());
     print.setDisplayTypeSelect(printTemplate.getDisplayTypeSelect());
+    print.setIsEditable(printTemplate.getIsEditable());
+    print.setAttach(printTemplate.getAttach());
+    print.setMetaFileField(printTemplate.getMetaFileField());
 
-    Context scriptContext = new Context(Mapper.toMap(metaModel), metaModel.getClass());
+    Context scriptContext = null;
+    if (StringUtils.notEmpty(model)) {
+      Class<? extends Model> modelClass = (Class<? extends Model>) Class.forName(model);
+      Model modelObject = JPA.find(modelClass, objectId);
+      if (ObjectUtils.notEmpty(modelObject)) {
+        scriptContext = new Context(Mapper.toMap(modelObject), modelClass);
+      }
+    }
 
     rank = 0;
     int level = 1;
@@ -116,16 +152,27 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
           printTemplate.getPrintTemplateLineList(), print, null, scriptContext, maker, level);
     }
 
-    printRepo.save(print);
+    if (CollectionUtils.isNotEmpty(printTemplate.getPrintTemplateSet())) {
+      for (PrintTemplate subPrintTemplate : printTemplate.getPrintTemplateSet()) {
+        Long subObjectId = objectId;
+        if (StringUtils.notEmpty(subPrintTemplate.getMetaModelDefaultPath())) {
+          Object subMetaModelObject =
+              templateContextService.computeTemplateContext(
+                  subPrintTemplate.getMetaModelDefaultPath(), scriptContext);
+          Class<? extends Model> subModelClass =
+              (Class<? extends Model>) Class.forName(subPrintTemplate.getMetaModel().getFullName());
+          subObjectId = (Long) Mapper.of(subModelClass).get(subMetaModelObject, "id");
+        }
+
+        Print subPrint = generatePrint(subObjectId, subPrintTemplate);
+        print.addPrintSetItem(subPrint);
+      }
+    }
+    print = printRepo.save(print);
 
     printService.attachMetaFiles(print, getMetaFiles(maker, printTemplate));
 
-    return ActionView.define("Create print")
-        .model(Print.class.getName())
-        .add("form", "print-form")
-        .param("forceEdit", "true")
-        .context("_showRecord", print.getId().toString())
-        .map();
+    return print;
   }
 
   private void processPrintTemplateLineList(
@@ -136,7 +183,11 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
       TemplateMaker maker,
       int level)
       throws AxelorException {
-    int seq = 0;
+    int seq = 1;
+    if (ObjectUtils.notEmpty(templateLineList.get(0))
+        && ObjectUtils.notEmpty(templateLineList.get(0).getSequence())) {
+      seq = templateLineList.get(0).getSequence().intValue();
+    }
     for (PrintTemplateLine printTemplateLine : templateLineList) {
       boolean present = true;
       if (StringUtils.notEmpty(printTemplateLine.getConditions())) {
@@ -153,20 +204,26 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
       }
 
       if (present) {
-        ++seq;
         ++rank;
         String title = null;
         String content = null;
 
-        if (!Strings.isNullOrEmpty(printTemplateLine.getTitle())) {
+        if (StringUtils.notEmpty(printTemplateLine.getTitle())) {
           maker.setTemplate(printTemplateLine.getTitle());
           addSequencesInContext(maker, level, seq, parent);
           title = maker.make();
         }
 
-        if (!Strings.isNullOrEmpty(printTemplateLine.getContent())) {
+        if (StringUtils.notEmpty(printTemplateLine.getContent())) {
           maker.setTemplate(printTemplateLine.getContent());
           addSequencesInContext(maker, level, seq, parent);
+          if (CollectionUtils.isNotEmpty(printTemplateLine.getTemplateContextList())) {
+            for (TemplateContext templateContext : printTemplateLine.getTemplateContextList()) {
+              Object result =
+                  templateContextService.computeTemplateContext(templateContext, scriptContext);
+              maker.addContext(templateContext.getName(), result);
+            }
+          }
           content = maker.make();
         }
 
@@ -189,6 +246,7 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
         }
 
         print.addPrintLineListItem(printLine);
+        seq++;
       }
     }
   }

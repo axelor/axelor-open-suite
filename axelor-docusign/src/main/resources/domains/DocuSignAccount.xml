@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  
+  <module name="docusign" package="com.axelor.apps.docusign.db"/>
+
+  <entity name="DocuSignAccount" lang="java">
+    
+    <string name="name" title="Name"/>
+    <string name="accountId" title="Account id"/>
+    <string name="accessToken" title="Access token" large="true"/>
+    <string name="basePath" title="Base path"/>   
+  
+  </entity>
+  
+  
+</domain-models>
