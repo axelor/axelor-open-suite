@@ -197,7 +197,7 @@
 		model="com.axelor.apps.base.db.PriceList" >
 		<view type="grid" name="price-list-grid" />
 		<view type="form" name="sale-price-list-form" />
-		<domain>self.typeSelect = 1</domain>
+		<domain>self.typeSelect = 1 and self.id not in (select priceList.id from PriceList priceList join PartnerPriceList partnerPriceList on priceList member of partnerPriceList.priceListSet where priceList.typeSelect = 1 and partnerPriceList.isExclusive IS TRUE )</domain>
 	</action-view>	
 	
 	<menuitem name="sc-root-sale-templates" parent="sc-root-sale-conf" 
