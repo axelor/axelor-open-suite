@@ -264,6 +264,7 @@
 		model="com.axelor.apps.base.db.PriceList">
 		<view type="grid" name="price-list-grid" />
 		<view type="form" name="price-list-form" />
+		<domain>self.id not in (select priceList.id from PriceList priceList join PartnerPriceList partnerPriceList on priceList member of partnerPriceList.priceListSet where partnerPriceList.isExclusive IS TRUE )</domain>
 	</action-view>
 
 	<menuitem name="referential-conf" title="Configuration" order="100"

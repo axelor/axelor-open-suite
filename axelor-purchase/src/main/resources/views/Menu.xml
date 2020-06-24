@@ -209,7 +209,7 @@
 		model="com.axelor.apps.base.db.PriceList" >
 		<view type="grid" name="price-list-grid" />
 		<view type="form" name="purchase-price-list-form" />
-		<domain>self.typeSelect = 2</domain>
+		<domain>self.typeSelect = 2 and self.id not in (select priceList.id from PriceList priceList join PartnerPriceList partnerPriceList on priceList member of partnerPriceList.priceListSet where priceList.typeSelect = 2 and partnerPriceList.isExclusive IS TRUE )</domain>
 	</action-view>
 	
 	<menuitem name="sc-root-purchase-conf-purchase-request-creator" parent="sc-root-purchase-conf" if="__config__.app.isApp('purchase-request')"
