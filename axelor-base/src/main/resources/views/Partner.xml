@@ -347,13 +347,11 @@
 				<field name="functionBusinessCard" showIf="isContact || partnerTypeSelect == 2" />
 			</panel>
 			<panel name="otherPartnerDetailsPanel">
-				<field name="siren" hideIf="partnerTypeSelect== 2" colSpan="4"
-					onChange="action-partner-record-set-registration-code" />
-				<field name="nic" hideIf="partnerTypeSelect== 2" colSpan="4"
-					onChange="action-partner-record-set-registration-code" />
-				<field name="registrationCode" hideIf="partnerTypeSelect== 2"
-					readonly="true" colSpan="4"
+				<field name="registrationCode" hideIf="partnerTypeSelect== 2" colSpan="4"
 					onChange="action-method-partner-registration-code-onChange" />
+				<field name="siren" hideIf="partnerTypeSelect== 2" colSpan="4" readonly="true" />
+				<field name="nic" hideIf="partnerTypeSelect== 2" colSpan="4" readonly="true"
+					onChange="action-partner-record-set-registration-code" />
 				<field name="saleTurnover" hideIf="partnerTypeSelect== 2" />
 				<field name="nbrEmployees" hideIf="partnerTypeSelect== 2" />
 				<field name="mainActivityCode" hideIf="partnerTypeSelect== 2" />
@@ -456,7 +454,6 @@
           <panel name="otherPartnerDetailsPanel">
             <field name="saleTurnover" hideIf="partnerTypeSelect== 2"/>
             <field name="nbrEmployees" hideIf="partnerTypeSelect== 2"/>
-            <field name="registrationCode" hideIf="partnerTypeSelect== 2" onChange="action-method-partner-registration-code-onChange"/>
             <field name="mainActivityCode" hideIf="partnerTypeSelect== 2"/>
             <field name="taxNbr" hideIf="partnerTypeSelect== 2"/>
 						<field name="paymentDelay" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')"/>
@@ -1411,7 +1408,7 @@
 	</action-method>
 
 	<action-method name="action-method-partner-registration-code-onChange">
-		<call class="com.axelor.apps.base.web.PartnerController" method="setTaxNbr" />
+		<call class="com.axelor.apps.base.web.PartnerController" method="modifyRegistrationCode" />
 	</action-method>
 
 	<action-view name="action-contact-partner-dashlet" title="Partners"
@@ -1472,11 +1469,6 @@
 			expr="eval:__config__.app.getApp('production')?.getManageOutsourcing()" />
 	</action-attrs>
 
-	<action-record name="action-partner-record-set-registration-code"
-		model="com.axelor.apps.base.db.Partner">
-		<field name="registrationCode" expr="eval: __this__.siren?.concat(__this__.nic)" />
-	</action-record>
-
 	<action-view name="action-partner-view-subsidiary-partners"
 		title="Subsidiaries" model="com.axelor.apps.base.db.Partner">
 		<view type="grid" name="partner-grid" />
@@ -1516,6 +1508,7 @@
 			<domain>self.isEmployee = true AND self.isContact = false</domain>
 		</filter>
 	</search-filters>
+
 
 
 </object-views>
