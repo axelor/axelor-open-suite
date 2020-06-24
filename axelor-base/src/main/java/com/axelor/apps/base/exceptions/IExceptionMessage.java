@@ -397,4 +397,10 @@ public interface IExceptionMessage {
   public static final String ADVANCED_IMPORT_NO_RESET = /*$$(*/ "No imported data to reset" /*)*/;
   public static final String SERVER_CONNECTION_ERROR = /*$$(*/
       "Unable to connect to Geonames server" /*)*/;
+
+  // product category service
+  public static final String PRODUCT_CATEGORY_PARENTS_CIRCULAR_DEPENDENCY = /*$$(*/
+      "Configuration error: the product category %s is an ancestor of himself." /*)*/;
+  public static final String PRODUCT_CATEGORY_CHILDREN_CIRCULAR_DEPENDENCY = /*$$(*/
+      "Configuration error: the product category %s is among its descendants." /*)*/;
 }
