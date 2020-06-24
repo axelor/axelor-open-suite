@@ -5,13 +5,13 @@
     
     <grid name="product-company-grid" title="Product per company" model="com.axelor.apps.base.db.ProductCompany">
 	    <field name="company"/>
-	    <field name="salePrice" x-scale="2"/>
-		<field name="saleCurrency"/>
-		<field name="purchasePrice" x-scale="2"/>
-		<field name="purchaseCurrency"/>
+		<field name="lastPurchasePrice" x-scale="2"/>
+		<field name="lastPurchaseCurrency"/>
 		<field name="costPrice" x-scale="2"/>
 		<field name="avgPrice" x-scale="2"/>
 		<field name="company.currency" title="Company currency"/>
+		<field name="salePrice" x-scale="2"/>
+		<field name="saleCurrency"/>
 	</grid>
 	
 	<form name="product-company-form" title="Product per company" model="com.axelor.apps.base.db.ProductCompany" 
