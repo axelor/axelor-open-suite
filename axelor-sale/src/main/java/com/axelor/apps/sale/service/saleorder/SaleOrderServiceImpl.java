@@ -131,7 +131,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void validateChanges(SaleOrder saleOrder) throws AxelorException {
-    // Nothing to do if we don't have supplychain.
+    checkUnauthorizedDiscounts(saleOrder);
   }
 
   @Override
@@ -267,6 +267,26 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     }
 
     return saleOrderLineList;
+  }
+
+  @Override
+  public void checkUnauthorizedDiscounts(SaleOrder saleOrder) throws AxelorException {
+    SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (saleOrderLineList != null) {
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+        BigDecimal maxDiscount = saleOrderLineService.computeMaxDiscount(saleOrder, saleOrderLine);
+        if (maxDiscount != null
+            // do not block if the discount amount if from a derogation
+            && !saleOrderLine.getAllowDiscountDerogation()
+            && saleOrderLineService.isSaleOrderLineDiscountGreaterThanMaxDiscount(
+                saleOrderLine, maxDiscount)) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(IExceptionMessage.SALE_ORDER_DISCOUNT_TOO_HIGH));
+        }
+      }
+    }
   }
 
   @Transactional(rollbackOn = {Exception.class})

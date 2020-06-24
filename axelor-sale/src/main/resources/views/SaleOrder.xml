@@ -264,6 +264,13 @@
 	          </div>
 	        ]]></viewer>
 	      </field>
+				<field name="$discountsNeedReview" showIf="$discountsNeedReview" showTitle="false" readonly="true">
+					<viewer><![CDATA[
+		      	<h4>
+		        	<span class="label label-important" x-translate>Discounts need review</span>
+		      	</h4>
+					]]></viewer>
+				</field>
 	  	</panel>
 	  	<field name="company.tradingNameSet" hidden="true"/>
 	    <panel name="generalInfoPanel" colSpan="12">
@@ -1006,6 +1013,7 @@
 		<action name="action-sale-order-attrs-external-reference"/>
 		<action name="action-sale-order-attrs-availability"/>
 		<action name="action-sale-order-attrs-set-required"/>
+		<action name="action-sale-order-attrs-set-discounts-need-review"/>
 		<action name="action-sale-order-record-load-trading-name-config"/>
 	</action-group>
 
@@ -1061,6 +1069,7 @@
   
   	<action-validate name="action-sale-order-validate-quotation">
 		<error message="Please enter at least one detail line." if="saleOrderLineList?.isEmpty()"/>
+		<alert message="One product is sold at loss, are you sure you want to finalize the quotation ?" if="saleOrderLineList?.any{ it.subTotalGrossMargin &lt; 0 }"/>
 	</action-validate>
 
     <action-attrs name="action-sale-order-attrs-in-ati">
@@ -1459,6 +1468,11 @@
 	<action-attrs name="action-sale-order-attrs-availability">
 		<attribute name="hidden" for="availabilityRequestLabel" expr="eval: !(__repo__(StockMove).all().filter('self.originTypeSelect LIKE ? AND self.originId = ? AND self.availabilityRequest = ? AND self.statusSelect = ?','com.axelor.apps.sale.db.SaleOrder',id,true,__repo__(StockMove).STATUS_PLANNED).count() > 0)"/>
 		<attribute name="hidden" expr="eval: statusSelect != 3" for="saleOrderLineList.availableStatus" if="__config__.app.isApp('supplychain')"/>
+	</action-attrs>
+
+	<action-attrs name="action-sale-order-attrs-set-discounts-need-review">
+		<attribute name="value" for="$discountsNeedReview"
+			expr="eval: (statusSelect == __repo__(SaleOrder).STATUS_DRAFT_QUOTATION || (orderBeingEdited &amp;&amp; __repo__(SaleOrder).STATUS_ORDER_CONFIRMED)) &amp;&amp; saleOrderLineList?.any{it.discountsNeedReview}"/>
 	</action-attrs>
 
 	<action-method name="action-sale-order-method-fill-sale-order-lines-estimated-date">

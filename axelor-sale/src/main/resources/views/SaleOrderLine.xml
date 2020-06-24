@@ -8,6 +8,8 @@
 		<hilite color="danger" if="deliveryState == 1"/>
 		<hilite color="warning" if="deliveryState == 2"/>
 		<hilite color="success" if="deliveryState == 3"/>
+		<field name="$hasWarning" hidden="true"/>
+		<button name="errorIconButton" showIf="$hasWarning" onClick="refresh" readonlyIf="true" icon="fa-exclamation-triangle"/>
 		<field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber" width="51"/>
 		<field name="typeSelect" hidden="true"/>
 		<field name="deliveryState" hidden="true" if="__config__.app.isApp('supplychain')" />
@@ -149,11 +151,26 @@
 					<field name="price" colSpan="3" readonlyIf="$isReadOnly !== false || deliveryState == 3 || $nonNegotiable" onChange="action-sale-order-line-method-onchange-price,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" hidden="true"/>
 					<field name="inTaxPrice" colSpan="3" readonlyIf="$isReadOnly !== false || deliveryState == 3" onChange="action-sale-order-line-method-onchange-intaxprice,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" hidden="true"/>
 					<panel name="discountPanel" colSpan="12" readonlyIf="$isReadOnly !== false || deliveryState == 3">
-						<field name="discountTypeSelect" colSpan="3" readonlyIf="$nonNegotiable" onChange="action-sale-order-line-method-compute,action-sale-order-line-attrs-discountamount-title,action-sale-order-line-method-compute-analytic-distribution"/>
-						<field name="discountAmount" colSpan="3" readonlyIf="$nonNegotiable" onChange="action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution" hideIf="discountTypeSelect == 0"/>
+						<field name="discountTypeSelect" colSpan="3" readonlyIf="$nonNegotiable" onChange="action-sale-order-line-group-discount-type-select-onchange"/>
+						<!--This panel purpose is to avoid issues with permission by field -->
+						<panel name="discountAmountPanel" colSpan="9" hideIf="discountTypeSelect == 0">
+							<field name="discountAmount" colSpan="3" readonlyIf="$nonNegotiable"
+							validIf="!$maxDiscount || allowDiscountDerogation || (discountTypeSelect == 1 &amp;&amp; $number(discountAmount) &lt;= $number($maxDiscount)) || (discountTypeSelect == 2 &amp;&amp; 100*$number(discountAmount)/$number(price) &lt; $number($maxDiscount))"
+							onChange="action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution"/>
+							<field name="allowDiscountDerogation"/>
+						</panel>
 						<field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"/>
+						<field name="$maxDiscount" colSpan="12" showTitle="false" showIf="$maxDiscount" readonly="true">
+							<viewer><![CDATA[
+								<h4>
+									<span class="label label-warning"><span x-translate>Max discount</span> {{record.$maxDiscount}}%</span>
+								</h4>
+							]]>
+							</viewer>
+						</field>
 					</panel>
 					<label name="multipleQtyNotRespectedLabel" hidden="true" colSpan="12"/>
+					<field name="discountsNeedReview" hidden="true"/>
 					<field name="$qtyValid" hidden="true" colSpan="12"/>
 				</panel>
 
@@ -406,6 +423,7 @@
 		<action name="action-sale-order-line-attrs-is-requested-qty-readonly" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageStockReservation()"/>
       	<action name="action-record-sale-order-line-future-qty" if="__config__.app.isApp('supplychain')"/>
       	<action name="action-sale-order-attrs-hide-ati"/>
+			<action name="action-sale-order-line-method-fill-max-discount"/>
     </action-group>
 
     <action-group name="action-group-sale-saleorderline-product-onchange">
@@ -423,6 +441,7 @@
     	<action name="action-sale-order-line-attrs-pack" if="typeSelect == 2 || isSubLine"/>
         <action name="action-record-sale-order-line-future-qty" if="__config__.app.isApp('supplychain')"/>
         <action name="action-sale-order-line-record-complementary-products-to-handle"/>
+			<action name="action-sale-order-line-method-fill-max-discount"/>
     </action-group>
 
     <action-group name="action-group-sale-saleorderline-qty-onchange">
@@ -451,6 +470,18 @@
 		<action name="action-sale-order-line-method-check-stock"
 				if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getCheckSaleStocks()"/>
     </action-group>
+
+	<action-group name="action-sale-order-line-group-discount-type-select-onchange">
+		<action name="action-sale-order-line-method-compute"/>
+		<action name="action-sale-order-line-attrs-discountamount-title"/>
+		<action name="action-sale-order-line-method-compute-analytic-distribution"/>
+		<action name="action-sale-order-line-method-fill-max-discount"/>
+	</action-group>
+
+	<action-group name="action-sale-order-line-group-discount-amount-onchange">
+		<action name="action-sale-order-line-method-compute"/>
+    <action name="action-sale-order-line-method-compute-analytic-distribution"/>
+	</action-group>
     
     <action-attrs name="action-sale-order-attrs-hide-ati">
 		<attribute name="hidden" for="exTaxTotal" expr="eval: _parent.inAti || typeSelect == 2" if="_parent?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
@@ -577,6 +608,10 @@
 	
 	<action-method name="action-sale-order-line-method-onchange-intaxprice">
 		<call class="com.axelor.apps.sale.web.SaleOrderLineController" method="updatePrice"/>
+	</action-method>
+
+	<action-method name="action-sale-order-line-method-fill-max-discount">
+		<call class="com.axelor.apps.sale.web.SaleOrderLineController" method="fillMaxDiscount"/>
 	</action-method>
 
   	<!-- ACTION ATTRS -->
