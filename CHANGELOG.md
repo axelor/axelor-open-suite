@@ -30,6 +30,7 @@
 - SALE ORDER: Set duration when created from opportunity.
 - Advance import: Fix multiple search on same field.
 - Bill of Material: Replace NPE by an explicit message to the user when product unit is not configured.
+- TRANING : Added domain to 'Required training' for not display self record.
 
 ## [5.3.6] - 2020-05-26
 ## Improvements
