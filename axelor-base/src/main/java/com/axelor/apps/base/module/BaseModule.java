@@ -79,6 +79,10 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.PartnerServiceImpl;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.PeriodServiceImpl;
+import com.axelor.apps.base.service.PrintService;
+import com.axelor.apps.base.service.PrintServiceImpl;
+import com.axelor.apps.base.service.PrintTemplateService;
+import com.axelor.apps.base.service.PrintTemplateServiceImpl;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.ProductMultipleQtyServiceImpl;
 import com.axelor.apps.base.service.ProductService;
@@ -195,5 +199,7 @@ public class BaseModule extends AxelorModule {
     bind(ActionService.class).to(ActionServiceImpl.class);
     bind(PartnerService.class).to(PartnerServiceImpl.class);
     bind(SearchCallService.class).to(SearchCallServiceImpl.class);
+    bind(PrintTemplateService.class).to(PrintTemplateServiceImpl.class);
+    bind(PrintService.class).to(PrintServiceImpl.class);
   }
 }

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+
+    <module name="base" package="com.axelor.apps.base.db"/>
+
+    <entity name="Print">
+
+        <string name="documentName" title="Document name" namecolumn="true"/>
+        <many-to-one name="metaModel" title="Model" ref="com.axelor.meta.db.MetaModel"/>
+        <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"/>
+        <many-to-one name="printSettings" title="Print settings" ref="com.axelor.apps.base.db.PrintingSettings"/>
+        <one-to-many name="printLineList" title="Content lines" ref="com.axelor.apps.base.db.PrintLine" mappedBy="print"/>
+        <many-to-one name="language" title="Language" ref="com.axelor.apps.base.db.Language"/>
+        <boolean name="hidePrintSettings" title="Hide print settings" hidden="true"/>
+        <string name="formatSelect" title="Format" selection="base.print.template.format.select"/>
+        <integer name="displayTypeSelect" title="Display type" selection="base.print.display.type.select"/>
+        <boolean name="isEditable" title="Editable"/>
+        <boolean name="attach" title="Attach to model"/>
+        <string name="metaFileField" title="File field name"/>
+        <long name="objectId" title="Object id"/>
+        <many-to-many name="printSet" title="Print sublist" ref="com.axelor.apps.base.db.Print"/>
+        
+        <extra-code><![CDATA[
+        
+        //SEQUENCE SELECT
+        public static final int DISPLAY_TYPE_PORTRAIT = 1;
+        public static final int DISPLAY_TYPE_LANDSCAPE = 2;
+        
+     ]]></extra-code>
+
+    </entity>
+
+</domain-models>

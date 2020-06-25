@@ -391,4 +391,12 @@ public interface IExceptionMessage {
   public static final String ADVANCED_IMPORT_NO_RESET = /*$$(*/ "No imported data to reset" /*)*/;
   public static final String SERVER_CONNECTION_ERROR = /*$$(*/
       "Unable to connect to Geonames server" /*)*/;
+
+  /* Print template */
+  public static final String PRINT_TEMPLATE_CONDITION_MUST_BE_BOOLEAN = /*$$(*/
+      "The groovy condition result must be a boolean" /*)*/;
+  public static final String PRINT_ERROR = /*$$(*/
+      "Error in print. Please check report configuration and print settings." /*)*/;
+  public static final String PRINT_TEMPLATE_ERROR_ON_LINE_WITH_SEQUENCE_AND_TITLE = /*$$(*/
+      "Error in print template line with sequence %s and title %s." /*)*/;
 }
