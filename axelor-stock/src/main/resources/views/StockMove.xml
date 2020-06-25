@@ -41,6 +41,7 @@
 			<button name="printPickingStockMoveGridBtn" title="Print Picking StockMove(s)" onClick="action-print-picking-stock-move" icon="fa-print"/>
     <button name="seeStockMoveLinesBtn" title="See stock move lines" onClick="action-stock-move-view-stock-move-line" icon="fa-tasks"/>
     	</toolbar>
+		<hilite if="invoiceBlockingReason &amp;&amp; (!invoiceBlockedToDate || invoiceBlockedToDate &gt;  __date__)" color="danger"/>
 		<field name="stockMoveSeq" width="120">
 			<hilite color="warning" strong="true" if="pickingIsEdited"/>
 		</field>
@@ -59,7 +60,9 @@
 	  	<hilite strong="true" color="warning" if="availableStatusSelect == 2"/>
 	  	<hilite strong="true" color="danger" if="availableStatusSelect == 3"/>
      </field>
-     <field name="pickingIsEdited" hidden="true" />
+     <field name="invoiceBlockingReason" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+		<field name="invoiceBlockedToDate" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+		<field name="pickingIsEdited" hidden="true" />
      <field name="typeSelect" hidden="true" />
      <button name="printStockMoveBtn" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
      <button name="viewDirectionBtn" icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
@@ -267,7 +270,7 @@
 				<button name="passedForPaymentAuthorizedBtn" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; ( typeSelect == 3 &amp;&amp; !isReversion) &amp;&amp; pfpValidateStatusSelect != 2" title="PFP authorized" onClick="save,action-stock-move-record-pfp-validate,save" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()"/>
 				<button name="refusalToPayLitigationBtn" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; ( typeSelect == 3 &amp;&amp; !isReversion) &amp;&amp; pfpValidateStatusSelect != 3" title="PFP litigation" onClick="save,action-stock-move-record-pfp-refusal-to-pay,save" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()"/>
 				<button name="realizeBtn" title="Realize" icon="fa-check" showIf="statusSelect == 2" prompt="Are you sure you want to realize this stock move?" onClick="action-group-stock-stockmove-realize-click"/>
-				<button name="generateInvoiceBtn" title="Generate invoice" icon="fa-file-o" onClick="save,action-supplychain-stock-move-method-invoicing-wizard" if-module="axelor-supplychain" showIf="statusSelect == 3 &amp;&amp; typeSelect &gt; 1" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
+				<button name="generateInvoiceBtn" title="Generate invoice" icon="fa-file-o" onClick="save,action-supplychain-stock-move-validate-invoicing-block,action-supplychain-stock-move-method-invoicing-wizard" if-module="axelor-supplychain" showIf="statusSelect == 3 &amp;&amp; typeSelect &gt; 1" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
 				<button name="generateReversionBtn" title="Generate reversion" icon="fa-undo" onClick="save,action-stock-move-method-generate-reversion" showIf="statusSelect == 3 &amp;&amp; !isReversion"/>
 				<button name="cancelBtn" title="Cancel" icon="fa-times-circle" css="btn-danger" showIf="id != null &amp;&amp; statusSelect &gt; 1 &amp;&amp; statusSelect &lt; 4" onClick="action-group-stock-stockmove-cancel-click"/>
 				<button name="draftBtn" title="Draft" showIf="statusSelect == 4" onClick="action-stock-move-method-draft"/>
@@ -449,6 +452,12 @@
                     <field name="plannedStockMoveMessageTemplate" readonlyIf="statusSelect == 3" requiredIf="plannedStockMoveAutomaticMail" showIf="plannedStockMoveAutomaticMail" grid-view="template-grid" form-view="template-form"/>
                     <field name="realStockMoveMessageTemplate" requiredIf="realStockMoveAutomaticMail" showIf="realStockMoveAutomaticMail" grid-view="template-grid" form-view="template-form"/>
                 </panel>
+							<panel name="invoiceBlockingPanel" showIf="typeSelect == 2 &amp;&amp; !isReversion" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" colSpan="12">
+								<field name="invoiceBlocking" onChange="action-supplychain-stock-move-record-invoice-blocking-onchange"/>
+								<field name="invoiceBlockingReason" showIf="invoiceBlocking" requiredIf="invoiceBlocking" canView="true"/>
+								<field name="invoiceBlockedToDate" showIf="invoiceBlocking"/>
+								<field name="invoiceBlockedByUser" showIf="invoiceBlocking" canView="true"/>
+							</panel>
             </panel>
 
         </panel-tabs>
