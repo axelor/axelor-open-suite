@@ -7,6 +7,7 @@
 - MRP : Remove duplicate information
 - ACCOUNTING INFORMATION : Add missing translation
 - TeamTaskCategory : Added translation for title of grid-view and fields
+- AccountingBatch : Adding partner name in the bankDetails' not active anomaly message.
 
 ## [5.3.7] - 2020-06-26
 ## Improvements
