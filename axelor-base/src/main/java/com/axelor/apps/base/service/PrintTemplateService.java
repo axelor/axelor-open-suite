@@ -24,11 +24,6 @@ import java.io.IOException;
 
 public interface PrintTemplateService {
 
-  /*
-  public Map<String, Object> generatePrint(
-      Long objectId, String model, String simpleModel, PrintTemplate printTemplate)
-      throws AxelorException, IOException, ClassNotFoundException;*/
-
   public Print generatePrint(Long objectId, PrintTemplate printTemplate)
       throws AxelorException, IOException, ClassNotFoundException;
 }

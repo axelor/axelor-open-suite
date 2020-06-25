@@ -31,6 +31,7 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
@@ -118,11 +119,13 @@ public class PrintServiceImpl implements PrintService {
         return ActionView.define(documentName).add("html", pdfPath).map();
       } else {
         throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, IExceptionMessage.PRINT_ERROR);
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.PRINT_ERROR));
       }
     } else {
       throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, IExceptionMessage.PRINT_ERROR);
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PRINT_ERROR));
     }
   }
 

@@ -34,6 +34,7 @@ import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.rpc.Context;
@@ -74,28 +75,6 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
     this.templateMessageService = templateMessageService;
     this.templateContextService = templateContextService;
   }
-
-  /*
-  @SuppressWarnings("unchecked")
-  @Override
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  public Map<String, Object> generatePrint(
-      Long objectId, String model, String simpleModel, PrintTemplate printTemplate)
-      throws AxelorException, IOException, ClassNotFoundException {
-
-    Print print = createPrint(objectId, model, simpleModel, printTemplate);
-
-    if (printTemplate.getIsEditable()) {
-      return ActionView.define("Create print")
-          .model(Print.class.getName())
-          .add("form", "print-form")
-          .param("forceEdit", "true")
-          .context("_showRecord", print.getId().toString())
-          .map();
-    } else {
-      return printService.generatePDF(print);
-    }
-  }*/
 
   @SuppressWarnings("unchecked")
   @Override
@@ -183,70 +162,79 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
       TemplateMaker maker,
       int level)
       throws AxelorException {
+
     int seq = 1;
     if (ObjectUtils.notEmpty(templateLineList.get(0))
         && ObjectUtils.notEmpty(templateLineList.get(0).getSequence())) {
       seq = templateLineList.get(0).getSequence().intValue();
     }
     for (PrintTemplateLine printTemplateLine : templateLineList) {
-      boolean present = true;
-      if (StringUtils.notEmpty(printTemplateLine.getConditions())) {
-        Object evaluation =
-            templateContextService.computeTemplateContext(
-                printTemplateLine.getConditions(), scriptContext);
-        if (evaluation instanceof Boolean) {
-          present = (Boolean) evaluation;
-        } else {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_INCONSISTENCY,
-              IExceptionMessage.PRINT_TEMPLATE_CONDITIONS_MUST_BE_BOOLEAN);
-        }
-      }
-
-      if (present) {
-        ++rank;
-        String title = null;
-        String content = null;
-
-        if (StringUtils.notEmpty(printTemplateLine.getTitle())) {
-          maker.setTemplate(printTemplateLine.getTitle());
-          addSequencesInContext(maker, level, seq, parent);
-          title = maker.make();
-        }
-
-        if (StringUtils.notEmpty(printTemplateLine.getContent())) {
-          maker.setTemplate(printTemplateLine.getContent());
-          addSequencesInContext(maker, level, seq, parent);
-          if (CollectionUtils.isNotEmpty(printTemplateLine.getTemplateContextList())) {
-            for (TemplateContext templateContext : printTemplateLine.getTemplateContextList()) {
-              Object result =
-                  templateContextService.computeTemplateContext(templateContext, scriptContext);
-              maker.addContext(templateContext.getName(), result);
-            }
+      try {
+        boolean present = true;
+        if (StringUtils.notEmpty(printTemplateLine.getConditions())) {
+          Object evaluation =
+              templateContextService.computeTemplateContext(
+                  printTemplateLine.getConditions(), scriptContext);
+          if (evaluation instanceof Boolean) {
+            present = (Boolean) evaluation;
+          } else {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_INCONSISTENCY,
+                I18n.get(IExceptionMessage.PRINT_TEMPLATE_CONDITION_MUST_BE_BOOLEAN));
           }
-          content = maker.make();
         }
 
-        PrintLine printLine = new PrintLine();
-        printLine.setRank(rank);
-        printLine.setSequence(seq);
-        printLine.setTitle(title);
-        printLine.setContent(content);
-        printLine.setIsEditable(printTemplateLine.getIsEditable());
-        printLine.setParent(parent);
+        if (present) {
+          ++rank;
+          String title = null;
+          String content = null;
 
-        if (CollectionUtils.isNotEmpty(printTemplateLine.getPrintTemplateLineList())) {
-          processPrintTemplateLineList(
-              printTemplateLine.getPrintTemplateLineList(),
-              print,
-              printLine,
-              scriptContext,
-              maker,
-              level + 1);
+          if (StringUtils.notEmpty(printTemplateLine.getTitle())) {
+            maker.setTemplate(printTemplateLine.getTitle());
+            addSequencesInContext(maker, level, seq, parent);
+            title = maker.make();
+          }
+
+          if (StringUtils.notEmpty(printTemplateLine.getContent())) {
+            maker.setTemplate(printTemplateLine.getContent());
+            addSequencesInContext(maker, level, seq, parent);
+            if (CollectionUtils.isNotEmpty(printTemplateLine.getTemplateContextList())) {
+              for (TemplateContext templateContext : printTemplateLine.getTemplateContextList()) {
+                Object result =
+                    templateContextService.computeTemplateContext(templateContext, scriptContext);
+                maker.addContext(templateContext.getName(), result);
+              }
+            }
+            content = maker.make();
+          }
+
+          PrintLine printLine = new PrintLine();
+          printLine.setRank(rank);
+          printLine.setSequence(seq);
+          printLine.setTitle(title);
+          printLine.setContent(content);
+          printLine.setIsEditable(printTemplateLine.getIsEditable());
+          printLine.setParent(parent);
+
+          if (CollectionUtils.isNotEmpty(printTemplateLine.getPrintTemplateLineList())) {
+            processPrintTemplateLineList(
+                printTemplateLine.getPrintTemplateLineList(),
+                print,
+                printLine,
+                scriptContext,
+                maker,
+                level + 1);
+          }
+
+          print.addPrintLineListItem(printLine);
+          seq++;
         }
-
-        print.addPrintLineListItem(printLine);
-        seq++;
+      } catch (Exception e) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.PRINT_TEMPLATE_ERROR_ON_LINE_WITH_SEQUENCE_AND_TITLE),
+            printTemplateLine.getSequence(),
+            printTemplateLine.getTitle());
       }
     }
   }

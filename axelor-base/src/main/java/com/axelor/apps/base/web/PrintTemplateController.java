@@ -48,8 +48,6 @@ public class PrintTemplateController {
 
     LOG.debug("Print template wizard call for model : {}", model);
 
-    // String simpleModel = model.substring(model.lastIndexOf(".") + 1);
-
     Query<PrintTemplate> printTemplateQuery =
         Beans.get(PrintTemplateRepository.class).all().filter("self.metaModel.fullName = ?", model);
 
@@ -94,8 +92,6 @@ public class PrintTemplateController {
     }
 
     Long objectId = Long.parseLong(context.get("_objectId").toString());
-    // String model = (String) context.get("_templateContextModel");
-    // String simpleModel = (String) context.get("_simpleModel");
 
     try {
       response.setCanClose(true);

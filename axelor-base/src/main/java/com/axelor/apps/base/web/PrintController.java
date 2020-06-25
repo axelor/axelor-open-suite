@@ -20,8 +20,8 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.base.db.Print;
 import com.axelor.apps.base.service.PrintService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -34,8 +34,7 @@ public class PrintController {
     try {
       response.setView(Beans.get(PrintService.class).generatePDF(print));
     } catch (AxelorException e) {
-      TraceBackService.trace(response, e);
-      response.setError(I18n.get(e.getMessage()));
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }
