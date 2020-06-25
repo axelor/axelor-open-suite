@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+  <grid title="Invoice blocking reasons" name="stock-move-invoice-blocking-reason-grid"
+    model="com.axelor.apps.supplychain.db.StockMoveInvoicingBlockingReason">
+    <field name="name"/>
+  </grid>
+
+  <form title="Invoice blocking reasons" name="stock-move-invoice-blocking-reason-form"
+    model="com.axelor.apps.supplychain.db.StockMoveInvoicingBlockingReason">
+    <panel name="mainPanel">
+      <field name="name"/>
+    </panel>
+  </form>
+</object-views>

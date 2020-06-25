@@ -128,7 +128,7 @@
 		
 		<extend target="//button[@name='generateInvoiceBtn']">
 			<replace>
-				<button if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove() &amp;&amp; __config__.app.getApp('supplychain').getValidStepForInvOutSM() " if-module="axelor-supplychain" name="generateInvoiceBtn" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; typeSelect > 1 &amp;&amp;  invoicingStatusSelect!=3" icon="fa-file-o" onClick="save,action-supplychain-stock-move-method-invoicing-wizard"/>
+				<button if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove() &amp;&amp; __config__.app.getApp('supplychain').getValidStepForInvOutSM() " if-module="axelor-supplychain" name="generateInvoiceBtn" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; typeSelect > 1 &amp;&amp;  invoicingStatusSelect!=3" icon="fa-file-o" onClick="save,action-supplychain-stock-move-validate-invoicing-block,action-supplychain-stock-move-method-invoicing-wizard"/>
 			</replace>
 		</extend>
 		
@@ -235,4 +235,32 @@
 	<action-record name="action-stock-move-status-select-invoiced-validated" model="com.axelor.apps.stock.db.StockMove">
 	  <field name="invoicingStatusSelect" expr="4"/>
 	</action-record>
+
+	<action-record name="action-supplychain-stock-move-record-invoice-blocking-onchange" model="com.axelor.apps.stock.db.StockMove">
+		<field name="invoiceBlockedByUser" expr="eval: invoiceBlocking ? __user__ : null"/>
+	</action-record>
+
+	<action-validate name="action-supplychain-stock-move-validate-invoicing-block">
+		<error message="Invoicing of this stock move is blocked." if="invoiceBlocking &amp;&amp; (!invoiceBlockedToDate || invoiceBlockedToDate &gt;  __date__)"/>
+	</action-validate>
+
+
+	<search-filters id="supplychain-customer-deliveries-filter" name="customer-deliveries-filters" model="com.axelor.apps.stock.db.StockMove" title="Customer deliveries filters">
+		<filter title="Deliveries to prepare">
+			<domain>self.statusSelect = 2</domain>
+		</filter>
+		<filter title="Late Deliveries">
+			<domain>self.estimatedDate &lt; CURRENT_DATE</domain>
+		</filter>
+		<filter title="Deliveries History">
+			<domain>self.statusSelect = 3</domain>
+		</filter>
+		<filter title="Deliveries Cancelled">
+			<domain>self.statusSelect = 4</domain>
+		</filter>
+		<filter title="Invoicing Blocking">
+			<domain>self.invoiceBlocking IS TRUE AND (self.invoiceBlockedToDate IS NULL OR self.invoiceBlockedToDate &gt; CURRENT_DATE)</domain>
+		</filter>
+	</search-filters>
+
 </object-views>

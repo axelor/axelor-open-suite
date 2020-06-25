@@ -113,7 +113,9 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
         .addParam("SaleOrderId", saleOrder.getId())
         .addParam("Locale", locale)
         .addParam("ProformaInvoice", proforma)
-        .addParam("GroupProducts", appBase.getIsRegroupProductsOnPrintings() && saleOrder.getGroupProductsOnPrintings())
+        .addParam(
+            "GroupProducts",
+            appBase.getIsRegroupProductsOnPrintings() && saleOrder.getGroupProductsOnPrintings())
         .addParam("GroupProductTypes", appBase.getRegroupProductsTypeSelect())
         .addParam("GroupProductLevel", appBase.getRegroupProductsLevelSelect())
         .addParam("GroupProductProductTitle", appBase.getRegroupProductsLabelProducts())

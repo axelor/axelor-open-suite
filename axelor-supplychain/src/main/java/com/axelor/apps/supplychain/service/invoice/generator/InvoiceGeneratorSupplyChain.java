@@ -111,7 +111,7 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
         stockMove.getTrackingNumber(),
         null,
         stockMove.getTradingName());
-    
+
     this.groupProductsOnPrintings = stockMove.getGroupProductsOnPrintings();
   }
 

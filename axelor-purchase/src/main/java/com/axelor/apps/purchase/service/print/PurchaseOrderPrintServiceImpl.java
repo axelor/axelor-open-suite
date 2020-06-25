@@ -100,7 +100,10 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
     return reportSetting
         .addParam("PurchaseOrderId", purchaseOrder.getId())
         .addParam("Locale", locale)
-        .addParam("GroupProducts", appBase.getIsRegroupProductsOnPrintings() && purchaseOrder.getGroupProductsOnPrintings())
+        .addParam(
+            "GroupProducts",
+            appBase.getIsRegroupProductsOnPrintings()
+                && purchaseOrder.getGroupProductsOnPrintings())
         .addParam("GroupProductTypes", appBase.getRegroupProductsTypeSelect())
         .addParam("GroupProductLevel", appBase.getRegroupProductsLevelSelect())
         .addParam("GroupProductProductTitle", appBase.getRegroupProductsLabelProducts())

@@ -118,7 +118,8 @@ public abstract class InvoiceGenerator {
   }
 
   /**
-   * PaymentCondition, Paymentmode, MainInvoicingAddress, Currency, groupProductsOnPrintings récupérés du tiers
+   * PaymentCondition, Paymentmode, MainInvoicingAddress, Currency, groupProductsOnPrintings
+   * récupérés du tiers
    *
    * @param operationType
    * @param company
