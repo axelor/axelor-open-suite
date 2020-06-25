@@ -7,6 +7,7 @@
 - MRP : Remove duplicate information
 - ACCOUNTING INFORMATION : Add missing translation
 - TeamTaskCategory : Added translation for title of grid-view and fields
+- ACCOUNTING REPORT : Rework fixed asset summary report
 
 ## [5.3.7] - 2020-06-26
 ## Improvements

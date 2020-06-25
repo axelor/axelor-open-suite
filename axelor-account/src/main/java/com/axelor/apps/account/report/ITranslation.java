@@ -549,6 +549,10 @@ public interface ITranslation {
       /*$$(*/ "AccountingReportType17.year_start_value"; /*)*/
   public static final String ACCOUNTING_REPORT_17_DEPRECIATION_CHARGE =
       /*$$(*/ "AccountingReportType17.depreciation_charge"; /*)*/
+  public static final String ACCOUNTING_REPORT_17_FINAL_TOTAL =
+      /*$$(*/ "AccountingReportType17.final_total"; /*)*/
+  public static final String ACCOUNTING_REPORT_17_TOTAL_BY_ACCOUNT =
+      /*$$(*/ "AccountingReportType17.total_by_account"; /*)*/
   public static final String ACCOUNTING_REPORT_17_TOTAL_BY_ACCOUNT_AND_ANALYTIC_TEMPLATE =
       /*$$(*/ "AccountingReportType17.total_by_account_and_analytic_template"; /*)*/
   public static final String ACCOUNTING_REPORT_17_TOTAL_BY_ANALYTIC_TEMPLATE =
