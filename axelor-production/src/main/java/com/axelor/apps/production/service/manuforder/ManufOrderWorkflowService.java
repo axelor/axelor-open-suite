@@ -716,7 +716,14 @@ public class ManufOrderWorkflowService {
       }
     }
 
+    LocalDateTime minDate =
+        manufOrderList.stream()
+            .map(mo -> mo.getPlannedStartDateT())
+            .min(LocalDateTime::compareTo)
+            .get();
+
     /* Update the created manuf order */
+    mergedManufOrder.setPlannedStartDateT(minDate);
     mergedManufOrder.setStatusSelect(ManufOrderRepository.STATUS_DRAFT);
     mergedManufOrder.setProduct(product);
     mergedManufOrder.setUnit(unit);
