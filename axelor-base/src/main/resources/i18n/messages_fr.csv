@@ -804,6 +804,7 @@
 "IPO + Cheque",,,
 "ITF",,,
 "If you leave this field empty or fill it with an incorrect formula, the default email account's signature will be used.\nExamples of a correct formulas:\n$__user__.emailSignature$\n$first(__user__.emailAccountList).signature$","Si vous laissez ce champ vide ou le remplissez avec une formule incorrecte, la signature du compte email par défaut sera utilisée.\nExemples de formules correctes :\n$__user__.emailSignature$\n$first(__user__.emailAccountList).signature$",,
+"Ignore the line","Ignorer la ligne",,
 "Ignore/Empty",,,
 "Image",,,
 "Import","Importer",,

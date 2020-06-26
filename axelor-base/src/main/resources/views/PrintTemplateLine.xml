@@ -6,12 +6,14 @@
     <grid name="print-template-line-grid" title="Print template lines" model="com.axelor.apps.base.db.PrintTemplateLine">
         <field name="sequence" width="100"/>
         <field name="title" widget="html"/>
+        <field name="ignoreTheLine"/>
     </grid>
 
     <form name="print-template-line-form" title="Print template line" model="com.axelor.apps.base.db.PrintTemplateLine" width="large">
         <panel>
             <field name="sequence"/>
-            <field name="isEditable"/>
+            <field name="isEditable" colSpan="3"/>
+            <field name="ignoreTheLine" colSpan="3"/>
             <field name="title" widget="html" colSpan="12" help="String template"/>
             <field name="content" widget="html" colSpan="12" help="String template"/>
             <panel-related name="templateContextPanel" field="templateContextList" colSpan="12"/>

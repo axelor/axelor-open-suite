@@ -169,6 +169,9 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
       seq = templateLineList.get(0).getSequence().intValue();
     }
     for (PrintTemplateLine printTemplateLine : templateLineList) {
+      if (printTemplateLine.getIgnoreTheLine()) {
+        continue;
+      }
       try {
         boolean present = true;
         if (StringUtils.notEmpty(printTemplateLine.getConditions())) {
