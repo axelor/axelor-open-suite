@@ -1,6 +1,8 @@
 # Changelog
 ## [Unreleased 5.2.13]
 ## Improvements
+- INVOICE : generate invoice from timetableList from purchase order.
+
 ## Bug Fixes
 - MRP : Remove duplicate information
 - ACCOUNTING INFORMATION : Add missing translation
