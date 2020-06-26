@@ -1,6 +1,8 @@
 # Changelog
 ## [Unreleased 5.3.8]
 ## Improvements
+- ACCOUNT SITUATION : update account situation on invoice payment cancel and improve moveLine calculation
+
 ## Bug Fixes
 - EXTRA HOURS : Fix missing translation
 - ACCOUNTING REPORT : Add missing translations in report
