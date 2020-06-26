@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.report.IReport;
+import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.ModelTool;
@@ -52,12 +53,16 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
 
   protected InvoiceRepository invoiceRepo;
   protected AccountConfigRepository accountConfigRepo;
+  protected AppBaseService appBaseService;
 
   @Inject
   public InvoicePrintServiceImpl(
-      InvoiceRepository invoiceRepo, AccountConfigRepository accountConfigRepo) {
+      InvoiceRepository invoiceRepo,
+      AccountConfigRepository accountConfigRepo,
+      AppBaseService appBaseService) {
     this.invoiceRepo = invoiceRepo;
     this.accountConfigRepo = accountConfigRepo;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -227,10 +232,19 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
               : partnerLanguageCode;
     }
 
+    AppBase appBase = appBaseService.getAppBase();
+
     return reportSetting
         .addParam("InvoiceId", invoice.getId())
         .addParam("Locale", locale)
         .addParam("ReportType", reportType == null ? 0 : reportType)
+        .addParam(
+            "GroupProducts",
+            appBase.getIsRegroupProductsOnPrintings() && invoice.getGroupProductsOnPrintings())
+        .addParam("GroupProductTypes", appBase.getRegroupProductsTypeSelect())
+        .addParam("GroupProductLevel", appBase.getRegroupProductsLevelSelect())
+        .addParam("GroupProductProductTitle", appBase.getRegroupProductsLabelProducts())
+        .addParam("GroupProductServiceTitle", appBase.getRegroupProductsLabelServices())
         .addParam("HeaderHeight", invoice.getPrintingSettings().getPdfHeaderHeight())
         .addParam("FooterHeight", invoice.getPrintingSettings().getPdfFooterHeight())
         .addFormat(format);

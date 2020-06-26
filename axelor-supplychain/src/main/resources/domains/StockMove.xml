@@ -17,6 +17,11 @@
     <integer name="pfpValidateStatusSelect" title="PFP Status" selection="invoice.pfp.validate.status.select" readonly="true" default="1"/>
     <integer name="invoicingStatusSelect" title="Invoicing status" selection="supplychain.stock.move.invoicing.status.select" readonly="true" default="0"/>
 
+    <boolean name="invoiceBlocking" title="Invoice blocking"/>
+    <many-to-one name="invoiceBlockingReason" title="Blocking reason" ref="com.axelor.apps.supplychain.db.StockMoveInvoicingBlockingReason"/>
+    <date name="invoiceBlockedToDate" title="Blocked until"/>
+    <many-to-one name="invoiceBlockedByUser" readonly="true" title="Blocked by" ref="com.axelor.auth.db.User"/>
+
     <finder-method name="findAllBySaleOrderAndStatus" using="originTypeSelect,originId,statusSelect" all="true"/>
 
     <extra-code>

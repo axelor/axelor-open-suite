@@ -10,6 +10,15 @@
   	<string namecolumn="true" name="typeSelect" title="Type" selection="base.base.partner.supply.chain.link.type.select"/>
 	<string name="link1Name" title="Relation 1"/>
 	<string name="link2Name" title="Relation 2"/>
+	
+	<extra-code><![CDATA[
+	
+	    // TYPE SELECT
+	    public static final String TYPE_SELECT_INVOICED_BY = "Invoiced by";
+	    public static final String TYPE_SELECT_DELIVERED_BY = "Delivered by";
+	    public static final String TYPE_SELECT_ORDERED_BY = "Ordered by";
+
+	]]></extra-code>
   </entity>
 
 </domain-models>

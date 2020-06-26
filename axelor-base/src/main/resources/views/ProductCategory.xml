@@ -18,6 +18,7 @@
         	<field name="code" x-bind="{{code|unaccent|uppercase}}" />
 	        <field name="parentProductCategory" form-view="product-category-form" grid-view="product-family-grid"/>
 			<field name="sequence" onSelect="action-attrs-product-category-form-set-sequence-domain"/>
+			<field name="maxDiscount" onChange="action-group-product-category-max-discount-onchange"/>
 		</panel>
    		<panel-dashlet name="salesTurnoverPanel"  title="Sales Turnover" action="dashlet.category.sales.turnover.per.month" colSpan="12" height="350" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
     </form>  
@@ -54,6 +55,11 @@
 		<context name="_isModel" expr="false"/>
 		<context name="_productCategoryId" expr="eval:__this__.id" />
 	</action-view>
+
+	<action-group name="action-group-product-category-max-discount-onchange">
+		<action name="action-method-product-category-update-sale-order-lines"/>
+		<action name="action-method-product-category-show-existing-discounts"/>
+	</action-group>
 	
 	<action-attrs name="action-attrs-product-category-form-set-hidden">
 		<attribute name="hidden" for="sequence" expr="eval: __config__.app.getApp('base').getProductSequenceTypeSelect() != 'Per product category' || __repo__(ProductCategory).all().filter('self.parentProductCategory.id = ?', id).count() > 0"/>
@@ -62,5 +68,13 @@
 	<action-attrs name="action-attrs-product-category-form-set-sequence-domain">
 		<attribute name="domain" for="sequence" expr="self.codeSelect = 'product'"/>
 	</action-attrs>
+
+	<action-method name="action-method-product-category-update-sale-order-lines" if-module="axelor-sale">
+		<call class="com.axelor.apps.sale.web.ProductCategoryController" method="updateSaleOrderLines"/>
+	</action-method>
+
+	<action-method name="action-method-product-category-show-existing-discounts">
+		<call class="com.axelor.apps.base.web.ProductCategoryController" method="showExistingDiscounts"/>
+	</action-method>
 	
 </object-views>

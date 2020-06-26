@@ -1,0 +1,5 @@
+---
+title: "SaleOrder: fix display of manuf order on saleOrder"
+type: fix
+description: |
+	In sale order, the display of the manuf orders in the production tab is fixed

@@ -299,6 +299,26 @@ public class SaleOrderLineController {
     Beans.get(SaleOrderLineService.class).checkMultipleQty(saleOrderLine, response);
   }
 
+  /**
+   * Called from sale order line form view on load and on discount type select change. Call {@link
+   * SaleOrderLineService#computeMaxDiscount} and set the message to the view.
+   *
+   * @param request
+   * @param response
+   */
+  public void fillMaxDiscount(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+      SaleOrder saleOrder = saleOrderLineService.getSaleOrder(context);
+      BigDecimal maxDiscount = saleOrderLineService.computeMaxDiscount(saleOrder, saleOrderLine);
+      response.setValue("$maxDiscount", maxDiscount);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   private void compute(ActionResponse response, SaleOrder saleOrder, SaleOrderLine orderLine)
       throws AxelorException {
 

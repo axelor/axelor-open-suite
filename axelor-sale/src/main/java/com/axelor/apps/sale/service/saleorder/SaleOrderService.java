@@ -90,4 +90,13 @@ public interface SaleOrderService {
    */
   public List<SaleOrderLine> handleComplementaryProducts(SaleOrder saleOrder)
       throws AxelorException;
+
+  /**
+   * Blocks if the given sale order has line with a discount superior to the max authorized
+   * discount.
+   *
+   * @param saleOrder a sale order
+   * @throws AxelorException if the sale order is in anomaly
+   */
+  void checkUnauthorizedDiscounts(SaleOrder saleOrder) throws AxelorException;
 }

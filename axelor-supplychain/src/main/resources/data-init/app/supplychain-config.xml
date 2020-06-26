@@ -13,4 +13,6 @@
 		<bind to="resetDate" eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate()" />
 	</input>
 
+	<input file="supplychain_stock_move_invoicing_blocking_reason.csv" separator=";" type="com.axelor.apps.supplychain.db.StockMoveInvoicingBlockingReason" search="self.name = :name"/>
+
 </csv-inputs>

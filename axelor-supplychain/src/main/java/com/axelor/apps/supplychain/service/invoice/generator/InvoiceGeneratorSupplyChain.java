@@ -55,7 +55,8 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
         saleOrder.getExternalReference(),
         saleOrder.getInAti(),
         saleOrder.getCompanyBankDetails(),
-        saleOrder.getTradingName());
+        saleOrder.getTradingName(),
+        saleOrder.getGroupProductsOnPrintings());
     this.saleOrder = saleOrder;
   }
 
@@ -83,7 +84,8 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
         purchaseOrder.getExternalReference(),
         purchaseOrder.getInAti(),
         purchaseOrder.getCompanyBankDetails(),
-        purchaseOrder.getTradingName());
+        purchaseOrder.getTradingName(),
+        purchaseOrder.getGroupProductsOnPrintings());
     this.purchaseOrder = purchaseOrder;
   }
 
@@ -109,6 +111,8 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
         stockMove.getTrackingNumber(),
         null,
         stockMove.getTradingName());
+
+    this.groupProductsOnPrintings = stockMove.getGroupProductsOnPrintings();
   }
 
   @Override

@@ -67,6 +67,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
       for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {
         saleOrderLine.setDesiredDelivDate(null);
         saleOrderLine.setEstimatedDelivDate(null);
+        saleOrderLine.setAllowDiscountDerogation(false);
       }
     }
 

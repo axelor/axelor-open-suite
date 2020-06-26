@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -41,7 +41,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">834</value>
+                <value type="constant">8</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -156,6 +156,79 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
             <property name="valueType">static</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="GroupProducts" id="5408">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">boolean</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">False</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">check-box</property>
+            <structure name="format"/>
+        </scalar-parameter>
+        <scalar-parameter name="GroupProductTypes" id="5409">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant"></value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="GroupProductLevel" id="5410">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant"></value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="GroupProductProductTitle" id="5411">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant"></value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="GroupProductServiceTitle" id="5412">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant"></value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -1202,22 +1275,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="heading">stock_move_id</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">id</property>
-                    <property name="alias">id</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">id</text-property>
-                    <property name="onColumnLayout">false</property>
-                    <text-property name="heading">id</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">product_code</property>
-                    <property name="alias">product_code</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">product_code</text-property>
-                    <property name="onColumnLayout">false</property>
-                    <text-property name="heading">product_code</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">product_name</property>
                     <property name="alias">product_name</property>
                     <property name="analysis">dimension</property>
@@ -1226,16 +1283,66 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="heading">product_name</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">description</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">description</text-property>
+                    <property name="onColumnLayout">false</property>
+                    <text-property name="heading">description</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">producttype</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">producttype</text-property>
+                    <text-property name="heading">producttype</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">qty</property>
-                    <property name="alias">qty</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">qty</text-property>
                     <property name="onColumnLayout">false</property>
                     <text-property name="heading">qty</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">unit_price_untaxed</property>
+                    <property name="analysis">measure</property>
+                </structure>
+                <structure>
+                    <property name="columnName">sequence</property>
+                    <property name="analysis">measure</property>
+                </structure>
+                <structure>
+                    <property name="columnName">isTitleLine</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">isTitleLine</text-property>
+                    <text-property name="heading">isTitleLine</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">product_code</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">product_code</text-property>
+                    <property name="onColumnLayout">false</property>
+                    <text-property name="heading">product_code</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">customerProductCode</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">customerProductCode</text-property>
+                    <text-property name="heading">customerProductCode</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">customerProductName</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">customerProductName</text-property>
+                    <text-property name="heading">customerProductName</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">stock_move_line_id</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">stock_move_line_id</text-property>
+                    <text-property name="heading">stock_move_line_id</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">unit_code</property>
-                    <property name="alias">unit_code</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">unit_code</text-property>
                     <property name="onColumnLayout">false</property>
@@ -1243,80 +1350,94 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="columnName">tracking_number_seq</property>
-                    <property name="alias">tracking_number_seq</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">tracking_number_seq</text-property>
                     <property name="onColumnLayout">false</property>
                     <text-property name="heading">tracking_number_seq</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">description</property>
-                    <property name="alias">description</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">description</text-property>
-                    <property name="onColumnLayout">false</property>
-                    <text-property name="heading">description</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">sequence</property>
-                    <property name="alias">sequence</property>
-                    <property name="analysis">measure</property>
-                </structure>
-                <structure>
-                    <property name="columnName">unit_price_untaxed</property>
-                    <property name="alias">unit_price_untaxed</property>
-                    <property name="analysis">measure</property>
-                </structure>
-                <structure>
-                    <property name="columnName">isTitleLine</property>
-                    <property name="alias">isTitleLine</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">isTitleLine</text-property>
-                    <text-property name="heading">isTitleLine</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">customerProductCode</property>
-                    <property name="alias">customerProductCode</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">customerProductCode</text-property>
-                    <text-property name="heading">customerProductCode</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">customerProductName</property>
-                    <property name="alias">customerProductName</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">customerProductName</text-property>
-                    <text-property name="heading">customerProductName</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">from_rack</property>
-                    <property name="alias">from_rack</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">from_rack</text-property>
                     <text-property name="heading">from_rack</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">to_rack</property>
-                    <property name="alias">to_rack</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">to_rack</text-property>
                     <text-property name="heading">to_rack</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">currency</property>
-                    <property name="alias">currency</property>
                     <property name="analysis">dimension</property>
                 </structure>
+                <structure>
+                    <property name="columnName">isgrouped</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">isgrouped</text-property>
+                    <text-property name="heading">isgrouped</text-property>
+                </structure>
             </list-property>
-            <list-property name="filter"/>
+            <list-property name="filter">
+                <structure>
+                    <property name="operator">is-true</property>
+                    <expression name="expr" type="javascript">if (!params["GroupProducts"].value) {
+	row["isgrouped"] == 1
+} else {
+	if (row["producttype"] == "service") {
+		if (BirtStr.search("*services*", params["GroupProductTypes"].value) == -1) {
+			row["isgrouped"] == 1
+		} else {
+			if (BirtStr.search("*global*", params["GroupProductLevel"].value) == -1) {
+				row["isgrouped"] == 2
+			} else {
+				row["isgrouped"] == 3
+			}
+		}
+	} else {
+		if (BirtStr.search("*products*", params["GroupProductTypes"].value) == -1) {
+			row["isgrouped"] == 1
+		} else {
+			if (BirtStr.search("*global*", params["GroupProductLevel"].value) == -1) {
+				row["isgrouped"] == 2
+			} else {
+				row["isgrouped"] == 3
+			}
+		}
+	}
+}</expression>
+                </structure>
+            </list-property>
             <list-property name="parameters">
+                <structure>
+                    <property name="name">product_title</property>
+                    <property name="paramName">GroupProductProductTitle</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                    <property name="position">1</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">service_title</property>
+                    <property name="paramName">GroupProductServiceTitle</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                    <property name="position">2</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
                 <structure>
                     <property name="name">param_1</property>
                     <property name="paramName">StockMoveId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
-                    <property name="position">1</property>
+                    <property name="position">3</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -1330,17 +1451,17 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                     <structure>
                         <property name="position">2</property>
-                        <property name="name">id</property>
-                        <property name="dataType">decimal</property>
+                        <property name="name">product_name</property>
+                        <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
-                        <property name="name">product_code</property>
+                        <property name="name">description</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">4</property>
-                        <property name="name">product_name</property>
+                        <property name="name">producttype</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
@@ -1350,58 +1471,68 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                     <structure>
                         <property name="position">6</property>
-                        <property name="name">unit_code</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">7</property>
-                        <property name="name">tracking_number_seq</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">8</property>
-                        <property name="name">description</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">9</property>
-                        <property name="name">sequence</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">10</property>
                         <property name="name">unit_price_untaxed</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">11</property>
+                        <property name="position">7</property>
+                        <property name="name">sequence</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
                         <property name="name">isTitleLine</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">12</property>
+                        <property name="position">9</property>
+                        <property name="name">product_code</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
                         <property name="name">customerProductCode</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">13</property>
+                        <property name="position">11</property>
                         <property name="name">customerProductName</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
+                        <property name="position">12</property>
+                        <property name="name">stock_move_line_id</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">unit_code</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
                         <property name="position">14</property>
-                        <property name="name">from_rack</property>
+                        <property name="name">tracking_number_seq</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">15</property>
-                        <property name="name">to_rack</property>
+                        <property name="name">from_rack</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">16</property>
+                        <property name="name">to_rack</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">17</property>
                         <property name="name">currency</property>
                         <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">18</property>
+                        <property name="name">isgrouped</property>
+                        <property name="dataType">integer</property>
                     </structure>
                 </list-property>
             </structure>
@@ -1412,112 +1543,151 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="name">stock_move_id</property>
                     <property name="nativeName">stock_move_id</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
-                    <property name="name">id</property>
-                    <property name="nativeName">id</property>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="position">3</property>
-                    <property name="name">product_code</property>
-                    <property name="nativeName">product_code</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">4</property>
                     <property name="name">product_name</property>
                     <property name="nativeName">product_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">description</property>
+                    <property name="nativeName">description</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">producttype</property>
+                    <property name="nativeName">producttype</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">qty</property>
                     <property name="nativeName">qty</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
-                    <property name="name">unit_code</property>
-                    <property name="nativeName">unit_code</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">7</property>
-                    <property name="name">tracking_number_seq</property>
-                    <property name="nativeName">tracking_number_seq</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">8</property>
-                    <property name="name">description</property>
-                    <property name="nativeName">description</property>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="position">9</property>
-                    <property name="name">sequence</property>
-                    <property name="nativeName">sequence</property>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="position">10</property>
                     <property name="name">unit_price_untaxed</property>
                     <property name="nativeName">unit_price_untaxed</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">11</property>
+                    <property name="position">7</property>
+                    <property name="name">sequence</property>
+                    <property name="nativeName">sequence</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
                     <property name="name">isTitleLine</property>
                     <property name="nativeName">isTitleLine</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">12</property>
+                    <property name="position">9</property>
+                    <property name="name">product_code</property>
+                    <property name="nativeName">product_code</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">10</property>
                     <property name="name">customerProductCode</property>
                     <property name="nativeName">customerProductCode</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">13</property>
+                    <property name="position">11</property>
                     <property name="name">customerProductName</property>
                     <property name="nativeName">customerProductName</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">stock_move_line_id</property>
+                    <property name="nativeName">stock_move_line_id</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                </structure>
+                <structure>
+                    <property name="position">13</property>
+                    <property name="name">unit_code</property>
+                    <property name="nativeName">unit_code</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">14</property>
-                    <property name="name">from_rack</property>
-                    <property name="nativeName">from_rack</property>
+                    <property name="name">tracking_number_seq</property>
+                    <property name="nativeName">tracking_number_seq</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">15</property>
-                    <property name="name">to_rack</property>
-                    <property name="nativeName">to_rack</property>
+                    <property name="name">from_rack</property>
+                    <property name="nativeName">from_rack</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">16</property>
+                    <property name="name">to_rack</property>
+                    <property name="nativeName">to_rack</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">17</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">18</property>
+                    <property name="name">isgrouped</property>
+                    <property name="nativeName">isgrouped</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select 
+            <xml-property name="queryText"><![CDATA[
+WITH SML AS (
+SELECT
 StockMove.id as stock_move_id, 
-StockMoveLine.id, 
-Product.code as product_code, 
 StockMoveLine.product_name as product_name,
-StockMoveLine.real_qty as qty, 
-Unit.name as unit_code, 
-TrackingNumber.tracking_number_seq, 
+ProductCategory.name as product_category_name,
+    CASE WHEN (Product.product_type_select LIKE 'storable')
+        THEN ?
+        ELSE ? END as grouped_title,
 StockMoveLine.description,
-StockMoveLine.sequence,
+Product.product_type_select as productType,
+StockMoveLine.real_qty as qty, 
 StockMoveLine.unit_price_untaxed,
+Currency.code as currencyCode,
+StockMoveLine.sequence,
 (SaleOrderLine.type_select = 2 or PurchaseOrderLine.is_title_line) as "isTitleLine",
+Product.code as product_code,
+ProductCategory.code as product_category_code,
 CustomerCatalog.product_customer_code as "customerProductCode",
 CustomerCatalog.product_customer_name as "customerProductName",
+StockMoveLine.id as stock_move_line_id, 
+Unit.name as unit_code, 
+TrackingNumber.tracking_number_seq, 
 FromStockLocationLine.rack as from_rack,
 ToStockLocationLine.rack as to_rack,
 Currency.name as currency
@@ -1525,6 +1695,7 @@ from stock_stock_move as StockMove
 inner join stock_stock_move_line as StockMoveLine on (StockMoveLine.stock_move = StockMove.id)
 left join base_company as Company on (StockMove.company = Company.id)
 left join base_product as Product on (StockMoveLine.product = Product.id)
+left outer join base_product_category as ProductCategory on (Product.product_category = ProductCategory.id)
 left join base_unit as Unit on (StockMoveLine.unit = Unit.id)
 left join stock_tracking_number as TrackingNumber on (StockMoveLine.tracking_number = TrackingNumber.id)
 left outer join sale_sale_order_line as SaleOrderLine on (SaleOrderLine.id = StockMoveLine.sale_order_line)
@@ -1544,7 +1715,76 @@ left outer join stock_stock_location_line as FromStockLocationLine on (FromLocat
 left outer join stock_stock_location as ToLocation on (ToLocation.id = StockMove.to_stock_location and StockMove.type_select in (1,3))
 left outer join stock_stock_location_line as ToStockLocationLine on (ToLocation.id = ToStockLocationLine.stock_location and ToStockLocationLine.product = Product.id)
 where StockMove.id = ? and StockMoveLine.real_qty > 0
-order by StockMoveLine.sequence]]></xml-property>
+order by StockMoveLine.sequence)
+
+SELECT 
+    stock_move_id, 
+    product_name,
+    description,
+    productType,
+    qty, 
+    unit_price_untaxed,
+    sequence,
+    "isTitleLine",
+    product_code, 
+    "customerProductCode",
+    "customerProductName",
+    stock_move_line_id, 
+    unit_code, 
+    tracking_number_seq, 
+    from_rack,
+    to_rack,
+    currency,
+    1 as isgrouped
+FROM SML
+
+UNION
+SELECT 
+    MIN(stock_move_id), 
+    product_category_name as product_name,
+    null as description,
+    productType,
+    SUM(qty) as qty, 
+    (SUM(unit_price_untaxed * qty) / SUM(qty)) as unit_price_untaxed,
+    MIN(sequence) as sequence, 
+    BOOL_AND("isTitleLine") as "isTitleLine",
+    product_category_code as product_code, 
+    null as "customerProductCode",
+    null as "customerProductName",
+    MIN(stock_move_line_id), 
+    unit_code, 
+    null as tracking_number_seq, 
+    null as from_rack,
+    null as to_rack,
+    currency,
+    2 as isgrouped
+FROM SML
+group by productType, product_category_name, product_category_code, unit_code, currencyCode, currency
+
+UNION
+SELECT 
+    MIN(stock_move_id), 
+    grouped_title as product_name,
+    null as description,
+    productType,
+    SUM(qty) as qty, 
+    (SUM(unit_price_untaxed * qty) / SUM(qty)) as unit_price_untaxed,
+    MIN(sequence) as sequence, 
+    BOOL_AND("isTitleLine") as "isTitleLine",
+    null as product_code, 
+    null as "customerProductCode",
+    null as "customerProductName",
+    MIN(stock_move_line_id), 
+    unit_code, 
+    null as tracking_number_seq, 
+    null as from_rack,
+    null as to_rack,
+    currency,
+    3 as isgrouped
+FROM SML
+group by productType, grouped_title, unit_code, currencyCode, currency
+;
+]]></xml-property>
         </oda-data-set>
     </data-sets>
     <styles>
@@ -2603,9 +2843,9 @@ row["first_name"]
                                 <property name="dataType">decimal</property>
                             </structure>
                             <structure>
-                                <property name="name">id</property>
-                                <text-property name="displayName">id</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["id"]</expression>
+                                <property name="name">stock_move_line_id</property>
+                                <text-property name="displayName">stock_move_line_id</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["stock_move_line_id"]</expression>
                                 <property name="dataType">decimal</property>
                             </structure>
                             <structure>
@@ -2750,6 +2990,13 @@ row["first_name"]
                             </structure>
                         </list-property>
                         <property name="pageBreakInterval">0</property>
+                        <list-property name="sort">
+                            <structure>
+                                <expression name="key" type="javascript">row["sequence"]</expression>
+                                <property name="direction">asc</property>
+                                <property name="strength">-1</property>
+                            </structure>
+                        </list-property>
                         <list-property name="filter">
                             <structure>
                                 <property name="operator">in</property>
