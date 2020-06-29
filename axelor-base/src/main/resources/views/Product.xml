@@ -29,6 +29,7 @@
 
 	<form name="product-form" title="Product" model="com.axelor.apps.base.db.Product" 
 	onNew="action-group-base-product-onnew"
+	onSave="action-group-product-onsave"
 	onLoad="action-group-product-onload" width="large">
  		<toolbar>
     		<button name="showProductSheetBtn" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
@@ -616,5 +617,18 @@
 	<action-attrs name="action-product-attrs-set-required-productCategory">
 		<attribute name="required" for="productCategory" expr="eval: __config__.app.getApp('base').getGenerateProductSequence() &amp;&amp; __config__.app.getApp('base').getProductSequenceTypeSelect() == 'Per product category'"/>
 	</action-attrs>
-	
+
+    <action-group name="action-group-product-onsave"> 
+        <action name="action-product-method-check-anomaly"/>
+        <action name="action-product-method-set-anomaly"/>
+    </action-group>
+
+    <action-method name="action-product-method-check-anomaly">
+        <call class="com.axelor.apps.base.web.ProductController" method="checkPriceList"/>
+    </action-method>
+
+    <action-method name="action-product-method-set-anomaly">
+        <call class="com.axelor.apps.base.web.ProductController" method="setPriceListLineAnomaly"/>
+    </action-method>
+
 </object-views>

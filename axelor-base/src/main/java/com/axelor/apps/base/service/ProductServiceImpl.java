@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.ProductVariant;
@@ -34,6 +36,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -42,6 +45,8 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.StringUtils;
 
 public class ProductServiceImpl implements ProductService {
@@ -193,6 +198,12 @@ public class ProductServiceImpl implements ProductService {
 
       this.updateSalePrice(productVariant);
     }
+  }
+
+  public boolean hasActivePriceList(Product product) {
+    return !product.getPriceListLineList().stream()
+        .filter(priceListLine -> priceListLine.getPriceList().getIsActive())
+        .collect(Collectors.toList()).isEmpty();
   }
 
   @Override

@@ -7,9 +7,10 @@
 			
 		<entity name="PriceListLine"  lang="java">
 			<many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList" title="Price list"/>
-			<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+			<many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product" mappedBy="priceListLineList" />
 			<many-to-one name="productCategory" ref="com.axelor.apps.base.db.ProductCategory" title="Product category"/>
 			<integer name="typeSelect" title="Discount/Additionnal/Replace" selection="base.price.list.line.type.select"/>
+			<integer name="anomalySelect" title="Anomaly" selection="base.price.list.line.anomaly.select"></integer>
 			<integer name="amountTypeSelect" title="Fixed Amount/%" selection="base.price.list.line.amount.type.select"/>
 			<decimal name="amount" title="Amount/%" precision="20" scale="10" min="0"/>
 			<decimal name="minQty" title="Qty min (by product)" precision="20" scale="10" min="0"/>
@@ -27,6 +28,10 @@
 				public static final int TYPE_DISCOUNT = 1;
 				public static final int TYPE_ADDITIONNAL = 2;
 				public static final int TYPE_REPLACE = 3;
+
+				// ANOMALY SELECT
+				public static final int ANOMALY_UNAVAILABLE_FOR_SALE = 1;
+				public static final int ANOMALY_NOT_RENEWED = 2;
 			]]>
 			</extra-code>
 		</entity>

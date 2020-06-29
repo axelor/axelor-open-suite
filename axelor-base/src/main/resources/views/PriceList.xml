@@ -23,6 +23,7 @@
     
    <form name="price-list-form" title="Price list" model="com.axelor.apps.base.db.PriceList"
 	   onNew="action-price-list-record-default,action-price-list-attrs-readonly-type-select"
+        onSave="action-price-list-method-check-anomaly"
 	   width="large">
    		<panel name="mainPanel" >
 		    <field name="title"/>
@@ -50,13 +51,17 @@
    
    <form name="sale-price-list-form" title="Price list" model="com.axelor.apps.base.db.PriceList"
 	   onNew="action-group-base-sale-pricelist-onnew"
-	   onLoad="action-price-list-attrs-readonly-type-select-true">
+	   onLoad="action-price-list-attrs-readonly-type-select-true"
+        onSave="action-price-list-method-check-anomaly"
+        width="100%">
    		<panel-include view="price-list-form"/>
    </form>
    
    <form name="purchase-price-list-form" title="Price list" model="com.axelor.apps.base.db.PriceList"
 	   onNew="action-group-base-purchase-pricelist-onnew"
-	   onLoad="action-price-list-attrs-readonly-type-select-true">
+	   onLoad="action-price-list-attrs-readonly-type-select-true"
+        onSave="action-price-list-method-check-anomaly"
+        width="100%">
    		<panel-include view="price-list-form"/>
    </form>
    
@@ -101,6 +106,11 @@
 		<call class="com.axelor.apps.base.web.PriceListController"
 			  method="checkDates"/>
 	</action-method>
+
+    <action-method name="action-price-list-method-check-anomaly">
+        <call class="com.axelor.apps.base.web.PriceListController"
+                method="checkPriceListLineList"/>
+    </action-method>
 
 	<action-view name="action-price-list-view-dashlet-partner-price-list" title="Partner price lists" model="com.axelor.apps.base.db.PartnerPriceList">
 		<view type="grid" name="partner-price-list-grid" />

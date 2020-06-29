@@ -50,6 +50,8 @@
 		<boolean name="autoUpdateSalePrice" default="false"
 			title="Update sale price from cost price" />
 
+        <one-to-many name="priceListLineList" ref="com.axelor.apps.base.db.PriceListLine" mappedBy="product"/>
+
 		<decimal name="costPrice" title="Cost price" precision="20"
 			scale="10" massUpdate="true" min="0" />
 

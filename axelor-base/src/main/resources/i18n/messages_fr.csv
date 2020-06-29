@@ -1659,6 +1659,8 @@
 "Warning : Exported maximum export limit records.",,,
 "Warning : the pay period %s is closed.","Attention : la période de paie %s est clôturée",,
 "Warning, modifying those configuration can have technical repercussions.","Attention , la modification de ces configurations peut avoir des impacts techniques.",,
+"Warning, this product is present in at least one price list","Attention, ce produit est présent dans une ou plusieurs listes de prix",,
+"Warning, the price list contains at least one product that is not renewed or not available for sale.","Attention, la liste de prix contient au moins un produit non renouvelé ou non disponible à la vente.",,
 "Warranty","Garantie",,
 "Warranty length (in months)","Durée de la garantie (Mois)",,
 "Web",,,
