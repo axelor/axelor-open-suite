@@ -170,6 +170,11 @@
 		<option value="1">In %</option>
 		<option value="2">Fixed</option>
 	</selection>
+    
+    <selection name="base.price.list.line.anomaly.select">  
+        <option value="1">Product unavailable for sale</option>
+        <option value="2">Product not renewed</option>
+    </selection>
 
 	<selection name="day.month.select">
 		<option value="0">00</option>

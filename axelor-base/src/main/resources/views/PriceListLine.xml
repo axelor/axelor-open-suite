@@ -5,17 +5,23 @@
 	
 	
     <grid name="price-list-line-grid" title="Price list lines" model="com.axelor.apps.base.db.PriceListLine" > 
+  	    <hilite background="danger" if="anomalySelect == 1"/>
+  	    <hilite background="warning" if="anomalySelect == 2"/>
        	<field name="product" form-view="product-form" grid-view="product-grid"/> 
     	<field name="productCategory" form-view="product-category-form" grid-view="product-category-grid"/>
    	 	<field name="typeSelect"/>
     	<field name="amountTypeSelect"/>
     	<field name="amount" x-scale="2"/>
     	<field name="minQty" x-scale="2"/>
+        <field name="anomalySelect" expr="1"/>
 	</grid>
     
 	<form name="price-list-line-form" title="Price list line" model="com.axelor.apps.base.db.PriceListLine"
 	onNew="action-group-base-pricelistline-onnew"
 	onLoad="action-price-list-line-attrs-scale-and-precision" width="large">
+		<panel name="anomalyPanel" title="Anomaly" colSpan="12" showIf="anomalySelect > 0">
+			<field name="anomalySelect" readonly="true" showTitle="false"/>
+		</panel>
 		<panel name="applicationPanel" title="Apply on" colSpan="11">
 			<field name="product" canEdit="false" colSpan="5" onChange="action-price-list-line-record-product" form-view="product-form" grid-view="product-grid" requiredIf="productCategory == null" hideIf="productCategory != null"/> 
 			<label name="orLabel" title="Or" colSpan="1" hideIf="product != null || productCategory != null"/>
@@ -43,6 +49,7 @@
    	<action-record name="action-price-list-line-record-product" model="com.axelor.apps.base.db.PriceListLine">
  		<field name="amount" expr="eval: product?.salePrice" if="product &amp;&amp; _parent?.typeSelect == 1 &amp;&amp; typeSelect == 3"/>
  		<field name="amount" expr="eval: product?.purchasePrice" if="product &amp;&amp; _parent?.typeSelect == 2 &amp;&amp; typeSelect == 3"/>
+        <field name="anomalySelect" expr="eval: product.sellable? product.isUnrenewed? 2 : null : 1"/>
     </action-record>
     
     <action-record name="action-price-list-line-record-type-select" model="com.axelor.apps.base.db.PriceListLine">
