@@ -23,6 +23,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCancelService;
+import com.axelor.apps.account.service.move.MoveCustAccountService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.bankpayment.db.BankOrder;
@@ -52,14 +53,16 @@ public class InvoicePaymentCancelServiceBankPayImpl extends InvoicePaymentCancel
       MoveCancelService moveCancelService,
       ReconcileService reconcileService,
       BankOrderService bankOrderService,
-      InvoicePaymentToolService invoicePaymentToolService) {
+      InvoicePaymentToolService invoicePaymentToolService,
+      MoveCustAccountService moveCustAccountService) {
 
     super(
         accountConfigService,
         invoicePaymentRepository,
         moveCancelService,
         reconcileService,
-        invoicePaymentToolService);
+        invoicePaymentToolService,
+        moveCustAccountService);
 
     this.bankOrderService = bankOrderService;
   }

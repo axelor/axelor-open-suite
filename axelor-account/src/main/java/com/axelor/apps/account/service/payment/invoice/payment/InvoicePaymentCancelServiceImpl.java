@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCancelService;
+import com.axelor.apps.account.service.move.MoveCustAccountService;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -39,6 +40,7 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
   protected MoveCancelService moveCancelService;
   protected ReconcileService reconcileService;
   protected InvoicePaymentToolService invoicePaymentToolService;
+  protected MoveCustAccountService moveCustAccountService;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -48,13 +50,15 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
       InvoicePaymentRepository invoicePaymentRepository,
       MoveCancelService moveCancelService,
       ReconcileService reconcileService,
-      InvoicePaymentToolService invoicePaymentToolService) {
+      InvoicePaymentToolService invoicePaymentToolService,
+      MoveCustAccountService moveCustAccountService) {
 
     this.accountConfigService = accountConfigService;
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.moveCancelService = moveCancelService;
     this.reconcileService = reconcileService;
     this.invoicePaymentToolService = invoicePaymentToolService;
+    this.moveCustAccountService = moveCustAccountService;
   }
 
   /**
@@ -85,6 +89,7 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
     } else {
       this.updateCancelStatus(invoicePayment);
     }
+    moveCustAccountService.updateCustomerAccount(paymentMove);
   }
 
   @Transactional(rollbackOn = {Exception.class})
