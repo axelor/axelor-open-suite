@@ -20,6 +20,8 @@
 - Account: Fix incomplete sequences in english data init.
 - Product form: fix typo in help message.
 - Inventory: fix error on stock location select when company is not filled.
+- INVOICE : corrected the possibility to add a payment when the amount remaining is inferior or equal to 0.
+- Stock Move: empty all references to orders and invoices on copy.
 - Invoice : Fix multiple invoices not ventilating when generated from sale order with advance payment 
 
 ## [5.1.15] - 2020-03-23
