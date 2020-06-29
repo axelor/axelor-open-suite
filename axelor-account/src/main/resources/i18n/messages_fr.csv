@@ -1833,6 +1833,8 @@
 "The closing date is earlier than the current date: moves recorded after that date will not be taken into account in the report.","La date d'arrêté est antérieure à la date du jour : les écritures enregistrées après cette date ne seront pas prise en compte dans le rapport.",,
 "The closing of a fiscal year brings irrevocable integration of a move in Moves book","La clôture d’une année fiscale entraîne l’intégration irréversible d’une écriture comptable dans le Journal des écritures comptables.",,
 "The company is required and must be the same for all invoices","La société est obligatoire et doit être la même pour l'ensemble des factures",,
+"The configuration of Civil Year doesn't exist in database","La configuration de l'année civile n'existe pas en Base de données",,
+"The configuration of Fiscal Year doesn't exist in database","La configuration de l'année fiscale n'existe pas en Base de données",,
 "The currency is required and must be the same for all invoices","La devise est obligatoire et doit être la même pour l'ensemble des factures",,
 "The deposit slip has already been published.","Le bordeau a déjà été édité",,
 "The from date is incorrect","La date de départ est incorrecte",,
