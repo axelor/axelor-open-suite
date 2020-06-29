@@ -40,3 +40,4 @@
 - EMPLOYEE : add translation of "Employee PhoneBook".
 - Studio: Add and fixed attributes of model and fields for import and export app.
 - EMPLOYEE : add button for Employee.rptdesign report on form.
+- XML : Update all xml files XSD version to AOP 5.3.
