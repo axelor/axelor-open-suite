@@ -4324,11 +4324,17 @@ row["first_name"]
                                 <expression name="expression" type="javascript">dataSetRow["sequence"]</expression>
                                 <property name="dataType">integer</property>
                             </structure>
+                            <structure>
+                                <property name="name">producttype</property>
+                                <text-property name="displayName">producttype</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["producttype"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
                         </list-property>
                         <structure name="toc"/>
                         <list-property name="sort">
                             <structure>
-                                <expression name="key" type="javascript">row["productType"]</expression>
+                                <expression name="key" type="javascript">row["producttype"]</expression>
                                 <property name="direction">desc</property>
                                 <property name="strength">-1</property>
                             </structure>

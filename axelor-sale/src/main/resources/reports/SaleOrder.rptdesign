@@ -5309,6 +5309,11 @@ row["ex_tax_total"] - row["totalDiscountAmount"]
                             <property name="hideDetail">false</property>
                             <list-property name="sort">
                                 <structure>
+                                    <expression name="key" type="javascript">row["product_type_select"]</expression>
+                                    <property name="direction">desc</property>
+                                    <property name="strength">-1</property>
+                                </structure>
+                                <structure>
                                     <expression name="key" type="javascript">row["sequence"]</expression>
                                     <property name="direction">asc</property>
                                     <property name="strength">-1</property>

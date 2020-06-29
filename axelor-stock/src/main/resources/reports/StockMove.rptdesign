@@ -2988,15 +2988,14 @@ row["first_name"]
                                 <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
-                        </list-property>
-                        <property name="pageBreakInterval">0</property>
-                        <list-property name="sort">
                             <structure>
-                                <expression name="key" type="javascript">row["sequence"]</expression>
-                                <property name="direction">asc</property>
-                                <property name="strength">-1</property>
+                                <property name="name">producttype</property>
+                                <text-property name="displayName">producttype</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["producttype"]</expression>
+                                <property name="dataType">string</property>
                             </structure>
                         </list-property>
+                        <property name="pageBreakInterval">0</property>
                         <list-property name="filter">
                             <structure>
                                 <property name="operator">in</property>
@@ -3359,6 +3358,11 @@ row["first_name"]
                             <expression name="keyExpr" type="javascript">row["product_code"]+row["product_name"]+row["unit_code"]</expression>
                             <property name="hideDetail">false</property>
                             <list-property name="sort">
+                                <structure>
+                                    <expression name="key" type="javascript">row["producttype"]</expression>
+                                    <property name="direction">desc</property>
+                                    <property name="strength">-1</property>
+                                </structure>
                                 <structure>
                                     <expression name="key" type="javascript">row["sequence"]</expression>
                                     <property name="direction">asc</property>
