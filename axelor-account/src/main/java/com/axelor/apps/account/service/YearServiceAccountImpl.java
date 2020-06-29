@@ -35,6 +35,7 @@ import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.AdjustHistoryService;
 import com.axelor.apps.base.service.YearServiceImpl;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -59,6 +60,7 @@ public class YearServiceAccountImpl extends YearServiceImpl {
   protected AdjustHistoryService adjustHistoryService;
   protected PartnerRepository partnerRepository;
   protected PeriodServiceAccountImpl periodServiceAccountImpl;
+  protected AppBaseService appBaseService;
 
   @Inject
   public YearServiceAccountImpl(
@@ -66,12 +68,14 @@ public class YearServiceAccountImpl extends YearServiceImpl {
       ReportedBalanceLineRepository reportedBalanceLineRepo,
       YearRepository yearRepository,
       AdjustHistoryService adjustHistoryService,
-      PeriodServiceAccountImpl periodServiceAccountImpl) {
+      PeriodServiceAccountImpl periodServiceAccountImpl,
+      AppBaseService appBaseService) {
     super(yearRepository);
     this.partnerRepository = partnerRepository;
     this.reportedBalanceLineRepo = reportedBalanceLineRepo;
     this.adjustHistoryService = adjustHistoryService;
     this.periodServiceAccountImpl = periodServiceAccountImpl;
+    this.appBaseService = appBaseService;
   }
 
   /**
@@ -248,5 +252,27 @@ public class YearServiceAccountImpl extends YearServiceImpl {
       log.debug("Solde rapporté : {}", reportedBalanceAmount);
     }
     return reportedBalanceAmount;
+  }
+
+  /**
+   * function which retrieve Year Object for the Calendar year current and the type of Year
+   *
+   * @return
+   */
+  public Year getYear(int intTypeSelect) {
+
+    Year year =
+        (Year)
+            JPA.em()
+                .createQuery(
+                    "SELECT self FROM Year self "
+                        + "WHERE self.fromDate <= ?1 and "
+                        + "self.toDate > ?1 and "
+                        + "self.typeSelect = ?2 ")
+                .setParameter(1, appBaseService.getTodayDate())
+                .setParameter(2, intTypeSelect)
+                .getSingleResult();
+
+    return year;
   }
 }

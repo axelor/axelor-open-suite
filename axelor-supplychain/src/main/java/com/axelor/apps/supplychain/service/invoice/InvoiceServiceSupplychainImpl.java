@@ -20,6 +20,8 @@ package com.axelor.apps.supplychain.service.invoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.PartnerTurnoverServiceImpl;
+import com.axelor.apps.account.service.YearServiceAccountImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
@@ -60,7 +62,9 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl {
       AppAccountService appAccountService,
       PartnerService partnerService,
       InvoiceLineService invoiceLineService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      PartnerTurnoverServiceImpl partnerTurnoverServiceImpl,
+      YearServiceAccountImpl yearServiceAccountImpl) {
     super(
         validateFactory,
         ventilateFactory,
@@ -70,7 +74,9 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl {
         appAccountService,
         partnerService,
         invoiceLineService,
-        accountConfigService);
+        accountConfigService,
+        partnerTurnoverServiceImpl,
+        yearServiceAccountImpl);
   }
 
   @Override

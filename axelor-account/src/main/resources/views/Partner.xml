@@ -104,6 +104,23 @@
          </panel>
 	</form>
 
+    <!-- Add part of CA in panel plier and customer -->
+    <form id="account-partner-form" name="partner-form" title="Partner"
+        model="com.axelor.apps.base.db.Partner" width="large" extension="true">        
+        <extend target="//field[@name='saleOrderInformation']">
+            <insert position="before">
+                <panel-dashlet colSpan="12" action="action-account-view-partner-turnover-customer" title="CA list"/>  
+            </insert>
+        </extend>
+        
+        <extend target="//field[@name='purchaseOrderInformation']">
+            <insert position="before">
+                <panel-dashlet colSpan="12" action="action-account-view-partner-turnover-supplier" title="CA list"/>  
+            </insert>
+        </extend>
+    </form>
+
+
 	<action-view name="action-partner-view-partner-invoice" title="Invoices" model="com.axelor.apps.account.db.Invoice">
 		<view type="grid" name="invoice-grid"/>
 		<view type="form" name="invoice-form"/>
@@ -150,6 +167,15 @@
     	<context name="_showSingle" expr="eval:true"/>
     </action-view>
     
-
+    <action-view name="action-account-view-partner-turnover-customer" title="CA list"
+                  model="com.axelor.apps.base.db.PartnerTurnover"> 
+            <view type="grid" name="partner-turnover-grid"/>
+            <domain>self.operationTypeSelect = 2 and self.partner = :id </domain>
+    </action-view>
+    <action-view name="action-account-view-partner-turnover-supplier" title="CA list"
+                  model="com.axelor.apps.base.db.PartnerTurnover"> 
+            <view type="grid" name="partner-turnover-grid"/>
+            <domain>self.operationTypeSelect = 1 and self.partner = :id </domain>
+    </action-view>
 	
 </object-views>

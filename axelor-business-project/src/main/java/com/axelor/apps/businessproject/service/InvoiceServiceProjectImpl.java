@@ -21,6 +21,8 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.service.PartnerTurnoverServiceImpl;
+import com.axelor.apps.account.service.YearServiceAccountImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
@@ -52,7 +54,9 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
       AppAccountService appAccountService,
       PartnerService partnerService,
       InvoiceLineService invoiceLineService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      PartnerTurnoverServiceImpl partnerTurnoverServiceImpl,
+      YearServiceAccountImpl yearServiceAccountImpl) {
     super(
         validateFactory,
         ventilateFactory,
@@ -62,7 +66,9 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
         appAccountService,
         partnerService,
         invoiceLineService,
-        accountConfigService);
+        accountConfigService,
+        partnerTurnoverServiceImpl,
+        yearServiceAccountImpl);
   }
 
   public List<String> editInvoiceAnnex(Invoice invoice, String invoiceIds, boolean toAttach)

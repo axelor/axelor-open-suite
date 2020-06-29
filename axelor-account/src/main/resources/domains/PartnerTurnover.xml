@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+
+	<module name="base" package="com.axelor.apps.base.db" />
+
+	<entity name="PartnerTurnover" lang="java">
+
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" readonly="true"  title="Company" />
+    <many-to-one name="year" ref="com.axelor.apps.base.db.Year" readonly="true"  title="Year" />
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" readonly="true" />
+    
+    <integer name="operationTypeSelect" title="Sales / Purchases" readonly="true" selection="partner.turnover.type.partner.select" />
+    
+    <decimal name="revenue" title="Revenue" precision="20" scale="2" readonly="true" />
+    <decimal name="revenueSubsidiariesIncluded" title="Revenue (Subsidiaries included)" precision="20" scale="2" readonly="true" />
+
+
+<extra-code><![CDATA[
+    
+        // PARTNER TYPE 
+        public static final int PARTNER_TYPE_SUPPLIER = 1;
+        public static final int PARTNER_TYPE_CUSTOMER = 2;
+
+
+    ]]></extra-code>
+    
+	</entity>
+
+</domain-models>
