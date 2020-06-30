@@ -144,4 +144,8 @@ public interface PartnerService {
   String getPartnerDomain(Partner partner);
 
   String getTaxNbrFromRegistrationCode(Partner partner);
+
+  String getNicFromRegistrationCode(Partner partner);
+
+  String getSirenFromRegistrationCode(Partner partner);
 }

@@ -723,4 +723,36 @@ public class PartnerServiceImpl implements PartnerService {
     }
     return partnerQuery.fetchOne();
   }
+
+  @Override
+  public String getNicFromRegistrationCode(Partner partner) {
+    String regCode = partner.getRegistrationCode();
+    String nic = "";
+
+    if (regCode != null) {
+      regCode = regCode.replaceAll(" ", "");
+
+      if (regCode.length() == 14) {
+        nic = regCode.substring(9, 14);
+      }
+    }
+
+    return nic;
+  }
+
+  @Override
+  public String getSirenFromRegistrationCode(Partner partner) {
+    String regCode = partner.getRegistrationCode();
+    String siren = "";
+
+    if (regCode != null) {
+      regCode = regCode.replaceAll(" ", "");
+
+      if (regCode.length() == 14) {
+        siren = regCode.substring(0, 9);
+      }
+    }
+
+    return siren;
+  }
 }
