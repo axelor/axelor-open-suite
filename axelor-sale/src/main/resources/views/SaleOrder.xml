@@ -161,13 +161,10 @@
 	</form>
 
 	<form id="sale-order-form" name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" onLoad="action-group-sale-saleorder-onload" onNew="action-group-sale-saleorder-onnew">
+		<toolbar>
+			<button name="reportsBtn" title="Reports" icon="fa-print" hideIf="clientPartner == null" readonlyIf="!id" onClick="save,action-sale-order-view-reports-wizard"/>
+		</toolbar>
 	  <menubar>
-	    <menu name="saleOrderReportsMenu" title="Reports">
-	      <item name="printItem" title="Print" hideIf="clientPartner == null" action="save,action-sale-order-method-show-sale-order"/>
-	      <item name="printProformaInvoiceItem" title="Print proforma invoice" hideIf="clientPartner == null" action="save,action-sale-order-method-print-proforma-invoice"/>
-	      <item name="excelExportItem" title="Excel Export" hideIf="clientPartner == null" action="save,action-sale-order-method-export-sale-order-excel"/>
-	      <item name="wordExportItem" title="Word Export" hideIf="clientPartner == null" action="save,action-sale-order-method-export-sale-order-word"/>
-	    </menu>
 	    <menu name="saleOrderToolsMenu" title="Tools">
 	      <item name="scheduleEventItem" title="Schedule Event" hideIf="clientPartner == null" action="action-sale-order-view-schedule-event"/>
 	      <item name="sendEmailItem" title="Send email" hideIf="clientPartner == null" action="save,action-send-by-email-with-template"/>
@@ -267,6 +264,13 @@
 	          </div>
 	        ]]></viewer>
 	      </field>
+				<field name="$discountsNeedReview" showIf="$discountsNeedReview" showTitle="false" readonly="true">
+					<viewer><![CDATA[
+		      	<h4>
+		        	<span class="label label-important" x-translate>Discounts need review</span>
+		      	</h4>
+					]]></viewer>
+				</field>
 	  	</panel>
 	  	<field name="company.tradingNameSet" hidden="true"/>
 	    <panel name="generalInfoPanel" colSpan="12">
@@ -380,6 +384,7 @@
         </panel>
 	    <panel if="__config__.app.getApp('sale').getPrintingConfigPerSaleOrder()" name="printingPanel" title="Printing">
 	      <field name="printingSettings" canEdit="false" onSelect="action-sale-method-filter-printing-settings"/>
+        <field name="groupProductsOnPrintings" if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()" colSpan="6"/>
 	      <field name="hideDiscount"/>
 	      <field name="specificNotes" readonly="true" showIf="specificNotes" colSpan="12"/>
 	    </panel>
@@ -739,6 +744,45 @@
 		<attribute name="hidden" expr="eval: !(advancePaymentAmountNeeded > (new BigDecimal(amountToInvoice)))" for="amountToInvoiceHiddenPanel"/>
 	</action-attrs>
 
+	<form name="sale-order-reports-wizard-form" title="Reports"  model="com.axelor.apps.base.db.Wizard" onNew="action-sale-order-reports-wizard-attrs">
+		<panel name="mainPanel">
+			<panel name="ReportTypePanel" colSpan="6">
+				<field name="$reportType" title="Report type" type="integer" selection="sale.order.report.type" required="true"
+					onChange="action-sale-order-reports-wizard-proforma-invoice-attrs" colSpan="12" />
+			</panel>
+			<panel name="formatPanel" colSpan="6">
+				<field name="$format" title="Format" selection="sale.order.report.format" colSpan="12" required="true" readonlyIf="$reportType == 2"/>
+			</panel>
+			<button name="printBtn" title="Print" onClick="action-sale-order-group-report-print" readonlyIf="$reportType==null || $format==null"/>
+		</panel>
+	</form>
+
+    <action-view name="action-sale-order-view-reports-wizard" title="Reports" model="com.axelor.apps.base.db.Wizard">
+        <view type="form" name="sale-order-reports-wizard-form"/>
+        <view-param name="popup" value="reload"/>
+        <view-param name="popup-save" value="false"/>
+        <view-param name="show-toolbar" value="false" />
+        <view-param name="show-confirm" value="false" />
+        <context name="_printedPDF" expr="eval: printedPDF"/>
+        <context name="id" expr="eval: id"/>
+    </action-view>
+
+    <action-attrs name="action-sale-order-reports-wizard-attrs">
+    	<attribute name="value" for="$reportType" expr="eval: 1" />
+    	<attribute name="value" for="$format" expr="pdf" />
+    </action-attrs>
+
+    <action-attrs name="action-sale-order-reports-wizard-proforma-invoice-attrs">
+    	<attribute name="value" for="$format" expr="pdf" if="reportType == 2"/>
+    </action-attrs>
+
+	<action-group name="action-sale-order-group-report-print">
+		<action name="action-sale-order-method-show-sale-order" if="format == 'pdf' &amp;&amp; reportType == 1"/>
+		<action name="action-sale-order-method-export-sale-order-excel" if="format == 'xls' &amp;&amp; reportType == 1"/>
+		<action name="action-sale-order-method-export-sale-order-word" if="format == 'doc' &amp;&amp; reportType == 1"/>
+		<action name="action-sale-order-method-print-proforma-invoice" if="format == 'pdf' &amp;&amp; reportType == 2"/>
+	</action-group>
+
 	<cards name="sale-order-cards" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" width="300px"  css="rect-image" orderBy="-orderDate">
 		<menubar>
 			<menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
@@ -939,6 +983,7 @@
         <action name="action-sale-order-attrs-availability"/>
         <action name="action-sale-order-group-set-defualts-from-opportunity" if="_parent != null &amp;&amp; _parent?._model=='com.axelor.apps.crm.db.Opportunity'"/>
 		<action name="action-sale-order-record-load-trading-name-config"/>
+		<action name="action-sale-order-record-set-group-product-on-printing"/>
     </action-group>
 
 	<action-group name="action-sale-order-group-set-defualts-from-opportunity">
@@ -968,6 +1013,7 @@
 		<action name="action-sale-order-attrs-external-reference"/>
 		<action name="action-sale-order-attrs-availability"/>
 		<action name="action-sale-order-attrs-set-required"/>
+		<action name="action-sale-order-attrs-set-discounts-need-review"/>
 		<action name="action-sale-order-record-load-trading-name-config"/>
 	</action-group>
 
@@ -1008,6 +1054,7 @@
 		<action name="action-sale-order-method-compute" if="template"/>
 		<action name="action-sale-order-attrs-set-is-ispm-required"
 				if="__config__.app.isApp('supplychain')"/>
+		<action name="action-sale-order-record-set-group-product-on-printing"/>
 	</action-group>
 
   <action-group name="action-group-sale-order-validate-changes">
@@ -1022,6 +1069,7 @@
   
   	<action-validate name="action-sale-order-validate-quotation">
 		<error message="Please enter at least one detail line." if="saleOrderLineList?.isEmpty()"/>
+		<alert message="One product is sold at loss, are you sure you want to finalize the quotation ?" if="saleOrderLineList?.any{ it.subTotalGrossMargin &lt; 0 }"/>
 	</action-validate>
 
     <action-attrs name="action-sale-order-attrs-in-ati">
@@ -1042,6 +1090,10 @@
     	<field name="clientPartner" expr="eval: __repo__(Partner).find(_partner.mainPartner.id)" if="_partner.isContact == true &amp; _partner.mainPartner != null"/>
     	<field name="contactPartner" expr="eval: _partner" if="_partner.isContact == true"/>
     	<field name="contactPartner" expr="eval: _partner?.contactPartnerSet?.size() == 1 ? _partner?.contactPartnerSet[0] : null" if="_partner.isContact == false"/>
+    </action-record>
+
+    <action-record name="action-sale-order-record-set-group-product-on-printing" model="com.axelor.apps.sale.db.SaleOrder">
+        <field name="groupProductsOnPrintings" expr="eval: clientPartner?.groupProductsOnPrintings" if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()" />
     </action-record>
 
     <action-record name="action-sale-order-record-in-ati" model="com.axelor.apps.sale.db.SaleOrder">
@@ -1319,7 +1371,7 @@
 	<action-view name="action-sale-order-view-manuf-orders" title="Manufacturing Orders" model="com.axelor.apps.production.db.ManufOrder">
 		<view type="grid" name="manuf-order-grid"/>
 		<view type="form" name="manuf-order-form"/>
-		<domain>self.saleOrder.id = :id</domain>
+		<domain>:id member of self.saleOrderSet</domain>		
 	</action-view>
 
 	<action-view name="action-sale-order-view-show-generated-po" title="Generated purchase orders" model="com.axelor.apps.purchase.db.PurchaseOrder">
@@ -1416,6 +1468,11 @@
 	<action-attrs name="action-sale-order-attrs-availability">
 		<attribute name="hidden" for="availabilityRequestLabel" expr="eval: !(__repo__(StockMove).all().filter('self.originTypeSelect LIKE ? AND self.originId = ? AND self.availabilityRequest = ? AND self.statusSelect = ?','com.axelor.apps.sale.db.SaleOrder',id,true,__repo__(StockMove).STATUS_PLANNED).count() > 0)"/>
 		<attribute name="hidden" expr="eval: statusSelect != 3" for="saleOrderLineList.availableStatus" if="__config__.app.isApp('supplychain')"/>
+	</action-attrs>
+
+	<action-attrs name="action-sale-order-attrs-set-discounts-need-review">
+		<attribute name="value" for="$discountsNeedReview"
+			expr="eval: (statusSelect == __repo__(SaleOrder).STATUS_DRAFT_QUOTATION || (orderBeingEdited &amp;&amp; __repo__(SaleOrder).STATUS_ORDER_CONFIRMED)) &amp;&amp; saleOrderLineList?.any{it.discountsNeedReview}"/>
 	</action-attrs>
 
 	<action-method name="action-sale-order-method-fill-sale-order-lines-estimated-date">

@@ -41,6 +41,7 @@
 			<button name="printPickingStockMoveGridBtn" title="Print Picking StockMove(s)" onClick="action-print-picking-stock-move" icon="fa-print"/>
     <button name="seeStockMoveLinesBtn" title="See stock move lines" onClick="action-stock-move-view-stock-move-line" icon="fa-tasks"/>
     	</toolbar>
+		<hilite if="invoiceBlockingReason &amp;&amp; (!invoiceBlockedToDate || invoiceBlockedToDate &gt;  __date__)" color="danger"/>
 		<field name="stockMoveSeq" width="120">
 			<hilite color="warning" strong="true" if="pickingIsEdited"/>
 		</field>
@@ -59,7 +60,9 @@
 	  	<hilite strong="true" color="warning" if="availableStatusSelect == 2"/>
 	  	<hilite strong="true" color="danger" if="availableStatusSelect == 3"/>
      </field>
-     <field name="pickingIsEdited" hidden="true" />
+     <field name="invoiceBlockingReason" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+		<field name="invoiceBlockedToDate" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+		<field name="pickingIsEdited" hidden="true" />
      <field name="typeSelect" hidden="true" />
      <button name="printStockMoveBtn" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
      <button name="viewDirectionBtn" icon="fa-location-arrow" onClick="action-stock-move-validate-address,action-stock-move-method-view-direction" readonlyIf="typeSelect != 2 || statusSelect == 1"/>
@@ -230,15 +233,17 @@
 									</h4>
 								]]></viewer>
 							</field>
-							<field name="$invoicingTags" showTitle="false" readonly="true" showIf="statusSelect == 3 &amp;&amp; typeSelect != 1" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+							<field name="$invoicingTags" showTitle="false" readonly="true" showIf="statusSelect == 3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 								<viewer depends="invoicingStatusSelect"><![CDATA[
-									<h4 class="text-left">
-										<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 0"  x-translate>Not invoiced</span>
-										<span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 1" x-translate>Partially invoiced</span>
-										<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 2" x-translate>Invoiced</span>
-									</h4>
-								]]>
-								</viewer>
+						<h4 class="text-left">
+							<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 0"  x-translate>Not invoiced</span>
+							<span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 1" x-translate>Partially invoiced</span>
+							<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 2" x-translate>Invoiced</span>
+							<span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 3" x-translate>Delayed invoicing</span>
+							<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 4" x-translate>Validated for invoicing</span>
+						</h4>
+						]]>
+							</viewer>
 							</field>
 						</panel>
 						<field name="$availabilityRequestTags" showTitle="false" readonly="true" showIf="$readonly()" colSpan="2">
@@ -267,8 +272,10 @@
 				<button name="passedForPaymentAuthorizedBtn" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; ( typeSelect == 3 &amp;&amp; !isReversion) &amp;&amp; pfpValidateStatusSelect != 2" title="PFP authorized" onClick="save,action-stock-move-record-pfp-validate,save" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()"/>
 				<button name="refusalToPayLitigationBtn" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; ( typeSelect == 3 &amp;&amp; !isReversion) &amp;&amp; pfpValidateStatusSelect != 3" title="PFP litigation" onClick="save,action-stock-move-record-pfp-refusal-to-pay,save" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()"/>
 				<button name="realizeBtn" title="Realize" icon="fa-check" showIf="statusSelect == 2" prompt="Are you sure you want to realize this stock move?" onClick="action-group-stock-stockmove-realize-click"/>
-				<button name="generateInvoiceBtn" title="Generate invoice" icon="fa-file-o" onClick="save,action-supplychain-stock-move-method-invoicing-wizard" if-module="axelor-supplychain" showIf="statusSelect == 3 &amp;&amp; typeSelect &gt; 1" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
+				<button if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()" if-module="axelor-supplychain" name="generateInvoiceBtn" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; typeSelect > 1 &amp;&amp; (!__config__.app.getApp('supplychain').getValidStepForInvOutSM() || invoicingStatusSelect != 3)" icon="fa-file-o" onClick="save,action-supplychain-stock-move-validate-invoicing-block,action-supplychain-stock-move-method-invoicing-wizard"/>
 				<button name="generateReversionBtn" title="Generate reversion" icon="fa-undo" onClick="save,action-stock-move-method-generate-reversion" showIf="statusSelect == 3 &amp;&amp; !isReversion"/>
+				<button if="__config__.app.getApp('supplychain').getValidStepForInvOutSM()" name="delayedInvoice" title="Facturation ultérieure" showIf="statusSelect == 3 &amp;&amp; typeSelect == 2 &amp;&amp; invoicingStatusSelect != 2 &amp;&amp; invoicingStatusSelect != 3" css="btn-warning" onClick="save,action-stock-move-status-select-invoiced-delayed,save"/>
+				<button if="__config__.app.getApp('supplychain').getValidStepForInvOutSM()" name="validatedInvoice" title="Validé pour facturation" showIf="statusSelect == 3 &amp;&amp; typeSelect == 2 &amp;&amp; invoicingStatusSelect != 2 &amp;&amp; invoicingStatusSelect != 4" css="btn-success" onClick="save,action-stock-move-status-select-invoiced-validated,save"/>
 				<button name="cancelBtn" title="Cancel" icon="fa-times-circle" css="btn-danger" showIf="id != null &amp;&amp; statusSelect &gt; 1 &amp;&amp; statusSelect &lt; 4" onClick="action-group-stock-stockmove-cancel-click"/>
 				<button name="draftBtn" title="Draft" showIf="statusSelect == 4" onClick="action-stock-move-method-draft"/>
 			</panel>
@@ -434,8 +441,9 @@
 			</panel>
 
             <panel name="configPanel" title="Configuration" itemSpan="6">
-				<field name="isWithBackorder"/>
+				<field name="isWithBackorder" colSpan="12"/>
                 <field name="printingSettings" onSelect="action-stock-move-method-filter-printing-settings" canEdit="false"/>
+                <field name="groupProductsOnPrintings" if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings() &amp;&amp; typeSelect == 2" colSpan="6"/>
                 <field name="isWithReturnSurplus" showIf="typeSelect == 3"/>
                 <field name="$reservedQtyChanged" type="boolean" hidden="true"/>
                 <panel name="plannedStockMovePanel" colSpan="12" showIf="typeSelect == 2">
@@ -448,6 +456,12 @@
                     <field name="plannedStockMoveMessageTemplate" readonlyIf="statusSelect == 3" requiredIf="plannedStockMoveAutomaticMail" showIf="plannedStockMoveAutomaticMail" grid-view="template-grid" form-view="template-form"/>
                     <field name="realStockMoveMessageTemplate" requiredIf="realStockMoveAutomaticMail" showIf="realStockMoveAutomaticMail" grid-view="template-grid" form-view="template-form"/>
                 </panel>
+							<panel name="invoiceBlockingPanel" showIf="typeSelect == 2 &amp;&amp; !isReversion" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" colSpan="12">
+								<field name="invoiceBlocking" onChange="action-supplychain-stock-move-record-invoice-blocking-onchange"/>
+								<field name="invoiceBlockingReason" showIf="invoiceBlocking" requiredIf="invoiceBlocking" canView="true"/>
+								<field name="invoiceBlockedToDate" showIf="invoiceBlocking"/>
+								<field name="invoiceBlockedByUser" showIf="invoiceBlocking" canView="true"/>
+							</panel>
             </panel>
 
         </panel-tabs>
@@ -457,6 +471,9 @@
 		</panel-mail>
     </form>
 
+  <action-method name="action-invoice-method-show-invoice">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="showInvoice"/>
+  </action-method>
 
 	<form name="popup-stock-move-backorder-form" title="Manage backorder?" model="com.axelor.apps.stock.db.StockMove" width="large">
 		<panel name="mainPanel" colSpan="12">
@@ -575,6 +592,7 @@
 		<action name="action-record-supply-chain-stock-move-onnew"  if="__parent__?._model == 'com.axelor.apps.account.db.Invoice'"/>
 		<action name="action-attrs-supply-chain-stock-move-onnew" if="__parent__?._model == 'com.axelor.apps.account.db.Invoice'"/>
 		<action name="action-stock-move-attrs-filter-on-available-products"/>
+		<action name="action-stock-move-record-set-group-product-on-printing"/>
     </action-group>
 
     <action-group name="action-group-stock-stockmove-onload">
@@ -631,6 +649,7 @@
 		<action name="action-stock-move-record-ispm-field"/>
 	   	<action name="action-stock-move-record-partner-shipment-informations"/>
 	   	<action name="action-stock-move-attrs-check-delivery-address" if="partner?.partnerAddressList?.size() > 1"/>
+		<action name="action-stock-move-record-set-group-product-on-printing"/>
 	</action-group>
 
     <action-group name="action-stock-move-group-onchange-company">
@@ -995,6 +1014,10 @@
     	<field name="freightCarrierMode" expr="eval: clientPartner?.freightCarrierMode"/>
 		<field name="carrierPartner" expr="eval: clientPartner?.freightCarrierMode?.carrierPartner"/>
 	</action-record>
+
+    <action-record name="action-stock-move-record-set-group-product-on-printing" model="com.axelor.apps.stock.db.StockMove">
+        <field name="groupProductsOnPrintings" expr="eval: partner?.groupProductsOnPrintings" if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()" />
+    </action-record>
 	
 	<action-attrs name="action-stock-move-attrs-check-delivery-address">
 		<attribute name="hidden" for="deliveryAddressText" expr="eval: partner?.partnerAddressList?.findAll{it.isDeliveryAddr}?.size() &gt; 0 " />

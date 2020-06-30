@@ -25,6 +25,7 @@ import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrd
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
@@ -48,6 +49,7 @@ public class SaleOrderWorkflowServiceProductionImpl
       SaleOrderRepository saleOrderRepo,
       AppSaleService appSaleService,
       UserService userService,
+      SaleOrderLineService saleOrderLineService,
       SaleOrderStockService saleOrderStockService,
       SaleOrderPurchaseService saleOrderPurchaseService,
       AppSupplychainService appSupplychainService,
@@ -61,6 +63,7 @@ public class SaleOrderWorkflowServiceProductionImpl
         saleOrderRepo,
         appSaleService,
         userService,
+        saleOrderLineService,
         saleOrderStockService,
         saleOrderPurchaseService,
         appSupplychainService,

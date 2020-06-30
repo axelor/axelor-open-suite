@@ -54,6 +54,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
   protected SaleOrderRepository saleOrderRepo;
   protected AppSaleService appSaleService;
   protected UserService userService;
+  protected SaleOrderLineService saleOrderLineService;
 
   @Inject
   public SaleOrderWorkflowServiceImpl(
@@ -61,13 +62,15 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
       PartnerRepository partnerRepo,
       SaleOrderRepository saleOrderRepo,
       AppSaleService appSaleService,
-      UserService userService) {
+      UserService userService,
+      SaleOrderLineService saleOrderLineService) {
 
     this.sequenceService = sequenceService;
     this.partnerRepo = partnerRepo;
     this.saleOrderRepo = saleOrderRepo;
     this.appSaleService = appSaleService;
     this.userService = userService;
+    this.saleOrderLineService = saleOrderLineService;
   }
 
   @Override
@@ -126,6 +129,8 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
       ignore = {BlockedSaleOrderException.class})
   public void finalizeQuotation(SaleOrder saleOrder) throws AxelorException {
     Partner partner = saleOrder.getClientPartner();
+
+    checkSaleOrderBeforeFinalization(saleOrder);
 
     Blocking blocking =
         Beans.get(BlockingService.class)
@@ -226,5 +231,14 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
         + " "
         + saleOrder.getSaleOrderSeq()
         + ((saleOrder.getVersionNumber() > 1) ? "-V" + saleOrder.getVersionNumber() : "");
+  }
+
+  /**
+   * Throws exceptions to block the finalization of given sale order.
+   *
+   * @param saleOrder a sale order being finalized
+   */
+  protected void checkSaleOrderBeforeFinalization(SaleOrder saleOrder) throws AxelorException {
+    Beans.get(SaleOrderService.class).checkUnauthorizedDiscounts(saleOrder);
   }
 }

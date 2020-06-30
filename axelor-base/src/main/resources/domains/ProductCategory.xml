@@ -11,6 +11,7 @@
     <string name="name" title="Name" unique="true" required="true" namecolumn="true"/>
     <many-to-one name="parentProductCategory" ref="ProductCategory" title="Parent category"/>
     <many-to-one name="sequence" ref="com.axelor.apps.base.db.Sequence" title="Sequence"/>
+    <decimal name="maxDiscount" title="Max discount (%)" scale="2" precision="5" min="0" max="100"/>
   	
   </entity>
   

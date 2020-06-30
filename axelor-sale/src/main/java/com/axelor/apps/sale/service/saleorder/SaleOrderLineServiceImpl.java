@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.ProductCategoryService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
@@ -38,6 +39,7 @@ import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
@@ -52,6 +54,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,6 +73,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   @Inject protected AppSaleService appSaleService;
 
   @Inject protected AccountManagementService accountManagementService;
+
+  @Inject protected ProductCategoryService productCategoryService;
 
   @Override
   public void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
@@ -619,5 +624,41 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       return soLine;
     }
     return null;
+  }
+
+  @Override
+  public BigDecimal computeMaxDiscount(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException {
+    Optional<BigDecimal> maxDiscount = Optional.empty();
+    Product product = saleOrderLine.getProduct();
+    if (product != null && product.getProductCategory() != null) {
+      maxDiscount = productCategoryService.computeMaxDiscount(product.getProductCategory());
+    }
+    if (!maxDiscount.isPresent()
+        || saleOrderLine.getDiscountTypeSelect() == PriceListLineRepository.AMOUNT_TYPE_NONE
+        || saleOrder == null
+        || (saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_DRAFT_QUOTATION
+            && (saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_ORDER_CONFIRMED
+                || !saleOrder.getOrderBeingEdited()))) {
+      return null;
+    } else {
+      return maxDiscount.get();
+    }
+  }
+
+  @Override
+  public boolean isSaleOrderLineDiscountGreaterThanMaxDiscount(
+      SaleOrderLine saleOrderLine, BigDecimal maxDiscount) {
+    return (saleOrderLine.getDiscountTypeSelect() == PriceListLineRepository.AMOUNT_TYPE_PERCENT
+            && saleOrderLine.getDiscountAmount().compareTo(maxDiscount) > 0)
+        || (saleOrderLine.getDiscountTypeSelect() == PriceListLineRepository.AMOUNT_TYPE_FIXED
+            && saleOrderLine.getPrice().signum() != 0
+            && saleOrderLine
+                    .getDiscountAmount()
+                    .multiply(
+                        BigDecimal.valueOf(100)
+                            .divide(saleOrderLine.getPrice(), 2, RoundingMode.HALF_UP))
+                    .compareTo(maxDiscount)
+                > 0);
   }
 }

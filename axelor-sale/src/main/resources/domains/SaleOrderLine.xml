@@ -74,6 +74,9 @@
 	
 	<boolean name="enableFreezeFields" transient="true" title="Freeze fields"/>
 
+	<boolean name="discountsNeedReview" readonly="true"/>
+
+	<boolean name="allowDiscountDerogation" title="Allow discount derogation"/>
 	<finder-method name="findAllBySaleOrder" using="saleOrder" all="true"/>
 
 	<extra-code>

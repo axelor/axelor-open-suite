@@ -18,6 +18,7 @@
 package com.axelor.apps.stock.service.stockmove.print;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.StockMove;
@@ -30,6 +31,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
@@ -37,6 +39,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StockMovePrintServiceImpl implements StockMovePrintService {
+
+  protected AppBaseService appBaseService;
+
+  @Inject
+  public StockMovePrintServiceImpl(AppBaseService appBaseService) {
+    this.appBaseService = appBaseService;
+  }
 
   @Override
   public String printStockMoves(List<Long> ids) throws IOException {
@@ -75,12 +84,20 @@ public class StockMovePrintServiceImpl implements StockMovePrintService {
 
     String locale = ReportSettings.getPrintingLocale(stockMove.getPartner());
     String title = getFileName(stockMove);
+    AppBase appBase = appBaseService.getAppBase();
 
     ReportSettings reportSetting =
         ReportFactory.createReport(IReport.STOCK_MOVE, title + " - ${date}");
     return reportSetting
         .addParam("StockMoveId", stockMove.getId())
         .addParam("Locale", locale)
+        .addParam(
+            "GroupProducts",
+            appBase.getIsRegroupProductsOnPrintings() && stockMove.getGroupProductsOnPrintings())
+        .addParam("GroupProductTypes", appBase.getRegroupProductsTypeSelect())
+        .addParam("GroupProductLevel", appBase.getRegroupProductsLevelSelect())
+        .addParam("GroupProductProductTitle", appBase.getRegroupProductsLabelProducts())
+        .addParam("GroupProductServiceTitle", appBase.getRegroupProductsLabelServices())
         .addParam("HeaderHeight", stockMove.getPrintingSettings().getPdfHeaderHeight())
         .addParam("FooterHeight", stockMove.getPrintingSettings().getPdfFooterHeight())
         .addFormat(format);

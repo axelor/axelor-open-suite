@@ -149,6 +149,7 @@ public class InvoicingProjectService {
             null,
             null,
             null,
+            null,
             null) {
 
           @Override
@@ -493,9 +494,11 @@ public class InvoicingProjectService {
       List<File> fileList = new ArrayList<>();
       MetaFiles metaFiles = Beans.get(MetaFiles.class);
 
+      Invoice invoice = invoicingProject.getInvoice();
+
       fileList.add(
           Beans.get(InvoicePrintServiceImpl.class)
-              .print(invoicingProject.getInvoice(), null, ReportSettings.FORMAT_PDF, null));
+              .print(invoice, null, ReportSettings.FORMAT_PDF, null));
       fileList.add(reportSettings.generate().getFile());
 
       MetaFile metaFile = metaFiles.upload(PdfTool.mergePdf(fileList));

@@ -106,42 +106,7 @@
             <button name="createInvoiceBtn" title="Generate the invoice" onClick="action-supplychain-stock-move-method-generate-invoice" showIf="operationSelect &lt; 3"/>
 	    </panel>
     </form>
-    	  
-    <form id="supplychain-move-form" name="stock-move-form" title="Stock move"
-		model="com.axelor.apps.stock.db.StockMove" extension="true">
-    	<extend target="//field[@name='$invoicingTags']">
-			<replace>
-				<field name="$invoicingTags" showTitle="false" readonly="true" showIf="statusSelect == 3" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
-					<viewer depends="invoicingStatusSelect"><![CDATA[
-						<h4 class="text-left">
-							<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 0"  x-translate>Not invoiced</span>
-							<span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 1" x-translate>Partially invoiced</span>
-							<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 2" x-translate>Invoiced</span>
-							<span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 3" x-translate>Delayed invoicing</span>
-							<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 4" x-translate>Validated for invoicing</span>
-						</h4>
-					]]>
-					</viewer>
-				</field>
-			</replace>
-		</extend>
-		
-		<extend target="//button[@name='generateInvoiceBtn']">
-			<replace>
-				<button if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove() &amp;&amp; __config__.app.getApp('supplychain').getValidStepForInvOutSM() " if-module="axelor-supplychain" name="generateInvoiceBtn" title="Generate invoice" showIf="statusSelect == 3 &amp;&amp; typeSelect > 1 &amp;&amp;  invoicingStatusSelect!=3" icon="fa-file-o" onClick="save,action-supplychain-stock-move-method-invoicing-wizard"/>
-			</replace>
-		</extend>
-		
-		<extend target="//button[@name='generateReversionBtn']">
-			<insert position="after">
-				<button if="__config__.app.getApp('supplychain').getValidStepForInvOutSM()" name="delayedInvoice" title="Facturation ultérieure" showIf="statusSelect == 3 &amp;&amp; typeSelect == 2 &amp;&amp; invoicingStatusSelect != 2 &amp;&amp; invoicingStatusSelect != 3" css="btn-warning" onClick="save,action-stock-move-status-select-invoiced-delayed,save"/>
-      			<button if="__config__.app.getApp('supplychain').getValidStepForInvOutSM()" name="validatedInvoice" title="Validé pour facturation" showIf="statusSelect == 3 &amp;&amp; typeSelect == 2 &amp;&amp; invoicingStatusSelect != 2 &amp;&amp; invoicingStatusSelect != 4" css="btn-success" onClick="save,action-stock-move-status-select-invoiced-validated,save"/>
-			</insert>
-		</extend>
-		
-    </form>
-    
-    
+
     <action-method name="action-supplychain-stock-move-method-invoicing-wizard">
 		<call class="com.axelor.apps.supplychain.web.StockMoveInvoiceController" method="openInvoicingWizard"/>
 	</action-method>
@@ -235,4 +200,32 @@
 	<action-record name="action-stock-move-status-select-invoiced-validated" model="com.axelor.apps.stock.db.StockMove">
 	  <field name="invoicingStatusSelect" expr="4"/>
 	</action-record>
+
+	<action-record name="action-supplychain-stock-move-record-invoice-blocking-onchange" model="com.axelor.apps.stock.db.StockMove">
+		<field name="invoiceBlockedByUser" expr="eval: invoiceBlocking ? __user__ : null"/>
+	</action-record>
+
+	<action-validate name="action-supplychain-stock-move-validate-invoicing-block">
+		<error message="Invoicing of this stock move is blocked." if="invoiceBlocking &amp;&amp; (!invoiceBlockedToDate || invoiceBlockedToDate &gt;  __date__)"/>
+	</action-validate>
+
+
+	<search-filters id="supplychain-customer-deliveries-filter" name="customer-deliveries-filters" model="com.axelor.apps.stock.db.StockMove" title="Customer deliveries filters">
+		<filter title="Deliveries to prepare">
+			<domain>self.statusSelect = 2</domain>
+		</filter>
+		<filter title="Late Deliveries">
+			<domain>self.estimatedDate &lt; CURRENT_DATE</domain>
+		</filter>
+		<filter title="Deliveries History">
+			<domain>self.statusSelect = 3</domain>
+		</filter>
+		<filter title="Deliveries Cancelled">
+			<domain>self.statusSelect = 4</domain>
+		</filter>
+		<filter title="Invoicing Blocking">
+			<domain>self.invoiceBlocking IS TRUE AND (self.invoiceBlockedToDate IS NULL OR self.invoiceBlockedToDate &gt; CURRENT_DATE)</domain>
+		</filter>
+	</search-filters>
+
 </object-views>

@@ -365,6 +365,7 @@ InvoiceSet.length > 0))"
 			</panel>
 			<panel title="Printing" name="printingPanel" colSpan="12">
 				<field name="printingSettings" onSelect="action-invoice-method-filter-printing-settings" canEdit="false"/>
+				<field name="groupProductsOnPrintings" if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()" colSpan="6"/>
 				<field name="invoicesCopySelect" colSpan="6" title="Invoices copy"/>
 				<field name="hideDiscount" colSpan="6"/>
         		<field name="headOfficeAddress" if="__user__.activeCompany?.accountConfig?.displayHeadOfficeAddrOnInvoicePrinting"/>
@@ -826,6 +827,7 @@ InvoiceSet.length > 0))"
 	    <action name="action-invoice-record-printing-fields" if="__config__.app.isApp('business-project')"/>
 			<action name="action-invoice-record-load-dummy-field-payment-voucher-on-invoice"/>
       <action name="action-invoice-record-set-dummy-field-language"/>
+        <action name="action-invoice-method-set-default-group-products-on-printings"/>
     </action-group>
 
     <action-group name="action-account-invoice-onload-group" >
@@ -873,6 +875,7 @@ InvoiceSet.length > 0))"
 			<action name="action-invoice-method-set-pfp-validator-user"
         if="__config__.app.getApp('account').getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2) ) "/>
       <action name="action-invoice-record-set-dummy-field-language"/>
+        <action name="action-invoice-method-set-default-group-products-on-printings"/>
     </action-group>
 
 	<action-group name="action-invoice-group-currency-onchange">
@@ -1022,6 +1025,10 @@ InvoiceSet.length > 0))"
 
 	<action-record name="action-invoice-record-set-dummy-field-language" model="com.axelor.apps.account.db.Invoice">
 		<field name="$language" expr="eval: (__repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.getIsPrintInvoicesInCompanyLanguage()) ? company?.language : partner?.language" if="company"/>
+	</action-record>
+
+	<action-record name="action-invoice-method-set-default-group-products-on-printings" model="com.axelor.apps.account.db.Invoice">
+		<field name="groupProductsOnPrintings" expr="eval: partner?.groupProductsOnPrintings" if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()" />
 	</action-record>
 
     <!-- ACTION ATTRS -->

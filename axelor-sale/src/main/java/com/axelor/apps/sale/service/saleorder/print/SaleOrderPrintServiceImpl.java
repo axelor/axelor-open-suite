@@ -18,6 +18,7 @@
 package com.axelor.apps.sale.service.saleorder.print;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -45,10 +46,12 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
   @Inject SaleOrderService saleOrderService;
 
   protected AppSaleService appSaleService;
+  protected AppBaseService appBaseService;
 
   @Inject
-  public SaleOrderPrintServiceImpl(AppSaleService appSaleService) {
+  public SaleOrderPrintServiceImpl(AppSaleService appSaleService, AppBaseService appBaseService) {
     this.appSaleService = appSaleService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -101,6 +104,8 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
 
     String title = saleOrderService.getFileName(saleOrder);
 
+    AppBase appBase = appBaseService.getAppBase();
+
     ReportSettings reportSetting =
         ReportFactory.createReport(IReport.SALES_ORDER, title + " - ${date}");
 
@@ -108,6 +113,13 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
         .addParam("SaleOrderId", saleOrder.getId())
         .addParam("Locale", locale)
         .addParam("ProformaInvoice", proforma)
+        .addParam(
+            "GroupProducts",
+            appBase.getIsRegroupProductsOnPrintings() && saleOrder.getGroupProductsOnPrintings())
+        .addParam("GroupProductTypes", appBase.getRegroupProductsTypeSelect())
+        .addParam("GroupProductLevel", appBase.getRegroupProductsLevelSelect())
+        .addParam("GroupProductProductTitle", appBase.getRegroupProductsLabelProducts())
+        .addParam("GroupProductServiceTitle", appBase.getRegroupProductsLabelServices())
         .addParam("HeaderHeight", saleOrder.getPrintingSettings().getPdfHeaderHeight())
         .addParam("FooterHeight", saleOrder.getPrintingSettings().getPdfFooterHeight())
         .addFormat(format);

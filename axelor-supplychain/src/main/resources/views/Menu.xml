@@ -205,8 +205,29 @@
 		<view type="form" name="partner-supplychain-link-type-form" />
 	</action-view>
 
+
+	<menuitem name="stock-root-custdeliveries-invoicing-block" parent="stock-root-stock-moves" tag-count="true"
+		title="Invoicing blocked customer deliveries" action="stock.root.custdeliveries.invoicing.block" order="7"/>
+
+	<action-view name="stock.root.custdeliveries.invoicing.block" title="Invoicing blocked customer deliveries"
+		model="com.axelor.apps.stock.db.StockMove" >
+		<view type="grid" name="stock-move-out-grid"/>
+		<view type="calendar" name="stock-move-calendar" />
+		<view type="form" name="stock-move-form"/>
+		<view-param name="forceTitle" value="true"/>
+		<view-param name="search-filters" value="customer-deliveries-filters"/>
+		<domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE AND self.invoiceBlocking = TRUE AND (self.invoiceBlockedToDate IS NULL OR self.invoiceBlockedToDate &gt; :_today)</domain>
+		<context name="_today" expr="eval: __date__"/>
+		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
+		<context name="_isReversion" expr="eval: false"/>
+	</action-view>
+
+	<menuitem name="stock-root-conf-invoice-blocking-reason" title="Invoice blocking reason" parent="stock-root-conf"
+		action="action.stock.view.invoice.blocking.reason"/>
+
+	<action-view name="action.stock.view.invoice.blocking.reason" title="Invoice blocking reason" model="com.axelor.apps.supplychain.db.StockMoveInvoicingBlockingReason">
+		<view type="grid" name="stock-move-invoice-blocking-reason-grid"/>
+		<view type="form" name="stock-move-invoice-blocking-reason-form"/>
+	</action-view>
 </object-views>
-
-
-
 
