@@ -38,6 +38,8 @@
 
     <integer name="width" title="Width" min="0"/>
     <integer name="height" title="Height" help="Maximum height should be 60 px." min="0" max="60"/>
+    
+    <one-to-many name="partnerList" ref="com.axelor.apps.base.db.Partner" title="Attached partners"/>
   </entity>
   
 </domain-models>
