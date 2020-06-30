@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<print-templates>
+<% __ids__.each({ u = com.axelor.inject.Beans.get('com.axelor.apps.base.db.repo.PrintTemplateRepository' as Class).find(it)
+		
+	printTemplateLineListService = ""
+	u.printTemplateLineList.each( {pt->
+	    printTemplateLineListService += "<printTemplateLine>"
+	    printTemplateLineListService += "  <sequence>${pt.sequence}</sequence>"
+	    printTemplateLineListService += "  <title>${pt.title}</title>"
+		printTemplateLineListService += "  <content>${pt.content}</content>"
+		printTemplateLineListService += "  <conditions>${pt.conditions}</conditions>"
+		printTemplateLineListService += "  <isEditable>${pt.isEditable}</isEditable>"
+		printTemplateLineListService += "</printTemplateLine>"
+	})
+	
+	birtTemplateSetService = ""
+	u.birtTemplateSet.each( {bt->
+	    birtTemplateSetService += "<birtTemplate>"
+	    birtTemplateSetService += "  <name>${bt.name}</name>"
+	    birtTemplateSetService += "  <format>${bt.format}</format>"
+	    birtTemplateSetService += "  <templateLink>${bt.templateLink}</templateLink>"
+		birtTemplateSetService += "</birtTemplate>"
+	})
+	
+	printTemplateSetService = ""
+	u.printTemplateSet.each( {pt->
+	    printTemplateSetService += "<printTemplate>"
+	    printTemplateSetService += "  <name>${pt.name}</name>"
+	    printTemplateSetService += "  <metaModel>"
+	    printTemplateSetService += "  <name>${pt?.metaModel?.name}</name>"
+	    printTemplateSetService += "  <fullName>${pt?.metaModel?.fullName}</fullName>"
+	    printTemplateSetService += "  <packageName>${pt?.metaModel?.packageName}</packageName>"
+	    printTemplateSetService += "  </metaModel>"
+	    printTemplateSetService += "  <company>"
+	    printTemplateSetService += "  <code>${pt?.company?.code}</code>"
+	    printTemplateSetService += "  <name>${pt?.company?.name}</name>"
+	    printTemplateSetService += "  </company>"
+	    printTemplateSetService += "  <language>"
+	    printTemplateSetService += "  <code>${pt?.language?.code}</code>"
+	    printTemplateSetService += "  <name>${pt?.language?.name}</name>"
+	    printTemplateSetService += "  </language>"
+	    printTemplateSetService += "  <printSettings>"
+	    printTemplateSetService += "  <name>${u?.printSettings?.name}</name>"
+	    printTemplateSetService += "  </printSettings>"
+	    printTemplateSetService += "  <formatSelect>${u.formatSelect}</formatSelect>"
+	    printTemplateSetService += "  <displayTypeSelect>${u.displayTypeSelect}</displayTypeSelect>"
+	    printTemplateSetService += "  <documentName>${u.documentName}</documentName>"
+	    printTemplateSetService += "  <metaFileField>${u.metaFileField}</metaFileField>"
+	    printTemplateSetService += "  <metaModelDefaultPath>${u.metaModelDefaultPath}</metaModelDefaultPath>"
+	    printTemplateSetService += "  <attach>${u.attach}</attach>"
+	    printTemplateSetService += "  <isEditable>${u.isEditable}</isEditable>"
+	    printTemplateSetService += "  <hidePrintSettings>${u.hidePrintSettings}</hidePrintSettings>"
+		printTemplateSetService += "</printTemplate>"
+	})
+	out <<
+	"""
+	<print-template>
+		<name>${u.name}</name>
+		<metaModel>
+			<name>${u?.metaModel?.name}</name>
+			<fullName>${u?.metaModel?.fullName}</fullName>
+			<packageName>${u?.metaModel?.packageName}</packageName>
+		</metaModel>
+		<company>
+			<code>${u?.company?.code}</code>
+			<name>${u?.company?.name}</name>
+		</company>
+		<language>
+			<code>${u?.language?.code}</code>
+			<name>${u?.language?.name}</name>
+		</language>
+		<printSettings>
+			<name>${u?.printSettings?.name}</name>
+		</printSettings>
+		<formatSelect>${u.formatSelect}</formatSelect>
+		<displayTypeSelect>${u.displayTypeSelect}</displayTypeSelect>
+		<documentName>${u.documentName}</documentName>
+		<metaFileField>${u.metaFileField}</metaFileField>
+		<metaModelDefaultPath>${u.metaModelDefaultPath}</metaModelDefaultPath>		
+		<attach>${u.attach}</attach>
+		<isEditable>${u.isEditable}</isEditable>
+		<hidePrintSettings>${u.hidePrintSettings}</hidePrintSettings>
+		<birtTemplateSet>
+			$birtTemplateSetService
+		</birtTemplateSet>
+		
+		<printTemplateLineList>
+			$printTemplateLineListService
+		</printTemplateLineList>
+				
+		<printTemplateSet>
+			$printTemplateSetService
+		</printTemplateSet>
+		
+	</print-template>
+	"""
+}) %>
+</print-templates>
