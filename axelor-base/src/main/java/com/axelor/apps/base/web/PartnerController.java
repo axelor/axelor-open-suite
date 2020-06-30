@@ -385,11 +385,15 @@ public class PartnerController {
     }
   }
 
-  public void setTaxNbr(ActionRequest request, ActionResponse response) {
+  public void modifyRegistrationCode(ActionRequest request, ActionResponse response) {
     try {
       Partner partner = request.getContext().asType(Partner.class);
       String taxNbr = Beans.get(PartnerService.class).getTaxNbrFromRegistrationCode(partner);
+      String nic = Beans.get(PartnerService.class).getNicFromRegistrationCode(partner);
+      String siren = Beans.get(PartnerService.class).getSirenFromRegistrationCode(partner);
       response.setValue("taxNbr", taxNbr);
+      response.setValue("nic", nic);
+      response.setValue("siren", siren);
     } catch (Exception e) {
       TraceBackService.trace(e);
     }

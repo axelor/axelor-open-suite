@@ -1,0 +1,5 @@
+---
+title: "Partner: set automatically the siren and nic from registration code"
+type: feature
+description: |
+	In partner, when the user set the registration code, we automatically set the nic and siren

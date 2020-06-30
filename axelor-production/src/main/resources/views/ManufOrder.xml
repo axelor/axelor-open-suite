@@ -550,7 +550,7 @@
 		<call class="com.axelor.apps.production.web.ManufOrderController" method="generateMergeManufOrder" />
 	</action-method>
 
-	<action-view name="action-manuf-order-view-merged-manuf-orders" title="Merged manuf order" model="com.axelor.apps.production.db.ManufOrder">
+	<action-view name="action-manuf-order-view-merged-manuf-orders" title="Merged manuf orders" model="com.axelor.apps.production.db.ManufOrder">
 		<view type="grid" name="manuf-order-grid" />
 		<view type="form" name="manuf-order-form" />
 		<view-param name="popup" value="true" />
