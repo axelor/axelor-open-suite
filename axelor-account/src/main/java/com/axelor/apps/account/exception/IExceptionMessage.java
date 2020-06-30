@@ -809,4 +809,11 @@ public interface IExceptionMessage {
 
   static final String INVALID_ANALYTIC_MOVE_LINE = /*$$(*/
       "Invalid Analytic moveLines, some axes percentage values are higher than 100%." /*)*/;
+
+  /** Period service */
+  static final String YEAR_CIVIL = /*$$(*/
+      "The configuration of Civil Year doesn't exist in database" /*)*/;
+
+  static final String YEAR_FISCAL = /*$$(*/
+      "The configuration of Fiscal Year doesn't exist in database" /*)*/;
 }

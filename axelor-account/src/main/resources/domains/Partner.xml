@@ -30,6 +30,10 @@
 		<boolean name="isFactor" title="Factor" />
 		<boolean name="factorizedCustomer" />
 		<string name="sellerCode" />
+        
+        <!-- Calcul CA -->
+        <one-to-many name="partnerTurnoverList" ref="com.axelor.apps.base.db.PartnerTurnover" readonly="true" mappedBy="partner" title="CAs list" />
+                
     </entity>
 
 </domain-models>

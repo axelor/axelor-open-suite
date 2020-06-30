@@ -36,6 +36,8 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.PartnerTurnoverService;
+import com.axelor.apps.account.service.YearServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
@@ -52,8 +54,10 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.db.repo.YearBaseRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
@@ -83,6 +87,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.persistence.NoResultException;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,6 +106,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected PartnerService partnerService;
   protected InvoiceLineService invoiceLineService;
   protected AccountConfigService accountConfigService;
+  protected PartnerTurnoverService partnerTurnoverService;
+  protected YearServiceAccount yearServiceAccount;
 
   @Inject
   public InvoiceServiceImpl(
@@ -112,7 +119,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       AppAccountService appAccountService,
       PartnerService partnerService,
       InvoiceLineService invoiceLineService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      PartnerTurnoverService partnerTurnoverService,
+      YearServiceAccount yearServiceAccount) {
 
     this.validateFactory = validateFactory;
     this.ventilateFactory = ventilateFactory;
@@ -123,6 +132,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.partnerService = partnerService;
     this.invoiceLineService = invoiceLineService;
     this.accountConfigService = accountConfigService;
+    this.partnerTurnoverService = partnerTurnoverService;
+    this.yearServiceAccount = yearServiceAccount;
   }
 
   // WKF
@@ -323,6 +334,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
               ReportSettings.FORMAT_PDF,
               null);
     }
+
+    // Method calculating CA
+    calculCA(invoice);
   }
 
   /**
@@ -970,5 +984,92 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         .setParameter(4, partner.getId())
         .getResultList()
         .size();
+  }
+
+  /**
+   * @param invoice
+   * @throws AxelorException
+   */
+  private void calculCA(Invoice invoice) throws AxelorException {
+
+    Partner partner = invoice.getPartner();
+    List<Partner> partnerParentList = new ArrayList<Partner>();
+    partnerParentList.add(partner);
+
+    /*
+     * Manage Date activity of civil year and fiscal year
+     * Search object in database corresponding to civil year and fiscal year compared to date of the day
+     * If Same date => one treatment (Civil year)
+     */
+    // Fiscal Year
+    Year yearFiscal;
+    try {
+      yearFiscal = yearServiceAccount.getYear(YearBaseRepository.TYPE_FISCAL);
+    } catch (NoResultException e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.YEAR_CIVIL));
+    }
+
+    // Civil year
+    Year yearCivil;
+    try {
+      yearCivil = yearServiceAccount.getYear(YearBaseRepository.TYPE_CIVIL);
+    } catch (NoResultException e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.YEAR_FISCAL));
+    }
+
+    // Comparaison of start date and end date
+    boolean isSameDate =
+        (yearCivil.getFromDate().isEqual(yearFiscal.getFromDate()))
+            && (yearCivil.getToDate().isEqual(yearFiscal.getToDate()));
+
+    // Case of Supplier
+    if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE 
+    		|| invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+      partnerTurnoverService.calculCA(
+          partner, true, (isSameDate ? null : yearFiscal), yearCivil, partnerParentList);
+    }
+    // Case of Customer
+    else if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE 
+    		|| invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+      partnerTurnoverService.calculCA(
+          partner, false, (isSameDate ? null : yearFiscal), yearCivil, partnerParentList);
+    }
+
+    do {
+
+      // If partner current is a subsidiary of a partner Parent
+      if (partner.getParentPartner() != null) {
+
+        partnerParentList.add(partner.getParentPartner());
+
+        // Case of Supplier
+        if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE 
+        		|| invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+          partnerTurnoverService.calculCA(
+              partner.getParentPartner(),
+              true,
+              (isSameDate ? null : yearFiscal),
+              yearCivil,
+              partnerParentList);
+        }
+        // Case of Customer
+        else if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE 
+        		|| invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+          partnerTurnoverService.calculCA(
+              partner.getParentPartner(),
+              false,
+              (isSameDate ? null : yearFiscal),
+              yearCivil,
+              partnerParentList);
+        }
+      }
+
+      // Get the Partner Parent object of Current Partner
+      partner = partner.getParentPartner();
+
+    } while (partner != null);
   }
 }

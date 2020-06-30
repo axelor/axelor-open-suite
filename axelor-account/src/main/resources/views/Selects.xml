@@ -457,4 +457,8 @@
 		<option value="reportedBalance">Reported balance</option>
 	</selection>
 
+    <selection name="partner.turnover.type.partner.select">
+        <option value="1">Supplier</option>
+        <option value="2">Customer</option>
+    </selection>
 </object-views>
