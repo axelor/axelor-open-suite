@@ -57,8 +57,8 @@
 	    	<panel name="informationsPanel" title="Information">
 	      		<field name="notes" colSpan="12"/>
 	    		<field name="companyDepartmentList" grid-view="company-department-company-grid" form-view="company-department-company-form" canSelect="true" domain="self.company IS NULL" colSpan="12"/>
-    			<field name="partnerList" form-view="partner-form" grid-view="partner-grid" colSpan="12" canNew="false" canSelect="true" onSelect="action-company-partner-list-on-select"/>
-		    	<field name="workshopList" colSpan="12" if-module="axelor-stock" if="__config__.app.isApp('stock')" canNew="false" canSelect="true" onSelect="action-company-workshop-list-on-select"/>
+    			<field name="partnerList" form-view="partner-form" grid-view="partner-grid" colSpan="12" canNew="false" canSelect="true" domain="self.isInternal is true"/>
+		    	<field name="workshopList" colSpan="12" if-module="axelor-stock" if="__config__.app.isApp('stock')" canNew="false" canSelect="true" domain="self.isWorkshop is true"/>
 	    	
 	    	</panel>
 	    	<panel name="configurationsPanel" title="Configurations">
@@ -128,13 +128,5 @@
   <action-method name="action-company-logo-onchange-update-dimension">
     <call class="com.axelor.apps.base.web.CompanyController" method="updateDimension"/>
   </action-method>
-  
-  <action-attrs name="action-company-workshop-list-on-select">
-  	<attribute name="domain" for="workshopList" expr="self.isWorkshop is true"/>
-  </action-attrs>
-  
-  <action-attrs name="action-company-partner-list-on-select">
-  	<attribute name="domain" for="partnerList" expr="self.isInternal is true"/>
-  </action-attrs>
 
 </object-views>
