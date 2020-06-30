@@ -23,18 +23,28 @@ import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.PrintTemplateRepository;
 import com.axelor.apps.base.service.PrintService;
 import com.axelor.apps.base.service.PrintTemplateService;
+import com.axelor.apps.base.service.imports.listener.ImporterListener;
+import com.axelor.data.xml.XMLImporter;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.common.io.Files;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
+import java.nio.file.Path;
 import java.util.Map;
+import org.apache.commons.io.FileUtils;
+import org.apache.xmlbeans.impl.common.IOUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -113,6 +123,41 @@ public class PrintTemplateController {
           .map();
     } else {
       return Beans.get(PrintService.class).generatePDF(print);
+    }
+  }
+
+  public void importPrintTemplate(ActionRequest request, ActionResponse response) {
+
+    String config = "/data-import/import-print-template-config.xml";
+
+    try {
+      InputStream inputStream = this.getClass().getResourceAsStream(config);
+      File configFile = File.createTempFile("config", ".xml");
+      FileOutputStream fout = new FileOutputStream(configFile);
+      IOUtil.copyCompletely(inputStream, fout);
+
+      Path path =
+          MetaFiles.getPath((String) ((Map) request.getContext().get("dataFile")).get("filePath"));
+      File tempDir = Files.createTempDir();
+      File importFile = new File(tempDir, "print-template.xml");
+      Files.copy(path.toFile(), importFile);
+
+      XMLImporter importer =
+          new XMLImporter(configFile.getAbsolutePath(), tempDir.getAbsolutePath());
+
+      ImporterListener listner = new ImporterListener("PrintTemplate");
+
+      importer.addListener(listner);
+
+      importer.run();
+
+      FileUtils.forceDelete(configFile);
+
+      FileUtils.forceDelete(tempDir);
+      response.setValue("importLog", listner.getImportLog());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }
