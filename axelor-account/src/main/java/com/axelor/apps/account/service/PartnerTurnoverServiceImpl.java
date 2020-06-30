@@ -44,8 +44,6 @@ public class PartnerTurnoverServiceImpl implements PartnerTurnoverService {
       List<Partner> lstPartnerParent)
       throws AxelorException {
 
-    // Retrieve of partner
-    // Partner partner = invoice.getPartner();
 
     BigDecimal bgCivilYear = new BigDecimal(0);
     BigDecimal bgFiscalYear = new BigDecimal(0);

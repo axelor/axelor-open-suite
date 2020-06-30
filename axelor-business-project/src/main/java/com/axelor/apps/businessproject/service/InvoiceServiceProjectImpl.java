@@ -17,12 +17,15 @@
  */
 package com.axelor.apps.businessproject.service;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.PartnerTurnoverServiceImpl;
-import com.axelor.apps.account.service.YearServiceAccountImpl;
+import com.axelor.apps.account.service.PartnerTurnoverService;
+import com.axelor.apps.account.service.YearServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
@@ -39,8 +42,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
-import java.util.Arrays;
-import java.util.List;
 
 public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
 
@@ -55,8 +56,8 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
       PartnerService partnerService,
       InvoiceLineService invoiceLineService,
       AccountConfigService accountConfigService,
-      PartnerTurnoverServiceImpl partnerTurnoverServiceImpl,
-      YearServiceAccountImpl yearServiceAccountImpl) {
+      PartnerTurnoverService partnerTurnoverService,
+      YearServiceAccount yearServiceAccount) {
     super(
         validateFactory,
         ventilateFactory,
@@ -67,8 +68,8 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
         partnerService,
         invoiceLineService,
         accountConfigService,
-        partnerTurnoverServiceImpl,
-        yearServiceAccountImpl);
+        partnerTurnoverService,
+        yearServiceAccount);
   }
 
   public List<String> editInvoiceAnnex(Invoice invoice, String invoiceIds, boolean toAttach)

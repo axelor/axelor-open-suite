@@ -17,11 +17,18 @@
  */
 package com.axelor.apps.supplychain.service.invoice;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.PartnerTurnoverServiceImpl;
-import com.axelor.apps.account.service.YearServiceAccountImpl;
+import com.axelor.apps.account.service.PartnerTurnoverService;
+import com.axelor.apps.account.service.YearServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
@@ -43,12 +50,6 @@ import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl {
 
@@ -63,8 +64,8 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl {
       PartnerService partnerService,
       InvoiceLineService invoiceLineService,
       AccountConfigService accountConfigService,
-      PartnerTurnoverServiceImpl partnerTurnoverServiceImpl,
-      YearServiceAccountImpl yearServiceAccountImpl) {
+      PartnerTurnoverService partnerTurnoverService,
+      YearServiceAccount yearServiceAccount) {
     super(
         validateFactory,
         ventilateFactory,
@@ -75,8 +76,8 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl {
         partnerService,
         invoiceLineService,
         accountConfigService,
-        partnerTurnoverServiceImpl,
-        yearServiceAccountImpl);
+        partnerTurnoverService,
+        yearServiceAccount);
   }
 
   @Override
