@@ -75,6 +75,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -714,6 +715,13 @@ public class ManufOrderWorkflowService {
       if (manufOrder.getNote() != null && manufOrder.getNote() != "") {
         note += manufOrder.getManufOrderSeq() + " : " + manufOrder.getNote() + "\n";
       }
+    }
+
+    Optional<LocalDateTime> minDate =
+        manufOrderList.stream().map(mo -> mo.getPlannedStartDateT()).min(LocalDateTime::compareTo);
+
+    if (minDate.isPresent()) {
+      mergedManufOrder.setPlannedStartDateT(minDate.get());
     }
 
     /* Update the created manuf order */
