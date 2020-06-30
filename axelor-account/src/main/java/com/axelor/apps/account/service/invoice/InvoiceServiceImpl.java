@@ -1026,12 +1026,14 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             && (yearCivil.getToDate().isEqual(yearFiscal.getToDate()));
 
     // Case of Supplier
-    if (invoice.getOperationTypeSelect() == 1 || invoice.getOperationTypeSelect() == 2) {
+    if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE 
+    		|| invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
       partnerTurnoverService.calculCA(
           partner, true, (isSameDate ? null : yearFiscal), yearCivil, partnerParentList);
     }
     // Case of Customer
-    else if (invoice.getOperationTypeSelect() == 3 || invoice.getOperationTypeSelect() == 4) {
+    else if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE 
+    		|| invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
       partnerTurnoverService.calculCA(
           partner, false, (isSameDate ? null : yearFiscal), yearCivil, partnerParentList);
     }
@@ -1044,7 +1046,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         partnerParentList.add(partner.getParentPartner());
 
         // Case of Supplier
-        if (invoice.getOperationTypeSelect() == 1 || invoice.getOperationTypeSelect() == 2) {
+        if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE 
+        		|| invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
           partnerTurnoverService.calculCA(
               partner.getParentPartner(),
               true,
@@ -1053,7 +1056,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
               partnerParentList);
         }
         // Case of Customer
-        else if (invoice.getOperationTypeSelect() == 3 || invoice.getOperationTypeSelect() == 4) {
+        else if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE 
+        		|| invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
           partnerTurnoverService.calculCA(
               partner.getParentPartner(),
               false,
