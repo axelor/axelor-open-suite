@@ -24,7 +24,7 @@ import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PartnerTurnoverServiceImpl {
+public class PartnerTurnoverServiceImpl implements PartnerTurnoverService {
 
   private final Logger log = LoggerFactory.getLogger(PartnerTurnoverServiceImpl.class);
   @Inject AppBaseService appBaseService;
@@ -141,7 +141,7 @@ public class PartnerTurnoverServiceImpl {
    * @return
    */
   @SuppressWarnings("unchecked")
-  private BigDecimal getCalculCACurrency(
+  public BigDecimal getCalculCACurrency(
       Partner partner, List<Partner> lstPartner, Year year, int intTypeSelect) {
 
     // Query which return the sum of CA group by currency
@@ -200,7 +200,7 @@ public class PartnerTurnoverServiceImpl {
    * @param intTypeSelect : type of status
    * @return
    */
-  private BigDecimal getCalculCACurrency(Partner partner, Year year, int intTypeSelect) {
+  public BigDecimal getCalculCACurrency(Partner partner, Year year, int intTypeSelect) {
 
     List<Partner> lstPartner = new ArrayList<Partner>();
     lstPartner.add(partner);
@@ -208,30 +208,8 @@ public class PartnerTurnoverServiceImpl {
     return getCalculCACurrency(partner, lstPartner, year, intTypeSelect);
   }
 
-  /**
-   * function which retrieve Year Object for the Calendar year current and the type of Year
-   *
-   * @return
-   */
-  public Year getYear(int intTypeSelect) {
-
-    Year year =
-        (Year)
-            JPA.em()
-                .createQuery(
-                    "SELECT self FROM Year self "
-                        + "WHERE self.fromDate <= ?1 and "
-                        + "self.toDate > ?1 and "
-                        + "self.typeSelect = ?2 ")
-                .setParameter(1, appBaseService.getTodayDate())
-                .setParameter(2, intTypeSelect)
-                .getSingleResult();
-
-    return year;
-  }
-
   @SuppressWarnings("unchecked")
-  private List<Partner> getListChild(List<Partner> lstPartner) {
+  public List<Partner> getListChild(List<Partner> lstPartner) {
 
     List<Partner> listPartnernResult =
         (List<Partner>)

@@ -36,8 +36,8 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
-import com.axelor.apps.account.service.PartnerTurnoverServiceImpl;
-import com.axelor.apps.account.service.YearServiceAccountImpl;
+import com.axelor.apps.account.service.PartnerTurnoverService;
+import com.axelor.apps.account.service.YearServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
@@ -106,8 +106,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected PartnerService partnerService;
   protected InvoiceLineService invoiceLineService;
   protected AccountConfigService accountConfigService;
-  protected PartnerTurnoverServiceImpl partnerTurnoverServiceImpl;
-  protected YearServiceAccountImpl yearServiceAccountImpl;
+  protected PartnerTurnoverService partnerTurnoverService;
+  protected YearServiceAccount yearServiceAccount;
 
   @Inject
   public InvoiceServiceImpl(
@@ -120,8 +120,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       PartnerService partnerService,
       InvoiceLineService invoiceLineService,
       AccountConfigService accountConfigService,
-      PartnerTurnoverServiceImpl partnerTurnoverServiceImpl,
-      YearServiceAccountImpl yearServiceAccountImpl) {
+      PartnerTurnoverService partnerTurnoverService,
+      YearServiceAccount yearServiceAccount) {
 
     this.validateFactory = validateFactory;
     this.ventilateFactory = ventilateFactory;
@@ -132,8 +132,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.partnerService = partnerService;
     this.invoiceLineService = invoiceLineService;
     this.accountConfigService = accountConfigService;
-    this.partnerTurnoverServiceImpl = partnerTurnoverServiceImpl;
-    this.yearServiceAccountImpl = yearServiceAccountImpl;
+    this.partnerTurnoverService = partnerTurnoverService;
+    this.yearServiceAccount = yearServiceAccount;
   }
 
   // WKF
@@ -1004,7 +1004,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     // Fiscal Year
     Year yearFiscal;
     try {
-      yearFiscal = yearServiceAccountImpl.getYear(YearBaseRepository.TYPE_FISCAL);
+      yearFiscal = yearServiceAccount.getYear(YearBaseRepository.TYPE_FISCAL);
     } catch (NoResultException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.YEAR_CIVIL));
@@ -1013,7 +1013,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     // Civil year
     Year yearCivil;
     try {
-      yearCivil = yearServiceAccountImpl.getYear(YearBaseRepository.TYPE_CIVIL);
+      yearCivil = yearServiceAccount.getYear(YearBaseRepository.TYPE_CIVIL);
     } catch (NoResultException e) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -1027,12 +1027,12 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
     // Case of Supplier
     if (invoice.getOperationTypeSelect() == 1 || invoice.getOperationTypeSelect() == 2) {
-      partnerTurnoverServiceImpl.calculCA(
+      partnerTurnoverService.calculCA(
           partner, true, (isSameDate ? null : yearFiscal), yearCivil, partnerParentList);
     }
     // Case of Customer
     else if (invoice.getOperationTypeSelect() == 3 || invoice.getOperationTypeSelect() == 4) {
-      partnerTurnoverServiceImpl.calculCA(
+      partnerTurnoverService.calculCA(
           partner, false, (isSameDate ? null : yearFiscal), yearCivil, partnerParentList);
     }
 
@@ -1045,7 +1045,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
 
         // Case of Supplier
         if (invoice.getOperationTypeSelect() == 1 || invoice.getOperationTypeSelect() == 2) {
-          partnerTurnoverServiceImpl.calculCA(
+          partnerTurnoverService.calculCA(
               partner.getParentPartner(),
               true,
               (isSameDate ? null : yearFiscal),
@@ -1054,7 +1054,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         }
         // Case of Customer
         else if (invoice.getOperationTypeSelect() == 3 || invoice.getOperationTypeSelect() == 4) {
-          partnerTurnoverServiceImpl.calculCA(
+          partnerTurnoverService.calculCA(
               partner.getParentPartner(),
               false,
               (isSameDate ? null : yearFiscal),
