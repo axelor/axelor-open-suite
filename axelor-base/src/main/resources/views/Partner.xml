@@ -350,8 +350,7 @@
 				<field name="registrationCode" hideIf="partnerTypeSelect== 2" colSpan="4"
 					onChange="action-method-partner-registration-code-onChange" />
 				<field name="siren" hideIf="partnerTypeSelect== 2" colSpan="4" readonly="true" />
-				<field name="nic" hideIf="partnerTypeSelect== 2" colSpan="4" readonly="true"
-					onChange="action-partner-record-set-registration-code" />
+				<field name="nic" hideIf="partnerTypeSelect== 2" colSpan="4" readonly="true" />
 				<field name="saleTurnover" hideIf="partnerTypeSelect== 2" />
 				<field name="nbrEmployees" hideIf="partnerTypeSelect== 2" />
 				<field name="mainActivityCode" hideIf="partnerTypeSelect== 2" />
