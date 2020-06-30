@@ -1,6 +1,7 @@
 # Changelog
 ## [Unreleased 5.2.13]
 ## Improvements
+- OPPORTUNITY: Change the data type of bestCase and worstCase fields from string to decimal.
 - INVOICE : generate invoice from timetableList from purchase order.
 
 ## Bug Fixes
