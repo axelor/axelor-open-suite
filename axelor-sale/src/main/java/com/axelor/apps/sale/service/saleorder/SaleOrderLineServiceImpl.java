@@ -655,9 +655,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
             && saleOrderLine.getPrice().signum() != 0
             && saleOrderLine
                     .getDiscountAmount()
-                    .multiply(
-                        BigDecimal.valueOf(100)
-                            .divide(saleOrderLine.getPrice(), 2, RoundingMode.HALF_UP))
+                    .multiply(BigDecimal.valueOf(100))
+                    .divide(saleOrderLine.getPrice(), 2, RoundingMode.HALF_UP)
                     .compareTo(maxDiscount)
                 > 0);
   }

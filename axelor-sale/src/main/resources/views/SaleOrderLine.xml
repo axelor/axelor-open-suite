@@ -155,9 +155,9 @@
 						<!--This panel purpose is to avoid issues with permission by field -->
 						<panel name="discountAmountPanel" colSpan="9" hideIf="discountTypeSelect == 0">
 							<field name="discountAmount" colSpan="3" readonlyIf="$nonNegotiable"
-							validIf="!$maxDiscount || allowDiscountDerogation || (discountTypeSelect == 1 &amp;&amp; $number(discountAmount) &lt;= $number($maxDiscount)) || (discountTypeSelect == 2 &amp;&amp; 100*$number(discountAmount)/$number(price) &lt; $number($maxDiscount))"
-							onChange="action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution"/>
-							<field name="allowDiscountDerogation"/>
+							validIf="!$maxDiscount || (discountTypeSelect == 1 &amp;&amp; $number(discountAmount) &lt;= ($number(discountDerogation) || $number($maxDiscount))) || (discountTypeSelect == 2 &amp;&amp; 100*$number(discountAmount)/$number(price) &lt;= ($number(discountDerogation) || $number($maxDiscount)))"
+							onChange="action-sale-order-line-group-discount-amount-onchange"/>
+							<field name="discountDerogation" colSpan="3" onChange="action-sale-order-line-record-fill-discount-amount-from-derogation,action-sale-order-line-group-discount-amount-onchange"/>
 						</panel>
 						<field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"/>
 						<field name="$maxDiscount" colSpan="12" showTitle="false" showIf="$maxDiscount" readonly="true">
@@ -482,7 +482,7 @@
 		<action name="action-sale-order-line-method-compute"/>
     <action name="action-sale-order-line-method-compute-analytic-distribution"/>
 	</action-group>
-    
+
     <action-attrs name="action-sale-order-attrs-hide-ati">
 		<attribute name="hidden" for="exTaxTotal" expr="eval: _parent.inAti || typeSelect == 2" if="_parent?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
 		<attribute name="hidden" for="inTaxTotal" expr="eval: !_parent.inAti || typeSelect == 2" if="_parent?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
@@ -564,6 +564,10 @@
     <action-record name="action-sale-order-line-record-complementary-products-to-handle" model="com.axelor.apps.sale.db.SaleOrderLine">
     	<field name="isComplementaryProductsUnhandledYet" expr="eval: true" if="product != null &amp;&amp; product.complementaryProductList != null &amp;&amp; !product.complementaryProductList.isEmpty()"/>
     </action-record>
+
+	<action-record name="action-sale-order-line-record-fill-discount-amount-from-derogation" model="com.axelor.apps.sale.db.SaleOrderLine">
+		<field name="discountAmount" expr="eval: discountTypeSelect == __repo__(PriceListLine).AMOUNT_TYPE_FIXED ? discountDerogation * price / 100 : discountDerogation"/>
+	</action-record>
     
    	<!-- ACTION METHOD -->
 	<action-method name="action-sale-order-line-method-compute">

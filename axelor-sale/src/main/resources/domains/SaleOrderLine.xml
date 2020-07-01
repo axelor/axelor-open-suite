@@ -76,7 +76,7 @@
 
 	<boolean name="discountsNeedReview" readonly="true"/>
 
-	<boolean name="allowDiscountDerogation" title="Allow discount derogation"/>
+	<decimal name="discountDerogation" title="Discount derogation (%)" min="0" max="100"/>
 	<finder-method name="findAllBySaleOrder" using="saleOrder" all="true"/>
 
 	<extra-code>

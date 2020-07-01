@@ -275,12 +275,14 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
     if (saleOrderLineList != null) {
       for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-        BigDecimal maxDiscount = saleOrderLineService.computeMaxDiscount(saleOrder, saleOrderLine);
-        if (maxDiscount != null
-            // do not block if the discount amount if from a derogation
-            && !saleOrderLine.getAllowDiscountDerogation()
+        BigDecimal maxDiscountAuthorized =
+            saleOrderLineService.computeMaxDiscount(saleOrder, saleOrderLine);
+        if (saleOrderLine.getDiscountDerogation() != null) {
+          maxDiscountAuthorized = saleOrderLine.getDiscountDerogation().max(maxDiscountAuthorized);
+        }
+        if (maxDiscountAuthorized != null
             && saleOrderLineService.isSaleOrderLineDiscountGreaterThanMaxDiscount(
-                saleOrderLine, maxDiscount)) {
+                saleOrderLine, maxDiscountAuthorized)) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
               I18n.get(IExceptionMessage.SALE_ORDER_DISCOUNT_TOO_HIGH));
