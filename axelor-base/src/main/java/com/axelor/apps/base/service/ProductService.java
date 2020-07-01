@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.base.service;
 
-import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.ProductVariantConfig;
@@ -26,7 +24,6 @@ import com.axelor.apps.base.db.ProductVariantValue;
 import com.axelor.exception.AxelorException;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.util.List;
 
 public interface ProductService {
 

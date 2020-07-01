@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.businessproject.service;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -42,6 +39,8 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import java.util.Arrays;
+import java.util.List;
 
 public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
 

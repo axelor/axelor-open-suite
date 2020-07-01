@@ -62,20 +62,20 @@ public class ProductController {
   }
 
   public void checkPriceList(ActionRequest request, ActionResponse response)
-          throws AxelorException {
-      Product newProduct = request.getContext().asType(Product.class);
+      throws AxelorException {
+    Product newProduct = request.getContext().asType(Product.class);
 
-      if ( (!newProduct.getSellable() || newProduct.getIsUnrenewed())
-              && Beans.get(ProductService.class).hasActivePriceList(newProduct)) {
-          response.setAlert(I18n.get("Warning, this product is present in at least one price list" ));
-      }
+    if ((!newProduct.getSellable() || newProduct.getIsUnrenewed())
+        && Beans.get(ProductService.class).hasActivePriceList(newProduct)) {
+      response.setAlert(I18n.get("Warning, this product is present in at least one price list"));
+    }
   }
 
   public void setPriceListLineAnomaly(ActionRequest request, ActionResponse response)
-          throws AxelorException {
-      Product newProduct = request.getContext().asType(Product.class);
-      Product product = Beans.get(ProductRepository.class).find(newProduct.getId());
-      Beans.get(PriceListService.class).setPriceListLineAnomaly(newProduct);
+      throws AxelorException {
+    Product newProduct = request.getContext().asType(Product.class);
+    Product product = Beans.get(ProductRepository.class).find(newProduct.getId());
+    Beans.get(PriceListService.class).setPriceListLineAnomaly(newProduct);
   }
 
   public void updateProductsPrices(ActionRequest request, ActionResponse response)

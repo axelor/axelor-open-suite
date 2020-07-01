@@ -34,12 +34,9 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 public class PriceListService {
 
@@ -99,25 +96,34 @@ public class PriceListService {
     }
     return priceListLine;
   }
-  
+
   @Transactional
   public void setPriceListLineAnomaly(Product product) {
-      if (!product.getSellable()) {
-          product.getPriceListLineList().forEach(line -> {
-              line.setAnomalySelect(PriceListLineRepository.ANOMALY_UNAVAILABLE_FOR_SALE);
-              priceListLineRepo.persist(line);
-          });
-      } else if (product.getIsUnrenewed()) {
-          product.getPriceListLineList().forEach(line -> {
-              line.setAnomalySelect(PriceListLineRepository.ANOMALY_NOT_RENEWED);
-              priceListLineRepo.persist(line);
-          });
-      } else {
-          product.getPriceListLineList().forEach(line -> {
-              line.setAnomalySelect(null);
-              priceListLineRepo.persist(line);
-          });
-      }
+    if (!product.getSellable()) {
+      product
+          .getPriceListLineList()
+          .forEach(
+              line -> {
+                line.setAnomalySelect(PriceListLineRepository.ANOMALY_UNAVAILABLE_FOR_SALE);
+                priceListLineRepo.persist(line);
+              });
+    } else if (product.getIsUnrenewed()) {
+      product
+          .getPriceListLineList()
+          .forEach(
+              line -> {
+                line.setAnomalySelect(PriceListLineRepository.ANOMALY_NOT_RENEWED);
+                priceListLineRepo.persist(line);
+              });
+    } else {
+      product
+          .getPriceListLineList()
+          .forEach(
+              line -> {
+                line.setAnomalySelect(null);
+                priceListLineRepo.persist(line);
+              });
+    }
   }
 
   public int getDiscountTypeSelect(PriceListLine priceListLine) {
