@@ -871,6 +871,7 @@
 "Last production price","Dernier prix de production",,
 "Last purchase currency","Dernière devise d'achat",,
 "Last purchase price","Dernier prix d’achat",,
+"Last purchase price (in company currency)","Dernier prix d'achat (en devise société)",,
 "Last purchase price A.T.I.",,,
 "Last purchase price W.T.",,,
 "Latitude","Latitude",,

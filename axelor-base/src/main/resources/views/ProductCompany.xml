@@ -5,8 +5,7 @@
     
     <grid name="product-company-grid" title="Product per company" model="com.axelor.apps.base.db.ProductCompany">
 	    <field name="company"/>
-		<field name="lastPurchasePrice" x-scale="2"/>
-		<field name="lastPurchaseCurrency"/>
+		<field name="lastPurchasePrice" x-scale="2" title="Last purchase price (in company currency)"/>
 		<field name="costPrice" x-scale="2"/>
 		<field name="avgPrice" x-scale="2"/>
 		<field name="company.currency" title="Company currency"/>
