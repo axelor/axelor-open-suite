@@ -4,6 +4,7 @@
 - ACCOUNT SITUATION : update account situation on invoice payment cancel and improve moveLine calculation
 - OPPORTUNITY: Change the data type of bestCase and worstCase fields from string to decimal.
 - INVOICE : generate invoice from timetableList from purchase order.
+- SaleOrder : Change title of numberOfPeriods
 
 ## Bug Fixes
 - EXTRA HOURS : Fix missing translation
