@@ -150,16 +150,13 @@ public interface ITranslation {
       "AccountingReportType7.company"; /*)*/
   public static final String ACCOUNTING_REPORT_7_END_DATE = /*$$(*/
       "AccountingReportType7.endDate"; /*)*/
-  public static final String ACCOUNTING_REPORT_7_FROM = /*$$(*/
-      "AccountingReportType7.from"; /*)*/
-  public static final String ACCOUNTING_REPORT_7_TO = /*$$(*/
-      "AccountingReportType7.to"; /*)*/
+  public static final String ACCOUNTING_REPORT_7_FROM = /*$$(*/ "AccountingReportType7.from"; /*)*/
+  public static final String ACCOUNTING_REPORT_7_TO = /*$$(*/ "AccountingReportType7.to"; /*)*/
   public static final String ACCOUNTING_REPORT_7_PERIOD = /*$$(*/
       "AccountingReportType7.period"; /*)*/
   public static final String ACCOUNTING_REPORT_7_PAYMENT_MODE = /*$$(*/
       "AccountingReportType7.paymentMode"; /*)*/
-  public static final String ACCOUNTING_REPORT_7_DATE = /*$$(*/
-      "AccountingReportType7.date"; /*)*/
+  public static final String ACCOUNTING_REPORT_7_DATE = /*$$(*/ "AccountingReportType7.date"; /*)*/
   public static final String ACCOUNTING_REPORT_7_DESCRIPTION = /*$$(*/
       "AccountingReportType7.description"; /*)*/
   public static final String ACCOUNTING_REPORT_7_PARTNER = /*$$(*/

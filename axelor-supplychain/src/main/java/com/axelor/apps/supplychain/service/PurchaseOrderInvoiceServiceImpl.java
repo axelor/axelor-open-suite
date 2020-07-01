@@ -402,8 +402,6 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
             false,
             null,
             purchaseOrderLine,
-            null,
-            false,
             null) {
 
           @Override
