@@ -871,6 +871,7 @@
 "Last production price",,,
 "Last purchase currency",,,
 "Last purchase price",,,
+"Last purchase price (in company currency)",,,
 "Last purchase price A.T.I.",,,
 "Last purchase price W.T.",,,
 "Latitude",,,

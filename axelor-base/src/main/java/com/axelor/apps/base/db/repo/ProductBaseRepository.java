@@ -17,9 +17,7 @@
  */
 package com.axelor.apps.base.db.repo;
 
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.ProductCompany;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -32,8 +30,6 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 import javax.persistence.PersistenceException;
 import javax.validation.ValidationException;
 
@@ -51,23 +47,6 @@ public class ProductBaseRepository extends ProductRepository {
 
   @Override
   public Product save(Product product) {
-    if (!appBaseService.getAppBase().getCompanySpecificProductFieldsList().isEmpty()) {
-      List<Company> companyList = Beans.get(CompanyRepository.class).all().fetch();
-      ArrayList<Company> productCompanyList = new ArrayList<Company>();
-      if (product.getProductCompanyList() != null) {
-        for (ProductCompany productCompany : product.getProductCompanyList()) {
-          productCompanyList.add(productCompany.getCompany());
-        }
-      }
-      for (Company company : companyList) {
-        if (!productCompanyList.contains(company)) {
-          ProductCompany productCompany = new ProductCompany();
-          productCompany.setCompany(company);
-          productCompany.setProduct(product);
-          product.addProductCompanyListItem(productCompany);
-        }
-      }
-    }
     try {
       if (appBaseService.getAppBase().getGenerateProductSequence()
           && Strings.isNullOrEmpty(product.getCode())) {
