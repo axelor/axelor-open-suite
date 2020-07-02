@@ -1,5 +1,8 @@
 # Changelog
 ## [Unreleased 5.3.8]
+## Features
+- Add tagCount for Expense, Timesheet, Leave request and Extra hours menus.
+
 ## Improvements
 - ACCOUNT SITUATION : update account situation on invoice payment cancel and improve moveLine calculation
 - OPPORTUNITY: Change the data type of bestCase and worstCase fields from string to decimal.

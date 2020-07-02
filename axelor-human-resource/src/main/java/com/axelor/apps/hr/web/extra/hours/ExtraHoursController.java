@@ -36,6 +36,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.CallMethod;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
@@ -178,7 +179,7 @@ public class ExtraHoursController {
   }
 
   /* Count Tags displayed on the menu items */
-
+  @CallMethod
   public String extraHoursValidateMenuTag() {
 
     return Beans.get(HRMenuTagService.class)
