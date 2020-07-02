@@ -277,7 +277,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       for (SaleOrderLine saleOrderLine : saleOrderLineList) {
         BigDecimal maxDiscountAuthorized =
             saleOrderLineService.computeMaxDiscount(saleOrder, saleOrderLine);
-        if (saleOrderLine.getDiscountDerogation() != null) {
+        if (saleOrderLine.getDiscountDerogation() != null && maxDiscountAuthorized != null) {
           maxDiscountAuthorized = saleOrderLine.getDiscountDerogation().max(maxDiscountAuthorized);
         }
         if (maxDiscountAuthorized != null
