@@ -15,6 +15,7 @@
 - AccountingBatch : Adding partner name in the bankDetails' not active anomaly message.
 - Application config : Add missing translations
 - UnitCostCalculation : check NPE on product select.
+- BANK PAYMENT : fix ICS number being linked to EBICS
 
 ## [5.3.7] - 2020-06-26
 ## Improvements
