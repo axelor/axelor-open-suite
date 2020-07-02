@@ -402,7 +402,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
         Product product = purchaseOrderLine.getProduct();
         if (product != null) {
-          Currency lastPurchaseCurrency = purchaseOrder.getCurrency();
           BigDecimal lastPurchasePrice =
               (Boolean) productCompanyService.get(product, "inAti", purchaseOrder.getCompany())
                   ? purchaseOrderLine.getInTaxPrice()
@@ -416,8 +415,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
           productCompanyService.set(
               product, "lastPurchasePrice", lastPurchasePrice, purchaseOrder.getCompany());
-          productCompanyService.set(
-              product, "lastPurchaseCurrency", lastPurchaseCurrency, purchaseOrder.getCompany());
           if ((Boolean)
               productCompanyService.get(
                   product, "defShipCoefByPartner", purchaseOrder.getCompany())) {
