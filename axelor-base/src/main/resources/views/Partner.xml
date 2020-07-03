@@ -443,23 +443,6 @@
 					</field>
 					<field name="webSite" placeholder="http://www.url.com" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$" widget="url"/>
 				</panel>
-				<panel name="partnerDetailsPanel" title="Partner Details" hideIf="isEmployee" colSpan="12" >
-					<panel colSpan="6" name="partnerCategoryPanel">
-						<field name="partnerCategory" widget="SuggestBox" colSpan="6" form-view="partner-category-form" grid-view="partner-category-grid"/>
-						<field name="industrySector" colSpan="6" widget="SuggestBox"/>
-						<field name="source" canEdit="false" colSpan="6" widget="SuggestBox" form-view="source-form" grid-view="source-grid"/>
-						<field name="department" colSpan="6" hideIf="partnerTypeSelect== 2"/>
-					</panel>
-          <panel name="otherPartnerDetailsPanel">
-            <field name="saleTurnover" hideIf="partnerTypeSelect== 2"/>
-            <field name="nbrEmployees" hideIf="partnerTypeSelect== 2"/>
-            <field name="mainActivityCode" hideIf="partnerTypeSelect== 2"/>
-            <field name="taxNbr" hideIf="partnerTypeSelect== 2"/>
-						<field name="paymentDelay" if-module="axelor-cash-management"  if="__config__.app.isApp('cash-management')"/>
-            <field name="parentPartner" hideIf="partnerTypeSelect != 1" domain="self.isContact = false AND self.partnerTypeSelect = 1 AND self in (SELECT p FROM Partner p join p.companySet c where c in :companySet)" form-view="partner-form" grid-view="partner-grid"/>
-						<field name="sellerCode" showIf="isFactor" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFactors()" />
-					</panel>
-				</panel>
 
 				<panel name="employeePanel" hidden="true">
 					<button name="openEmployeeFormBtn" title="Open employee form"
