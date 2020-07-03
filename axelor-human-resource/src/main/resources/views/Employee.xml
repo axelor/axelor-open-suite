@@ -186,10 +186,10 @@
 	      </field>
 	    </panel>
 	    
-		<panel name="companyPanel" showIf="stepByStepSelect == 5" colSpan="2">
+		<panel name="companyPanel" showIf="stepByStepSelect == 5 &amp;&amp; mainEmploymentContract.payCompany != null" colSpan="2" readonly="true">
 		      <field name="mainEmploymentContract" showTitle="false" colSpan="12" domain="self.employee.id = :id">
 		        <editor x-viewer="true">
-		          <panel name="payCompanyPanel" colSpan="12" title="Pay Company">
+		          <panel name="payCompanyPanel" colSpan="12" showTitle="false">
 		            <field name="payCompany.logo" showTitle="false" colSpan="12" widget="Image"/>
 		            <field name="payCompany.name" showTitle="false" colSpan="12" css="bold large" readonly="true"/>
 		          </panel>
