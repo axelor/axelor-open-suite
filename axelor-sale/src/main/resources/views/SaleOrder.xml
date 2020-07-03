@@ -971,12 +971,13 @@
     </action-group>
 
     <action-group name="action-sale-order-line-change-group">
+        <action name="action-sale-order-method-update-product-qty-with-pack-header-qty" if="saleOrderLineList.find{it->it.typeSelect == 2} != null"/>
     	<action name="action-sale-order-method-compute"/>
     	<action name="action-sale-order-method-compute-margin"/>
     	<action name="action-sale-order-record-set-advance-payment" if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
     	<action name="action-sale-order-record-update-timetable-amounts" if="__config__.app.isApp('supplychain') &amp;&amp; timetableList != null"/>
     	<action name="action-sale-order-method-update-amount-to-be-spread-over-the-timetable" if="__config__.app.isApp('supplychain') &amp;&amp; timetableList != null"/>
-    	<action name="save" if="saleOrderLineList.find{it->it.typeSelect == 2 &amp;&amp; (it.version != null || it.id == null)} != null" />
+    	<action name="save" if="saleOrderLineList.find{it->it.typeSelect == 2} != null" />
     </action-group>
 
 	<action-group name="action-sale-order-group-client-partner-change">
@@ -1486,6 +1487,10 @@
 	<action-method name="action-sale-order-method-set-status-to-confirmed">
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="backToConfirmedStatus" />
 	</action-method>
+  
+    <action-method name="action-sale-order-method-update-product-qty-with-pack-header-qty">
+       <call method="updateProductQtyWithPackHeaderQty" class="com.axelor.apps.sale.web.SaleOrderController"/>
+    </action-method>
    
    <action-attrs name="action-sale-order-attrs-readonly-timetable">
     <attribute name="readonly" expr="eval: timetableList.any { it?.invoiced }" for="timetableTemplate"/>

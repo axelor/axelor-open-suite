@@ -2,6 +2,7 @@
 ## [Unreleased 5.3.8]
 ## Features
 - Add tagCount for Expense, Timesheet, Leave request and Extra hours menus.
+- Update pack feature in sale order.
 
 ## Improvements
 - ACCOUNT SITUATION : update account situation on invoice payment cancel and improve moveLine calculation
