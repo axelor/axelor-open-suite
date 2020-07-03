@@ -19,6 +19,7 @@
 - Application config : Add missing translations
 - UnitCostCalculation : check NPE on product select.
 - SaleOrder: Remove one externalReference which appears twice in grid view.
+- AdvancedExport : Fix the bug of records are exported twice.
 
 ## [5.3.7] - 2020-06-26
 ## Improvements
