@@ -9,6 +9,7 @@
 - MRP : Remove duplicate information
 - ACCOUNTING INFORMATION : Add missing translation
 - BANK PAYMENT : fix ICS number being linked to EBICS
+- AdvancedExport : Fix the bug of records are exported twice.
 
 ## [5.2.12] - 2020-06-19
 ## Improvements
