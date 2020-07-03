@@ -18,6 +18,7 @@
 - AccountingBatch : Adding partner name in the bankDetails' not active anomaly message.
 - Application config : Add missing translations
 - UnitCostCalculation : check NPE on product select.
+- SaleOrder: Remove one externalReference which appears twice in grid view.
 
 ## [5.3.7] - 2020-06-26
 ## Improvements
