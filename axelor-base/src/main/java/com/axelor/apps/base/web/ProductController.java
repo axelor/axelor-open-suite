@@ -74,8 +74,11 @@ public class ProductController {
   public void setPriceListLineAnomaly(ActionRequest request, ActionResponse response)
       throws AxelorException {
     Product newProduct = request.getContext().asType(Product.class);
-    Product product = Beans.get(ProductRepository.class).find(newProduct.getId());
-    Beans.get(PriceListService.class).setPriceListLineAnomaly(newProduct);
+    // Set anomaly when a product exists in list Price
+    if (newProduct.getId() != null) {
+      Product product = Beans.get(ProductRepository.class).find(newProduct.getId());
+      Beans.get(PriceListService.class).setPriceListLineAnomaly(newProduct);
+    }
   }
 
   public void updateProductsPrices(ActionRequest request, ActionResponse response)
