@@ -50,6 +50,7 @@ import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -118,6 +119,9 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   public void fillComplementaryProductList(SaleOrderLine saleOrderLine) {
     if (saleOrderLine.getProduct() != null
         && saleOrderLine.getProduct().getComplementaryProductList() != null) {
+      if (saleOrderLine.getSelectedComplementaryProductList() == null) {
+        saleOrderLine.setSelectedComplementaryProductList(new ArrayList<>());
+      }
       saleOrderLine.clearSelectedComplementaryProductList();
       for (ComplementaryProduct complProduct :
           saleOrderLine.getProduct().getComplementaryProductList()) {
