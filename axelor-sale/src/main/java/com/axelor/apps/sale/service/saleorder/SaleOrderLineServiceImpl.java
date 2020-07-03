@@ -50,9 +50,7 @@ import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -120,9 +118,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   public void fillComplementaryProductList(SaleOrderLine saleOrderLine) {
     if (saleOrderLine.getProduct() != null
         && saleOrderLine.getProduct().getComplementaryProductList() != null) {
-      List<ComplementaryProductSelected> complementaryProducts =
-          new ArrayList<ComplementaryProductSelected>();
-      saleOrderLine.setSelectedComplementaryProductList(complementaryProducts);
+      saleOrderLine.clearSelectedComplementaryProductList();
       for (ComplementaryProduct complProduct :
           saleOrderLine.getProduct().getComplementaryProductList()) {
         ComplementaryProductSelected newComplProductLine = new ComplementaryProductSelected();
@@ -133,7 +129,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
         newComplProductLine.setIsSelected(!complProduct.getOptional());
         newComplProductLine.setSaleOrderLine(saleOrderLine);
-        complementaryProducts.add(newComplProductLine);
+        saleOrderLine.addSelectedComplementaryProductListItem(newComplProductLine);
       }
     }
   }
