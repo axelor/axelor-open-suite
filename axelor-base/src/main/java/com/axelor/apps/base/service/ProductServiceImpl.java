@@ -197,10 +197,13 @@ public class ProductServiceImpl implements ProductService {
   }
 
   public boolean hasActivePriceList(Product product) {
-    return !product.getPriceListLineList().stream()
-        .filter(priceListLine -> priceListLine.getPriceList().getIsActive())
-        .collect(Collectors.toList())
-        .isEmpty();
+    if (product.getPriceListLineList() == null) return false;
+    else {
+      return !product.getPriceListLineList().stream()
+          .filter(priceListLine -> priceListLine.getPriceList().getIsActive())
+          .collect(Collectors.toList())
+          .isEmpty();
+    }
   }
 
   @Override
