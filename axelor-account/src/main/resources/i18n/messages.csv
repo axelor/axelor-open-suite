@@ -1163,6 +1163,7 @@
 "Invoice.totalTax",,,
 "Invoice.totalToPay",,,
 "Invoice.unitPrice",,,
+"InvoiceLine.endOfPack",,,
 "InvoicePayment.amount",,,
 "InvoicePayment.date",,,
 "InvoicePayment.payment_mode",,,

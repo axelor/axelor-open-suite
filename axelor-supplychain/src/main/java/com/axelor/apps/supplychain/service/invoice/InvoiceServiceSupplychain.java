@@ -15,13 +15,31 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.translation;
+package com.axelor.apps.supplychain.service.invoice;
 
-public interface ITranslation {
+import com.axelor.apps.account.db.Invoice;
 
-  public static final String SALE_APP_NAME = /*$$(*/ "value:Sale"; /*)*/
+public interface InvoiceServiceSupplychain {
 
-  public static final String ABC_ANALYSIS_START_DATE = /*$$(*/ "AbcAnalysis.startDate"; /*)*/
-  public static final String ABC_ANALYSIS_END_DATE = /*$$(*/ "AbcAnalysis.endDate"; /*)*/
-  public static final String SALE_ORDER_LINE_END_OF_PACK = /*$$(*/ "SaleOrderLine.endOfPack"; /*)*/
+  /**
+   * Calculate pack total in invoice lines
+   *
+   * @param invoice
+   */
+  public void computePackTotal(Invoice invoice);
+
+  /**
+   * Reset pack total in invoice lines
+   *
+   * @param invoice
+   */
+  public void resetPackTotal(Invoice invoice);
+
+  /**
+   * To update product qty with pack header qty
+   *
+   * @param invoice
+   * @return
+   */
+  public Invoice updateProductQtyWithPackHeaderQty(Invoice invoice);
 }

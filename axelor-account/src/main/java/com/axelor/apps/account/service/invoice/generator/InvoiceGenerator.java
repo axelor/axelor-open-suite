@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
@@ -400,6 +401,11 @@ public abstract class InvoiceGenerator {
     invoice.setCompanyInTaxTotal(BigDecimal.ZERO);
 
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+
+      if (invoiceLine.getTypeSelect() != InvoiceLineRepository.TYPE_NORMAL) {
+        continue;
+      }
+
       // In the invoice currency
       invoice.setExTaxTotal(invoice.getExTaxTotal().add(invoiceLine.getExTaxTotal()));
 

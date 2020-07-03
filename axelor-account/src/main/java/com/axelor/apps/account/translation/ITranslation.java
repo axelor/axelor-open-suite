@@ -24,4 +24,5 @@ public interface ITranslation {
   public static final String BUDGET_APP_NAME = /*$$(*/ "value:Budget"; /*)*/
   public static final String ACCOUNT_DEBIT_BALANCE = /*$$(*/ "Debit balance" /*)*/;
   public static final String ACCOUNT_CREDIT_BALANCE = /*$$(*/ "Credit balance" /*)*/;
+  public static final String INVOICE_LINE_END_OF_PACK = /*$$(*/ "InvoiceLine.endOfPack" /*)*/;
 }
