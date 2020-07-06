@@ -28,3 +28,4 @@
 29;"pain.002.001.02.ack";"pain.002.001.02.ack - PSR niveau protocolaire";"Payment Status Report niveau protocolaire"
 30;"pain.002.001.03.ara";"pain.002.001.03.ara - PSR";"Payment Status Report"
 31;"pain.002.001.03.ack";"pain.002.001.03.ack - PSR niveau protocolaire";"Payment Status Report niveau protocolaire"
+32;"ofx.file.import";"ofx.bank.statement";"Import Bank Statement From Ofx File"
