@@ -664,9 +664,8 @@ header .dropdown-submenu:focus > a {
 	padding: 0 1px 2px 1px !important;
 }
 
-.btn-default {
+ .btn-default {
 	background-color: #fff;
-	border: 1px solid #0275d8;
 	color: #0275d8;
 }
 
@@ -676,6 +675,12 @@ header .dropdown-submenu:focus > a {
 	color: #fff;
 }
 
+.btn:hover {
+	background-color: transparent;
+	border-color: transparent;
+	color: #0275d8;
+}
+
 .info-button {
 	border-style: solid;
 	box-shadow: none !important;
@@ -683,15 +688,6 @@ header .dropdown-submenu:focus > a {
 
 .info-button:not([class*=btn-]) > i, .info-button:not([class*=btn-]) .info-button-value {
     color: #2185D0;
-}
-
-.btn-default:hover,
-.btn-default:focus,
-.btn-default:active,
-.btn-default.active,
-.btn-default.disabled,
-.btn-default[disabled] {
-	border: 1px solid #0275d8;
 }
 
 .dms-file-list .dms-folder-tree {
