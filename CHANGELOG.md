@@ -1,9 +1,15 @@
 # Changelog
 ## [Unreleased 5.2.13]
 ## Improvements
+- OPPORTUNITY: Change the data type of bestCase and worstCase fields from string to decimal.
+- INVOICE : generate invoice from timetableList from purchase order.
+- SaleOrder : Change title of numberOfPeriods
+
 ## Bug Fixes
 - MRP : Remove duplicate information
 - ACCOUNTING INFORMATION : Add missing translation
+- BANK PAYMENT : fix ICS number being linked to EBICS
+- AdvancedExport : Fix the bug of records are exported twice.
 - INVOICE : corrected the possibility to add a payment when the amount remaining is inferior or equal to 0.
 
 ## [5.2.12] - 2020-06-19
