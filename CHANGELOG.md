@@ -1,12 +1,25 @@
 # Changelog
 ## [Unreleased 5.3.8]
+## Features
+- Add tagCount for Expense, Timesheet, Leave request and Extra hours menus.
+
 ## Improvements
+- ACCOUNT SITUATION : update account situation on invoice payment cancel and improve moveLine calculation
+- OPPORTUNITY: Change the data type of bestCase and worstCase fields from string to decimal.
+- INVOICE : generate invoice from timetableList from purchase order.
+- SaleOrder : Change title of numberOfPeriods
+
 ## Bug Fixes
 - EXTRA HOURS : Fix missing translation
 - ACCOUNTING REPORT : Add missing translations in report
 - MRP : Remove duplicate information
 - ACCOUNTING INFORMATION : Add missing translation
 - TeamTaskCategory : Added translation for title of grid-view and fields
+- AccountingBatch : Adding partner name in the bankDetails' not active anomaly message.
+- Application config : Add missing translations
+- UnitCostCalculation : check NPE on product select.
+- SaleOrder: Remove one externalReference which appears twice in grid view.
+- AdvancedExport : Fix the bug of records are exported twice.
 - INVOICE : corrected the possibility to add a payment when the amount remaining is inferior or equal to 0.
 
 ## [5.3.7] - 2020-06-26

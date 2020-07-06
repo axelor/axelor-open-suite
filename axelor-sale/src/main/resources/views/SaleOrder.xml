@@ -77,7 +77,6 @@
     <field name="creationDate"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="inTaxTotal" aggregate="sum"/>
-		<field name="externalReference"/>
 		<field name="statusSelect"/>
     <button name="printBtn" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
