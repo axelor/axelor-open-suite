@@ -21,6 +21,7 @@
 - SaleOrder: Remove one externalReference which appears twice in grid view.
 - AdvancedExport : Fix the bug of records are exported twice.
 - INVOICE : corrected the possibility to add a payment when the amount remaining is inferior or equal to 0.
+- Invoice : Fix multiple invoices not ventilating when generated from sale order with advance payment
 
 ## [5.3.7] - 2020-06-26
 ## Improvements
