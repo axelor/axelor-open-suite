@@ -2063,7 +2063,10 @@ SELECT
     productType,
     "TaxValue",
     SUM(qty) as qty,
-    (SUM("UnitPrice" * qty) / SUM(qty)) as "UnitPrice",
+    CASE WHEN SUM(qty) != 0 
+    	THEN (SUM("UnitPrice" * qty) / SUM(qty))
+    	ELSE 0 END 
+    as "UnitPrice",
     SUM("totalDiscountAmount") as "totalDiscountAmount",
     SUM(ex_tax_total),
     SUM(in_tax_total),
@@ -2090,7 +2093,10 @@ SELECT
     productType,
     "TaxValue",
     SUM(qty) as qty,
-    (SUM("UnitPrice" * qty) / SUM(qty)) as "UnitPrice",
+    CASE WHEN SUM(qty) != 0 
+    	THEN (SUM("UnitPrice" * qty) / SUM(qty))
+    	ELSE 0 END
+    as "UnitPrice",
     SUM("totalDiscountAmount") as "totalDiscountAmount",
     SUM(ex_tax_total),
     SUM(in_tax_total),
