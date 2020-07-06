@@ -37,7 +37,7 @@
 		<panel name="priceListLinePanel" title="Price list lines" >
 			<field name="generalDiscount"/>
 			<label name="orLabel" title="Or" colSpan="12"/>
-			<panel-related name="historizedPriceListPanel" field="priceListLineList" grid-view="price-list-line-grid" form-view="price-list-line-form" colSpan="12"/>
+			<panel-related name="priceListLineListPanel" field="priceListLineList" grid-view="price-list-line-grid" form-view="price-list-line-form" colSpan="12"/>
 		 </panel>
 		<panel name="commentsPanel" title="Comments">
 			<field name="comments" colSpan="12" height="3"/>    					
