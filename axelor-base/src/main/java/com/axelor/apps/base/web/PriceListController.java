@@ -38,9 +38,12 @@ public class PriceListController {
 
   public void checkPriceListLineList(ActionRequest request, ActionResponse response) {
     PriceList priceList = request.getContext().asType(PriceList.class);
-    priceList = Beans.get(PriceListRepository.class).find(priceList.getId());
-    if (priceList.getPriceListLineList().stream().anyMatch(o -> o.getAnomalySelect() > 0)) {
-      response.setAlert(
+    if (priceList.getId() != null) {
+        priceList = Beans.get(PriceListRepository.class).find(priceList.getId());
+    }
+    if (priceList.getPriceListLineList() != null
+            && priceList.getPriceListLineList().stream().anyMatch(o -> o.getAnomalySelect() > 0)) {
+        response.setAlert(
           I18n.get(
               "Warning, the price list contains at least one product that is not renewed or not available for sale."));
     }
