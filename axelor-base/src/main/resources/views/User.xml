@@ -10,6 +10,7 @@
         <field name="name"/>
         <field name="fullName"/>
         <field name="activeCompany" form-view="company-form" grid-view="company-grid"/>
+        <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"/>
         <field name="group" form-view="group-form" grid-view="group-grid"/>
         <field name="blocked"/>
 		<field name="activateOn"/>
@@ -69,6 +70,7 @@
 	      			</field>
     		 	</panel>
         	 	<field name="activeCompany" onSelect="action-user-attrs-domain-active-company" widget="SuggestBox" form-view="company-form" grid-view="company-grid" />
+				<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"/>
 				<field name="activeTeam" canEdit="false" form-view="team-form" grid-view="team-grid" onSelect="action-user-attrs-domain-active-team"/>
 	        	<panel-related name="companySetPanel" title="Internal companies" field="companySet" showTitle="false" canNew="false" showIf="[2,5].indexOf(stepStatusSelect) > -1" colSpan="12"/>
 				<field name="teamSet" canEdit="false" form-view="team-form" grid-view="team-grid" colSpan="12"/>
@@ -86,6 +88,7 @@
     	<panel name="mainPanel" sidebar="true" showIf="stepStatusSelect == 5">
 			<field name="activeCompany" onSelect="action-user-attrs-domain-active-company" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
 			<!--	<field name="timesheetPeriodConfig"/> -->
+			<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"/>
 			<field name="workshopStockLocation" onSelect="action-user-attrs-domain-workshop-stock-location" canEdit="false" if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop()"/>
 			<field name="employee" if-module="axelor-human-resource" form-view="employee-form" grid-view="employee-grid" domain="self.user = null" canNew="false" canEdit="false" canView="false" if="__config__.app.isApp('employee')" />
 			<button name="createEmployeeBtn"  onClick="save,action-user-group-employee" title="Create employee" if-module="axelor-human-resource" showIf="employee == null &amp;&amp; id != null &amp;&amp; id>0" if="__config__.app.isApp('employee')" />
@@ -200,6 +203,7 @@
 			<field name="image" showTitle="false"/>
 			<field name="language"/>
 	        <field name="activeCompany" onSelect="action-user-attrs-domain-active-company" widget="SuggestBox" form-view="company-form" grid-view="company-grid" canEdit="false"/>
+			<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"/>
 			<field name="singleTab" widget="inline-checkbox"/>
 			<field name="change" title="Change password?" widget="inline-checkbox"/>
 			<panel name="allPasswordsPanel" showIf="change" itemSpan="12">

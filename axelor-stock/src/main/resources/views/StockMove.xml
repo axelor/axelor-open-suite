@@ -736,6 +736,7 @@
 	    <field name="_userType" expr="eval: _userType" />
       <!-- force boolean conversion -->
 	    <field name="isReversion" expr="eval: _isReversion ?: false"/>
+	    <field name="tradingName" expr="eval: __user__?.tradingName"/>
 	</action-record>
 
 	<action-record name="action-stock-move-record-auto-mail" model="com.axelor.apps.stock.db.StockMove">

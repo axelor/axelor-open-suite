@@ -1,0 +1,6 @@
+---
+title: "User:  add trading name"
+type: feature
+description: |
+	In user, add a trading name
+	In each documents (invoice, saleOrder, stockMove) set the user's trading name by default
