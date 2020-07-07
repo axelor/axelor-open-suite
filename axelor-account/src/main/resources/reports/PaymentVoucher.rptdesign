@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -605,9 +605,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="name">payment_date</property>
-                    <text-property name="displayName">payment_date</text-property>
+                    <text-property name="displayName">PaymentDate</text-property>
                     <expression name="expression" type="javascript">dataSetRow["payment_date"]</expression>
                     <property name="dataType">date</property>
+                    <property name="allowExport">true</property>
                 </structure>
             </list-property>
             <column id="2569">
@@ -643,10 +644,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </label>
                 </cell>
                 <cell id="2577">
-                    <text id="2700">
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["payment_date"]</VALUE-OF>]]></text-property>
-                    </text>
+                    <data id="3677">
+                        <property name="resultSetColumn">payment_date</property>
+                    </data>
                 </cell>
             </row>
             <row id="2578">
@@ -1007,12 +1007,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="borderTopColor">#000000</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <text id="2701">
+                        <data id="3678">
                             <property name="fontSize">8pt</property>
-                            <property name="textAlign">center</property>
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["LineDate"]</VALUE-OF>]]></text-property>
-                        </text>
+                            <property name="resultSetColumn">LineDate</property>
+                        </data>
                     </cell>
                     <cell id="2644">
                         <property name="colSpan">2</property>

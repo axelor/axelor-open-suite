@@ -2170,15 +2170,14 @@ WHERE ExpenseLine.kilometric_expense = ?
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF>  :</B>]]></text-property>
                     </text>
-                    <text id="3935">
+                    <data id="5085">
                         <property name="marginTop">1pt</property>
                         <property name="marginLeft">2pt</property>
                         <property name="paddingLeft">5pt</property>
                         <property name="textAlign">left</property>
                         <property name="display">inline</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["sent_date"]</VALUE-OF>]]></text-property>
-                    </text>
+                        <property name="resultSetColumn">sent_date</property>
+                    </data>
                 </cell>
                 <cell id="3375">
                     <property name="colSpan">2</property>
@@ -4937,9 +4936,14 @@ WHERE ExpenseLine.kilometric_expense = ?
                     <text id="4016">
                         <property name="marginRight">2pt</property>
                         <property name="textAlign">center</property>
+                        <property name="display">inline</property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["validated_user_name"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF format="dd/MM/yyyy">row["validation_date"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["validated_user_name"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> ]]></text-property>
                     </text>
+                    <data id="5086">
+                        <property name="display">inline</property>
+                        <property name="resultSetColumn">validation_date</property>
+                    </data>
                 </cell>
             </row>
         </grid>

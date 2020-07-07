@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -2337,9 +2337,10 @@ from base_app_base]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">delivery_date</property>
-                    <text-property name="displayName">delivery_date</text-property>
+                    <text-property name="displayName">DeliveryDate</text-property>
                     <expression name="expression" type="javascript">dataSetRow["delivery_date"]</expression>
                     <property name="dataType">date</property>
+                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">status_select</property>
@@ -2680,6 +2681,13 @@ from base_app_base]]></xml-property>
                     <expression name="expression" type="javascript">dataSetRow["is_display_purchase_order_line_number"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
+                <structure>
+                    <property name="name">Column Binding</property>
+                    <text-property name="displayName">DeliveryDate</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["delivery_date"]</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <column id="4568"/>
             <row id="4569">
@@ -2988,12 +2996,19 @@ from base_app_base]]></xml-property>
                                                 <property name="contentType">html</property>
                                                 <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
                                             </text>
-                                            <text id="4578">
-                                                <property name="marginLeft">2pt</property>
+                                            <data id="4633">
                                                 <property name="display">inline</property>
-                                                <property name="contentType">html</property>
-                                                <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["order_date"]</VALUE-OF>]]></text-property>
-                                            </text>
+                                                <property name="dataSet">PurchaseOrderDS</property>
+                                                <list-property name="boundDataColumns">
+                                                    <structure>
+                                                        <property name="name">order_date</property>
+                                                        <text-property name="displayName">order_date</text-property>
+                                                        <expression name="expression" type="javascript">dataSetRow["order_date"]</expression>
+                                                        <property name="dataType">date</property>
+                                                    </structure>
+                                                </list-property>
+                                                <property name="resultSetColumn">order_date</property>
+                                            </data>
                                         </cell>
                                     </row>
                                     <row id="3652">
@@ -3033,12 +3048,10 @@ from base_app_base]]></xml-property>
                                                 <property name="contentType">html</property>
                                                 <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
                                             </text>
-                                            <text id="3833">
-                                                <property name="marginLeft">2pt</property>
+                                            <data id="4634">
                                                 <property name="display">inline</property>
-                                                <property name="contentType">html</property>
-                                                <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["delivery_date"]</VALUE-OF>]]></text-property>
-                                            </text>
+                                                <property name="resultSetColumn">delivery_date</property>
+                                            </data>
                                         </cell>
                                     </row>
                                     <row id="3654">
@@ -6360,12 +6373,11 @@ row["first_name"]
                                     <property name="showIfBlank">false</property>
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
-                                    <text id="4487">
+                                    <data id="4635">
                                         <property name="fontSize">8pt</property>
-                                        <property name="textAlign">center</property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["desired_deliv_date"]</VALUE-OF>]]></text-property>
-                                    </text>
+                                        <property name="textAlign">left</property>
+                                        <property name="resultSetColumn">desired_deliv_date</property>
+                                    </data>
                                 </cell>
                             </row>
                         </detail>

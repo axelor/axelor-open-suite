@@ -3337,9 +3337,10 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">due_date</property>
-                    <text-property name="displayName">due_date</text-property>
+                    <text-property name="displayName">DueDate</text-property>
                     <expression name="expression" type="javascript">dataSetRow["due_date"]</expression>
                     <property name="dataType">date</property>
+                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">currencyCode</property>
@@ -3878,6 +3879,7 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                             <cell id="3657">
                                 <text id="3646">
                                     <property name="marginLeft">2pt</property>
+                                    <property name="display">inline</property>
                                     <property name="dataSet">TranslateDS</property>
                                     <list-property name="visibility">
                                         <structure>
@@ -3908,8 +3910,12 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF format="dd/MM/yyyy">row._outer["due_date"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF format="^">"  "</VALUE-OF>]]></text-property>
                                 </text>
+                                <data id="5646">
+                                    <property name="display">inline</property>
+                                    <property name="resultSetColumn">due_date</property>
+                                </data>
                             </cell>
                         </row>
                         <row id="3658">
@@ -4211,6 +4217,7 @@ else if(row["contactPartnerTitleSelect"] == "4"){"Prof."}
                     <text id="4527">
                         <property name="marginLeft">2pt</property>
                         <property name="textAlign">center</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="visibility">
                             <structure>
@@ -4245,6 +4252,14 @@ else if(row["contactPartnerTitleSelect"] == "4"){"Prof."}
 .replace('%s',Formatter.format(row._outer["subscription_from_date"],'dd/MM/yyyy'))
 .replace('%s',Formatter.format(row._outer["subscription_to_date"],'dd/MM/yyyy'))</VALUE-OF>]]></text-property>
                     </text>
+                    <data id="5647">
+                        <property name="display">inline</property>
+                        <property name="resultSetColumn">subscription_from_date</property>
+                    </data>
+                    <data id="5648">
+                        <property name="display">inline</property>
+                        <property name="resultSetColumn">subscription_to_date</property>
+                    </data>
                 </cell>
                 <cell id="4516"/>
             </row>
@@ -5554,8 +5569,12 @@ vars["in_total"] = vars["temp_in_total"];
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>
 <VALUE-OF format="^">" "</VALUE-OF>
-<VALUE-OF format="dd/MM/yyyy">row._outer["advanceInvoiceDate"]</VALUE-OF>]]></text-property>
+]]></text-property>
                                     </text>
+                                    <data id="5649">
+                                        <property name="display">inline</property>
+                                        <property name="resultSetColumn">advanceInvoiceDate</property>
+                                    </data>
                                 </cell>
                                 <cell id="4493">
                                     <property name="borderLeftStyle">solid</property>
@@ -6496,10 +6515,9 @@ vars["in_total"] = vars["temp_in_total"];
                                                     <property name="borderRightWidth">thin</property>
                                                     <property name="borderTopStyle">solid</property>
                                                     <property name="borderTopWidth">thin</property>
-                                                    <text id="5496">
-                                                        <property name="contentType">html</property>
-                                                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["payment_date"]</VALUE-OF>]]></text-property>
-                                                    </text>
+                                                    <data id="5650">
+                                                        <property name="resultSetColumn">payment_date</property>
+                                                    </data>
                                                 </cell>
                                                 <cell id="5473">
                                                     <property name="borderBottomStyle">solid</property>

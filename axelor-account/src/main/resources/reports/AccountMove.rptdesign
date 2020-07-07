@@ -1986,34 +1986,9 @@ if(row._outer["technical_origin"] == 1) {
                                         <property name="borderRightStyle">none</property>
                                         <property name="borderTopStyle">none</property>
                                         <property name="textAlign">center</property>
-                                        <text id="4513">
-                                            <property name="marginLeft">2pt</property>
-                                            <property name="dataSet">TranslateDS</property>
-                                            <list-property name="paramBindings">
-                                                <structure>
-                                                    <property name="paramName">param_1</property>
-                                                    <simple-property-list name="expression">
-                                                        <value type="javascript">'move.journal'</value>
-                                                    </simple-property-list>
-                                                </structure>
-                                            </list-property>
-                                            <list-property name="boundDataColumns">
-                                                <structure>
-                                                    <property name="name">key</property>
-                                                    <text-property name="displayName">key</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                    <property name="dataType">string</property>
-                                                </structure>
-                                                <structure>
-                                                    <property name="name">translation</property>
-                                                    <text-property name="displayName">translation</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                    <property name="dataType">string</property>
-                                                </structure>
-                                            </list-property>
-                                            <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row._outer["date"]</VALUE-OF>]]></text-property>
-                                        </text>
+                                        <data id="4908">
+                                            <property name="resultSetColumn">date</property>
+                                        </data>
                                     </cell>
                                     <cell id="4493">
                                         <property name="borderBottomStyle">none</property>

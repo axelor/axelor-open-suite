@@ -1752,13 +1752,12 @@ WHERE EmployeeBonusMgt.id = ?]]></xml-property>
                         <property name="borderTopColor">#606062</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <text id="3985">
+                        <data id="4055">
                             <property name="fontSize">8pt</property>
                             <property name="marginRight">2pt</property>
                             <property name="textAlign">right</property>
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF >row["seniority_date"]</VALUE-OF>]]></text-property>
-                        </text>
+                            <property name="resultSetColumn">seniority_date</property>
+                        </data>
                     </cell>
                 </row>
             </detail>

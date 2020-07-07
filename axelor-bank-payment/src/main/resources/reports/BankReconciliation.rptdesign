@@ -1622,9 +1622,10 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                 </structure>
                 <structure>
                     <property name="name">report_date</property>
-                    <text-property name="displayName">report_date</text-property>
+                    <text-property name="displayName">ReportDate</text-property>
                     <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
                     <property name="dataType">date-time</property>
+                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">currency</property>
@@ -2004,11 +2005,9 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                     </text>
                 </cell>
                 <cell id="510">
-                    <text id="556">
-                        <property name="fontFamily">sans-serif</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF  format="dd/MM/yyyy">row["report_date"]</VALUE-OF>]]></text-property>
-                    </text>
+                    <data id="6410">
+                        <property name="resultSetColumn">report_date</property>
+                    </data>
                 </cell>
                 <cell id="4702">
                     <property name="textAlign">left</property>
@@ -2049,9 +2048,10 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                             </structure>
                             <structure>
                                 <property name="name">to_date</property>
-                                <text-property name="displayName">to_date</text-property>
+                                <text-property name="displayName">ToDate</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["to_date"]</expression>
                                 <property name="dataType">date</property>
+                                <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">reference</property>
@@ -2536,11 +2536,9 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                                     <property name="borderLeftStyle">none</property>
                                     <property name="borderRightStyle">none</property>
                                     <property name="borderTopStyle">none</property>
-                                    <text id="6023">
-                                        <property name="fontFamily">sans-serif</property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["to_date"]</VALUE-OF>]]></text-property>
-                                    </text>
+                                    <data id="6411">
+                                        <property name="resultSetColumn">to_date</property>
+                                    </data>
                                 </cell>
                                 <cell id="4731">
                                     <property name="borderBottomStyle">none</property>
@@ -2761,9 +2759,10 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                 </structure>
                 <structure>
                     <property name="name">report_date</property>
-                    <text-property name="displayName">report_date</text-property>
+                    <text-property name="displayName">ReportDate</text-property>
                     <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
                     <property name="dataType">date-time</property>
+                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">currency</property>
@@ -3141,11 +3140,9 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                     </text>
                 </cell>
                 <cell id="5199">
-                    <text id="5189">
-                        <property name="fontFamily">sans-serif</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF  format="dd/MM/yyyy">row["report_date"]</VALUE-OF>]]></text-property>
-                    </text>
+                    <data id="6412">
+                        <property name="resultSetColumn">report_date</property>
+                    </data>
                 </cell>
                 <cell id="5200">
                     <property name="textAlign">left</property>

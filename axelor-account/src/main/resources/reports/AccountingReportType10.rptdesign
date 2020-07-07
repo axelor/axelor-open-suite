@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -756,15 +756,17 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
                 </structure>
                 <structure>
                     <property name="name">date_to</property>
-                    <text-property name="displayName">date_to</text-property>
+                    <text-property name="displayName">DateTo</text-property>
                     <expression name="expression" type="javascript">dataSetRow["date_to"]</expression>
                     <property name="dataType">date</property>
+                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">date_from</property>
-                    <text-property name="displayName">date_from</text-property>
+                    <text-property name="displayName">DateFrom</text-property>
                     <expression name="expression" type="javascript">dataSetRow["date_from"]</expression>
                     <property name="dataType">date</property>
+                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">period_name</property>
@@ -850,10 +852,9 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
                     </label>
                 </cell>
                 <cell id="514">
-                    <text id="525">
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["ReportDate"]</VALUE-OF>]]></text-property>
-                    </text>
+                    <data id="3152">
+                        <property name="resultSetColumn">ReportDate</property>
+                    </data>
                 </cell>
             </row>
             <row id="502">
@@ -974,10 +975,9 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
                     </label>
                 </cell>
                 <cell id="516">
-                    <text id="3141">
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["date_from"]</VALUE-OF>]]></text-property>
-                    </text>
+                    <data id="3153">
+                        <property name="resultSetColumn">date_from</property>
+                    </data>
                 </cell>
             </row>
             <row id="3143">
@@ -994,10 +994,9 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
                     </label>
                 </cell>
                 <cell id="3149">
-                    <text id="3142">
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["date_to"]</VALUE-OF>]]></text-property>
-                    </text>
+                    <data id="3154">
+                        <property name="resultSetColumn">date_to</property>
+                    </data>
                 </cell>
             </row>
             <row id="535">
@@ -1374,12 +1373,10 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
                             <property name="borderTopColor">#000000</property>
                             <property name="borderTopStyle">solid</property>
                             <property name="borderTopWidth">thin</property>
-                            <text id="1155">
+                            <data id="3155">
                                 <property name="fontSize">8.5pt</property>
-                                <property name="textAlign">center</property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["date"]</VALUE-OF>]]></text-property>
-                            </text>
+                                <property name="resultSetColumn">date</property>
+                            </data>
                         </cell>
                         <cell id="1181">
                             <property name="colSpan">2</property>

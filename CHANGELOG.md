@@ -33,6 +33,7 @@
 - SaleOrder/Invoice/PurchaseOrder Line : Unit is now required
 - TeamTask: add new field categorySet.
 - Studio: Make app builder optional
+- Birt report: Change display of date
 
 ## Bug Fixes
 - HR : A leave-line cannot be saved whitout employee or leave-reason.

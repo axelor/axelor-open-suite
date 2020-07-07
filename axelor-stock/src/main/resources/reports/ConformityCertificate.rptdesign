@@ -2315,15 +2315,9 @@ row["first_name"]
                     <property name="rowSpan">1</property>
                     <property name="borderBottomStyle">solid</property>
                     <property name="borderBottomWidth">thin</property>
-                    <text id="4197">
+                    <data id="5375">
                         <property name="dataSet">SaleOrderDS</property>
                         <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">external_reference</property>
-                                <text-property name="displayName">external_reference</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["external_reference"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
                             <structure>
                                 <property name="name">creation_date</property>
                                 <text-property name="displayName">creation_date</text-property>
@@ -2331,9 +2325,8 @@ row["first_name"]
                                 <property name="dataType">date</property>
                             </structure>
                         </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["creation_date"]</VALUE-OF>]]></text-property>
-                    </text>
+                        <property name="resultSetColumn">creation_date</property>
+                    </data>
                 </cell>
             </row>
             <row id="4200">
@@ -2398,10 +2391,9 @@ row["first_name"]
                     <property name="borderLeftStyle">none</property>
                     <property name="borderRightStyle">none</property>
                     <property name="borderTopStyle">none</property>
-                    <text id="4208">
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["real_date"]</VALUE-OF>]]></text-property>
-                    </text>
+                    <data id="5376">
+                        <property name="resultSetColumn">real_date</property>
+                    </data>
                 </cell>
             </row>
             <row id="3391">

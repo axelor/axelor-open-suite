@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">Data Cube.Lines.x</property>
@@ -1569,13 +1569,28 @@ GROUP BY date
                     <property name="colSpan">10</property>
                     <property name="rowSpan">1</property>
                     <property name="verticalAlign">top</property>
+                    <data id="4874">
+                        <property name="fontSize">14pt</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="textAlign">center</property>
+                        <property name="display">inline</property>
+                        <property name="resultSetColumn">from_date</property>
+                    </data>
                     <text id="4058">
                         <property name="fontSize">14pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="textAlign">center</property>
+                        <property name="display">inline</property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["from_date"]</VALUE-OF><VALUE-OF format="^">" - "</VALUE-OF><VALUE-OF>row["to_date"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="^">" - "</VALUE-OF>]]></text-property>
                     </text>
+                    <data id="4873">
+                        <property name="fontSize">14pt</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="textAlign">center</property>
+                        <property name="display">inline</property>
+                        <property name="resultSetColumn">to_date</property>
+                    </data>
                 </cell>
             </row>
             <row id="4671">
@@ -3124,6 +3139,7 @@ GROUP BY date
                                 <text id="4871">
                                     <property name="fontSize">14pt</property>
                                     <property name="textAlign">left</property>
+                                    <property name="display">inline</property>
                                     <property name="dataSet">TranslateDS</property>
                                     <list-property name="paramBindings">
                                         <structure>
@@ -3148,7 +3164,31 @@ GROUP BY date
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF format="dd/MM/YYYY">row._outer._outer["to_date"]</VALUE-OF><VALUE-OF format="^">" : "</VALUE-OF><VALUE-OF format="####.00">row._outer["TotalTurnover"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF>row._outer._outer["companyCurrency"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF>]]></text-property>
+                                </text>
+                                <data id="4875">
+                                    <property name="fontSize">14pt</property>
+                                    <property name="fontWeight">normal</property>
+                                    <property name="textAlign">left</property>
+                                    <property name="display">inline</property>
+                                    <property name="dataSet">Infos</property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">to_date</property>
+                                            <text-property name="displayName">to_date</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["to_date"]</expression>
+                                            <property name="dataType">date</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="resultSetColumn">to_date</property>
+                                </data>
+                                <text id="4877">
+                                    <property name="fontSize">14pt</property>
+                                    <property name="fontWeight">normal</property>
+                                    <property name="textAlign">left</property>
+                                    <property name="display">inline</property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF format="^">" : "</VALUE-OF><VALUE-OF format="####.00">row._outer["TotalTurnover"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF>row._outer._outer["companyCurrency"]</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                         </row>
