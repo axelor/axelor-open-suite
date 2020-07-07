@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -1294,21 +1294,24 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="name">date_from</property>
-                    <text-property name="displayName">date_from</text-property>
+                    <text-property name="displayName">DateFrom</text-property>
                     <expression name="expression" type="javascript">dataSetRow["date_from"]</expression>
                     <property name="dataType">date</property>
+                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">date_to</property>
-                    <text-property name="displayName">date_to</text-property>
+                    <text-property name="displayName">DateTo</text-property>
                     <expression name="expression" type="javascript">dataSetRow["date_to"]</expression>
                     <property name="dataType">date</property>
+                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">report_date</property>
-                    <text-property name="displayName">report_date</text-property>
+                    <text-property name="displayName">ReportDate</text-property>
                     <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
                     <property name="dataType">date</property>
+                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">report_date_edition</property>
@@ -1409,6 +1412,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="displayName">display_only_not_completely_lettered_move_lines</text-property>
                     <expression name="expression" type="javascript">dataSetRow["display_only_not_completely_lettered_move_lines"]</expression>
                     <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding</property>
+                    <text-property name="displayName">DateTo</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["date_to"]</expression>
+                    <property name="dataType">date</property>
+                    <property name="allowExport">true</property>
                 </structure>
             </list-property>
             <column id="492">
@@ -1565,10 +1575,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </text>
                 </cell>
                 <cell id="4129">
-                    <text id="3078">
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["report_date"]</VALUE-OF>]]></text-property>
-                    </text>
+                    <data id="4270">
+                        <property name="resultSetColumn">report_date</property>
+                    </data>
                 </cell>
                 <cell id="499">
                     <text id="4196">
@@ -1694,10 +1703,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </text>
                 </cell>
                 <cell id="4130">
-                    <text id="556">
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF  format="dd/MM/yyyy">row["date_from"]</VALUE-OF>]]></text-property>
-                    </text>
+                    <data id="4271">
+                        <property name="resultSetColumn">date_from</property>
+                    </data>
                 </cell>
                 <cell id="504">
                     <text id="4197">
@@ -1736,10 +1744,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </text>
                 </cell>
                 <cell id="505">
-                    <text id="557">
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["date_to"]</VALUE-OF>]]></text-property>
-                    </text>
+                    <data id="4272">
+                        <property name="resultSetColumn">date_to</property>
+                    </data>
                 </cell>
             </row>
             <row id="4211">

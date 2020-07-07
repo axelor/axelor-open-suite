@@ -3265,10 +3265,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </cell>
                 <cell id="4154">
                     <property name="textAlign">left</property>
-                    <text id="4312">
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy" >row["deadline"]</VALUE-OF>]]></text-property>
-                    </text>
+                    <data id="4313">
+                        <property name="resultSetColumn">deadline</property>
+                    </data>
                 </cell>
             </row>
             <row id="4178">
@@ -3952,10 +3951,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <text id="4017">
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["estimated_deliv_date"]</VALUE-OF>]]></text-property>
-                        </text>
+                        <data id="4314">
+                            <property name="resultSetColumn">estimated_deliv_date</property>
+                        </data>
                     </cell>
                 </row>
             </detail>
@@ -5232,10 +5230,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <text id="4282">
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["date"]</VALUE-OF>]]></text-property>
-                        </text>
+                        <data id="4315">
+                            <property name="resultSetColumn">date</property>
+                        </data>
                     </cell>
                     <cell id="270">
                         <property name="borderBottomStyle">solid</property>
@@ -5713,10 +5710,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <text id="4291">
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["expense_date"]</VALUE-OF>]]></text-property>
-                        </text>
+                        <data id="4316">
+                            <property name="resultSetColumn">expense_date</property>
+                        </data>
                     </cell>
                     <cell id="324">
                         <property name="borderBottomStyle">solid</property>
@@ -6324,10 +6320,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <text id="4301">
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy HH:mm">row["from_date"]</VALUE-OF>]]></text-property>
-                        </text>
+                        <data id="4317">
+                            <property name="resultSetColumn">from_date</property>
+                        </data>
                     </cell>
                     <cell id="4237">
                         <property name="borderBottomStyle">solid</property>
@@ -6338,10 +6333,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <text id="4302">
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy HH:mm">row["to_date"]</VALUE-OF>]]></text-property>
-                        </text>
+                        <data id="4318">
+                            <property name="resultSetColumn">to_date</property>
+                        </data>
                     </cell>
                     <cell id="4239">
                         <property name="borderBottomStyle">solid</property>
@@ -6352,10 +6346,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <text id="4303">
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy HH:mm">row["due_date"]</VALUE-OF>]]></text-property>
-                        </text>
+                        <data id="4319">
+                            <property name="resultSetColumn">due_date</property>
+                        </data>
                     </cell>
                 </row>
             </detail>
@@ -6843,10 +6836,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <text id="4306">
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["task_date"]</VALUE-OF>]]></text-property>
-                        </text>
+                        <data id="4320">
+                            <property name="resultSetColumn">task_date</property>
+                        </data>
                     </cell>
                     <cell id="449">
                         <property name="borderBottomStyle">solid</property>

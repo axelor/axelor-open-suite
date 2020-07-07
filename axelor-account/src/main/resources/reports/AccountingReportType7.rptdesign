@@ -1093,21 +1093,24 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="name">date_from</property>
-                    <text-property name="displayName">date_from</text-property>
+                    <text-property name="displayName">DateFrom</text-property>
                     <expression name="expression" type="javascript">dataSetRow["date_from"]</expression>
                     <property name="dataType">date</property>
+                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">date_to</property>
-                    <text-property name="displayName">date_to</text-property>
+                    <text-property name="displayName">DateTo</text-property>
                     <expression name="expression" type="javascript">dataSetRow["date_to"]</expression>
                     <property name="dataType">date</property>
+                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">report_date</property>
-                    <text-property name="displayName">report_date</text-property>
+                    <text-property name="displayName">ReportDate</text-property>
                     <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
                     <property name="dataType">date</property>
+                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">report_date_edition</property>
@@ -1342,10 +1345,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </text>
                 </cell>
                 <cell id="4129">
-                    <text id="3078">
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["report_date"]</VALUE-OF>]]></text-property>
-                    </text>
+                    <data id="4304">
+                        <property name="resultSetColumn">report_date</property>
+                    </data>
                 </cell>
                 <cell id="499">
                     <text id="4196">
@@ -1489,10 +1491,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </text>
                 </cell>
                 <cell id="4130">
-                    <text id="556">
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF  format="dd/MM/yyyy">row["date_from"]</VALUE-OF>]]></text-property>
-                    </text>
+                    <data id="4305">
+                        <property name="resultSetColumn">date_from</property>
+                    </data>
                 </cell>
                 <cell id="504">
                     <text id="4197">
@@ -1537,10 +1538,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </text>
                 </cell>
                 <cell id="505">
-                    <text id="557">
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["date_to"]</VALUE-OF>]]></text-property>
-                    </text>
+                    <data id="4306">
+                        <property name="resultSetColumn">date_to</property>
+                    </data>
                 </cell>
             </row>
             <row id="4211">

@@ -1266,6 +1266,7 @@ where ForecastRecap.id = ?
             <row id="3858">
                 <cell id="3898">
                     <text id="4014">
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -1290,11 +1291,16 @@ where ForecastRecap.id = ?
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF format="dd/MM/yyyy">row._outer["calculationdate"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : ]]></text-property>
                     </text>
+                    <data id="5423">
+                        <property name="display">inline</property>
+                        <property name="resultSetColumn">calculationdate</property>
+                    </data>
                 </cell>
                 <cell id="3891">
                     <text id="4017">
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -1319,11 +1325,16 @@ where ForecastRecap.id = ?
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF format="dd/MM/yyyy">row._outer["fromdate"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : ]]></text-property>
                     </text>
+                    <data id="5424">
+                        <property name="display">inline</property>
+                        <property name="resultSetColumn">fromdate</property>
+                    </data>
                 </cell>
                 <cell id="3859">
                     <text id="4021">
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -1348,8 +1359,12 @@ where ForecastRecap.id = ?
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF format="dd/MM/yyyy">row._outer["todate"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : ]]></text-property>
                     </text>
+                    <data id="5425">
+                        <property name="display">inline</property>
+                        <property name="resultSetColumn">todate</property>
+                    </data>
                 </cell>
             </row>
             <row id="3860">

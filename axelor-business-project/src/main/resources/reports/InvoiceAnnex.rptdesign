@@ -3021,6 +3021,7 @@ WHERE invproj.invoice IN (@INJECTID)]]></xml-property>
                                             <cell id="3653">
                                                 <text id="3425">
                                                     <property name="marginLeft">2pt</property>
+                                                    <property name="display">inline</property>
                                                     <property name="dataSet">TranslateDS</property>
                                                     <list-property name="visibility">
                                                         <structure>
@@ -3051,8 +3052,12 @@ WHERE invproj.invoice IN (@INJECTID)]]></xml-property>
                                                         </structure>
                                                     </list-property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF format="dd/MM/yyyy">row._outer["invoice_date"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : ]]></text-property>
                                                 </text>
+                                                <data id="5374">
+                                                    <property name="display">inline</property>
+                                                    <property name="resultSetColumn">invoice_date</property>
+                                                </data>
                                             </cell>
                                         </row>
                                         <row id="3654">
@@ -3126,6 +3131,7 @@ WHERE invproj.invoice IN (@INJECTID)]]></xml-property>
                                             <cell id="3657">
                                                 <text id="3646">
                                                     <property name="marginLeft">2pt</property>
+                                                    <property name="display">inline</property>
                                                     <property name="dataSet">TranslateDS</property>
                                                     <list-property name="visibility">
                                                         <structure>
@@ -3156,8 +3162,12 @@ WHERE invproj.invoice IN (@INJECTID)]]></xml-property>
                                                         </structure>
                                                     </list-property>
                                                     <property name="contentType">html</property>
-                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF format="dd/MM/yyyy">row._outer["due_date"]</VALUE-OF>]]></text-property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF format="^">"  "</VALUE-OF>]]></text-property>
                                                 </text>
+                                                <data id="5375">
+                                                    <property name="display">inline</property>
+                                                    <property name="resultSetColumn">due_date</property>
+                                                </data>
                                             </cell>
                                         </row>
                                         <row id="3658">

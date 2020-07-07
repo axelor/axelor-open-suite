@@ -1679,6 +1679,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </cell>
                 <cell id="5258">
                     <text id="5269">
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -1697,12 +1698,16 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> :<VALUE-OF format="dd/MM/yyyy">row._outer["inventoryPlannedStartDate"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> :]]></text-property>
                     </text>
+                    <data id="5395">
+                        <property name="display">block</property>
+                        <property name="resultSetColumn">inventoryPlannedStartDate</property>
+                    </data>
                 </cell>
                 <cell id="5380">
                     <text id="5386">
-                        <property name="display">block</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -1721,11 +1726,16 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B>: <VALUE-OF format="dd/MM/yyyy">row._outer["inventoryPlannedEndDate"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B>: ]]></text-property>
                     </text>
+                    <data id="5396">
+                        <property name="display">block</property>
+                        <property name="resultSetColumn">inventoryPlannedEndDate</property>
+                    </data>
                 </cell>
                 <cell id="5259">
                     <text id="5388">
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -1744,8 +1754,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF format="dd/MM/yyyy">row._outer["inventoryCreatedOn"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> :]]></text-property>
                     </text>
+                    <data id="5397">
+                        <property name="display">block</property>
+                        <property name="resultSetColumn">inventoryCreatedOn</property>
+                    </data>
                 </cell>
                 <cell id="5266">
                     <text id="5270">

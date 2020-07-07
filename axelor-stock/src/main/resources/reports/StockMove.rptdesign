@@ -1983,6 +1983,13 @@ order by StockMoveLine.sequence]]></xml-property>
                     <expression name="expression" type="javascript">dataSetRow["display_product_code_on_printing"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
+                <structure>
+                    <property name="name">Column Binding</property>
+                    <text-property name="displayName">TodayDate</text-property>
+                    <expression name="expression" type="javascript">new Date()</expression>
+                    <property name="dataType">date</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <structure name="toc"/>
             <column id="5232"/>
@@ -2135,6 +2142,7 @@ order by StockMoveLine.sequence]]></xml-property>
                                 <text id="3425">
                                     <property name="marginLeft">0pt</property>
                                     <property name="textAlign">left</property>
+                                    <property name="display">inline</property>
                                     <property name="dataSet">TranslateDS</property>
                                     <list-property name="paramBindings">
                                         <structure>
@@ -2161,8 +2169,12 @@ order by StockMoveLine.sequence]]></xml-property>
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B>: <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF format="dd/MM/yyyy">row._outer["picking_edit_date"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B>: <VALUE-OF format="^">"  "</VALUE-OF> ]]></text-property>
                                 </text>
+                                <data id="5408">
+                                    <property name="display">inline</property>
+                                    <property name="resultSetColumn">picking_edit_date</property>
+                                </data>
                             </cell>
                         </row>
                         <row id="5316">
@@ -2181,6 +2193,7 @@ order by StockMoveLine.sequence]]></xml-property>
                                 <text id="5318">
                                     <property name="marginLeft">0pt</property>
                                     <property name="textAlign">left</property>
+                                    <property name="display">inline</property>
                                     <property name="dataSet">TranslateDS</property>
                                     <list-property name="paramBindings">
                                         <structure>
@@ -2207,8 +2220,12 @@ order by StockMoveLine.sequence]]></xml-property>
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B>: <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF format="dd/MM/yyyy">BirtDateTime.now()</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B>: <VALUE-OF format="^">"  "</VALUE-OF> ]]></text-property>
                                 </text>
+                                <data id="5409">
+                                    <property name="display">inline</property>
+                                    <property name="resultSetColumn">Column Binding</property>
+                                </data>
                             </cell>
                         </row>
                         <row id="5405">
@@ -2223,6 +2240,7 @@ order by StockMoveLine.sequence]]></xml-property>
                                 <text id="5407">
                                     <property name="marginLeft">0pt</property>
                                     <property name="textAlign">left</property>
+                                    <property name="display">inline</property>
                                     <property name="dataSet">TranslateDS</property>
                                     <list-property name="paramBindings">
                                         <structure>
@@ -2249,8 +2267,12 @@ order by StockMoveLine.sequence]]></xml-property>
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B>: <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF format="dd/MM/yyyy">row._outer["orderDate"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B>: <VALUE-OF format="^">"  "</VALUE-OF> ]]></text-property>
                                 </text>
+                                <data id="5410">
+                                    <property name="display">inline</property>
+                                    <property name="resultSetColumn">orderDate</property>
+                                </data>
                             </cell>
                         </row>
                         <row id="3654">
