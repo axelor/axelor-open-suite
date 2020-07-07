@@ -38,9 +38,6 @@ public class PriceListController {
 
   public void checkPriceListLineList(ActionRequest request, ActionResponse response) {
     PriceList priceList = request.getContext().asType(PriceList.class);
-    if (priceList.getId() != null) {
-        priceList = Beans.get(PriceListRepository.class).find(priceList.getId());
-    }
     if (priceList.getPriceListLineList() != null
             && priceList.getPriceListLineList().stream().anyMatch(o -> o.getAnomalySelect() > 0)) {
         response.setAlert(
