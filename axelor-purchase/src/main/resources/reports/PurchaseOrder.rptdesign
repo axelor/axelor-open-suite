@@ -6864,12 +6864,6 @@ row["first_name"]
                         <column id="3477">
                             <property name="width">9.970851063829787cm</property>
                         </column>
-                        <row id="3851">
-                            <property name="height">0.5cm</property>
-                            <cell id="3852"/>
-                            <cell id="3853"/>
-                            <cell id="3855"/>
-                        </row>
                         <row id="3478">
                             <property name="height">1.4022916666666667cm</property>
                             <cell id="3479">
