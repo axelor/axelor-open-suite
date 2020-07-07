@@ -1221,6 +1221,7 @@
     	<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     	<field name="template" expr="eval:_template" />
 		<field name="printingSettings" expr="eval: __user__.activeCompany?.printingSettings" if="__user__.activeCompany != null"/>
+		<field name="tradingName" expr="eval: __user__?.tradingName"/>
     </action-record>
 
     <action-record name="action-sale-order-record-company-configuration" model="com.axelor.apps.sale.db.SaleOrder">

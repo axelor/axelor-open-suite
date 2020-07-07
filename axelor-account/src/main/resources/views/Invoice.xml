@@ -957,6 +957,7 @@ InvoiceSet.length > 0))"
         <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
 		<field name="printingSettings" expr="eval: __user__.activeCompany?.printingSettings" if="__user__.activeCompany != null"/>
+		<field name="tradingName" expr="eval: __user__?.tradingName"/>
     </action-record>
 
     <action-record name="action-invoice-record-load-dummy-field-payment-voucher-on-invoice" model="com.axelor.apps.account.db.Invoice">
