@@ -1745,7 +1745,10 @@ SELECT
     null as description,
     productType,
     SUM(qty) as qty, 
-    (SUM(unit_price_untaxed * qty) / SUM(qty)) as unit_price_untaxed,
+    CASE WHEN SUM(qty) != 0
+    	THEN (SUM(unit_price_untaxed * qty) / SUM(qty))
+    	ELSE 0 END 
+    as unit_price_untaxed,
     MIN(sequence) as sequence, 
     BOOL_AND("isTitleLine") as "isTitleLine",
     product_category_code as product_code, 
@@ -1768,7 +1771,10 @@ SELECT
     null as description,
     productType,
     SUM(qty) as qty, 
-    (SUM(unit_price_untaxed * qty) / SUM(qty)) as unit_price_untaxed,
+    CASE WHEN SUM(qty) != 0
+    	THEN (SUM(unit_price_untaxed * qty) / SUM(qty))
+    	ELSE 0 END
+    as unit_price_untaxed,
     MIN(sequence) as sequence, 
     BOOL_AND("isTitleLine") as "isTitleLine",
     null as product_code, 

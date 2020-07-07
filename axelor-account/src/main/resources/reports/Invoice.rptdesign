@@ -3,18 +3,6 @@
     <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
-            <property name="name">queryText</property>
-            <property name="id">4513</property>
-        </structure>
-        <structure>
-            <property name="name">queryTimeOut</property>
-            <property name="id">4513</property>
-        </structure>
-        <structure>
-            <property name="name">rowFetchSize</property>
-            <property name="id">4513</property>
-        </structure>
-        <structure>
             <property name="name">odaURL</property>
             <property name="id">209</property>
             <expression name="value" type="javascript">params["DBName"].value</expression>
@@ -2360,11 +2348,15 @@ Product.product_type_select as "productType",
 TaxLine.value as "taxValue",
 SUM(InvoiceLine.qty),
 Unit.label_to_printing as "unitName",
-(SUM((CASE WHEN Invoice.in_ati
-	THEN InvoiceLine.in_tax_price
-	ELSE InvoiceLine.price END) * InvoiceLine.qty) / SUM(InvoiceLine.qty))
+CASE WHEN SUM(InvoiceLine.qty) != 0
+	THEN SUM((CASE WHEN Invoice.in_ati
+		THEN InvoiceLine.in_tax_price
+		ELSE InvoiceLine.price END) * InvoiceLine.qty) / SUM(InvoiceLine.qty)
+	ELSE 0 END
 	as "unitPrice",
-SUM(InvoiceLine.price * InvoiceLine.qty) / SUM(InvoiceLine.qty),
+CASE WHEN SUM(InvoiceLine.qty) != 0
+	THEN SUM(InvoiceLine.price * InvoiceLine.qty) / SUM(InvoiceLine.qty)
+	ELSE 0 END,
 SUM((InvoiceLine.price_discounted
 	- (CASE WHEN Invoice.in_ati
 		THEN InvoiceLine.in_tax_price
@@ -2408,11 +2400,15 @@ Product.product_type_select as "productType",
 TaxLine.value as "taxValue",
 SUM(InvoiceLine.qty),
 Unit.label_to_printing as "unitName",
-(SUM((CASE WHEN Invoice.in_ati
-	THEN InvoiceLine.in_tax_price
-	ELSE InvoiceLine.price END) * InvoiceLine.qty) / SUM(InvoiceLine.qty))
+CASE WHEN SUM(InvoiceLine.qty) != 0
+	THEN SUM((CASE WHEN Invoice.in_ati
+		THEN InvoiceLine.in_tax_price
+		ELSE InvoiceLine.price END) * InvoiceLine.qty) / SUM(InvoiceLine.qty)
+	ELSE 0 END
 	as "unitPrice",
-SUM(InvoiceLine.price * InvoiceLine.qty) / SUM(InvoiceLine.qty),
+CASE WHEN SUM(InvoiceLine.qty) != 0
+	THEN SUM(InvoiceLine.price * InvoiceLine.qty) / SUM(InvoiceLine.qty)
+	ELSE 0 END,
 SUM((InvoiceLine.price_discounted
 	- (CASE WHEN Invoice.in_ati
 		THEN InvoiceLine.in_tax_price
