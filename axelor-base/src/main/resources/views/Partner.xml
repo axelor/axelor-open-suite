@@ -182,10 +182,10 @@
 			<menu name="partnerReportsMenu" title="Reports" icon="fa-files-o"
 				showTitle="true">
 				<item name="envelopeItem" title="Envelope"
-					action="save,action-partner-method-show-envelope" readonlyIf="id == null" />
+					action="save,action-partner-method-show-envelope" readonlyIf="!id" />
 				<item name="customerSituationItem" title="Customer Situation"
 					action="save,action-partner-method-show-client-situation"
-					readonlyIf="id == null" showIf="isCustomer == true" if-module="axelor-account" />
+					readonlyIf="!id" showIf="isCustomer" if-module="axelor-account" />
 			</menu>
 		</menubar>
 		<panel-include view="incl-event-actions-partner-form" />

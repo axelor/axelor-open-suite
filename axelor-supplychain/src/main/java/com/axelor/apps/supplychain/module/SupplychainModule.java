@@ -86,6 +86,8 @@ import com.axelor.apps.supplychain.service.MrpLineService;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
 import com.axelor.apps.supplychain.service.MrpService;
 import com.axelor.apps.supplychain.service.MrpServiceImpl;
+import com.axelor.apps.supplychain.service.PartnerSupplychainLinkService;
+import com.axelor.apps.supplychain.service.PartnerSupplychainLinkServiceImpl;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
 import com.axelor.apps.supplychain.service.ProjectedStockService;
@@ -223,5 +225,6 @@ public class SupplychainModule extends AxelorModule {
     bind(PurchaseOrderSupplychainService.class).to(PurchaseOrderServiceSupplychainImpl.class);
     bind(SaleOrderSupplychainService.class).to(SaleOrderServiceSupplychainImpl.class);
     bind(StockMoveServiceSupplychain.class).to(StockMoveServiceSupplychainImpl.class);
+    bind(PartnerSupplychainLinkService.class).to(PartnerSupplychainLinkServiceImpl.class);
   }
 }
