@@ -12,6 +12,7 @@
 - AdvancedExport : Fix the bug of records are exported twice.
 - INVOICE : corrected the possibility to add a payment when the amount remaining is inferior or equal to 0.
 - Invoice : Fix multiple invoices not ventilating when generated from sale order with advance payment 
+- STOCK MOVE : Fix filterOnAvailableProducts which doesn't work.
 
 ## [5.2.12] - 2020-06-19
 ## Improvements

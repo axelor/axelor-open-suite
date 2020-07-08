@@ -1153,8 +1153,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     if (stockMoveLine.getProductModel() != null) {
       domain += " AND self.parentProduct.id = " + stockMoveLine.getProductModel().getId();
     }
-    if (stockMoveLine.getFilterOnAvailableProducts()
-        && stockMove.getFromStockLocation().getTypeSelect() != 3) {
+    if (stockMove.getFromStockLocation().getTypeSelect() != 3) {
       domain +=
           " AND self.id in (select sll.product.id from StockLocation sl inner join sl.stockLocationLineList sll WHERE sl.id = "
               + stockMove.getFromStockLocation().getId()
