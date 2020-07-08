@@ -142,6 +142,10 @@
 	<action-method name="action-supplychain-stock-move-method-generate-concat-suppl-invoice-check-fields">
 		<call class="com.axelor.apps.supplychain.web.StockMoveInvoiceController" method="generateInvoiceConcatInStockMoveCheckMissingFields"/>
 	</action-method>
+
+	<action-method name="action-stock-move-supplychain-method-set-invoiced-partner-domain">
+		<call class="com.axelor.apps.supplychain.web.StockMoveController" method="setInvoicedPartnerDomain"/>
+	</action-method>
 	
 	<action-validate name="action-validate-supplychain-outgoing-stock-move-check-selection">
 		<error message="You have to choose at least one outgoing stock move" if="customerStockMoveToInvoice == null || customerStockMoveToInvoice.size() == 0"/>

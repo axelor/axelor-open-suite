@@ -234,4 +234,12 @@
 		<call class="com.axelor.apps.supplychain.web.TimetableController" method="applyTemplate"/>
 	</action-method>
 
+	<action-method name="action-sale-order-supplychain-method-set-invoiced-partner-domain">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="setInvoicedPartnerDomain"/>
+	</action-method>
+
+	<action-method name="action-sale-order-supplychain-method-set-delivered-partner-domain">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="setDeliveredPartnerDomain"/>
+	</action-method>
+
 </object-views>

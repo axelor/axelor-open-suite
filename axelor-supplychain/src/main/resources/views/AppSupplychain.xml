@@ -38,6 +38,7 @@
 			<field name="isVerifyProductStock" widget="boolean-switch" colSpan="4"/>
 
 			<field name="validStepForInvOutSM" showIf="generateInvoiceFromStockMove" widget="boolean-switch" colSpan="4" />
+			<field name="activatePartnerRelations" widget="boolean-switch" colSpan="4" />
 
 		</panel>
 		<panel name="intercoPanel" title="Interco">

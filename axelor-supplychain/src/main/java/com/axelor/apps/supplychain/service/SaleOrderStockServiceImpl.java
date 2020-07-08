@@ -42,6 +42,7 @@ import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.db.repo.SupplyChainConfigRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -71,6 +72,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   protected StockMoveLineRepository stockMoveLineRepository;
   protected AppBaseService appBaseService;
   protected SaleOrderRepository saleOrderRepository;
+  protected AppSupplychainService appSupplychainService;
 
   @Inject
   public SaleOrderStockServiceImpl(
@@ -82,7 +84,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       StockMoveLineServiceSupplychain stockMoveLineSupplychainService,
       StockMoveLineRepository stockMoveLineRepository,
       AppBaseService appBaseService,
-      SaleOrderRepository saleOrderRepository) {
+      SaleOrderRepository saleOrderRepository,
+      AppSupplychainService appSupplychainService) {
 
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
@@ -93,6 +96,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.appBaseService = appBaseService;
     this.saleOrderRepository = saleOrderRepository;
+    this.appSupplychainService = appSupplychainService;
   }
 
   @Override
@@ -254,12 +258,14 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
         stockConfigService.getCustomerVirtualStockLocation(
             stockConfigService.getStockConfig(company));
 
+    Partner partner = computePartnerToUseForStockMove(saleOrder);
+
     StockMove stockMove =
         stockMoveService.createStockMove(
             null,
             saleOrder.getDeliveryAddress(),
             company,
-            saleOrder.getClientPartner(),
+            partner,
             saleOrder.getStockLocation(),
             toStockLocation,
             null,
@@ -281,8 +287,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     stockMove.setSpecificPackage(saleOrder.getSpecificPackage());
     stockMove.setNote(saleOrder.getDeliveryComments());
     stockMove.setPickingOrderComments(saleOrder.getPickingOrderComments());
-    stockMove.setGroupProductsOnPrintings(
-        saleOrder.getClientPartner().getGroupProductsOnPrintings());
+    stockMove.setGroupProductsOnPrintings(partner.getGroupProductsOnPrintings());
+    stockMove.setInvoicedPartner(saleOrder.getInvoicedPartner());
     if (stockMove.getPartner() != null) {
       setDefaultAutoMailSettings(stockMove);
     }
@@ -493,12 +499,26 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     return deliveryState;
   }
 
+  @Override
   public Optional<SaleOrder> findSaleOrder(StockMove stockMove) {
     if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())
         && stockMove.getOriginId() != null) {
       return Optional.ofNullable(saleOrderRepository.find(stockMove.getOriginId()));
     } else {
       return Optional.empty();
+    }
+  }
+
+  /**
+   * Use delivered partner if the configuration is set in generated stock move, else the default is
+   * client partner.
+   */
+  protected Partner computePartnerToUseForStockMove(SaleOrder saleOrder) {
+    if (appSupplychainService.getAppSupplychain().getActivatePartnerRelations()
+        && saleOrder.getDeliveredPartner() != null) {
+      return saleOrder.getDeliveredPartner();
+    } else {
+      return saleOrder.getClientPartner();
     }
   }
 }

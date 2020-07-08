@@ -37,7 +37,8 @@
 		width="large" extension="true">
 		<extend target="panel[@name='partnerDetailsPanel']">
 			<insert position="after">
-				<panel colSpan="12" itemSpan="6" name="partnerSupplyChainLinkListPanel" showIf="isProspect || isCustomer">
+				<panel colSpan="12" itemSpan="6" name="partnerSupplyChainLinkListPanel" showIf="isProspect || isCustomer"
+				if="__config__.app.getApp('supplychain')?.activatePartnerRelations">
 					<panel-related field="partner1SupplychainLinkList"
 						grid-view="partner-supplychain-link-partner-1-grid" form-view="partner-supplychain-link-form"
 						colSpan="6"/>

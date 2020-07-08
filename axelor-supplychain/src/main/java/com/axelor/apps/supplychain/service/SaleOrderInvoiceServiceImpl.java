@@ -586,6 +586,11 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
           saleOrder.getSaleOrderSeq());
     }
 
+    // do not use invoiced partner if the option is disabled
+    if (!appSupplychainService.getAppSupplychain().getActivatePartnerRelations()) {
+      saleOrder.setInvoicedPartner(null);
+    }
+
     return new InvoiceGeneratorSupplyChain(saleOrder, isRefund) {
       @Override
       public Invoice generate() throws AxelorException {

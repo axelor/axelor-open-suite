@@ -39,6 +39,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
@@ -73,6 +74,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   private StockMoveLineRepository stockMoveLineRepository;
   private InvoiceLineRepository invoiceLineRepository;
   private SupplyChainConfigService supplyChainConfigService;
+  private AppSupplychainService appSupplychainService;
 
   @Inject
   public StockMoveInvoiceServiceImpl(
@@ -84,7 +86,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       PurchaseOrderRepository purchaseOrderRepo,
       StockMoveLineRepository stockMoveLineRepository,
       InvoiceLineRepository invoiceLineRepository,
-      SupplyChainConfigService supplyChainConfigService) {
+      SupplyChainConfigService supplyChainConfigService,
+      AppSupplychainService appSupplychainService) {
     this.saleOrderInvoiceService = saleOrderInvoiceService;
     this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
     this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
@@ -94,6 +97,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.invoiceLineRepository = invoiceLineRepository;
     this.supplyChainConfigService = supplyChainConfigService;
+    this.appSupplychainService = appSupplychainService;
   }
 
   @Override
@@ -299,6 +303,10 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       } else {
         return null;
       }
+    }
+    // do not use invoiced partner if the option is disabled
+    if (!appSupplychainService.getAppSupplychain().getActivatePartnerRelations()) {
+      stockMove.setInvoicedPartner(null);
     }
 
     InvoiceGenerator invoiceGenerator =

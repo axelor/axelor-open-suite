@@ -37,6 +37,9 @@
       <boolean name="isIspmRequired" title="Is ISPM 15 required"/>
 
         <boolean name="directOrderLocation" title="Direct order"/>
+
+      <many-to-one name="invoicedPartner" title="Invoiced partner" ref="com.axelor.apps.base.db.Partner"/>
+      <many-to-one name="deliveredPartner" title="Delivery partner" ref="com.axelor.apps.base.db.Partner"/>
         <extra-code>
             <![CDATA[
                 // INVOICE

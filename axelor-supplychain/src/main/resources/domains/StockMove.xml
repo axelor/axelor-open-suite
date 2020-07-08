@@ -22,6 +22,8 @@
     <date name="invoiceBlockedToDate" title="Blocked until"/>
     <many-to-one name="invoiceBlockedByUser" readonly="true" title="Blocked by" ref="com.axelor.auth.db.User"/>
 
+    <many-to-one name="invoicedPartner" title="Invoiced partner" ref="com.axelor.apps.base.db.Partner"/>
+
     <finder-method name="findAllBySaleOrderAndStatus" using="originTypeSelect,originId,statusSelect" all="true"/>
 
     <extra-code>

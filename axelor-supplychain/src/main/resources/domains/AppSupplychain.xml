@@ -52,8 +52,9 @@
 	    <boolean name="isSaleOrderWithoutOutgoingStockMove" title="Sale order without outgoing stock move"/>
     	<boolean name="isPurchaseOrderWithoutIncomingStockMove" title="Purchase order without incoming stock move"/>
     	<boolean name="manageAdvancePaymentsFromPaymentConditions" title="Manage advance payments from payment conditions" default="false"/>
-    
-    <track>
+		<boolean name="activatePartnerRelations" title="Activate partner delegations"/>
+
+		<track>
     	<field name="custStockMoveMgtOnSO" on="UPDATE"/>
     	<field name="customerStockMoveGenerationAuto" on="UPDATE"/>
     	<field name="supplStockMoveMgtOnPO" on="UPDATE"/>
