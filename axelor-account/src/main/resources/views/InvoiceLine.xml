@@ -96,7 +96,7 @@
 				<field name="companyExTaxTotal" title="Total W.T." colSpan="6" if="__config__.app.getApp('budget').getManageMultiBudget()" readonly="true" hidden="false">
 					<viewer depends="companyExTaxTotal,$currencySymbol">
 						<![CDATA[
-							<dd>{{record.companyExTaxTotal}} {{record.$currencySymbol}}</dd>
+							<dd>{{$fmt('companyExTaxTotal') | currency: record.$currencySymbol}}</dd>
 						]]>
 					</viewer>
 				</field>

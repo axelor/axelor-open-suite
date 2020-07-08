@@ -209,7 +209,7 @@
                 </dl>
             </div>
             <div class="card-footer">
-                <i class='fa fa-clock-o'></i> <span>{{record.expectedCloseDate|date:'dd/MM/yyyy'}}</span>
+                <i class='fa fa-clock-o'></i> <span>{{$fmt('expectedCloseDate')}}</span>
             </div>
 						<div class="card-summary popover">
 							<p style="margin:2px;">

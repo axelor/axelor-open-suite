@@ -434,7 +434,7 @@
 		&lt;h4&gt;{{fullName}}&lt;/h4&gt;
 		&lt;div class="card-body"&gt;{{description}}&lt;/div&gt;
 		&lt;div class="card-footer"&gt;
-		  &lt;i class='fa fa-clock-o'&gt;&lt;/i&gt; &lt;span&gt;{{dueDate|date:'dd/MM/yyyy'}}&lt;/span&gt;
+		  &lt;i class='fa fa-clock-o'&gt;&lt;/i&gt; &lt;span&gt;{{$fmt('dueDate')}}&lt;/span&gt;
 		&lt;/div&gt;
 		</template>
 	</kanban>
@@ -454,7 +454,7 @@
 		&lt;h4&gt;{{fullName}}&lt;/h4&gt;
 		&lt;div class="card-body"&gt;{{description}}&lt;/div&gt;
 		&lt;div class="card-footer"&gt;
-		  &lt;i class='fa fa-clock-o'&gt;&lt;/i&gt; &lt;span&gt;{{dueDate|date:'dd/MM/yyyy'}}&lt;/span&gt;
+		  &lt;i class='fa fa-clock-o'&gt;&lt;/i&gt; &lt;span&gt;{{$fmt('dueDate')}}&lt;/span&gt;
 		&lt;/div&gt;
 		</template>
 	</kanban>

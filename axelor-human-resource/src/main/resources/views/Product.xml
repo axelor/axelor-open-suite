@@ -162,7 +162,7 @@
 				<img ng-show="!picture" src="img/product-default.png" />
 			  </div>
 			  <div class="span8" style="width: 60%;">
-				<span>{{$fmt('salePrice')}} {{saleCurrency.symbol}}<br/>
+				<span>{{$fmt('salePrice') | currency: saleCurrency.symbol}}<br/>
 				{{unit.name}}<br/>
 				{{productFamily.name}}<br/>
 				{{productCategory.name}}</span>

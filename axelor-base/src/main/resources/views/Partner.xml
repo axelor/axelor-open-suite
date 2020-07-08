@@ -213,7 +213,7 @@
                                 	<span x-translate style="display:none">Sale_block</span>
                                 	<span x-translate style="display:none">Purch._block</span>
                                 	<i class="fa fa-caret-right" style="margin: 0 4px;"/>
-                                	{{ item.blockingToDate | date:'dd/MM/yy' }}
+                                	{{ $fmt('item.blockingToDate') }}
                                 </span>
                             </h4>
                         ]]></viewer>
