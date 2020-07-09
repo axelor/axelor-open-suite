@@ -16,6 +16,8 @@ public class PartnerSupplychainLinkServiceImpl implements PartnerSupplychainLink
     partnerIds.add(0L);
 
     if (partner != null && partner.getPartner1SupplychainLinkList() != null) {
+      // add current partner
+      partnerIds.add(partner.getId());
       partnerIds.addAll(
           partner.getPartner1SupplychainLinkList().stream()
               .filter(
