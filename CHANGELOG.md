@@ -9,6 +9,7 @@
 - OPPORTUNITY: Change the data type of bestCase and worstCase fields from string to decimal.
 - INVOICE : generate invoice from timetableList from purchase order.
 - SaleOrder : Change title of numberOfPeriods
+- Hide Start of pack and End of pack type selection when pack feature is disabled
 
 ## Bug Fixes
 - EXTRA HOURS : Fix missing translation
