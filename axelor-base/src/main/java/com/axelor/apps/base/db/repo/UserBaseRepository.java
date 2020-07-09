@@ -32,9 +32,12 @@ public class UserBaseRepository extends UserRepository {
   @Override
   public User save(User user) {
     try {
-      if (user.getId() == null ) {
-        AppSettings appSettings = AppSettings.get();
-        user.setLanguage(appSettings.get("application.locale"));
+      AppSettings appSettings = AppSettings.get();
+      String defaultLanguage = appSettings.get("application.locale");
+      if (user.getId() == null && defaultLanguage != null) {
+    	  if(defaultLanguage.equals("")) {
+    		  user.setLanguage(appSettings.get("application.locale"));
+    	  }
       }
       if (user.getPartner() != null
           && user.getPartner().getEmailAddress() != null
