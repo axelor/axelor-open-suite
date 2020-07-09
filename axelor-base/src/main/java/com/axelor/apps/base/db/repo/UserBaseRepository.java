@@ -35,9 +35,9 @@ public class UserBaseRepository extends UserRepository {
       AppSettings appSettings = AppSettings.get();
       String defaultLanguage = appSettings.get("application.locale");
       if (user.getId() == null && defaultLanguage != null) {
-    	  if(defaultLanguage.equals("")) {
-    		  user.setLanguage(appSettings.get("application.locale"));
-    	  }
+        if (defaultLanguage.equals("")) {
+          user.setLanguage(appSettings.get("application.locale"));
+        }
       }
       if (user.getPartner() != null
           && user.getPartner().getEmailAddress() != null
