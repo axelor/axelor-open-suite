@@ -243,21 +243,6 @@ public class MoveController {
     response.setView(actionViewBuilder.map());
   }
 
-  public void updateInDayBookMode(ActionRequest request, ActionResponse response) {
-
-    Move move = request.getContext().asType(Move.class);
-    move = Beans.get(MoveRepository.class).find(move.getId());
-
-    try {
-      if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
-        Beans.get(MoveService.class).getMoveValidateService().updateInDayBookMode(move);
-        response.setReload(true);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void computeTotals(ActionRequest request, ActionResponse response) {
     Move move = request.getContext().asType(Move.class);
 

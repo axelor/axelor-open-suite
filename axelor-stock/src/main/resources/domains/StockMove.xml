@@ -6,6 +6,8 @@
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
   <entity name="StockMove" lang="java">
+  
+  	<entity-listener class="com.axelor.apps.stock.listeners.StockMoveListener"/>
 
 	<string name="stockMoveSeq" namecolumn="true" title="Ref." readonly="true"/>
     <string name="name" title="Name"/>

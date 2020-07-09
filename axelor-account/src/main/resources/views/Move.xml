@@ -34,7 +34,7 @@
     <form name="move-form" title="Account move" canArchive="false" model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
           onNew="action-account-move-onnew-group"
           onLoad="action-account-move-group-onload" 
-          onSave="action-move-method-check-remove-lines,save,action-move-method-update-in-day-book-mode">
+          onSave="action-move-method-check-remove-lines,save">
 
         <toolbar>
             <button name="printBtn" title="Print Move" icon="fa-print" onClick="save,action-account-move-method-print-move"/>
@@ -281,10 +281,6 @@
 	<!-- ACTION METHOD -->
 	<action-method name="action-move-method-validate">
 		<call class="com.axelor.apps.account.web.MoveController" method="validate"/>
-	</action-method>
-	
-	<action-method name="action-move-method-update-in-day-book-mode">
-		<call class="com.axelor.apps.account.web.MoveController" method="updateInDayBookMode"/>
 	</action-method>
 	
 	<action-method name="action-move-method-check-remove-lines">

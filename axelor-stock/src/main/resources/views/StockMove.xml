@@ -151,7 +151,7 @@
 
 
    <form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove" width="large"
-               onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew" onSave="save,action-stock-move-method-update-stocks">
+               onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew">
 		<toolbar>
 			<button showIf="typeSelect == 2 &amp;&amp; !isReversion" name="refreshProductNetMassBtn" title="Refresh the products net mass" onClick="action-stock-move-method-refresh-net-mass"/>
 		</toolbar>
@@ -1008,10 +1008,6 @@
 	<action-method name="action-method-print-conformity-certificate">
 		<call class="com.axelor.apps.stock.web.StockMoveController" method="printConformityCertificate"/>
 	</action-method>
-
-  <action-method name="action-stock-move-method-update-stocks">
-    <call class="com.axelor.apps.stock.web.StockMoveController" method="updateStocks"/>
-  </action-method>
 
 	<action-record name="action-stock-move-record-freight-carrier" model="com.axelor.apps.stock.db.StockMove">
 		<field name="carrierPartner" expr="eval:freightCarrierMode?.carrierPartner"/>

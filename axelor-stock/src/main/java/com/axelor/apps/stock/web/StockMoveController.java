@@ -532,24 +532,6 @@ public class StockMoveController {
     }
   }
 
-  /**
-   * Called from stock move form view on save. Call {@link
-   * StockMoveService#updateStocks(StockMove)}.
-   *
-   * @param request
-   * @param response
-   */
-  public void updateStocks(ActionRequest request, ActionResponse response) {
-    try {
-      StockMove stockMove = request.getContext().asType(StockMove.class);
-      Beans.get(StockMoveService.class)
-          .updateStocks(Beans.get(StockMoveRepository.class).find(stockMove.getId()));
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void refreshProductNetMass(ActionRequest request, ActionResponse response) {
     try {
       StockMove stockMove = request.getContext().asType(StockMove.class);

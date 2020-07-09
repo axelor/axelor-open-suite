@@ -6,7 +6,7 @@
   <module name="account" package="com.axelor.apps.account.db"/>
   
   <entity sequential="true" name="Move" lang="java">
-  
+  	<entity-listener class="com.axelor.apps.account.listeners.MoveListener"/>
     <many-to-one name="journal" ref="Journal" title="Journal" required="true"/>
     <many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period" readonly="true" required="true"/>
     <date name="date" column="date_val" title="Date"/> <!--  Only used for Manual Misc. Operations -->
