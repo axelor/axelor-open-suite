@@ -14,7 +14,6 @@ public class StockMoveListener {
   @PostUpdate
   private void updateStocks(StockMove stockMove) {
     try {
-      System.out.println("SALUT JUPDATE");
       Beans.get(StockMoveService.class)
           .updateStocks(Beans.get(StockMoveRepository.class).find(stockMove.getId()));
     } catch (Exception e) {
