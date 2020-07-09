@@ -8,6 +8,7 @@
 - OPPORTUNITY: Change the data type of bestCase and worstCase fields from string to decimal.
 - INVOICE : generate invoice from timetableList from purchase order.
 - SaleOrder : Change title of numberOfPeriods
+- SaleOrder : Consider today's date also in invoice sale amount dashboard.
 
 ## Bug Fixes
 - EXTRA HOURS : Fix missing translation
