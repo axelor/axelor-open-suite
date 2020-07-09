@@ -9,6 +9,7 @@
 - OPPORTUNITY: Change the data type of bestCase and worstCase fields from string to decimal.
 - INVOICE : generate invoice from timetableList from purchase order.
 - SaleOrder : Change title of numberOfPeriods
+- BankStatementLine : orderBy modification in AFB 120
 
 ## Bug Fixes
 - EXTRA HOURS : Fix missing translation
