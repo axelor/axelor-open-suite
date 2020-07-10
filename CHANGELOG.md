@@ -25,6 +25,7 @@
 - INVOICE : corrected the possibility to add a payment when the amount remaining is inferior or equal to 0.
 - EMPLOYEE : add first name search in advance search.
 - Invoice : Fix multiple invoices not ventilating when generated from sale order with advance payment
+- TIMESHEET: Fix error message showing when there were no mail templates.
 
 ## [5.3.7] - 2020-06-26
 ## Improvements
@@ -44,7 +45,6 @@
 - INTERBANK CODE: added translation of Reject/Return code.
 - PAYMENT MODE: Fix wrong translation.
 - ACCOUNT: Fix wrong move line grid view.
-- TIMESHEET: Fix error message showing when there were no mail templates.
 - SALE ORDER: Set duration when created from opportunity.
 - Advance import: Fix multiple search on same field.
 - Bill of Material: Replace NPE by an explicit message to the user when product unit is not configured.
