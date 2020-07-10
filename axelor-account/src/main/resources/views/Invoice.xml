@@ -697,7 +697,7 @@ InvoiceSet.length > 0))"
                         <font x-translate ng-if="record.typeSelect == 4">Inv. on</font>
                         <font x-translate ng-if="record.typeSelect == 5">Other on</font>
                         <font x-translate ng-if="record.typeSelect == 6">Imputed on</font>
-                        <font> {{$fmt('record.paymentDate')}}</font>
+                        <font> {{$fmt('paymentDate')}}</font>
                         <dd>-{{$fmt('amount') | currency: record.currency.symbol}}</dd>
                       </dt>
                    	</dl>
