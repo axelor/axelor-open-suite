@@ -22,6 +22,7 @@
 - Bill of Material: Replace NPE by an explicit message to the user when product unit is not configured.
 - EMPLOYEE: add button for Employee.rptdesign report on form.
 - Employee email address: prevent the selection of existing email addresses.
+- Accounting report : corrected bank reconciliation statement report, now display lines reconcile after date report.
 
 ## [5.2.11] - 2020-05-26
 ## Improvements
