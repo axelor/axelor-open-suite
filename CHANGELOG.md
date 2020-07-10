@@ -49,6 +49,7 @@
 - Advance import: Fix multiple search on same field.
 - Bill of Material: Replace NPE by an explicit message to the user when product unit is not configured.
 - TRANING : Added domain to 'Required training' for not display self record.
+- Accounting report : corrected bank reconciliation statement report, now display lines reconcile after date report.
 
 ## [5.3.6] - 2020-05-26
 ## Improvements
