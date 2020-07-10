@@ -170,6 +170,13 @@ public interface IExceptionMessage {
   static final String MOVE_LINE_7 = /*$$(*/
       "The accounting move line on the account %s can't have an amount equals to zero" /*)*/;
 
+  /** Exchange differences */
+  static final String MOVE_LINE_WITH_EXCHANGE_DIFFERENCE_NOT_CREATED = /*$$(*/
+      "Error generated on creation of a move line with exchange difference" /*)*/;
+
+  static final String EXHANGE_DIFFERENCE_ACCOUNT_NOT_CONFIGURED = /*$$(*/
+      "You must configure exchange difference accounts for the company <b>%s</b>." /*)*/;
+
   /** Move service */
   static final String MOVE_1 = /*$$(*/ "Invoice type missing on invoice %s" /*)*/;
 

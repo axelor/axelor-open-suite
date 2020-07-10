@@ -63,12 +63,14 @@
 						<field name="forecastedInvCustAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
 						<field name="forecastedInvSuppAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
 					</panel>
-
-
 				</panel>
 				<panel name="paymentDifferencesPanel" title="Payment differences" colSpan="12">
 					<field name="thresholdDistanceFromRegulation"/>
 					<field name="cashPositionVariationAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+				</panel>
+				<panel name="exchangeDifferencesPanel" title="Exchanges differences" colSpan="12">
+					<field name="exchangeDifferenceLossAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
+					<field name="exchangeDifferenceGainAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
 				</panel>
 				<panel name="authorizeAutoReconcilePanel" title="Authorize auto reconcile" colSpan="12">
 					<field name="autoReconcileOnInvoice"/>
