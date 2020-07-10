@@ -257,6 +257,11 @@
 	</action-attrs>
 	
 	
+	<search-filters name="bill-of-material-filters" model="com.axelor.apps.production.db.BillOfMaterial" title="Bills of material filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+        <field name="workshopStockLocation" hidden="true" if="!__config__.app.getApp('production').getManageWorkshop()"/>
+        <field name="prodResidualProductList" hidden="true" if="!__config__.app.getApp('production').getManageResidualProductOnBom()"/>
+    </search-filters>
 </object-views>
 
 

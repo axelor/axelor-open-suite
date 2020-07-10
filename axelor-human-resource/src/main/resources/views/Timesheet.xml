@@ -489,5 +489,12 @@
 			(fromGenerationDate != null &amp;&amp; fromGenerationDate > toGenerationDate))" 
 			field="$toGenerationDate" error="Automatic generation dates must be included in the timesheet period"/>
 	</action-condition>
+	
+	<search-filters name="timesheet-filters" model="com.axelor.apps.hr.db.Timesheet" title="Timesheet filters">
+		<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="showEditor" hidden="true" if="!(__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet').getTimesheetEditor())"/>
+		<field name="user.employee.timesheetImputationSelect" hidden="true" if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageBusinessProduction())"/>
+		<field name="timesheetLineList" hidden="true" if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageBusinessProduction())"/>	
+	</search-filters>
 
 </object-views>

@@ -66,4 +66,7 @@
     	<call class="com.axelor.apps.base.web.YearController" method="generatePeriods"/>
     </action-method>
     
+    <search-filters name="year-filters" model="com.axelor.apps.base.db.Year" title="Year filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
 </object-views>

@@ -6,7 +6,6 @@
 	<grid name="forecast-grid" title="Forecasts" model="com.axelor.apps.cash.management.db.Forecast">
 		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="bankDetails"/>
-		<field name="typeSelect"/>
 		<field name="amount" aggregate="sum"/>
 		<field name="estimatedDate"/>
 		<field name="realizedSelect"/>
@@ -17,7 +16,6 @@
 	 	<panel name="mainPanel" >
 			<field name="company" canEdit="false" onChange="action-forecast-record-bank"/>
 	       	<field name="bankDetails" onSelect="action-accounting-batch-attrs-bank-details-domain"/>
-	       	<field name="typeSelect"/>
 	       	<field name="amount"/>
 	       	<field name="estimatedDate"/>
 	       	<field name="forecastReason"/>
@@ -35,4 +33,7 @@
 	 	<field name="bankDetails" expr="eval: company?.defaultBankDetails" if="company?.defaultBankDetails?.active"/>
 	 </action-record>
     
+    <search-filters name="forecast-filters" model="com.axelor.apps.cash.management.db.Forecast" title="Forecast filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
 </object-views>

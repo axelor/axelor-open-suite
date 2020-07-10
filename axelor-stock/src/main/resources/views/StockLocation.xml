@@ -130,5 +130,16 @@
         <attribute name="value" for="$printingType" expr="1"/>
         <attribute name="value" for="$exportTypeSelect" expr="pdf"/>
     </action-attrs>
+    
+    <search-filters name="stock-location-filters" model="com.axelor.apps.stock.db.StockLocation" title="Stock location filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+        <field name="isWorkshop" hidden="true" if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop())"/>
+        <field name="usableOnSaleOrder" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="usableOnPurchaseOrder" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="usableOnProduction" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="directOrderLocation" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="isNotInMrp" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="isNotInCalculStock" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    </search-filters>
 
 </object-views>

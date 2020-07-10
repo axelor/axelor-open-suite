@@ -23,10 +23,14 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -57,17 +61,26 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
 
   protected AppSupplychain appSupplychain;
   protected SaleOrderStockService saleOrderStockService;
-  protected SaleOrderRepository saleOrderRepository;
 
   @Inject
   public SaleOrderServiceSupplychainImpl(
+      SaleOrderLineService saleOrderLineService,
+      AppBaseService appBaseService,
+      SaleOrderLineRepository saleOrderLineRepo,
+      SaleOrderRepository saleOrderRepo,
+      SaleOrderComputeService saleOrderComputeService,
+      SaleOrderMarginService saleOrderMarginService,
       AppSupplychainService appSupplychainService,
-      SaleOrderStockService saleOrderStockService,
-      SaleOrderRepository saleOrderRepository) {
-
+      SaleOrderStockService saleOrderStockService) {
+    super(
+        saleOrderLineService,
+        appBaseService,
+        saleOrderLineRepo,
+        saleOrderRepo,
+        saleOrderComputeService,
+        saleOrderMarginService);
     this.appSupplychain = appSupplychainService.getAppSupplychain();
     this.saleOrderStockService = saleOrderStockService;
-    this.saleOrderRepository = saleOrderRepository;
   }
 
   public SaleOrder getClientInformations(SaleOrder saleOrder) {
@@ -212,6 +225,6 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   @Transactional
   public void updateToConfirmedStatus(SaleOrder saleOrder) {
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
-    saleOrderRepository.save(saleOrder);
+    saleOrderRepo.save(saleOrder);
   }
 }

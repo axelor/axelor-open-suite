@@ -80,13 +80,13 @@
         
         <panel name="productPanel" showIf="lineTypeSelect == 1">
             <field name="productName" colSpan="9"/>
-            <field name="lineTypeSelect" if="__config__.app.getApp('sale')?.enablePackManagement" colSpan="3" onChange="action-stock-move-line-method-empty-line" />
+            <field name="lineTypeSelect" colSpan="3" onChange="action-stock-move-line-method-empty-line" />
             <field name="qty" readonlyIf="lineTypeSelect != 1"/>
             <field name="realQty"/>
         </panel>
         
         <panel name="mainPanel" hideIf="lineTypeSelect == 1" >
-        	<field name="lineTypeSelect" if="__config__.app.getApp('sale')?.enablePackManagement" onChange="action-stock-move-line-method-empty-line" />
+        	<field name="lineTypeSelect" onChange="action-stock-move-line-method-empty-line" />
         	<field name="availableStatus" readonly="true" hidden="true" colSpan="2">
 				<viewer><![CDATA[
 					<h4>
@@ -461,6 +461,8 @@
 	  <attribute name="hidden" for="filterOnAvailableProducts" expr="eval: stockMove?.fromStockLocation?.typeSelect==3 || __parent__?.statusSelect &gt; 1" if="_parent ==null || _parent?._model != 'com.axelor.apps.stock.db.StockMove'"/>
 			<attribute name="hidden" for="companyPurchasePrice" expr="eval: __parent__.typeSelect != 3" if="__parent__"/>
 			<attribute name="hidden" for="companyPurchasePrice" expr="eval: stockMove.typeSelect != 3" if="stockMove"/>
+      
+      <attribute name="selection-in" for="lineTypeSelect" expr="eval: __config__.app.getApp('sale')?.enablePackManagement ? [0,1,2,3] : [0,1]" />
     </action-attrs>
     
 
@@ -624,5 +626,13 @@
 	<action-method name="action-stock-move-line-method-set-available-status">
 		<call class="com.axelor.apps.stock.web.StockMoveLineController" method="setAvailableStatus"/>
 	</action-method>
+	
+	<search-filters name="stock-move-line-filters" model="com.axelor.apps.stock.db.StockMoveLine" title="Stock move line filters">
+        <field name="reservationDateTime" hidden="true" if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation())"/>
+		<field name="reservedQty" hidden="true" if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation())"/>
+		<field name="requestedReservedQty" hidden="true" if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getManageStockReservation())"/>
+		<field name="productModel" hidden="true" if="!__config__.app.getApp('base').getManageProductVariants()"/>
+		<field name="isQtyRequested" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    </search-filters>
 
 </object-views>

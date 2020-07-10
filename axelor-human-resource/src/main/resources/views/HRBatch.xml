@@ -104,4 +104,7 @@
     </action-attrs>
 	
 
+    <search-filters name="hr-batch-filters" model="com.axelor.apps.hr.db.HrBatch" title="HR batch filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
 </object-views>

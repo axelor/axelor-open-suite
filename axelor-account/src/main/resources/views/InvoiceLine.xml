@@ -43,17 +43,19 @@
 	<form name="invoice-line-form" title="Invoice line" model="com.axelor.apps.account.db.InvoiceLine" width="large" readonlyIf="$isReadOnly"
 		  onNew="action-account-invoice-line-onnew-group"
 		  onLoad="action-group-account-invoice-line-onload">
-		<panel name="titlePanel" hideIf="typeSelect != 1">
-			<field name="productName"  title="Title" requiredIf="typeSelect == 1"  colSpan="9"/>
-			<field name="typeSelect" if="__config__.app.getApp('sale')?.enablePackManagement" colSpan="3" onChange="action-invoice-line-method-empty-line" selection-in="[0,1]" />
-            <field name="qty"/>
+		<panel name="titlePanel" hideIf="typeSelect == 0">
+			<field name="productName"  title="Title" requiredIf="typeSelect != 0"  colSpan="9"/>
+			<field name="typeSelect" colSpan="3" onChange="action-invoice-line-method-empty-line" />
+            <field name="qty" colSpan="6" />
+            <field name="isShowTotal" colSpan="3" if="__config__.app.getApp('sale')?.enablePackManagement" showIf="typeSelect == 3"/>
+            <field name="isHideUnitAmounts" colSpan="3" if="__config__.app.getApp('sale')?.enablePackManagement" showIf="typeSelect == 3"/>      
 		</panel>
-		<panel-tabs name="mainPanelTab" hideIf="typeSelect == 1">
+		<panel-tabs name="mainPanelTab" hideIf="typeSelect != 0">
 			<panel name="informationsPanel" title="Information">
 				<field name="product" canEdit="false" onChange="action-group-account-invoice-line-product-onchange" onSelect="action-invoice-line-attrs-set-product-domain-onselect" form-view="product-form" grid-view="product-grid"/>
 				<field name="$isFilterOnSupplier" title="Filter on supplier" type="boolean" widget="boolean-switch"  colSpan="2" if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog()"/>
-				<field name="typeSelect" if="__config__.app.getApp('sale')?.enablePackManagement" colSpan="3" onChange="action-invoice-line-method-empty-line" selection-in="[0,1]"  />
-				<field name="productName" colSpan="12" requiredIf="typeSelect != 1"/>
+				<field name="typeSelect" colSpan="3" onChange="action-invoice-line-method-empty-line" />
+				<field name="productName" colSpan="12" requiredIf="typeSelect == 0 "/>
 				<field name="qty" colSpan="3" required="true" onChange="action-group-account-invoice-line-qty-onchange"/>
 				<field name="unit" colSpan="3" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
 				<field name="price" colSpan="3" required="true" onChange="action-invoice-line-method-onchange-price,action-invoice-line-method-compute,action-invoice-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount"/>
@@ -350,6 +352,8 @@
 		<attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == inTaxPrice" if="__parent__?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; __parent__?.inAti"/>
 		
 		<attribute name="required" for="analyticDistributionTemplate" expr="__parent__?.statusSelect &gt; 1 &amp;&amp; analyticMoveLineList.isEmpty() &amp;&amp; account?.analyticDistributionAuthorized &amp;&amp; account?.analyticDistributionRequiredOnInvoiceLines" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" />
+        
+        <attribute name="selection-in" for="typeSelect" expr="eval: __config__.app.getApp('sale')?.enablePackManagement ? [0,1,2,3] : [0,1]" />
 	</action-attrs>
 
   	<action-attrs name="action-attrs-account-invoice-line-account-onchange">
@@ -365,10 +369,6 @@
 		<field name="project" expr="eval: _parent?.project" if="__config__.app.isApp('business-project')" />
 	</action-record>
 
-	<action-attrs name="action-invoice-line-attrs-compute-total-pack">
-		<attribute name="value" for="totalPack" expr="eval:subLineList.collect{it->it.inTaxTotal}.sum()" if="typeSelect == 2 &amp;&amp; subLineList != null &amp;&amp; (__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
-	</action-attrs>
-
 	<action-view name="action-invoice-line-view-team-tasks" title="Related tasks" model="com.axelor.team.db.TeamTask">
 		<view type="grid" name="team-task-grid"/>
 		<view type="form" name="team-task-form"/>
@@ -380,6 +380,15 @@
 		<field name="invoice.paymentDate" title="Payment date"/>
 		<field name="invoice.company" title="Company"/>
 		<field name="invoice.statusSelect" title="Status select"/>
+		<field name="companyExTaxTotal" hidden="true" if="!(__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget())"/>
+		<field name="budgetDistributionSumAmount" hidden="true" if="!(__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget())"/>
+		<field name="budget" hidden="true" if="!(__config__.app.isApp('budget') &amp; &amp; !__config__.app.getApp('budget').getManageMultiBudget())"/>
+		<field name="budgetDistributionList" hidden="true" if="!(__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget())"/>
+		<field name="project" hidden="true" if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectInvoiceLines())"/>
+		<field name="analyticDistributionTemplate" hidden="true" if="!__config__.app.getApp('account').getManageAnalyticAccounting()"/>
+		<field name="analyticMoveLineList" hidden="true" if="!__config__.app.getApp('account').getManageAnalyticAccounting()"/>	
+		<field name="saleOrderLine" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="purchaseOrderLine" hidden="true" if="!__config__.app.isApp('supplychain')"/>
 	</search-filters>
 
 </object-views>

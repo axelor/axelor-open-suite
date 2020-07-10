@@ -61,6 +61,7 @@
 		title="Internal purchase requests">
 		<view type="grid" name="purchase-request-grid"/>
 		<view type="form" name="purchase-request-form"/>
+		<view-param name="search-filters" value="purchase-request-filters"/>
 	</action-view>
 
 	<!-- Purchase request menus end  -->

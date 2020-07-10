@@ -311,7 +311,7 @@
 
 		<panel-tabs name="mainPanelTab" hideIf="partner == null">
 			<panel name="invoiceContentPanel" title="Content" showTitle="false">
-				<panel-related name="invoiceLineListPanel" field="invoiceLineList" canNew="statusSelect == 1" canRemove="statusSelect == 1" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-grid" onChange="action-invoice-method-compute" canMove="true" orderBy="sequence"  height="30" />
+				<panel-related name="invoiceLineListPanel" field="invoiceLineList" canNew="statusSelect == 1" canRemove="statusSelect == 1" readonlyIf="statusSelect == 3 || partner == null" colSpan="12" form-view="invoice-line-form" grid-view="invoice-line-grid" onChange="action-invoice-group-invoice-line-list-on-change" canMove="true" orderBy="sequence"  height="30" />
 			</panel>
 			<panel name="invoiceTaxPanel" title="Tax" showTitle="false">
 				<panel-related name="invoiceLineTaxListPanel" field="invoiceLineTaxList" colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
@@ -904,6 +904,12 @@ InvoiceSet.length > 0))"
 		<action name="save"/>
 		<action name="action-invoice-view-register-payment"/>
 	</action-group>
+  
+    <action-group name="action-invoice-group-invoice-line-list-on-change">
+        <action name="action-invoice-method-update-product-qty-with-pack-header-qty" if="__config__.app.isApp('supplychain') &amp;&amp; invoiceLineList.find{it->it.typeSelect == 2} != null"/>
+        <action name="action-invoice-method-compute"/>
+        <action name="save" if="invoiceLineList.find{it->it.typeSelect == 2} != null" />
+    </action-group>
 
 	<action-attrs name="action-invoice-attrs-in-ati">
     	<attribute name="hidden" for="invoiceLineList.exTaxTotal" expr="inAti"/>
@@ -1291,7 +1297,8 @@ InvoiceSet.length > 0))"
     	<view-param name="popup" value="reload"/>
 	  	<view-param name="show-toolbar" value="false"/>
 	  	<view-param name="forceEdit" value="true" />
- 	  	<view-param name="show-confirm" value="true"/>
+ 	  	<view-param name="show-confirm" value="false"/>
+ 	  	<view-param name="popup-save" value="false"/>
 	  	<context name="_invoice" expr="eval: __this__"/>
     </action-view>
 
@@ -1341,7 +1348,23 @@ InvoiceSet.length > 0))"
 	</action-view>
 
 	<search-filters name="customer-invoices-filters" model="com.axelor.apps.account.db.Invoice" title="Customer invoices filters">
-	    <field name="address" hidden="true"/>
+		<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="tradingName" hidden="true" if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+		<field name="pfpValidateStatusSelect" hidden="true" if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+	    <field name="pfpValidatorUser" hidden="true" if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+	    <field name="project" hidden="true" if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
+	    <field name="decisionPfpTakenDate" hidden="true" if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+		<field name="company.accountConfig" hidden="true" if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+		<field name="company.accountConfig.isManagePassedForPayment" hidden="true" if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+		<field name="advancePaymentInvoiceSet" hidden="true" if="!__config__.app.getApp('account').getManageAdvancePaymentInvoice()"/>
+		<field name="stockMoveSet" hidden="true" if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove())"/>
+		<field name="reasonOfRefusalToPay" hidden="true" if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+		<field name="company.accountConfig.isManagePFPInRefund" hidden="true" if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+		<field name="interco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="createdByInterco" hidden="true" if="!__config__.app.isApp('supplychain')"/> 
+        <field name="partnerTaxNbr" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="estimatedPaymentDate" hidden="true" if="!__config__.app.isApp('cash-management')"/>  
+		<field name="address" hidden="true"/>
 	    <field name="debitBlockingByUser" title="Debit blocking done by"/>
 	    <field name="debtRecoveryBlockingByUser" title="Debt recovery blocking done by"/>
 	    <field name="debitBlockingReason" title="Debit blocking reason"/>
@@ -1375,7 +1398,23 @@ InvoiceSet.length > 0))"
 	</search-filters>
 
 	<search-filters name="customer-refunds-filters" model="com.axelor.apps.account.db.Invoice" title="Customer refunds filters">
-	    <field name="address" hidden="true"/>
+	    <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+	    <field name="tradingName" hidden="true" if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+	    <field name="pfpValidateStatusSelect" hidden="true" if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+	    <field name="pfpValidatorUser" hidden="true" if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+	    <field name="project" hidden="true" if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
+	    <field name="decisionPfpTakenDate" hidden="true" if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+	    <field name="company.accountConfig" hidden="true" if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+		<field name="company.accountConfig.isManagePassedForPayment" hidden="true" if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+		<field name="advancePaymentInvoiceSet" hidden="true" if="!__config__.app.getApp('account').getManageAdvancePaymentInvoice()"/>
+		<field name="stockMoveSet" hidden="true" if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove())"/>
+		<field name="reasonOfRefusalToPay" hidden="true" if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+		<field name="company.accountConfig.isManagePFPInRefund" hidden="true" if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+		<field name="interco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="createdByInterco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="partnerTaxNbr" hidden="true" if="!__config__.app.isApp('supplychain')"/>    
+		<field name="estimatedPaymentDate" hidden="true" if="!__config__.app.isApp('cash-management')"/>  
+		<field name="address" hidden="true"/>
 	    <field name="debitBlockingByUser" title="Debit blocking done by"/>
 	    <field name="debtRecoveryBlockingByUser" title="Debt recovery blocking done by"/>
 	    <field name="debitBlockingReason" title="Debit blocking reason"/>
@@ -1400,7 +1439,23 @@ InvoiceSet.length > 0))"
 	</search-filters>
 
 	<search-filters name="supplier-invoices-filters" model="com.axelor.apps.account.db.Invoice" title="Supplier invoices filters">
-	    <field name="address" hidden="true"/>
+		<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="tradingName" hidden="true" if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+	    <field name="pfpValidateStatusSelect" hidden="true" if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+	    <field name="pfpValidatorUser" hidden="true" if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+	    <field name="project" hidden="true" if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
+	    <field name="decisionPfpTakenDate" hidden="true" if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+		<field name="company.accountConfig" hidden="true" if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+		<field name="company.accountConfig.isManagePassedForPayment" hidden="true" if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+		<field name="advancePaymentInvoiceSet" hidden="true" if="!__config__.app.getApp('account').getManageAdvancePaymentInvoice()"/>
+        <field name="stockMoveSet" hidden="true" if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove())"/>
+		<field name="reasonOfRefusalToPay" hidden="true" if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+		<field name="company.accountConfig.isManagePFPInRefund" hidden="true" if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+		<field name="interco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="createdByInterco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="partnerTaxNbr" hidden="true" if="!__config__.app.isApp('supplychain')"/>    
+		<field name="estimatedPaymentDate" hidden="true" if="!__config__.app.isApp('cash-management')"/>  
+		<field name="address" hidden="true"/>
 	    <field name="debitBlockingByUser" title="Debit blocking done by"/>
 	    <field name="debtRecoveryBlockingByUser" title="Debt recovery blocking done by"/>
 	    <field name="debitBlockingReason" title="Debit blocking reason"/>
@@ -1428,7 +1483,23 @@ InvoiceSet.length > 0))"
 	</search-filters>
 
 	<search-filters name="supplier-refunds-filters" model="com.axelor.apps.account.db.Invoice" title="Supplier refunds filters">
-	    <field name="address" hidden="true"/>
+		<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="tradingName" hidden="true" if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+	    <field name="pfpValidateStatusSelect" hidden="true" if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+	    <field name="pfpValidatorUser" hidden="true" if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+	    <field name="project" hidden="true" if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
+		<field name="decisionPfpTakenDate" hidden="true" if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+		<field name="company.accountConfig" hidden="true" if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+		<field name="company.accountConfig.isManagePassedForPayment" hidden="true" if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+		<field name="advancePaymentInvoiceSet" hidden="true" if="!__config__.app.getApp('account').getManageAdvancePaymentInvoice()"/>
+		<field name="stockMoveSet" hidden="true" if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove())"/>
+		<field name="reasonOfRefusalToPay" hidden="true" if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+		<field name="company.accountConfig.isManagePFPInRefund" hidden="true" if="!__config__.app.getApp('account').getActivatePassedForPayment()"/>
+		<field name="interco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="createdByInterco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="partnerTaxNbr" hidden="true" if="!__config__.app.isApp('supplychain')"/>    
+		<field name="estimatedPaymentDate" hidden="true" if="!__config__.app.isApp('cash-management')"/>  
+		<field name="address" hidden="true"/>
 	    <field name="debitBlockingByUser" title="Debit blocking done by"/>
 	    <field name="debtRecoveryBlockingByUser" title="Debt recovery blocking done by"/>
 	    <field name="debitBlockingReason" title="Debit blocking reason"/>

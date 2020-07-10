@@ -51,7 +51,7 @@
 
 	<selection name='product.product.type.select'>
 		<option value='service'>Service</option>
-		<option value='storable'>Product</option>
+		<option value='storable'>ProductType.product</option>
 	</selection>
 
 	<selection name='product.procurement.method.select'>
@@ -495,6 +495,8 @@
     <selection name="line.type.select">
         <option value="0">Standard</option>
         <option value="1">Title</option>
+        <option value="2">Start of pack</option>
+        <option value="3">End of pack</option>
     </selection>
     
     <selection name='trace.back.origin.select' id="trace.back.origin.select.base" >

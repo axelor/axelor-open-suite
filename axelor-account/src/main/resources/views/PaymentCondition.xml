@@ -24,4 +24,8 @@
         </panel>
     </form>
     
+    <search-filters name="payment-condition-filters" model="com.axelor.apps.account.db.PaymentCondition" title="Payment condition filters">
+    	<field name="advancePaymentNeeded" hidden="true" if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions)"/>
+    </search-filters>
+    
 </object-views>

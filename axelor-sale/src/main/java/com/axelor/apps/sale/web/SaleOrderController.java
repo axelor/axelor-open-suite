@@ -38,8 +38,10 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.PackRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
@@ -516,6 +518,7 @@ public class SaleOrderController {
                 .model(SaleOrder.class.getName())
                 .add("grid", "sale-order-grid")
                 .add("form", "sale-order-form")
+                .param("search-filters", "sale-order-filters")
                 .param("forceEdit", "true")
                 .context("_showRecord", String.valueOf(saleOrder.getId()))
                 .map());
@@ -740,5 +743,16 @@ public class SaleOrderController {
       response.setError(e.getMessage());
     }
     response.setAttr("clientPartner", "domain", domain);
+  }
+
+  public void updateProductQtyWithPackHeaderQty(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    if (Boolean.FALSE.equals(Beans.get(AppSaleService.class).getAppSale().getEnablePackManagement())
+        || !Beans.get(SaleOrderLineService.class)
+            .isStartOfPackTypeLineQtyChanged(saleOrder.getSaleOrderLineList())) {
+      return;
+    }
+    Beans.get(SaleOrderService.class).updateProductQtyWithPackHeaderQty(saleOrder);
+    response.setReload(true);
   }
 }

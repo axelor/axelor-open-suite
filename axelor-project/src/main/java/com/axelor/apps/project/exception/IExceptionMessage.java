@@ -28,10 +28,6 @@ public interface IExceptionMessage {
       "You have no projects or tasks bound to you, your planning can't be generated." /*)*/;
   static final String PROJECT_PLANNING_NO_TASK_TEAM = /*$$(*/
       "Your team has no projects or tasks bound to it, the planning can't be generated." /*)*/;
-  static final String PROJECT_CUSTOMER_PARTNER = /*$$(*/
-      "The selected project/task doesn't contain any customers" /*)*/;
-  static final String PROJECT_DEEP_LIMIT_REACH = /*$$(*/
-      "The deep limit of the project is too high" /*)*/;
   static final String PROJECT_NO_ACTIVE_TEAM = /*$$(*/
       "You have no active team, the planning can't be generated" /*)*/;
   static final String PROJECT_NO_TEAM = /*$$(*/ "You have selected no team for this project" /*)*/;

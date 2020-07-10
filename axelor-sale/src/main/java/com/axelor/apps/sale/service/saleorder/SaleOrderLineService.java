@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -28,6 +29,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 public interface SaleOrderLineService {
@@ -145,4 +147,62 @@ public interface SaleOrderLineService {
       BigDecimal packQty,
       BigDecimal ConversionRate,
       Integer sequence);
+
+  /**
+   * To create non standard SaleOrderLine from Pack
+   *
+   * @param pack
+   * @param saleOrder
+   * @param packQty
+   * @param saleOrderLineList
+   * @param sequence
+   * @return
+   */
+  public List<SaleOrderLine> createNonStandardSOLineFromPack(
+      Pack pack,
+      SaleOrder saleOrder,
+      BigDecimal packQty,
+      List<SaleOrderLine> saleOrderLineList,
+      Integer sequence);
+
+  /**
+   * To create Start of pack type line and End of pack type line from the pack.
+   *
+   * @param pack
+   * @param saleOrder
+   * @param packQty
+   * @param typeSelect
+   * @param sequence
+   * @return
+   */
+  public SaleOrderLine createStartOfPackAndEndOfPackTypeLineFromPack(
+      Pack pack, SaleOrder saleOrder, BigDecimal packQty, Integer typeSelect, Integer sequence);
+
+  /**
+   * To check that saleOrderLineList has "End of pack" type line.
+   *
+   * @param saleOrderLineList
+   * @return
+   */
+  public boolean hasEndOfPackTypeLine(List<SaleOrderLine> saleOrderLineList);
+
+  /**
+   * Update product qty
+   *
+   * @param saleOrderLine
+   * @param saleOrder
+   * @param oldQty
+   * @param newQty
+   * @return
+   */
+  public void updateProductQty(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder, BigDecimal oldQty, BigDecimal newQty);
+
+  /**
+   * To check that Start of pack type line quantity changed or not
+   *
+   * @param saleOrderLineList
+   * @return
+   */
+  public boolean isStartOfPackTypeLineQtyChanged(List<SaleOrderLine> saleOrderLineList);
 }
