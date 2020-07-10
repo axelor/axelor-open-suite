@@ -26,24 +26,24 @@
 			<field name="journalType" grid-view="journal-type-grid" form-view="journal-type-form"/>
 		</panel>
 		<panel name="totalPanel" showIf="id">
-			<field name="$totalDebit" title="Total Debit" colSpan="4" readonly="true">
+			<field name="$totalDebit" title="Total Debit" type="decimal" colSpan="4" readonly="true">
 				<viewer>
 					<![CDATA[
-						<h3>{{record.$totalDebit}}</h3>
+						<h3>{{$fmt('$totalDebit')}}</h3>
 					]]>
 				</viewer>
 			</field>
-			<field name="$totalCredit" title="Total Credit" colSpan="4" readonly="true">
+			<field name="$totalCredit" title="Total Credit" type="decimal" colSpan="4" readonly="true">
 				<viewer>
 					<![CDATA[
-						<h3>{{record.$totalCredit}}</h3>
+						<h3>{{$fmt('$totalCredit')}}</h3>
 					]]>
 				</viewer>
 			</field>
-			<field name="$balance" title="Balance" colSpan="4" readonly="true">
+			<field name="$balance" title="Balance" type="decimal" colSpan="4" readonly="true">
 				<viewer>
 					<![CDATA[
-						<h3>{{record.$totalDebit >= record.$totalCredit ? record.$totalDebit - record.$totalCredit : record.$totalCredit - record.$totalDebit}}</h3>
+						<h3>{{record.$totalDebit >= record.$totalCredit ? $fmt('$totalDebit - $totalCredit') : $fmt('$totalCredit - $totalDebit')}}</h3>
 					]]>
 				</viewer>
 			</field>

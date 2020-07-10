@@ -594,7 +594,7 @@
                 <img ng-show="!picture && partnerTypeSelect == 2 && (titleSelect > 2 || !titleSelect)" src="img/partner-default.png" />
 			  </div>
 			  <div class="span8">
-			  	{{registrationCode}}
+			  	{{$fmt('registrationCode')}}
 			  	<address>
 			  	{{mainAddress.fullName}}
 			  	</address>
@@ -867,7 +867,9 @@
     </action-record>
 	
 	<action-record name="action-partner-record-set-positive-balance" model="com.axelor.apps.base.db.Partner">
-		<field name="$positiveBalanceBtn" expr="eval: $balance &lt; 0 ? $balance * -1 : $balance" if="$balance != null"/>
+		<field name="$positiveBalanceBtn" expr="eval: $balance &lt; 0 ?
+		java.text.NumberFormat.getInstance(new Locale(__user__.language)).format($balance * -1) :
+		java.text.NumberFormat.getInstance(new Locale(__user__.language)).format($balance)" if="$balance != null"/>
 		<field name="$positiveBalanceBtn" expr="eval: 0" if="$balance == null"/>
 	</action-record>
 

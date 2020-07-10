@@ -99,21 +99,21 @@
 		                    <![CDATA[
 		                    <dl class="dl-horizontal">
 		                        <dt x-translate>Total W.T.</dt>
-		                        <dd>{{record.exTaxTotal}}</dd>
+		                        <dd>{{$fmt('exTaxTotal')}}</dd>
 		                        <dt x-translate>Total tax</dt>
-		                        <dd>{{record.taxTotal}}</dd>
+		                        <dd>{{$fmt('taxTotal')}}</dd>
 		                        <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
-		                        <dd class="order-subtotal-total">{{record.inTaxTotal}}</dd>
+		                        <dd class="order-subtotal-total">{{$fmt('inTaxTotal')}}</dd>
 		                        <dt ng-show="record.personalExpenseAmount != 0" x-translate>Personal expense</dt>
-		                        <dd ng-show="record.personalExpenseAmount != 0"> -{{record.personalExpenseAmount | number:2}}</dd>
+		                        <dd ng-show="record.personalExpenseAmount != 0"> -{{$fmt('personalExpenseAmount')}}</dd>
 		                        <dt ng-show="record.withdrawnCash != 0" x-translate>Withdrawn cash</dt>
-		                        <dd ng-show="record.withdrawnCash != 0">-{{record.withdrawnCash | number:2}}</dd>
+		                        <dd ng-show="record.withdrawnCash != 0">-{{$fmt('withdrawnCash')}}</dd>
 		                        <dt ng-show="record.advanceAmount != 0" x-translate>Advance</dt>
-		                        <dd ng-show="record.advanceAmount != 0">-{{record.advanceAmount | number:2}}</dd>
+		                        <dd ng-show="record.advanceAmount != 0">-{{$fmt('advanceAmount')}}</dd>
 		                        <dt ng-show="(record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0) &amp;&amp; (record.paymentStatusSelect == 1 || record.paymentStatusSelect == 3)"  ng-style="{'color' : 'blue'}" x-translate>Payment</dt>
-		                        <dd ng-show="(record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0) &amp;&amp; (record.paymentStatusSelect == 1 || record.paymentStatusSelect == 3)"  ng-style="{'color' : 'blue'}">-{{record.paymentAmount  | number:2}}</dd>
+		                        <dd ng-show="(record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0) &amp;&amp; (record.paymentStatusSelect == 1 || record.paymentStatusSelect == 3)"  ng-style="{'color' : 'blue'}">-{{$fmt('paymentAmount')}}</dd>
 		                        <dt class="order-subtotal-total" x-translate>TotalToRefund</dt>
-		                        <dd class="order-subtotal-total">{{record.inTaxTotal - record.advanceAmount - record.withdrawnCash - record.personalExpenseAmount - record.paymentAmount | number:2}}</dd>
+		                        <dd class="order-subtotal-total">{{$fmt('inTaxTotal - advanceAmount - withdrawnCash - personalExpenseAmount - paymentAmount')}}</dd>
 		                    </dl>
 		                    ]]>
 		                </viewer>

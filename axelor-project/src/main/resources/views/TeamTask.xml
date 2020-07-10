@@ -112,12 +112,12 @@
 			<panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')" if-module="axelor-human-resource">
 				<field name="totalPlannedHrs" readonly="true" colSpan="4">
 				<viewer><![CDATA[
-                   	<span>{{record.totalPlannedHrs}} </span><span x-translate>hours</span>
+                   	<span>{{$fmt('totalPlannedHrs')}} </span><span x-translate>hours</span>
        			]]></viewer>
 				</field>
 				<field name="budgetedTime" colSpan="4">
 				<viewer><![CDATA[
-                   	<span>{{record.budgetedTime}} </span><span x-translate>hours</span>
+                   	<span>{{$fmt('budgetedTime')}} </span><span x-translate>hours</span>
        			]]></viewer>
 				</field>
 				<spacer name="budgetedTimeSpacer" colSpan="4" />
@@ -182,7 +182,7 @@
 			<panel name="timeSpentPanel" title="Time Spent" if-module="axelor-human-resource" if="__config__.app.isApp('timesheet')">
 				<field name="totalRealHrs" readonly="true" colSpan="4">
 				<viewer><![CDATA[
-                   	<span>{{record.totalRealHrs}} </span><span x-translate>hours</span>
+                   	<span>{{$fmt('totalRealHrs')}} </span><span x-translate>hours</span>
        			]]></viewer>
 				</field>
 				<panel-dashlet name="validatedTimesheetLinesPanel" action="action-teamtask-dashlet-validated-timeshet-lines" title="Validated Timesheet lines" colSpan="12" canSearch="true"/>
