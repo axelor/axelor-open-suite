@@ -45,20 +45,16 @@ public class MetaJsonModelRepo extends MetaJsonModelRepository {
     if (jsonModel.getIsGenerateMenu()) {
       MenuBuilder menuBuilder = jsonModel.getMenuBuilder();
       if (menuBuilder != null) {
-        if (menuBuilder.getVersion() == 0) {
-          menuBuilder =
-              Beans.get(MenuBuilderService.class)
-                  .updateMenuBuilder(
-                      menuBuilder,
-                      jsonModel.getName(),
-                      jsonModel.getName().toLowerCase(),
-                      jsonModel.getAppBuilder(),
-                      MetaJsonRecord.class.getName(),
-                      true,
-                      null);
-        } else {
-          Beans.get(MenuBuilderRepository.class).save(menuBuilder);
-        }
+        menuBuilder =
+            Beans.get(MenuBuilderService.class)
+                .updateMenuBuilder(
+                    menuBuilder,
+                    jsonModel.getName(),
+                    jsonModel.getName().toLowerCase(),
+                    jsonModel.getAppBuilder(),
+                    MetaJsonRecord.class.getName(),
+                    true,
+                    null);
       }
     }
     return jsonModel;
