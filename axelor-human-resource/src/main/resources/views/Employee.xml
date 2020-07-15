@@ -532,5 +532,6 @@
         <field name="mainEmploymentContract.executiveStatusSelect"
             title="Main employment contract status"/>
         <field name="socialSecurityNumber" title="Social security number" hidden="true"/>
+        <field name="contactPartner.firstName" title="First name"/>
     </search-filters>
 </object-views>

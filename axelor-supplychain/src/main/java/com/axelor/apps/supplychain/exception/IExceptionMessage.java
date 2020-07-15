@@ -261,4 +261,10 @@ public interface IExceptionMessage {
       "Partial invoicing of outgoing stock move with tracking number activated is not supported." /*)*/;
 
   String STOCK_MOVE_NO_LINES_TO_INVOICE = /*$$(*/ "Please fill a quantity to invoice." /*)*/;
+
+  public static final String TIMETABLE_PURCHASE_OREDR_NOT_VALIDATED = /*$$(*/
+      "Please validate the purchase order before invoicing." /*)*/;
+
+  static final String PO_INVOICE_QTY_MAX = /*$$(*/
+      "The quantity to invoice is greater than the quantity in the purchase order" /*)*/;
 }
