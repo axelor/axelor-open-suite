@@ -24,7 +24,6 @@
 - INVOICE : Added the possibility to add a watermark to the printings
 - DEBT RECOVERY HISTORY : add payment reminder report to debt recovery history
 
-
 ## Improvements
 - USER : Default User language is based on application.locale from application.properties
 - BASE : Cache memory performace improved by not stocking geographical entities anymore
