@@ -10,6 +10,7 @@
 - INVOICE : generate invoice from timetableList from purchase order.
 - SaleOrder : Change title of numberOfPeriods
 - Hide Start of pack and End of pack type selection when pack feature is disabled
+- BankStatementLine : orderBy modification in AFB 120
 
 ## Bug Fixes
 - EXTRA HOURS : Fix missing translation
