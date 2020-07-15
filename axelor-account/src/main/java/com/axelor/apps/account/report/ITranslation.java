@@ -558,4 +558,29 @@ public interface ITranslation {
   public static final String INVOICE_PAYMENT_AMOUNT = /*$$(*/ "InvoicePayment.amount"; /*)*/
   public static final String INVOICE_REPORT_HEAD_OFFICE_ADDR = /*$$(*/
       "Invoice.headOfficeAddress"; /*)*/
+
+  public static final String PAYMENT_REMINDER_PAYMENT_REMINDER =
+      /*$$(*/ "PaymentReminder.payment_reminder"; /*)*/
+  public static final String PAYMENT_REMINDER_REFERENCE_DATE =
+      /*$$(*/ "PaymentReminder.reference_date"; /*)*/
+  public static final String PAYMENT_REMINDER_LAST_REMINDER_DATE =
+      /*$$(*/ "PaymentReminder.last_reminder_date"; /*)*/
+  public static final String PAYMENT_REMINDER_CURRENCY_CODE =
+      /*$$(*/ "PaymentReminder.currency_code"; /*)*/
+  public static final String PAYMENT_REMINDER_IDENTIFICATION_CODE =
+      /*$$(*/ "PaymentReminder.identification_code"; /*)*/
+  public static final String PAYMENT_REMINDER_DATE = /*$$(*/ "PaymentReminder.date"; /*)*/
+  public static final String PAYMENT_REMINDER_LATE_PAYMMENT_DAYS =
+      /*$$(*/ "PaymentReminder.late_payment_days"; /*)*/
+  public static final String PAYMENT_REMINDER_AMOUNT = /*$$(*/ "PaymentReminder.amount_incl"; /*)*/
+  public static final String PAYMENT_REMINDER_AMOUNT_PAID =
+      /*$$(*/ "PaymentReminder.amount_paid"; /*)*/
+  public static final String PAYMENT_REMINDER_TO_PAY = /*$$(*/ "PaymentReminder.to_pay"; /*)*/
+  public static final String PAYMENT_REMINDER_TOTAL_AMOUNT =
+      /*$$(*/ "PaymentReminder.total_amount_incl"; /*)*/
+  public static final String PAYMENT_REMINDER_TOTAL_AMOUNT_PAID =
+      /*$$(*/ "PaymentReminder.total_amount_paid"; /*)*/
+  public static final String PAYMENT_REMINDER_TOTAL_TO_PAY =
+      /*$$(*/ "PaymentReminder.total_to_pay"; /*)*/
+
 }
