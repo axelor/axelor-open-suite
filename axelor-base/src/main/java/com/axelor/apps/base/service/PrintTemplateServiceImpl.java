@@ -268,7 +268,8 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
     }
 
     for (BirtTemplate birtTemplate : printTemplate.getBirtTemplateSet()) {
-      metaFiles.add(templateMessageService.createMetaFileUsingBirtTemplate(maker, birtTemplate));
+      metaFiles.add(
+          templateMessageService.createMetaFileUsingBirtTemplate(maker, birtTemplate, null, null));
     }
 
     LOG.debug("MetaFile to attach: {}", metaFiles);
