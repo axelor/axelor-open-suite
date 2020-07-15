@@ -1,4 +1,29 @@
 # Changelog
+## [5.3.8] - 2020-07-15
+## Improvements
+- ACCOUNT SITUATION: update account situation on invoice payment cancel and improve moveLine calculation.
+- OPPORTUNITY: Change the data type of bestCase and worstCase fields from string to decimal.
+- INVOICE: generate invoice from timetable list from purchase order.
+- SaleOrder: Change title of numberOfPeriods.
+- BankStatementLine: orderBy modification in AFB 120.
+- Add tagCount for Expense, Timesheet, Leave request and Extra hours menus.
+
+## Bug Fixes
+- EXTRA HOURS: Fix missing translation.
+- ACCOUNTING REPORT: Add missing translations in report.
+- MRP: Remove duplicate information.
+- ACCOUNTING INFORMATION: Add missing translation.
+- TeamTaskCategory: Added translation for title of grid view and fields.
+- AccountingBatch: Adding partner name in the bankDetails' not active anomaly message.
+- Application config: Add missing translations.
+- UnitCostCalculation: check NPE on product select.
+- SaleOrder: Remove one externalReference which appears twice in grid view.
+- AdvancedExport: Fix the bug of records being exported twice.
+- INVOICE: corrected the possibility to add a payment when the amount remaining is inferior or equal to 0.
+- EMPLOYEE: add first name search in advance search.
+- Invoice: Fix multiple invoices not ventilating when generated from sale order with advance payment.
+- TRAINING: Added domain to 'Required training' so it does not display itself.
+
 ## [5.3.7] - 2020-06-26
 ## Improvements
 - LEAVE REQUEST: remove field duration length constraint
@@ -352,6 +377,7 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - PRODUCT: Fix economicManufOrderQty displayed twice.
 
 
+[5.3.8]: https://github.com/axelor/axelor-open-suite/compare/v5.3.7...V5.3.8
 [5.3.7]: https://github.com/axelor/axelor-open-suite/compare/v5.3.6...v5.3.7
 [5.3.6]: https://github.com/axelor/axelor-open-suite/compare/v5.3.5...v5.3.6
 [5.3.5]: https://github.com/axelor/axelor-open-suite/compare/v5.3.4...v5.3.5
