@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaDriverClass</property>
@@ -2415,6 +2415,7 @@ from BASE_APP_BASE]]></xml-property>
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
                     <text id="515">
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -2439,8 +2440,12 @@ from BASE_APP_BASE]]></xml-property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF format="dd/MM/yyyy HH:MM">row._outer["created_on"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : ]]></text-property>
                     </text>
+                    <data id="5444">
+                        <property name="display">inline</property>
+                        <property name="resultSetColumn">created_on</property>
+                    </data>
                 </cell>
                 <cell id="5282">
                     <property name="colSpan">2</property>
@@ -2508,6 +2513,7 @@ from BASE_APP_BASE]]></xml-property>
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
                     <text id="5407">
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -2532,8 +2538,12 @@ from BASE_APP_BASE]]></xml-property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF format="dd/MM/yyyy">row._outer["calculation_date"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : ]]></text-property>
                     </text>
+                    <data id="5445">
+                        <property name="display">inline</property>
+                        <property name="resultSetColumn">calculation_date</property>
+                    </data>
                 </cell>
             </row>
         </grid>

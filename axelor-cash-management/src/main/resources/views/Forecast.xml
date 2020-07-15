@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
 	<grid name="forecast-grid" title="Forecasts" model="com.axelor.apps.cash.management.db.Forecast">
 		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="bankDetails"/>
-		<field name="typeSelect"/>
 		<field name="amount" aggregate="sum"/>
 		<field name="estimatedDate"/>
 		<field name="realizedSelect"/>
@@ -17,7 +16,6 @@
 	 	<panel name="mainPanel" >
 			<field name="company" canEdit="false" onChange="action-forecast-record-bank"/>
 	       	<field name="bankDetails" onSelect="action-accounting-batch-attrs-bank-details-domain"/>
-	       	<field name="typeSelect"/>
 	       	<field name="amount"/>
 	       	<field name="estimatedDate"/>
 	       	<field name="forecastReason"/>
@@ -35,4 +33,7 @@
 	 	<field name="bankDetails" expr="eval: company?.defaultBankDetails" if="company?.defaultBankDetails?.active"/>
 	 </action-record>
     
+    <search-filters name="forecast-filters" model="com.axelor.apps.cash.management.db.Forecast" title="Forecast filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
 </object-views>

@@ -775,7 +775,7 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
     return bankDetailsRepository
         .all()
         .filter(
-            "self.accountNbr = ?1 and self.bankCode = ?2 and self.sortCode = ?3",
+            "self.accountNbr = ?1 and self.bankCode = ?2 and self.sortCode = ?3 and self.company is not null and active is true",
             accountNumber,
             bankCode,
             sortCode)

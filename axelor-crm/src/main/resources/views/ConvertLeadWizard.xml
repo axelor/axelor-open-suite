@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
 	<form name="convert-lead-wizard-form" title="Convert lead" model="com.axelor.apps.base.db.Wizard" width="large" onNew="action-convert-lead-wizard-method-set-defaults" canSave="false">
 	  	<toolbar>
@@ -17,7 +17,7 @@
 	 		<field name="$selectPartner.partnerTypeSelect" hidden="true" />
 	 	</panel>
 		<panel name="convertToPartnerPanel" showIf="$leadToPartnerSelect == 1">
-		    <static name="titleText" colSpan="12"><![CDATA[<h3><b>Partner informations</b></h3>]]></static>
+		    <static name="titleText" colSpan="12"><![CDATA[<b><font size='4'>Partner informations</font></b>]]></static>
 			<field name="$partner" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" target="com.axelor.apps.base.db.Partner" type="many-to-one">
 				<editor x-show-titles="false" onNew="action-convert-lead-wizard-record-default-partner">
 					<panel name="imagePanel" colSpan="12">
@@ -56,15 +56,15 @@
 			          <field name="$partner.partnerTypeSelect" hidden="true" />
    			        </panel>
 	      			
-	    			<panel name="partnerDetailsPanel" title="Partner Details"  colSpan="12">
-				        <field name="partnerCategory" colSpan="4" widget="SuggestBox" hideIf="partnerTypeSelect == 2" form-view="partner-category-form" grid-view="partner-category-grid"/>
-				        <field name="industrySector" colSpan="4" widget="SuggestBox" hideIf="partnerTypeSelect == 2"/>
-				        <field name="department" colSpan="4" hideIf="partnerTypeSelect == 2" form-view="department-form" grid-view="department-grid"/>
-				        <field name="nbrEmployees" colSpan="4" hideIf="partnerTypeSelect == 2"/>
-				        <field name="registrationCode" colSpan="4" hideIf="partnerTypeSelect == 2"/>
+	    			<panel name="partnerDetailsPanel" title="Partner Details"  colSpan="12" hideIf="partnerTypeSelect == 2">
+				        <field name="partnerCategory" colSpan="4" widget="SuggestBox" form-view="partner-category-form" grid-view="partner-category-grid"/>
+				        <field name="industrySector" colSpan="4" widget="SuggestBox"/>
+				        <field name="department" colSpan="4" form-view="department-form" grid-view="department-grid"/>
+				        <field name="nbrEmployees" colSpan="4"/>
+				        <field name="registrationCode" colSpan="4"/>
 				        <spacer colSpan="4"/>
-				        <field name="taxNbr" colSpan="4" showTitle="true" hideIf="partnerTypeSelect == 2"/>
-				        <field name="saleTurnover" colSpan="4" showTitle="true" hideIf="partnerTypeSelect == 2"/>
+				        <field name="taxNbr" colSpan="4" showTitle="true"/>
+				        <field name="saleTurnover" colSpan="4" showTitle="true"/>
 		                <field name="source" hidden="true"/>
 	                </panel>
 	                <panel name="settingsPanel" title="Settings" colSpan="12">
@@ -84,7 +84,7 @@
 					<field name="titleSelect"  showTitle="false" placeholder="Civility" colSpan="2"/>
 					<field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="4" onChange="action-group-base-partner-contact-name-onchange"/>
 					<field name="firstName" showTitle="false" css="highlight" placeholder="First name" colSpan="4" onChange="action-group-base-partner-contact-name-onchange"/>
-					<label name="contactLabel" title="Contact"/>
+					<label name="contactLabel" title="Contact" colSpan="12"/>
 					<field name="jobTitleFunction"/>
 					<field name="reportsTo" domain="self.isContact = true"/>
 					<field name="fixedPhone"/>

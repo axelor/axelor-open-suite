@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
   
 	<module name="base" package="com.axelor.apps.base.db" />
 			
@@ -11,8 +11,8 @@
 			<many-to-one name="productCategory" ref="com.axelor.apps.base.db.ProductCategory" title="Product category"/>
 			<integer name="typeSelect" title="Discount/Additionnal/Replace" selection="base.price.list.line.type.select"/>
 			<integer name="amountTypeSelect" title="Fixed Amount/%" selection="base.price.list.line.amount.type.select"/>
-			<decimal name="amount" title="Amount/%" precision="20" scale="10"/>
-			<decimal name="minQty" title="Qty min (by product)" precision="20" scale="10"/>
+			<decimal name="amount" title="Amount/%" precision="20" scale="10" min="0"/>
+			<decimal name="minQty" title="Qty min (by product)" precision="20" scale="10" min="0"/>
 
 			<finder-method name="findByPriceListAndProduct" using="priceList,product"/>
 

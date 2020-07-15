@@ -146,6 +146,7 @@ public class MoveController {
                 .model(Move.class.getName())
                 .add("grid", "move-grid")
                 .add("form", "move-form")
+                .param("search-filters", "move-filters")
                 .map());
         response.setCanClose(true);
       }
@@ -259,8 +260,13 @@ public class MoveController {
 
   public void computeTotals(ActionRequest request, ActionResponse response) {
     Move move = request.getContext().asType(Move.class);
-    Map<String, Object> values = Beans.get(MoveService.class).computeTotals(move);
-    response.setValues(values);
+
+    try {
+      Map<String, Object> values = Beans.get(MoveService.class).computeTotals(move);
+      response.setValues(values);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void autoTaxLineGenerate(ActionRequest request, ActionResponse response)

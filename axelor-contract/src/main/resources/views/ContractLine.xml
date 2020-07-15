@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views
-              http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+              http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
     <grid name="contract-line-grid" title="Contract Lines"
           model="com.axelor.apps.contract.db.ContractLine" canMove="true"
@@ -39,7 +39,8 @@
         				onTabSelect="action-contract-line-attrs-read-only-distribution-lines">
         			<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" canEdit="false"
         				onChange="action-contract-line-method-create-distribution"/>
-        			<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12"/>
+        			<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" grid-view="analytic-move-line-distribution-grid" form-view="analytic-move-line-distribution-form" colSpan="12" onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+        			<field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
         		</panel>
           </panel-tabs>
     </form>
@@ -104,7 +105,8 @@
         				onSelect="action-contract-line-attrs-set-analytic-distribution-template-domain"
         				onChange="action-contract-line-method-create-distribution"/>
         			<panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList" colSpan="12" grid-view="analytic-move-line-distribution-grid"
-        				form-view="analytic-move-line-distribution-form"/>
+        				form-view="analytic-move-line-distribution-form" onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
+        			<field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
         		</panel>
           </panel-tabs>
     </form>

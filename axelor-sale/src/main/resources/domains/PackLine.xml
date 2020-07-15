@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
 	<module name="sale" package="com.axelor.apps.sale.db" />
 
@@ -13,7 +13,7 @@
 		<decimal name="quantity" title="Qty" precision="20" scale="10"/>
 		<decimal name="price" title="Price"/>
 		<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
-		<integer name="typeSelect" selection="sale.order.line.type.select" title="Type"/>
+		<integer name="typeSelect" selection="line.type.select" title="Type"/>
 		<boolean name="isShowTotal" title="Show Total"/>
 		<boolean name="isHideUnitAmounts" title="Hide Unit Amounts"/>
 

@@ -1417,6 +1417,7 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                         <text-property name="content"><![CDATA[<b><VALUE-OF>row["translation"]||row["message_key"]</VALUE-OF></b> <VALUE-OF>row._outer["stock_location_name"]</VALUE-OF>]]></text-property>
                     </text>
                     <text id="186">
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslationDS</property>
                         <list-property name="visibility">
                             <structure>
@@ -1447,11 +1448,16 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<b><VALUE-OF>row["translation"]||row["message_key"]</VALUE-OF></b> <VALUE-OF>row._outer["start_date"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<b><VALUE-OF>row["translation"]||row["message_key"]</VALUE-OF></b>]]></text-property>
                     </text>
+                    <data id="4051">
+                        <property name="display">inline</property>
+                        <property name="resultSetColumn">start_date</property>
+                    </data>
                 </cell>
                 <cell id="185">
                     <text id="187">
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslationDS</property>
                         <list-property name="visibility">
                             <structure>
@@ -1482,8 +1488,12 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<b><VALUE-OF>row["translation"]||row["message_key"]</VALUE-OF></b> <VALUE-OF>row._outer["end_date"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<b><VALUE-OF>row["translation"]||row["message_key"]</VALUE-OF></b>]]></text-property>
                     </text>
+                    <data id="4052">
+                        <property name="display">inline</property>
+                        <property name="resultSetColumn">end_date</property>
+                    </data>
                 </cell>
             </row>
             <row id="193">

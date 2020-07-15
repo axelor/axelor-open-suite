@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
@@ -37,10 +37,10 @@
   	<many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv" title="Tax Equiv"/>
   	
   	<string name="description" title="Description" large="true"/>
-  	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+  	<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit" required="true"/>
   	
   	<decimal name="discountAmount" title="Discount amount" precision="20" scale="10"/>
-  	<integer name="discountTypeSelect" title="Discount Type" selection="base.price.list.line.amount.type.select" default="0" />
+  	<integer name="discountTypeSelect" title="Discount type" selection="base.price.list.line.amount.type.select" default="0" />
   	
   	<boolean name="isOrdered" title="Ordered"/>
   	  	

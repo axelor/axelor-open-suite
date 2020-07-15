@@ -47,6 +47,9 @@ public interface IExceptionMessage {
   /** Bill of Materials Service */
   static final String BOM_1 = /*$$(*/ "Personalized" /*)*/;
 
+  static final String BOM_MISSING_UNIT_ON_PRODUCT = /*$$(*/
+      "Please fill unit for product %s." /*)*/;
+
   /** Production Order Wizard and controller */
   static final String PRODUCTION_ORDER_1 = /*$$(*/ "Production's order created" /*)*/;
 
@@ -156,4 +159,8 @@ public interface IExceptionMessage {
 
   static final String UNIT_COST_CALCULATION_NO_PRODUCT = /*$$(*/
       "Please select an element (a product, a product category or a product family) to run calculation" /*)*/;
+
+  // CostSheetLine service
+  static final String MISSING_PRODUCT_PURCHASE_CURRENCY = /*$$(*/
+      "Purchase currency is missing for product %s, please configure it." /*)*/;
 }

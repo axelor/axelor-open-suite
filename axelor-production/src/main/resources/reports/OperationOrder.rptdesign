@@ -1814,36 +1814,9 @@ LEFT JOIN
                                 <cell id="4381">
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
-                                    <text id="4384">
-                                        <property name="marginTop">1pt</property>
-                                        <property name="marginLeft">2pt</property>
-                                        <property name="textAlign">left</property>
-                                        <property name="dataSet">TranslateDS</property>
-                                        <list-property name="paramBindings">
-                                            <structure>
-                                                <property name="paramName">param_1</property>
-                                                <simple-property-list name="expression">
-                                                    <value type="javascript">'OperationOrder.plannedStartDate'</value>
-                                                </simple-property-list>
-                                            </structure>
-                                        </list-property>
-                                        <list-property name="boundDataColumns">
-                                            <structure>
-                                                <property name="name">key</property>
-                                                <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">translation</property>
-                                                <text-property name="displayName">translation</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                        </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF  format="dd/MM/yyy HH:mm">row._outer["planned_start_datet"]</VALUE-OF>]]></text-property>
-                                    </text>
+                                    <data id="4586">
+                                        <property name="resultSetColumn">planned_start_datet</property>
+                                    </data>
                                 </cell>
                                 <cell id="4398"/>
                                 <cell id="4239">
@@ -1881,36 +1854,9 @@ LEFT JOIN
                                     </text>
                                 </cell>
                                 <cell id="4389">
-                                    <text id="4390">
-                                        <property name="marginTop">1pt</property>
-                                        <property name="marginLeft">2pt</property>
-                                        <property name="textAlign">left</property>
-                                        <property name="dataSet">TranslateDS</property>
-                                        <list-property name="paramBindings">
-                                            <structure>
-                                                <property name="paramName">param_1</property>
-                                                <simple-property-list name="expression">
-                                                    <value type="javascript">'OperationOrder.plannedEndDate'</value>
-                                                </simple-property-list>
-                                            </structure>
-                                        </list-property>
-                                        <list-property name="boundDataColumns">
-                                            <structure>
-                                                <property name="name">key</property>
-                                                <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">translation</property>
-                                                <text-property name="displayName">translation</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                        </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyy HH:mm">row._outer["planned_end_datet"]</VALUE-OF>]]></text-property>
-                                    </text>
+                                    <data id="4588">
+                                        <property name="resultSetColumn">planned_end_datet</property>
+                                    </data>
                                 </cell>
                             </row>
                             <row id="4242">
@@ -1952,36 +1898,9 @@ LEFT JOIN
                                 <cell id="4385">
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
-                                    <text id="4388">
-                                        <property name="marginTop">1pt</property>
-                                        <property name="marginLeft">2pt</property>
-                                        <property name="textAlign">left</property>
-                                        <property name="dataSet">TranslateDS</property>
-                                        <list-property name="paramBindings">
-                                            <structure>
-                                                <property name="paramName">param_1</property>
-                                                <simple-property-list name="expression">
-                                                    <value type="javascript">'OperationOrder.realStartDate'</value>
-                                                </simple-property-list>
-                                            </structure>
-                                        </list-property>
-                                        <list-property name="boundDataColumns">
-                                            <structure>
-                                                <property name="name">key</property>
-                                                <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">translation</property>
-                                                <text-property name="displayName">translation</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                        </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyy HH:mm">row._outer["planned_start_datet"]</VALUE-OF>]]></text-property>
-                                    </text>
+                                    <data id="4587">
+                                        <property name="resultSetColumn">real_start_datet</property>
+                                    </data>
                                 </cell>
                                 <cell id="4396"/>
                                 <cell id="4247">
@@ -2019,36 +1938,9 @@ LEFT JOIN
                                     </text>
                                 </cell>
                                 <cell id="4391">
-                                    <text id="4392">
-                                        <property name="marginTop">1pt</property>
-                                        <property name="marginLeft">2pt</property>
-                                        <property name="textAlign">left</property>
-                                        <property name="dataSet">TranslateDS</property>
-                                        <list-property name="paramBindings">
-                                            <structure>
-                                                <property name="paramName">param_1</property>
-                                                <simple-property-list name="expression">
-                                                    <value type="javascript">'OperationOrder.realEndDate'</value>
-                                                </simple-property-list>
-                                            </structure>
-                                        </list-property>
-                                        <list-property name="boundDataColumns">
-                                            <structure>
-                                                <property name="name">key</property>
-                                                <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">translation</property>
-                                                <text-property name="displayName">translation</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                        </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyy HH:mm">row._outer["planned_end_datet"]</VALUE-OF>]]></text-property>
-                                    </text>
+                                    <data id="4589">
+                                        <property name="resultSetColumn">real_end_datet</property>
+                                    </data>
                                 </cell>
                             </row>
                             <row id="4360">

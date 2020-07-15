@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 	
 	<menuitem name="stock-root" title="Stock management"  order="-85"  if="__config__.app.isApp('stock')"
 	icon="fa-cubes"  icon-background="#b6473f" />
@@ -143,6 +143,7 @@
 		<view type="grid" name="stock-move-grid"/>
         <view type="calendar" name="stock-move-calendar" />
 		<view type="form" name="stock-move-form"/>
+		<view-param name="search-filters" value="customer-deliveries-filters"/>
 		<domain>self.statusSelect = 2 and self.fromStockLocation.id = 3</domain>
 	</action-view>	
 	
@@ -154,6 +155,7 @@
 		<view type="grid" name="stock-move-grid"/>
         <view type="calendar" name="stock-move-calendar" />
 		<view type="form" name="stock-move-form"/>
+		<view-param name="search-filters" value="customer-deliveries-filters"/>
 		<domain>self.statusSelect = 2 and self.toStockLocation.id = 3</domain>
 	</action-view>	
 	
@@ -165,6 +167,7 @@
 		<view type="grid" name="stock-move-grid"/>
         <view type="calendar" name="stock-move-calendar" />
 		<view type="form" name="stock-move-form"/>
+		<view-param name="search-filters" value="customer-deliveries-filters"/>
 		<domain>self.statusSelect = 2 and self.toStockLocation.id = 2</domain>
 	</action-view>	
 	
@@ -176,6 +179,7 @@
 		<view type="grid" name="stock-move-grid"/>
         <view type="calendar" name="stock-move-calendar" />
 		<view type="form" name="stock-move-form"/>
+		<view-param name="search-filters" value="supplier-arrivals-filters"/>
 		<domain>self.statusSelect = 2 and self.fromStockLocation.id = 2</domain>
 	</action-view>	
 	
@@ -200,6 +204,7 @@
 		<view type="grid" name="stock-move-line-all-grid"/>
         <view type="calendar" name="stock-move-calendar" />
 		<view type="form" name="stock-move-line-all-form"/>
+		<view-param name="search-filters" value="stock-move-line-filters"/>
 	</action-view>		
 	
 	<menuitem name="stock-root-stock-per-day" parent="stock-root"
@@ -231,6 +236,7 @@
 		model="com.axelor.apps.stock.db.StockLocation" >
 		<view type="grid" name="stock-location-grid"/>
 		<view type="form" name="stock-location-form"/>
+		<view-param name="search-filters" value="stock-location-filters"/>
 	</action-view>
 	
 	<menuitem name="stock-root-stock-location-tree" parent="stock-root"
@@ -379,6 +385,7 @@
     <action-view name="stock.root.logistical.forms" title="Logistical forms" model="com.axelor.apps.stock.db.LogisticalForm">
         <view type="grid" name="logistical-form-grid" />
         <view type="form" name="logistical-form-form" />
+        <view-param name="search-filters" value="logistical-form-filters"/>
     </action-view>
 
 	<menuitem name="stock-root-conf-cancel-reason" title="Cancel reason" parent="stock-root-conf"
@@ -387,6 +394,7 @@
 	<action-view name="action.stock.view.cancel.reason" title="Cancel reason" model="com.axelor.apps.base.db.CancelReason">
 		<view type="grid" name="cancel-reason-grid"/>
 		<view type="form" name="cancel-reason-form"/>
+		<view-param name="search-filters" value="cancel-reason-filters"/>
 		<domain>self.applicationType = :_xApplicationType</domain>
 		<context name="_xApplicationType" expr="eval: com.axelor.apps.stock.db.StockMove"/>
 	</action-view>

@@ -33,6 +33,7 @@ import com.axelor.apps.production.db.repo.ProductionBatchRepository;
 import com.axelor.apps.production.db.repo.RawMaterialRequirementProductionRepository;
 import com.axelor.apps.production.db.repo.RawMaterialRequirementRepository;
 import com.axelor.apps.production.db.repo.StockMoveLineProductionRepository;
+import com.axelor.apps.production.db.repo.StockMoveProductionRepository;
 import com.axelor.apps.production.db.repo.UnitCostCalculationManagementRepository;
 import com.axelor.apps.production.db.repo.UnitCostCalculationRepository;
 import com.axelor.apps.production.service.BillOfMaterialService;
@@ -67,6 +68,8 @@ import com.axelor.apps.production.service.costsheet.UnitCostCalcLineService;
 import com.axelor.apps.production.service.costsheet.UnitCostCalcLineServiceImpl;
 import com.axelor.apps.production.service.costsheet.UnitCostCalculationService;
 import com.axelor.apps.production.service.costsheet.UnitCostCalculationServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderPrintService;
+import com.axelor.apps.production.service.manuforder.ManufOrderPrintServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
@@ -82,6 +85,7 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.apps.stock.db.repo.ProductStockRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.repo.StockMoveLineSupplychainRepository;
+import com.axelor.apps.supplychain.db.repo.StockMoveSupplychainRepository;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
 import com.axelor.apps.supplychain.service.MrpServiceImpl;
 import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
@@ -132,5 +136,7 @@ public class ProductionModule extends AxelorModule {
     bind(ConfiguratorCreatorImportServiceImpl.class)
         .to(ConfiguratorCreatorImportServiceProductionImpl.class);
     bind(ProductStockLocationServiceImpl.class).to(ProductionProductStockLocationServiceImpl.class);
+    bind(StockMoveSupplychainRepository.class).to(StockMoveProductionRepository.class);
+    bind(ManufOrderPrintService.class).to(ManufOrderPrintServiceImpl.class);
   }
 }

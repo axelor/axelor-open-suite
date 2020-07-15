@@ -1309,6 +1309,12 @@ if(params["PrintType"].value.equals('2'))
                                 </list-property>
                                 <property name="allowExport">true</property>
                             </structure>
+                            <structure>
+                                <property name="name">TodayDateTime</property>
+                                <expression name="expression" type="javascript">BirtDateTime.now()</expression>
+                                <property name="dataType">date-time</property>
+                                <property name="allowExport">true</property>
+                            </structure>
                         </list-property>
                         <column id="5291">
                             <property name="width">50%</property>
@@ -1329,6 +1335,7 @@ if(params["PrintType"].value.equals('2'))
                                     <property name="marginLeft">2pt</property>
                                     <property name="marginRight">0pt</property>
                                     <property name="textAlign">left</property>
+                                    <property name="display">inline</property>
                                     <property name="dataSet">TranslateDS</property>
                                     <list-property name="paramBindings">
                                         <structure>
@@ -1353,8 +1360,12 @@ if(params["PrintType"].value.equals('2'))
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF format="dd/MM/yyyy kk:mm">new Date()</VALUE-OF> ]]></text-property>
+                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : ]]></text-property>
                                 </text>
+                                <data id="5366">
+                                    <property name="display">inline</property>
+                                    <property name="resultSetColumn">TodayDateTime</property>
+                                </data>
                             </cell>
                             <cell id="5363">
                                 <text id="5365">
@@ -1407,6 +1418,7 @@ if(params["PrintType"].value.equals('2'))
                                     <property name="marginLeft">2pt</property>
                                     <property name="marginRight">0pt</property>
                                     <property name="textAlign">left</property>
+                                    <property name="display">inline</property>
                                     <property name="dataSet">TranslateDS</property>
                                     <list-property name="paramBindings">
                                         <structure>
@@ -1431,8 +1443,12 @@ if(params["PrintType"].value.equals('2'))
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF format="dd/MM/yyyy kk:mm">new Date()</VALUE-OF> ]]></text-property>
+                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : ]]></text-property>
                                 </text>
+                                <data id="5367">
+                                    <property name="display">inline</property>
+                                    <property name="resultSetColumn">TodayDateTime</property>
+                                </data>
                             </cell>
                             <cell id="5305">
                                 <property name="colSpan">1</property>

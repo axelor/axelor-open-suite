@@ -29,6 +29,9 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
 }
 if(params["FooterHeight"].value != 0) {
 reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty("footerHeight",params["FooterHeight"].value+"cm");
+}
+if(params["Watermark"].value != null){
+reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().backgroundImage=params["Watermark"].value;
 }]]></method>
     <property name="layoutPreference">fixed layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -164,6 +167,21 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
             <property name="valueType">static</property>
             <property name="dataType">integer</property>
             <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="Watermark" id="5644">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant"></value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -544,6 +562,18 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                     <text-property name="displayName">displayHeadOfficeAddress</text-property>
                     <text-property name="heading">displayHeadOfficeAddress</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">enablePackMangement</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">enablePackMangement</text-property>
+                    <text-property name="heading">enablePackMangement</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">contactPartnerTitleSelect</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">contactPartnerTitleSelect</text-property>
+                    <text-property name="heading">contactPartnerTitleSelect</text-property>
+                </structure>
             </list-property>
             <list-property name="filter"/>
             <list-property name="parameters">
@@ -808,6 +838,16 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                     <structure>
                         <property name="position">50</property>
                         <property name="name">displayHeadOfficeAddress</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">51</property>
+                        <property name="name">enablePackMangement</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">52</property>
+                        <property name="name">contactPartnerTitleSelect</property>
                         <property name="dataType">integer</property>
                     </structure>
                 </list-property>
@@ -1164,6 +1204,20 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
+                <structure>
+                    <property name="position">51</property>
+                    <property name="name">enablePackMangement</property>
+                    <property name="nativeName">enablePackMangement</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">52</property>
+                    <property name="name">contactPartnerTitleSelect</property>
+                    <property name="nativeName">contactPartnerTitleSelect</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Invoice.id as inv_id, 
 	coalesce(MetaFileTN.file_path, MetaFile.file_path) as logo_path, 
@@ -1214,9 +1268,12 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
 	Invoice.amount_remaining,
 	Invoice.proforma_comments,
 	Invoice.head_office_address,
-	AccountConfig.display_head_office_addr_on_invoice_printing as "displayHeadOfficeAddress"
+	AccountConfig.display_head_office_addr_on_invoice_printing as "displayHeadOfficeAddress",
+    AppSale.enable_pack_management as "enablePackMangement",
+    ContactPartner.title_select as "contactPartnerTitleSelect"
 from account_invoice as Invoice 
 left outer join base_company as Company on (Invoice.company = Company.id)
+left outer join base_app_sale as AppSale on true
 left outer join base_partner as Partner on (Invoice.partner = Partner.id)
 left outer join base_partner as ContactPartner on (Invoice.contact_partner = ContactPartner.id)
 left outer join account_payment_condition as PaymentCondition on (Invoice.payment_condition = PaymentCondition.id)
@@ -2968,6 +3025,11 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
             <property name="borderTopStyle">solid</property>
             <property name="borderTopWidth">thin</property>
         </style>
+        <style name="NewStyle2" id="5645">
+            <property name="backgroundPositionX">center</property>
+            <property name="backgroundPositionY">center</property>
+            <property name="backgroundRepeat">no-repeat</property>
+        </style>
     </styles>
     <page-setup>
         <simple-master-page name="Simple MasterPage" id="2">
@@ -2976,6 +3038,7 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
             <property name="leftMargin">0.4in</property>
             <property name="bottomMargin">0in</property>
             <property name="rightMargin">0.15625in</property>
+            <property name="style">NewStyle2</property>
             <property name="headerHeight">0cm</property>
             <property name="footerHeight">2.4cm</property>
             <page-footer>
@@ -3274,9 +3337,10 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">due_date</property>
-                    <text-property name="displayName">due_date</text-property>
+                    <text-property name="displayName">DueDate</text-property>
                     <expression name="expression" type="javascript">dataSetRow["due_date"]</expression>
                     <property name="dataType">date</property>
+                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">currencyCode</property>
@@ -3489,6 +3553,24 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                     <property name="name">displayHeadOfficeAddress</property>
                     <text-property name="displayName">displayHeadOfficeAddress</text-property>
                     <expression name="expression" type="javascript">dataSetRow["displayHeadOfficeAddress"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">specific_note_on_invoice</property>
+                    <text-property name="displayName">specific_note_on_invoice</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["specific_note_on_invoice"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">enablePackMangement</property>
+                    <text-property name="displayName">enablePackMangement</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["enablePackMangement"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">contactPartnerTitleSelect</property>
+                    <text-property name="displayName">contactPartnerTitleSelect</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["contactPartnerTitleSelect"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
             </list-property>
@@ -3797,6 +3879,7 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                             <cell id="3657">
                                 <text id="3646">
                                     <property name="marginLeft">2pt</property>
+                                    <property name="display">inline</property>
                                     <property name="dataSet">TranslateDS</property>
                                     <list-property name="visibility">
                                         <structure>
@@ -3827,8 +3910,12 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF format="dd/MM/yyyy">row._outer["due_date"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF format="^">"  "</VALUE-OF>]]></text-property>
                                 </text>
+                                <data id="5646">
+                                    <property name="display">inline</property>
+                                    <property name="resultSetColumn">due_date</property>
+                                </data>
                             </cell>
                         </row>
                         <row id="3658">
@@ -4060,7 +4147,14 @@ row["partnerFirstName"]
                         <property name="fontSize">12pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["contactName"]</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row["contactFirstName"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["contactPartnerTitleSelect"] != null){
+if(row["contactPartnerTitleSelect"] == "1"){"M."}
+else if(row["contactPartnerTitleSelect"] == "2"){"Ms."}
+else if(row["contactPartnerTitleSelect"] == "3"){"Dr"}
+else if(row["contactPartnerTitleSelect"] == "4"){"Prof."}
+}</VALUE-OF> 
+<VALUE-OF format="^">"  "</VALUE-OF>
+<VALUE-OF>row["contactName"]</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row["contactFirstName"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="4467">
@@ -4123,6 +4217,7 @@ row["partnerFirstName"]
                     <text id="4527">
                         <property name="marginLeft">2pt</property>
                         <property name="textAlign">center</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="visibility">
                             <structure>
@@ -4157,6 +4252,14 @@ row["partnerFirstName"]
 .replace('%s',Formatter.format(row._outer["subscription_from_date"],'dd/MM/yyyy'))
 .replace('%s',Formatter.format(row._outer["subscription_to_date"],'dd/MM/yyyy'))</VALUE-OF>]]></text-property>
                     </text>
+                    <data id="5647">
+                        <property name="display">inline</property>
+                        <property name="resultSetColumn">subscription_from_date</property>
+                    </data>
+                    <data id="5648">
+                        <property name="display">inline</property>
+                        <property name="resultSetColumn">subscription_to_date</property>
+                    </data>
                 </cell>
                 <cell id="4516"/>
             </row>
@@ -4176,6 +4279,7 @@ row["partnerFirstName"]
                 <cell id="5351">
                     <property name="colSpan">9</property>
                     <property name="rowSpan">1</property>
+                    <property name="paddingTop">45pt</property>
                     <table name="InvoiceLineTable1" id="5601">
                         <property name="marginLeft">0pt</property>
                         <property name="width">19.235208333333336cm</property>
@@ -4299,7 +4403,7 @@ row["partnerFirstName"]
                             <structure>
                                 <property name="name">showtotal</property>
                                 <text-property name="displayName">showtotal</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["showtotal"]</expression>
+                                <expression name="expression" type="javascript">dataSetRow["showtotal"] != null ? dataSetRow["showtotal"] : true</expression>
                                 <property name="dataType">boolean</property>
                                 <property name="allowExport">true</property>
                             </structure>
@@ -4386,6 +4490,13 @@ row["partnerFirstName"]
                                         <expression name="value" type="javascript">dataSetRow["totaldiscountamount"]</expression>
                                     </structure>
                                 </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">enablePackMangement</property>
+                                <text-property name="displayName">enablePackMangement</text-property>
+                                <expression name="expression" type="javascript">row._outer["enablePackMangement"]</expression>
+                                <property name="dataType">boolean</property>
                                 <property name="allowExport">true</property>
                             </structure>
                         </list-property>
@@ -4826,16 +4937,24 @@ row["partnerFirstName"]
                         </header>
                         <detail>
                             <row id="5378">
-                                <method name="onCreate"><![CDATA[vars["ex_total"] = vars["temp_ex_total"];
+                                <method name="onPrepare"><![CDATA[vars["is_first_title_line"] = false;
+]]></method>
+                                <method name="onCreate"><![CDATA[if(this.getRowData().getColumnValue("enablePackMangement") == true) {
+vars["ex_total"] = vars["temp_ex_total"];
 vars["in_total"] = vars["temp_in_total"];
-if(this.getRowData().getColumnValue("is_title_line") == true){
+ if(this.getRowData().getColumnValue("is_title_line") == true) {
+     if(vars["is_first_title_line"] == false) {
+       vars["is_first_title_line"] = true;
+     } else {
+      vars["is_first_title_line"] = false;
+     } 
 	vars["temp_ex_total"] = parseFloat(0.00);
 	vars["temp_in_total"] = parseFloat(0.00);
-}else{
+ } else {
 	vars["temp_ex_total"] += parseFloat(this.getRowData().getColumnValue("ex_tax_total"));
 	vars["temp_in_total"] += parseFloat(this.getRowData().getColumnValue("in_tax_total"));
-}
-]]></method>
+ }
+}]]></method>
                                 <cell id="5379">
                                     <property name="borderLeftStyle">solid</property>
                                     <property name="borderLeftWidth">thin</property>
@@ -4889,7 +5008,6 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                     </data>
                                     <text id="5385">
                                         <property name="fontSize">8pt</property>
-                                        <property name="marginBottom">4pt</property>
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
@@ -4897,7 +5015,7 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<SUB><I><VALUE-OF format="HTML">if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF></I></SUB><br>]]></text-property>
+                                        <text-property name="content"><![CDATA[<SUB><I><VALUE-OF format="HTML">if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF></I></SUB></br>]]></text-property>
                                     </text>
                                     <text id="5386">
                                         <property name="fontSize">8pt</property>
@@ -4914,7 +5032,7 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                     <text id="5328">
                                         <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
-                                        <property name="marginBottom">4pt</property>
+                                        <property name="marginBottom">2pt</property>
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
@@ -4922,7 +5040,7 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<SUB><I><VALUE-OF format="HTML">if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF></I></SUB><br>]]></text-property>
+                                        <text-property name="content"><![CDATA[<SUB><I><VALUE-OF format="HTML">if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF></I></SUB>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="5389">
@@ -4964,7 +5082,7 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["qty"],"#,##0."+Array(row["nb_decimal_digit_for_qty"]+1).join("0"))</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["unitname"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["qty"],"#,##0."+Array((row["nb_decimal_digit_for_qty"] || 2)+1).join("0"))</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["unitname"]</VALUE-OF>]]></text-property>
                                     </text>
                                     <text id="5431">
                                         <property name="fontSize">8pt</property>
@@ -4974,7 +5092,7 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">!row._outer["is_title_line"] || row._outer["qty"] == 0</expression>
+                                                <expression name="valueExpr" type="javascript">!row._outer["is_title_line"] || !vars["is_first_title_line"] || row._outer["qty"] == 0</expression>
                                             </structure>
                                         </list-property>
                                         <list-property name="boundDataColumns">
@@ -4986,7 +5104,7 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["qty"],"#,##0."+Array(row["nb_decimal_digit_for_qty"]+1).join("0"))</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["qty"],"#,##0."+Array((row["nb_decimal_digit_for_qty"] || 2)+1).join("0"))</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="5393">
@@ -5088,7 +5206,7 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">!row._outer["is_title_line"] || !row._outer["showtotal"] || vars["ex_total"] == 0</expression>
+                                                <expression name="valueExpr" type="javascript">!row._outer["is_title_line"] || vars["is_first_title_line"] || !row._outer["showtotal"] || vars["ex_total"] == 0</expression>
                                             </structure>
                                         </list-property>
                                         <list-property name="boundDataColumns">
@@ -5128,11 +5246,11 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">vars["ex_total"] == 0 || !row["is_title_line"] || !row["showtotal"]</expression>
+                                                <expression name="valueExpr" type="javascript">vars["ex_total"] == 0 || !row["is_title_line"] || vars["is_first_title_line"] || !row["showtotal"]</expression>
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["ex_tax_total"] != 0){row["currencycode"]}</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["currencycode"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="5401">
@@ -5163,7 +5281,7 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">!row._outer["is_title_line"] || !row._outer["showtotal"] || vars["in_total"] == 0</expression>
+                                                <expression name="valueExpr" type="javascript">!row._outer["is_title_line"] || vars["is_first_title_line"] || !row._outer["showtotal"] || vars["in_total"] == 0</expression>
                                             </structure>
                                         </list-property>
                                         <list-property name="boundDataColumns">
@@ -5203,7 +5321,7 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">!row["is_title_line"] || !row["showtotal"] || vars["in_total"] == 0</expression>
+                                                <expression name="valueExpr" type="javascript">!row["is_title_line"] || vars["is_first_title_line"] || !row["showtotal"] || vars["in_total"] == 0</expression>
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
@@ -5451,8 +5569,12 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>
 <VALUE-OF format="^">" "</VALUE-OF>
-<VALUE-OF format="dd/MM/yyyy">row._outer["advanceInvoiceDate"]</VALUE-OF>]]></text-property>
+]]></text-property>
                                     </text>
+                                    <data id="5649">
+                                        <property name="display">inline</property>
+                                        <property name="resultSetColumn">advanceInvoiceDate</property>
+                                    </data>
                                 </cell>
                                 <cell id="4493">
                                     <property name="borderLeftStyle">solid</property>
@@ -6393,10 +6515,9 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
                                                     <property name="borderRightWidth">thin</property>
                                                     <property name="borderTopStyle">solid</property>
                                                     <property name="borderTopWidth">thin</property>
-                                                    <text id="5496">
-                                                        <property name="contentType">html</property>
-                                                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["payment_date"]</VALUE-OF>]]></text-property>
-                                                    </text>
+                                                    <data id="5650">
+                                                        <property name="resultSetColumn">payment_date</property>
+                                                    </data>
                                                 </cell>
                                                 <cell id="5473">
                                                     <property name="borderBottomStyle">solid</property>
@@ -8208,11 +8329,15 @@ if(this.getRowData().getColumnValue("is_title_line") == true){
             <property name="type">report</property>
         </variable-element>
         <variable-element name="temp_ex_total">
-            <expression name="value" type="javascript">5.00</expression>
+            <expression name="value" type="javascript">0.00</expression>
             <property name="type">report</property>
         </variable-element>
         <variable-element name="temp_in_total">
             <expression name="value" type="javascript">0.00</expression>
+            <property name="type">report</property>
+        </variable-element>
+        <variable-element name="is_first_title_line">
+            <expression name="value" type="javascript">new Boolean()</expression>
             <property name="type">report</property>
         </variable-element>
     </property>

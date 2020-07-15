@@ -1579,11 +1579,10 @@ ORDER BY control_point_name;]]></xml-property>
                                 <property name="borderTopColor">#7F7F7F</property>
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
-                                <text id="5368">
+                                <data id="6451">
                                     <property name="fontWeight">bold</property>
-                                    <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["end_date"]</VALUE-OF>]]></text-property>
-                                </text>
+                                    <property name="resultSetColumn">end_date</property>
+                                </data>
                             </cell>
                             <cell id="5354">
                                 <property name="borderBottomColor">#7F7F7F</property>

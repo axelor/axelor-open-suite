@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 	
 	<menuitem name="manufacturing-root" title="Manufacturing" order="-84"  if="__config__.app.isApp('production')"
@@ -31,6 +31,7 @@
 				 model="com.axelor.apps.production.db.BillOfMaterial" >
 		<view type="grid" name="bill-of-material-grid" />
 		<view type="form" name="bill-of-material-form" />
+		<view-param name="search-filters" value="bill-of-material-filters"/>
 		<domain>self.defineSubBillOfMaterial = true AND self.personalized = false</domain>
 	</action-view>
 
@@ -39,9 +40,11 @@
 
 	<action-view name="manufacturing.root.personalized.bill.of.material" title="Personalized BoM"
 				 model="com.axelor.apps.production.db.BillOfMaterial" >
-		<view type="grid" name="bill-of-material-grid" />
+		<view type="grid" name="personalized-bill-of-material-grid" />
 		<view type="form" name="bill-of-material-form" />
+		<view-param name="search-filters" value="bill-of-material-filters"/>
 		<domain>self.defineSubBillOfMaterial = true AND self.personalized = true</domain>
+		<context name="_isPersonalized" expr="eval: true"/>
 	</action-view>
 	
 	<menuitem name="manufacturing-root-prod-process" parent="manufacturing-root"
@@ -51,6 +54,7 @@
 		model="com.axelor.apps.production.db.ProdProcess" >
 		<view type="grid" name="prod-process-grid" />
 		<view type="form" name="prod-process-form" />
+		<view-param name="search-filters" value="prod-process-filters"/>
 	</action-view>
 		
 	<menuitem name="manufacturing-root-production-order" parent="manufacturing-root"
@@ -94,6 +98,7 @@
 		<view type="calendar" name="operation-order-planned-calendar"/>
 		<view type="grid" name="operation-order-grid" />
 		<view type="form" name="operation-order-form" />
+		<view-param name="search-filters" value="operation-order-filters"/>
 		<domain>self.statusSelect = 3</domain>
 	</action-view>
 	
@@ -105,6 +110,7 @@
 		<view type="calendar" name="operation-order-real-calendar"/>
 		<view type="grid" name="operation-order-grid" />
 		<view type="form" name="operation-order-form" />
+		<view-param name="search-filters" value="operation-order-filters"/>
 		<domain>self.statusSelect = 6</domain>
 	</action-view>
 	
@@ -123,6 +129,7 @@
 		model="com.axelor.apps.production.db.RawMaterialRequirement">
 		<view type="grid" name="raw-material-requirement-grid"/>
 		<view type="form" name="raw-material-requirement-form"/>
+		<view-param name="search-filters" value="raw-material-requirement-filters"/>
 	</action-view>
 	
 	<menuitem name="manufacturing-root-cost-calculations" parent="manufacturing-root" title="Cost calculations" action="manufacturing.root.cost.calculations" order="44"/>
@@ -156,6 +163,7 @@
 		model="com.axelor.apps.production.db.WorkCenter" >
 		<view type="grid" name="work-center-grid" />
 		<view type="form" name="work-center-form" />
+		<view-param name="search-filters" value="work-center-filters"/>
 	</action-view>
 	
 	<menuitem name="manufacturing-conf-machine" parent="manufacturing-conf"
@@ -248,6 +256,7 @@
 				 model="com.axelor.apps.production.db.ConfiguratorProdProcess" >
 		<view type="grid" name="configurator-prod-process-grid" />
 		<view type="form" name="configurator-prod-process-form" />
+		<view-param name="search-filters" value="configurator-prod-process-filters"/>
 	</action-view>
 
 	<menuitem name="manufacturing-conf-configurators-prod-process-line" parent="manufacturing-conf-configurators" order="50"
@@ -274,6 +283,7 @@
 		title="Cancel Reason" model="com.axelor.apps.base.db.CancelReason" >
 		<view type="grid" name="cancel-reason-grid" />
 		<view type="form" name="cancel-reason-form" />
+		<view-param name="search-filters" value="cancel-reason-filters"/>
 		<domain>self.applicationType = :_xApplicationType</domain>
 		<context name="_xApplicationType" expr="eval: com.axelor.apps.production.db.ManufOrder"/>
 	</action-view>
@@ -295,6 +305,7 @@
 	<action-view name="manufacturing.conf.workshop" title="Workshop" model="com.axelor.apps.stock.db.StockLocation">
 		<view type="grid" name="stock-location-grid"/>
 		<view type="form" name="stock-location-form"/>
+		<view-param name="search-filters" value="stock-location-filters"/>
 		<domain>self.usableOnProduction = true AND self.isWorkshop = true</domain>
 		<context name="_productionWorkshop" expr="eval:true"/>
 	</action-view>
@@ -308,6 +319,7 @@
 		model="com.axelor.apps.production.db.ProductionBatch" >
 		<view type="grid" name="production-batch-grid" />
 		<view type="form" name="production-batch-form" />
+		<view-param name="search-filters" value="production-batch-filters"/>
 	</action-view>
 
 	<!-- TOP MENU -->
@@ -343,6 +355,7 @@
 		model="com.axelor.apps.production.db.BillOfMaterial" >
 		<view type="grid" name="bill-of-material-grid" />
 		<view type="form" name="bill-of-material-form" />
+                <view-param name="search-filters" value="bill-of-material-filters"/>
 		<domain>self.defineSubBillOfMaterial = true AND self.personalized = false</domain>
 	</action-view>
 </object-views>

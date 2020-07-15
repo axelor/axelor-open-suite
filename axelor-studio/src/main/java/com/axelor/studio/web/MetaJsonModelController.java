@@ -25,9 +25,14 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.studio.db.MenuBuilder;
 import com.axelor.studio.db.Wkf;
+import com.axelor.studio.db.repo.MenuBuilderRepo;
+import com.axelor.studio.db.repo.MenuBuilderRepository;
+import com.axelor.studio.db.repo.MetaJsonModelRepo;
 import com.axelor.studio.db.repo.WkfRepository;
 import com.axelor.studio.service.StudioMetaService;
+import com.google.inject.persist.Transactional;
 import java.util.stream.Collectors;
 
 public class MetaJsonModelController {
@@ -95,6 +100,24 @@ public class MetaJsonModelController {
       response.setValue("$jsonFieldTracking", jsonFields);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  @Transactional
+  public void removeMenuBuilder(ActionRequest request, ActionResponse response) {
+
+    MetaJsonModel metaJsonModel = request.getContext().asType(MetaJsonModel.class);
+    if (metaJsonModel.getMenuBuilder() != null
+        && metaJsonModel.getMenuBuilder().getId() != null
+        && metaJsonModel.getMenuBuilder().getMetaMenu() != null) {
+      MenuBuilder menuBuilder =
+          Beans.get(MenuBuilderRepository.class).find(metaJsonModel.getMenuBuilder().getId());
+
+      metaJsonModel = Beans.get(MetaJsonModelRepo.class).find(metaJsonModel.getId());
+      metaJsonModel.setMenuBuilder(null);
+      Beans.get(MetaJsonModelRepo.class).save(metaJsonModel);
+      Beans.get(MenuBuilderRepo.class).remove(menuBuilder);
+      response.setReload(true);
     }
   }
 }

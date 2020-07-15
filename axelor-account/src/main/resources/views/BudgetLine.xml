@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
     <grid name="budget-line-grid" title="Budget Lines" model="com.axelor.apps.account.db.BudgetLine">
         <field name="fromDate"/>
@@ -13,8 +13,8 @@
     
     <form name="budget-line-form" title="Budget Line" model="com.axelor.apps.account.db.BudgetLine" width="large">
        <panel name="mainPanel" >
-	       <field name="fromDate" onChange="action-period-year-on-change-from-date-validate"/>
-	       <field name="toDate" onChange="action-period-year-on-change-to-date-validate"/>
+	       <field name="fromDate" onChange="action-period-year-on-change-from-date-validate" required="true"/>
+	       <field name="toDate" onChange="action-period-year-on-change-to-date-validate" required="true"/>
 	       <field name="amountExpected"/>
 	       <field name="amountCommitted" readonly="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
 	       <field name="amountRealized" readonly="true"/>

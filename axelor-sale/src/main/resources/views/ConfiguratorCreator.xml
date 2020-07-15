@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
     <grid name="configurator-creator-grid" title="ConfiguratorCreators" model="com.axelor.apps.sale.db.ConfiguratorCreator">
 	    <toolbar>
@@ -169,5 +169,9 @@
         <view type="grid" name="configurator-grid"/>
         <context name="_configuratorCreator" expr="eval: __self__"/>
     </action-view>
+    
+    <search-filters name="configurator-creator-filters" model="com.axelor.apps.sale.db.ConfiguratorCreator" title="Configurator creator filters">
+        <field name="configuratorBom" hidden="true" if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getEnableConfigurator())"/>
+    </search-filters>
 
 </object-views>

@@ -23,6 +23,7 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaField;
@@ -37,6 +38,8 @@ import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.meta.db.repo.MetaViewRepository;
 import com.axelor.meta.loader.XMLViews;
 import com.axelor.meta.schema.ObjectViews;
+import com.axelor.meta.schema.actions.ActionAttrs;
+import com.axelor.meta.schema.actions.ActionAttrs.Attribute;
 import com.axelor.meta.schema.actions.ActionGroup;
 import com.axelor.meta.schema.actions.ActionGroup.ActionItem;
 import com.axelor.meta.schema.actions.ActionMethod;
@@ -51,13 +54,18 @@ import com.axelor.meta.schema.views.FormView;
 import com.axelor.meta.schema.views.PanelField;
 import com.axelor.rpc.Request;
 import com.axelor.rpc.Resource;
+import com.axelor.studio.db.MenuBuilder;
 import com.axelor.studio.db.Wkf;
 import com.axelor.studio.db.WkfNode;
+import com.axelor.studio.db.WkfTransition;
+import com.axelor.studio.db.repo.MenuBuilderRepo;
 import com.axelor.studio.db.repo.WkfRepository;
 import com.axelor.studio.exception.IExceptionMessage;
 import com.axelor.studio.service.StudioMetaService;
+import com.axelor.studio.service.builder.MenuBuilderService;
 import com.axelor.studio.service.filter.FilterGroovyService;
 import com.google.common.base.Joiner;
+import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -68,6 +76,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.xml.bind.JAXBException;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,15 +95,19 @@ public class WkfService {
 
   protected Wkf workflow = null;
 
-  protected String wkfId = null;
+  protected String wkfCode = null;
 
   protected Inflector inflector;
 
   protected Integer wkfSequence = 0;
 
+  protected Integer wkfSequencePreview = 0;
+
   protected String applyCondition = null;
 
   protected String trackingAction = null;
+
+  protected String trackingActionPreview = null;
 
   protected String simpleModelName = null;
 
@@ -128,7 +142,9 @@ public class WkfService {
     try {
       initService(wkf);
       createTrackingAction();
+      createPreviewTrackingAction();
       setWkfSequence();
+      setWkfPreviewSequence();
       Map<String, Object> nodeValues = nodeService.process();
 
       String defaultValue =
@@ -151,19 +167,26 @@ public class WkfService {
         setMetaView(defaultValue);
       }
       createTrackFlowButton();
+      setPreview();
 
       List<String[]> actions = (List<String[]>) nodeValues.get("nodeActions");
       actions.addAll(transitionService.process());
       actions.add(new String[] {"save"});
       actions.add(new String[] {trackingAction});
-      updateActionGroup("action-group-" + wkfId, actions);
+      updateActionGroup("action-group-" + wkfCode, actions);
+      List<String[]> previewActions = new ArrayList<String[]>();
+      previewActions.add(new String[] {"save"});
+      previewActions.add(new String[] {trackingActionPreview});
+      updateActionGroup("action-group-" + workflow.getCode(), previewActions);
+
+      setStatusValue();
+
       MetaStore.clear();
 
     } catch (Exception e) {
-      if (e.getMessage().equals(IExceptionMessage.CANNOT_ALTER_NODES)) {
+      if (Objects.equal(e.getMessage(), IExceptionMessage.CANNOT_ALTER_NODES)) {
         throw e;
       }
-
       e.printStackTrace();
       return e.toString();
     }
@@ -174,8 +197,9 @@ public class WkfService {
   private void initService(Wkf wkf) {
     workflow = wkf;
     inflector = Inflector.getInstance();
-    wkfId = "wkf" + wkf.getId().toString();
-    trackingAction = "action-method-wkf-track-" + wkfId;
+    wkfCode = "wkf" + wkf.getCode() + "wkf";
+    trackingAction = "action-method-wkf-track-" + wkfCode;
+    trackingActionPreview = "action-method-wkf-track-" + workflow.getCode();
 
     if (!wkf.getIsJson() && wkf.getJsonField() == null) {
       simpleModelName = StringUtils.substringAfterLast(workflow.getModel(), ".");
@@ -200,7 +224,7 @@ public class WkfService {
       applyCondition = applyCondition.replace("?.", ".");
     }
 
-    MetaJsonField panel = getJsonField(wkfId + "Panel", "panel");
+    MetaJsonField panel = getJsonField(wkfCode + "Panel", "panel");
     panel.setSequence(wkfSequence - 49);
     panel.setVisibleInGrid(false);
     panel.setIsWkf(true);
@@ -220,14 +244,78 @@ public class WkfService {
     }
     saveJsonField(workflow.getStatusField());
 
-    MetaJsonField wkfEnd = getJsonField(wkfId + "Separator", "separator");
+    MetaJsonField wkfEnd = getJsonField(wkfCode + "Separator", "separator");
     wkfEnd.setSequence(wkfSequence);
     wkfEnd.setVisibleInGrid(false);
     wkfEnd.setIsWkf(true);
     wkfEnd.setWidgetAttrs("{\"colSpan\": \"12\"}");
-    saveJsonField(panel);
+    saveJsonField(wkfEnd);
 
     //    setTrackOnSave(workflow, false);
+  }
+
+  private void setPreview() {
+    String model = "com.axelor.studio.db.Wkf";
+    if (findJsonField(wkfCode + workflow.getCode() + "Panel", model) == null) {
+
+      MetaJsonField panel = getJsonField(wkfCode + "Panel", "panel");
+      panel = jsonFieldRepo.copy(panel, true);
+      panel.setName(wkfCode + workflow.getCode() + "Panel");
+      createPreviewMetaJsonField(
+          panel, 49, "$record.code == '" + workflow.getCode() + "' && $record.id != null");
+    }
+
+    String statusFieldName = getWkfFieldInfo(workflow)[0];
+    if (findJsonField(wkfCode + statusFieldName, model) == null) {
+
+      MetaJsonField status = null;
+      if (workflow.getIsJson() || workflow.getJsonField() != null) {
+        status = jsonFieldRepo.copy(workflow.getStatusField(), true);
+      } else {
+        status = new MetaJsonField();
+        status.setType(workflow.getStatusMetaField().getTypeName().toLowerCase());
+        status.setTitle(workflow.getStatusMetaField().getLabel());
+        status.setDefaultValue("1");
+        status.setSelection(getSelectName());
+        status.setWidgetAttrs("{\"colSpan\": \"12\"}");
+        if (workflow.getDisplayTypeSelect() == 0) {
+          status.setWidget("NavSelect");
+        }
+        status.setReadonly(true);
+      }
+      status.setName(wkfCode + statusFieldName);
+      createPreviewMetaJsonField(
+          status, 48, "$record.code == '" + workflow.getCode() + "' && $record.id != null");
+    }
+
+    if (findJsonField(wkfCode + workflow.getCode() + "TrackFlow", model) == null) {
+      MetaJsonField trackFlow = getJsonField(wkfCode + "TrackFlow", "button");
+      trackFlow = jsonFieldRepo.copy(trackFlow, true);
+      trackFlow.setName(wkfCode + workflow.getCode() + "TrackFlow");
+      createPreviewMetaJsonField(
+          trackFlow,
+          47,
+          "$record.code == '"
+              + workflow.getCode()
+              + "' && $record.isTrackFlow == true && $record.id != null");
+    }
+
+    if (findJsonField(wkfCode + workflow.getCode() + "Spacer", model) == null) {
+      MetaJsonField wkfEnd = new MetaJsonField();
+      wkfEnd.setName(wkfCode + workflow.getCode() + "Spacer");
+      wkfEnd.setType("spacer");
+      createPreviewMetaJsonField(
+          wkfEnd, 0, "$record.code == '" + workflow.getCode() + "' && $record.id != null");
+    }
+  }
+
+  public void createPreviewMetaJsonField(MetaJsonField jsonField, int sequence, String condition) {
+    jsonField.setSequence(wkfSequencePreview - sequence);
+    jsonField.setModel("com.axelor.studio.db.Wkf");
+    jsonField.setModelField("attrs");
+    jsonField.setJsonModel(null);
+    jsonField.setShowIf(condition);
+    saveJsonField(jsonField);
   }
 
   private void setMetaView(String defaultValue) {
@@ -298,7 +386,7 @@ public class WkfService {
     newActionRecord.setFields(new ArrayList<ActionRecord.RecordField>());
     RecordField recordField = new RecordField();
     recordField.setName(workflow.getStatusMetaField().getName());
-    recordField.setExpression(defaultValue);
+    recordField.setExpression("eval: " + defaultValue);
     newActionRecord.getFields().add(recordField);
 
     MetaAction action =
@@ -538,6 +626,10 @@ public class WkfService {
     return jsonFieldRepo.save(jsonField);
   }
 
+  public MetaJsonField findJsonField(String name, String model) {
+    return jsonFieldRepo.all().filter("self.name = ?1 AND self.model = ?2", name, model).fetchOne();
+  }
+
   @Transactional
   public MetaView saveMetaView(MetaView metaView) {
     metaView = metaViewRepo.save(metaView);
@@ -553,7 +645,8 @@ public class WkfService {
 
     initService(wkf);
 
-    String actions = "action-" + wkfId + ",action-group-" + wkfId;
+    String actions =
+        "action-" + wkfCode + ",action-group-" + wkfCode + ",action-group-" + workflow.getCode();
     actions = clearFields(actions, true);
 
     StringBuilder builder = new StringBuilder(actions);
@@ -561,8 +654,13 @@ public class WkfService {
       if (!node.getMetaActionSet().isEmpty()) {
         builder.append("," + nodeService.getActionName(node.getName()));
       }
+
+      if (node.getMenuBuilder() != null && node.getMenuBuilder().getMetaMenu() != null) {
+        Beans.get(MenuBuilderRepo.class).remove(node.getMenuBuilder());
+        node.setMenuBuilder(null);
+      }
     }
-    builder.append("," + trackingAction);
+    builder.append("," + trackingAction + "," + trackingActionPreview);
     actions = builder.toString();
 
     metaService.removeMetaActions(actions);
@@ -588,6 +686,20 @@ public class WkfService {
     }
 
     //    setTrackOnSave(wkf, true);
+  }
+
+  public List<MetaJsonField> clearMetaJsonField() {
+    List<MetaJsonField> metaJsonFieldList =
+        jsonFieldRepo
+            .all()
+            .filter(
+                "self.name LIKE :code and self.model =?1 and self.modelField =?2",
+                "com.axelor.studio.db.Wkf",
+                "attrs")
+            .bind("code", wkfCode + "%")
+            .fetch();
+
+    return metaJsonFieldList;
   }
 
   @Transactional
@@ -625,12 +737,16 @@ public class WkfService {
     metaViewRepo.remove(generatedView);
   }
 
+  @SuppressWarnings("unchecked")
   private String clearFields(String actions, boolean fromRemove) {
 
     List<MetaJsonField> fields = getFields(fromRemove);
+    List<MetaJsonField> jsonFields = clearMetaJsonField();
+
+    List<MetaJsonField> combinedList = ListUtils.union(fields, jsonFields);
 
     StringBuilder builder = new StringBuilder(actions);
-    for (MetaJsonField field : fields) {
+    for (MetaJsonField field : combinedList) {
       if (field.getIsWkf() && !field.equals(workflow.getStatusField())) {
         if (field.getOnClick() != null) {
           builder.append("," + field.getOnClick());
@@ -656,7 +772,7 @@ public class WkfService {
           jsonFieldRepo
               .all()
               .filter(
-                  query + "self.name LIKE '" + wkfId + "%' and self.jsonModel.name = ?1",
+                  query + "self.name LIKE '" + wkfCode + "%' and self.jsonModel.name = ?1",
                   workflow.getModel())
               .fetch();
     } else {
@@ -676,18 +792,19 @@ public class WkfService {
     return fields;
   }
 
+  @SuppressWarnings("unchecked")
   @Transactional
   public String clearOldButtons(List<String> skipList) {
-
     log.debug("Cleaning old buttons. Skip list: {}", skipList);
-    if (skipList.isEmpty()) {
+    if (CollectionUtils.isEmpty(skipList)) {
       return null;
     }
 
-    skipList.add(wkfId + "TrackFlow");
+    skipList.add(wkfCode + "TrackFlow");
 
     ArrayList<String> actions = new ArrayList<>();
-    List<MetaJsonField> fields = null;
+    List<MetaJsonField> fields = new ArrayList<MetaJsonField>();
+    List<MetaJsonField> finalList = new ArrayList<MetaJsonField>();
     String modelField = workflow.getJsonField() != null ? workflow.getJsonField() : "attrs";
 
     if (workflow.getIsJson()) {
@@ -698,11 +815,11 @@ public class WkfService {
                   "self.type = 'button' "
                       + "and self.jsonModel.name = ?1 "
                       + "and self.isWkf = true "
-                      + "and self.name not in (?2) "
-                      + "and self.name LIKE ?3",
+                      + "and self.name NOT IN (?2) "
+                      + "and self.name LIKE ?3 ",
                   workflow.getModel(),
                   skipList,
-                  wkfId + "%")
+                  wkfCode + "%")
               .fetch();
     } else {
       fields =
@@ -712,18 +829,35 @@ public class WkfService {
                   "self.type = 'button' "
                       + "and self.model = ?1 "
                       + "and self.modelField = ?2 "
-                      + "and self.name not in (?3) "
+                      + "and self.name NOT IN (?3) "
                       + "and self.name LIKE ?4",
                   workflow.getModel(),
                   modelField,
                   skipList,
-                  wkfId + "%")
+                  wkfCode + "%")
               .fetch();
     }
 
-    log.debug("Total Buttons to remove: {}", fields.size());
+    List<MetaJsonField> metaJsonFields =
+        jsonFieldRepo
+            .all()
+            .filter(
+                "self.type = 'button' "
+                    + "and self.name LIKE :code "
+                    + "and self.model = ?1 "
+                    + "and self.modelField = ?2 "
+                    + "and self.name NOT IN (?3)",
+                "com.axelor.studio.db.Wkf",
+                "attrs",
+                skipList)
+            .bind("code", wkfCode + "Transition%" + "Button")
+            .fetch();
 
-    Iterator<MetaJsonField> buttons = fields.iterator();
+    finalList = ListUtils.union(fields, metaJsonFields);
+
+    log.debug("Total Buttons to remove: {}", finalList.size());
+
+    Iterator<MetaJsonField> buttons = finalList.iterator();
 
     while (buttons.hasNext()) {
       MetaJsonField button = buttons.next();
@@ -732,7 +866,8 @@ public class WkfService {
 
       if (onClick != null) {
         for (String action : onClick.split(",")) {
-          if (!action.equals("action-group-" + wkfId)) {
+          if (!action.equals("action-group-" + wkfCode)
+              && !action.equals("action-group-" + workflow.getCode())) {
             actions.add(action);
           }
         }
@@ -744,6 +879,72 @@ public class WkfService {
     return Joiner.on(",").join(actions);
   }
 
+  @Transactional
+  public void setWkfPreviewSequence() {
+    int buttonCount = 0;
+    int newButton = 0;
+
+    for (WkfTransition transition : workflow.getTransitions()) {
+      if (transition.getIsButton()) {
+        buttonCount++;
+      }
+      if (transition.getIsButton() && transition.getConditions() == null) {
+        newButton++;
+      }
+    }
+
+    if (newButton != buttonCount && newButton > 0) {
+
+      MetaJsonField jsonField =
+          jsonFieldRepo
+              .all()
+              .filter(
+                  "self.type = :type AND self.model = :model AND self.jsonModel is null AND self.name LIKE :code")
+              .bind("type", "spacer")
+              .bind("model", "com.axelor.studio.db.Wkf")
+              .bind("code", "%" + workflow.getCode() + "%")
+              .order("sequence")
+              .fetchOne();
+      wkfSequencePreview = jsonField.getSequence();
+      return;
+    }
+
+    MetaJsonField metaJsonField =
+        jsonFieldRepo
+            .all()
+            .filter("self.type = :type AND self.model = :model AND self.jsonModel is null")
+            .bind("type", "spacer")
+            .bind("model", "com.axelor.studio.db.Wkf")
+            .order("sequence")
+            .fetchOne();
+
+    if (metaJsonField == null) {
+      wkfSequencePreview = -1;
+    } else if (buttonCount > 0) {
+      wkfSequencePreview = metaJsonField.getSequence() - (15);
+    }
+  }
+
+  public void setStatusValue() {
+
+    ActionAttrs actionAttrs = new ActionAttrs();
+    actionAttrs.setName("action-wkf-attrs-set-status-field-value");
+
+    Attribute attribute = new Attribute();
+    attribute.setExpression("eval:'1'");
+    attribute.setFieldName("wkf" + workflow.getCode() + "wkf" + getWkfFieldInfo(workflow)[0]);
+    attribute.setName("value");
+
+    List<Attribute> attributes = new ArrayList<ActionAttrs.Attribute>();
+    attributes.add(attribute);
+
+    actionAttrs.setAttributes(attributes);
+
+    String xml = XMLViews.toXml(actionAttrs, true);
+    metaService.updateMetaAction(
+        "action-wkf-attrs-set-status-field-value", "action-attrs", xml, null);
+  }
+
   public void clearNodes(Collection<WkfNode> nodes) {
 
     List<String> actions = new ArrayList<>();
@@ -751,10 +952,13 @@ public class WkfService {
     for (WkfNode node : nodes) {
       if (workflow == null) {
         workflow = node.getWkf();
-        inflector = Inflector.getInstance();
       }
       if (!node.getMetaActionSet().isEmpty()) {
         actions.add(nodeService.getActionName(node.getName()));
+      }
+
+      if (node.getMenuBuilder() != null && node.getMenuBuilder().getMetaMenu() != null) {
+        Beans.get(MenuBuilderRepo.class).remove(node.getMenuBuilder());
       }
     }
 
@@ -762,7 +966,7 @@ public class WkfService {
   }
 
   public void createTrackFlowButton() {
-    MetaJsonField trackFlow = getJsonField(wkfId + "TrackFlow", "button");
+    MetaJsonField trackFlow = getJsonField(wkfCode + "TrackFlow", "button");
     trackFlow.setSequence(wkfSequence - 47);
     trackFlow.setTitle("Track flow");
     trackFlow.setWidgetAttrs("{\"colSpan\": \"2\"}");
@@ -793,12 +997,26 @@ public class WkfService {
     ActionMethod actionMethod = new ActionMethod();
     actionMethod.setName(trackingAction);
     Call call = new Call();
-    call.setMethod("track(" + workflow.getId() + "," + "__self__)");
+    call.setMethod("track(" + workflow.getId() + "," + "__self__,false)");
     call.setController("com.axelor.studio.service.wkf.WkfTrackingService");
     actionMethod.setCall(call);
     String xml = XMLViews.toXml(actionMethod, true);
 
     metaService.updateMetaAction(trackingAction, "action-method", xml, null);
+  }
+
+  @Transactional
+  public void createPreviewTrackingAction() {
+
+    ActionMethod actionMethod = new ActionMethod();
+    actionMethod.setName(trackingActionPreview);
+    Call call = new Call();
+    call.setMethod("track(" + workflow.getId() + "," + "__self__,true)");
+    call.setController("com.axelor.studio.service.wkf.WkfTrackingService");
+    actionMethod.setCall(call);
+    String xml = XMLViews.toXml(actionMethod, true);
+
+    metaService.updateMetaAction(trackingActionPreview, "action-method", xml, null);
   }
 
   @Transactional
@@ -835,5 +1053,42 @@ public class WkfService {
       wkfFieldType = statusMetaField.getTypeName();
     }
     return new String[] {wkfFieldName, wkfFieldType};
+  }
+
+  public void manageMenuBuilder(WkfNode node) {
+
+    if (node.getIsGenerateMenu()) {
+
+      Wkf wkf = node.getWkf();
+      MenuBuilder menuBuilder = node.getMenuBuilder();
+      if (menuBuilder != null) {
+
+        String menuName =
+            String.format("%s-%s-%s", wkf.getModel(), node.getName(), (int) (Math.random() * 100));
+        Boolean isJson = wkf.getIsJson();
+        String domain = getDomain(wkf, node.getSequence());
+        menuBuilder =
+            Beans.get(MenuBuilderService.class)
+                .updateMenuBuilder(
+                    menuBuilder,
+                    wkf.getModel(),
+                    menuName,
+                    wkf.getAppBuilder(),
+                    isJson ? MetaJsonRecord.class.getName() : wkf.getModel(),
+                    wkf.getIsJson(),
+                    domain);
+      }
+    }
+  }
+
+  private String getDomain(Wkf wkf, Integer fieldValue) {
+
+    if (wkf.getIsJson()) {
+      return String.format(
+          "json_extract_integer(self.attrs, '%s') = %s",
+          wkf.getStatusField().getName(), fieldValue);
+    } else {
+      return String.format("self.%s = %s", wkf.getStatusMetaField().getName(), fieldValue);
+    }
   }
 }

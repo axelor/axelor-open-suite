@@ -98,6 +98,7 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
       task.setUnitPrice(
           (BigDecimal) productCompanyService.get(saleOrderLine.getProduct(), "salePrice", company));
     }
+    task.setDescription(saleOrderLine.getDescription());
     task.setQuantity(saleOrderLine.getQty());
     task.setSaleOrderLine(saleOrderLine);
     task.setToInvoice(

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 	<menuitem id="abs-menu-mail" name="menu-mail" if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base').getEnterpriseCommunication()" hidden="false" order="-110"
     title="Messaging" icon="fa-users" icon-background="#84429f" />
@@ -109,6 +109,7 @@
 		model="com.axelor.apps.base.db.Year" >
 		<view type="grid" name="year-grid"/>
 		<view type="form" name="year-form"/>
+		<view-param name="search-filters" value="year-filters"/>
 		<domain>self.typeSelect = 0</domain>
 	</action-view>
 
@@ -120,6 +121,7 @@
 		title="Sequences" model="com.axelor.apps.base.db.Sequence" >
 		<view type="grid" name="sequence-grid"/>
 		<view type="form" name="sequence-form"/>
+		<view-param name="search-filters" value="sequence-filters"/>
 	</action-view>
 
 	<menuitem name="admin-root-general-barcode"
@@ -253,6 +255,7 @@
 		model="com.axelor.apps.base.db.Address" >
 		<view type="grid" name="address-grid" />
 		<view type="form" name="address-form" />
+		<view-param name="search-filters" value="address-filters"/>
 		<context name="fromMain" expr="eval:true"/>
 		<context name="_duplicateFinderFields" expr=" addressL4;addressL6"/>
 	</action-view>
@@ -264,6 +267,7 @@
 		title="Bank details" model="com.axelor.apps.base.db.BankDetails" >
 		<view type="grid" name="bank-details-grid"/>
 		<view type="form" name="bank-details-form"/>
+		<view-param name="search-filters" value="bank-detail-filters"/>
 	</action-view>
 
 	<menuitem name="referential-conf-invoice-bank" parent="referential-conf"
@@ -349,7 +353,16 @@
 		<view type="grid" name="stop-reason-grid"/>
 		<view type="form" name="stop-reason-form"/>
 	</action-view>
+	
+	<menuitem name="referential-conf-sync-contact" parent="referential-conf"
+		title="Contact synchronisation" action="referential.conf.sync.contact" order="210"/>
 
+	<action-view name="referential.conf.sync.contact" title="Contact synchronisation"
+		model="com.axelor.apps.base.db.SyncContact" >
+		<view type="grid" name="sync-contact-grid"/>
+    	<view type="form" name="sync-contact-form"/>
+	</action-view>
+	
 	<menuitem name="referential-report" parent="referential-root" order="90" title="Reportings" icon="fa-bar-chart"/>
 
 	<menuitem name="referential-report-dashboards-customers"  parent="referential-report"
@@ -455,6 +468,7 @@
 		title="Countries" model="com.axelor.apps.base.db.Country" >
 		<view type="grid" name="country-grid"/>
 		<view type="form" name="country-form"/>
+		<view-param name="search-filters" value="country-filters"/>
 	</action-view>
 
 	<menuitem name="admin-root-organisation-territory-canton"
@@ -514,6 +528,7 @@
 		model="com.axelor.apps.base.db.Company" >
 		<view type="grid" name="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<view type="form" name="company-form"/>
+		<view-param name="search-filters" value="company-filters"/>
 		<context name="_showRecord" expr="eval:__repo__(Company).all().fetchOne()?.getId()"  if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
     <context name="_canNew" expr="eval:__config__.app.getApp('base').getEnableMultiCompany()"/>
 	</action-view>
@@ -528,6 +543,7 @@
 	<action-view name="company.department.all" title="Company departments" model="com.axelor.apps.base.db.CompanyDepartment">
     	<view type="grid" name="company-department-grid"/>
 	    <view type="form" name="company-department-form"/>
+	    <view-param name="search-filters" value="company-department-filters"/>
 	</action-view>
 
 	<menuitem name="company-bank-details" parent="admin-root-user-configuration" title="Bank details" action="company.bank.details"/>
@@ -604,6 +620,7 @@
 		model="com.axelor.apps.base.db.BaseBatch" >
 		<view type="grid" name="base-batch-grid"/>
 		<view type="form" name="base-batch-form"/>
+		<view-param name="search-filters" value="base-batch-filters"/>
 	</action-view>
 	
 	<menuitem name="admin-root-batch-mail" parent="admin-root-batch"
@@ -613,6 +630,7 @@
 		model="com.axelor.apps.base.db.MailBatch" >
 		<view type="grid" name="mail-batch-grid"/>
 		<view type="form" name="mail-batch-form"/>
+		<view-param name="search-filters" value="mail-batch-filters"/>
 	</action-view>
 	
 	<menuitem id="bas-mail-conf" name="mail-conf" parent="admin-root" if="__config__.app.isApp('base')"
@@ -748,6 +766,7 @@
 	  <view name="team-task-grid" type="grid"/>
 	  <view name="team-task-calendar" type="calendar"/>
 	  <view name="team-task-form" type="form"/>
+	  <view-param name="search-filters" value="team-task-filters"/>
 	  <view-param name="details-view" value="true"/>
 	  <domain>
 	    (self.assignedTo = :__user__  AND self.status NOT IN :closed_status) AND
@@ -760,6 +779,7 @@
 	  <view name="team-task-grid" type="grid"/>
 	  <view name="team-task-calendar" type="calendar"/>
 	  <view name="team-task-form" type="form"/>
+	  <view-param name="search-filters" value="team-task-filters"/>
 	  <view-param name="details-view" value="true"/>
 	  <domain>
 	    (self.assignedTo = :__user__ AND self.status NOT IN :closed_status) AND
@@ -772,6 +792,7 @@
 	  <view name="team-task-grid" type="grid"/>
 	  <view name="team-task-calendar" type="calendar"/>
 	  <view name="team-task-form" type="form"/>
+	  <view-param name="search-filters" value="team-task-filters"/>
 	  <view-param name="details-view" value="true"/>
 	  <domain>self.assignedTo = :__user__ AND self.status NOT IN :closed_status</domain>
 	  <context name="closed_status" expr="#{['closed', 'canceled']}"/>
@@ -781,7 +802,7 @@
 	  <view name="team-task-grid" type="grid"/>
 	  <view name="team-task-calendar" type="calendar"/>
 	  <view name="team-task-form" type="form"/>
-	  <view-param name="search-filters" value="task-filters"/>
+	  <view-param name="search-filters" value="team-task-filters"/>
 	  <view-param name="details-view" value="true"/>
     <domain>self.assignedTo = :__user__ AND self.typeSelect = :_typeSelect</domain>
     <context name="_typeSelect" expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TASK"/>
@@ -791,6 +812,7 @@
 	  <view name="team-task-grid" type="grid"/>
 	  <view name="team-task-calendar" type="calendar"/>
 	  <view name="team-task-form" type="form"/>
+	  <view-param name="search-filters" value="team-task-filters"/>
 	  <view-param name="details-view" value="true"/>
 	  <domain>self.createdBy = :__user__ AND self.status NOT IN :closed_status</domain>
 	  <context name="closed_status" expr="#{['closed', 'canceled']}"/>
@@ -800,7 +822,7 @@
     <view name="team-task-grid" type="grid"/>
     <view name="team-task-calendar" type="calendar"/>
     <view name="team-task-form" type="form"/>
-    <view-param name="search-filters" value="task-filters"/>
+    <view-param name="search-filters" value="team-task-filters"/>
     <view-param name="details-view" value="true"/>
     <domain>self.typeSelect = :_typeSelect</domain>
     <context name="_typeSelect" expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TASK"/>

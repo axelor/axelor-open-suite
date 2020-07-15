@@ -38,10 +38,13 @@ import com.axelor.apps.production.db.UnitCostCalculation;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.CostSheetGroupRepository;
 import com.axelor.apps.production.db.repo.CostSheetLineRepository;
+import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -225,6 +228,11 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
             break;
           }
         }
+
+        costPrice =
+            this.getComponentCostPrice(
+                product, parentProduct.getBomCompValuMethodSelect(), company);
+        break;
         // If we didn't have a computed price in cost calculation session, so we compute the price
         // from its bill of materials
       case CostSheetService.ORIGIN_BILL_OF_MATERIAL:
@@ -303,7 +311,15 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
     }
 
     if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
+
       price = (BigDecimal) productCompanyService.get(product, "purchasePrice", company);
+      price =
+          unitConversionService.convert(
+              product.getUnit(),
+              product.getPurchasesUnit() != null ? product.getPurchasesUnit() : product.getUnit(),
+              price,
+              appProductionService.getNbDecimalDigitForUnitPrice(),
+              product);
 
       BigDecimal shippingCoef =
           shippingCoefService.getShippingCoef(
@@ -312,9 +328,14 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
               company,
               new BigDecimal(9999999));
 
-      price =
-          ((BigDecimal) productCompanyService.get(product, "purchasePrice", company))
-              .multiply(shippingCoef);
+      price = price.multiply(shippingCoef);
+
+      if (product.getPurchaseCurrency() == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.MISSING_PRODUCT_PURCHASE_CURRENCY),
+            product.getFullName());
+      }
 
       price =
           currencyService.getAmountCurrencyConvertedAtDate(
@@ -330,7 +351,15 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
                 productCompanyService.get(product, "supplierCatalogList", company);
         for (SupplierCatalog supplierCatalog : supplierCatalogList) {
           if (BigDecimal.ZERO.compareTo(supplierCatalog.getPrice()) < 0) {
-            price = supplierCatalog.getPrice();
+            price =
+                unitConversionService.convert(
+                    product.getUnit(),
+                    product.getPurchasesUnit() != null
+                        ? product.getPurchasesUnit()
+                        : product.getUnit(),
+                    supplierCatalog.getPrice(),
+                    appProductionService.getNbDecimalDigitForUnitPrice(),
+                    product);
             Partner supplierPartner = supplierCatalog.getSupplierPartner();
             if (supplierPartner != null) {
               shippingCoef =
@@ -389,6 +418,11 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
             break;
           }
         }
+
+        costPrice =
+            this.getComponentCostPrice(
+                product, parentProduct.getBomCompValuMethodSelect(), company);
+        break;
 
       case CostSheetService.ORIGIN_BILL_OF_MATERIAL:
         costPrice =

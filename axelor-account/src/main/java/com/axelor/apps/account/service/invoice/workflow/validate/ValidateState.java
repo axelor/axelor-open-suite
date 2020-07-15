@@ -111,7 +111,8 @@ public class ValidateState extends WorkflowInvoice {
       invoice.setJournal(invoiceService.getJournal(invoice));
     }
 
-    if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+    if ((invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+            || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)
         && appAccountService.isApp("budget")) {
       if (!appAccountService.getAppBudget().getManageMultiBudget()) {
         this.generateBudgetDistribution(invoice);

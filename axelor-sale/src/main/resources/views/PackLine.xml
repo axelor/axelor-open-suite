@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
     <grid name="pack-line-grid" title="PackLine" model="com.axelor.apps.sale.db.PackLine">
     	<field name="product.code"/>
     	<field name="productName"/>
-    	<field name="quantity" x-sclae="2"/>
+    	<field name="quantity" x-scale="2"/>
     	<field name="unit"/>
     	<field name="price"/>
     </grid>
@@ -39,7 +39,7 @@
     </action-record>
 
     <action-record name="action-pack-line-record-type-select-onchange" model="com.axelor.apps.sale.db.PackLine">
-    	<field name="product,unit" expr="eval: null" if="typeSelect == 1"/>
+    	<field name="product,unit,productName" expr="eval: null" if="typeSelect == 1"/>
     	<field name="quantity" expr="eval: 1.00" />
     	<field name="price" expr="eval: 0.00" if="typeSelect == 1"/>
     </action-record>

@@ -334,7 +334,8 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   @Override
   @Transactional
   public void addRawMaterials(
-      long billOfMaterialId, ArrayList<LinkedHashMap<String, Object>> rawMaterials) {
+      long billOfMaterialId, ArrayList<LinkedHashMap<String, Object>> rawMaterials)
+      throws AxelorException {
     if (rawMaterials != null && !rawMaterials.isEmpty()) {
       BillOfMaterial billOfMaterial = billOfMaterialRepo.find(billOfMaterialId);
       int priority = 0;
@@ -359,13 +360,20 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   }
 
   @Transactional
-  protected BillOfMaterial createBomFromRawMaterial(long productId, int priority) {
+  protected BillOfMaterial createBomFromRawMaterial(long productId, int priority)
+      throws AxelorException {
     BillOfMaterial newBom = new BillOfMaterial();
     Product rawMaterial = productRepo.find(productId);
     newBom.setDefineSubBillOfMaterial(false);
     newBom.setPriority(priority);
     newBom.setProduct(rawMaterial);
     newBom.setQty(new BigDecimal(1));
+    if (rawMaterial.getUnit() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.BOM_MISSING_UNIT_ON_PRODUCT),
+          rawMaterial.getFullName());
+    }
     newBom.setUnit(rawMaterial.getUnit());
     newBom.setWasteRate(BigDecimal.ZERO);
     newBom.setHasNoManageStock(false);

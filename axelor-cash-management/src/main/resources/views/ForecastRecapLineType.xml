@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
     <grid name="forecast-recap-line-type-grid" title="Forecast Types" model="com.axelor.apps.cash.management.db.ForecastRecapLineType" orderBy="sequence">
        	<field name="sequence"/>
+       	<field name="name"/>
 	   	<field name="elementSelect"/>
 	   	<field name="typeSelect"/>
-	   	<field name="statusSelect"/>
     </grid>
  
 	 <form name="forecast-recap-line-type-form" title="Forecast Type" model="com.axelor.apps.cash.management.db.ForecastRecapLineType">
 	 	<panel name="mainPanel">
+	 	    <field name="name"/>
         	<field name="sequence"/>
-        	<field name="elementSelect"/>
+        	<field name="elementSelect" onChange="action-forecast-recap-element-select-onchange-record"/>
         	<field name="typeSelect"/>
             <field name="operationTypeSelect" showIf="elementSelect == 1  &amp;&amp; typeSelect == 1" selection-in="[2,3]"/>
             <field name="operationTypeSelect" showIf="elementSelect == 1  &amp;&amp; typeSelect == 2" selection-in="[1,4]"/>
@@ -25,5 +26,17 @@
             <field name="statusSelect" widget="MultiSelect" selection="hrs.expenses.status.select" showIf="elementSelect == 4"/>
 	    </panel>
 	 </form>
-    
+	 
+	 <action-record name="action-forecast-recap-element-select-onchange-record" model="com.axelor.apps.cash.management.db.ForecastRecapLineType">
+	   <field name="name" expr="eval:com.axelor.i18n.I18n.get('Invoice')" if="elementSelect == 1"/>
+	   <field name="name" expr="eval:com.axelor.i18n.I18n.get('Sale Order')" if="elementSelect == 2"/>
+	   <field name="name" expr="eval:com.axelor.i18n.I18n.get('Purchase Order')" if="elementSelect == 3"/>
+	   <field name="name" expr="eval:com.axelor.i18n.I18n.get('Expense')" if="elementSelect == 4"/>
+	   <field name="name" expr="eval:com.axelor.i18n.I18n.get('Forecast')" if="elementSelect == 5"/>
+	   <field name="name" expr="eval:com.axelor.i18n.I18n.get('Opportunity')" if="elementSelect == 6"/>
+	   <field name="name" expr="eval:com.axelor.i18n.I18n.get('Salary')" if="elementSelect == 7"/>
+	   <field name="name" expr="eval:com.axelor.i18n.I18n.get('Timetable')" if="elementSelect == 8"/>
+       <field name="name" expr="" if="!elementSelect"/>
+	 </action-record>
+	 
 </object-views>

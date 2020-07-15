@@ -126,6 +126,7 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
         .model(TeamTask.class.getName())
         .add("grid", "team-task-grid")
         .add("form", "team-task-form")
+        .param("search-filters", "team-task-filters")
         .domain(String.format("self.id in (%s)", StringTool.getIdListString(tasks)));
   }
 }

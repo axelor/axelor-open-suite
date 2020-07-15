@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
     <grid name="invoice-payment-grid" title="Payments" model="com.axelor.apps.account.db.InvoicePayment" orderBy="paymentDate">
 		<hilite if="$moment(paymentDate).diff(invoice.dueDate,'days') &gt; 0" color="warning"/>
@@ -46,6 +46,9 @@
 			<field name="statusSelect" showIf="(paymentMode.typeSelect == 2 || paymentMode.typeSelect  == 9) &amp;&amp; paymentMode.inOutSelect == 2"/>
 			<field name="statusSelect" hideIf="(paymentMode.typeSelect == 2 || paymentMode.typeSelect  == 9) &amp;&amp; paymentMode.inOutSelect == 2" selection-in="[0,1,2]"/>
 			<button name="cancelBtn" title="Cancel" readonlyIf="statusSelect == 2" icon="fa-times-circle" onClick="action-invoice-payment-method-cancel"/>
+		</panel>
+		<panel name="newInvoicePaymentPanel"  hideIf="id">
+			<button name="saveBtn" title="OK" colOffset="11" colspan="1" width="50"  onClick="action-invoice-payment-method-check-and-save,save,close"/>
 		</panel>
 	</form>
 
@@ -128,6 +131,10 @@
 	
 	<action-method name="action-invoice-payment-method-validate-mass-payment">
 		<call class="com.axelor.apps.account.web.InvoicePaymentController" method="validateMassPayment"/>
+	</action-method>
+	
+	<action-method name="action-invoice-payment-method-check-and-save">
+		<call class="com.axelor.apps.account.web.InvoicePaymentController" method="checkConditionBeforeSave"/>
 	</action-method>
 	
 </object-views>
