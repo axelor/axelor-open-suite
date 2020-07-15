@@ -237,6 +237,11 @@
 		<option value="3">Adjusting</option>
 	</selection>
 	
+	<selection name="company.partner.category.select">
+		<option value="1">Customer</option>
+		<option value="2">Supplier</option>
+	</selection>
+	
 	<selection name="company.partner.type.select">
 		<option value="1">Company</option>
 		<option value="2">Individual</option>

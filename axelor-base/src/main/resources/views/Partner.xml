@@ -899,8 +899,8 @@
 		<field name="user"  expr="#{__user__}"/>
 		<field name="team"  expr="#{__user__.activeTeam}"/>
 		<field name="language" expr="#{__config__.app.getApp('base').getDefaultPartnerLanguage()}" />
-		<field name="isCustomer" expr="true" if="_isCustomer"/>
-		<field name="isSupplier" expr="true" if="_isSupplier"/>
+		<field name="isCustomer" expr="true" if="_isCustomer || (__user__?.activeCompany?.defaultPartnerCategorySelect == 1 &amp;&amp; !_isSupplier &amp;&amp; !_isCarrier &amp;&amp; !_isSubcontractor)"/>
+		<field name="isSupplier" expr="true" if="_isSupplier || (__user__?.activeCompany?.defaultPartnerCategorySelect == 2 &amp;&amp; !_isCustomer &amp;&amp; !_isCarrier &amp;&amp; !_isSubcontractor)"/>
 		<field name="isCarrier" expr="true" if="_isCarrier"/>
 		<field name="isSubcontractor" expr="true" if="_isSubcontractor"/>
 	</action-record>

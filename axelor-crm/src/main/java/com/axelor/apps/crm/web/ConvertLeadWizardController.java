@@ -209,7 +209,19 @@ public class ConvertLeadWizardController {
     response.setAttr("department", "value", lead.getDepartment());
     response.setAttr("team", "value", lead.getTeam());
     response.setAttr("user", "value", lead.getUser());
-    response.setAttr("isProspect", "value", true);
+    if (lead.getUser() != null) {
+      if (lead.getUser().getActiveCompany().getDefaultPartnerCategorySelect()
+          == CompanyRepository.CATEGORY_CUSTOMER) {
+        response.setAttr("isCustomer", "value", true);
+      } else if (lead.getUser().getActiveCompany().getDefaultPartnerCategorySelect()
+          == CompanyRepository.CATEGORY_SUPPLIER) {
+        response.setAttr("isSupplier", "value", true);
+      } else {
+        response.setAttr("isProspect", "value", true);
+      }
+    } else {
+      response.setAttr("isProspect", "value", true);
+    }
     response.setAttr("partnerTypeSelect", "value", "1");
     response.setAttr("language", "value", appBase.getDefaultPartnerLanguage());
   }

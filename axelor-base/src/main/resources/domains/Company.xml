@@ -28,6 +28,7 @@
   	<many-to-one name="printingSettings" ref="PrintingSettings" title="Printing Settings" massUpdate="true"/>
   	
   	<integer name="defaultPartnerTypeSelect" title="Partner Type" selection="company.partner.type.select" default="1" massUpdate="true"/>
+	<integer name="defaultPartnerCategorySelect" title="Partner Category" selection="company.partner.category.select" massUpdate="true"/>
 
     <many-to-many name="tradingNameSet" ref="com.axelor.apps.base.db.TradingName" title="Trading names"/>
     <one-to-many name="tradingNamePrintingSettingsList" ref="com.axelor.apps.base.db.TradingNamePrintingSettings" mappedBy="company"/>
@@ -38,6 +39,13 @@
 
     <integer name="width" title="Width" min="0"/>
     <integer name="height" title="Height" help="Maximum height should be 60 px." min="0" max="60"/>
+    <extra-code><![CDATA[
+	
+	   	// CATEGORY SELECT
+		public static final int CATEGORY_CUSTOMER = 1;
+		public static final int CATEGORY_SUPPLIER = 2;
+	
+	]]></extra-code> 
   </entity>
   
 </domain-models>
