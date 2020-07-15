@@ -11,6 +11,7 @@
 - SaleOrder : Change title of numberOfPeriods
 - Hide Start of pack and End of pack type selection when pack feature is disabled
 - BankStatementLine : orderBy modification in AFB 120
+- EBICSTS : add new data init to bank statement file formats
 
 ## Bug Fixes
 - EXTRA HOURS : Fix missing translation
