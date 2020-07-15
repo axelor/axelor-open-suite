@@ -15,10 +15,6 @@
     	<call class="com.axelor.apps.supplychain.web.InvoiceController" method="generateSubscriptionInvoices"/>
     </action-method>
     
-    <action-method name="action-invoice-method-update-product-qty-with-pack-header-qty">
-        <call class="com.axelor.apps.supplychain.web.InvoiceController" method="updateProductQtyWithPackHeaderQty"/>
-    </action-method>
-    
     <action-validate name="action-invoice-validate-pfp-stock-move">
     	<alert message="At least one stock move is in litigation, do you really want to validate passed for payment ?" if="__repo__(StockMove).all().filter(' ? MEMBER OF self.invoiceSet and self.pfpValidateStatusSelect = 3',id).fetch().size &gt;= 1"/>
     </action-validate>

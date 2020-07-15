@@ -56,15 +56,14 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
       AccountManagementAccountService accountManagementAccountService,
-      PurchaseProductService purchaseProductService,
-      InvoiceLineRepository invoiceLineRepo) {
+      PurchaseProductService purchaseProductService) {
+
     super(
         currencyService,
         priceListService,
         appAccountService,
         analyticMoveLineService,
-        accountManagementAccountService,
-        invoiceLineRepo);
+        accountManagementAccountService);
     this.purchaseProductService = purchaseProductService;
   }
 
