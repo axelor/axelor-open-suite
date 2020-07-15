@@ -1458,8 +1458,6 @@
 "Payment vouchers","Les Saisies paiements",,
 "Payment vouchers on invoice","Saisies paiements sur facture",,
 "Payment(s) schedule(s) rejected","Échéancier(s) paiement(s) rejeté(s)",,
-<<<<<<< HEAD
-=======
 "PaymentReminder.amount","Montant T.T.C.",,
 "PaymentReminder.amount_paid","Montant payé",,
 "PaymentReminder.currency_code","Devise",,
@@ -1473,7 +1471,6 @@
 "PaymentReminder.total_amount","Montant total T.T.C.",,
 "PaymentReminder.total_amount_paid","Montant total payé",,
 "PaymentReminder.total_to_pay","Total à payer",,
->>>>>>> 73f9f16595... RM#17859: Report update payment reminder
 "Payments","Paiements",,
 "Payments assistant","Assistant paiements",,
 "Payments details","Paiements",,

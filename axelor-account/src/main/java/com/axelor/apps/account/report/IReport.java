@@ -30,5 +30,4 @@ public interface IReport {
   public static final String CHEQUE_DEPOSIT_SLIP = "ChequeDepositSlip.rptdesign";
   public static final String CASH_DEPOSIT_SLIP = "CashDepositSlip.rptdesign";
   public static final String DEBT_RECOVERY = "PaymentReminder.rptdesign";
-
 }

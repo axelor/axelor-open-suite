@@ -1458,8 +1458,6 @@
 "Payment vouchers",,,
 "Payment vouchers on invoice",,,
 "Payment(s) schedule(s) rejected",,,
-<<<<<<< HEAD
-=======
 "PaymentReminder.amount_incl","Amount incl.",,
 "PaymentReminder.amount_paid","Amount paid",,
 "PaymentReminder.currency_code","Currency",,
@@ -1473,7 +1471,6 @@
 "PaymentReminder.total_amount_incl","Total amount incl.",,
 "PaymentReminder.total_amount_paid","Total amount paid",,
 "PaymentReminder.total_to_pay","Total to pay",,
->>>>>>> 73f9f16595... RM#17859: Report update payment reminder
 "Payments",,,
 "Payments assistant",,,
 "Payments details",,,
