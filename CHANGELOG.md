@@ -2,6 +2,7 @@
 ## [Unreleased 5.3.9]
 ## Improvements
 ## Bug Fixes
+- TIMESHEET : Fix editor still being displayed even with a disabled config
 - BankDetails : Fix validation flow of iban
 
 ## [5.3.8] - 2020-07-15
@@ -28,6 +29,7 @@
 - EMPLOYEE: add first name search in advance search.
 - Invoice: Fix multiple invoices not ventilating when generated from sale order with advance payment.
 - TRAINING: Added domain to 'Required training' so it does not display itself.
+- INVOICE : Fix Subscription invoice operationSubTypeSelect change issue.
 
 ## [5.3.7] - 2020-06-26
 ## Improvements
