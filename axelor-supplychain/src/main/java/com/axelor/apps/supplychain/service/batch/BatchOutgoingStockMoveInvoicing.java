@@ -38,7 +38,7 @@ import javax.persistence.TypedQuery;
 
 public class BatchOutgoingStockMoveInvoicing extends BatchStrategy {
 
-  private StockMoveInvoiceService stockMoveInvoiceService;
+  protected StockMoveInvoiceService stockMoveInvoiceService;
 
   @Inject
   public BatchOutgoingStockMoveInvoicing(StockMoveInvoiceService stockMoveInvoiceService) {
