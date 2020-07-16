@@ -27,6 +27,7 @@
 - EMPLOYEE: add first name search in advance search.
 - Invoice: Fix multiple invoices not ventilating when generated from sale order with advance payment.
 - TRAINING: Added domain to 'Required training' so it does not display itself.
+- INVOICE : Fix Subscription invoice operationSubTypeSelect change issue.
 
 ## [5.3.7] - 2020-06-26
 ## Improvements
