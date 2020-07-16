@@ -373,6 +373,9 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     return ReportFactory.createReport(IReport.ABC_ANALYSIS, name)
         .addParam("abcAnalysisId", abcAnalysis.getId())
         .addParam("Locale", ReportSettings.getPrintingLocale(null))
+        .addParam(
+            "Timezone",
+            abcAnalysis.getCompany() != null ? abcAnalysis.getCompany().getTimezone() : null)
         .addFormat(reportType)
         .toAttach(abcAnalysis)
         .generate()

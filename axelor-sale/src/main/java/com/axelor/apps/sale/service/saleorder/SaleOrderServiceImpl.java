@@ -87,6 +87,9 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
     return ReportFactory.createReport(IReport.SALES_ORDER, name + "-${date}")
         .addParam("Locale", language)
+        .addParam(
+            "Timezone",
+            saleOrder.getCompany() != null ? saleOrder.getCompany().getTimezone() : null)
         .addParam("SaleOrderId", saleOrder.getId())
         .addParam("ProformaInvoice", proforma)
         .addFormat(format)

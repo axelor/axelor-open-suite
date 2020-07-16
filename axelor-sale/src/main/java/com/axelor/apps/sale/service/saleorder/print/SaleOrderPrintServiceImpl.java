@@ -106,6 +106,9 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
 
     return reportSetting
         .addParam("SaleOrderId", saleOrder.getId())
+        .addParam(
+            "Timezone",
+            saleOrder.getCompany() != null ? saleOrder.getCompany().getTimezone() : null)
         .addParam("Locale", locale)
         .addParam("ProformaInvoice", proforma)
         .addParam("HeaderHeight", saleOrder.getPrintingSettings().getPdfHeaderHeight())

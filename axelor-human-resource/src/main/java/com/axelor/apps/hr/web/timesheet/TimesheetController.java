@@ -508,6 +508,9 @@ public class TimesheetController {
     String fileLink =
         ReportFactory.createReport(IReport.TIMESHEET, name)
             .addParam("TimesheetId", timesheet.getId())
+            .addParam(
+                "Timezone",
+                timesheet.getCompany() != null ? timesheet.getCompany().getTimezone() : null)
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
             .toAttach(timesheet)
             .generate()

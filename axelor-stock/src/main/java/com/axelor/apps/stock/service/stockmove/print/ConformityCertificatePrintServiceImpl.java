@@ -73,6 +73,9 @@ public class ConformityCertificatePrintServiceImpl implements ConformityCertific
         ReportFactory.createReport(IReport.CONFORMITY_CERTIFICATE, title + " - ${date}");
     return reportSetting
         .addParam("StockMoveId", stockMove.getId())
+        .addParam(
+            "Timezone",
+            stockMove.getCompany() != null ? stockMove.getCompany().getTimezone() : null)
         .addParam("Locale", locale)
         .addParam("HeaderHeight", stockMove.getPrintingSettings().getPdfHeaderHeight())
         .addParam("FooterHeight", stockMove.getPrintingSettings().getPdfFooterHeight())

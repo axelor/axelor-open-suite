@@ -43,6 +43,7 @@ public class CostSheetController {
       String fileLink =
           ReportFactory.createReport(IReport.COST_SHEET, name + "-${date}")
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
+              .addParam("Timezone", getTimezone(costSheet))
               .addParam("CostSheetId", costSheetId)
               .addParam(
                   "manageCostSheetGroup",
@@ -59,5 +60,12 @@ public class CostSheetController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  private String getTimezone(CostSheet costSheet) {
+    if (costSheet.getManufOrder() == null || costSheet.getManufOrder().getCompany() == null) {
+      return null;
+    }
+    return costSheet.getManufOrder().getCompany().getTimezone();
   }
 }

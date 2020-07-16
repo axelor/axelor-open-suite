@@ -63,6 +63,10 @@ public class EmployeeController {
     String fileLink =
         ReportFactory.createReport(IReport.EMPLOYEE_ANNUAL_REPORT, name)
             .addParam("EmployeeId", Long.valueOf(employeeId))
+            .addParam(
+                "Timezone",
+                getTimezone(
+                    Beans.get(EmployeeRepository.class).find(Long.valueOf(employeeId)).getUser()))
             .addParam("YearId", Long.valueOf(yearId))
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
             .toAttach(Beans.get(EmployeeRepository.class).find(Long.valueOf(employeeId)))
@@ -113,6 +117,7 @@ public class EmployeeController {
         ReportFactory.createReport(IReport.EMPLOYEE_PHONEBOOK, name + "-${date}")
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
             .addParam("UserId", user.getId())
+            .addParam("Timezone", getTimezone(user))
             .generate()
             .getFileLink();
 
@@ -130,13 +135,21 @@ public class EmployeeController {
 
     String fileLink =
         ReportFactory.createReport(IReport.EMPLOYEE, name + "-${date}")
-            .addParam("EmployeeId", Long.valueOf(employee.getId()))
+            .addParam("EmployeeId", employee.getId())
+            .addParam("Timezone", getTimezone(employee.getUser()))
             .generate()
             .getFileLink();
 
     LOG.debug("Printing " + name);
 
     response.setView(ActionView.define(name).add("html", fileLink).map());
+  }
+
+  private String getTimezone(User user) {
+    if (user == null || user.getActiveCompany() == null) {
+      return null;
+    }
+    return user.getActiveCompany().getTimezone();
   }
 
   public void generateNewDPAE(ActionRequest request, ActionResponse response) {

@@ -63,6 +63,11 @@ public class ProductionBatchController {
         ReportFactory.createReport(IReport.WORK_IN_PROGRESS_VALUATION, name + "-${date}")
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
             .addParam(
+                "Timezone",
+                productionBatch.getCompany() != null
+                    ? productionBatch.getCompany().getTimezone()
+                    : null)
+            .addParam(
                 "companyId",
                 productionBatch.getCompany() != null ? productionBatch.getCompany().getId() : 0)
             .addParam(

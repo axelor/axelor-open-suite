@@ -107,6 +107,9 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
     String fileLink =
         rS.addParam("InvoiceId", invoiceIds)
             .addParam("Locale", language)
+            .addParam(
+                "Timezone",
+                invoice.getCompany() != null ? invoice.getCompany().getTimezone() : null)
             .addParam("InvoicesCopy", invoicesCopy)
             .addParam("HeaderHeight", invoice.getPrintingSettings().getPdfHeaderHeight())
             .addParam("FooterHeight", invoice.getPrintingSettings().getPdfFooterHeight())
