@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="userProperties">
         <structure>
             <property name="name">test</property>
@@ -90,7 +90,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor_open_suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -3004,6 +3004,7 @@ from base_app_base]]></xml-property>
                                 <text id="3425">
                                     <property name="fontSize">9pt</property>
                                     <property name="marginLeft">2pt</property>
+                                    <property name="display">inline</property>
                                     <property name="dataSet">TranslateDS</property>
                                     <list-property name="visibility">
                                         <structure>
@@ -3034,8 +3035,17 @@ from base_app_base]]></xml-property>
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF format="dd/MM/yyyy">row._outer["CreationDate"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : ]]></text-property>
                                 </text>
+                                <data id="5399">
+                                    <property name="fontSize">9pt</property>
+                                    <structure name="dateTimeFormat">
+                                        <property name="category">Short Date</property>
+                                        <property name="pattern">Short Date</property>
+                                    </structure>
+                                    <property name="display">inline</property>
+                                    <property name="resultSetColumn">CreationDate</property>
+                                </data>
                             </cell>
                         </row>
                         <row id="4381">
@@ -3163,6 +3173,10 @@ from base_app_base]]></xml-property>
                             <cell id="4385">
                                 <data id="5396">
                                     <property name="fontSize">9pt</property>
+                                    <structure name="dateTimeFormat">
+                                        <property name="category">Short Date</property>
+                                        <property name="pattern">Short Date</property>
+                                    </structure>
                                     <property name="resultSetColumn">EndValidityDate</property>
                                 </data>
                             </cell>
@@ -3493,6 +3507,10 @@ from base_app_base]]></xml-property>
                             <cell id="3865">
                                 <data id="5397">
                                     <property name="fontSize">9pt</property>
+                                    <structure name="dateTimeFormat">
+                                        <property name="category">Short Date</property>
+                                        <property name="pattern">Short Date</property>
+                                    </structure>
                                     <property name="resultSetColumn">ShipmentDate</property>
                                 </data>
                             </cell>
@@ -8693,9 +8711,9 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                     <property name="textAlign">right</property>
                     <image id="4328">
                         <property name="height">50px</property>
-                        <expression name="altText">""</expression>
                         <property name="source">file</property>
                         <expression name="uri" type="javascript">params["AttachmentPath"].value+row["salesperson_signature_path"]</expression>
+                        <expression name="altText">""</expression>
                     </image>
                     <text-data id="4329">
                         <expression name="valueExpr">row["SalemanName"]</expression>
