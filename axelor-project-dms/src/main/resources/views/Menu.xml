@@ -3,18 +3,9 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
-	<menuitem name="project-dms-root" title="Project DMS" order="-109"/>
+	<menuitem name="project-dms-root" title="Project DMS" parent="menu-project-root" action="project.dms.view" order="0"/>
 	
-	<menuitem name="project-dms-root-dms-version" title="DMS versions" parent="project-dms-root" action="project.dms.root.dms.version"/>
-
-	<action-view name="project.dms.root.dms.version" title="DMS versions" model="com.axelor.apps.projectdms.db.DMSVersion">
-		<view type="grid" name="dms-version-grid" />
-		<view type="form" name="dms-version-form" />
-	</action-view>
-	
-	<menuitem name="project-dms-root-dms-view" title="Document view" parent="project-dms-root" action="project.dms.root.dms.view"/>
-	
-	<action-view name="project.dms.root.dms.view" title="Document view">
+	<action-view name="project.dms.view" title="Document view">
 		<view type="html" name="dms"/>
 	</action-view>
 	
