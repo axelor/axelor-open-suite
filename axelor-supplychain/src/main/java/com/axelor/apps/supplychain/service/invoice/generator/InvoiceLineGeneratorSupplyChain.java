@@ -36,7 +36,6 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -196,27 +195,15 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
     if (saleOrderLine != null) {
 
-      switch (saleOrderLine.getTypeSelect()) {
-        case SaleOrderLineRepository.TYPE_END_OF_PACK:
-          invoiceLine.setIsHideUnitAmounts(saleOrderLine.getIsHideUnitAmounts());
-          invoiceLine.setIsShowTotal(saleOrderLine.getIsShowTotal());
-          break;
-
-        case SaleOrderLineRepository.TYPE_NORMAL:
-          if (saleOrderLine.getAnalyticDistributionTemplate() != null) {
-            invoiceLine.setAnalyticDistributionTemplate(
-                saleOrderLine.getAnalyticDistributionTemplate());
-            this.copyAnalyticMoveLines(saleOrderLine.getAnalyticMoveLineList(), invoiceLine);
-            analyticMoveLineList = invoiceLineService.computeAnalyticDistribution(invoiceLine);
-          } else {
-            analyticMoveLineList =
-                invoiceLineService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
-            analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
-          }
-          break;
-
-        default:
-          return invoiceLine;
+      if (saleOrderLine.getAnalyticDistributionTemplate() != null) {
+        invoiceLine.setAnalyticDistributionTemplate(
+            saleOrderLine.getAnalyticDistributionTemplate());
+        this.copyAnalyticMoveLines(saleOrderLine.getAnalyticMoveLineList(), invoiceLine);
+        analyticMoveLineList = invoiceLineService.computeAnalyticDistribution(invoiceLine);
+      } else {
+        analyticMoveLineList =
+            invoiceLineService.getAndComputeAnalyticDistribution(invoiceLine, invoice);
+        analyticMoveLineList.stream().forEach(invoiceLine::addAnalyticMoveLineListItem);
       }
 
     } else if (purchaseOrderLine != null) {

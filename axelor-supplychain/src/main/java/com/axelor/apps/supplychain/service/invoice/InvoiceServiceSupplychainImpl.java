@@ -18,9 +18,7 @@
 package com.axelor.apps.supplychain.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -34,33 +32,24 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.AdvancePayment;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.common.ObjectUtils;
-import com.axelor.db.EntityHelper;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
-    implements InvoiceServiceSupplychain {
-
-  protected InvoiceLineRepository invoiceLineRepo;
-  protected AppBaseService appBaseService;
+public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl {
 
   @Inject
   public InvoiceServiceSupplychainImpl(
@@ -73,9 +62,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       PartnerService partnerService,
       InvoiceLineService invoiceLineService,
       AccountConfigService accountConfigService,
-      MoveToolService moveToolService,
-      InvoiceLineRepository invoiceLineRepo,
-      AppBaseService appBaseService) {
+      MoveToolService moveToolService) {
     super(
         validateFactory,
         ventilateFactory,
@@ -87,8 +74,6 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
         invoiceLineService,
         accountConfigService,
         moveToolService);
-    this.invoiceLineRepo = invoiceLineRepo;
-    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -189,92 +174,5 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
           .flatMap(move -> moveToolService.getToReconcileCreditMoveLines(move).stream())
           .collect(Collectors.toList());
     }
-  }
-
-  @Override
-  public void computePackTotal(Invoice invoice) {
-    List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
-
-    if (!invoiceLineService.hasEndOfPackTypeLine(invoiceLineList)) {
-      return;
-    }
-    invoiceLineList.sort(Comparator.comparing(InvoiceLine::getSequence));
-    BigDecimal totalExTaxTotal = BigDecimal.ZERO;
-    BigDecimal totalInTaxTotal = BigDecimal.ZERO;
-
-    for (InvoiceLine invoiceLine : invoiceLineList) {
-      switch (invoiceLine.getTypeSelect()) {
-        case InvoiceLineRepository.TYPE_NORMAL:
-          totalExTaxTotal = totalExTaxTotal.add(invoiceLine.getExTaxTotal());
-          totalInTaxTotal = totalInTaxTotal.add(invoiceLine.getInTaxTotal());
-          break;
-
-        case InvoiceLineRepository.TYPE_TITLE:
-          break;
-
-        case InvoiceLineRepository.TYPE_END_OF_PACK:
-          invoiceLine.setQty(BigDecimal.ZERO);
-          invoiceLine.setExTaxTotal(
-              invoiceLine.getIsShowTotal() ? totalExTaxTotal : BigDecimal.ZERO);
-          invoiceLine.setInTaxTotal(
-              invoiceLine.getIsShowTotal() ? totalInTaxTotal : BigDecimal.ZERO);
-
-        default:
-          totalExTaxTotal = totalInTaxTotal = BigDecimal.ZERO;
-          break;
-      }
-    }
-    invoice.setInvoiceLineList(invoiceLineList);
-  }
-
-  @Override
-  public void resetPackTotal(Invoice invoice) {
-    List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
-    if (ObjectUtils.isEmpty(invoiceLineList)) {
-      return;
-    }
-    invoiceLineList
-        .stream()
-        .filter(
-            invoiceLine -> invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_END_OF_PACK)
-        .forEach(
-            invoiceLine -> {
-              invoiceLine.setIsHideUnitAmounts(Boolean.FALSE);
-              invoiceLine.setIsShowTotal(Boolean.FALSE);
-              invoiceLine.setExTaxTotal(BigDecimal.ZERO);
-              invoiceLine.setInTaxTotal(BigDecimal.ZERO);
-            });
-    invoice.setInvoiceLineList(invoiceLineList);
-  }
-
-  @Override
-  @Transactional
-  public Invoice updateProductQtyWithPackHeaderQty(Invoice invoice) {
-    List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
-    invoiceLineList.sort(Comparator.comparing(InvoiceLine::getSequence));
-    boolean isStartOfPack = false;
-    BigDecimal oldQty = BigDecimal.ZERO;
-    BigDecimal newQty = BigDecimal.ZERO;
-    int scale = appBaseService.getNbDecimalDigitForQty();
-    for (InvoiceLine invoiceLine : invoiceLineList) {
-      if (invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_START_OF_PACK
-          && !isStartOfPack) {
-        InvoiceLine oldInvoiceLine = invoiceLineRepo.find(invoiceLine.getId());
-        oldQty = oldInvoiceLine.getQty();
-        newQty = invoiceLine.getQty();
-        if (newQty.compareTo(oldQty) != 0) {
-          isStartOfPack = true;
-          oldInvoiceLine = EntityHelper.getEntity(invoiceLine);
-          oldInvoiceLine.setSubLineList(invoiceLine.getSubLineList());
-          invoiceLineRepo.save(oldInvoiceLine);
-        }
-      } else if (isStartOfPack) {
-        if (invoiceLine.getTypeSelect() == InvoiceLineRepository.TYPE_END_OF_PACK) {
-          break;
-        }
-        invoiceLineService.updateProductQty(invoiceLine, invoice, oldQty, newQty, scale);
-      }
-    }
-    return invoice;
   }
 }

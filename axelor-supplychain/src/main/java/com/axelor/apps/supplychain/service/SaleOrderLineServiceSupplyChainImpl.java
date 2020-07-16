@@ -26,18 +26,12 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.AppAccountRepository;
-import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.PriceListService;
-import com.axelor.apps.base.service.ProductMultipleQtyService;
-import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineServiceImpl;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
@@ -64,31 +58,9 @@ import javax.persistence.Query;
 public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImpl
     implements SaleOrderLineServiceSupplyChain {
 
-  protected AppAccountService appAccountService;
-  protected AnalyticMoveLineService analyticMoveLineService;
+  @Inject protected AppAccountService appAccountService;
 
-  @Inject
-  public SaleOrderLineServiceSupplyChainImpl(
-      CurrencyService currencyService,
-      PriceListService priceListService,
-      ProductMultipleQtyService productMultipleQtyService,
-      AppBaseService appBaseService,
-      AppSaleService appSaleService,
-      AccountManagementService accountManagementService,
-      SaleOrderLineRepository saleOrderLineRepo,
-      AppAccountService appAccountService,
-      AnalyticMoveLineService analyticMoveLineService) {
-    super(
-        currencyService,
-        priceListService,
-        productMultipleQtyService,
-        appBaseService,
-        appSaleService,
-        accountManagementService,
-        saleOrderLineRepo);
-    this.appAccountService = appAccountService;
-    this.analyticMoveLineService = analyticMoveLineService;
-  }
+  @Inject protected AnalyticMoveLineService analyticMoveLineService;
 
   @Override
   public void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)

@@ -9,9 +9,6 @@
 
 		<string name="code" title="Code" unique="true"/>
 		<string name="name" title="Name"/>
-        <boolean name="isShowTotal" title="Show total"/>
-        <boolean name="isHideUnitAmounts" title="Hide unit amounts"/>
-        <boolean name="doNotDisplayHeaderAndEndPack" title="Do not display the header and end of pack"/>
 		<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
 		<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
 		<one-to-many name="components" ref="com.axelor.apps.sale.db.PackLine" title="Components"/>
