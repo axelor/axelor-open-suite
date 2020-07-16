@@ -21,16 +21,13 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.exception.IExceptionMessage;
-import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
-import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceService;
 import com.axelor.db.JPA;
 import com.axelor.exception.service.TraceBackService;
@@ -309,16 +306,5 @@ public class InvoiceController {
               e.getMessage()));
       TraceBackService.trace(e);
     }
-  }
-
-  public void updateProductQtyWithPackHeaderQty(ActionRequest request, ActionResponse response) {
-    Invoice invoice = request.getContext().asType(Invoice.class);
-    if (Boolean.FALSE.equals(Beans.get(AppSaleService.class).getAppSale().getEnablePackManagement())
-        || !Beans.get(InvoiceLineService.class)
-            .isStartOfPackTypeLineQtyChanged(invoice.getInvoiceLineList())) {
-      return;
-    }
-    Beans.get(InvoiceServiceSupplychain.class).updateProductQtyWithPackHeaderQty(invoice);
-    response.setReload(true);
   }
 }

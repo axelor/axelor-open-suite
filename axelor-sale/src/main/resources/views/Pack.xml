@@ -16,9 +16,6 @@
 	    	<field name="name" colSpan="3"/>
 	    	<field name="unit" colSpan="3" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
 	    	<field name="currency" colSpan="3" canEdit="false" />
-            <field name="isShowTotal" colSpan="3"/>
-            <field name="isHideUnitAmounts" colSpan="3"/>
-            <field name="doNotDisplayHeaderAndEndPack" />
 	    	<panel-related field="components" form-view="pack-line-form" grid-view="pack-line-grid" canMove="true" orderBy="sequence" colSpan="12"/>
     	</panel>
     </form>

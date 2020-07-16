@@ -79,33 +79,4 @@ public interface InvoiceLineService {
 
   public Map<String, Object> fillPriceAndAccount(
       Invoice invoice, InvoiceLine invoiceLine, boolean isPurchase) throws AxelorException;
-
-  /**
-   * To check that invoiceLineList has "End of pack" type line.
-   *
-   * @param invoiceLineList
-   * @return
-   */
-  public boolean hasEndOfPackTypeLine(List<InvoiceLine> invoiceLineList);
-
-  /**
-   * To check that Start of pack type line quantity changed or not
-   *
-   * @param invoiceLineList
-   * @return
-   */
-  public boolean isStartOfPackTypeLineQtyChanged(List<InvoiceLine> invoiceLineList);
-
-  /**
-   * Update product qty
-   *
-   * @param invoiceLine
-   * @param invoice
-   * @param oldQty
-   * @param newQty
-   * @param scale
-   * @return
-   */
-  public InvoiceLine updateProductQty(
-      InvoiceLine invoiceLine, Invoice invoice, BigDecimal oldQty, BigDecimal newQty, int scale);
 }
