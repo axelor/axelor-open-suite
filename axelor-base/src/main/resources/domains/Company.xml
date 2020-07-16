@@ -38,6 +38,8 @@
 
     <integer name="width" title="Width" min="0"/>
     <integer name="height" title="Height" help="Maximum height should be 60 px." min="0" max="60"/>
+
+    <string name="timezone" title="Time Zone" selection="company.timezone.select"/>
   </entity>
   
 </domain-models>

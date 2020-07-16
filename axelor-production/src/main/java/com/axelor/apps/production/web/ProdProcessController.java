@@ -87,6 +87,9 @@ public class ProdProcessController {
     String fileLink =
         ReportFactory.createReport(IReport.PROD_PROCESS, prodProcessLabel + "-${date}")
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
+            .addParam(
+                "Timezone",
+                prodProcess.getCompany() != null ? prodProcess.getCompany().getTimezone() : null)
             .addParam("ProdProcessId", prodProcessId)
             .generate()
             .getFileLink();

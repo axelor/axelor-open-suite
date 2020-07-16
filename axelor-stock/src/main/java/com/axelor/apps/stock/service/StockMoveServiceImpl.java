@@ -1173,6 +1173,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     ReportSettings reportSettings =
         ReportFactory.createReport(reportType, title + "-${date}")
             .addParam("StockMoveId", stockMoveIds)
+            .addParam("Timezone", null)
             .addParam("Locale", locale);
 
     if (reportType.equals(IReport.CONFORMITY_CERTIFICATE)) {

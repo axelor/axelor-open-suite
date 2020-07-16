@@ -306,6 +306,9 @@ public class ExpenseController {
     String fileLink =
         ReportFactory.createReport(IReport.EXPENSE, name)
             .addParam("ExpenseId", expense.getId())
+            .addParam(
+                "Timezone",
+                expense.getCompany() != null ? expense.getCompany().getTimezone() : null)
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
             .toAttach(expense)
             .generate()

@@ -62,6 +62,7 @@ import com.axelor.apps.base.service.BankService;
 import com.axelor.apps.base.service.BankServiceImpl;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.BarcodeGeneratorServiceImpl;
+import com.axelor.apps.base.service.BaseReportGenerator;
 import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.base.service.CompanyServiceImpl;
 import com.axelor.apps.base.service.DMSImportWizardService;
@@ -133,6 +134,7 @@ import com.axelor.apps.message.service.TemplateMessageServiceImpl;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.base.service.ical.ICalendarEventService;
 import com.axelor.base.service.ical.ICalendarEventServiceImpl;
+import com.axelor.report.ReportGenerator;
 import com.axelor.team.db.repo.TeamTaskRepository;
 
 public class BaseModule extends AxelorModule {
@@ -198,5 +200,6 @@ public class BaseModule extends AxelorModule {
     bind(PartnerService.class).to(PartnerServiceImpl.class);
     bind(ProductCompanyService.class).to(ProductCompanyServiceImpl.class);
     bind(SearchCallService.class).to(SearchCallServiceImpl.class);
+    bind(ReportGenerator.class).to(BaseReportGenerator.class);
   }
 }
