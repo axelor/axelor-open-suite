@@ -3,6 +3,7 @@
 ## Improvements
 ## Bug Fixes
 - TIMESHEET : Fix editor still being displayed even with a disabled config
+- BankDetails : Fix validation flow of iban
 
 ## [5.3.8] - 2020-07-15
 ## Improvements
