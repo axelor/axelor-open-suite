@@ -2,6 +2,7 @@
 ## [Unreleased 5.3.9]
 ## Improvements
 ## Bug Fixes
+- BankDetails : Fix validation flow of iban
 
 ## [5.3.8] - 2020-07-15
 ## Improvements
