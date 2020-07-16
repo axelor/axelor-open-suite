@@ -208,6 +208,9 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
     return ReportFactory.createReport(IReport.BILL_OF_MATERIAL, name + "-${date}")
         .addParam("Locale", language)
+        .addParam(
+            "Timezone",
+            billOfMaterial.getCompany() != null ? billOfMaterial.getCompany().getTimezone() : null)
         .addParam("BillOfMaterialId", billOfMaterial.getId())
         .addFormat(format)
         .generate()

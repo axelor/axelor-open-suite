@@ -95,6 +95,7 @@ public class LeadController {
       String fileLink =
           ReportFactory.createReport(IReport.LEAD, title + "-${date}")
               .addParam("LeadId", leadIds)
+              .addParam("Timezone", getTimezone(lead))
               .addParam("Locale", ReportSettings.getPrintingLocale(lead.getPartner()))
               .generate()
               .getFileLink();
@@ -106,6 +107,13 @@ public class LeadController {
     } else {
       response.setFlash(I18n.get(IExceptionMessage.LEAD_1));
     }
+  }
+
+  private String getTimezone(Lead lead) {
+    if (lead.getUser() == null || lead.getUser().getActiveCompany() == null) {
+      return null;
+    }
+    return lead.getUser().getActiveCompany().getTimezone();
   }
 
   public void showLeadsOnMap(ActionRequest request, ActionResponse response) {

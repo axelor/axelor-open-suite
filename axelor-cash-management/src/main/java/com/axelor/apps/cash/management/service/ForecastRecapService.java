@@ -48,6 +48,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -1177,8 +1178,12 @@ public class ForecastRecapService {
     String title = I18n.get(ITranslation.CASH_MANAGEMENT_REPORT_TITLE);
     title += forecastRecapId;
 
+    ForecastRecap forecastRecap = JPA.find(ForecastRecap.class, forecastRecapId);
     return ReportFactory.createReport(IReport.FORECAST_RECAP, title + "-${date}")
         .addParam("ForecastRecapId", forecastRecapId.toString())
+        .addParam(
+            "Timezone",
+            forecastRecap.getCompany() != null ? forecastRecap.getCompany().getTimezone() : null)
         .addParam("Locale", ReportSettings.getPrintingLocale(null))
         .addFormat(reportType)
         .generate()

@@ -62,6 +62,8 @@ public class EmployeeBonusController {
     String fileLink =
         ReportFactory.createReport(IReport.EMPLOYEE_BONUS_MANAGEMENT, name)
             .addParam("EmployeeBonusMgtId", bonus.getId())
+            .addParam(
+                "Timezone", bonus.getCompany() != null ? bonus.getCompany().getTimezone() : null)
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
             .toAttach(bonus)
             .generate()

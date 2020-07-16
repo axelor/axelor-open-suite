@@ -70,7 +70,15 @@ public class QualityControlPrintServiceImpl {
 
     return reportSetting
         .addParam("QualityControlId", qualityControl.getId())
+        .addParam("Timezone", getTimezone(qualityControl))
         .addParam("Locale", locale)
         .addFormat(format);
+  }
+
+  private String getTimezone(QualityControl qualityControl) {
+    if (qualityControl.getProject() == null || qualityControl.getProject().getCompany() == null) {
+      return null;
+    }
+    return qualityControl.getProject().getCompany().getTimezone();
   }
 }
