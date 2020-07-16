@@ -2,6 +2,7 @@
 ## [Unreleased 5.3.9]
 ## Improvements
 ## Bug Fixes
+- TIMESHEET : Fix editor still being displayed even with a disabled config
 
 ## [5.3.8] - 2020-07-15
 ## Improvements
