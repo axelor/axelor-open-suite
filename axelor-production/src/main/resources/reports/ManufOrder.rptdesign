@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -34,6 +34,9 @@
             <property name="isRequired">true</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">1</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
@@ -64,6 +67,9 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -76,6 +82,9 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">axelor</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -1626,6 +1635,15 @@ INNER JOIN
             <page-footer>
                 <grid id="4631">
                     <property name="width">27.887083333333333cm</property>
+                    <list-property name="boundDataColumns">
+                        <structure>
+                            <property name="name">Column Binding</property>
+                            <text-property name="displayName">Today_date</text-property>
+                            <expression name="expression" type="javascript">new Date()</expression>
+                            <property name="dataType">date</property>
+                            <property name="allowExport">true</property>
+                        </structure>
+                    </list-property>
                     <column id="4732">
                         <property name="width">1.6in</property>
                     </column>
@@ -1706,10 +1724,13 @@ INNER JOIN
                         </cell>
                         <cell id="4637">
                             <property name="verticalAlign">middle</property>
-                            <text id="4826">
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF format="d MMM y kk:mm">BirtDateTime.now()</VALUE-OF>]]></text-property>
-                            </text>
+                            <data id="4850">
+                                <structure name="dateTimeFormat">
+                                    <property name="category">Long Date</property>
+                                    <property name="pattern">Long Date</property>
+                                </structure>
+                                <property name="resultSetColumn">Column Binding</property>
+                            </data>
                         </cell>
                         <cell id="4817">
                             <property name="verticalAlign">middle</property>
@@ -3659,9 +3680,9 @@ INNER JOIN
                                         <property name="borderTopWidth">thin</property>
                                         <property name="textAlign">center</property>
                                         <image id="4578">
-                                            <expression name="altText">""</expression>
                                             <property name="source">file</property>
                                             <expression name="uri" type="javascript">params["AttachmentPath"].value+row["barcode_picture"]</expression>
+                                            <expression name="altText">""</expression>
                                         </image>
                                     </cell>
                                     <cell id="4173">
@@ -4216,12 +4237,12 @@ else dataSetRow["planned_end_datet"]</expression>
                                             <property name="backgroundColor">#FFFFFF</property>
                                             <property name="textAlign">center</property>
                                             <image id="4531">
-                                                <expression name="altText">""</expression>
                                                 <structure name="toc"/>
                                                 <property name="source">file</property>
                                                 <property name="fitToContainer">true</property>
                                                 <property name="proportionalScale">true</property>
                                                 <expression name="uri" type="javascript">params["AttachmentPath"].value+row["bar_code_path"]</expression>
+                                                <expression name="altText">""</expression>
                                             </image>
                                         </cell>
                                     </row>
@@ -4630,9 +4651,9 @@ else dataSetRow["planned_end_datet"]</expression>
                                                             <property name="borderTopWidth">thin</property>
                                                             <property name="textAlign">center</property>
                                                             <image id="4586">
-                                                                <expression name="altText">""</expression>
                                                                 <property name="source">file</property>
                                                                 <expression name="uri" type="javascript">params["AttachmentPath"].value+row["barcode_picture"]</expression>
+                                                                <expression name="altText">""</expression>
                                                             </image>
                                                         </cell>
                                                         <cell id="4509">
