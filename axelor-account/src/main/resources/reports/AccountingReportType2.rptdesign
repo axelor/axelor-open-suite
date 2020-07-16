@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -915,11 +915,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         </cell>
                         <cell id="3122">
                             <property name="verticalAlign">top</property>
-                            <text id="3128">
+                            <data id="4224">
                                 <property name="fontSize">9pt</property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF>row["report_date_edition"]</VALUE-OF>]]></text-property>
-                            </text>
+                                <property name="resultSetColumn">report_date_edition</property>
+                            </data>
                         </cell>
                     </row>
                 </grid>
