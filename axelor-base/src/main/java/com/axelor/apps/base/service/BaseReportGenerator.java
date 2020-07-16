@@ -127,7 +127,8 @@ public class BaseReportGenerator extends ReportGenerator {
         opts.setOption(IPDFRenderOption.PDF_HYPHENATION, true);
       }
 
-      TimeZone timeZone = getTimezone(params.get("Timezone") != null ? params.get("Timezone").toString() : null);
+      TimeZone timeZone =
+          getTimezone(params.get("Timezone") != null ? params.get("Timezone").toString() : null);
 
       task.setLocale(locale);
       task.setTimeZone(timeZone);
