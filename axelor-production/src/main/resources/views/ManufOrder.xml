@@ -96,7 +96,7 @@
 			<field name="manufOrderSeq"  readonly="true" css="bold" colSpan="2"/>
 			<field name="prioritySelect" readonlyIf="statusSelect == 6" colSpan="2"/>
 			<field name="company" widget="SuggestBox" onChange="action-manuf-order-record-empty-workshop" canEdit="false" readonlyIf="statusSelect &gt; 1" colSpan="2" form-view="company-form" grid-view="company-grid"/>
-			<field name="workshopStockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="2" canEdit="false" onChange="action-manuf-order-record-workshop-onchange" readonlyIf="statusSelect &gt; 1" if="__config__.app.getApp('production').getManageWorkshop()" domain="self.company = :company and self.typeSelect = 1 and self.isWorkshop = true"/>
+			<field name="workshopStockLocation" required="true" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="2" canEdit="false" onChange="action-manuf-order-record-workshop-onchange" readonlyIf="statusSelect &gt; 1" if="__config__.app.getApp('production').getManageWorkshop()" domain="self.company = :company and self.typeSelect = 1 and self.isWorkshop = true"/>
 			<field name="$viewerIsOutsourcing" showTitle="false" readonly="true" showIf="$readonly()" colSpan="2" depends="prodProcess.outsourcing">
 				<viewer>
 					<![CDATA[
