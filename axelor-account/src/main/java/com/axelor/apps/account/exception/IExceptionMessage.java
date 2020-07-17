@@ -619,6 +619,9 @@ public interface IExceptionMessage {
   static final String MOVE_CANCEL_3 = /*$$(*/
       "So many accounting operations are used on this move, so move can't be canceled" /*)*/;
 
+  static final String MOVE_CANCEL_4 = /*$$(*/
+      "The move is validated and so can not be canceled" /*)*/;
+
   static final String INVOICE_CANCEL_1 = /*$$(*/
       "Invoice is passed in doubfult debit, and can't be canceled" /*)*/;
 
