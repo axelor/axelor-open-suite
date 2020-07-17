@@ -233,18 +233,17 @@
 	    		</panel>
 	    		<panel name="variantsPanel" title="Variants" showTitle="false" if="__config__.app.getApp('base').getManageProductVariants()">
 	      			<panel name="parentVariantPanel" showIf="!parentProduct" colSpan="12">
-	        			<field name="productVariantConfig" colSpan="12" canSelect="false" canNew="true">
-				        	<editor x-show-titles="false">
-					            <field name="productVariantAttr1" canNew="true" onChange="action-product-variant-config-attrs-domain,action-product-variant-config-record-reset-variant-value1" form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
-					            <field name="productVariantValue1Set" showIf="productVariantAttr1" colSpan="6" widget="TagSelect" canNew="false" onSelect="action-product-nested-product-variant-config-attrs-domain" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
-					            <field name="productVariantAttr2" showIf="productVariantAttr1" canNew="true" onChange="action-product-variant-config-attrs-domain,action-product-variant-config-record-reset-variant-value2" form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
-					            <field name="productVariantValue2Set" showIf="productVariantAttr2" colSpan="6" widget="TagSelect" canNew="false" onSelect="action-product-nested-product-variant-config-attrs-domain" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
-					            <field name="productVariantAttr3" showIf="productVariantAttr2" canNew="true" onChange="action-product-variant-config-attrs-domain,action-product-variant-config-record-reset-variant-value3" form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
-					            <field name="productVariantValue3Set" showIf="productVariantAttr3" colSpan="6" widget="TagSelect" canNew="false" onSelect="action-product-nested-product-variant-config-attrs-domain" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
-					            <field name="productVariantAttr4" showIf="productVariantAttr3" canNew="true" onChange="action-product-variant-config-attrs-domain,action-product-variant-config-record-reset-variant-value4" form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
-					            <field name="productVariantValue4Set" showIf="productVariantAttr4" colSpan="6" widget="TagSelect" canNew="false" onSelect="action-product-nested-product-variant-config-attrs-domain" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
-				          	</editor>
-	        			</field>
+	        			<field name="productVariantConfig" canEdit="true" colSpan="6" canSelect="true" canNew="true"/>
+				        <panel name="productVariantConfigPanel" showIf="productVariantConfig" colSpan="12">
+                             <field name="productVariantConfig.productVariantAttr1" showTitle="false" form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
+                             <field name="productVariantConfig.productVariantValue1Set" showTitle="false" showIf="productVariantConfig.productVariantAttr1" colSpan="6" widget="TagSelect" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+                             <field name="productVariantConfig.productVariantAttr2" showTitle="false" showIf="productVariantConfig.productVariantAttr1" form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
+                             <field name="productVariantConfig.productVariantValue2Set" showTitle="false" showIf="productVariantConfig.productVariantAttr2" colSpan="6" widget="TagSelect" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+                             <field name="productVariantConfig.productVariantAttr3" showTitle="false" showIf="productVariantConfig.productVariantAttr2" form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
+                             <field name="productVariantConfig.productVariantValue3Set" showTitle="false" showIf="productVariantConfig.productVariantAttr3" colSpan="6" widget="TagSelect" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+                             <field name="productVariantConfig.productVariantAttr4" showTitle="false" showIf="productVariantConfig.productVariantAttr3" form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
+                             <field name="productVariantConfig.productVariantValue4Set" showTitle="false" showIf="productVariantConfig.productVariantAttr4" colSpan="6" widget="TagSelect" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+                        </panel>
 	        			<button name="generateProductVariantBtn" title="Generate product variants" onClick="save,action-product-method-generate-product-variant"/>
 						<field name="manageVariantPrice"/>
 	        			<panel-dashlet name="productVariantPanel" colSpan="12" action="action-product-view-product-variant" showIf="id" />

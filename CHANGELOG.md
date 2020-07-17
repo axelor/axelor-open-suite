@@ -4,6 +4,7 @@
 ## Bug Fixes
 - TIMESHEET : Fix editor still being displayed even with a disabled config
 - BankDetails : Fix validation flow of iban
+- Product: To select many values at the same time replaced from productVariantConfig's editor to the panel.
 
 ## [5.3.8] - 2020-07-15
 ## Improvements
