@@ -21,6 +21,10 @@
 				    <field name="onlinePaymentMethodSet" colSpan="12" showIf="manageInvoices &amp;&amp; canPayOnline"/>
 		    	</panel>
 		    	</panel>
+		    <panel name="customerPortalConfigPanel" title="Customer portal configuration" colSpan="12">
+		    	<field name="enableDms" widget="boolean-switch"/>
+		    	<field name="enableTaskEditor" widget="boolean-switch"/>
+		    </panel>
 		</panel>
 				        
 		<panel-mail name="mailPanel">
