@@ -7,6 +7,7 @@
         <field name="sequence" width="100"/>
         <field name="title" widget="html"/>
         <field name="ignoreTheLine"/>
+        <button name="testTemplateLineBtn" title="Test" icon="fa-file-text-o" onClick="save,action-print-template-line-view-open-test-line"/>
     </grid>
 
     <form name="print-template-line-form" title="Print template line" model="com.axelor.apps.base.db.PrintTemplateLine" width="large">
@@ -19,7 +20,8 @@
             <panel-related name="templateContextPanel" field="templateContextList" colSpan="12"/>
             <field name="conditions" widget="CodeEditor" x-code-syntax="groovy" colSpan="12" help="Groovy conditions"/>
             <panel-related name="printTemplateLineListPanel" field="printTemplateLineList" grid-view="print-template-line-grid" form-view="print-template-line-form" colSpan="12" orderBy="sequence" canMove="true"/>
-            <field name="parent" hidden="true"/>
+            <button name="testTemplateLineBtn" title="Test" icon="fa-file-text-o" onClick="save,action-print-template-line-view-open-test-line" showIf="id" colSpan="4" colOffset="4"/>
+   			<field name="parent" hidden="true"/>
         </panel>
     </form>
 

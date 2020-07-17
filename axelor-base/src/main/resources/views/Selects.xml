@@ -517,5 +517,9 @@
        <option value="1">Portrait</option>
        <option value="2">Landscape</option>
     </selection>
+    
+    <selection name="print.template.line.test.reference.select">
+    	<option value="Default" order="0" hidden="true">Default</option>
+    </selection>
 
 </object-views>
