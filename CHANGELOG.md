@@ -22,6 +22,7 @@
 - BPM : Add overview of the result of the wkf.
 - SUPPLIER PORTAL : Creation of new Supplier portal
 - INVOICE : Added the possibility to add a watermark to the printings
+- Reports: Manage locale, date format and timezone following company configuration.
 
 ## Improvements
 - USER : Default User language is based on application.locale from application.properties
