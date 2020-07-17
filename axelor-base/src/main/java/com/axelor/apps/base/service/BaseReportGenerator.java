@@ -17,10 +17,10 @@
  */
 package com.axelor.apps.base.service;
 
-import com.axelor.app.internal.AppFilter;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.report.ReportGenerator;
 import com.google.common.base.Preconditions;
@@ -68,13 +68,14 @@ public class BaseReportGenerator extends ReportGenerator {
    * @throws IOException if an I/O exception occurs
    * @throws BirtException if rendering fails
    */
+  @Override
   public void generate(
       OutputStream output, String designName, String format, Map<String, Object> params)
       throws IOException, BirtException {
-    generate(output, designName, format, params, AppFilter.getLocale());
+    generate(output, designName, format, params, ReportingTool.getCompanyLocale());
   }
 
-  private TimeZone getTimezone(String tz) {
+  protected TimeZone getTimezone(String tz) {
     TimeZone timeZone = TimeZone.getDefault();
     if (ObjectUtils.isEmpty(tz) && AuthUtils.getUser() != null) {
       if (AuthUtils.getUser().getActiveCompany() != null) {
@@ -99,6 +100,7 @@ public class BaseReportGenerator extends ReportGenerator {
    * @throws BirtException if rendering fails
    */
   @SuppressWarnings("unchecked")
+  @Override
   public void generate(
       OutputStream output,
       String designName,
@@ -167,9 +169,10 @@ public class BaseReportGenerator extends ReportGenerator {
    * @throws IOException if an I/O exception occurs
    * @throws BirtException if rendering fails
    */
+  @Override
   public File generate(String designName, String format, Map<String, Object> params)
       throws IOException, BirtException {
-    return generate(designName, format, params, AppFilter.getLocale());
+    return generate(designName, format, params, ReportingTool.getCompanyLocale());
   }
 
   /**
@@ -183,6 +186,7 @@ public class BaseReportGenerator extends ReportGenerator {
    * @throws IOException if an I/O exception occurs
    * @throws BirtException if rendering fails
    */
+  @Override
   public File generate(String designName, String format, Map<String, Object> params, Locale locale)
       throws IOException, BirtException {
     Preconditions.checkNotNull(designName, "no report design name given");
@@ -209,6 +213,7 @@ public class BaseReportGenerator extends ReportGenerator {
         }
       }
     } catch (Exception e) {
+      TraceBackService.trace(e);
     }
   }
 }

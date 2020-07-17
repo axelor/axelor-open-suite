@@ -22,6 +22,7 @@
 - BPM : Add overview of the result of the wkf.
 - SUPPLIER PORTAL : Creation of new Supplier portal
 - INVOICE : Added the possibility to add a watermark to the printings
+- Reports: Manage locale, date format and timezone following company configuration.
 
 ## Improvements
 - USER : Default User language is based on application.locale from application.properties
@@ -43,3 +44,4 @@
 - Studio: Add and fixed attributes of model and fields for import and export app.
 - EMPLOYEE : add button for Employee.rptdesign report on form.
 - XML : Update all xml files XSD version to AOP 5.3.
+- INVOICE : Change Invoicing menu translation.
