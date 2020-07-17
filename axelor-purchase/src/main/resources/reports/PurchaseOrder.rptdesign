@@ -6383,6 +6383,10 @@ row["first_name"]
                                     <property name="overflow">hidden</property>
                                     <data id="4635">
                                         <property name="fontSize">8pt</property>
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
+                                        </structure>
                                         <property name="textAlign">left</property>
                                         <property name="resultSetColumn">desired_deliv_date</property>
                                     </data>

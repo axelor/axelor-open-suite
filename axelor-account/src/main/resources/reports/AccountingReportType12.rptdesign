@@ -1229,6 +1229,10 @@ order by Tax.code ASC]]></xml-property>
                         <text-property name="text">Date d'édition : </text-property>
                     </label>
                     <data id="4177">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="display">inline</property>
                         <property name="resultSetColumn">ReportDateEdition</property>
                     </data>
@@ -1241,6 +1245,10 @@ order by Tax.code ASC]]></xml-property>
                         <text-property name="text">Du : </text-property>
                     </label>
                     <data id="4175">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="display">inline</property>
                         <property name="resultSetColumn">date_from</property>
                     </data>
@@ -1253,6 +1261,10 @@ order by Tax.code ASC]]></xml-property>
                         <text-property name="text">Au : </text-property>
                     </label>
                     <data id="4176">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="display">inline</property>
                         <property name="resultSetColumn">date_to</property>
                     </data>

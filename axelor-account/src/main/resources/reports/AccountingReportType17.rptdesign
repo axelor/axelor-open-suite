@@ -1702,7 +1702,8 @@ AND Asset.company = AccountingReport.company]]></xml-property>
                             <data id="5641">
                                 <property name="fontFamily">sans-serif</property>
                                 <structure name="dateTimeFormat">
-                                    <property name="category">Unformatted</property>
+                                    <property name="category">Short Date</property>
+                                    <property name="pattern">Short Date</property>
                                 </structure>
                                 <property name="resultSetColumn">report_date</property>
                             </data>
@@ -2090,7 +2091,7 @@ AND Asset.company = AccountingReport.company]]></xml-property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
                     </text>
                     <data id="5639">
                         <property name="fontFamily">sans-serif</property>
@@ -2139,7 +2140,7 @@ AND Asset.company = AccountingReport.company]]></xml-property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
                     </text>
                     <data id="5640">
                         <property name="fontFamily">sans-serif</property>

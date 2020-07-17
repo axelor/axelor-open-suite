@@ -852,6 +852,10 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
                 </cell>
                 <cell id="514">
                     <data id="3152">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="resultSetColumn">ReportDate</property>
                     </data>
                 </cell>
@@ -975,6 +979,10 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
                 </cell>
                 <cell id="516">
                     <data id="3153">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="resultSetColumn">date_from</property>
                     </data>
                 </cell>
@@ -994,6 +1002,10 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
                 </cell>
                 <cell id="3149">
                     <data id="3154">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="resultSetColumn">date_to</property>
                     </data>
                 </cell>

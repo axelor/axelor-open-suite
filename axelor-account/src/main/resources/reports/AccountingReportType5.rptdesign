@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -527,6 +527,10 @@ left outer join base_currency as Currency on AccountingReport.currency = Currenc
                         </cell>
                         <cell id="3122">
                             <data id="3160">
+                                <structure name="dateTimeFormat">
+                                    <property name="category">Short Date</property>
+                                    <property name="pattern">Short Date</property>
+                                </structure>
                                 <property name="resultSetColumn">ReportDateEdition</property>
                             </data>
                         </cell>
@@ -715,6 +719,10 @@ left outer join base_currency as Currency on AccountingReport.currency = Currenc
                 </cell>
                 <cell id="514">
                     <data id="3153">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="resultSetColumn">ReportDate</property>
                     </data>
                 </cell>
@@ -744,6 +752,10 @@ left outer join base_currency as Currency on AccountingReport.currency = Currenc
                 </cell>
                 <cell id="515">
                     <data id="3154">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="resultSetColumn">PeriodName</property>
                     </data>
                 </cell>
@@ -762,6 +774,10 @@ left outer join base_currency as Currency on AccountingReport.currency = Currenc
                 </cell>
                 <cell id="516">
                     <data id="3151">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="resultSetColumn">DateFrom</property>
                     </data>
                 </cell>
@@ -780,6 +796,10 @@ left outer join base_currency as Currency on AccountingReport.currency = Currenc
                 </cell>
                 <cell id="3137">
                     <data id="3152">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="resultSetColumn">DateTo</property>
                     </data>
                 </cell>
