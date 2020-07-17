@@ -1011,6 +1011,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <property name="verticalAlign">top</property>
                             <data id="4307">
                                 <property name="fontSize">9pt</property>
+                                <structure name="dateTimeFormat">
+                                    <property name="category">Short Date</property>
+                                    <property name="pattern">Short Date</property>
+                                </structure>
                                 <property name="resultSetColumn">report_date_edition</property>
                             </data>
                         </cell>
@@ -1340,11 +1344,15 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
                     </text>
                 </cell>
                 <cell id="4129">
                     <data id="4304">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="resultSetColumn">report_date</property>
                     </data>
                 </cell>
@@ -1486,11 +1494,15 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
                     </text>
                 </cell>
                 <cell id="4130">
                     <data id="4305">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="resultSetColumn">date_from</property>
                     </data>
                 </cell>
@@ -1533,11 +1545,15 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
                     </text>
                 </cell>
                 <cell id="505">
                     <data id="4306">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="resultSetColumn">date_to</property>
                     </data>
                 </cell>

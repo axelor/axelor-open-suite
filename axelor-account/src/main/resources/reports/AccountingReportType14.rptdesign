@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -630,6 +630,10 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
                         </cell>
                         <cell id="3122">
                             <data id="3208">
+                                <structure name="dateTimeFormat">
+                                    <property name="category">Short Date</property>
+                                    <property name="pattern">Short Date</property>
+                                </structure>
                                 <property name="resultSetColumn">ReportDateEdition</property>
                             </data>
                         </cell>
@@ -832,7 +836,7 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
                     <label id="520">
                         <property name="fontWeight">bold</property>
                         <property name="textAlign">right</property>
-                        <text-property name="text">PERIODE :</text-property>
+                        <text-property name="text">PERIODE : </text-property>
                     </label>
                 </cell>
                 <cell id="515">
@@ -850,7 +854,7 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
                     <label id="521">
                         <property name="fontWeight">bold</property>
                         <property name="textAlign">right</property>
-                        <text-property name="text">DU :</text-property>
+                        <text-property name="text">DU : </text-property>
                     </label>
                 </cell>
                 <cell id="516">
@@ -873,7 +877,7 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
                     <label id="522">
                         <property name="fontWeight">bold</property>
                         <property name="textAlign">right</property>
-                        <text-property name="text">AU :</text-property>
+                        <text-property name="text">AU : </text-property>
                     </label>
                 </cell>
                 <cell id="548">

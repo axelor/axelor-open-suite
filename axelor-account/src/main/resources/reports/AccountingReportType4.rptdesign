@@ -833,6 +833,10 @@ left outer join base_currency as Currency on AccountingReport.currency = Currenc
                         <cell id="3122">
                             <data id="4223">
                                 <property name="fontSize">9pt</property>
+                                <structure name="dateTimeFormat">
+                                    <property name="category">Short Date</property>
+                                    <property name="pattern">Short Date</property>
+                                </structure>
                                 <property name="resultSetColumn">ReportDateEdition</property>
                             </data>
                         </cell>
@@ -1006,6 +1010,10 @@ left outer join base_currency as Currency on AccountingReport.currency = Currenc
                 </cell>
                 <cell id="534">
                     <data id="4220">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="resultSetColumn">date</property>
                     </data>
                 </cell>
@@ -1065,6 +1073,10 @@ left outer join base_currency as Currency on AccountingReport.currency = Currenc
                 </cell>
                 <cell id="515">
                     <data id="4221">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="resultSetColumn">date_from</property>
                     </data>
                 </cell>
@@ -1094,6 +1106,10 @@ left outer join base_currency as Currency on AccountingReport.currency = Currenc
                 </cell>
                 <cell id="516">
                     <data id="4222">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="resultSetColumn">date_to</property>
                     </data>
                 </cell>

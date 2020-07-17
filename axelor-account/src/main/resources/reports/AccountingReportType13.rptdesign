@@ -548,6 +548,10 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
                         <cell id="3122">
                             <data id="3136">
                                 <property name="fontSize">9pt</property>
+                                <structure name="dateTimeFormat">
+                                    <property name="category">Short Date</property>
+                                    <property name="pattern">Short Date</property>
+                                </structure>
                                 <property name="resultSetColumn">ReportDateEdition</property>
                             </data>
                         </cell>
@@ -734,6 +738,10 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
                 </cell>
                 <cell id="514">
                     <data id="3131">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="resultSetColumn">ReportDate</property>
                     </data>
                 </cell>
@@ -767,12 +775,16 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
                         <property name="textAlign">right</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<B><VALUE-OF>if(row["date_from"] != null){
-"DU :"
+"DU : "
 }</VALUE-OF></B>]]></text-property>
                     </text>
                 </cell>
                 <cell id="3069">
                     <data id="3132">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="resultSetColumn">date_from</property>
                     </data>
                 </cell>
@@ -787,12 +799,16 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
                         <property name="textAlign">right</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<B><VALUE-OF>if(row["date_to"] != null){
-"AU:"
+"AU : "
 }</VALUE-OF></B>]]></text-property>
                     </text>
                 </cell>
                 <cell id="516">
                     <data id="3133">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="resultSetColumn">date_to</property>
                     </data>
                 </cell>
@@ -1113,6 +1129,10 @@ row["credit"]
                             <property name="borderRightWidth">thin</property>
                             <data id="3134">
                                 <property name="fontSize">9pt</property>
+                                <structure name="dateTimeFormat">
+                                    <property name="category">Short Date</property>
+                                    <property name="pattern">Short Date</property>
+                                </structure>
                                 <property name="resultSetColumn">date</property>
                             </data>
                         </cell>
