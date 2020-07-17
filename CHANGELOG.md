@@ -13,6 +13,7 @@
 - INVOICE : corrected the possibility to add a payment when the amount remaining is inferior or equal to 0.
 - Invoice : Fix multiple invoices not ventilating when generated from sale order with advance payment 
 - TIMESHEET : Fix editor still being displayed even with a disabled config
+- ACCOUNTING MOVE : remove all possibility to cancel a validate move.
 
 ## [5.2.12] - 2020-06-19
 ## Improvements
