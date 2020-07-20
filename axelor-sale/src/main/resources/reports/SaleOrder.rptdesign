@@ -3035,7 +3035,7 @@ from base_app_base]]></xml-property>
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : ]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
                                 </text>
                                 <data id="5399">
                                     <property name="fontSize">9pt</property>
@@ -3753,10 +3753,14 @@ else if(row["contactPartnerTitleSelect"] == "4"){"Prof."}
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
                     </text>
                     <data id="5398">
                         <property name="fontSize">9pt</property>
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="display">inline</property>
                         <property name="resultSetColumn">deliveryDate</property>
                     </data>
@@ -5529,6 +5533,10 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                                         <property name="textAlign">center</property>
                                         <data id="4584">
                                             <property name="fontSize">8pt</property>
+                                            <structure name="dateTimeFormat">
+                                                <property name="category">Short Date</property>
+                                                <property name="pattern">Short Date</property>
+                                            </structure>
                                             <property name="textAlign">center</property>
                                             <property name="resultSetColumn">EstimatedDeliveryDate</property>
                                         </data>

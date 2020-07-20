@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -1379,12 +1379,14 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                         </cell>
                         <cell id="6213">
                             <property name="verticalAlign">middle</property>
-                            <text id="6214">
-                                <property name="fontFamily">sans-serif</property>
+                            <data id="6414">
                                 <property name="fontSize">9pt</property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF format="dd MMM yyyy hh:mm">row["report_date"]</VALUE-OF>]]></text-property>
-                            </text>
+                                <structure name="dateTimeFormat">
+                                    <property name="category">Short Date</property>
+                                    <property name="pattern">Short Date</property>
+                                </structure>
+                                <property name="resultSetColumn">report_date</property>
+                            </data>
                         </cell>
                         <cell id="6216">
                             <auto-text id="6217">
@@ -1520,7 +1522,6 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                                 <property name="overflow">hidden</property>
                                 <property name="height">35px</property>
                                 <property name="width">154px</property>
-                                <expression name="altText">""</expression>
                                 <property name="dataSet">BankReconciliationDS</property>
                                 <list-property name="boundDataColumns">
                                     <structure>
@@ -1570,6 +1571,7 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                                 <property name="source">file</property>
                                 <property name="proportionalScale">true</property>
                                 <expression name="uri" type="javascript">params["AttachmentPath"]+row["logo_path"]</expression>
+                                <expression name="altText">""</expression>
                             </image>
                         </cell>
                         <cell id="6058">
@@ -2006,6 +2008,10 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                 </cell>
                 <cell id="510">
                     <data id="6410">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="resultSetColumn">report_date</property>
                     </data>
                 </cell>
@@ -3141,6 +3147,10 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                 </cell>
                 <cell id="5199">
                     <data id="6412">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="resultSetColumn">report_date</property>
                     </data>
                 </cell>
@@ -3632,11 +3642,14 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                                     <property name="borderLeftStyle">none</property>
                                     <property name="borderRightStyle">none</property>
                                     <property name="borderTopStyle">none</property>
-                                    <text id="6026">
+                                    <data id="6413">
                                         <property name="fontFamily">sans-serif</property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["to_date"]</VALUE-OF>]]></text-property>
-                                    </text>
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
+                                        </structure>
+                                        <property name="resultSetColumn">to_date</property>
+                                    </data>
                                 </cell>
                                 <cell id="5255">
                                     <property name="borderBottomStyle">none</property>

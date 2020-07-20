@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="userProperties">
         <structure>
             <property name="name">Data Cube.Lines.x</property>
@@ -1572,6 +1572,10 @@ GROUP BY date
                     <data id="4874">
                         <property name="fontSize">14pt</property>
                         <property name="fontWeight">bold</property>
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="textAlign">center</property>
                         <property name="display">inline</property>
                         <property name="resultSetColumn">from_date</property>
@@ -1582,11 +1586,15 @@ GROUP BY date
                         <property name="textAlign">center</property>
                         <property name="display">inline</property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="^">" - "</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[&amp;nbsp;<VALUE-OF format="^">" - "</VALUE-OF>&amp;nbsp;]]></text-property>
                     </text>
                     <data id="4873">
                         <property name="fontSize">14pt</property>
                         <property name="fontWeight">bold</property>
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="textAlign">center</property>
                         <property name="display">inline</property>
                         <property name="resultSetColumn">to_date</property>
@@ -1733,8 +1741,17 @@ GROUP BY date
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
                     <property name="verticalAlign">top</property>
+                    <label id="4878">
+                        <property name="display">inline</property>
+                        <text-property name="text"> </text-property>
+                    </label>
                     <data id="4695">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="resultSetColumn">publicationDateTime</property>
                     </data>
                 </cell>
@@ -3164,11 +3181,15 @@ GROUP BY date
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>&amp;nbsp;]]></text-property>
                                 </text>
                                 <data id="4875">
                                     <property name="fontSize">14pt</property>
                                     <property name="fontWeight">normal</property>
+                                    <structure name="dateTimeFormat">
+                                        <property name="category">Short Date</property>
+                                        <property name="pattern">Short Date</property>
+                                    </structure>
                                     <property name="textAlign">left</property>
                                     <property name="display">inline</property>
                                     <property name="dataSet">Infos</property>
@@ -3180,6 +3201,7 @@ GROUP BY date
                                             <property name="dataType">date</property>
                                         </structure>
                                     </list-property>
+                                    <structure name="toc"/>
                                     <property name="resultSetColumn">to_date</property>
                                 </data>
                                 <text id="4877">

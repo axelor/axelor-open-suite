@@ -1998,6 +1998,10 @@ INNER JOIN
                                         <row id="4753">
                                             <cell id="4754">
                                                 <data id="4840">
+                                                    <structure name="dateTimeFormat">
+                                                        <property name="category">Short Date</property>
+                                                        <property name="pattern">Short Date</property>
+                                                    </structure>
                                                     <property name="resultSetColumn">planned_start_datet</property>
                                                 </data>
                                             </cell>
@@ -3042,6 +3046,10 @@ INNER JOIN
                                         <property name="borderTopWidth">thin</property>
                                         <data id="4841">
                                             <property name="fontSize">8.5pt</property>
+                                            <structure name="dateTimeFormat">
+                                                <property name="category">Short Date</property>
+                                                <property name="pattern">Short Date</property>
+                                            </structure>
                                             <property name="resultSetColumn">planned_start_datet</property>
                                         </data>
                                     </cell>
@@ -3060,6 +3068,10 @@ INNER JOIN
                                         <property name="borderTopWidth">thin</property>
                                         <data id="4842">
                                             <property name="fontSize">8.5pt</property>
+                                            <structure name="dateTimeFormat">
+                                                <property name="category">Short Date</property>
+                                                <property name="pattern">Short Date</property>
+                                            </structure>
                                             <property name="resultSetColumn">planned_end_datet</property>
                                         </data>
                                     </cell>
@@ -3078,6 +3090,10 @@ INNER JOIN
                                         <property name="borderTopWidth">thin</property>
                                         <data id="4843">
                                             <property name="fontSize">8.5pt</property>
+                                            <structure name="dateTimeFormat">
+                                                <property name="category">Short Date</property>
+                                                <property name="pattern">Short Date</property>
+                                            </structure>
                                             <property name="resultSetColumn">real_start_datet</property>
                                         </data>
                                     </cell>
@@ -3096,6 +3112,10 @@ INNER JOIN
                                         <property name="borderTopWidth">thin</property>
                                         <data id="4844">
                                             <property name="fontSize">8.5pt</property>
+                                            <structure name="dateTimeFormat">
+                                                <property name="category">Short Date</property>
+                                                <property name="pattern">Short Date</property>
+                                            </structure>
                                             <property name="resultSetColumn">real_end_datet</property>
                                         </data>
                                     </cell>
@@ -4149,6 +4169,10 @@ else dataSetRow["planned_end_datet"]</expression>
                                                     <cell id="4774">
                                                         <data id="4845">
                                                             <property name="fontSize">8.5pt</property>
+                                                            <structure name="dateTimeFormat">
+                                                                <property name="category">Short Date</property>
+                                                                <property name="pattern">Short Date</property>
+                                                            </structure>
                                                             <property name="resultSetColumn">Column Binding_from</property>
                                                         </data>
                                                     </cell>
@@ -4191,6 +4215,10 @@ else dataSetRow["planned_end_datet"]</expression>
                                                     <cell id="4777">
                                                         <data id="4846">
                                                             <property name="fontSize">8.5pt</property>
+                                                            <structure name="dateTimeFormat">
+                                                                <property name="category">Short Date</property>
+                                                                <property name="pattern">Short Date</property>
+                                                            </structure>
                                                             <property name="resultSetColumn">Column Binding_to</property>
                                                         </data>
                                                     </cell>

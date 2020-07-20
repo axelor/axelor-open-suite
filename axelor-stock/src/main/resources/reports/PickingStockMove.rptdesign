@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -2026,9 +2026,13 @@ order by StockMoveLine.sequence]]></xml-property>
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B>: <VALUE-OF format="^">"  "</VALUE-OF> ]]></text-property>
+                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B>:&amp;nbsp;]]></text-property>
                                 </text>
                                 <data id="5374">
+                                    <structure name="dateTimeFormat">
+                                        <property name="category">Short Date</property>
+                                        <property name="pattern">Short Date</property>
+                                    </structure>
                                     <property name="display">inline</property>
                                     <property name="resultSetColumn">TodayDate</property>
                                 </data>
@@ -3104,9 +3108,9 @@ rowNumD=0;]]></method>
                                         <property name="borderTopWidth">thin</property>
                                         <property name="textAlign">center</property>
                                         <image id="4110">
-                                            <expression name="altText">""</expression>
                                             <property name="source">file</property>
                                             <expression name="uri" type="javascript">params["AttachmentPath"].value+row["barcode_picture"]</expression>
+                                            <expression name="altText">""</expression>
                                         </image>
                                     </cell>
                                     <cell id="3807">
@@ -3992,9 +3996,9 @@ rowNumD=0;]]></method>
                                     <property name="borderTopWidth">thin</property>
                                     <property name="textAlign">center</property>
                                     <image id="4375">
-                                        <expression name="altText">""</expression>
                                         <property name="source">file</property>
                                         <expression name="uri" type="javascript">params["AttachmentPath"].value+row["barcode_picture"]</expression>
+                                        <expression name="altText">""</expression>
                                     </image>
                                 </cell>
                                 <cell id="4290">
