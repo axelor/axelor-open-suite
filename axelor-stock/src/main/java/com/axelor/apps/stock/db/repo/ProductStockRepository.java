@@ -159,7 +159,6 @@ public class ProductStockRepository extends ProductBaseRepository {
   @Override
   public Product copy(Product product, boolean deep) {
     Product copy = super.copy(product, deep);
-    copy.clearProductCompanyList();
     copy.setAvgPrice(BigDecimal.ZERO);
     return copy;
   }

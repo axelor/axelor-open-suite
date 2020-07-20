@@ -110,6 +110,7 @@ public class ProductBaseRepository extends ProductRepository {
     } catch (Exception e) {
       throw new PersistenceException(e.getLocalizedMessage());
     }
+    copy.clearProductCompanyList();
     return copy;
   }
 }
