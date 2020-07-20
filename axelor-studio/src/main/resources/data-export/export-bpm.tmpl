@@ -265,6 +265,11 @@
 					\n\t\t\t\t\t</templateContextLine>"""
 
 				}
+				
+				birtTemplates = ""
+				action.emailTemplate?.birtTemplateSet.each{
+					birtTemplate -> birtTemplates += """\n\t\t\t\t\t<birtTemplate>${birtTemplate.name}</birtTemplate>"""
+				}
 
 				emailTemplate =  """\n\t\t\t\t<name>${action.emailTemplate?.name}</name>
 					\n\t\t\t\t<mediaTypeSelect>${action.emailTemplate?.mediaTypeSelect}</mediaTypeSelect>
@@ -284,7 +289,8 @@
 					\n\t\t\t\t<isSystem>${action.emailTemplate?.isSystem}</isSystem>
 					\n\t\t\t\t<isJson>${action.emailTemplate?.isJson}</isJson>
 					\n\t\t\t\t<metaJsonModel>${action.emailTemplate?.metaJsonModel?.name}</metaJsonModel>
-					\n\t\t\t\t<birtTemplate>${action.emailTemplate?.birtTemplate?.name}</birtTemplate>"""
+					\n\t\t\t\t<birtTemplateSet>$birtTemplates
+					\n\t\t\t\t</birtTemplateSet>"""
 				}
 				actions += """\n\t\t<actionBuilder>
 				\n\t\t\t<name>${action.name}</name>
