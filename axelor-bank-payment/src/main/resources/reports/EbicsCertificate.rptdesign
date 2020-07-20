@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaDriverClass</property>
@@ -555,6 +555,10 @@ where message_key = ? and language = ? ]]></xml-property>
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
                                     <data id="4005">
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
+                                        </structure>
                                         <property name="resultSetColumn">init_letter_edition_date</property>
                                     </data>
                                 </cell>
@@ -572,6 +576,10 @@ where message_key = ? and language = ? ]]></xml-property>
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
                                     <data id="4006">
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Time</property>
+                                            <property name="pattern">Short Time</property>
+                                        </structure>
                                         <property name="resultSetColumn">init_letter_edition_date</property>
                                     </data>
                                 </cell>

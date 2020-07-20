@@ -2169,9 +2169,13 @@ order by StockMoveLine.sequence]]></xml-property>
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B>: <VALUE-OF format="^">"  "</VALUE-OF> ]]></text-property>
+                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B>:&amp;nbsp;]]></text-property>
                                 </text>
                                 <data id="5408">
+                                    <structure name="dateTimeFormat">
+                                        <property name="category">Short Date</property>
+                                        <property name="pattern">Short Date</property>
+                                    </structure>
                                     <property name="display">inline</property>
                                     <property name="resultSetColumn">picking_edit_date</property>
                                 </data>
@@ -2220,9 +2224,13 @@ order by StockMoveLine.sequence]]></xml-property>
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B>: <VALUE-OF format="^">"  "</VALUE-OF> ]]></text-property>
+                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B>:&amp;nbsp;]]></text-property>
                                 </text>
                                 <data id="5409">
+                                    <structure name="dateTimeFormat">
+                                        <property name="category">Short Date</property>
+                                        <property name="pattern">Short Date</property>
+                                    </structure>
                                     <property name="display">inline</property>
                                     <property name="resultSetColumn">Column Binding</property>
                                 </data>
@@ -2267,9 +2275,13 @@ order by StockMoveLine.sequence]]></xml-property>
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B>: <VALUE-OF format="^">"  "</VALUE-OF> ]]></text-property>
+                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B>:&amp;nbsp;]]></text-property>
                                 </text>
                                 <data id="5410">
+                                    <structure name="dateTimeFormat">
+                                        <property name="category">Short Date</property>
+                                        <property name="pattern">Short Date</property>
+                                    </structure>
                                     <property name="display">inline</property>
                                     <property name="resultSetColumn">orderDate</property>
                                 </data>
