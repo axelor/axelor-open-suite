@@ -244,7 +244,9 @@
 				<bind node="isSystem" to="isSystem"/>
 				<bind node="isJson" to="isJson"/>
 				<bind node="metaJsonModel" to="metaJsonModel" search="self.name = :metaJsonModel" create="false"/>
-				<bind node="birtTemplate" to="birtTemplate" search="self.name = :birtTemplate" create="false"/>
+				<bind node="birtTemplateSet/birtTemplate" to="birtTemplateSet" search="self.name = :birtTemplateName" update="false" create="false">
+					<bind node="text()" to="name" alias="birtTemplateName"/>
+				</bind>
 			</bind>
 			<bind node="actionBuilderViews/view" to="actionBuilderViews">
 				<bind node="viewType" to="viewType" />

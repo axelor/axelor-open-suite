@@ -1,2 +1,2 @@
-name;metaModel.name;languageCode;target;birtTemplate.name;filePath;isDefault;templateContext;subject;content;toRecipients;ccRecipients;bccRecipients;mediaTypeSelect
+name;metaModel.name;languageCode;target;birtTemplateSet_importId;filePath;isDefault;templateContext;subject;content;toRecipients;ccRecipients;bccRecipients;mediaTypeSelect
 Appraisal;Appraisal;en;;;;true;;Appraisal;"<p>Hello</p><p>$Appraisal.employee.name$</p><p>Here is details of your appraisal&nbsp;</p>";;;;2

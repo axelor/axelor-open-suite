@@ -43,6 +43,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.birt.core.data.DataTypeUtil;
 import org.eclipse.birt.core.exception.BirtException;
 import org.eclipse.birt.report.model.api.elements.DesignChoiceConstants;
@@ -63,11 +64,14 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
   public Set<MetaFile> getMetaFiles(Template template) throws AxelorException, IOException {
 
     Set<MetaFile> metaFiles = super.getMetaFiles(template);
-    if (template.getBirtTemplate() == null) {
+    Set<BirtTemplate> birtTemplates = template.getBirtTemplateSet();
+    if (CollectionUtils.isEmpty(birtTemplates)) {
       return metaFiles;
     }
 
-    metaFiles.add(createMetaFileUsingBirtTemplate(maker, template.getBirtTemplate()));
+    for (BirtTemplate birtTemplate : birtTemplates) {
+      metaFiles.add(createMetaFileUsingBirtTemplate(maker, birtTemplate));
+    }
 
     logger.debug("Metafile to attach: {}", metaFiles);
 

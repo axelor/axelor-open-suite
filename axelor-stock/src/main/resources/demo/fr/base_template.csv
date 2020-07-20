@@ -1,4 +1,4 @@
-"name";"metaModel.name";"language.importId";"target";"birtTemplate.name";"filePath";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect"
+"name";"metaModel.name";"language.importId";"target";"birtTemplateSet_importId";"filePath";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect"
 "Envoi BL Client";"StockMove";2;;;;"true";;"Commande $StockMove.SaleOrder.SaleOrderSeq$ expédiée";"<p>Bonjour,</p>
 
 <p>Nous tenons à vous informer que votre commande $StockMove.saleOrder.saleOrderSeq$ a été expédiée.<br/>
