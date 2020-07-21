@@ -1,6 +1,8 @@
 # Changelog
 ## [Unreleased 5.3.9]
 ## Improvements
+- Report : Fix unit translation.
+
 ## Bug Fixes
 - TIMESHEET : Fix editor still being displayed even with a disabled config
 - BankDetails : Fix validation flow of iban
