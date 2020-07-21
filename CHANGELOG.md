@@ -5,6 +5,7 @@
 - TIMESHEET : Fix editor still being displayed even with a disabled config
 - BankDetails : Fix validation flow of iban
 - INVOICE : fix message on generate of subscription invoice
+- ACCOUNTING MOVE : remove all possibility to cancel a validate move.
 
 ## [5.3.8] - 2020-07-15
 ## Improvements

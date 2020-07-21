@@ -78,7 +78,15 @@ public class MoveRemoveService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected Move updateMoveToArchived(Move move) {
+  protected Move updateMoveToArchived(Move move) throws AxelorException {
+
+    if (move.getStatusSelect().equals(MoveRepository.STATUS_VALIDATED)) {
+      throw new AxelorException(
+          move,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.MOVE_CANCEL_4));
+    }
+
     move.setStatusSelect(MoveRepository.STATUS_CANCELED);
     return move;
   }
