@@ -1820,6 +1820,7 @@
 "Temporary filepath to import rejected records",,,
 "Terms and Conditions","Terms and Conditions",,
 "The Move Balance must be positive",,,
+"The move is validated and so can not be canceled.",,,
 "The account code %s is already used for the company %s, there cannot be two accounts with the same code for the same company.",,,
 "The account of a product could not be determined or is not filled. Please fill the missing account on invoice line %s",,,
 "The accounting move line on the account %s can't have an amount equals to zero",,,
