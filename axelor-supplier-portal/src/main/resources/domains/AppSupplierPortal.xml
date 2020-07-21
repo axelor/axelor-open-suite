@@ -4,7 +4,7 @@
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
-	<entity name="AppSupplierPortal" cachable="true" extends="App">
+	<entity name="AppSupplierPortal" cacheable="true" extends="App">
 
 		<boolean name="managePurchaseOrders" title="Manage purchase orders" default="true"/>
 		<boolean name="manageInvoices" title="Manage invoices" default="true"/>
@@ -17,7 +17,6 @@
 			<field name="manageInvoices" on="UPDATE"/>
 			<field name="manageDelivery" on="UPDATE"/>
 			<field name="showCatalog" on="UPDATE"/>
-			<field name="displayProductCatalogSupplier" on="UPDATE"/>
 			<field name="allowSupplierToCreateProducts" on="UPDATE"/>
 		</track>
    	</entity>
