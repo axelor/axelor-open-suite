@@ -1,5 +1,8 @@
 # Changelog
 ## [Unreleased 5.3.9]
+## Features
+- USER : add a dashlet showing all user's permissions.
+
 ## Improvements
 ## Bug Fixes
 - TIMESHEET : Fix editor still being displayed even with a disabled config
