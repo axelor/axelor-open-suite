@@ -7875,7 +7875,7 @@ vars["in_total"] = vars["temp_in_total"];
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="HTML">if(params["ReportType"].value != 1) row["note"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"") + "<br>";</VALUE-OF>
 <VALUE-OF format="HTML">
-     if(row._outer["status_select"] == 1 || row._outer["status_select"] == 2 ) row["proforma_comments"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")
+   if(row["status_select"] == 1 || row["status_select"] == 2) row["proforma_comments"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")
 </VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>

@@ -47,3 +47,5 @@
 - EMPLOYEE : add button for Employee.rptdesign report on form.
 - XML : Update all xml files XSD version to AOP 5.3.
 - INVOICE : Change Invoicing menu translation.
+- INVOICE : Resolve report binding issue.
+
