@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.app.internal.AppFilter;
+import com.axelor.apps.base.db.Language;
 import com.axelor.apps.base.db.PrintTemplateLine;
 import com.axelor.apps.base.db.PrintTemplateLineTest;
 import com.axelor.apps.base.db.repo.PrintTemplateLineRepository;
@@ -42,6 +44,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 public class PrintTemplateLineServiceImpl implements PrintTemplateLineService {
 
@@ -82,7 +85,13 @@ public class PrintTemplateLineServiceImpl implements PrintTemplateLineService {
 
     String resultOfTitle = null;
     String resultOfContent = null;
-    TemplateMaker maker = initMaker(objectId, model, simpleModel);
+
+    Locale locale =
+        Optional.ofNullable(printTemplateLine.getPrintTemplate().getLanguage())
+            .map(Language::getCode)
+            .map(Locale::new)
+            .orElseGet(AppFilter::getLocale);
+    TemplateMaker maker = initMaker(objectId, model, simpleModel, locale);
 
     try {
       if (StringUtils.notEmpty(printTemplateLine.getTitle())) {
@@ -126,9 +135,9 @@ public class PrintTemplateLineServiceImpl implements PrintTemplateLineService {
   }
 
   @SuppressWarnings("unchecked")
-  private TemplateMaker initMaker(Long objectId, String model, String simpleModel)
+  protected TemplateMaker initMaker(Long objectId, String model, String simpleModel, Locale locale)
       throws ClassNotFoundException {
-    TemplateMaker maker = new TemplateMaker(Locale.FRENCH, TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
+    TemplateMaker maker = new TemplateMaker(locale, TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
 
     Class<? extends Model> modelClass = (Class<? extends Model>) Class.forName(model);
     maker.setContext(JPA.find(modelClass, objectId), simpleModel);
