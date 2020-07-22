@@ -37,6 +37,7 @@
 - Studio: Make app builder optional
 - Birt report: Change display of date
 - Invoice report : Change in font size in Invoice report.
+- Report : Fix unit translation.
 
 ## Bug Fixes
 - HR : A leave-line cannot be saved whitout employee or leave-reason.
