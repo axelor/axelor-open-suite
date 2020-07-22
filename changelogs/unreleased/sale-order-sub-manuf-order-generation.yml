@@ -1,0 +1,7 @@
+---
+title: Generate sub manufacturing orders from sale order
+type: change
+description: |
+  If the option is activated, we now generate also sub manufacturing
+  orders on confirming a sale order instead of only creating the
+  parent manufacturing order.

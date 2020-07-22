@@ -175,4 +175,8 @@ public interface IExceptionMessage {
   // CostSheetLine service
   static final String MISSING_PRODUCT_PURCHASE_CURRENCY = /*$$(*/
       "Purchase currency is missing for product %s, please configure it." /*)*/;
+
+  // Production Order Sale Order Service
+  static final String CHILD_BOM_TOO_MANY_ITERATION = /*$$(*/
+      "Too many iterations when searching for children bills of materials. Please check for bill of materials being in its own component list." /*)*/;
 }
