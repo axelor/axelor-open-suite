@@ -12,6 +12,7 @@
 - INVOICE : fix message on generate of subscription invoice
 - ACCOUNTING MOVE : remove all possibility to cancel a validate move.
 - ICalendar : Update event synchronization.
+- Template Maker : fix selection value translation based on locale
 
 ## [5.3.8] - 2020-07-15
 ## Improvements
