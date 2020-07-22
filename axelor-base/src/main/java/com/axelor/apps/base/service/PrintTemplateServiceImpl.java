@@ -17,7 +17,9 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.base.db.BirtTemplate;
+import com.axelor.apps.base.db.Language;
 import com.axelor.apps.base.db.Print;
 import com.axelor.apps.base.db.PrintLine;
 import com.axelor.apps.base.db.PrintTemplate;
@@ -46,6 +48,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -95,7 +98,12 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
     LOG.debug("printTemplate : {}", printTemplate);
     LOG.debug("");
 
-    TemplateMaker maker = initMaker(objectId, model, simpleModel);
+    Locale locale =
+        Optional.ofNullable(printTemplate.getLanguage())
+            .map(Language::getCode)
+            .map(Locale::new)
+            .orElseGet(AppFilter::getLocale);
+    TemplateMaker maker = initMaker(objectId, model, simpleModel, locale);
 
     Print print = new Print();
     if (StringUtils.notEmpty(printTemplate.getDocumentName())) {
@@ -250,9 +258,9 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
   }
 
   @SuppressWarnings("unchecked")
-  private TemplateMaker initMaker(Long objectId, String model, String simpleModel)
+  protected TemplateMaker initMaker(Long objectId, String model, String simpleModel, Locale locale)
       throws ClassNotFoundException {
-    TemplateMaker maker = new TemplateMaker(Locale.FRENCH, TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
+    TemplateMaker maker = new TemplateMaker(locale, TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
 
     Class<? extends Model> myClass = (Class<? extends Model>) Class.forName(model);
     maker.setContext(JPA.find(myClass, objectId), simpleModel);
