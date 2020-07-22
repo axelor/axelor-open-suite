@@ -28,7 +28,6 @@
     
     <track>
     	<field name="prodProcess"/>
-    	<field name="workCenter"/>
     	<field name="name"/>
     	<field name="priority"/>
     	<field name="description"/>

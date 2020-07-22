@@ -95,7 +95,6 @@
 	  <field name="plannedStartDateT" />
 	  <field name="plannedEndDateT" />
 	  <field name="clientPartner" />
-	  <field name="saleOrder" />
 	  <field name="statusSelect" />
 	  <field name="cancelReasonStr"/>
 	</track>
