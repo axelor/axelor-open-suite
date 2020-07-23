@@ -2,6 +2,7 @@
 ## [Unreleased 5.2.14]
 ## Improvements
 ## Bug Fixes
+- INVOICE : Fix chart not taking refunds into account
 
 ## [5.2.13] - 2020-07-21
 ## Improvements
