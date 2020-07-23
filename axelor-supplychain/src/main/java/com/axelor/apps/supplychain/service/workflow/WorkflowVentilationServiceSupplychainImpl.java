@@ -172,7 +172,9 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
       accountingSituationSupplychainService.updateUsedCredit(saleOrder.getClientPartner());
 
       // determine if the invoice is a balance invoice.
-      if (saleOrder.getAmountInvoiced().compareTo(saleOrder.getExTaxTotal()) == 0) {
+      if (saleOrder.getAmountInvoiced().compareTo(saleOrder.getExTaxTotal()) == 0
+          && invoice.getOperationSubTypeSelect()
+              != InvoiceRepository.OPERATION_SUB_TYPE_SUBSCRIPTION) {
         invoice.setOperationSubTypeSelect(InvoiceRepository.OPERATION_SUB_TYPE_BALANCE);
       }
     }
