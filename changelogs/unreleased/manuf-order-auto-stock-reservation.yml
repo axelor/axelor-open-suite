@@ -1,0 +1,6 @@
+---
+title: Automatic stock reservation for manufacturing orders components
+type: feature
+description: |
+  Add a new configuration in supplychain to automatically request reservation
+  for consumed stock move lines.
