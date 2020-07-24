@@ -14,6 +14,7 @@
 - ICalendar : Update event synchronization.
 - Template Maker : fix selection value translation based on locale
 - SaleOrder : Consider today's date also in invoice sale amount dashboard.
+- CRM : set default nbrEmployees to 0.
 
 ## [5.3.8] - 2020-07-15
 ## Improvements
