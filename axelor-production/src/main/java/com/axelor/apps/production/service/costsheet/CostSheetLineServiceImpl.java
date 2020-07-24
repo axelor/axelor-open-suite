@@ -330,7 +330,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
 
       price = price.multiply(shippingCoef);
 
-      if (product.getPurchaseCurrency() == null) {
+      if (productCompanyService.get(product, "purchaseCurrency", company) == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.MISSING_PRODUCT_PURCHASE_CURRENCY),
@@ -379,7 +379,6 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
         }
       }
     }
-
     return price;
   }
 
