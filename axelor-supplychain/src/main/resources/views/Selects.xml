@@ -140,4 +140,9 @@
 		<option value="Ordered by">Ordered by</option>
 	</selection>
 
+	<selection name="supplychain.sale.order.reservation.date.field">
+		<option value="0">Confirmation date</option>
+		<option value="1">Estimated shipping date</option>
+	</selection>
+
 </object-views>

@@ -217,7 +217,7 @@
 			</panel>
 			<panel name="deliveryPanel" title="Delivery">
 				<field name="desiredDelivDate" readonlyIf="$availabiltyRequest"/>
-				<field name="estimatedDelivDate" readonlyIf="$availabiltyRequest"/>
+				<field name="estimatedDelivDate" onChange="save,action-sale-order-line-supplychain-method-update-reservation-date" readonlyIf="$availabiltyRequest"/>
 				<field name="deliveredQty" readonly="true" readonlyIf="$isReadOnly !== false"/>
                 <button name="$previewBtn" title="See stock details"  icon="fa-cubes" colSpan="4" widget="info-button" onClick="action-stock-location-line-view-for-a-product-from-saleorderline-view" if-module="axelor-supplychain"/>
 				<field name="pickingOrderInfo" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" readonlyIf="$isReadOnly !== false"/>

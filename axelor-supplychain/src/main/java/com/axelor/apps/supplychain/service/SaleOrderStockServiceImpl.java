@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import static com.axelor.apps.supplychain.exception.IExceptionMessage.RESERVATION_SALE_ORDER_DATE_CONFIG_INCORRECT_VALUE;
+
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -73,6 +75,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   protected AppBaseService appBaseService;
   protected SaleOrderRepository saleOrderRepository;
   protected AppSupplychainService appSupplychainService;
+  protected SupplyChainConfigService supplyChainConfigService;
 
   @Inject
   public SaleOrderStockServiceImpl(
@@ -85,7 +88,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       StockMoveLineRepository stockMoveLineRepository,
       AppBaseService appBaseService,
       SaleOrderRepository saleOrderRepository,
-      AppSupplychainService appSupplychainService) {
+      AppSupplychainService appSupplychainService,
+      SupplyChainConfigService supplyChainConfigService) {
 
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
@@ -97,6 +101,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     this.appBaseService = appBaseService;
     this.saleOrderRepository = saleOrderRepository;
     this.appSupplychainService = appSupplychainService;
+    this.supplyChainConfigService = supplyChainConfigService;
   }
 
   @Override
@@ -296,21 +301,46 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   }
 
   /**
-   * Fill reservation date time in stock move lines with sale order confirmation date time.
+   * Fill reservation date time in stock move lines with sale order following supplychain
+   * configuration.
    *
    * @param stockMove
    * @param saleOrder
    */
-  protected void setReservationDateTime(StockMove stockMove, SaleOrder saleOrder) {
-    LocalDateTime reservationDateTime = saleOrder.getConfirmationDateTime();
-    if (reservationDateTime == null) {
-      reservationDateTime = Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime();
-    }
+  protected void setReservationDateTime(StockMove stockMove, SaleOrder saleOrder)
+      throws AxelorException {
+    SupplyChainConfig supplyChainConfig =
+        supplyChainConfigService.getSupplyChainConfig(saleOrder.getCompany());
+
     List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
-    if (stockMoveLineList != null) {
-      for (StockMoveLine stockMoveLine : stockMoveLineList) {
-        stockMoveLine.setReservationDateTime(reservationDateTime);
+    if (stockMoveLineList == null) {
+      stockMoveLineList = new ArrayList<>();
+    }
+    for (StockMoveLine stockMoveLine : stockMoveLineList) {
+      LocalDateTime reservationDateTime;
+
+      switch (supplyChainConfig.getSaleOrderReservationDateSelect()) {
+        case SupplyChainConfigRepository.SALE_ORDER_CONFIRMATION_DATE:
+          reservationDateTime = saleOrder.getConfirmationDateTime();
+          break;
+        case SupplyChainConfigRepository.SALE_ORDER_SHIPPING_DATE:
+          SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
+          if (saleOrderLine == null) {
+            reservationDateTime = null;
+          } else {
+            reservationDateTime = saleOrderLine.getEstimatedDelivDate().atStartOfDay();
+          }
+          break;
+        default:
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(RESERVATION_SALE_ORDER_DATE_CONFIG_INCORRECT_VALUE));
       }
+
+      if (reservationDateTime == null) {
+        reservationDateTime = Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime();
+      }
+      stockMoveLine.setReservationDateTime(reservationDateTime);
     }
   }
 
