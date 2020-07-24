@@ -17,8 +17,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import static com.axelor.apps.supplychain.exception.IExceptionMessage.RESERVATION_SALE_ORDER_DATE_CONFIG_INCORRECT_VALUE;
-
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -334,7 +332,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
         default:
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(RESERVATION_SALE_ORDER_DATE_CONFIG_INCORRECT_VALUE));
+              I18n.get(IExceptionMessage.RESERVATION_SALE_ORDER_DATE_CONFIG_INCORRECT_VALUE));
       }
 
       if (reservationDateTime == null) {

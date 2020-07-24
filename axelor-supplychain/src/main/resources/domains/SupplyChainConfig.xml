@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
-  <module name="stock" package="com.axelor.apps.supplychain.db"/>
+  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
 
   <entity name="SupplyChainConfig" lang="java">
      

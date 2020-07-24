@@ -37,6 +37,9 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.supplychain.db.SupplyChainConfig;
+import com.axelor.apps.supplychain.service.ReservedQtyService;
+import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -64,20 +67,27 @@ public class ManufOrderStockMoveService {
   protected StockMoveService stockMoveService;
   protected StockMoveLineService stockMoveLineService;
   protected AppBaseService appBaseService;
+  protected SupplyChainConfigService supplyChainConfigService;
+  protected ReservedQtyService reservedQtyService;
 
   @Inject
   public ManufOrderStockMoveService(
       StockMoveService stockMoveService,
       StockMoveLineService stockMoveLineService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      SupplyChainConfigService supplyChainConfigService,
+      ReservedQtyService reservedQtyService) {
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
     this.appBaseService = appBaseService;
+    this.supplyChainConfigService = supplyChainConfigService;
+    this.reservedQtyService = reservedQtyService;
   }
 
   public void createToConsumeStockMove(ManufOrder manufOrder) throws AxelorException {
 
     Company company = manufOrder.getCompany();
+    SupplyChainConfig supplyChainConfig = supplyChainConfigService.getSupplyChainConfig(company);
 
     if (manufOrder.getToConsumeProdProductList() != null && company != null) {
 
@@ -90,6 +100,9 @@ public class ManufOrderStockMoveService {
 
       if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
         stockMoveService.plan(stockMove);
+        if (supplyChainConfig.getAutoRequestReservedQtyOnManufOrder()) {
+          requestStockReservation(stockMove);
+        }
         manufOrder.addInStockMoveListItem(stockMove);
       }
 
@@ -100,6 +113,13 @@ public class ManufOrderStockMoveService {
           manufOrder.addConsumedStockMoveLineListItem(stockMoveLine);
         }
       }
+    }
+  }
+
+  /** Request reservation (and allocate if possible) all stock for this stock move. */
+  protected void requestStockReservation(StockMove stockMove) throws AxelorException {
+    for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+      reservedQtyService.allocateAll(stockMoveLine);
     }
   }
 
