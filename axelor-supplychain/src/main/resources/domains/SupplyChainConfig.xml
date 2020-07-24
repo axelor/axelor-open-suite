@@ -18,7 +18,9 @@
     <boolean name="autoAllocateOnAllocation" title="Auto allocate stock on other stock moves" help="If true, after allocating quantity for a given stock move we allocate the remaining quantity in others stock moves."/>
     <boolean name="autoRequestReservedQty" title="Auto request reserved qty" help="If true, the requested quantity for reservation will be equal to the quantity of the given sale order line."/>
     <boolean name="autoAllocateOnAvailabilityRequest" title="Auto allocate during an availability request"/>
-    
+
+		<integer name="saleOrderReservationDateSelect" selection="supplychain.sale.order.reservation.date.field" title="Sale order date used for stock reservation" default="0"/>
+
     <integer name="defaultEstimatedDate" title="Default estimated date in stock move from sale order" selection="supplychain.estimated.date.select" default="1"/>
     
     <decimal name="numberOfDays" title="Number of days" min="0" />
@@ -37,6 +39,10 @@
       public static final int EMPTY_DATE = 1;
       public static final int CURRENT_DATE_PLUS_DAYS = 2;
 
+      // Sale order reservation date select
+      public static final int SALE_ORDER_CONFIRMATION_DATE = 0;
+      public static final int SALE_ORDER_SHIPPING_DATE = 1;
+
     ]]></extra-code>
 
     <track>
@@ -51,6 +57,8 @@
     	<field name="autoAllocateOnAllocation" on="UPDATE"/>
     	<field name="autoRequestReservedQty" on="UPDATE"/>
     	<field name="autoAllocateOnAvailabilityRequest" on="UPDATE"/>
+
+			<field name="saleOrderReservationDateSelect" on="UPDATE"/>
     	
     	<field name="defaultEstimatedDate" on="UPDATE"/>
     

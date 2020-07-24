@@ -40,6 +40,7 @@ import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.PartnerSupplychainLinkService;
 import com.axelor.apps.supplychain.service.SaleOrderCreateServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
+import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderReservedQtyService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
@@ -914,6 +915,27 @@ public class SaleOrderController {
                   PartnerSupplychainLinkTypeRepository.TYPE_SELECT_DELIVERED_BY);
 
       response.setAttr("deliveredPartner", "domain", strFilter);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from sale order view, on delivery date change. <br>
+   * Update stock reservation date for each sale order line by calling {@link
+   * SaleOrderLineServiceSupplyChain#updateStockMoveReservationDateTime(SaleOrderLine)}.
+   *
+   * @param request
+   * @param response
+   */
+  public void updateStockReservationDate(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+        Beans.get(SaleOrderLineServiceSupplyChain.class)
+            .updateStockMoveReservationDateTime(saleOrderLine);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

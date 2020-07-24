@@ -323,7 +323,7 @@
 	    <panel if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" name="deliveryInformationPanel" title="Delivery" colSpan="12">
 	      <field name="specificPackage" colSpan="12"/>
 	      <field name="stockLocation" canEdit="false" onSelect="action-sale-order-attrs-set-stock-location-domain" form-view="stock-location-form" grid-view="stock-location-grid"/>
-	      <field name="deliveryDate" onChange="action-sale-order-method-fill-sale-order-lines-estimated-date"/>
+	      <field name="deliveryDate" onChange="action-sale-order-group-on-delivery-date-change"/>
 	      <field name="deliveryCondition" colSpan="12"/>
 	      <field name="shipmentMode" canEdit="false" form-view="shipment-mode-grid" grid-view="shipment-mode-grid"/>
 	      <field name="freightCarrierMode" canEdit="false" onChange="action-sale-order-record-freight-carrier" domain="self.shipmentMode = :shipmentMode" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid"/>
@@ -1477,6 +1477,12 @@
 		<attribute name="value" for="$discountsNeedReview"
 			expr="eval: (statusSelect == __repo__(SaleOrder).STATUS_DRAFT_QUOTATION || (orderBeingEdited &amp;&amp; __repo__(SaleOrder).STATUS_ORDER_CONFIRMED)) &amp;&amp; saleOrderLineList?.any{it.discountsNeedReview}"/>
 	</action-attrs>
+
+	<action-group name="action-sale-order-group-on-delivery-date-change">
+		<action name="action-sale-order-method-fill-sale-order-lines-estimated-date"/>
+		<action name="save"/>
+    <action name="action-sale-order-supplychain-method-update-stock-reservation-date"/>
+	</action-group>
 
 	<action-method name="action-sale-order-method-fill-sale-order-lines-estimated-date">
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="fillSaleOrderLinesEstimatedDate"/>
