@@ -68,6 +68,10 @@
 		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="cancelReservation"/>
 	</action-method>
 
+	<action-method name="action-sale-order-line-supplychain-method-update-reservation-date">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="updateReservationDate"/>
+	</action-method>
+
 	<action-record name="action-sale-order-line-record-update-requested-reserved-qty-from-qty" model="com.axelor.apps.sale.db.SaleOrderLine">
     <field name="requestedReservedQty" expr="eval: BigDecimal.ZERO.max(qty)" if="requestedReservedQty &gt; qty || isQtyRequested"/>
 	</action-record>

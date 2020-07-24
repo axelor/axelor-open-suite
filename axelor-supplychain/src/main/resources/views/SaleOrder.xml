@@ -242,4 +242,8 @@
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="setDeliveredPartnerDomain"/>
 	</action-method>
 
+	<action-method name="action-sale-order-supplychain-method-update-stock-reservation-date">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="updateStockReservationDate"/>
+	</action-method>
+
 </object-views>
