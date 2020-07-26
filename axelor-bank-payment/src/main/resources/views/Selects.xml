@@ -130,6 +130,7 @@
 		<option value="pain.002.001.01.ara">pain.002.001.01.ara</option>
 		<option value="pain.002.001.02.ara">pain.002.001.02.ara</option>
 		<option value="pain.002.001.02.ack">pain.002.001.02.ack</option>
+		<option value="ofx.file.import">ofx.file.import</option>
 	</selection>
 	
 	<selection name="bankpayment.ebics.bank.bank.statement.period.mode.select">

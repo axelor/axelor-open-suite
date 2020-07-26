@@ -36,6 +36,8 @@
 		public static final String FILE_FORMAT_CAMT_XXX_CFONB240_ACH = "camt.xxx.cfonb240.ach";
 		public static final String FILE_FORMAT_CAMT_XXX_CFONB240_CAI = "camt.xxx.cfonb240.cai";
 		
+		public static final String FILE_FORMAT_OFX_BANK_STATEMENT_IMPORT = "ofx.file.import";
+		
 		public static final String FILE_FORMAT_CAMT_053_001_02_STM = "camt.053.001.02.stm";
 		
 		public static final String FILE_FORMAT_CAMT_XXX_CFONB120_STM = "camt.xxx.cfonb120.stm";
