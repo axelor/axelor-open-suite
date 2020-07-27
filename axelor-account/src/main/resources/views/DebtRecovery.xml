@@ -59,6 +59,7 @@
           field="paymentScheduleLineDebtRecoverySet"
                 grid-view="payment-schedule-line-grid"
                 form-view="payment-schedule-line-form"/>
+            <panel-dashlet name="blockedInvoicesSetPanel" action="action-debt-recovery-view-blocked-invoices" title="Blocked invoices" />
         	<panel name="contactPanel" title="Contact">
         		<panel-related name="partnerAddressListPanel" field="accountingSituation.partner.partnerAddressList" colSpan="12" form-view="partner-address-form" >
         			<field name="address" form-view="address-form" grid-view="address-grid"/>
@@ -97,4 +98,11 @@
               method="runDebtRecovery"/>
     </action-method>
 
+    <action-view name="action-debt-recovery-view-blocked-invoices" model="com.axelor.apps.account.db.Invoice" title="Blocked invoices">
+        <view name="invoice-grid" type="grid" />
+        <view name="invoice-form" type="form" />
+        <domain>self.debtRecoveryBlockingOk = true and self.id IN (:_ids)</domain>
+        <context name="_ids" expr="eval: invoiceDebtRecoverySet.collect{it.id}" />
+    </action-view>
+    
 </object-views>
