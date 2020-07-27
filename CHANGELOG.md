@@ -4,6 +4,7 @@
 ## Bug Fixes
 - MRP : Remove duplicate information
 - ACCOUNTING INFORMATION : Add missing translation
+- Accounting report : corrected bank reconciliation statement report, now display lines reconcile after date report.
 
 ## [5.2.12] - 2020-06-19
 ## Improvements
@@ -22,7 +23,6 @@
 - Bill of Material: Replace NPE by an explicit message to the user when product unit is not configured.
 - EMPLOYEE: add button for Employee.rptdesign report on form.
 - Employee email address: prevent the selection of existing email addresses.
-- Accounting report : corrected bank reconciliation statement report, now display lines reconcile after date report.
 
 ## [5.2.11] - 2020-05-26
 ## Improvements
