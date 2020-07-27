@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.service.message;
 
+import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.PrintingSettings;
@@ -44,7 +45,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import javax.mail.MessagingException;
 import org.slf4j.Logger;
@@ -124,10 +124,8 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 
     logger.debug("Default BirtTemplate : {}", birtTemplate);
 
-    String language = AuthUtils.getUser().getLanguage();
-
-    TemplateMaker maker = new TemplateMaker(new Locale(language), '$', '$');
-    maker.setContext(messageRepository.find(message.getId()), "Message");
+    TemplateMaker maker = new TemplateMaker(AppFilter.getLocale(), '$', '$');
+    maker.setContext(messageRepository.find(message.getId()), Message.class.getSimpleName());
 
     String fileName =
         "Message "

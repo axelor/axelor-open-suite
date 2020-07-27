@@ -1,18 +1,52 @@
 # Changelog
-## [Unreleased 5.3.8]
+## [Unreleased 5.3.9]
+## Features
+- USER : add a dashlet showing all user's permissions.
+
 ## Improvements
-- ACCOUNT SITUATION : update account situation on invoice payment cancel and improve moveLine calculation
+- Report : Fix unit translation.
+- EBICSTS : add new data init to bank statement file formats
+- Customer grid : show mainAddress details.
 
 ## Bug Fixes
-- EXTRA HOURS : Fix missing translation
-- ACCOUNTING REPORT : Add missing translations in report
-- MRP : Remove duplicate information
-- ACCOUNTING INFORMATION : Add missing translation
-- TeamTaskCategory : Added translation for title of grid-view and fields
-- AccountingBatch : Adding partner name in the bankDetails' not active anomaly message.
-- Application config : Add missing translations
-- UnitCostCalculation : check NPE on product select.
+- TIMESHEET : Fix editor still being displayed even with a disabled config
+- BankDetails : Fix validation flow of iban
+- INVOICE : fix message on generate of subscription invoice
+- ACCOUNTING MOVE : remove all possibility to cancel a validate move.
+- ICalendar : Update event synchronization.
+- Template Maker : fix selection value translation based on locale
+- SaleOrder : Consider today's date also in invoice sale amount dashboard.
+- CRM : set default nbrEmployees to 0.
+- Conversion : corrected the case of conversion from void to void and improved message in case of conversion from void to unit or from unit to void.
+- Accounting report : corrected bank reconciliation statement report, now display lines reconcile after date report.
+- Invoice : Fix wrong translation in report
 - Project : Add missing translations 
+
+## [5.3.8] - 2020-07-15
+## Improvements
+- ACCOUNT SITUATION: update account situation on invoice payment cancel and improve moveLine calculation.
+- OPPORTUNITY: Change the data type of bestCase and worstCase fields from string to decimal.
+- INVOICE: generate invoice from timetable list from purchase order.
+- SaleOrder: Change title of numberOfPeriods.
+- BankStatementLine: orderBy modification in AFB 120.
+- Add tagCount for Expense, Timesheet, Leave request and Extra hours menus.
+
+## Bug Fixes
+- EXTRA HOURS: Fix missing translation.
+- ACCOUNTING REPORT: Add missing translations in report.
+- MRP: Remove duplicate information.
+- ACCOUNTING INFORMATION: Add missing translation.
+- TeamTaskCategory: Added translation for title of grid view and fields.
+- AccountingBatch: Adding partner name in the bankDetails' not active anomaly message.
+- Application config: Add missing translations.
+- UnitCostCalculation: check NPE on product select.
+- SaleOrder: Remove one externalReference which appears twice in grid view.
+- AdvancedExport: Fix the bug of records being exported twice.
+- INVOICE: corrected the possibility to add a payment when the amount remaining is inferior or equal to 0.
+- EMPLOYEE: add first name search in advance search.
+- Invoice: Fix multiple invoices not ventilating when generated from sale order with advance payment.
+- TRAINING: Added domain to 'Required training' so it does not display itself.
+- INVOICE : Fix Subscription invoice operationSubTypeSelect change issue.
 
 ## [5.3.7] - 2020-06-26
 ## Improvements
@@ -36,7 +70,8 @@
 - SALE ORDER: Set duration when created from opportunity.
 - Advance import: Fix multiple search on same field.
 - Bill of Material: Replace NPE by an explicit message to the user when product unit is not configured.
-- TRANING : Added domain to 'Required training' for not display self record.
+- EMPLOYEE: add button for Employee.rptdesign report on form.
+- Employee email address: prevent the selection of existing email addresses.
 
 ## [5.3.6] - 2020-05-26
 ## Improvements
@@ -366,7 +401,8 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - PRODUCT: Fix economicManufOrderQty displayed twice.
 
 
-[Unreleased 5.3.8]: https://github.com/axelor/axelor-open-suite/compare/v5.3.7...dev
+[Unreleased 5.3.9]: https://github.com/axelor/axelor-open-suite/compare/v5.3.8...dev
+[5.3.8]: https://github.com/axelor/axelor-open-suite/compare/v5.3.7...V5.3.8
 [5.3.7]: https://github.com/axelor/axelor-open-suite/compare/v5.3.6...v5.3.7
 [5.3.6]: https://github.com/axelor/axelor-open-suite/compare/v5.3.5...v5.3.6
 [5.3.5]: https://github.com/axelor/axelor-open-suite/compare/v5.3.4...v5.3.5
