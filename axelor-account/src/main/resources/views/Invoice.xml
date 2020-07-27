@@ -1312,7 +1312,8 @@ InvoiceSet.length > 0))"
     	<view-param name="popup" value="reload"/>
 	  	<view-param name="show-toolbar" value="false"/>
 	  	<view-param name="forceEdit" value="true" />
- 	  	<view-param name="show-confirm" value="true"/>
+ 	  	<view-param name="show-confirm" value="false"/>
+ 	  	<view-param name="popup-save" value="false"/>
 	  	<context name="_invoice" expr="eval: __this__"/>
     </action-view>
 

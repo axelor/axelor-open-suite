@@ -513,7 +513,7 @@
 	          base_company AS _company
 	          ON  _company.id = _user.active_company
 	          AND _company.id = self.company
-	    WHERE self.status_select = 3 AND self.operation_type_select=3 AND self.invoice_date &lt; DATE(:todayDate) 
+	    WHERE self.status_select = 3 AND self.operation_type_select=3 AND self.invoice_date &lt;= DATE(:todayDate)
 	        AND self.invoice_date &gt; DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month'  
 	    GROUP BY 
 	          _month

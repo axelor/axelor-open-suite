@@ -107,7 +107,7 @@
 	
 	<!-- Subscription fields -->
 	<integer name="periodicityTypeSelect" selection="sale.subscription.periodicity.type.select" title="Periodicity type" default="2"/>
-	<integer name="numberOfPeriods" title="Number of periods" min="1" default="1" />
+	<integer name="numberOfPeriods" title="Period duration" min="1" default="1" />
 	<date name="contractStartDate" title="Contract start date" />
 	<integer name="contractPeriodInMonths" title="Contract period in months" />
 	<date name="currentContractPeriodEndDate" title="End of current contract period" />
