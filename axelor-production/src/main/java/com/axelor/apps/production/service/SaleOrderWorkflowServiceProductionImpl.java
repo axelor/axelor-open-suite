@@ -31,7 +31,6 @@ import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.SaleOrderWorkflowServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -74,8 +73,6 @@ public class SaleOrderWorkflowServiceProductionImpl
   @Transactional(rollbackOn = {Exception.class})
   public void confirmSaleOrder(SaleOrder saleOrder) throws AxelorException {
     super.confirmSaleOrder(saleOrder);
-
-    AppProductionService appProductionService = Beans.get(AppProductionService.class);
 
     if (appProductionService.isApp("production")
         && appProductionService.getAppProduction().getProductionOrderGenerationAuto()) {
