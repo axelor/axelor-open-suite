@@ -21,17 +21,13 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.CurrencyConversionService;
 import com.axelor.apps.base.service.DurationService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.report.IReport;
-import com.axelor.common.ObjectUtils;
-import com.axelor.db.EntityHelper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -42,8 +38,10 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wslite.json.JSONException;
@@ -52,28 +50,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  private SaleOrderLineService saleOrderLineService;
-  protected AppBaseService appBaseService;
-  protected SaleOrderLineRepository saleOrderLineRepo;
-  protected SaleOrderRepository saleOrderRepo;
-  protected SaleOrderComputeService saleOrderComputeService;
-  protected SaleOrderMarginService saleOrderMarginService;
-
-  @Inject
-  public SaleOrderServiceImpl(
-      SaleOrderLineService saleOrderLineService,
-      AppBaseService appBaseService,
-      SaleOrderLineRepository saleOrderLineRepo,
-      SaleOrderRepository saleOrderRepo,
-      SaleOrderComputeService saleOrderComputeService,
-      SaleOrderMarginService saleOrderMarginService) {
-    this.saleOrderLineService = saleOrderLineService;
-    this.appBaseService = appBaseService;
-    this.saleOrderLineRepo = saleOrderLineRepo;
-    this.saleOrderRepo = saleOrderRepo;
-    this.saleOrderComputeService = saleOrderComputeService;
-    this.saleOrderMarginService = saleOrderMarginService;
-  }
+  @Inject private SaleOrderLineService saleOrderService;
 
   @Override
   public String getFileName(SaleOrder saleOrder) {
@@ -158,24 +135,20 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   @Override
   @Transactional
   public SaleOrder addPack(SaleOrder saleOrder, Pack pack, BigDecimal packQty) {
-
-    List<PackLine> packLineList = pack.getComponents();
-    if (ObjectUtils.isEmpty(packLineList)) {
-      return saleOrder;
-    }
-    packLineList.sort(Comparator.comparing(PackLine::getSequence));
     Integer sequence = 0;
 
     List<SaleOrderLine> soLines = saleOrder.getSaleOrderLineList();
     if (soLines != null && !soLines.isEmpty()) {
-      sequence = soLines.stream().mapToInt(SaleOrderLine::getSequence).max().getAsInt();
+      sequence =
+          Collections.max(
+              soLines.stream().map(soLine -> soLine.getSequence()).collect(Collectors.toSet()));
     }
 
-    BigDecimal conversionRate = new BigDecimal(1.00);
+    BigDecimal ConversionRate = new BigDecimal(1.00);
     if (pack.getCurrency() != null
         && !pack.getCurrency().getCode().equals(saleOrder.getCurrency().getCode())) {
       try {
-        conversionRate =
+        ConversionRate =
             Beans.get(CurrencyConversionService.class)
                 .convert(pack.getCurrency(), saleOrder.getCurrency());
       } catch (MalformedURLException | JSONException | AxelorException e) {
@@ -183,16 +156,11 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       }
     }
 
-    if (Boolean.FALSE.equals(pack.getDoNotDisplayHeaderAndEndPack())) {
-      soLines =
-          saleOrderLineService.createNonStandardSOLineFromPack(
-              pack, saleOrder, packQty, soLines, ++sequence);
-    }
     SaleOrderLine soLine;
-    for (PackLine packLine : packLineList) {
+    for (PackLine packLine : pack.getComponents()) {
       soLine =
-          saleOrderLineService.createSaleOrderLine(
-              packLine, saleOrder, packQty, conversionRate, ++sequence);
+          saleOrderService.createSaleOrderLine(
+              packLine, saleOrder, packQty, ConversionRate, ++sequence);
       if (soLine != null) {
         soLine.setSaleOrder(saleOrder);
         soLines.add(soLine);
@@ -208,35 +176,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       }
 
       Beans.get(SaleOrderRepository.class).save(saleOrder);
-    }
-    return saleOrder;
-  }
-
-  @Override
-  @Transactional
-  public SaleOrder updateProductQtyWithPackHeaderQty(SaleOrder saleOrder) {
-    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
-    boolean isStartOfPack = false;
-    BigDecimal newQty = BigDecimal.ZERO;
-    BigDecimal oldQty = BigDecimal.ZERO;
-    this.sortSaleOrderLineList(saleOrder);
-
-    for (SaleOrderLine SOLine : saleOrderLineList) {
-
-      if (SOLine.getTypeSelect() == SaleOrderLineRepository.TYPE_START_OF_PACK && !isStartOfPack) {
-        newQty = SOLine.getQty();
-        oldQty = saleOrderLineRepo.find(SOLine.getId()).getQty();
-        if (newQty.compareTo(oldQty) != 0) {
-          isStartOfPack = true;
-          SOLine = EntityHelper.getEntity(SOLine);
-          saleOrderLineRepo.save(SOLine);
-        }
-      } else if (isStartOfPack) {
-        if (SOLine.getTypeSelect() == SaleOrderLineRepository.TYPE_END_OF_PACK) {
-          break;
-        }
-        saleOrderLineService.updateProductQty(SOLine, saleOrder, oldQty, newQty);
-      }
     }
     return saleOrder;
   }

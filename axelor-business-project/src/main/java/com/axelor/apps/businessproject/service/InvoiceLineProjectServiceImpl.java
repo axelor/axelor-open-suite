@@ -35,6 +35,8 @@ import java.util.List;
 public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
     implements InvoiceLineProjectService {
 
+  @Inject private InvoiceLineRepository invoiceLineRepo;
+
   @Inject
   public InvoiceLineProjectServiceImpl(
       CurrencyService currencyService,
@@ -42,16 +44,14 @@ public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
       AccountManagementAccountService accountManagementAccountService,
-      PurchaseProductService purchaseProductService,
-      InvoiceLineRepository invoiceLineRepo) {
+      PurchaseProductService purchaseProductService) {
     super(
         currencyService,
         priceListService,
         appAccountService,
         analyticMoveLineService,
         accountManagementAccountService,
-        purchaseProductService,
-        invoiceLineRepo);
+        purchaseProductService);
   }
 
   @Transactional

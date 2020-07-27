@@ -75,9 +75,6 @@
 			// TYPE SELECT
 			public static final int TYPE_NORMAL = 0;
 			public static final int TYPE_TITLE = 1;
-            public static final int TYPE_START_OF_PACK = 2;
-            public static final int TYPE_END_OF_PACK = 3;
-
 	  	]]>
 	</extra-code>
   	

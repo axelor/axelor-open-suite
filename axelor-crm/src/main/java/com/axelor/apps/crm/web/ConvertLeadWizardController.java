@@ -213,6 +213,7 @@ public class ConvertLeadWizardController {
     response.setAttr("isProspect", "value", true);
     response.setAttr("partnerTypeSelect", "value", "1");
     response.setAttr("language", "value", appBase.getDefaultPartnerLanguage());
+    response.setAttr("nbrEmployees", "value", 0);
   }
 
   public void setIndividualPartner(ActionRequest request, ActionResponse response)
@@ -220,8 +221,13 @@ public class ConvertLeadWizardController {
 
     Lead lead = findLead(request);
 
-    response.setAttr("firstName", "value", lead.getFirstName());
-    response.setAttr("name", "value", lead.getName());
+    if (request.getContext().get("partnerTypeSelect").toString().equals("2")) {
+      response.setAttr("firstName", "value", lead.getFirstName());
+      response.setAttr("name", "value", lead.getName());
+      
+    } else {
+      response.setAttr("name", "value", lead.getEnterpriseName());
+    }
   }
 
   public void setContactDefaults(ActionRequest request, ActionResponse response)
