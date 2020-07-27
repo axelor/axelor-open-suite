@@ -22,4 +22,7 @@
         <attribute for="applicationType" name="hidden" expr="eval: _xApplicationType != null"/>
     </action-attrs>
 
+	<search-filters name="cancel-reason-filters" model="com.axelor.apps.base.db.CancelReason" title="Cancel reason filters">
+        <field name="cancelQuantityAllocation" hidden="true" if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation())"/>
+    </search-filters>
 </object-views>

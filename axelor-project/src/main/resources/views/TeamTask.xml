@@ -3,7 +3,7 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
-	<grid id="project-team-task-grid" name="team-task-grid" title="Tasks" model="com.axelor.team.db.TeamTask" edit-icon="true" orderBy="taskDate, priority">
+	<grid id="project-team-task-grid" name="team-task-grid" title="Tasks" model="com.axelor.team.db.TeamTask" edit-icon="true" orderBy="taskDate,priority">
 		<hilite if="status == 'closed'" color="success"/>
 		<hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
 		<hilite if="priority == 'urgent'" color="warning"/>
@@ -137,7 +137,7 @@
 					<field name="name"/>
 				</panel-related>
 			</panel>
-			<panel name="financialDataPanel" title="Financial Data" colSpan="12">				
+			<panel name="financialDataPanel" title="Financial Data" colSpan="12" if-module="axelor-business-project" if="__config__.app.isApp('business-project')">				
 				<field name="invoicingType" colspan="6" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" onChange="action-team-task-attrs-invoice-type-on-change"/>
 				<field name="toInvoice" colSpan="2" readonlyIf="invoiced" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>				
 				<field name="isPaid" showIf="project.invoicingSequenceSelect == 1" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" colSpan="1"/>
@@ -178,7 +178,7 @@
 				<field name="hasDateOrFrequencyChanged" hidden="true"/>
 			</panel>
 			
-			<panel name="timeSpentPanel" title="Time Spent">
+			<panel name="timeSpentPanel" title="Time Spent" if-module="axelor-human-resource" if="__config__.app.isApp('timesheet')">
 				<field name="totalRealHrs" readonly="true" colSpan="4">
 				<viewer><![CDATA[
                    	<span>{{record.totalRealHrs}} </span><span x-translate>hours</span>
@@ -188,7 +188,7 @@
 				<panel-dashlet name="waitingTimesheetLinesPanel" action="action-teamtask-dashlet-waiting-timeshet-lines" title="Waiting Timesheet lines" colSpan="12" canSearch="true"/>
 			</panel>
 
-			<panel name="timerPanel" title="Timer" showIf="id" hidden="true">
+			<panel name="timerPanel" title="Timer" showIf="id" hidden="true" if-module="axelor-helpdesk" if="__config__.app.isApp('helpdesk')">
 				<panel name="actionsPanel" title="Actions">
 					<button name="startTimerBtn" title="Start" icon="fa-play" colSpan="12" hidden="true"
 						onClick="action-team-task-method-start-timer"/>
@@ -499,8 +499,8 @@
 	</action-method>
 	
 	<action-attrs name="action-team-task-attrs-invoice-type-on-change">
-		<attribute name="value" for="toInvoice" expr="eval: true" if="invoicingType == 1"/>
-		<attribute name="value" for="toInvoice" expr="eval: false" if="invoicingType != 1"/>
+		<attribute name="value" for="toInvoice" expr="eval: true" if="invoicingType == 1 || invoicingType == 2"/>
+		<attribute name="value" for="toInvoice" expr="eval: false" if="invoicingType == 3"/>
 		<attribute name="value" for="isOrderProposed" expr="eval: true" if="invoicingType == 1"/>
 		<attribute name="value" for="isOrderProposed" expr="eval: false" if="invoicingType != 1"/>
 	</action-attrs>

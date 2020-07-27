@@ -33,11 +33,11 @@
             <field name="comments" colSpan="12" />
         </panel>
         <panel name="detailsPanel" sidebar="true">
-            <panel name="salaryDetailsPanel" hidden="true" showIf="employmentContract != null" colSpan="12" readonly="true">
-                <field name="annualGrossSalary" />
+            <panel name="salaryDetailsPanel" hidden="true" showIf="employmentContract != null" colSpan="12" >
+                <field name="annualGrossSalary" readonly="true"/>
                 <field name="netSalary" onChange="action-payroll-preparation-record-total" />
                 <field name="socialCharges" />
-                <field name="total" />
+                <field name="total" readonly="true"/>
             </panel>
             <field name="exportTypeSelect" readonlyIf="exported" />
             <button name="exportBtn" title="Export payroll preparation" hidden="true" showIf="id != null &amp;&amp; !exported" onClick="action-payroll-preparation-group-export" />
@@ -101,5 +101,9 @@
 		<attribute name="readonly" for="mainPanel" expr="true"/>
 		<attribute name="hidden" for="refreshButton" expr="true"/>
 	</action-attrs>
+	
+	<search-filters name="payroll-preparation-filters" model="com.axelor.apps.hr.db.PayrollPreparation" title="Payroll preparation filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
 	
 </object-views>

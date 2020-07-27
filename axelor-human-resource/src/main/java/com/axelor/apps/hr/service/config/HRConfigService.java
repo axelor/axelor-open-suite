@@ -120,52 +120,6 @@ public class HRConfigService {
     return refusedExpenseTemplate;
   }
 
-  // TIMESHEET
-
-  public Template getSentTimesheetTemplate(HRConfig hrConfig) throws AxelorException {
-    Template sentTimesheetTemplate = hrConfig.getSentTimesheetTemplate();
-    if (sentTimesheetTemplate == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.HR_CONFIG_SENT_TIMESHEET_TEMPLATE),
-          hrConfig.getCompany().getName());
-    }
-    return sentTimesheetTemplate;
-  }
-
-  public Template getValidatedTimesheetTemplate(HRConfig hrConfig) throws AxelorException {
-    Template validatedTimesheetTemplate = hrConfig.getValidatedTimesheetTemplate();
-    if (validatedTimesheetTemplate == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.HR_CONFIG_VALIDATED_TIMESHEET_TEMPLATE),
-          hrConfig.getCompany().getName());
-    }
-    return validatedTimesheetTemplate;
-  }
-
-  public Template getRefusedTimesheetTemplate(HRConfig hrConfig) throws AxelorException {
-    Template refusedTimesheetTemplate = hrConfig.getRefusedTimesheetTemplate();
-    if (refusedTimesheetTemplate == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.HR_CONFIG_REFUSED_TIMESHEET_TEMPLATE),
-          hrConfig.getCompany().getName());
-    }
-    return refusedTimesheetTemplate;
-  }
-
-  public Template getCanceledTimesheetTemplate(HRConfig hrConfig) throws AxelorException {
-    Template refusedTimesheetTemplate = hrConfig.getCanceledTimesheetTemplate();
-    if (refusedTimesheetTemplate == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.HR_CONFIG_CANCELED_TIMESHEET_TEMPLATE),
-          hrConfig.getCompany().getName());
-    }
-    return refusedTimesheetTemplate;
-  }
-
   // LEAVE REQUEST
 
   public Template getSentLeaveTemplate(HRConfig hrConfig) throws AxelorException {

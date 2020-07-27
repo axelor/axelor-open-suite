@@ -64,7 +64,7 @@ public class UnitConversionService {
    * @param endUnit The end unit
    * @param value The value to convert
    * @param scale The wanted scale of the result
-   * @param product Optionnal, a product used for complex conversions. Input null if needless.
+   * @param product Optional, a product used for complex conversions. Input null if needless.
    * @return The converted value with the specified scale
    * @throws AxelorException
    */
@@ -112,7 +112,7 @@ public class UnitConversionService {
    * @param unitConversionList A list of conversions between units
    * @param startUnit The start unit
    * @param endUnit The end unit
-   * @param product Optionnal, a product used for complex conversions. INput null if needless.
+   * @param product Optional, a product used for complex conversions. INput null if needless.
    * @return A conversion coefficient to convert from startUnit to endUnit.
    * @throws AxelorException The required units are not found in the conversion list.
    * @throws CompilationFailedException

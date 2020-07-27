@@ -97,11 +97,11 @@
 				<field name="fullName" showTitle="false" colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 5">
 					<editor x-show-titles="false">
 						<field name="enterpriseName" css="label-bold bold large" colSpan="12" showIf="partner == null" placeholder="Enterprise name" onChange="action-lead-method-set-social-network-url"/>
-						<field name="jobTitleFunction" colSpan="6" placeholder="Function"/>
 						<field name="industrySector" colSpan="6" form-view="industry-sector-form" grid-view="industry-sector-grid" canEdit="false"/>
 						<field name="partner" colSpan="12" showIf="statusSelect == 4" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
 					</editor>
 				</field>
+				<field name="jobTitleFunction" colSpan="6" placeholder="Function" showTitle="false"/>
 			</panel>
 		</panel>
 
@@ -340,6 +340,7 @@
 	</action-method>
 	
    	<search-filters name="lead-filters" model="com.axelor.apps.crm.db.Lead" title="Lead filters">
+   		<field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
 		<filter title="My Leads">
 			<domain>self.user = :__user__</domain>
 		</filter>

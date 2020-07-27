@@ -6,13 +6,14 @@
 	<menuitem name="forecast-root" title="Cash management" order="-86"  if="__config__.app.isApp('cash-management')"
 		icon="fa-money"  icon-background="#e0a83c"/>
 	
-	<menuitem name="forecast-root-forecast" order="10" parent="forecast-root"
-		title="Forecasts" action="forecast.root.forecast" />
+	<menuitem name="forecast-config-manual-forecast" order="10" parent="forecast-conf"
+		title="Manual forecasts" action="forecast-config-manual-forecast" />
 
-	<action-view name="forecast.root.forecast" title="Forecasts"
+	<action-view name="forecast-config-manual-forecast" title="Manual forecasts"
 		model="com.axelor.apps.cash.management.db.Forecast" >
 		<view type="grid" name="forecast-grid" />
 		<view type="form" name="forecast-form" />
+		<view-param name="search-filters" value="forecast-filters"/>
 	</action-view>
 	
 	<menuitem name="forecast-root-forecast-recap" order="20" parent="forecast-root"
@@ -22,6 +23,7 @@
 		model="com.axelor.apps.cash.management.db.ForecastRecap" >
 		<view type="grid" name="forecast-recap-grid" />
 		<view type="form" name="forecast-recap-form" />
+		<view-param name="search-filters" value="forecast-recap-filters"/>
 		<domain>self.isReport != true</domain>
 	</action-view>
 	
@@ -31,6 +33,7 @@
 		model="com.axelor.apps.cash.management.db.ForecastRecap" >
 		<view type="grid" name="forecast-report-grid" />
 		<view type="form" name="forecast-report-form" />
+		<view-param name="search-filters" value="forecast-recap-filters"/>
 		<domain>self.isReport = true</domain>
 	</action-view>
 		
@@ -43,6 +46,7 @@
 		model="com.axelor.apps.cash.management.db.ForecastGenerator" >
 		<view type="grid" name="forecast-generator-grid" />
 		<view type="form" name="forecast-generator-form" />
+		<view-param name="search-filters" value="forecast-generator-filters"/>
 	</action-view>
 	
 	<menuitem name="forecast-conf-forecast-reason" order="20" parent="forecast-conf"

@@ -19,6 +19,9 @@
 
 		<boolean name="isQtyRequested" readonly="true" title="Quantity requested"/>
 
+		<!-- Is not used in view but needed for java service -->
+		<boolean name="isMergedStockMoveLine" transient="true"/>
+
 		<datetime name="reservationDateTime" readonly="true"/>
 
 		<finder-method name="findAllBySaleOrder"

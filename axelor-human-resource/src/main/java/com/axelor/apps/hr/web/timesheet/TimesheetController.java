@@ -48,6 +48,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.CallMethod;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
@@ -173,7 +174,8 @@ public class TimesheetController {
         ActionView.define(I18n.get("Timesheets"))
             .model(Timesheet.class.getName())
             .add("grid", "all-timesheet-grid")
-            .add("form", "timesheet-form");
+            .add("form", "timesheet-form")
+            .param("search-filters", "timesheet-filters");
 
     if (employee == null || !employee.getHrManager()) {
       if (employee == null || employee.getManagerUser() == null) {
@@ -214,6 +216,7 @@ public class TimesheetController {
             .model(Timesheet.class.getName())
             .add("grid", "timesheet-validate-grid")
             .add("form", "timesheet-form")
+            .param("search-filters", "timesheet-filters")
             .context("todayDate", Beans.get(AppBaseService.class).getTodayDate());
 
     Beans.get(HRMenuValidateService.class).createValidateDomain(user, employee, actionView);
@@ -261,7 +264,8 @@ public class TimesheetController {
         ActionView.define(I18n.get("Historic colleague Timesheets"))
             .model(Timesheet.class.getName())
             .add("grid", "timesheet-grid")
-            .add("form", "timesheet-form");
+            .add("form", "timesheet-form")
+            .param("search-filters", "timesheet-filters");
 
     actionView.domain("(self.statusSelect = 3 OR self.statusSelect = 4)");
 
@@ -310,7 +314,8 @@ public class TimesheetController {
         ActionView.define(I18n.get("Timesheets to be Validated by your subordinates"))
             .model(Timesheet.class.getName())
             .add("grid", "timesheet-grid")
-            .add("form", "timesheet-form");
+            .add("form", "timesheet-form")
+            .param("search-filters", "timesheet-filters");
 
     String domain =
         "self.user.employee.managerUser.employee.managerUser = :_user AND self.company = :_activeCompany AND self.statusSelect = 2";
@@ -409,6 +414,7 @@ public class TimesheetController {
             .model(Timesheet.class.getName())
             .add("form", "timesheet-form")
             .add("grid", "timesheet-grid")
+            .param("search-filters", "timesheet-filters")
             .domain("self.user = :_user")
             .context("_user", AuthUtils.getUser())
             .map());
@@ -485,6 +491,7 @@ public class TimesheetController {
   }
 
   /* Count Tags displayed on the menu items */
+  @CallMethod
   public String timesheetValidateMenuTag() {
 
     return Beans.get(HRMenuTagService.class)

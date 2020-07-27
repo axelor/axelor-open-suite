@@ -20,6 +20,7 @@ package com.axelor.apps.purchase.service.print;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.report.IReport;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -41,7 +42,7 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
   @Override
   public String printPurchaseOrder(PurchaseOrder purchaseOrder, String formatPdf)
       throws AxelorException {
-    String fileName = getPurchaseOrderFilesName(false, formatPdf);
+    String fileName = getPurchaseOrderFilesName(purchaseOrder.getStatusSelect(), false, formatPdf);
     return PdfTool.getFileLinkFromPdfFile(print(purchaseOrder, formatPdf), fileName);
   }
 
@@ -58,7 +59,9 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
             printedPurchaseOrders.add(print(purchaseOrder, ReportSettings.FORMAT_PDF));
           }
         });
-    String fileName = getPurchaseOrderFilesName(true, ReportSettings.FORMAT_PDF);
+
+    Integer status = Beans.get(PurchaseOrderRepository.class).find(ids.get(0)).getStatusSelect();
+    String fileName = getPurchaseOrderFilesName(status, true, ReportSettings.FORMAT_PDF);
     return PdfTool.mergePdfToFileLink(printedPurchaseOrders, fileName);
   }
 
@@ -89,8 +92,13 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
         .addFormat(formatPdf);
   }
 
-  protected String getPurchaseOrderFilesName(boolean plural, String formatPdf) {
-    return I18n.get(plural ? "Purchase orders" : "Purchase order")
+  protected String getPurchaseOrderFilesName(Integer status, boolean plural, String formatPdf) {
+    String prefixFileName = I18n.get(plural ? "Purchase orders" : "Purchase order");
+    if (status == PurchaseOrderRepository.STATUS_DRAFT
+        || status == PurchaseOrderRepository.STATUS_REQUESTED) {
+      prefixFileName = I18n.get(plural ? "Purchase quotations" : "Purchase quotation");
+    }
+    return prefixFileName
         + " - "
         + Beans.get(AppBaseService.class).getTodayDate().format(DateTimeFormatter.BASIC_ISO_DATE)
         + "."
@@ -99,7 +107,12 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
 
   @Override
   public String getFileName(PurchaseOrder purchaseOrder) {
-    return I18n.get("Purchase order")
+    String prefixFileName = I18n.get("Purchase order");
+    if (purchaseOrder.getStatusSelect() == PurchaseOrderRepository.STATUS_DRAFT
+        || purchaseOrder.getStatusSelect() == PurchaseOrderRepository.STATUS_REQUESTED) {
+      prefixFileName = I18n.get("Purchase quotation");
+    }
+    return prefixFileName
         + " "
         + purchaseOrder.getPurchaseOrderSeq()
         + ((purchaseOrder.getVersionNumber() > 1) ? "-V" + purchaseOrder.getVersionNumber() : "");

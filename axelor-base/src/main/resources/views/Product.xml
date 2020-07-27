@@ -42,12 +42,12 @@
           					if="__config__.app.getApp('base').getGenerateProductSequence()"/>
           				<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="5" css="label-bold bold large" placeholder="Code" 
           					if="!__config__.app.getApp('base').getGenerateProductSequence()" required="true"/>
-                  <field name="name" showTitle="false" colSpan="7" css="label-bold bold large" placeholder="Name" width="400"/>
+                  <field name="name" showTitle="false" colSpan="7" css="label-bold bold large" placeholder="Name" width="800"/>
         			</editor>
       			</field>
     		</panel>
     		<panel name="actionsPanel" colSpan="8">
-       			<button name="$totalVariantsBtn" title="Total variants" showIf="isModel" colSpan="3" icon="fa-tags" onClick="action-product-view-total-variants" widget="info-button"/>
+       			<spacer colSpan="3"/>
 				<panel name="tagsPanel" colSpan="2" if="__config__.app.isApp('sale')" if-module="axelor-sale">
 					<field name="$viewerProductTags" showTitle="false" colSpan="12" readonly="true">
 						<viewer depends="configurator">
@@ -59,11 +59,19 @@
 						</viewer>
 					</field>
 				</panel>
-      			<panel name="subActionsPanel" showTitle="false" showIf="productTypeSelect == 'storable' &amp;&amp; id &amp;&amp; stockManaged" colSpan="7" if-module="axelor-stock" if="__config__.app.isApp('stock')">
-       	 		    <button name="$realQtyBtn" title="Real qty" colSpan="4" icon="fa-building-o" onClick="action-stock-move-line-product-default-realized" widget="info-button"/>
-             	    <button name="$futureQtyBtn" title="Future qty" colSpan="4" icon="fa-line-chart" onClick="action-stock-move-line-product-default-planned" widget="info-button"/>	
-                    <button name="$previewBtn" title="See stock details" colSpan="4" onClick="action-stock-location-line-view-for-a-product-from-product-view" if-module="axelor-supplychain" widget="info-button" icon="fa-cubes"/>
-    	  			<field name="isModel" hidden="true"/>
+      			<panel name="subActionsPanel" showTitle="false" showIf="productTypeSelect == 'storable' &amp;&amp; id &amp;&amp; stockManaged" colSpan="12" if-module="axelor-stock" if="__config__.app.isApp('stock')">
+							<spacer colSpan="3"/>
+							<button name="$realQtyBtn" title="Real qty" colSpan="3" icon="fa-building-o"
+											onClick="action-stock-move-line-product-default-realized" widget="info-button"/>
+             	<button name="$futureQtyBtn" title="Future qty" colSpan="3" icon="fa-line-chart"
+											onClick="action-stock-move-line-product-default-planned" widget="info-button"/>
+              <button name="$previewBtn" title="See stock details" colSpan="3"
+											onClick="action-stock-location-line-view-for-a-product-from-product-view" if-module="axelor-supplychain"
+											widget="info-button" icon="fa-cubes"/>
+              <spacer colSpan="9"/>
+    	  			<button name="$totalVariantsBtn" title="Total variants" showIf="isModel" colSpan="3" icon="fa-tags"
+											onClick="action-product-view-total-variants" widget="info-button"/>
+					<field name="isModel" hidden="true"/>
 				</panel>
       		</panel>
     		<panel name="imagePanel" colSpan="2">
@@ -362,6 +370,7 @@
 		<action name="action-product-attrs-set-cost-type-select"/>
 		<action name="action-product-record-set-barcode-type-config"/>
 		<action name="action-product-attrs-title-unit"/>
+		<action name="action-product-record-service-stock-managed"/>
     </action-group>
     
     <action-group name="action-group-base-product-producttype-onchange">
@@ -561,9 +570,47 @@
     </action-record>
 	
     <search-filters name="products-filters" model="com.axelor.apps.base.db.Product" title="Products filters">
-    	<field name="purchaseProductMultipleQtyList" title="Multiple quantities of purchase"/>
-    	<field name="saleProductMultipleQtyList" title="Multiple quantities of sale"/>
-		<filter title="Current Products">
+    	<field name="purchaseProductMultipleQtyList" title="Multiple quantities of purchase" hidden="true" if="!(__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase')?.getManageMultiplePurchaseQuantity())"/>
+    	<field name="allowToForcePurchaseQty" hidden="true" if="!(__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase')?.getManageMultiplePurchaseQuantity())"/>
+    	<field name="saleProductMultipleQtyList" title="Multiple quantities of sale" hidden="true" if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale')?.getManageMultipleSaleQuantity())"/>
+    	<field name="serialNumber" hidden="true" if="!__config__.app.getApp('base').getActivateBarCodeGeneration()"/>
+		<field name="barcodeTypeConfig" hidden="true" if="!(__config__.app.getApp('base').getActivateBarCodeGeneration() &amp;&amp; __config__.app.getApp('base').getEditProductBarcodeType())"/>
+		<field name="salesUnit" hidden="true" if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale')?.getManageSalesUnits())"/>
+		<field name="purchasesUnit" hidden="true" if="!(__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase')?.getManagePurchasesUnits())"/>
+		<field name="configurator" hidden="true" if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale')?.getEnableConfigurator())"/>
+		<field name="allowToForceSaleQty" hidden="true" if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale')?.getManageMultipleSaleQuantity())"/>
+		<field name="costSheetGroup" hidden="true" if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageCostSheetGroup())"/>
+		<field name="customerCatalogList"  hidden="true" if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getEnableCustomerCatalogMgt())"/>
+		<field name="supplierCatalogList" hidden="true" if="!(__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog())"/>
+		<field name="productVariantConfig" hidden="true" if="!__config__.app.getApp('base').getManageProductVariants()"/>
+		<field name="manageVariantPrice" hidden="true" if="!__config__.app.getApp('base').getManageProductVariants()"/>
+		<field name="taskTemplateSet" hidden="true" if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').enableTaskTemplatesByProduct)"/>
+		<field name="productSubTypeSelect" hidden="true" if="!__config__.app.isApp('production')"/>
+        <field name="isActivity" hidden="true" if="!__config__.app.isApp('employee')" />
+        <field name="standardDelay" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="productSynchronizedInPrestashop" hidden="true" if="!__config__.app.isApp('prestashop')"/>
+        <field name="shippingCoef" hidden="true" if="!__config__.app.isApp('purchase')"/>
+		<field name="defShipCoefByPartner" hidden="true" if="!__config__.app.isApp('purchase')"/>
+		<field name="isAnalyticCapture" hidden="true" if="!__config__.app.isApp('account')"/>
+		<field name="excludeFromMrp" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="stockManaged" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="mrpFamily" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="inventoryTypeSelect" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="productStandard" hidden="true" if="!__config__.app.isApp('production')"/>
+      	<field name="productApproval" hidden="true" if="!__config__.app.isApp('production')"/>
+      	<field name="controlOnReceipt" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="avgPrice" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="economicManufOrderQty" hidden="true" if="!__config__.app.isApp('production')"/>
+	    <field name="hasWarranty" hidden="true" if="!__config__.app.isApp('stock')"/>
+		<field name="warrantyNbrOfMonths" hidden="true" if="!__config__.app.isApp('stock')"/>
+		<field name="isPerishable" hidden="true" if="!__config__.app.isApp('stock')"/>
+		<field name="perishableNbrOfMonths" hidden="true" if="!__config__.app.isApp('stock')"/>
+		<field name="checkExpirationDateAtStockMoveRealization" hidden="true" if="!__config__.app.isApp('stock')"/>
+	    <field name="trackingNumberConfiguration" hidden="true" if="!__config__.app.isApp('stock')"/>
+	    <field name="usedInDEB" hidden="true" if="!__config__.app.isApp('stock')"/>
+		<field name="customsCodeNomenclature" hidden="true" if="!__config__.app.isApp('stock')"/>
+		<field name="countryOfOrigin" hidden="true" if="!__config__.app.isApp('stock')"/>
+        <filter title="Current Products">
 			<domain>self.endDate IS NULL or CURRENT_DATE &lt; self.endDate</domain>
 		</filter>
 		<filter title="Storable Products">

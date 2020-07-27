@@ -60,4 +60,8 @@
 		<context name="id" expr="eval: id"/>
 	</action-view>
 	
+	<search-filters name="irrecoverable-filters" model="com.axelor.apps.account.db.Irrecoverable" title="Irrecoverable filters">
+    	<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
+	
 </object-views>

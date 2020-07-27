@@ -58,4 +58,7 @@
 		<call class="com.axelor.apps.businessproject.web.ProjectInvoicingAssistantBatchController" method="showGeneratedInvoicingProject"/>
 	</action-method>
 
+	<search-filters name="project-invoicing-assistant-batch-filters" model="com.axelor.apps.businessproject.db.ProjectInvoicingAssistantBatch" title="Project invoicing assistant batch filters">
+    	<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
 </object-views>

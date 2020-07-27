@@ -1,13 +1,185 @@
 # Changelog
-## [Unreleased 5.3.3]
+## [Unreleased 5.3.9]
+## Features
+- USER : add a dashlet showing all user's permissions.
+
 ## Improvements
+- Report : Fix unit translation.
+- EBICSTS : add new data init to bank statement file formats
+
+## Bug Fixes
+- TIMESHEET : Fix editor still being displayed even with a disabled config
+- BankDetails : Fix validation flow of iban
+- INVOICE : fix message on generate of subscription invoice
+- ACCOUNTING MOVE : remove all possibility to cancel a validate move.
+- ICalendar : Update event synchronization.
+- Template Maker : fix selection value translation based on locale
+- SaleOrder : Consider today's date also in invoice sale amount dashboard.
+- CRM : set default nbrEmployees to 0.
+- Conversion : corrected the case of conversion from void to void and improved message in case of conversion from void to unit or from unit to void.
+
+## [5.3.8] - 2020-07-15
+## Improvements
+- ACCOUNT SITUATION: update account situation on invoice payment cancel and improve moveLine calculation.
+- OPPORTUNITY: Change the data type of bestCase and worstCase fields from string to decimal.
+- INVOICE: generate invoice from timetable list from purchase order.
+- SaleOrder: Change title of numberOfPeriods.
+- BankStatementLine: orderBy modification in AFB 120.
+- Add tagCount for Expense, Timesheet, Leave request and Extra hours menus.
+
+## Bug Fixes
+- EXTRA HOURS: Fix missing translation.
+- ACCOUNTING REPORT: Add missing translations in report.
+- MRP: Remove duplicate information.
+- ACCOUNTING INFORMATION: Add missing translation.
+- TeamTaskCategory: Added translation for title of grid view and fields.
+- AccountingBatch: Adding partner name in the bankDetails' not active anomaly message.
+- Application config: Add missing translations.
+- UnitCostCalculation: check NPE on product select.
+- SaleOrder: Remove one externalReference which appears twice in grid view.
+- AdvancedExport: Fix the bug of records being exported twice.
+- INVOICE: corrected the possibility to add a payment when the amount remaining is inferior or equal to 0.
+- EMPLOYEE: add first name search in advance search.
+- Invoice: Fix multiple invoices not ventilating when generated from sale order with advance payment.
+- TRAINING: Added domain to 'Required training' so it does not display itself.
+- INVOICE : Fix Subscription invoice operationSubTypeSelect change issue.
+
+## [5.3.7] - 2020-06-26
+## Improvements
+- LEAVE REQUEST: remove field duration length constraint
+- Studio: Added selection for context field and context field value.
+- EMPLOYMENT CONTRACT: Add new sequence on save.
+
+## Bug Fixes
+- INVENTORY: prevent having more than one line for the same product and the same tracking number.
+- EMPLOYEE: add translation of "Employee PhoneBook".
+- CRM/SALES: Contact menu also shows contacts from prospects.
+- Mail message: fix an issue where some emails are not being sent in a batch.
+- ADVANCED SEARCH: Added display condition on fields using app config settings.
+- BANK STATEMENT LINE: change orderBy of afb120 bank statement line grid.
+- BANK DETAILS: Display balance in card view and form view.
+- Configurator creator: fix demo data import.
+- INTERBANK CODE: added translation of Reject/Return code.
+- PAYMENT MODE: Fix wrong translation.
+- ACCOUNT: Fix wrong move line grid view.
+- TIMESHEET: Fix error message showing when there were no mail templates.
+- SALE ORDER: Set duration when created from opportunity.
+- Advance import: Fix multiple search on same field.
+- Bill of Material: Replace NPE by an explicit message to the user when product unit is not configured.
+- EMPLOYEE: add button for Employee.rptdesign report on form.
+- Employee email address: prevent the selection of existing email addresses.
+
+## [5.3.6] - 2020-05-26
+## Improvements
+- OPPORTUNITY: add sequence.
+- Add civility for partner contact in birt report printing.
+- DURATION: rearranged fields in grid and form view.
+- Add configuration to activate partial invoicing for sale order and purchase order.
+- ACCOUNTING REPORT: Printing Information panel UI light changes.
+- PURCHASE ORDER SUPPLIER LINE: fix for decimal digit scale and precision.
+- MOVE LINE: removed massUpdate from move-line-grid.
+- LEAVE LINE: remove fields length constraints.
+- Accounting Partner General Ledger: Manage title visibility.
+
+## Bug Fixes
+- CONTRACT: Add filter on payment mode.
+- CONTRACT: fix for unit price null on invoice.
+- SALEORDER: copy description when generating task by line from sale order.
+- Business Project: set toInvoice for timesheet line based on parent task instead of a task.
+- FORECAST RECAP: many anomalies resolved.
+- Bank details: corrected the possibility to get an inactive bank details.
+- Back Order: corrected link between back order and origin.
+- DEMO DATA: fixed issue in demo data.
+- PARTNER: industrySector is now displayed when customer is individual.
+- Fixed asset: corrected amortization calculation process.
+- BANK STATEMENT: Fix order by in afb120 bank statement lines.
+- ICalendarEvent: make subject, location & subjectTeam field large.
+
+## [5.3.5] - 2020-05-11
+## Features
+- CONTACT: Add import from Google contact.
+
+## Improvements
+- WEEKLY PLANNING: leaveCoef now has default and init values.
+- BudgetLine: make dates field required.
+- Product: Change french translation of value product in productTypeSelect.
+- SUPPLY CHAIN: Improve title and translation of field.
+- SALEORDERLINE: Change french translation of 'Available status'.
+- ACCOUNT: Take in consideration numbers prefix when generating automaticaly a customer account.
+- BANK STATEMENT: Bank Statement ID added in grid view.
+- BANK STATEMENT LINE: Bank Statement Reference added on separated grid view and on form view.
+- Invoice: made all dashboard's charts and grid based on ventilated invoices.
+- DETAIL PER PRODUCT: modify filter of product on details by product form and changed default value for stock managed boolean of product.
+- OPPORTUNITY: set canNew false for saleOrderList.
+
+## Bug Fixes
+- STOCK MOVE: Fix hiding company on multi company disabled.
+- Invoice: qty check on ventilation now deals with different units between invoice line and stock move line.
+- Product: Product name is readable even when too long.
+- Stock config: Add missing translation.
+- App stock: Fix missing translation.
+- SALEORDERLINE: Readonly allocate and deallocate button on already delivered lines.
+- ICalendar: fix issue when syncing between two dates.
+- SALEORDERLINE: Empty available status on already delivered lines.
+- Accounting: fix using wrong tax account when ventilating an invoice with reverse charge tax.
+- Sale order: fix duration language in report.
+- SALEORDER: Fix generating twice the same invoice from subscription sale order.
+- BankOderEconomicReason: name is now filled in demo data.
+- ACCOUNTING BATCH: Fix NPE on 'close annual accounts' option.
+- ACCOUNTING BATCH: Fix issue which did block the save.
+- PRODUCT VARIANTS: fix for error in product variant creation.
+- STOCK LOCATION LINE: Fix blank screen issue in stock correction process.
+- ACCOUNT: Fixed inconsistency of analytic distribution settings and tax settings.
+
+## [5.3.4] - 2020-04-29
+## Improvements
+- COST SHEET: in batch computing work in progress valuation, compute cost for ongoing manuf orders at the valuation date.
+- ACCOUNTING BATCH: add start and end date of realizing fixed asset line.
+- Improve consistency of grid and card view menus.
+- Stock Move: if present, use trading name logo in printing.
+- PRODUCTION: do not hide manufacturing order in operation order form opened in a popup.
+
+## Bug Fixes
+- Budget amount: Correctly manage the case of refund invoices.
+- USER: fix filter for activeCompany.
+- WORKSHOP STOCK LOCATION: Fix config being ignored.
+- TeamTask: Set default invoicingType to 'No invoicing'.
+- TeamTask: Set toInvoice is true when selected InvoicingType is 'Package'.
+- TeamTask: Fix fields disappearing on save.
+- PURCHASE: Fix fields where negative values shouldn't be allowed
+- SALES: Fix fields where negative values shouldn't be allowed
+- Manuf Order: add missing translations.
+- STOCK MOVE: Product translation in birt.
+- Invoice Line: Fix hidden price field in form.
+- Account: Fix incomplete sequences in english data init.
+- INVOICELINE: fix hideIf for discountAmount.
+- Product form: fix typo in help message.
+- Production: add missing translations.
+- Studio: Fix custom model's 'formWidth' default value.
+- Stock Move: add missing trading name in form view.
+- Batch Outgoing Stock Move Invoicing: fix query, process and view.
+- Sale Order: set printing settings from trading name when generated from opportunity.
+- Inventory: fix error on stock location select when company is not filled.
+- Product: Fix NPE while sending the email from product-activity-form,product-expense-form.
+- City import: Fix server error during import.
+- PRODUCTION: hide workshopStockLocation in grid views based on manageWorkshop configuration.
+- EMPLOYEE: Fixed contactPartner full name compute.
+
+## [5.3.3] - 2020-04-14
+## Improvements
+- PAYROLL PREP: Net salary and social charges fields are now editable.
+- MESSAGE: Changed the order of fields Language & Template when sending a message from an object.
+- STOCK LOCATION LINE: now shows wap dashlet when accessing line from a product.
+- CONTROL POINT: change french translation of name field.
+- INVOICE: less margins between the customer name/address zone and the invoice lines table on Birt printout.
+- AnalyticMoveLine: Validate total percentage.
+
 ## Bug Fixes
 - Manuf Order: fix issue when printing multiple manufacturing orders.
 When printing multiple manufacturing orders, operations from all orders were printed for each one.
 - Purchase Request: Add missing translation.
 - Purchase Request Line: fix product domain.
 - Availability request: do not ask to allocate stock if the product is not managed in stock.
-- Conversion : corrected the case of conversion from void to void and improved message in case of conversion from void to unit or from unit to void.
 
 ## [5.3.2] - 2020-04-01
 ## Improvements
@@ -204,7 +376,13 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - PRODUCT: Fix economicManufOrderQty displayed twice.
 
 
-[Unreleased 5.3.3]: https://github.com/axelor/axelor-open-suite/compare/v5.3.2...dev
+[Unreleased 5.3.9]: https://github.com/axelor/axelor-open-suite/compare/v5.3.8...dev
+[5.3.8]: https://github.com/axelor/axelor-open-suite/compare/v5.3.7...V5.3.8
+[5.3.7]: https://github.com/axelor/axelor-open-suite/compare/v5.3.6...v5.3.7
+[5.3.6]: https://github.com/axelor/axelor-open-suite/compare/v5.3.5...v5.3.6
+[5.3.5]: https://github.com/axelor/axelor-open-suite/compare/v5.3.4...v5.3.5
+[5.3.4]: https://github.com/axelor/axelor-open-suite/compare/v5.3.3...v5.3.4
+[5.3.3]: https://github.com/axelor/axelor-open-suite/compare/v5.3.2...v5.3.3
 [5.3.2]: https://github.com/axelor/axelor-open-suite/compare/v5.3.1...v5.3.2
 [5.3.1]: https://github.com/axelor/axelor-open-suite/compare/v5.3.0...v5.3.1
 [5.3.0]: https://github.com/axelor/axelor-open-suite/compare/v5.2.5...v5.3.0

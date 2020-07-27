@@ -46,5 +46,18 @@
 	<action-record name="action-payment-mode-set-default" model="com.axelor.apps.account.db.PaymentMode">
 	    <field name="accountManagementList" expr="eval:__repo__(Company).all().fetch().collect{__repo__(AccountManagement).create([company:it])}" if="__config__.app.isApp('account')"/>
 	</action-record>
+	
+	<search-filters name="payment-mode-filters" model="com.axelor.apps.account.db.PaymentMode" title="Payment mode filters">
+    	<field name="validatePaymentByDepositSlipPublication" hidden="true" if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.paymentVouchersOnInvoice)"/>
+    	<field name="accountManagementList" hidden="true" if="!__config__.app.isApp('account')"/>
+	    <field name="generateBankOrder" hidden="true" if="!__config__.app.isApp('bank-payment')"/>
+		<field name="autoConfirmBankOrder" hidden="true" if="!__config__.app.isApp('bank-payment')"/>
+	  	<field name="automaticTransmission" hidden="true" if="!__config__.app.isApp('bank-payment')"/>
+	  	<field name="generateMoveAutoFromBankOrder" hidden="true" if="!__config__.app.isApp('bank-payment')"/>
+        <field name="consoBankOrderLinePerPartner" hidden="true" if="!__config__.app.isApp('bank-payment')"/>
+	  	<field name="orderTypeSelect" hidden="true" if="!__config__.app.isApp('bank-payment')"/>
+	    <field name="bankOrderExportFolderPath" hidden="true" if="!__config__.app.isApp('bank-payment')"/>
+	  	<field name="bankOrderFileFormat" hidden="true" if="!__config__.app.isApp('bank-payment')"/>
+	</search-filters>
 
 </object-views>

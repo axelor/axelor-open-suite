@@ -20,7 +20,7 @@
 			<field name="duration" />
 			<field name="mandatoryTraining" colSpan="4" />
 			<field name="skillSet" colSpan="8" widget="tag-select" />
-			<field name="requiredTrainingSet" colSpan="12" />
+			<field name="requiredTrainingSet" colSpan="12" domain="self.id != :id" />
 			<field name="description" colSpan="12" />
 			<field name="program" colSpan="12" widget="html" />
 			<field name="objectives" colSpan="12" />
@@ -39,4 +39,7 @@
 		<context name="_training" expr="eval:__self__"/>
 	</action-view>
 	
+	<search-filters name="training-filters" model="com.axelor.apps.talent.db.Training" title="Training filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
 </object-views>

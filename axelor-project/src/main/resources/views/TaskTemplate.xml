@@ -31,4 +31,8 @@
 		</panel>		
 	</form>
 
+	<search-filters name="task-template-filters" model="com.axelor.apps.project.db.TaskTemplate" title="Task template filters">
+		<field name="internalDescription" hidden="true" if="!__config__.app.isApp('business-support')"/>
+	</search-filters>
+
 </object-views>

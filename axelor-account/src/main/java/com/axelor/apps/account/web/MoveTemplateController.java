@@ -109,6 +109,7 @@ public class MoveTemplateController {
                   .model(Move.class.getName())
                   .add("grid", "move-grid")
                   .add("form", "move-form")
+                  .param("search-filters", "move-filters")
                   .domain("self.id in (" + Joiner.on(",").join(moveList) + ")")
                   .map());
         }

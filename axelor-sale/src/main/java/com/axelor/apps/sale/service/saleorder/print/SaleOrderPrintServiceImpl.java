@@ -21,6 +21,7 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.report.IReport;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
@@ -40,12 +41,12 @@ import java.util.List;
 
 public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
 
-  @Inject SaleOrderService saleOrderService;
+  @Inject protected SaleOrderService saleOrderService;
 
   @Override
   public String printSaleOrder(SaleOrder saleOrder, boolean proforma, String format)
       throws AxelorException, IOException {
-    String fileName = getSaleOrderFilesName(false, format);
+    String fileName = getSaleOrderFilesName(saleOrder.getStatusSelect(), false, format);
     return PdfTool.getFileLinkFromPdfFile(print(saleOrder, proforma, format), fileName);
   }
 
@@ -61,7 +62,8 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
             printedSaleOrders.add(print(saleOrder, false, ReportSettings.FORMAT_PDF));
           }
         });
-    String fileName = getSaleOrderFilesName(true, ReportSettings.FORMAT_PDF);
+    Integer status = Beans.get(SaleOrderRepository.class).find(ids.get(0)).getStatusSelect();
+    String fileName = getSaleOrderFilesName(status, true, ReportSettings.FORMAT_PDF);
     return PdfTool.mergePdfToFileLink(printedSaleOrders, fileName);
   }
 
@@ -107,9 +109,14 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
    *
    * @param plural if there is one or multiple sale orders.
    */
-  protected String getSaleOrderFilesName(boolean plural, String format) {
+  protected String getSaleOrderFilesName(Integer status, boolean plural, String format) {
+    String prefixFileName = I18n.get(plural ? "Sale orders" : "Sale order");
+    if (status == SaleOrderRepository.STATUS_DRAFT_QUOTATION
+        || status == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
+      prefixFileName = I18n.get(plural ? "Sale quotations" : "Sale quotation");
+    }
 
-    return I18n.get(plural ? "Sale orders" : "Sale order")
+    return prefixFileName
         + " - "
         + Beans.get(AppBaseService.class).getTodayDate().format(DateTimeFormatter.BASIC_ISO_DATE)
         + "."

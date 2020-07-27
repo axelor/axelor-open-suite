@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.AdvancedExportLine;
 import com.axelor.apps.tool.NamingTool;
 import com.axelor.auth.AuthUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.JpaSecurity;
 import com.axelor.db.Model;
@@ -90,8 +91,8 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
   public Query getAdvancedExportQuery(AdvancedExport advancedExport, List<Long> recordIds)
       throws AxelorException {
 
-    StringBuilder selectFieldBuilder = new StringBuilder(),
-        orderByFieldBuilder = new StringBuilder();
+    StringBuilder selectFieldBuilder = new StringBuilder();
+    StringBuilder orderByFieldBuilder = new StringBuilder();
 
     joinFieldSet.clear();
     selectionJoinFieldSet.clear();
@@ -117,6 +118,9 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
         selectField = "";
         aliasName = "";
         col++;
+      }
+      if (StringUtils.notEmpty(orderByFieldBuilder)) {
+        orderByFieldBuilder.append("self.id asc,");
       }
     } catch (ClassNotFoundException e) {
       TraceBackService.trace(e);

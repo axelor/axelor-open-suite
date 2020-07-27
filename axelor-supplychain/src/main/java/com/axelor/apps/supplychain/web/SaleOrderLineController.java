@@ -55,7 +55,7 @@ public class SaleOrderLineController {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
     if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
       saleOrderLine =
-          Beans.get(SaleOrderLineServiceSupplyChainImpl.class)
+          Beans.get(SaleOrderLineServiceSupplyChain.class)
               .computeAnalyticDistribution(saleOrderLine);
       response.setValue(
           "analyticDistributionTemplate", saleOrderLine.getAnalyticDistributionTemplate());

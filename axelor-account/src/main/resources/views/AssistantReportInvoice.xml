@@ -96,4 +96,7 @@
     	<call class="com.axelor.apps.account.web.AssistantReportInvoiceController" method="printPurchases"/>
     </action-method>
     
+    <search-filters name="accounting-report-invoice-filters" model="com.axelor.apps.account.db.AssistantReportInvoice" title="Accounting report invoice filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
 </object-views>
