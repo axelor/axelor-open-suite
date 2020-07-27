@@ -585,7 +585,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-sale-order-line-attrs-domain-product">
-		<attribute name="domain" for="product" expr="self.isModel = false and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true"/>
+		<attribute name="domain" for="product" expr="self.isModel = false and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true and dtype = 'Product'"/>
 	</action-attrs>
 	
   	<action-attrs name="action-sale-order-line-attrs-scale-and-precision">

@@ -68,7 +68,7 @@
 		<view type="cards" name="product-activity-cards"/>
     	<view type="grid" name="product-activity-grid"/>
 	    <view type="form" name="product-activity-form"/>
-	    <domain>self.isActivity = true</domain>
+	    <domain>self.isActivity = true AND dtype = 'Product'</domain>
 	</action-view>
 
 	<menuitem name="end-of-contract-reason-all" parent="hr-root-emp-mgt-conf"
@@ -288,7 +288,7 @@
 	    <view type="form" name="product-expense-form"/>
 	    <view-param name="search-filters" value="product-expense-filters"/>
 	    <view-param name="forceTitle" value="true" />
-		<domain>self.isModel = false AND self.expense = true</domain>
+		<domain>self.isModel = false AND self.expense = true AND dtype = 'Product'</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_isModel" expr="false"/>
 		<context name="_payCompany" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
@@ -402,7 +402,7 @@
 		<view type="grid" name="product-grid" />
 		<view type="form" name="product-form" />
 		<view-param name="search-filters" value="products-filters"/>
-		<domain>self.isModel = :_isModel AND self.productTypeSelect = :_productTypeSelect AND self.expense = false</domain>
+		<domain>self.isModel = :_isModel AND self.productTypeSelect = :_productTypeSelect AND self.expense = false AND dtype = 'Product'</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_isModel" expr="false"/>
 		<context name="_productTypeSelect" expr="storable"/>

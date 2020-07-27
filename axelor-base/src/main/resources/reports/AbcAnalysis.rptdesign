@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <simple-property-list name="includeResource">
         <value>translation_fr_FR</value>
         <value>translation_en_US</value>
@@ -1448,9 +1448,13 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<b><VALUE-OF>row["translation"]||row["message_key"]</VALUE-OF></b>]]></text-property>
+                        <text-property name="content"><![CDATA[<b><VALUE-OF>row["translation"]||row["message_key"]</VALUE-OF></b>&amp;nbsp;]]></text-property>
                     </text>
                     <data id="4051">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="display">inline</property>
                         <property name="resultSetColumn">start_date</property>
                     </data>
@@ -1488,9 +1492,13 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<b><VALUE-OF>row["translation"]||row["message_key"]</VALUE-OF></b>]]></text-property>
+                        <text-property name="content"><![CDATA[<b><VALUE-OF>row["translation"]||row["message_key"]</VALUE-OF></b>&amp;nbsp;]]></text-property>
                     </text>
                     <data id="4052">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="display">inline</property>
                         <property name="resultSetColumn">end_date</property>
                     </data>

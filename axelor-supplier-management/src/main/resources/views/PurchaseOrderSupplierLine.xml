@@ -71,7 +71,7 @@
 	  <panel name="mainPanel" >
 	    <field name="stateSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
 	    <field name="purchaseOrderLine.purchaseOrder.purchaseOrderSeq"/>
-	    <field name="purchaseOrderLine.product" form-view="product-form" grid-view="product-grid"/>
+	    <field name="purchaseOrderLine.product" form-view="product-form" grid-view="product-grid" domain="dtype = 'Product'"/>
 	    <field name="purchaseOrderLine.qty"/>
 	    <field name="purchaseOrderLine.unit" form-view="unit-form" grid-view="unit-grid"/>
 	    <field name="availableQty" readonlyIf="stateSelect != 1"/>

@@ -236,6 +236,8 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     return reportSetting
         .addParam("InvoiceId", invoice.getId())
         .addParam("Locale", locale)
+        .addParam(
+            "Timezone", invoice.getCompany() != null ? invoice.getCompany().getTimezone() : null)
         .addParam("ReportType", reportType == null ? 0 : reportType)
         .addParam("HeaderHeight", invoice.getPrintingSettings().getPdfHeaderHeight())
         .addParam("Watermark", watermark)

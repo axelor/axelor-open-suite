@@ -551,7 +551,7 @@
 	<chart onInit="action.base.chart.set.date.6m" name="chart.product.sale.turnover.last.12.month" title="Product sale turnover (Excl. Tax) last 12 month">
 		<search-fields>
 			<field type="date" name="toDate" title="To Date" x-required="true"/>
-			<field type="reference" target="com.axelor.apps.base.db.Product" name="product" title="Product" x-required="true"/>
+			<field type="reference" target="com.axelor.apps.base.db.Product" name="product" title="Product" x-required="true" domain="dtype = 'Product'"/>
 		</search-fields>
 		<dataset type="jpql">
 			SELECT

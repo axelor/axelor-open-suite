@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaDriverClass</property>
@@ -923,7 +923,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <text id="4826">
                                 <property name="fontSize">9pt</property>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF format="d MMM y kk:mm">BirtDateTime.now()</VALUE-OF>]]></text-property>
+                                <text-property name="content"><![CDATA[<VALUE-OF format="Short Date">BirtDateTime.now()</VALUE-OF> <VALUE-OF format="Short Time">BirtDateTime.now()</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
                         <cell id="4240">
@@ -1164,7 +1164,7 @@ addDays(new Date(), row["duration"])</expression>
                 <cell id="4094">
                     <text id="4101">
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/YYYY">new Date()</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="Short Date">BirtDateTime.now()</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>
@@ -1252,6 +1252,10 @@ addDays(new Date(), row["duration"])</expression>
                 </cell>
                 <cell id="4151">
                     <data id="4885">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="display">inline</property>
                         <property name="resultSetColumn">Column Binding</property>
                     </data>

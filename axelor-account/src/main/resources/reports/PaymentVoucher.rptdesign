@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -640,11 +640,15 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 <cell id="2576">
                     <label id="2496">
                         <property name="textAlign">right</property>
-                        <text-property name="text">DATE :</text-property>
+                        <text-property name="text">DATE : </text-property>
                     </label>
                 </cell>
                 <cell id="2577">
                     <data id="3677">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="resultSetColumn">payment_date</property>
                     </data>
                 </cell>
@@ -1009,6 +1013,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="borderTopWidth">thin</property>
                         <data id="3678">
                             <property name="fontSize">8pt</property>
+                            <structure name="dateTimeFormat">
+                                <property name="category">Short Date</property>
+                                <property name="pattern">Short Date</property>
+                            </structure>
                             <property name="resultSetColumn">LineDate</property>
                         </data>
                     </cell>

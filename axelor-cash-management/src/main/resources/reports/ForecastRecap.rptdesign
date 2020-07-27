@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -1024,13 +1024,14 @@ where ForecastRecap.id = ?
                             </text>
                         </cell>
                         <cell id="4029">
-                            <text id="5378">
+                            <data id="5426">
                                 <property name="fontSize">9pt</property>
-                                <property name="paddingTop">1pt</property>
-                                <property name="textAlign">center</property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF>row["calculationdate"]</VALUE-OF>]]></text-property>
-                            </text>
+                                <structure name="dateTimeFormat">
+                                    <property name="category">Short Date</property>
+                                    <property name="pattern">Short Date</property>
+                                </structure>
+                                <property name="resultSetColumn">calculationdate</property>
+                            </data>
                         </cell>
                         <cell id="4030">
                             <auto-text id="5281">
@@ -1291,9 +1292,13 @@ where ForecastRecap.id = ?
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : ]]></text-property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> :&amp;nbsp;]]></text-property>
                     </text>
                     <data id="5423">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="display">inline</property>
                         <property name="resultSetColumn">calculationdate</property>
                     </data>
@@ -1325,9 +1330,13 @@ where ForecastRecap.id = ?
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : ]]></text-property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> :&amp;nbsp;]]></text-property>
                     </text>
                     <data id="5424">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="display">inline</property>
                         <property name="resultSetColumn">fromdate</property>
                     </data>
@@ -1359,9 +1368,13 @@ where ForecastRecap.id = ?
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : ]]></text-property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> :&amp;nbsp;]]></text-property>
                     </text>
                     <data id="5425">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="display">inline</property>
                         <property name="resultSetColumn">todate</property>
                     </data>
@@ -2970,8 +2983,8 @@ else -row[&quot;sum&quot;]</Definition>
                                     <property name="borderTopWidth">thin</property>
                                     <data id="5393">
                                         <structure name="dateTimeFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">dd/MM/yy</property>
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
                                         </structure>
                                         <property name="resultSetColumn">estimateddate</property>
                                     </data>

@@ -115,7 +115,7 @@
 						</h4>
 					]]></viewer>
 			</field>
-			<field name="product" canEdit="false" domain="self.expense = false" onChange="action-stock-move-line-tracking-number-attrs,action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-method-product-domain" form-view="product-form" grid-view="stock-move-line-product-grid" readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') > 2"/>
+          	<field name="product" canEdit="false" domain="self.expense = false AND dtype = 'Product'" onChange="action-stock-move-line-tracking-number-attrs,action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-method-product-domain" form-view="product-form" grid-view="stock-move-line-product-grid" readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') > 2"/>
 	        <field name="filterOnAvailableProducts" widget="boolean-switch" hidden="true"/>
 	        <field name="productModel" canEdit="false" domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()" readonlyIf="product || $get('stockMove.statusSelect') > 1"/>
             <field name="productName"/>
@@ -169,7 +169,7 @@
 
 	<grid name="stock-move-line-split-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine" editable="true"
 		canNew="false" canDelete="false">
-		<field name="product" readonly="true" form-view="product-form" grid-view="product-grid" readonlyIf="$get('stockMove.statusSelect') > 1"/>
+		<field name="product" readonly="true" form-view="product-form" grid-view="product-grid" readonlyIf="$get('stockMove.statusSelect') > 1" domain="dtype = 'Product'"/>
 		<field name="productModel" readonly="true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()" readonlyIf="product || $get('stockMove.statusSelect') > 1"/>
 		<field name="productName" readonly="true" />
 		<field name="qty" aggregate="sum" onChange="action-stock-move-line-validate-check-split-quantity" x-scale="2"/>
@@ -217,7 +217,7 @@
 		<field name="stockMove.typeSelect"/>
         <field name="stockMove.fromStockLocation"/>
         <field name="stockMove.toStockLocation"/>
-        <field name="product" form-view="product-form" grid-view="product-grid" readonlyIf="$get('stockMove.statusSelect') > 1"/>
+        <field name="product" form-view="product-form" grid-view="product-grid" readonlyIf="$get('stockMove.statusSelect') > 1" domain="dtype = 'Product'"/>
         <field name="productName" />
         <field name="stockMove.partner"/>
         <field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange" x-scale="2"/>
@@ -243,7 +243,7 @@
 		<field name="stockMove.typeSelect"/>
 		<field name="stockMove.fromStockLocation" />
 		<field name="stockMove.toStockLocation" />
-		<field name="product" form-view="product-form" grid-view="product-grid" />
+		<field name="product" form-view="product-form" grid-view="product-grid" domain="dtype = 'Product'"/>
 		<field name="productName" />
 		<field name="stockMove.partner" />
 		<field name="realQty" aggregate="sum" onChange="action-stock-move-line-group-real-qty-onchange" x-scale="2"/>
@@ -284,7 +284,7 @@
   			 </panel>
         </panel>
         <panel name="moveDetailsPanel" title="Move details">
-	        <field name="product" canEdit="false" domain="self.expense = false" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-method-product-domain" form-view="product-form" grid-view="product-grid" readonlyIf="$get('stockMove.statusSelect') > 1"/>
+	        <field name="product" canEdit="false" domain="self.expense = false AND dtype = 'Product'" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-method-product-domain" form-view="product-form" grid-view="product-grid" readonlyIf="$get('stockMove.statusSelect') > 1"/>
 	        <field name="productModel" canEdit="false" domain="self.isModel = true" form-view="product-form" grid-view="product-grid" if="__config__.app.getApp('base').getManageProductVariants()" readonlyIf="product || $get('stockMove.statusSelect') > 1"/>
 	        <field name="productName" required="true" readonlyIf="$get('stockMove.statusSelect') > 1"/>
 	        <field name="stockMove.partner"/>

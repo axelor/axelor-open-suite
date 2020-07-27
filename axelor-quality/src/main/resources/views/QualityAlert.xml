@@ -25,7 +25,7 @@
 		</panel>
 		<panel name="detailsPanel">
 			<field name="reference"/>
-			<field name="product"/>
+			<field name="product" domain="dtype = 'Product'"/>
 			<field name="workCenter"/>
 			<field name="team" domain="self.typeSelect = 'quality'"/>
 			<field name="responsible"/>

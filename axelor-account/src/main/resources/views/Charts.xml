@@ -52,9 +52,7 @@
 	    <category key="_year" type="text" title="Year"/>
 		<series key="_turn_over"  type="bar" title="TurnOver" />
 	</chart>
-    
-	
-	
+  
 	<chart stacked="true" name="chart.invoice.turnover.cust.history" title="Customer Turnover history by month (on invoices)" onInit="action.account.chart.set.from.to.date.month">	
 	  	    <search-fields>
 			  <field type="date" name="fromDate" title="From Date" x-required="true"/>

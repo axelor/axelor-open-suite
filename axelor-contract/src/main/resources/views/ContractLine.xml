@@ -22,7 +22,7 @@
           
           <panel-tabs name="mainPanelTab">
         		<panel name="informationsPanel" title="Information">
-            		<field name="product" canEdit="false" onChange="action-method-contract-version-change-product,action-method-contract-line-compute-total"/>
+            		<field name="product" canEdit="false" onChange="action-method-contract-version-change-product,action-method-contract-line-compute-total" domain="dtype = 'Product'"/>
             		<field name="productName"/>
             		<field name="qty" readonlyIf="isConsumptionLine" onChange="action-method-contract-line-compute-total"/>
             		<field name="price" onChange="action-method-contract-line-compute-total"/>
@@ -88,7 +88,7 @@
           
           <panel-tabs name="mainPanelTab">
         		<panel name="informationsPanel" title="Information">
-            		<field name="product" canEdit="false" onChange="action-method-contract-change-product,action-method-contract-line-compute-total"/>
+            		<field name="product" canEdit="false" onChange="action-method-contract-change-product,action-method-contract-line-compute-total" domain="dtype = 'Product'"/>
             		<field name="productName"/>
             		<field name="qty" readonlyIf="isConsumptionLine" onChange="action-method-contract-line-compute-total"/>
             		<field name="price" onChange="action-method-contract-line-compute-total"/>
@@ -124,7 +124,8 @@
       model="com.axelor.apps.contract.db.ContractLine">
         <panel name="mainPanel">
             <field name="product" canEdit="false"
-              onChange="action-contract-template-method-change-product"/>
+              onChange="action-contract-template-method-change-product"
+              domain="dtype = 'Product'"/>
             <field name="productName"/>
             <field name="qty" readonlyIf="isConsumptionLine"/>
             <field name="price"/>
@@ -147,7 +148,8 @@
       model="com.axelor.apps.contract.db.ContractLine">
         <panel name="mainPanel">
             <field name="product" canEdit="false"
-              onChange="action-contract-template-method-change-product"/>
+              onChange="action-contract-template-method-change-product"
+              domain="dtype = 'Product'"/>
             <field name="productName"/>
             <field name="qty"/>
             <field name="price"/>

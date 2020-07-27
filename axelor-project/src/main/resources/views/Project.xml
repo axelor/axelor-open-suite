@@ -253,7 +253,7 @@
 				<button name="cancelManageExpenseLinesBtn" colSpan="4" hidden="true" title="Cancel" onClick="action-project-attrs-expense-line-cancel-manage-lines" />
 				<panel-dashlet name="expenseLinePanel" action="action-project-view-show-validated-expense-lines" colSpan="12" canSearch="true"/>
 			</panel>
-			<panel title="Production" name="productionPanel"  showIf="isBusinessProject"
+			<panel title="Production" name="productionPanel" showIf="isBusinessProject"
 				 if-module="axelor-business-production"
 				 if="__config__.app.isApp('business-project') 
 				 &amp;&amp; __config__.app.getApp('business-project').getShowProductionOrderRelatedToProject()">
@@ -332,7 +332,7 @@
 			<panel title="Configurations" name="configurationsPanel" >
 				<field if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
 					name="productSet" colSpan="12" widget="TagSelect" canEdit="false"
-					domain="self.isActivity = true" form-view="product-activity-form"
+					domain="self.isActivity = true AND dtype = 'Product'" form-view="product-activity-form"
 					grid-view="product-activity-grid" />
 				<field name="teamTaskCategorySet" colSpan="12" widget="TagSelect" />
 				<field name="projectFolderSet" colSpan="12" widget="TagSelect" />

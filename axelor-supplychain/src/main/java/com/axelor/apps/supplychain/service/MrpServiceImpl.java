@@ -350,7 +350,8 @@ public class MrpServiceImpl implements MrpService {
         reorderQty = reorderQty.max(stockRules.getReOrderQty());
       }
 
-      MrpLineType mrpLineTypeProposal = this.getMrpLineTypeForProposal(stockRules, product);
+      MrpLineType mrpLineTypeProposal =
+          this.getMrpLineTypeForProposal(stockRules, product, mrpLine.getCompany());
 
       long duplicateCount =
           mrpLineRepository
@@ -483,8 +484,8 @@ public class MrpServiceImpl implements MrpService {
     return BigDecimal.ZERO;
   }
 
-  protected MrpLineType getMrpLineTypeForProposal(StockRules stockRules, Product product)
-      throws AxelorException {
+  protected MrpLineType getMrpLineTypeForProposal(
+      StockRules stockRules, Product product, Company company) throws AxelorException {
 
     return this.getMrpLineType(MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL);
   }
@@ -930,7 +931,7 @@ public class MrpServiceImpl implements MrpService {
           productRepository
               .all()
               .filter(
-                  "self.productCategory in (?1) AND self.productTypeSelect = ?2 AND self.excludeFromMrp = false AND self.stockManaged = true",
+                  "self.productCategory in (?1) AND self.productTypeSelect = ?2 AND self.excludeFromMrp = false AND self.stockManaged = true AND dtype = 'Product'",
                   mrp.getProductCategorySet(),
                   ProductRepository.PRODUCT_TYPE_STORABLE)
               .fetch());
@@ -942,7 +943,7 @@ public class MrpServiceImpl implements MrpService {
           productRepository
               .all()
               .filter(
-                  "self.productFamily in (?1) AND self.productTypeSelect = ?2 AND self.excludeFromMrp = false AND self.stockManaged = true",
+                  "self.productFamily in (?1) AND self.productTypeSelect = ?2 AND self.excludeFromMrp = false AND self.stockManaged = true AND dtype = 'Product'",
                   mrp.getProductFamilySet(),
                   ProductRepository.PRODUCT_TYPE_STORABLE)
               .fetch());

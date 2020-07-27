@@ -24,7 +24,7 @@
 
     <form name="abc-analysis-line-form" model="com.axelor.apps.base.db.ABCAnalysisLine" title="ABC Analysis line" canEdit="false" canNew="false">
         <panel name="mainPanel">
-            <field name="product" readonly="true"/>
+            <field name="product" readonly="true" domain="dtype = 'Product'"/>
             <field name="abcAnalysisClass" readonly="true"/>
             <field name="decimalWorth" readonly="true"/>
             <field name="decimalQty" readonly="true"/>

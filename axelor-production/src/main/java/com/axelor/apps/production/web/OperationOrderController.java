@@ -240,6 +240,7 @@ public class OperationOrderController {
         String fileLink =
             ReportFactory.createReport(IReport.OPERATION_ORDER, name + "-${date}")
                 .addParam("Locale", ReportSettings.getPrintingLocale(null))
+                .addParam("Timezone", getTimezone(operationOrder))
                 .addParam("OperationOrderId", operationOrderIds)
                 .generate()
                 .getFileLink();
@@ -253,6 +254,14 @@ public class OperationOrderController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  private String getTimezone(OperationOrder operationOrder) {
+    if (operationOrder.getManufOrder() == null
+        || operationOrder.getManufOrder().getCompany() == null) {
+      return null;
+    }
+    return operationOrder.getManufOrder().getCompany().getTimezone();
   }
 
   public void chargeByMachineHours(ActionRequest request, ActionResponse response) {

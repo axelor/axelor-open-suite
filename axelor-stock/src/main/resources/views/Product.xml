@@ -67,7 +67,7 @@
 	   			<field name="fullName" showTitle="false" css="label-bold bold large" colSpan="12">
 	       			<editor x-show-titles="false">
 	         				<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="3" css="label-bold bold large" placeholder="Code" readonly="true"/>
-	         				<field name="name" showTitle="false" colSpan="9" css="label-bold bold large" placeholder="Name" readonly="true"/>
+	         				<field name="name" required="true" showTitle="false" colSpan="9" css="label-bold bold large" placeholder="Name" readonly="true"/>
 	       			</editor>
 	     			</field>
 	   		</panel>

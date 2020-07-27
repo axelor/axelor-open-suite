@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -3312,6 +3312,10 @@ else if (row["status_select"] == 5) { 'ManufOrder.standBy' }</value>
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
                                     <data id="6045">
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
+                                        </structure>
                                         <property name="resultSetColumn">planned_end</property>
                                     </data>
                                 </cell>

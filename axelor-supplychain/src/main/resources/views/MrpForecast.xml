@@ -28,7 +28,7 @@
 	    	<panel name="detailsPanel" colSpan="12">
 	        	<field name="id" title="Ref"/>
 	        	<field name="forecastDate"/>
-   	        	<field name="product" canEdit="false" onChange="action-mrp-forecast-record-unit"/>
+   	        	<field name="product" canEdit="false" onChange="action-mrp-forecast-record-unit" domain="dtype = 'Product'"/>
    	        	<field name="qty"/>
    	        	<field name="unit"/>
         		<field name="stockLocation"/>

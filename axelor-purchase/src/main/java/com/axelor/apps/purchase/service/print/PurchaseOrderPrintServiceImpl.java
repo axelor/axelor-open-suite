@@ -94,6 +94,9 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
         ReportFactory.createReport(IReport.PURCHASE_ORDER, title + " - ${date}");
     return reportSetting
         .addParam("PurchaseOrderId", purchaseOrder.getId())
+        .addParam(
+            "Timezone",
+            purchaseOrder.getCompany() != null ? purchaseOrder.getCompany().getTimezone() : null)
         .addParam("Locale", locale)
         .addParam("HeaderHeight", purchaseOrder.getPrintingSettings().getPdfHeaderHeight())
         .addParam("FooterHeight", purchaseOrder.getPrintingSettings().getPdfFooterHeight())

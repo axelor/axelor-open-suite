@@ -229,6 +229,12 @@ public interface IExceptionMessage {
   static final String PRODUCT_NO_ACTIVE_COMPANY = /*$$(*/
       "No active company for this user, please define an active company." /*)*/;
 
+  public static final String PRODUCT_COMPANY_NO_PRODUCT = /*$$(*/
+      "Attempted to get field '%s' for unspecified product." /*)*/;
+
+  public static final String PRODUCT_COMPANY_NO_FIELD = /*$$(*/
+      "Attempted to get a field from product '%s' but forgot to specify which field." /*)*/;
+
   /** Calendar */
   static final String CALENDAR_NOT_VALID = /*$$(*/ "Calendar configuration not valid" /*)*/;
 

@@ -177,8 +177,9 @@
 		<bind column="importId" to="importId"/>
 	</input>
 	
-	<input file="base_appBase.csv" separator=";" type="com.axelor.apps.base.db.AppBase"  search="self.code = :code" update="true" >
+	<input file="base_appBase.csv" separator=";" type="com.axelor.apps.base.db.AppBase" search="self.code = :code" update="true" >
 		<bind to="defaultPartnerLanguage" search="self.code = :defaultPartnerLanguageCode"/>
+		<bind to="companySpecificProductFieldsList" column="companySpecificFieldName" search="self.name IN :companySpecificFieldName AND self.metaModel.name = 'Product'" eval="companySpecificFieldName.split('\\|') as List"/>
 	</input>
 
 	<input file="base_period.csv" separator=";" type="com.axelor.apps.base.db.Period" />

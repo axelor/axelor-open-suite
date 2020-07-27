@@ -22,6 +22,8 @@
 - BPM : Add overview of the result of the wkf.
 - SUPPLIER PORTAL : Creation of new Supplier portal
 - INVOICE : Added the possibility to add a watermark to the printings
+- Reports: Manage locale, date format and timezone following company configuration.
+- Product: add products per company to configure different prices depending on the company.
 - DEBT RECOVERY HISTORY : add payment reminder report to debt recovery history
 
 ## Improvements
@@ -35,6 +37,8 @@
 - TeamTask: add new field categorySet.
 - Studio: Make app builder optional
 - Birt report: Change display of date
+- Invoice report : Change in font size in Invoice report.
+- Report : Fix unit translation.
 
 ## Bug Fixes
 - HR : A leave-line cannot be saved whitout employee or leave-reason.
@@ -43,3 +47,6 @@
 - Studio: Add and fixed attributes of model and fields for import and export app.
 - EMPLOYEE : add button for Employee.rptdesign report on form.
 - XML : Update all xml files XSD version to AOP 5.3.
+- INVOICE : Change Invoicing menu translation.
+- INVOICE : Resolve report binding issue.
+
