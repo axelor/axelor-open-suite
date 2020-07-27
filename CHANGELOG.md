@@ -22,6 +22,7 @@
 - Invoice : Fix wrong translation in report
 - Project : Add missing translations 
 - ACCOUNT CONFIG : Add missing translations
+- BANK PAYMENT : fix ICS number being linked to EBICS
 
 ## [5.3.8] - 2020-07-15
 ## Improvements
