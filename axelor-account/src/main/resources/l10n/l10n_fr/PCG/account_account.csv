@@ -1001,3 +1001,5 @@
 890;"CL8";"Bilan";"view";;
 890000;890;"Bilan d'ouverture";"special";;
 891000;890;"Bilan de clôture";"special";;
+656000;650;"Pertes dûess aux écarts de change";"charge";;1;;
+756000;750;"Gains dûs aux écarts de change";"income";;1;;

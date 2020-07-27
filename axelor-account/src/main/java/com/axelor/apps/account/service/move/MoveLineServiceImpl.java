@@ -1288,4 +1288,112 @@ public class MoveLineServiceImpl implements MoveLineService {
     }
     return moveLine;
   }
+
+  @Override
+  public Map<String, MoveLine> createMoveLineAndExchangeDifferenceIfExists(
+      Move move,
+      Partner partner,
+      Account account,
+      BigDecimal amountInSpecificMoveCurrency,
+      boolean isDebit,
+      LocalDate moveLinesDate,
+      LocalDate moveLinesDueDate,
+      LocalDate originDate,
+      int counter,
+      String origin,
+      String description,
+      LocalDate exchangeRateDate)
+      throws AxelorException {
+
+    Map<String, MoveLine> moveLines = new HashMap<>();
+
+    log.debug(
+        "Creating accounting move line (Account : {}, Amount in specific move currency : {}, debit ? : {}, date : {}, counter : {}, reference : {}",
+        new Object[] {
+          account.getName(), amountInSpecificMoveCurrency, isDebit, moveLinesDate, counter, origin
+        });
+
+    Currency currency = move.getCurrency();
+    Company company = move.getCompany();
+    Currency companyCurrency = companyConfigService.getCompanyCurrency(company);
+
+    BigDecimal lineCurrencyRate =
+        currencyService.getCurrencyConversionRate(currency, companyCurrency, exchangeRateDate);
+
+    BigDecimal lineAmountConvertedInCompanyCurrency =
+        currencyService.getAmountCurrencyConvertedUsingExchangeRate(
+            amountInSpecificMoveCurrency, lineCurrencyRate);
+
+    MoveLine moveLineWithRate =
+        this.createMoveLine(
+            move,
+            partner,
+            account,
+            amountInSpecificMoveCurrency,
+            lineAmountConvertedInCompanyCurrency,
+            lineCurrencyRate,
+            isDebit,
+            moveLinesDate,
+            moveLinesDueDate,
+            originDate,
+            counter,
+            origin,
+            description);
+
+    if (moveLineWithRate != null) {
+      moveLines.put("moveLineWithRate", moveLineWithRate);
+    }
+
+    BigDecimal moveCurrencyRate =
+        currencyService.getCurrencyConversionRate(currency, companyCurrency, moveLinesDate);
+
+    if (moveCurrencyRate.equals(lineCurrencyRate)) {
+      return moveLines.isEmpty() ? null : moveLines;
+    }
+
+    BigDecimal differenceAmount =
+        currencyService
+            .getAmountCurrencyConvertedUsingExchangeRate(
+                amountInSpecificMoveCurrency, moveCurrencyRate)
+            .subtract(lineAmountConvertedInCompanyCurrency);
+
+    Account exchangeDifferenceAccount;
+    if (BigDecimal.ZERO.compareTo(differenceAmount) > 0) {
+      exchangeDifferenceAccount = company.getAccountConfig().getExchangeDifferenceLossAccount();
+      isDebit = false;
+    } else {
+      exchangeDifferenceAccount = company.getAccountConfig().getExchangeDifferenceGainAccount();
+      isDebit = true;
+    }
+
+    if (exchangeDifferenceAccount == null) {
+      throw new AxelorException(
+          company,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.EXHANGE_DIFFERENCE_ACCOUNT_NOT_CONFIGURED),
+          company.getName());
+    }
+
+    MoveLine exchangeDifferenceLine =
+        this.createMoveLine(
+            move,
+            partner,
+            exchangeDifferenceAccount,
+            amountInSpecificMoveCurrency,
+            differenceAmount,
+            lineCurrencyRate,
+            isDebit,
+            moveLinesDate,
+            moveLinesDueDate,
+            originDate,
+            counter,
+            origin,
+            description);
+
+    if (moveLineWithRate != null) {
+      moveLines.put("exchangeDifferenceLine", exchangeDifferenceLine);
+    }
+
+    return moveLines.isEmpty() ? null : moveLines;
+  }
 }

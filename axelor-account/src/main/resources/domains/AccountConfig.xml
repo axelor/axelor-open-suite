@@ -41,6 +41,9 @@
 		<many-to-one name="yearOpeningAccount" ref="com.axelor.apps.account.db.Account" title="Year opening account"/>
 		<many-to-one name="yearClosureAccount" ref="com.axelor.apps.account.db.Account" title="Year closure account"/>
 		
+		<many-to-one name="exchangeDifferenceLossAccount" ref="com.axelor.apps.account.db.Account" title="Exchange difference loss account"/>
+		<many-to-one name="exchangeDifferenceGainAccount" ref="com.axelor.apps.account.db.Account" title="Exchange difference gain account"/>
+		
 
         <!-- Automatic account creation for partners -->
         <integer name="partnerAccountGenerationModeSelect" selection="account.create.mode.select" default="0" title="Automatic partner account creation mode"/>
@@ -208,6 +211,8 @@
 		<field name="advancePaymentAccount" on="UPDATE"/>
 		<field name="factorDebitAccount" on="UPDATE"/>
 		<field name="factorCreditAccount" on="UPDATE"/>
+		<field name="exchangeDifferenceLossAccount" on="UPDATE"/>
+		<field name="exchangeDifferenceGainAccount" on="UPDATE"/>
 		
 		<field name="partnerAccountGenerationModeSelect" on="UPDATE"/>
 		<field name="customerAccountPrefix" on="UPDATE"/>

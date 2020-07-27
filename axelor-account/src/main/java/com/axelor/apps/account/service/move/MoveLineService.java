@@ -143,4 +143,23 @@ public interface MoveLineService {
       throws AxelorException;
 
   public MoveLine computeTaxAmount(MoveLine moveLine) throws AxelorException;
+
+  /*
+   * Call this to create moveLine & expenseDifferenceMoveLine
+   * when currency of the move is different of the company currency
+   */
+  public Map<String, MoveLine> createMoveLineAndExchangeDifferenceIfExists(
+      Move move,
+      Partner partner,
+      Account account,
+      BigDecimal amountInSpecificMoveCurrency,
+      boolean isDebit,
+      LocalDate moveLinesDate,
+      LocalDate moveLinesDueDate,
+      LocalDate originDate,
+      int counter,
+      String origin,
+      String description,
+      LocalDate exchangeRateDate)
+      throws AxelorException;
 }

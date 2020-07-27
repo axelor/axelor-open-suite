@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
+import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -38,14 +39,18 @@ import com.axelor.apps.account.service.move.MoveService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Map;
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
@@ -188,13 +193,14 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
       origin = invoicePayment.getInvoice().getSupplierInvoiceNb();
     }
+    Currency paymentCurrency = invoicePayment.getCurrency();
     Move move =
         moveService
             .getMoveCreateService()
             .createMove(
                 journal,
                 company,
-                invoicePayment.getCurrency(),
+                paymentCurrency,
                 partner,
                 paymentDate,
                 paymentMode,
@@ -213,18 +219,49 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             origin,
             invoicePayment.getDescription()));
 
-    MoveLine customerMoveLine =
-        moveLineService.createMoveLine(
-            move,
-            partner,
-            customerAccount,
-            paymentAmount,
-            !isDebitInvoice,
-            paymentDate,
-            null,
-            2,
-            origin,
-            invoicePayment.getDescription());
+    MoveLine customerMoveLine;
+    if (paymentCurrency.equals(company.getCurrency())) {
+      customerMoveLine =
+          moveLineService.createMoveLine(
+              move,
+              partner,
+              customerAccount,
+              paymentAmount,
+              !isDebitInvoice,
+              paymentDate,
+              null,
+              2,
+              origin,
+              invoicePayment.getDescription());
+    } else {
+      Map<String, MoveLine> moveLinesMap =
+          moveLineService.createMoveLineAndExchangeDifferenceIfExists(
+              move,
+              partner,
+              customerAccount,
+              paymentAmount,
+              !isDebitInvoice,
+              paymentDate,
+              null,
+              paymentDate,
+              2,
+              origin,
+              invoicePayment.getDescription(),
+              invoice.getMove().getDate());
+
+      if (moveLinesMap == null) {
+        throw new AxelorException(
+            invoice,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(IExceptionMessage.MOVE_LINE_WITH_EXCHANGE_DIFFERENCE_NOT_CREATED));
+      }
+
+      customerMoveLine = moveLinesMap.get("moveLineWithRate");
+      if (moveLinesMap.containsKey("exchangeDifferenceLine")) {
+        MoveLine exchangeDifferenceLine = moveLinesMap.get("exchangeDifferenceLine");
+        move.addMoveLineListItem(exchangeDifferenceLine);
+      }
+    }
 
     move.addMoveLineListItem(customerMoveLine);
 
