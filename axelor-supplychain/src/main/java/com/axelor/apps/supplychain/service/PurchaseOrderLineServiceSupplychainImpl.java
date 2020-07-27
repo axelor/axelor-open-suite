@@ -73,7 +73,7 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
     Unit unit = null;
     BigDecimal qty = BigDecimal.ZERO;
 
-    if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL) {
+    if (saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_TITLE) {
 
       if (saleOrderLine.getProduct() != null) {
         unit = saleOrderLine.getProduct().getPurchasesUnit();

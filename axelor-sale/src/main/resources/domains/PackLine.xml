@@ -14,6 +14,8 @@
 		<decimal name="price" title="Price"/>
 		<many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
 		<integer name="typeSelect" selection="line.type.select" title="Type"/>
+		<boolean name="isShowTotal" title="Show Total"/>
+		<boolean name="isHideUnitAmounts" title="Hide Unit Amounts"/>
 
 	</entity>
 
