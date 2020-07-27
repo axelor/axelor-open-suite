@@ -19,6 +19,7 @@
 - CRM : set default nbrEmployees to 0.
 - Conversion : corrected the case of conversion from void to void and improved message in case of conversion from void to unit or from unit to void.
 - Accounting report : corrected bank reconciliation statement report, now display lines reconcile after date report.
+- Invoice : Fix wrong translation in report
 
 ## [5.3.8] - 2020-07-15
 ## Improvements

@@ -1139,7 +1139,7 @@
 "Invoice.priceInclTax","Prix TTC",,
 "Invoice.productCode","Code Produit",,
 "Invoice.proformaInvoice","FACTURE PROFORMA N°",,
-"Invoice.purchaseInvoiceAdvPaymentNo","FACTURE D'AVOIR FOURNISSEUR N°",,
+"Invoice.purchaseInvoiceAdvPaymentNo","FACTURE D'ACOMPTE FOURNISSEUR N°",,
 "Invoice.purchaseInvoiceBalanceNo","FACTURE DE SOLDE FOURNISSEUR N°",,
 "Invoice.purchaseInvoiceNo","FACTURE FOURNISSEUR N°",,
 "Invoice.purchaseRefundNo","AVOIR FOURNISSEUR N°",,
