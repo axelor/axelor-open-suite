@@ -2,7 +2,8 @@
 ## [Unreleased 5.2.14]
 ## Improvements
 ## Bug Fixes
-- Anomaly RM#29555 - DASHLET : invoice sale amount by month not updated (#5616)
+- DASHLET : invoice sale amount by month not updated
+- Accounting report : corrected bank reconciliation statement report, now display lines reconcile after date report.
 
 ## [5.2.13] - 2020-07-21
 ## Improvements
