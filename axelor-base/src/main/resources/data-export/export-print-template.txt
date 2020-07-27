@@ -10,6 +10,35 @@
 		printTemplateLineListService += "  <content>${pt.content}</content>"
 		printTemplateLineListService += "  <conditions>${pt.conditions}</conditions>"
 		printTemplateLineListService += "  <isEditable>${pt.isEditable}</isEditable>"
+		printTemplateLineListService += "  <ignoreTheLine>${pt.ignoreTheLine}</ignoreTheLine>"
+		printTemplateLineListService += "    <printTemplateLineList>"
+		pt.printTemplateLineList.each( {pti ->
+		printTemplateLineListService += "		<printTemplateLine>"
+		printTemplateLineListService += "   		<sequence>${pti.sequence}</sequence>"
+		printTemplateLineListService += "   		<title>${pti.title}</title>"
+		printTemplateLineListService += "  			<content>${pti.content}</content>"
+		printTemplateLineListService += "  			<conditions>${pti.conditions}</conditions>"
+		printTemplateLineListService += "  			<isEditable>${pti.isEditable}</isEditable>"
+		printTemplateLineListService += "  			<ignoreTheLine>${pti.ignoreTheLine}</ignoreTheLine>"
+		printTemplateLineListService += "  				<templateContexLineList>"
+		pti.templateContextList.each( {tcl ->
+		printTemplateLineListService += "					<templateContexLine>"
+		printTemplateLineListService += "   					<name>${tcl.name}</name>"
+		printTemplateLineListService += "   					<value>${tcl.value}</value>"
+		printTemplateLineListService += "					</templateContexLine>"
+		})
+		printTemplateLineListService += "  				</templateContexLineList>"
+		printTemplateLineListService += "		</printTemplateLine>"
+		})
+		printTemplateLineListService += "  	</printTemplateLineList>"
+		printTemplateLineListService += "  	<templateContexLineList>"
+		pt.templateContextList.each( {tcl ->
+		printTemplateLineListService += "		<templateContexLine>"
+		printTemplateLineListService += "   		<name>${tcl.name}</name>"
+		printTemplateLineListService += "   		<value>${tcl.value}</value>"
+		printTemplateLineListService += "		</templateContexLine>"
+		})
+		printTemplateLineListService += "  	</templateContexLineList>"
 		printTemplateLineListService += "</printTemplateLine>"
 	})
 	

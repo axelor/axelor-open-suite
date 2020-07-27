@@ -41,6 +41,23 @@
       	<bind node="content" to="content"/>
       	<bind node="conditions" to="conditions"/>
       	<bind node="isEditable" to="isEditable"/>
+      	<bind node="ignoreTheLine" to="ignoreTheLine"/>
+      	<bind node="printTemplateLineList/printTemplateLine" to="printTemplateLineList">
+      		<bind node="sequence" to="sequence"/>
+      		<bind node="title" to="title"/>
+      		<bind node="content" to="content"/>
+      		<bind node="conditions" to="conditions"/>
+      		<bind node="isEditable" to="isEditable"/>
+      		<bind node="ignoreTheLine" to="ignoreTheLine"/>
+      		<bind node="templateContexLineList/templateContexLine" to="templateContextList">
+      			<bind node="name" to="name"/>
+      			<bind node="value" to="value"/>
+      		</bind>
+      	</bind>
+      	<bind node="templateContexLineList/templateContexLine" to="templateContextList">
+      		<bind node="name" to="name"/>
+      		<bind node="value" to="value"/>
+      	</bind>
       </bind>
       <bind node="printTemplateSet/printTemplate" to="printTemplateSet">
       	<bind node="name" to="name" />
