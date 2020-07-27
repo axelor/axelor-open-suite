@@ -25,6 +25,7 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.tool.template.TemplateMaker;
 import com.google.inject.Inject;
@@ -71,10 +72,23 @@ public class UnitConversionService {
       Unit startUnit, Unit endUnit, BigDecimal value, int scale, Product product)
       throws AxelorException {
 
-    if (startUnit == null || endUnit == null)
+    if ((startUnit == null && endUnit == null)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.UNIT_CONVERSION_3));
+    }
+
+    if (startUnit == null && endUnit != null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.UNIT_CONVERSION_2));
+    }
+
+    if (endUnit == null && startUnit != null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.UNIT_CONVERSION_4));
+    }
 
     if (startUnit.equals(endUnit)) return value;
     else {
@@ -84,7 +98,7 @@ public class UnitConversionService {
 
         return value.multiply(coefficient).setScale(scale, RoundingMode.HALF_EVEN);
       } catch (IOException | ClassNotFoundException e) {
-        e.printStackTrace();
+        TraceBackService.trace(e);
       }
     }
     return value;
