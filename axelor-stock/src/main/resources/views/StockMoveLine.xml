@@ -461,6 +461,8 @@
 	  <attribute name="hidden" for="filterOnAvailableProducts" expr="eval: stockMove?.fromStockLocation?.typeSelect==3 || __parent__?.statusSelect &gt; 1" if="_parent ==null || _parent?._model != 'com.axelor.apps.stock.db.StockMove'"/>
 			<attribute name="hidden" for="companyPurchasePrice" expr="eval: __parent__.typeSelect != 3" if="__parent__"/>
 			<attribute name="hidden" for="companyPurchasePrice" expr="eval: stockMove.typeSelect != 3" if="stockMove"/>
+      
+      <attribute name="selection-in" for="lineTypeSelect" expr="eval: __config__.app.getApp('sale')?.enablePackManagement ? [0,1,2,3] : [0,1]" />
     </action-attrs>
     
 
