@@ -21,6 +21,7 @@
 - Accounting report : corrected bank reconciliation statement report, now display lines reconcile after date report.
 - Invoice : Fix wrong translation in report
 - Project : Add missing translations 
+- ACCOUNT CONFIG : Add missing translations
 
 ## [5.3.8] - 2020-07-15
 ## Improvements
