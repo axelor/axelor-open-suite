@@ -1282,7 +1282,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["reference_date"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="Short Date">row["reference_date"]</VALUE-OF> ]]></text-property>
                     </text>
                 </cell>
                 <cell id="5373">
@@ -1346,7 +1346,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["debt_recovery_date"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="Short Date">row["debt_recovery_date"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="5374">

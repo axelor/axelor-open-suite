@@ -29,6 +29,11 @@ public class DebtRecoveryHistoryController {
               .addParam("DebtRecoveryHistoryID", debtRecoveryHistory.getId())
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
               .addFormat("pdf")
+              .addParam(
+                  "Timezone",
+                  debtRecoveryHistory.getDebtRecovery().getCompany() != null
+                      ? debtRecoveryHistory.getDebtRecovery().getCompany().getTimezone()
+                      : null)
               .toAttach(debtRecoveryHistory)
               .generate()
               .getFileLink();
