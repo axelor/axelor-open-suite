@@ -20,7 +20,7 @@
 	     <menubar>
 	     	<menu title="Tools" showTitle="true" icon="fa-wrench">
 	    		<item name="runCalculationItem" title="Run calculation"  showIf="statusSelect != 1" action="save,action-method-mrp-run-calculation" prompt="Are you sure you want run the calculation ? Calculation can take a long time."/>
-	    		<item name="generateAllProposalsItem" title="Generate all proposals" showIf="statusSelect == 2" action="save,action-method-mrp-generate-all-proposal" prompt="Are you sure you want generate all proposals ?"/>
+	    		<item name="generateAllProposalsItem" title="Generate all proposals" showIf="statusSelect == 2" action="save,action-mrp-view-generate-proposal-wizard" prompt="Are you sure you want generate all proposals ?"/>
 	    		<item action="save,action-method-mrp-undo-manual-changes" title="Undo manual changes" name="undoManualChangesItem"/>
 	    	</menu>
 	    	<menu title="Reports" showTitle="true" icon="fa-files-o">
