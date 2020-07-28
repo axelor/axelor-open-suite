@@ -46,7 +46,6 @@
         <panel-tabs>
             <panel-related name="debtRecoveryHistoryListPanel" field="debtRecoveryHistoryList" grid-view="debt-recovery-history-grid"
                 form-view="debt-recovery-history-form" />
-            <!-- panel-related name="invoiceDebtRecoverySetPanel" field="invoiceDebtRecoverySet" grid-view="invoice-grid" form-view="invoice-form" /-->
             <panel-dashlet name="recoveryInvoicesSetPanel" action="action-debt-recovery-view-recovery-invoices" title="Invoice concerned by the debt recovery" />
             <panel-related name="paymentScheduleLineDebtRecoverySetPanel" field="paymentScheduleLineDebtRecoverySet"
                 grid-view="payment-schedule-line-grid" form-view="payment-schedule-line-form" />
