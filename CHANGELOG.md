@@ -2,6 +2,9 @@
 ## [Unreleased 5.2.14]
 ## Improvements
 ## Bug Fixes
+- DASHLET : invoice sale amount by month not updated
+- Accounting report : corrected bank reconciliation statement report, now display lines reconcile after date report.
+- ACCOUNTING REPORT : Add missing translations in report
 - INVOICE : Fix chart not taking refunds into account
 
 ## [5.2.13] - 2020-07-21
