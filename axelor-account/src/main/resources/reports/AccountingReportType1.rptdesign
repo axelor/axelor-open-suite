@@ -538,10 +538,11 @@ AND (MoveLine.amount_remaining > 0 OR not AccountingReport.display_only_not_comp
 
 union
 
+
 select DISTINCT MoveLine.id as moveLine_id, 
 MoveLine.name as move_line_name, 
-CONCAT('RAN',COALESCE (MoveLine.description,'')) as move_line_description,
-bLastYear.reported_balance_date as move_line_date, 
+CONCAT('RAN ',COALESCE (MoveLine.description,'')) as move_line_description,
+bYear.reported_balance_date as move_line_date, 
 MoveLine.partner_full_name as partner,
 CONCAT(MoveLine.account_code, ' ', MoveLine.account_name) as account,
 case when MoveLine.debit > 0 THEN MoveLine.amount_remaining ELSE 0 END , 
@@ -574,9 +575,6 @@ left outer join public.account_account_config as AccountConfig on (AccountConfig
 left outer join public.base_period as Period on (Move.period = Period.id) 
 left outer join public.base_year as bYear on (Period.year = bYear.id) 
 
-left outer join public.base_year as ReportYear on AccountingReport.year = ReportYear.id
-left outer join public.base_year as bLastYear on (ReportYear.last_accounting_year = bLastYear.id) 
-
 left outer join public.account_journal as Journal on (Move.journal = Journal.id) 
 where 
 (AccountingReport.currency = Move.company_currency) AND
@@ -586,7 +584,6 @@ Move.company = AccountingReport.company AND
     or AccountSet.account_set = ParentAccount2.id or AccountSet.account_set = ParentAccount3.id
     or AccountSet.account_set = ParentAccount4.id or AccountSet.account_set = ParentAccount5.id 
     or AccountSet.account_set = ParentAccount6.id or AccountSet.account_set = ParentAccount6.parent_account) AND(PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner) AND
-(bYear.id = bLastYear.id) AND
 (AccountingReport.journal IS NULL OR AccountingReport.journal  = Move.journal) AND
 (AccountingReport.payment_mode IS  NULL OR (AccountingReport.payment_mode = Move.payment_mode)) AND
 Move.ignore_in_accounting_ok = false AND (Move.status_select = 3 OR Move.status_select = 2)
@@ -600,19 +597,21 @@ AND (AccountingReport.display_opening_accounting_moves is true
 AND (MoveLine.amount_remaining > 0)
 AND Account.reconcile_ok
 AND AccountingReport.calculate_provisional_opening_accounting_moves
+AND (AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) 
+AND (AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.date_to) 
 
 Union
 
 select 0 as moveLine_id, 
-'RAN' as move_line_name, 
-'RAN' as move_line_description,
-bLastYear.reported_balance_date as move_line_date, 
-MoveLine.partner_full_name as partner,
+'RAN ' as move_line_name, 
+'RAN ' as move_line_description,
+bYear.reported_balance_date as move_line_date, 
+'' as partner,
 CONCAT(MoveLine.account_code, ' ', MoveLine.account_name) as account,
 case when SUM(MoveLine.debit) > SUM(MoveLine.credit) THEN SUM(MoveLine.debit) - SUM(MoveLine.credit) ELSE 0 END , 
 case when SUM(MoveLine.debit) < SUM(MoveLine.credit) THEN SUM(MoveLine.credit)  - SUM(MoveLine.debit) ELSE 0 END , 
 ReconcileGroup.code as reconcile_group_code, 
-bLastYear.reported_balance_date, 
+bYear.reported_balance_date, 
 Journal.code as journal_code,
 Account.code as account_code , 
 Account.name as account_name , 
@@ -639,9 +638,6 @@ left outer join public.account_account_config as AccountConfig on (AccountConfig
 left outer join public.base_period as Period on (Move.period = Period.id) 
 left outer join public.base_year as bYear on (Period.year = bYear.id) 
 
-left outer join public.base_year as ReportYear on AccountingReport.year = ReportYear.id
-left outer join public.base_year as bLastYear on (ReportYear.last_accounting_year = bLastYear.id) 
-
 left outer join public.account_journal as Journal on (Move.journal = Journal.id) 
 where 
 (AccountingReport.currency = Move.company_currency) AND
@@ -651,7 +647,6 @@ Move.company = AccountingReport.company AND
     or AccountSet.account_set = ParentAccount2.id or AccountSet.account_set = ParentAccount3.id
     or AccountSet.account_set = ParentAccount4.id or AccountSet.account_set = ParentAccount5.id 
     or AccountSet.account_set = ParentAccount6.id or AccountSet.account_set = ParentAccount6.parent_account) AND(PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner) AND
-(bYear.id = bLastYear.id) AND
 (AccountingReport.journal IS NULL OR AccountingReport.journal  = Move.journal) AND
 (AccountingReport.payment_mode IS  NULL OR (AccountingReport.payment_mode = Move.payment_mode)) AND
 Move.ignore_in_accounting_ok = false AND (Move.status_select = 3 OR Move.status_select = 2)
@@ -662,9 +657,11 @@ AND (AccountingReport.display_closing_accounting_moves is true
 AND (AccountingReport.display_opening_accounting_moves is true 
 	OR(AccountingReport.display_opening_accounting_moves is false 
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
-AND not Account.reconcile_ok
+AND (Account.reconcile_ok is null or Account.reconcile_ok is false ) 
 AND AccountingReport.calculate_provisional_opening_accounting_moves
-group by moveLine_id, move_line_name, move_line_description, bLastYear.reported_balance_date,MoveLine.partner_full_name,account,reconcile_group_code,
+AND (AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) 
+AND (AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.date_to) 
+group by moveLine_id, move_line_name, move_line_description, bYear.reported_balance_date,account,reconcile_group_code,
 journal_code,Account.code, Account.name,move_sequence,MoveLine.account_code,MoveLine.account_name
 HAVING SUM(MoveLine.debit) - SUM(MoveLine.credit) != 0
 
