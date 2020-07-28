@@ -501,24 +501,38 @@
 	    <field type="string" name="monthSelect" title="Historical Period" selection="account.year.period.duration.select" x-required="true"/>
 	  </search-fields>
 	  <dataset type="sql">
-	    SELECT
-	      coalesce(SUM(self.ex_tax_total),0.00)  AS ex_tax_total,
-	      to_char(self.invoice_date,'yyyy-MM') AS _month
-	    FROM
-	      account_invoice self
-	    JOIN
-	          auth_user AS _user
-	          ON _user.id = :__user__
-	    JOIN
-	          base_company AS _company
-	          ON  _company.id = _user.active_company
-	          AND _company.id = self.company
-	    WHERE self.status_select = 3 AND self.operation_type_select=3 AND self.invoice_date &lt;= DATE(:todayDate)
-	        AND self.invoice_date &gt; DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month'  
-	    GROUP BY 
-	          _month
-	    ORDER BY
-	          _month
+			SELECT
+				invoice_ex_tax_total - refund_ex_tax_total as ex_tax_total,
+				_month
+				FROM (
+					SELECT
+						coalesce(SUM(
+							CASE
+								WHEN self.operation_type_select=3 THEN self.ex_tax_total
+							END
+						),0.00)  AS invoice_ex_tax_total,
+						coalesce(SUM(
+							CASE
+								WHEN self.operation_type_select=4 THEN self.ex_tax_total
+							END
+						),0.00)  AS refund_ex_tax_total,
+						to_char(self.invoice_date,'yyyy-MM') AS _month
+					FROM
+						account_invoice self
+					JOIN
+						auth_user AS _user
+						ON _user.id = :__user__
+					JOIN
+						base_company AS _company
+						ON  _company.id = _user.active_company
+						AND _company.id = self.company
+					WHERE self.status_select = 3 AND self.invoice_date &lt;= DATE(:todayDate)
+						AND self.invoice_date &gt; DATE(:todayDate) - (CAST(:monthSelect as int)) * INTERVAL '1 month'
+					GROUP BY
+						_month
+					ORDER BY
+						_month
+				) AS sub
 	  </dataset>
 	  <category key="_month" type="month" title="Month"/>
 	  <series key="ex_tax_total" type="bar" title="Amount"/>
