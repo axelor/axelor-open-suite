@@ -18,72 +18,61 @@
         <field name="currency"/>
     </grid>
 
-	<form name="debt-recovery-form" title="Debt Recovery"
-		model="com.axelor.apps.account.db.DebtRecovery" canNew="false">
-		<panel name="mainPanel" title="Overview">
-			<field name="name" showTitle="false" colSpan="12">
-				<viewer depends="name">
+    <form name="debt-recovery-form" title="Debt Recovery" model="com.axelor.apps.account.db.DebtRecovery" canNew="false">
+        <panel name="mainPanel" title="Overview">
+            <field name="name" showTitle="false" colSpan="12">
+                <viewer depends="name">
 					<![CDATA[
 						<h3>
 							<span  style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.name}}</span>
 						</h3>
 					]]>
 				</viewer>
-			</field>
-			<field name="company" form-view="company-form" grid-view="company-grid" readonly="true" colSpan="3"/>
-			<field name="currency" form-view="currency-form" grid-view="currency-grid" readonly="true" colSpan="3"/>
-			<field name="accountingSituation.partner" readonly="true" colSpan="3" form-view="partner-form" grid-view="partner-grid"/>
-			<spacer name="partnerFullNameSpacer" colSpan="3"/>
-			<field name="balanceDue" colSpan="3" />
-			<field name="balanceDueDebtRecovery" colSpan="3" />
-			<field name="referenceDate" colSpan="3" />
-			<field name="debtRecoveryDate" colSpan="3" />
-		</panel>
-		<panel>
-			<field name="setToIrrecoverableOk" widget="boolean-switch"
-				colSpan="3" />
-			<field name="deceasedPartnerOk" widget="boolean-switch"
-				colSpan="3" />
-			<field name="unknownAddressOk" widget="boolean-switch" colSpan="3" />
-		</panel>
-		<panel-tabs>
-			<panel-related  name="debtRecoveryHistoryListPanel"
-          field="debtRecoveryHistoryList"
-                grid-view="debt-recovery-history-grid"
-                form-view="debt-recovery-history-form"/>
-      <panel-related 	name="invoiceDebtRecoverySetPanel" 
-          field="invoiceDebtRecoverySet" 
-                grid-view="invoice-grid"
-                form-view="invoice-form"/>
-      <panel-related 	name="paymentScheduleLineDebtRecoverySetPanel" 
-          field="paymentScheduleLineDebtRecoverySet"
-                grid-view="payment-schedule-line-grid"
-                form-view="payment-schedule-line-form"/>
-        	<panel name="contactPanel" title="Contact">
-        		<panel-related name="partnerAddressListPanel" field="accountingSituation.partner.partnerAddressList" colSpan="12" form-view="partner-address-form" >
-        			<field name="address" form-view="address-form" grid-view="address-grid"/>
-        		</panel-related>
-        		<field name="accountingSituation.partner.fixedPhone" colSpan="6" />
-        		<field name="accountingSituation.partner.fax" colSpan="6" />
-        		<field name="accountingSituation.partner.emailAddress" colSpan="6"/>
-        		<field name="accountingSituation.partner.webSite" colSpan="6"/>
-        	</panel>
-		</panel-tabs>
-		<panel sidebar="true" canCollapse="true" name="caracteristics"
-			title="Caracteristics">
-			<field name="debtRecoveryMethod" form-view="debt-recovery-method-form"
-				grid-view="debt-recovery-method-grid" canEdit="false"/>
-			<field name="debtRecoveryMethodLine"
-				onSelect="action-debt-recovery-attrs-set-debt-recovery-line-domain"
-				form-view="debt-recovery-method-line-form" grid-view="debt-recovery-method-line-grid" canEdit="false"/>
-			<field name="waitDebtRecoveryMethodLine"
-				onSelect="action-debt-recovery-attrs-set-debt-recovery-line-domain"
-				form-view="debt-recovery-method-line-form" grid-view="debt-recovery-method-line-grid" canEdit="false"/>
-		</panel>
-		<panel sidebar="true" name="actions" hidden="true" showIf="waitDebtRecoveryMethodLine != null">
-			<button name="validateDebtRecoveryBtn" title="Validate Debt Recovery" onClick="save,action-debt-recovery-method-validate-debtRecovery"/>
-		</panel>
-	</form>
+            </field>
+            <field name="company" form-view="company-form" grid-view="company-grid" readonly="true" colSpan="3" />
+            <field name="currency" form-view="currency-form" grid-view="currency-grid" readonly="true" colSpan="3" />
+            <field name="accountingSituation.partner" readonly="true" colSpan="3" form-view="partner-form" grid-view="partner-grid" />
+            <spacer name="partnerFullNameSpacer" colSpan="3" />
+            <field name="balanceDue" colSpan="3" />
+            <field name="balanceDueDebtRecovery" colSpan="3" />
+            <field name="referenceDate" colSpan="3" />
+            <field name="debtRecoveryDate" colSpan="3" />
+        </panel>
+        <panel>
+            <field name="setToIrrecoverableOk" widget="boolean-switch" colSpan="3" />
+            <field name="deceasedPartnerOk" widget="boolean-switch" colSpan="3" />
+            <field name="unknownAddressOk" widget="boolean-switch" colSpan="3" />
+        </panel>
+        <panel-tabs>
+            <panel-related name="debtRecoveryHistoryListPanel" field="debtRecoveryHistoryList" grid-view="debt-recovery-history-grid"
+                form-view="debt-recovery-history-form" />
+            <panel-dashlet name="recoveryInvoicesSetPanel" action="action-debt-recovery-view-recovery-invoices" title="Invoice concerned by the debt recovery" />
+            <panel-related name="paymentScheduleLineDebtRecoverySetPanel" field="paymentScheduleLineDebtRecoverySet"
+                grid-view="payment-schedule-line-grid" form-view="payment-schedule-line-form" />
+            <panel-dashlet name="blockedInvoicesSetPanel" action="action-debt-recovery-view-blocked-invoices" title="Blocked invoices" />
+            <panel name="contactPanel" title="Contact">
+                <panel-related name="partnerAddressListPanel" field="accountingSituation.partner.partnerAddressList" colSpan="12"
+                    form-view="partner-address-form">
+                    <field name="address" form-view="address-form" grid-view="address-grid" />
+                </panel-related>
+                <field name="accountingSituation.partner.fixedPhone" colSpan="6" />
+                <field name="accountingSituation.partner.fax" colSpan="6" />
+                <field name="accountingSituation.partner.emailAddress" colSpan="6" />
+                <field name="accountingSituation.partner.webSite" colSpan="6" />
+            </panel>
+        </panel-tabs>
+        <panel sidebar="true" canCollapse="true" name="caracteristics" title="Caracteristics">
+            <field name="debtRecoveryMethod" form-view="debt-recovery-method-form" grid-view="debt-recovery-method-grid" canEdit="false" />
+            <field name="debtRecoveryMethodLine" onSelect="action-debt-recovery-attrs-set-debt-recovery-line-domain"
+                form-view="debt-recovery-method-line-form" grid-view="debt-recovery-method-line-grid" canEdit="false" />
+            <field name="waitDebtRecoveryMethodLine" onSelect="action-debt-recovery-attrs-set-debt-recovery-line-domain"
+                form-view="debt-recovery-method-line-form" grid-view="debt-recovery-method-line-grid" canEdit="false" />
+        </panel>
+        <panel sidebar="true" name="actions" hidden="true" showIf="waitDebtRecoveryMethodLine != null">
+            <button name="validateDebtRecoveryBtn" title="Validate Debt Recovery"
+                onClick="save,action-debt-recovery-method-validate-debtRecovery" />
+        </panel>
+    </form>
 
     <action-attrs name="action-debt-recovery-attrs-set-debt-recovery-line-domain">
         <attribute for="debtRecoveryMethodLine" name="domain"
@@ -97,4 +86,18 @@
               method="runDebtRecovery"/>
     </action-method>
 
+    <action-view name="action-debt-recovery-view-recovery-invoices" model="com.axelor.apps.account.db.Invoice" title="Invoice concerned by the debt recovery">
+        <view name="invoice-grid" type="grid" />
+        <view name="invoice-form" type="form" />
+        <domain>self.debtRecoveryBlockingOk = false and self.id IN (:_ids)</domain>
+        <context name="_ids" expr="eval: invoiceDebtRecoverySet.collect{it.id}" />
+    </action-view>
+    
+    <action-view name="action-debt-recovery-view-blocked-invoices" model="com.axelor.apps.account.db.Invoice" title="Blocked invoices">
+        <view name="invoice-grid" type="grid" />
+        <view name="invoice-form" type="form" />
+        <domain>self.debtRecoveryBlockingOk = true and self.id IN (:_ids)</domain>
+        <context name="_ids" expr="eval: invoiceDebtRecoverySet.collect{it.id}" />
+    </action-view>
+           
 </object-views>
