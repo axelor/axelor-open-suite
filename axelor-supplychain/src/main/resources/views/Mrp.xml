@@ -38,11 +38,6 @@
 					</h3>
 				]]></viewer>
 			</field>
-			<field name="createdOn" colSpan="4"/>
-			<field name="createdBy" colSpan="4"/>
-			<field name="endDate" colSpan="4"/>
-			<field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="4" domain="self.typeSelect != 3" canEdit="false"/>
-			<field name="stockLocation.company" colSpan="4"/>
 	    </panel>
 	    <panel name="filtersPanel" title="Filters" collapseIf="statusSelect != 0" colSpan="12">
 			<field name="id"/><spacer/>
@@ -50,12 +45,11 @@
 	        <field name="startDateTime" colSpan="4" readonly="true"/>
 	        <field name="endDateTime" colSpan="4" readonly="true"/>
 	        <field name="createdBy"/>
-	        <field name="mrpTypeSelect" hidden="true"/>
 	        <field name="endDate" colSpan="6" hideIf="mrpTypeSelect == 2"/>
 	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="6" domain="self.typeSelect != 3 AND (self.isNotInMrp = false OR self.isNotInMrp = null)" canEdit="false"/>
 	        <field name="stockLocation.company"/>
 	        <field name="displayProductWithoutProposal" widget="boolean-switch"/>
-	        <spacer name="companySpacer"/>
+	        <field name="mrpTypeSelect" hidden="true"/>
 	        <field name="year" showIf="mrpTypeSelect == 2" domain="self.typeSelect = 3" onChange="action-mrp-manuf-order-record-reset-period" form-view="year-manuf-order-form" grid-view="year-account-grid"/>
 	        <field name="period" showIf="mrpTypeSelect == 2" domain="self.year = :year" form-view="period-form" grid-view="period-grid"/>
 	        <panel-related name="productSetPanel" field="productSet" canEdit="false" form-view="product-form" grid-view="product-grid" canNew="false" colSpan="12" domain="self.productTypeSelect = 'storable' AND self.excludeFromMrp = false AND self.stockManaged = true AND (:mrpTypeSelect = 1 OR self.productSubTypeSelect = 1)"/>
