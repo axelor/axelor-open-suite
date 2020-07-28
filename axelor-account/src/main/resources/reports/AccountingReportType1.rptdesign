@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -16,18 +16,6 @@
             <property name="name">odaPassword</property>
             <property name="id">209</property>
             <expression name="value" type="javascript">params["Password"].value</expression>
-        </structure>
-        <structure>
-            <property name="name">queryText</property>
-            <property name="id">210</property>
-        </structure>
-        <structure>
-            <property name="name">queryTimeOut</property>
-            <property name="id">210</property>
-        </structure>
-        <structure>
-            <property name="name">rowFetchSize</property>
-            <property name="id">210</property>
         </structure>
     </list-property>
     <property name="units">in</property>
@@ -56,7 +44,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -1377,11 +1365,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </label>
                         </cell>
                         <cell id="3122">
-                            <property name="fontSize">9pt</property>
                             <property name="verticalAlign">top</property>
-                            <data id="4273">
-                                <property name="resultSetColumn">report_date_edition</property>
-                            </data>
+                            <text id="3128">
+                                <property name="fontSize">9pt</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["report_date_edition"]</VALUE-OF>]]></text-property>
+                            </text>
                         </cell>
                     </row>
                 </grid>
@@ -1461,24 +1450,21 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="name">date_from</property>
-                    <text-property name="displayName">DateFrom</text-property>
+                    <text-property name="displayName">date_from</text-property>
                     <expression name="expression" type="javascript">dataSetRow["date_from"]</expression>
                     <property name="dataType">date</property>
-                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">date_to</property>
-                    <text-property name="displayName">DateTo</text-property>
+                    <text-property name="displayName">date_to</text-property>
                     <expression name="expression" type="javascript">dataSetRow["date_to"]</expression>
                     <property name="dataType">date</property>
-                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">report_date</property>
-                    <text-property name="displayName">ReportDate</text-property>
+                    <text-property name="displayName">report_date</text-property>
                     <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
                     <property name="dataType">date</property>
-                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">report_date_edition</property>
@@ -1579,13 +1565,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="displayName">display_only_not_completely_lettered_move_lines</text-property>
                     <expression name="expression" type="javascript">dataSetRow["display_only_not_completely_lettered_move_lines"]</expression>
                     <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">Column Binding</property>
-                    <text-property name="displayName">DateTo</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["date_to"]</expression>
-                    <property name="dataType">date</property>
-                    <property name="allowExport">true</property>
                 </structure>
             </list-property>
             <column id="492">
@@ -1738,17 +1717,14 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
                 </cell>
                 <cell id="4129">
-                    <data id="4270">
-                        <structure name="dateTimeFormat">
-                            <property name="category">Short Date</property>
-                            <property name="pattern">Short Date</property>
-                        </structure>
-                        <property name="resultSetColumn">report_date</property>
-                    </data>
+                    <text id="3078">
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="Short Date">row["report_date"]</VALUE-OF>]]></text-property>
+                    </text>
                 </cell>
                 <cell id="499">
                     <text id="4196">
@@ -1870,17 +1846,14 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
                 </cell>
                 <cell id="4130">
-                    <data id="4271">
-                        <structure name="dateTimeFormat">
-                            <property name="category">Short Date</property>
-                            <property name="pattern">Short Date</property>
-                        </structure>
-                        <property name="resultSetColumn">date_from</property>
-                    </data>
+                    <text id="556">
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF  format="Short Date">row["date_from"]</VALUE-OF>]]></text-property>
+                    </text>
                 </cell>
                 <cell id="504">
                     <text id="4197">
@@ -1915,17 +1888,14 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
                 </cell>
                 <cell id="505">
-                    <data id="4272">
-                        <structure name="dateTimeFormat">
-                            <property name="category">Short Date</property>
-                            <property name="pattern">Short Date</property>
-                        </structure>
-                        <property name="resultSetColumn">date_to</property>
-                    </data>
+                    <text id="557">
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="Short Date">row["date_to"]</VALUE-OF> ]]></text-property>
+                    </text>
                 </cell>
             </row>
             <row id="4211">
