@@ -1,4 +1,29 @@
 # Changelog
+## [5.3.9] - 2020-07-29
+## Improvements
+- USER: add a dashlet showing all user's permissions.
+- EBICSTS: add new data init to bank statement file formats.
+- Customer grid: show mainAddress details.
+
+## Bug Fixes
+- Report: Fix unit translation.
+- TIMESHEET: Fix editor still being displayed even with a disabled config.
+- BankDetails: Fix validation flow of iban.
+- INVOICE: fix message on generate of subscription invoice.
+- ACCOUNTING MOVE: remove all possibility to cancel a validated move.
+- ICalendar: Update event synchronization.
+- Template Maker: fix selection value translation based on locale.
+- SaleOrder: Consider today's date also in invoice sale amount dashboard.
+- CRM: set default nbrEmployees to 0.
+- Conversion: corrected the case of conversion from void to void and improved message in case of conversion from void to unit or from unit to void.
+- Accounting report: corrected bank reconciliation statement report, now display lines reconciled after date report.
+- Invoice: Fix wrong translation in report.
+- Project: Add missing translations.
+- ACCOUNT CONFIG: Add missing translations.
+- BANK PAYMENT: fix ICS number being linked to EBICS.
+- INVOICE: Fix chart not taking refunds into account.
+- INVOICE : Fix subscription invoice sub type change issue on ventilation.
+
 ## [5.3.8] - 2020-07-15
 ## Improvements
 - ACCOUNT SITUATION: update account situation on invoice payment cancel and improve moveLine calculation.
@@ -377,7 +402,8 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - PRODUCT: Fix economicManufOrderQty displayed twice.
 
 
-[5.3.8]: https://github.com/axelor/axelor-open-suite/compare/v5.3.7...V5.3.8
+[5.3.9]: https://github.com/axelor/axelor-open-suite/compare/v5.3.8...v5.3.9
+[5.3.8]: https://github.com/axelor/axelor-open-suite/compare/v5.3.7...v5.3.8
 [5.3.7]: https://github.com/axelor/axelor-open-suite/compare/v5.3.6...v5.3.7
 [5.3.6]: https://github.com/axelor/axelor-open-suite/compare/v5.3.5...v5.3.6
 [5.3.5]: https://github.com/axelor/axelor-open-suite/compare/v5.3.4...v5.3.5
