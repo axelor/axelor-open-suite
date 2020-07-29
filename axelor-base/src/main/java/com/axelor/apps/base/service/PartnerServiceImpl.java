@@ -52,9 +52,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 import javax.inject.Singleton;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -162,6 +164,7 @@ public class PartnerServiceImpl implements PartnerService {
 
     this.setPartnerFullName(partner);
     this.setCompanyStr(partner);
+    this.setMainAddress(partner);
   }
 
   /**
@@ -705,5 +708,24 @@ public class PartnerServiceImpl implements PartnerService {
       partnerQuery = partnerQuery.bind("partnerId", partnerId);
     }
     return partnerQuery.fetchOne();
+  }
+
+  protected void setMainAddress(Partner partner) {
+
+    if (!partner.getIsCustomer() && !partner.getIsSupplier()) {
+      return;
+    }
+
+    List<PartnerAddress> partnerAddressList = partner.getPartnerAddressList();
+    if (CollectionUtils.isNotEmpty(partnerAddressList)) {
+      Optional<PartnerAddress> optPartnerAddress =
+          partnerAddressList
+              .stream()
+              .filter(partnerAdd -> partnerAdd.getIsDefaultAddr())
+              .findFirst();
+      if (optPartnerAddress.isPresent()) {
+        partner.setMainAddress(optPartnerAddress.get().getAddress());
+      }
+    }
   }
 }

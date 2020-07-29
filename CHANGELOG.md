@@ -7,6 +7,7 @@
 - Report : Fix unit translation.
 - EBICSTS : add new data init to bank statement file formats
 - Customer grid : show mainAddress details.
+- Partner : update mainAddress with defaultAddress from partnerAddressList
 
 ## Bug Fixes
 - TIMESHEET : Fix editor still being displayed even with a disabled config
