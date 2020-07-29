@@ -306,4 +306,14 @@ public class DateTool {
 
     return Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
   }
+
+  /**
+   * Returns the maximum of two dates. A null date is treated as being less than any non-null date.
+   */
+  public static LocalDateTime max(LocalDateTime d1, LocalDateTime d2) {
+    if (d1 == null && d2 == null) return null;
+    if (d1 == null) return d2;
+    if (d2 == null) return d1;
+    return (d1.isAfter(d2)) ? d1 : d2;
+  }
 }

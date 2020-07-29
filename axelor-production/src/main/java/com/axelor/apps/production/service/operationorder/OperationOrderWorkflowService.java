@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.production.service.operationorder;
 
+import com.axelor.apps.base.db.DayPlanning;
+import com.axelor.apps.base.db.WeeklyPlanning;
+import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.MachineTool;
 import com.axelor.apps.production.db.ManufOrder;
@@ -37,8 +40,10 @@ import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.tool.date.DateTool;
 import com.axelor.apps.tool.date.DurationTool;
 import com.axelor.auth.AuthUtils;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -49,6 +54,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -60,6 +66,7 @@ public class OperationOrderWorkflowService {
   protected OperationOrderDurationRepository operationOrderDurationRepo;
   protected AppProductionService appProductionService;
   protected MachineToolRepository machineToolRepo;
+  @Inject protected WeeklyPlanningService weeklyPlanningService;
 
   @Inject
   public OperationOrderWorkflowService(
@@ -75,6 +82,135 @@ public class OperationOrderWorkflowService {
     this.machineToolRepo = machineToolRepo;
   }
 
+  @Transactional
+  public void manageDurationWithMachinePlanning(
+      OperationOrder operationOrder, WeeklyPlanning weeklyPlanning, Long duration)
+      throws AxelorException {
+    LocalDateTime startDate = operationOrder.getPlannedStartDateT();
+    LocalDateTime endDate = operationOrder.getPlannedEndDateT();
+    DayPlanning dayPlanning =
+        weeklyPlanningService.findDayPlanning(weeklyPlanning, startDate.toLocalDate());
+    if (dayPlanning != null) {
+      LocalTime firstPeriodFrom = dayPlanning.getMorningFrom();
+      LocalTime firstPeriodTo = dayPlanning.getMorningTo();
+      LocalTime secondPeriodFrom = dayPlanning.getAfternoonFrom();
+      LocalTime secondPeriodTo = dayPlanning.getAfternoonTo();
+      LocalTime startDateTime = startDate.toLocalTime();
+      LocalTime endDateTime = endDate.toLocalTime();
+
+      /**
+       * If operation begins inside one period of the machine but finished after that period, then
+       * we split the operation
+       */
+      if (firstPeriodTo != null
+          && startDateTime.isBefore(firstPeriodTo)
+          && endDateTime.isAfter(firstPeriodTo)) {
+        LocalDateTime plannedEndDate = startDate.toLocalDate().atTime(firstPeriodTo);
+        Long plannedDuration =
+            DurationTool.getSecondsDuration(Duration.between(startDate, plannedEndDate));
+        operationOrder.setPlannedDuration(plannedDuration);
+        operationOrder.setPlannedEndDateT(plannedEndDate);
+        operationOrderRepo.save(operationOrder);
+        OperationOrder otherOperationOrder = JPA.copy(operationOrder, true);
+        otherOperationOrder.setPlannedStartDateT(plannedEndDate);
+        if (secondPeriodFrom != null) {
+          otherOperationOrder.setPlannedStartDateT(
+              startDate.toLocalDate().atTime(secondPeriodFrom));
+        } else {
+          this.searchForNextWorkingDay(otherOperationOrder, weeklyPlanning, plannedEndDate);
+        }
+        operationOrderRepo.save(otherOperationOrder);
+        this.plan(otherOperationOrder, operationOrder.getPlannedDuration());
+      }
+    }
+  }
+
+  /**
+   * Set the planned start date of the operation order according to the planning of the machine
+   *
+   * @param weeklyPlanning
+   * @param operationOrder
+   */
+  public void planWithPlanning(OperationOrder operationOrder, WeeklyPlanning weeklyPlanning) {
+    LocalDateTime startDate = operationOrder.getPlannedStartDateT();
+    DayPlanning dayPlanning =
+        weeklyPlanningService.findDayPlanning(weeklyPlanning, startDate.toLocalDate());
+
+    if (dayPlanning != null) {
+      LocalTime firstPeriodFrom = dayPlanning.getMorningFrom();
+      LocalTime firstPeriodTo = dayPlanning.getMorningTo();
+      LocalTime secondPeriodFrom = dayPlanning.getAfternoonFrom();
+      LocalTime secondPeriodTo = dayPlanning.getAfternoonTo();
+      LocalTime startDateTime = startDate.toLocalTime();
+
+      /**
+       * If the start date is before the start time of the machine (or equal, then the operation
+       * order will begins at the same time than the machine Example: Machine begins at 8am. We set
+       * the date to 6am. Then the planned start date will be set to 8am.
+       */
+      if (firstPeriodFrom != null
+          && (startDateTime.isBefore(firstPeriodFrom) || startDateTime.equals(firstPeriodFrom))) {
+        operationOrder.setPlannedStartDateT(startDate.toLocalDate().atTime(firstPeriodFrom));
+      }
+      /**
+       * If the machine has two periods, with a break between them, and the operation is planned
+       * inside this period of time, then we will start the operation at the beginning of the
+       * machine second period. Example: Machine hours is 8am to 12 am. 2pm to 6pm. We try to begins
+       * at 1pm. The operation planned start date will be set to 2pm.
+       */
+      else if (firstPeriodTo != null
+          && secondPeriodFrom != null
+          && (startDateTime.isAfter(firstPeriodTo) || startDateTime.equals(firstPeriodTo))
+          && (startDateTime.isBefore(secondPeriodFrom) || startDateTime.equals(secondPeriodFrom))) {
+        operationOrder.setPlannedStartDateT(startDate.toLocalDate().atTime(secondPeriodFrom));
+      }
+      /**
+       * If the start date is planned after working hours, or during a day off, then we will search
+       * for the first period of the machine available. Example: Machine on Friday is 6am to 8 pm.
+       * We set the date to 9pm. The next working day is Monday 8am. Then the planned start date
+       * will be set to Monday 8am.
+       */
+      else if ((firstPeriodTo != null
+              && secondPeriodFrom == null
+              && (startDateTime.isAfter(firstPeriodTo) || startDateTime.equals(firstPeriodTo)))
+          || (secondPeriodTo != null
+              && (startDateTime.isAfter(secondPeriodTo) || startDateTime.equals(secondPeriodTo)))
+          || (firstPeriodFrom == null && secondPeriodFrom == null)) {
+        this.searchForNextWorkingDay(operationOrder, weeklyPlanning, startDate);
+      }
+    }
+  }
+
+  public void searchForNextWorkingDay(
+      OperationOrder operationOrder, WeeklyPlanning weeklyPlanning, LocalDateTime startDate) {
+    int daysToAddNbr = 0;
+    DayPlanning nextDayPlanning = null;
+    /** We will find the next DayPlanning with at least one working period. */
+    do {
+
+      daysToAddNbr++;
+      nextDayPlanning =
+          weeklyPlanningService.findDayPlanning(
+              weeklyPlanning, startDate.toLocalDate().plusDays(daysToAddNbr));
+    } while (nextDayPlanning.getAfternoonFrom() == null
+        && nextDayPlanning.getMorningFrom() == null);
+
+    /**
+     * We will add the nbr of days to retrieve the working day, and set the time to either the first
+     * morning period or the first afternoon period.
+     */
+    if (nextDayPlanning.getMorningFrom() != null) {
+      operationOrder.setPlannedStartDateT(
+          startDate.toLocalDate().plusDays(daysToAddNbr).atTime(nextDayPlanning.getMorningFrom()));
+    } else if (nextDayPlanning.getAfternoonFrom() != null) {
+      operationOrder.setPlannedStartDateT(
+          startDate
+              .toLocalDate()
+              .plusDays(daysToAddNbr)
+              .atTime(nextDayPlanning.getAfternoonFrom()));
+    }
+  }
+
   /**
    * Plan an operation order. For successive calls, must be called by order of operation order
    * priority.
@@ -84,20 +220,46 @@ public class OperationOrderWorkflowService {
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
-  public OperationOrder plan(OperationOrder operationOrder) throws AxelorException {
+  public OperationOrder plan(OperationOrder operationOrder, Long cumulatedDuration)
+      throws AxelorException {
 
     if (CollectionUtils.isEmpty(operationOrder.getToConsumeProdProductList())) {
       Beans.get(OperationOrderService.class).createToConsumeProdProductList(operationOrder);
     }
 
-    operationOrder.setPlannedStartDateT(this.getLastOperationOrder(operationOrder));
+    LocalDateTime plannedStartDate = operationOrder.getPlannedStartDateT();
+
+    LocalDateTime lastOPerationDate = this.getLastOperationOrder(operationOrder);
+    LocalDateTime maxDate = DateTool.max(plannedStartDate, lastOPerationDate);
+    operationOrder.setPlannedStartDateT(maxDate);
+
+    Machine machine = operationOrder.getMachineWorkCenter();
+    WeeklyPlanning weeklyPlanning = null;
+    if (machine != null) {
+      weeklyPlanning = machine.getWeeklyPlanning();
+    }
+    if (weeklyPlanning != null) {
+      this.planWithPlanning(operationOrder, weeklyPlanning);
+    }
 
     operationOrder.setPlannedEndDateT(this.computePlannedEndDateT(operationOrder));
-
-    operationOrder.setPlannedDuration(
+    if (cumulatedDuration != null) {
+      operationOrder.setPlannedEndDateT(
+          operationOrder
+              .getPlannedEndDateT()
+              .minusSeconds(cumulatedDuration)
+              .plusSeconds(this.getMachineSetupDuration(operationOrder)));
+    }
+    Long plannedDuration =
         DurationTool.getSecondsDuration(
             Duration.between(
-                operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())));
+                operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT()));
+
+    operationOrder.setPlannedDuration(plannedDuration);
+
+    if (weeklyPlanning != null) {
+      this.manageDurationWithMachinePlanning(operationOrder, weeklyPlanning, plannedDuration);
+    }
 
     ManufOrder manufOrder = operationOrder.getManufOrder();
     if (manufOrder == null || manufOrder.getIsConsProOnOperation()) {
@@ -107,6 +269,48 @@ public class OperationOrderWorkflowService {
     operationOrder.setStatusSelect(OperationOrderRepository.STATUS_PLANNED);
 
     return operationOrderRepo.save(operationOrder);
+  }
+
+  public long getMachineSetupDuration(OperationOrder operationOrder) throws AxelorException {
+    ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
+
+    long duration = 0;
+
+    WorkCenterGroup workCenterGroup = prodProcessLine.getWorkCenterGroup();
+
+    WorkCenter workCenter = null;
+
+    if (workCenterGroup != null
+        && workCenterGroup.getWorkCenterSet() != null
+        && !workCenterGroup.getWorkCenterSet().isEmpty()) {
+      workCenter =
+          workCenterGroup.getWorkCenterSet().stream()
+              .min(Comparator.comparing(WorkCenter::getSequence))
+              .get();
+    }
+
+    if (workCenter == null) {
+      return 0;
+    }
+
+    int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
+
+    if (workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_MACHINE
+        || workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
+      Machine machine = workCenter.getMachine();
+      if (machine == null) {
+        throw new AxelorException(
+            workCenter,
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.WORKCENTER_NO_MACHINE),
+            workCenter.getName());
+      }
+      duration += machine.getStartingDuration();
+      duration += machine.getEndingDuration();
+      duration += machine.getSetupDuration();
+    }
+
+    return duration;
   }
 
   /**
