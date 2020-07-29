@@ -2,6 +2,7 @@
 ## [Unreleased 5.3.10]
 ## Improvements
 ## Bug Fixes
+- MRP : Shows error message instead of NPE when a product has no unit
 
 ## [5.3.9] - 2020-07-29
 ## Improvements
