@@ -18,6 +18,7 @@
 		<view type="grid" name="project-grid"/>
 		<view type="form" name="project-form"/>
 		<view type="kanban" name="project-kanban"/>
+		<view-param name="search-filters" value="project-filters"/>
 		<domain>self.isProject = true and (self.projectTypeSelect = :_xProjectTypeSelect or self.projectTypeSelect = 0 or self.projectTypeSelect = null)</domain>
 		<context name="_fromProject" expr="eval:true"/>
 		<context name="_xProjectTypeSelect" expr="eval: __repo__(Project).TYPE_PROJECT"/>
@@ -28,6 +29,7 @@
 		<view type="grid" name="project-grid"/>
 		<view type="form" name="project-form"/>
 		<view type="kanban" name="project-kanban"/>
+		<view-param name="search-filters" value="project-filters"/>
 		<domain>self.isProject = true and self.projectTypeSelect = :_xProjectTypeSelect</domain>
 		<context name="_fromProject" expr="eval:true"/>
 		<context name="_xProjectTypeSelect" expr="eval: __repo__(Project).TYPE_PHASE"/>
@@ -38,6 +40,7 @@
 		<view type="kanban" name="team-task-kanban"/>
 		<view type="grid" name="team-task-grid"/>
 		<view type="form" name="team-task-form"/>
+		<view-param name="search-filters" value="team-task-filters"/>
 		<domain>self.project.statusSelect IN (1,2) and self.typeSelect = 'task'</domain>
 		<context name="_typeSelect" expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TASK"/>
 	</action-view>
@@ -47,6 +50,7 @@
 		<view type="kanban" name="team-task-kanban"/>
 		<view type="grid" name="team-task-grid"/>
 		<view type="form" name="team-task-form"/>
+		<view-param name="search-filters" value="team-task-filters"/>
 		<view-param name="forceTitle" value="true"/>
 		<domain>self.project.statusSelect IN (1,2) and self.typeSelect = 'ticket'</domain>
 		<context name="_typeSelect" expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TICKET"/>
@@ -64,12 +68,14 @@
 	<action-view name="project.task.template" title="Task template" model="com.axelor.apps.project.db.TaskTemplate">
 		<view type="grid" name="task-template-grid"/>
 		<view type="form" name="task-template-form"/>
+		<view-param name="search-filters" value="task-template-filters"/>
 	</action-view>
 
 	<menuitem name="project-project-template" parent="project-template" title="Project template" action="project.project.template"/>
 	<action-view name="project.project.template" title="Project template" model="com.axelor.apps.project.db.ProjectTemplate">
 		<view type="grid" name="project-template-grid"/>
 		<view type="form" name="project-template-form"/>
+		<view-param name="search-filters" value="project-template-filters"/>
 	</action-view>
 
 	<menuitem title="Historical" name="project-historical" parent="menu-project-root" order="39" icon="fa-clock-o"/>
@@ -78,6 +84,7 @@
 	<action-view name="all.tasks.history" title="Task history" model="com.axelor.team.db.TeamTask">
 		<view type="grid" name="team-task-grid"/>
 		<view type="form" name="team-task-form"/>
+		<view-param name="search-filters" value="team-task-filters"/>
 		<domain>self.status = 'closed' or self.status = 'canceled'</domain>
 	</action-view>
 
@@ -107,6 +114,7 @@
 	<action-view name="team.task.category" title="Team Task Category" model="com.axelor.apps.project.db.TeamTaskCategory">
 		<view type="grid" name="team-task-category-grid"/>
 		<view type="form" name="team-task-category-form"/>
+		<view-param name="search-filters" value="team-task-category-filters"/>
 	</action-view>
 	
 	<menuitem name="project-resource-type" parent="project-configurations" title="Resource types" action="project.resource.types" if="__config__.app.getApp('project').getResourceManagement()" />

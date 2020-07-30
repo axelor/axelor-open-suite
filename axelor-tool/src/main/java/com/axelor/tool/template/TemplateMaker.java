@@ -19,13 +19,13 @@ package com.axelor.tool.template;
 
 import com.axelor.apps.tool.exception.IExceptionMessage;
 import com.axelor.auth.AuthUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
-import com.axelor.meta.db.MetaSelectItem;
-import com.axelor.meta.db.repo.MetaSelectItemRepository;
+import com.axelor.meta.MetaStore;
+import com.axelor.meta.schema.views.Selection;
 import com.axelor.rpc.Resource;
 import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
@@ -156,6 +156,14 @@ public class TemplateMaker {
     return model.getClass();
   }
 
+  public void setLocale(Locale locale) {
+    this.locale = locale;
+  }
+
+  public Locale getLocale() {
+    return locale;
+  }
+
   public String make() {
     if (Strings.isNullOrEmpty(this.template)) {
       throw new IllegalArgumentException(I18n.get(IExceptionMessage.TEMPLATE_MAKER_2));
@@ -202,16 +210,17 @@ public class TemplateMaker {
       if (value == null) {
         return "";
       }
-      MetaSelectItem item =
-          Beans.get(MetaSelectItemRepository.class)
-              .all()
-              .filter("self.select.name = ?1 AND self.value = ?2", prop.getSelection(), value)
-              .fetchOne();
 
-      if (item != null) {
-        return item.getTitle();
+      Selection.Option option = MetaStore.getSelectionItem(prop.getSelection(), value.toString());
+      if (option == null) {
+        return value.toString();
       }
-      return value.toString();
+
+      if (StringUtils.notBlank(option.getTitle())) {
+        return I18n.getBundle(locale).getString(option.getTitle());
+      }
+
+      return option.getValue();
     }
 
     @Override

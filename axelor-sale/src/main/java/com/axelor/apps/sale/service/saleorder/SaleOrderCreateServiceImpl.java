@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
@@ -95,12 +96,15 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       LocalDate orderDate,
       PriceList priceList,
       Partner clientPartner,
-      Team team)
+      Team team,
+      TradingName tradingName)
       throws AxelorException {
 
     logger.debug(
         "Création d'un devis client : Société = {},  Reference externe = {}, Client = {}",
-        new Object[] {company, externalReference, clientPartner.getFullName()});
+        company,
+        externalReference,
+        clientPartner.getFullName());
 
     SaleOrder saleOrder = new SaleOrder();
     saleOrder.setClientPartner(clientPartner);
@@ -112,7 +116,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
     saleOrder.setOrderDate(orderDate);
 
     saleOrder.setPrintingSettings(
-        Beans.get(TradingNameService.class).getDefaultPrintingSettings(null, company));
+        Beans.get(TradingNameService.class).getDefaultPrintingSettings(tradingName, company));
 
     if (salespersonUser == null) {
       salespersonUser = AuthUtils.getUser();

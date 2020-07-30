@@ -13,7 +13,7 @@
   		<integer name="discountTypeSelect" title="Discount type" selection="base.price.list.line.amount.type.select" default="3"/>
 		<decimal name="discountAmount" title="Discount amount" precision="20" scale="10"/>
 		<decimal name="priceDiscounted" title="Unit price discounted" precision="20" scale="10"/>
-		<integer name="invoicingType" selection="business.team.task.invoicing.type.select" title="Invoicing Type"/>
+		<integer name="invoicingType" selection="business.team.task.invoicing.type.select" default="3" title="Invoicing Type"/>
 		<boolean name="isPaid" title="Paid"/>
 		<many-to-one name="customerReferral" ref="com.axelor.auth.db.User" title="Customer referral"/>
 		<many-to-one name="saleOrderLine" title="Related sale order line" ref="com.axelor.apps.sale.db.SaleOrderLine"/>

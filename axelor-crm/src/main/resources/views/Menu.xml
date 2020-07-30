@@ -46,8 +46,18 @@
 		<view type="form" name="partner-contact-form" />
 	  	<view-param name="limit" value="39"/>
 		<view-param name="search-filters" value="partner-filters"/>
-		<domain>self.isContact = true AND self.mainPartner.isCustomer = true</domain>
-		<context name="_domain" expr="self.isContact = true AND self.mainPartner.isCustomer = true"/>
+		<domain>self.isContact = true AND (self.mainPartner.isCustomer = true OR self.mainPartner.isProspect = true)</domain>
+		<context name="_domain" expr="self.isContact = true AND (self.mainPartner.isCustomer = true OR self.mainPartner.isProspect = true)"/>
+	</action-view>
+	
+	<menuitem name="crm-root-catalog" parent="crm-root"
+		title="Catalogs" action="crm.root.catalogs" order="11"/>
+
+	<action-view name="crm.root.catalogs" title="Catalogs"
+		model="com.axelor.apps.crm.db.Catalog" >
+		<view type="cards" name="catalog-cards" />
+		<view type="grid" name="catalog-grid" />
+		<view type="form" name="catalog-form" />
 	</action-view>
 	
 	<menuitem name="crm-root-event" parent="crm-root"
@@ -120,12 +130,14 @@
 		model="com.axelor.apps.crm.db.TargetConfiguration" >
 		<view type="grid" name="target-configuration-grid"/>
 		<view type="form" name="target-configuration-form"/>
+		<view-param name="search-filters" value="target-configuration-filters"/>
 	</action-view>
 	
 	<action-view name="crm.conf.target" title="Objectives"
 		model="com.axelor.apps.crm.db.Target" >
 		<view type="grid" name="target-grid"/>
 		<view type="form" name="target-form"/>
+		<view-param name="search-filters" value="target-filters"/>
 	</action-view>
 	
 	<menuitem name="crm-conf-lost-reason" parent="crm-conf"
@@ -146,6 +158,15 @@
 		<view type="form" name="function-form"/>
 	</action-view>
 		
+	<menuitem name="crm-conf-catalog-type" parent="crm-conf"
+		title="Catalog types" action="crm.conf.catalog.type" />
+		
+	<action-view name="crm.conf.catalog.type" title="Catalog type"
+		model="com.axelor.apps.crm.db.CatalogType" >
+		<view type="grid" name="catalog-type-grid"/>
+		<view type="form" name="catalog-type-form"/>
+	</action-view>
+	
 	<menuitem name="admin-root-batch-crm" parent="admin-root-batch"
 		title="CRM batches" action="admin.root.batch.crm" if="__config__.app.isApp('crm')" />
 
@@ -153,6 +174,7 @@
 		model="com.axelor.apps.crm.db.CrmBatch" >
 		<view type="grid" name="crm-batch-grid"/>
 		<view type="form" name="crm-batch-form"/>
+		<view-param name="search-filters" value="crm-batch-filters"/>
 	</action-view>
 
 	<!-- Top Menu for Activity and Create Entry for opportunity.... -->
@@ -167,6 +189,7 @@
 		<view type="grid" name="event-grid"/>
 		<view type="form" name="event-form"/>
 		<view type="calendar" name="event-calendar-color-by-calendar"/>
+		<view-param name="search-filters" value="event-filters"/>
 		<domain>self.typeSelect = 2</domain>
 		<context name="_internalUserId" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
@@ -182,6 +205,7 @@
 		<view type="grid" name="event-grid"/>
 		<view type="form" name="event-form"/>
 		<view type="calendar" name="event-calendar-color-by-calendar"/>
+		<view-param name="search-filters" value="event-filters"/>
 		<domain>self.typeSelect = 1</domain>
 		<context name="_internalUserId" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
@@ -197,6 +221,7 @@
 		<view type="grid" name="event-grid"/>
 		<view type="form" name="event-form"/>
 		<view type="calendar" name="event-calendar-color-by-calendar"/>
+		<view-param name="search-filters" value="event-filters"/>
 		<domain>self.typeSelect = 3</domain>
 		<context name="_internalUserId" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>

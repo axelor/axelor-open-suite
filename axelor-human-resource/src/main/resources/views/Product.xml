@@ -16,7 +16,7 @@
 
    <form name="product-expense-form" onNew="action-group-base-product-expense-onnew" title="Expense type" model="com.axelor.apps.base.db.Product" onLoad="action-product-attrs-scale-and-precision">
         <toolbar>
-    		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+    		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
 			<button name="showProductSheetBtn" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
     	</toolbar>
 	    <panel name="mainPanel">
@@ -84,7 +84,7 @@
    onNew="action-group-base-product-onnew, action-product-activity-record-default-activity" 
    onLoad="action-product-attrs-scale-and-precision" width="large">
     <toolbar>
-    		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+    		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
 			<button name="showProductSheetBtn" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
     	</toolbar>
 	    <panel name="mainPanel">
@@ -204,5 +204,14 @@
     <action-record name="hr-action-product-record-default-new" model="com.axelor.apps.base.db.Product">
     	<field name="expense" expr="false"/>
     </action-record>
+    
+    <search-filters name="product-expense-filters" model="com.axelor.apps.base.db.Product" title="Product expense filters">
+    	<field name="hasWarranty" hidden="true" if="!__config__.app.isApp('stock')"/>
+	    <field name="warrantyNbrOfMonths" hidden="true" if="!__config__.app.isApp('stock')"/>
+        <field name="isPerishable" hidden="true" if="!__config__.app.isApp('stock')"/>
+	    <field name="perishableNbrOfMonths" hidden="true" if="!__config__.app.isApp('stock')"/>
+        <field name="trackingNumberConfiguration" hidden="true" if="!__config__.app.isApp('stock')"/>
+        <field name="isAnalyticCapture" hidden="true" if="!__config__.app.isApp('account')" />
+	</search-filters>
 	
 </object-views>

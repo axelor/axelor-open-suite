@@ -20,7 +20,9 @@
                        <field name="forecastRecapSeq" showTitle="false" colSpan="12" css="label-bold bold large"/>
                    </panel>
 		   <field name="company" canEdit="false" onChange="action-forecast-record-bank, action-forecast-recap-record-currency"/>
-	       	   <field name="bankDetails" onSelect="action-accounting-batch-attrs-bank-details-domain" if="__config__.app.getApp('base').getManageMultiBanks()"/>
+	       	   <field name="bankDetails" onChange="action-forecast-recap-bank-detail-onchange-record" onSelect="action-accounting-batch-attrs-bank-details-domain" if="__config__.app.getApp('base').getManageMultiBanks()"/>
+	       	   <field name="bankDetails.balance" if="__config__.app.getApp('base').getManageMultiBanks()" showIf="bankDetails"/>
+	       	   <field name="bankDetails.balanceUpdatedDate" if="__config__.app.getApp('base').getManageMultiBanks()" showIf="bankDetails"/>
 	       	   <field name="fromDate" onChange="action-forecast-recap-validate-dates"/>
        		   <field name="toDate" onChange="action-forecast-recap-validate-dates"/>
        		   <field name="opportunitiesTypeSelect"/>
@@ -97,6 +99,10 @@
 	 	<field name="currency" expr="company?.currency"/>
 	 </action-record>
 	 
+	 <action-record name="action-forecast-recap-bank-detail-onchange-record" model="com.axelor.apps.cash.management.db.ForecastRecap">
+	 	<field name="startingBalance" expr="eval: bankDetails  ? bankDetails.balance : null"/>
+	 </action-record>
+	 
 	 <action-record name="action-forecast-recap-record-default-on-new" model="com.axelor.apps.cash.management.db.ForecastRecap">
 	 	<field name="company" expr="eval: __user__.activeCompany"/>
 	 	<field name="currency" expr="eval: __user__.activeCompany?.currency"/>
@@ -110,11 +116,16 @@
 	 </action-record>
 	 
 	 <action-validate name="action-forecast-recap-validate-dates">
+	    <error message="Starting date should not be in the past" if="fromDate != null &amp;&amp; fromDate &lt; __date__" action="action-forecast-recap-null-fromDate"/>
 		<error message="Invalid dates" if="toDate != null &amp;&amp; fromDate != null &amp;&amp; toDate &lt; fromDate" action="action-forecast-recap-null-toDate"/>
 	</action-validate>
 	
 	<action-record name="action-forecast-recap-null-toDate" model="com.axelor.apps.cash.management.db.ForecastRecap">
 		<field name="toDate" expr="eval: null"/>
+	</action-record>
+	
+	<action-record name="action-forecast-recap-null-fromDate" model="com.axelor.apps.cash.management.db.ForecastRecap">
+		<field name="fromDate" expr="eval: null"/>
 	</action-record>
 	
 	<action-validate name="action-forecast-recap-validate-dates-before-populate">
@@ -138,5 +149,10 @@
     <action-method name="action-forecast-recap-method-print">
 		<call class="com.axelor.apps.cash.management.web.ForecastRecapController" method="print"/>
     </action-method>
+    
+    <search-filters name="forecast-recap-filters" model="com.axelor.apps.cash.management.db.ForecastRecap" title="Forecast recap filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+        <field name="bankDetails" hidden="true" if="!__config__.app.getApp('base').getManageMultiBanks()"/>
+    </search-filters>
 
 </object-views>

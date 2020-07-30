@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+
+	<module name="crm" package="com.axelor.apps.crm.db"/>
+	
+	<entity name="Catalog" lang="java">
+	
+		<string name="name" title="Name" namecolumn="true" required="true"/>
+		<string name="description" large="true" title="Desription"/>
+		<many-to-one name="catalogType" ref="com.axelor.apps.crm.db.CatalogType" title="Catalog type"/>
+		<many-to-one name="pdfFile" title="PDF file" ref="com.axelor.meta.db.MetaFile" required="true"/>
+		<binary name="image" title="Image"/>
+
+	</entity>
+
+</domain-models>

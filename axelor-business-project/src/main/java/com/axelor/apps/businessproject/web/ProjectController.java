@@ -71,6 +71,7 @@ public class ProjectController {
               .model(PurchaseOrder.class.getName())
               .add("form", "purchase-order-form")
               .add("grid", "purchase-order-quotation-grid")
+              .param("search-filters", "purchase-order-filters")
               .context("_project", Beans.get(ProjectRepository.class).find(project.getId()))
               .map());
     }

@@ -45,7 +45,11 @@
 			<field name="bankOrder" if-module="axelor-bank-payment" showIf="bankOrder" form-view="bank-order-form" grid-view="bank-order-grid"/>
 			<field name="statusSelect" showIf="(paymentMode.typeSelect == 2 || paymentMode.typeSelect  == 9) &amp;&amp; paymentMode.inOutSelect == 2"/>
 			<field name="statusSelect" hideIf="(paymentMode.typeSelect == 2 || paymentMode.typeSelect  == 9) &amp;&amp; paymentMode.inOutSelect == 2" selection-in="[0,1,2]"/>
-			<button name="cancelBtn" title="Cancel" readonlyIf="statusSelect == 2" icon="fa-times-circle" onClick="action-invoice-payment-method-cancel"/>
+			<button name="cancelBtn" title="Cancel"  readonlyIf="statusSelect == 2 || move.statusSelect == 3" hideIf="move.statusSelect == 3" icon="fa-times-circle" onClick="action-invoice-payment-method-cancel"/>
+			<field name="move.statusSelect" hidden="true" readonly="true"/>
+		</panel>
+		<panel name="newInvoicePaymentPanel"  hideIf="id">
+			<button name="saveBtn" title="OK" colOffset="11" colspan="1" width="50"  onClick="action-invoice-payment-method-check-and-save,save,close"/>
 		</panel>
 	</form>
 
@@ -128,6 +132,10 @@
 	
 	<action-method name="action-invoice-payment-method-validate-mass-payment">
 		<call class="com.axelor.apps.account.web.InvoicePaymentController" method="validateMassPayment"/>
+	</action-method>
+	
+	<action-method name="action-invoice-payment-method-check-and-save">
+		<call class="com.axelor.apps.account.web.InvoicePaymentController" method="checkConditionBeforeSave"/>
 	</action-method>
 	
 </object-views>

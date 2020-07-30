@@ -102,4 +102,7 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
         <call class="com.axelor.apps.base.web.SequenceController" method="computeFullName"/>
     </action-method>
 
+	<search-filters name="sequence-filters" model="com.axelor.apps.base.db.Sequence" title="Sequence filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
 </object-views>

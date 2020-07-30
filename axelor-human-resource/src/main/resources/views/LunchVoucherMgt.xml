@@ -143,4 +143,7 @@
 		<call class="com.axelor.apps.hr.web.lunch.voucher.LunchVoucherMgtController" method="checkLeavePeriod"/>
 	</action-method>
 
+	<search-filters name="lunch-voucher-mgt-filters" model="com.axelor.apps.hr.db.LunchVoucherMgt" title="Lunch voucher management filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
 </object-views>

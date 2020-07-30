@@ -29,4 +29,7 @@
         </panel>
     </form>
 
+	<search-filters name="company-department-filters" model="com.axelor.apps.base.db.CompanyDepartment" title="Company department filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
 </object-views>

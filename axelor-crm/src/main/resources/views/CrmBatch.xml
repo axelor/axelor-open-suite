@@ -64,4 +64,8 @@
 	    <attribute name="hidden" expr="eval: actionSelect != 22" for="targetPanel"/>
 	</action-attrs>
 	
+	<search-filters name="crm-batch-filters" model="com.axelor.apps.crm.db.CrmBatch" title="Crm batch filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
+	
 </object-views>
