@@ -4,6 +4,8 @@
 - CRM : Create new objects Catalog and Catelog type
 
 ## Improvements
+- LEAD : Added description field on reports
+
 ## Bug Fixes
 - MRP : Shows error message instead of NPE when a product has no unit
 - ICalendar : Fix IndexOutOfBound Exception on event creation & Manage synchronisation select.
