@@ -1,5 +1,8 @@
 # Changelog
 ## [Unreleased 5.3.10]
+## Features
+- CRM : Create new objects Catalog and Catelog type
+
 ## Improvements
 ## Bug Fixes
 - MRP : Shows error message instead of NPE when a product has no unit
