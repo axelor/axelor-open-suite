@@ -1,6 +1,8 @@
 # Changelog
 ## [Unreleased 5.3.10]
 ## Improvements
+- contract-form : configPanel modification
+
 ## Bug Fixes
 - MRP : Shows error message instead of NPE when a product has no unit
 - ICalendar : Fix IndexOutOfBound Exception on event creation & Manage synchronisation select.
