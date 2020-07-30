@@ -515,7 +515,8 @@ public class ICalendarService {
     if (event.getLocation() != null) {
       items.add(new Location(event.getLocation()));
     }
-    if (event.getGeo() != null) {
+    if (StringUtils.notEmpty(event.getGeo()) && event.getGeo().contains(";")) {
+      // new Geo() object seperate the longitude and latitude using ; char
       items.add(new Geo(event.getGeo()));
     }
     if (event.getUid() == null) {
@@ -974,7 +975,7 @@ public class ICalendarService {
     }
   }
 
-  private List<ICalendarEvent> getICalendarEvents(ICalendar calendar) {
+  public List<ICalendarEvent> getICalendarEvents(ICalendar calendar) {
     LocalDateTime lastSynchro = calendar.getLastSynchronizationDateT();
     if (lastSynchro != null) {
       return iEventRepo
