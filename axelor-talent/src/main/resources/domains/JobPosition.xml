@@ -22,7 +22,7 @@
 		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
 		<string name="positionStatusSelect" title="Position Status" selection="job.position.position.status"/>
 		<date name="startingDate" title="Starting date"/>
-		<string name="profileWanted" title="Profile wanted"/>
+		<string name="profileWanted" title="Profile wanted" large="true"/>
 		
 		<extra-code>
 	   		<![CDATA[
