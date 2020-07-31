@@ -27,6 +27,4 @@ public interface IReport {
   public static final String CLIENT_SITUATION = "ClientSituation.rptdesign";
   public static final String MESSAGE_PDF = "MessagePDF.rptdesign";
   public static final String ABC_ANALYSIS = "AbcAnalysis.rptdesign";
-  public static final String PRINT_PORTRAIT = "Print_portrait.rptdesign";
-  public static final String PRINT_LANDSCAPE = "Print_landscape.rptdesign";
 }

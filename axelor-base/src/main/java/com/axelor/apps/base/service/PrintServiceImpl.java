@@ -17,12 +17,10 @@
  */
 package com.axelor.apps.base.service;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Print;
+import com.axelor.apps.base.db.PrintLine;
 import com.axelor.apps.base.db.repo.PrintRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.base.report.IReport;
-import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.tool.file.PdfTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
@@ -31,7 +29,6 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
@@ -39,11 +36,16 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.itextpdf.html2pdf.HtmlConverter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
@@ -53,6 +55,7 @@ import org.slf4j.LoggerFactory;
 public class PrintServiceImpl implements PrintService {
 
   private final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  protected static final String FILE_EXTENSION_PDF = ".pdf";
 
   protected PrintRepository printRepo;
   protected MetaFiles metaFiles;
@@ -66,44 +69,41 @@ public class PrintServiceImpl implements PrintService {
   @Override
   @Transactional
   public Map<String, Object> generatePDF(Print print) throws AxelorException {
-    print = printRepo.find(print.getId());
-    String documentName =
-        StringUtils.notEmpty(print.getDocumentName()) ? print.getDocumentName() : "";
+    try {
+      print = printRepo.find(print.getId());
+      String html = generateHtml(print);
 
-    String reportModele =
-        print.getDisplayTypeSelect() == PrintRepository.DISPLAY_TYPE_LANDSCAPE
-            ? IReport.PRINT_LANDSCAPE
-            : IReport.PRINT_PORTRAIT;
+      ByteArrayOutputStream pdfOutputStream = new ByteArrayOutputStream();
+      HtmlConverter.convertToPdf(html, pdfOutputStream);
 
-    ReportSettings reportSettings =
-        ReportFactory.createReport(reportModele, documentName + "-${date}")
-            .addParam("PrintId", print.getId())
-            .generate();
+      String documentName =
+          (StringUtils.notEmpty(print.getDocumentName()) ? print.getDocumentName() : "")
+              + "-"
+              + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
+              + FILE_EXTENSION_PDF;
 
-    if (ObjectUtils.notEmpty(reportSettings)) {
+      InputStream pdfInputStream = new ByteArrayInputStream(pdfOutputStream.toByteArray());
+      MetaFile metaFile = metaFiles.upload(pdfInputStream, documentName);
+      File file = MetaFiles.getPath(metaFile).toFile();
 
-      if (print.getAttach() || StringUtils.notEmpty(print.getMetaFileField())) {
-        File file = reportSettings.getFile();
-        if (file.exists()) {
-          try {
-            try (InputStream is = new FileInputStream(file)) {
-              MetaFile metaFile = metaFiles.upload(is, documentName);
-              Class<? extends Model> modelClass =
-                  (Class<? extends Model>) Class.forName(print.getMetaModel().getFullName());
-              Model objectModel = JPA.find(modelClass, print.getObjectId());
+      String fileLink =
+          PdfTool.getFileLinkFromPdfFile(
+              PdfTool.printCopiesToFile(file, 1), metaFile.getFileName());
 
-              if (print.getAttach()) {
-                if (ObjectUtils.notEmpty(print.getMetaModel())) {
-                  metaFiles.attach(metaFile, documentName, objectModel);
-                }
-              }
-              if (StringUtils.notEmpty(print.getMetaFileField())) {
-                saveMetaFileInModel(modelClass, objectModel, metaFile, print.getMetaFileField());
-              }
-            }
+      if (ObjectUtils.notEmpty(file)
+          && file.exists()
+          && (print.getAttach() || StringUtils.notEmpty(print.getMetaFileField()))) {
 
-          } catch (IOException | ClassNotFoundException e) {
-            throw new AxelorException(e, TraceBackRepository.CATEGORY_INCONSISTENCY);
+        Class<? extends Model> modelClass =
+            (Class<? extends Model>) Class.forName(print.getMetaModel().getFullName());
+        Model objectModel = JPA.find(modelClass, print.getObjectId());
+
+        if (ObjectUtils.notEmpty(objectModel)) {
+          if (print.getAttach()) {
+            metaFiles.attach(metaFile, documentName, objectModel);
+          }
+          if (StringUtils.notEmpty(print.getMetaFileField())) {
+            saveMetaFileInModel(modelClass, objectModel, metaFile, print.getMetaFileField());
           }
         }
       }
@@ -113,19 +113,9 @@ public class PrintServiceImpl implements PrintService {
           generatePDF(subPrint);
         }
       }
-
-      String pdfPath = reportSettings.getFileLink();
-      if (StringUtils.notEmpty(pdfPath)) {
-        return ActionView.define(documentName).add("html", pdfPath).map();
-      } else {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.PRINT_ERROR));
-      }
-    } else {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PRINT_ERROR));
+      return ActionView.define(documentName).add("html", fileLink).map();
+    } catch (IOException | ClassNotFoundException e) {
+      throw new AxelorException(e, TraceBackRepository.CATEGORY_INCONSISTENCY);
     }
   }
 
@@ -140,6 +130,37 @@ public class PrintServiceImpl implements PrintService {
       p.set(objectModel, metaFile);
       JPA.save(objectModel);
     }
+  }
+
+  protected String generateHtml(Print print) {
+    StringBuilder htmlBuilder = new StringBuilder();
+    htmlBuilder.append("<!DOCTYPE html>");
+    htmlBuilder.append("<html>");
+    htmlBuilder.append("<head>");
+    htmlBuilder.append("<title></title>");
+    htmlBuilder.append("<meta charset=\"utf-8\"/>");
+    htmlBuilder.append("<style type=\"text/css\">");
+    htmlBuilder.append("</style>");
+    htmlBuilder.append("</head>");
+    htmlBuilder.append("<body>");
+
+    if (ObjectUtils.notEmpty(print)) {
+      List<PrintLine> printLineList = print.getPrintLineList();
+      if (CollectionUtils.isNotEmpty(printLineList)) {
+        for (PrintLine printLine : printLineList) {
+          if (StringUtils.notEmpty(printLine.getTitle())) {
+            htmlBuilder.append(printLine.getTitle());
+          }
+          if (StringUtils.notEmpty(printLine.getContent())) {
+            htmlBuilder.append(printLine.getContent());
+          }
+        }
+      }
+    }
+
+    htmlBuilder.append("</body>");
+    htmlBuilder.append("</html>");
+    return htmlBuilder.toString();
   }
 
   @Override
