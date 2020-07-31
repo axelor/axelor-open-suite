@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 	<grid name="account-management-grid" title="Account management list"
 		model="com.axelor.apps.account.db.AccountManagement">
@@ -54,7 +54,7 @@
 					onChange="action-group-account-account-management-onchange-common"
 					form-view="company-form" grid-view="company-grid" canEdit="false"/>
 				<field name="product" canEdit="false" form-view="product-form"
-					grid-view="product-grid" showIf="typeSelect == 1"/>
+					grid-view="product-grid" showIf="typeSelect == 1" domain="dtype = 'Product'"/>
 				<field name="productFamily" canEdit="false" form-view="product-family-form" grid-view="product-family-grid" showIf="typeSelect == 1"/>
 			</panel>
 
@@ -182,10 +182,19 @@
 		<attribute name="hidden" for="typeSelect" expr="eval: true"
 			if="eval: __parent__?._model == 'com.axelor.apps.account.db.Tax' || __parent__?._model == 'com.axelor.apps.base.db.Product' || __parent__?._model == 'com.axelor.apps.base.db.ProductFamily' || __parent__?._model == 'com.axelor.apps.account.db.PaymentMode'" />
 	</action-attrs>
-	
+
 	<action-attrs name="action-account-management-attrs-bank-details-on-change">
 		<attribute name="value" for="cashAccount" expr="eval: bankDetails?.bankAccount"/>
 		<attribute name="value" for="journal" expr="eval: bankDetails?.journal"/>
 	</action-attrs>
-	
+
+	<search-filters name="account-management-filters" model="com.axelor.apps.account.db.AccountManagement" title="Account management filters">
+		<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="saleAccount" hidden="true" if="!__config__.app.isApp('account')" />
+		<field name="purchaseAccount" hidden="true" if="!__config__.app.isApp('account')"/>
+		<field name="cashAccount" hidden="true" if="!__config__.app.isApp('account')"/>
+		<field name="analyticDistributionTemplate" hidden="true" if="!__config__.app.isApp('account')"/>
+		<field name="fixedAssetCategory" hidden="true" if="!__config__.app.isApp('account')"/>
+		<field name="purchFixedAssetsAccount" hidden="true" if="!__config__.app.isApp('account')"/>
+	</search-filters>
 </object-views>

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.sale.service.saleorder;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
@@ -41,16 +42,20 @@ public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderServ
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public SaleOrder createSaleOrderFromOpportunity(Opportunity opportunity) throws AxelorException {
-    Currency currency;
+    Currency currency = null;
+    Company company = opportunity.getCompany();
     if (opportunity.getCurrency() != null) {
       currency = opportunity.getCurrency();
     } else if (opportunity.getPartner() != null && opportunity.getPartner().getCurrency() != null) {
       currency = opportunity.getPartner().getCurrency();
-    } else {
-      currency = opportunity.getCompany().getCurrency();
+    } else if (company != null) {
+      currency = company.getCurrency();
     }
 
     SaleOrder saleOrder = createSaleOrder(opportunity, currency);
+    if (company != null && company.getSaleConfig() != null) {
+      saleOrder.setDuration(company.getSaleConfig().getDefaultValidityDuration());
+    }
 
     opportunity.addSaleOrderListItem(saleOrder);
 

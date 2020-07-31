@@ -148,6 +148,11 @@ public class BankOrderController {
         ReportFactory.createReport(IReport.BANK_ORDER, name + "-${date}")
             .addParam("BankOrderId", bankOrder.getId())
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
+            .addParam(
+                "Timezone",
+                bankOrder.getSenderCompany() != null
+                    ? bankOrder.getSenderCompany().getTimezone()
+                    : null)
             .generate()
             .getFileLink();
 

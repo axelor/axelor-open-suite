@@ -31,6 +31,8 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.TradingNameService;
@@ -74,6 +76,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   @Inject protected AppPurchaseService appPurchaseService;
 
   @Inject protected PurchaseOrderRepository purchaseOrderRepo;
+
+  @Inject protected ProductCompanyService productCompanyService;
 
   @Override
   public PurchaseOrder _computePurchaseOrderLines(PurchaseOrder purchaseOrder)
@@ -273,6 +277,9 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     ReportFactory.createReport(IReport.PURCHASE_ORDER, title + "-${date}")
         .addParam("PurchaseOrderId", purchaseOrder.getId())
         .addParam("Locale", language)
+        .addParam(
+            "Timezone",
+            purchaseOrder.getCompany() != null ? purchaseOrder.getCompany().getTimezone() : null)
         .addParam("HeaderHeight", purchaseOrder.getPrintingSettings().getPdfHeaderHeight())
         .addParam("FooterHeight", purchaseOrder.getPrintingSettings().getPdfFooterHeight())
         .toAttach(purchaseOrder)
@@ -394,16 +401,36 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   @Transactional(rollbackOn = {Exception.class})
   public void updateCostPrice(PurchaseOrder purchaseOrder) throws AxelorException {
     if (purchaseOrder.getPurchaseOrderLineList() != null) {
+      CurrencyService currencyService = Beans.get(CurrencyService.class);
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
         Product product = purchaseOrderLine.getProduct();
         if (product != null) {
-          product.setPurchasePrice(
-              purchaseOrder.getInAti()
+          Currency lastPurchaseCurrency = purchaseOrder.getCurrency();
+          BigDecimal lastPurchasePrice =
+              (Boolean) productCompanyService.get(product, "inAti", purchaseOrder.getCompany())
                   ? purchaseOrderLine.getInTaxPrice()
-                  : purchaseOrderLine.getPrice());
-          if (product.getDefShipCoefByPartner()) {
+                  : purchaseOrderLine.getPrice();
+          lastPurchasePrice =
+              currencyService.getAmountCurrencyConvertedAtDate(
+                  purchaseOrder.getCurrency(),
+                  purchaseOrder.getCompany().getCurrency(),
+                  lastPurchasePrice,
+                  currencyService.getDateToConvert(null));
+
+          productCompanyService.set(
+              product, "lastPurchasePrice", lastPurchasePrice, purchaseOrder.getCompany());
+          productCompanyService.set(
+              product, "lastPurchaseCurrency", lastPurchaseCurrency, purchaseOrder.getCompany());
+          if ((Boolean)
+              productCompanyService.get(
+                  product, "defShipCoefByPartner", purchaseOrder.getCompany())) {
             Unit productPurchaseUnit =
-                product.getPurchasesUnit() != null ? product.getPurchasesUnit() : product.getUnit();
+                (Unit)
+                    productCompanyService.get(product, "purchasesUnit", purchaseOrder.getCompany());
+            productPurchaseUnit =
+                productPurchaseUnit != null
+                    ? productPurchaseUnit
+                    : (Unit) productCompanyService.get(product, "unit", purchaseOrder.getCompany());
             BigDecimal convertedQty =
                 Beans.get(UnitConversionService.class)
                     .convert(
@@ -420,16 +447,19 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                         purchaseOrder.getCompany(),
                         convertedQty);
             if (shippingCoef.compareTo(BigDecimal.ZERO) != 0) {
-              product.setShippingCoef(shippingCoef);
+              productCompanyService.set(
+                  product, "shippingCoef", shippingCoef, purchaseOrder.getCompany());
             }
           }
-          if (product.getCostTypeSelect() == ProductRepository.COST_TYPE_LAST_PURCHASE_PRICE) {
-            product.setCostPrice(
-                purchaseOrder.getInAti()
-                    ? purchaseOrderLine.getInTaxPrice()
-                    : purchaseOrderLine.getPrice());
-            if (product.getAutoUpdateSalePrice()) {
-              Beans.get(ProductService.class).updateSalePrice(product);
+          if ((Integer)
+                  productCompanyService.get(product, "costTypeSelect", purchaseOrder.getCompany())
+              == ProductRepository.COST_TYPE_LAST_PURCHASE_PRICE) {
+            productCompanyService.set(
+                product, "costPrice", lastPurchasePrice, purchaseOrder.getCompany());
+            if ((Boolean)
+                productCompanyService.get(
+                    product, "autoUpdateSalePrice", purchaseOrder.getCompany())) {
+              Beans.get(ProductService.class).updateSalePrice(product, purchaseOrder.getCompany());
             }
           }
         }

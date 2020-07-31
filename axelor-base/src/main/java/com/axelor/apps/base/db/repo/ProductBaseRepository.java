@@ -47,7 +47,6 @@ public class ProductBaseRepository extends ProductRepository {
 
   @Override
   public Product save(Product product) {
-
     try {
       if (appBaseService.getAppBase().getGenerateProductSequence()
           && Strings.isNullOrEmpty(product.getCode())) {

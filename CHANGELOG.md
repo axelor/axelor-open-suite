@@ -21,6 +21,9 @@
 - MRP: add configuration to ignore end date on incoming mrp line type.
 - BPM : Add overview of the result of the wkf.
 - SUPPLIER PORTAL : Creation of new Supplier portal
+- INVOICE : Added the possibility to add a watermark to the printings
+- Reports: Manage locale, date format and timezone following company configuration.
+- Product: add products per company to configure different prices depending on the company.
 
 ## Improvements
 - USER : Default User language is based on application.locale from application.properties
@@ -31,6 +34,18 @@
 - Removed block permission from demo data.
 - SaleOrder/Invoice/PurchaseOrder Line : Unit is now required
 - TeamTask: add new field categorySet.
+- Studio: Make app builder optional
+- Birt report: Change display of date
+- Invoice report : Change in font size in Invoice report.
+- Report : Fix unit translation.
 
 ## Bug Fixes
 - HR : A leave-line cannot be saved whitout employee or leave-reason.
+- Lead: Fix city name and state name issue in report printing.
+- EMPLOYEE : add translation of "Employee PhoneBook".
+- Studio: Add and fixed attributes of model and fields for import and export app.
+- EMPLOYEE : add button for Employee.rptdesign report on form.
+- XML : Update all xml files XSD version to AOP 5.3.
+- INVOICE : Change Invoicing menu translation.
+- INVOICE : Resolve report binding issue.
+

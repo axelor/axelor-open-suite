@@ -29,6 +29,9 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.stock.service.InventoryService;
+import com.axelor.db.JPA;
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -42,6 +45,8 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.nio.file.Path;
 import java.util.List;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,6 +74,9 @@ public class InventoryController {
       String fileLink =
           ReportFactory.createReport(IReport.INVENTORY, name + "-${date}")
               .addParam("InventoryId", inventory.getId())
+              .addParam(
+                  "Timezone",
+                  inventory.getCompany() != null ? inventory.getCompany().getTimezone() : null)
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
               .addParam(
                   "activateBarCodeGeneration",
@@ -194,7 +202,8 @@ public class InventoryController {
           ActionView.define(I18n.get("Internal Stock Moves"))
               .model(StockMove.class.getName())
               .add("grid", "stock-move-grid")
-              .add("form", "stock-move-form");
+              .add("form", "stock-move-form")
+              .param("search-filters", "internal-stock-move-filters");
       if (stockMoveList.isEmpty()) {
         response.setFlash(I18n.get("No stock moves found for this inventory."));
       } else {
@@ -208,6 +217,27 @@ public class InventoryController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkDuplicateProduct(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Inventory inventory = request.getContext().asType(Inventory.class);
+
+    Query query =
+        JPA.em()
+            .createQuery(
+                "select COUNT(*) FROM InventoryLine self WHERE self.inventory.id = :invent GROUP BY self.product, self.trackingNumber HAVING COUNT(self) > 1");
+
+    try {
+      query.setParameter("invent", inventory.getId()).getSingleResult();
+
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.INVENTORY_PRODUCT_TRACKING_NUMBER_ERROR));
+
+    } catch (NoResultException e) {
+      // if control came here means no duplicate product.
     }
   }
 }

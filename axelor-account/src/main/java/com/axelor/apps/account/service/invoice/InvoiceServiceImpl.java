@@ -44,6 +44,7 @@ import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.BankDetails;
@@ -101,6 +102,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected PartnerService partnerService;
   protected InvoiceLineService invoiceLineService;
   protected AccountConfigService accountConfigService;
+  protected MoveToolService moveToolService;
 
   @Inject
   public InvoiceServiceImpl(
@@ -112,7 +114,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       AppAccountService appAccountService,
       PartnerService partnerService,
       InvoiceLineService invoiceLineService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      MoveToolService moveToolService) {
 
     this.validateFactory = validateFactory;
     this.ventilateFactory = ventilateFactory;
@@ -123,6 +126,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.partnerService = partnerService;
     this.invoiceLineService = invoiceLineService;
     this.accountConfigService = accountConfigService;
+    this.moveToolService = moveToolService;
   }
 
   // WKF

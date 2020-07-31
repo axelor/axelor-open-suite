@@ -87,6 +87,9 @@ public class ProdProcessController {
     String fileLink =
         ReportFactory.createReport(IReport.PROD_PROCESS, prodProcessLabel + "-${date}")
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
+            .addParam(
+                "Timezone",
+                prodProcess.getCompany() != null ? prodProcess.getCompany().getTimezone() : null)
             .addParam("ProdProcessId", prodProcessId)
             .generate()
             .getFileLink();
@@ -140,6 +143,7 @@ public class ProdProcessController {
             .model(ProdProcess.class.getName())
             .add("form", "prod-process-form")
             .add("grid", "prod-process-grid")
+            .param("search-filters", "prod-process-filters")
             .context("_showRecord", String.valueOf(copy.getId()))
             .map());
   }

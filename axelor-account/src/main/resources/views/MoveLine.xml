@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
   <grid name="move-line-grid" orderBy="-date,-name" title="Move lines" model="com.axelor.apps.account.db.MoveLine"  canArchive="false" canDelete="false" canNew="false">
   	<toolbar>
@@ -454,8 +454,8 @@
 	</action-record>
 
 	<action-view name="action-account-view-show-move-lines" title="${label} move lines" model="com.axelor.apps.account.db.MoveLine">
-		<view type="grid" name="move-line-move-grid"/>
-		<view type="form" name="move-line-move-form"/>
+		<view type="grid" name="move-line-grid"/>
+		<view type="form" name="move-line-form"/>
 		<domain>self.account.id = :_id</domain>
 	</action-view>
 
@@ -471,8 +471,10 @@
 		<field name="move.period" title="Period"/>
 		<field name="move.journal" title="Journal"/>
 		<field name="move.statusSelect" title="Status"/>
-		<field name="move.company" title="Company"/>
+		<field name="move.company" title="Company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<field name="account.reconcileOk" title="Reconcilable"/>
+		<field name="analyticMoveLineList" hidden="true" if="!__config__.app.getApp('account').getManageAnalyticAccounting()"/>
+		<field name="analyticDistributionTemplate" hidden="true" if="!__config__.app.getApp('account').getManageAnalyticAccounting()"/>
 		<filter title="Sale Entries">
 			<domain>self.move.invoice.operationTypeSelect = 3 OR self.move.invoice.operationTypeSelect = 4</domain>
 		</filter>

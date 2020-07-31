@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
     <grid name="product-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="code,name" x-row-height="80">
    		<toolbar>
@@ -42,7 +42,7 @@
           					if="__config__.app.getApp('base').getGenerateProductSequence()"/>
           				<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="5" css="label-bold bold large" placeholder="Code" 
           					if="!__config__.app.getApp('base').getGenerateProductSequence()" required="true"/>
-                  <field name="name" showTitle="false" colSpan="7" css="label-bold bold large" placeholder="Name" width="800"/>
+                  <field name="name" required="true" showTitle="false" colSpan="7" css="label-bold bold large" placeholder="Name" width="800"/>
         			</editor>
       			</field>
     		</panel>
@@ -88,12 +88,12 @@
     		<panel name="productInfoPanel" colSpan="10" >
       
       			<panel name="productTypologyPanel" title="Product typology" colSpan="6" colWidths="30%,70%">
-			        <field name="productTypeSelect" colSpan="12" onChange="action-group-base-product-producttype-onchange" />
+			        <field name="productTypeSelect" required="true" colSpan="12" onChange="action-group-base-product-producttype-onchange" />
 			        <field name="productSubTypeSelect" colSpan="12"  showIf="productTypeSelect == 'storable'" if="__config__.app.isApp('production')" onChange="action-product-record-product-sub-type-select-onchange"/>
                     <field name="isShippingCostsProduct" colSpan="4" hideIf="productTypeSelect != 'storable' || productSubTypeSelect || _fromProduction || _fromStock || _fromSale || _fromPurchase"/>
 			        <field name="isActivity" showIf="productTypeSelect == 'service' &amp;&amp; !isShippingCostsProduct" if-module="axelor-human-resource" if="__config__.app.isApp('employee')" />
                     <field name="procurementMethodSelect" colSpan="6"
-                        requiredIf="productTypeSelect == 'storable'"
+                        requiredIf="productTypeSelect == 'storable' &amp;&amp; __config__.app.getApp('base').getCompanySpecificProductFieldsList().isEmpty()"
                         onChange="action-product-record-tick-checkbox-purchasable" hideIf="isShippingCostsProduct" readonlyIf="productSubTypeSelect == 3"/>
 			        <field name="standardDelay" colSpan="12" showIf="saleSupplySelect == 2 || saleSupplySelect == 3" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
       			</panel>
@@ -109,6 +109,7 @@
       				<field name="serialNumber" />
 					<field name="barcodeTypeConfig" if="__config__.app.getApp('base').getEditProductBarcodeType()"/>
       			</panel>
+      			<panel-related name="productCompanyListPanel" field="productCompanyList" grid-view="product-company-grid" form-view="product-company-form" colSpan="12" hidden="true" onChange="save"/>
     		</panel>
   		</panel>
   		<panel-tabs name="productSpecificAttributes" title="Product specific attributes">
@@ -158,8 +159,11 @@
 	    	<panel name="purchaseCostsPanel" title="Purchase/Costs" showTitle="false">
 		      	<panel name="purchasePanel" title="Purchases" colSpan="6">
 			        <field name="purchasable" colSpan="12"/>
-			        <field name="purchasePrice" showIf="purchasable" colSpan="6"/>
+			        <field name="purchasePrice" showIf="purchasable" colSpan="3"/>
 			        <field name="purchaseCurrency" canEdit="false" showIf="purchasable" colSpan="6" form-view="currency-form" grid-view="currency-grid"/>
+			        <spacer colSpan="3"/>
+			        <field name="lastPurchasePrice" showIf="purchasable" colSpan="3" readonly="true"/>
+			        <field name="lastPurchaseCurrency" showIf="purchasable" colSpan="6" readonly="true"/>
 			        <field name="defaultSupplierPartner" canEdit="false" showIf="purchasable" colSpan="6" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
 			        <field name="supplierDeliveryTime" showIf="purchasable" colSpan="6"/>
                     <panel name="purchaseMultipleQtyPanel" title="Multiple quantities" colSpan="12" if="__config__.app.getApp('purchase')?.getManageMultiplePurchaseQuantity()">
@@ -370,9 +374,10 @@
 		<action name="action-product-attrs-set-cost-type-select"/>
 		<action name="action-product-record-set-barcode-type-config"/>
 		<action name="action-product-attrs-title-unit"/>
+		<action name="action-product-attrs-enable-product-company-list"/>
 		<action name="action-product-record-service-stock-managed"/>
     </action-group>
-    
+
     <action-group name="action-group-base-product-producttype-onchange">
     	<action name="action-product-record-sale-supply-select"/>
     	<action name="action-product-validate-sale-supply-select"/>
@@ -405,6 +410,7 @@
         <action name="action-product-attrs-readonly-sellable" if="__context__?._fromSale"/>
         <action name="action-product-attrs-readonly-purchasable" if="__context__?._fromPurchase"/>
 		<action name="action-product-attrs-cost-price-variant"/>
+		<action name="action-product-attrs-enable-product-company-list"/>
     </action-group>
 
 	<action-group name="action-product-group-cost-type-select-onchange">
@@ -431,15 +437,18 @@
     </action-attrs>
     
     <action-attrs name="action-product-attrs-change-title-based-on-inAti">
-    	<attribute name="title" for="salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale price A.T.I.')" if="inAti"/>
-    	<attribute name="title" for="salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale price W.T.')" if="!inAti"/>
-    	<attribute name="title" for="purchasePrice" expr="eval: com.axelor.i18n.I18n.get('Purchase price A.T.I.')" if="inAti"/>
-    	<attribute name="title" for="purchasePrice" expr="eval: com.axelor.i18n.I18n.get('Purchase price W.T.')" if="!inAti"/>
+    	<attribute name="title" for="salePrice,productCompanyList.salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale price A.T.I.')" if="inAti"/>
+    	<attribute name="title" for="salePrice,productCompanyList.salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale price W.T.')" if="!inAti"/>
+    	<attribute name="title" for="purchasePrice,productCompanyList.purchasePrice" expr="eval: com.axelor.i18n.I18n.get('Purchase price A.T.I.')" if="inAti"/>
+    	<attribute name="title" for="purchasePrice,productCompanyList.purchasePrice" expr="eval: com.axelor.i18n.I18n.get('Purchase price W.T.')" if="!inAti"/>
+    	<attribute name="title" for="lastPurchasePrice,productCompanyList.lastPurchasePrice" expr="eval: com.axelor.i18n.I18n.get('Last purchase price A.T.I.')" if="inAti"/>
+    	<attribute name="title" for="lastPurchasePrice,productCompanyList.lastPurchasePrice" expr="eval: com.axelor.i18n.I18n.get('Last purchase price W.T.')" if="!inAti"/>
     </action-attrs>
 
     <action-attrs name="action-product-attrs-scale-and-precision">
 		<attribute name="scale" for="salePrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="purchasePrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="lastPurchasePrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="costPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		
 		<attribute name="scale" for="economicManufOrderQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
@@ -452,7 +461,8 @@
 	</action-attrs>
 
 	<action-attrs name="action-product-attrs-update-cost-price">
-		<attribute for="costPrice" name="value" expr="eval: shippingCoef ? purchasePrice.multiply(shippingCoef) : purchasePrice" if="costTypeSelect == 2"/>
+		<attribute for="costPrice" name="value" expr="eval: shippingCoef ? lastPurchasePrice.multiply(shippingCoef) : lastPurchasePrice" if="costTypeSelect == 2 &amp;&amp; lastPurchasePrice &gt; 0"/>
+		<attribute for="costPrice" name="value" expr="eval: shippingCoef ? purchasePrice.multiply(shippingCoef) : purchasePrice" if="costTypeSelect == 2  &amp;&amp; lastPurchasePrice &lt;= 0"/>
 		<attribute for="costPrice" name="value" expr="eval: avgPrice" if="costTypeSelect == 3"/>
 		<attribute for="costPrice" name="value" expr="eval: lastProductionPrice" if="costTypeSelect == 4"/>
 	</action-attrs>
@@ -464,6 +474,10 @@
 				   if="parentProduct?.manageVariantPrice"/>
 	</action-attrs>
 	
+	<action-attrs name="action-product-attrs-enable-product-company-list">
+		<attribute name="hidden" for="productCompanyList" expr="eval: __config__.app.getApp('base').getCompanySpecificProductFieldsList().isEmpty()"/>
+	</action-attrs>
+
 	<action-group name="action-product-group-default-new">
 		<action name="action-product-record-default-new"/>
 		<action name="hr-action-product-record-default-new" if="__config__.app.getApp('expense')"/>
@@ -475,6 +489,7 @@
     	<field name="startDate" expr="eval:__config__.app.getTodayDate()" if="startDate == null"/>
     	<field name="salePrice" expr="0"/>
     	<field name="purchasePrice" expr="0"/>
+    	<field name="lastPurchasePrice" expr="0"/>
     	<field name="saleCurrency" expr="eval: _activeCompany?.currency"/>
     	<field name="purchaseCurrency" expr="eval: _activeCompany?.currency"/>
     	<field name="managPriceCoef" expr="1"/>
@@ -570,9 +585,47 @@
     </action-record>
 	
     <search-filters name="products-filters" model="com.axelor.apps.base.db.Product" title="Products filters">
-    	<field name="purchaseProductMultipleQtyList" title="Multiple quantities of purchase"/>
-    	<field name="saleProductMultipleQtyList" title="Multiple quantities of sale"/>
-		<filter title="Current Products">
+    	<field name="purchaseProductMultipleQtyList" title="Multiple quantities of purchase" hidden="true" if="!(__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase')?.getManageMultiplePurchaseQuantity())"/>
+    	<field name="allowToForcePurchaseQty" hidden="true" if="!(__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase')?.getManageMultiplePurchaseQuantity())"/>
+    	<field name="saleProductMultipleQtyList" title="Multiple quantities of sale" hidden="true" if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale')?.getManageMultipleSaleQuantity())"/>
+    	<field name="serialNumber" hidden="true" if="!__config__.app.getApp('base').getActivateBarCodeGeneration()"/>
+		<field name="barcodeTypeConfig" hidden="true" if="!(__config__.app.getApp('base').getActivateBarCodeGeneration() &amp;&amp; __config__.app.getApp('base').getEditProductBarcodeType())"/>
+		<field name="salesUnit" hidden="true" if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale')?.getManageSalesUnits())"/>
+		<field name="purchasesUnit" hidden="true" if="!(__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase')?.getManagePurchasesUnits())"/>
+		<field name="configurator" hidden="true" if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale')?.getEnableConfigurator())"/>
+		<field name="allowToForceSaleQty" hidden="true" if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale')?.getManageMultipleSaleQuantity())"/>
+		<field name="costSheetGroup" hidden="true" if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageCostSheetGroup())"/>
+		<field name="customerCatalogList"  hidden="true" if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getEnableCustomerCatalogMgt())"/>
+		<field name="supplierCatalogList" hidden="true" if="!(__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog())"/>
+		<field name="productVariantConfig" hidden="true" if="!__config__.app.getApp('base').getManageProductVariants()"/>
+		<field name="manageVariantPrice" hidden="true" if="!__config__.app.getApp('base').getManageProductVariants()"/>
+		<field name="taskTemplateSet" hidden="true" if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').enableTaskTemplatesByProduct)"/>
+		<field name="productSubTypeSelect" hidden="true" if="!__config__.app.isApp('production')"/>
+        <field name="isActivity" hidden="true" if="!__config__.app.isApp('employee')" />
+        <field name="standardDelay" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="productSynchronizedInPrestashop" hidden="true" if="!__config__.app.isApp('prestashop')"/>
+        <field name="shippingCoef" hidden="true" if="!__config__.app.isApp('purchase')"/>
+		<field name="defShipCoefByPartner" hidden="true" if="!__config__.app.isApp('purchase')"/>
+		<field name="isAnalyticCapture" hidden="true" if="!__config__.app.isApp('account')"/>
+		<field name="excludeFromMrp" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="stockManaged" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="mrpFamily" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="inventoryTypeSelect" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="productStandard" hidden="true" if="!__config__.app.isApp('production')"/>
+      	<field name="productApproval" hidden="true" if="!__config__.app.isApp('production')"/>
+      	<field name="controlOnReceipt" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="avgPrice" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="economicManufOrderQty" hidden="true" if="!__config__.app.isApp('production')"/>
+	    <field name="hasWarranty" hidden="true" if="!__config__.app.isApp('stock')"/>
+		<field name="warrantyNbrOfMonths" hidden="true" if="!__config__.app.isApp('stock')"/>
+		<field name="isPerishable" hidden="true" if="!__config__.app.isApp('stock')"/>
+		<field name="perishableNbrOfMonths" hidden="true" if="!__config__.app.isApp('stock')"/>
+		<field name="checkExpirationDateAtStockMoveRealization" hidden="true" if="!__config__.app.isApp('stock')"/>
+	    <field name="trackingNumberConfiguration" hidden="true" if="!__config__.app.isApp('stock')"/>
+	    <field name="usedInDEB" hidden="true" if="!__config__.app.isApp('stock')"/>
+		<field name="customsCodeNomenclature" hidden="true" if="!__config__.app.isApp('stock')"/>
+		<field name="countryOfOrigin" hidden="true" if="!__config__.app.isApp('stock')"/>
+        <filter title="Current Products">
 			<domain>self.endDate IS NULL or CURRENT_DATE &lt; self.endDate</domain>
 		</filter>
 		<filter title="Storable Products">

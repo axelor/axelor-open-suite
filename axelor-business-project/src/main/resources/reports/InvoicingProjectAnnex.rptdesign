@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <property name="units">in</property>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">fixed layout</property>
@@ -3265,10 +3265,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </cell>
                 <cell id="4154">
                     <property name="textAlign">left</property>
-                    <text id="4312">
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy" >row["deadline"]</VALUE-OF>]]></text-property>
-                    </text>
+                    <data id="4313">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
+                        <property name="resultSetColumn">deadline</property>
+                    </data>
                 </cell>
             </row>
             <row id="4178">
@@ -3952,10 +3955,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <text id="4017">
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["estimated_deliv_date"]</VALUE-OF>]]></text-property>
-                        </text>
+                        <data id="4314">
+                            <structure name="dateTimeFormat">
+                                <property name="category">Short Date</property>
+                                <property name="pattern">Short Date</property>
+                            </structure>
+                            <property name="resultSetColumn">estimated_deliv_date</property>
+                        </data>
                     </cell>
                 </row>
             </detail>
@@ -5232,10 +5238,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <text id="4282">
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["date"]</VALUE-OF>]]></text-property>
-                        </text>
+                        <data id="4315">
+                            <structure name="dateTimeFormat">
+                                <property name="category">Short Date</property>
+                                <property name="pattern">Short Date</property>
+                            </structure>
+                            <property name="resultSetColumn">date</property>
+                        </data>
                     </cell>
                     <cell id="270">
                         <property name="borderBottomStyle">solid</property>
@@ -5713,10 +5722,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <text id="4291">
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["expense_date"]</VALUE-OF>]]></text-property>
-                        </text>
+                        <data id="4316">
+                            <structure name="dateTimeFormat">
+                                <property name="category">Short Date</property>
+                                <property name="pattern">Short Date</property>
+                            </structure>
+                            <property name="resultSetColumn">expense_date</property>
+                        </data>
                     </cell>
                     <cell id="324">
                         <property name="borderBottomStyle">solid</property>
@@ -6324,10 +6336,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <text id="4301">
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy HH:mm">row["from_date"]</VALUE-OF>]]></text-property>
-                        </text>
+                        <data id="4317">
+                            <structure name="dateTimeFormat">
+                                <property name="category">Short Date</property>
+                                <property name="pattern">Short Date</property>
+                            </structure>
+                            <property name="resultSetColumn">from_date</property>
+                        </data>
                     </cell>
                     <cell id="4237">
                         <property name="borderBottomStyle">solid</property>
@@ -6338,10 +6353,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <text id="4302">
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy HH:mm">row["to_date"]</VALUE-OF>]]></text-property>
-                        </text>
+                        <data id="4318">
+                            <structure name="dateTimeFormat">
+                                <property name="category">Short Date</property>
+                                <property name="pattern">Short Date</property>
+                            </structure>
+                            <property name="resultSetColumn">to_date</property>
+                        </data>
                     </cell>
                     <cell id="4239">
                         <property name="borderBottomStyle">solid</property>
@@ -6352,10 +6370,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <text id="4303">
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy HH:mm">row["due_date"]</VALUE-OF>]]></text-property>
-                        </text>
+                        <data id="4319">
+                            <structure name="dateTimeFormat">
+                                <property name="category">Short Date</property>
+                                <property name="pattern">Short Date</property>
+                            </structure>
+                            <property name="resultSetColumn">due_date</property>
+                        </data>
                     </cell>
                 </row>
             </detail>
@@ -6843,10 +6864,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="borderRightWidth">thin</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <text id="4306">
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["task_date"]</VALUE-OF>]]></text-property>
-                        </text>
+                        <data id="4320">
+                            <structure name="dateTimeFormat">
+                                <property name="category">Short Date</property>
+                                <property name="pattern">Short Date</property>
+                            </structure>
+                            <property name="resultSetColumn">task_date</property>
+                        </data>
                     </cell>
                     <cell id="449">
                         <property name="borderBottomStyle">solid</property>

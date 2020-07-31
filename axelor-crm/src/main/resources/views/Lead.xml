@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
     <grid name="lead-grid" title="Leads" model="com.axelor.apps.crm.db.Lead" orderBy="-contactDate,statusSelect">
       <!--
@@ -340,6 +340,7 @@
 	</action-method>
 	
    	<search-filters name="lead-filters" model="com.axelor.apps.crm.db.Lead" title="Lead filters">
+   		<field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
 		<filter title="My Leads">
 			<domain>self.user = :__user__</domain>
 		</filter>

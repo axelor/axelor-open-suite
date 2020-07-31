@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
   
   <grid name="wkf-grid" title="Process studio" model="com.axelor.studio.db.Wkf">
 	  <field name="code" x-bind="{{code|unaccent|uppercase}}" x-pattern="[a-zA-Z][a-zA-Z0-9_\\$]+"/>
       <field name="name"/>
       <field name="model"/>
-      <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
+      <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
   </grid>
     
   <form name="wkf-form" title="Process studio" model="com.axelor.studio.db.Wkf" width="large" 
@@ -15,8 +15,9 @@
      <panel name="mainPanel">
         <field name="code" colSpan="3" x-bind="{{code|unaccent|uppercase}}" x-pattern="[a-zA-Z][a-zA-Z0-9_\\$]+" required="true"/>
         <field name="name" colSpan="3"/>
-        <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form" onChange="action-wkf-reset-model" colSpan="4"/>
+        <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form" onChange="action-wkf-reset-model" colSpan="4" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
         <field name="isTrackFlow" colSpan="2"/>
+        <spacer name="appBuilderSpacer" colSpan="4" if="!__config__.app.getApp('bpm').getEnableAppBuilder()"/>
         <field name="isJson" colSpan="1" onChange="action-wkf-attrs-json-change,action-wkf-reset-model"/>
         <panel name="modelPanel" colSpan="4">
 	        <field name="model" colSpan="12" showIf="isJson" widget="ref-text" x-target="com.axelor.meta.db.MetaJsonModel" x-target-name="name" onSelect="action-wkf-attrs-set-model-domain" onChange="action-wkf-attrs-reset-status-field"/>
@@ -110,14 +111,16 @@
   </action-method>
 
   <action-attrs name="action-wkf-attrs-set-model-domain">
-    <attribute name="domain" for="model" expr="eval:&quot;self.appBuilder.id = ${appBuilder.id} &quot;" if="isJson &amp;&amp; appBuilder != null" />
+    <attribute name="domain" for="model" expr="eval:&quot;self.appBuilder.id = ${appBuilder.id} &quot;" if="isJson &amp;&amp; __config__.app.getApp('bpm').getEnableAppBuilder() &amp;&amp; appBuilder != null" />
     <attribute name="domain" for="model" expr="eval: null" if="!isJson" />
   </action-attrs>
   
   <action-attrs name="action-wkf-attrs-set-status-field-domain">
   	<attribute name="domain" for="statusMetaField" expr="eval:&quot;self.metaModel.fullName = '${model}' AND (self.typeName = 'String' OR self.typeName = 'Integer') AND self.name NOT IN ('attrs','importId','importOrigin','version') &quot;" if="!isJson &amp;&amp; jsonField == null" />
-  	<attribute name="domain" for="statusField" expr="eval:&quot;self.model = '${model}' and self.modelField = '${jsonField}' and (self.type = 'string' or self.type = 'integer') and self.appBuilder.id = ${appBuilder?.id} &quot;" if="!isJson &amp;&amp; jsonField != null" />
-  	<attribute name="domain" for="statusField" expr="eval:&quot;self.jsonModel.name = '${model}' and (self.type = 'string' or self.type = 'integer') and (self.appBuilder.id = ${appBuilder?.id} or self.jsonModel.appBuilder.id = ${appBuilder?.id}) &quot;" if="isJson"/>
+  	<attribute name="domain" for="statusField" expr="eval:&quot;self.model = '${model}' and self.modelField = '${jsonField}' and (self.type = 'string' or self.type = 'integer') and self.appBuilder.id = ${appBuilder?.id} &quot;" if="!isJson &amp;&amp; jsonField != null &amp;&amp; __config__.app.getApp('bpm').getEnableAppBuilder()" />
+  	<attribute name="domain" for="statusField" expr="eval:&quot;self.jsonModel.name = '${model}' and (self.type = 'string' or self.type = 'integer') and (self.appBuilder.id = ${appBuilder?.id} or self.jsonModel.appBuilder.id = ${appBuilder?.id}) &quot;" if="isJson &amp;&amp; __config__.app.getApp('bpm').getEnableAppBuilder()"/>
+  	<attribute name="domain" for="statusField" expr="eval:&quot;self.model = '${model}' and self.modelField = '${jsonField}' and (self.type = 'string' or self.type = 'integer') &quot;" if="!isJson &amp;&amp; jsonField != null &amp;&amp; !__config__.app.getApp('bpm').getEnableAppBuilder()" />
+  	<attribute name="domain" for="statusField" expr="eval:&quot;self.jsonModel.name = '${model}' and (self.type = 'string' or self.type = 'integer') &quot;" if="isJson &amp;&amp; !__config__.app.getApp('bpm').getEnableAppBuilder()"/>
   </action-attrs>
   
   <action-attrs name="action-wkf-attrs-json-change">

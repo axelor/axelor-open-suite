@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
    	<chart name="chart.account.invoice.summary" title="Account Invoice Summary">
 		<dataset type="sql">
@@ -52,9 +52,7 @@
 	    <category key="_year" type="text" title="Year"/>
 		<series key="_turn_over"  type="bar" title="TurnOver" />
 	</chart>
-    
-	
-	
+  
 	<chart stacked="true" name="chart.invoice.turnover.cust.history" title="Customer Turnover history by month (on invoices)" onInit="action.account.chart.set.from.to.date.month">	
 	  	    <search-fields>
 			  <field type="date" name="fromDate" title="From Date" x-required="true"/>
