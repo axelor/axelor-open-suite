@@ -17,20 +17,6 @@
  */
 package com.axelor.apps.cash.management.service;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -69,6 +55,18 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class ForecastRecapService {
@@ -84,18 +82,21 @@ public class ForecastRecapService {
   protected CurrencyService currencyService;
   protected ForecastRecapLineTypeRepository forecastRecapLineTypeRepository;
   protected ForecastRecapRepository forecastRecapRepo;
-  
+
   @Inject
-  public ForecastRecapService(AppBaseService appBaseService,ForecastRepository forecastRepo,ForecastRecapLineRepository forecastRecapLineRepo,
-		  CurrencyService currencyService,
-		  ForecastRecapLineTypeRepository forecastRecapLineTypeRepository,
-		  ForecastRecapRepository forecastRecapRepo) {
-	  this.appBaseService = appBaseService;
-	  this.forecastRepo = forecastRepo;
-	  this.forecastRecapLineRepo = forecastRecapLineRepo;
-	  this.forecastRecapLineTypeRepository = forecastRecapLineTypeRepository;
-	  this.forecastRecapRepo = forecastRecapRepo;
-	  this.currencyService = currencyService;
+  public ForecastRecapService(
+      AppBaseService appBaseService,
+      ForecastRepository forecastRepo,
+      ForecastRecapLineRepository forecastRecapLineRepo,
+      CurrencyService currencyService,
+      ForecastRecapLineTypeRepository forecastRecapLineTypeRepository,
+      ForecastRecapRepository forecastRecapRepo) {
+    this.appBaseService = appBaseService;
+    this.forecastRepo = forecastRepo;
+    this.forecastRecapLineRepo = forecastRecapLineRepo;
+    this.forecastRecapLineTypeRepository = forecastRecapLineTypeRepository;
+    this.forecastRecapRepo = forecastRecapRepo;
+    this.currencyService = currencyService;
   }
 
   @Transactional
@@ -136,20 +137,20 @@ public class ForecastRecapService {
         this.getForecastRecapLineType(ForecastRecapLineTypeRepository.ELEMENT_OPPORTUNITY);
     List<Integer> statusList =
         StringTool.getIntegerList(opportunityForecastRecapLineType.getStatusSelect());
-      opportunityList =
-          Beans.get(OpportunityRepository.class)
-              .all()
-              .filter(
-                  "self.company = ?1"
-              + (forecastRecap.getBankDetails() != null ? " AND self.bankDetails = ?2" : "")
-                		  + " AND self.expectedCloseDate BETWEEN ?3 AND ?4 AND self.saleOrderList IS EMPTY"
-                      + (statusList.isEmpty() ? "" : " AND self.salesStageSelect IN ?5"),
-                  forecastRecap.getCompany(),
-                  forecastRecap.getBankDetails(),
-                  forecastRecap.getFromDate(),
-                  forecastRecap.getToDate(),
-                  statusList)
-              .fetch();
+    opportunityList =
+        Beans.get(OpportunityRepository.class)
+            .all()
+            .filter(
+                "self.company = ?1"
+                    + (forecastRecap.getBankDetails() != null ? " AND self.bankDetails = ?2" : "")
+                    + " AND self.expectedCloseDate BETWEEN ?3 AND ?4 AND self.saleOrderList IS EMPTY"
+                    + (statusList.isEmpty() ? "" : " AND self.salesStageSelect IN ?5"),
+                forecastRecap.getCompany(),
+                forecastRecap.getBankDetails(),
+                forecastRecap.getFromDate(),
+                forecastRecap.getToDate(),
+                statusList)
+            .fetch();
     for (Opportunity opportunity : opportunityList) {
       BigDecimal amountCompanyCurr = BigDecimal.ZERO;
       if (forecastRecap.getOpportunitiesTypeSelect()
@@ -320,20 +321,20 @@ public class ForecastRecapService {
     if (statusList.isEmpty()) {
       statusList.add(InvoiceRepository.STATUS_VALIDATED);
     }
-      invoiceList =
-          Beans.get(InvoiceRepository.class)
-              .all()
-              .filter(
-                  "self.company = ?1"
-                		  + (forecastRecap.getBankDetails() != null ? " AND self.bankDetails = ?2" : "")
-            		  + " AND self.statusSelect IN (?3) AND self.operationTypeSelect = ?4 AND self.estimatedPaymentDate BETWEEN ?5 AND ?6 AND self.companyInTaxTotalRemaining != 0",
-                  forecastRecap.getCompany(),
-                  forecastRecap.getBankDetails(),
-                  statusList,
-                  invoiceForecastRecapLineType.getOperationTypeSelect(),
-                  forecastRecap.getFromDate(),
-                  forecastRecap.getToDate())
-              .fetch();
+    invoiceList =
+        Beans.get(InvoiceRepository.class)
+            .all()
+            .filter(
+                "self.company = ?1"
+                    + (forecastRecap.getBankDetails() != null ? " AND self.bankDetails = ?2" : "")
+                    + " AND self.statusSelect IN (?3) AND self.operationTypeSelect = ?4 AND self.estimatedPaymentDate BETWEEN ?5 AND ?6 AND self.companyInTaxTotalRemaining != 0",
+                forecastRecap.getCompany(),
+                forecastRecap.getBankDetails(),
+                statusList,
+                invoiceForecastRecapLineType.getOperationTypeSelect(),
+                forecastRecap.getFromDate(),
+                forecastRecap.getToDate())
+            .fetch();
     for (Invoice invoice : invoiceList) {
       BigDecimal amount;
       if (invoice.getMove() == null) {
@@ -418,16 +419,16 @@ public class ForecastRecapService {
     List<Employee> employeeList = new ArrayList<Employee>();
     ForecastRecapLineType salaryForecastRecapLineType =
         this.getForecastRecapLineType(ForecastRecapLineTypeRepository.ELEMENT_SALARY);
-      employeeList =
-          Beans.get(EmployeeRepository.class)
-              .all()
-              .filter(
-                  "self.mainEmploymentContract.payCompany = ?1 AND self.mainEmploymentContract.monthlyGlobalCost != 0"
-                		  + (forecastRecap.getBankDetails() != null ? " AND self.bankDetails = ?2" : ""),
-                  forecastRecap.getCompany(),
-                  forecastRecap.getBankDetails())
-              .fetch();
-    
+    employeeList =
+        Beans.get(EmployeeRepository.class)
+            .all()
+            .filter(
+                "self.mainEmploymentContract.payCompany = ?1 AND self.mainEmploymentContract.monthlyGlobalCost != 0"
+                    + (forecastRecap.getBankDetails() != null ? " AND self.bankDetails = ?2" : ""),
+                forecastRecap.getCompany(),
+                forecastRecap.getBankDetails())
+            .fetch();
+
     LocalDate itDate =
         LocalDate.parse(forecastRecap.getFromDate().toString(), DateTimeFormatter.ISO_DATE);
     while (!itDate.isAfter(forecastRecap.getToDate())) {
@@ -475,7 +476,7 @@ public class ForecastRecapService {
                       + (forecastRecap.getBankDetails() != null
                           ? " AND self.companyBankDetails = ?7"
                           : "")
-                      +" AND self.timetableList IS EMPTY",
+                      + " AND self.timetableList IS EMPTY",
                   forecastRecap.getFromDate(),
                   forecastRecap.getToDate(),
                   forecastRecap
@@ -498,7 +499,7 @@ public class ForecastRecapService {
                       + (forecastRecap.getBankDetails() != null
                           ? " AND self.companyBankDetails = ?5"
                           : "")
-                      +" AND self.timetableList IS EMPTY",
+                      + " AND self.timetableList IS EMPTY",
                   forecastRecap.getFromDate(),
                   forecastRecap.getToDate(),
                   forecastRecap.getCompany(),
@@ -666,7 +667,7 @@ public class ForecastRecapService {
                 timetable.getEstimatedDate(),
                 forecastRecapLineType.getTypeSelect(),
                 amountCompanyCurr,
-               SaleOrder.class.getName(),
+                SaleOrder.class.getName(),
                 timetable.getSaleOrder().getId(),
                 timetable.getSaleOrder().getSaleOrderSeq(),
                 forecastRecapLineType));
@@ -808,31 +809,35 @@ public class ForecastRecapService {
 
   @Transactional
   public void populateWithForecasts(ForecastRecap forecastRecap) throws AxelorException {
-	  List<Forecast> forecastList = new ArrayList<Forecast>();
+    List<Forecast> forecastList = new ArrayList<Forecast>();
     ForecastRecapLineType forecastForecastRecapLineType =
         this.getForecastRecapLineType(ForecastRecapLineTypeRepository.ELEMENT_FORECAST);
-    forecastList = forecastRepo.all().filter(
-            "self.estimatedDate BETWEEN ?1 AND ?2 AND self.company = ?3"
+    forecastList =
+        forecastRepo
+            .all()
+            .filter(
+                "self.estimatedDate BETWEEN ?1 AND ?2 AND self.company = ?3"
                     + (forecastRecap.getBankDetails() != null ? " AND self.bankDetails = ?4" : "")
                     + " AND self.realizationDate IS NULL",
                 forecastRecap.getFromDate(),
                 forecastRecap.getToDate(),
                 forecastRecap.getCompany(),
-                forecastRecap.getBankDetails()).fetch();
-	     for (Forecast forecast : forecastList) {
-	      ForecastReason forecastReason = forecast.getForecastReason();
-	      forecastRecap.addForecastRecapLineListItem(
-	          this.createForecastRecapLine(
-	              forecast.getEstimatedDate(),
-	              forecast.getAmount().compareTo(BigDecimal.ZERO) == -1 ? 2 : 1,
-	              forecast.getAmount().abs(),
-	              ForecastReason.class.getName(),
-	              forecastReason.getId(),
-	              forecastReason.getReason(),
-	              forecastForecastRecapLineType));
-	      forecast.setRealizationDate(forecast.getEstimatedDate());
-	      forecastRepo.save(forecast);
-	    }
+                forecastRecap.getBankDetails())
+            .fetch();
+    for (Forecast forecast : forecastList) {
+      ForecastReason forecastReason = forecast.getForecastReason();
+      forecastRecap.addForecastRecapLineListItem(
+          this.createForecastRecapLine(
+              forecast.getEstimatedDate(),
+              forecast.getAmount().compareTo(BigDecimal.ZERO) == -1 ? 2 : 1,
+              forecast.getAmount().abs(),
+              ForecastReason.class.getName(),
+              forecastReason.getId(),
+              forecastReason.getReason(),
+              forecastForecastRecapLineType));
+      forecast.setRealizationDate(forecast.getEstimatedDate());
+      forecastRepo.save(forecast);
+    }
   }
 
   public void populateWithForecastsNoSave(ForecastRecap forecastRecap) throws AxelorException {

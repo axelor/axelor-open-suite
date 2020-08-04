@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
 public class ForecastRecapController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  
+
   public void populate(ActionRequest request, ActionResponse response) throws AxelorException {
     ForecastRecap forecastRecap = request.getContext().asType(ForecastRecap.class);
     if (forecastRecap.getCompany() == null) {
