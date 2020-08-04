@@ -88,6 +88,8 @@
 	   			
 	   			public static final int ROUTING_API_YOURS = 1;
 	   			public static final int ROUTING_API_OSRM = 2;
+
+	   			public static final int IMPORT_EXPORT_INTERFACE_EDIFACT = 1;
 	   		]]>
 	   	</extra-code>
 	   	

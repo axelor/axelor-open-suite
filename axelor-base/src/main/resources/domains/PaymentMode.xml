@@ -11,6 +11,9 @@
     <string name="code" required="true" title="Code"/>
   	<integer name="typeSelect" title="Type" selection="iaccount.payment.mode.type.select" />
   	<integer name="inOutSelect" title="In / Out" selection="iaccount.payment.mode.in.out.select" />
+
+    <one-to-many name="importExportInterfaceList" ref="com.axelor.apps.base.db.ImportExportInterface"
+                 title="Import/Export interfaces" mappedBy="paymentMode"/>
   	
   	<extra-code><![CDATA[
 	

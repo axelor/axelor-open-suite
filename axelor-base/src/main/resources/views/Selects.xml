@@ -507,4 +507,8 @@
     	<option value="import">Importing</option>
     </selection>
 
+	<selection name='import.export.interface'>
+		<option value="1">EDIFACT</option>
+	</selection>
+
 </object-views>

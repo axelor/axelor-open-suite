@@ -17,19 +17,22 @@
   			<field name="validatePaymentByDepositSlipPublication" showIf="inOutSelect == 1 &amp;&amp; [5, 7].indexOf(typeSelect) >= 0" if="__config__.app.getApp('account')?.paymentVouchersOnInvoice" />
 		</panel>
 		<panel-tabs name="mainPanelTab">
-	        <panel-related name="accountManagementListPanel" field="accountManagementList" grid-view="account-management-payment-mode-grid" form-view="account-management-form"
-		        domain="self.typeSelect = 3" colSpan="12" if-module="axelor-account" if="__config__.app.isApp('account')" />
-	        <panel name="bankOrderPanel" title="Bank order config." if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')">
+			<panel-related name="accountManagementListPanel" field="accountManagementList" grid-view="account-management-payment-mode-grid"
+										 form-view="account-management-form" domain="self.typeSelect = 3" colSpan="12" if-module="axelor-account"
+										 if="__config__.app.isApp('account')" />
+			<panel name="bankOrderPanel" title="Bank order config." if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')">
 				<field name="generateBankOrder" showIf="typeSelect == 2 || typeSelect == 9" />
 				<field name="autoConfirmBankOrder" showIf="generateBankOrder"/>
-	  			<field name="automaticTransmission" showIf="generateBankOrder"/>
-	  			<field name="generateMoveAutoFromBankOrder" showIf="generateBankOrder"/>
-        		<field name="consoBankOrderLinePerPartner" showIf="generateBankOrder"/>
-	  			<field name="orderTypeSelect" selection-in="[2,4]" hidden="true" showIf="generateBankOrder &amp;&amp; typeSelect == 2"  requiredIf="generateBankOrder &amp;&amp; typeSelect == 2"/>
-	    		<field name="orderTypeSelect" selection-in="[1,3,5,6]" hidden="true" showIf="generateBankOrder &amp;&amp; typeSelect == 9" requiredIf="generateBankOrder &amp;&amp; typeSelect == 9"/>
-	  			<field name="bankOrderExportFolderPath" showIf="generateBankOrder" requiredIf="generateBankOrder"/>
-	  			<field name="bankOrderFileFormat" domain="self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true'" canEdit="false" showIf="generateBankOrder" requiredIf="generateBankOrder" form-view="bank-order-file-format-form" grid-view="bank-order-file-format-grid"/>
-	        </panel>
+				<field name="automaticTransmission" showIf="generateBankOrder"/>
+				<field name="generateMoveAutoFromBankOrder" showIf="generateBankOrder"/>
+				<field name="consoBankOrderLinePerPartner" showIf="generateBankOrder"/>
+				<field name="orderTypeSelect" selection-in="[2,4]" hidden="true" showIf="generateBankOrder &amp;&amp; typeSelect == 2"  requiredIf="generateBankOrder &amp;&amp; typeSelect == 2"/>
+				<field name="orderTypeSelect" selection-in="[1,3,5,6]" hidden="true" showIf="generateBankOrder &amp;&amp; typeSelect == 9" requiredIf="generateBankOrder &amp;&amp; typeSelect == 9"/>
+				<field name="bankOrderExportFolderPath" showIf="generateBankOrder" requiredIf="generateBankOrder"/>
+				<field name="bankOrderFileFormat" domain="self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true'" canEdit="false" showIf="generateBankOrder" requiredIf="generateBankOrder" form-view="bank-order-file-format-form" grid-view="bank-order-file-format-grid"/>
+			</panel>
+			<panel-related name="importExportInterfacePanel" field="importExportInterfaceList" title="Import/Export"
+										 form-view="import-export-interface-form" grid-view="import-export-interface-grid"/>
 		</panel-tabs>
     </form>
     

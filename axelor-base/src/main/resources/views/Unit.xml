@@ -9,10 +9,11 @@
     </grid>
     <form name="unit-form" title="Unit" model="com.axelor.apps.base.db.Unit">
     	<panel name="mainPanel" >
-        	<field name="name"/>
-        	<field name="labelToPrinting"/>
-        	<field name="unitTypeSelect"/>
-        	
-        </panel>
+        <field name="name"/>
+        <field name="labelToPrinting"/>
+        <field name="unitTypeSelect"/>
+      </panel>
+      <panel-related name="importExportInterfacePanel" field="importExportInterfaceList" title="Import/Export"
+                     form-view="import-export-interface-form" grid-view="import-export-interface-grid"/>
     </form>
 </object-views>
