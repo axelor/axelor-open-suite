@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
 public class ForecastRecapController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
+  
   public void populate(ActionRequest request, ActionResponse response) throws AxelorException {
     ForecastRecap forecastRecap = request.getContext().asType(ForecastRecap.class);
     if (forecastRecap.getCompany() == null) {
@@ -99,7 +99,8 @@ public class ForecastRecapController {
     ForecastRecap forecastRecap = Beans.get(ForecastRecapRepository.class).find(id);
     forecastRecap.setForecastRecapLineList(new ArrayList<ForecastRecapLine>());
 
-    forecastRecapService.populateWithTimetablesOrOrders(forecastRecap);
+    forecastRecapService.populateWithSaleOrders(forecastRecap);
+    forecastRecapService.populateWithPurchaseOrders(forecastRecap);
     forecastRecapService.populateWithExpenses(forecastRecap);
     forecastRecapService.populateWithSalaries(forecastRecap);
     forecastRecapService.populateWithForecastsNoSave(forecastRecap);
@@ -132,7 +133,8 @@ public class ForecastRecapController {
     ForecastRecap forecastRecap = Beans.get(ForecastRecapRepository.class).find(id);
     forecastRecap.setForecastRecapLineList(new ArrayList<ForecastRecapLine>());
 
-    forecastRecapService.populateWithTimetablesOrOrders(forecastRecap);
+    forecastRecapService.populateWithSaleOrders(forecastRecap);
+    forecastRecapService.populateWithPurchaseOrders(forecastRecap);
     forecastRecapService.populateWithExpenses(forecastRecap);
     forecastRecapService.populateWithSalaries(forecastRecap);
     forecastRecapService.populateWithForecastsNoSave(forecastRecap);
