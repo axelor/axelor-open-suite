@@ -16,12 +16,14 @@
 			<field name="typeSelect" if-module="axelor-account" if="__config__.app.isApp('account')"/>
 		</panel>
 	    <panel-tabs>
-			<panel name="taxRateListPanel" title="Tax rate list">
-				<field name="activeTaxLine" onSelect="action-base-attrs-domain-active-tax-line" canNew="false" form-view="tax-line-tax-form" grid-view="tax-line-tax-grid"/>
-			 	<panel-related name="taxLineListPanel" field="taxLineList" colSpan="12" canNew="true" form-view="tax-line-tax-form" grid-view="tax-line-tax-grid"/>
-			</panel>
+				<panel name="taxRateListPanel" title="Tax rate list">
+					<field name="activeTaxLine" onSelect="action-base-attrs-domain-active-tax-line" canNew="false" form-view="tax-line-tax-form" grid-view="tax-line-tax-grid"/>
+			 		<panel-related name="taxLineListPanel" field="taxLineList" colSpan="12" canNew="true" form-view="tax-line-tax-form" grid-view="tax-line-tax-grid"/>
+				</panel>
 	    	<panel-related name="accountManagementListPanel" title="Accounting configuration" field="accountManagementList" if-module="axelor-account" grid-view="account-management-tax-grid" form-view="account-management-form" if="__config__.app.isApp('account')" />
-	    </panel-tabs>
+	    	<panel-related name="importExportInterfacePanel" field="importExportInterfaceList" title="Import/Export"
+											 form-view="import-export-interface-form" grid-view="import-export-interface-grid"/>
+			</panel-tabs>
 	</form>
 	
 	<action-attrs name="action-base-attrs-domain-active-tax-line" model="com.axelor.apps.account.db.Tax">

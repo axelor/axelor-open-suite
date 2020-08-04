@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="ImportExportInterface" lang="java">
+
+    <integer name="interfaceSelect" title="Interface" selection="import.export.interface" required="true"/>
+    <string name="code" title="Code" required="true"/>
+    
+    <!-- FOR MAPPED BY -->
+    <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit"/>
+    <many-to-one name="tax" ref="com.axelor.apps.account.db.Tax"/>
+    <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode"/>
+
+  </entity>
+
+</domain-models>

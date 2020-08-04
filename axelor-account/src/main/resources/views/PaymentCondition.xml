@@ -12,16 +12,18 @@
     </grid>
     
     <form name="payment-condition-form" title="Payment Condition" model="com.axelor.apps.account.db.PaymentCondition"  >
-        <panel name="mainPanel" >
-        	<field name="name"/>
-	        <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3"/>
-			<field name="isFree" colSpan="3"/>
-	        <field name="typeSelect" colSpan="6"/>
-	        <field name="paymentTime" colSpan="6"/>	        
-	        <field name="periodTypeSelect" colSpan="6"></field>
-	        <field name="daySelect" colSpan="6" showIf="typeSelect == 4"/>
-	        <field name="advancePaymentNeeded" if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
-        </panel>
+      <panel name="mainPanel" >
+        <field name="name"/>
+        <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3"/>
+        <field name="isFree" colSpan="3"/>
+        <field name="typeSelect" colSpan="6"/>
+        <field name="paymentTime" colSpan="6"/>
+        <field name="periodTypeSelect" colSpan="6"/>
+        <field name="daySelect" colSpan="6" showIf="typeSelect == 4"/>
+        <field name="advancePaymentNeeded" if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
+      </panel>
+      <panel-related name="importExportInterfacePanel" field="importExportInterfaceList" title="Import/Export"
+                     form-view="import-export-interface-form" grid-view="import-export-interface-grid"/>
     </form>
     
 </object-views>
