@@ -8,6 +8,7 @@
         	<button name="catalogBtn" title="Catalog" onClick="action-print-product-catalog" icon="fa-book"/>
 			<button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
 	    </toolbar>
+	    <field name="picture" widget="Image"/>
 	    <field name="code" x-bind="{{code|unaccent|uppercase}}" width="120"/>
 	    <field name="name" width="300"/>
 	    <field name="productCategory" form-view="product-category-form" grid-view="product-category-grid"/>
@@ -20,6 +21,7 @@
 	</grid>
     
     <grid name="product-product-variant-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="code,name">
+	    <field name="picture" widget="Image"/>
 	    <field name="code" x-bind="{{code|unaccent|uppercase}}" width="120"/>
 	    <field name="name"/>
 	    <field name="productVariant" width="200"/>

@@ -24,6 +24,7 @@
 - INVOICE : Added the possibility to add a watermark to the printings
 - Reports: Manage locale, date format and timezone following company configuration.
 - Product: add products per company to configure different prices depending on the company.
+- Product: add product image in grid view.
 
 ## Improvements
 - USER : Default User language is based on application.locale from application.properties

@@ -4,6 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
     <grid name="product-expense-grid" title="Expense types" model="com.axelor.apps.base.db.Product" orderBy="name">
+	    <field name="picture" widget="Image"/>
 	    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 	    <field name="name" width="400"/>
 	    <field name="productFamily" form-view="product-family-form" grid-view="product-family-grid"/>
@@ -70,6 +71,7 @@
    		<toolbar>
         	<button name="catalogBtn" title="Catalog" onClick="action-print-product-catalog" icon="fa-book"/>
 	    </toolbar>
+	    <field name="picture" widget="Image"/>
 	    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 	    <field name="name" width="400"/>
 	    <field name="productCategory" form-view="product-category-form" grid-view="product-category-grid"/>
