@@ -117,14 +117,18 @@ public class MrpLineServiceImpl implements MrpLineService {
     StockLocation stockLocation = mrpLine.getStockLocation();
     LocalDate maturityDate = mrpLine.getMaturityDate();
 
-    Partner supplierPartner = product.getDefaultSupplierPartner();
+    Partner supplierPartner = mrpLine.getSupplierPartner();
 
     if (supplierPartner == null) {
-      throw new AxelorException(
-          mrpLine,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MRP_LINE_1),
-          product.getFullName());
+        supplierPartner = product.getDefaultSupplierPartner();
+
+        if (supplierPartner == null) {
+          throw new AxelorException(
+              mrpLine,
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(IExceptionMessage.MRP_LINE_1),
+              product.getFullName());
+        }
     }
 
     Company company = stockLocation.getCompany();
@@ -223,6 +227,10 @@ public class MrpLineServiceImpl implements MrpLineService {
     mrpLine.setStockLocation(stockLocation);
 
     mrpLine.setMinQty(this.getMinQty(product, stockLocation));
+
+    if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL) {
+        mrpLine.setSupplierPartner(product.getDefaultSupplierPartner());
+    }
 
     this.updatePartner(mrpLine, model);
 

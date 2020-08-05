@@ -661,6 +661,7 @@ public class MrpServiceImpl implements MrpService {
               purchaseOrder.getStockLocation(),
               purchaseOrderLine);
       if (mrpLine != null) {
+        mrpLine.setSupplierPartner(purchaseOrder.getSupplierPartner());
         mrpLineRepository.save(mrpLine);
       }
     }

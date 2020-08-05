@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 	
-    <grid name="mrp-grid" model="com.axelor.apps.supplychain.db.Mrp" title="MPS">
+    <grid name="mrp-grid" model="com.axelor.apps.supplychain.db.Mrp" title="MRP">
         <hilite if="statusSelect == 1" strong="true" color="warning"/>
         <hilite if="statusSelect == 2" strong="true" color="success"/>
         <field name="mrpSeq"/>
@@ -15,7 +15,7 @@
         <field name="statusSelect"/>
 	 </grid>
     
-	<form name="mrp-form" model="com.axelor.apps.supplychain.db.Mrp" title="MPS" width="large"
+	<form name="mrp-form" model="com.axelor.apps.supplychain.db.Mrp" title="MRP" width="large"
 		onLoad="action-attrs-mrp-generate-all-proposals" onNew="action-mrp-record-onnew">
 	     <menubar>
 	     	<menu title="Tools" showTitle="true" icon="fa-wrench">
