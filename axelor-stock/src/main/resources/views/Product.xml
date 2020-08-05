@@ -36,6 +36,7 @@
 	</cards>
 	
 	<grid name="stock-product-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="code,name">
+	    <field name="picture" widget="Image"/>
 	    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 	    <field name="name" width="400"/>
 	    <field name="$stockMinDate" title="Min stock date" type="date" />
@@ -45,6 +46,7 @@
     </grid>
     
     <grid name="stock-move-line-product-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="code,name" x-row-height="80">
+	    <field name="picture" widget="Image"/>
 	    <field name="code" x-bind="{{code|unaccent|uppercase}}" width="100"/>
 	    <field name="name" width="300"/>
   	    <field name="$availableQty" title="Available qty" type="decimal" width="120" sortable="false"/>
