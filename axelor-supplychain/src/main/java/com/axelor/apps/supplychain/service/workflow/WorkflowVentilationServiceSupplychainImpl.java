@@ -166,15 +166,23 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     }
 
     for (SaleOrder saleOrder : saleOrderSet) {
+      boolean firstInvoice = false;
+
+      if (saleOrder.getAmountInvoiced().equals(BigDecimal.ZERO)) {
+        firstInvoice = true;
+      }
+
       log.debug("Update the invoiced amount of the sale order : {}", saleOrder.getSaleOrderSeq());
       saleOrderInvoiceService.update(saleOrder, invoice.getId(), false);
       saleOrderRepository.save(saleOrder);
       accountingSituationSupplychainService.updateUsedCredit(saleOrder.getClientPartner());
 
       // determine if the invoice is a balance invoice.
-      if (saleOrder.getAmountInvoiced().compareTo(saleOrder.getExTaxTotal()) == 0
-          && invoice.getOperationSubTypeSelect()
-              != InvoiceRepository.OPERATION_SUB_TYPE_SUBSCRIPTION) {
+      if (firstInvoice
+          && (saleOrder.getSaleOrderTypeSelect() == SaleOrderRepository.SALE_ORDER_TYPE_SUBSCRIPTION
+              || (saleOrder.getAmountInvoiced().compareTo(saleOrder.getExTaxTotal()) == 0
+                  && invoice.getOperationSubTypeSelect()
+                      != InvoiceRepository.OPERATION_SUB_TYPE_SUBSCRIPTION))) {
         invoice.setOperationSubTypeSelect(InvoiceRepository.OPERATION_SUB_TYPE_BALANCE);
       }
     }
