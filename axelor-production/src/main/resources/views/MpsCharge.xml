@@ -20,7 +20,7 @@
     		<field name="startMonthDate" onChange="action-mps-charge-group-date-on-change"/>
     		<field name="endMonthDate" onChange="action-mps-charge-group-date-on-change"/>
     		<spacer name="buttonSpacer"/>
-    		<button name="generateCharge" title="Generate charge lines" onClick="save"/>
+    		<button name="generateCharge" title="Generate charge lines" onClick="save,dummy-action-fill"/>
     		
     	</panel>
     	<panel-dashlet action="mps-charge-show-mps-charge-lines" name="test" title="Charge lines" colSpan="12"/>
@@ -64,6 +64,9 @@
 		<category key="month" type="month"/>
 		<series key="count" groupBy="code" type="line"/>
 	</chart>
+	<action-method name="dummy-action-fill">
+		<call class="com.axelor.apps.production.web.MpsChargeController" method="fillDummy"/>
+	</action-method>
 	
 	<action-group name="action-mps-charge-group-date-on-change">
 		<action name="action-mps-charge-validate-date-on-change"/>
