@@ -32,7 +32,7 @@
 	
 <!-- 	MRP -->
 	
-	<menuitem name="stock-mrp" parent="stock-root" title="MPS" if="__config__.app.isApp('supplychain')"  order="40"/> 
+	<menuitem name="stock-mrp" parent="stock-root" title="MRP" if="__config__.app.isApp('supplychain')"  order="40"/> 
 	
 	<menuitem name="stock-mrp-calculation" parent="stock-mrp" title="Calculation" action="stock.mrp.calculation" order="1"/>
 	

@@ -1,0 +1,11 @@
+---
+title: supplier become selectable on MrpLine & little improvements on MRP
+type: change & fix
+description: |
+  MRP is now realy named MRP
+  creation of the field 'supplierPartner' on MrpLine, it take the default supplier partner of the product when running the calculation
+  And become editable to choose an other supplier form the catalog of the product
+  Then the proposal generator consider the supplier from MrpLine
+
+  Added an information message on proposal generation, and translate messages from run calculation and generated all proposals button
+  Correct some bug in the process of calculation and generation.
