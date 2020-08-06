@@ -159,9 +159,9 @@
 	</action-view>
 		
 	<menuitem name="crm-conf-catalog-type" parent="crm-conf"
-		title="Catalog types" action="crm.conf.catalog.type" />
+		title="Catalogs type" action="crm.conf.catalog.type" />
 		
-	<action-view name="crm.conf.catalog.type" title="Catalog type"
+	<action-view name="crm.conf.catalog.type" title="Catalogs type"
 		model="com.axelor.apps.crm.db.CatalogType" >
 		<view type="grid" name="catalog-type-grid"/>
 		<view type="form" name="catalog-type-form"/>

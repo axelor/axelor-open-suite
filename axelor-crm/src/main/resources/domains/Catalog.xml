@@ -8,11 +8,18 @@
 	<entity name="Catalog" lang="java">
 	
 		<string name="name" title="Name" namecolumn="true" required="true"/>
-		<string name="description" large="true" title="Desription"/>
+		<string name="description" large="true" title="Description"/>
 		<many-to-one name="catalogType" ref="com.axelor.apps.crm.db.CatalogType" title="Catalog type"/>
 		<many-to-one name="pdfFile" title="PDF file" ref="com.axelor.meta.db.MetaFile" required="true"/>
 		<binary name="image" title="Image"/>
-
+		
+		<track>
+			<field name="name"/>
+			<field name="description"/>
+			<field name="catalogType"/>
+			<field name="pdfFile"/>
+		</track>
+		
 	</entity>
 
 </domain-models>
