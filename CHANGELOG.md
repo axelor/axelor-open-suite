@@ -5,6 +5,7 @@
 
 ## Improvements
 - LEAD : Added description field on reports
+- ACCOUNT MANAGEMENT : Change visiblity of product and product family
 
 ## Bug Fixes
 - MRP : Shows error message instead of NPE when a product has no unit
