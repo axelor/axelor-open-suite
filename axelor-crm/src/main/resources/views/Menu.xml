@@ -167,6 +167,15 @@
 		<view type="form" name="catalog-type-form"/>
 	</action-view>
 	
+	<menuitem name="crm-conf-industry-sector" parent="crm-conf"
+		title="Industry sectors" action="crm.conf.industry.sector"/>
+
+	<action-view name="crm.conf.industry.sector" title="Industry sectors"
+		model="com.axelor.apps.base.db.IndustrySector" >
+		<view type="grid" name="industry-sector-grid"/>
+		<view type="form" name="industry-sector-form"/>
+	</action-view>
+	
 	<menuitem name="admin-root-batch-crm" parent="admin-root-batch"
 		title="CRM batches" action="admin.root.batch.crm" if="__config__.app.isApp('crm')" />
 
