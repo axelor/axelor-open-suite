@@ -67,7 +67,10 @@ public class DebtRecoverySessionService {
    */
   public DebtRecoveryMethod getDebtRecoveryMethod(DebtRecovery debtRecovery) {
 
-    AccountingSituation accountingSituation = debtRecovery.getAccountingSituation();
+    AccountingSituation accountingSituation =
+        debtRecovery.getTradingName() == null
+            ? debtRecovery.getAccountingSituation()
+            : debtRecovery.getTradingNameAccountingSituation();
     Company company = accountingSituation.getCompany();
     Partner partner = accountingSituation.getPartner();
     List<DebtRecoveryConfigLine> debtRecoveryConfigLines =
@@ -230,7 +233,11 @@ public class DebtRecoverySessionService {
               + " %s: +"
               + I18n.get(IExceptionMessage.DEBT_RECOVERY_SESSION_1),
           I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
-          debtRecovery.getAccountingSituation().getPartner().getName());
+          (debtRecovery.getTradingName() == null
+                  ? debtRecovery.getAccountingSituation()
+                  : debtRecovery.getTradingNameAccountingSituation())
+              .getPartner()
+              .getName());
     }
     for (DebtRecoveryMethodLine debtRecoveryMethodLine :
         debtRecovery.getDebtRecoveryMethod().getDebtRecoveryMethodLineList()) {

@@ -17,13 +17,12 @@
  */
 package com.axelor.apps.account.service.debtrecovery;
 
-import com.axelor.apps.account.db.AccountingSituation;
-import com.axelor.apps.account.db.DebtRecovery;
 import com.axelor.apps.account.db.DebtRecoveryHistory;
 import com.axelor.apps.account.db.DebtRecoveryLevel;
 import com.axelor.apps.account.db.DebtRecoveryMethodLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayerQualityConfigLine;
+import com.axelor.apps.account.db.repo.DebtRecoveryHistoryRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -37,7 +36,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,37 +46,27 @@ public class PayerQualityService {
 
   protected AppAccountService appAccountService;
   protected PartnerRepository partnerRepository;
+  protected DebtRecoveryHistoryRepository debtRecoveryHistoryRepo;
 
   @Inject
   public PayerQualityService(
-      AppAccountService appAccountService, PartnerRepository partnerRepository) {
+      AppAccountService appAccountService,
+      PartnerRepository partnerRepository,
+      DebtRecoveryHistoryRepository debtRecoveryHistoryRepo) {
 
     this.appAccountService = appAccountService;
     this.partnerRepository = partnerRepository;
+    this.debtRecoveryHistoryRepo = debtRecoveryHistoryRepo;
   }
 
-  // TODO : à remplacer par une requête afin de rendre le traitement scalable
   public List<DebtRecoveryHistory> getDebtRecoveryHistoryList(Partner partner) {
-    List<DebtRecoveryHistory> debtRecoveryHistoryList = new ArrayList<DebtRecoveryHistory>();
-    if (partner.getAccountingSituationList() != null) {
-      for (AccountingSituation accountingSituation : partner.getAccountingSituationList()) {
-        DebtRecovery debtRecovery = accountingSituation.getDebtRecovery();
-        if (debtRecovery != null
-            && debtRecovery.getDebtRecoveryHistoryList() != null
-            && !debtRecovery.getDebtRecoveryHistoryList().isEmpty()) {
-          for (DebtRecoveryHistory debtRecoveryHistory :
-              debtRecovery.getDebtRecoveryHistoryList()) {
-            if ((debtRecoveryHistory.getDebtRecoveryDate() != null
-                && debtRecoveryHistory
-                    .getDebtRecoveryDate()
-                    .isAfter(appAccountService.getTodayDate().minusYears(1)))) {
-              debtRecoveryHistoryList.add(debtRecoveryHistory);
-            }
-          }
-        }
-      }
-    }
-    return debtRecoveryHistoryList;
+    return debtRecoveryHistoryRepo
+        .all()
+        .filter(
+            "(self.debtRecovery.accountingSituation.partner = ?1 OR self.debtRecovery.tradingNameAccountingSituation.partner = ?1) AND self.debtRecoveryDate > ?2",
+            partner,
+            appAccountService.getTodayDate().minusYears(1))
+        .fetch();
   }
 
   public List<MoveLine> getMoveLineRejectList(Partner partner) {
@@ -102,10 +90,10 @@ public class PayerQualityService {
     List<MoveLine> moveLineList = this.getMoveLineRejectList(partner);
 
     log.debug(
-        "Tiers {} : Nombre de relance concernée : {}",
+        "Tiers {} : Nombre de relances concernées : {}",
         partner.getName(),
         debtRecoveryHistoryList.size());
-    log.debug("Tiers {} : Nombre de rejets concernée : {}", partner.getName(), moveLineList.size());
+    log.debug("Tiers {} : Nombre de rejets concernés : {}", partner.getName(), moveLineList.size());
 
     for (DebtRecoveryHistory debtRecoveryHistory : debtRecoveryHistoryList) {
       burden =

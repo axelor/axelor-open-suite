@@ -23,6 +23,7 @@
 
 		<!--  PAGE Debt recovery -->
 		<one-to-one name="debtRecovery" ref="com.axelor.apps.account.db.DebtRecovery" mappedBy="accountingSituation" title="Debt recovery"/>
+		<one-to-many name="tradingNameDebtRecoveryList" ref="com.axelor.apps.account.db.DebtRecovery" mappedBy="tradingNameAccountingSituation" title="Debt recoveries"/>
 
 		<many-to-one name="companyInBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Company bank for in payment mode"/>
 		<many-to-one name="companyOutBankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Company bank for out payment mode"/>

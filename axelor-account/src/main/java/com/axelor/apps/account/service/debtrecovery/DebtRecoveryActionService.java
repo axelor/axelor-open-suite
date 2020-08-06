@@ -82,7 +82,10 @@ public class DebtRecoveryActionService {
   public void runAction(DebtRecovery debtRecovery) throws AxelorException {
 
     DebtRecoveryMethodLine debtRecoveryMethodLine = debtRecovery.getDebtRecoveryMethodLine();
-    Partner partner = debtRecovery.getAccountingSituation().getPartner();
+    Partner partner =
+        (debtRecovery.getTradingName() == null)
+            ? debtRecovery.getAccountingSituation().getPartner()
+            : debtRecovery.getTradingNameAccountingSituation().getPartner();
 
     if (debtRecovery.getDebtRecoveryMethod() == null) {
       throw new AxelorException(
@@ -178,7 +181,10 @@ public class DebtRecoveryActionService {
 
     log.debug("Begin runManualAction service ...");
     DebtRecoveryMethodLine debtRecoveryMethodLine = debtRecovery.getWaitDebtRecoveryMethodLine();
-    Partner partner = debtRecovery.getAccountingSituation().getPartner();
+    Partner partner =
+        (debtRecovery.getTradingName() == null)
+            ? debtRecovery.getAccountingSituation().getPartner()
+            : debtRecovery.getTradingNameAccountingSituation().getPartner();
 
     if (debtRecovery.getDebtRecoveryMethod() == null) {
       throw new AxelorException(
