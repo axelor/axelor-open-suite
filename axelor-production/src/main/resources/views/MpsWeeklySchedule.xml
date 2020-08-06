@@ -13,7 +13,10 @@
     	<panel name="mainPanel">
     		<field name="code"/>
     		<field name="label"/>
-    	</panel>
+   			<field name="company" colSpan="4"/>
+   			<field name="agency" colSpan="4"/>
+   			<field name="workCenter" colSpan="4"/>
+       	</panel>
     	<panel name="hoursPanel" itemSpan="12">    	
 	  		<field name="hoursMonday"  onChange="action-mps-weekly-schedule-method-count-total-hours"/>	  		
 	  		<field name="hoursTuesday"  onChange="action-mps-weekly-schedule-method-count-total-hours"/>

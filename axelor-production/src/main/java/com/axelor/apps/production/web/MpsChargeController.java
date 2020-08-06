@@ -18,7 +18,9 @@
 package com.axelor.apps.production.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.production.db.MpsCharge;
 import com.axelor.apps.production.db.MpsWeeklySchedule;
+import com.axelor.apps.production.db.repo.MpsWeeklyScheduleRepository;
 import com.axelor.apps.production.report.IReport;
 import com.axelor.apps.production.service.MpsChargeService;
 import com.axelor.apps.production.translation.ITranslation;
@@ -36,6 +38,8 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -57,10 +61,19 @@ public class MpsChargeController {
 
     MpsChargeService mpsChargeService = Beans.get(MpsChargeService.class);
 
-    Map<MpsWeeklySchedule, Map<YearMonth, BigDecimal>> totalHoursCountMap =
-        mpsChargeService.countTotalHours(startMonthDate, endMonthDate);
+    List<MpsWeeklySchedule> mpsWeeklyScheduleList =
+        Beans.get(MpsWeeklyScheduleRepository.class).all().order("totalHours").fetch();
+
+    Map<MpsWeeklySchedule, Map<Integer, BigDecimal>> totalHoursWeekCountMap = new LinkedHashMap<>();
+    for (MpsWeeklySchedule mpsWeeklySchedule : mpsWeeklyScheduleList) {
+      Map<Integer, BigDecimal> totalHoursWeekMap = new HashMap<>();
+      for (int i = 1; i <= 53; i++) {
+        totalHoursWeekMap.put(i, mpsWeeklySchedule.getTotalHours());
+      }
+      totalHoursWeekCountMap.put(mpsWeeklySchedule, totalHoursWeekMap);
+    }
     List<Map<String, Object>> dataMapList =
-        mpsChargeService.getTableDataMapList(totalHoursCountMap);
+        mpsChargeService.getTableDataWeekMapList(totalHoursWeekCountMap);
 
     response.setData(dataMapList);
   }
@@ -69,6 +82,7 @@ public class MpsChargeController {
 
     LocalDate startMonthDate = (LocalDate) request.getContext().getParent().get("startMonthDate");
     LocalDate endMonthDate = (LocalDate) request.getContext().getParent().get("endMonthDate");
+    MpsCharge mpsCharge = request.getContext().getParent().asType(MpsCharge.class);
 
     if (startMonthDate.getYear() != endMonthDate.getYear()) {
       endMonthDate = startMonthDate.with(TemporalAdjusters.lastDayOfYear());
@@ -76,10 +90,10 @@ public class MpsChargeController {
 
     MpsChargeService mpsChargeService = Beans.get(MpsChargeService.class);
 
-    Map<MpsWeeklySchedule, Map<YearMonth, BigDecimal>> totalHoursCountMap =
-        mpsChargeService.countTotalHours(startMonthDate, endMonthDate);
+    Map<MpsWeeklySchedule, Map<Integer, BigDecimal>> totalHoursCountMap =
+        mpsChargeService.countTotalWeekHours(startMonthDate, endMonthDate);
     List<Map<String, Object>> dataMapList =
-        mpsChargeService.getChartDataMapList(totalHoursCountMap);
+        mpsChargeService.getChartDataMapWeekList(totalHoursCountMap, mpsCharge);
 
     response.setData(dataMapList);
   }
@@ -88,6 +102,7 @@ public class MpsChargeController {
 
     LocalDate startMonthDate = (LocalDate) request.getContext().getParent().get("startMonthDate");
     LocalDate endMonthDate = (LocalDate) request.getContext().getParent().get("endMonthDate");
+    MpsCharge mpsCharge = request.getContext().getParent().asType(MpsCharge.class);
 
     if (startMonthDate.getYear() == endMonthDate.getYear()) {
       return;
@@ -97,7 +112,7 @@ public class MpsChargeController {
     Map<MpsWeeklySchedule, Map<YearMonth, BigDecimal>> totalHoursCountMap =
         mpsChargeService.countTotalHours(startMonthDate, endMonthDate);
     List<Map<String, Object>> dataMapList =
-        mpsChargeService.getChartDataMapList(totalHoursCountMap);
+        mpsChargeService.getChartDataMapList(totalHoursCountMap, mpsCharge);
 
     response.setData(dataMapList);
   }

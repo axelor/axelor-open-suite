@@ -6,6 +6,9 @@
   <module name="production" package="com.axelor.apps.production.db"/>
 
   <entity name="MpsCharge" lang="java" cachable="true">
+  		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+  		<many-to-one name="agency" ref="com.axelor.apps.base.db.TradingName" title="Agency"/>
+  		<many-to-one name="workCenter" ref="com.axelor.apps.production.db.WorkCenter" title="Work center"/> 
   		<date name="startMonthDate" title="Start Month"/>
   		<date name="endMonthDate" title="End Month"/>  		  	
   </entity>

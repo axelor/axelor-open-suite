@@ -19,6 +19,7 @@ package com.axelor.apps.production.service;
 
 import com.axelor.apps.production.db.MpsCharge;
 import com.axelor.apps.production.db.MpsWeeklySchedule;
+import com.axelor.apps.production.db.repo.MpsChargeLineRepository;
 import com.axelor.apps.production.db.repo.MpsChargeRepository;
 import com.axelor.apps.production.db.repo.MpsWeeklyScheduleRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -33,6 +34,8 @@ import java.time.LocalTime;
 import java.time.Period;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoField;
+import java.time.temporal.IsoFields;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
@@ -63,8 +66,52 @@ public class MpsChargeServiceImpl implements MpsChargeService {
           countTotalHoursForMpsWeeklySchedual(mpsWeeklySchedule, startMonthDate, endMonthDate);
       totalHoursCountMap.put(mpsWeeklySchedule, totalHoursCountYearForMpsWeeklySchedualMap);
     }
-
     return totalHoursCountMap;
+  }
+
+  @Override
+  public Map<MpsWeeklySchedule, Map<Integer, BigDecimal>> countTotalWeekHours(
+      LocalDate startMonthDate, LocalDate endMonthDate) {
+    List<MpsWeeklySchedule> mpsWeeklyScheduleList =
+        Beans.get(MpsWeeklyScheduleRepository.class).all().order("totalHours").fetch();
+
+    Map<MpsWeeklySchedule, Map<Integer, BigDecimal>> totalHoursWeekCountMap = new LinkedHashMap<>();
+    for (MpsWeeklySchedule mpsWeeklySchedule : mpsWeeklyScheduleList) {
+      Map<Integer, BigDecimal> totalHoursWeekMap = new HashMap<>();
+      int startWeek = startMonthDate.getDayOfYear() / 7;
+      int endWeek = endMonthDate.getDayOfYear() / 7;
+      if (endWeek < startWeek) {
+        for (int i = 1; i <= endWeek; i++) {
+          totalHoursWeekMap.put(i, mpsWeeklySchedule.getTotalHours());
+        }
+        endWeek = 53;
+      }
+      for (int i = startWeek; i <= endWeek; i++) {
+        totalHoursWeekMap.put(i, mpsWeeklySchedule.getTotalHours());
+      }
+      totalHoursWeekCountMap.put(mpsWeeklySchedule, totalHoursWeekMap);
+    }
+    return totalHoursWeekCountMap;
+  }
+
+  @Override
+  public List<Map<String, Object>> getTableDataWeekMapList(
+      Map<MpsWeeklySchedule, Map<Integer, BigDecimal>> totalHoursCountMap) {
+    List<Map<String, Object>> dataMapList = new ArrayList<>();
+    for (Map.Entry<MpsWeeklySchedule, Map<Integer, BigDecimal>> entry :
+        totalHoursCountMap.entrySet()) {
+
+      Map<String, Object> dataMap = new HashMap<>();
+      dataMap.put(TITLE_CODE, entry.getKey().getCode());
+
+      for (Map.Entry<Integer, BigDecimal> yearsWeekCount : entry.getValue().entrySet()) {
+        String week = yearsWeekCount.getKey().toString().toLowerCase();
+        dataMap.put(week, yearsWeekCount.getValue());
+      }
+      dataMapList.add(dataMap);
+    }
+
+    return dataMapList;
   }
 
   private Map<YearMonth, BigDecimal> countTotalHoursForMpsWeeklySchedual(
@@ -156,7 +203,7 @@ public class MpsChargeServiceImpl implements MpsChargeService {
     ObjectMapper objectMapper = new ObjectMapper();
 
     Map<String, Object> dataMap = new HashMap<>();
-    dataMap.put("data", getChartDataMapList(totalHoursCountMap));
+    dataMap.put("data", getChartDataMapList(totalHoursCountMap, mpsCharge));
     String dataMapJSONString = null;
     try {
       dataMapJSONString = objectMapper.writeValueAsString(dataMap);
@@ -170,7 +217,6 @@ public class MpsChargeServiceImpl implements MpsChargeService {
   public List<Map<String, Object>> getTableDataMapList(
       Map<MpsWeeklySchedule, Map<YearMonth, BigDecimal>> totalHoursCountMap) {
     List<Map<String, Object>> dataMapList = new ArrayList<>();
-
     for (Map.Entry<MpsWeeklySchedule, Map<YearMonth, BigDecimal>> entry :
         totalHoursCountMap.entrySet()) {
 
@@ -189,9 +235,10 @@ public class MpsChargeServiceImpl implements MpsChargeService {
 
   @Override
   public List<Map<String, Object>> getChartDataMapList(
-      Map<MpsWeeklySchedule, Map<YearMonth, BigDecimal>> totalHoursCountMap) {
+      Map<MpsWeeklySchedule, Map<YearMonth, BigDecimal>> totalHoursCountMap, MpsCharge mpsCharge) {
     List<Map<String, Object>> dataMapList = new ArrayList<>();
-
+    List<Map<String, Object>> chargeDataMapList = new ArrayList<>();
+    boolean chargeDataToSet = true;
     for (Map.Entry<MpsWeeklySchedule, Map<YearMonth, BigDecimal>> totalHoursCount :
         totalHoursCountMap.entrySet()) {
 
@@ -203,7 +250,20 @@ public class MpsChargeServiceImpl implements MpsChargeService {
 
         YearMonth yearMonth = yearsMonthCount.getKey();
         String monthName = yearMonth.getMonth().toString().toLowerCase();
-
+        if (chargeDataToSet) {
+          Map<String, Object> dataMap = new HashMap<>();
+          dataMap.put(TITLE_CODE, "Charge estimée");
+          dataMap.put(TITLE_MONTH, yearMonth.getMonthValue());
+          dataMap.put(TITLE_MONTH_NAME, monthName);
+          dataMap.put(
+              TITLE_YEAR_MONTH,
+              LocalDateTime.of(
+                      LocalDate.of(yearMonth.getYear(), yearMonth.getMonthValue(), 1),
+                      LocalTime.MIN)
+                  .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+          dataMap.put(TITLE_COUNT, getChargeLinesDataMap(yearMonth, mpsCharge));
+          chargeDataMapList.add(dataMap);
+        }
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put(TITLE_CODE, mpsWeeklySchedualCode);
         dataMap.put(TITLE_MONTH, yearMonth.getMonthValue());
@@ -216,8 +276,93 @@ public class MpsChargeServiceImpl implements MpsChargeService {
         dataMap.put(TITLE_COUNT, yearsMonthCount.getValue());
         dataMap.put(TITLE_TOTAL_HOURS, totalHours);
         dataMapList.add(dataMap);
+        chargeDataMapList.add(dataMap);
       }
+      chargeDataToSet = false;
     }
-    return dataMapList;
+    return chargeDataMapList;
+  }
+
+  public List<Map<String, Object>> getChartDataMapWeekList(
+      Map<MpsWeeklySchedule, Map<Integer, BigDecimal>> totalHoursCountMap, MpsCharge mpsCharge) {
+    List<Map<String, Object>> dataMapList = new ArrayList<>();
+    List<Map<String, Object>> chargeDataMapList = new ArrayList<>();
+    boolean chargeDataToSet = true;
+    for (Map.Entry<MpsWeeklySchedule, Map<Integer, BigDecimal>> totalHoursCount :
+        totalHoursCountMap.entrySet()) {
+
+      String mpsWeeklySchedualCode = totalHoursCount.getKey().getCode();
+      BigDecimal totalHours = totalHoursCount.getKey().getTotalHours();
+
+      for (Map.Entry<Integer, BigDecimal> yearsMonthCount : totalHoursCount.getValue().entrySet()) {
+
+        Integer yearMonth = yearsMonthCount.getKey();
+        String monthName = yearMonth.toString().toLowerCase();
+        if (chargeDataToSet) {
+          Map<String, Object> dataMap = new HashMap<>();
+          dataMap.put(TITLE_CODE, "test");
+          dataMap.put(TITLE_MONTH, yearMonth.toString());
+          dataMap.put(TITLE_MONTH_NAME, monthName);
+          dataMap.put(
+              TITLE_YEAR_MONTH,
+              mpsCharge
+                  .getStartMonthDate()
+                  .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, yearMonth)
+                  .with(ChronoField.DAY_OF_WEEK, DayOfWeek.MONDAY.getValue()));
+          dataMap.put(TITLE_COUNT, getChargeLinesDataMap(yearMonth, mpsCharge));
+          chargeDataMapList.add(dataMap);
+        }
+        Map<String, Object> dataMap = new HashMap<>();
+        dataMap.put(TITLE_CODE, mpsWeeklySchedualCode);
+        dataMap.put(TITLE_MONTH, yearMonth.toString());
+        dataMap.put(TITLE_MONTH_NAME, monthName);
+        dataMap.put(TITLE_YEAR_MONTH, yearMonth);
+        dataMap.put(TITLE_COUNT, yearsMonthCount.getValue());
+        dataMap.put(TITLE_TOTAL_HOURS, totalHours);
+        dataMapList.add(dataMap);
+        chargeDataMapList.add(dataMap);
+      }
+      chargeDataToSet = false;
+    }
+    return chargeDataMapList;
+  }
+
+  public BigDecimal getChargeLinesDataMap(YearMonth month, MpsCharge mpsCharge) {
+    if (mpsCharge.getWorkCenter() == null) return BigDecimal.ZERO;
+    return Beans.get(MpsChargeLineRepository.class)
+        .all()
+        .filter(
+            "self.workCenter = :workCenter AND self.mpsCharge = :mpsChargeId AND MONTH(self.startingDate) = :month")
+        .bind("mpsChargeId", mpsCharge.getId())
+        .bind("month", month.getMonthValue())
+        .bind("workCenter", mpsCharge.getWorkCenter().getId())
+        .fetchStream()
+        .map(it -> new BigDecimal(it.getDuration()))
+        .reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
+  }
+
+  public BigDecimal getChargeLinesDataMap(Integer month, MpsCharge mpsCharge) {
+    if (mpsCharge.getWorkCenter() == null) return BigDecimal.ZERO;
+    return Beans.get(MpsChargeLineRepository.class)
+        .all()
+        .filter(
+            "self.workCenter = :workCenter AND self.mpsCharge = :mpsChargeId AND (self.startingDate BETWEEN :fromDate AND :toDate )")
+        .bind("mpsChargeId", mpsCharge.getId())
+        .bind(
+            "fromDate",
+            mpsCharge
+                .getStartMonthDate()
+                .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, month)
+                .with(ChronoField.DAY_OF_WEEK, DayOfWeek.MONDAY.getValue()))
+        .bind(
+            "toDate",
+            mpsCharge
+                .getStartMonthDate()
+                .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, month)
+                .with(ChronoField.DAY_OF_WEEK, DayOfWeek.SUNDAY.getValue()))
+        .bind("workCenter", mpsCharge.getWorkCenter().getId())
+        .fetchStream()
+        .map(it -> new BigDecimal(it.getDuration()))
+        .reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
   }
 }
