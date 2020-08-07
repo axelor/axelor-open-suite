@@ -276,7 +276,7 @@
 	    <panel name="generalInfoPanel" colSpan="12">
 	      <field name="company" readonlyIf="statusSelect == 3 || clientPartner != null" widget="SuggestBox" canEdit="false" onChange="action-sale-group-onchange-company" form-view="company-form" grid-view="company-grid" colSpan="3"/>
 	      <field if="__config__.app.getApp('base').enableTradingNamesManagement" name="tradingName" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" canEdit="false" onChange="action-sale-method-printing-settings-default-values" domain=":company MEMBER OF self.companySet" form-view="trading-name-form" grid-view="trading-name-grid" colSpan="3" 
-	      		 requiredIf="$enableSalesProductByTradName &amp;&amp; company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0"/>
+	      		 requiredIf="company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0"/>
 	      <label name="tradingNameLabel" if="!(__config__.app.getApp('base').enableTradingNamesManagement)" colSpan="3" />
 	      <field name="currency" required="true" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" canEdit="false" form-view="currency-form" grid-view="currency-grid" colSpan="3"/>
 	      <field name="priceList" readonlyIf="saleOrderLineList.length > 0 || statusSelect >= 2" onChange="action-sale-order-record-hide-discount" onSelect="action-sale-order-method-price-list-domain" canEdit="false" form-view="price-list-form" grid-view="price-list-grid" hideIf="company == null" colSpan="3"/>

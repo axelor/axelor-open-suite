@@ -7,7 +7,8 @@
 		<hilite if="waitDebtRecoveryMethodLine" color="warning"/>
 		<hilite if="!waitDebtRecoveryMethodLine" color="success"/>
     	<field name="company"/>
-        <field name="accountingSituation.partner"/>
+    	<field name="tradingName"/>
+        <field name="partner"/>
         <field name="referenceDate"/>
         <field name="debtRecoveryDate"/>
         <field name="debtRecoveryMethod"/>
@@ -31,8 +32,10 @@
             </field>
             <field name="company" form-view="company-form" grid-view="company-grid" readonly="true" colSpan="3" />
             <field name="currency" form-view="currency-form" grid-view="currency-grid" readonly="true" colSpan="3" />
-            <field name="accountingSituation.partner" readonly="true" colSpan="3" form-view="partner-form" grid-view="partner-grid" />
-            <spacer name="partnerFullNameSpacer" colSpan="3" />
+            <field name="accountingSituation.partner" readonly="true" hidden="true" showIf="accountingSituation != null" colSpan="3" form-view="partner-form" grid-view="partner-grid" />
+            <field name="tradingNameAccountingSituation.partner" readonly="true" hidden="true" showIf="tradingNameAccountingSituation != null" colSpan="3" form-view="partner-form" grid-view="partner-grid" />
+            <field name="tradingName" colSpan="3" hidden="true" showIf="tradingName != null" readonly="true"/>
+            <spacer name="tradingNameSpacer" colSpan="9" hiddne="true" showIf="tradingName != null"/>
             <field name="balanceDue" colSpan="3" />
             <field name="balanceDueDebtRecovery" colSpan="3" />
             <field name="referenceDate" colSpan="3" />
@@ -55,10 +58,14 @@
                     form-view="partner-address-form">
                     <field name="address" form-view="address-form" grid-view="address-grid" />
                 </panel-related>
-                <field name="accountingSituation.partner.fixedPhone" colSpan="6" />
-                <field name="accountingSituation.partner.fax" colSpan="6" />
-                <field name="accountingSituation.partner.emailAddress" colSpan="6" />
-                <field name="accountingSituation.partner.webSite" colSpan="6" />
+                <field name="accountingSituation.partner.fixedPhone" colSpan="6" hidden="true" showIf="accountingSituation != null"/>
+                <field name="accountingSituation.partner.fax" colSpan="6" hidden="true" showIf="accountingSituation != null"/>
+                <field name="accountingSituation.partner.emailAddress" colSpan="6" hidden="true" showIf="accountingSituation != null"/>
+                <field name="accountingSituation.partner.webSite" colSpan="6" hidden="true" showIf="accountingSituation != null"/>
+                <field name="tradingNameAccountingSituation.partner.fixedPhone" colSpan="6" hidden="true" showIf="tradingNameAccountingSituation != null"/>
+                <field name="tradingNameAccountingSituation.partner.fax" colSpan="6" hidden="true" showIf="tradingNameAccountingSituation != null"/>
+                <field name="tradingNameAccountingSituation.partner.emailAddress" colSpan="6" hidden="true" showIf="tradingNameAccountingSituation != null"/>
+                <field name="tradingNameAccountingSituation.partner.webSite" colSpan="6" hidden="true" showIf="tradingNameAccountingSituation != null"/>
             </panel>
         </panel-tabs>
         <panel sidebar="true" canCollapse="true" name="caracteristics" title="Caracteristics">

@@ -55,6 +55,9 @@
 			<field name="debtRecovery.balanceDueDebtRecovery" title="Balance due recoverable" colSpan="4"/>
 			<button name="customerRecoveryBtn" title="Customer recovery" onClick="action-accounting-situation-method-open-debt-recovery" colSpan="4"/>
 		</panel>
+		<panel name="tradingNameDebtRecoveryProcessPanel" title="Debt recovery process" hideIf="tradingNameDebtRecoveryList == null &amp;&amp; tradingNameDebtREcoveryList.length &lt;= 0">
+			<panel-related name="tradingNameDebtRecoveryPanel" field="tradingNameDebtRecoveryList" canNew="false" canRemove="false" canSelect="false" grid-view="debt-recovery-grid" form-view="debt-recovery-form" colSpan="12"/>
+		</panel>
 
 		<panel-related name="reportedBalanceLineListPanel" field="reportedBalanceLineList" hideIf="reportedBalanceLineList.length == 0" colSpan="12" form-view="reported-balance-line-custom-form" grid-view="reported-balance-line-custom-grid"/>
 

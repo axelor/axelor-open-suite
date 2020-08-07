@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
@@ -113,16 +114,17 @@ public class AccountCustomerService {
   }
 
   /**
-   * Fonction permettant de calculer le solde exigible d'un tiers
+   * Compute the balance due for a specific (company, trading name) combination.
    *
-   * <p>Calcul du solde exigible du tiers : Montant Total des factures et des échéances rejetées
-   * échues (date du jour >= date de l’échéance)
+   * <p>Computation of the balance due of a partner : Total amount of the invoices and expired
+   * deadlines (date of the day >= date of the deadline)
    *
-   * @param partner Un tiers
-   * @param company Une société
-   * @return Le solde exigible
+   * @param partner A Partner
+   * @param company A Company
+   * @param tradingName (Optional) A trading name of the company
+   * @return The balance due of this trading name, in the scope of the activities of this company
    */
-  public BigDecimal getBalanceDue(Partner partner, Company company) {
+  public BigDecimal getBalanceDue(Partner partner, Company company, TradingName tradingName) {
     log.debug(
         "Compute balance due (Partner : {}, Company : {})", partner.getName(), company.getName());
 
@@ -135,7 +137,7 @@ public class AccountCustomerService {
                     + "SELECT moveline.amount_remaining AS sum_remaining, moveline.id AS moveline_id "
                     + "FROM public.account_move_line AS moveline "
                     + "WHERE moveline.debit > 0 "
-                    + "AND ((moveline.due_date IS NULL AND moveline.date_val <= ?1) OR (moveline.due_date IS NOT NULL AND moveline.due_date <= ?1)) "
+                    + "AND ((moveline.due_date IS NULL AND moveline.date_val <= :todayDate) OR (moveline.due_date IS NOT NULL AND moveline.due_date <= :todayDate)) "
                     + "GROUP BY moveline.id, moveline.amount_remaining) AS m1 on (m1.moveline_id = ml.id) "
                     + "LEFT OUTER JOIN ( "
                     + "SELECT moveline.amount_remaining AS sum_remaining, moveline.id AS moveline_id "
@@ -144,11 +146,12 @@ public class AccountCustomerService {
                     + "GROUP BY moveline.id, moveline.amount_remaining) AS m2 ON (m2.moveline_id = ml.id) "
                     + "LEFT OUTER JOIN public.account_account AS account ON (ml.account = account.id) "
                     + "LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "
-                    + "WHERE ml.partner = ?2 AND move.company = ?3 AND move.ignore_in_debt_recovery_ok IN ('false', null) "
+                    + "WHERE ml.partner = :partner AND move.company = :company AND move.ignore_in_debt_recovery_ok IN ('false', null) "
+                    + (tradingName != null ? "AND move.trading_name = :tradingName " : "")
                     + "AND move.ignore_in_accounting_ok IN ('false', null) AND account.use_for_partner_balance = 'true'"
-                    + "AND (move.status_select = ?4 OR move.status_select = ?5) AND ml.amount_remaining > 0 ")
+                    + "AND (move.status_select = :statusValidated OR move.status_select = :statusDaybook) AND ml.amount_remaining > 0 ")
             .setParameter(
-                1,
+                "todayDate",
                 Date.from(
                     appBaseService
                         .getTodayDate()
@@ -156,10 +159,14 @@ public class AccountCustomerService {
                         .atZone(ZoneOffset.UTC)
                         .toInstant()),
                 TemporalType.DATE)
-            .setParameter(2, partner)
-            .setParameter(3, company)
-            .setParameter(4, MoveRepository.STATUS_VALIDATED)
-            .setParameter(5, MoveRepository.STATUS_DAYBOOK);
+            .setParameter("partner", partner)
+            .setParameter("company", company)
+            .setParameter("statusValidated", MoveRepository.STATUS_VALIDATED)
+            .setParameter("statusDaybook", MoveRepository.STATUS_DAYBOOK);
+
+    if (tradingName != null) {
+      query = query.setParameter("tradingName", tradingName);
+    }
 
     BigDecimal balance = (BigDecimal) query.getSingleResult();
 
@@ -185,11 +192,14 @@ public class AccountCustomerService {
    * solde des échéances rejetées qui ne sont pas bloqués
    * *****************************************************
    */
-  public BigDecimal getBalanceDueDebtRecovery(Partner partner, Company company) {
+  public BigDecimal getBalanceDueDebtRecovery(
+      Partner partner, Company company, TradingName tradingName) {
     log.debug(
-        "Compute balance due debt recovery (Partner : {}, Company : {})",
+        "Compute balance due debt recovery (Partner : {}, Company : {}"
+            + (tradingName != null ? ", Trading name : {})" : ")"),
         partner.getName(),
-        company.getName());
+        company.getName(),
+        tradingName != null ? tradingName.getName() : null);
 
     int mailTransitTime = 0;
 
@@ -208,9 +218,9 @@ public class AccountCustomerService {
                     + "LEFT OUTER JOIN ( "
                     + "SELECT moveline.amount_remaining AS sum_remaining, moveline.id AS moveline_id "
                     + "FROM public.account_move_line AS moveline "
-                    + "WHERE moveline.debit > 0 AND (( moveline.date_val = moveline.due_date AND (moveline.due_date + ?1 ) < ?2 ) "
-                    + "OR (moveline.due_date IS NOT NULL AND moveline.date_val != moveline.due_date AND moveline.due_date < ?2)"
-                    + "OR (moveline.due_date IS NULL AND moveline.date_val < ?2)) "
+                    + "WHERE moveline.debit > 0 AND (( moveline.date_val = moveline.due_date AND (moveline.due_date + :mailTransitTime ) < :todayDate ) "
+                    + "OR (moveline.due_date IS NOT NULL AND moveline.date_val != moveline.due_date AND moveline.due_date < :todayDate)"
+                    + "OR (moveline.due_date IS NULL AND moveline.date_val < :todayDate)) "
                     + "GROUP BY moveline.id, moveline.amount_remaining) AS m1 ON (m1.moveline_id = ml.id) "
                     + "LEFT OUTER JOIN ( "
                     + "SELECT moveline.amount_remaining AS sum_remaining, moveline.id AS moveline_id "
@@ -220,13 +230,14 @@ public class AccountCustomerService {
                     + "LEFT OUTER JOIN public.account_account AS account ON (ml.account = account.id) "
                     + "LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "
                     + "LEFT JOIN public.account_invoice AS invoice ON (move.invoice = invoice.id) "
-                    + "WHERE ml.partner = ?3 AND move.company = ?4 AND move.ignore_in_debt_recovery_ok in ('false', null) "
+                    + "WHERE ml.partner = :partner AND move.company = :company AND move.ignore_in_debt_recovery_ok in ('false', null) "
+                    + (tradingName != null ? "AND move.trading_name = :tradingName " : "")
                     + "AND move.ignore_in_accounting_ok IN ('false', null) AND account.use_for_partner_balance = 'true'"
-                    + "AND (move.status_select = ?5 OR move.status_select = ?6) AND ml.amount_remaining > 0 "
+                    + "AND (move.status_select = :statusValidated OR move.status_select = :statusDaybook) AND ml.amount_remaining > 0 "
                     + "AND (invoice IS NULL OR invoice.debt_recovery_blocking_ok = FALSE) ")
-            .setParameter(1, mailTransitTime)
+            .setParameter("mailTransitTime", mailTransitTime)
             .setParameter(
-                2,
+                "todayDate",
                 Date.from(
                     appBaseService
                         .getTodayDate()
@@ -234,10 +245,14 @@ public class AccountCustomerService {
                         .atZone(ZoneOffset.UTC)
                         .toInstant()),
                 TemporalType.DATE)
-            .setParameter(3, partner)
-            .setParameter(4, company)
-            .setParameter(5, MoveRepository.STATUS_VALIDATED)
-            .setParameter(6, MoveRepository.STATUS_DAYBOOK);
+            .setParameter("partner", partner)
+            .setParameter("company", company)
+            .setParameter("statusValidated", MoveRepository.STATUS_VALIDATED)
+            .setParameter("statusDaybook", MoveRepository.STATUS_DAYBOOK);
+
+    if (tradingName != null) {
+      query = query.setParameter("tradingName", tradingName);
+    }
 
     BigDecimal balance = (BigDecimal) query.getSingleResult();
 
@@ -333,11 +348,11 @@ public class AccountCustomerService {
       accountingSituation.setBalanceCustAccount(this.getBalance(partner, company));
     }
     if (updateDueCustAccount) {
-      accountingSituation.setBalanceDueCustAccount(this.getBalanceDue(partner, company));
+      accountingSituation.setBalanceDueCustAccount(this.getBalanceDue(partner, company, null));
     }
     if (updateDueDebtRecoveryCustAccount) {
       accountingSituation.setBalanceDueDebtRecoveryCustAccount(
-          this.getBalanceDueDebtRecovery(partner, company));
+          this.getBalanceDueDebtRecovery(partner, company, null));
     }
     accountingSituation.setCustAccountMustBeUpdateOk(false);
     accSituationRepo.save(accountingSituation);

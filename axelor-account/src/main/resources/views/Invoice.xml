@@ -260,11 +260,12 @@
                 <field name="operationTypeSelect" hideIf="statusSelect &gt; 1 || partner != null || $readonly() || _operationTypeSelect != 3"
                     onChange="action-group-account-invoice-operationtype-onchange" selection-in="[3,4]"/>
             </panel>
+            <field name="company.tradingNameSet" hidden="true" colSpan="12"/>
             <field name="operationSubTypeSelect" hideIf="statusSelect &gt; 1 || operationTypeSelect != 3 || $readonly()" showTitle="true"/>
             <field name="company" canEdit="false" readonlyIf="statusSelect != 1 || partner != null" onChange="action-group-account-invoice-company-onchange" form-view="company-form" grid-view="company-grid"/>
             <field name="currency" colSpan="3" canEdit="false" onChange="action-invoice-group-currency-onchange" readonlyIf="statusSelect != 1 || (invoiceLineList &amp;&amp; invoiceLineList.length != 0)" form-view="currency-form" grid-view="currency-grid"/>
             <field name="priceList" colSpan="3" canEdit="false" onChange="action-invoice-record-hide-discount" readonlyIf="statusSelect != 1" onSelect="action-invoice-method-domain-priceList" form-view="price-list-form" grid-view="price-list-grid"/>
-            <field name="tradingName" canEdit="false" grid-view="trading-name-grid" form-view="trading-name-form" if="__config__.app.getApp('base').enableTradingNamesManagement" readonlyIf="statusSelect != 1" domain=":company MEMBER OF self.companySet" onChange="action-invoice-method-printing-settings-default-values"/>
+            <field name="tradingName" canEdit="false" grid-view="trading-name-grid" form-view="trading-name-form" if="__config__.app.getApp('base').enableTradingNamesManagement" requiredIf="company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0" readonlyIf="statusSelect != 1" domain=":company MEMBER OF self.companySet" onChange="action-invoice-method-printing-settings-default-values"/>
             <field name="companyBankDetails" canEdit="false" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain" form-view="bank-details-form" grid-view="bank-details-grid" />
             <field name="interco" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
             <field name="createdByInterco" showIf="createdByInterco" readonly="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
