@@ -4087,7 +4087,7 @@ row["first_name"]
                             <property name="width">0.5in</property>
                         </column>
                         <column id="3448">
-                            <property name="width">0.7in</property>
+                            <property name="width">1in</property>
                         </column>
                         <column id="3449">
                             <list-property name="visibility">
@@ -5642,12 +5642,17 @@ row["first_name"]
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
                                     <grid id="4623">
-                                        <column id="4624"/>
-                                        <column id="4625"/>
+                                        <column id="4624">
+                                            <property name="width">0.7in</property>
+                                        </column>
+                                        <column id="4625">
+                                            <property name="width">0.3in</property>
+                                        </column>
                                         <row id="4626">
                                             <cell id="4627">
                                                 <text id="4629">
                                                     <property name="fontSize">8pt</property>
+                                                    <property name="textAlign">right</property>
                                                     <property name="dataSet">AppBaseDS</property>
                                                     <list-property name="visibility">
                                                         <structure>
@@ -5670,6 +5675,7 @@ row["first_name"]
                                             <cell id="4628">
                                                 <text id="4630">
                                                     <property name="fontSize">8pt</property>
+                                                    <property name="textAlign">left</property>
                                                     <property name="dataSet">TranslateDS</property>
                                                     <list-property name="visibility">
                                                         <structure>
