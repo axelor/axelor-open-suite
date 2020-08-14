@@ -135,7 +135,9 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       }
       for (StockMove stockMove : stockMoves) {
         stockMoveService.cancel(stockMove, cancelReason);
-        stockMoveRepository.remove(stockMove);
+        if (stockMove.getStatusSelect().equals(StockMoveRepository.STATUS_DRAFT)) {
+          stockMoveRepository.remove(stockMove);
+        }
       }
     }
     return checkAvailabiltyRequest;
