@@ -11,6 +11,7 @@
 - MRP : Shows error message instead of NPE when a product has no unit
 - ICalendar : Fix IndexOutOfBound Exception on event creation & Manage synchronisation select.
 - CRM : Add menu industry sector in CRM config and changes in lead form view.
+- Accounting batch : put to required mandatory fields for close annual year batch.
 
 ## [5.3.9] - 2020-07-29
 ## Improvements

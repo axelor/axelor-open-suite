@@ -815,4 +815,11 @@ public interface IExceptionMessage {
 
   static final String INVALID_ANALYTIC_MOVE_LINE = /*$$(*/
       "Invalid Analytic moveLines, some axes percentage values are higher than 100%." /*)*/;
+
+  /*Close annual account batch */
+  static final String BATCH_CLOSE_ANNUAL_ACCOUNT_1 = /*$$(*/
+      "%s : Error : You must configure accounts for the batch configurator %s" /*)*/;
+
+  static final String BATCH_CLOSE_ANNUAL_ACCOUNT_2 = /*$$(*/
+      "%s : Error : You must configure a year for the batch configurator %s" /*)*/;
 }
