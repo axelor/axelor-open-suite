@@ -25,6 +25,7 @@
 - Invoice : Fix multiple invoices not ventilating when generated from sale order with advance payment 
 - BANK PAYMENT : fix ICS number being linked to EBICS
 - ICalendar : Resolve synchronisation issue & Mange synchronisation select.
+- Invoice : on invoice form view corrected display of empty column in invoice payment line grid viewer.
 
 ## [5.1.15] - 2020-03-23
 ## Improvements
