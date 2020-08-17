@@ -478,7 +478,7 @@ InvoiceSet.length > 0))"
 			</field>
             <field name="$paymentVouchersOnInvoice" type="boolean" hidden="true" />
             <field name="invoicePaymentList" showTitle="false" readonly="true" colSpan="12" css="order-subtotal">
-              <viewer depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol,$paymentVouchersOnInvoice">
+              <viewer depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol,$paymentVouchersOnInvoice,paymentMode,companyBankDetails">
                 <![CDATA[
                   <span class="form-item-container">
                     <dl class="dl-horizontal" ng-class="{'hilite-danger-text': record.statusSelect == 2, 'hilite-info-text': record.statusSelect == 3}">
