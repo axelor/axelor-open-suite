@@ -11,6 +11,7 @@
 - MRP : Shows error message instead of NPE when a product has no unit
 - ICalendar : Fix IndexOutOfBound Exception on event creation & Manage synchronisation select.
 - CRM : Add menu industry sector in CRM config and changes in lead form view.
+- Fiscal year : corrected sql  error on close function.
 - Accounting batch : put to required mandatory fields for close annual year batch.
 - Invoice : on invoice form view corrected display of empty column in invoice payment line grid viewer.
 
