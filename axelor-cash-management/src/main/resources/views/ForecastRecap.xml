@@ -107,6 +107,7 @@
 	 	<field name="company" expr="eval: __user__.activeCompany"/>
 	 	<field name="currency" expr="eval: __user__.activeCompany?.currency"/>
 	 	<field name="isReport" expr="eval: false"/>
+	 	<field name="fromDate" expr="eval: __date__"/>
 	 </action-record>
 	 
 	 <action-record name="action-forecast-report-record-default-on-new" model="com.axelor.apps.cash.management.db.ForecastRecap">
