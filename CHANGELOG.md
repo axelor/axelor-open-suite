@@ -12,6 +12,9 @@
 - ICalendar : Fix IndexOutOfBound Exception on event creation & Manage synchronisation select.
 - CRM : Add menu industry sector in CRM config and changes in lead form view.
 - Batch payroll preparation generation : corrected batch error no session.
+- Fiscal year : corrected sql  error on close function.
+- Accounting batch : put to required mandatory fields for close annual year batch.
+- Invoice : on invoice form view corrected display of empty column in invoice payment line grid viewer.
 
 ## [5.3.9] - 2020-07-29
 ## Improvements
