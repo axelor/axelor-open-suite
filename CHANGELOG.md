@@ -7,6 +7,7 @@
 - ACCOUNTING REPORT : Add missing translations in report
 - INVOICE : Fix chart not taking refunds into account
 - INVOICE : Fix Subscription invoice operationSubTypeSelect change issue.
+- Invoice line : corrected view error when trying to change an invoice line.
 
 ## [5.2.13] - 2020-07-21
 ## Improvements
