@@ -177,7 +177,6 @@ public class ForecastRecapService {
             .fetch();
     for (Opportunity opportunity : opportunityList) {
       BigDecimal amountCompanyCurr = BigDecimal.ZERO;
-      opportunity = opportunityRepo.find(opportunity.getId());
       if (forecastRecap.getOpportunitiesTypeSelect()
           == ForecastRecapRepository.OPPORTUNITY_TYPE_BASE) {
         amountCompanyCurr =
@@ -346,7 +345,6 @@ public class ForecastRecapService {
                 forecastRecap.getToDate())
             .fetch();
     for (Invoice invoice : invoiceList) {
-      invoice = invoiceRepo.find(invoice.getId());
       BigDecimal amount;
       if (invoice.getMove() == null) {
         amount =
