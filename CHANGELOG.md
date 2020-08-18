@@ -8,6 +8,7 @@
 - INVOICE : Fix chart not taking refunds into account
 - INVOICE : Fix Subscription invoice operationSubTypeSelect change issue.
 - Invoice : on invoice form view corrected display of empty column in invoice payment line grid viewer.
+- Accounting batch : put to required mandatory fields for close annual year batch.
 
 ## [5.2.13] - 2020-07-21
 ## Improvements
