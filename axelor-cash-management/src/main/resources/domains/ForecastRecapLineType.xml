@@ -25,7 +25,13 @@
       public static final int ELEMENT_SALARY = 7;  // Salary   
             
   ]]></extra-code>
-    
+    <track>
+      <field name="typeSelect"/>
+      <field name="elementSelect"/>
+      <field name="statusSelect"/>
+      <field name="operationTypeSelect"/>
+      <message if="true" on="UPDATE">Forecast recap line type updated.</message>
+    </track>
   </entity>
   
 </domain-models>

@@ -224,7 +224,7 @@ public class ConvertLeadWizardController {
     if (request.getContext().get("partnerTypeSelect").toString().equals("2")) {
       response.setAttr("firstName", "value", lead.getFirstName());
       response.setAttr("name", "value", lead.getName());
-      
+
     } else {
       response.setAttr("name", "value", lead.getEnterpriseName());
     }

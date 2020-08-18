@@ -74,14 +74,15 @@ public class ForecastRecapService {
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected AppBaseService appBaseService;
-
   protected ForecastRepository forecastRepo;
-
   protected ForecastRecapLineRepository forecastRecapLineRepo;
-
   protected CurrencyService currencyService;
   protected ForecastRecapLineTypeRepository forecastRecapLineTypeRepository;
   protected ForecastRecapRepository forecastRecapRepo;
+  protected OpportunityRepository opportunityRepo;
+  protected InvoiceRepository invoiceRepo;
+
+  protected LocalDate today;
 
   @Inject
   public ForecastRecapService(
@@ -90,17 +91,29 @@ public class ForecastRecapService {
       ForecastRecapLineRepository forecastRecapLineRepo,
       CurrencyService currencyService,
       ForecastRecapLineTypeRepository forecastRecapLineTypeRepository,
-      ForecastRecapRepository forecastRecapRepo) {
+      ForecastRecapRepository forecastRecapRepo,
+      OpportunityRepository opportunityRepo,
+      InvoiceRepository invoiceRepo) {
     this.appBaseService = appBaseService;
     this.forecastRepo = forecastRepo;
     this.forecastRecapLineRepo = forecastRecapLineRepo;
     this.forecastRecapLineTypeRepository = forecastRecapLineTypeRepository;
     this.forecastRecapRepo = forecastRecapRepo;
     this.currencyService = currencyService;
+    this.opportunityRepo = opportunityRepo;
+    this.invoiceRepo = invoiceRepo;
   }
 
+  //  public void runCalculation(ForecastRecap forecastRecap) throws AxelorException {
+  //	  	this.reset(forecastRecap);
+  //	    this.startMrp(forecastRepo.find(forecastRecap.getId()));
+  //	    this.completeMrp(forecastRepo.find(forecastRecap.getId()));
+  //	    this.doCalulation(forecastRepo.find(forecastRecap.getId()));
+  //	    this.finish(forecastRepo.find(forecastRecap.getId()));
+  //  }
+
   @Transactional
-  public void populate(ForecastRecap forecastRecap) throws AxelorException {
+  public void reset(ForecastRecap forecastRecap) {
     List<ForecastRecapLine> forecastRecapLineList = forecastRecap.getForecastRecapLineList();
     if (forecastRecapLineList != null && !forecastRecapLineList.isEmpty()) {
       for (ForecastRecapLine forecastRecapLine : forecastRecapLineList) {
@@ -111,26 +124,37 @@ public class ForecastRecapService {
       forecastRecapLineList.clear();
     }
     forecastRecap.setCurrentBalance(forecastRecap.getStartingBalance());
-    if (forecastRecap.getOpportunitiesTypeSelect() != null
-        && forecastRecap.getOpportunitiesTypeSelect()
-            > ForecastRecapRepository.OPPORTUNITY_TYPE_NO) {
-      this.populateWithOpportunities(forecastRecap);
-    }
-    this.populateWithInvoices(forecastRecap);
-    this.populateWithSalaries(forecastRecap);
-    this.populateWithSaleOrders(forecastRecap);
-    this.populateWithPurchaseOrders(forecastRecap);
-    this.populateWithForecasts(forecastRecap);
-    this.populateWithExpenses(forecastRecap);
-
-    forecastRecapRepo.save(forecastRecap);
-
-    this.computeForecastRecapLineBalance(forecastRecap);
-    forecastRecap.setEndingBalance(forecastRecap.getCurrentBalance());
-    forecastRecap.setCalculationDate(appBaseService.getTodayDate());
+    today = appBaseService.getTodayDate();
     forecastRecapRepo.save(forecastRecap);
   }
 
+  @Transactional
+  public void finish(ForecastRecap forecastRecap) {
+    this.computeForecastRecapLineBalance(forecastRecap);
+    forecastRecap.setEndingBalance(forecastRecap.getCurrentBalance());
+    forecastRecap.setCalculationDate(today);
+    forecastRecapRepo.save(forecastRecap);
+  }
+
+  public void populate(ForecastRecap forecastRecap) throws AxelorException {
+    this.reset(forecastRecapRepo.find(forecastRecap.getId()));
+
+    if (forecastRecap.getOpportunitiesTypeSelect() != null
+        && forecastRecap.getOpportunitiesTypeSelect()
+            > ForecastRecapRepository.OPPORTUNITY_TYPE_NO) {
+      this.populateWithOpportunities(forecastRecapRepo.find(forecastRecap.getId()));
+    }
+    this.populateWithInvoices(forecastRecapRepo.find(forecastRecap.getId()));
+    this.populateWithSalaries(forecastRecapRepo.find(forecastRecap.getId()));
+    this.populateWithSaleOrders(forecastRecapRepo.find(forecastRecap.getId()));
+    this.populateWithPurchaseOrders(forecastRecapRepo.find(forecastRecap.getId()));
+    this.populateWithForecasts(forecastRecapRepo.find(forecastRecap.getId()));
+    this.populateWithExpenses(forecastRecapRepo.find(forecastRecap.getId()));
+
+    this.finish(forecastRecapRepo.find(forecastRecap.getId()));
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
   public void populateWithOpportunities(ForecastRecap forecastRecap) throws AxelorException {
     List<Opportunity> opportunityList = new ArrayList<Opportunity>();
     ForecastRecapLineType opportunityForecastRecapLineType =
@@ -138,7 +162,7 @@ public class ForecastRecapService {
     List<Integer> statusList =
         StringTool.getIntegerList(opportunityForecastRecapLineType.getStatusSelect());
     opportunityList =
-        Beans.get(OpportunityRepository.class)
+        opportunityRepo
             .all()
             .filter(
                 "self.company = ?1"
@@ -153,6 +177,7 @@ public class ForecastRecapService {
             .fetch();
     for (Opportunity opportunity : opportunityList) {
       BigDecimal amountCompanyCurr = BigDecimal.ZERO;
+      opportunity = opportunityRepo.find(opportunity.getId());
       if (forecastRecap.getOpportunitiesTypeSelect()
           == ForecastRecapRepository.OPPORTUNITY_TYPE_BASE) {
         amountCompanyCurr =
@@ -164,17 +189,8 @@ public class ForecastRecapService {
                         .getAmount()
                         .multiply(opportunity.getProbability())
                         .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP),
-                    appBaseService.getTodayDate())
+                    today)
                 .setScale(2, RoundingMode.HALF_UP);
-        forecastRecap.addForecastRecapLineListItem(
-            this.createForecastRecapLine(
-                opportunity.getExpectedCloseDate(),
-                opportunityForecastRecapLineType.getTypeSelect(),
-                amountCompanyCurr,
-                Opportunity.class.getName(),
-                opportunity.getId(),
-                opportunity.getName(),
-                opportunityForecastRecapLineType));
       } else if (forecastRecap.getOpportunitiesTypeSelect()
           == ForecastRecapRepository.OPPORTUNITY_TYPE_BEST) {
         amountCompanyCurr =
@@ -186,17 +202,9 @@ public class ForecastRecapService {
                         .getBestCase()
                         .multiply(opportunity.getProbability())
                         .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP),
-                    appBaseService.getTodayDate())
+                    today)
                 .setScale(2, RoundingMode.HALF_UP);
-        forecastRecap.addForecastRecapLineListItem(
-            this.createForecastRecapLine(
-                opportunity.getExpectedCloseDate(),
-                opportunityForecastRecapLineType.getTypeSelect(),
-                amountCompanyCurr,
-                opportunity.getClass().getName(),
-                opportunity.getId(),
-                opportunity.getName(),
-                opportunityForecastRecapLineType));
+
       } else {
         amountCompanyCurr =
             currencyService
@@ -207,19 +215,20 @@ public class ForecastRecapService {
                         .getWorstCase()
                         .multiply(opportunity.getProbability())
                         .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP),
-                    appBaseService.getTodayDate())
+                    today)
                 .setScale(2, RoundingMode.HALF_UP);
-        forecastRecap.addForecastRecapLineListItem(
-            this.createForecastRecapLine(
-                opportunity.getExpectedCloseDate(),
-                opportunityForecastRecapLineType.getTypeSelect(),
-                amountCompanyCurr,
-                opportunity.getClass().getName(),
-                opportunity.getId(),
-                opportunity.getName(),
-                opportunityForecastRecapLineType));
       }
+      forecastRecap.addForecastRecapLineListItem(
+          this.createForecastRecapLine(
+              opportunity.getExpectedCloseDate(),
+              opportunityForecastRecapLineType.getTypeSelect(),
+              amountCompanyCurr,
+              Opportunity.class.getName(),
+              opportunity.getId(),
+              opportunity.getName(),
+              opportunityForecastRecapLineType));
     }
+    forecastRecapRepo.save(forecastRecap);
   }
 
   public void getOpportunities(
@@ -311,6 +320,7 @@ public class ForecastRecapService {
     }
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   public void populateWithInvoices(ForecastRecap forecastRecap) throws AxelorException {
     List<Invoice> invoiceList = new ArrayList<Invoice>();
     ForecastRecapLineType invoiceForecastRecapLineType =
@@ -336,6 +346,7 @@ public class ForecastRecapService {
                 forecastRecap.getToDate())
             .fetch();
     for (Invoice invoice : invoiceList) {
+      invoice = invoiceRepo.find(invoice.getId());
       BigDecimal amount;
       if (invoice.getMove() == null) {
         amount =
@@ -344,7 +355,7 @@ public class ForecastRecapService {
                     invoice.getCurrency(),
                     forecastRecap.getCompany().getCurrency(),
                     invoice.getCompanyInTaxTotal(),
-                    appBaseService.getTodayDate())
+                    today)
                 .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
       } else {
         amount =
@@ -353,7 +364,7 @@ public class ForecastRecapService {
                     invoice.getCurrency(),
                     forecastRecap.getCompany().getCurrency(),
                     invoice.getCompanyInTaxTotalRemaining(),
-                    appBaseService.getTodayDate())
+                    today)
                 .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
       }
 
@@ -367,6 +378,7 @@ public class ForecastRecapService {
               invoice.getInvoiceId(),
               invoiceForecastRecapLineType));
     }
+    forecastRecapRepo.save(forecastRecap);
   }
 
   public void getInvoices(
@@ -415,6 +427,7 @@ public class ForecastRecapService {
     }
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   public void populateWithSalaries(ForecastRecap forecastRecap) throws AxelorException {
     List<Employee> employeeList = new ArrayList<Employee>();
     ForecastRecapLineType salaryForecastRecapLineType =
@@ -454,8 +467,10 @@ public class ForecastRecapService {
         itDate = payDay;
       }
     }
+    forecastRecapRepo.save(forecastRecap);
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   public void populateWithSaleOrders(ForecastRecap forecastRecap) throws AxelorException {
     ForecastRecapLineType saleOrderForecastRecapLineType =
         this.getForecastRecapLineType(ForecastRecapLineTypeRepository.ELEMENT_SALE_ORDER);
@@ -531,8 +546,10 @@ public class ForecastRecapService {
               saleOrder.getSaleOrderSeq(),
               saleOrderForecastRecapLineType));
     }
+    forecastRecapRepo.save(forecastRecap);
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   public void populateWithPurchaseOrders(ForecastRecap forecastRecap) throws AxelorException {
     ForecastRecapLineType purchaseOrderForecastRecapLineType =
         this.getForecastRecapLineType(ForecastRecapLineTypeRepository.ELEMENT_PURCHASE_ORDER);
@@ -608,6 +625,7 @@ public class ForecastRecapService {
               purchaseOrder.getPurchaseOrderSeq(),
               purchaseOrderForecastRecapLineType));
     }
+    forecastRecapRepo.save(forecastRecap);
   }
 
   public void populateWithTimetables(
@@ -807,7 +825,7 @@ public class ForecastRecapService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void populateWithForecasts(ForecastRecap forecastRecap) throws AxelorException {
     List<Forecast> forecastList = new ArrayList<Forecast>();
     ForecastRecapLineType forecastForecastRecapLineType =
@@ -816,28 +834,32 @@ public class ForecastRecapService {
         forecastRepo
             .all()
             .filter(
-                "self.estimatedDate BETWEEN ?1 AND ?2 AND self.company = ?3"
-                    + (forecastRecap.getBankDetails() != null ? " AND self.bankDetails = ?4" : "")
+                "self.estimatedDate < ?1 AND self.company = ?2"
+                    + (forecastRecap.getBankDetails() != null ? " AND self.bankDetails = ?3" : "")
                     + " AND self.realizationDate IS NULL",
-                forecastRecap.getFromDate(),
                 forecastRecap.getToDate(),
                 forecastRecap.getCompany(),
                 forecastRecap.getBankDetails())
             .fetch();
     for (Forecast forecast : forecastList) {
       ForecastReason forecastReason = forecast.getForecastReason();
+      LocalDate realizationDate =
+          forecast.getEstimatedDate().isAfter(appBaseService.getTodayDate())
+              ? forecast.getEstimatedDate()
+              : appBaseService.getTodayDate();
       forecastRecap.addForecastRecapLineListItem(
           this.createForecastRecapLine(
-              forecast.getEstimatedDate(),
+              realizationDate,
               forecast.getAmount().compareTo(BigDecimal.ZERO) == -1 ? 2 : 1,
               forecast.getAmount().abs(),
               ForecastReason.class.getName(),
               forecastReason.getId(),
               forecastReason.getReason(),
               forecastForecastRecapLineType));
-      forecast.setRealizationDate(forecast.getEstimatedDate());
+      forecast.setRealizationDate(realizationDate);
       forecastRepo.save(forecast);
     }
+    forecastRecapRepo.save(forecastRecap);
   }
 
   public void populateWithForecastsNoSave(ForecastRecap forecastRecap) throws AxelorException {
@@ -926,6 +948,7 @@ public class ForecastRecapService {
     }
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   public void populateWithExpenses(ForecastRecap forecastRecap) throws AxelorException {
     ForecastRecapLineType expenseForecastRecapLineType =
         this.getForecastRecapLineType(ForecastRecapLineTypeRepository.ELEMENT_EXPENSE);
@@ -973,6 +996,7 @@ public class ForecastRecapService {
               expense.getExpenseSeq(),
               expenseForecastRecapLineType));
     }
+    forecastRecapRepo.save(forecastRecap);
   }
 
   public ForecastRecapLine createForecastRecapLine(
@@ -986,7 +1010,7 @@ public class ForecastRecapService {
     ForecastRecapLine forecastRecapLine = new ForecastRecapLine();
     forecastRecapLine.setEstimatedDate(date);
     forecastRecapLine.setTypeSelect(type);
-    forecastRecapLine.setAmount(amount);
+    forecastRecapLine.setAmount(type == 1 ? amount.abs() : amount.negate());
     forecastRecapLine.setRelatedToSelect(relatedToSelect);
     forecastRecapLine.setRelatedToSelectId(relatedToSelectId);
     forecastRecapLine.setRelatedToSelectName(relatedToSelectName);
@@ -1022,15 +1046,9 @@ public class ForecastRecapService {
         });
 
     for (ForecastRecapLine forecastRecapLine : forecastRecapLines) {
-      if (forecastRecapLine.getTypeSelect() == 1) {
-        forecastRecap.setCurrentBalance(
-            forecastRecap.getCurrentBalance().add(forecastRecapLine.getAmount()));
-        forecastRecapLine.setBalance(forecastRecap.getCurrentBalance());
-      } else {
-        forecastRecap.setCurrentBalance(
-            forecastRecap.getCurrentBalance().subtract(forecastRecapLine.getAmount()));
-        forecastRecapLine.setBalance(forecastRecap.getCurrentBalance());
-      }
+      forecastRecap.setCurrentBalance(
+          forecastRecap.getCurrentBalance().add(forecastRecapLine.getAmount()));
+      forecastRecapLine.setBalance(forecastRecap.getCurrentBalance());
     }
     forecastRecap.setForecastRecapLineList(forecastRecapLines);
   }

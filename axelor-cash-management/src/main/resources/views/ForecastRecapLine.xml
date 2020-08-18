@@ -4,12 +4,14 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
     <grid name="forecast-recap-line-grid" title="Lines" model="com.axelor.apps.cash.management.db.ForecastRecapLine" orderBy="estimatedDate,typeSelect,id">
+       	<hilite background="success" if="typeSelect==1"/>
+       	<hilite background="warning" if="typeSelect==2"/>
        	<field name="estimatedDate"/>
+       	<field name="typeSelect" hidden="true"/>
        	<field name="forecastRecapLineType.name" title="Forecast Recap Line Type" />
-	   	<field name="typeSelect"/>
 	   	<field name="relatedToSelect"/>
 	   	<field name="relatedToSelectName"/>
-	   	<field name="amount" aggregate="sum"/>
+	   	<field name="amount" aggregate="sum" title="Cumulated amount"/>
 	   	<field name="balance"/>
     </grid>
  
