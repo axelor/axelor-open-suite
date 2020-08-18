@@ -2,6 +2,7 @@
 ## [Unreleased 5.3.10]
 ## Features
 - CRM : Create new objects Catalog and Catelog type
+- MOBILE : Added boolean field isCatalogEnable in config
 
 ## Improvements
 - LEAD : Added description field on reports
