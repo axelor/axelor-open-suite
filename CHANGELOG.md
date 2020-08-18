@@ -7,6 +7,9 @@
 - ACCOUNTING REPORT : Add missing translations in report
 - INVOICE : Fix chart not taking refunds into account
 - INVOICE : Fix Subscription invoice operationSubTypeSelect change issue.
+- Invoice : on invoice form view corrected display of empty column in invoice payment line grid viewer.
+- Accounting batch : put to required mandatory fields for close annual year batch.
+- Batch payroll preparation generation : corrected batch error no session.
 - Fiscal year : corrected sql  error on close function.
 
 ## [5.2.13] - 2020-07-21
