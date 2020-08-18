@@ -17,10 +17,6 @@
 		<boolean name="canPayOnline" title="Can pay online" default="false"/>
 		<many-to-many name="onlinePaymentMethodSet" ref="com.axelor.apps.client.portal.db.OnlinePaymentMethod" title="Online payment methods"/>
    		<integer name="portalSelect" title="Portal" selection="clientportal.extern.or.intern" default="1"/>
-
-   		<!-- Customer portal configuration -->
-   		<boolean name="enableDms" title="Enable DMS"/>
-   		<boolean name="enableTaskEditor" title="Enable task editor"/>
 		
 		<extra-code><![CDATA[
 	
