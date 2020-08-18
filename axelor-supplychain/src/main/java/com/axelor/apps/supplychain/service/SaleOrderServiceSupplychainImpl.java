@@ -29,6 +29,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.supplychain.db.Timetable;
@@ -137,6 +138,10 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
         stockMoveService.cancel(stockMove, cancelReason);
         if (stockMove.getStatusSelect().equals(StockMoveRepository.STATUS_DRAFT)) {
           stockMoveRepository.remove(stockMove);
+        } else {
+          for (StockMoveLine stockMoveline : stockMove.getStockMoveLineList()) {
+            stockMoveline.setSaleOrderLine(null);
+          }
         }
       }
     }
