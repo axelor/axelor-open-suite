@@ -2858,7 +2858,7 @@ else -row[&quot;sum&quot;]</Definition>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">'ForecastLine.relatedToSelect'</value>
+                                                    <value type="javascript">'ForecastRecapLine.relatedToSelect'</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>
