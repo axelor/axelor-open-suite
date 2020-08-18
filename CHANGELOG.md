@@ -7,6 +7,7 @@
 - ACCOUNTING REPORT : Add missing translations in report
 - INVOICE : Fix chart not taking refunds into account
 - INVOICE : Fix Subscription invoice operationSubTypeSelect change issue.
+- BANK RECONCILIATION STATEMENT REPORT : change French translation of balance from "balance" to "solde".
 
 ## [5.2.13] - 2020-07-21
 ## Improvements
