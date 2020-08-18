@@ -26,6 +26,7 @@
 - BANK PAYMENT : fix ICS number being linked to EBICS
 - ICalendar : Resolve synchronisation issue & Mange synchronisation select.
 - Invoice line : corrected view error when trying to change an invoice line.
+- Batch payroll preparation generation : corrected batch error no session.
 
 ## [5.1.15] - 2020-03-23
 ## Improvements
