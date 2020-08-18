@@ -11,6 +11,7 @@
 - Accounting batch : put to required mandatory fields for close annual year batch.
 - Batch payroll preparation generation : corrected batch error no session.
 - Fiscal year : corrected sql  error on close function.
+- Invoice line : corrected view error when trying to change an invoice line.
 
 ## [5.2.13] - 2020-07-21
 ## Improvements
