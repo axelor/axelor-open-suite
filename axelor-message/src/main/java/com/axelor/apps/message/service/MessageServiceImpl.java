@@ -81,7 +81,7 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
   @Transactional
   public Message createMessage(
       String model,
-      int id,
+      long id,
       String subject,
       String content,
       EmailAddress fromEmailAddress,
