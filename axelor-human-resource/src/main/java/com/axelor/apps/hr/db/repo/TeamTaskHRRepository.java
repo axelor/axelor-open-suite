@@ -33,7 +33,8 @@ public class TeamTaskHRRepository extends TeamTaskProjectRepository {
   public TeamTask save(TeamTask teamTask) {
     teamTask = super.save(teamTask);
 
-    if (!Beans.get(AppHumanResourceService.class).isApp("employee")) {
+    if (!Beans.get(AppHumanResourceService.class).isApp("employee")
+        || teamTask.getProject() == null) {
       return teamTask;
     }
 
