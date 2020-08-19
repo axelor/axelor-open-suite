@@ -12,6 +12,7 @@
 - Batch payroll preparation generation : corrected batch error no session.
 - Fiscal year : corrected sql  error on close function.
 - Invoice line : corrected view error when trying to change an invoice line.
+- BANK RECONCILIATION STATEMENT REPORT : change French translation of balance from "balance" to "solde".
 
 ## [5.2.13] - 2020-07-21
 ## Improvements
