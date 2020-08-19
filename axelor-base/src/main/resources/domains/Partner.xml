@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
   
   <module name="base" package="com.axelor.apps.base.db"/>
   
@@ -53,7 +53,7 @@
 
     <many-to-one name="salePartnerPriceList" ref="com.axelor.apps.base.db.PartnerPriceList" title="Sale price lists"/>
     <many-to-one name="purchasePartnerPriceList" ref="com.axelor.apps.base.db.PartnerPriceList" title="Purchase price lists"/>
-	<decimal name="paymentDelay" title="Payment delay (Average)" massUpdate="true" />
+	<decimal name="paymentDelay" title="Payment delay (Average in days)" massUpdate="true" />
    
     <!-- PAGE Blocage -->
 	<one-to-many name="blockingList" ref="com.axelor.apps.base.db.Blocking" title="Blocking follow-up List" mappedBy="partner" orderBy="-blockingToDate"/>
@@ -66,7 +66,7 @@
 	<many-to-one name="reportsTo" ref="com.axelor.apps.base.db.Partner" title="Reports to" massUpdate="true" index="false"/>
     <string name="description" title="Description"  large="true"/>
    	<many-to-one name="industrySector" title="Industry sector" ref="com.axelor.apps.base.db.IndustrySector" index="false" massUpdate="true"/>
-	<integer name="nbrEmployees" title="Employees (Nbr)"/>
+	<integer name="nbrEmployees" title="Employees (Nbr)" min="0"/>
 	<integer name="saleTurnover" title="Turnover"/>
 	<string name="registrationCode" title="Registration code"/>
     <string name="mainActivityCode" title="Main activity code"/>

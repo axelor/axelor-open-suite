@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
   
   <grid name="chart-builder-filter-grid" title="Filters" model="com.axelor.studio.db.Filter" onNew="action-filter-line-defaults">
       <field name="logicOp" />
@@ -38,8 +38,8 @@
   </action-method>
 
   <action-attrs name="action-chart-filter-meta-json-field-domain">
-  	<attribute for="metaJsonField" name="domain" expr="eval:&quot;self.jsonModel.name = '${_parent.model}' AND (self.type != 'json-one-to-many' OR self.type != 'one-to-many' OR self.type != 'many-to-many' OR self.type != 'json-many-to-many')&quot;" if="_parent?.isJson"/>
-  	<attribute for="metaJsonField" name="domain" expr="eval:&quot;self.model = '${_parent.model}' AND (self.type != 'json-one-to-many' OR self.type != 'one-to-many' OR self.type != 'many-to-many' OR self.type != 'json-many-to-many')&quot;" if="!_parent?.isJson"/>
+  	<attribute for="metaJsonField" name="domain" expr="eval:&quot;self.jsonModel.name = '${_parent.model}' AND self.type NOT IN ('json-one-to-many','one-to-many','many-to-many','json-many-to-many')&quot;" if="_parent?.isJson"/>
+  	<attribute for="metaJsonField" name="domain" expr="eval:&quot;self.model = '${_parent.model}' AND self.type NOT IN ('json-one-to-many','one-to-many','many-to-many','json-many-to-many')&quot;" if="!_parent?.isJson"/>
   </action-attrs>
   
   <action-attrs name="action-filter-line-defaults">
@@ -47,7 +47,7 @@
   </action-attrs>
   
   <action-attrs name="action-chart-filter-meta-field-domain">
-      <attribute for="metaField" name="domain" expr="eval:&quot;self.metaModel.fullName = '${_parent.model}' AND (self.relationship IS NULL OR self.relationship != 'OneToMany' OR self.relationship != 'ManyToMany')&quot;"/>
+      <attribute for="metaField" name="domain" expr="eval:&quot;self.metaModel.fullName = '${_parent.model}' AND (self.relationship IS NULL OR self.relationship NOT IN ('OneToMany','ManyToMany'))&quot;"/>
   </action-attrs>
   
   <action-validate name="action-studio-filter-validate-values">

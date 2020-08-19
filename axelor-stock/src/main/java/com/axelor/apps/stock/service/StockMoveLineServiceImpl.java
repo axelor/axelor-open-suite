@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -77,6 +78,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   protected TrackingNumberService trackingNumberService;
   protected WeightedAveragePriceService weightedAveragePriceService;
   protected TrackingNumberRepository trackingNumberRepo;
+  protected ProductCompanyService productCompanyService;
   protected ShippingCoefService shippingCoefService;
 
   @Inject
@@ -90,6 +92,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       UnitConversionService unitConversionService,
       WeightedAveragePriceService weightedAveragePriceService,
       TrackingNumberRepository trackingNumberRepo,
+      ProductCompanyService productCompanyService,
       ShippingCoefService shippingCoefService) {
     this.trackingNumberService = trackingNumberService;
     this.appBaseService = appBaseService;
@@ -100,6 +103,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     this.unitConversionService = unitConversionService;
     this.weightedAveragePriceService = weightedAveragePriceService;
     this.trackingNumberRepo = trackingNumberRepo;
+    this.productCompanyService = productCompanyService;
     this.shippingCoefService = shippingCoefService;
   }
 
@@ -578,11 +582,14 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       Product product = stockMoveLine.getProduct();
 
       if (product != null
-          && product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
+          && ((String)
+                  productCompanyService.get(product, "productTypeSelect", stockMove.getCompany()))
+              .equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
         try {
           checkConformitySelection(stockMoveLine, stockMove);
         } catch (Exception e) {
-          productsWithErrors.add(product.getName());
+          productsWithErrors.add(
+              (String) productCompanyService.get(product, "name", stockMove.getCompany()));
         }
       }
     }
@@ -804,7 +811,10 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           || (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
               && !stockMove.getIsReversion())) {
         // customer delivery or customer return
-        unitPriceUntaxed = stockMoveLine.getProduct().getSalePrice();
+        unitPriceUntaxed =
+            (BigDecimal)
+                productCompanyService.get(
+                    stockMoveLine.getProduct(), "salePrice", stockMove.getCompany());
         BigDecimal wapPrice =
             computeFromStockLocation(stockMoveLine, stockMove.getToStockLocation());
         stockMoveLine.setWapPrice(wapPrice);
@@ -819,7 +829,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
                 stockMove.getPartner(),
                 stockMove.getCompany(),
                 stockMoveLine.getRealQty());
-        companyPurchasePrice = stockMoveLine.getProduct().getPurchasePrice();
+        companyPurchasePrice =
+            (BigDecimal)
+                productCompanyService.get(
+                    stockMoveLine.getProduct(), "purchasePrice", stockMove.getCompany());
+        ;
         unitPriceUntaxed = companyPurchasePrice.multiply(shippingCoef);
       } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL
           && stockMove.getFromStockLocation() != null
@@ -828,7 +842,10 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         unitPriceUntaxed =
             computeFromStockLocation(stockMoveLine, stockMove.getFromStockLocation());
       } else {
-        unitPriceUntaxed = stockMoveLine.getProduct().getCostPrice();
+        unitPriceUntaxed =
+            (BigDecimal)
+                productCompanyService.get(
+                    stockMoveLine.getProduct(), "costPrice", stockMove.getCompany());
       }
     }
     stockMoveLine.setCompanyPurchasePrice(companyPurchasePrice);
@@ -1158,7 +1175,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
               + stockMove.getFromStockLocation().getId()
               + " AND sll.currentQty > 0)";
     }
-    return domain;
+    return domain + " AND dtype = 'Product'";
   }
 
   @Override
@@ -1193,15 +1210,14 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
   public List<TrackingNumber> getAvailableTrackingNumbers(
       StockMoveLine stockMoveLine, StockMove stockMove) {
-    List<TrackingNumber> trackingNumbers = null;
     String domain =
         "self.product.id = "
             + stockMoveLine.getProduct().getId()
-            + " AND self.id in (select stockLocationLine.trackingNumber.id from StockLocationLine stockLocationLine join StockLocation sl on sl.id = stockLocationLine.detailsStockLocation.id WHERE sl.id = "
+            + " AND self.id in (select stockLocationLine.trackingNumber.id from StockLocationLine stockLocationLine"
+            + " join StockLocation sl on sl.id = stockLocationLine.detailsStockLocation.id WHERE sl.id = "
             + stockMove.getFromStockLocation().getId()
-            + " )";
-    trackingNumbers = trackingNumberRepo.all().filter(domain).fetch();
-    return trackingNumbers;
+            + " AND coalesce(stockLocationLine.currentQty, 0) != 0)";
+    return trackingNumberRepo.all().filter(domain).fetch();
   }
 
   public void fillRealizeWapPrice(StockMoveLine stockMoveLine) {

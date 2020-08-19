@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
   
   <grid name="wkf-transition-grid" title="Transition" model="com.axelor.studio.db.WkfTransition">
        <field name="name"/>
@@ -9,7 +9,7 @@
        <field name="target" />
   </grid>
     
-  <form name="wkf-transition-form" title="Transition" model="com.axelor.studio.db.WkfTransition" width="large">
+  <form name="wkf-transition-form" title="Transition" model="com.axelor.studio.db.WkfTransition" width="large" onLoad="action-wkf-transition-attrs-onload">
       <panel name="mainPanel">
         <field name="name" readonly="true"/>
         <spacer name="nameSpacer" />
@@ -23,17 +23,21 @@
         <field name="successMsg" showIf="isButton"/>
         <field name="wkf" hidden="true"/>
         <field name="wkf.model" hidden="true"/>
+        <field name="wkf.isJson" hidden="true"/>
+        <field name="wkf.jsonField" hidden="true"/>
       </panel>
       <panel-related name="conditionsPanel" field="conditions" colSpan="12" editable="true" onNew="action-wkf-transition-filter-set-defaults">
         <field name="logicOp" />
-        <field name="metaJsonField" required="true" widget="SuggestBox" onSelect="action-wkf-transition-filter-meta-json-field-domain" onChange="action-filter-method-update-target-field" />
-        <field name="targetField" readonlyIf="metaJsonField.targetModel == null &amp;&amp; metaJsonField.targetJsonModel == null" requiredIf="metaJsonField.targetModel != null || metaJsonField.targetJsonModel != null"  />
+        <field name="isJson" />
+        <field name="metaField" readonlyIf="isJson" requiredIf="!isJson" widget="SuggestBox" onChange="action-filter-method-update-target-field" onSelect="action-wkf-transition-filter-meta-field-domain"/>
+        <field name="metaJsonField" readonlyIf="!isJson" requiredIf="isJson" widget="SuggestBox" onSelect="action-wkf-transition-filter-meta-json-field-domain" onChange="action-filter-method-update-target-field" />
+        <field name="targetField" readonlyIf="!isJson &amp;&amp; metaField.relationship == null || isJson &amp;&amp; metaJsonField.targetModel == null &amp;&amp; metaJsonField.targetJsonModel == null" requiredIf="!isJson &amp;&amp; metaField.relationship != null || isJson &amp;&amp; metaJsonField.targetModel != null" />
         <field name="operator"/>
         <field name="value" onChange="action-studio-filter-validate-values" />
         <field name="metaJsonField.targetModel" hidden="true" />
-        <field name="metaJsonField.targetJsonModel" hidden="true" />
-        <field name="isJson" hidden="true" />
+        <field name="metaJsonField.targetJsonModel" hidde0n="true" />
         <field name="targetType" hidden="true" /> 
+        <field name="metaField.relationship" hidden="true"/>
       </panel-related>
       <panel name="roleSetPanel">
         <field name="roleSet" widget="TagSelect" showIf="isButton" colSpan="12" />
@@ -41,11 +45,20 @@
   </form>
   
   <action-attrs name="action-wkf-transition-filter-meta-json-field-domain">
-  	<attribute for="metaJsonField" name="domain" expr="eval:&quot;(self.jsonModel.name = '${_parent.wkf.model}' OR self.model = '${_parent.wkf.model}' ) AND (self.type != 'json-one-to-many' OR self.type != 'one-to-many' OR self.type != 'many-to-many' OR self.type != 'json-many-to-many')&quot;"/>
+  	<attribute for="metaJsonField" name="domain" expr="eval:&quot;(self.jsonModel.name = '${_parent.wkf.model}' OR self.model = '${_parent.wkf.model}') AND self.targetModel IS NULL AND self.targetJsonModel IS NULL&quot;"/>
+  </action-attrs>
+  
+  <action-attrs name="action-wkf-transition-filter-meta-field-domain">
+  	<attribute for="metaField" name="domain" expr="eval:&quot;self.metaModel.fullName = '${_parent.wkf.model}' AND self.relationship IS NULL&quot;"/>
   </action-attrs>
   
   <action-attrs name="action-wkf-transition-filter-set-defaults">
-  	<attribute for="isJson" name="value" expr="eval:true" /> 
+  	<attribute name="value" expr="eval:_parent?.wkf.isJson" for="isJson"/>
+  </action-attrs>
+  
+  <action-attrs name="action-wkf-transition-attrs-onload">
+  	<attribute name="hidden" for="conditions.isJson" expr="eval:wkf.isJson"/>
+  	<attribute name="hidden" for="conditions.metaField"  expr="eval:wkf.isJson"/>
   </action-attrs>
   
 </object-views>

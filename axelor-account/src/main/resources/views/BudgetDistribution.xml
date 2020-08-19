@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
     <grid name="budget-distribution-grid" title="Budget distributions" model="com.axelor.apps.account.db.BudgetDistribution">
         <field name="budget" domain="self.statusSelect = 2"/>
@@ -38,7 +38,7 @@
 	<form name="invoice-budget-distribution-form" title="Budget distribution" model="com.axelor.apps.account.db.BudgetDistribution" width="large" onLoad="action-budget-distribution-attrs-budget-amount-available">
 		<panel name="mainPanel" >
 			<field name="budget" readonly="true"/>
-			<field name="invoiceLine.product" readonly="true"/>
+			<field name="invoiceLine.product" readonly="true" domain="dtype = 'Product'"/>
 			<field name="budgetAmountAvailable" readonly="true"/>
 			<field name="amount" readonly="true"/>
 			<field name="purchaseOrderLine.purchaseOrder.statusSelect" hidden="true"/>
@@ -49,7 +49,7 @@
 	<form name="invoice-budget-distribution-complete-form" title="Budget distribution" model="com.axelor.apps.account.db.BudgetDistribution" width="large" onLoad="action-budget-distribution-attrs-budget-amount-available">
 		<panel name="mainPanel" >
 			<field name="budget" readonly="true"/>
-			<field name="invoiceLine.product" readonly="true"/>
+			<field name="invoiceLine.product" readonly="true" domain="dtype = 'Product'"/>
 			<field name="invoiceLine.invoice" readonly="true"/>
 			<field name="invoiceLine.invoice.validatedDate" readonly="true"/>
 			<field name="budgetAmountAvailable" readonly="true"/>
@@ -70,7 +70,7 @@
         <panel name="mainPanel" readonly="true">
             <field name="purchaseOrderLine.purchaseOrder"/>
             <field name="purchaseOrderLine.purchaseOrder.orderDate"/>
-            <field name="purchaseOrderLine.product"/>
+            <field name="purchaseOrderLine.product" domain="dtype = 'Product'"/>
             <field name="amount"/>
         </panel>
     </form>
@@ -78,7 +78,7 @@
     <grid name="budget-distribution-grid-invoice-line-grid" title="Realized lines" model="com.axelor.apps.account.db.BudgetDistribution">
         <field name="invoiceLine.invoice"/>
         <field name="invoiceLine.invoice.invoiceDate"/>
-        <field name="invoiceLine.product"/>
+        <field name="invoiceLine.product" domain="dtype = 'Product'"/>
         <field name="amount"/>
     </grid>
 
@@ -86,7 +86,7 @@
         <panel name="mainPanel" readonly="true">
             <field name="invoiceLine.invoice"/>
             <field name="invoiceLine.invoice.invoiceDate"/>
-            <field name="invoiceLine.product"/>
+            <field name="invoiceLine.product" domain="dtype = 'Product'"/>
             <field name="amount"/>
         </panel>
     </form>

@@ -48,6 +48,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -81,6 +82,7 @@ public class ForecastRecapService {
 
   @Inject protected CurrencyService currencyService;
   @Inject protected ForecastRecapLineTypeRepository forecastRecapLineTypeRepository;
+  @Inject protected ForecastRecapRepository forecastRecapRepo;
 
   @Transactional
   public void populate(ForecastRecap forecastRecap) throws AxelorException {
@@ -105,10 +107,12 @@ public class ForecastRecapService {
     this.populateWithForecasts(forecastRecap);
     this.populateWithExpenses(forecastRecap);
 
+    forecastRecapRepo.save(forecastRecap);
+
     this.computeForecastRecapLineBalance(forecastRecap);
     forecastRecap.setEndingBalance(forecastRecap.getCurrentBalance());
     forecastRecap.setCalculationDate(appBaseService.getTodayDate());
-    Beans.get(ForecastRecapRepository.class).save(forecastRecap);
+    forecastRecapRepo.save(forecastRecap);
   }
 
   public void populateWithOpportunities(ForecastRecap forecastRecap) throws AxelorException {
@@ -168,7 +172,8 @@ public class ForecastRecapService {
                 .getAmountCurrencyConvertedAtDate(
                     opportunity.getCurrency(),
                     opportunity.getCompany().getCurrency(),
-                    new BigDecimal(opportunity.getBestCase())
+                    opportunity
+                        .getBestCase()
                         .multiply(opportunity.getProbability())
                         .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP),
                     appBaseService.getTodayDate())
@@ -188,7 +193,8 @@ public class ForecastRecapService {
                 .getAmountCurrencyConvertedAtDate(
                     opportunity.getCurrency(),
                     opportunity.getCompany().getCurrency(),
-                    new BigDecimal(opportunity.getWorstCase())
+                    opportunity
+                        .getWorstCase()
                         .multiply(opportunity.getProbability())
                         .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP),
                     appBaseService.getTodayDate())
@@ -256,7 +262,8 @@ public class ForecastRecapService {
                 .getAmountCurrencyConvertedAtDate(
                     opportunity.getCurrency(),
                     opportunity.getCompany().getCurrency(),
-                    new BigDecimal(opportunity.getBestCase())
+                    opportunity
+                        .getBestCase()
                         .multiply(opportunity.getProbability())
                         .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP),
                     appBaseService.getTodayDate())
@@ -267,7 +274,8 @@ public class ForecastRecapService {
                 .getAmountCurrencyConvertedAtDate(
                     opportunity.getCurrency(),
                     opportunity.getCompany().getCurrency(),
-                    new BigDecimal(opportunity.getWorstCase())
+                    opportunity
+                        .getWorstCase()
                         .multiply(opportunity.getProbability())
                         .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP),
                     appBaseService.getTodayDate())
@@ -949,7 +957,7 @@ public class ForecastRecapService {
       forecastRecap.addForecastRecapLineListItem(
           this.createForecastRecapLine(
               forecast.getEstimatedDate(),
-              forecast.getTypeSelect(),
+              forecast.getAmount().compareTo(BigDecimal.ZERO) == -1 ? 2 : 1,
               forecast.getAmount(),
               ForecastReason.class.getName(),
               forecastReason.getId(),
@@ -995,7 +1003,7 @@ public class ForecastRecapService {
       forecastRecap.addForecastRecapLineListItem(
           this.createForecastRecapLine(
               forecast.getEstimatedDate(),
-              forecast.getTypeSelect(),
+              forecast.getAmount().compareTo(BigDecimal.ZERO) == -1 ? 2 : 1,
               forecast.getAmount(),
               ForecastReason.class.getName(),
               forecastReason.getId(),
@@ -1034,7 +1042,7 @@ public class ForecastRecapService {
               .fetch();
     }
     for (Forecast forecast : forecastList) {
-      if (forecast.getTypeSelect() == 1) {
+      if (forecast.getAmount().compareTo(BigDecimal.ZERO) != -1) {
         if (forecast.getRealizedSelect() == 2) {
           if (mapExpected.containsKey(forecast.getEstimatedDate())) {
             mapExpected.put(
@@ -1170,8 +1178,12 @@ public class ForecastRecapService {
     String title = I18n.get(ITranslation.CASH_MANAGEMENT_REPORT_TITLE);
     title += forecastRecapId;
 
+    ForecastRecap forecastRecap = JPA.find(ForecastRecap.class, forecastRecapId);
     return ReportFactory.createReport(IReport.FORECAST_RECAP, title + "-${date}")
         .addParam("ForecastRecapId", forecastRecapId.toString())
+        .addParam(
+            "Timezone",
+            forecastRecap.getCompany() != null ? forecastRecap.getCompany().getTimezone() : null)
         .addParam("Locale", ReportSettings.getPrintingLocale(null))
         .addFormat(reportType)
         .generate()

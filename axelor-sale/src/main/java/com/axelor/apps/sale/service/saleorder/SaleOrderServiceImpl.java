@@ -28,6 +28,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.report.IReport;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -54,11 +55,18 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
   @Override
   public String getFileName(SaleOrder saleOrder) {
-
-    return I18n.get("Sale order")
+    String prefixFileName = I18n.get("Sale order");
+    if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT_QUOTATION
+        || saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
+      prefixFileName = I18n.get("Sale quotation");
+    }
+    return prefixFileName
         + " "
         + saleOrder.getSaleOrderSeq()
-        + ((saleOrder.getVersionNumber() > 1) ? "-V" + saleOrder.getVersionNumber() : "");
+        + ((Beans.get(AppSaleService.class).getAppSale().getManageSaleOrderVersion()
+                && saleOrder.getVersionNumber() > 1)
+            ? "-V" + saleOrder.getVersionNumber()
+            : "");
   }
 
   @Override
@@ -79,6 +87,9 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
     return ReportFactory.createReport(IReport.SALES_ORDER, name + "-${date}")
         .addParam("Locale", language)
+        .addParam(
+            "Timezone",
+            saleOrder.getCompany() != null ? saleOrder.getCompany().getTimezone() : null)
         .addParam("SaleOrderId", saleOrder.getId())
         .addParam("ProformaInvoice", proforma)
         .addFormat(format)

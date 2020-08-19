@@ -51,12 +51,8 @@ import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import javax.mail.MessagingException;
-import javax.persistence.EntityNotFoundException;
 import javax.persistence.LockModeType;
-import javax.persistence.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,16 +61,16 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
 
   private MetaAttachmentRepository metaAttachmentRepository;
   protected MessageRepository messageRepository;
-
-  private ExecutorService executor = Executors.newCachedThreadPool();
-  private static final int ENTITY_FIND_TIMEOUT = 10000;
-  private static final int ENTITY_FIND_INTERVAL = 200;
+  protected SendMailQueueService sendMailQueueService;
 
   @Inject
   public MessageServiceImpl(
-      MetaAttachmentRepository metaAttachmentRepository, MessageRepository messageRepository) {
+      MetaAttachmentRepository metaAttachmentRepository,
+      MessageRepository messageRepository,
+      SendMailQueueService sendMailQueueService) {
     this.metaAttachmentRepository = metaAttachmentRepository;
     this.messageRepository = messageRepository;
+    this.sendMailQueueService = sendMailQueueService;
   }
 
   @Override
@@ -92,7 +88,8 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
       Set<MetaFile> metaFiles,
       String addressBlock,
       int mediaTypeSelect,
-      EmailAccount emailAccount) {
+      EmailAccount emailAccount,
+      String signature) {
 
     emailAccount =
         emailAccount != null
@@ -116,7 +113,8 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
             bccEmailAddressList,
             addressBlock,
             mediaTypeSelect,
-            emailAccount);
+            emailAccount,
+            signature);
 
     messageRepository.save(message);
 
@@ -159,7 +157,8 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
       List<EmailAddress> bccEmailAddressList,
       String addressBlock,
       int mediaTypeSelect,
-      EmailAccount emailAccount) {
+      EmailAccount emailAccount,
+      String signature) {
 
     Set<EmailAddress> replyToEmailAddressSet = Sets.newHashSet();
     Set<EmailAddress> bccEmailAddressSet = Sets.newHashSet();
@@ -181,7 +180,9 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
       }
     }
 
-    if (emailAccount != null) {
+    if (!Strings.isNullOrEmpty(signature)) {
+      content += "<p></p><p></p>" + signature;
+    } else if (emailAccount != null) {
       content += "<p></p><p></p>" + Beans.get(MailAccountService.class).getSignature(emailAccount);
     }
 
@@ -259,7 +260,7 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
       return message;
     }
 
-    log.debug("Sent email");
+    log.debug("Sending email...");
     MailAccountService mailAccountService = Beans.get(MailAccountService.class);
     com.axelor.mail.MailAccount account =
         new SmtpAccount(
@@ -318,63 +319,10 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
 
     getEntityManager().flush();
     getEntityManager().lock(message, LockModeType.PESSIMISTIC_WRITE);
-    final long messageId = message.getId();
     // send email using a separate process to avoid thread blocking
-    executor.submit(
-        () -> {
-          final long startTime = System.currentTimeMillis();
-          boolean done = false;
-          PersistenceException persistenceException = null;
-          mailBuilder.send();
-          do {
-            try {
-              inTransaction(
-                  () -> {
-                    final Message updateMessage = findMessage(messageId);
-                    getEntityManager().lock(updateMessage, LockModeType.PESSIMISTIC_WRITE);
-                    updateMessage.setSentByEmail(true);
-                    updateMessage.setStatusSelect(MessageRepository.STATUS_SENT);
-                    updateMessage.setSentDateT(LocalDateTime.now());
-                    updateMessage.setSenderUser(AuthUtils.getUser());
-                    messageRepository.save(updateMessage);
-                  });
-              done = true;
-            } catch (PersistenceException e) {
-              persistenceException = e;
-              sleep();
-            }
-          } while (!done && System.currentTimeMillis() - startTime < ENTITY_FIND_TIMEOUT);
-          if (!done) {
-            throw persistenceException;
-          }
-          return true;
-        });
+    sendMailQueueService.submitMailJob(mailBuilder, message);
 
     return message;
-  }
-
-  private Message findMessage(Long messageId) {
-    Message foundMessage;
-    final long startTime = System.currentTimeMillis();
-
-    while ((foundMessage = messageRepository.find(messageId)) == null
-        && System.currentTimeMillis() - startTime < ENTITY_FIND_TIMEOUT) {
-      sleep();
-    }
-
-    if (foundMessage == null) {
-      throw new EntityNotFoundException(messageId.toString());
-    }
-
-    return foundMessage;
-  }
-
-  private void sleep() {
-    try {
-      Thread.sleep(ENTITY_FIND_INTERVAL);
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
-    }
   }
 
   public Set<MetaAttachment> getMetaAttachments(Message message) {

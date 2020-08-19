@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -443,5 +443,18 @@
       <option value="6">6 Months</option>
       <option value="12">1 Year</option>
    </selection>
+   
+	<selection name='trace.back.origin.select' id="trace.back.origin.select.account" >
+		<option value='invoice'>Invoicing</option>
+		<option value='debtRecovery'>Debt recovery</option>
+		<option value='doubtfulCustomer'>Doubtful customer</option>
+		<option value='reimbursement'>Reimbursement</option>
+		<option value="accountCustomer">Account customer</option> <!-- replaced by customerAccount. If delete, also do it for corresponding constant in view ExceptionOrigin.xml -->
+		<option value="customerAccount">Customer account</option> 
+		<option value="moveLineExport">Move line export</option>
+		<option value="irrecoverable">Irrecoverable</option>
+		<option value="creditTransfer">Credit transfer</option>
+		<option value="reportedBalance">Reported balance</option>
+	</selection>
 
 </object-views>

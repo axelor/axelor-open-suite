@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.move.MoveCustAccountService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
@@ -33,6 +34,7 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -53,6 +55,7 @@ public class InvoicePaymentController {
     invoicePayment = Beans.get(InvoicePaymentRepository.class).find(invoicePayment.getId());
     try {
       Beans.get(InvoicePaymentCancelService.class).cancel(invoicePayment);
+      Beans.get(MoveCustAccountService.class).updateCustomerAccount(invoicePayment.getMove());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -169,5 +172,21 @@ public class InvoicePaymentController {
       TraceBackService.trace(response, e);
     }
     response.setReload(true);
+  }
+
+  /**
+   * Method that check the invoice payment before save and save. Only use when add payment is used
+   * in invoice
+   *
+   * @param request
+   * @param response
+   */
+  public void checkConditionBeforeSave(ActionRequest request, ActionResponse response) {
+    try {
+      InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
+      Beans.get(InvoicePaymentToolService.class).checkConditionBeforeSave(invoicePayment);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 }

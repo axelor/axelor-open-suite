@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
     <grid name="campaign-grid" title="Campaigns" model="com.axelor.apps.marketing.db.Campaign">
         <field name="name"/>
@@ -31,8 +31,8 @@
 			<spacer name="nameSpacer"/>
 			<panel name="informationPanel" title="Information" colSpan="12">
 				<field name="campaignType" canEdit="false" colSpan="4"/>
-				<field name="eventStartDateT" colSpan="4"/>
-				<field name="eventEndDateT" colSpan="4"/>
+				<field name="eventStartDateT" colSpan="4" validIf="eventStartDateT == null || eventEndDateT == null || eventStartDateT &lt; eventEndDateT"/>
+				<field name="eventEndDateT" colSpan="4" validIf="eventStartDateT == null || eventEndDateT == null || eventStartDateT &lt; eventEndDateT"/>
 				<field name="emailing" colSpan="4" widget="boolean-switch" />
 				<field name="manageAnEventPerTarget" colSpan="4" widget="boolean-switch"/>
 				<field name="manageAttendees" colSpan="4" widget="boolean-switch"/>

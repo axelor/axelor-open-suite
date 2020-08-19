@@ -345,6 +345,7 @@ public class PurchaseOrderController {
                 .model(PurchaseOrder.class.getName())
                 .add("grid", "purchase-order-grid")
                 .add("form", "purchase-order-form")
+                .param("search-filters", "purchase-order-filters")
                 .param("forceEdit", "true")
                 .context("_showRecord", String.valueOf(purchaseOrder.getId()))
                 .map());

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 	<grid name="employee-grid" title="Employee" model="com.axelor.apps.hr.db.Employee" orderBy="contactPartner.simpleFullName">
 		 <toolbar>
@@ -29,6 +29,7 @@
 
     <toolbar>
       <button name="annualReportBtn" title="Show expenses annual report" showIf="id" onClick="action-employee-view-annual-report-wizard"/>
+      <button name="employeeReportBtn" title="Print" showIf="id" onClick="save,action-employee-method-print-employee-report"/>
     </toolbar>
 
     <!-- New employee wizard -->
@@ -48,7 +49,7 @@
             <field name="firstName" onChange="action-partner-record-simple-and-full-name,action-employee-contact-method-set-social-network-url" colSpan="5"/>
             <field name="name" title="Name" onChange="action-partner-record-simple-and-full-name,action-employee-contact-method-set-social-network-url" colSpan="5"/>
 
-            <field name="emailAddress" canNew="true" form-view="email-address-simple-form"/>
+            <field name="emailAddress" canNew="true" form-view="email-address-simple-form" canSelect="false"/>
             <field name="webSite" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$" placeholder="http://www.url.com"/>
 
             <field name="fixedPhone" onChange="action-partner-method-normalize-fixedPhone" colSpan="4" pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33100000000"/>
@@ -74,8 +75,8 @@
       <field name="departmentOfBirth" colSpan="4" onChange="action-employee-attrs-department-of-birth-on-change" onSelect="action-employee-attrs-department-of-birth-on-select"/>
       <field name="cityOfBirth" colSpan="4" onSelect="action-employee-attrs-city-of-birth-on-select"/>
       <field name="citizenship" colSpan="4"/>
-      <field name="maidenName" colSpan="4"/>
       <field name="maritalName" colSpan="4"/>
+      <field name="maidenName" colSpan="4" hideIf="sexSelect!='F'"/>
       <field name="socialSecurityNumber" colSpan="4" max="15" min="12"/>
     </panel>
 
@@ -107,7 +108,7 @@
 
     <!-- Employment contract -->
     <panel name="contractualInfoSBSPanel" title="Contractual information" showIf="stepByStepSelect == 2">
-      <field name="dateOfHire" colSpan="3"/>
+      <field name="hireDate" colSpan="3" onChange="action-employee-attrs-set-seniority-date"/>
       <field name="seniorityDate" colSpan="3"/>
       <field name="bonusCoef" colSpan="3"/>
       <field name="profitSharingBeneficiary" colSpan="3"/>
@@ -140,7 +141,7 @@
 
     <panel name="timesheetsSBSPanel" title="Timesheets" if="__config__.app.isApp('timesheet')" showIf="stepByStepSelect == 3">
       <field name="timeLoggingPreferenceSelect" colSpan="3"/>
-      <field name="product" canEdit="false" colSpan="3" domain="self.isActivity = true" form-view="product-form" grid-view="product-grid"/>
+      <field name="product" canEdit="false" colSpan="3" domain="self.isActivity = true AND dtype = 'Product'" form-view="product-form" grid-view="product-grid"/>
       <field name="timesheetReminder" colSpan="3"/>
       <field name="timesheetImputationSelect" colSpan="3" if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()" if-module="axelor-business-production"/>
     </panel>
@@ -201,8 +202,8 @@
           <field name="departmentOfBirth" colSpan="4" onChange="action-employee-attrs-department-of-birth-on-change" onSelect="action-employee-attrs-department-of-birth-on-select"/>
           <field name="cityOfBirth" colSpan="4" onSelect="action-employee-attrs-city-of-birth-on-select"/>
           <field name="citizenship" colSpan="4"/>
-          <field name="maidenName" colSpan="4"/>
           <field name="maritalName" colSpan="4"/>
+          <field name="maidenName" colSpan="4" hideIf="sexSelect!='F'"/>
           <field name="socialSecurityNumber" colSpan="4" max="15" min="12"/>
         </panel>
 
@@ -234,7 +235,7 @@
 
       <panel name="employmentContractsPanel" title="Employment contracts">
         <panel name="contractualInfoPanel" title="Contractual information" colSpan="12">
-          <field name="dateOfHire" colSpan="3"/>
+          <field name="hireDate" colSpan="3" onChange="action-employee-attrs-set-seniority-date"/>
           <field name="seniorityDate" colSpan="3"/>
           <field name="bonusCoef" colSpan="3"/>
           <field name="profitSharingBeneficiary" colSpan="3"/>
@@ -266,7 +267,7 @@
 
       <panel name="timesheetsPanel" title="Timesheets" if="__config__.app.isApp('timesheet')">
         <field name="timeLoggingPreferenceSelect" colSpan="3"/>
-        <field name="product" canEdit="false" colSpan="3" domain="self.isActivity = true" form-view="product-form" grid-view="product-grid"/>
+        <field name="product" canEdit="false" colSpan="3" domain="self.isActivity = true AND dtype = 'Product'" form-view="product-form" grid-view="product-grid"/>
         <field name="timesheetReminder" colSpan="3"/>
         <field name="timesheetImputationSelect" colSpan="3" if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()" if-module="axelor-business-production"/>
 
@@ -382,6 +383,9 @@
   </form>
 
 	<cards name="employee-card" title="Employee" model="com.axelor.apps.hr.db.Employee" css="rect-image" orderBy="name">
+    <toolbar>
+      <button name="printEmployeePhoneBookBtn" title="Employee PhoneBook" icon="fa-print" onClick="action-print-employee-phonebook"/>
+    </toolbar>
 		<field name="contactPartner.picture" />
 		<field name="contactPartner.fullName" />
 		<field name="contactPartner.fixedPhone" />
@@ -492,17 +496,42 @@
     <action-method name="action-print-employee-phonebook" >
 		<call class="com.axelor.apps.hr.web.EmployeeController" method="printEmployeePhonebook"/>
 	</action-method>
+	
+	<action-method name="action-employee-method-print-employee-report" >
+		<call class="com.axelor.apps.hr.web.EmployeeController" method="printEmployeeReport"/>
+	</action-method>
 
+	<action-method name="action-employee-method-print-employee-report" >
+		<call class="com.axelor.apps.hr.web.EmployeeController" method="printEmployeeReport"/>
+	</action-method>
+	
 	<action-condition name="action-employee-validate-dates">
 		<check error="Invalid date" field="endDate" if="startDate != null &amp;&amp; endDate != null  &amp;&amp; (endDate &lt; startDate)"/>
 	</action-condition>
 	
+	<action-attrs name="action-employee-attrs-set-seniority-date">
+		<attribute name="value" for="seniorityDate" expr="eval: hireDate" if="seniorityDate == null"/>
+	</action-attrs>
+	
     <search-filters name="employee-filters" model="com.axelor.apps.hr.db.Employee"
         title="Employee filters">
+        <field name="bankDetails" hidden="true" if="!__config__.app.getApp('base').getManageMultiBanks()"/>
+        <field name="timesheetImputationSelect" hidden="true" if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getEnableTimesheetOnManufOrder())"/>
+        <field name="lunchVoucherFormatSelect" hidden="true" if="!(__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getLunchVoucher())"/>
+        <field name="lunchVoucherAdvanceList" hidden="true" if="!(__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getLunchVoucher())"/>
+        <field name="employeeAdvanceList" hidden="true" if="!(__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee').getAdvanceManagement())"/>
+        <field name="leaveLineList" hidden="true" if="!__config__.app.isApp('leave')"/>
+      	<field name="negativeValueLeave" hidden="true" if="!__config__.app.isApp('leave')"/>
+    	<field name="timeLoggingPreferenceSelect" hidden="true" if="!__config__.app.isApp('timesheet')"/>
+      	<field name="product" hidden="true" if="!__config__.app.isApp('timesheet')"/>
+      	<field name="timesheetReminder" hidden="true" if="!__config__.app.isApp('timesheet')"/> 
+      	<field name="kilometricLogList" hidden="true" if="!__config__.app.isApp('timesheet')"/>
+      	<field name="employeeVehicleList" hidden="true" if="!__config__.app.isApp('expense')"/> 
         <field name="mainEmploymentContract.payCompany"
             title="Pay company main employment contract"/>
         <field name="mainEmploymentContract.executiveStatusSelect"
             title="Main employment contract status"/>
         <field name="socialSecurityNumber" title="Social security number" hidden="true"/>
+        <field name="contactPartner.firstName" title="First name"/>
     </search-filters>
 </object-views>

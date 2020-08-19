@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 	<menuitem name="hr-root" order="-104" title="HR" icon="fa-sitemap"  if="__config__.app.isApp('employee')"
 	     icon-background="#84429f"/>
@@ -32,6 +32,7 @@
 	<action-view name="payroll.preparation.all" title="Payroll Preparations" model="com.axelor.apps.hr.db.PayrollPreparation">
     	<view type="grid" name="payroll-preparation-grid"/>
 	    <view type="form" name="payroll-preparation-form"/>
+	    <view-param name="search-filters" value="payroll-preparation-filters"/>
 	</action-view>
 
 	<menuitem name="all-lunch-voucher-mgt" parent="hr-root-emp-mgt" title="Lunch Voucher Management" action="lunch.voucher.mgt.all"
@@ -40,6 +41,7 @@
 	<action-view name="lunch.voucher.mgt.all" title="Lunch Voucher Management" model="com.axelor.apps.hr.db.LunchVoucherMgt">
     	<view type="grid" name="lunch-voucher-mgt-grid"/>
 	    <view type="form" name="lunch-voucher-mgt-form"/>
+	    <view-param name="search-filters" value="lunch-voucher-mgt-filters"/>
 	</action-view>
 
 	<menuitem name="hr-employee-bonus-mgt" parent="hr-root-emp-mgt" title="Employee bonus mgt" action="employee.bonus.mgt.all"
@@ -48,12 +50,14 @@
 	<action-view name="employee.bonus.mgt.all" title="Employee bonus mgt" model="com.axelor.apps.hr.db.EmployeeBonusMgt">
     	<view type="grid" name="employee-bonus-mgt-grid"/>
 	    <view type="form" name="employee-bonus-mgt-form"/>
+	    <view-param name="search-filters" value="employee-bonus-mgt-filters"/>
 	</action-view>
 
   <menuitem name="hr-employee-dpae" title="DPAEs" parent="hr-root-emp-mgt" action="employee.dpae.all" if="__user__.activeCompany?.hrConfig?.enableDPAE"/>
   <action-view name="employee.dpae.all" title="DPAEs" model="com.axelor.apps.hr.db.DPAE">
     <view type="grid" name="dpae-grid"/>
     <view type="form" name="dpae-form"/>
+    <view-param name="search-filters" value="dpae-filters"/>
   </action-view>
 
   <menuitem name="hr-root-emp-mgt-conf" parent="hr-root-emp-mgt" title="Configuration" icon="fa-cog"/>
@@ -64,7 +68,7 @@
 		<view type="cards" name="product-activity-cards"/>
     	<view type="grid" name="product-activity-grid"/>
 	    <view type="form" name="product-activity-form"/>
-	    <domain>self.isActivity = true</domain>
+	    <domain>self.isActivity = true AND dtype = 'Product'</domain>
 	</action-view>
 
 	<menuitem name="end-of-contract-reason-all" parent="hr-root-emp-mgt-conf"
@@ -106,6 +110,7 @@
 		model="com.axelor.apps.base.db.Year">
 		<view type="grid" name="year-grid"/>
 		<view type="form" name="year-hr-form"/>
+		<view-param name="search-filters" value="year-filters"/>
 		<domain>self.typeSelect = 2</domain>
 	</action-view>
 
@@ -167,17 +172,18 @@
 		title="My Leave Requests">
 		<view name="leave-request-grid" type="grid" />
 		<view name="leave-request-form" type="form" />
+		<view-param name="search-filters" value="leave-request-filters"/>
 		<domain>self.user = :user_id AND self.toJustifyLeaveReason = :to_justify_leave_reason</domain>
 		<context name="user_id" expr="eval:__user__" />
 		<context name="to_justify_leave_reason" expr="eval: false"/>
 	</action-view>
 
-	<menuitem name="validate-leave-request"  parent="leave-request-root" title="Leave Requests to Validate" action="leave.validate"/>
+	<menuitem name="validate-leave-request"  parent="leave-request-root" title="Leave Requests to Validate" action="leave.validate" tag-style="default" tag-get="com.axelor.apps.hr.web.leave.LeaveController:leaveValidateMenuTag()"/>
 
 	<action-method name="leave.validate">
 		<call class="com.axelor.apps.hr.web.leave.LeaveController" method="validateLeave"/>
 	</action-method>
-
+	
 	<menuitem name="historic-leave-request"  parent="leave-request-root" title="Historic team leave requests" action="leave.historic"/>
 
 	<action-method name="leave.historic">
@@ -196,6 +202,7 @@
 	<action-view name="leave.request.to.justify" title="Leave to justify" model="com.axelor.apps.hr.db.LeaveRequest">
 		<view name="leave-request-form" type="form" />
 		<view name="leave-request-validate-grid" type="grid" />
+		<view-param name="search-filters" value="leave-request-filters"/>
 		<domain>self.user = :user_id AND self.toJustifyLeaveReason = :to_justify_leave_reason</domain>
 		<context name="user_id" expr="eval:__user__" />
 		<context name="to_justify_leave_reason" expr="eval: true"/>
@@ -208,6 +215,13 @@
 	<action-view name="leave.reason.all" title="Leave reason" model="com.axelor.apps.hr.db.LeaveReason">
     	<view type="grid" name="leave-reason-grid"/>
 	    <view type="form" name="leave-reason-form"/>
+	</action-view>
+	
+	<menuitem name="leave-line-all-employee" parent="leave-request-conf" title="All employees's leave lines" action="action.leave.line.view.conf" />
+
+	<action-view name="action.leave.line.view.conf" title="All employees's leave lines" model="com.axelor.apps.hr.db.LeaveLine">
+		<view type="grid" name="leave-line-grid-all-employee"/>
+		<view type="form" name="leave-line-form-all-employee"/>
 	</action-view>
 
 
@@ -226,22 +240,24 @@
 		title="My Expenses">
 		<view name="expense-grid" type="grid" />
 		<view name="expense-form" type="form" />
+		<view-param name="search-filters" value="expense-filters"/>
 		<domain>self.user = :user_id</domain>
 		<context name="user_id" expr="eval:__user__" />
         <context name="_payCompany" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
 	</action-view>
 
-	<menuitem name="validate-expense"  parent="expense-root" title="Expenses to Validate" action="expense.validate" />
+	<menuitem name="validate-expense"  parent="expense-root" title="Expenses to Validate" action="expense.validate" tag-style="default" tag-get="com.axelor.apps.hr.web.expense.ExpenseController:expenseValidateMenuTag()"/>
 
 	<action-method name="expense.validate">
 		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="validateExpense"/>
 	</action-method>
-
-	<menuitem name="ventilate-expense"  parent="expense-root" title="Expenses to Ventilate" action="expense.ventilate"  />
+	
+	<menuitem name="ventilate-expense"  parent="expense-root" title="Expenses to Ventilate" action="expense.ventilate" tag-count="true"/>
 
 	<action-view name="expense.ventilate" title="Expenses to Ventilate" model="com.axelor.apps.hr.db.Expense">
 		<view type="grid" name="expense-grid"/>
 		<view type="form" name="expense-form"/>
+		<view-param name="search-filters" value="expense-filters"/>
 		<domain>self.statusSelect = 3 AND self.ventilated = false</domain>
         <context name="_payCompany" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
 	</action-view>
@@ -251,6 +267,7 @@
 	<action-view name="multiple.users.expense" title="Multiple users expenses" model="com.axelor.apps.hr.db.Expense">
 		<view type="grid" name="expense-grid"/>
 		<view type="form" name="expense-form"/>
+		<view-param name="search-filters" value="expense-filters"/>
 		<domain>self.multipleUsers IS TRUE</domain>
 		<context name="setMultipleUsers" expr="eval: true"/>
         <context name="_payCompany" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
@@ -269,9 +286,9 @@
 	<action-view name="conf.expense.type" title="Expense types" model="com.axelor.apps.base.db.Product">
     	<view type="grid" name="product-expense-grid"/>
 	    <view type="form" name="product-expense-form"/>
-	    <view-param name="search-filters" value="products-filters"/>
+	    <view-param name="search-filters" value="product-expense-filters"/>
 	    <view-param name="forceTitle" value="true" />
-		<domain>self.isModel = false AND self.expense = true</domain>
+		<domain>self.isModel = false AND self.expense = true AND dtype = 'Product'</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_isModel" expr="false"/>
 		<context name="_payCompany" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
@@ -307,11 +324,12 @@
 		title="My Timesheets">
 		<view name="my-timesheets-grid" type="grid" />
 		<view name="timesheet-form" type="form" />
+		<view-param name="search-filters" value="timesheet-filters"/>
 		<domain>self.user = :user_id</domain>
 		<context name="user_id" expr="eval:__user__" />
 	</action-view>
 
-	<menuitem name="validate-timesheet"  parent="timesheet-root" title="Timesheets to Validate" action="timesheet.validate" order="3"/>
+	<menuitem name="validate-timesheet"  parent="timesheet-root" title="Timesheets to Validate" action="timesheet.validate" order="3" tag-style="default" tag-get="com.axelor.apps.hr.web.timesheet.TimesheetController:timesheetValidateMenuTag()"/>
 
 	<action-method name="timesheet.validate">
 		<call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="validateTimesheet"/>
@@ -361,11 +379,12 @@
 		title="My Extra Hours">
 		<view name="extra-hours-grid" type="grid" />
 		<view name="extra-hours-form" type="form" />
+		<view-param name="search-filters" value="extra-hours-filters"/>
 		<domain>self.user = :user_id</domain>
 		<context name="user_id" expr="eval:__user__" />
 	</action-view>
 
-	<menuitem name="validate-extra-hours"  parent="extra-hours-root" title="Extra hours to validate" action="extra.hours.validate"/>
+	<menuitem name="validate-extra-hours"  parent="extra-hours-root" title="Extra hours to validate" action="extra.hours.validate" tag-style="default" tag-get="com.axelor.apps.hr.web.extra.hours.ExtraHoursController:extraHoursValidateMenuTag()"/>
 
 	<action-method name="extra.hours.validate">
 		<call class="com.axelor.apps.hr.web.extra.hours.ExtraHoursController" method="validateExtraHours"/>
@@ -383,16 +402,16 @@
 		<view type="grid" name="product-grid" />
 		<view type="form" name="product-form" />
 		<view-param name="search-filters" value="products-filters"/>
-		<domain>self.isModel = :_isModel AND self.productTypeSelect = :_productTypeSelect AND self.expense = false</domain>
+		<domain>self.isModel = :_isModel AND self.productTypeSelect = :_productTypeSelect AND self.expense = false AND dtype = 'Product'</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_isModel" expr="false"/>
 		<context name="_productTypeSelect" expr="storable"/>
 	</action-view>
 
-	<menuitem name="extra-hours-type" parent="extra-hours-root" title="Extra hours Type" action="extra.hours.type"/>
+	<menuitem name="extra-hours-type" parent="extra-hours-root" title="Extra hours type" action="extra.hours.type"/>
 
 	<action-view name="extra.hours.type" model="com.axelor.apps.hr.db.ExtraHoursType"
-		title="Extra Hours Type">
+		title="Extra hours type">
 		<view name="extra-hours-type-grid" type="grid" />
 		<view name="extra-hours-type-form" type="form" />
 	</action-view>
@@ -404,6 +423,7 @@
 		model="com.axelor.apps.hr.db.HrBatch" >
 		<view type="grid" name="hr-batch-grid"/>
 		<view type="form" name="hr-batch-form"/>
+		<view-param name="search-filters" value="hr-batch-filters"/>
 	</action-view>
 
 	<menuitem name="hr-report-root" parent="hr-root" title="Dashboards" order="300" icon="fa-bar-chart"/>

@@ -43,6 +43,7 @@ public class PartnerController {
               .model(Project.class.getName())
               .add("form", "project-form")
               .add("grid", "project-grid")
+              .param("search-filters", "project-filters")
               .param("forceTitle", "true")
               .param("forceEdit", "true")
               .context("_showRecord", project.getId())

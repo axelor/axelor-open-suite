@@ -156,6 +156,11 @@ public class PaymentVoucherController {
     String fileLink =
         ReportFactory.createReport(IReport.PAYMENT_VOUCHER, name + "-${date}")
             .addParam("PaymentVoucherId", paymentVoucher.getId())
+            .addParam(
+                "Timezone",
+                paymentVoucher.getCompany() != null
+                    ? paymentVoucher.getCompany().getTimezone()
+                    : null)
             .generate()
             .getFileLink();
 

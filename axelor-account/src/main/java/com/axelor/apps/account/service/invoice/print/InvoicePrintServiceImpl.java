@@ -64,7 +64,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
   public String printInvoice(
       Invoice invoice, boolean forceRefresh, String format, Integer reportType, String locale)
       throws AxelorException, IOException {
-    String fileName = getInvoiceFilesName(false, format);
+    String fileName = I18n.get("Invoice") + "-" + invoice.getInvoiceId() + "." + format;
     return PdfTool.getFileLinkFromPdfFile(
         printCopiesToFile(invoice, forceRefresh, reportType, format, locale), fileName);
   }
@@ -165,7 +165,13 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
           }
         });
 
-    String fileName = getInvoiceFilesName(true, "pdf");
+    String fileName =
+        I18n.get("Invoices")
+            + " - "
+            + Beans.get(AppBaseService.class)
+                .getTodayDate()
+                .format(DateTimeFormatter.BASIC_ISO_DATE)
+            + ".pdf";
     return PdfTool.mergePdfToFileLink(printedInvoices, fileName);
   }
 
@@ -185,7 +191,6 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
   @Override
   public ReportSettings prepareReportSettings(
       Invoice invoice, Integer reportType, String format, String locale) throws AxelorException {
-
     if (invoice.getPrintingSettings() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
@@ -220,27 +225,23 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
               ? companyLanguageCode
               : partnerLanguageCode;
     }
+    String watermark = null;
+    if (accountConfigRepo.findByCompany(invoice.getCompany()).getInvoiceWatermark() != null) {
+      watermark =
+          MetaFiles.getPath(
+                  accountConfigRepo.findByCompany(invoice.getCompany()).getInvoiceWatermark())
+              .toString();
+    }
 
     return reportSetting
         .addParam("InvoiceId", invoice.getId())
         .addParam("Locale", locale)
+        .addParam(
+            "Timezone", invoice.getCompany() != null ? invoice.getCompany().getTimezone() : null)
         .addParam("ReportType", reportType == null ? 0 : reportType)
         .addParam("HeaderHeight", invoice.getPrintingSettings().getPdfHeaderHeight())
+        .addParam("Watermark", watermark)
         .addParam("FooterHeight", invoice.getPrintingSettings().getPdfFooterHeight())
         .addFormat(format);
-  }
-
-  /**
-   * Return the name for the printed invoice.
-   *
-   * @param plural if there is one or multiple invoices.
-   */
-  protected String getInvoiceFilesName(boolean plural, String format) {
-
-    return I18n.get(plural ? "Invoices" : "Invoice")
-        + " - "
-        + Beans.get(AppBaseService.class).getTodayDate().format(DateTimeFormatter.BASIC_ISO_DATE)
-        + "."
-        + format;
   }
 }

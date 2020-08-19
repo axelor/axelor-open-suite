@@ -17,9 +17,13 @@
  */
 package com.axelor.studio.db.repo;
 
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaJsonModel;
+import com.axelor.meta.db.MetaJsonRecord;
 import com.axelor.meta.db.repo.MetaJsonModelRepository;
 import com.axelor.studio.db.AppBuilder;
+import com.axelor.studio.db.MenuBuilder;
+import com.axelor.studio.service.builder.MenuBuilderService;
 
 public class MetaJsonModelRepo extends MetaJsonModelRepository {
 
@@ -37,6 +41,31 @@ public class MetaJsonModelRepo extends MetaJsonModelRepository {
         jsonModel.getMenu().setConditionToCheck(null);
       }
     }
+
+    if (jsonModel.getIsGenerateMenu()) {
+      MenuBuilder menuBuilder = jsonModel.getMenuBuilder();
+      if (menuBuilder != null) {
+        menuBuilder =
+            Beans.get(MenuBuilderService.class)
+                .updateMenuBuilder(
+                    menuBuilder,
+                    jsonModel.getName(),
+                    jsonModel.getName().toLowerCase(),
+                    jsonModel.getAppBuilder(),
+                    MetaJsonRecord.class.getName(),
+                    true,
+                    null);
+      }
+    }
     return jsonModel;
+  }
+
+  @Override
+  public void remove(MetaJsonModel jsonModel) {
+
+    if (jsonModel.getMenuBuilder() != null && jsonModel.getMenuBuilder().getMetaMenu() != null) {
+      Beans.get(MenuBuilderRepo.class).remove(jsonModel.getMenuBuilder());
+    }
+    super.remove(jsonModel);
   }
 }

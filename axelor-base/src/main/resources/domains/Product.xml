@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db" />
 
 	<entity name="Product" lang="java">
 
-		<string name="name" title="Name" required="true" initParam="true"
+		<string name="name" title="Name" initParam="true"
 			translatable="true" />
 		<string name="serialNumber" title="Serial Nbr"/>
 		<string name="code" title="Code" initParam="true" unique="true"/>
@@ -28,7 +28,7 @@
 		<integer name="saleSupplySelect" title="Sale supply default method on sale order"
 			selection="product.sale.supply.select" initParam="true" massUpdate="true"/>
 
-		<string name="productTypeSelect" title="Type" required="true"
+		<string name="productTypeSelect" title="Type"
 			selection="product.product.type.select" initParam="true" massUpdate="true"/>
 		<string name="procurementMethodSelect" title="Procurement method"
 			selection="product.procurement.method.select" initParam="true" />
@@ -44,17 +44,20 @@
 		<many-to-one name="saleCurrency" ref="com.axelor.apps.base.db.Currency"
 			title="Sale currency" initParam="true" />
 		<decimal name="purchasePrice" title="Purchase price W.T."
-			precision="20" scale="10" massUpdate="true" />
+			precision="20" scale="10" massUpdate="true" min="0" />
+		<decimal name="lastPurchasePrice" title="Last purchase price W.T."
+			precision="20" scale="10"/>
 		<many-to-one name="purchaseCurrency" ref="com.axelor.apps.base.db.Currency"
 			title="Purchase / Cost currency" initParam="true" />
+		<many-to-one name="lastPurchaseCurrency" ref="com.axelor.apps.base.db.Currency" title="Last purchase currency"/>
 		<boolean name="autoUpdateSalePrice" default="false"
 			title="Update sale price from cost price" />
 
 		<decimal name="costPrice" title="Cost price" precision="20"
-			scale="10" massUpdate="true" />
+			scale="10" massUpdate="true" min="0" />
 
-		<decimal name="managPriceCoef" title="Management coef." />
-		<decimal name="shippingCoef" title="Shipping Coef." />
+		<decimal name="managPriceCoef" title="Management coef." min="0" />
+		<decimal name="shippingCoef" title="Shipping Coef." min="0" />
 		<boolean name="defShipCoefByPartner" title="Define the shipping coef by partner" />
 
 		<date name="startDate" title="Product launch Date" initParam="true" />
@@ -93,7 +96,7 @@
 		<integer name="costTypeSelect" title="Cost type"
 			selection="base.product.cost.type.select" default="1" />
 
-		<integer name="supplierDeliveryTime" title="Supplier delivery time (days)" />
+		<integer name="supplierDeliveryTime" title="Supplier delivery time (days)" min="0" />
 
 		<many-to-one name="barCode" title="Barcode"
 			ref="com.axelor.meta.db.MetaFile" />
@@ -129,6 +132,9 @@
 			
 		<boolean name="allowToForcePurchaseQty" title="Allow to force purchases quantities"/>
 		
+		<one-to-many name="productCompanyList" ref="com.axelor.apps.base.db.ProductCompany" title="Products per companies"
+			mappedBy="product"/>
+
 		<extra-code>
 	   		<![CDATA[
 				// PRODUCT TYPE SELECT

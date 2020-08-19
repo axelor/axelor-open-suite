@@ -45,6 +45,7 @@ public class TrainingRegisterController {
             .model(Event.class.getCanonicalName())
             .add("form", "event-form")
             .add("grid", "event-grid")
+            .param("search-filters", "event-filters")
             .context("_showRecord", event.getId())
             .context("_user", trainingRegister.getEmployee().getUser())
             .map());
@@ -91,13 +92,14 @@ public class TrainingRegisterController {
       trainingSaved = trainingRegisterSaved.getTraining();
     }
 
-    if (trainingSaved != null && trainingSaved.getId() != trainingRegister.getTraining().getId()) {
+    if (trainingSaved != null
+        && trainingSaved.getId().equals(trainingRegister.getTraining().getId())) {
       trainingRegisterService.updateTrainingRating(trainingSaved, trainingRegister.getId());
     }
 
     if (trainingSessionSaved != null) {
       if (trainingRegister.getTrainingSession() == null
-          || trainingRegister.getTrainingSession().getId() != trainingSessionSaved.getId()) {
+          || trainingRegister.getTrainingSession().getId().equals(trainingSessionSaved.getId())) {
         trainingRegisterService.updateSessionRating(trainingSessionSaved, trainingRegister.getId());
       }
     }

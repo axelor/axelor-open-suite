@@ -19,6 +19,7 @@ package com.axelor.apps.businessproduction.service;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -57,7 +58,8 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
       AppProductionService appProductionService,
       ManufOrderRepository manufOrderRepo,
       ProdProductRepository prodProductRepo,
-      OperationOrderServiceBusinessImpl operationOrderServiceBusinessImpl) {
+      OperationOrderServiceBusinessImpl operationOrderServiceBusinessImpl,
+      ProductCompanyService productCompanyService) {
     super(
         sequenceService,
         operationOrderService,
@@ -66,7 +68,8 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
         appBaseService,
         appProductionService,
         manufOrderRepo,
-        prodProductRepo);
+        prodProductRepo,
+        productCompanyService);
     this.operationOrderServiceBusinessImpl = operationOrderServiceBusinessImpl;
   }
 

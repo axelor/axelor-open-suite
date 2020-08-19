@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
   
   <grid name="dashlet-builder-grid" title="Dashlet builders" model="com.axelor.studio.db.DashletBuilder" canMove="true" orderBy="sequence">
   	  <field name="viewType" />	
       <field name="name" />
-      <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
+      <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
   </grid>
   
   <form name="dashlet-builder-form" title="Dashlet builder" model="com.axelor.studio.db.DashletBuilder">
       <panel name="mainPanel">
-      	  <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
-      	  <spacer name="appBuilderSpacer"/>
+      	  <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
+      	  <spacer name="appBuilderSpacer" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
           <field name="viewType" selection-in="['chart','grid', 'custom']"/>
 	      <field name="name" />
       	  <field name="metaView" requiredIf="action == null" domain="self.type = :viewType" />

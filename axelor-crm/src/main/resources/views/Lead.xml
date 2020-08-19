@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
     <grid name="lead-grid" title="Leads" model="com.axelor.apps.crm.db.Lead" orderBy="-contactDate,statusSelect">
       <!--
@@ -96,12 +96,12 @@
 				<static name="duplicateLeadText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a lead with this name.</span>]]></static>
 				<field name="fullName" showTitle="false" colSpan="12" readonlyIf="statusSelect == 4 || statusSelect == 5">
 					<editor x-show-titles="false">
-						<field name="enterpriseName" colSpan="12" showIf="partner == null" placeholder="Enterprise name" onChange="action-lead-method-set-social-network-url"/>
-						<field name="jobTitleFunction" colSpan="6" placeholder="Function"/>
+						<field name="enterpriseName" css="label-bold bold large" colSpan="12" showIf="partner == null" placeholder="Enterprise name" onChange="action-lead-method-set-social-network-url"/>
 						<field name="industrySector" colSpan="6" form-view="industry-sector-form" grid-view="industry-sector-grid" canEdit="false"/>
 						<field name="partner" colSpan="12" showIf="statusSelect == 4" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
 					</editor>
 				</field>
+				<field name="jobTitleFunction" colSpan="6" placeholder="Function" showTitle="false"/>
 			</panel>
 		</panel>
 
@@ -110,7 +110,7 @@
 				<panel name="contactDetailPanel" title="Contact details" readonlyIf="statusSelect == 4 || statusSelect == 5" colSpan="12">
 					<field name="isDoNotCall" colSpan="3" hideIf="$readonly()"/>
 					<field name="isDoNotSendEmail" colSpan="3" hideIf="$readonly()"/>
-					<field name="$viewerCallAndEmail" showIf="$readonly" colSpan="12" showTitle="false">
+					<field name="$viewerCallAndEmail" showIf="$readonly()" colSpan="12" showTitle="false">
 						<viewer>
 							<![CDATA[
 								<h4>
@@ -120,7 +120,6 @@
 							]]>
 						</viewer>
 					</field>
-					<spacer name="viewerCallAndEmailSpacer" colSpan="6"/>
 					<field name="mobilePhone" colSpan="3" placeholder="+33100000000" onChange="action-partner-method-normalize-mobilePhone" pattern="^\+?([\s()-.]*\d){7,}$"/>
 					<field name="emailAddress" colSpan="3" canSelect="false" form-view="email-address-simple-form" x-show-icons="false">
 						<editor x-show-titles="false">
@@ -129,15 +128,14 @@
 					</field>
 					<field name="fixedPhone" colSpan="3" placeholder="+33100000000" onChange="action-partner-method-normalize-fixedPhone" pattern="^\+?([\s()-.]*\d){7,}$"/>
 					<field name="fax" colSpan="3" placeholder="+33100000000" onChange="action-partner-method-normalize-fax" pattern="^\+?([\s()-.]*\d){7,}$"/>
-					<field name="webSite" colSpan="3" placeholder="http://www.url.com" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
+					<field name="webSite" colSpan="6" placeholder="http://www.url.com" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
 				</panel>
 
 				<panel name="primaryAddress" title="Primary address" readonlyIf="statusSelect == 4 || statusSelect == 5" colSpan="12">
-					<field name="primaryAddress" colSpan="12"/>
-					<field name="primaryCity" colSpan="4"/>
-					<field name="primaryState" colSpan="4"/>
+					<field name="primaryAddress" colSpan="8"/>
 					<field name="primaryPostalCode" colSpan="4"/>
-					<spacer name="primaryPostalCodeSpacer" colSpan="8"/>
+					<field name="primaryCity" colSpan="4" form-view="city-form" grid-view="city-grid" onChange="action-attrs-lead-set-primary-state-country-postal-code"/>
+					<field name="primaryState" colSpan="4" form-view="region-form" grid-view="region-grid"/>
 					<field name="primaryCountry" colSpan="4" form-view="country-form" grid-view="country-grid"/>
 				</panel>
 
@@ -158,7 +156,7 @@
 		<panel name="actionsPanel" sidebar="true">
 			<button name="grabLeadBtn" title="Assign to me" hideIf="user.id == _internalUserId || statusSelect == 4 || statusSelect == 5" icon="fa-suitcase" onClick="save,com.axelor.apps.crm.web.EventController:assignToMeLead"/>
 			<button name="startBtn" title="Start" hideIf="statusSelect >= 3" icon="fa-play" onClick="save,action-lead-record-status-start,save"/>
-			<button name="convertBtn" title="Convert" hideIf="statusSelect >= 4 || !id" icon="fa-exchange" onClick="save,action-lead-view-convert-lead,reload"/>
+			<button name="convertBtn" title="Convert" hideIf="statusSelect >= 4 || !id" icon="fa-exchange" onClick="save,action-lead-view-convert-lead"/>
 			<button name="recycleBtn" title="Recycle" hideIf="statusSelect != 5" icon="fa-recycle" onClick="save,action-lead-record-status-recycle,save"/>
 			<button name="loseBtn" title="Lose" hideIf="statusSelect == 5" icon="fa-times" onClick="save,action-lead-view-lose,save" css="btn-danger"/>
 			<button name="showPartnerBtn" title="Show Partner" showIf="partner" colSpan="6" onClick="action-lead-view-show-partner"/>
@@ -268,6 +266,14 @@
     	<field name="statusSelect" expr="3"/>
     	<field name="isRecycled" expr="true"/>
     </action-record>
+    
+    <action-attrs name="action-attrs-lead-set-primary-state-country-postal-code">
+    	<attribute if="eval: primaryCity?.department?.region" name="value" expr="eval: primaryCity.department.region" for="primaryState"/>
+ 		<attribute if="eval: primaryCity?.country" name="value" expr="eval: primaryCity.country" for="primaryCountry"/>
+ 		<attribute name="readonly" expr="eval: primaryCity?.department?.region ? true: false" for="primaryState"/>
+ 		<attribute name="readonly" expr="eval: primaryCity?.country ? true: false" for="primaryCountry"/>
+ 		<attribute name="value" for="primaryPostalCode" expr="eval: primaryCity?.zip"/>
+    </action-attrs>
 
     <action-view name="action-lead-view-lose" model="com.axelor.apps.crm.db.Lead" title="Lose">
 	  	<view type="form" name="lead-lose-wizard-form"/>
@@ -334,6 +340,7 @@
 	</action-method>
 	
    	<search-filters name="lead-filters" model="com.axelor.apps.crm.db.Lead" title="Lead filters">
+   		<field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
 		<filter title="My Leads">
 			<domain>self.user = :__user__</domain>
 		</filter>

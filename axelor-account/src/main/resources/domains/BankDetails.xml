@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="BankDetails" lang="java">
 
     <string name="specificNoteOnInvoice" title="Specific note on invoice" large="true"/>
+    <many-to-one name="bankAccount" ref="com.axelor.apps.account.db.Account" title="Bank accounting account"/>
+    <many-to-one name="journal" ref="com.axelor.apps.account.db.Journal" title="Journal"/>
   
   </entity>
 

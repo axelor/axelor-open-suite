@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -54,6 +54,9 @@
 	<boolean name="displayTrackNbrOnCertificateOfConformityPrinting" title="Display tracking number details on certificate of conformity printing"/>
 	<boolean name="displayExtRefOnCertificateOfConformityPrinting" title="Display external ref. on certificate of conformity printing"/>
 	<many-to-one name="stockRuleMessageTemplate" ref="com.axelor.apps.message.db.Template" title="Message template for stock rules"/>
+	<boolean name="displayProductCodeOnPrinting" title="Display product code on printing" default="false"/>
+	<boolean name="displayPriceOnPrinting" title="Display price on printing" default="false"/>
+	<boolean name="displayOrderReferenceAndOrderDate" title="Display order reference and order date" default="false"/>
 
 	<track>
 		<field name="company" on="UPDATE"/>

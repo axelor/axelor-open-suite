@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
     <grid name="production-order-grid" title="Production orders" model="com.axelor.apps.production.db.ProductionOrder" orderBy="-productionOrderSeq">
     <hilite color="danger" if="prioritySelect == 3"/>
@@ -40,7 +40,7 @@
         <panel-tabs name="mainPanelTab">
             <panel-related name="manufOrderListPanel" field="manufOrderList" colSpan="12" edit-window="blank" canNew="false" form-view="manuf-order-form">
                 <field name="manufOrderSeq"/>
-                <field name="product" form-view="product-form" grid-view="product-grid"/>
+                <field name="product" form-view="product-form" grid-view="product-grid" domain="dtype = 'Product'"/>
                 <field name="qty"/>
                 <field name="plannedStartDateT"/>
                 <field name="plannedEndDateT"/>
@@ -56,7 +56,7 @@
     
     <form name="add-manuf-order-wizard-form" model="com.axelor.apps.base.db.Wizard" title="Add Manuf. Order" onNew="action-production-order-record-default-wizard,action-add-manuf-order-wizard-attrs-scale">
     	<panel name="wizardPanel">
-     		<field name="$product" title="Product" type="many-to-one" target="com.axelor.apps.base.db.Product" canEdit="false" domain="self.expense = false and self.productTypeSelect = 'storable' and self.procurementMethodSelect = 'produce'" form-view="product-form" grid-view="product-grid" onChange="action-production-order-wizard-record-bill-of-materials"/>
+     		<field name="$product" title="Product" type="many-to-one" target="com.axelor.apps.base.db.Product" canEdit="false" domain="self.expense = false and self.productTypeSelect = 'storable' and self.procurementMethodSelect = 'produce' AND dtype = 'Product'" form-view="product-form" grid-view="product-grid" onChange="action-production-order-wizard-record-bill-of-materials"/>
         	<field name="$billOfMaterial" title="BOM" type="many-to-one" onChange="action-production-order-wizard-record-product" onSelect="action-production-order-wizard-attrs-bill-of-material-dummy-domain" target="com.axelor.apps.production.db.BillOfMaterial" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
         	<field name="$qty" title="Quantity" type="decimal"/>
         	<field name="$_startDate" widget="dateTime" title="Planned start date"/>
@@ -117,6 +117,7 @@
 	</action-view>
 
     <search-filters name="production-order-filters" model="com.axelor.apps.production.db.ProductionOrder" title="Production order filters">
+		<field name="project" hidden="true" if="!__config__.app.getApp('production').getManageBusinessProduction()"/>
 		<filter title="Production orders closed">
 			<domain>self.isClosed = true</domain>
 		</filter>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
   
 	<grid name="bank-reconciliation-grid" title="Bank reconciliations" model="com.axelor.apps.bankpayment.db.BankReconciliation" orderBy="-fromDate,-toDate,company.code,bankDetails.iban">
 		<field name="name"/>
@@ -30,12 +30,12 @@
 				<field name="bankStatement" domain="self.statusSelect = 2"/>
 				<field name="company" canEdit="false" widget="SuggestBox" onChange="action-bank-reconciliation-set-currency" form-view="company-form" grid-view="company-grid" required="true"/>
 				<field name="currency" canEdit="false" form-view="currency-form" grid-view="currency-grid" required="true"/>
-				<field name="bankDetails" canEdit="false" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-bank-reconciliation-method-set-bank-details-domain" required="true"/>
+				<field name="bankDetails" canEdit="false" form-view="bank-details-form" grid-view="bank-details-grid" onSelect="action-bank-reconciliation-method-set-bank-details-domain" required="true" onChange="action-bank-reconciliation-method-set-journal,action-bank-reconciliation-method-set-cash-account"/>
 				<field name="includeOtherBankStatements"/>
 				<field name="fromDate"/>
 				<field name="toDate"/>
-				<field name="journal" canEdit="false" domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form" grid-view="journal-grid"/>
-				<field name="cashAccount" canEdit="false" domain="self.company = :company AND self.accountType.technicalTypeSelect ='cash'" form-view="account-form" grid-view="account-grid"/>
+				<field name="journal" canEdit="false" form-view="journal-form" grid-view="journal-grid" onChange="action-bank-reconciliation-method-set-cash-account" onSelect="action-bank-reconciliation-method-set-journal-domain"/>
+				<field name="cashAccount" canEdit="false" form-view="account-form" grid-view="account-grid" onSelect="action-bank-reconciliation-method-set-cash-account-domain"/>
 			</panel>
 			<panel colSpan="12" name="actionsPanel">
 				<button name="loadBankStatementBtn" title="Load bank statements" onClick="save,action-bank-reconciliation-method-load-bank-statement" showIf="bankStatement &amp;&amp; !bankReconciliationLineList.length > 0" colSpan="3"/>
@@ -204,5 +204,25 @@
 	<action-validate name="action-bank-reconciliation-check-incomplete-bankreconciliation-line">
    		<alert message="There is at least one incomplete bank reconciliation. Are you sure you want to continue ?" if="bankReconciliationLineList != null &amp;&amp; bankReconciliationLineList.find{it.moveLine == null} != null" />
    	</action-validate>
-    
+
+	<action-method name="action-bank-reconciliation-method-set-journal-domain">
+    	<call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="setJournalDomain"/>
+    </action-method>
+
+	<action-method name="action-bank-reconciliation-method-set-journal">
+     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="setJournal"/>
+    </action-method>
+
+   <action-method name="action-bank-reconciliation-method-set-cash-account-domain">
+    	<call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="setCashAccountDomain"/>
+    </action-method>
+
+    <action-method name="action-bank-reconciliation-method-set-cash-account">
+     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="setCashAccount"/>
+    </action-method>
+
+	<search-filters name="bank-reconciliation-filters" model="com.axelor.apps.bankpayment.db.BankReconciliation" title="Bank reconciliation filters">
+		<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+	</search-filters>
+
 </object-views>

@@ -19,6 +19,7 @@ package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
+import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.auth.db.User;
@@ -33,6 +34,8 @@ public class EmployeeHRRepository extends EmployeeRepository {
       partner.setIsContact(true);
       partner.setIsEmployee(true);
       Beans.get(PartnerHRRepository.class).save(partner);
+    } else {
+      Beans.get(PartnerService.class).setPartnerFullName(partner);
     }
 
     EmploymentContract employmentContract = entity.getMainEmploymentContract();
@@ -52,7 +55,7 @@ public class EmployeeHRRepository extends EmployeeRepository {
     entity.setPhoneAtCustomer(null);
     entity.setEmergencyContact(null);
     entity.setEmergencyNumber(null);
-    entity.setDateOfHire(null);
+    entity.setHireDate(null);
     entity.setSeniorityDate(null);
     entity.setProfitSharingBeneficiary(null);
     entity.setMainEmploymentContract(null);

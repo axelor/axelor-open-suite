@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -500,6 +500,7 @@ FROM public.account_accounting_report as AccountingReport
 LEFT JOIN public.account_fixed_asset AS Asset ON (AccountingReport.id = ?)
 LEFT JOIN public.account_account AS Account ON asset.purchase_account = account.id 
 LEFT JOIN public.account_analytic_distribution_template AS AnalyticDistributionTemplate ON Asset.analytic_distribution_template = AnalyticDistributionTemplate.id
+left join public.account_accounting_report_account_set as AccountSet on AccountSet.account_accounting_report = AccountingReport.id
 WHERE 
    (Asset.status_select in (2,3) 
    OR 
@@ -511,6 +512,7 @@ WHERE
    AND (AccountingReport.date_to IS NULL OR Asset.acquisition_date <= AccountingReport.date_to)
    AND Asset.company = AccountingReport.company
    AND (AccountingReport.analytic_distribution_template IS NULL OR Asset.analytic_distribution_template = AccountingReport.analytic_distribution_template)
+   AND(AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
 ORDER BY Account.code]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -1697,68 +1699,14 @@ AND Asset.company = AccountingReport.company]]></xml-property>
                         </cell>
                         <cell id="4637">
                             <property name="verticalAlign">middle</property>
-                            <text id="4826">
+                            <data id="5641">
                                 <property name="fontFamily">sans-serif</property>
-                                <property name="dataSet">AccountingReportDS</property>
-                                <list-property name="boundDataColumns">
-                                    <structure>
-                                        <property name="name">company_name</property>
-                                        <text-property name="displayName">company_name</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["company_name"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">date_from</property>
-                                        <text-property name="displayName">date_from</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["date_from"]</expression>
-                                        <property name="dataType">date</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">date_to</property>
-                                        <text-property name="displayName">date_to</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["date_to"]</expression>
-                                        <property name="dataType">date</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">year_name</property>
-                                        <text-property name="displayName">year_name</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["year_name"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">report_date</property>
-                                        <text-property name="displayName">report_date</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
-                                        <property name="dataType">date</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">report_date_edition</property>
-                                        <text-property name="displayName">report_date_edition</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["report_date_edition"]</expression>
-                                        <property name="dataType">date-time</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">logo_path</property>
-                                        <text-property name="displayName">logo_path</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">period_name</property>
-                                        <text-property name="displayName">period_name</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["period_name"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">currency</property>
-                                        <text-property name="displayName">currency</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                </list-property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF format="MMM dd, yyyy, hh:mm a">row["report_date"]</VALUE-OF>]]></text-property>
-                            </text>
+                                <structure name="dateTimeFormat">
+                                    <property name="category">Short Date</property>
+                                    <property name="pattern">Short Date</property>
+                                </structure>
+                                <property name="resultSetColumn">report_date</property>
+                            </data>
                         </cell>
                         <cell id="4817">
                             <property name="verticalAlign">middle</property>
@@ -2143,16 +2091,17 @@ AND Asset.company = AccountingReport.company]]></xml-property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
                     </text>
-                    <text id="556">
+                    <data id="5639">
                         <property name="fontFamily">sans-serif</property>
-                        <property name="marginLeft">2pt</property>
-                        <property name="textAlign">left</property>
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="display">inline</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF  format="dd/MM/yyyy">row["date_from"]</VALUE-OF>]]></text-property>
-                    </text>
+                        <property name="resultSetColumn">date_from</property>
+                    </data>
                 </cell>
                 <cell id="504">
                     <property name="colSpan">2</property>
@@ -2191,16 +2140,17 @@ AND Asset.company = AccountingReport.company]]></xml-property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
                     </text>
-                    <text id="557">
+                    <data id="5640">
                         <property name="fontFamily">sans-serif</property>
-                        <property name="marginLeft">2pt</property>
-                        <property name="textAlign">left</property>
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="display">inline</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["date_to"]</VALUE-OF>]]></text-property>
-                    </text>
+                        <property name="resultSetColumn">date_to</property>
+                    </data>
                 </cell>
             </row>
         </grid>
@@ -2483,6 +2433,108 @@ row["disposal_value"];
                     <text-property name="displayName">analytic_distribution_template_name</text-property>
                     <expression name="expression" type="javascript">dataSetRow["analytic_distribution_template_name"]</expression>
                     <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">adt_sum_original_value</property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>NewTableGroup1</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">if(row['acquisition_date'] &lt;=  row['date_from']){
+	row["gross_value"];
+}</expression>
+                        </structure>
+                    </list-property>
+                    <expression name="filterExpr" type="javascript">row["analytic_distribution_template"]</expression>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">adt_sum_acquisition</property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>NewTableGroup1</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">if(row['acquisition_date'] >=  row['date_from'] &amp;&amp; row['acquisition_date'] &lt;=  row['date_to']){
+	row["gross_value"]
+}</expression>
+                        </structure>
+                    </list-property>
+                    <expression name="filterExpr" type="javascript">row["analytic_distribution_template"]</expression>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">adt_sum_asset_disposal</property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>NewTableGroup1</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">if(row['disposal_date'] >=  row['date_from'] &amp;&amp; row['disposal_date'] &lt;=  row['date_to']){
+row["disposal_value"];
+}</expression>
+                        </structure>
+                    </list-property>
+                    <expression name="filterExpr" type="javascript">row["analytic_distribution_template"]</expression>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">adt_sum_year_end_value</property>
+                    <property name="dataType">float</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>NewTableGroup1</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">SUM</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["gross_value"] - row["disposal_value"];</expression>
+                        </structure>
+                    </list-property>
+                    <expression name="filterExpr" type="javascript">row["analytic_distribution_template"]</expression>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">accountNameCount</property>
+                    <text-property name="displayName">accountNameCount</text-property>
+                    <property name="dataType">integer</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>TableGroup</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">COUNT</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["account_name"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">templateNameCount</property>
+                    <text-property name="displayName">templateNameCount</text-property>
+                    <property name="dataType">integer</property>
+                    <simple-property-list name="aggregateOn">
+                        <value>NewTableGroup1</value>
+                    </simple-property-list>
+                    <property name="aggregateFunction">COUNT</property>
+                    <list-property name="arguments">
+                        <structure>
+                            <property name="name">Expression</property>
+                            <expression name="value" type="javascript">row["accountNameCount"]</expression>
+                        </structure>
+                    </list-property>
+                    <property name="allowExport">true</property>
                 </structure>
             </list-property>
             <property name="pageBreakInterval">0</property>
@@ -3172,6 +3224,155 @@ row["disposal_value"];
                     </cell>
                 </row>
             </header>
+            <group id="5591">
+                <property name="groupName">NewTableGroup1</property>
+                <expression name="keyExpr" type="javascript">if(row["subtotal_by_analytic_distribution"]){
+	row["analytic_distribution_template"]
+}
+else {
+	row["account_code"]
+}</expression>
+                <property name="repeatHeader">false</property>
+                <property name="hideDetail">false</property>
+                <footer>
+                    <row id="5607">
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">!row["subtotal_by_analytic_distribution"]</expression>
+                            </structure>
+                        </list-property>
+                        <cell id="5608">
+                            <property name="colSpan">6</property>
+                            <property name="rowSpan">1</property>
+                            <text id="5627">
+                                <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">9pt</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="textAlign">right</property>
+                                <property name="dataSet">TranslateDS</property>
+                                <list-property name="paramBindings">
+                                    <structure>
+                                        <property name="paramName">param_1</property>
+                                        <simple-property-list name="expression">
+                                            <value type="javascript">'AccountingReportType17.total_by_analytic_template'</value>
+                                        </simple-property-list>
+                                    </structure>
+                                </list-property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">message_key</property>
+                                        <text-property name="displayName">message_key</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">translation</property>
+                                        <text-property name="displayName">translation</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : ]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="5614">
+                            <data id="5628">
+                                <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">9pt</property>
+                                <property name="fontWeight">bold</property>
+                                <structure name="numberFormat">
+                                    <property name="category">Custom</property>
+                                    <property name="pattern">#,##0.00</property>
+                                </structure>
+                                <property name="textAlign">right</property>
+                                <property name="resultSetColumn">adt_sum_original_value</property>
+                            </data>
+                        </cell>
+                        <cell id="5615">
+                            <data id="5630">
+                                <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">9pt</property>
+                                <property name="fontWeight">bold</property>
+                                <structure name="numberFormat">
+                                    <property name="category">Custom</property>
+                                    <property name="pattern">#,##0.00</property>
+                                </structure>
+                                <property name="textAlign">right</property>
+                                <property name="resultSetColumn">adt_sum_acquisition</property>
+                            </data>
+                        </cell>
+                        <cell id="5616">
+                            <data id="5632">
+                                <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">9pt</property>
+                                <property name="fontWeight">bold</property>
+                                <structure name="numberFormat">
+                                    <property name="category">Custom</property>
+                                    <property name="pattern">#,##0.00</property>
+                                    <property name="locale">agq</property>
+                                </structure>
+                                <property name="textAlign">right</property>
+                                <property name="resultSetColumn">adt_sum_asset_disposal</property>
+                            </data>
+                        </cell>
+                        <cell id="5617">
+                            <data id="5634">
+                                <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">9pt</property>
+                                <property name="fontWeight">bold</property>
+                                <structure name="numberFormat">
+                                    <property name="category">Custom</property>
+                                    <property name="pattern">#,##0.00</property>
+                                </structure>
+                                <property name="textAlign">right</property>
+                                <property name="resultSetColumn">adt_sum_year_end_value</property>
+                            </data>
+                        </cell>
+                        <cell id="5618">
+                            <text id="5636">
+                                <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">9pt</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="textAlign">right</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">vars["adt_total_year_start_value"]</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="5619">
+                            <text id="5635">
+                                <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">9pt</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="textAlign">right</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">vars["adt_total_depreciation_charges"]</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="5620">
+                            <text id="5637">
+                                <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">9pt</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="textAlign">right</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">vars["adt_total_year_end_value"]</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="5621">
+                            <text id="5638">
+                                <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">9pt</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="textAlign">right</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">vars["adt_total_residual_year_value"]</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
+                    </row>
+                </footer>
+            </group>
             <group id="5346">
                 <property name="groupName">TableGroup</property>
                 <expression name="keyExpr" type="javascript">if(row["subtotal_by_analytic_distribution"]){
@@ -3214,6 +3415,12 @@ else {
                         <property name="borderLeftStyle">none</property>
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row["templateNameCount"] &lt;= 1 &amp;&amp; row["subtotal_by_analytic_distribution"]</expression>
+                            </structure>
+                        </list-property>
                         <cell id="5351">
                             <property name="colSpan">6</property>
                             <property name="rowSpan">1</property>
@@ -3222,8 +3429,31 @@ else {
                                 <property name="fontSize">9pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="textAlign">right</property>
+                                <property name="dataSet">TranslateDS</property>
+                                <list-property name="paramBindings">
+                                    <structure>
+                                        <property name="paramName">param_1</property>
+                                        <simple-property-list name="expression">
+                                            <value type="javascript">'AccountingReportType17.total_by_account_and_analytic_template'</value>
+                                        </simple-property-list>
+                                    </structure>
+                                </list-property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">message_key</property>
+                                        <text-property name="displayName">message_key</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">translation</property>
+                                        <text-property name="displayName">translation</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[Total : ]]></text-property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : ]]></text-property>
                             </text>
                         </cell>
                         <cell id="5353">
@@ -3318,6 +3548,7 @@ else {
                                 <property name="borderRightStyle">none</property>
                                 <property name="borderTopStyle">none</property>
                                 <property name="textAlign">right</property>
+                                <structure name="toc"/>
                                 <property name="contentType">html</property>
                                 <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">vars["total_depreciation_charges"]</VALUE-OF>]]></text-property>
                             </text>
@@ -3547,9 +3778,21 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
                                     <expression name="expression" type="javascript">if(dataSetRow["year_start_total"]){
 	vars["total_year_start_value"] += parseFloat(dataSetRow["year_start_total"]);
 	vars["final_total_year_start_value"] += parseFloat(dataSetRow["year_start_total"]);
+	if(vars["adt_name_total_year_start_value"].equals("") || vars["adt_name_total_year_start_value"].equals(row._outer["analytic_distribution_template_name"])){
+	    vars["adt_name_total_year_start_value"] = row._outer["analytic_distribution_template_name"];
+		vars["adt_total_year_start_value"] += parseFloat(dataSetRow["year_start_total"]);
+	}
+	else {
+		vars["adt_name_total_year_start_value"] = row._outer["analytic_distribution_template_name"];
+		vars["adt_total_year_start_value"] = parseFloat(0.00) + parseFloat(dataSetRow["year_start_total"]);
+	}
 	dataSetRow["year_start_total"];
 }else{ 
  	0
+ 	if(!vars["adt_name_total_year_start_value"].equals(row._outer["analytic_distribution_template_name"])){
+       vars["adt_name_total_year_start_value"] = row._outer["analytic_distribution_template_name"];
+       vars["adt_total_year_start_value"] = parseFloat(0.00);
+    }
 }</expression>
                                     <property name="dataType">float</property>
                                     <property name="allowExport">true</property>
@@ -3592,9 +3835,21 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
                                     <expression name="expression" type="javascript">if(dataSetRow["depreciation_total"]){
 	vars["total_depreciation_charges"] += parseFloat(dataSetRow["depreciation_total"]);
 	vars["final_total_depreciation_charges"] += parseFloat(dataSetRow["depreciation_total"]);
+    if(vars["adt_name_total_depreciation_charges"].equals("") || vars["adt_name_total_depreciation_charges"].equals(row._outer["analytic_distribution_template_name"])){
+	    vars["adt_name_total_depreciation_charges"] = row._outer["analytic_distribution_template_name"];
+		vars["adt_total_depreciation_charges"] += parseFloat(dataSetRow["depreciation_total"]);
+	}
+	else {
+		vars["adt_name_total_depreciation_charges"] = row._outer["analytic_distribution_template_name"];
+		vars["adt_total_depreciation_charges"] = parseFloat(0.00) + parseFloat(dataSetRow["depreciation_total"]);
+	}
 	dataSetRow["depreciation_total"];
 }else{ 
  	0
+ 	if(!vars["adt_name_total_depreciation_charges"].equals(row._outer["analytic_distribution_template_name"])){
+       vars["adt_name_total_depreciation_charges"] = row._outer["analytic_distribution_template_name"];
+       vars["adt_total_depreciation_charges"] = parseFloat(0.00);
+    }
 }</expression>
                                     <property name="dataType">decimal</property>
                                     <property name="allowExport">true</property>
@@ -3631,9 +3886,21 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
                                     <expression name="expression" type="javascript">if(dataSetRow["cumulative_depreciation"]){
 	vars["total_year_end_value"] += parseFloat(dataSetRow["cumulative_depreciation"]);
 	vars["final_total_year_end_value"] += parseFloat(dataSetRow["cumulative_depreciation"]);
+	if(vars["adt_name_total_year_end_value"].equals("") || vars["adt_name_total_year_end_value"].equals(row._outer["analytic_distribution_template_name"])){
+	    vars["adt_name_total_year_end_value"] = row._outer["analytic_distribution_template_name"];
+		vars["adt_total_year_end_value"] += parseFloat(dataSetRow["cumulative_depreciation"]);
+	}
+	else {
+		vars["adt_name_total_year_end_value"] = row._outer["analytic_distribution_template_name"];
+		vars["adt_total_year_end_value"] = parseFloat(0.00) + parseFloat(dataSetRow["cumulative_depreciation"]);
+	}
 	dataSetRow["cumulative_depreciation"];
 }else{ 
  	0
+ 	if(!vars["adt_name_total_year_end_value"].equals(row._outer["analytic_distribution_template_name"])){
+       vars["adt_name_total_year_end_value"] = row._outer["analytic_distribution_template_name"];
+       vars["adt_total_year_end_value"] = parseFloat(0.00);
+    }
 }</expression>
                                     <property name="dataType">decimal</property>
                                     <property name="allowExport">true</property>
@@ -3677,9 +3944,21 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
                                     <expression name="expression" type="javascript">if(dataSetRow["residual_value"]){
 	vars["total_residual_year_value"] += parseFloat(dataSetRow["residual_value"]);
 	vars["final_total_residual_year_value"] += parseFloat(dataSetRow["residual_value"]);
+	if(vars["adt_name_total_residual_year_value"].equals("") || vars["adt_name_total_residual_year_value"].equals(row._outer["analytic_distribution_template_name"])){
+	    vars["adt_name_total_residual_year_value"] = row._outer["analytic_distribution_template_name"];
+		vars["adt_total_residual_year_value"] += parseFloat(dataSetRow["residual_value"]);
+	}
+	else {
+		vars["adt_name_total_residual_year_value"] = row._outer["analytic_distribution_template_name"];
+		vars["adt_total_residual_year_value"] = parseFloat(0.00) + parseFloat(dataSetRow["residual_value"]);
+	}
 	dataSetRow["residual_value"];
 }else{ 
  	0
+ 	if(!vars["adt_name_total_residual_year_value"].equals(row._outer["analytic_distribution_template_name"])){
+       vars["adt_name_total_residual_year_value"] = row._outer["analytic_distribution_template_name"];
+       vars["adt_total_residual_year_value"] = parseFloat(0.00);
+    }
 }</expression>
                                     <property name="dataType">decimal</property>
                                     <property name="allowExport">true</property>
@@ -3857,6 +4136,38 @@ vars["total_depreciation_charges"] = 0 ;]]></method>
         </variable-element>
         <variable-element name="final_total_residual_year_value">
             <expression name="value" type="javascript">0</expression>
+            <property name="type">report</property>
+        </variable-element>
+        <variable-element name="adt_total_depreciation_charges">
+            <expression name="value" type="javascript">0</expression>
+            <property name="type">report</property>
+        </variable-element>
+        <variable-element name="adt_total_year_start_value">
+            <expression name="value" type="javascript">0</expression>
+            <property name="type">report</property>
+        </variable-element>
+        <variable-element name="adt_total_year_end_value">
+            <expression name="value" type="javascript">0</expression>
+            <property name="type">report</property>
+        </variable-element>
+        <variable-element name="adt_total_residual_year_value">
+            <expression name="value" type="javascript">0</expression>
+            <property name="type">report</property>
+        </variable-element>
+        <variable-element name="adt_name_total_year_start_value">
+            <expression name="value" type="javascript">""</expression>
+            <property name="type">report</property>
+        </variable-element>
+        <variable-element name="adt_name_total_depreciation_charges">
+            <expression name="value" type="javascript">""</expression>
+            <property name="type">report</property>
+        </variable-element>
+        <variable-element name="adt_name_total_year_end_value">
+            <expression name="value" type="javascript">""</expression>
+            <property name="type">report</property>
+        </variable-element>
+        <variable-element name="adt_name_total_residual_year_value">
+            <expression name="value" type="javascript">""</expression>
             <property name="type">report</property>
         </variable-element>
     </property>

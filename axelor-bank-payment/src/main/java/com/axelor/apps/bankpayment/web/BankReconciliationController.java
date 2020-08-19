@@ -18,6 +18,8 @@
 package com.axelor.apps.bankpayment.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
@@ -26,12 +28,14 @@ import com.axelor.apps.bankpayment.report.IReport;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationValidateService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.db.EntityHelper;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.util.HashMap;
 import java.util.List;
@@ -141,6 +145,11 @@ public class BankReconciliationController {
                   IReport.BANK_RECONCILIATION, "Bank Reconciliation" + "-${date}")
               .addParam("BankReconciliationId", bankReconciliation.getId())
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
+              .addParam(
+                  "Timezone",
+                  bankReconciliation.getCompany() != null
+                      ? bankReconciliation.getCompany().getTimezone()
+                      : null)
               .addFormat("pdf")
               .toAttach(bankReconciliation)
               .generate()
@@ -150,5 +159,60 @@ public class BankReconciliationController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void setJournalDomain(ActionRequest request, ActionResponse response) {
+
+    BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+    String journalIds = null;
+
+    if (EntityHelper.getEntity(bankReconciliation).getBankDetails() != null) {
+      journalIds = Beans.get(BankReconciliationService.class).getJournalDomain(bankReconciliation);
+    }
+
+    if (Strings.isNullOrEmpty(journalIds)) {
+      response.setAttr("journal", "domain", "self.id IN (0)");
+    } else {
+      response.setAttr("journal", "domain", "self.id IN(" + journalIds + ")");
+    }
+  }
+
+  public void setJournal(ActionRequest request, ActionResponse response) {
+
+    BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+    Journal journal = null;
+
+    if (EntityHelper.getEntity(bankReconciliation).getBankDetails() != null) {
+      journal = Beans.get(BankReconciliationService.class).getJournal(bankReconciliation);
+    }
+    response.setValue("journal", journal);
+  }
+
+  public void setCashAccountDomain(ActionRequest request, ActionResponse response) {
+
+    BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+    String cashAccountIds = null;
+
+    if (EntityHelper.getEntity(bankReconciliation).getBankDetails() != null) {
+      cashAccountIds =
+          Beans.get(BankReconciliationService.class).getCashAccountDomain(bankReconciliation);
+    }
+
+    if (Strings.isNullOrEmpty(cashAccountIds)) {
+      response.setAttr("cashAccount", "domain", "self.id IN (0)");
+    } else {
+      response.setAttr("cashAccount", "domain", "self.id IN(" + cashAccountIds + ")");
+    }
+  }
+
+  public void setCashAccount(ActionRequest request, ActionResponse response) {
+
+    BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+    Account cashAccount = null;
+
+    if (EntityHelper.getEntity(bankReconciliation).getBankDetails() != null) {
+      cashAccount = Beans.get(BankReconciliationService.class).getCashAccount(bankReconciliation);
+    }
+    response.setValue("cashAccount", cashAccount);
   }
 }

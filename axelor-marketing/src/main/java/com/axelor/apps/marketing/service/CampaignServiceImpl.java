@@ -26,6 +26,7 @@ import com.axelor.apps.marketing.db.repo.CampaignRepository;
 import com.axelor.apps.marketing.exception.IExceptionMessage;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
@@ -42,15 +43,16 @@ import javax.mail.MessagingException;
 
 public class CampaignServiceImpl implements CampaignService {
 
-  protected TemplateMessageServiceMarketingImpl templateMessageServiceMarketingImpl;
+  protected TemplateMessageMarketingService templateMessageMarketingService;
 
   protected EventRepository eventRepo;
 
   @Inject
   public CampaignServiceImpl(
-      TemplateMessageServiceMarketingImpl templateMessageServiceMarketingImpl,
-      EventRepository eventRepo) {
-    this.templateMessageServiceMarketingImpl = templateMessageServiceMarketingImpl;
+      TemplateMessageService templateMessageService,
+      EventRepository eventRepo,
+      TemplateMessageMarketingService templateMessageMarketingService) {
+    this.templateMessageMarketingService = templateMessageMarketingService;
     this.eventRepo = eventRepo;
   }
 
@@ -59,7 +61,7 @@ public class CampaignServiceImpl implements CampaignService {
     String errorPartners = "";
     String errorLeads = "";
 
-    templateMessageServiceMarketingImpl.setEmailAccount(campaign.getEmailAccount());
+    templateMessageMarketingService.setEmailAccount(campaign.getEmailAccount());
 
     if (campaign.getPartnerTemplate() != null) {
       errorPartners =
@@ -83,7 +85,7 @@ public class CampaignServiceImpl implements CampaignService {
     String errorPartners = "";
     String errorLeads = "";
 
-    templateMessageServiceMarketingImpl.setEmailAccount(campaign.getEmailAccount());
+    templateMessageMarketingService.setEmailAccount(campaign.getEmailAccount());
 
     if (campaign.getPartnerReminderTemplate() != null) {
       errorPartners =
@@ -108,7 +110,6 @@ public class CampaignServiceImpl implements CampaignService {
     for (Partner partner : partnerSet) {
 
       try {
-        //        templateMessageServiceMarketingImpl.generateAndSendMessage(partner, template);
         generateAndSendMessage(campaign, partner, template);
       } catch (ClassNotFoundException
           | InstantiationException
@@ -131,7 +132,6 @@ public class CampaignServiceImpl implements CampaignService {
     for (Lead lead : leadSet) {
 
       try {
-        //        templateMessageServiceMarketingImpl.generateAndSendMessage(lead, template);
         generateAndSendMessage(campaign, lead, template);
       } catch (ClassNotFoundException
           | InstantiationException
@@ -151,7 +151,7 @@ public class CampaignServiceImpl implements CampaignService {
   protected void generateAndSendMessage(Campaign campaign, Model model, Template template)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           MessagingException, IOException, AxelorException {
-    Message message = templateMessageServiceMarketingImpl.generateAndSendMessage(model, template);
+    Message message = templateMessageMarketingService.generateAndSendMessage(model, template);
     message.setRelatedTo1Select(Campaign.class.getCanonicalName());
     message.setRelatedTo1SelectId(campaign.getId());
   }
@@ -237,8 +237,8 @@ public class CampaignServiceImpl implements CampaignService {
     }
   }
 
-  @Transactional
-  public void generateTargets(Campaign campaign) {
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void generateTargets(Campaign campaign) throws AxelorException {
 
     TargetListService targetListService = Beans.get(TargetListService.class);
 

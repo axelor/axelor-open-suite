@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
   <grid name="inventory-grid" title="Inventory" model="com.axelor.apps.stock.db.Inventory">
 		<field name="inventorySeq" width="120"/>
@@ -69,7 +69,7 @@
 			<panel name="filterPanel" title="Filters" hideIf="statusSelect &lt; 2" readonly="true">
 				<field name="productFamily" grid-view="product-family-grid" form-view="product-family-form"/>
 				<field name="productCategory" grid-view="product-category-grid" form-view="product-category-form"/>
-				<field name="product" grid-view="product-grid" form-view="product-form"/>
+				<field name="product" grid-view="product-grid" form-view="product-form" domain="dtype = 'Product'"/>
 				<field name="excludeOutOfStock" colSpan="3"/>
 				<field name="includeObsolete" colSpan="3"/>
 				<panel name="racksRangePanel" title="Racks range">
@@ -82,7 +82,7 @@
     <panel name="fillInventoryPanel" title="Fill inventory with" hideIf="statusSelect >= 2 || stockLocation == null">
 			<field name="productFamily" canEdit="false" grid-view="product-family-grid" form-view="product-family-form"/>
 			<field name="productCategory" canEdit="false" grid-view="product-category-grid" form-view="product-category-form"/>
-			<field name="product" canEdit="false" onSelect="action-inventory-on-select-product" onChange="action-inventory-on-change-product" grid-view="product-grid" form-view="product-form"/>
+			<field name="product" canEdit="false" onSelect="action-inventory-on-select-product" onChange="action-inventory-on-change-product" grid-view="product-grid" form-view="product-form" domain="dtype = 'Product'"/>
       <field name="excludeOutOfStock" colSpan="3"/>
       <field name="includeObsolete" colSpan="3"/>
       <panel name="racksRangePanel" title="Racks range">
@@ -110,6 +110,7 @@
     
     <action-group name="action-group-stock-inventory-plan-click">
     	<action name="save"/>
+    	<action name="action-inventory-method-inventory-line-list-duplicat-product"/>
     	<action name="action-inventory-record-plan"/>
     	<action name="action-set-inventory-seq"/>    	
     	<action name="save"/>
@@ -117,12 +118,14 @@
 
     <action-group name="action-group-stock-inventory-start-click">
     	<action name="save"/>
+    	<action name="action-inventory-method-inventory-line-list-duplicat-product"/>
     	<action name="action-inventory-record-start"/>
     	<action name="save"/>
     </action-group>
 
     <action-group name="action-group-stock-inventory-complete-click">
     	<action name="save"/>
+    	<action name="action-inventory-method-inventory-line-list-duplicat-product"/>
     	<action name="action-inventory-validate-inventory-line-list"/>
     	<action name="action-inventory-record-complete"/>
     	<action name="save"/>
@@ -130,6 +133,7 @@
 
     <action-group name="action-group-stock-inventory-validate-click">
     	<action name="save"/>
+    	<action name="action-inventory-method-inventory-line-list-duplicat-product"/>
     	<action name="action-inventory-method-realize-stock-move"/>
     </action-group>
 
@@ -199,21 +203,22 @@
 	</action-method>
 	
 	<action-attrs  name="action-inventory-attrs-set-location-domain">
-  		<attribute name="domain" for="stockLocation" expr="eval:&quot;(self.typeSelect = 1 OR self.typeSelect = 2) AND self.company.id = $company.id &quot;" />
+		<attribute name="domain" if="!company" for="stockLocation" expr="eval:&quot; self.id = 0 &quot;" />
+		<attribute name="domain" if="company" for="stockLocation" expr="eval:&quot;(self.typeSelect = 1 OR self.typeSelect = 2) AND self.company.id = $company.id &quot;" />
 	</action-attrs>
 
 	<action-attrs name="action-inventory-on-change-product">
-		<attribute name="value" for="productFamily" expr="eval:__repo__(ProductFamily).find(product.productFamily.id)" if="productFamily == null &amp;&amp; product.productFamily != null"/>    		
-		<attribute name="value" for="productCategory" expr="eval:__repo__(ProductCategory).find(product.productCategory.id)" if="productCategory == null &amp;&amp; product.productCategory != null"/>    
+		<attribute name="value" for="productFamily" expr="eval:__repo__(ProductFamily).find(product.productFamily.id)" if="productFamily == null &amp;&amp; product != null &amp;&amp; product.productFamily != null"/>    		
+		<attribute name="value" for="productCategory" expr="eval:__repo__(ProductCategory).find(product.productCategory.id)" if="productCategory == null &amp;&amp; product != null &amp;&amp; product.productCategory != null"/>    
 	</action-attrs>
 	
 	<action-attrs name="action-inventory-on-select-product">
-    <attribute name="domain" for="product" expr="eval:&quot;self.productCategory.id = ${productCategory.id} AND self.inventoryTypeSelect = :typeSelect&quot;" if="productCategory != null &amp;&amp; typeSelect == 2"/>
-		<attribute name="domain" for="product" expr="eval:&quot;self.productCategory.id = ${productCategory.id}&quot;" if="productCategory != null &amp;&amp; typeSelect != 2"/>
-		<attribute name="domain" for="product" expr="eval:&quot;self.productFamily.id = ${productFamily.id} AND self.inventoryTypeSelect = :typeSelect&quot;" if="productCategory == null &amp;&amp; productFamily != null &amp;&amp; typeSelect == 2"/>
-		<attribute name="domain" for="product" expr="eval:&quot;self.productFamily.id = ${productFamily.id}&quot;" if="productCategory == null &amp;&amp; productFamily != null &amp;&amp; typeSelect != 2"/>
-		<attribute name="domain" for="product" expr="eval:&quot;self.inventoryTypeSelect = :typeSelect&quot;" if="productCategory == null &amp;&amp; productFamily == null &amp;&amp; typeSelect == 2"/>
-    <attribute name="domain" for="product" expr="eval:null" if="productCategory == null &amp;&amp; productFamily == null &amp;&amp; typeSelect != 2"/>
+    	<attribute name="domain" for="product" expr="eval:&quot;self.productCategory.id = ${productCategory.id} AND self.inventoryTypeSelect = :typeSelect AND dtype = 'Product'&quot;" if="productCategory != null &amp;&amp; typeSelect == 2"/>
+		<attribute name="domain" for="product" expr="eval:&quot;self.productCategory.id = ${productCategory.id} AND dtype = 'Product'&quot;" if="productCategory != null &amp;&amp; typeSelect != 2"/>
+		<attribute name="domain" for="product" expr="eval:&quot;self.productFamily.id = ${productFamily.id} AND self.inventoryTypeSelect = :typeSelect AND dtype = 'Product'&quot;" if="productCategory == null &amp;&amp; productFamily != null &amp;&amp; typeSelect == 2"/>
+		<attribute name="domain" for="product" expr="eval:&quot;self.productFamily.id = ${productFamily.id} AND dtype = 'Product'&quot;" if="productCategory == null &amp;&amp; productFamily != null &amp;&amp; typeSelect != 2"/>
+		<attribute name="domain" for="product" expr="eval:&quot;self.inventoryTypeSelect = :typeSelect AND dtype = 'Product'&quot;" if="productCategory == null &amp;&amp; productFamily == null &amp;&amp; typeSelect == 2"/>
+    	<attribute name="domain" for="product" expr="eval:&quot;dtype = 'Product'&quot;" if="productCategory == null &amp;&amp; productFamily == null &amp;&amp; typeSelect != 2"/>
 	</action-attrs>
 	
 	<action-method name="action-inventory-method-show-stockmoves">
@@ -221,6 +226,7 @@
 	</action-method>
 
     <search-filters name="inventories-filters" model="com.axelor.apps.stock.db.Inventory" title="Inventories filters">
+		<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<filter title="Planned Inventories">
 			<domain>self.statusSelect = 1</domain>
 		</filter>
@@ -236,5 +242,9 @@
 	<action-validate name="action-inventory-validate-inventory-line-list">
 		<error message="Please fill all inventory lines" if="inventoryLineList.any { it?.realQty == null }"/>
 	</action-validate>
+	
+	<action-method name="action-inventory-method-inventory-line-list-duplicat-product">
+        <call class="com.axelor.apps.stock.web.InventoryController" method="checkDuplicateProduct"/>	
+    </action-method> 
 	
 </object-views>

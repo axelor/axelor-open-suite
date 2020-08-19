@@ -146,6 +146,7 @@ public class MoveController {
                 .model(Move.class.getName())
                 .add("grid", "move-grid")
                 .add("form", "move-form")
+                .param("search-filters", "move-filters")
                 .map());
         response.setCanClose(true);
       }
@@ -218,6 +219,8 @@ public class MoveController {
     String fileLink =
         ReportFactory.createReport(IReport.ACCOUNT_MOVE, moveName + "-${date}")
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
+            .addParam(
+                "Timezone", move.getCompany() != null ? move.getCompany().getTimezone() : null)
             .addParam("moveId", move.getId())
             .generate()
             .getFileLink();
@@ -259,8 +262,13 @@ public class MoveController {
 
   public void computeTotals(ActionRequest request, ActionResponse response) {
     Move move = request.getContext().asType(Move.class);
-    Map<String, Object> values = Beans.get(MoveService.class).computeTotals(move);
-    response.setValues(values);
+
+    try {
+      Map<String, Object> values = Beans.get(MoveService.class).computeTotals(move);
+      response.setValues(values);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void autoTaxLineGenerate(ActionRequest request, ActionResponse response)
@@ -305,6 +313,9 @@ public class MoveController {
   public void checkRemoveLines(ActionRequest request, ActionResponse response) {
     try {
       Move moveView = request.getContext().asType(Move.class);
+      if (moveView.getId() == null) {
+        return;
+      }
       Move moveBD = Beans.get(MoveRepository.class).find(moveView.getId());
       List<String> moveLineReconciledAndRemovedNameList = new ArrayList<>();
       for (MoveLine moveLineBD : moveBD.getMoveLineList()) {

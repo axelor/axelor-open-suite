@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -41,7 +41,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">834</value>
+                <value type="constant">1</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -58,7 +58,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">en</value>
+                <value type="constant">fr</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -74,7 +74,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -200,210 +200,245 @@ else row["last_modified_by"]</expression>
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">id</property>
+                    <property name="alias">id</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">id</text-property>
                     <text-property name="heading">id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">logo_path</property>
+                    <property name="alias">logo_path</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">logo_path</text-property>
                     <text-property name="heading">logo_path</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">logo_height</property>
+                    <property name="alias">logo_height</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">logo_height</text-property>
                     <text-property name="heading">logo_height</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">logo_width</property>
+                    <property name="alias">logo_width</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">logo_width</text-property>
                     <text-property name="heading">logo_width</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">real_date</property>
+                    <property name="alias">real_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">real_date</text-property>
                     <text-property name="heading">real_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">picking_edit_date</property>
+                    <property name="alias">picking_edit_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">picking_edit_date</text-property>
                     <text-property name="heading">picking_edit_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">type_select</property>
+                    <property name="alias">type_select</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">type_select</text-property>
                     <text-property name="heading">type_select</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">stock_move_seq</property>
+                    <property name="alias">stock_move_seq</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">stock_move_seq</text-property>
                     <text-property name="heading">stock_move_seq</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">title_select</property>
+                    <property name="alias">title_select</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">title_select</text-property>
                     <text-property name="heading">title_select</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">name</property>
+                    <property name="alias">name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">name</text-property>
                     <text-property name="heading">name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">first_name</property>
+                    <property name="alias">first_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">first_name</text-property>
                     <text-property name="heading">first_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">partner_type_select</property>
+                    <property name="alias">partner_type_select</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">partner_type_select</text-property>
                     <text-property name="heading">partner_type_select</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">partner_seq</property>
+                    <property name="alias">partner_seq</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">partner_seq</text-property>
                     <text-property name="heading">partner_seq</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">from_address_str</property>
+                    <property name="alias">from_address_str</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">from_address_str</text-property>
                     <text-property name="heading">from_address_str</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">to_address_str</property>
+                    <property name="alias">to_address_str</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">to_address_str</text-property>
                     <text-property name="heading">to_address_str</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">is_ispm_required</property>
+                    <property name="alias">is_ispm_required</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">is_ispm_required</text-property>
                     <text-property name="heading">is_ispm_required</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">countryName</property>
+                    <property name="alias">countryName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">countryName</text-property>
                     <text-property name="heading">countryName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">pdf_header</property>
+                    <property name="alias">pdf_header</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">pdf_header</text-property>
                     <text-property name="heading">pdf_header</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">pdf_footer</property>
+                    <property name="alias">pdf_footer</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">pdf_footer</text-property>
                     <text-property name="heading">pdf_footer</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">last_modified_by</property>
+                    <property name="alias">last_modified_by</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">last_modified_by</text-property>
                     <text-property name="heading">last_modified_by</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">createdBy</property>
+                    <property name="alias">createdBy</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">createdBy</text-property>
                     <text-property name="heading">createdBy</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">num_of_packages</property>
+                    <property name="alias">num_of_packages</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">num_of_packages</text-property>
                     <text-property name="heading">num_of_packages</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">tracking_number</property>
+                    <property name="alias">tracking_number</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">tracking_number</text-property>
                     <text-property name="heading">tracking_number</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">num_of_palettes</property>
+                    <property name="alias">num_of_palettes</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">num_of_palettes</text-property>
                     <text-property name="heading">num_of_palettes</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">gross_mass</property>
+                    <property name="alias">gross_mass</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">gross_mass</text-property>
                     <text-property name="heading">gross_mass</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">to_stock_location_address</property>
+                    <property name="alias">to_stock_location_address</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">to_stock_location_address</text-property>
                     <text-property name="heading">to_stock_location_address</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">from_stock_location_name</property>
+                    <property name="alias">from_stock_location_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">from_stock_location_name</text-property>
                     <text-property name="heading">from_stock_location_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">to_stock_location_name</property>
+                    <property name="alias">to_stock_location_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">to_stock_location_name</text-property>
                     <text-property name="heading">to_stock_location_name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">origin</property>
+                    <property name="alias">origin</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">origin</text-property>
                     <text-property name="heading">origin</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">externalReference</property>
+                    <property name="alias">externalReference</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">externalReference</text-property>
                     <text-property name="heading">externalReference</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">invoicingAddress</property>
+                    <property name="alias">invoicingAddress</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">invoicingAddress</text-property>
                     <text-property name="heading">invoicingAddress</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">display_partner_seq_on_printing</property>
+                    <property name="alias">display_partner_seq_on_printing</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">display_partner_seq_on_printing</text-property>
                     <text-property name="heading">display_partner_seq_on_printing</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">display_line_details_on_printing</property>
+                    <property name="alias">display_line_details_on_printing</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">display_line_details_on_printing</text-property>
                     <text-property name="heading">display_line_details_on_printing</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">display_track_nbr_on_picking_printing</property>
+                    <property name="alias">display_track_nbr_on_picking_printing</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">display_track_nbr_on_picking_printing</text-property>
                     <text-property name="heading">display_track_nbr_on_picking_printing</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">note</property>
+                    <property name="alias">note</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">note</text-property>
                     <text-property name="heading">note</text-property>
@@ -582,26 +617,46 @@ else row["last_modified_by"]</expression>
                     </structure>
                     <structure>
                         <property name="position">32</property>
+                        <property name="name">orderDate</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                    <structure>
+                        <property name="position">33</property>
                         <property name="name">display_partner_seq_on_printing</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">33</property>
+                        <property name="position">34</property>
                         <property name="name">display_line_details_on_printing</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">34</property>
+                        <property name="position">35</property>
                         <property name="name">display_track_nbr_on_picking_printing</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">35</property>
+                        <property name="position">36</property>
+                        <property name="name">display_order_reference_and_order_date</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">37</property>
+                        <property name="name">display_price_on_printing</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">38</property>
+                        <property name="name">display_product_code_on_printing</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">39</property>
                         <property name="name">note</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">36</property>
+                        <property name="position">40</property>
                         <property name="name">user_name</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -614,250 +669,239 @@ else row["last_modified_by"]</expression>
                     <property name="name">id</property>
                     <property name="nativeName">id</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">logo_height</property>
                     <property name="nativeName">logo_height</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">logo_width</property>
                     <property name="nativeName">logo_width</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">real_date</property>
                     <property name="nativeName">real_date</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">picking_edit_date</property>
                     <property name="nativeName">picking_edit_date</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">type_select</property>
                     <property name="nativeName">type_select</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">stock_move_seq</property>
                     <property name="nativeName">stock_move_seq</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">title_select</property>
                     <property name="nativeName">title_select</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">name</property>
                     <property name="nativeName">name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">first_name</property>
                     <property name="nativeName">first_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
                     <property name="name">partner_type_select</property>
                     <property name="nativeName">partner_type_select</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
                     <property name="name">partner_seq</property>
                     <property name="nativeName">partner_seq</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">14</property>
                     <property name="name">from_address_str</property>
                     <property name="nativeName">from_address_str</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">15</property>
                     <property name="name">to_address_str</property>
                     <property name="nativeName">to_address_str</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">16</property>
                     <property name="name">is_ispm_required</property>
                     <property name="nativeName">is_ispm_required</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">17</property>
                     <property name="name">countryName</property>
                     <property name="nativeName">countryName</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">18</property>
                     <property name="name">pdf_header</property>
                     <property name="nativeName">pdf_header</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">19</property>
                     <property name="name">pdf_footer</property>
                     <property name="nativeName">pdf_footer</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">20</property>
                     <property name="name">last_modified_by</property>
                     <property name="nativeName">last_modified_by</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">21</property>
                     <property name="name">createdBy</property>
                     <property name="nativeName">createdBy</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">22</property>
                     <property name="name">num_of_packages</property>
                     <property name="nativeName">num_of_packages</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">23</property>
                     <property name="name">tracking_number</property>
                     <property name="nativeName">tracking_number</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">24</property>
                     <property name="name">num_of_palettes</property>
                     <property name="nativeName">num_of_palettes</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">25</property>
                     <property name="name">gross_mass</property>
                     <property name="nativeName">gross_mass</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">26</property>
                     <property name="name">to_stock_location_address</property>
                     <property name="nativeName">to_stock_location_address</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">27</property>
                     <property name="name">from_stock_location_name</property>
                     <property name="nativeName">from_stock_location_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">28</property>
                     <property name="name">to_stock_location_name</property>
                     <property name="nativeName">to_stock_location_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">29</property>
                     <property name="name">origin</property>
                     <property name="nativeName">origin</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">30</property>
                     <property name="name">externalReference</property>
                     <property name="nativeName">externalReference</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">31</property>
                     <property name="name">invoicingAddress</property>
                     <property name="nativeName">invoicingAddress</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">32</property>
-                    <property name="name">display_partner_seq_on_printing</property>
-                    <property name="nativeName">display_partner_seq_on_printing</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
+                    <property name="name">orderDate</property>
+                    <property name="nativeName">orderDate</property>
+                    <property name="dataType">date</property>
                 </structure>
                 <structure>
                     <property name="position">33</property>
-                    <property name="name">display_line_details_on_printing</property>
-                    <property name="nativeName">display_line_details_on_printing</property>
+                    <property name="name">display_partner_seq_on_printing</property>
+                    <property name="nativeName">display_partner_seq_on_printing</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">34</property>
-                    <property name="name">display_track_nbr_on_picking_printing</property>
-                    <property name="nativeName">display_track_nbr_on_picking_printing</property>
+                    <property name="name">display_line_details_on_printing</property>
+                    <property name="nativeName">display_line_details_on_printing</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">35</property>
+                    <property name="name">display_track_nbr_on_picking_printing</property>
+                    <property name="nativeName">display_track_nbr_on_picking_printing</property>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="position">36</property>
+                    <property name="name">display_order_reference_and_order_date</property>
+                    <property name="nativeName">display_order_reference_and_order_date</property>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="position">37</property>
+                    <property name="name">display_price_on_printing</property>
+                    <property name="nativeName">display_price_on_printing</property>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="position">38</property>
+                    <property name="name">display_product_code_on_printing</property>
+                    <property name="nativeName">display_product_code_on_printing</property>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="position">39</property>
                     <property name="name">note</property>
                     <property name="nativeName">note</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
 StockMove.id, 
-MetaFile.file_path as logo_path,
+COALESCE(MetaFileTN.file_path, MetaFile.file_path) as logo_path,
 Company.height as logo_height,
 Company.width as logo_width,
 StockMove.real_date, 
@@ -898,9 +942,17 @@ CASE
 	WHEN StockMove.origin_type_select LIKE '%SaleOrder' THEN SaleOrder.main_invoicing_address_str
 END
 as "invoicingAddress",
+CASE
+	WHEN StockMove.origin_type_select LIKE '%SaleOrder' THEN SaleOrder.order_date
+	WHEN StockMove.origin_type_select LIKE '%PurchaseOrder' THEN PurchaseOrder.order_date
+END
+as "orderDate",
 StockConfig.display_partner_seq_on_printing,
 StockConfig.display_line_details_on_printing,
 StockConfig.display_track_nbr_on_picking_printing,
+StockConfig.display_order_reference_and_order_date,
+StockConfig.display_price_on_printing,
+StockConfig.display_product_code_on_printing,
 StockMove.note
 
 from stock_stock_move as StockMove
@@ -919,6 +971,8 @@ left outer join purchase_purchase_order as PurchaseOrder on (StockMove.origin_id
 left outer join stock_stock_location as fromStockLocation on (StockMove.from_stock_location = FromStockLocation.id)
 left outer join stock_stock_location as ToStockLocation on (StockMove.to_stock_location = ToStockLocation.id)
 left outer join base_address as ToStockLocationAddress on (ToStockLocation.address = ToStockLocationAddress.id)
+left outer join base_trading_name TradingName on (TradingName.id = StockMove.trading_name)
+left outer join meta_file as MetaFileTN on (MetaFileTN.id = TradingName.logo)
 
 where StockMove.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -1141,6 +1195,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">stock_move_id</property>
+                    <property name="alias">stock_move_id</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">stock_move_id</text-property>
                     <property name="onColumnLayout">false</property>
@@ -1148,6 +1203,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="columnName">id</property>
+                    <property name="alias">id</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">id</text-property>
                     <property name="onColumnLayout">false</property>
@@ -1155,6 +1211,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="columnName">product_code</property>
+                    <property name="alias">product_code</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">product_code</text-property>
                     <property name="onColumnLayout">false</property>
@@ -1162,6 +1219,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="columnName">product_name</property>
+                    <property name="alias">product_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">product_name</text-property>
                     <property name="onColumnLayout">false</property>
@@ -1169,6 +1227,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="columnName">qty</property>
+                    <property name="alias">qty</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">qty</text-property>
                     <property name="onColumnLayout">false</property>
@@ -1176,6 +1235,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="columnName">unit_code</property>
+                    <property name="alias">unit_code</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">unit_code</text-property>
                     <property name="onColumnLayout">false</property>
@@ -1183,6 +1243,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="columnName">tracking_number_seq</property>
+                    <property name="alias">tracking_number_seq</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">tracking_number_seq</text-property>
                     <property name="onColumnLayout">false</property>
@@ -1190,6 +1251,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="columnName">description</property>
+                    <property name="alias">description</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">description</text-property>
                     <property name="onColumnLayout">false</property>
@@ -1197,37 +1259,53 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="columnName">sequence</property>
+                    <property name="alias">sequence</property>
+                    <property name="analysis">measure</property>
+                </structure>
+                <structure>
+                    <property name="columnName">unit_price_untaxed</property>
+                    <property name="alias">unit_price_untaxed</property>
                     <property name="analysis">measure</property>
                 </structure>
                 <structure>
                     <property name="columnName">isTitleLine</property>
+                    <property name="alias">isTitleLine</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">isTitleLine</text-property>
                     <text-property name="heading">isTitleLine</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">customerProductCode</property>
+                    <property name="alias">customerProductCode</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">customerProductCode</text-property>
                     <text-property name="heading">customerProductCode</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">customerProductName</property>
+                    <property name="alias">customerProductName</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">customerProductName</text-property>
                     <text-property name="heading">customerProductName</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">from_rack</property>
+                    <property name="alias">from_rack</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">from_rack</text-property>
                     <text-property name="heading">from_rack</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">to_rack</property>
+                    <property name="alias">to_rack</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">to_rack</text-property>
                     <text-property name="heading">to_rack</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">currency</property>
+                    <property name="alias">currency</property>
+                    <property name="analysis">dimension</property>
                 </structure>
             </list-property>
             <list-property name="filter"/>
@@ -1292,27 +1370,37 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                     <structure>
                         <property name="position">10</property>
+                        <property name="name">unit_price_untaxed</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
                         <property name="name">isTitleLine</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">11</property>
+                        <property name="position">12</property>
                         <property name="name">customerProductCode</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">12</property>
+                        <property name="position">13</property>
                         <property name="name">customerProductName</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">13</property>
+                        <property name="position">14</property>
                         <property name="name">from_rack</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">15</property>
                         <property name="name">to_rack</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">16</property>
+                        <property name="name">currency</property>
                         <property name="dataType">string</property>
                     </structure>
                 </list-property>
@@ -1324,98 +1412,96 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="name">stock_move_id</property>
                     <property name="nativeName">stock_move_id</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">id</property>
                     <property name="nativeName">id</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">product_code</property>
                     <property name="nativeName">product_code</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">product_name</property>
                     <property name="nativeName">product_name</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">qty</property>
                     <property name="nativeName">qty</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">unit_code</property>
                     <property name="nativeName">unit_code</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">tracking_number_seq</property>
                     <property name="nativeName">tracking_number_seq</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">description</property>
                     <property name="nativeName">description</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">sequence</property>
                     <property name="nativeName">sequence</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
-                    <property name="name">isTitleLine</property>
-                    <property name="nativeName">isTitleLine</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
+                    <property name="name">unit_price_untaxed</property>
+                    <property name="nativeName">unit_price_untaxed</property>
+                    <property name="dataType">decimal</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
-                    <property name="name">customerProductCode</property>
-                    <property name="nativeName">customerProductCode</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
+                    <property name="name">isTitleLine</property>
+                    <property name="nativeName">isTitleLine</property>
+                    <property name="dataType">integer</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
-                    <property name="name">customerProductName</property>
-                    <property name="nativeName">customerProductName</property>
+                    <property name="name">customerProductCode</property>
+                    <property name="nativeName">customerProductCode</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
-                    <property name="name">from_rack</property>
-                    <property name="nativeName">from_rack</property>
+                    <property name="name">customerProductName</property>
+                    <property name="nativeName">customerProductName</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">14</property>
+                    <property name="name">from_rack</property>
+                    <property name="nativeName">from_rack</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">15</property>
                     <property name="name">to_rack</property>
                     <property name="nativeName">to_rack</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">16</property>
+                    <property name="name">currency</property>
+                    <property name="nativeName">currency</property>
+                    <property name="dataType">string</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
@@ -1428,18 +1514,30 @@ Unit.name as unit_code,
 TrackingNumber.tracking_number_seq, 
 StockMoveLine.description,
 StockMoveLine.sequence,
+StockMoveLine.unit_price_untaxed,
 (SaleOrderLine.type_select = 2 or PurchaseOrderLine.is_title_line) as "isTitleLine",
 CustomerCatalog.product_customer_code as "customerProductCode",
 CustomerCatalog.product_customer_name as "customerProductName",
 FromStockLocationLine.rack as from_rack,
-ToStockLocationLine.rack as to_rack
+ToStockLocationLine.rack as to_rack,
+Currency.name as currency
 from stock_stock_move as StockMove
 inner join stock_stock_move_line as StockMoveLine on (StockMoveLine.stock_move = StockMove.id)
+left join base_company as Company on (StockMove.company = Company.id)
 left join base_product as Product on (StockMoveLine.product = Product.id)
 left join base_unit as Unit on (StockMoveLine.unit = Unit.id)
 left join stock_tracking_number as TrackingNumber on (StockMoveLine.tracking_number = TrackingNumber.id)
 left outer join sale_sale_order_line as SaleOrderLine on (SaleOrderLine.id = StockMoveLine.sale_order_line)
 left outer join purchase_purchase_order_line as PurchaseOrderLine on (PurchaseOrderLine.id = StockMoveLine.purchase_order_line) 
+left join base_currency as Currency on (Currency.id = 
+(select CASE
+	WHEN SM.origin_type_select LIKE '%SaleOrder' THEN SaleOrder.currency 
+	WHEN SM.origin_type_select LIKE '%PurchaseOrder' THEN PurchaseOrder.currency
+	WHEN SM.origin_type_select LIKE '%Inventory' THEN Company.currency
+END as currency from stock_stock_move as SM 
+left join sale_sale_order as SaleOrder on (SaleOrder.id = SaleOrderLine.sale_order)
+left join purchase_purchase_order as PurchaseOrder on (PurchaseOrder.id = PurchaseOrderLine.purchase_order) 
+where SM.id = StockMove.id))
 left outer join sale_customer_catalog as CustomerCatalog on (CustomerCatalog.product = Product.id and CustomerCatalog.customer_partner = StockMove.partner) 
 left outer join stock_stock_location as FromLocation on (FromLocation.id = StockMove.from_stock_location and StockMove.type_select = 1)
 left outer join stock_stock_location_line as FromStockLocationLine on (FromLocation.id = FromStockLocationLine.stock_location and FromStockLocationLine.product = Product.id)
@@ -1849,6 +1947,49 @@ order by StockMoveLine.sequence]]></xml-property>
                     <property name="dataType">string</property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">logo_height_1</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_height"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">logo_width_1</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_width"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">orderDate</property>
+                    <text-property name="displayName">orderDate</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["orderDate"]</expression>
+                    <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="name">display_order_reference_and_order_date</property>
+                    <text-property name="displayName">display_order_reference_and_order_date</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["display_order_reference_and_order_date"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">display_price_on_printing</property>
+                    <text-property name="displayName">display_price_on_printing</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["display_price_on_printing"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">display_product_code_on_printing</property>
+                    <text-property name="displayName">display_product_code_on_printing</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["display_product_code_on_printing"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding</property>
+                    <text-property name="displayName">TodayDate</text-property>
+                    <expression name="expression" type="javascript">new Date()</expression>
+                    <property name="dataType">date</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <structure name="toc"/>
             <column id="5232"/>
@@ -2001,6 +2142,7 @@ order by StockMoveLine.sequence]]></xml-property>
                                 <text id="3425">
                                     <property name="marginLeft">0pt</property>
                                     <property name="textAlign">left</property>
+                                    <property name="display">inline</property>
                                     <property name="dataSet">TranslateDS</property>
                                     <list-property name="paramBindings">
                                         <structure>
@@ -2027,8 +2169,16 @@ order by StockMoveLine.sequence]]></xml-property>
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B>: <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF format="dd/MM/yyyy">row._outer["picking_edit_date"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B>:&amp;nbsp;]]></text-property>
                                 </text>
+                                <data id="5408">
+                                    <structure name="dateTimeFormat">
+                                        <property name="category">Short Date</property>
+                                        <property name="pattern">Short Date</property>
+                                    </structure>
+                                    <property name="display">inline</property>
+                                    <property name="resultSetColumn">picking_edit_date</property>
+                                </data>
                             </cell>
                         </row>
                         <row id="5316">
@@ -2047,6 +2197,7 @@ order by StockMoveLine.sequence]]></xml-property>
                                 <text id="5318">
                                     <property name="marginLeft">0pt</property>
                                     <property name="textAlign">left</property>
+                                    <property name="display">inline</property>
                                     <property name="dataSet">TranslateDS</property>
                                     <list-property name="paramBindings">
                                         <structure>
@@ -2073,12 +2224,77 @@ order by StockMoveLine.sequence]]></xml-property>
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B>: <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF format="dd/MM/yyyy">BirtDateTime.now()</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B>:&amp;nbsp;]]></text-property>
                                 </text>
+                                <data id="5409">
+                                    <structure name="dateTimeFormat">
+                                        <property name="category">Short Date</property>
+                                        <property name="pattern">Short Date</property>
+                                    </structure>
+                                    <property name="display">inline</property>
+                                    <property name="resultSetColumn">Column Binding</property>
+                                </data>
+                            </cell>
+                        </row>
+                        <row id="5405">
+                            <property name="textAlign">left</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">!row["display_order_reference_and_order_date"]</expression>
+                                </structure>
+                            </list-property>
+                            <cell id="5406">
+                                <text id="5407">
+                                    <property name="marginLeft">0pt</property>
+                                    <property name="textAlign">left</property>
+                                    <property name="display">inline</property>
+                                    <property name="dataSet">TranslateDS</property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'StockMove.orderDate'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">key</property>
+                                            <text-property name="displayName">key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]
+															</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]
+															</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B>:&amp;nbsp;]]></text-property>
+                                </text>
+                                <data id="5410">
+                                    <structure name="dateTimeFormat">
+                                        <property name="category">Short Date</property>
+                                        <property name="pattern">Short Date</property>
+                                    </structure>
+                                    <property name="display">inline</property>
+                                    <property name="resultSetColumn">orderDate</property>
+                                </data>
                             </cell>
                         </row>
                         <row id="3654">
                             <property name="textAlign">left</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">!row["display_order_reference_and_order_date"]</expression>
+                                </structure>
+                            </list-property>
                             <cell id="3655">
                                 <text id="3646">
                                     <property name="marginLeft">0pt</property>
@@ -2087,7 +2303,7 @@ order by StockMoveLine.sequence]]></xml-property>
                                     <list-property name="visibility">
                                         <structure>
                                             <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">row._outer["externalReference"] != null</expression>
+                                            <expression name="valueExpr" type="javascript">!row._outer["display_order_reference_and_order_date"]</expression>
                                         </structure>
                                     </list-property>
                                     <list-property name="paramBindings">
@@ -2121,55 +2337,8 @@ order by StockMoveLine.sequence]]></xml-property>
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B> : <VALUE-OF>row._outer["origin"]</VALUE-OF>]]></text-property>
-                                </text>
-                            </cell>
-                        </row>
-                        <row id="4521">
-                            <property name="textAlign">left</property>
-                            <cell id="4522">
-                                <text id="4523">
-                                    <property name="marginLeft">0pt</property>
-                                    <property name="textAlign">left</property>
-                                    <property name="dataSet">TranslateDS</property>
-                                    <list-property name="visibility">
-                                        <structure>
-                                            <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">row._outer["externalReference"] == null</expression>
-                                        </structure>
-                                    </list-property>
-                                    <list-property name="paramBindings">
-                                        <structure>
-                                            <property name="paramName">param_1</property>
-                                            <simple-property-list name="expression">
-                                                <value type="javascript">if(row["type_select"] == "1"){
-	'StockMove.reference'
-}else if(row["type_select"] == "2"){
-	'StockMove.purchaseOrder'
-}else if(row["type_select"] == "3"){
-	'StockMove.purchaseOrder'
-}</value>
-                                            </simple-property-list>
-                                        </structure>
-                                    </list-property>
-                                    <list-property name="boundDataColumns">
-                                        <structure>
-                                            <property name="name">key</property>
-                                            <text-property name="displayName">key</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["message_key"]
-															</expression>
-                                            <property name="dataType">string</property>
-                                        </structure>
-                                        <structure>
-                                            <property name="name">translation</property>
-                                            <text-property name="displayName">translation</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["translation"]
-															</expression>
-                                            <property name="dataType">string</property>
-                                        </structure>
-                                    </list-property>
-                                    <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B> : <VALUE-OF>row._outer["origin"]</VALUE-OF> / <VALUE-OF>row._outer["externalReference"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B> : <VALUE-OF>row._outer["origin"]+" ";</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF>if(row._outer["externalReference"]!=null){
+"/ " + row._outer["externalReference"];}</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                         </row>
@@ -2601,6 +2770,18 @@ row["first_name"]
                                 </list-property>
                                 <property name="allowExport">true</property>
                             </structure>
+                            <structure>
+                                <property name="name">unit_price_untaxed</property>
+                                <text-property name="displayName">unit_price_untaxed</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["unit_price_untaxed"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">currency</property>
+                                <text-property name="displayName">currency</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
                         </list-property>
                         <property name="pageBreakInterval">0</property>
                         <list-property name="filter">
@@ -2614,6 +2795,12 @@ row["first_name"]
                             </structure>
                         </list-property>
                         <column id="5377">
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">!row._outer["display_product_code_on_printing"]</expression>
+                                </structure>
+                            </list-property>
                             <property name="width">20%</property>
                         </column>
                         <column id="5378">
@@ -2623,6 +2810,24 @@ row["first_name"]
                             <property name="width">10%</property>
                         </column>
                         <column id="5380">
+                            <property name="width">10%</property>
+                        </column>
+                        <column id="5393">
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">!row._outer["display_price_on_printing"]</expression>
+                                </structure>
+                            </list-property>
+                            <property name="width">10%</property>
+                        </column>
+                        <column id="5397">
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">!row._outer["display_price_on_printing"]</expression>
+                                </structure>
+                            </list-property>
                             <property name="width">10%</property>
                         </column>
                         <column id="5381">
@@ -2761,7 +2966,7 @@ row["first_name"]
                                     <property name="borderRightWidth">thin</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <text id="5333">
+                                    <text id="5384">
                                         <property name="backgroundColor">#FFFFFF</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="color">#000000</property>
@@ -2796,7 +3001,54 @@ row["first_name"]
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
-                                <cell id="5334">
+                                <cell id="5390">
+                                    <property name="colSpan">2</property>
+                                    <property name="rowSpan">1</property>
+                                    <property name="backgroundColor">#FFFFFF</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <text id="5398">
+                                        <property name="backgroundColor">#FFFFFF</property>
+                                        <property name="fontWeight">bold</property>
+                                        <property name="color">#000000</property>
+                                        <property name="borderBottomStyle">none</property>
+                                        <property name="borderLeftStyle">none</property>
+                                        <property name="borderRightStyle">none</property>
+                                        <property name="borderTopStyle">none</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'StockMove.unitPrice'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="5385">
                                     <property name="colSpan">1</property>
                                     <property name="rowSpan">1</property>
                                     <property name="backgroundColor">#FFFFFF</property>
@@ -2947,8 +3199,32 @@ row["first_name"]
                                         <property name="borderTopWidth">thin</property>
                                         <text id="5346">
                                             <property name="textAlign">left</property>
+                                            <property name="dataSet">TranslateDS</property>
+                                            <list-property name="paramBindings">
+                                                <structure>
+                                                    <property name="paramName">param_1</property>
+                                                    <simple-property-list name="expression">
+                                                        <value type="javascript">'value:'+row["product_name"]</value>
+                                                    </simple-property-list>
+                                                </structure>
+                                            </list-property>
+                                            <list-property name="boundDataColumns">
+                                                <structure>
+                                                    <property name="name">key</property>
+                                                    <text-property name="displayName">key</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                    <property name="dataType">string</property>
+                                                    <property name="allowExport">true</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">translation</property>
+                                                    <text-property name="displayName">translation</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                            </list-property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>row["product_name"]</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null) {row["translation"]} else {row._outer["product_name"]}</VALUE-OF>]]></text-property>
                                         </text>
                                         <data id="5347">
                                             <property name="fontStyle">italic</property>
@@ -3020,6 +3296,56 @@ row["total_qty_per_product"]
                                             <text-property name="content"><![CDATA[ <VALUE-OF>
 row["unit_code"]
 </VALUE-OF>]]></text-property>
+                                        </text>
+                                    </cell>
+                                    <cell id="5391">
+                                        <property name="borderBottomStyle">solid</property>
+                                        <property name="borderBottomWidth">thin</property>
+                                        <property name="borderTopStyle">solid</property>
+                                        <property name="borderTopWidth">thin</property>
+                                        <property name="textAlign">left</property>
+                                        <text id="5399">
+                                            <property name="textAlign">right</property>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row["unit_price_untaxed"]</VALUE-OF>]]></text-property>
+                                        </text>
+                                    </cell>
+                                    <cell id="5395">
+                                        <property name="borderBottomStyle">solid</property>
+                                        <property name="borderBottomWidth">thin</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                        <property name="borderTopStyle">solid</property>
+                                        <property name="borderTopWidth">thin</property>
+                                        <property name="textAlign">left</property>
+                                        <text id="5403">
+                                            <property name="marginLeft">0pt</property>
+                                            <property name="textAlign">left</property>
+                                            <property name="dataSet">TranslateDS</property>
+                                            <list-property name="paramBindings">
+                                                <structure>
+                                                    <property name="paramName">param_1</property>
+                                                    <simple-property-list name="expression">
+                                                        <value type="javascript">'value:'+row["unit_code"]</value>
+                                                    </simple-property-list>
+                                                </structure>
+                                            </list-property>
+                                            <list-property name="boundDataColumns">
+                                                <structure>
+                                                    <property name="name">message_key</property>
+                                                    <text-property name="displayName">message_key</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                                <structure>
+                                                    <property name="name">translation</property>
+                                                    <text-property name="displayName">translation</text-property>
+                                                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                    <property name="dataType">string</property>
+                                                </structure>
+                                            </list-property>
+                                            <property name="contentType">html</property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row._outer["currency"]</VALUE-OF>]]></text-property>
                                         </text>
                                     </cell>
                                     <cell id="5353">
@@ -3122,8 +3448,32 @@ row["to_rack"]
                                     <property name="borderTopWidth">thin</property>
                                     <text id="5364">
                                         <property name="textAlign">left</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'value:'+row["product_name"]</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">key</property>
+                                                <text-property name="displayName">key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                                <property name="allowExport">true</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["product_name"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null) {row["translation"]} else {row._outer["product_name"]}</VALUE-OF>]]></text-property>
                                     </text>
                                     <data id="5365">
                                         <property name="fontStyle">italic</property>
@@ -3196,6 +3546,54 @@ row["unit_code"]
 </VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
+                                <cell id="5392">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <text id="5402">
+                                        <property name="textAlign">right</property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["unit_price_untaxed"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
+                                <cell id="5396">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <text id="5404">
+                                        <property name="marginLeft">0pt</property>
+                                        <property name="textAlign">left</property>
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'value:'+row["unit_code"]</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">message_key</property>
+                                                <text-property name="displayName">message_key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row._outer["currency"]</VALUE-OF>]]></text-property>
+                                    </text>
+                                </cell>
                                 <cell id="5371">
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
@@ -3205,7 +3603,7 @@ row["unit_code"]
                                     <property name="borderRightWidth">thin</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <text id="5372">
+                                    <text id="5386">
                                         <property name="textAlign">center</property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="HTML">
@@ -3213,7 +3611,7 @@ row["tracking_number_seq"]
 </VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
-                                <cell id="5373">
+                                <cell id="5387">
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
                                     <property name="borderLeftStyle">solid</property>
@@ -3230,7 +3628,7 @@ row["from_rack"]
 </VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
-                                <cell id="5375">
+                                <cell id="5388">
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
                                     <property name="borderLeftStyle">solid</property>
@@ -3239,7 +3637,7 @@ row["from_rack"]
                                     <property name="borderRightWidth">thin</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <text id="5376">
+                                    <text id="5389">
                                         <property name="textAlign">center</property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>  
