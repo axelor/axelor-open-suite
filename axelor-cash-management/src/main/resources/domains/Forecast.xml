@@ -10,8 +10,8 @@
 	<many-to-one name="forecastReason" ref="com.axelor.apps.cash.management.db.ForecastReason" required="true" title="Reason" />
 	<decimal name="amount" title="Amount"/>
 	<date name="estimatedDate" title="Estimated date"/>
+	<date name="realizationDate" title="Realization date"/>
 	<string name="comments" title="Comments" large="true"/>
-	<integer name="realizedSelect" selection="forecast.realized.select" title="Realized" default="2"/>
 	<many-to-one name="forecastGenerator" ref="com.axelor.apps.cash.management.db.ForecastGenerator"/>
 	
 	<extra-code><![CDATA[

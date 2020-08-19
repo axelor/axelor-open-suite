@@ -4,6 +4,10 @@
 - CRM : Create new objects Catalog and Catelog type
 
 ## Improvements
+- Report : Fix unit translation.
+- EBICSTS : add new data init to bank statement file formats
+- Customer grid : show mainAddress details.
+- Forecast Recap : Visual changes to dashlet grid, some recap line type modified, recap take into account saleOrders and purchase order in addition to timetables, also added demo data  
 - LEAD : Added description field on reports
 - ACCOUNT MANAGEMENT : Change visiblity of product and product family
 
