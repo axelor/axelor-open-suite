@@ -122,16 +122,9 @@ public class ForecastRecapService {
 
   @Transactional
   public void reset(ForecastRecap forecastRecap) {
-    List<ForecastRecapLine> forecastRecapLineList = forecastRecap.getForecastRecapLineList();
-    if (forecastRecapLineList != null && !forecastRecapLineList.isEmpty()) {
-      for (ForecastRecapLine forecastRecapLine : forecastRecapLineList) {
-        if (forecastRecapLine.getId() != null && forecastRecapLine.getId() > 0) {
-          forecastRecapLineRepo.remove(forecastRecapLine);
-        }
-      }
-      forecastRecapLineList.clear();
-    }
+    forecastRecap.clearForecastRecapLineList();
     forecastRecap.setCurrentBalance(forecastRecap.getStartingBalance());
+
     today = appBaseService.getTodayDate();
     forecastRecapRepo.save(forecastRecap);
   }
@@ -141,6 +134,7 @@ public class ForecastRecapService {
     this.computeForecastRecapLineBalance(forecastRecap);
     forecastRecap.setEndingBalance(forecastRecap.getCurrentBalance());
     forecastRecap.setCalculationDate(today);
+    forecastRecap.setIsComplete(true);
     forecastRecapRepo.save(forecastRecap);
   }
 
@@ -156,7 +150,11 @@ public class ForecastRecapService {
     this.populateWithSalaries(forecastRecapRepo.find(forecastRecap.getId()));
     this.populateWithSaleOrders(forecastRecapRepo.find(forecastRecap.getId()));
     this.populateWithPurchaseOrders(forecastRecapRepo.find(forecastRecap.getId()));
-    this.populateWithForecasts(forecastRecapRepo.find(forecastRecap.getId()));
+    if (forecastRecap.getIsReport()) {
+      this.populateWithForecastsNoSave(forecastRecap);
+    } else {
+      this.populateWithForecasts(forecastRecapRepo.find(forecastRecap.getId()));
+    }
     this.populateWithExpenses(forecastRecapRepo.find(forecastRecap.getId()));
 
     this.finish(forecastRecapRepo.find(forecastRecap.getId()));
@@ -876,43 +874,34 @@ public class ForecastRecapService {
     ForecastRecapLineType forecastForecastRecapLineType =
         this.getForecastRecapLineType(ForecastRecapLineTypeRepository.ELEMENT_FORECAST);
     List<Forecast> forecastList = new ArrayList<Forecast>();
-    if (forecastRecap.getBankDetails() != null) {
-      forecastList =
-          Beans.get(ForecastRepository.class)
-              .all()
-              .filter(
-                  "self.estimatedDate BETWEEN ?1 AND ?2 AND self.company = ?3 AND"
-                      + " self.bankDetails = ?4 AND self.realizationDate IS NULL",
-                  forecastRecap.getFromDate(),
-                  forecastRecap.getToDate(),
-                  forecastRecap.getCompany(),
-                  forecastRecap.getBankDetails(),
-                  appBaseService.getTodayDate())
-              .fetch();
-    } else {
-      forecastList =
-          Beans.get(ForecastRepository.class)
-              .all()
-              .filter(
-                  "self.estimatedDate BETWEEN ?1 AND ?2 AND self.company = ?3 AND"
-                      + " self.realizationDate IS NULL",
-                  forecastRecap.getFromDate(),
-                  forecastRecap.getToDate(),
-                  forecastRecap.getCompany(),
-                  appBaseService.getTodayDate())
-              .fetch();
-    }
+    forecastList =
+        forecastRepo
+            .all()
+            .filter(
+                "self.estimatedDate < ?1 AND self.company = ?2"
+                    + (forecastRecap.getBankDetails() != null ? " AND self.bankDetails = ?3" : "")
+                    + " AND self.realizationDate IS NULL",
+                forecastRecap.getToDate(),
+                forecastRecap.getCompany(),
+                forecastRecap.getBankDetails())
+            .fetch();
     for (Forecast forecast : forecastList) {
+      forecast = forecastRepo.find(forecast.getId());
       ForecastReason forecastReason = forecast.getForecastReason();
+      LocalDate realizationDate =
+          forecast.getEstimatedDate().isAfter(appBaseService.getTodayDate())
+              ? forecast.getEstimatedDate()
+              : appBaseService.getTodayDate();
       this.createForecastRecapLine(
-          forecast.getEstimatedDate(),
+          realizationDate,
           forecast.getAmount().compareTo(BigDecimal.ZERO) == -1 ? 2 : 1,
           forecast.getAmount().abs(),
           ForecastReason.class.getName(),
           forecastReason.getId(),
           forecastReason.getReason(),
-          forecastForecastRecapLineType,
+          forecastRecapLineTypeRepo.find(forecastForecastRecapLineType.getId()),
           forecastRecapRepo.find(forecastRecap.getId()));
+      JPA.clear();
     }
   }
 

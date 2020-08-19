@@ -129,15 +129,7 @@ public class ForecastRecapController {
 
   public void spending(ActionRequest request, ActionResponse response) throws AxelorException {
     Long id = new Long(request.getContext().get("_id").toString());
-    ForecastRecapService forecastRecapService = Beans.get(ForecastRecapService.class);
     ForecastRecap forecastRecap = Beans.get(ForecastRecapRepository.class).find(id);
-    forecastRecap.setForecastRecapLineList(new ArrayList<ForecastRecapLine>());
-
-    forecastRecapService.populateWithSaleOrders(forecastRecap);
-    forecastRecapService.populateWithPurchaseOrders(forecastRecap);
-    forecastRecapService.populateWithExpenses(forecastRecap);
-    forecastRecapService.populateWithSalaries(forecastRecap);
-    forecastRecapService.populateWithForecastsNoSave(forecastRecap);
     List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
     Map<LocalDate, BigDecimal> map = new HashMap<LocalDate, BigDecimal>();
     for (ForecastRecapLine forecastRecapLine : forecastRecap.getForecastRecapLineList()) {
@@ -163,21 +155,7 @@ public class ForecastRecapController {
 
   public void marges(ActionRequest request, ActionResponse response) throws AxelorException {
     Long id = new Long(request.getContext().get("_id").toString());
-    ForecastRecapService forecastRecapService = Beans.get(ForecastRecapService.class);
     ForecastRecap forecastRecap = Beans.get(ForecastRecapRepository.class).find(id);
-    forecastRecap.setForecastRecapLineList(new ArrayList<ForecastRecapLine>());
-
-    forecastRecapService.populateWithSaleOrders(forecastRecap);
-    forecastRecapService.populateWithPurchaseOrders(forecastRecap);
-    forecastRecapService.populateWithExpenses(forecastRecap);
-    forecastRecapService.populateWithSalaries(forecastRecap);
-    forecastRecapService.populateWithForecastsNoSave(forecastRecap);
-    forecastRecapService.populateWithInvoices(forecastRecap);
-    if (forecastRecap.getOpportunitiesTypeSelect() != null
-        && forecastRecap.getOpportunitiesTypeSelect()
-            > ForecastRecapRepository.OPPORTUNITY_TYPE_NO) {
-      forecastRecapService.populateWithOpportunities(forecastRecap);
-    }
     List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
     Map<LocalDate, BigDecimal> map = new HashMap<LocalDate, BigDecimal>();
     for (ForecastRecapLine forecastRecapLine : forecastRecap.getForecastRecapLineList()) {
