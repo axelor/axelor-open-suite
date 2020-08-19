@@ -7,7 +7,7 @@
 - Report : Fix unit translation.
 - EBICSTS : add new data init to bank statement file formats
 - Customer grid : show mainAddress details.
-- Forecast Recap : Multiples improvements
+- Forecast Recap : Visual changes to dashlet grid, some recap line type modified, recap take into account saleOrders and purchase order in addition to timetables, also added demo data  
 
 ## Bug Fixes
 - TIMESHEET : Fix editor still being displayed even with a disabled config
