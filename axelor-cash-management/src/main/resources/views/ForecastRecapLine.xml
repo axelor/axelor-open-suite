@@ -11,7 +11,7 @@
        	<field name="forecastRecapLineType.name" title="Forecast Recap Line Type" />
 	   	<field name="relatedToSelect"/>
 	   	<field name="relatedToSelectName"/>
-	   	<field name="amount" aggregate="sum" title="Cumulated amount"/>
+	   	<field name="amount" aggregate="sum"/>
 	   	<field name="balance"/>
     </grid>
  
