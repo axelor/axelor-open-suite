@@ -2,6 +2,7 @@
 ## [Unreleased 5.3.10]
 ## Features
 - CRM : Create new objects Catalog and Catelog type
+- Training session, register :  mass register creation.
 
 ## Improvements
 - Report : Fix unit translation.
