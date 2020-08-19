@@ -868,7 +868,6 @@ public class ForecastRecapService {
           forecastRecapRepo.find(forecastRecap.getId()));
       forecast.setRealizationDate(realizationDate);
       forecastRepo.save(forecast);
-      JPA.flush();
       JPA.clear();
     }
   }
@@ -973,7 +972,7 @@ public class ForecastRecapService {
         expenseRepo
             .all()
             .filter(
-                "self.validationDate BETWEEN ?1 AND ?2 AND self.company = ?3 AND self.statusSelect IN (?5)"
+                "self.validationDate BETWEEN ?1 AND ?2 AND self.company = ?3 AND self.statusSelect IN (?4)"
                     + (forecastRecap.getBankDetails() != null ? " AND self.bankDetails = ?5" : ""),
                 forecastRecap.getFromDate(),
                 forecastRecap.getToDate(),
