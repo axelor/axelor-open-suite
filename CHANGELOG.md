@@ -20,6 +20,7 @@
 - Accounting batch : put to required mandatory fields for close annual year batch.
 - Invoice : on invoice form view corrected display of empty column in invoice payment line grid viewer.
 - Invoice line : corrected view error when trying to change an invoice line.
+- BANK RECONCILIATION STATEMENT REPORT : change French translation of balance from "balance" to "solde".
 
 ## [5.3.9] - 2020-07-29
 ## Improvements
