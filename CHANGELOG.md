@@ -1,29 +1,50 @@
 # Changelog
-## [Unreleased 5.3.9]
+## [Unreleased 5.3.10]
 ## Features
-- USER : add a dashlet showing all user's permissions.
+- CRM : Create new objects Catalog and Catelog type
 
 ## Improvements
 - Report : Fix unit translation.
 - EBICSTS : add new data init to bank statement file formats
 - Customer grid : show mainAddress details.
 - Forecast Recap : Visual changes to dashlet grid, some recap line type modified, recap take into account saleOrders and purchase order in addition to timetables, also added demo data  
+- LEAD : Added description field on reports
+- ACCOUNT MANAGEMENT : Change visiblity of product and product family
 
 ## Bug Fixes
-- TIMESHEET : Fix editor still being displayed even with a disabled config
-- BankDetails : Fix validation flow of iban
-- INVOICE : fix message on generate of subscription invoice
-- ACCOUNTING MOVE : remove all possibility to cancel a validate move.
-- ICalendar : Update event synchronization.
-- Template Maker : fix selection value translation based on locale
-- SaleOrder : Consider today's date also in invoice sale amount dashboard.
-- CRM : set default nbrEmployees to 0.
-- Conversion : corrected the case of conversion from void to void and improved message in case of conversion from void to unit or from unit to void.
-- Accounting report : corrected bank reconciliation statement report, now display lines reconcile after date report.
-- Invoice : Fix wrong translation in report
-- Project : Add missing translations 
-- ACCOUNT CONFIG : Add missing translations
-- BANK PAYMENT : fix ICS number being linked to EBICS
+- MRP : Shows error message instead of NPE when a product has no unit
+- ICalendar : Fix IndexOutOfBound Exception on event creation & Manage synchronisation select.
+- CRM : Add menu industry sector in CRM config and changes in lead form view.
+- Batch payroll preparation generation : corrected batch error no session.
+- Fiscal year : corrected sql  error on close function.
+- Accounting batch : put to required mandatory fields for close annual year batch.
+- Invoice : on invoice form view corrected display of empty column in invoice payment line grid viewer.
+- Invoice line : corrected view error when trying to change an invoice line.
+
+## [5.3.9] - 2020-07-29
+## Improvements
+- USER: add a dashlet showing all user's permissions.
+- EBICSTS: add new data init to bank statement file formats.
+- Customer grid: show mainAddress details.
+
+## Bug Fixes
+- Report: Fix unit translation.
+- TIMESHEET: Fix editor still being displayed even with a disabled config.
+- BankDetails: Fix validation flow of iban.
+- INVOICE: fix message on generate of subscription invoice.
+- ACCOUNTING MOVE: remove all possibility to cancel a validated move.
+- ICalendar: Update event synchronization.
+- Template Maker: fix selection value translation based on locale.
+- SaleOrder: Consider today's date also in invoice sale amount dashboard.
+- CRM: set default nbrEmployees to 0.
+- Conversion: corrected the case of conversion from void to void and improved message in case of conversion from void to unit or from unit to void.
+- Accounting report: corrected bank reconciliation statement report, now display lines reconciled after date report.
+- Invoice: Fix wrong translation in report.
+- Project: Add missing translations.
+- ACCOUNT CONFIG: Add missing translations.
+- BANK PAYMENT: fix ICS number being linked to EBICS.
+- INVOICE: Fix chart not taking refunds into account.
+- INVOICE : Fix subscription invoice sub type change issue on ventilation.
 
 ## [5.3.8] - 2020-07-15
 ## Improvements
@@ -49,7 +70,6 @@
 - EMPLOYEE: add first name search in advance search.
 - Invoice: Fix multiple invoices not ventilating when generated from sale order with advance payment.
 - TRAINING: Added domain to 'Required training' so it does not display itself.
-- INVOICE : Fix Subscription invoice operationSubTypeSelect change issue.
 
 ## [5.3.7] - 2020-06-26
 ## Improvements
@@ -404,8 +424,9 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - PRODUCT: Fix economicManufOrderQty displayed twice.
 
 
-[Unreleased 5.3.9]: https://github.com/axelor/axelor-open-suite/compare/v5.3.8...dev
-[5.3.8]: https://github.com/axelor/axelor-open-suite/compare/v5.3.7...V5.3.8
+[Unreleased 5.3.10]: https://github.com/axelor/axelor-open-suite/compare/v5.3.9...dev
+[5.3.9]: https://github.com/axelor/axelor-open-suite/compare/v5.3.8...v5.3.9
+[5.3.8]: https://github.com/axelor/axelor-open-suite/compare/v5.3.7...v5.3.8
 [5.3.7]: https://github.com/axelor/axelor-open-suite/compare/v5.3.6...v5.3.7
 [5.3.6]: https://github.com/axelor/axelor-open-suite/compare/v5.3.5...v5.3.6
 [5.3.5]: https://github.com/axelor/axelor-open-suite/compare/v5.3.4...v5.3.5

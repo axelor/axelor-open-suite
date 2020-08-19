@@ -50,6 +50,16 @@
 		<context name="_domain" expr="self.isContact = true AND (self.mainPartner.isCustomer = true OR self.mainPartner.isProspect = true)"/>
 	</action-view>
 	
+	<menuitem name="crm-root-catalog" parent="crm-root"
+		title="Catalogs" action="crm.root.catalogs" order="11"/>
+
+	<action-view name="crm.root.catalogs" title="Catalogs"
+		model="com.axelor.apps.crm.db.Catalog" >
+		<view type="cards" name="catalog-cards" />
+		<view type="grid" name="catalog-grid" />
+		<view type="form" name="catalog-form" />
+	</action-view>
+	
 	<menuitem name="crm-root-event" parent="crm-root"
 		title="Events" action="crm.root.event" order="15"/>
 
@@ -148,6 +158,24 @@
 		<view type="form" name="function-form"/>
 	</action-view>
 		
+	<menuitem name="crm-conf-catalog-type" parent="crm-conf"
+		title="Catalogs type" action="crm.conf.catalog.type" />
+		
+	<action-view name="crm.conf.catalog.type" title="Catalogs type"
+		model="com.axelor.apps.crm.db.CatalogType" >
+		<view type="grid" name="catalog-type-grid"/>
+		<view type="form" name="catalog-type-form"/>
+	</action-view>
+	
+	<menuitem name="crm-conf-industry-sector" parent="crm-conf"
+		title="Industry sectors" action="crm.conf.industry.sector"/>
+
+	<action-view name="crm.conf.industry.sector" title="Industry sectors"
+		model="com.axelor.apps.base.db.IndustrySector" >
+		<view type="grid" name="industry-sector-grid"/>
+		<view type="form" name="industry-sector-form"/>
+	</action-view>
+	
 	<menuitem name="admin-root-batch-crm" parent="admin-root-batch"
 		title="CRM batches" action="admin.root.batch.crm" if="__config__.app.isApp('crm')" />
 
