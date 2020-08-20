@@ -10,6 +10,7 @@
 - Forecast Recap : Visual changes to dashlet grid, some recap line type modified, recap take into account saleOrders and purchase order in addition to timetables, also added demo data  
 - LEAD : Added description field on reports
 - ACCOUNT MANAGEMENT : Change visiblity of product and product family
+- INVOICE : Changed fr traduction for Contact
 
 ## Bug Fixes
 - MRP : Shows error message instead of NPE when a product has no unit
