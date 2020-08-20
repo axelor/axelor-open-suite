@@ -6,6 +6,7 @@
 ## Improvements
 - LEAD : Added description field on reports
 - ACCOUNT MANAGEMENT : Change visiblity of product and product family
+- STOCK MOVE : Changed error message when trying to invoice a stockmove which has already been invoiced
 
 ## Bug Fixes
 - MRP : Shows error message instead of NPE when a product has no unit
