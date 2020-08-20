@@ -17,9 +17,8 @@
  */
 package com.axelor.apps.account.db.repo;
 
-import javax.persistence.PersistenceException;
-
 import com.axelor.apps.account.db.DebtRecovery;
+import javax.persistence.PersistenceException;
 
 public class DebtRecoveryAccountRepository extends DebtRecoveryRepository {
 
@@ -27,9 +26,9 @@ public class DebtRecoveryAccountRepository extends DebtRecoveryRepository {
   public DebtRecovery save(DebtRecovery debtRecovery) {
     try {
       if (debtRecovery.getAccountingSituation() != null) {
-    	  debtRecovery.setPartner(debtRecovery.getAccountingSituation().getPartner());
+        debtRecovery.setPartner(debtRecovery.getAccountingSituation().getPartner());
       } else if (debtRecovery.getTradingNameAccountingSituation() != null) {
-    	  debtRecovery.setPartner(debtRecovery.getTradingNameAccountingSituation().getPartner());
+        debtRecovery.setPartner(debtRecovery.getTradingNameAccountingSituation().getPartner());
       }
       return super.save(debtRecovery);
     } catch (Exception e) {

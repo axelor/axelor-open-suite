@@ -272,7 +272,7 @@ public class AccountModule extends AxelorModule {
     bind(PartnerTurnoverService.class).to(PartnerTurnoverServiceImpl.class);
 
     bind(YearServiceAccount.class).to(YearServiceAccountImpl.class);
-    
+
     bind(DebtRecoveryRepository.class).to(DebtRecoveryAccountRepository.class);
   }
 }

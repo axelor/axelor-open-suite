@@ -120,15 +120,15 @@ public class MrpLineServiceImpl implements MrpLineService {
     Partner supplierPartner = mrpLine.getSupplierPartner();
 
     if (supplierPartner == null) {
-        supplierPartner = product.getDefaultSupplierPartner();
+      supplierPartner = product.getDefaultSupplierPartner();
 
-        if (supplierPartner == null) {
-          throw new AxelorException(
-              mrpLine,
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.MRP_LINE_1),
-              product.getFullName());
-        }
+      if (supplierPartner == null) {
+        throw new AxelorException(
+            mrpLine,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.MRP_LINE_1),
+            product.getFullName());
+      }
     }
 
     Company company = stockLocation.getCompany();
@@ -229,7 +229,7 @@ public class MrpLineServiceImpl implements MrpLineService {
     mrpLine.setMinQty(this.getMinQty(product, stockLocation));
 
     if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL) {
-        mrpLine.setSupplierPartner(product.getDefaultSupplierPartner());
+      mrpLine.setSupplierPartner(product.getDefaultSupplierPartner());
     }
 
     this.updatePartner(mrpLine, model);
