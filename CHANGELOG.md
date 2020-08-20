@@ -6,6 +6,7 @@
 ## Improvements
 - LEAD : Added description field on reports
 - ACCOUNT MANAGEMENT : Change visiblity of product and product family
+- Tracking number : Added product / origin reference on message error when estimated delivery date is null"
 
 ## Bug Fixes
 - MRP : Shows error message instead of NPE when a product has no unit
