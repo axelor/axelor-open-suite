@@ -72,7 +72,7 @@
     		<field name="year.toDate" showIf="closeYear" hidden="true"/>
     		<field name="year.reportedBalanceDate" showIf="openYear" hidden="true"/>
     		<field name="moveDescription"/>
-			<field name="accountSet" colSpan="12" form-view="account-form" grid-view="account-grid" widget="TagSelect" canNew="false" canEdit="false" domain="self.company = :company"/> 
+			<field name="accountSet" colSpan="12" form-view="account-form" grid-view="account-grid" widget="TagSelect" canNew="false" canEdit="false" domain="self.company = :company" requiredIf="actionSelect == 21"/> 
 <!-- 			<field name="journalSet" colSpan="12" form-view="journal-form" grid-view="journal-grid" widget="TagSelect" canNew="false" domain="self.company = :company"/> -->
 		</panel>
 		<panel name="informationPanel" title="Information"  >

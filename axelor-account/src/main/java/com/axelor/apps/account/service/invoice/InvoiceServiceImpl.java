@@ -289,7 +289,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
           I18n.get(IExceptionMessage.INVOICE_GENERATOR_4),
           I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
     }
-
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
       Account account = invoiceLine.getAccount();
 
