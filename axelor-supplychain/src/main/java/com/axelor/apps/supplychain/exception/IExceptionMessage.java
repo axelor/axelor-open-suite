@@ -126,6 +126,8 @@ public interface IExceptionMessage {
 
   static final String MRP_NO_PRODUCT = /*$$(*/ "Please select an element to run calculation" /*)*/;
 
+  static final String MRP_NO_PRODUCT_UNIT = /*$$(*/ "Please fill unit for product %s" /*)*/;
+
   /** Sale order Stock Service Implement */
   static final String SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE = /*$$(*/
       "No delivery stock move to generate for this sale order" /*)*/;
