@@ -120,8 +120,12 @@
 		public static final int CONFORMITY_NONE = 1;
 		public static final int CONFORMITY_COMPLIANT = 2;
 		public static final int CONFORMITY_NON_COMPLIANT = 3;
-	
+
 		public static final String ORIGIN_INVENTORY = "com.axelor.apps.stock.db.Inventory";
+		public static final String ORIGIN_SALE_ORDER = "com.axelor.apps.sale.db.SaleOrder";
+		public static final String ORIGIN_PURCHASE_ORDER = "com.axelor.apps.purchase.db.PurchaseOrder";
+		public static final String ORIGIN_MANUFACTURING_ORDER = "com.axelor.apps.production.db.ManufOrder";
+		public static final String ORIGIN_OPERATION_ORDER = "com.axelor.apps.production.db.OperationOrder";
 		public static final String ORIGIN_STOCK_CORRECTION = "com.axelor.apps.stock.db.StockCorrection";
 	]]></extra-code>
 	
