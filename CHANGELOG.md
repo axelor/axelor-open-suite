@@ -41,6 +41,7 @@
 - Invoice report : Change in font size in Invoice report.
 - Report : Fix unit translation.
 - Forecast Recap : default value set to today for from date field
+- Move : It is now possible to change date until the move is validated
 
 ## Bug Fixes
 - HR : A leave-line cannot be saved whitout employee or leave-reason.
