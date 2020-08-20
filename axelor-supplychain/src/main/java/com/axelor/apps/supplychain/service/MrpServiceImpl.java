@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
@@ -430,6 +432,8 @@ public class MrpServiceImpl implements MrpService {
       String relatedToSelectName)
       throws AxelorException {
 
+    LocalDate initialMaturityDate = maturityDate;
+
     if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL) {
       maturityDate = maturityDate.minusDays(product.getSupplierDeliveryTime());
       reorderQty = reorderQty.max(this.getSupplierCatalogMinQty(product));
@@ -461,6 +465,10 @@ public class MrpServiceImpl implements MrpService {
               stockLocation,
               null);
       if (createdmrpLine != null) {
+        createdmrpLine.setWarnDelayFromSupplier(
+            mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL
+                && DAYS.between(initialMaturityDate, maturityDate)
+                    < product.getSupplierDeliveryTime());
         mrpLine = mrpLineRepository.save(createdmrpLine);
       }
       mrpLine.setRelatedToSelectName(relatedToSelectName);

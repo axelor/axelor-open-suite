@@ -21,6 +21,7 @@
   		<long name="proposalSelectId" readonly="true"/>
 		<many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
 		<many-to-one name="supplierPartner" ref="com.axelor.apps.base.db.Partner" title="Supplier" massUpdate="true"/>
+		<boolean name="warnDelayFromSupplier" readonly="true"/>
     
         <!-- TRANSIENT FIELD -->
         <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" transient="true"/>
