@@ -1,18 +1,17 @@
 # Changelog
-## [Unreleased 5.2.14]
-## Improvements
+## [5.2.14] - 2020-08-20
 ## Bug Fixes
-- DASHLET : invoice sale amount by month not updated
-- Accounting report : corrected bank reconciliation statement report, now display lines reconcile after date report.
-- ACCOUNTING REPORT : Add missing translations in report
-- INVOICE : Fix chart not taking refunds into account
-- INVOICE : Fix Subscription invoice operationSubTypeSelect change issue.
-- Invoice : on invoice form view corrected display of empty column in invoice payment line grid viewer.
-- Accounting batch : put to required mandatory fields for close annual year batch.
-- Batch payroll preparation generation : corrected batch error no session.
-- Fiscal year : corrected sql  error on close function.
-- Invoice line : corrected view error when trying to change an invoice line.
-- BANK RECONCILIATION STATEMENT REPORT : change French translation of balance from "balance" to "solde".
+- DASHLET: fix invoice sale amount by month not updated.
+- Accounting report: corrected bank reconciliation statement report, now displays lines reconciled after report date.
+- ACCOUNTING REPORT: Add missing translations in report.
+- INVOICE: Fix chart not taking refunds into account.
+- INVOICE: Fix subscription invoice issue on sub type select change.
+- Invoice: on invoice form view corrected display of empty column in invoice payment line grid viewer.
+- Accounting batch: Year and accounts are now required for close annual year batch.
+- Batch payroll preparation generation: corrected batch error no session.
+- Fiscal year: corrected sql error on close function.
+- Invoice line: corrected view error when trying to change an invoice line.
+- BANK RECONCILIATION STATEMENT REPORT: change French translation of balance from "balance" to "solde".
 
 ## [5.2.13] - 2020-07-21
 ## Improvements
@@ -685,7 +684,7 @@ In this case, the file is correctly retrieved from the bank server, but not save
 - LEAVE REQUEST: Add error when leave reason has no unit.
 - LEAVE REQUEST: Set duration value 0 if day planning of selected weekly planning is empty
 
-[Unreleased 5.2.14]: https://github.com/axelor/axelor-open-suite/compare/v5.2.13...5.2-dev
+[5.2.14]: https://github.com/axelor/axelor-open-suite/compare/v5.2.13...v5.2.14
 [5.2.13]: https://github.com/axelor/axelor-open-suite/compare/v5.2.12...v5.2.13
 [5.2.12]: https://github.com/axelor/axelor-open-suite/compare/v5.2.11...v5.2.12
 [5.2.11]: https://github.com/axelor/axelor-open-suite/compare/v5.2.10...v5.2.11
