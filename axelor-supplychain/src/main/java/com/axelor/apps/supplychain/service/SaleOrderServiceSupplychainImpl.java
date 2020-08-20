@@ -135,10 +135,11 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
             IExceptionMessage.SUPPLYCHAIN_MISSING_CANCEL_REASON_ON_CHANGING_SALE_ORDER);
       }
       for (StockMove stockMove : stockMoves) {
-        stockMoveService.cancel(stockMove, cancelReason);
         if (stockMove.getStatusSelect().equals(StockMoveRepository.STATUS_DRAFT)) {
+          stockMoveService.cancel(stockMove, cancelReason);
           stockMoveRepository.remove(stockMove);
         } else {
+          stockMoveService.cancel(stockMove, cancelReason);
           for (StockMoveLine stockMoveline : stockMove.getStockMoveLineList()) {
             stockMoveline.setSaleOrderLine(null);
           }
