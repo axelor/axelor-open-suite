@@ -21,16 +21,25 @@
         <field name="supplierPartner" onSelect="action-mrp-line-attrs-domain-supplier-partner" readonlyIf="proposalGenerated || [5,8].indexOf($get('mrpLineType.elementSelect')) == -1" />
         <field name="proposalGenerated" hidden="true"/>
         <button name="generateProposalBtn" icon="fa-calendar" onClick="action-mrp-line-method-generate-proposal" readonlyIf="proposalGenerated || [5,8].indexOf($get('mrpLineType.elementSelect')) == -1"/>
+        <button name="errorIconButton" showIf="warnDelayFromSupplier" onClick="refresh" readonlyIf="true" icon="fa-exclamation-triangle"/>
         <field name="mrpLineType.elementSelect" hidden="true"/>
         <field name="isEditedByUser" hidden="true"/>
         <field name="product.defaultSupplierPartner.id" hidden="true"/>
         <field name="supplierPartner.id" hidden="true"/>
+        <field name="warnDelayFromSupplier" hidden="true"/>
     </grid>
 
 	<form name="mrp-line-form" model="com.axelor.apps.supplychain.db.MrpLine" title="Result"
         onNew="action-mrp-line-attrs-scale-and-precision" onLoad="action-mrp-line-attrs-scale-and-precision" readonlyIf="proposalGenerated || [5,8].indexOf($get('mrpLineType.elementSelect')) == -1">
 	    <panel name="mainPanel">
-	        <field name="product" readonly="true" canEdit="false"/>
+        <field name="$warnDelayFromSupplierLabel" readonly="true" showTitle="false" colSpan="12" showIf="warnDelayFromSupplier">
+          <viewer><![CDATA[
+	                    <h4>
+	                        <span class="label label-warning" x-translate>The product will not be delivered in time for its corresponding need.</span>
+	                    </h4>
+					]]></viewer>
+        </field>
+        <field name="product" readonly="true" canEdit="false"/>
 	        <field name="mrpLineType" readonly="true"/>
         	<field name="qty" onChange="action-temp-complete-is-edited-by-user" readonlyIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5  &amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect = 1))" />
         	<field name="maturityDate" onChange="action-temp-complete-is-edited-by-user" readonlyIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5  &amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect = 1))"/>
@@ -51,6 +60,7 @@
             <field name="proposalSelect" title="Proposal" widget="RefSelect" readonly="true" showIf="proposalGenerated"/>
             <field name="isEditedByUser"  hideIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5 &amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect = 1))"/>
             <field name="mrp.mrpTypeSelect" hidden="true"/>
+            <field name="warnDelayFromSupplier" hidden="true"/>
 	    </panel>
 
         <panel name="supplierPanel" showIf="mrpLineType.elementSelect == 5" >
