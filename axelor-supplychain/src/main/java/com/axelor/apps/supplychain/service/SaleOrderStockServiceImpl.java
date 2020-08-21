@@ -323,7 +323,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
           break;
         case SupplyChainConfigRepository.SALE_ORDER_SHIPPING_DATE:
           SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
-          if (saleOrderLine == null) {
+          if (saleOrderLine == null || saleOrderLine.getEstimatedDelivDate() == null) {
             reservationDateTime = null;
           } else {
             reservationDateTime = saleOrderLine.getEstimatedDelivDate().atStartOfDay();
