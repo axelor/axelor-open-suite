@@ -25,6 +25,7 @@
 - Reports: Manage locale, date format and timezone following company configuration.
 - Product: add products per company to configure different prices depending on the company.
 - Product: add product image in grid view.
+- QUALITY TAG : add colorSelect field for tag color
 
 ## Improvements
 - USER : Default User language is based on application.locale from application.properties

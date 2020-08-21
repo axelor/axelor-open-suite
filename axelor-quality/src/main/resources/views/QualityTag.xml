@@ -4,11 +4,13 @@
 
 	<grid name="quality-tag-grid" title="Quality tag" model="com.axelor.apps.quality.db.QualityTag">
 		<field name="name"/>
+		<field name="colorSelect"/>
 	</grid>
 	
 	<form name="quality-tag-form" title="Quality tag" model="com.axelor.apps.quality.db.QualityTag">
 		<panel name="mainPanel">
 			<field name="name"/>
+			<field name="colorSelect"/>
 		</panel>
 	</form>	
 
