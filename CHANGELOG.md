@@ -22,6 +22,7 @@
 - Invoice line : corrected view error when trying to change an invoice line.
 - BANK RECONCILIATION STATEMENT REPORT : change French translation of balance from "balance" to "solde".
 - Sale order : removed the behavior of removing stock move with a status different than draft after clicking on edit sale order button.
+- AccountManagement : Demo datas : sequence are now linked with the account managements
 
 ## [5.3.9] - 2020-07-29
 ## Improvements
