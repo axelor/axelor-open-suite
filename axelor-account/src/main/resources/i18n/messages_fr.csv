@@ -1011,7 +1011,7 @@
 "Generate move for advance payment","Générer des écritures pour les acomptes",,
 "Generate move for payment on invoice","Générer des écritures pour les paiements directs sur facture",,
 "Generate move from template","Générer les écritures à partir du modèle",,
-"Generate moves with draft status (daybook status if not)",,,
+"Generate moves with draft status (daybook status if not)","Générer les écritures en statut nouveau (statut brouillard sinon)",,
 "Generate periods","Générer les périodes",,
 "Generate refund","Générer un avoir",,
 "Generate reimbursements","Générer les remboursements",,
