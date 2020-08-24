@@ -19,6 +19,7 @@
 	<many-to-one name="salesMan" ref="com.axelor.auth.db.User" title="Salesperson"/>
 	<integer name="displayTypeSelect" title="Display" selection="display.type.select" default="3"/>
 	<boolean name="isReport"/>
+	<boolean name="isComplete" default="false"/>
 	<date name="calculationDate" title="Calculation Date" readonly="true"/>
 	
 	<unique-constraint columns="forecastRecapSeq,company"/>
