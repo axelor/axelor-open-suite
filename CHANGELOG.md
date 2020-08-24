@@ -25,6 +25,7 @@
 - Sale Order : Adding Partner name and SaleOrder sequence in Customer credit traceback
 - PRODUCT : Format number of decimal digits for displayed quantities.
 - PurchaseOrder : removed action which is setting dotted field explicitly.
+- TRACKING MAIL NOTIFICATION : corrected wrong partner receiving email selected. 
 
 ## [5.3.9] - 2020-07-29
 ## Improvements
