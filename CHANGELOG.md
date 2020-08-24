@@ -25,6 +25,10 @@
 - Reports: Manage locale, date format and timezone following company configuration.
 - Product: add products per company to configure different prices depending on the company.
 - Product: add product image in grid view.
+- HRConfig : Import formula variables.
+- PRODUCT: Add json field.
+- MRP: hideIf on generateProposalBtn on mrpLine grid.
+- Opportunity: Addition of hideIf attribute for 'take charge' button in opportunity grid.
 - LEAD : hide Take charge button on grid view.
 
 ## Improvements
