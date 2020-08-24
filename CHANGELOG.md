@@ -25,11 +25,14 @@
 - Reports: Manage locale, date format and timezone following company configuration.
 - Product: add products per company to configure different prices depending on the company.
 - Product: add product image in grid view.
+- HRConfig : Import formula variables.
+- PRODUCT: Add json field.
 - MRP: hideIf on generateProposalBtn on mrpLine grid.
 
 ## Improvements
 - USER : Default User language is based on application.locale from application.properties
 - BASE : Cache memory performace improved by not stocking geographical entities anymore
+- Accounting move line : When creating a new line the default debit or credit is set in order to balance the move
 - Accounting Move Line : When debit/credit is filled the other field is set to 0 instead of being set to a readonly mode
 - Invoice/Orders : The printing filename has been changed to show the id of the printed order/invoice
 - Employee : renamed dateOfHire, timeOfHire, endDateContract, dateOfBirth fields to hireDate, hireTime, contractEndDate, birthDate

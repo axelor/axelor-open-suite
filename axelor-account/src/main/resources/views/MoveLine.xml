@@ -326,6 +326,7 @@
     <action-group name="action-account-move-line-onnew-group">
 	    <action name="action-move-line-record-get-move-informations"/>
 	    <action name="action-move-line-record-get-first-move-line-informations"/>
+	    <action name="action-move-line-record-get-creditdebit-balance"/>
 	    <action name="action-move-line-attrs-hidden-reconcileLists"/>
 	    <action name="action-move-line-record-set-currencyRate"/>
 	    <action name="action-move-line-record-set-currencyAmount"/>
@@ -409,6 +410,11 @@
 		<field name="description" expr="eval: _parent?.moveLineList.get(0).description" if="eval: _parent?.getInfoFromFirstMoveLineOk == true &amp;&amp; _parent?.moveLineList != null &amp;&amp; _parent?.moveLineList.size() != 0"/>
 		<field name="exportedDirectDebitOk" expr="eval: _parent?.moveLineList.get(0).exportedDirectDebitOk" if="eval: _parent?.getInfoFromFirstMoveLineOk == true &amp;&amp; _parent?.moveLineList != null &amp;&amp; _parent?.moveLineList.size() != 0"/>
 		<field name="partner" expr="eval: _parent?.moveLineList.get(0).partner" if="eval: _parent?.getInfoFromFirstMoveLineOk == true &amp;&amp; _parent?.moveLineList != null &amp;&amp; _parent?.moveLineList.size() != 0"/>
+	</action-record>
+	
+	<action-record name="action-move-line-record-get-creditdebit-balance" model="com.axelor.apps.account.db.MoveLine">
+		<field name="debit" expr="eval: _parent?.moveLineList.collect{new BigDecimal(it.credit)}.sum() - _parent?.moveLineList.collect{new BigDecimal(it.debit)}.sum()" if="eval: _parent?.moveLineList.collect{new BigDecimal(it.credit)}.sum() &gt; _parent?.moveLineList.collect{new BigDecimal(it.debit)}.sum()" />
+		<field name="credit" expr="eval: _parent?.moveLineList.collect{new BigDecimal(it.debit)}.sum() - _parent?.moveLineList.collect{new BigDecimal(it.credit)}.sum()" if="eval: _parent?.moveLineList.collect{new BigDecimal(it.credit)}.sum() &lt; _parent?.moveLineList.collect{new BigDecimal(it.debit)}.sum()"/>
 	</action-record>
 
 	<action-record name="action-move-line-record-set-currencyRate" model="com.axelor.apps.account.db.MoveLine">
