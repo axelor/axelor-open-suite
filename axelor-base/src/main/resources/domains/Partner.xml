@@ -78,8 +78,6 @@
 	<string name="contactAttrs" title="Fields" json="true" />
 	<string name="headOfficeAddress" title="Head office address"/>
 
-	<finder-method name="findByUser" using="user"/>
-
 	<extra-code>
 	<![CDATA[
 		public static final int PARTNER_TYPE_COMPANY = 1;
