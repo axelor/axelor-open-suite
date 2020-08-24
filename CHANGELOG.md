@@ -3,6 +3,7 @@
 ## Improvements
 ## Bug Fixes
 - PurchaseOrder : removed action which is setting dotted field explicitly.
+- TRACKING MAIL NOTIFICATION : corrected wrong partner receiving email selected. 
 
 ## [5.2.14] - 2020-08-20
 ## Bug Fixes
