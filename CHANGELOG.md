@@ -31,6 +31,7 @@
 - Opportunity: Addition of hideIf attribute for 'take charge' button in opportunity grid.
 - LEAD : hide Take charge button on grid view.
 - TICKET : hide Take charge button on grid view.
+- QUALITY TAG : add colorSelect field for tag color
 
 ## Improvements
 - USER : Default User language is based on application.locale from application.properties
