@@ -2,6 +2,7 @@
 ## [Unreleased 5.2.15]
 ## Improvements
 ## Bug Fixes
+- PurchaseOrder : removed action which is setting dotted field explicitly.
 
 ## [5.2.14] - 2020-08-20
 ## Bug Fixes

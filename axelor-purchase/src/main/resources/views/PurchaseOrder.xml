@@ -368,7 +368,6 @@
     	<action name="action-purchase-order-record-new"/>
     	<action name="action-purchase-order-record-company-configuration"/>
     	<action name="action-purchase-order-method-get-stock-location"/>
-    	<action name="action-purchase-order-attrs-stock-location-address"/>
     	<action name="action-purchase-order-record-in-ati"/>
     	<action name="action-purchase-order-attrs-in-ati"/>
     	<action name="action-purchase-order-dispaly-price"/>
@@ -445,10 +444,6 @@
     	<attribute name="hidden" for="purchaseOrderLineList.inTaxPrice" expr="!inAti"/>
     	<attribute name="hidden" for="inAti" expr=" eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 1
     									|| __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 2" if="company"/>
-    </action-attrs>
-
-    <action-attrs name="action-purchase-order-attrs-stock-location-address">
-    	<attribute name="value" for="stockLocation.address" expr="eval: stockLocation.address"/>
     </action-attrs>
 
     <action-record name="action-purchase-order-record-in-ati" model="com.axelor.apps.purchase.db.PurchaseOrder">
