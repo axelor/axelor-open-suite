@@ -50,9 +50,18 @@
 		</panel>
 		<panel-tabs name="mainPanelTab" hideIf="typeSelect == 1">
 			<panel name="informationsPanel" title="Information">
-				<field name="product" canEdit="false" onChange="action-group-account-invoice-line-product-onchange" onSelect="action-invoice-line-attrs-set-product-domain-onselect" form-view="product-form" grid-view="product-grid"/>
-				<field name="$isFilterOnSupplier" title="Filter on supplier" type="boolean" widget="boolean-switch"  colSpan="2" if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog()"/>
-				<field name="typeSelect" colSpan="3" onChange="action-invoice-line-method-empty-line" selection-in="[0,1]"  />
+			    <panel name="customerInvoicePanel" colSpan="12">
+			      <field name="product" canEdit="false" onChange="action-group-account-invoice-line-product-onchange" onSelect="action-invoice-line-attrs-set-product-domain-onselect" form-view="product-form" grid-view="product-grid"/>
+				  <field name="$isFilterOnSupplier" title="Filter on supplier" type="boolean" widget="boolean-switch"  colSpan="2" if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog()"/>
+				  <field name="typeSelect" colSpan="3" onChange="action-invoice-line-method-empty-line" selection-in="[0,1]"  />
+			    </panel>
+			    
+			    <panel name="supplierInvoicePanel" colSpan="12">
+				  <field name="product" canEdit="false" onChange="action-group-account-invoice-line-product-onchange" onSelect="action-invoice-line-attrs-set-product-domain-onselect" form-view="product-form" grid-view="product-purchase-grid"/>
+				  <field name="$isFilterOnSupplier" title="Filter on supplier" type="boolean" widget="boolean-switch"  colSpan="2" if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog()"/>
+				  <field name="typeSelect" colSpan="3" onChange="action-invoice-line-method-empty-line" selection-in="[0,1]"  />
+			    </panel>
+			    
 				<field name="productName" colSpan="12" requiredIf="typeSelect != 1"/>
 				<field name="qty" colSpan="3" required="true" onChange="action-group-account-invoice-line-qty-onchange"/>
 				<field name="unit" colSpan="3" canEdit="false" requiredIf="typeSelect == 0" form-view="unit-form" grid-view="unit-grid"/>
@@ -350,6 +359,8 @@
 		<attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == inTaxPrice" if="__parent__?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; __parent__?.inAti"/>
 		
 		<attribute name="required" for="analyticDistributionTemplate" expr="__parent__?.statusSelect &gt; 1 &amp;&amp; analyticMoveLineList.isEmpty() &amp;&amp; account?.analyticDistributionAuthorized &amp;&amp; account?.analyticDistributionRequiredOnInvoiceLines" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" />
+	    <attribute name="hidden" for="customerInvoicePanel" expr="eval: invoice != null ? invoice.operationTypeSelect &lt; 3 : __parent__?.operationTypeSelect &lt; 3" />
+	    <attribute name="hidden" for="supplierInvoicePanel" expr="eval: invoice != null ? invoice.operationTypeSelect &gt; 2 : __parent__?.operationTypeSelect &gt; 2" />
 	</action-attrs>
 
   	<action-attrs name="action-attrs-account-invoice-line-account-onchange">

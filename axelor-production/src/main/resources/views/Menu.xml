@@ -12,7 +12,7 @@
 
 	<action-view name="manufacturing.root.products" title="Products"
 		model="com.axelor.apps.base.db.Product" >
-		<view type="grid" name="product-grid" />
+		<view type="grid" name="product-production-stock-grid" />
 		<view type="form" name="product-form" />
 		<view type="cards" name="product-cards" />
 		<view-param name="search-filters" value="products-filters"/>

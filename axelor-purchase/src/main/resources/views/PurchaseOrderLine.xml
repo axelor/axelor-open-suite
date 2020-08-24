@@ -96,7 +96,7 @@
 				</field>
        			<spacer name="receiptStateSpacer"  if="__config__.app.isApp('supplychain')"/>
 				<field name="product"  canEdit="false" onChange="action-group-purchase-purchase-orderline-product-onchange"
-				  onSelect="action-purchase-order-line-attrs-product-domain" form-view="product-form" grid-view="product-grid"/>
+				  onSelect="action-purchase-order-line-attrs-product-domain" form-view="product-form" grid-view="product-purchase-grid"/>
 				<field name="enableFreezeFields" colSpan="2"/>
 				<field name="$isFilterOnSupplier" type="boolean" title="Filter on supplier" widget="boolean-switch" colSpan="2" if="__config__.app.getApp('purchase').getManageSupplierCatalog()"/>
 				<field name="isTitleLine" colSpan="2" onChange="action-purchase-order-line-method-empty-line" widget="boolean-switch"/>
