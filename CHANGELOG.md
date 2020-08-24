@@ -28,6 +28,7 @@
 - HRConfig : Import formula variables.
 - PRODUCT: Add json field.
 - MRP: hideIf on generateProposalBtn on mrpLine grid.
+- Opportunity: Addition of hideIf attribute for 'take charge' button in opportunity grid.
 
 ## Improvements
 - USER : Default User language is based on application.locale from application.properties
