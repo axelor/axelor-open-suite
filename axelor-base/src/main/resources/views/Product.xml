@@ -309,6 +309,7 @@
   		</panel-tabs>
   		<panel name="attrsPanel">
   			<field name="attrs" colSpan="12" />
+            <field name="productAttrs" colSpan="12" />
   		</panel>
 
   		<panel-mail name="mailsPanel">

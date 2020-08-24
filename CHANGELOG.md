@@ -26,6 +26,7 @@
 - Product: add products per company to configure different prices depending on the company.
 - Product: add product image in grid view.
 - HRConfig : Import formula variables.
+- PRODUCT: Add json field.
 
 ## Improvements
 - USER : Default User language is based on application.locale from application.properties
