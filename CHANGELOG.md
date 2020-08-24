@@ -21,6 +21,9 @@
 - Invoice : on invoice form view corrected display of empty column in invoice payment line grid viewer.
 - Invoice line : corrected view error when trying to change an invoice line.
 - BANK RECONCILIATION STATEMENT REPORT : change French translation of balance from "balance" to "solde".
+- Sale order : removed the behavior of removing stock move with a status different than draft after clicking on edit sale order button.
+- Sale Order : Adding Partner name and SaleOrder sequence in Customer credit traceback
+- PRODUCT : Format number of decimal digits for displayed quantities.
 - PurchaseOrder : removed action which is setting dotted field explicitly.
 
 ## [5.3.9] - 2020-07-29

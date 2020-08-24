@@ -269,4 +269,7 @@ public interface IExceptionMessage {
 
   static final String PO_INVOICE_QTY_MAX = /*$$(*/
       "The quantity to invoice is greater than the quantity in the purchase order" /*)*/;
+
+  static final String SALE_ORDER_CLIENT_PARTNER_EXCEEDED_CREDIT = /*$$(*/
+      "%s blocked : maximal accepted credit exceeded for %s." /*)*/;
 }
