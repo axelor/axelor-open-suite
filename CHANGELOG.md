@@ -25,6 +25,7 @@
 - Sale Order : Adding Partner name and SaleOrder sequence in Customer credit traceback
 - PRODUCT : Format number of decimal digits for displayed quantities.
 - PurchaseOrder : removed action which is setting dotted field explicitly.
+- MANUF ORDER : Fix number of decimal digit displayed for missing quantity on toConsumeProdProductList field.
 
 ## [5.3.9] - 2020-07-29
 ## Improvements
