@@ -24,6 +24,7 @@
 - Sale order : removed the behavior of removing stock move with a status different than draft after clicking on edit sale order button.
 - Sale Order : Adding Partner name and SaleOrder sequence in Customer credit traceback
 - PRODUCT : Format number of decimal digits for displayed quantities.
+- PurchaseOrder : removed action which is setting dotted field explicitly.
 
 ## [5.3.9] - 2020-07-29
 ## Improvements
