@@ -94,8 +94,6 @@
 	
 	<string name="proformaComments" title="Comment to display on proforma" large="true"/>
 
-	<finder-method name="findByUser" using="user"/>
-
 	<extra-code>
 	<![CDATA[
 		public static final int PARTNER_TYPE_COMPANY = 1;
