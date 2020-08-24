@@ -29,6 +29,7 @@
 - PRODUCT: Add json field.
 - MRP: hideIf on generateProposalBtn on mrpLine grid.
 - Opportunity: Addition of hideIf attribute for 'take charge' button in opportunity grid.
+- LEAD : hide Take charge button on grid view.
 
 ## Improvements
 - USER : Default User language is based on application.locale from application.properties
