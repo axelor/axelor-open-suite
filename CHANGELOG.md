@@ -27,6 +27,7 @@
 - Product: add product image in grid view.
 - HRConfig : Import formula variables.
 - PRODUCT: Add json field.
+- MRP: hideIf on generateProposalBtn on mrpLine grid.
 
 ## Improvements
 - USER : Default User language is based on application.locale from application.properties
