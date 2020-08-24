@@ -184,12 +184,7 @@
 
 	<input file="base_period.csv" separator=";" type="com.axelor.apps.base.db.Period" />
 	
-	<input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User" search="self.code = :code" call="com.axelor.csv.script.ImportUser:importUser">
- 		<bind to="partner" column="partner.importId" if="false"/>
- 		<bind to="activeTeam" column="activeTeam.importId" if="false"/>
- 		<bind to="teamSet" column="teamSet.importId" if="false"/>
- 		<bind to="employee" column="employee.importId" if="false"/>
- 	</input>
+	<input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User" search="self.code = :code" call="com.axelor.csv.script.ImportUser:importUser"/>
  	
 	<input file="account_tax.csv" separator=";" type="com.axelor.apps.account.db.Tax" search="self.code = :code" />
   	
