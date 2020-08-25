@@ -32,6 +32,7 @@
 - LEAD : hide Take charge button on grid view.
 - TICKET : hide Take charge button on grid view.
 - QUALITY TAG : add colorSelect field for tag color
+- User : add forcePasswordChange field in user-form.
 
 ## Improvements
 - USER : Default User language is based on application.locale from application.properties
