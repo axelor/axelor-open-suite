@@ -17,6 +17,21 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.production.db.MpsCharge;
+import com.axelor.apps.production.db.MpsChargeLine;
+import com.axelor.apps.production.db.MpsWeeklySchedule;
+import com.axelor.apps.production.db.WorkCenter;
+import com.axelor.apps.production.db.repo.MpsChargeLineRepository;
+import com.axelor.apps.production.db.repo.MpsChargeRepository;
+import com.axelor.apps.production.db.repo.MpsWeeklyScheduleRepository;
+import com.axelor.apps.production.db.repo.WorkCenterRepository;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -35,22 +50,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
-
-import com.axelor.apps.production.db.MpsCharge;
-import com.axelor.apps.production.db.MpsChargeLine;
-import com.axelor.apps.production.db.MpsWeeklySchedule;
-import com.axelor.apps.production.db.WorkCenter;
-import com.axelor.apps.production.db.repo.MpsChargeLineRepository;
-import com.axelor.apps.production.db.repo.MpsChargeRepository;
-import com.axelor.apps.production.db.repo.MpsWeeklyScheduleRepository;
-import com.axelor.apps.production.db.repo.WorkCenterRepository;
-import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.exception.service.TraceBackService;
-import com.axelor.inject.Beans;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.inject.persist.Transactional;
 
 public class MpsChargeServiceImpl implements MpsChargeService {
 
@@ -75,25 +74,27 @@ public class MpsChargeServiceImpl implements MpsChargeService {
     }
     return totalHoursCountMap;
   }
-  
+
   @Transactional
   public void createDummy(int week, MpsCharge mpsCharge) {
-	  MpsChargeLine dummy = new MpsChargeLine();
-	  dummy.setStartingDate(mpsCharge
-		      .getStartMonthDate()
-		      .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, week)
-		      .with(ChronoField.DAY_OF_WEEK, DayOfWeek.MONDAY.getValue()));
-	  dummy.setEndingDate(dummy.getStartingDate().plusMonths((int)(Math.random()*10)));
-	  List<SaleOrder> listSaleOrder = Beans.get(SaleOrderRepository.class).all().fetch();
-	  List<WorkCenter> listWorkCenter = Beans.get(WorkCenterRepository.class).all().fetch();
-	  dummy.setWorkCenter(listWorkCenter.get((int)(Math.random()*listWorkCenter.size())));
-	  dummy.setSaleOrder(listSaleOrder.get((int)(Math.random()*listSaleOrder.size())));
-	  dummy.setCustomerWantedDate(dummy.getEndingDate().plusDays(10));
-	  dummy.setMpsCharge(mpsCharge);
-	  dummy.setPriority((int)(Math.random()*4)+1);
-	  Beans.get(MpsChargeLineRepository.class).save(dummy);
+    MpsChargeLine dummy = new MpsChargeLine();
+    dummy.setStartingDate(
+        mpsCharge
+            .getStartMonthDate()
+            .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, week)
+            .with(ChronoField.DAY_OF_WEEK, DayOfWeek.MONDAY.getValue()));
+    dummy.setEndingDate(dummy.getStartingDate().plusMonths((int) (Math.random() * 10)));
+    List<SaleOrder> listSaleOrder = Beans.get(SaleOrderRepository.class).all().fetch();
+    List<WorkCenter> listWorkCenter = Beans.get(WorkCenterRepository.class).all().fetch();
+    dummy.setWorkCenter(listWorkCenter.get((int) (Math.random() * listWorkCenter.size())));
+    dummy.setSaleOrder(listSaleOrder.get((int) (Math.random() * listSaleOrder.size())));
+    dummy.setCustomerWantedDate(dummy.getEndingDate().plusDays(10));
+    dummy.setMpsCharge(mpsCharge);
+    dummy.setDuration((int) (Math.random() * 2000));
+    dummy.setPriority((int) (Math.random() * 4) + 1);
+    Beans.get(MpsChargeLineRepository.class).save(dummy);
   }
-  
+
   @Override
   public Map<MpsWeeklySchedule, Map<Integer, BigDecimal>> countTotalWeekHours(
       LocalDate startMonthDate, LocalDate endMonthDate) {
@@ -325,7 +326,7 @@ public class MpsChargeServiceImpl implements MpsChargeService {
         String monthName = yearMonth.toString().toLowerCase();
         if (chargeDataToSet) {
           Map<String, Object> dataMap = new HashMap<>();
-          dataMap.put(TITLE_CODE, "test");
+          dataMap.put(TITLE_CODE, "Charge estimée");
           dataMap.put(TITLE_MONTH, yearMonth.toString());
           dataMap.put(TITLE_MONTH_NAME, monthName);
           dataMap.put(

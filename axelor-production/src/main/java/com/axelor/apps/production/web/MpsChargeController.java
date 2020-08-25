@@ -17,20 +17,6 @@
  */
 package com.axelor.apps.production.web;
 
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAdjusters;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.production.db.MpsCharge;
 import com.axelor.apps.production.db.MpsWeeklySchedule;
@@ -48,24 +34,37 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class MpsChargeController {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  
+
   public void fillDummy(ActionRequest request, ActionResponse response) {
-	  MpsCharge mpsCharge = request.getContext().asType(MpsCharge.class);
-	  mpsCharge = Beans.get(MpsChargeRepository.class).find(mpsCharge.getId());
-	
+    MpsCharge mpsCharge = request.getContext().asType(MpsCharge.class);
+    mpsCharge = Beans.get(MpsChargeRepository.class).find(mpsCharge.getId());
+
     int startWeek = mpsCharge.getStartMonthDate().getDayOfYear() / 7;
     int endWeek = mpsCharge.getEndMonthDate().getDayOfYear() / 7;
 
-	for(int i = startWeek; i <= endWeek; i++) {
-		Beans.get(MpsChargeServiceImpl.class).createDummy(i,mpsCharge);
-	}
+    for (int i = startWeek; i <= endWeek; i++) {
+      Beans.get(MpsChargeServiceImpl.class).createDummy(i, mpsCharge);
+    }
+    response.setReload(true);
   }
-  
+
   public void getMpsWeeklyScheduleCustom(ActionRequest request, ActionResponse response) {
 
     LocalDate startMonthDate =
