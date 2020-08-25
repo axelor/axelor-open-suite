@@ -124,6 +124,7 @@
 	            <panel name="passwordOptionsPanel" showIf="code != $user">
 	              <field name="$generateRandomPassword" title="Generate random password" widget="boolean" onChange="action-user-generate-random-password"/>
 	              <field name="sendEmailUponPasswordChange"/>
+	              <field name="forcePasswordChange"/>
 	            </panel>
 	          </panel>
 	        </panel>
