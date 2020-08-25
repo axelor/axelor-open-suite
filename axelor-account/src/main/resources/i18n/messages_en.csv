@@ -1192,6 +1192,7 @@
 "Is already reverse",,,
 "Is updating",,,
 "It is not possible to edit the amount of a reconciled and/or lettered accounting move line.",,,
+"It is not possible to go back to validate status or cancel a ventilated invoice.",,,
 "Journal",,,
 "Journal %s does not have any account move sequence configured",,,
 "Journal Type",,,

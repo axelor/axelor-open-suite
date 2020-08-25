@@ -719,6 +719,9 @@ public interface IExceptionMessage {
   static final String INVOICE_4 = /*$$(*/ "Refunds from invoice %s" /*)*/;
 
   static final String INVOICE_NO_INVOICE_TO_PAY = /*$$(*/ "No invoice to pay" /*)*/;
+  static final String
+      INVOICE_CAN_NOT_GO_BACK_TO_VALIDATE_STATUS_OR_CANCEL_VENTILATED_INVOICE = /*$$(*/
+          "It is not possible to go back to validate status or cancel a ventilated invoice." /*)*/;
 
   /** Move template controller */
   static final String MOVE_TEMPLATE_1 = /*$$(*/ "Template move is not balanced" /*)*/;
