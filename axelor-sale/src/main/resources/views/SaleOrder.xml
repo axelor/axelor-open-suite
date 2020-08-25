@@ -449,7 +449,16 @@
 	    <field name="companyBankDetails" canEdit="false" hidden="true" widget="SuggestBox" onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain" form-view="bank-details-form" grid-view="bank-details-grid"/>
 	  </panel>
 	  <panel name="referencePanel" title="References" hideIf="clientPartner == null" itemSpan="6" sidebar="true" canCollapse="true" collapseIf="true">
-	    <field name="externalReference" hideIf="company == null" onChange="action-sale-order-attrs-external-reference"/>
+	    <field name="externalReference" hideIf="company == null" onChange="action-sale-sale-order-attrs-external-reference"/>
+        <field name="$duplicateExternalReference" hidden="true" colSpan="12" showTitle="false" readonly="true">
+        	<viewer>
+        		<![CDATA[
+               	  <h4>
+               	    <span class="label label-warning" style="color: #FFFFFF;" x-translate>Watch out, a sale order was already created with this external reference.</span>
+                  </h4>
+              	]]>
+            </viewer>    
+        </field>
 	    <field name="opportunity" readonlyIf="statusSelect >= 2" form-view="opportunity-form" grid-view="opportunity-grid" canEdit="false"/>
 	    <field name="duplicateReferenceLabel" showTitle="false" readonly="true" hidden="true">
         <viewer>
@@ -1530,6 +1539,12 @@
     <attribute name="readonly" expr="eval: timetableList.any { it?.invoiced }" for="timetableTemplate"/>
     <attribute name="readonly" expr="eval: timetableList.any { it?.invoiced }" for="computationDate"/>
    </action-attrs>
+   
+    <action-attrs name="action-sale-sale-order-attrs-external-reference">
+      <attribute name="hidden" for="$duplicateExternalReference" 
+      expr="eval: !((externalReference != null &amp;&amp; id != null &amp;&amp; __repo__(SaleOrder).all().filter('self.externalReference = ? AND self.id != ?', externalReference , id).count() > 0)
+                 || (externalReference != null &amp;&amp; id == null &amp;&amp; __repo__(SaleOrder).all().filter('self.externalReference = ?', externalReference).count() > 0))"/>
+    </action-attrs>
    
 	
 </object-views>
