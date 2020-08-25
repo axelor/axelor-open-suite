@@ -470,11 +470,10 @@
 			</panel>
 			<panel name="paymentPanel" title="Invoicing/Payment" hideIf="isContact"
 				if-module="axelor-account" colSpan="12" if="__config__.app.isApp('invoice')">
-				<panel-include view="incl-invoice-payment-partner-form"
-					from="axelor-account"  />
+				<panel-include view="incl-invoice-payment-partner-form"/>
 				<panel-include if-module="axelor-account"
 					if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
-					view="incl-sepa-direct-debit-partner-form" from="axelor-account" />
+					view="incl-sepa-direct-debit-partner-form"/>
 				<panel name="invoiceCommentsPanel" title="Comment to display on invoice"
 					colSpan="12">
 					<field name="invoiceComments" widget="html" colSpan="12"
@@ -493,14 +492,13 @@
 				form-view="accounting-situation-partner-form"
 				onSelect="action-account-accounting-situation-method-update-customer-account" />
 			<panel-include if-module="axelor-account" view="incl-blocking-partner-form"
-				from="axelor-account" if="__config__.app.isApp('account')" />
+				if="__config__.app.isApp('account')" />
 			<panel name="activitiesPanel" title="Activities" showIf="id != null"
 				if-module="axelor-crm" onTabSelect="action-partner-method-view-emails"
 				hideIf="isEmployee" if="__config__.app.isApp('crm')">
 				<button name="showAllEventsBtn" title="Show all events" css="btn-custom text-left"
 					icon="fa-tasks" onClick="action-partner-view-events" readonlyIf="id == null" />
-				<panel-include view="incl-activities-partner-form"
-					from="axelor-crm" />
+				<panel-include view="incl-activities-partner-form"/>
 				<panel-include if-module="axelor-sale" view="incl-sales-partner-form"
 					if="__config__.app.isApp('sale')" />
 				<panel-include if-module="axelor-purchase" view="incl-purchases-partner-form"
@@ -806,10 +804,9 @@
 				if="__config__.app.isApp('crm')">
 				<button name="showAllEventsBtn" title="Show all events" css="btn-custom text-left"
 					icon="fa-tasks" onClick="action-contact-view-events" readonlyIf="id == null" />
-				<panel-include view="incl-activities-contact-form"
-					from="axelor-crm" />
+				<panel-include view="incl-activities-contact-form"/>
 				<panel-include if-module="axelor-supplychain" view="incl-sales-contact-form"
-					from="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
+					if="__config__.app.isApp('supplychain')" />
 				<field name="$emailsList" colSpan="12" type="many-to-many"
 					target="com.axelor.apps.message.db.Message" title="Emails" canNew="false"
 					canSelect="false" canRemove="false" />
@@ -1048,10 +1045,9 @@
 			<panel name="activitiesPanel" title="Activities" showIf="id != null"
 				if-module="axelor-crm" onTabSelect="action-partner-method-view-emails-contact"
 				if="__config__.app.isApp('crm')">
-				<panel-include view="incl-activities-contact-form"
-					from="axelor-crm" />
+				<panel-include view="incl-activities-contact-form" />
 				<panel-include if-module="axelor-supplychain" view="incl-sales-contact-form"
-					from="axelor-supplychain" if="__config__.app.isApp('supplychain')" />
+					if="__config__.app.isApp('supplychain')" />
 				<field name="$emailsList" colSpan="12" type="many-to-many"
 					target="com.axelor.apps.message.db.Message" title="Emails" canNew="false"
 					canSelect="false" canRemove="false" />
