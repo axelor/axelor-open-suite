@@ -23,8 +23,8 @@
 	       	   <field name="bankDetails" onChange="action-forecast-recap-method-starting-balance" onSelect="action-accounting-batch-attrs-bank-details-domain" if="__config__.app.getApp('base').getManageMultiBanks()"/>
 	       	   <field name="bankDetails.balance" if="__config__.app.getApp('base').getManageMultiBanks()" showIf="bankDetails"/>
 	       	   <field name="bankDetails.balanceUpdatedDate" if="__config__.app.getApp('base').getManageMultiBanks()" showIf="bankDetails"/>
-	       	   <field name="fromDate" onChange="action-forecast-recap-validate-dates"/>
-       		   <field name="toDate" onChange="action-forecast-recap-validate-dates"/>
+	       	   <field name="fromDate" onChange="action-forecast-recap-validate-dates" colSpan="3"/>
+       		   <field name="toDate" onChange="action-forecast-recap-validate-dates" colSpan="3"/>
        		   <field name="opportunitiesTypeSelect"/>
        		   <field name="startingBalance" colSpan="3"/>
        		   <field name="company.defaultBankDetails.balance.UpdatedDate" showIf="company.defaultBankDetails.balanceUpdatedDate &amp;&amp;!bankDetails" colSpan="3"/>
