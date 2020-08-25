@@ -633,7 +633,7 @@ public interface IExceptionMessage {
 
   /** Ventilate state */
   static final String VENTILATE_STATE_1 = /*$$(*/
-      "Invoice's or credit note's date can't be previous last invoice ventilated's date" /*)*/;
+      "%s - Invoice's or credit note's date can't be previous last invoice ventilated's date" /*)*/;
 
   static final String VENTILATE_STATE_2 = /*$$(*/
       "Invoice's or credit note's date can't be previous last invoice ventilated on month's date" /*)*/;
@@ -649,7 +649,7 @@ public interface IExceptionMessage {
       "An analytic distribution is set in product but the account used do not allow analytic distribution" /*)*/;
 
   static final String VENTILATE_STATE_FUTURE_DATE = /*$$(*/
-      "Invoice date can't be in the future." /*)*/;
+      "%s - Invoice date can't be in the future." /*)*/;
 
   static final String VENTILATE_STATE_FUTURE_ORIGIN_DATE = /*$$(*/
       "Invoice date of origin can't be in the future." /*)*/;

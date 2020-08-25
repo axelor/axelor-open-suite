@@ -27,6 +27,7 @@
 - PRODUCT : Format number of decimal digits for displayed quantities.
 - PurchaseOrder : removed action which is setting dotted field explicitly.
 - TRACKING MAIL NOTIFICATION : corrected wrong partner receiving email selected. 
+- Invoice : added invoice reference on traceback when trying to ventilate invoice and exception occurs.
 
 ## [5.3.9] - 2020-07-29
 ## Improvements
