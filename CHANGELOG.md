@@ -28,6 +28,7 @@
 - PurchaseOrder : removed action which is setting dotted field explicitly.
 - TRACKING MAIL NOTIFICATION : corrected wrong partner receiving email selected. 
 - MANUF ORDER : Fix number of decimal digit displayed for missing quantity on toConsumeProdProductList field.
+- Invoice : added invoice reference on traceback when trying to ventilate invoice and exception occurs.
 
 ## [5.3.9] - 2020-07-29
 ## Improvements
