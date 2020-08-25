@@ -580,7 +580,6 @@ public class MrpServiceImpl implements MrpService {
   }
 
   protected void createPurchaseMrpLines() throws AxelorException {
-
     MrpLineType purchaseOrderMrpLineType =
         this.getMrpLineType(MrpLineTypeRepository.ELEMENT_PURCHASE_ORDER);
 
@@ -670,7 +669,7 @@ public class MrpServiceImpl implements MrpService {
 
     MrpLineType saleOrderMrpLineType =
         this.getMrpLineType(MrpLineTypeRepository.ELEMENT_SALE_ORDER);
-
+    System.out.println("COUCOUUUU " + saleOrderMrpLineType);
     if (saleOrderMrpLineType == null) {
       return;
     }
@@ -909,7 +908,7 @@ public class MrpServiceImpl implements MrpService {
   protected MrpLineType getMrpLineType(int elementSelect) {
 
     int applicationFieldSelect = getApplicationField(mrp.getMrpTypeSelect());
-
+    System.out.println(applicationFieldSelect);
     return mrpLineTypeRepository
         .all()
         .filter(

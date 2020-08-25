@@ -9,6 +9,16 @@
       	<string name="relatedToSelect" title="Related to" selection="supplychain.mrp.line.related.to.select"/>
   		<long name="relatedToSelectId"/>
       
+      <extra-code>
+            <![CDATA[
+        
+	        //RELATED TO SELECT TYPE
+	  		public static final String RELATED_TO_SALE_ORDER_LINE = "com.axelor.apps.sale.db.SaleOrderLine";
+	  		public static final String RELATED_TO_PURCHASE_ORDER_LINE = "com.axelor.apps.purchase.db.PurchaseOrderLine";
+	  		public static final String RELATED_TO_MRP_FORECAST = "com.axelor.apps.supplychain.db.MrpForecast";
+	  		
+      	 ]]>
+      </extra-code>
   </entity>
 
 </domain-models>
