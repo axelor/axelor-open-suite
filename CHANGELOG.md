@@ -51,4 +51,5 @@
 - XML : Update all xml files XSD version to AOP 5.3.
 - INVOICE : Change Invoicing menu translation.
 - INVOICE : Resolve report binding issue.
+- Bank reconciliation : add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 
