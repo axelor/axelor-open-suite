@@ -149,7 +149,7 @@ public class BankReconciliationService {
               .filter(
                   "self.bankDetails = ?1 and self.cashAccount = ?2",
                   bankReconciliation.getBankDetails(),
-                  bankReconciliation.getCashAccount())
+                  cashAccount)
               .fetch();
     } else {
       accountManagementList =
