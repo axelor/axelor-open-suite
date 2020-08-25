@@ -28,7 +28,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class TrainingSessionController {
 
-  public void closeSession(ActionRequest request, ActionResponse response) {
+  public void completeSession(ActionRequest request, ActionResponse response) {
 
     TrainingSession trainingSession = request.getContext().asType(TrainingSession.class);
     trainingSession = Beans.get(TrainingSessionRepository.class).find(trainingSession.getId());
@@ -36,5 +36,38 @@ public class TrainingSessionController {
     Beans.get(TrainingSessionService.class).closeSession(trainingSession);
 
     response.setReload(true);
+  }
+
+  public void updateAllRating(ActionRequest request, ActionResponse response) {
+
+    TrainingSession trainingSession = request.getContext().asType(TrainingSession.class);
+    trainingSession = Beans.get(TrainingSessionRepository.class).find(trainingSession.getId());
+
+    Beans.get(TrainingSessionService.class).updateAllRating(trainingSession);
+
+    response.setReload(true);
+  }
+
+  public void cancle(ActionRequest request, ActionResponse response) {
+
+    TrainingSession trainingSession = request.getContext().asType(TrainingSession.class);
+    trainingSession = Beans.get(TrainingSessionRepository.class).find(trainingSession.getId());
+
+    Beans.get(TrainingSessionService.class).cancle(trainingSession);
+
+    response.setReload(true);
+  }
+
+  public void updateTraingRegisterTraining(ActionRequest request, ActionResponse response) {
+
+    TrainingSession trainingSession = request.getContext().asType(TrainingSession.class);
+
+    if (trainingSession.getTrainingRegisterList() != null) {
+
+      trainingSession =
+          Beans.get(TrainingSessionService.class).updateTraingRegisterTraining(trainingSession);
+
+      response.setValue("trainingRegisterList", trainingSession.getTrainingRegisterList());
+    }
   }
 }

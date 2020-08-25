@@ -2,6 +2,7 @@
 ## [Unreleased 5.3.10]
 ## Features
 - CRM : Create new objects Catalog and Catelog type
+- Training session, register :  mass register creation.
 
 ## Improvements
 - Report : Fix unit translation.
@@ -25,6 +26,7 @@
 - Sale Order : Adding Partner name and SaleOrder sequence in Customer credit traceback
 - PRODUCT : Format number of decimal digits for displayed quantities.
 - PurchaseOrder : removed action which is setting dotted field explicitly.
+- TRACKING MAIL NOTIFICATION : corrected wrong partner receiving email selected. 
 - MANUF ORDER : Fix number of decimal digit displayed for missing quantity on toConsumeProdProductList field.
 
 ## [5.3.9] - 2020-07-29
