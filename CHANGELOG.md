@@ -11,6 +11,7 @@
 - Fix concurrent modification error when adding contact to customer.
 - Account management: Fix visibility issue on product and product family fields.
 - Stock Move status change: improve performance on cancelling and planning stock move.
+- Opportunity : Add sequence on demo data
 
 ## [5.4.0] - 2020-09-16
 ## Features
