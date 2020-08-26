@@ -672,6 +672,14 @@ public class InvoiceController {
     response.setValue(
         "addressStr", Beans.get(AddressService.class).computeAddressStr(invoice.getAddress()));
   }
+
+  public void computeDeliveryAddressStr(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    response.setValue(
+        "deliveryAddressStr",
+        Beans.get(AddressService.class).computeAddressStr(invoice.getDeliveryAddress()));
+  }
+
   /**
    * Called on load and in partner, company or payment mode change. Fill the bank details with a
    * default value.
