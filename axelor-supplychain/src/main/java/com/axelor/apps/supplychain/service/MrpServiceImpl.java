@@ -155,19 +155,25 @@ public class MrpServiceImpl implements MrpService {
     // TODO check that the different types used for purchase/manufOrder proposal are in stock type
     // TODO check that all types exist + override the method on production module
 
-    today = appBaseService.getTodayDate();
-
     mrpRepository.save(mrp);
   }
 
   @Override
   @Transactional
   public void reset(Mrp mrp) {
+    today = appBaseService.getTodayDate();
 
     mrpLineRepository
         .all()
         .filter("self.mrp.id = ?1 AND self.isEditedByUser = false", mrp.getId())
         .remove();
+    mrpLineRepository
+        .all()
+        .filter(
+            "self.mrp.id = ?1 AND self.isEditedByUser = true AND self.maturityDate < ?2",
+            mrp.getId(),
+            today)
+        .update("maturityDate", today);
 
     mrp.setStatusSelect(MrpRepository.STATUS_DRAFT);
 
