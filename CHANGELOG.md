@@ -13,6 +13,7 @@
 - ACCOUNT MANAGEMENT : Change visiblity of product and product family
 - ACCOUNTING REPORT : change translation.
 - TemplateRuleService - service removed because not used.
+- PARTNER : Add new field to check Active/InActive partner.
 
 ## Bug Fixes
 - MRP : Shows error message instead of NPE when a product has no unit
