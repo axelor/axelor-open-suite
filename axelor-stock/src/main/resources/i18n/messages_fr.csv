@@ -491,7 +491,7 @@
 "Please configure mass units for this product packing : %s",,,
 "Please enter a valid split quantity","Veuillez entrer une quantité valide pour la scission",,
 "Please fill all inventory lines",,,
-"Please fill estimated delivery date for product %s from %s",,,
+"Please fill estimated delivery date for product %s from %s","Veuillez renseigner une date de livraison estimée pour le produit %s venant de %s",,
 "Please fill in the delivery (to) address to get the delivery itinerary.","Veuillez remplir le champ A l'adresse pour obtenir l'itinéraire de livraison.",,
 "Please fill in the source (from) location address to get the delivery itinerary.","Veuillez remplir l'adresse associé au champ Emplacement source pour obtenir l'itinéraire de livraison.",,
 "Please fill printing settings on following stock moves: %s","Merci de remplir les paramètres d'impressions sur les mouvements de stock suivants : %s",,

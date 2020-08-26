@@ -289,7 +289,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           stockMoveLine,
           minQty,
           trackingNumberService.getTrackingNumber(
-              product, qtyByTracking, stockMove.getCompany(), stockMove.getEstimatedDate(),stockMove.getOrigin()));
+              product,
+              qtyByTracking,
+              stockMove.getCompany(),
+              stockMove.getEstimatedDate(),
+              stockMove.getOrigin()));
 
       generateTrakingNumberCounter++;
 
@@ -303,7 +307,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
       stockMoveLine.setTrackingNumber(
           trackingNumberService.getTrackingNumber(
-              product, qtyByTracking, stockMove.getCompany(), stockMove.getEstimatedDate(),stockMove.getOrigin()));
+              product,
+              qtyByTracking,
+              stockMove.getCompany(),
+              stockMove.getEstimatedDate(),
+              stockMove.getOrigin()));
     }
   }
 
