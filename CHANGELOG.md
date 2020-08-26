@@ -13,6 +13,7 @@
 - ACCOUNT MANAGEMENT : Change visiblity of product and product family
 - ACCOUNTING REPORT : change translation.
 - TemplateRuleService - service removed because not used.
+- Mail Notification : Send notification only if activateSendingEmail is true in config & specify tag for message.
 
 ## Bug Fixes
 - MRP : Shows error message instead of NPE when a product has no unit
