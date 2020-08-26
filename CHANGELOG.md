@@ -13,6 +13,7 @@
 - ACCOUNT MANAGEMENT : Change visiblity of product and product family
 - ACCOUNTING REPORT : change translation.
 - TemplateRuleService - service removed because not used.
+- Invoice : Addition of new field to display deliveryAddress on form and in report.
 
 ## Bug Fixes
 - MRP : Shows error message instead of NPE when a product has no unit
