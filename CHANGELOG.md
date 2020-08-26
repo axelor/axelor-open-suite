@@ -61,4 +61,5 @@
 - XML : Update all xml files XSD version to AOP 5.3.
 - INVOICE : Change Invoicing menu translation.
 - INVOICE : Resolve report binding issue.
+- MRP LINE : Fix the mrp-line-form dirty view issue.
 
