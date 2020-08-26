@@ -44,7 +44,7 @@
 	<action-view name="sc.root.purchase.products" title="Products &amp; services"
 		model="com.axelor.apps.base.db.Product" >
 		<view type="cards" name="product-cards" />
-		<view type="grid" name="product-grid" />
+		<view type="grid" name="product-purchase-grid" />
 		<view type="form" name="product-form" />
 		<view-param name="search-filters" value="products-filters"/>
 		<domain>self.isModel = false AND self.purchasable = true</domain>

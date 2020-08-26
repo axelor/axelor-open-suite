@@ -18,6 +18,37 @@
 	    <field name="internalDescription" widget="html" width="400" />
 	    <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 	</grid>
+	
+	<grid name="product-purchase-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="code,name" x-row-height="80">
+   		<toolbar>
+        	<button name="catalogBtn" title="Catalog" onClick="action-print-product-catalog" icon="fa-book"/>
+			<button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
+	    </toolbar>
+	    <field name="code" x-bind="{{code|unaccent|uppercase}}" width="120"/>
+	    <field name="name" width="300"/>
+	    <field name="productCategory" form-view="product-category-form" grid-view="product-category-grid"/>
+	    <field name="productFamily" form-view="product-family-form" grid-view="product-family-grid"/>
+	    <field name="productTypeSelect" width="100"/>
+	   	<field name="purchasePrice" x-scale="2" />
+	    <field name="unit" width="70" form-view="unit-form" grid-view="unit-grid"/>
+	    <field name="internalDescription" widget="html" width="400" />
+	    <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+	</grid>
+	
+	<grid name="product-production-stock-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="code,name" x-row-height="80">
+   		<toolbar>
+        	<button name="catalogBtn" title="Catalog" onClick="action-print-product-catalog" icon="fa-book"/>
+			<button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
+	    </toolbar>
+	    <field name="code" x-bind="{{code|unaccent|uppercase}}" width="120"/>
+	    <field name="name" width="300"/>
+	    <field name="productCategory" form-view="product-category-form" grid-view="product-category-grid"/>
+	    <field name="productFamily" form-view="product-family-form" grid-view="product-family-grid"/>
+	    <field name="productTypeSelect" width="100"/>
+	    <field name="unit" width="70" form-view="unit-form" grid-view="unit-grid"/>
+	    <field name="internalDescription" widget="html" width="400" />
+	    <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+	</grid>
     
     <grid name="product-product-variant-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="code,name">
 	    <field name="code" x-bind="{{code|unaccent|uppercase}}" width="120"/>
