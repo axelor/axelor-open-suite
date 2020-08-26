@@ -2,6 +2,7 @@
 ## [Unreleased 5.3.10]
 ## Features
 - CRM : Create new objects Catalog and Catelog type
+- Training session, register :  mass register creation.
 
 ## Improvements
 - Report : Fix unit translation.
@@ -10,7 +11,7 @@
 - Forecast Recap : Visual changes to dashlet grid, some recap line type modified, recap take into account saleOrders and purchase order in addition to timetables, also added demo data  
 - LEAD : Added description field on reports
 - ACCOUNT MANAGEMENT : Change visiblity of product and product family
-- INVOICE : Changed fr traduction for Contact
+- ACCOUNTING REPORT : change translation.
 
 ## Bug Fixes
 - MRP : Shows error message instead of NPE when a product has no unit
@@ -23,6 +24,14 @@
 - Invoice line : corrected view error when trying to change an invoice line.
 - BANK RECONCILIATION STATEMENT REPORT : change French translation of balance from "balance" to "solde".
 - Sale order : removed the behavior of removing stock move with a status different than draft after clicking on edit sale order button.
+- Sale Order : Adding Partner name and SaleOrder sequence in Customer credit traceback
+- PRODUCT : Format number of decimal digits for displayed quantities.
+- PurchaseOrder : removed action which is setting dotted field explicitly.
+- TRACKING MAIL NOTIFICATION : corrected wrong partner receiving email selected. 
+- MANUF ORDER : Fix number of decimal digit displayed for missing quantity on toConsumeProdProductList field.
+- Invoice : added invoice reference on traceback when trying to ventilate invoice and exception occurs.
+- AccountManagement : Demo datas : sequence are now linked with the account managements
+- INVOICE : Changed french traduction for Contact
 
 ## [5.3.9] - 2020-07-29
 ## Improvements

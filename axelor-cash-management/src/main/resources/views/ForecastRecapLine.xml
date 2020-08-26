@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
-    <grid name="forecast-recap-line-grid" title="Lines" model="com.axelor.apps.cash.management.db.ForecastRecapLine" orderBy="estimatedDate,typeSelect,id">
+    <grid name="forecast-recap-line-grid" title="Lines" model="com.axelor.apps.cash.management.db.ForecastRecapLine" orderBy="estimatedDate,forecastRecapLineType.sequence">
        	<hilite background="success" if="typeSelect==1"/>
        	<hilite background="warning" if="typeSelect==2"/>
        	<field name="estimatedDate"/>
@@ -13,6 +13,7 @@
 	   	<field name="relatedToSelectName"/>
 	   	<field name="amount" aggregate="sum"/>
 	   	<field name="balance"/>
+	   	<field name="forecastRecapLineType.sequence" hidden="true"/>
     </grid>
  
 	 <form name="forecast-recap-line-form" title="Line" model="com.axelor.apps.cash.management.db.ForecastRecapLine">

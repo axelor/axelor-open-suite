@@ -21,6 +21,8 @@ import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.talent.db.Training;
 import com.axelor.apps.talent.db.TrainingRegister;
 import com.axelor.apps.talent.db.TrainingSession;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 public interface TrainingRegisterService {
 
@@ -37,4 +39,7 @@ public interface TrainingRegisterService {
   public void updateEventCalendar(TrainingRegister trainingRegister);
 
   public String computeFullName(TrainingRegister trainingRegister);
+
+  public String massTrainingRegisterCreation(
+      ArrayList<LinkedHashMap<String, Object>> employeeList, TrainingSession trainingSession);
 }
