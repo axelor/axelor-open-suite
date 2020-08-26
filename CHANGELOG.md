@@ -435,14 +435,6 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - UI: Addition of onClick attributes in buttons.
 - Sales dashboard: Fix chart not displayed.
 - PRODUCT: Fix economicManufOrderQty displayed twice.
-- HR : A leave-line cannot be saved whitout employee or leave-reason.
-- Lead: Fix city name and state name issue in report printing.
-- EMPLOYEE : add translation of "Employee PhoneBook".
-- Studio: Add and fixed attributes of model and fields for import and export app.
-- EMPLOYEE : add button for Employee.rptdesign report on form.
-- XML : Update all xml files XSD version to AOP 5.3.
-- INVOICE : Change Invoicing menu translation.
-- INVOICE : Resolve report binding issue.
 
 [Unreleased 5.3.10]: https://github.com/axelor/axelor-open-suite/compare/v5.3.9...dev
 [5.3.9]: https://github.com/axelor/axelor-open-suite/compare/v5.3.8...v5.3.9
