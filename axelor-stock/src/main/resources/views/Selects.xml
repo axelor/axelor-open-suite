@@ -58,8 +58,8 @@
 	
 	<selection name="stock.move.line.conformity.select">
 		<option value="1"></option>
-		<option value="2">Compliant</option>
-		<option value="3">Non-compliant</option>
+		<option value="2" color="green">Compliant</option>
+		<option value="3" color="red">Non-compliant</option>
 	</selection>
 	
 	<selection name="stock.move.line.available.status.select">
