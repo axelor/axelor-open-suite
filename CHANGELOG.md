@@ -3,6 +3,7 @@
 ## Features
 - CRM : Create new objects Catalog and Catelog type
 - Training session, register :  mass register creation.
+- PAYMENT VOUCHER: Set default operationTypeSelect to 'Customer sale'.
 
 ## Improvements
 - Report : Fix unit translation.
