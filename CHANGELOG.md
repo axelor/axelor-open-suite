@@ -51,6 +51,7 @@
 - Report : Fix unit translation.
 - Forecast Recap : default value set to today for from date field
 - Product : Added possibility to add a color to the product variant value tag with the field displayColor
+- Partner : Deleting partner will not remove linked employee.
 
 ## Bug Fixes
 - HR : A leave-line cannot be saved whitout employee or leave-reason.
