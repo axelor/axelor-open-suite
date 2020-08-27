@@ -13,6 +13,8 @@
 - ACCOUNT MANAGEMENT : Change visiblity of product and product family
 - ACCOUNTING REPORT : change translation.
 - TemplateRuleService - service removed because not used.
+- Invoice : Addition of new field to display deliveryAddress on form and in report.
+- Mail Notification : Send notification only if activateSendingEmail is true in config & specify tag for message.
 - PARTNER : Add new field to check Active/InActive partner.
 
 ## Bug Fixes
