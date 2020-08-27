@@ -317,6 +317,14 @@
 				<panel-related name="invoiceLineTaxListPanel" field="invoiceLineTaxList" colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
 			</panel>
 			<panel name="deliveryPanel" title="Delivery" hideIf="operationSubTypeSelect == 2 " if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()">
+            <panel name="deliveryAddressPanel" colSpan="12" hidden="true" showIf="operationTypeSelect == 3">
+               <field name="deliveryAddress" hideIf="$readonly() || statusSelect &gt; 1" onSelect="action-invoice-attrs-domain-delivery-address"
+                  onChange="action-method-invoice-compute-delivery-address-str" form-view="address-partner-address-form" canEdit="false"
+                  canNew="true" colSpan="6"/>
+	            <field name="deliveryAddressStr" colSpan="6" readonlyIf="statusSelect &gt; 1" height="5">
+	               <viewer>{{record.addressStr}}</viewer>
+	            </field>
+            </panel>
 				<panel-related field="stockMoveSet" readonlyIf="statusSelect == 2 || statusSelect == 3" colSpan="12" grid-view="stock-move-grid" form-view="stock-move-form" onNew="action-group-stock-stockmove-onnew" onSelect="action-invoice-attrs-domain-stock-move" domain="self.partner = :partner AND self.company = :company AND self.statusSelect = 3 AND self.typeSelect &gt; 1" canNew="false" canSelect="false"/>
 			</panel>
 			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()" title="Business project" colSpan="12" if-module="axelor-business-project">
@@ -1123,6 +1131,11 @@ InvoiceSet.length > 0))"
 		<attribute name="domain" for="address" expr="eval: &quot;self.id IN (${(partner?.partnerAddressList?.findAll{it.isInvoicingAddr}.collect{it.address.id}+[null]).join(',')})&quot;" />
     </action-attrs>
 
+   <action-attrs name="action-invoice-attrs-domain-delivery-address">
+      <attribute name="domain" for="deliveryAddress" expr="eval: &quot;self.id IN
+         (${(partner?.partnerAddressList?.findAll{it.isDeliveryAddr}.collect{it.address.id}+[null]).join(',')})&quot;"/>
+   </action-attrs>
+
     <!-- ACTION VALIDATE -->
 
     <action-validate name="action-validate-invoice-check-selection">
@@ -1146,6 +1159,10 @@ InvoiceSet.length > 0))"
 	<action-method name="action-method-invoice-address-str" model="com.axelor.apps.account.db.Invoice">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="computeAddressStr"/>
 	</action-method>
+
+   <action-method name="action-method-invoice-compute-delivery-address-str">
+      <call class="com.axelor.apps.account.web.InvoiceController" method="computeDeliveryAddressStr"/>
+   </action-method>
 
 	<action-method name="action-invoice-method-payment-mode-condition">
 		<call class="com.axelor.apps.account.web.InvoiceController" method="fillPaymentModeAndCondition"/>
