@@ -2,6 +2,7 @@
 ## [Unreleased 5.3.11]
 ## Improvements
 ## Bug Fixes
+- BANK STATEMENT : corrected npe on bank details in import file function.
 
 ## [5.3.10] - 2020-08-27
 ## Features
