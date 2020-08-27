@@ -3,6 +3,7 @@
 ## Improvements
 ## Bug Fixes
 - BANK STATEMENT : corrected npe on bank details in import file function.
+- Accounting report : Add translations to some reports
 
 ## [5.3.10] - 2020-08-27
 ## Features
