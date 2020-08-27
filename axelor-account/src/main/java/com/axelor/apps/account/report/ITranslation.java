@@ -92,6 +92,7 @@ public interface ITranslation {
       "Invoice.customerTaxNumber"; /*)*/
   public static final String INVOICE_AMOUNT_REMAINING = /*$$(*/ "Invoice.amountRemaining"; /*)*/
   public static final String INVOICE_PROFORMA_INVOICE = /*$$(*/ "Invoice.proformaInvoice"; /*)*/
+  public static final String INVOICE_DELIVERY_ADDRESS = /*$$(*/ "Invoice.deliveryAddress"; /*)*/
 
   public static final String ACCOUNTING_REPORT_EDITION_DATE = /*$$(*/
       "AccountingReport.editionDate"; /*)*/
