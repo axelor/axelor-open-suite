@@ -32,6 +32,7 @@
 - MANUF ORDER : Fix number of decimal digit displayed for missing quantity on toConsumeProdProductList field.
 - Invoice : added invoice reference on traceback when trying to ventilate invoice and exception occurs.
 - AccountManagement : Demo datas : sequence are now linked with the account managements
+- BANK STATEMENT : corrected npe on bank details in import file function.
 
 ## [5.3.9] - 2020-07-29
 ## Improvements
