@@ -322,10 +322,10 @@
 		<view-param name="search-filters" value="reimbursement-filters"/>
 	</action-view>
 
-    <menuitem name="account-root-accounting-cheque-deposit-slip-all" parent="account-root-accounting" title="Cheque deposit slips"
+    <menuitem name="account-root-accounting-cheque-deposit-slip-all" parent="account-root-accounting" title="Deposit slips"
         action="account.root.accounting.cheque.deposit.slip.all" />
 
-    <action-view name="account.root.accounting.cheque.deposit.slip.all" title="Cheque deposit slips"
+    <action-view name="account.root.accounting.cheque.deposit.slip.all" title="Deposit slips"
         model="com.axelor.apps.account.db.DepositSlip">
         <view type="grid" name="cheque-deposit-slip-grid" />
         <view type="form" name="cheque-deposit-slip-form" />
