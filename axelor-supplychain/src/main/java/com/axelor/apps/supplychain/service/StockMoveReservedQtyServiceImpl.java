@@ -39,9 +39,7 @@ public class StockMoveReservedQtyServiceImpl implements StockMoveReservedQtyServ
       return;
     }
     List<StockMoveLine> stockMoveLineToAllocateList =
-        stockMove
-            .getStockMoveLineList()
-            .stream()
+        stockMove.getStockMoveLineList().stream()
             .filter(stockMoveLine -> stockMoveLine.getRealQty().signum() != 0)
             .collect(Collectors.toList());
     for (StockMoveLine stockMoveLine : stockMoveLineToAllocateList) {
