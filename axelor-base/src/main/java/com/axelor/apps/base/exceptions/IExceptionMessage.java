@@ -57,7 +57,11 @@ public interface IExceptionMessage {
   static final String UNIT_CONVERSION_1 = /*$$(*/
       "Please configure unit conversion from '%s' to '%s'." /*)*/;
 
-  static final String UNIT_CONVERSION_2 = /*$$(*/ "Please configure units." /*)*/;
+  static final String UNIT_CONVERSION_2 = /*$$(*/ "Start unit cannot be void." /*)*/;
+
+  static final String UNIT_CONVERSION_3 = /*$$(*/ "Conversion impossible because of no unit." /*)*/;
+
+  static final String UNIT_CONVERSION_4 = /*$$(*/ "End unit cannot be void." /*)*/;
 
   static final String CURRENCY_CONVERSION_1 = /*$$(*/
       "WARNING : Please close the current conversion period before creating new one" /*)*/;

@@ -32,6 +32,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.service.config.SaleConfigService;
+import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -145,7 +146,11 @@ public class AccountingSituationSupplychainServiceImpl extends AccountingSituati
           if (!saleOrder.getManualUnblock()) {
             String message = accountingSituation.getCompany().getOrderBloquedMessage();
             if (Strings.isNullOrEmpty(message)) {
-              message = I18n.get("Client blocked : maximal accepted credit exceeded.");
+              message =
+                  String.format(
+                      I18n.get(IExceptionMessage.SALE_ORDER_CLIENT_PARTNER_EXCEEDED_CREDIT),
+                      partner.getFullName(),
+                      saleOrder.getSaleOrderSeq());
             }
             throw new BlockedSaleOrderException(accountingSituation, message);
           }

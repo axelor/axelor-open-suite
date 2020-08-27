@@ -13,7 +13,6 @@
 	<date name="fromDate" title="From" required="true"/>
 	<date name="toDate" title="To" required="true"/>
 	<string name="comments" title="Comments" large="true"/>
-	<integer name="realizedSelect" selection="forecast.realized.select" title="Realized" default="2"/>
 	<integer name="periodicitySelect" selection="product.periodicity.subscription.select" title="Periodicity" default="1"/>
   </entity>
   
