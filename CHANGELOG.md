@@ -28,6 +28,7 @@
 - Invoice line : corrected view error when trying to change an invoice line.
 - Batch payroll preparation generation : corrected batch error no session.
 - TRACKING MAIL NOTIFICATION : corrected wrong partner receiving email selected. 
+- LOGISTICAL FORM : Fix NPE when computing volume
 
 ## [5.1.15] - 2020-03-23
 ## Improvements
