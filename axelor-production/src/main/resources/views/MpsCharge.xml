@@ -4,6 +4,8 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 	
 	<grid name="mps-charge-grid" model="com.axelor.apps.production.db.MpsCharge" title="Master Production Scheduling Charge">
+		<field name="company"/>
+    	<field name="agency"/>
   		<field name="startMonthDate" title="Start Month"/>
   		<field name="endMonthDate" title="End Month"/>  		  	
 	</grid>
@@ -13,14 +15,23 @@
     		<button name="printBtn" title="Print" icon="fa-print" onClick="save,action-mps-charge-method-print" showIf="id"/>
   		</toolbar>
     	<panel name="mainPanel">
+    		<field name="company"/>
+    		<field name="agency"/>
     		<field name="startMonthDate" onChange="action-mps-charge-group-date-on-change"/>
     		<field name="endMonthDate" onChange="action-mps-charge-group-date-on-change"/>
+    		<spacer name="buttonSpacer"/>
+    		<button name="generateCharge" title="Generate charge lines" onClick="save,dummy-action-fill"/>
+    		
     	</panel>
-    	<panel name="detailsPanel" title="MPS Weekly schedules" showIf="startMonthDate &amp;&amp; endMonthDate">
+    	<panel-dashlet action="mps-charge-show-mps-charge-lines" name="test" title="Charge lines" colSpan="12"/>
+    	<panel name="filterInfoPanel" title="Filters" showIf="company &amp;&amp; startMonthDate &amp;&amp; endMonthDate">
+    		<field name="workCenter" onChange="action-mps-charge-group-date-on-change"/>
+    	</panel>
+    	<panel name="detailsPanel" title="MPS Weekly schedules" showIf="workCenter">
     		<panel-dashlet action="custom:mps-charge-mps-weekley-schedule-custom" name="mpsWeeklySchedualCustomPanel" colSpan="12" showTitle="false"/>
-    		<panel-dashlet action="chart:mps.charge.mps.weekley.schedule.chart.first.year" name="mpsWeeklySchedualChartFirstYearPanel" colSpan="6"/>
-    		<panel-dashlet action="chart:mps.charge.mps.weekley.schedule.chart.second.year" name="mpsWeeklySchedualChartSecondYearPanel" colSpan="6"/>
+    		<panel-dashlet action="chart:mps.charge.mps.weekley.schedule.chart.first.year" name="mpsWeeklySchedualChartFirstYearPanel" colSpan="12"/>
     	</panel>
+    	
     </form>
 	
 	 <custom name="mps-charge-mps-weekley-schedule-custom" title="">
@@ -30,7 +41,7 @@
 	 	]]>
 	 	</dataset>
 	 	<template><![CDATA[
-	 		<report-table data='data' columns='code,january,february,march,april,may,june,july,august,september,october,november,december'></report-table>
+	 		<report-table data='data' columns='code,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52'></report-table>
 	 	]]></template>
 	 </custom>
 
@@ -40,7 +51,7 @@
 				com.axelor.apps.production.web.MpsChargeController:getMpsWeeklyScheduleChartFirstYear
 			]]>
 		</dataset>
-		<category key="month" type="month"/>
+		<category key="month" type="number"/>
 		<series key="count" groupBy="code" type="line"/>
 	</chart>
 
@@ -53,6 +64,9 @@
 		<category key="month" type="month"/>
 		<series key="count" groupBy="code" type="line"/>
 	</chart>
+	<action-method name="dummy-action-fill">
+		<call class="com.axelor.apps.production.web.MpsChargeController" method="fillDummy"/>
+	</action-method>
 	
 	<action-group name="action-mps-charge-group-date-on-change">
 		<action name="action-mps-charge-validate-date-on-change"/>
@@ -77,6 +91,13 @@
 	<action-method name="action-mps-charge-method-print">
 		<call class="com.axelor.apps.production.web.MpsChargeController" method="print"/>
 	</action-method>
-	    
+	
+	<action-view name="mps-charge-show-mps-charge-lines" model="com.axelor.apps.production.db.MpsChargeLine" title="MPS Charge ">
+		<view type="grid" name="mps-charge-line-grid"/>
+		<view type="form" name="mps-charge-line-form"/>
+		<domain>self.mpsCharge = :_mpsChargeId</domain>
+		<context name="_mpsChargeId" expr="eval: __this__.id"/>
+	</action-view>
+	
 </object-views>
 

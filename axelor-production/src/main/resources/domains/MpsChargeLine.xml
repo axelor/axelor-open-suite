@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+  <module name="production" package="com.axelor.apps.production.db"/>
+  
+  <entity name="MpsChargeLine" lang="java" cachable="true">
+  		<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="SaleOrder"/>
+  		<many-to-one name="workCenter" ref="com.axelor.apps.production.db.WorkCenter" title="Work center"/>
+  		<integer name="duration"/>
+  		<date name="startingDate" title="Semaine de démarage"/>
+  		<date name="endingDate" title="Semaine de fin"/>
+  		<date name="customerWantedDate" title="Fin souhaité du client"/>
+  		<integer name="priority"/>
+  		<many-to-one name="mpsCharge" ref="com.axelor.apps.production.db.MpsCharge"/>
+  </entity>
+
+</domain-models>

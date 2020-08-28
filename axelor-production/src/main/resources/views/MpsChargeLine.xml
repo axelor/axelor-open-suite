@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+		
+	<grid name="mps-charge-line-grid" model="com.axelor.apps.production.db.MpsChargeLine" title="MPS Charge Lines" groupBy="saleOrder">
+  		<field name="saleOrder" hidden="true"/>
+  		<field name="workCenter"/>
+  		<field name="duration"/>
+  		<field name="startingDate"/>
+  		<field name="endingDate"/>
+  		<field name="priority"/>
+  		<field name="customerWantedDate"/>
+	</grid>
+	
+	<form name="mps-charge-line-form" model="com.axelor.apps.production.db.MpsChargeLine" title="MPS Charge Line">
+		<panel name="mainPanel">
+			<field name="saleOrder"/>
+	  		<field name="workCenter"/>
+	  		<field name="duration"/>
+	  		<field name="startingDate"/>
+	  		<field name="endingDate"/>
+	  		<field name="priority"/>
+	  		<field name="customerWantedDate"/>
+	  		<field name="mpsCharge"/>
+	  	</panel>
+	</form>
+	
+</object-views>

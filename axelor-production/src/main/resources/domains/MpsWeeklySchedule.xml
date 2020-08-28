@@ -9,7 +9,9 @@
   		
   		<string name="code" title="Code" unique="true"/>
   		<string name="label" title="Label" namecolumn="true"/>
-  		
+  		<many-to-one name="company" ref="com.axelor.apps.base.db.Company"/>
+  		<many-to-one name="agency" ref="com.axelor.apps.base.db.TradingName"/>
+  		<many-to-one name="workCenter" ref="com.axelor.apps.production.db.WorkCenter" title="Work center"/>
   		<decimal name="hoursMonday" title="Monday hours"/>
   		<decimal name="hoursTuesday" title="Tuesday hours"/>
   		<decimal name="hoursWednesday" title="Wednesday hours"/>
