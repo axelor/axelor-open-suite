@@ -53,6 +53,7 @@
 - Product : Added possibility to add a color to the product variant value tag with the field displayColor
 - Partner : Deleting partner will not remove linked employee.
 - Journal : Improve balance calculation
+- Invoice : Addition of new field to display deliveryAddress on form and in report.
 
 ## Bug Fixes
 - HR : A leave-line cannot be saved whitout employee or leave-reason.
