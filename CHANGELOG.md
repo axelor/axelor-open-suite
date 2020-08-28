@@ -439,7 +439,6 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - INVOICE: add specific note of company bank details on invoice report.
 
 ## Bug Fixes
-<<<<<<< HEAD
 - Studio: Fix access to json fields of base model in chart builder form.
 - Fix "could not extract ResultSet" Exception on finalizing a sale order.
 - Studio: Fixed display blank when you click on a field which is out of a panel.
@@ -465,15 +464,3 @@ When printing multiple manufacturing orders, operations from all orders were pri
 [5.3.2]: https://github.com/axelor/axelor-open-suite/compare/v5.3.1...v5.3.2
 [5.3.1]: https://github.com/axelor/axelor-open-suite/compare/v5.3.0...v5.3.1
 [5.3.0]: https://github.com/axelor/axelor-open-suite/compare/v5.2.5...v5.3.0
-=======
-- HR : A leave-line cannot be saved whitout employee or leave-reason.
-- Lead: Fix city name and state name issue in report printing.
-- EMPLOYEE : add translation of "Employee PhoneBook".
-- Studio: Add and fixed attributes of model and fields for import and export app.
-- EMPLOYEE : add button for Employee.rptdesign report on form.
-- XML : Update all xml files XSD version to AOP 5.3.
-- INVOICE : Change Invoicing menu translation.
-- INVOICE : Resolve report binding issue.
-- MRP LINE : Fix the mrp-line-form dirty view issue.
-- Sale Invoice Details : Fixed the empty report generation
->>>>>>> fe671aed31... RM30857 Fixed the anomaly causing the report from sale invoice detail to be empty
