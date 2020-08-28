@@ -5,6 +5,7 @@
 - BANK STATEMENT : corrected npe on bank details in import file function.
 - Accounting report : Add translations to some reports
 - INVOICE : Add 'Periodic contract' sub type viewer in form.
+- CLIENT STOCK MOVE : corrected unable to realize if real quantity > to quantity on a stock move line.
 - FISCAL YEAR : corrected sql error.
 
 ## [5.3.10] - 2020-08-27
