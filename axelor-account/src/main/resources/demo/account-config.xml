@@ -27,7 +27,9 @@
 		<bind to="endDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(endDate)" column="endDate"/>
 	</input>
 
-	<input file="account_journalType.csv" separator=";" type="com.axelor.apps.account.db.JournalType" search="self.importId = :importId" />
+	<input file="account_journalType.csv" separator=";" type="com.axelor.apps.account.db.JournalType" search="self.importId = :importId">
+		<bind column="accountTypeSet" to="accountTypeSet" search="self.technicalTypeSelect in :accountTypeSet" eval="accountTypeSet.split('\\|') as List"/>
+	</input>
 	
 	<input file="account_journal.csv" separator=";" type="com.axelor.apps.account.db.Journal" search="self.importId = :importId" call="com.axelor.csv.script.ImportJournal:importAccountType"/>
      

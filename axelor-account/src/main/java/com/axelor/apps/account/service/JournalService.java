@@ -18,18 +18,14 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.db.JPA;
-import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.Query;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class JournalService {
-
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   /**
    * Compute the balance of the journal, depending of the account type and balance type
@@ -44,11 +40,13 @@ public class JournalService {
     String query =
         "select sum(self.debit),sum(self.credit)"
             + " from MoveLine self where self.move.journal.id = :journal "
-            + "and self.move.ignoreInAccountingOk IN ('false', null) and self.move.statusSelect IN (2, 3) and self.account.accountType.technicalTypeSelect = 'cash'";
+            + "and self.move.ignoreInAccountingOk IN ('false', null) and self.move.statusSelect IN (:statusDaybook, :statusValidated) and self.account.accountType MEMBER OF self.move.journal.journalType.accountTypeSet";
 
     Query resultQuery = JPA.em().createQuery(query);
 
     resultQuery.setParameter("journal", journal.getId());
+    resultQuery.setParameter("statusDaybook", MoveRepository.STATUS_DAYBOOK);
+    resultQuery.setParameter("statusValidated", MoveRepository.STATUS_VALIDATED);
 
     Object[] resultArr = (Object[]) resultQuery.getResultList().get(0);
 
