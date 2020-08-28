@@ -642,6 +642,7 @@
     <action-group name="action-stock-move-group-available-qty-onchange">
         <action name="action-stock-move-method-verify-product-stock"/>
         <action name="action-stock-move-validate-check-reservation"/>
+				<action name="save"/>
         <action name="action-stock-move-method-allocate-all"/>
     </action-group>
 
