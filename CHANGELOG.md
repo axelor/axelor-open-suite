@@ -64,4 +64,4 @@
 - INVOICE : Change Invoicing menu translation.
 - INVOICE : Resolve report binding issue.
 - MRP LINE : Fix the mrp-line-form dirty view issue.
-
+- Sale Invoice Details : Fixed the empty report generation
