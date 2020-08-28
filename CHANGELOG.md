@@ -13,6 +13,7 @@
 - Move line : Correctly display reconcile tab (credit or debit) when the account is reconcilable.
 - PurchaseOrder : Fixed error on requesting due to missing production module field in report
 - BANK ORDER : Fix NPE when validating a bank order
+- FISCAL YEAR : corrected sql error.
 
 ## [5.2.14] - 2020-08-20
 ## Bug Fixes
