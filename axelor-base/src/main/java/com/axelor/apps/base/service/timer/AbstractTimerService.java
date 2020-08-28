@@ -100,7 +100,8 @@ public abstract class AbstractTimerService implements TimerService {
       timer.setAssignedToUser(userService.getUser());
     } else if (timer.getStatusSelect().equals(TimerRepository.TIMER_STARTED)) {
       throw new AxelorException(
-          TraceBackRepository.TYPE_FUNCTIONNAL, I18n.get(IExceptionMessage.TIMER_IS_NOT_STOPPED));
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.TIMER_IS_NOT_STOPPED));
     }
     timer.setStatusSelect(TimerRepository.TIMER_STARTED);
     return timerRepository.save(timer);
@@ -115,7 +116,8 @@ public abstract class AbstractTimerService implements TimerService {
     TimerHistory last = timerHistoryRepository.findByTimer(timer).order("-startDateT").fetchOne();
     if (last == null) {
       throw new AxelorException(
-          TraceBackRepository.TYPE_FUNCTIONNAL, I18n.get(IExceptionMessage.TIMER_IS_NOT_STARTED));
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.TIMER_IS_NOT_STARTED));
     }
     last.setEndDateT(dateTime);
     timer.setStatusSelect(TimerRepository.TIMER_STOPPED);
