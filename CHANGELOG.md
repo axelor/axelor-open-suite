@@ -7,8 +7,11 @@
 
 ## [5.3.10] - 2020-08-27
 ## Features
+- CRM : Create new objects Catalog and Catelog type
+- Training session, register :  mass register creation.
 - CRM: Create new objects Catalog and Catalog type.
 - Training session, register: mass register creation.
+- PAYMENT VOUCHER: Set default operationTypeSelect to 'Customer sale'.
 
 ## Improvements
 - EBICSTS: add new data init to bank statement file formats.
