@@ -110,6 +110,8 @@ public class ProjectFolderServiceImpl implements ProjectFolderService {
 
     return reportSetting
         .addParam("ProjectId", project.getId())
+        .addParam(
+            "Timezone", project.getCompany() != null ? project.getCompany().getTimezone() : null)
         .addParam("Locale", ReportSettings.getPrintingLocale(null))
         .addFormat(ReportSettings.FORMAT_PDF);
   }

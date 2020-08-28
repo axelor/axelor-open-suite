@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -760,11 +760,14 @@ left outer join base_currency as Currency on AccountingReport.currency = Currenc
                             </label>
                         </cell>
                         <cell id="3122">
-                            <text id="3128">
+                            <data id="4224">
                                 <property name="fontSize">9pt</property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF>row["ReportDateEdition"]</VALUE-OF>]]></text-property>
-                            </text>
+                                <structure name="dateTimeFormat">
+                                    <property name="category">Short Date</property>
+                                    <property name="pattern">Short Date</property>
+                                </structure>
+                                <property name="resultSetColumn">ReportDateEdition</property>
+                            </data>
                         </cell>
                     </row>
                 </grid>
@@ -954,6 +957,10 @@ left outer join base_currency as Currency on AccountingReport.currency = Currenc
                 </cell>
                 <cell id="514">
                     <data id="4220">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="resultSetColumn">ReportDate</property>
                     </data>
                 </cell>
@@ -1002,6 +1009,10 @@ left outer join base_currency as Currency on AccountingReport.currency = Currenc
                 </cell>
                 <cell id="516">
                     <data id="4221">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="resultSetColumn">date_from</property>
                     </data>
                 </cell>
@@ -1020,6 +1031,10 @@ left outer join base_currency as Currency on AccountingReport.currency = Currenc
                 </cell>
                 <cell id="2705">
                     <data id="4222">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="resultSetColumn">date_to</property>
                     </data>
                 </cell>
@@ -1486,6 +1501,13 @@ row["ReportedBalanceAmount"]
                                 <expression name="expression" type="javascript">dataSetRow["partner_seq"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
+                            <structure>
+                                <property name="name">date_to</property>
+                                <text-property name="displayName">date_to</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["date_to"]</expression>
+                                <property name="dataType">string</property>
+                                <property name="allowExport">true</property>
+                            </structure>
                         </list-property>
                         <property name="pageBreakInterval">0</property>
                         <column id="1168">
@@ -1546,6 +1568,7 @@ row["ReportedBalanceAmount"]
                                     <property name="borderTopWidth">thin</property>
                                     <property name="verticalAlign">bottom</property>
                                     <text id="2687">
+                                        <property name="display">inline</property>
                                         <property name="dataSet">AccountingReportDS</property>
                                         <list-property name="boundDataColumns">
                                             <structure>
@@ -1580,8 +1603,26 @@ row["ReportedBalanceAmount"]
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[A nouveau <VALUE-OF format="dd/MM/yyyy">row["date_from"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[A nouveau ]]></text-property>
                                     </text>
+                                    <data id="4229">
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
+                                        </structure>
+                                        <property name="display">inline</property>
+                                        <property name="dataSet">AccountingReportDS</property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">date_from</property>
+                                                <text-property name="displayName">dateFrom</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["date_from"]</expression>
+                                                <property name="dataType">string</property>
+                                                <property name="allowExport">true</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="resultSetColumn">date_from</property>
+                                    </data>
                                 </cell>
                                 <cell id="1148">
                                     <property name="colSpan">2</property>
@@ -1620,6 +1661,7 @@ row["ReportedBalanceAmount"]
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                     <text id="1544">
+                                        <property name="display">inline</property>
                                         <property name="dataSet">AccountingReportDS</property>
                                         <list-property name="boundDataColumns">
                                             <structure>
@@ -1654,8 +1696,16 @@ row["ReportedBalanceAmount"]
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[Solde <VALUE-OF format="dd/MM/yyyy">row["date_to"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[Solde ]]></text-property>
                                     </text>
+                                    <data id="4226">
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
+                                        </structure>
+                                        <property name="display">inline</property>
+                                        <property name="resultSetColumn">date_to</property>
+                                    </data>
                                 </cell>
                             </row>
                             <row id="1210">
@@ -2661,6 +2711,13 @@ dataSetRow["invoice_reconciled_name"]
                                 <expression name="expression" type="javascript">dataSetRow["partner_seq"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
+                            <structure>
+                                <property name="name">date_to</property>
+                                <text-property name="displayName">date_to</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["date_to"]</expression>
+                                <property name="dataType">date</property>
+                                <property name="allowExport">true</property>
+                            </structure>
                         </list-property>
                         <property name="pageBreakInterval">0</property>
                         <column id="1446">
@@ -2728,6 +2785,7 @@ dataSetRow["invoice_reconciled_name"]
                                     <property name="borderTopWidth">thin</property>
                                     <property name="verticalAlign">bottom</property>
                                     <text id="2690">
+                                        <property name="display">inline</property>
                                         <property name="dataSet">AccountingReportDS</property>
                                         <list-property name="boundDataColumns">
                                             <structure>
@@ -2762,8 +2820,26 @@ dataSetRow["invoice_reconciled_name"]
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[A nouveau <VALUE-OF format="dd/MM/yyyy">row["date_from"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[A nouveau ]]></text-property>
                                     </text>
+                                    <data id="4230">
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
+                                        </structure>
+                                        <property name="display">inline</property>
+                                        <property name="dataSet">AccountingReportDS</property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">date_from</property>
+                                                <text-property name="displayName">dateFrom</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["date_from"]</expression>
+                                                <property name="dataType">date</property>
+                                                <property name="allowExport">true</property>
+                                            </structure>
+                                        </list-property>
+                                        <property name="resultSetColumn">date_from</property>
+                                    </data>
                                 </cell>
                                 <cell id="1453">
                                     <property name="colSpan">1</property>
@@ -2823,6 +2899,7 @@ dataSetRow["invoice_reconciled_name"]
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                     <text id="1545">
+                                        <property name="display">inline</property>
                                         <property name="dataSet">AccountingReportDS</property>
                                         <list-property name="boundDataColumns">
                                             <structure>
@@ -2857,8 +2934,16 @@ dataSetRow["invoice_reconciled_name"]
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[Solde <VALUE-OF format="dd/MM/yyyy">row["date_to"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[Solde ]]></text-property>
                                     </text>
+                                    <data id="4225">
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
+                                        </structure>
+                                        <property name="display">inline</property>
+                                        <property name="resultSetColumn">date_to</property>
+                                    </data>
                                 </cell>
                             </row>
                             <row id="1384">

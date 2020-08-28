@@ -224,7 +224,7 @@
 		<view type="form" name="product-form" />
 		<view type="cards" name="product-cards" />
 		<view-param name="search-filters" value="products-filters"/>
-		<domain>self.isModel = false and self.productTypeSelect = 'storable'</domain>
+		<domain>self.isModel = false and self.productTypeSelect = 'storable' and dtype = 'Product'</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_fromStock" expr="eval:true" />
 	</action-view>

@@ -111,6 +111,11 @@ public class LunchVoucherMgtController {
       String fileLink =
           ReportFactory.createReport(IReport.LUNCH_VOUCHER_MGT_MONTHLY, name)
               .addParam("lunchVoucherMgtId", lunchVoucherMgt.getId())
+              .addParam(
+                  "Timezone",
+                  lunchVoucherMgt.getCompany() != null
+                      ? lunchVoucherMgt.getCompany().getTimezone()
+                      : null)
               .addParam("Locale", Beans.get(UserService.class).getLanguage())
               .addFormat(ReportSettings.FORMAT_PDF)
               .generate()

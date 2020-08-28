@@ -21,7 +21,8 @@
     <form name="consumption-line-form" title="Consumption Line" model="com.axelor.apps.contract.db.ConsumptionLine">
         <panel readonlyIf="isInvoiced" name="mainPanel">
             <field name="product" required="true" canEdit="false"
-                   onChange="action-consumption-line-method-change-product"/>
+                   onChange="action-consumption-line-method-change-product"
+                   domain="dtype = 'Product'"/>
             <field name="lineDate" required="true"/>
             <field name="reference"/>
             <field name="unit" canEdit="false"/>

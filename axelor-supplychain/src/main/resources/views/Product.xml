@@ -5,7 +5,7 @@
 
 	<form name="supplychain-stock-details-by-product-form" title="Stock details by product" model="com.axelor.apps.base.db.Wizard" canSave="false" width="large" canNew="false" canCopy="false" onNew="action-group-stock-details-by-product-on-new">
       <panel name="MainFilters" itemSpan="4" colSpan="12">
-          <field name="$product" title="Product" canEdit="false" target="com.axelor.apps.base.db.Product" type="many-to-one" form-view="product-form" grid-view="product-grid" onChange="action-group-supplychain-update-indicators" domain="self.stockManaged = true AND self.productTypeSelect = 'storable'"/>
+          <field name="$product" title="Product" canEdit="false" target="com.axelor.apps.base.db.Product" type="many-to-one" form-view="product-form" grid-view="product-grid" onChange="action-group-supplychain-update-indicators" domain="self.stockManaged = true AND dtype = 'Product' AND self.productTypeSelect = 'storable'"/>
           <field name="$company" title="Company" showIf="$product" canEdit="false" target="com.axelor.apps.base.db.Company" type="many-to-one" form-view="company-form" grid-view="company-grid" onChange="action-record-empty-company-and-stock-location, action-group-supplychain-update-indicators"/>
           <field name="$stockLocation" title="Stock location" showIf="$product &amp;&amp; $company" domain="self.typeSelect != 3 and self.company = :company" canEdit="false" target="com.axelor.apps.stock.db.StockLocation" type="many-to-one" form-view="stock-location-form" grid-view="stock-location-grid" onChange="action-group-supplychain-update-indicators" />
       </panel>

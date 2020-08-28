@@ -25,6 +25,7 @@ import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
@@ -44,14 +45,16 @@ public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
       AccountManagementAccountService accountManagementAccountService,
-      PurchaseProductService purchaseProductService) {
+      PurchaseProductService purchaseProductService,
+      ProductCompanyService productCompanyService) {
     super(
         currencyService,
         priceListService,
         appAccountService,
         analyticMoveLineService,
         accountManagementAccountService,
-        purchaseProductService);
+        purchaseProductService,
+        productCompanyService);
   }
 
   @Transactional

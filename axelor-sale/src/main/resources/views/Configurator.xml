@@ -12,7 +12,7 @@
           onLoad="action-configurator-update-indicators,save">
         <panel name="mainPanel" readonlyIf="product">
             <field name="product" readonly="true" showTitle="false"
-                   showIf="product" colSpan="12">
+                   showIf="product" colSpan="12" domain="dtype = 'Product'">
                 <viewer>
                     <![CDATA[
 			 			<h3>

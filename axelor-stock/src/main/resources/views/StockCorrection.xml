@@ -58,8 +58,8 @@
     </action-record>
 
 	<action-attrs name="action-stock-correction-on-select-product">
-		<attribute name="domain" for="product" expr="eval: &quot; self.id IN (0) &quot;" if="stockLocation == null || stockLocation?.stockLocationLineList?.isEmpty()"/>
-		<attribute name="domain" for="product" expr="eval: &quot; self IN (SELECT p FROM StockLocation s JOIN s.stockLocationLineList sl JOIN sl.product p WHERE s = :stockLocation)&quot;" if="stockLocation != null"/>
+		<attribute name="domain" for="product" expr="eval: &quot; self.id IN (0) AND dtype = 'Product'&quot;" if="stockLocation == null || stockLocation?.stockLocationLineList?.isEmpty()"/>
+		<attribute name="domain" for="product" expr="eval: &quot; self IN (SELECT p FROM StockLocation s JOIN s.stockLocationLineList sl JOIN sl.product p WHERE s = :stockLocation) AND dtype = 'Product'&quot;" if="stockLocation != null"/>
     </action-attrs>
 
     <action-attrs name="action-stock-correction-on-select-tracking-number">

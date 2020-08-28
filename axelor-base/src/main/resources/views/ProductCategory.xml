@@ -48,7 +48,7 @@
 		<view type="grid" name="product-grid" />
 		<view type="form" name="product-form" />
 		<view-param name="search-filters" value="products-filters"/>
-		<domain>self.isModel = false AND self.productCategory.id = :_productCategoryId</domain>
+		<domain>self.isModel = false AND self.productCategory.id = :_productCategoryId AND dtype = 'Product'</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_isModel" expr="false"/>
 		<context name="_productCategoryId" expr="eval:__this__.id" />

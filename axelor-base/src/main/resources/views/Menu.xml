@@ -189,7 +189,7 @@
 		<view type="form" name="product-form" />
 	  	<view-param name="limit" value="39"/>
 		<view-param name="search-filters" value="products-filters"/>
-		<domain>self.isModel = :_isModel AND self.productTypeSelect = :_productTypeSelect </domain>
+		<domain>self.isModel = :_isModel AND self.productTypeSelect = :_productTypeSelect AND dtype = 'Product'</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_isModel" expr="false"/>
 		<context name="_productTypeSelect" expr="storable"/>
@@ -206,7 +206,7 @@
 		<view type="form" name="product-form" />
 	  	<view-param name="limit" value="39"/>
 		<view-param name="search-filters" value="products-filters"/>
-		<domain>self.isModel = :_isModel AND self.productTypeSelect = :_productTypeSelect </domain>
+		<domain>self.isModel = :_isModel AND self.productTypeSelect = :_productTypeSelect AND dtype = 'Product'</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_isModel" expr="false"/>
 		<context name="_productTypeSelect" expr="service"/>
@@ -222,7 +222,7 @@
 		<view type="form" name="product-form" />
 	  	<view-param name="limit" value="39"/>
 		<view-param name="search-filters" value="products-filters"/>
-		<domain>self.isModel = :_isModel</domain>
+		<domain>self.isModel = :_isModel AND dtype = 'Product'</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_isModel" expr="true"/>
 	</action-view>

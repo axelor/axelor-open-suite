@@ -41,6 +41,7 @@ import com.axelor.apps.base.db.repo.AppAccountRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.exception.AxelorException;
@@ -62,6 +63,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   protected PriceListService priceListService;
   protected AppAccountService appAccountService;
   protected AnalyticMoveLineService analyticMoveLineService;
+  protected ProductCompanyService productCompanyService;
 
   @Inject
   public InvoiceLineServiceImpl(
@@ -69,13 +71,15 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       PriceListService priceListService,
       AppAccountService appAccountService,
       AnalyticMoveLineService analyticMoveLineService,
-      AccountManagementAccountService accountManagementAccountService) {
+      AccountManagementAccountService accountManagementAccountService,
+      ProductCompanyService productCompanyService) {
 
     this.accountManagementAccountService = accountManagementAccountService;
     this.currencyService = currencyService;
     this.priceListService = priceListService;
     this.appAccountService = appAccountService;
     this.analyticMoveLineService = analyticMoveLineService;
+    this.productCompanyService = productCompanyService;
   }
 
   public List<AnalyticMoveLine> getAndComputeAnalyticDistribution(
@@ -180,15 +184,23 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     Currency productCurrency;
 
     if (isPurchase) {
-      price = product.getPurchasePrice();
-      productCurrency = product.getPurchaseCurrency();
+      price =
+          (BigDecimal) productCompanyService.get(product, "purchasePrice", invoice.getCompany());
+      productCurrency =
+          (Currency) productCompanyService.get(product, "purchaseCurrency", invoice.getCompany());
     } else {
-      price = product.getSalePrice();
-      productCurrency = product.getSaleCurrency();
+      price = (BigDecimal) productCompanyService.get(product, "salePrice", invoice.getCompany());
+      productCurrency =
+          (Currency) productCompanyService.get(product, "saleCurrency", invoice.getCompany());
     }
 
-    if (product.getInAti() != resultInAti) {
-      price = this.convertUnitPrice(product.getInAti(), taxLine, price);
+    if ((Boolean) productCompanyService.get(product, "inAti", invoice.getCompany())
+        != resultInAti) {
+      price =
+          this.convertUnitPrice(
+              (Boolean) productCompanyService.get(product, "inAti", invoice.getCompany()),
+              taxLine,
+              price);
     }
 
     return currencyService

@@ -76,7 +76,7 @@
                <view type="cards" name="product-cards" />
                <view type="grid" name="product-grid" />
                <view type="form" name="product-form" />
-               <domain>self.sellable = true</domain>
+               <domain>self.sellable = true AND dtype = 'Product'</domain>
        </action-view>
 	
 	<action-view name="wizard-client-form-open-my-tickets" title="My tickets"

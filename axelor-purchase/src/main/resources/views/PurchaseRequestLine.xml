@@ -31,7 +31,7 @@
 	</action-record>
 	
 	<action-attrs name="action-purchase-request-line-attrs-product-domain">
-		<attribute name="domain" for="product" if="_parent?.supplierUser?.id" expr="eval: &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true and self.id IN (SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = ${_parent?.supplierUser?.id}) &quot;"/>
+		<attribute name="domain" for="product" if="_parent?.supplierUser?.id" expr="eval: &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true and self.id IN (SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = ${_parent?.supplierUser?.id}) AND dtype = 'Product'&quot;"/>
 		<attribute name="domain" for="product" if="!_parent?.supplierUser?.id" expr="eval: &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true &quot;"/>
 	</action-attrs>
 

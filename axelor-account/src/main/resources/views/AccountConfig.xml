@@ -121,8 +121,8 @@
 				</panel>
 
 				<panel name="productsPanel" title="Products" colSpan="12">
-					<field name="invoicingProduct" form-view="product-form" grid-view="product-grid"/>
-					<field name="advancePaymentProduct" form-view="product-form" grid-view="product-grid"/>
+					<field name="invoicingProduct" domain="dtype = 'Product'" form-view="product-form" grid-view="product-grid"/>
+					<field name="advancePaymentProduct" domain="dtype = 'Product'" form-view="product-form" grid-view="product-grid"/>
 				</panel>
 
 				<panel name="printingSettingsPanel" title="Printing settings" colSpan="12">

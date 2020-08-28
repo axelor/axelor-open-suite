@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -43,6 +43,9 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">1</value>
+            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -3278,8 +3281,9 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                 <structure>
                     <property name="name">invoice_date</property>
                     <text-property name="displayName">invoice_date</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["invoice_date"]</expression>
+                    <expression name="expression" type="javascript">if(dataSetRow["invoice_date"] != null ){ dataSetRow["invoice_date"];}else{new Date();}</expression>
                     <property name="dataType">date</property>
+                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">operation_sub_type_select</property>
@@ -3775,6 +3779,7 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                             <cell id="3653">
                                 <text id="3425">
                                     <property name="marginLeft">2pt</property>
+                                    <property name="display">inline</property>
                                     <property name="dataSet">TranslateDS</property>
                                     <list-property name="paramBindings">
                                         <structure>
@@ -3799,8 +3804,16 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF format="dd/MM/yyyy"> if(row._outer["invoice_date"] != null){ row._outer["invoice_date"] } else { BirtDateTime.now() } </VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
                                 </text>
+                                <data id="5651">
+                                    <structure name="dateTimeFormat">
+                                        <property name="category">Short Date</property>
+                                        <property name="pattern">Short Date</property>
+                                    </structure>
+                                    <property name="display">inline</property>
+                                    <property name="resultSetColumn">invoice_date</property>
+                                </data>
                             </cell>
                         </row>
                         <row id="3654">
@@ -3910,9 +3923,13 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF format="^">"  "</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
                                 </text>
                                 <data id="5646">
+                                    <structure name="dateTimeFormat">
+                                        <property name="category">Short Date</property>
+                                        <property name="pattern">Short Date</property>
+                                    </structure>
                                     <property name="display">inline</property>
                                     <property name="resultSetColumn">due_date</property>
                                 </data>
@@ -4146,15 +4163,40 @@ row["partnerFirstName"]
                     <text id="4263">
                         <property name="fontSize">12pt</property>
                         <property name="fontWeight">bold</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">if(row["contactPartnerTitleSelect"] == "1"){'M.'}
+else if(row["contactPartnerTitleSelect"] == "2"){'Ms.'}
+else if(row["contactPartnerTitleSelect"] == "3"){'Dr'}
+else if(row["contactPartnerTitleSelect"] == "4"){'Prof.'}</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["contactPartnerTitleSelect"] != null){
-if(row["contactPartnerTitleSelect"] == "1"){"M."}
-else if(row["contactPartnerTitleSelect"] == "2"){"Ms."}
-else if(row["contactPartnerTitleSelect"] == "3"){"Dr"}
-else if(row["contactPartnerTitleSelect"] == "4"){"Prof."}
+                        <text-property name="content"><![CDATA[<VALUE-OF>if(params["Locale"].value != 'en') {
+row["translation"]
+} else {
+row["message_key"]
 }</VALUE-OF> 
 <VALUE-OF format="^">"  "</VALUE-OF>
-<VALUE-OF>row["contactName"]</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row["contactFirstName"]</VALUE-OF>]]></text-property>
+<VALUE-OF>row._outer["contactName"]</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["contactFirstName"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="4467">
@@ -5063,49 +5105,133 @@ vars["in_total"] = vars["temp_in_total"];
                                     <property name="borderLeftWidth">thin</property>
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
-                                    <text id="5392">
+                                    <grid id="4623">
                                         <property name="fontSize">8pt</property>
                                         <property name="textAlign">center</property>
-                                        <property name="dataSet">AppBaseDS</property>
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
                                                 <expression name="valueExpr" type="javascript">row._outer["is_title_line"]</expression>
                                             </structure>
                                         </list-property>
-                                        <list-property name="boundDataColumns">
-                                            <structure>
-                                                <property name="name">nb_decimal_digit_for_qty</property>
-                                                <text-property name="displayName">nb_decimal_digit_for_qty</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["nb_decimal_digit_for_qty"]</expression>
-                                                <property name="dataType">integer</property>
-                                            </structure>
-                                        </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["qty"],"#,##0."+Array((row["nb_decimal_digit_for_qty"] || 2)+1).join("0"))</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["unitname"]</VALUE-OF>]]></text-property>
-                                    </text>
-                                    <text id="5431">
+                                        <column id="4624"/>
+                                        <column id="4625"/>
+                                        <row id="4626">
+                                            <cell id="4627">
+                                                <text id="5392">
+                                                    <property name="fontSize">8pt</property>
+                                                    <property name="textAlign">right</property>
+                                                    <property name="dataSet">AppBaseDS</property>
+                                                    <list-property name="boundDataColumns">
+                                                        <structure>
+                                                            <property name="name">nb_decimal_digit_for_qty</property>
+                                                            <text-property name="displayName">nb_decimal_digit_for_qty</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["nb_decimal_digit_for_qty"]</expression>
+                                                            <property name="dataType">integer</property>
+                                                        </structure>
+                                                    </list-property>
+                                                    <property name="contentType">html</property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["qty"],"#,##0."+Array((row["nb_decimal_digit_for_qty"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                                </text>
+                                            </cell>
+                                            <cell id="4628">
+                                                <text id="4630">
+                                                    <property name="fontSize">8pt</property>
+                                                    <property name="textAlign">left</property>
+                                                    <property name="dataSet">TranslateDS</property>
+                                                    <list-property name="paramBindings">
+                                                        <structure>
+                                                            <property name="paramName">param_1</property>
+                                                            <simple-property-list name="expression">
+                                                                <value type="javascript">'value:'+row["unitname"]</value>
+                                                            </simple-property-list>
+                                                        </structure>
+                                                    </list-property>
+                                                    <list-property name="boundDataColumns">
+                                                        <structure>
+                                                            <property name="name">message_key</property>
+                                                            <text-property name="displayName">message_key</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                        <structure>
+                                                            <property name="name">translation</property>
+                                                            <text-property name="displayName">translation</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                    </list-property>
+                                                    <property name="contentType">html</property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>if(row["translation"] != null) {row["translation"]} else {row._outer["unitname"]}</VALUE-OF>
+]]></text-property>
+                                                </text>
+                                            </cell>
+                                        </row>
+                                    </grid>
+                                    <grid id="5652">
                                         <property name="fontSize">8pt</property>
-                                        <property name="fontWeight">bold</property>
                                         <property name="textAlign">center</property>
-                                        <property name="dataSet">AppBaseDS</property>
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
                                                 <expression name="valueExpr" type="javascript">!row._outer["is_title_line"] || !vars["is_first_title_line"] || row._outer["qty"] == 0</expression>
                                             </structure>
                                         </list-property>
-                                        <list-property name="boundDataColumns">
-                                            <structure>
-                                                <property name="name">nb_decimal_digit_for_qty</property>
-                                                <text-property name="displayName">nb_decimal_digit_for_qty</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["nb_decimal_digit_for_qty"]</expression>
-                                                <property name="dataType">integer</property>
-                                            </structure>
-                                        </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["qty"],"#,##0."+Array((row["nb_decimal_digit_for_qty"] || 2)+1).join("0"))</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF>]]></text-property>
-                                    </text>
+                                        <column id="5653"/>
+                                        <column id="5654"/>
+                                        <row id="5655">
+                                            <cell id="5656">
+                                                <text id="5431">
+                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontWeight">bold</property>
+                                                    <property name="textAlign">right</property>
+                                                    <property name="dataSet">AppBaseDS</property>
+                                                    <list-property name="boundDataColumns">
+                                                        <structure>
+                                                            <property name="name">nb_decimal_digit_for_qty</property>
+                                                            <text-property name="displayName">nb_decimal_digit_for_qty</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["nb_decimal_digit_for_qty"]</expression>
+                                                            <property name="dataType">integer</property>
+                                                        </structure>
+                                                    </list-property>
+                                                    <property name="contentType">html</property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["qty"],"#,##0."+Array((row["nb_decimal_digit_for_qty"] || 2)+1).join("0"))</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF>]]></text-property>
+                                                </text>
+                                            </cell>
+                                            <cell id="5658">
+                                                <text id="5659">
+                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontWeight">bold</property>
+                                                    <property name="textAlign">left</property>
+                                                    <property name="dataSet">TranslateDS</property>
+                                                    <list-property name="paramBindings">
+                                                        <structure>
+                                                            <property name="paramName">param_1</property>
+                                                            <simple-property-list name="expression">
+                                                                <value type="javascript">'value:'+row["unitname"]</value>
+                                                            </simple-property-list>
+                                                        </structure>
+                                                    </list-property>
+                                                    <list-property name="boundDataColumns">
+                                                        <structure>
+                                                            <property name="name">message_key</property>
+                                                            <text-property name="displayName">message_key</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                        <structure>
+                                                            <property name="name">translation</property>
+                                                            <text-property name="displayName">translation</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                    </list-property>
+                                                    <property name="contentType">html</property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>if(row["translation"] != null) {row["translation"]} else {row._outer["unitname"]}</VALUE-OF>]]></text-property>
+                                                </text>
+                                            </cell>
+                                        </row>
+                                    </grid>
                                 </cell>
                                 <cell id="5393">
                                     <property name="borderBottomStyle">none</property>
@@ -7065,7 +7191,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                 <property name="paddingRight">5pt</property>
                                                 <property name="textAlign">right</property>
                                                 <text id="5300">
-                                                    <property name="fontSize">10pt</property>
+                                                    <property name="fontSize">9pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="textAlign">left</property>
                                                     <property name="contentType">html</property>
@@ -7348,7 +7474,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                 <property name="paddingRight">5pt</property>
                                                 <property name="textAlign">right</property>
                                                 <text id="5306">
-                                                    <property name="fontSize">10pt</property>
+                                                    <property name="fontSize">9pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="textAlign">left</property>
                                                     <property name="contentType">html</property>
@@ -7492,7 +7618,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                 <property name="paddingRight">5pt</property>
                                                 <property name="textAlign">right</property>
                                                 <text id="5596">
-                                                    <property name="fontSize">10pt</property>
+                                                    <property name="fontSize">9pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="textAlign">left</property>
                                                     <property name="contentType">html</property>
@@ -7774,7 +7900,7 @@ vars["in_total"] = vars["temp_in_total"];
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="HTML">if(params["ReportType"].value != 1) row["note"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"") + "<br>";</VALUE-OF>
 <VALUE-OF format="HTML">
-     if(row._outer["status_select"] == 1 || row._outer["status_select"] == 2 ) row["proforma_comments"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")
+   if(row["status_select"] == 1 || row["status_select"] == 2) row["proforma_comments"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")
 </VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -4075,7 +4075,8 @@ order by task_end_date]]></xml-property>
                                     <property name="overflow">hidden</property>
                                     <data id="4687">
                                         <structure name="dateTimeFormat">
-                                            <property name="category">Unformatted</property>
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
                                         </structure>
                                         <property name="resultSetColumn">inv_date</property>
                                     </data>
@@ -5636,7 +5637,8 @@ order by task_end_date]]></xml-property>
                                     <property name="overflow">hidden</property>
                                     <data id="4742">
                                         <structure name="dateTimeFormat">
-                                            <property name="category">Unformatted</property>
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
                                         </structure>
                                         <property name="resultSetColumn">inv_date</property>
                                     </data>
@@ -6420,6 +6422,10 @@ order by task_end_date]]></xml-property>
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
                                     <data id="5789">
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
+                                        </structure>
                                         <property name="textAlign">center</property>
                                         <property name="resultSetColumn">tm_validation_date</property>
                                     </data>
@@ -7282,6 +7288,10 @@ order by task_end_date]]></xml-property>
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
                                     <data id="5695">
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
+                                        </structure>
                                         <property name="resultSetColumn">exp_validation_date</property>
                                     </data>
                                 </cell>
@@ -8035,6 +8045,10 @@ order by task_end_date]]></xml-property>
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
                                     <data id="5880">
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
+                                        </structure>
                                         <property name="resultSetColumn">me_date</property>
                                     </data>
                                 </cell>
@@ -10966,6 +10980,10 @@ order by task_end_date]]></xml-property>
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
                                     <data id="5364">
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
+                                        </structure>
                                         <property name="textAlign">center</property>
                                         <property name="resultSetColumn">so_date</property>
                                     </data>
@@ -12037,6 +12055,10 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalSale
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
                                     <data id="5992">
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
+                                        </structure>
                                         <property name="resultSetColumn">task_end_date</property>
                                     </data>
                                 </cell>
@@ -12840,6 +12862,10 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
                                     <data id="5368">
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
+                                        </structure>
                                         <property name="resultSetColumn">po_date</property>
                                     </data>
                                 </cell>
@@ -15764,6 +15790,10 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalExpe
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
                                     <data id="5900">
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
+                                        </structure>
                                         <property name="resultSetColumn">me_date</property>
                                     </data>
                                 </cell>
@@ -16550,6 +16580,10 @@ vars["TotalRemainingTurnover"] = vars["TotalRemainingTurnover"] + row["TotalManu
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
                                     <data id="5741">
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
+                                        </structure>
                                         <property name="resultSetColumn">po_date</property>
                                     </data>
                                 </cell>
@@ -18089,6 +18123,10 @@ vars["TotalRemainingCost"] = vars["TotalRemainingCost"]+row["TotalExpectedCosts"
                                     <property name="canShrink">false</property>
                                     <property name="overflow">hidden</property>
                                     <data id="5931">
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
+                                        </structure>
                                         <property name="resultSetColumn">me_date</property>
                                     </data>
                                 </cell>

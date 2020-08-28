@@ -19,7 +19,7 @@
 			<panel-related name="partnerContactSetPanel" field="partnerContactSet" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 			<panel-related name="projectSetPanel" field="projectSet" form-view="project-form" grid-view="project-grid"/>
 			<panel-related name="leadSetPanel" field="leadSet"  showIf="isCrmAppEnable"  form-view="lead-form" grid-view="lead-grid"/>
-			<panel-related name="productSetPanel" field="productSet" showIf="isSaleAppEnable"  form-view="product-form" grid-view="product-grid"/>
+			<panel-related name="productSetPanel" field="productSet" showIf="isSaleAppEnable" form-view="product-form" grid-view="product-grid" domain="dtype = 'Product'"/>
 		</panel-tabs>
 				        
         <panel-mail name="mailPanel">

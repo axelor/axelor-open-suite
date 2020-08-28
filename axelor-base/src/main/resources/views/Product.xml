@@ -8,6 +8,7 @@
         	<button name="catalogBtn" title="Catalog" onClick="action-print-product-catalog" icon="fa-book"/>
 			<button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
 	    </toolbar>
+	    <field name="picture" widget="Image"/>
 	    <field name="code" x-bind="{{code|unaccent|uppercase}}" width="120"/>
 	    <field name="name" width="300"/>
 	    <field name="productCategory" form-view="product-category-form" grid-view="product-category-grid"/>
@@ -20,6 +21,7 @@
 	</grid>
     
     <grid name="product-product-variant-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="code,name">
+	    <field name="picture" widget="Image"/>
 	    <field name="code" x-bind="{{code|unaccent|uppercase}}" width="120"/>
 	    <field name="name"/>
 	    <field name="productVariant" width="200"/>
@@ -42,7 +44,7 @@
           					if="__config__.app.getApp('base').getGenerateProductSequence()"/>
           				<field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="5" css="label-bold bold large" placeholder="Code" 
           					if="!__config__.app.getApp('base').getGenerateProductSequence()" required="true"/>
-                  <field name="name" showTitle="false" colSpan="7" css="label-bold bold large" placeholder="Name" width="800"/>
+                  <field name="name" required="true" showTitle="false" colSpan="7" css="label-bold bold large" placeholder="Name" width="800"/>
         			</editor>
       			</field>
     		</panel>
@@ -88,12 +90,12 @@
     		<panel name="productInfoPanel" colSpan="10" >
       
       			<panel name="productTypologyPanel" title="Product typology" colSpan="6" colWidths="30%,70%">
-			        <field name="productTypeSelect" colSpan="12" onChange="action-group-base-product-producttype-onchange" />
+			        <field name="productTypeSelect" required="true" colSpan="12" onChange="action-group-base-product-producttype-onchange" />
 			        <field name="productSubTypeSelect" colSpan="12"  showIf="productTypeSelect == 'storable'" if="__config__.app.isApp('production')" onChange="action-product-record-product-sub-type-select-onchange"/>
                     <field name="isShippingCostsProduct" colSpan="4" hideIf="productTypeSelect != 'storable' || productSubTypeSelect || _fromProduction || _fromStock || _fromSale || _fromPurchase"/>
 			        <field name="isActivity" showIf="productTypeSelect == 'service' &amp;&amp; !isShippingCostsProduct" if-module="axelor-human-resource" if="__config__.app.isApp('employee')" />
                     <field name="procurementMethodSelect" colSpan="6"
-                        requiredIf="productTypeSelect == 'storable'"
+                        requiredIf="productTypeSelect == 'storable' &amp;&amp; __config__.app.getApp('base').getCompanySpecificProductFieldsList().isEmpty()"
                         onChange="action-product-record-tick-checkbox-purchasable" hideIf="isShippingCostsProduct" readonlyIf="productSubTypeSelect == 3"/>
 			        <field name="standardDelay" colSpan="12" showIf="saleSupplySelect == 2 || saleSupplySelect == 3" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
       			</panel>
@@ -109,6 +111,7 @@
       				<field name="serialNumber" />
 					<field name="barcodeTypeConfig" if="__config__.app.getApp('base').getEditProductBarcodeType()"/>
       			</panel>
+      			<panel-related name="productCompanyListPanel" field="productCompanyList" grid-view="product-company-grid" form-view="product-company-form" colSpan="12" hidden="true" onChange="save"/>
     		</panel>
   		</panel>
   		<panel-tabs name="productSpecificAttributes" title="Product specific attributes">
@@ -158,8 +161,11 @@
 	    	<panel name="purchaseCostsPanel" title="Purchase/Costs" showTitle="false">
 		      	<panel name="purchasePanel" title="Purchases" colSpan="6">
 			        <field name="purchasable" colSpan="12"/>
-			        <field name="purchasePrice" showIf="purchasable" colSpan="6"/>
+			        <field name="purchasePrice" showIf="purchasable" colSpan="3"/>
 			        <field name="purchaseCurrency" canEdit="false" showIf="purchasable" colSpan="6" form-view="currency-form" grid-view="currency-grid"/>
+			        <spacer colSpan="3"/>
+			        <field name="lastPurchasePrice" showIf="purchasable" colSpan="3" readonly="true"/>
+			        <field name="lastPurchaseCurrency" showIf="purchasable" colSpan="6" readonly="true"/>
 			        <field name="defaultSupplierPartner" canEdit="false" showIf="purchasable" colSpan="6" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
 			        <field name="supplierDeliveryTime" showIf="purchasable" colSpan="6"/>
                     <panel name="purchaseMultipleQtyPanel" title="Multiple quantities" colSpan="12" if="__config__.app.getApp('purchase')?.getManageMultiplePurchaseQuantity()">
@@ -236,13 +242,13 @@
 	        			<field name="productVariantConfig" colSpan="12" canSelect="false" canNew="true">
 				        	<editor x-show-titles="false">
 					            <field name="productVariantAttr1" canNew="true" onChange="action-product-variant-config-attrs-domain,action-product-variant-config-record-reset-variant-value1" form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
-					            <field name="productVariantValue1Set" showIf="productVariantAttr1" colSpan="6" widget="TagSelect" canNew="false" onSelect="action-product-nested-product-variant-config-attrs-domain" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+					            <field name="productVariantValue1Set" showIf="productVariantAttr1" colSpan="6" widget="TagSelect" x-color-field="colorSelect" canNew="false" onSelect="action-product-nested-product-variant-config-attrs-domain" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
 					            <field name="productVariantAttr2" showIf="productVariantAttr1" canNew="true" onChange="action-product-variant-config-attrs-domain,action-product-variant-config-record-reset-variant-value2" form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
-					            <field name="productVariantValue2Set" showIf="productVariantAttr2" colSpan="6" widget="TagSelect" canNew="false" onSelect="action-product-nested-product-variant-config-attrs-domain" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+					            <field name="productVariantValue2Set" showIf="productVariantAttr2" colSpan="6" widget="TagSelect" x-color-field="colorSelect" canNew="false" onSelect="action-product-nested-product-variant-config-attrs-domain" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
 					            <field name="productVariantAttr3" showIf="productVariantAttr2" canNew="true" onChange="action-product-variant-config-attrs-domain,action-product-variant-config-record-reset-variant-value3" form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
-					            <field name="productVariantValue3Set" showIf="productVariantAttr3" colSpan="6" widget="TagSelect" canNew="false" onSelect="action-product-nested-product-variant-config-attrs-domain" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+					            <field name="productVariantValue3Set" showIf="productVariantAttr3" colSpan="6" widget="TagSelect" x-color-field="colorSelect" canNew="false" onSelect="action-product-nested-product-variant-config-attrs-domain" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
 					            <field name="productVariantAttr4" showIf="productVariantAttr3" canNew="true" onChange="action-product-variant-config-attrs-domain,action-product-variant-config-record-reset-variant-value4" form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
-					            <field name="productVariantValue4Set" showIf="productVariantAttr4" colSpan="6" widget="TagSelect" canNew="false" onSelect="action-product-nested-product-variant-config-attrs-domain" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+					            <field name="productVariantValue4Set" showIf="productVariantAttr4" colSpan="6" widget="TagSelect" x-color-field="colorSelect" canNew="false" onSelect="action-product-nested-product-variant-config-attrs-domain" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
 				          	</editor>
 	        			</field>
 	        			<button name="generateProductVariantBtn" title="Generate product variants" onClick="save,action-product-method-generate-product-variant"/>
@@ -303,6 +309,7 @@
   		</panel-tabs>
   		<panel name="attrsPanel">
   			<field name="attrs" colSpan="12" />
+            <field name="productAttrs" colSpan="12" />
   		</panel>
 
   		<panel-mail name="mailsPanel">
@@ -370,9 +377,10 @@
 		<action name="action-product-attrs-set-cost-type-select"/>
 		<action name="action-product-record-set-barcode-type-config"/>
 		<action name="action-product-attrs-title-unit"/>
+		<action name="action-product-attrs-enable-product-company-list"/>
 		<action name="action-product-record-service-stock-managed"/>
     </action-group>
-    
+
     <action-group name="action-group-base-product-producttype-onchange">
     	<action name="action-product-record-sale-supply-select"/>
     	<action name="action-product-validate-sale-supply-select"/>
@@ -405,6 +413,7 @@
         <action name="action-product-attrs-readonly-sellable" if="__context__?._fromSale"/>
         <action name="action-product-attrs-readonly-purchasable" if="__context__?._fromPurchase"/>
 		<action name="action-product-attrs-cost-price-variant"/>
+		<action name="action-product-attrs-enable-product-company-list"/>
     </action-group>
 
 	<action-group name="action-product-group-cost-type-select-onchange">
@@ -431,15 +440,18 @@
     </action-attrs>
     
     <action-attrs name="action-product-attrs-change-title-based-on-inAti">
-    	<attribute name="title" for="salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale price A.T.I.')" if="inAti"/>
-    	<attribute name="title" for="salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale price W.T.')" if="!inAti"/>
-    	<attribute name="title" for="purchasePrice" expr="eval: com.axelor.i18n.I18n.get('Purchase price A.T.I.')" if="inAti"/>
-    	<attribute name="title" for="purchasePrice" expr="eval: com.axelor.i18n.I18n.get('Purchase price W.T.')" if="!inAti"/>
+    	<attribute name="title" for="salePrice,productCompanyList.salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale price A.T.I.')" if="inAti"/>
+    	<attribute name="title" for="salePrice,productCompanyList.salePrice" expr="eval: com.axelor.i18n.I18n.get('Sale price W.T.')" if="!inAti"/>
+    	<attribute name="title" for="purchasePrice,productCompanyList.purchasePrice" expr="eval: com.axelor.i18n.I18n.get('Purchase price A.T.I.')" if="inAti"/>
+    	<attribute name="title" for="purchasePrice,productCompanyList.purchasePrice" expr="eval: com.axelor.i18n.I18n.get('Purchase price W.T.')" if="!inAti"/>
+    	<attribute name="title" for="lastPurchasePrice,productCompanyList.lastPurchasePrice" expr="eval: com.axelor.i18n.I18n.get('Last purchase price A.T.I.')" if="inAti"/>
+    	<attribute name="title" for="lastPurchasePrice,productCompanyList.lastPurchasePrice" expr="eval: com.axelor.i18n.I18n.get('Last purchase price W.T.')" if="!inAti"/>
     </action-attrs>
 
     <action-attrs name="action-product-attrs-scale-and-precision">
 		<attribute name="scale" for="salePrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="purchasePrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="lastPurchasePrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		<attribute name="scale" for="costPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 		
 		<attribute name="scale" for="economicManufOrderQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
@@ -452,7 +464,8 @@
 	</action-attrs>
 
 	<action-attrs name="action-product-attrs-update-cost-price">
-		<attribute for="costPrice" name="value" expr="eval: shippingCoef ? purchasePrice.multiply(shippingCoef) : purchasePrice" if="costTypeSelect == 2"/>
+		<attribute for="costPrice" name="value" expr="eval: shippingCoef ? lastPurchasePrice.multiply(shippingCoef) : lastPurchasePrice" if="costTypeSelect == 2 &amp;&amp; lastPurchasePrice &gt; 0"/>
+		<attribute for="costPrice" name="value" expr="eval: shippingCoef ? purchasePrice.multiply(shippingCoef) : purchasePrice" if="costTypeSelect == 2  &amp;&amp; lastPurchasePrice &lt;= 0"/>
 		<attribute for="costPrice" name="value" expr="eval: avgPrice" if="costTypeSelect == 3"/>
 		<attribute for="costPrice" name="value" expr="eval: lastProductionPrice" if="costTypeSelect == 4"/>
 	</action-attrs>
@@ -464,6 +477,10 @@
 				   if="parentProduct?.manageVariantPrice"/>
 	</action-attrs>
 	
+	<action-attrs name="action-product-attrs-enable-product-company-list">
+		<attribute name="hidden" for="productCompanyList" expr="eval: __config__.app.getApp('base').getCompanySpecificProductFieldsList().isEmpty()"/>
+	</action-attrs>
+
 	<action-group name="action-product-group-default-new">
 		<action name="action-product-record-default-new"/>
 		<action name="hr-action-product-record-default-new" if="__config__.app.getApp('expense')"/>
@@ -475,6 +492,7 @@
     	<field name="startDate" expr="eval:__config__.app.getTodayDate()" if="startDate == null"/>
     	<field name="salePrice" expr="0"/>
     	<field name="purchasePrice" expr="0"/>
+    	<field name="lastPurchasePrice" expr="0"/>
     	<field name="saleCurrency" expr="eval: _activeCompany?.currency"/>
     	<field name="purchaseCurrency" expr="eval: _activeCompany?.currency"/>
     	<field name="managPriceCoef" expr="1"/>

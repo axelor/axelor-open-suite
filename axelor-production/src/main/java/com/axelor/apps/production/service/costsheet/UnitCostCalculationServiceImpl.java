@@ -20,6 +20,7 @@ package com.axelor.apps.production.service.costsheet;
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.CostSheet;
@@ -80,6 +81,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   protected UnitCostCalcLineRepository unitCostCalcLineRepository;
   protected AppProductionService appProductionService;
   protected ProductService productService;
+  protected ProductCompanyService productCompanyService;
 
   protected Map<Long, Integer> productMap;
 
@@ -91,7 +93,8 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
       CostSheetService costSheetService,
       UnitCostCalcLineRepository unitCostCalcLineRepository,
       AppProductionService appProductionService,
-      ProductService productService) {
+      ProductService productService,
+      ProductCompanyService productCompanyService) {
     this.productRepository = productRepository;
     this.unitCostCalculationRepository = unitCostCalculationRepository;
     this.unitCostCalcLineService = unitCostCalcLineService;
@@ -99,6 +102,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     this.unitCostCalcLineRepository = unitCostCalcLineRepository;
     this.appProductionService = appProductionService;
     this.productService = productService;
+    this.productCompanyService = productCompanyService;
   }
 
   @Override
@@ -281,7 +285,8 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
               .all()
               .filter(
                   "self.productCategory in (?1) AND self.productTypeSelect = ?2 AND self.productSubTypeSelect in (?3)"
-                      + " AND self.defaultBillOfMaterial.company in (?4) AND self.procurementMethodSelect in (?5, ?6)",
+                      + " AND self.defaultBillOfMaterial.company in (?4) AND self.procurementMethodSelect in (?5, ?6)"
+                      + " AND dtype = 'Product'",
                   unitCostCalculation.getProductCategorySet(),
                   ProductRepository.PRODUCT_TYPE_STORABLE,
                   productSubTypeSelects,
@@ -298,7 +303,8 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
               .all()
               .filter(
                   "self.productFamily in (?1) AND self.productTypeSelect = ?2 AND self.productSubTypeSelect in (?3)"
-                      + " AND self.defaultBillOfMaterial.company in (?4) AND self.procurementMethodSelect in (?5, ?6)",
+                      + " AND self.defaultBillOfMaterial.company in (?4) AND self.procurementMethodSelect in (?5, ?6)"
+                      + " AND dtype = 'Product'",
                   unitCostCalculation.getProductFamilySet(),
                   ProductRepository.PRODUCT_TYPE_STORABLE,
                   productSubTypeSelects,
@@ -434,7 +440,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     }
   }
 
-  public void updateUnitCosts(UnitCostCalculation unitCostCalculation) {
+  public void updateUnitCosts(UnitCostCalculation unitCostCalculation) throws AxelorException {
 
     for (UnitCostCalcLine unitCostCalcLine : unitCostCalculation.getUnitCostCalcLineList()) {
 
@@ -448,17 +454,20 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   }
 
   @Transactional
-  protected void updateUnitCosts(UnitCostCalcLine unitCostCalcLine) {
+  protected void updateUnitCosts(UnitCostCalcLine unitCostCalcLine) throws AxelorException {
 
     Product product = unitCostCalcLine.getProduct();
 
-    product.setCostPrice(
+    productCompanyService.set(
+        product,
+        "costPrice",
         unitCostCalcLine
             .getCostToApply()
             .setScale(
-                appProductionService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP));
+                appProductionService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP),
+        unitCostCalcLine.getCompany());
 
-    productService.updateSalePrice(product);
+    productService.updateSalePrice(product, unitCostCalcLine.getCompany());
   }
 
   @Transactional

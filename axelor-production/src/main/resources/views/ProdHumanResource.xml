@@ -23,7 +23,7 @@
     <form name="prod-human-resource-form" title="Prod. Human resource" model="com.axelor.apps.production.db.ProdHumanResource"
         onNew="action-prod-human-resource-record-default">
 		<panel name="mainPanel">
-	        <field name="product" domain="self.productTypeSelect = 'service'" canEdit="false" form-view="product-form" grid-view="product-grid"/>
+	        <field name="product" domain="self.productTypeSelect = 'service' AND dtype = 'Product'" canEdit="false" form-view="product-form" grid-view="product-grid"/>
 	        <field name="employee" form-view="employee-form" grid-view="employee-grid" canNew="false" canEdit="false" canView="false"/>
 	        <field name="duration" widget="duration" x-big="true" x-seconds="true"/>
   		  	<field name="costSheetGroup" form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid" domain="self.costTypeSelect = 2" if="__config__.app.getApp('production').getManageCostSheetGroup()"/>

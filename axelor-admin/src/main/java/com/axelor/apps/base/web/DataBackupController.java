@@ -26,13 +26,13 @@ import java.io.IOException;
 
 public class DataBackupController {
 
-  public void CreateBackUp(ActionRequest req, ActionResponse res) throws IOException {
+  public void createBackup(ActionRequest req, ActionResponse res) throws IOException {
     DataBackup dataBackup = req.getContext().asType(DataBackup.class);
     Beans.get(DataBackupService.class).createBackUp(dataBackup);
     res.setReload(true);
   }
 
-  public void RestoreBackUp(ActionRequest req, ActionResponse res) throws IOException {
+  public void restoreBackup(ActionRequest req, ActionResponse res) throws IOException {
     DataBackupService dataBackupService = Beans.get(DataBackupService.class);
     DataBackup dataBackup = req.getContext().asType(DataBackup.class);
     if (dataBackupService.SeuencesExist()) {

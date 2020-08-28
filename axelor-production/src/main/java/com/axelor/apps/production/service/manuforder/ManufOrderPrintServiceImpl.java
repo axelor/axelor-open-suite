@@ -69,6 +69,9 @@ public class ManufOrderPrintServiceImpl implements ManufOrderPrintService {
     ReportSettings reportSetting = ReportFactory.createReport(IReport.MANUF_ORDER, title);
     return reportSetting
         .addParam("Locale", ReportSettings.getPrintingLocale(null))
+        .addParam(
+            "Timezone",
+            manufOrder.getCompany() != null ? manufOrder.getCompany().getTimezone() : null)
         .addParam("ManufOrderId", manufOrder.getId().toString())
         .addParam(
             "activateBarCodeGeneration",

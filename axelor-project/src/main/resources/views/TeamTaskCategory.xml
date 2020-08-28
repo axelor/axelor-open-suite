@@ -11,7 +11,7 @@
 	<form title="Category" name="team-task-category-form" model="com.axelor.apps.project.db.TeamTaskCategory">
 		<panel name="mainPanel">
 			<field name="name"/>
-			<field name="defaultProduct" domain="self.unit.unitTypeSelect=3" form-view="product-form" grid-view="product-grid" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>			
+			<field name="defaultProduct" domain="self.unit.unitTypeSelect=3 AND dtype = 'Product'" form-view="product-form" grid-view="product-grid" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>			
 			<field name="defaultInvoicingType" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" validIf="$number(defaultInvoicingType) > 0"/>
 		</panel>
 	</form>

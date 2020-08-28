@@ -7,7 +7,7 @@
     <form name="production-order-wizard-form" title="Production order wizard" model="com.axelor.apps.base.db.Wizard" 
     onNew="action-production-order-wizard-record-default,action-production-order-wizard-record-default-bom,action-production-order-wizard-attrs-scale">
 		<panel name="mainPanel">
-			<field name="product" widget="ManyToOne" target="com.axelor.apps.base.db.Product" canEdit="false" title="Product" showIf="!product_id" form-view="product-form" grid-view="product-grid"/>
+			<field name="product" widget="ManyToOne" target="com.axelor.apps.base.db.Product" canEdit="false" title="Product" showIf="!product_id" form-view="product-form" grid-view="product-grid" domain="dtype = 'Product'"/>
 			<field name="qty" widget="decimal" title="Quantity"/>
 			<field name="billOfMaterial" widget="ManyToOne" target="com.axelor.apps.production.db.BillOfMaterial" title="BOM" form-view="bill-of-material-form" grid-view="bill-of-material-grid"
 			onSelect="action-production-order-wizard-attrs-bill-of-material-domain"

@@ -48,6 +48,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.CallMethod;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
@@ -490,6 +491,7 @@ public class TimesheetController {
   }
 
   /* Count Tags displayed on the menu items */
+  @CallMethod
   public String timesheetValidateMenuTag() {
 
     return Beans.get(HRMenuTagService.class)
@@ -506,6 +508,9 @@ public class TimesheetController {
     String fileLink =
         ReportFactory.createReport(IReport.TIMESHEET, name)
             .addParam("TimesheetId", timesheet.getId())
+            .addParam(
+                "Timezone",
+                timesheet.getCompany() != null ? timesheet.getCompany().getTimezone() : null)
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
             .toAttach(timesheet)
             .generate()

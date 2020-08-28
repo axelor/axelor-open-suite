@@ -59,7 +59,7 @@
     </action-group>
 
     <action-attrs name="action-pack-line-attrs-domain-product">
-    	<attribute name="domain" for="product" expr="eval: &quot; self.isModel = false and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true &quot;"/>
+    	<attribute name="domain" for="product" expr="eval: &quot; self.isModel = false and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true and dtype = 'Product'&quot;"/>
     </action-attrs>
 
 </object-views>

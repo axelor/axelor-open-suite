@@ -124,9 +124,9 @@
     
     <action-attrs name="action-configurator-bom-attrs-product-domain">
         <attribute name="domain" for="product"
-                   expr="eval: &quot; self.productTypeSelect = 'storable' &quot;"/>
-    	<attribute name="domain" for="product" if="parentConfiguratorBOM == null"
-                   expr="eval: &quot; self.productTypeSelect = 'storable' AND self.productSubTypeSelect != 3 &quot;" />
+                   expr="eval: &quot; self.productTypeSelect = 'storable' AND dtype = 'Product'&quot;"/>
+    	<attribute name="domain" for="product" if="parentConfiguratorBOM == null" 
+                   expr="eval: &quot; self.productTypeSelect = 'storable' AND self.productSubTypeSelect != 3 AND dtype = 'Product'&quot;" />
     </action-attrs>
 
     <tree name="configurator-bom-tree" title="Configurators BOMs tree">
