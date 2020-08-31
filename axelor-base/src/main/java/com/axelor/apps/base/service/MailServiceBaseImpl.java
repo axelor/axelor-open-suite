@@ -214,7 +214,9 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
   @Override
   public void send(MailMessage message) throws MailException {
 
-    if (!Beans.get(AppBaseService.class).getAppBase().getActivateSendingEmail()) {
+    Boolean activateSendingEmail =
+        Beans.get(AppBaseService.class).getAppBase().getActivateSendingEmail();
+    if (activateSendingEmail == null || !activateSendingEmail) {
       return;
     }
     super.send(message);
