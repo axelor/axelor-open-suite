@@ -24,6 +24,7 @@
 			<field name="preTaskStatusSet" widget="MultiSelect"/>
     		<field name="postTaskStatusSet" widget="MultiSelect"/>
     		<field name="exculdeTaskInvoicing"/>
+    		<field name="generateProjectSequence" widget="boolean-switch"/>
 		</panel>
 		        
 		<panel-mail name="mailPanel">

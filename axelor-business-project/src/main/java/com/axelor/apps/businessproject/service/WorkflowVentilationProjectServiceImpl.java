@@ -29,7 +29,6 @@ import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
-import com.axelor.apps.project.db.Project;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -127,9 +126,6 @@ public class WorkflowVentilationProjectServiceImpl
       }
       for (TeamTask teamTask : invoicingProject.getTeamTaskSet()) {
         teamTask.setInvoiced(true);
-      }
-      for (Project project : invoicingProject.getProjectSet()) {
-        project.setInvoiced(true);
       }
 
       invoicingProject.setStatusSelect(InvoicingProjectRepository.STATUS_VENTILATED);

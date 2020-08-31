@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+	<grid name="project-activity-grid" title="Project Activities" model="com.axelor.apps.project.db.ProjectActivity" orderBy="-doneOn" canNew="false" canEdit="false">
+		<field name="project"/>
+		<field name="objectUpdated"/>
+		<field name="recordTitle"/>
+		<field name="user"/>
+		<field name="doneOn"/>
+	</grid>
+	
+	<form name="project-activity-form" title="Project Activity" model="com.axelor.apps.project.db.ProjectActivity" canNew="false" canEdit="false">
+		<panel name="mainPanel">
+		 <field name="project" form-view="project-form" grid-view="project-grid"/>
+		 <field name="objectUpdated"/>
+		 <field name="recordTitle"/>
+		 <field name="user" form-view="user-form" grid-view="user-grid"/>
+		 <field name="doneOn"/>
+		 <field name="activity"/>
+		</panel>
+	</form>
+	
+</object-views>

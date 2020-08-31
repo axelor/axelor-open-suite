@@ -454,6 +454,20 @@ public class TimesheetController {
     }
   }
 
+  public void complete(ActionRequest request, ActionResponse response) {
+    try {
+      Timesheet timesheet = request.getContext().asType(Timesheet.class);
+      timesheet = Beans.get(TimesheetRepository.class).find(timesheet.getId());
+      // confirm
+      Beans.get(TimesheetService.class).confirm(timesheet);
+
+      // validate
+      this.valid(request, response);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   // action called when refusing a timesheet. Changing status + Sending mail to Applicant
   public void refuse(ActionRequest request, ActionResponse response) throws AxelorException {
 

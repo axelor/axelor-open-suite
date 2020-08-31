@@ -10,17 +10,17 @@
 		<string name="name"/>
 		<string name="description" multiline="true" large="true"/>
 		<many-to-one name="team" ref="com.axelor.team.db.Team"/>
-		<many-to-many name="projectFolderSet" ref="com.axelor.apps.project.db.ProjectFolder" title="Project Folders"/>
 		<one-to-many name="childProjectList" ref="com.axelor.apps.project.db.Project" title="Child Projects" mappedBy="parentProject"/>
 		<many-to-one name="assignedTo" ref="com.axelor.auth.db.User" title="Assigned to"/>
-		<integer name="statusSelect" selection="project.status.select" title="Status" default="1"/>
-		<many-to-many name="teamTaskCategorySet" ref="com.axelor.apps.project.db.TeamTaskCategory" title="Type of authorized categories"/>
+		<many-to-one name="projectStatus" title="Status" ref="com.axelor.apps.project.db.ProjectStatus"/>
 		<one-to-many name="teamTaskList" ref="com.axelor.team.db.TeamTask" title="Tasks" mappedBy="project"/>
 		<boolean name="synchronize"/>
 	  	<boolean name="extendsMembersFromParent" default="false"/>
 		<many-to-one name="parentProject" ref="com.axelor.apps.project.db.Project" title="Parent project"/>
 		<one-to-many name="wikiList" ref="com.axelor.apps.project.db.Wiki" title="Wiki" mappedBy="project"/>
 		<one-to-many name="resourceBookingList" ref="com.axelor.apps.project.db.ResourceBooking" title="Resource booking" mappedBy="project"/>
+		
+		<one-to-many name="taskCustomFieldsList" ref="com.axelor.meta.db.MetaJsonField" title="Task fields" orphanRemoval="true"/>
 		
 		<string name="code" title="Code" unique="true"/>
 		<many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Membres"/>
@@ -29,14 +29,11 @@
 		
 		<datetime name="fromDate" title="From Date"/>
 		<datetime name="toDate" title="To Date"/>
-		<datetime name="dueDate" title="Due Date"/>
       
-        <decimal name="estimatedTimeDays" title="Estimated time (in days)" />
         <decimal name="estimatedTimeHrs" title="Estimated time (in hours)" />
 		
 		<decimal name="timeSpent" title="Time Spent"/>
 		
-		<decimal name="progress" title="Progress (%)"/>
 		<decimal name="sequence" title="Sequence" />
 		<integer name="orderByState"/>
 	  
@@ -47,34 +44,36 @@
 		<many-to-many name="finishToFinishTaskSet" ref="com.axelor.apps.project.db.Project" title="Finish tasks to finish"/>
 		<many-to-many name="startToFinishTaskSet" ref="com.axelor.apps.project.db.Project" title="Start tasks to finish"/>
 		
-		<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
-		
 		<many-to-many name="productSet" ref="com.axelor.apps.base.db.Product" title="Type of authorized activities"/>
 		
 		<boolean name="excludePlanning" title="Exclude planning" />
 		
 		<string name="fullName" namecolumn="true" title="Name"/>
 	 	
-	 	<boolean name="isProject" title="Project/Phase" default="true" />
-	 	<boolean name="isShowPhasesElements" title="Show phases elements" default="true" />
-	 	
-        <integer name="projectTypeSelect" selection="project.project.project.type.select" default="1"/>
+        <boolean name="isShowPhasesElements" title="Show phases elements" default="true" />
       	<enum name="genProjTypePerOrderLine" ref="GenProjTypePerOrderLine" default="BUSINESS_PROJECT"/>
+      	<one-to-many name="projectActivity" title="Project Activity" ref="com.axelor.apps.project.db.ProjectActivity" mappedBy="project"/>
       	
-      	<finder-method name="findAllByParentProject" using="parentProject" all="true"/>
+      	<!-- Configuration fields -->
+		<boolean name="isShowStatus" title="Status?" default="true"/>
+		<many-to-many name="teamTaskStatusSet" ref="com.axelor.apps.project.db.ProjectStatus" title="Type of authorized status"/>
+		<boolean name="isShowPriority" title="Priorities?" default="true"/>
+		<many-to-many name="teamTaskPrioritySet" ref="com.axelor.apps.project.db.ProjectPriority" title="Type of authorized priorities"/>
+		<boolean name="isShowTaskCategory" title="Categories?" default="true"/>
+		<many-to-many name="teamTaskCategorySet" ref="com.axelor.apps.project.db.TeamTaskCategory" title="Type of authorized categories"/>
+		<boolean name="isShowProgress" title="Progress?" default="true"/>
+		<boolean name="isShowPlanning" title="Planning?" default="true"/>
+		<boolean name="isShowFrequency" title="Frequency?"/>
+		<boolean name="isShowTimeSpent" title="Time Spent?"/>
+		<boolean name="isShowSection" title="Section?" default="true"/>
+		<boolean name="isShowTopic" title="Topic?" default="true"/>
+		<boolean name="isShowGantt" title="Enable Gantt view"/>
+		<boolean name="isShowKanbanPerStatus" title="Enable Kanban view per status"/>
+		<boolean name="isShowKanbanPerSection" title="Enable Kanban view per section"/>
+		<boolean name="isShowCalendarPerStatus" title="Enable calendar view per status"/>
+		<boolean name="isShowCalendarPerUser" title="Enable calendar view per user"/>
+		<finder-method name="findAllByParentProject" using="parentProject" all="true"/>
         <finder-method name="findByName" using="name"/>
-
-	   <extra-code>
-   		<![CDATA[
-   			public static final Integer TYPE_PROJECT = 1;
-   			public static final Integer TYPE_PHASE = 2;
-
-   			public static final Integer STATE_NEW = 1;
-   			public static final Integer STATE_IN_PROGRESS = 2;
-   			public static final Integer STATE_FINISHED = 3;
-   			public static final Integer STATE_CANCELED = 4;
-   		]]>
-   	</extra-code>
   </entity>
 
 	<enum name="GenProjTypePerOrderLine">

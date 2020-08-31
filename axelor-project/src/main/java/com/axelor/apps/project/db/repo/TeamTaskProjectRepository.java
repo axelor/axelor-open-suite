@@ -18,17 +18,22 @@
 package com.axelor.apps.project.db.repo;
 
 import com.axelor.apps.base.db.repo.TeamTaskBaseRepository;
+import com.axelor.apps.base.service.TeamTaskService;
 import com.axelor.team.db.TeamTask;
+import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javax.persistence.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TeamTaskProjectRepository extends TeamTaskBaseRepository {
+
+  @Inject protected TeamTaskService teamTaskService;
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -108,5 +113,12 @@ public class TeamTaskProjectRepository extends TeamTaskBaseRepository {
     task.setTaskEndDate(null);
     task.setMetaFile(null);
     return task;
+  }
+
+  @Override
+  protected void generateRecurrentTasks(TeamTask teamTask) throws PersistenceException {
+    if (teamTask.getProject().getIsShowFrequency()) {
+      super.generateRecurrentTasks(teamTask);
+    }
   }
 }

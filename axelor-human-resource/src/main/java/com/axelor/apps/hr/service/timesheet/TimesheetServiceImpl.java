@@ -233,7 +233,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Override
   @Transactional
   public void validate(Timesheet timesheet) {
-
+    timesheet.setIsCompleted(true);
     timesheet.setStatusSelect(TimesheetRepository.STATUS_VALIDATED);
     timesheet.setValidatedBy(AuthUtils.getUser());
     timesheet.setValidationDate(appHumanResourceService.getTodayDate());
@@ -949,7 +949,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
             .filter(
                 "self.membersUserSet.id = ?1 and "
                     + "self.imputable = true "
-                    + "and self.statusSelect != 3",
+                    + "and self.projectStatus.isCompleted = false",
                 user.getId())
             .fetch();
 

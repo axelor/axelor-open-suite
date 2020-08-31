@@ -3,12 +3,12 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
-	<module name="project" package="com.axelor.apps.project.db"/>
+	<module name="business-project" package="com.axelor.apps.businessproject.db"/>
 	
 	<entity name="ProjectFolder">
   		<string name="name"/>
   		<string name="description" large="true"/>
- 	 	<many-to-many name="projectSet" ref="com.axelor.apps.project.db.Project" mappedBy="projectFolderSet"/>
+ 	 	<many-to-many name="projectSet" title="Projects" ref="com.axelor.apps.project.db.Project" mappedBy="projectFolderSet"/>
 	</entity>
 	
 </domain-models>

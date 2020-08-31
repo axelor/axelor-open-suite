@@ -12,7 +12,6 @@
     <many-to-many name="saleOrderLineSet" ref="com.axelor.apps.sale.db.SaleOrderLine" title="Sale order lines" />
     <many-to-many name="purchaseOrderLineSet" ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Purchase order lines" />
     <many-to-many name="expenseLineSet" ref="com.axelor.apps.hr.db.ExpenseLine" title="Expense Lines" />
-    <many-to-many name="projectSet" ref="com.axelor.apps.project.db.Project" title="Project" />
     <many-to-many name="teamTaskSet" ref="com.axelor.team.db.TeamTask" title="Tasks" />
 		<integer name="logTimesSetPrioritySelect" selection="invoicing.project.priority.select" title="Log Times Priority" default="3"/>
 		<integer name="saleOrderLineSetPrioritySelect" selection="invoicing.project.priority.select" title="Sale order lines Priority" default="1"/>

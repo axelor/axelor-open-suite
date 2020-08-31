@@ -41,4 +41,7 @@ public interface ITranslation {
       "AbcAnalysisLine.cumulatedQty"; /*)*/
   public static final String ABC_ANALYSIS_LINE_CUMULATED_CLASS = /*$$(*/
       "AbcAnalysisLine.class"; /*)*/
+  public static final String FREQUENCY_END_DATE_EXCEEDS = /*$$(*/
+      "Frequency end date cannot be before task date."; /*)*/
+  public static final String EMPTY_TASK_DATE = /*$$(*/ "Please fill in task date."; /*)*/
 }

@@ -39,7 +39,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,28 +91,6 @@ public class ProjectController {
     logger.debug("Printing " + name);
 
     response.setView(ActionView.define(name).add("html", fileLink).map());
-  }
-
-  // TODO: Duration is removed. Have to change calcuation
-  public void computeProgress(ActionRequest request, ActionResponse response) {
-
-    //    Project project = request.getContext().asType(Project.class);
-
-    BigDecimal duration = BigDecimal.ZERO;
-    //    if (BigDecimal.ZERO.compareTo(project.getDuration()) != 0) {
-    //      duration =
-    //          project
-    //              .getTimeSpent()
-    //              .add(project.getLeadDelay())
-    //              .divide(project.getDuration(), 2, java.math.RoundingMode.HALF_UP)
-    //              .multiply(new BigDecimal(100));
-    //    }
-
-    if (duration.compareTo(BigDecimal.ZERO) == -1 || duration.compareTo(new BigDecimal(100)) == 1) {
-      duration = BigDecimal.ZERO;
-    }
-
-    response.setValue("progress", duration);
   }
 
   public void countToInvoice(ActionRequest request, ActionResponse response) {

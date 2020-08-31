@@ -25,9 +25,8 @@
 			<field name="attachAnnexToInvoice" widget="boolean-switch"  readonlyIf="invoice"/>
 			<button name="generateInvoiceBtn" title="Generate Invoice" onClick="save,action-invoicing-project-method-generate-invoice" hideIf="invoice != null"/>
 			<field name="invoice" readonly="true" form-view="invoice-form" grid-view="invoice-grid" edit-window="blank"/>
-			<field name="consolidatePhaseWhenInvoicing" showIf="project.projectTypeSelect == 1"/>
+			<field name="consolidatePhaseWhenInvoicing"/>
 			<button name="seeLinkedTimesheetLinesBtn" title="See Linked Timesheet Lines" onClick="action-invoicing-project-show-timesheet-lines" hidden="true" showIf="invoice != null"/>
-			<field name="project.projectTypeSelect" hidden="true"/>
 		</panel>
 
         <panel name="commentsPanel">
@@ -67,13 +66,6 @@
 							   showIf="expenseLineSet &amp;&amp; expenseLineSet.length &gt; 0"
 							   readonlyIf="invoice"
 							   name="expenseLineSetPanel"/>
-
-				<panel-related field="projectSet" colSpan="12" canNew="false"
-							   canEdit="false" canSelect="false"
-							   form-view="project-form" grid-view="project-grid"
-							   showIf="projectSet &amp;&amp; projectSet.length &gt; 0"
-							   readonlyIf="invoice"
-							   name="projectSetPanel"/>
 
 				<panel-related title="Production" field="manufOrderSet"
 							   colSpan="12" canNew="false" canEdit="false"
@@ -122,7 +114,6 @@
 
 	<action-attrs name="action-invoicing-project-attrs-title-project">
 		<attribute name="title" for="project" expr="eval: __config__.app.getApp('project').getProjectLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
-		<attribute name="title" for="projectSet" expr="eval: __config__.app.getApp('project').getProjectLabel()" if="!com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
 	</action-attrs>
 	
 	<action-record name="action-invoicing-project-record-default" model="com.axelor.apps.businessproject.db.InvoicingProject">

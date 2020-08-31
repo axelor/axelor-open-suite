@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+
+	<module name="project" package="com.axelor.apps.project.db"/>
+	
+	<entity name="ProjectActivity">
+  		<many-to-one name="project" title="Project" ref="com.axelor.apps.project.db.Project" readonly="true"/>
+  		<string name="objectUpdated" title="Object updated" readonly="true"/>
+  		<string name="recordTitle" title="Record title" readonly="true"/>
+  		<many-to-one name="user" column="user_id" title="User" ref="com.axelor.auth.db.User" readonly="true"/>
+  		<datetime name="doneOn" title="Done on" readonly="true"/>
+  		<string name="activity" title="Activity" namecolumn="true" readonly="true" large="true"/>
+	</entity> 
+	
+ </domain-models>

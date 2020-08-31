@@ -3,12 +3,12 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
 	
-	<grid name="project-folder-grid" title="Projects Folder" model="com.axelor.apps.project.db.ProjectFolder">
+	<grid name="project-folder-grid" title="Projects Folder" model="com.axelor.apps.businessproject.db.ProjectFolder">
 		<field name="name"/>
 		<field name="description" widget="html"/>
 	</grid>
 
-	<form title="Project Folder" name="project-folder-form"  model="com.axelor.apps.project.db.ProjectFolder" width="large">
+	<form title="Project Folder" name="project-folder-form"  model="com.axelor.apps.businessproject.db.ProjectFolder" width="large">
 		<menubar>
 			<menu title="Reports" showTitle="true" icon="fa-files-o">
 				<item title="Projects Planification and costs" action="action-project-folder-method-print-projects-planification-and-costs-report"/>

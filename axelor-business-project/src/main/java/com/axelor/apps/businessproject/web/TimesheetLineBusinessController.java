@@ -31,4 +31,10 @@ public class TimesheetLineBusinessController {
         Beans.get(TimesheetLineBusinessService.class).getDefaultToInvoice(timesheetLine);
     response.setValue("toInvoice", timesheetLine.getToInvoice());
   }
+
+  public void setTimesheet(ActionRequest request, ActionResponse response) {
+    TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
+    timesheetLine = Beans.get(TimesheetLineBusinessService.class).setTimesheet(timesheetLine);
+    response.setValues(timesheetLine);
+  }
 }

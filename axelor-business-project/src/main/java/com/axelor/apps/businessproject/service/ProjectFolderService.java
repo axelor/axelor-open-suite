@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.businessproject.service;
 
-import com.axelor.apps.project.db.ProjectFolder;
+import com.axelor.apps.businessproject.db.ProjectFolder;
 import com.axelor.exception.AxelorException;
 import java.io.IOException;
 

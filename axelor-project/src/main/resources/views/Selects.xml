@@ -8,13 +8,6 @@
 		<option value="2">Project Phase</option>
 	</selection>
 	
-	<selection name="project.status.select">
-		<option value="1">New</option>
-		<option value="2">In Progress</option>
-		<option value="3">Finished</option>
-		<option value="4">Canceled</option>
-	</selection>
-	
 	<selection name="message.related.to.select" id="project.message.related.to.select">
 	    <option value="com.axelor.apps.project.db.Project">Project</option>
 	</selection>
@@ -37,13 +30,25 @@
 		<option value="100">100 %</option>
 	</selection>
 	
-	<selection name="project.project.project.type.select">
-		<option value="1">Project</option>
-		<option value="2">Project phase</option>
+	<selection name="project.json.field.type">
+		<option value="string">String</option>
+		<option value="integer">Integer</option>
+		<option value="decimal">Decimal</option>
+		<option value="date">Date</option>
+		<option value="select">Select</option>
+		<option value="multiselect">MultiSelect</option>
 	</selection>
-
-	<selection name="sequence.generic.code.select" id="project.sequence.generic.code.select">
-		<option value="project">Project</option>
+	
+	<selection name="project.priority.technical.type.select">
+		<option value="1">Low</option>
+		<option value="2">Normal</option>
+		<option value="3">High</option>
+		<option value="4">Urgent</option>
+	</selection>
+	
+	<selection name="project.status.related.to.select">
+		<option value="1">Project</option>
+		<option value="2">Task</option>
 	</selection>
 
 </object-views>

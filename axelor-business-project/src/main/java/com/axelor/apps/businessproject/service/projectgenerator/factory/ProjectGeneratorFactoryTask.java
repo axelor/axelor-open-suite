@@ -64,7 +64,6 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
   @Override
   public Project create(SaleOrder saleOrder) {
     Project project = projectBusinessService.generateProject(saleOrder);
-    project.setIsProject(true);
     project.setIsBusinessProject(true);
     return project;
   }

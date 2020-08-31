@@ -91,7 +91,6 @@ public class TeamTaskServiceImpl implements TeamTaskService {
 
   protected void updateModuleFields(TeamTask teamTask, TeamTask nextTeamTask) {
     nextTeamTask.setName(teamTask.getName());
-    nextTeamTask.setTeam(teamTask.getTeam());
     nextTeamTask.setPriority(teamTask.getPriority());
     nextTeamTask.setStatus(teamTask.getStatus());
     nextTeamTask.setTaskDuration(teamTask.getTaskDuration());

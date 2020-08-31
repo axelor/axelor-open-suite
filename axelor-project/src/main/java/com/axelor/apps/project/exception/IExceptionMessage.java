@@ -35,6 +35,6 @@ public interface IExceptionMessage {
   static final String PROJECT_NO_ACTIVE_TEAM = /*$$(*/
       "You have no active team, the planning can't be generated" /*)*/;
   static final String PROJECT_NO_TEAM = /*$$(*/ "You have selected no team for this project" /*)*/;
-  static final String PROJECT_SEQUENCE_ERROR = /*$$(*/
-      "The company %s doesn't have any configured sequence for Project" /*)*/;
+  static final String JSON_FIELD_MODEL_INVALID = /*$$(*/ "Invalid model name" /*)*/;
+  static final String JSON_FIELD_SELECTION_NULL = /*$$(*/ "Invalid selection name" /*)*/;
 }

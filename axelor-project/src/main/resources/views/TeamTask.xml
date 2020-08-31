@@ -3,19 +3,21 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
-	<grid id="project-team-task-grid" name="team-task-grid" title="Tasks" model="com.axelor.team.db.TeamTask" edit-icon="true" orderBy="taskDate,priority">
-		<hilite if="status == 'closed'" color="success"/>
-		<hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
-		<hilite if="priority == 'urgent'" color="warning"/>
+	<grid id="project-team-task-grid" name="team-task-grid" title="Tasks" model="com.axelor.team.db.TeamTask" edit-icon="true" orderBy="-taskPriority.technicalTypeSelect">
+		<hilite if="$get('taskStatus.isCompleted') &amp;&amp; $get('taskStatus.isDefaultCompleted')" color="success"/>
+        <hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
+		<hilite if="$get('taskPriority.technicalTypeSelect') == 4" color="warning"/>
 		<field name="name"/>
 		<field name="project"/>
 		<field name="taskDate"/>
-		<field name="taskEndDate" hidden="true"/>
-		<field name="status"/>
-		<field name="priority"/>
+		<field name="taskStatus"/>
+		<field name="taskPriority"/>
 		<field name="teamTaskCategory"/>
 		<field name="targetVersion" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
-        <button name="timeSpentBtn" title="Enter Time spent" icon="fa-clock-o" onClick="action-team-task-view-time-spent" />
+		<field name="taskEndDate" hidden="true"/>
+        <field name="taskPriority.technicalTypeSelect" hidden="true"/>
+        <field name="taskStatus.isCompleted" hidden="true"/>
+        <field name="taskStatus.isDefaultCompleted" hidden="true"/>
 	</grid>
 	
 	<form name="team-task-form" id="project-team-task-form" title="Task" model="com.axelor.team.db.TeamTask"
@@ -23,9 +25,7 @@
 				onLoad="action-team-task-group-timer-process" width="large">
 		<toolbar>
 			<button name="grabEventBtn" icon="fa-suitcase" help="Take charge" onClick="action-team-task-record-assigned-yourself,save"/>
-			<button name="startBtn" icon="fa-play" onClick="action-team-task-record-status-in-progress,save"/>
-			<button name="acceptBtn" icon="fa-check" onClick="action-team-task-record-status-closed,save"/>
-			<button name="stopBtn" icon="fa-power-off" onClick="action-team-task-record-status-canceled,save"/>
+			<button name="doneBtn" icon="fa-check" onClick="action-team-task-record-change-status,save" showIf="project.isShowStatus"/>
 		</toolbar>
 		<menubar>
 	        <menu name="teamTaskMenu" title="Tools">   
@@ -38,8 +38,10 @@
 		</panel>
 
 		<panel name="mainPanel" colSpan="12">
-			<field name="status" colSpan="6" required="true" widget="NavSelect" showTitle="false"/>
-			<panel name="viewerTagsPanel" colSpan="4">
+			<panel name="viewerTagsPanel" colSpan="12">
+			 <panel name="statusPanel" showIf="project.isShowStatus" stacked="true" colSpan="12">
+				<field name="taskStatus" widget="NavSelect" showTitle="false" x-order="sequence"/>
+			 </panel>
 				<field name="$viewerTags" showTitle="false" readonly="true" showIf="typeSelect == 'ticket' &amp;&amp; $readonly()" colSpan="12" if-module="axelor-business-support" if="__config__.app.isApp('business-support')" hidden="true">
 					<viewer>
 						<![CDATA[
@@ -47,7 +49,6 @@
 								<span class="label label-important" ng-show="record.assignment == 1" x-translate>Task assigned to the client</span>
 								<span class="label label-success" ng-show="record.assignment == 2 && record.$provider == null" x-translate>Task assigned to the provider</span>
 								<span class="label label-success" style="background-color: #5cb85c; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.3em;" ng-show="record.assignment == 2 && record.$provider != null" x-translate>Task assigned to</span><span class="label label-success" style="background-color: #5cb85c; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0; padding-left: 0.0em;" ng-show="record.assignment == 2 && record.$provider != null">{{record.$provider}}</span>
-
 								<span class="label label-important" ng-show="(!record.isOrderAccepted && record.invoicingType == 2 && record.exTaxTotal != 0) || (!record.isOrderAccepted && record.invoicingType == 1)" x-translate>Order Proposed</span>
 								<span class="label label-success" ng-show="record.isOrderAccepted" x-translate>Order Accepted</span>
 							</h4>
@@ -55,7 +56,8 @@
 					</viewer>
 				</field>
 			</panel>
-			<button name="timeSpentBtn" title="Enter Time spent" onClick="save,action-team-task-view-time-spent" colSpan="2"/>
+			<field name="project.isShowTimeSpent" hidden="true"/>
+			<button name="timeSpentBtn" title="Enter Time spent" onClick="save,action-team-task-view-time-spent" colSpan="2" showIf="project.isShowTimeSpent"/>
 			<field name="$provider" hidden="true" type="string"/>
 			<panel name="projectDetailsPanel" colSpan="12">
 				<panel name="detailsPanel" colSpan="8">
@@ -74,7 +76,7 @@
 					<field name="project" colSpan="6" onChange="action-team-task-group-project-onchange" required="true"/>
 					<field name="parentTask" readonlyIf="project == null" colSpan="6" onSelect="action-task-attrs-project-parent-task-configurations"/>
 					<field name="assignedTo" readonlyIf="project == null" colSpan="6" canNew="false" canView="false" canEdit="false" onSelect="action-task-attrs-project-assigned-to-configurations" required="true" form-view="user-form" grid-view="user-grid"/>
-					<field name="team" readonly="true" colSpan="6" form-view="team-form" grid-view="team-grid" if="!__config__.app.isApp('business-support')"/>
+					<field name="team" readonly="true" colSpan="6" form-view="team-form" grid-view="team-grid" if="!__config__.app.isApp('business-support')" hidden="true"/>
 					<field name="customerReferral" onSelect="action-task-attrs-customer-referral-domain" hidden="true" showIf="typeSelect == 'ticket'" if="__config__.app.isApp('business-project')"/>
 					<field name="isPrivate" hidden="true" showIf="typeSelect == 'ticket'" colSpan="6"  if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
 					<field name="isOrderAccepted" colSpan="3" hidden="true" showIf="typeSelect == 'ticket'" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/>
@@ -87,15 +89,26 @@
 				</panel>
 			</panel>
 			<panel name="characteristicsPanel" title="Characteristics" colSpan="12">
-				<field name="teamTaskCategory" colSpan="4" onSelect="action-task-attrs-team-task-category-configurations" onChange="action-team-task-group-project-category-onchange"/>
-				<field name="priority" colSpan="4" required="true"/>
+				<panel name="categoryPanel" showIf="project.isShowTaskCategory" colSpan="4">
+  				  <field name="teamTaskCategory" onSelect="action-task-attrs-team-task-category-configurations" onChange="action-team-task-group-project-category-onchange"/>
+				</panel>
+				<panel name="sectionPanel" showIf="project.isShowSection" colSpan="4">
+				  <field name="teamTaskSection" form-view="team-task-section-form" grid-view="team-task-section-grid"/>
+				</panel>
+				<panel name="priorityPanel" showIf="project.isShowPriority" colSpan="4">
+				  <field name="taskPriority" onSelect="action-team-task-atts-priority-on-select" requiredIf="project.isShowPriority" canView="false"/>
+				</panel>
 				<field name="targetVersion" if-module="axelor-business-support" if="__config__.app.isApp('business-support')" domain="self.project = :project OR self.project.parentProject = :project" colSpan="4" form-view="project-version-form" grid-view="project-version-grid"/>
 				<field name="assignment" hidden="true" showIf="typeSelect == 'ticket'" if-module="axelor-business-support" if="__config__.app.isApp('business-support')" colSpan="4"/>
-				<field name="taskDate" title="Task date" colSpan="4" onChange="action-task-attrs-set-task-duration,action-team-task-record-set-date-or-frequency-changed" required="true"/>
+				<field name="taskDate" colSpan="4" onChange="action-task-attrs-set-task-duration,action-team-task-record-set-date-or-frequency-changed" required="true"/>
 				<field name="taskEndDate" colSpan="4" onChange="action-task-attrs-set-task-duration"/>
 				<field name="taskDeadline" title="Task deadline" colSpan="4" if="!__config__.app.isApp('business-support')"/>
-				<field name="categorySet"  widget="tagSelect" canNew="false" onSelect="action-task-attrs-team-task-category-configurations"/>
-				<field name="progressSelect" widget="SelectProgress" onChange="action-task-update-planned-progress"/>
+				<field name="progressSelect" widget="SelectProgress" onChange="action-task-update-planned-progress" showIf="project.isShowProgress"/>
+				<field name="project.isShowProgress" hidden="true"/>
+				<field name="project.isShowSection" hidden="true"/>
+				<field name="project.isShowStatus" hidden="true"/>
+				<field name="project.isShowPriority" hidden="true"/>
+				<field name="project.isShowTaskCategory" hidden="true"/>
 			</panel>
 
 			<field name="typeSelect" hidden="true"/>
@@ -109,7 +122,7 @@
 				<field name="internalDescription" colSpan="12" widget="html"/>
 			</panel>
 			
-			<panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')" if-module="axelor-human-resource">
+			<panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')" if-module="axelor-human-resource" showIf="project.isShowPlanning">
 				<field name="totalPlannedHrs" readonly="true" colSpan="4">
 				<viewer><![CDATA[
                    	<span>{{record.totalPlannedHrs}} </span><span x-translate>hours</span>
@@ -129,10 +142,10 @@
 				<button name="removeSelectedPlanningTimeBtn" colSpan="3" hidden="true"  title="Remove selected lines" onClick="action-project-validate-remove-project-planning-time,action-project-planning-time-method-remove-project-planning-time"/>
 				<button name="cancelRemovePlanningTimeBtn" colSpan="3" hidden="true" title="Cancel" onClick="action-project-attrs-project-planning-time-cancel-remove" />
 				<panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning" action="action-team-task-dashlet-project-planning-time" colSpan="12" canSearch="true"/>
-				
 				<field name="plannedProgress" hidden="true" colSpan="12" widget="progress"/>
+				<field name="project.isShowPlanning" hidden="true"/>
 			</panel>
-			<panel name="treeViewPanel" title="Tree view" colSpan="12">
+			<panel name="treeViewPanel" title="Tree view" colSpan="12" showIf="id">
 				<panel-dashlet name="taskTreePanel" title="Task Tree" colSpan="12" action="action-view-show-task-tree"/>
 				<panel-related name="finishToStartSetPanel" field="finishToStartSet" colSpan="12">
 					<field name="name"/>
@@ -171,22 +184,23 @@
 				<field if="__config__.app.getApp('project').isEnableSignature" name="metaFile"  width="120" widget="Image" />
 			</panel>
 
-			<panel name="frequencyPanel" title="Frequency">
+			<panel name="frequencyPanel" title="Frequency" showIf="project.isShowFrequency">
 				<field name="frequency" onChange="action-team-task-record-set-date-or-frequency-changed" domain="1 &lt;&gt; 1" canNew="true" grid-view="frequency-grid" form-view="frequency-form"/>
 				<field name="nextTeamTask" hidden="true" showIf="nextTeamTask"/>
 				<field name="isFirst" hidden="true"/>
 				<field name="doUpdateNextTasks" hidden="true"/>
 				<field name="hasDateOrFrequencyChanged" hidden="true"/>
+				<field name="project.isShowFrequency" hidden="true"/>
 			</panel>
 			
-			<panel name="timeSpentPanel" title="Time Spent" if-module="axelor-human-resource" if="__config__.app.isApp('timesheet')">
+			<panel name="timeSpentPanel" title="Time Spent" if-module="axelor-human-resource" if="__config__.app.isApp('timesheet')" showIf="project.isShowTimeSpent">
 				<field name="totalRealHrs" readonly="true" colSpan="4">
 				<viewer><![CDATA[
                    	<span>{{record.totalRealHrs}} </span><span x-translate>hours</span>
        			]]></viewer>
 				</field>
-				<panel-dashlet name="validatedTimesheetLinesPanel" action="action-teamtask-dashlet-validated-timeshet-lines" title="Validated Timesheet lines" colSpan="12" canSearch="true"/>
-				<panel-dashlet name="waitingTimesheetLinesPanel" action="action-teamtask-dashlet-waiting-timeshet-lines" title="Waiting Timesheet lines" colSpan="12" canSearch="true"/>
+				<panel-dashlet name="validatedTimesheetLinesPanel" action="action-teamtask-dashlet-validated-timeshet-lines" title="Validated Timesheet lines" colSpan="12" canSearch="true" if="__config__.app.getApp('timesheet').needValidation"/>
+				<panel-dashlet name="waitingTimesheetLinesPanel" action="action-teamtask-dashlet-waiting-timeshet-lines" title="Waiting Timesheet lines" colSpan="12" canSearch="true" if="__config__.app.getApp('timesheet').needValidation" />
 			</panel>
 
 			<panel name="timerPanel" title="Timer" showIf="id" hidden="true" if-module="axelor-helpdesk" if="__config__.app.isApp('helpdesk')">
@@ -263,18 +277,15 @@
 
 	</tree>
 	
-	<kanban name="team-task-kanban" columnBy="status" title="Tasks" limit="30" sequenceBy="sequence"  model="com.axelor.team.db.TeamTask">
+	<kanban name="team-task-kanban" columnBy="taskStatus" title="Tasks" limit="30" sequenceBy="sequence"  model="com.axelor.team.db.TeamTask">
 		<field name="name"/>
 		<field name="project"/>
-		<field name="status"/>
 		<field name="assignedTo"/>
 		<field name="taskDate"/>
 		<field name="taskDeadline"/>
-		<field name="priority"/>
+		<field name="taskPriority.name"/>
+		<field name="taskPriority.technicalTypeSelect"/>
 		<field name="progressSelect"/>
-		<hilite color="success" if="(taskDeadline == null || $moment(taskDeadline).diff(todayDate,'days') &gt;= 0) &amp;&amp; status != 'closed'"/>
-		<hilite color="danger" if="$moment(taskDeadline).diff(todayDate,'days') &lt; 0 &amp;&amp; status != 'closed'"/>
-		<hilite color="info" if="status == 'closed'"/>
 		<template>
 		<![CDATA[
 			<h4>{{name}}</h4>
@@ -290,10 +301,7 @@
 					<span ng-if="$moment(taskDeadline).isAfter($moment().add(1, 'days'), 'days')"> <span x-translate>Deadline</span> {{ $moment().to($moment(taskDeadline), false) }}</span>
 					<span ng-if="$moment(taskDeadline).isBefore($moment().subtract(1, 'days'), 'days')"> <span x-translate>Deadline</span> {{ $moment(taskDeadline).from($moment(), false)  }}</span>
 					
-					<span class="label label-success pull-right" ng-if="priority == 'low'" x-translate>Low</span>
-					<span class="label label-info pull-right" ng-if="priority == 'normal'" x-translate>Normal</span>
-					<span class="label label-warning pull-right" ng-if="priority == 'high'" x-translate>High</span>
-					<span class="label label-important pull-right" ng-if="priority == 'urgent'" x-translate>Urgent</span>
+					<span class="label pull-right" ng-class="{1:'label-success',2:'label-info',3:'label-warning',4:'label-important'}[taskPriority.technicalTypeSelect]">{{taskPriority.name}}</span>
 					
 				</div>
 				<div class="progress kanban-progress">
@@ -308,6 +316,53 @@
 		</template>
 	</kanban>
 	
+	<kanban name="task-per-section-kanban" columnBy="teamTaskSection" title="Tasks" limit="30" sequenceBy="sequence"  model="com.axelor.team.db.TeamTask">
+		<field name="name"/>
+		<field name="project"/>
+		<field name="assignedTo"/>
+		<field name="taskDate"/>
+		<field name="taskDeadline"/>
+		<field name="taskPriority.name"/>
+		<field name="taskPriority.technicalTypeSelect"/>
+		<field name="progressSelect"/>
+		<template>
+		<![CDATA[
+			<h4>{{name}}</h4>
+			<h4><span style="font-weight:normal;">{{project.fullName}}</span></h4>
+			<img ng-if="assignedTo" ng-src="{{$image('assignedTo', 'image')}}">
+			<div class="card-body">
+				<div>
+					<i class="fa fa-calendar" aria-hidden="true"></i>
+					<span ng-if="!taskDeadline"> <span x-translate>Not specified</span> </span>
+					<span ng-if="$moment(taskDeadline).isSame($moment().subtract(1, 'days'), 'day')"> <span x-translate>Deadline Yesterday</span> </span>
+					<span ng-if="$moment(taskDeadline).isSame($moment(), 'day')"> <span x-translate>Deadline Today</span> </span>
+					<span ng-if="$moment(taskDeadline).isSame($moment().add(1, 'days'), 'day')"> <span x-translate>Deadline Tomorrow</span> </span>
+					<span ng-if="$moment(taskDeadline).isAfter($moment().add(1, 'days'), 'days')"> <span x-translate>Deadline</span> {{ $moment().to($moment(taskDeadline), false) }}</span>
+					<span ng-if="$moment(taskDeadline).isBefore($moment().subtract(1, 'days'), 'days')"> <span x-translate>Deadline</span> {{ $moment(taskDeadline).from($moment(), false)  }}</span>
+					
+					<span class="label pull-right" ng-class="{1:'label-success',2:'label-info',3:'label-warning',4:'label-important'}[taskPriority.technicalTypeSelect]">{{taskPriority.name}}</span>
+					
+				</div>
+				<div class="progress kanban-progress">
+					<span ng-if="progressSelect == 0">{{ progressSelect }}%</span>
+				  <div class="bar" style="width: {{ progressSelect }}%;">{{ progressSelect }}%</div>
+				</div>
+			</div>
+			<div class="card-footer">
+				<i class='fa fa-clock-o'></i> <span ng-if="taskDate">{{taskDate | date:'dd/MM/yyyy'}}</span><span ng-if="!taskDate" x-translate>Not specified</span>
+			</div>
+		]]>
+		</template>
+	</kanban>
+	
+	<calendar name="team-task-per-status-calendar" title="Task Calendar" model="com.axelor.team.db.TeamTask" eventStart="taskDate" eventStop="taskEndDate" eventLength="1" mode="month" colorBy="taskStatus">
+ 	  <field name="fullName"/>
+	</calendar>
+		
+	<calendar name="team-task-per-user-calendar" title="Task Calendar" model="com.axelor.team.db.TeamTask" eventStart="taskDate" eventStop="taskEndDate" eventLength="1" mode="month" colorBy="assignedTo">
+ 	  <field name="fullName"/>
+	</calendar>
+	
 	<action-group name="action-team-task-group-onnew" id="action-team-task-group-project-onnew">
 		<action name="action-task-defaults"/>
 		<action name="action-team-task-record-set-default"/>
@@ -317,6 +372,7 @@
 	</action-group>
 	
 	<action-group name="action-team-task-group-project-onchange">
+	    <action name="action-task-attrs-project-filter-status" if="project.isShowStatus"/>
 		<action name="action-task-record-project-configurations"/>
 		<action name="action-team-task-method-update-discount" if="__config__.app.isApp('business-project')"/>
 		<action name="action-team-task-method-compute" if="__config__.app.isApp('business-project')"/>
@@ -373,17 +429,15 @@
 		<field name="teamTaskCategory" expr="eval: null"/>
 		<field name="assignedTo" expr="eval:(project?.membersUserSet ? project?.membersUserSet?.collect{it.id}.contains(assignedTo.id) : __repo__(Project).find(project?.id).membersUserSet?.collect{it.id}.contains(assignedTo.id)) ? assignedTo : null" if="project != null &amp;&amp; assignedTo != null"/>
 		<field name="membersUserSet" expr="eval: null"/>
-		<field name="team" expr="eval: project?.team" if="project?.synchronize &amp;&amp; project.team != null"/>
-        <field name="team" expr="eval: __repo__(Project).find(project?.parentProject?.id)?.team" if="(!project?.synchronize || project.team == null) &amp;&amp; project?.extendsMembersFromParent &amp;&amp; __repo__(Project).find(project?.parentProject?.id)?.synchronize"/>
         <field name="invoicingType" expr="eval: 2" if="project?.invoicingSequenceSelect == 1"/>
+        <field name="taskPriority" expr="call: com.axelor.apps.project.service.TeamTaskProjectService:getPriority(project)" if="project.isShowPriority"/>
+        <field name="taskStatus" expr="call: com.axelor.apps.project.service.TeamTaskProjectService:getStatus(project)" if="project.isShowStatus"/> 
 	</action-record>
 	
 	<action-record name="action-task-defaults"  model="com.axelor.team.db.TeamTask">
 		<field name="name" expr="eval: _value" if="_value"/>
 		<field name="assignedTo" expr="eval:__user__" />
-		<field name="priority" expr="normal" />
-    	<field name="status" expr="new" />
-    	<field name="taskDate" expr="#{__date__}" />
+		<field name="taskDate" expr="#{__date__}" />
     	<field name="project" expr="eval:_project" />
     	<field name="customerReferral" expr="eval: __user__" if="__user__?.roles.contains(__repo__(Role).all().filter('self.name=?','role.customer').fetchOne())"/>
     	<field name="assignment" expr="eval:2"/>
@@ -396,7 +450,11 @@
 	<action-record name="action-task-update-planned-progress" model="com.axelor.team.db.TeamTask">
 		<field name="plannedProgress" expr="eval: progressSelect"/>
 	</action-record>
-	
+    
+    <action-attrs name="action-team-task-atts-priority-on-select">
+      <attribute name="domain" expr="eval: (project?.teamTaskPrioritySet !=  null &amp;&amp; project?.teamTaskPrioritySet?.size() &gt; 0) ? &quot;self.id IN (${project?.teamTaskPrioritySet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;" for="taskPriority"/>
+    </action-attrs>
+    
 	<action-attrs name="action-task-attrs-team-task-category-configurations" model="com.axelor.team.db.TeamTask">
 		<attribute name="domain" for="teamTaskCategory" expr="eval: (project?.teamTaskCategorySet !=  null &amp;&amp; project?.teamTaskCategorySet?.size() &gt; 0) ? &quot;self.id IN (${project?.teamTaskCategorySet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
 	</action-attrs>
@@ -415,10 +473,6 @@
 	
 	<action-attrs name="action-task-attrs-set-task-duration">
 		<attribute name="value" for="taskDuration" expr="eval:java.time.temporal.ChronoUnit.DAYS.between(taskDate, taskEndDate)*86400" if="taskDate != null &amp;&amp; taskEndDate != null"/>
-	</action-attrs>
-	
-	<action-attrs name="action-task-attrs-set-dates">
-		<attribute name="value" for="taskEndDate" expr="eval:taskDate.plus((taskDuration/86400).longValue(), java.time.temporal.ChronoUnit.DAYS)" if="taskDate != null"/>
 	</action-attrs>
 	
 	<action-attrs name="action-task-attrs-onclick-order-accepted">
@@ -443,18 +497,6 @@
 		<field name="assignedTo" expr="eval: __user__"/>
 	</action-record>
 	
-	<action-record name="action-team-task-record-status-in-progress" model="com.axelor.team.db.TeamTask">
-		<field name="status" expr="in-progress"/>
-	</action-record>
-
-	<action-record name="action-team-task-record-status-closed" model="com.axelor.team.db.TeamTask">
-		<field name="status" expr="closed"/>
-	</action-record>
-
-	<action-record name="action-team-task-record-status-canceled" model="com.axelor.team.db.TeamTask">
-		<field name="status" expr="canceled"/>
-	</action-record>
-
 	<action-record name="action-team-task-record-product-selected" model="com.axelor.team.db.TeamTask">
 		<field name="quantity" expr="1"/>
 		<field name="unit" expr="eval: product?.salesUnit ?: product?.unit"/>
@@ -472,6 +514,7 @@
 	</action-method>
 
 	<action-group name="action-team-task-group-timer-process">
+		<action name="action-task-attrs-project-filter-status" if="project.isShowStatus"/>
 		<action name="action-team-task-method-manage-timer-buttons" if="timerList != null &amp;&amp; !timerList.isEmpty()"/>
 		<action name="action-team-task-method-compute-total-timer-duration" if="timerList != null &amp;&amp; !timerList.isEmpty()"/>
 		<action name="action-team-task-attrs-scale-and-precision" if="__config__.app.isApp('business-project')"/>
@@ -530,4 +573,32 @@
 		<attribute name="title" for="$projectPlanningTimeSet" expr="eval:com.axelor.i18n.I18n.get('Select lines to remove')"/>
 		<attribute name="domain" for="$projectPlanningTimeSet" expr="eval:&quot;self.task.id = :id&quot;"/>
 	</action-attrs>
+
+	<action-record name="action-team-task-record-change-status" model="com.axelor.team.db.TeamTask">
+	   <field name="statusBeforeComplete" expr="eval: taskStatus"/>
+	   <field name="taskStatus" expr="call:com.axelor.apps.project.service.TeamTaskProjectService:getDefaultCompletedStatus(project)" if="project.isShowStatus"/>
+	</action-record>
+    
+    <action-view name="action-project-view-per-section-kanban" title="Tasks" model="com.axelor.team.db.TeamTask">
+      <view type="kanban" name="task-per-section-kanban"/>
+      <view type="form" name="team-task-form"/>
+      <domain>self.project.id = :_id</domain>
+    </action-view>
+        
+    <action-view name="action-project-view-per-status-calendar" title="Task Calendar" model="com.axelor.team.db.TeamTask">
+        <view type="calendar" name="team-task-per-status-calendar"/>
+        <view type="form" name="team-task-form"/>
+        <domain>self.project.id = :_id</domain>
+    </action-view>
+    
+    <action-view name="action-project-view-per-user-calendar" title="Task Calendar" model="com.axelor.team.db.TeamTask">
+        <view type="calendar" name="team-task-per-user-calendar"/>
+        <view type="form" name="team-task-form"/>
+        <domain>self.project.id = :_id</domain>
+    </action-view>
+    
+    <action-attrs name="action-task-attrs-project-filter-status">
+       <attribute name="selection-in" for="taskStatus" expr="eval: project?.teamTaskStatusSet?.collect{it.id}?.join(',')"/>    
+    </action-attrs>
+        
 </object-views>

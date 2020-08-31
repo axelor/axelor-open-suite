@@ -19,11 +19,15 @@ package com.axelor.apps.project.service;
 
 import com.axelor.apps.base.service.TeamTaskServiceImpl;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectPriority;
+import com.axelor.apps.project.db.ProjectStatus;
+import com.axelor.apps.project.db.repo.ProjectPriorityRepository;
 import com.axelor.auth.db.User;
 import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 import java.time.LocalDate;
+import java.util.Comparator;
 
 public class TeamTaskProjectServiceImpl extends TeamTaskServiceImpl
     implements TeamTaskProjectService {
@@ -66,7 +70,6 @@ public class TeamTaskProjectServiceImpl extends TeamTaskServiceImpl
 
     teamTask.getMembersUserSet().forEach(nextTeamTask::addMembersUserSetItem);
 
-    nextTeamTask.setTeam(teamTask.getTeam());
     nextTeamTask.setParentTask(teamTask.getParentTask());
     nextTeamTask.setProduct(teamTask.getProduct());
     nextTeamTask.setUnit(teamTask.getUnit());
@@ -75,5 +78,31 @@ public class TeamTaskProjectServiceImpl extends TeamTaskServiceImpl
     nextTeamTask.setTaskEndDate(teamTask.getTaskEndDate());
     nextTeamTask.setBudgetedTime(teamTask.getBudgetedTime());
     nextTeamTask.setCurrency(teamTask.getCurrency());
+  }
+
+  @Override
+  public ProjectStatus getDefaultCompletedStatus(Project project) {
+    return project.getTeamTaskStatusSet().stream()
+        .filter(ProjectStatus::getIsDefaultCompleted)
+        .findAny()
+        .orElse(null);
+  }
+
+  @Override
+  public ProjectStatus getStatus(Project project) {
+    return project.getTeamTaskStatusSet().stream()
+        .min(Comparator.comparingInt(ProjectStatus::getSequence))
+        .orElse(null);
+  }
+
+  @Override
+  public ProjectPriority getPriority(Project project) {
+    return project.getTeamTaskPrioritySet().stream()
+        .filter(
+            priority ->
+                priority.getTechnicalTypeSelect()
+                    == ProjectPriorityRepository.PROJECT_PRIORITY_NORMAL)
+        .findAny()
+        .orElse(null);
   }
 }

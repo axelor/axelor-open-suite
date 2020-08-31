@@ -27,4 +27,6 @@ public interface TimesheetLineBusinessService {
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public TimesheetLine updateTimesheetLines(TimesheetLine timesheetLine);
+
+  public TimesheetLine setTimesheet(TimesheetLine timesheetLine);
 }

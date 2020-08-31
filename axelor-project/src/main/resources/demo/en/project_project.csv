@@ -1,2 +1,2 @@
-importId;name;clientPartner.importId;code;membersUserSet.importId;typeSelect;company.importId;statusSelect;projInvTypeSelect;assignedTo.importId;fullName;fromDate;duration
-1;123Service Project;88;123SP;1;project;1;1;3;1;123SP - 123Service Project;TODAY;50
+importId;name;clientPartner.importId;code;membersUserSet.importId;company.importId;projectStatus.importId;assignedTo.importId;fullName;fromDate;teamTaskStatusSet;teamTaskPrioritySet
+1;123Service Project;88;123SP;1;1;1;1;123SP - 123Service Project;TODAY;5|6|7|8;1|2|3|4

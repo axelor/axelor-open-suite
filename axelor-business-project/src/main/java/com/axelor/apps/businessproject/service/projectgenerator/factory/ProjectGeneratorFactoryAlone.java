@@ -47,7 +47,6 @@ public class ProjectGeneratorFactoryAlone implements ProjectGeneratorFactory {
   @Transactional
   public Project create(SaleOrder saleOrder) {
     Project project = projectBusinessService.generateProject(saleOrder);
-    project.setIsProject(false);
     project.setIsBusinessProject(true);
     return projectRepository.save(project);
   }

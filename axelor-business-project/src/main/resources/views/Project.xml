@@ -38,12 +38,11 @@
 		<attribute name="value:add" for="membersUserSet" expr="eval: __user__"/>
 	</action-attrs>
 	
-	<action-record id="business-project-action-project-default" name="action-project-default" model="com.axelor.apps.project.db.Project">
-		<field name="typeSelect" expr="eval:'task'" />
-		<field name="company" expr="eval:__user__.activeCompany"/>
-		<field name="fromDate" expr="eval: __date__"/>
-		<field name="assignedTo" expr="eval: __user__"/>
-	</action-record>
+	<action-attrs id="business-project-action-project-defaults" name="action-project-defaults" model="com.axelor.apps.project.db.Project">
+		<attribute name="value" for="company" expr="eval:__user__.activeCompany"/>
+		<attribute name="value" for="fromDate" expr="eval: __date__"/>
+		<attribute name="value" for="assignedTo" expr="eval: __user__"/>
+	</action-attrs>
 	
 	<action-attrs name="action-project-attrs-set-invoicing-sequence">
 		<attribute name="value" for="invoicingSequenceSelect" expr="eval: null"/>
@@ -450,5 +449,14 @@
   		<context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds" expr="eval:[id]"/>
   		<context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds" expr="eval:[id] + childProjectList.collect{it->it.id}"/>
     </action-view>
+    
+    
+	<action-method name="action-project-method-count-to-invoice">
+	   <call class="com.axelor.apps.businessproject.web.ProjectController" method="countToInvoice"/>
+    </action-method>
+     
+    <action-method name="action-project-view-show-invoicing-projects">
+	   <call class="com.axelor.apps.businessproject.web.ProjectController" method="showInvoicingProjects"/>
+	</action-method>
     
 </object-views>

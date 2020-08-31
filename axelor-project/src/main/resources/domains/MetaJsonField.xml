@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+
+	<module name="meta" package="com.axelor.meta.db" />
+	
+	<entity name="MetaJsonField" table="META_JSON_FIELD">
+		
+		<many-to-one name="selectionRef" title="Select" ref="com.axelor.meta.db.MetaSelect" readonly="true"/>
+		<boolean name="isDisplayedInList" title="Displayed in list view?"/>
+		
+	</entity>
+
+</domain-models>

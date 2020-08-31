@@ -9,7 +9,6 @@
 		<string name="name" required="true"/>
 		<string name="description" multiline="true" large="true"/>
 		<many-to-one name="team" ref="com.axelor.team.db.Team"/>
-		<many-to-many name="projectFolderSet" ref="com.axelor.apps.project.db.ProjectFolder" title="Project Folders"/>
 		<many-to-one name="assignedTo" ref="com.axelor.auth.db.User" title="Assigned to"/>
 		<many-to-many name="teamTaskCategorySet" ref="com.axelor.apps.project.db.TeamTaskCategory" title="Type of authorized categories"/>
 		<boolean name="synchronize"/>

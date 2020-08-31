@@ -44,7 +44,6 @@
 			<panel title="Invoicing" name="invoicingPanel" showIf="isBusinessProject" if="__config__.app.isApp('business-project')" if-module="axelor-business-project">				
 				<field name="isInvoicingExpenses" colSpan="4" />
 				<field name="isInvoicingPurchases" colSpan="4" />
-				<field name="invoicingTypeSelect"  colSpan="6"/>
 				<field name="invoicingComment" colSpan="12" />
 			</panel>
 
@@ -55,7 +54,7 @@
 			<panel title="Configurations" name="configurationsPanel" >
 				<field if="__config__.app.isApp('employee')" if-module="axelor-human-resource" name="productSet" colSpan="12" widget="TagSelect" canEdit="false" domain="self.isActivity = true" form-view="product-activity-form" grid-view="product-activity-grid" />
 				<field name="teamTaskCategorySet" colSpan="12" widget="TagSelect" />
-				<field name="projectFolderSet" colSpan="12" widget="TagSelect" />
+				<field name="projectFolderSet" colSpan="12" widget="TagSelect" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
 				<field name="imputable" colSpan="4" widget="boolean-switch" if="__config__.app.isApp('employee')" if-module="axelor-human-resource" />
 				<field name="excludePlanning" if-module="axelor-business-project"/>
 			</panel>
@@ -94,7 +93,7 @@
 
 	<action-attrs name="action-attrs-project-template-set-wizard-hidden">
 	  <attribute name="hidden" expr="eval:!_businessProject" for="clientPartner"/>
-	  <attribute name="hidden" expr="eval:__config__.app.getApp('project')?.generateProjectSequence" for="code"/>
+	  <attribute name="hidden" expr="eval:__config__.app.getApp('business-project')?.generateProjectSequence" for="code"/>
 	  <attribute name="hidden" expr="eval:!_businessProject" for="createBusinessProjectBtn"/>
 	  <attribute name="hidden" expr="eval:_businessProject" for="createProjectBtn"/>
 	</action-attrs>

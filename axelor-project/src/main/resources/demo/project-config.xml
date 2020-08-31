@@ -5,6 +5,8 @@
 
  	<input file="project_project.csv" type="com.axelor.apps.project.db.Project" separator=";" search="self.importId = :importId">
  		<bind to="fromDate" column="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)" />
+ 		<bind to="teamTaskStatusSet" column="teamTaskStatusSet" search="self.importId in :teamTaskStatusSet" eval="teamTaskStatusSet.split('\\|') as List"/>
+ 		<bind to="teamTaskPrioritySet" column="teamTaskPrioritySet" search="self.importId in :teamTaskPrioritySet" eval="teamTaskPrioritySet.split('\\|') as List"/>
  	</input>
  	
  	<input file="business_project_project.csv" type="com.axelor.apps.project.db.Project" separator=";" search="self.importId = :importId"/>
@@ -12,14 +14,5 @@
  	<input file="team_task.csv" type="com.axelor.team.db.TeamTask" separator=";" search="self.importId = :importId" call="com.axelor.apps.csv.script.TeamTaskScript:computeFullname">
  		<bind to="taskDate" column="taskDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(taskDate)" />
  	</input>
-
-	<input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence" search="self.importId = :importId" call="com.axelor.csv.script.SequenceScript:computeFullname">
-		<bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/>
-		<bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
-		<bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
-		<bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
-		<bind to="resetDate" eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate()"/>
-	</input>
-
 </csv-inputs>
 

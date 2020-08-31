@@ -6,10 +6,21 @@
 	<module name="project" package="com.axelor.apps.project.db"/>
 	
 	<entity name="ProjectStatus">
+	    <integer name="sequence" title="Sequence"/>
   		<string name="name"/>
-  		<boolean name="defaultStatus"/>
-  		<boolean name="isOpen"/>
-  		<boolean name="isClose"/>
+  		<boolean name="isDefaultCompleted" title="Default completed"/>
+  		<boolean name="isCompleted" title="Completed"/>
+  		<integer name="relatedToSelect" title="Related to" selection="project.status.related.to.select"/>
+  		<finder-method name="getDefaultCompleted" using="" filter="self.isDefaultCompleted = true"/>
+  		<finder-method name="getCompleted" using="" filter="self.isCompleted = true AND self.isDefaultCompleted = false"/>
+  		<finder-method name="getNotCompleted" using="" filter="self.isCompleted = false"/>
+  		
+  		<extra-code>
+   		 <![CDATA[
+   			public static final int PROJECT_STATUS_PROJECT = 1;
+   			public static final int PROJECT_STATUS_TASK = 2;
+   		 ]]>
+   	    </extra-code>
 	</entity>
- 
+	
  </domain-models>

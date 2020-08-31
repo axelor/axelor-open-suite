@@ -18,8 +18,7 @@
 			<panel name="mainDashboardPanel" colSpan="10" itemSpan="2" colOffset="2">
 				<panel name="projectPanel"  title="Project" if-module="axelor-project" itemSpan="12" hidden="true">
 					<button name="$totalProjects" title="Projects" width="190px" widget="info-button" onClick="action-method-show-client-view-total-projects" />
-	                <button name="$newTasks" title="New tasks" width="190px" widget="info-button" onClick="action-method-show-client-view-new-tasks"/>
-					<button name="$tasksInProgress" title="Tasks in progress" width="190px" widget="info-button" onClick="action-method-show-client-view-tasks-progress"/>
+					<button name="$tasksInCompleted" title="Tasks incompleted" width="190px" widget="info-button" onClick="action-method-show-client-view-tasks-in-completed"/>
 					<button name="$tasksDue" title="Tasks due" width="190px" widget="info-button" onClick="action-method-show-client-view-tasks-due"/>
 					</panel>
 				<panel name="saleOrderPanel" title="Order" if-module="axelor-sale" itemSpan="12" hidden="true">
@@ -130,12 +129,8 @@
 		<call class="com.axelor.apps.portal.web.ClientViewController" method="showClientMyTotalProjects"/>
 	</action-method>
 	
-	<action-method name="action-method-show-client-view-new-tasks" model="com.axelor.apps.base.db.Wizard">
-		<call class="com.axelor.apps.portal.web.ClientViewController" method="showClientMyNewTasks"/>
-	</action-method>
-	
-	<action-method name="action-method-show-client-view-tasks-progress" model="com.axelor.apps.base.db.Wizard">
-		<call class="com.axelor.apps.portal.web.ClientViewController" method="showClientMyTasksInProgress"/>
+	<action-method name="action-method-show-client-view-tasks-in-completed" model="com.axelor.apps.base.db.Wizard">
+		<call class="com.axelor.apps.portal.web.ClientViewController" method="showClientMyTasksInCompleted"/>
 	</action-method>
 	
 	<action-method name="action-method-show-client-view-tasks-due" model="com.axelor.apps.base.db.Wizard">

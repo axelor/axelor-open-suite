@@ -2,22 +2,24 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
-	
-	<grid name="project-status-grid" title="Status" model="com.axelor.apps.project.db.ProjectStatus">
+	<grid name="project-status-grid" title="Status" model="com.axelor.apps.project.db.ProjectStatus" orderBy="sequence">
+	    <field name="sequence"/>
 		<field name="name"/>
-		<field name="defaultStatus"/>
-		<field name="isOpen"/>
-		<field name="isClose"/>
+		<field name="isCompleted"/>
+		<field name="isDefaultCompleted"/>
 	</grid>
 	
-	<form title="Status" name="project-status-form"  model="com.axelor.apps.project.db.ProjectStatus">
+	<form name="project-status-form" title="Status" model="com.axelor.apps.project.db.ProjectStatus" onNew="action-project-status-record-on-new">
 		<panel name="mainPanel">
+		    <field name="sequence"/>
 			<field name="name"/>
-			<field name="defaultStatus"/>
-			<field name="isOpen" readonlyIf="isClose == 1"/>
-			<field name="isClose" readonlyIf="isOpen == 1"/>
+			<field name="isCompleted"/>
+			<field name="isDefaultCompleted" showIf="isCompleted"/>
 		</panel>
-		
 	</form>
+	
+	<action-record name="action-project-status-record-on-new" model="com.axelor.apps.project.db.ProjectStatus">	
+	   <field name="relatedToSelect" expr="eval: relatedToSelect"/>
+	</action-record>
 	
 </object-views>

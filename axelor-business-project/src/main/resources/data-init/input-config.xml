@@ -46,5 +46,13 @@
 		<bind to="showIf" column="showIf"/>
    	</input>
    	
+    <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence" search="self.importId = :importId">
+		<bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/>
+		<bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
+		<bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
+		<bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
+		<bind to="resetDate" eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate()"/>
+    </input>
+   	
 </csv-inputs>
 	

@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+
+	<module name="project" package="com.axelor.apps.project.db"/>
+	
+	<entity name="ProjectPriority">
+  		<string name="name"/> 
+  		<integer name="technicalTypeSelect" title="Technical type" selection="project.priority.technical.type.select" default="2"/>
+	
+	<extra-code>
+   		<![CDATA[
+   			public static final int PROJECT_PRIORITY_LOW = 1;
+   			public static final int PROJECT_PRIORITY_NORMAL = 2;
+   			public static final int PROJECT_PRIORITY_HIGH = 3;
+   			public static final int PROJECT_PRIORITY_URGENT = 4;
+   		]]>
+   	</extra-code>
+	</entity>
+	
+ </domain-models>

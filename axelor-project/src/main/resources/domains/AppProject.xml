@@ -8,7 +8,8 @@
 		<string name="projectLabel" title="Project Label"/>
 		<boolean name="resourceManagement" title="Resource management" />
 		<boolean name="isEnableSignature" title="Enable task signature" />
-		<boolean name="generateProjectSequence" title="Generate sequence for project"/>
+		<one-to-many name="taskCustomFieldsList" ref="com.axelor.meta.db.MetaJsonField" title="Task fields" orphanRemoval="true"/>
+		<one-to-many name="projectCustomFieldsList" ref="com.axelor.meta.db.MetaJsonField" title="Project fields" orphanRemoval="true"/>
 
 		<track>
 			<field name="projectLabel" on="UPDATE"/>

@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+
+  <module name="project" package="com.axelor.apps.project.db"/>
+
+  <entity name="Topic">
+    <string name="title" title="Title"/>
+    <string name="message" title="Message" large="true"/>
+    <many-to-one name="project" title="Project" ref="com.axelor.apps.project.db.Project"/>
+    <boolean name="isClosed" title="Closed" readonly="true"/>
+    
+    <track>
+      <field name="title"/>
+	  <field name="message"/>
+	  <field name="project"/>
+	  <field name="isClosed"/>
+    </track>
+  </entity> 
+
+</domain-models>

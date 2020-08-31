@@ -61,13 +61,9 @@ public class BatchInvoicingProjectService extends AbstractBatch {
         projectRepo
             .all()
             .filter(
-                "self.isBusinessProject = :isBusinessProject "
-                    + "AND self.toInvoice = :toInvoice AND "
-                    + "(self.statusSelect != :statusCanceled AND self.statusSelect != :statusFinished)")
-            .bind("isBusinessProject", true)
-            .bind("toInvoice", true)
-            .bind("statusCanceled", ProjectRepository.STATE_CANCELED)
-            .bind("statusFinished", ProjectRepository.STATE_FINISHED)
+                "self.isBusinessProject = true "
+                    + "AND self.toInvoice = true AND "
+                    + "self.projectStatus.isCompleted = false")
             .fetch();
 
     for (Project project : projectList) {

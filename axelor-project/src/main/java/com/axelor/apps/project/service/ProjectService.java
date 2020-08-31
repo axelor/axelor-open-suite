@@ -24,6 +24,7 @@ import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import java.math.BigDecimal;
+import java.util.Map;
 
 public interface ProjectService {
   Project generateProject(
@@ -48,4 +49,14 @@ public interface ProjectService {
   public Project createProjectFromTemplate(
       ProjectTemplate projectTemplate, String projectCode, Partner clientPartner)
       throws AxelorException;
+
+  public Map<String, Object> createProjectFromTemplateView(ProjectTemplate projectTemplate)
+      throws AxelorException;
+
+  public Map<String, Object> getTaskView(String title, String domain, Map<String, Object> context);
+
+  public Project generateProject(
+      ProjectTemplate projectTemplate, String projectCode, Partner clientPartner);
+
+  public Map<String, Object> getPerStatusKanban(Project project, Map<String, Object> context);
 }

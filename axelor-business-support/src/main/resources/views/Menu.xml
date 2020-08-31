@@ -23,7 +23,7 @@
   <action-view name="project.task.customer.my.task" title="My Tickets" model="com.axelor.team.db.TeamTask">
 	<view type="grid" name="team-task-client-grid"/>
 	<view type="form" name="team-task-client-form"/>
-	<domain>self.customerReferral = :user AND self.isPrivate = false AND self.typeSelect = 'ticket'</domain>
+	<domain>self.customerReferral = :user AND self.isPrivate = false AND self.typeSelect = :_typeSelect</domain>
 	<context name="user" expr="eval: __user__"/>
 	<context name="_typeSelect" expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TICKET"/>
   </action-view>
@@ -32,7 +32,6 @@
 
   <action-view name="project.task.customer.new" title="New tasks" model="com.axelor.team.db.TeamTask">
 	<view type="form" name="team-task-client-form"/>
-	<domain>self.typeSelect = 'ticket'</domain>
 	<context name="_typeSelect" expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TICKET"/>
   </action-view>
 
@@ -42,8 +41,7 @@
   <action-view name="project.task.customer.treated.by.customer" title="Tasks to be treated by customer" model="com.axelor.team.db.TeamTask">
 	<view type="grid" name="team-task-client-grid"/>
 	<view type="form" name="team-task-client-form"/>
-	<domain>self.status IN :statusCustomer AND self.isPrivate = false AND self.assignment = 1 AND self.typeSelect = 'ticket'</domain>
-	<context name="statusCustomer" expr="#{['new', 'in-progress']}"/>
+	<domain>self.taskStatus.isCompleted = false AND self.isPrivate = false AND self.assignment = 1 AND self.typeSelect = :_typeSelect</domain>
 	<context name="_typeSelect" expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TICKET"/>
   </action-view>
 
@@ -53,8 +51,7 @@
   <action-view name="project.task.customer.treated.by.provider" title="Tasks to be treated by provider" model="com.axelor.team.db.TeamTask">
 	<view type="grid" name="team-task-client-grid"/>
 	<view type="form" name="team-task-client-form"/>
-	<domain>self.status IN :statusProvider AND self.isPrivate = false AND self.assignment = 2 AND self.typeSelect = 'ticket'</domain>
-	<context name="statusProvider" expr="#{['new', 'in-progress']}"/>
+	<domain>self.taskStatus.isCompleted = false AND self.isPrivate = false AND self.assignment = 2 AND self.typeSelect = :_typeSelect</domain>
 	<context name="_typeSelect" expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TICKET"/>
   </action-view>
 
@@ -64,8 +61,7 @@
   <action-view name="project.task.customer.open.all" title="All open ticket" model="com.axelor.team.db.TeamTask">
 	<view type="grid" name="team-task-client-grid"/>
 	<view type="form" name="team-task-client-form"/>
-	<domain>self.status IN :status_open AND self.isPrivate = false AND self.typeSelect = 'ticket'</domain>
-	<context name="status_open" expr="#{['new', 'in-progress']}"/>
+	<domain>self.taskStatus.isCompleted = false AND self.isPrivate = false AND self.typeSelect = :_typeSelect</domain>
 	<context name="_typeSelect" expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TICKET"/>
   </action-view>
 
@@ -75,7 +71,7 @@
   <action-view name="project.task.customer.all" title="All tickets" model="com.axelor.team.db.TeamTask">
 	<view type="grid" name="team-task-client-grid"/>
 	<view type="form" name="team-task-client-form"/>
-	<domain>self.isPrivate = false AND self.typeSelect = 'ticket'</domain>
+	<domain>self.isPrivate = false AND self.typeSelect = :_typeSelect</domain>
 	<context name="_typeSelect" expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TICKET"/>
   </action-view>
 

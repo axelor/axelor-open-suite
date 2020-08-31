@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.businessproject.web;
 
+import com.axelor.apps.businessproject.db.ProjectFolder;
 import com.axelor.apps.businessproject.report.ITranslation;
 import com.axelor.apps.businessproject.service.ProjectFolderService;
-import com.axelor.apps.project.db.ProjectFolder;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;

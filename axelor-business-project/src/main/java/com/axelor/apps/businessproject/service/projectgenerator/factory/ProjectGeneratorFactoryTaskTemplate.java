@@ -70,7 +70,6 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
   @Override
   public Project create(SaleOrder saleOrder) {
     Project project = projectBusinessService.generateProject(saleOrder);
-    project.setIsProject(true);
     project.setIsBusinessProject(true);
     return project;
   }

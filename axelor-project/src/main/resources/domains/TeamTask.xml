@@ -10,11 +10,12 @@
 		<many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
 
         <string name="fullName" namecolumn="true" title="Name" search="id,name"/>
+        <many-to-one name="statusBeforeComplete" title="Last status" ref="com.axelor.apps.project.db.ProjectStatus"/>
+        <many-to-one name="taskStatus" title="Status" ref="com.axelor.apps.project.db.ProjectStatus"/>
 	  	
 	  	<many-to-one name="parentTask" ref="com.axelor.team.db.TeamTask" title="Parent task"/>
 	 	<many-to-one name="teamTaskCategory" ref="com.axelor.apps.project.db.TeamTaskCategory" title="Category"/>
     	<integer name="progressSelect" title="Progress" selection="project.task.progress.select"/>
-    	<many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
     	<one-to-many name="teamTaskList" ref="com.axelor.team.db.TeamTask" mappedBy="parentTask"/>
 	  
 		<many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Followers"/>
@@ -32,17 +33,19 @@
 		<many-to-many name="startToStartSet" title="Tasks to start before start" ref="TeamTask"/>
 		<many-to-many name="finishToFinishSet" title="Tasks to finish before finish" ref="TeamTask"/>
 		<decimal name="durationHours" title="Duration hours" />
-		<date name="taskEndDate" title="Task end" />
+		<date name="taskDate" title="Start Date"/>
+		<date name="taskEndDate" title="Due Date" />
 
 		<one-to-many name="timerList" ref="com.axelor.apps.base.db.Timer"/>
 		
 		<decimal name="budgetedTime" title="Estimated time"/>
 		<many-to-one name="metaFile" title="Signature" ref="com.axelor.meta.db.MetaFile" />
 		
-		<many-to-many name="categorySet" ref="com.axelor.apps.project.db.TeamTaskCategory" title="Tags"/>
+		<many-to-one name="teamTaskSection" ref="com.axelor.apps.project.db.TeamTaskSection" title="Section"/>
+		<many-to-one name="taskPriority" title="Priority" ref="com.axelor.apps.project.db.ProjectPriority"/>
 
 	 <track replace="true">
-	 	<field name="status"/>
+	 	<field name="taskStatus"/>
 	 	<field name="teamTaskCategory"/>
 	 	<field name="progressSelect"/>
 	 	<field name="assignedTo"/>

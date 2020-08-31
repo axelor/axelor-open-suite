@@ -30,8 +30,9 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTemplate;
-import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.db.repo.ProjectStatusRepository;
+import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -40,25 +41,35 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.team.db.TeamTask;
+import com.axelor.meta.schema.actions.ActionView;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.HashSet;
+import java.util.Map;
 
 public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     implements ProjectBusinessService {
 
-  @Inject protected AppBusinessProjectService appBusinessProjectService;
-
-  @Inject protected ProjectRepository projectRepo;
-
-  @Inject protected PartnerService partnerService;
-
-  @Inject protected AddressService addressService;
+  protected ProjectRepository projectRepo;
+  protected PartnerService partnerService;
+  protected AddressService addressService;
+  protected AppBusinessProjectService appBusinessProjectService;
 
   @Inject
-  public ProjectBusinessServiceImpl(ProjectRepository projectRepository) {
-    super(projectRepository);
+  public ProjectBusinessServiceImpl(
+      ProjectRepository projectRepository,
+      ProjectStatusRepository projectStatusRepository,
+      ProjectRepository projectRepo,
+      PartnerService partnerService,
+      AddressService addressService,
+      AppBusinessProjectService appBusinessProjectService) {
+    super(projectRepository, projectStatusRepository);
+    this.projectRepo = projectRepo;
+    this.partnerService = partnerService;
+    this.addressService = addressService;
+    this.appBusinessProjectService = appBusinessProjectService;
   }
 
   @Override
@@ -194,6 +205,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     }
 
     project.setImputable(true);
+    project.setCompany(company);
     if (parentProject != null && parentProject.getIsInvoicingTimesheet()) {
       project.setIsInvoicingTimesheet(true);
     }
@@ -209,18 +221,14 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
             saleOrderLine.getSaleOrder().getSalespersonUser(),
             parent.getCompany(),
             parent.getClientPartner());
-    project.setProjectTypeSelect(ProjectRepository.TYPE_PHASE);
     saleOrderLine.setProject(project);
     return project;
   }
 
   @Override
-  @Transactional
-  public Project createProjectFromTemplate(
-      ProjectTemplate projectTemplate, String projectCode, Partner clientPartner)
-      throws AxelorException {
-
-    Project project = super.createProjectFromTemplate(projectTemplate, projectCode, clientPartner);
+  public Project generateProject(
+      ProjectTemplate projectTemplate, String projectCode, Partner clientPartner) {
+    Project project = super.generateProject(projectTemplate, projectCode, clientPartner);
 
     if (projectTemplate.getIsBusinessProject()) {
       project.setCurrency(clientPartner.getCurrency());
@@ -240,13 +248,27 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       project.setInvoicingComment(projectTemplate.getInvoicingComment());
       project.setIsBusinessProject(projectTemplate.getIsBusinessProject());
     }
+    project.setProjectFolderSet(new HashSet<>(projectTemplate.getProjectFolderSet()));
+    project.setCompany(projectTemplate.getCompany());
 
     return project;
   }
 
   @Override
-  public TeamTask createTask(TaskTemplate taskTemplate, Project project) {
-    TeamTask task = super.createTask(taskTemplate, project);
-    return task;
+  public Map<String, Object> createProjectFromTemplateView(ProjectTemplate projectTemplate)
+      throws AxelorException {
+    if (appBusinessProjectService.getAppBusinessProject().getGenerateProjectSequence()
+        && !projectTemplate.getIsBusinessProject()) {
+      Project project =
+          Beans.get(ProjectService.class).createProjectFromTemplate(projectTemplate, null, null);
+      return ActionView.define(I18n.get("Project"))
+          .model(Project.class.getName())
+          .add("form", "project-form")
+          .add("grid", "project-grid")
+          .param("search-filters", "project-filters")
+          .context("_showRecord", project.getId())
+          .map();
+    }
+    return super.createProjectFromTemplateView(projectTemplate);
   }
 }

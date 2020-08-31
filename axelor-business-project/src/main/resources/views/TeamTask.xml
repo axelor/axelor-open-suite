@@ -7,7 +7,7 @@
     	<field name="project"/>
     	<field name="name"/>
     	<field name="taskDate"/>
-    	<field name="status"/>
+    	<field name="taskStatus"/>
     	<field name="progressSelect" widget="SelectProgress"/>
     	<field name="exTaxTotal"/>
     	<field name="toInvoice"/>
