@@ -1,5 +1,8 @@
 # Changelog
 ## [Unreleased 5.3.11]
+## Features
+- PSR : use the boEbicsPartnerServiceList to get the bank codification
+
 ## Improvements
 ## Bug Fixes
 - BANK STATEMENT : corrected npe on bank details in import file function.
