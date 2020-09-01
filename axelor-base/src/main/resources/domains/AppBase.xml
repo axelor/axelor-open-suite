@@ -79,6 +79,8 @@
 	   	
 	   	<many-to-one name="defaultMailMessageTemplate" title="Default mail message template" ref="com.axelor.apps.message.db.Template"/>
 	   	
+	   	<one-to-many name="mailTemplateAssociationList" title="Email template list for notifications" ref="com.axelor.apps.base.db.MailTemplateAssociation"/>
+
 		<extra-code>
 	   		<![CDATA[
 	   			public static final int DISCOUNT_SEPARATE = 1;
