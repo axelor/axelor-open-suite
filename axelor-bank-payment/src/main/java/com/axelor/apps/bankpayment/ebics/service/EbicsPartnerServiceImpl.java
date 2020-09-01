@@ -68,12 +68,6 @@ public class EbicsPartnerServiceImpl implements EbicsPartnerService {
   @Transactional
   public List<BankStatement> getBankStatements(EbicsPartner ebicsPartner)
       throws AxelorException, IOException {
-    if (ebicsPartner.getUsePSR()) {
-      ArrayList<BankStatementFileFormat> bankStatementFileFormatList =
-          new ArrayList<BankStatementFileFormat>();
-      bankStatementFileFormatList.add(ebicsPartner.getpSRBankStatementFileFormat());
-      return getBankStatements(ebicsPartner, bankStatementFileFormatList);
-    }
     return getBankStatements(ebicsPartner, null);
   }
 

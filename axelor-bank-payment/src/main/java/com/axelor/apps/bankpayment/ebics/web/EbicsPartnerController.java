@@ -18,6 +18,7 @@
 package com.axelor.apps.bankpayment.ebics.web;
 
 import com.axelor.apps.bankpayment.db.BankStatement;
+import com.axelor.apps.bankpayment.db.BankStatementFileFormat;
 import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsPartnerService;
@@ -27,6 +28,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.util.ArrayList;
 import java.util.List;
 
 @Singleton
@@ -36,10 +38,17 @@ public class EbicsPartnerController {
 
     try {
       EbicsPartner ebicsPartner = request.getContext().asType(EbicsPartner.class);
+      ArrayList<BankStatementFileFormat> bankStatementFileFormatList =
+          new ArrayList<BankStatementFileFormat>();
+      if (ebicsPartner.getUsePSR()) {
+
+        bankStatementFileFormatList.add(ebicsPartner.getpSRBankStatementFileFormat());
+      }
       List<BankStatement> bankStatementList =
           Beans.get(EbicsPartnerService.class)
               .getBankStatements(
-                  Beans.get(EbicsPartnerRepository.class).find(ebicsPartner.getId()));
+                  Beans.get(EbicsPartnerRepository.class).find(ebicsPartner.getId()),
+                  bankStatementFileFormatList);
       response.setFlash(
           String.format(I18n.get("%s bank statements get."), bankStatementList.size()));
     } catch (Exception e) {
