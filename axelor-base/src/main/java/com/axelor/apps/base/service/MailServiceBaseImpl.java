@@ -19,47 +19,71 @@ package com.axelor.apps.base.service;
 
 import static com.axelor.common.StringUtils.isBlank;
 
+import com.axelor.apps.base.db.MailTemplateAssociation;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.apps.message.service.MailServiceMessageImpl;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import com.axelor.mail.MailBuilder;
+import com.axelor.mail.MailException;
+import com.axelor.mail.MailSender;
 import com.axelor.mail.db.MailAddress;
 import com.axelor.mail.db.MailFollower;
 import com.axelor.mail.db.MailMessage;
 import com.axelor.mail.db.repo.MailFollowerRepository;
 import com.axelor.mail.db.repo.MailMessageRepository;
-import com.axelor.tool.template.TemplateMaker;
+import com.axelor.mail.service.MailService;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaAttachment;
+import com.axelor.text.GroovyTemplates;
+import com.axelor.text.StringTemplates;
+import com.axelor.text.Templates;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.invoke.MethodHandles;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javax.inject.Singleton;
+import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
 public class MailServiceBaseImpl extends MailServiceMessageImpl {
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  private ExecutorService executor = Executors.newCachedThreadPool();
+
+  private String userName = null;
 
   @Override
   public Model resolve(String email) {
@@ -218,33 +242,156 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
   }
 
   @Override
+  public void send(final MailMessage message) throws MailException {
+    final EmailAccount emailAccount = mailAccountService.getDefaultSender();
+    if (emailAccount == null) {
+      super.send(message);
+      return;
+    }
+
+    Preconditions.checkNotNull(message, "mail message can't be null");
+
+    final Model related = findEntity(message);
+    final MailSender sender = getMailSender(emailAccount);
+
+    final Set<String> recipients = recipients(message, related);
+    if (recipients.isEmpty()) {
+      return;
+    }
+
+    final MailMessageRepository messages = Beans.get(MailMessageRepository.class);
+    for (String recipient : recipients) {
+      MailBuilder builder = sender.compose().subject(getSubject(message, related));
+      builder.to(recipient);
+
+      Model obj = Beans.get(MailService.class).resolve(recipient);
+      userName = null;
+      if (obj != null) {
+        Class<Model> klass = EntityHelper.getEntityClass(obj);
+        if (klass.equals(User.class)) {
+          User user = (User) obj;
+          userName = user.getName();
+        } else if (klass.equals(Partner.class)) {
+          Partner partner = (Partner) obj;
+          userName = partner.getSimpleFullName();
+        }
+      }
+
+      for (MetaAttachment attachment : messages.findAttachments(message)) {
+        final Path filePath = MetaFiles.getPath(attachment.getMetaFile());
+        final File file = filePath.toFile();
+        builder.attach(file.getName(), file.toString());
+      }
+
+      MimeMessage email;
+      try {
+        builder.html(template(message, related));
+        email = builder.build(message.getMessageId());
+        final Set<String> references = new LinkedHashSet<>();
+        if (message.getParent() != null) {
+          references.add(message.getParent().getMessageId());
+        }
+        if (message.getRoot() != null) {
+          references.add(message.getRoot().getMessageId());
+        }
+        if (!references.isEmpty()) {
+          email.setHeader("References", Joiner.on(" ").skipNulls().join(references));
+        }
+      } catch (MessagingException | IOException e) {
+        throw new MailException(e);
+      }
+
+      // send email using a separate process to void thread blocking
+      executor.submit(
+          new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+              send(sender, email);
+              return true;
+            }
+          });
+    }
+  }
+
+  @Override
   protected String template(MailMessage message, Model entity) throws IOException {
-    Template template =
-        Beans.get(AppBaseService.class).getAppBase().getDefaultMailMessageTemplate();
+    Template template = getTemplateByModel(entity);
+    boolean isDefaultTemplate = false;
+    if (template == null) {
+      template = Beans.get(AppBaseService.class).getAppBase().getDefaultMailMessageTemplate();
+      isDefaultTemplate = true;
+    }
     if (template != null) {
-      Locale locale =
-          template.getLanguage() != null
-                  && template.getLanguage().getName().equalsIgnoreCase("French")
-              ? Locale.FRENCH
-              : Locale.ENGLISH;
-      TemplateMaker maker = new TemplateMaker(locale, '$', '$');
       final String text = message.getBody().trim();
       if (text == null
           || !MESSAGE_TYPE_NOTIFICATION.equals(message.getType())
           || !(text.startsWith("{") || text.startsWith("}"))) {
         return text;
       }
-      Map<String, Object> details = Beans.get(MailMessageRepository.class).details(message);
-      String jsonBody = details.containsKey("body") ? (String) details.get("body") : text;
-      Map<String, Object> data =
-          Beans.get(ObjectMapper.class)
-              .readValue(jsonBody, new TypeReference<Map<String, Object>>() {});
-      data.put("entity", entity);
-      maker.addInContext(data);
-      maker.setTemplate(template.getContent());
-      return maker.make();
+      final MailMessageRepository messages = Beans.get(MailMessageRepository.class);
+      final Map<String, Object> details = messages.details(message);
+      final String jsonBody = details.containsKey("body") ? (String) details.get("body") : text;
+      final ObjectMapper mapper = Beans.get(ObjectMapper.class);
+      final Map<String, Object> data =
+          mapper.readValue(jsonBody, new TypeReference<Map<String, Object>>() {});
+      if (isDefaultTemplate) {
+        data.put("entity", entity);
+      } else {
+        data.put(entity.getClass().getSimpleName(), entity);
+      }
+      data.put("username", userName);
+      Templates templates = createTemplates(template);
+      return templates.fromText(template.getContent()).make(data).render();
     } else {
       return super.template(message, entity);
     }
+  }
+
+  @Override
+  protected String getSubject(final MailMessage message, Model entity) {
+    if (message == null) {
+      return null;
+    }
+    Template template = getTemplateByModel(entity);
+    boolean isDefaultTemplate = false;
+    if (template == null) {
+      template = Beans.get(AppBaseService.class).getAppBase().getDefaultMailMessageTemplate();
+      isDefaultTemplate = true;
+    }
+    if (template != null) {
+      Map<String, Object> data = Maps.newHashMap();
+      if (isDefaultTemplate) {
+        data.put("entity", entity);
+      } else {
+        data.put(entity.getClass().getSimpleName(), entity);
+      }
+      Templates templates = createTemplates(template);
+      return templates.fromText(template.getSubject()).make(data).render();
+    } else {
+      return super.getSubject(message, entity);
+    }
+  }
+
+  protected Templates createTemplates(Template template) {
+    Templates templates;
+    if (template.getTemplateEngineSelect() == TemplateRepository.TEMPLATE_ENGINE_GROOVY_TEMPLATE) {
+      templates = Beans.get(GroovyTemplates.class);
+    } else {
+      templates = new StringTemplates('$', '$');
+    }
+    return templates;
+  }
+
+  protected Template getTemplateByModel(Model entity) {
+    List<MailTemplateAssociation> mailTemplateAssociationList =
+        Beans.get(AppBaseService.class).getAppBase().getMailTemplateAssociationList();
+    if (mailTemplateAssociationList != null) {
+      for (MailTemplateAssociation item : mailTemplateAssociationList) {
+        if (item.getModel().getFullName().equals(entity.getClass().getName())) {
+          return item.getEmailTemplate();
+        }
+      }
+    }
+    return null;
   }
 }

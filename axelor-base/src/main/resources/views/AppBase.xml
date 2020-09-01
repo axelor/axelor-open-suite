@@ -48,6 +48,8 @@
                 <field name="storeStreets" widget="boolean-switch" />
                 <field name="isSharedAddress" widget="boolean-switch" />
                 <field name="defaultMailMessageTemplate"/>
+                <spacer/>
+                <field name="mailTemplateAssociationList"/>                                
 			</panel>
 		    <panel name="interfacesPanel" title="Interfaces"  colSpan="12">
 				<panel name="mapPanel" title="Mapping"  colSpan="12">
