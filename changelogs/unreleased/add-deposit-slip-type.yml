@@ -1,0 +1,5 @@
+title: Add type to Deposit Slip
+type: feature
+description: |
+	Cheque deposit slip is now Deposit slip with a selectable type
+	Available type are Cheque, Bill of exchange & Cash

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -21,26 +21,6 @@
             <property name="name">odaDriverClass</property>
             <property name="id">209</property>
             <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
-        </structure>
-        <structure>
-            <property name="name">odaAutoCommit</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">odaIsolationMode</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">odaJndiName</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileName</property>
-            <property name="id">209</property>
-        </structure>
-        <structure>
-            <property name="name">OdaConnProfileStorePath</property>
-            <property name="id">209</property>
         </structure>
     </list-property>
     <property name="units">in</property>
@@ -195,6 +175,12 @@
                     <text-property name="heading">DepositDate</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">DepositType</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">DepositType</text-property>
+                    <text-property name="heading">DepositType</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">ChqNbr</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">ChqNbr</text-property>
@@ -312,76 +298,81 @@
                     </structure>
                     <structure>
                         <property name="position">3</property>
-                        <property name="name">ChqNbr</property>
+                        <property name="name">DepositType</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">4</property>
+                        <property name="name">ChqNbr</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
                         <property name="name">TotalAmount</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">5</property>
+                        <property name="position">6</property>
                         <property name="name">AccountNbr</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">6</property>
+                        <property name="position">7</property>
                         <property name="name">BankName</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">7</property>
+                        <property name="position">8</property>
                         <property name="name">Email</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
+                        <property name="position">9</property>
                         <property name="name">Addressl2</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">9</property>
+                        <property name="position">10</property>
                         <property name="name">Addressl3</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">10</property>
+                        <property name="position">11</property>
                         <property name="name">Addressl4</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">11</property>
+                        <property name="position">12</property>
                         <property name="name">Addressl5</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">12</property>
+                        <property name="position">13</property>
                         <property name="name">Addressl6</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">13</property>
+                        <property name="position">14</property>
                         <property name="name">City</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">15</property>
                         <property name="name">CompanyName</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">15</property>
+                        <property name="position">16</property>
                         <property name="name">logo_height</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">16</property>
+                        <property name="position">17</property>
                         <property name="name">logo_width</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">17</property>
+                        <property name="position">18</property>
                         <property name="name">CompanyLogo</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -405,104 +396,111 @@
                 </structure>
                 <structure>
                     <property name="position">3</property>
+                    <property name="name">DepositType</property>
+                    <property name="nativeName">DepositType</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
                     <property name="name">ChqNbr</property>
                     <property name="nativeName">ChqNbr</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">4</property>
+                    <property name="position">5</property>
                     <property name="name">TotalAmount</property>
                     <property name="nativeName">TotalAmount</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">5</property>
+                    <property name="position">6</property>
                     <property name="name">AccountNbr</property>
                     <property name="nativeName">AccountNbr</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">6</property>
+                    <property name="position">7</property>
                     <property name="name">BankName</property>
                     <property name="nativeName">BankName</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">7</property>
+                    <property name="position">8</property>
                     <property name="name">Email</property>
                     <property name="nativeName">Email</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">8</property>
+                    <property name="position">9</property>
                     <property name="name">Addressl2</property>
                     <property name="nativeName">Addressl2</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">9</property>
+                    <property name="position">10</property>
                     <property name="name">Addressl3</property>
                     <property name="nativeName">Addressl3</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">10</property>
+                    <property name="position">11</property>
                     <property name="name">Addressl4</property>
                     <property name="nativeName">Addressl4</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">11</property>
+                    <property name="position">12</property>
                     <property name="name">Addressl5</property>
                     <property name="nativeName">Addressl5</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">12</property>
+                    <property name="position">13</property>
                     <property name="name">Addressl6</property>
                     <property name="nativeName">Addressl6</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">13</property>
+                    <property name="position">14</property>
                     <property name="name">City</property>
                     <property name="nativeName">City</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">14</property>
+                    <property name="position">15</property>
                     <property name="name">CompanyName</property>
                     <property name="nativeName">CompanyName</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">15</property>
+                    <property name="position">16</property>
                     <property name="name">logo_height</property>
                     <property name="nativeName">logo_height</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">16</property>
+                    <property name="position">17</property>
                     <property name="name">logo_width</property>
                     <property name="nativeName">logo_width</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">17</property>
+                    <property name="position">18</property>
                     <property name="name">CompanyLogo</property>
                     <property name="nativeName">CompanyLogo</property>
                     <property name="dataType">string</property>
@@ -512,6 +510,7 @@
             <xml-property name="queryText"><![CDATA[SELECT
 	Deposit.deposit_number       AS "DepositNumber",
 	Deposit.deposit_date         AS "DepositDate",
+	Deposit.deposit_type         AS "DepositType",
 	Deposit.cheque_count         AS "ChqNbr",
 	Deposit.total_amount         AS "TotalAmount",
 	BankDetails.account_nbr      AS "AccountNbr",
@@ -1068,7 +1067,27 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="dataType">integer</property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">logo_height_1</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_height"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">logo_width_1</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_width"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">DepositType</property>
+                    <text-property name="displayName">DepositType</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["DepositType"]</expression>
+                    <property name="dataType">integer</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
+            <structure name="toc"/>
             <column id="4006">
                 <property name="width">2in</property>
             </column>
@@ -1530,7 +1549,22 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <column id="4438"/>
                         <column id="4440"/>
                         <column id="4441"/>
-                        <column id="4442"/>
+                        <column id="4442">
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row._outer["DepositType"] != 1</expression>
+                                </structure>
+                            </list-property>
+                        </column>
+                        <column id="4469">
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row._outer["DepositType"] != 3</expression>
+                                </structure>
+                            </list-property>
+                        </column>
                         <column id="4443"/>
                         <column id="4444"/>
                         <column id="4445"/>
@@ -1645,6 +1679,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                                 <property name="allowExport">true</property>
                                             </structure>
                                         </list-property>
+                                        <structure name="toc"/>
                                         <property name="resultSetColumn">Payer</property>
                                     </data>
                                 </cell>
@@ -1678,6 +1713,44 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["translation"]</VALUE-OF>]]></text-property>
                                     </text>
+                                </cell>
+                                <cell id="4466">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <data id="4470">
+                                        <property name="dataSet">TranslateDS</property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'ChequeDepositSlip.boeNum'</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">BoeNum</property>
+                                                <text-property name="displayName">BoeNum</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                                <property name="allowExport">true</property>
+                                            </structure>
+                                        </list-property>
+                                        <structure name="toc"/>
+                                        <property name="resultSetColumn">BoeNum</property>
+                                    </data>
                                 </cell>
                                 <cell id="4406">
                                     <property name="borderBottomStyle">solid</property>
@@ -1849,6 +1922,20 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="resultSetColumn">ChqNbr</property>
                                     </data>
                                 </cell>
+                                <cell id="4467">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <data id="4471">
+                                        <property name="textAlign">center</property>
+                                        <property name="resultSetColumn">ChqNbr</property>
+                                    </data>
+                                </cell>
                                 <cell id="4423">
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
@@ -1903,6 +1990,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 <cell id="4432"/>
                                 <cell id="4433"/>
                                 <cell id="4434"/>
+                                <cell id="4468"/>
                                 <cell id="4435">
                                     <property name="colSpan">3</property>
                                     <property name="rowSpan">1</property>

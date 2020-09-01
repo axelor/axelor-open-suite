@@ -2,18 +2,19 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
-	<grid name="cheque-deposit-slip-grid" model="com.axelor.apps.account.db.DepositSlip" title="Cheque deposit slips"
+	<grid name="cheque-deposit-slip-grid" model="com.axelor.apps.account.db.DepositSlip" title="Deposit slips"
 	    orderBy="-depositDate,-depositNumber">
 	  <field name="depositNumber" width="120"/>
 	  <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 	  <field name="companyBankDetails" />
 	  <field name="depositDate" />
+      <field name="depositType" />
 	  <field name="totalAmount" />
 	  <field name="chequeCount" />
 	  <field name="publicationDate"/>
 	</grid>
 
-    <form name="cheque-deposit-slip-form" model="com.axelor.apps.account.db.DepositSlip" title="Cheque deposit slip"
+    <form name="cheque-deposit-slip-form" model="com.axelor.apps.account.db.DepositSlip" title="Deposit slip"
         onNew="action-group-deposit-slip-onnew"
         onLoad="action-deposit-slip-company-bank-details-visibility" width="large">
 
@@ -28,9 +29,13 @@
             <static><![CDATA[<span class='label label-important'>Payment vouchers on invoice setting is disabled.</span>]]></static>
         </panel>
 
-        <panel name="periodPanel" title="Period" readonlyIf="publicationDate">
-            <field name="fromDate" />
-            <field name="toDate" />
+        <panel name="definitionPanel" readonlyIf="publicationDate">
+            <field name="depositType" />
+
+            <panel name="periodPanel" title="Period" colSpan="12" >
+                <field name="fromDate" />
+                <field name="toDate" />
+            </panel>
         </panel>
 
         <panel name="companyDetailsPanel" readonlyIf="publicationDate">
