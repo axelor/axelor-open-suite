@@ -5,6 +5,7 @@
 - PurchaseOrder : removed action which is setting dotted field explicitly.
 - TRACKING MAIL NOTIFICATION : corrected wrong partner receiving email selected. 
 - Sale Invoice Details : Fixed the empty report generation
+- Fix NPE when user try to ventilate customer refund invoice.
 
 ## [5.2.14] - 2020-08-20
 ## Bug Fixes
