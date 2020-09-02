@@ -25,6 +25,7 @@
         <view type="grid" name="ticket-grid"/>
         <view type="form" name="ticket-form"/>
         <domain>self.ticketType = :id </domain>
+        <context name="_user" expr="eval: __user__"/>
     </action-view>
 
 </object-views>

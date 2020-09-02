@@ -33,7 +33,7 @@
 		<field name="contactDate"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
         <field name="statusSelect"/>
-        <button name="grabLeadBtn" icon="fa-suitcase" help="Take charge" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" />
+        <button name="grabLeadBtn" hideIf="user.id == _internalUserId" icon="fa-suitcase" help="Take charge" onClick="com.axelor.apps.crm.web.EventController:assignToMeLead" />
 		<button name="scheduleEventBtn" title="Schedule Event" icon="fa-group" onClick="action-lead-view-schedule-event"/>
 		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
     </grid>
@@ -66,6 +66,15 @@
 							]]>
 						</viewer>
 					</field>
+					<field name="industrySector" showTitle="false" showIf="industrySector &amp;&amp; $readonly()">
+        				<viewer>
+							<![CDATA[
+								<h4>
+									<span class="label label-default" style="background-color: #0285D8;"> {{ record.name }} </span>
+     							</h4>
+							]]>
+						</viewer>
+      				</field>
 				</panel>
 			</panel>
 
@@ -130,13 +139,25 @@
 					<field name="fax" colSpan="3" placeholder="+33100000000" onChange="action-partner-method-normalize-fax" pattern="^\+?([\s()-.]*\d){7,}$"/>
 					<field name="webSite" colSpan="6" placeholder="http://www.url.com" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
 				</panel>
-
-				<panel name="primaryAddress" title="Primary address" readonlyIf="statusSelect == 4 || statusSelect == 5" colSpan="12">
-					<field name="primaryAddress" colSpan="8"/>
-					<field name="primaryPostalCode" colSpan="4"/>
-					<field name="primaryCity" colSpan="4" form-view="city-form" grid-view="city-grid" onChange="action-attrs-lead-set-primary-state-country-postal-code"/>
-					<field name="primaryState" colSpan="4" form-view="region-form" grid-view="region-grid"/>
-					<field name="primaryCountry" colSpan="4" form-view="country-form" grid-view="country-grid"/>
+								
+				<panel name="addressPanel" title="Primary address" showIf="$readonly()" colSpan="12">
+       				<field name="$address"  showTitle="false">
+						<viewer depends="primaryAddress,primaryPostalCode,primaryCity,primaryState,primaryCountry">
+							<![CDATA[
+								{{record.primaryAddress}}<br/>
+								{{record.primaryPostalCode}} {{record.primaryCity.name}}<br/>
+								{{record.primaryState.name}}<span ng-if="record.primaryState.name &amp;&amp; record.primaryCountry.name"> - </span>{{record.primaryCountry.name}}
+							]]>
+						</viewer>
+					</field>
+       			</panel>
+				
+				<panel name="primaryAddress" title="Primary address" readonlyIf="statusSelect == 4 || statusSelect == 5" colSpan="12" hideIf="$readonly()">
+					<field name="primaryAddress" colSpan="12"/>
+					<field name="primaryPostalCode" colSpan="6"/>
+					<field name="primaryCity" colSpan="6" form-view="city-form" grid-view="city-grid" onChange="action-attrs-lead-set-primary-state-country-postal-code"/>
+					<field name="primaryState" colSpan="6" form-view="region-form" grid-view="region-grid"/>
+					<field name="primaryCountry" colSpan="6" form-view="country-form" grid-view="country-grid"/>
 				</panel>
 
 				<panel name="descriptionPanel" title="Description" colSpan="12">

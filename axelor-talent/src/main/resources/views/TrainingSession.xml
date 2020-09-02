@@ -15,21 +15,25 @@
 	
 	<form name="training-session-form" title="Training session" model="com.axelor.apps.talent.db.TrainingSession" width="large" readonlyIf="$popup()">
 		<panel name="statusPanel" title="Status">
-			<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false" />		
+			<field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false" readonly="true"/>		
 		</panel>
 		<panel name="detailPanel">
-			<field name="training" onChange="action-training-session-training-change" />
+			<field name="training" onChange="action-training-session-training-change,action-training-session-training-update-method" />
 			<field name="location" />
 			<field name="fromDate" />
 			<field name="toDate" />
 			<field name="duration" />
-			<panel-dashlet name="employeeRegisteredPanel" action="action-dashlet-training-session-employee-registered" colSpan="12"/>
+			<panel-related name="trainingRegisterListPanel" field="trainingRegisterList" grid-view="training-register-grid" form-view="training-register-form" canNew="false" colSpan="12"/>
 		</panel>
 		<panel name="actionPanel" itemSpan="12" sidebar="true">
-			<button name="registerTrainingBtn" title="Register training" onClick="save,action-training-session-register-training" showIf="statusSelect == 1"/>
-			<button name="closeSessionBtn" title="Close session" onClick="save,action-training-session-method-close-session" showIf="statusSelect != 3" />
+			<button name="registerTrainingBtn" title="Register training" onClick="save,action-mass-register-wizard" showIf="statusSelect == 1"/>
+			<button name="completeSessionBtn" title="Complete session" onClick="save,action-training-session-method-complete-session" showIf="statusSelect == 1"/>
+			<button name="cancelButton" title="Cancel session" onClick="save,action-training-session-method-cancel" showIf="statusSelect == 1"/>
 			<field name="nbrRegistered" readonly="true"/>
 			<field name="rating" widget="progress" readonly="true" />
+			<field name="overallRatingToApply" colSpan="6"/>
+			<button name="updateAllRating" title="Update all rating" colSpan="6" onClick="save, action-update-all-rating-method"/>
+			
 		</panel>
 	</form>
 	
@@ -37,25 +41,20 @@
 		<field name="duration" expr="eval:training.duration" if="training != null"/>
 	</action-record>
 	
-	<action-view name="action-dashlet-training-session-employee-registered" title="Employee registred" model="com.axelor.apps.hr.db.Employee">
-		<view type="grid" name="employee-grid"/>
-		<view type="form" name="employee-form"/>
-		<view-param name="search-filters" value="employee-filters"/>
-		<domain>self.id in (:_employeeIds)</domain>
-		<context name="_employeeIds" expr="eval:[0] + __repo__(TrainingRegister).all().filter('self.trainingSession.id = ' + id).fetch().collect{it->it.employee?.id}"/>
-	</action-view>
+	<action-method name="action-training-session-training-update-method">
+	    <call class="com.axelor.apps.talent.web.TrainingSessionController" method="updateTraingRegisterTraining"/>
+	</action-method>
 	
-	<action-view name="action-training-session-register-training" title="Register training" model="com.axelor.apps.talent.db.TrainingRegister">
-		<view type="form" name="training-register-form"/>
-		<view type="grid" name="training-register-grid"/>
-		<context name="_trainingSession" expr="eval:__self__"/>
-		<context name="_training" expr="eval:__self__.training"/>
-		<context name="_fromDate" expr="eval:__self__.fromDate"/>
-		<context name="_toDate" expr="eval:__self__.toDate"/>
-	</action-view>
+	<action-method name="action-training-session-method-cancel">
+	    <call class="com.axelor.apps.talent.web.TrainingSessionController" method="cancel"/>
+	</action-method>
 	
-	<action-method name="action-training-session-method-close-session">
-		<call class="com.axelor.apps.talent.web.TrainingSessionController" method="closeSession"/>
+	<action-method name="action-update-all-rating-method">
+	    <call class="com.axelor.apps.talent.web.TrainingSessionController" method="updateAllRating"/>
+	</action-method>
+	
+	<action-method name="action-training-session-method-complete-session">
+		<call class="com.axelor.apps.talent.web.TrainingSessionController" method="completeSession"/>
 	</action-method>
 	
 </object-views>

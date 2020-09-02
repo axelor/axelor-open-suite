@@ -46,6 +46,21 @@
 		public static final int EBICS_TYPE_T = 0;
 		public static final int EBICS_TYPE_TS = 1;
 	]]></extra-code>
+	
+	<track>
+		<field name="partnerId" on="UPDATE"/>
+		<field name="ebicsBank" on="UPDATE"/>
+		<field name="ebicsTypeSelect" on="UPDATE"/>
+		<field name="testMode" on="UPDATE"/>
+		<field name="transportEbicsUser" on="UPDATE"/>
+		<field name="defaultSignatoryEbicsUser" on="UPDATE"/>
+		<field name="bankStatementGetModeSelect" on="UPDATE"/>
+		<field name="bankStatementStartDate" on="UPDATE"/>
+		<field name="bankStatementEndDate" on="UPDATE"/>
+		<field name="filterReceiverBD" on="UPDATE"/>
+		<field name="usePSR" on="UPDATE"/>
+		<field name="pSRBankStatementFileFormat" on="UPDATE"/>
+	</track>
     
   </entity>
   

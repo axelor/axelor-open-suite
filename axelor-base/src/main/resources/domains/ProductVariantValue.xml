@@ -9,6 +9,7 @@
 	
 	<string name="name" title="Name" required="true"/>
 	<string name="code" title="Code" required="true"/>
+	<string name="colorSelect" title="Display color" selection="color.name.selection"/>
 	<decimal name="priceExtra" title="Price Extra" precision="20" scale="10"/>
 	<integer name="applicationPriceSelect" title="Application" selection="ibase.product.variant.value.application.price.select"/>
 	<many-to-one name="productVariantAttr" ref="com.axelor.apps.base.db.ProductVariantAttr"/>

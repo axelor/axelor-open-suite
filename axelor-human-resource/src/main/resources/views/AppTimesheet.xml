@@ -3,7 +3,8 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 	
-	<form name="app-timesheet-config-form" title="App Timesheet" model="com.axelor.apps.base.db.AppTimesheet" canDelete="false" canNew="false" width="large">
+	<form name="app-timesheet-config-form" title="App Timesheet" model="com.axelor.apps.base.db.AppTimesheet" canDelete="false"
+				canNew="false" width="large" onSave="action-app-timesheet-method-switch-timesheet-editors">
 		<panel name="mainPanel">
 			<field name="invoicingTypeLogTimesSelect"/>
 			<field name="consolidateTSLine" widget="boolean-switch"/>
@@ -13,7 +14,7 @@
 			<field name="defaultEndFormat" />
 			<field name="createLinesForLeaves" widget="boolean-switch" />
 			<field name="createLinesForHolidays" widget="boolean-switch" />
-			<field name="timesheetEditor" widget="boolean-switch" />
+			<field name="timesheetEditor" widget="boolean-switch"/>
 			<field name="displayTimesheetLineNumber" widget="boolean-switch" />
 			<field name="timesheetReminderTemplate" domain="self.metaModel.name = 'TimesheetReminder'"/>
 			<field name="isAlertManufOrderFinish" widget="boolean-switch"/>
@@ -26,6 +27,9 @@
 			<mail-followers/>
 		</panel-mail>
 	</form>
-	
+
+	<action-method name="action-app-timesheet-method-switch-timesheet-editors">
+		<call class="com.axelor.apps.hr.web.AppTimesheetController" method="switchTimesheetEditors"/>
+	</action-method>
 	
 </object-views>

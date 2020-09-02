@@ -25,6 +25,15 @@
 - Reports: Manage locale, date format and timezone following company configuration.
 - Product: add products per company to configure different prices depending on the company.
 - Product: add product image in grid view.
+- HRConfig : Import formula variables.
+- PRODUCT: Add json field.
+- MRP: hideIf on generateProposalBtn on mrpLine grid.
+- Opportunity: Addition of hideIf attribute for 'take charge' button in opportunity grid.
+- LEAD : hide Take charge button on grid view.
+- TICKET : hide Take charge button on grid view.
+- QUALITY TAG : add colorSelect field for tag color
+- User : add forcePasswordChange field in user-form.
+- Invoice : Specify button css.
 
 ## Improvements
 - USER : Default User language is based on application.locale from application.properties
@@ -41,6 +50,11 @@
 - Invoice report : Change in font size in Invoice report.
 - Report : Fix unit translation.
 - Forecast Recap : default value set to today for from date field
+- Product : Added possibility to add a color to the product variant value tag with the field displayColor
+- Partner : Deleting partner will not remove linked employee.
+- Journal : Improve balance calculation
+- Invoice : Addition of new field to display deliveryAddress on form and in report.
+- EBICS PARTNER : added tracking to the fields of the ebics partner object.
 
 ## Bug Fixes
 - HR : A leave-line cannot be saved whitout employee or leave-reason.
@@ -51,5 +65,6 @@
 - XML : Update all xml files XSD version to AOP 5.3.
 - INVOICE : Change Invoicing menu translation.
 - INVOICE : Resolve report binding issue.
+- MRP LINE : Fix the mrp-line-form dirty view issue.
 - Bank reconciliation : add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 

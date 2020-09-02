@@ -134,6 +134,9 @@
 		
 		<one-to-many name="productCompanyList" ref="com.axelor.apps.base.db.ProductCompany" title="Products per companies"
 			mappedBy="product"/>
+      
+        <!-- Json field -->
+        <string name="productAttrs" title="Fields" json="true" />
 
 		<extra-code>
 	   		<![CDATA[

@@ -34,7 +34,7 @@
 			<field name="startDate"/>
 			<field name="endDate"/>
 			<field name="deadLineDate"/>
-			<field name="qualityTagSet" widget="TagSelect" colSpan="12"/>
+			<field name="qualityTagSet" widget="TagSelect" x-color-field="colorSelect" colSpan="12"/>
 		</panel>
 		<panel name="descriptionPanel">
 			<field name="description" colSpan="12" height="6" widget="html" showTitle="false"/>

@@ -21,6 +21,7 @@ import static com.axelor.common.StringUtils.isBlank;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.service.MailServiceMessageImpl;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
@@ -28,6 +29,7 @@ import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import com.axelor.mail.MailException;
 import com.axelor.mail.db.MailAddress;
 import com.axelor.mail.db.MailFollower;
 import com.axelor.mail.db.MailMessage;
@@ -171,7 +173,6 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     final Set<String> recipients = new LinkedHashSet<>();
     final MailFollowerRepository followers = Beans.get(MailFollowerRepository.class);
     String entityName = entity.getClass().getName();
-    PartnerRepository partnerRepo = Beans.get(PartnerRepository.class);
 
     if (message.getRecipients() != null) {
       for (MailAddress address : message.getRecipients()) {
@@ -190,7 +191,7 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
                 .anyMatch(x -> x.getFullName().equals(entityName)))) {
           continue;
         } else {
-          Partner partner = partnerRepo.findByUser(user);
+          Partner partner = user.getPartner();
           if (partner != null && partner.getEmailAddress() != null) {
             recipients.add(partner.getEmailAddress().getAddress());
           } else if (user.getEmail() != null) {
@@ -207,5 +208,14 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
       }
     }
     return Sets.filter(recipients, Predicates.notNull());
+  }
+
+  @Override
+  public void send(MailMessage message) throws MailException {
+
+    if (!Beans.get(AppBaseService.class).getAppBase().getActivateSendingEmail()) {
+      return;
+    }
+    super.send(message);
   }
 }

@@ -19,7 +19,7 @@
         <field name="partner"/>
   		<field name="product.defaultSupplierPartner"/>
         <field name="proposalGenerated" hidden="true"/>
-        <button name="generateProposalBtn" icon="fa-calendar" onClick="action-mrp-line-method-generate-proposal" readonlyIf="proposalGenerated || [5,8].indexOf($get('mrpLineType.elementSelect')) == -1"/>
+        <button name="generateProposalBtn" icon="fa-calendar" onClick="action-mrp-line-method-generate-proposal" readonlyIf="proposalGenerated" hideIf="[5,8].indexOf($get('mrpLineType.elementSelect')) == -1"/>
         <field name="mrpLineType.elementSelect" hidden="true"/>
         <field name="isEditedByUser" hidden="true"/>
         
@@ -42,6 +42,7 @@
             <field name="mrpLineType.elementSelect" hidden="true"/>
             <field name="mrpLineOriginList" colSpan="12" readonly="true">
                 <editor x-viewer="true">
+                	<field name="relatedToSelectId" hidden="true"/>
            			<field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId" colSpan="12" showTitle="false"/>
                 </editor>
             </field>
