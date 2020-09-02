@@ -9,6 +9,7 @@
 - FISCAL YEAR : corrected sql error.
 - Sale Invoice Details : Fixed the empty report generation
 - MRP: Fix data rollback on error.
+- Account config : Fix translation
 
 ## [5.3.10] - 2020-08-27
 ## Features
