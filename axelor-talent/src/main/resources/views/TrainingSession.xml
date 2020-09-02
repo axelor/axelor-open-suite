@@ -28,7 +28,7 @@
 		<panel name="actionPanel" itemSpan="12" sidebar="true">
 			<button name="registerTrainingBtn" title="Register training" onClick="save,action-mass-register-wizard" showIf="statusSelect == 1"/>
 			<button name="completeSessionBtn" title="Complete session" onClick="save,action-training-session-method-complete-session" showIf="statusSelect == 1"/>
-			<button name="cancelButton" title="Cancle" onClick="save,action-training-session-method-cancle" showIf="statusSelect == 1"/>
+			<button name="cancelButton" title="Cancel session" onClick="save,action-training-session-method-cancel" showIf="statusSelect == 1"/>
 			<field name="nbrRegistered" readonly="true"/>
 			<field name="rating" widget="progress" readonly="true" />
 			<field name="overallRatingToApply" colSpan="6"/>
@@ -45,8 +45,8 @@
 	    <call class="com.axelor.apps.talent.web.TrainingSessionController" method="updateTraingRegisterTraining"/>
 	</action-method>
 	
-	<action-method name="action-training-session-method-cancle">
-	    <call class="com.axelor.apps.talent.web.TrainingSessionController" method="cancle"/>
+	<action-method name="action-training-session-method-cancel">
+	    <call class="com.axelor.apps.talent.web.TrainingSessionController" method="cancel"/>
 	</action-method>
 	
 	<action-method name="action-update-all-rating-method">

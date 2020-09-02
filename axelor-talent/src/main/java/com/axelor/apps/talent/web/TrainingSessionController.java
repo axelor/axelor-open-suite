@@ -48,12 +48,12 @@ public class TrainingSessionController {
     response.setReload(true);
   }
 
-  public void cancle(ActionRequest request, ActionResponse response) {
+  public void cancel(ActionRequest request, ActionResponse response) {
 
     TrainingSession trainingSession = request.getContext().asType(TrainingSession.class);
     trainingSession = Beans.get(TrainingSessionRepository.class).find(trainingSession.getId());
 
-    Beans.get(TrainingSessionService.class).cancle(trainingSession);
+    Beans.get(TrainingSessionService.class).cancel(trainingSession);
 
     response.setReload(true);
   }

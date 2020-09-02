@@ -468,6 +468,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   public Invoice generateInvoice(SaleOrder saleOrder) throws AxelorException {
 
     Invoice invoice = this.createInvoice(saleOrder);
+    invoice.setDeliveryAddress(saleOrder.getDeliveryAddress());
+    invoice.setDeliveryAddressStr(saleOrder.getDeliveryAddressStr());
 
     invoiceRepo.save(invoice);
 
@@ -499,6 +501,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       throws AxelorException {
 
     Invoice invoice = this.createInvoice(saleOrder, saleOrderLinesSelected, qtyToInvoiceMap);
+    invoice.setDeliveryAddress(saleOrder.getDeliveryAddress());
+    invoice.setDeliveryAddressStr(saleOrder.getDeliveryAddressStr());
+
     invoiceRepo.save(invoice);
 
     saleOrderRepo.save(fillSaleOrder(saleOrder, invoice));
