@@ -221,29 +221,36 @@ public class MrpLineServiceImpl implements MrpLineService {
     String origin = "";
     int count = 0;
     for (MrpLineOrigin mrpLineOrigin : mrpLine.getMrpLineOriginList()) {
-      if (mrpLineOrigin
-          .getRelatedToSelect()
-          .equals(MrpLineOriginRepository.RELATED_TO_SALE_ORDER_LINE)) {
-        SaleOrder saleOrder =
-            saleOrderLineRepo.find(mrpLineOrigin.getRelatedToSelectId()).getSaleOrder();
-        origin += saleOrder.getSaleOrderSeq();
-      } else if (mrpLineOrigin
-          .getRelatedToSelect()
-          .equals(MrpLineOriginRepository.RELATED_TO_PURCHASE_ORDER_LINE)) {
-        PurchaseOrder purchaseOrder =
-            purchaseOrderLineRepo.find(mrpLineOrigin.getRelatedToSelectId()).getPurchaseOrder();
-        origin += purchaseOrder.getPurchaseOrderSeq();
-      } else if (mrpLineOrigin
-          .getRelatedToSelect()
-          .equals(MrpLineOriginRepository.RELATED_TO_MRP_FORECAST)) {
-        origin += mrpLineOrigin.getMrpLine().getMrp().getMrpSeq() + "-" + I18n.get("MRP forecast");
-      }
       count++;
+      origin += getMrpLineOriginStr(mrpLineOrigin);
       if (count < mrpLine.getMrpLineOriginList().size()) {
         origin += " & ";
       }
     }
     return origin;
+  }
+
+  protected String getMrpLineOriginStr(MrpLineOrigin mrpLineOrigin) {
+    if (mrpLineOrigin
+        .getRelatedToSelect()
+        .equals(MrpLineOriginRepository.RELATED_TO_SALE_ORDER_LINE)) {
+      SaleOrder saleOrder =
+          saleOrderLineRepo.find(mrpLineOrigin.getRelatedToSelectId()).getSaleOrder();
+      return saleOrder.getSaleOrderSeq();
+    }
+    if (mrpLineOrigin
+        .getRelatedToSelect()
+        .equals(MrpLineOriginRepository.RELATED_TO_PURCHASE_ORDER_LINE)) {
+      PurchaseOrder purchaseOrder =
+          purchaseOrderLineRepo.find(mrpLineOrigin.getRelatedToSelectId()).getPurchaseOrder();
+      return purchaseOrder.getPurchaseOrderSeq();
+    }
+    if (mrpLineOrigin
+        .getRelatedToSelect()
+        .equals(MrpLineOriginRepository.RELATED_TO_MRP_FORECAST)) {
+      return mrpLineOrigin.getMrpLine().getMrp().getMrpSeq() + "-" + I18n.get("MRP forecast");
+    }
+    return "";
   }
 
   protected void linkToOrder(MrpLine mrpLine, AuditableModel order) {
