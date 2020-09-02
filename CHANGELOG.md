@@ -55,6 +55,7 @@
 - Journal : Improve balance calculation
 - Invoice : Addition of new field to display deliveryAddress on form and in report.
 - EBICS PARTNER : added tracking to the fields of the ebics partner object.
+- Move : It is now possible to change date until the move is validated
 
 ## Bug Fixes
 - HR : A leave-line cannot be saved whitout employee or leave-reason.

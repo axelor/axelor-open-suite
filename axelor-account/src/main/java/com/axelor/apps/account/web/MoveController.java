@@ -59,6 +59,16 @@ public class MoveController {
     }
   }
 
+  public void updateLines(ActionRequest request, ActionResponse response) {
+    Move move = request.getContext().asType(Move.class);
+    try {
+      move.getMoveLineList().forEach(moveLine -> moveLine.setDate(move.getDate()));
+      response.setValues(move);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void getPeriod(ActionRequest request, ActionResponse response) {
 
     Move move = request.getContext().asType(Move.class);
