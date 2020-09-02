@@ -43,6 +43,6 @@ public interface TemplateMessageService {
 
   public Set<MetaFile> getMetaFiles(Template template) throws AxelorException, IOException;
 
-  public TemplateMaker initMaker(long objectId, String model, String tag, boolean isJson)
+  public TemplateMaker initMaker(long objectId, String model, String tag, Template template)
       throws InstantiationException, IllegalAccessException, ClassNotFoundException;
 }

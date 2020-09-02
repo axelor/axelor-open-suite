@@ -14,7 +14,7 @@
     </grid>
     
 	<form name="journal-form" title="Journal" model="com.axelor.apps.account.db.Journal"   
-		onNew="account-journal-record-default" width="large" onLoad="action-journal-method-set-totals">
+		onNew="account-journal-record-default" width="large" onLoad="action-journal-group-on-load-actions">
 		<panel name="statusPanel" title="Status">
 			<field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect" colSpan="9"/>
 			<button name="activeStatusBtn" title="Active" hideIf="statusSelect == 1" onClick="account-journal-record-status-active,save" colSpan="2"/>
@@ -24,8 +24,9 @@
 			<field name="code" x-bind="{{code|unaccent|uppercase}}" />
 			<field name="company" canEdit="false" readonlyIf="statusSelect == 1 || statusSelect == 2" form-view="company-form" grid-view="company-grid"/>
 			<field name="journalType" grid-view="journal-type-grid" form-view="journal-type-form"/>
+			<field name="journalType.isDisplayBalances" hidden="true"/>
 		</panel>
-		<panel name="totalPanel" showIf="id">
+		<panel name="totalPanel" showIf="id &amp;&amp; journalType.isDisplayBalances">
 			<field name="$totalDebit" title="Total Debit" colSpan="4" readonly="true">
 				<viewer>
 					<![CDATA[
@@ -102,7 +103,11 @@
     <action-record name="account-journal-on-change-not-export-ok" model="com.axelor.apps.account.db.Journal">
     	<field name="exportCode" expr="eval:null" if="notExportOk"/>
     </action-record>
-    
+
+	<action-group name="action-journal-group-on-load-actions">
+		<action name="action-journal-method-set-totals" if="journalType.isDisplayBalances"/>
+	</action-group>
+
     <action-method name="action-journal-method-set-totals">
       <call class="com.axelor.apps.account.web.JournalController" method="computeBalance"/>
     </action-method>

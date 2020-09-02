@@ -24,8 +24,11 @@
     <many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition" />
     <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank Details"/>
     <many-to-one name="partnerAccount" ref="com.axelor.apps.account.db.Account" title="Partner account"/>
-	<many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address" />
-    <string name="addressStr" title="Address" large="true" multiline="true"/>
+      <many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address" />
+      <many-to-one name="deliveryAddress" ref="com.axelor.apps.base.db.Address" title="Delivery address"/>
+
+		<string name="addressStr" title="Address" large="true" multiline="true"/>
+		<string name="deliveryAddressStr" title="Delivery address" large="true" multiline="true"/>
     <string name="internalReference" title="Internal Ref."/>
     <string name="externalReference" title="External Ref."/>
     <many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList" title="Price list"/>

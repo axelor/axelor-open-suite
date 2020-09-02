@@ -838,6 +838,7 @@
 "There is no matching condition for the allowance %s",,,
 "There is no year for society %s which includes date %s",,,
 "There is no year selected for the allowance.",,,
+"This contact is referenced from employee %s - %s",,,
 "This date is invalid. It must be included in the timesheet's period.",,,
 "Thursday",,,
 "Time %",,,

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.message.service;
 
+import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
@@ -51,7 +52,6 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import javax.mail.MessagingException;
@@ -66,7 +66,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected TemplateMaker maker =
-      new TemplateMaker(Locale.FRENCH, TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
+      new TemplateMaker(AppFilter.getLocale(), TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
 
   protected MessageService messageService;
   protected TemplateContextService templateContextService;
@@ -107,7 +107,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
             String.format(
                 I18n.get(IExceptionMessage.INVALID_MODEL_TEMPLATE_EMAIL), modelName, model));
       }
-      initMaker(objectId, model, tag, template.getIsJson());
+      initMaker(objectId, model, tag, template);
       computeTemplateContexts(
           template.getTemplateContextList(), objectId, model, template.getIsJson());
     }
@@ -243,10 +243,10 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 
   @Override
   @SuppressWarnings("unchecked")
-  public TemplateMaker initMaker(long objectId, String model, String tag, boolean isJson)
+  public TemplateMaker initMaker(long objectId, String model, String tag, Template template)
       throws ClassNotFoundException {
 
-    if (isJson) {
+    if (template.getIsJson()) {
       maker.setContext(JPA.find(MetaJsonRecord.class, objectId), tag);
     } else {
       Class<? extends Model> myClass = (Class<? extends Model>) Class.forName(model);

@@ -11,9 +11,9 @@
 	<decimal name="balance" title="ForecastRecapLine.balance"/>
     <many-to-one name="forecastRecapLineType" title="Forecast Recap Line Type" ref="com.axelor.apps.cash.management.db.ForecastRecapLineType"/>
 	<many-to-one name="forecastRecap" ref="com.axelor.apps.cash.management.db.ForecastRecap"/>
-	<string name="relatedToSelect" title="Related to" selection="forecast.recap.line.related.to.select"/>
+	<string name="relatedToSelect" title="ForecastRecapLine.relatedToSelect" selection="forecast.recap.line.related.to.select"/>
 	<long name="relatedToSelectId"/>
-	<string name="relatedToSelectName" title="Related to"/>
+	<string name="relatedToSelectName" title="Reference"/>
 	
   </entity>
   

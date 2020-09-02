@@ -708,7 +708,6 @@ public class MrpServiceImpl implements MrpService {
       throws AxelorException {
 
     SaleOrder saleOrder = saleOrderLine.getSaleOrder();
-
     if (!this.stockLocationList.contains(saleOrder.getStockLocation())) {
       return;
     }
@@ -867,10 +866,8 @@ public class MrpServiceImpl implements MrpService {
 
   @Transactional
   protected MrpLine createAvailableStockMrpLine(
-      Mrp mrp,
-      Product product,
-      StockLocation stockLocation,
-      MrpLineType availableStockMrpLineType) {
+      Mrp mrp, Product product, StockLocation stockLocation, MrpLineType availableStockMrpLineType)
+      throws AxelorException {
 
     BigDecimal qty = BigDecimal.ZERO;
 
@@ -1006,9 +1003,16 @@ public class MrpServiceImpl implements MrpService {
       LocalDate maturityDate,
       BigDecimal cumulativeQty,
       StockLocation stockLocation,
-      Model model) {
+      Model model)
+      throws AxelorException {
 
     if (productMap != null && product != null) {
+      if (product.getUnit() == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.MRP_NO_PRODUCT_UNIT),
+            product.getFullName());
+      }
       return mrpLineService.createMrpLine(
           mrp,
           product,

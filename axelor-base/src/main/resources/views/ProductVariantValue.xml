@@ -20,6 +20,7 @@
 	        <field name="code" x-bind="{{code|unaccent|uppercase}}" />
 	        <field name="priceExtra"/>
 	        <field name="applicationPriceSelect"/>
+	  		<field name="colorSelect"/>
         </panel>
     </form>   
 

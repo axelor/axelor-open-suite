@@ -42,7 +42,7 @@ import java.util.List;
 
 public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
 
-  @Inject SaleOrderService saleOrderService;
+  @Inject protected SaleOrderService saleOrderService;
 
   protected AppSaleService appSaleService;
 

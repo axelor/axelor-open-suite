@@ -6,6 +6,7 @@
 
 	<entity name="QualityTag" lang="java" cacheable="true">
 		<string name="name" title="Name" required="true" />
+		<string name="colorSelect" title="Tag color" selection="color.name.selection" default="blue"/>
 	</entity>
 
 </domain-models>

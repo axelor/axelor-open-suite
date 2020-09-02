@@ -80,12 +80,12 @@
 
 	<action-method name="action.data.backup.call.createbackup">
 		<call class="com.axelor.apps.base.web.DataBackupController"
-			method="CreateBackUp" />
+			method="createBackup" />
 	</action-method>
 
 	<action-method name="action.data.backup.call.restorebackup">
 		<call class="com.axelor.apps.base.web.DataBackupController"
-			method="RestoreBackUp" />
+			method="restoreBackup" />
 	</action-method>
 	
 	<action-attrs name="action-data-backup-attrs-onchange-relativedate">

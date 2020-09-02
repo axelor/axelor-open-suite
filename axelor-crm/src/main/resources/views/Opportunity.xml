@@ -25,7 +25,8 @@
 		<field name="probability" aggregate="avg" widget="Progress"/>
 		<field name="expectedCloseDate"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
-		<button name="grabOpportunityBtn" icon="fa-suitcase" help="Take charge" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" />
+		<button name="grabOpportunityBtn" icon="fa-suitcase" help="Take charge" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe"
+			hideIf="user.id == _internalUserId"/>
 		<button name="next-stageBtn" icon="fa-chevron-circle-right" help="Next stage" onClick="action-group-crm-opportunity-nextstage-click" readonlyIf="salesStageSelect &gt; 3" />
 		<button name="closed-wonBtn" icon="fa-check-circle" help="Closed won" onClick="action-group-crm-opportunity-closedwon-click" readonlyIf="salesStageSelect &gt; 4" />
 		<button name="closed-lostBtn" icon="fa-minus-circle" help="Closed lost" onClick="action-group-crm-opportunity-closedlost-click" readonlyIf="salesStageSelect &gt; 4" />
