@@ -43,7 +43,7 @@ public class TrackingNumberService {
 
   @Transactional(rollbackOn = {Exception.class})
   public TrackingNumber getTrackingNumber(
-      Product product, BigDecimal sizeOfLot, Company company, LocalDate date)
+      Product product, BigDecimal sizeOfLot, Company company, LocalDate date, String origin)
       throws AxelorException {
 
     TrackingNumber trackingNumber =
@@ -53,7 +53,8 @@ public class TrackingNumberService {
             .fetchOne();
 
     if (trackingNumber == null) {
-      trackingNumber = trackingNumberRepo.save(this.createTrackingNumber(product, company, date));
+      trackingNumber =
+          trackingNumberRepo.save(this.createTrackingNumber(product, company, date, origin));
     }
 
     trackingNumber.setCounter(trackingNumber.getCounter().add(sizeOfLot));
@@ -81,11 +82,18 @@ public class TrackingNumberService {
     }
   }
 
-  public TrackingNumber createTrackingNumber(Product product, Company company, LocalDate date)
-      throws AxelorException {
+  public TrackingNumber createTrackingNumber(
+      Product product, Company company, LocalDate date, String origin) throws AxelorException {
     Preconditions.checkNotNull(product, I18n.get("Product cannot be null."));
     Preconditions.checkNotNull(company, I18n.get("Company cannot be null."));
-    Preconditions.checkNotNull(date, I18n.get(IExceptionMessage.TRACK_NUMBER_DATE_MISSING));
+    if (date == null) {
+      throw new AxelorException(
+          product,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.TRACK_NUMBER_DATE_MISSING),
+          product.getFullName(),
+          origin);
+    }
 
     TrackingNumber trackingNumber = new TrackingNumber();
 

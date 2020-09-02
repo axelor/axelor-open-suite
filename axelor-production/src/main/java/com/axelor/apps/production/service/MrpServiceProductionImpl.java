@@ -263,6 +263,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   protected void createProposalMrpLine(
       Mrp mrp,
       Product product,
