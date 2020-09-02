@@ -54,6 +54,7 @@
 - Partner : Deleting partner will not remove linked employee.
 - Journal : Improve balance calculation
 - Invoice : Addition of new field to display deliveryAddress on form and in report.
+- EBICS PARTNER : added tracking to the fields of the ebics partner object.
 
 ## Bug Fixes
 - HR : A leave-line cannot be saved whitout employee or leave-reason.
