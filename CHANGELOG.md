@@ -7,6 +7,7 @@
 - INVOICE : Add 'Periodic contract' sub type viewer in form.
 - CLIENT STOCK MOVE : corrected unable to realize if real quantity > to quantity on a stock move line.
 - FISCAL YEAR : corrected sql error.
+- Sale Invoice Details : Fixed the empty report generation
 - MRP: Fix data rollback on error.
 
 ## [5.3.10] - 2020-08-27
