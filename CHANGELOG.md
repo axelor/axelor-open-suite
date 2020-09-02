@@ -1,6 +1,8 @@
 # Changelog
 ## [Unreleased 5.2.15]
 ## Improvements
+- AnalyticDistribution : Autocomplete analyticDistribution details while creating SaleOrder / PurchaseOrder with interco = true.
+
 ## Bug Fixes
 - PurchaseOrder : removed action which is setting dotted field explicitly.
 - TRACKING MAIL NOTIFICATION : corrected wrong partner receiving email selected. 
