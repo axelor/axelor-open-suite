@@ -253,22 +253,25 @@ public class MoveServiceImpl implements MoveService {
     if (!debitMoveLines.isEmpty()) {
       MoveLine invoiceCustomerMoveLine = moveToolService.getCustomerMoveLineByLoop(invoice);
 
-      // Si c'est le même compte sur les trop-perçus et sur la facture, alors on lettre directement
-      if (moveToolService.isSameAccount(debitMoveLines, invoiceCustomerMoveLine.getAccount())) {
-        List<MoveLine> creditMoveLineList = new ArrayList<MoveLine>();
-        creditMoveLineList.add(invoiceCustomerMoveLine);
-        paymentService.useExcessPaymentOnMoveLines(debitMoveLines, creditMoveLineList);
-      }
-      // Sinon on créée une O.D. pour passer du compte de la facture à un autre compte sur les
-      // trop-perçus
-      else {
-        this.createMoveUseDebit(invoice, debitMoveLines, invoiceCustomerMoveLine);
-      }
+      if (invoiceCustomerMoveLine != null) {
+        // Si c'est le même compte sur les trop-perçus et sur la facture, alors on lettre
+        // directement
+        if (moveToolService.isSameAccount(debitMoveLines, invoiceCustomerMoveLine.getAccount())) {
+          List<MoveLine> creditMoveLineList = new ArrayList<MoveLine>();
+          creditMoveLineList.add(invoiceCustomerMoveLine);
+          paymentService.useExcessPaymentOnMoveLines(debitMoveLines, creditMoveLineList);
+        }
+        // Sinon on créée une O.D. pour passer du compte de la facture à un autre compte sur les
+        // trop-perçus
+        else {
+          this.createMoveUseDebit(invoice, debitMoveLines, invoiceCustomerMoveLine);
+        }
 
-      // Gestion du passage en 580
-      reconcileService.balanceCredit(invoiceCustomerMoveLine);
+        // Gestion du passage en 580
+        reconcileService.balanceCredit(invoiceCustomerMoveLine);
 
-      invoice.setCompanyInTaxTotalRemaining(moveToolService.getInTaxTotalRemaining(invoice));
+        invoice.setCompanyInTaxTotalRemaining(moveToolService.getInTaxTotalRemaining(invoice));
+      }
     }
 
     return move;
