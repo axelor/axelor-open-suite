@@ -155,37 +155,49 @@
     <!-- END OF User creation -->
     <!-- END OF New employee wizard -->
 
-    <panel name="contactPanel" showIf="stepByStepSelect == 5">
-      <field name="contactPartner" colSpan="12" domain="self.employee = null AND (self.partnerTypeSelect = 2 OR self.isContact = true)" form-view="partner-contact-form" grid-view="partner-contact-grid" showTitle="false">
-        <editor x-viewer="true">
-          <panel name="imagePanel" colSpan="2">
-            <field name="picture" colSpan="12" css="center" showTitle="false" widget="Image"/>
-
-            <panel name="socialNetworkPanel" colSpan="12" showIf="fullName != null">
-              <label name="facebookLabel" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
-              <label name="twitterLabel" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
-              <label name="linkedinLabel" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
-              <label name="youtubeLabel" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" colSpan="2"/>
-            </panel>
-          </panel>
-          <panel name="contactDetailsPanel" colSpan="10">
-            <field name="simpleFullName" colSpan="12" showTitle="false" showIf="$readonly()" css="bold large"/>
-
-            <field name="titleSelect" colSpan="2" showIf="!$readonly()"/>
-            <field name="firstName" onChange="action-partner-record-simple-and-full-name,action-employee-contact-method-set-social-network-url" colSpan="5" showIf="!$readonly()"/>
-            <field name="name" title="Name" onChange="action-partner-record-simple-and-full-name,action-employee-contact-method-set-social-network-url" colSpan="5" showIf="!$readonly()"/>
-
-            <field name="emailAddress" canNew="true" form-view="email-address-simple-form" canSelect="false"/>
-            <field name="webSite" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$" placeholder="http://www.url.com"/>
-
-            <field name="fixedPhone" onChange="action-partner-method-normalize-fixedPhone" colSpan="4" pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33100000000"/>
-            <field name="mobilePhone" onChange="action-partner-method-normalize-mobilePhone" colSpan="4" pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33600000000"/>
-            <field name="fax" onChange="action-partner-method-normalize-fax" colSpan="4" pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33000000000"/>
-          </panel>
-        </editor>
-      </field>
-    </panel>
-
+  	<panel name="headerPanel">
+	    <panel name="contactPanel" showIf="stepByStepSelect == 5" colSpan="10">
+	      <field name="contactPartner" colSpan="12" domain="self.employee = null AND (self.partnerTypeSelect = 2 OR self.isContact = true)" form-view="partner-contact-form" grid-view="partner-contact-grid" showTitle="false">
+	        <editor x-viewer="true">
+	          <panel name="imagePanel" colSpan="2">
+	            <field name="picture" colSpan="12" css="center" showTitle="false" widget="Image"/>
+	
+	            <panel name="socialNetworkPanel" colSpan="12" showIf="fullName != null">
+	              <label name="facebookLabel" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
+	              <label name="twitterLabel" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
+	              <label name="linkedinLabel" title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;" colSpan="2"/>
+	              <label name="youtubeLabel" title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;" colSpan="2"/>
+	            </panel>
+	          </panel>
+	          <panel name="contactDetailsPanel" colSpan="10">
+	            <field name="simpleFullName" colSpan="12" showTitle="false" showIf="$readonly()" css="bold large"/>
+	
+	            <field name="titleSelect" colSpan="2" showIf="!$readonly()"/>
+	            <field name="firstName" onChange="action-partner-record-simple-and-full-name,action-employee-contact-method-set-social-network-url" colSpan="5" showIf="!$readonly()"/>
+	            <field name="name" title="Name" onChange="action-partner-record-simple-and-full-name,action-employee-contact-method-set-social-network-url" colSpan="5" showIf="!$readonly()"/>
+	
+	            <field name="emailAddress" canNew="true" form-view="email-address-simple-form" canSelect="false"/>
+	            <field name="webSite" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$" placeholder="http://www.url.com"/>
+	
+	            <field name="fixedPhone" onChange="action-partner-method-normalize-fixedPhone" colSpan="4" pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33100000000"/>
+	            <field name="mobilePhone" onChange="action-partner-method-normalize-mobilePhone" colSpan="4" pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33600000000"/>
+	            <field name="fax" onChange="action-partner-method-normalize-fax" colSpan="4" pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33000000000"/>
+	          </panel>
+	        </editor>
+	      </field>
+	    </panel>
+	    
+		<panel name="companyPanel" showIf="stepByStepSelect == 5 &amp;&amp; mainEmploymentContract.payCompany != null" colSpan="2" readonly="true">
+		      <field name="mainEmploymentContract" showTitle="false" colSpan="12" domain="self.employee.id = :id">
+		        <editor x-viewer="true">
+		          <panel name="payCompanyPanel" colSpan="12" showTitle="false">
+		            <field name="payCompany.logo" showTitle="false" colSpan="12" widget="Image"/>
+		            <field name="payCompany.name" showTitle="false" colSpan="12" css="bold large" readonly="true"/>
+		          </panel>
+		        </editor>
+		      </field>
+		    </panel>
+  	</panel>
     <panel-tabs name="mainPanelTab" showIf="stepByStepSelect == 5">
       <panel name="informationPanel" title="Information">
         <panel name="phoneProPanel" title="Work phones" colSpan="12">
