@@ -15,6 +15,7 @@
 - MRP: Fix data rollback on error.
 - Account config : Fix translation
 - INVOICE : Changed french traduction for Contact
+- Bank reconciliation line : is posted is now read only.
 
 ## [5.3.10] - 2020-08-27
 ## Features
