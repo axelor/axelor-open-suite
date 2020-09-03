@@ -68,12 +68,12 @@ public class MrpController {
 
     try {
 
-      int id = (int) request.getContext().get("_id");
+      Mrp mrp = request.getContext().asType(Mrp.class);
       Boolean isProposalsPerSupplier =
           (Boolean) request.getContext().get("consolidateProposalsPerSupplier");
       Beans.get(MrpService.class)
           .generateProposals(
-              Beans.get(MrpRepository.class).find(Long.valueOf(id)),
+              Beans.get(MrpRepository.class).find(mrp.getId()),
               isProposalsPerSupplier == null ? false : isProposalsPerSupplier);
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
