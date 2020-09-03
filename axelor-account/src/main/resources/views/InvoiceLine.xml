@@ -218,8 +218,8 @@
 	</action-attrs>
 	
 	<action-attrs name="action-invoice-line-attrs-set-product-domain-onselect">
-  		<attribute if="__parent__.operationTypeSelect &lt; 3  &amp;&amp; __config__.app.isApp('purchase')  &amp;&amp;  __config__.app.getApp('purchase').getManageSupplierCatalog()" name="domain" expr="eval: isFilterOnSupplier ? &quot; self.isModel = false and self.id IN (SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = ${__parent__?.partner?.id}) &quot; : &quot; self.isModel = false &quot;" for="product"/>
-  		<attribute  name="domain"  for="product" expr="eval: &quot; self.isModel = false &quot;" if="__parent__.operationTypeSelect > 2"/>
+  		<attribute if="__parent__?.operationTypeSelect &lt; 3  &amp;&amp; __config__.app.isApp('purchase')  &amp;&amp;  __config__.app.getApp('purchase').getManageSupplierCatalog()" name="domain" expr="eval: isFilterOnSupplier ? &quot; self.isModel = false and self.id IN (SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = ${__parent__?.partner?.id}) &quot; : &quot; self.isModel = false &quot;" for="product"/>
+  		<attribute  name="domain"  for="product" expr="eval: &quot; self.isModel = false &quot;" if="__parent__?.operationTypeSelect > 2"/>
 	</action-attrs>
 
     <!-- ACTION GROUPs -->
@@ -278,7 +278,7 @@
     </action-record>
 
     <action-record name="action-invoice-line-record-operation-type" model="com.axelor.apps.account.db.InvoiceLine">
-    	<field name="$_operationTypeSelect" expr="eval: __parent__.operationTypeSelect"/>
+    	<field name="$_operationTypeSelect" expr="eval: __parent__?.operationTypeSelect"/>
     	<field name="$_company" expr="eval:__parent__?.company"/>
     </action-record>
     

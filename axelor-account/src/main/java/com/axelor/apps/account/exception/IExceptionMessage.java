@@ -634,6 +634,9 @@ public interface IExceptionMessage {
   static final String INVOICE_PAYMENT_CANCEL = /*$$(*/
       "The bank order linked to this invoice payment has already been carried out/rejected, and thus can't be canceled" /*)*/;
 
+  public static final String INVOICE_PAYMENT_NO_AMOUNT_REMAINING = /*$$(*/
+      "The payment cannot be done because the amount remaining on the invoice %s is inferior or equal to 0." /*)*/;
+
   /** Ventilate state */
   static final String VENTILATE_STATE_1 = /*$$(*/
       "Invoice's or credit note's date can't be previous last invoice ventilated's date" /*)*/;

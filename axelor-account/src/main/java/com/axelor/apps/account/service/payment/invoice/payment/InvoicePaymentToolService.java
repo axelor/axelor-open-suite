@@ -44,4 +44,6 @@ public interface InvoicePaymentToolService {
   List<InvoicePayment> assignAdvancePayment(Invoice invoice, Invoice advancePayment);
 
   List<MoveLine> getCreditMoveLinesFromPayments(List<InvoicePayment> payments);
+
+  public void checkConditionBeforeSave(InvoicePayment invoicePayment) throws AxelorException;
 }

@@ -33,6 +33,7 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -169,5 +170,21 @@ public class InvoicePaymentController {
       TraceBackService.trace(response, e);
     }
     response.setReload(true);
+  }
+
+  /**
+   * Method that check the invoice payment before save and save. Only use when add payment is used
+   * in invoice
+   *
+   * @param request
+   * @param response
+   */
+  public void checkConditionBeforeSave(ActionRequest request, ActionResponse response) {
+    try {
+      InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
+      Beans.get(InvoicePaymentToolService.class).checkConditionBeforeSave(invoicePayment);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 }
