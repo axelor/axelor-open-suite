@@ -16,6 +16,7 @@
 - Account config : Fix translation
 - INVOICE : Changed french traduction for Contact
 - Bank reconciliation line : is posted is now read only.
+- Move line : Correctly display reconcile tab (credit or debit) when the account is reconcilable.
 
 ## [5.3.10] - 2020-08-27
 ## Features
