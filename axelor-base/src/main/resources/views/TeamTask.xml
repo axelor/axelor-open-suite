@@ -25,7 +25,7 @@
       <field name="taskDeadline"/>
       <field name="taskDuration"/>
       <field name="assignedTo"/>
-      <field name="description" colSpan="12"/>
+      <field name="description" colSpan="12" widget="html" />
 
       <field name="typeSelect" hidden="true"/>
     </panel>
