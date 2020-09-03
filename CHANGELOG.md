@@ -13,6 +13,7 @@
 - INVOICE : corrected the possibility to add a payment when the amount remaining is inferior or equal to 0.
 - Invoice : Fix multiple invoices not ventilating when generated from sale order with advance payment 
 - TIMESHEET : Fix editor still being displayed even with a disabled config
+- Move line : Correctly display reconcile tab (credit or debit) when the account is reconcilable.
 
 ## [5.2.12] - 2020-06-19
 ## Improvements
@@ -31,7 +32,6 @@
 - Bill of Material: Replace NPE by an explicit message to the user when product unit is not configured.
 - EMPLOYEE: add button for Employee.rptdesign report on form.
 - Employee email address: prevent the selection of existing email addresses.
-- Move line : Correctly display reconcile tab (credit or debit) when the account is reconcilable.
 
 ## [5.2.11] - 2020-05-26
 ## Improvements
