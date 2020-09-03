@@ -20,8 +20,10 @@ package com.axelor.apps.purchase.service.print;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.report.IReport;
+import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.ThrowConsumer;
@@ -30,6 +32,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
@@ -38,10 +41,17 @@ import java.util.List;
 
 public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService {
 
+  protected AppPurchaseService appPurchaseService;
+
+  @Inject
+  public PurchaseOrderPrintServiceImpl(AppPurchaseService appPurchaseService) {
+    this.appPurchaseService = appPurchaseService;
+  }
+
   @Override
   public String printPurchaseOrder(PurchaseOrder purchaseOrder, String formatPdf)
       throws AxelorException {
-    String fileName = getPurchaseOrderFilesName(false, formatPdf);
+    String fileName = getFileName(purchaseOrder) + "." + formatPdf;
     return PdfTool.getFileLinkFromPdfFile(print(purchaseOrder, formatPdf), fileName);
   }
 
@@ -58,7 +68,8 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
             printedPurchaseOrders.add(print(purchaseOrder, ReportSettings.FORMAT_PDF));
           }
         });
-    String fileName = getPurchaseOrderFilesName(true, ReportSettings.FORMAT_PDF);
+    Integer status = Beans.get(PurchaseOrderRepository.class).find(ids.get(0)).getStatusSelect();
+    String fileName = getPurchaseOrderFilesName(status);
     return PdfTool.mergePdfToFileLink(printedPurchaseOrders, fileName);
   }
 
@@ -83,25 +94,41 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
         ReportFactory.createReport(IReport.PURCHASE_ORDER, title + " - ${date}");
     return reportSetting
         .addParam("PurchaseOrderId", purchaseOrder.getId())
+        .addParam(
+            "Timezone",
+            purchaseOrder.getCompany() != null ? purchaseOrder.getCompany().getTimezone() : null)
         .addParam("Locale", locale)
         .addParam("HeaderHeight", purchaseOrder.getPrintingSettings().getPdfHeaderHeight())
         .addParam("FooterHeight", purchaseOrder.getPrintingSettings().getPdfFooterHeight())
         .addFormat(formatPdf);
   }
 
-  protected String getPurchaseOrderFilesName(boolean plural, String formatPdf) {
-    return I18n.get(plural ? "Purchase orders" : "Purchase order")
+  protected String getPurchaseOrderFilesName(Integer status) {
+    String prefixFileName = I18n.get("Purchase orders");
+    if (status == PurchaseOrderRepository.STATUS_DRAFT
+        || status == PurchaseOrderRepository.STATUS_REQUESTED) {
+      prefixFileName = I18n.get("Purchase quotations");
+    }
+    return prefixFileName
         + " - "
         + Beans.get(AppBaseService.class).getTodayDate().format(DateTimeFormatter.BASIC_ISO_DATE)
         + "."
-        + formatPdf;
+        + ReportSettings.FORMAT_PDF;
   }
 
   @Override
   public String getFileName(PurchaseOrder purchaseOrder) {
-    return I18n.get("Purchase order")
+    String prefixFileName = I18n.get("Purchase order");
+    if (purchaseOrder.getStatusSelect() == PurchaseOrderRepository.STATUS_DRAFT
+        || purchaseOrder.getStatusSelect() == PurchaseOrderRepository.STATUS_REQUESTED) {
+      prefixFileName = I18n.get("Purchase quotation");
+    }
+    return prefixFileName
         + " "
         + purchaseOrder.getPurchaseOrderSeq()
-        + ((purchaseOrder.getVersionNumber() > 1) ? "-V" + purchaseOrder.getVersionNumber() : "");
+        + ((appPurchaseService.getAppPurchase().getManagePurchaseOrderVersion()
+                && purchaseOrder.getVersionNumber() > 1)
+            ? "-V" + purchaseOrder.getVersionNumber()
+            : "");
   }
 }

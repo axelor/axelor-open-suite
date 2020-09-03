@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 	<grid name="bank-details-grid" title="Bank details" model="com.axelor.apps.base.db.BankDetails">
 		<toolbar>
@@ -25,13 +25,15 @@
 				<field name="balance" hidden="true" if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')"/>
 				<field name="balanceUpdatedDate" hidden="true" if-module="axelor-bank-payment" if="__config__.app.isApp('bank-payment')"/>
 			</panel>
-			<panel name="balancePanel" hidden="true" showIf="company &amp;&amp; balance &amp;&amp; balanceUpdatedDate" colSpan="3" if="__config__.app.isApp('bank-payment')">
+			<panel name="balancePanel" hidden="true" showIf="company &amp;&amp; balanceUpdatedDate" colSpan="3" if="__config__.app.isApp('bank-payment')">
 				<button name="$balanceBtn" title="Balance" icon="fa-balance-scale" widget="info-button" onClick="action-bank-details-view-show-bank-statement-lines" colSpan="12" />
 			</panel>
 		</panel>
         <panel name="currencyPanel">
 			<field name="label"/>
 			<field name="currency"/>
+			<field name="bankAccount" showIf="company != null" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"/>
+			<field name="journal" showIf="company != null" domain="self.company = :company AND self.statusSelect = 1"/>
             <field name="code" x-bind="{{code|uppercase}}" hidden="true" />
 		</panel>
 		<panel name="activePanel" sidebar="true">
@@ -61,7 +63,10 @@
 		</panel>
 	</form>
 
-	<cards name="bank-details-cards" model="com.axelor.apps.base.db.BankDetails" title="Bank details" width="400px">
+	<cards name="bank-details-cards" model="com.axelor.apps.base.db.BankDetails" title="Bank details" width="410px">
+		<toolbar>
+			<button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
+		</toolbar>
 		<field name="iban"/>
 		<field name="bank.code"/>
 		<field name="bank.bankName"/>
@@ -83,13 +88,13 @@
 				<br/>
 				<span class="label label-default" ng-show="record.company" style="background-color: #2185D0;">{{company.name}}</span>
 				<span class="label label-important" ng-show="!record.active" x-translate>Inactive</span>
-				<span class="btn info-button pull-right" style="width: 50%;" ng-show="record.balance && record.balanceUpdatedDate">
+				<span class="btn info-button pull-right" style="width: 50%;" ng-show="record.balanceUpdatedDate">
 				<a style="text-decoration: none;" ui-action-click="action-bank-details-view-show-bank-statement-lines">
 					<i class="pull-left fa fa-balance-scale" style="margin-top: 3%; font-size:30px;"/>
-     				<p class="pull-left span3" style="font-size: 20px; margin-top: 3%; width: 60%; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-					<strong>{{balance}}</strong>
+     				<p class="pull-left span3" style="font-size: 11px; margin-top: 3%; width: 60%; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+					<strong>{{$fmt('balance')}}</strong>
 					<br/>
-					<span class="pull-left" style="color: #000000; font-size: 12px;"> {{ $fmt('balanceUpdatedDate') }} </span></p>
+					<span class="pull-left" style="color: #000000; font-size: 9px;"> {{ $fmt('balanceUpdatedDate') }} </span></p>
 				</a>
 				</span>
 			</div>
@@ -137,7 +142,7 @@
 		<action name="action-method_bank-details-validate-iban"/>
         <action name="action-bank-details-attrs-code"/>
         <action name="action-bank-details-attrs-specific-notes"/>
-        <action name="action-group-bank-details-set-balance-onload" if="company &amp;&amp; balance &amp;&amp; balanceUpdatedDate"/>
+        <action name="action-group-bank-details-set-balance-onload" if="company &amp;&amp; balanceUpdatedDate"/>
 	</action-group>
 
 	<action-group name="action-group-bank-details-set-balance-onload">
@@ -164,9 +169,9 @@
 	</action-record>
 
 	<action-validate name="action-validate-bank-details-bbanKey">
-		<error message="Incorrect BBAN Key"
-			if="bank.bankDetailsTypeSelect == 1 &amp;&amp; ( 97 - ( ( 89 * Long.parseLong( bankCode ) + 15 * Long.parseLong( sortCode ) + 3 * Long.parseLong( accountNbr.replaceAll('[ajAJ]','1').replaceAll('[bksBKS]','2').replaceAll('[cltCLT]','3').replaceAll('[dmuDMU]','4').replaceAll('[envENV]','5').replaceAll('[fowFOW]','6').replaceAll('[gpxGPX]','7').replaceAll('[hqyHQY]','8').replaceAll('[irzIRZ]','9') ) ) % 97 )  != Long.parseLong( bbanKey ))" />
-	</action-validate>
+      <error message="Incorrect BBAN Key"
+         if="bankCode == null || sortCode == null  || accountNbr == null || bbanKey == null || ( bank.bankDetailsTypeSelect == 1 &amp;&amp; ( 97 - ( ( 89 * Long.parseLong( bankCode ) + 15 * Long.parseLong( sortCode ) + 3 * Long.parseLong( accountNbr.replaceAll('[ajAJ]','1').replaceAll('[bksBKS]','2').replaceAll('[cltCLT]','3').replaceAll('[dmuDMU]','4').replaceAll('[envENV]','5').replaceAll('[fowFOW]','6').replaceAll('[gpxGPX]','7').replaceAll('[hqyHQY]','8').replaceAll('[irzIRZ]','9') ) ) % 97 )  != Long.parseLong( bbanKey )))" />
+   </action-validate>
 
 	<action-attrs name="action-attrs-account-bankdetails-bank-empty-address">
 		<attribute for="bankAddress" name="value" expr="eval: null"/>
@@ -201,5 +206,10 @@
 		<domain>self.bankDetails.id = :bankDetailsId AND self.lineTypeSelect = 2</domain>
 		<context name="bankDetailsId" expr="eval: id"/>
 	</action-view>
+	
+	<search-filters name="bank-detail-filters" model="com.axelor.apps.base.db.BankDetails" title="Bank detail filters">
+		<field name="balance" hidden="true" if="!__config__.app.isApp('bank-payment')"/>
+		<field name="balanceUpdatedDate" hidden="true" if="!__config__.app.isApp('bank-payment')"/>
+	</search-filters>
 
 </object-views>

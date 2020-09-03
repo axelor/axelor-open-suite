@@ -110,7 +110,8 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
   }
 
   @Transactional
-  public void createBankStatementLine(Map<String, Object> structuredContentLine, int sequence) {
+  public BankStatementLineAFB120 createBankStatementLine(
+      Map<String, Object> structuredContentLine, int sequence) {
 
     String description = (String) structuredContentLine.get("description");
 
@@ -170,7 +171,7 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
             (String) structuredContentLine.get("unavailabilityIndexSelect"),
             (String) structuredContentLine.get("commissionExemptionIndexSelect"));
 
-    bankStatementLineAFB120Repository.save(bankStatementLineAFB120);
+    return bankStatementLineAFB120Repository.save(bankStatementLineAFB120);
   }
 
   protected List<Map<String, Object>> readFile() throws IOException, AxelorException {
@@ -774,7 +775,7 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
     return bankDetailsRepository
         .all()
         .filter(
-            "self.accountNbr = ?1 and self.bankCode = ?2 and self.sortCode = ?3",
+            "self.accountNbr = ?1 and self.bankCode = ?2 and self.sortCode = ?3 and self.company is not null and active is true",
             accountNumber,
             bankCode,
             sortCode)

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
   <grid name="sale-order-quotation-grid" title="Sale quotations" model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
 		<menubar>
@@ -77,7 +77,6 @@
     <field name="creationDate"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="inTaxTotal" aggregate="sum"/>
-		<field name="externalReference"/>
 		<field name="statusSelect"/>
     <button name="printBtn" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
@@ -363,7 +362,7 @@
         </panel>
       </panel>
 
-      <panel if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()" if-module="axelor-supplychain" name="timetablePanel" title="Timetable">
+      <panel if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()" if-module="axelor-supplychain" name="timetablePanel" title="Timetable" onTabSelect="action-sale-order-attrs-readonly-timetable">
 	      <field name="expectedRealisationDate" colSpan="12" width="50%"/>
 	      <label name="orLabel" title="OR" colSpan="12"/>
 	       <field name="timetableTemplate" onChange="action-sale-order-method-apply-timetable-template,action-sale-order-method-update-amount-to-be-spread-over-the-timetable"/>
@@ -475,7 +474,7 @@
 	    <field name="orderDate" showIf="statusSelect == 3" colSpan="6"/>
 	    <field name="orderNumber" showIf="statusSelect == 3" colSpan="6"/>
 	    <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" name="shipmentDate" showIf="statusSelect == 3" colSpan="6"/>
-	    <field name="duration" canEdit="false" readonlyIf="statusSelect >= 2" colSpan="6" widget="SuggestBox" canNew="true" onChange="action-sale-order-record-compute-end-of-validity-date"/>
+	    <field name="duration" domain="self.applicationTypeSelect = 1" canEdit="false" readonlyIf="statusSelect >= 2" colSpan="6" widget="SuggestBox" canNew="true" onChange="action-sale-order-record-compute-end-of-validity-date"/>
 	    <field name="endOfValidityDate" readonly="true" colSpan="6">
 	      <hilite color="danger" if="$moment().diff(endOfValidityDate, 'days') > 0 &amp;&amp; statusSelect != 3"/>
 	    </field>
@@ -738,9 +737,12 @@
 	</action-attrs>
 
 	<cards name="sale-order-cards" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" width="300px"  css="rect-image" orderBy="-orderDate">
-		<toolbar>
-    		<button name="seeSaleOrderLinesBtn" title="See sale orders lines" onClick="action-view-open-sale-order-lines"/>
-		</toolbar>
+		<menubar>
+			<menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+				<item name="mergeQuotationsItem" title="Merge quotations" action="action-open-sale-quotation-merge-form"/>
+				<item name="seeQuotationLinesItem" title="See quotation lines" action="action-view-open-quotation-lines"/>
+			</menu>
+		</menubar>
 		<field name="saleOrderSeq"/>
 		<field name="externalReference"/>
 		<field name="clientPartner.fullName"/>
@@ -807,9 +809,15 @@
 	</cards>
 
 	<cards name="sale-order-quotation-cards" title="Sale order quotation" model="com.axelor.apps.sale.db.SaleOrder" width="300px"  css="rect-image" orderBy="-orderDate">
-	<toolbar>
-			<button name="mergeQuotationOrderBtn" title="Merge quotations" onClick="action-open-sale-quotation-merge-form"/>
-	</toolbar>
+		<menubar>
+			<menu name="saleOrderReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+				<item name="printItem" title="Print" action="action-sale-order-method-show-sale-order"/>
+			</menu>
+			<menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+				<item name="mergeQuotationsItem" title="Merge quotations" action="action-open-sale-quotation-merge-form"/>
+				<item name="seeQuotationLinesItem" title="See quotation lines" action="action-view-open-quotation-lines"/>
+			</menu>
+		</menubar>
 		<field name="saleOrderSeq"/>
 		<field name="externalReference"/>
 		<field name="clientPartner.fullName"/>
@@ -940,7 +948,7 @@
     </action-record>
 
    <action-record name="action-sale-order-record-set-salemanuser-from-opportunity" model="com.axelor.apps.sale.db.SaleOrder">
-      <field name="salemanUser" expr="eval: _parent?.user"/>
+      <field name="salespersonUser" expr="eval: _parent?.user"/>
    </action-record>
 
     <action-group name="action-group-sale-saleorder-onload">
@@ -1220,6 +1228,47 @@
 	</action-method>
 
 	<search-filters name="sale-order-filters" model="com.axelor.apps.sale.db.SaleOrder" title="Sales Order filters">
+		<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="tradingName" hidden="true" if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+		<field name="saleOrderTypeSelect" hidden="true" if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowSusbcriptionSaleOrder())"/>
+		<field name="versionNumber" hidden="true" if="!__config__.app.getApp('sale').getManageSaleOrderVersion()"/>
+		<field name="project" hidden="true" if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
+        <field name="toInvoiceViaTask" hidden="true" if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
+        <field name="timetableTemplate" hidden="true" if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing())"/>
+	    <field name="computationDate" hidden="true" if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing())"/>
+	    <field name="timetableList" hidden="true" if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing())"/>
+	    <field name="amountToBeSpreadOverTheTimetable" hidden="true" if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing())"/>
+	    <field name="advancePaymentList" hidden="true" if="!(__config__.app.isApp('account') &amp;&amp; !__config__.app.getApp('account').getManageAdvancePaymentInvoice())"/>
+	    <field name="advancePaymentNeeded" hidden="true" if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions)"/>
+        <field name="advancePaymentAmountNeeded" hidden="true" if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions)"/>
+        <field name="printingSettings" hidden="true" if="!__config__.app.getApp('sale').getPrintingConfigPerSaleOrder()"/>
+	    <field name="hideDiscount" hidden="true" if="!__config__.app.getApp('sale').getPrintingConfigPerSaleOrder()"/>
+	    <field name="specificNotes" hidden="true" if="!__config__.app.getApp('sale').getPrintingConfigPerSaleOrder()"/>
+	    <field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
+	    <field name="expectedRealisationDate" hidden="true" if="!__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
+	    <field name="stockLocation" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="amountInvoiced" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="deliveryState" hidden="true" if="!__config__.app.isApp('supplychain')" />
+		<field name="directOrderLocation" hidden="true" if="!__config__.app.isApp('supplychain')" />
+		<field name="interco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+	    <field name="createdByInterco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+	    <field name="specificPackage" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+	    <field name="deliveryDate" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+	    <field name="deliveryCondition" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+	    <field name="shipmentMode" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+	    <field name="freightCarrierMode" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+	    <field name="carrierPartner" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+	    <field name="forwarderPartner" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+	    <field name="incoterm" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+	    <field name="isNeedingConformityCertificate" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+	    <field name="isIspmRequired" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+	    <field name="deliveryComments" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+	    <field name="pickingOrderComments" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+	    <field name="productionNote" hidden="true" if="!__config__.app.isApp('production')"/>
+      	<field name="paymentMode" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="paymentCondition" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="shipmentDate" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="standardDelay" hidden="true" if="!__config__.app.isApp('supplychain')"/>
 		<field name="saleOrderLineList.product.name" title="Product Name"/>
 		<field name="companyExTaxTotal" title="Total W.T. in company currency"/>
 		<field name="cancelReason" hidden="true"/>
@@ -1437,5 +1486,11 @@
 	<action-method name="action-sale-order-method-set-status-to-confirmed">
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="backToConfirmedStatus" />
 	</action-method>
+   
+   <action-attrs name="action-sale-order-attrs-readonly-timetable">
+    <attribute name="readonly" expr="eval: timetableList.any { it?.invoiced }" for="timetableTemplate"/>
+    <attribute name="readonly" expr="eval: timetableList.any { it?.invoiced }" for="computationDate"/>
+   </action-attrs>
+   
 	
 </object-views>

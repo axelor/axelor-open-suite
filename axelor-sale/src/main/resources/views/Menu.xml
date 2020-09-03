@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 	
 	
 	<menuitem name="sc-root-sale" title="Sales" order="-106"  if="__config__.app.isApp('sale')"
@@ -34,8 +34,8 @@
 		<view type="form" name="partner-contact-form" />
 	  	<view-param name="limit" value="39"/>
 		<view-param name="search-filters" value="partner-filters"/>
-		<domain>self.isContact = true AND self.mainPartner.isCustomer = true</domain>
-		<context name="_domain" expr="self.isContact = true AND self.mainPartner.isCustomer = true"/>
+		<domain>self.isContact = true AND (self.mainPartner.isCustomer = true OR self.mainPartner.isProspect = true)</domain>
+		<context name="_domain" expr="self.isContact = true AND (self.mainPartner.isCustomer = true OR self.mainPartner.isProspect = true)"/>
 	</action-view>
 	
 	<menuitem name="sc-root-sale-pack" parent="sc-root-sale" order="12"
@@ -56,7 +56,7 @@
 		<view type="grid" name="product-grid" />
 		<view type="form" name="product-form" />
 		<view-param name="search-filters" value="products-filters"/>
-		<domain>self.isModel = false AND self.sellable = true AND self.isShippingCostsProduct = false</domain>
+		<domain>self.isModel = false AND self.sellable = true AND self.isShippingCostsProduct = false AND dtype = 'Product'</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_fromSale" expr="eval:true" />
 	</action-view>
@@ -154,6 +154,7 @@
 		title="Cancel Reason" model="com.axelor.apps.base.db.CancelReason" >
 		<view type="grid" name="cancel-reason-grid" />
 		<view type="form" name="cancel-reason-form" />
+		<view-param name="search-filters" value="cancel-reason-filters"/>
         <domain>self.applicationType = :_xApplicationType</domain>
 		<context name="_xApplicationType" expr="eval: com.axelor.apps.sale.db.SaleOrder"/>
 	</action-view>
@@ -165,6 +166,8 @@
 		title="Durations" model="com.axelor.apps.base.db.Duration" >
 		<view type="grid" name="duration-grid" />
 		<view type="form" name="duration-form" />
+		<domain>self.applicationTypeSelect = 1</domain>
+		<context name="_applicatioTypeSelect" expr="1"/>
 	</action-view>
 	
 	<menuitem name="sale-conf-shipping-costs" parent="sc-root-sale-conf"
@@ -174,7 +177,8 @@
 		title="Shipping costs" model="com.axelor.apps.base.db.Product">
 		<view type="grid" name="product-grid"/>
 		<view type="form" name="product-form"/>
-		<domain>self.isShippingCostsProduct = true</domain>
+		<view-param name="search-filters" value="products-filters"/>
+		<domain>self.isShippingCostsProduct = true AND dtype = 'Product'</domain>
 		<context name="_isShippingCostsProduct" expr="true"/>
 	</action-view>
 
@@ -218,6 +222,7 @@
 		model="com.axelor.apps.account.db.Tax" >
 		<view type="grid" name="tax-grid"/>
 		<view type="form" name="tax-form"/>
+		<view-param name="search-filters" value="tax-filters"/>
 	</action-view>
 
 	<menuitem name="sale-conf-configurators" parent="sc-root-sale-conf" order="20"
@@ -231,6 +236,7 @@
 				 model="com.axelor.apps.sale.db.ConfiguratorCreator" >
 		<view type="grid" name="configurator-creator-grid" />
 		<view type="form" name="configurator-creator-form" />
+		<view-param name="search-filters" value="configurator-creator-filters"/>
 	</action-view>
 
 	<menuitem name="sale-conf-configurators-configurators" parent="sale-conf-configurators"
@@ -241,8 +247,8 @@
 				 model="com.axelor.apps.sale.db.Configurator" >
 		<view type="grid" name="configurator-grid" />
 		<view type="form" name="configurator-form" />
-		<domain>:__user__ MEMBER OF self.configuratorCreator.authorizedUserSet OR :groupId MEMBER OF self.configuratorCreator.authorizedGroupSet</domain>
-		<context name="groupId" expr="eval: __user__.group.id"/>
+		<domain>:__user__ MEMBER OF self.configuratorCreator.authorizedUserSet OR :_group MEMBER OF self.configuratorCreator.authorizedGroupSet</domain>
+		<context name="_group" expr="eval: __user__.group"/>
 	</action-view>
 
 <!-- ADMINISTRATION -->

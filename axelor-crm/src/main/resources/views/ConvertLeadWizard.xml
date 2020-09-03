@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
 	<form name="convert-lead-wizard-form" title="Convert lead" model="com.axelor.apps.base.db.Wizard" width="large" onNew="action-convert-lead-wizard-method-set-defaults" canSave="false">
 	  	<toolbar>
@@ -17,14 +17,20 @@
 	 		<field name="$selectPartner.partnerTypeSelect" hidden="true" />
 	 	</panel>
 		<panel name="convertToPartnerPanel" showIf="$leadToPartnerSelect == 1">
+		    <static name="titleText" colSpan="12"><![CDATA[<b><font size='4'>Partner informations</font></b>]]></static>
 			<field name="$partner" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" target="com.axelor.apps.base.db.Partner" type="many-to-one">
 				<editor x-show-titles="false" onNew="action-convert-lead-wizard-record-default-partner">
 					<panel name="imagePanel" colSpan="12">
 						<field name="picture" colSpan="2" widget="Image" showTitle="false"/>
-					    <field name="partnerTypeSelect" showTitle="false" onChange="action-partner-partner-type-select-change,action-convert-lead-method-set-individual-partner"/>
-						<field name="titleSelect"  showTitle="false" hideIf="partnerTypeSelect != 2" placeholder="Civility" colSpan="2"/>
-						<field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="5" onChange="action-group-base-partner-contact-name-onchange"/>
-						<field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="First name" colSpan="5" onChange="action-group-base-partner-contact-name-onchange"/>
+						<panel colSpan="10">
+						   <field name="partnerTypeSelect" colSpan="8" showTitle="false" onChange="action-partner-partner-type-select-change,action-convert-lead-method-set-individual-partner"/>
+                           <field name="name" showTitle="false" colSpan="8" hideIf="partnerTypeSelect != 1" css="highlight" placeholder="Name" onChange="action-group-base-partner-contact-name-onchange"/>
+                           <panel colSpan="8">
+                             <field name="titleSelect" showTitle="false" hideIf="partnerTypeSelect != 2" colSpan="2" placeholder="Civility"/>
+                             <field name="name" showTitle="false" colSpan="6" hideIf="partnerTypeSelect != 2" css="highlight" placeholder="Name" onChange="action-group-base-partner-contact-name-onchange"/>
+                             <field name="firstName" showTitle="false" hideIf="partnerTypeSelect != 2" colSpan="4" css="highlight" placeholder="First name" onChange="action-group-base-partner-contact-name-onchange"/>
+                           </panel>
+						</panel>
 					</panel>
 					
 					<panel name="informationPanel" title="Information" colSpan="12">
@@ -34,21 +40,31 @@
 		      		</panel>
 	      			
 	      			<panel name="generalContactDetailsPanel" title="General contact details" colSpan="12">
-						<field name="fixedPhone" colSpan="3" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fixedPhone"/>
-						<field name="fax" colSpan="3" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fax"/>
-						<field name="mobilePhone" colSpan="3" hideIf="partnerTypeSelect == 1" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-mobilePhone"/>
-						<field name="emailAddress" canSelect="false" form-view="email-address-simple-form"/>
-						<field name="webSite" placeholder="www.url.com" pattern="([^\s]+\.[^\s]+\.[^\s]{2,})"/>
+	      			    <field name="mobilePhone" colSpan="4" hideIf="partnerTypeSelect == 1" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-mobilePhone"/>
+						<field name="fixedPhone" colSpan="4" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fixedPhone"/>
+						<field name="fax" colSpan="4" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fax"/>
+						<field name="emailAddress" canSelect="false" form-view="email-address-simple-form" colSpan="4"/>
+						<field name="webSite" placeholder="www.url.com" pattern="([^\s]+\.[^\s]+\.[^\s]{2,})" colSpan="4"/>
 					</panel>
 	      			
-	    			<panel name="partnerDetailsPanel" title="Partner Details"  colSpan="12">
-				        <field name="partnerCategory" widget="SuggestBox" hideIf="partnerTypeSelect == 2" form-view="partner-category-form" grid-view="partner-category-grid"/>
-				        <field name="industrySector" widget="SuggestBox" hideIf="partnerTypeSelect == 2"/>
-				        <field name="department" hideIf="partnerTypeSelect == 2" form-view="department-form" grid-view="department-grid"/>
-				        <field name="saleTurnover" showTitle="true" hideIf="partnerTypeSelect == 2"/>
-				        <field name="nbrEmployees" hideIf="partnerTypeSelect == 2"/>
-				        <field name="registrationCode" hideIf="partnerTypeSelect == 2"/>
-				        <field name="taxNbr" showTitle="true" hideIf="partnerTypeSelect == 2"/>
+	      			<panel name="addressPanel" title="Primary address" colSpan="12">
+			          <field name="$primaryAddress" placeholder="Address" showTitle="false" type="string" colSpan="8"/>
+			          <field name="$primaryPostalCode" placeholder="Postal code" showTitle="false" type="string" colSpan="4"/>
+			          <field name="$primaryCity" showTitle="false" colSpan="4" type="ManyToOne" target="com.axelor.apps.base.db.City" placeholder="City"/>
+                      <field name="$primaryState" showTitle="false" colSpan="4" type="ManyToOne" target="com.axelor.apps.base.db.Region" placeholder="State"/>
+			          <field name="$primaryCountry" colSpan="4" placeholder="Country" showTitle="false" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
+			          <field name="$partner.partnerTypeSelect" hidden="true" />
+   			        </panel>
+	      			
+	    			<panel name="partnerDetailsPanel" title="Partner Details"  colSpan="12" hideIf="partnerTypeSelect == 2">
+				        <field name="partnerCategory" colSpan="4" widget="SuggestBox" form-view="partner-category-form" grid-view="partner-category-grid"/>
+				        <field name="industrySector" colSpan="4" widget="SuggestBox"/>
+				        <field name="department" colSpan="4" form-view="department-form" grid-view="department-grid"/>
+				        <field name="nbrEmployees" colSpan="4"/>
+				        <field name="registrationCode" colSpan="4"/>
+				        <spacer colSpan="4"/>
+				        <field name="taxNbr" colSpan="4" showTitle="true"/>
+				        <field name="saleTurnover" colSpan="4" showTitle="true"/>
 		                <field name="source" hidden="true"/>
 	                </panel>
 	                <panel name="settingsPanel" title="Settings" colSpan="12">
@@ -60,16 +76,6 @@
 					</panel>
 	            </editor>
 			</field>
-			<panel name="addressPanel">
-			    <label name="invoicingAddressLabel" title="Invoicing Address" colSpan="12"/>
-			    <field name="$primaryAddress" placeholder="Address" showTitle="false" type="string"/>
-			    <field name="$primaryCity" placeholder="City" showTitle="false" type="string"/>
-			    <field name="$primaryState" placeholder="State" showTitle="false" type="string"/>
-			    <field name="$primaryPostalCode" placeholder="Postal code" showTitle="false" type="string"/>
-			    <field name="$primaryCountry" placeholder="Country" showTitle="false" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
-			    <label name="deliveryAddressLabel" title="Delivery Address" colSpan="12"/>
-			    <field name="$partner.partnerTypeSelect" hidden="true" />
-   			</panel>
 		</panel>
 		<panel  name="createContactPanel" title="Contact" showIf="$leadToContactSelect == 1 &amp;&amp; ($leadToPartnerSelect == 1 &amp;&amp; $partner.partnerTypeSelect == 1 || $leadToPartnerSelect == 2 &amp;&amp; $selectPartner.partnerTypeSelect != 2)">
 			<field name="$contactPartner" showTitle="false" colSpan="12" canSelect="false" x-show-icons="false" form-view="contact-form" target="com.axelor.apps.base.db.Partner" type="many-to-one">
@@ -78,7 +84,7 @@
 					<field name="titleSelect"  showTitle="false" placeholder="Civility" colSpan="2"/>
 					<field name="name" showTitle="false" css="highlight" placeholder="Name" colSpan="4" onChange="action-group-base-partner-contact-name-onchange"/>
 					<field name="firstName" showTitle="false" css="highlight" placeholder="First name" colSpan="4" onChange="action-group-base-partner-contact-name-onchange"/>
-					<label name="contactLabel" title="Contact"/>
+					<label name="contactLabel" title="Contact" colSpan="12"/>
 					<field name="jobTitleFunction"/>
 					<field name="reportsTo" domain="self.isContact = true"/>
 					<field name="fixedPhone"/>
@@ -91,8 +97,8 @@
 			</field>
 			<label name="addressLabel" title="Address"/>
 			<field name="$contactAddress" placeholder="Address" showTitle="false" type="string" colSpan="12"/>
-			<field name="$contactCity" placeholder="City" showTitle="false" type="string" colSpan="4"/>
-			<field name="$contactState" placeholder="State" showTitle="false" type="string" colSpan="4"/>
+			<field name="$contactCity" type="ManyToOne" target="com.axelor.apps.base.db.City" placeholder="City" showTitle="false" colSpan="4"/>
+			<field name="$contactState" type="ManyToOne" target="com.axelor.apps.base.db.Region" placeholder="State" showTitle="false" colSpan="4"/>
 			<field name="$contactPostalCode" placeholder="Postal code" showTitle="false" type="string" colSpan="4"/>
 			<field colSpan="12" name="$contactCountry" placeholder="Country" showTitle="false" widget="ManyToOne" target="com.axelor.apps.base.db.Country" target-name="name"/>
 		</panel>

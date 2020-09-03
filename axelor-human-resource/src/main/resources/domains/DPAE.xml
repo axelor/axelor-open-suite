@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
@@ -23,17 +23,17 @@
     <string name="firstName" title="First name"/>
     <string name="socialSecurityNumber" title="Social security number" min="12" max="15"/>
     <string name="sexSelect" title="Sex" selection="employee.hr.sex.select"/>
-    <date name="dateOfBirth" title="Date of birth"/>
+    <date name="birthDate" title="Date of birth"/>
     <many-to-one name="departmentOfBirth" title="Department of birth" ref="com.axelor.apps.base.db.Department"/>
     <many-to-one name="cityOfBirth" title="City of birth" ref="com.axelor.apps.base.db.City"/>
     <many-to-one name="countryOfBirth" title="Country of birth" ref="com.axelor.apps.base.db.Country"/>
 
     <!-- 3) Contract -->
-    <date name="dateOfHire" title="Date of hire"/>
-    <time name="timeOfHire" title="Time of hire"/>
+    <date name="hireDate" title="Date of hire"/>
+    <time name="hireTime" title="Time of hire"/>
     <string name="trialPeriodDuration" title="Trial period duration"/>
     <many-to-one name="contractType" title="Contract type" ref="com.axelor.apps.hr.db.EmploymentContractType"/>
-    <date name="endDateOfContract" title="End date of hire"/>
+    <date name="contractEndDate" title="End date of hire"/>
   </entity>
 
 </domain-models>

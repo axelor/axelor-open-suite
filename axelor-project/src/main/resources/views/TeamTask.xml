@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
-	<grid id="project-team-task-grid" name="team-task-grid" title="Tasks" model="com.axelor.team.db.TeamTask" edit-icon="true" orderBy="taskDate, priority">
+	<grid id="project-team-task-grid" name="team-task-grid" title="Tasks" model="com.axelor.team.db.TeamTask" edit-icon="true" orderBy="taskDate,priority">
 		<hilite if="status == 'closed'" color="success"/>
 		<hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
 		<hilite if="priority == 'urgent'" color="warning"/>
@@ -94,7 +94,8 @@
 				<field name="taskDate" title="Task date" colSpan="4" onChange="action-task-attrs-set-task-duration,action-team-task-record-set-date-or-frequency-changed" required="true"/>
 				<field name="taskEndDate" colSpan="4" onChange="action-task-attrs-set-task-duration"/>
 				<field name="taskDeadline" title="Task deadline" colSpan="4" if="!__config__.app.isApp('business-support')"/>
-				<field name="progressSelect" colSpan="12" widget="SelectProgress" onChange="action-task-update-planned-progress"/>
+				<field name="categorySet"  widget="tagSelect" canNew="false" onSelect="action-task-attrs-team-task-category-configurations"/>
+				<field name="progressSelect" widget="SelectProgress" onChange="action-task-update-planned-progress"/>
 			</panel>
 
 			<field name="typeSelect" hidden="true"/>
@@ -137,7 +138,7 @@
 					<field name="name"/>
 				</panel-related>
 			</panel>
-			<panel name="financialDataPanel" title="Financial Data" colSpan="12">				
+			<panel name="financialDataPanel" title="Financial Data" colSpan="12" if-module="axelor-business-project" if="__config__.app.isApp('business-project')">				
 				<field name="invoicingType" colspan="6" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" onChange="action-team-task-attrs-invoice-type-on-change"/>
 				<field name="toInvoice" colSpan="2" readonlyIf="invoiced" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>				
 				<field name="isPaid" showIf="project.invoicingSequenceSelect == 1" if="__config__.app.isApp('business-project')" if-module="axelor-business-project" colSpan="1"/>
@@ -155,7 +156,7 @@
 				<field name="saleOrderLine" readonly="true" showIf="saleOrderLine" form-view="sale-order-line-form" grid-view="sale-order-line-grid"/>
 				<field name="invoiceLine" readonly="true" showIf="invoiceLine" form-view="invoice-line-form" grid-view="invoice-line-grid"/>
 				<panel name="packagePanel" title="Teamtask.Package" colSpan="12" showIf="invoicingType == 2">
-					<field name="product" colSpan="6" canEdit="false" onChange="action-team-task-group-product-onchange" domain="self.unit.unitTypeSelect=3" form-view="product-form" grid-view="product-grid"/>								
+					<field name="product" colSpan="6" canEdit="false" onChange="action-team-task-group-product-onchange" domain="self.unit.unitTypeSelect=3 AND dtype = 'Product'" form-view="product-form" grid-view="product-grid"/>								
 					<field name="quantity" colSpan="3" onChange="action-team-task-group-qty-onchange"/>
 					<field name="unit" colSpan="3" domain="self.unitTypeSelect=3" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
 					<field name="unitPrice" colSpan="3" onChange="action-team-task-group-unit-price-onchange"/>
@@ -178,7 +179,7 @@
 				<field name="hasDateOrFrequencyChanged" hidden="true"/>
 			</panel>
 			
-			<panel name="timeSpentPanel" title="Time Spent">
+			<panel name="timeSpentPanel" title="Time Spent" if-module="axelor-human-resource" if="__config__.app.isApp('timesheet')">
 				<field name="totalRealHrs" readonly="true" colSpan="4">
 				<viewer><![CDATA[
                    	<span>{{record.totalRealHrs}} </span><span x-translate>hours</span>
@@ -188,7 +189,7 @@
 				<panel-dashlet name="waitingTimesheetLinesPanel" action="action-teamtask-dashlet-waiting-timeshet-lines" title="Waiting Timesheet lines" colSpan="12" canSearch="true"/>
 			</panel>
 
-			<panel name="timerPanel" title="Timer" showIf="id" hidden="true">
+			<panel name="timerPanel" title="Timer" showIf="id" hidden="true" if-module="axelor-helpdesk" if="__config__.app.isApp('helpdesk')">
 				<panel name="actionsPanel" title="Actions">
 					<button name="startTimerBtn" title="Start" icon="fa-play" colSpan="12" hidden="true"
 						onClick="action-team-task-method-start-timer"/>
@@ -455,10 +456,10 @@
 	</action-record>
 
 	<action-record name="action-team-task-record-product-selected" model="com.axelor.team.db.TeamTask">
-		<field name="quantity" expr="1"/>
-		<field name="unit" expr="eval: product?.salesUnit ?: product?.unit"/>
-		<field name="unitPrice" expr="eval: product?.salePrice"/>
-		<field name="currency" expr="eval: product?.saleCurrency"/>
+	  <field name="quantity" expr="1"/>
+	  <field name="unit" expr="eval: (Unit) com.axelor.inject.Beans.get(com.axelor.apps.base.service.ProductCompanyService.class).get(product, 'salesUnit', project?.company) ?: (Unit) com.axelor.inject.Beans.get(com.axelor.apps.base.service.ProductCompanyService.class).get(product, 'unit', project?.company)"/>
+	  <field name="unitPrice" expr="call: com.axelor.apps.base.service.ProductCompanyServiceImpl:get(product, 'salePrice', project.company)"/>
+	  <field name="currency" expr="call: com.axelor.apps.base.service.ProductCompanyServiceImpl:get(product, 'saleCurrency', project.company)"/>
 	</action-record>
 	
 	<action-method name="action-team-task-method-manage-timer-buttons">
@@ -499,8 +500,8 @@
 	</action-method>
 	
 	<action-attrs name="action-team-task-attrs-invoice-type-on-change">
-		<attribute name="value" for="toInvoice" expr="eval: true" if="invoicingType == 1"/>
-		<attribute name="value" for="toInvoice" expr="eval: false" if="invoicingType != 1"/>
+		<attribute name="value" for="toInvoice" expr="eval: true" if="invoicingType == 1 || invoicingType == 2"/>
+		<attribute name="value" for="toInvoice" expr="eval: false" if="invoicingType == 3"/>
 		<attribute name="value" for="isOrderProposed" expr="eval: true" if="invoicingType == 1"/>
 		<attribute name="value" for="isOrderProposed" expr="eval: false" if="invoicingType != 1"/>
 	</action-attrs>

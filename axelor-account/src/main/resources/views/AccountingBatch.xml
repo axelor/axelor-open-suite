@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 	<grid name="accounting-batch-grid" title="Accounting batches" model="com.axelor.apps.account.db.AccountingBatch">
 		<field name="actionSelect" />
@@ -58,16 +58,21 @@
 			<field name="startDate"/>
 			<field name="endDate"/>
 		</panel>
+		<panel name="realizedFixedAssetLinesPagnel" title="Date range of realizing fixed asset lines" itemSpan="4" hideIf="actionSelect != 20" >
+			<field name="updateAllRealizedFixedAssetLines"/>
+			<field name="startDate" requiredIf="!updateAllRealizedFixedAssetLines &amp;&amp; actionSelect == 20" showIf="!updateAllRealizedFixedAssetLines"/>
+			<field name="endDate" requiredIf="!updateAllRealizedFixedAssetLines &amp;&amp; actionSelect == 20" showIf="!updateAllRealizedFixedAssetLines"/>
+		</panel>
 		<panel name="yearOpeningOrClosureAccountsPagePanel" title="Close/open the accounts" hideIf="actionSelect != 21">
 <!-- 		TODO FILTER ON STATUS -->
 			<field name="closeYear"/>
 			<field name="openYear"/>
-			<field name="year" domain="self.typeSelect = 1 AND self.company = :company AND (self.statusSelect = 1 OR :closeYear is false)" canEdit="false"/>		
+			<field name="year" domain="self.typeSelect = 1 AND self.company = :company AND (self.statusSelect = 1 OR :closeYear is false)" canEdit="false"  requiredIf="actionSelect == 21"/>
 			<field name="allocatePerPartner"/>
     		<field name="year.toDate" showIf="closeYear" hidden="true"/>
     		<field name="year.reportedBalanceDate" showIf="openYear" hidden="true"/>
     		<field name="moveDescription"/>
-			<field name="accountSet" colSpan="12" form-view="account-form" grid-view="account-grid" widget="TagSelect" canNew="false" canEdit="false" domain="self.company = :company"/> 
+			<field name="accountSet" colSpan="12" form-view="account-form" grid-view="account-grid" widget="TagSelect" canNew="false" canEdit="false" domain="self.company = :company" requiredIf="actionSelect == 21"/> 
 <!-- 			<field name="journalSet" colSpan="12" form-view="journal-form" grid-view="journal-grid" widget="TagSelect" canNew="false" domain="self.company = :company"/> -->
 		</panel>
 		<panel name="informationPanel" title="Information"  >
@@ -85,7 +90,7 @@
 	    <button name="accountCustomerBatchBtn" title="Start" showIf="actionSelect == 17"  onClick="save,action-accounting-batch-method-action-account-customer" colSpan="12"/>
 	    <button name="moveLineExportBatchBtn" title="Start" showIf="actionSelect == 18"  onClick="save,action-accounting-batch-method-action-move-line-export" colSpan="12"/>
 	    <button name="creditTransferBatchBtn" title="Credit Transfer Batch" showIf="actionSelect == 19" onClick="save,action-accounting-batch-method-action-credit-transfer" colSpan="12"/>
-	    <button name="realizeFixedAssetLinesBatchBtn" title="Realize Fixed asset lines Batch" showIf="actionSelect == 20" onClick="save,action-accounting-batch-method-action-fixed-asset-lines-realize" colSpan="12"/>
+	    <button name="realizeFixedAssetLinesBatchBtn" title="Realize Fixed asset lines Batch" showIf="actionSelect == 20" onClick="save,action-accounting-batch-group-realize-fixed-asset-lines" colSpan="12"/>
 	    <button name="closeAnnualAccountsBatchBtn" title="Start" showIf="actionSelect == 21" onClick="save,action-accounting-batch-group-close-annual-accounts" colSpan="12"/>
 	</panel>
 </form>
@@ -94,6 +99,11 @@
 	<action-group name="action-accounting-batch-group-close-annual-accounts">
 		<action name="action-accounting-batch-validate-batchlist-not-empty"/>
 		<action name="action-accounting-batch-method-action-close-annual-accounts"/>
+	</action-group>
+	
+	<action-group name="action-accounting-batch-group-realize-fixed-asset-lines">
+		<action name="action-accounting-batch-validate-realized-fixed-date"/>
+		<action name="action-accounting-batch-method-action-fixed-asset-lines-realize"/>
 	</action-group>
     
     
@@ -150,7 +160,12 @@
 	<action-validate name="action-accounting-batch-validate-batchlist-not-empty">
    		<alert message="The batch to close the annual accounts has already ran. Are you sure you want to continue ?" if="eval: batchList &amp;&amp; !batchList?.empty" />
    	</action-validate>
-
+   	
+	<action-validate name="action-accounting-batch-validate-realized-fixed-date">
+		<error message="Please enter valid start date and end date" if="eval: !updateAllRealizedFixedAssetLines &amp;&amp; startDate &gt; endDate" />
+	</action-validate>
+   	
+   	
     <!-- ACTION ATTRS -->
     
     <action-attrs name="action-accounting-batch-attrs-bank-details-domain">
@@ -163,5 +178,10 @@
     <action-attrs name="action-accounting-batch-attrs-set-empty-year-and-accountset-value">
     	<attribute name="value" expr="eval: null" for="year,accountSet"/>
     </action-attrs>
+    
+    <search-filters name="accounting-batch-filters" model="com.axelor.apps.account.db.AccountingBatch" title="Accounting batch filters">
+    	<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+        <field name="includeOtherBankAccounts" hidden="true" if="!__config__.app.getApp('base').getManageMultiBanks()"/>
+    </search-filters>
 
 </object-views>

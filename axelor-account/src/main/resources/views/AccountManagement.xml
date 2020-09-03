@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
 	<grid name="account-management-payment-mode-grid" title="Account Managements" model="com.axelor.apps.account.db.AccountManagement" editable="true"
 	   onNew="action-account-management-record-default, action-account-management-attrs-type">
@@ -11,7 +11,7 @@
     <field name="cashAccount" form-view="account-form" grid-view="account-grid" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"
         canEdit="false"/>
     <field name="journal" form-view="journal-form" grid-view="journal-grid" canEdit="false" domain="self.company = :company AND self.statusSelect = 1"/>
-    <field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid" canEdit="false" onSelect="action-account-management-attrs-bank-details-domain"/>
+    <field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid" canEdit="false" onSelect="action-account-management-attrs-bank-details-domain" onChange="action-account-management-attrs-bank-details-on-change"/>
     <field name="sequence" domain="self.company = :company  AND self.code='paymentVoucher'" form-view="sequence-form" grid-view="sequence-grid"/>
   </grid>
  

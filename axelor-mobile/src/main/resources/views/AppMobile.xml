@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 	
 	<form name="app-mobile-config-form" title="App Mobile" model="com.axelor.apps.base.db.AppMobile" canDelete="false" canNew="false" width="large">
 		<panel name="mobileAppsPanel" title="Mobile apps">
@@ -19,7 +19,7 @@
 			<panel-related name="partnerContactSetPanel" field="partnerContactSet" domain="self.isContact = 'true'" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 			<panel-related name="projectSetPanel" field="projectSet" form-view="project-form" grid-view="project-grid"/>
 			<panel-related name="leadSetPanel" field="leadSet"  showIf="isCrmAppEnable"  form-view="lead-form" grid-view="lead-grid"/>
-			<panel-related name="productSetPanel" field="productSet" showIf="isSaleAppEnable"  form-view="product-form" grid-view="product-grid"/>
+			<panel-related name="productSetPanel" field="productSet" showIf="isSaleAppEnable" form-view="product-form" grid-view="product-grid" domain="dtype = 'Product'"/>
 		</panel-tabs>
 				        
         <panel-mail name="mailPanel">

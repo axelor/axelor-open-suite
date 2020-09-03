@@ -43,6 +43,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +51,7 @@ public class MoveTemplateService {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected MoveService moveService;
+  protected MoveValidateService moveValidateService;
   protected MoveRepository moveRepo;
   protected MoveLineService moveLineService;
   protected PartnerRepository partnerRepo;
@@ -61,12 +63,14 @@ public class MoveTemplateService {
   @Inject
   public MoveTemplateService(
       MoveService moveService,
+      MoveValidateService moveValidateService,
       MoveRepository moveRepo,
       MoveLineService moveLineService,
       PartnerRepository partnerRepo,
       AnalyticMoveLineService analyticMoveLineService,
       TaxService taxService) {
     this.moveService = moveService;
+    this.moveValidateService = moveValidateService;
     this.moveRepo = moveRepo;
     this.moveLineService = moveLineService;
     this.partnerRepo = partnerRepo;
@@ -195,6 +199,11 @@ public class MoveTemplateService {
 
           counter++;
         }
+
+        if (moveTemplate.getAutomaticallyValidate()) {
+          moveValidateService.validate(move);
+        }
+
         moveRepo.save(move);
         moveList.add(move.getId());
       }
@@ -261,6 +270,11 @@ public class MoveTemplateService {
 
           counter++;
         }
+
+        if (moveTemplate.getAutomaticallyValidate()) {
+          moveValidateService.validate(move);
+        }
+
         moveRepo.save(move);
         moveList.add(move.getId());
       }
@@ -325,5 +339,32 @@ public class MoveTemplateService {
     } else {
       return false;
     }
+  }
+
+  public Map<String, Object> computeTotals(MoveTemplate moveTemplate) {
+    Map<String, Object> values = new HashMap<>();
+
+    if (moveTemplate.getMoveTemplateLineList() == null
+        || moveTemplate.getMoveTemplateLineList().isEmpty()) {
+      return values;
+    }
+    values.put("$totalLines", moveTemplate.getMoveTemplateLineList().size());
+
+    BigDecimal totalDebit =
+        moveTemplate.getMoveTemplateLineList().stream()
+            .map(MoveTemplateLine::getDebit)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    values.put("$totalDebit", totalDebit);
+
+    BigDecimal totalCredit =
+        moveTemplate.getMoveTemplateLineList().stream()
+            .map(MoveTemplateLine::getCredit)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    values.put("$totalCredit", totalCredit);
+
+    BigDecimal difference = totalDebit.subtract(totalCredit);
+    values.put("$difference", difference);
+
+    return values;
   }
 }

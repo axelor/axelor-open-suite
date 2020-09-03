@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
   <grid name="supplychain-batch-grid" title="Supplychain batches" model="com.axelor.apps.supplychain.db.SupplychainBatch">
     <field name="actionSelect" if="!__config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()" />
@@ -117,8 +117,8 @@
 	
 	<action-view name="action-batch-show-stock-move" title="Stock moves"
 		model="com.axelor.apps.stock.db.StockMove">
-		<view type="grid" name="stock-move-in-grid" if="supplychainBatch.accountingCutOffTypeSelect == 1"/>
-		<view type="grid" name="stock-move-out-grid" if="supplychainBatch.accountingCutOffTypeSelect == 2"/>
+		<view type="grid" name="stock-move-in-grid" if="supplychainBatch.actionSelect == __repo__(SupplychainBatch).ACTION_ACCOUNTING_CUT_OFF &amp;&amp; supplychainBatch.accountingCutOffTypeSelect == 1"/>
+		<view type="grid" name="stock-move-out-grid" if="supplychainBatch.actionSelect != __repo__(SupplychainBatch).ACTION_ACCOUNTING_CUT_OFF || supplychainBatch.accountingCutOffTypeSelect == 2"/>
 		<view type="form" name="stock-move-form"/>
 		<domain>:batch MEMBER OF self.batchSet</domain>
 		<context name="batch" expr="eval: __self__"/>
@@ -133,5 +133,8 @@
 	</action-view>
 	
 	
+	<search-filters name="supplychain-batch-filters" model="com.axelor.apps.supplychain.db.SupplychainBatch" title="Supplychain batch filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
 
 </object-views>

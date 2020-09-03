@@ -171,6 +171,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
                 saleOrder.getClientPartner())
             : project;
     saleOrder.setProject(project);
+    project.setDescription(saleOrder.getDescription());
     return project;
   }
 
@@ -192,7 +193,6 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       project.addMembersUserSetItem(assignedTo);
     }
 
-    project.addMembersUserSetItem(assignedTo);
     project.setImputable(true);
     if (parentProject != null && parentProject.getIsInvoicingTimesheet()) {
       project.setIsInvoicingTimesheet(true);

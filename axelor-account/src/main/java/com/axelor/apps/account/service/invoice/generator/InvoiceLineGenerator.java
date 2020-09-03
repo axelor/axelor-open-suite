@@ -39,6 +39,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UnitConversion;
 import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
@@ -66,6 +67,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
   protected AppAccountService appAccountService;
   protected InvoiceLineService invoiceLineService;
   protected AccountManagementAccountService accountManagementService;
+  protected ProductCompanyService productCompanyService;
 
   protected Invoice invoice;
   protected Product product;
@@ -98,6 +100,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.appAccountService = Beans.get(AppAccountService.class);
     this.invoiceLineService = Beans.get(InvoiceLineService.class);
     this.accountManagementService = Beans.get(AccountManagementAccountService.class);
+    this.productCompanyService = Beans.get(ProductCompanyService.class);
   }
 
   protected InvoiceLineGenerator(
@@ -181,7 +184,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
     invoiceLine.setProductName(productName);
     if (product != null) {
-      invoiceLine.setProductCode(product.getCode());
+      invoiceLine.setProductCode((String) productCompanyService.get(product, "code", company));
       Account account =
           accountManagementService.getProductAccount(
               product,

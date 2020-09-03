@@ -28,10 +28,13 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 import javax.persistence.PersistenceException;
 
 public class SaleOrderManagementRepository extends SaleOrderRepository {
+
+  @Inject SaleOrderComputeService saleOrderComputeService;
 
   @Override
   public SaleOrder copy(SaleOrder entity, boolean deep) {
@@ -74,7 +77,9 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
   public SaleOrder save(SaleOrder saleOrder) {
     try {
       if (Beans.get(AppSaleService.class).getAppSale().getEnablePackManagement()) {
-        Beans.get(SaleOrderComputeService.class).computePackTotal(saleOrder);
+        saleOrderComputeService.computePackTotal(saleOrder);
+      } else {
+        saleOrderComputeService.resetPackTotal(saleOrder);
       }
       computeSeq(saleOrder);
       computeFullName(saleOrder);

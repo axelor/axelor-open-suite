@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -51,7 +51,7 @@
 
 	<selection name='product.product.type.select'>
 		<option value='service'>Service</option>
-		<option value='storable'>Product</option>
+		<option value='storable'>ProductType.product</option>
 	</selection>
 
 	<selection name='product.procurement.method.select'>
@@ -153,7 +153,7 @@
 	</selection>
 
 	<selection name="base.price.list.line.amount.type.select">
-        <option value="0">No Discount</option>
+        <option value="0">No discount</option>
 		<option value="1">In %</option>
 		<option value="2">Fixed</option>
 	</selection>
@@ -249,6 +249,11 @@
 	<selection name="base.duration.type.select">
 		<option value="1">Month</option>
 		<option value="2">Day</option>
+	</selection>
+	
+	<selection name="base.duration.application.type.select">
+		<option value="1">Sale order</option>
+		<option value="2">Contract</option>
 	</selection>
 	
 	<selection name="base.compute.method.discount.select">
@@ -497,5 +502,14 @@
         <option value="0">Standard</option>
         <option value="1">Title</option>
     </selection>
+    
+    <selection name='trace.back.origin.select' id="trace.back.origin.select.base" >
+    	<option value="import">Importing</option>
+    </selection>
+
+	<selection name="company.timezone.select">
+		<option value="Europe/Paris">Europe/Paris</option>
+		<option value="America/New_York">America/New_York</option>
+	</selection>
 
 </object-views>

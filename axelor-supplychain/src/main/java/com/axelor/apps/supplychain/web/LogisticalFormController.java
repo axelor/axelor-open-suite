@@ -42,6 +42,11 @@ public class LogisticalFormController {
           ReportFactory.createReport(IReport.PACKING_LIST, name + " - ${date}")
               .addParam("LogisticalFormId", logisticalForm.getId())
               .addParam(
+                  "Timezone",
+                  logisticalForm.getCompany() != null
+                      ? logisticalForm.getCompany().getTimezone()
+                      : null)
+              .addParam(
                   "Locale",
                   ReportSettings.getPrintingLocale(logisticalForm.getDeliverToCustomerPartner()))
               .generate()

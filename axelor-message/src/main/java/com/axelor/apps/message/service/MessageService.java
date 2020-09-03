@@ -44,7 +44,8 @@ public interface MessageService {
       Set<MetaFile> metaFiles,
       String addressBlock,
       int mediaTypeSelect,
-      EmailAccount emailAccount);
+      EmailAccount emailAccount,
+      String signature);
 
   @Transactional
   public void attachMetaFiles(Message message, Set<MetaFile> metaFiles);

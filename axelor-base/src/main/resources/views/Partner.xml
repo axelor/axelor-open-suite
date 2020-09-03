@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 			  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-			  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+			  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 	<grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner" orderBy="name">
 		<toolbar>
@@ -43,6 +43,8 @@
 		<field name="fiscalPosition.code" title="Fiscal position"/>
 		<field name="registrationCode" />
 		<field name="mainAddress"/>
+		<field name="mainAddress.zip"/>
+		<field name="mainAddress.city"/>
 		<field name="companyStr" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<button name="scheduleEventBtn" title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 		<button name="sendByEmailBtn" title="Send Email"  icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
@@ -266,12 +268,12 @@
 							<field name="address" colSpan="12" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
 						</editor>
 					</field>
-					<field name="webSite" placeholder="http://www.url.com" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
+					<field name="webSite" placeholder="http://www.url.com" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$" widget="url"/>
 				</panel>
 				<panel name="partnerDetailsPanel" title="Partner Details" hideIf="isEmployee" colSpan="12" >
 					<panel colSpan="6" name="partnerCategoryPanel">
 						<field name="partnerCategory" widget="SuggestBox" colSpan="6" form-view="partner-category-form" grid-view="partner-category-grid"/>
-						<field name="industrySector" colSpan="6" widget="SuggestBox" hideIf="partnerTypeSelect== 2"/>
+						<field name="industrySector" colSpan="6" widget="SuggestBox"/>
 						<field name="source" canEdit="false" colSpan="6" widget="SuggestBox" form-view="source-form" grid-view="source-grid"/>
 						<field name="department" colSpan="6" hideIf="partnerTypeSelect== 2"/>
 					</panel>
@@ -303,8 +305,8 @@
 					<field name="description" colSpan="12" height="8" showTitle="false" widget="Html"/>
 				</panel>
 			</panel>
-			<panel name="paymentPanel" title="Invoicing/Payment" hideIf="isContact" if-module="axelor-account" colSpan="12"  if="__config__.app.isApp('account')">
-				<panel-include view="incl-invoice-payment-partner-form" from="axelor-account"  if="__config__.app.isApp('invoice')" />
+			<panel name="paymentPanel" title="Invoicing/Payment" hideIf="isContact" if-module="axelor-account" colSpan="12"  if="__config__.app.isApp('invoice')">
+				<panel-include view="incl-invoice-payment-partner-form" from="axelor-account"/>
 				<panel-include if-module="axelor-account" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment"  view="incl-sepa-direct-debit-partner-form" from="axelor-account"/>
 				<panel name="invoiceCommentsPanel" title="Comment to display on invoice" colSpan="12">
 				  <field name="invoiceComments" widget="html" colSpan="12" showTitle="false"/>
@@ -434,7 +436,7 @@
 					<field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fax"/>
 					<field name="fixedPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fixedPhone"/>
 					<field name="mobilePhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-mobilePhone"/>
-					<field name="webSite" placeholder="http://www.url.com" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
+					<field name="webSite" placeholder="http://www.url.com" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$" widget="url"/>
 				</panel>
 			</panel>
 		</panel-tabs>
@@ -486,10 +488,10 @@
 					</editor>
 				</field>
 				<static name="duplicatePartnerText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a partner with this name.</span>]]></static>
-				<field name="duplicatePartnerInArchiveText" hidden="true" type="string" showTitle="false" readonly="true">
-					<viewer depends="duplicatePartnerInArchiveText">
+				<field name="$duplicatePartnerInArchiveText" hidden="true" type="string" showTitle="false" readonly="true">
+					<viewer depends="$duplicatePartnerInArchiveText">
 					<![CDATA[
-						<span class='label label-warning' style="margin: 5px 0 !important; display: inline-table; line-height: initial;"><span  x-translate>There is a partner with this name in the archive of reference : </span> {{record.duplicatePartnerInArchiveText}}</span>
+						<span class='label label-warning' style="margin: 5px 0 !important; display: inline-table; line-height: initial;"><span x-translate>There is an archived partner with this name.</span> ({{record.$duplicatePartnerInArchiveText}})</span>
 					]]>
 					</viewer>
 				</field>
@@ -558,11 +560,18 @@
 			<field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fax"/>
 			<field name="fixedPhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-fixedPhone"/>
 			<field name="mobilePhone" placeholder="+33100000000" pattern="^\+?([\s()-.]*\d){7,}$" onChange="action-partner-method-normalize-mobilePhone"/>
-			<field name="webSite" placeholder="http://www.url.com" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
+			<field name="webSite" placeholder="http://www.url.com" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$" widget="url"/>
 		</panel>
 	</form>
 
 	<cards name="partner-cards" model="com.axelor.apps.base.db.Partner" title="Partners" css="rect-image">
+		<toolbar>
+			<button name="printPhoneBookBtn" title="Contact PhoneBook" icon="fa-print" onClick="action-print-phonebook"/>
+			<button name="printCompanyPhoneBookBtn" title="Company PhoneBook" icon="fa-print" onClick="action-print-company-phonebook" if="__config__.app.isApp('employee')"/>
+			<button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
+			<button name="replaceDuplicateBtn" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
+			<button name="advancedExportBtn" title="Advanced export" onClick="action-method-advanced-export-wizard-view"/>
+		</toolbar>
 		<field name="fullName" />
 		<field name="picture" />
 		<field name="fixedPhone"/>
@@ -606,6 +615,7 @@
 	<cards name="partner-contact-cards" model="com.axelor.apps.base.db.Partner" title="Contacts" css="rect-image">
 		<toolbar>
 			<button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
+			<button name="replaceDuplicateBtn" title="Merge duplicated" onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
 		</toolbar>
 		<field name="fullName" />
 		<field name="picture" />
@@ -730,7 +740,6 @@
 		<action name="action-partner-attrs-name-balance"/>
 		<action name="action-partner-attrs-partner-seq-editable"/>
         <action name="action-partner-method-check-name"/>
-        <action name="action-partner-method-check-name-in-archive"/>
         <action name="action-partner-attrs-hide-invoice-and-delivery-address-text"/>
         <action name="action-partner-attrs-set-canselect"/>
 	</action-group>
@@ -902,6 +911,7 @@
 		<field name="user"  expr="#{__user__}" if="#{_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'}"/>
 		<field name="team"  expr="#{__user__.activeTeam}" if="#{_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'}"/>
 		<field name="companySet" expr="eval: __repo__(Company).all().fetchOne()" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="mainPartner" expr="eval: __parent__" if="#{_parent != null &amp;&amp; _parent._model == 'com.axelor.apps.base.db.Partner'}"/>
 	</action-record>
 
 	<action-record name="action-partner-employee-record-default" model="com.axelor.apps.base.db.Partner">
@@ -1016,11 +1026,43 @@
 	</action-attrs>
    	
 	<search-filters name="partner-filters" model="com.axelor.apps.base.db.Partner" title="Partner filters">
-	    <field name="partnerAddressList" hidden="true"/>
+	    <field name="companyStr" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+	    <field name="isFactor" hidden="true" if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.manageFactors)"/>
+	    <field name="sellerCode" hidden="true" if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFactors())"/>
+	    <field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
+	    <field name="password" hidden="true" if="!(__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal').getPortalSelect() == 2)"/>
+	    <field name="factorizedCustomer" hidden="true" if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFactors())"/>
+	    <field name="customerCatalogList" hidden="true" if="!(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getEnableCustomerCatalogMgt())"/>
+	    <field name="supplierCatalogList" hidden="true" if="!(__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog())"/>
+	    <field name="paymentDelay" hidden="true" if="!__config__.app.isApp('cash-management')"/>
+		<field name="invoiceComments" hidden="true" if="!__config__.app.isApp('invoice')"/>
+		<field name="accountingSituationList" hidden="true" if="!__config__.app.isApp('account')"/>
+		<field name="saleOrderInformation" hidden="true" if="!__config__.app.isApp('sale')"/>
+		<field name="payerQuality" hidden="true" if="!__config__.app.isApp('account')"/>
+		<field name="salePartnerPriceList" hidden="true" if="!__config__.app.isApp('sale')"/>
+		<field name="chargeBackPurchaseSelect" hidden="true" if="!__config__.app.isApp('business-project')" />
+		<field name="chargeBackPurchase" hidden="true" if="!__config__.app.isApp('business-project')" />
+		<field name="saleOrderComments" hidden="true" if="!__config__.app.isApp('sale')"/>
+		<field name="purchaseOrderInformation" hidden="true" if="!__config__.app.isApp('purchase')"/>
+		<field name="purchasePartnerPriceList" hidden="true" if="!__config__.app.isApp('purchase')"/>
+		<field name="supplierQualityRatingSelect" hidden="true" if="!__config__.app.isApp('purchase')"/>
+		<field name="supplierArrivalProductQty" hidden="true" if="!__config__.app.isApp('purchase')"/>
+		<field name="partnerProductQualityRatingList" hidden="true" if="!__config__.app.isApp('purchase')"/>
+		<field name="purchaseOrderComments" hidden="true" if="!__config__.app.isApp('purchase')"/>
+		<field name="deliveryDelay" hidden="true" if="!__config__.app.isApp('stock')"/>
+        <field name="shipmentMode" hidden="true" if="!__config__.app.isApp('stock')"/>
+        <field name="freightCarrierMode" hidden="true" if="!__config__.app.isApp('stock')"/>
+        <field name="carrierPartner" hidden="true" if="!__config__.app.isApp('stock')"/>
+		<field name="isIspmRequired" hidden="true" if="!__config__.app.isApp('stock')"/>
+		<field name="isNeedingConformityCertificate" hidden="true" if="!__config__.app.isApp('stock')"/>
+		<field name="partnerStockSettingsList" hidden="true" if="!__config__.app.isApp('stock')"/>
+        <field name="deliveryComments" hidden="true" if="!__config__.app.isApp('stock')"/>
+        <field name="pickingOrderComments" hidden="true" if="!__config__.app.isApp('stock')"/>
+		<field name="partnerAddressList" hidden="true"/>
         <field name="mainAddress" title="Main address"/>
         <field name="isContact" title="Is a contact"/>
         <field name="simpleFullName" hidden="true"/>
-        <field name="isCarrier" title="Is a carrier" if="__config__.app.isApp('stock')"/>
+        <field name="isCarrier" title="Is a carrier" hidden="true" if="!__config__.app.isApp('stock')"/>
 		<filter title="All Enterprises">
 			<domain>self.partnerTypeSelect = 1 AND self.isContact = false</domain>
 		</filter>

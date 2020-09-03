@@ -176,6 +176,10 @@ public class InvoiceController {
     if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
         && invoice.getCompany().getAccountConfig() != null
         && !invoice.getCompany().getAccountConfig().getAllowCancelVentilatedInvoice()) {
+      response.setError(
+          I18n.get(
+              IExceptionMessage
+                  .INVOICE_CAN_NOT_GO_BACK_TO_VALIDATE_STATUS_OR_CANCEL_VENTILATED_INVOICE));
       return;
     }
 
@@ -257,6 +261,7 @@ public class InvoiceController {
               .model(Invoice.class.getName())
               .add("form", "invoice-form")
               .add("grid", "invoice-grid")
+              .param("search-filters", "customer-invoices-filters")
               .param("forceTitle", "true")
               .context("_showRecord", refund.getId().toString())
               .domain("self.originalInvoice.id = " + invoice.getId())
@@ -651,6 +656,7 @@ public class InvoiceController {
                 .model(Invoice.class.getName())
                 .add("grid", "invoice-grid")
                 .add("form", "invoice-form")
+                .param("search-filters", "customer-invoices-filters")
                 .param("forceEdit", "true")
                 .context("_showRecord", String.valueOf(invoice.getId()))
                 .map());
@@ -666,6 +672,14 @@ public class InvoiceController {
     response.setValue(
         "addressStr", Beans.get(AddressService.class).computeAddressStr(invoice.getAddress()));
   }
+
+  public void computeDeliveryAddressStr(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    response.setValue(
+        "deliveryAddressStr",
+        Beans.get(AddressService.class).computeAddressStr(invoice.getDeliveryAddress()));
+  }
+
   /**
    * Called on load and in partner, company or payment mode change. Fill the bank details with a
    * default value.

@@ -24,4 +24,10 @@ public interface TrainingSessionService {
   public void closeSession(TrainingSession trainingSession);
 
   public String computeFullName(TrainingSession trainingSession);
+
+  public void updateAllRating(TrainingSession trainingSession);
+
+  public void cancel(TrainingSession trainingSession);
+
+  public TrainingSession updateTraingRegisterTraining(TrainingSession trainingSession);
 }

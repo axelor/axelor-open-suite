@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 	<grid name="base-batch-grid" title="Base batches" model="com.axelor.apps.base.db.BaseBatch">
 		<field name="actionSelect" />
@@ -34,7 +34,7 @@
 		    </panel>
   		</panel-tabs>
   		<panel name="synchronizeBtnPanel" sidebar="true">
-  			<button name="synchronizeBtn" showIf="actionSelect == 2" title="Batch calendar synchronization" onClick="action-base-batch-method-synchronize-calendars"/>
+  			<button name="synchronizeBtn" showIf="actionSelect == 2" title="Batch calendar synchronization" onClick="save,action-base-batch-method-synchronize-calendars"/>
   		</panel>
     </form>
     
@@ -72,4 +72,8 @@
 			   error="This code is already use by another batch."/>
 	</action-condition>
 
+	<search-filters name="base-batch-filters" model="com.axelor.apps.base.db.BaseBatch" title="Base batch filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
+    
 </object-views>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
 	<grid name="budget-grid" title="Budgets" model="com.axelor.apps.account.db.Budget">
 		<field name="name"/>
@@ -141,5 +141,10 @@
 		<domain>self.budget.id = :_budgetId AND self.invoiceLine != null</domain>
 		<context name="_budgetId" expr="eval: __this__.id"/>
 	</action-view>
+	
+	<search-filters name="budget-filters" model="com.axelor.apps.account.db.Budget" title="Budget filters">
+    	<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    	<field name="totalAmountCommitted" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    </search-filters>
 
 </object-views>

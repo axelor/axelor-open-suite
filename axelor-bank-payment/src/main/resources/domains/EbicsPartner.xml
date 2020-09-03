@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 	
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
   
@@ -24,7 +24,7 @@
     <many-to-one name="pSRBankStatementFileFormat" ref="com.axelor.apps.bankpayment.db.BankStatementFileFormat" title="Payment Status Report file format"/>
 	<boolean name="usePSR" title="Enable PSR"/>
 	
-	<boolean name="testMode" title="Test mode"/>
+	<boolean name="testMode" title="Test mode" massUpdate="true"/>
 
 	<boolean name="filterReceiverBD" default="false" title="Filter receiver bank details"/>
 	<integer name="orderTypeSelect" selection="bankpayment.bank.order.type.select" title="Order type to filter"/>
@@ -46,6 +46,21 @@
 		public static final int EBICS_TYPE_T = 0;
 		public static final int EBICS_TYPE_TS = 1;
 	]]></extra-code>
+	
+	<track>
+		<field name="partnerId" on="UPDATE"/>
+		<field name="ebicsBank" on="UPDATE"/>
+		<field name="ebicsTypeSelect" on="UPDATE"/>
+		<field name="testMode" on="UPDATE"/>
+		<field name="transportEbicsUser" on="UPDATE"/>
+		<field name="defaultSignatoryEbicsUser" on="UPDATE"/>
+		<field name="bankStatementGetModeSelect" on="UPDATE"/>
+		<field name="bankStatementStartDate" on="UPDATE"/>
+		<field name="bankStatementEndDate" on="UPDATE"/>
+		<field name="filterReceiverBD" on="UPDATE"/>
+		<field name="usePSR" on="UPDATE"/>
+		<field name="pSRBankStatementFileFormat" on="UPDATE"/>
+	</track>
     
   </entity>
   

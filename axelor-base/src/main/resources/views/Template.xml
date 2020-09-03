@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
     <grid name="template-grid" id="template-grid-base" title="Templates" model="com.axelor.apps.message.db.Template">
         <field name="name"/>
@@ -55,6 +55,11 @@
 				<panel name="subjectContentPanel" title="Content" colSpan="12">
 					<field name="subject" colSpan="12" height="2" />
 					<field name="content" showTitle="false" colSpan="12" widget="html" />
+				</panel>
+				<panel name="signature-panel" title="Signature"
+					showIf="mediaTypeSelect != 3" colSpan="12">
+					<field name="addSignature" widget="inline-checkbox" colSpan="3"/>
+					<field name="signature" colSpan="9" showIf="addSignature" help="If you leave this field empty or fill it with an incorrect formula, the default email account's signature will be used.\nExamples of a correct formulas:\n$__user__.emailSignature$\n$first(__user__.emailAccountList).signature$"/>
 				</panel>
 				<panel-related name="templateContextPanel" field="templateContextList" colSpan="12"/>
 				<panel name="attachedFilesPanel" title="Attached files" colSpan="12">
