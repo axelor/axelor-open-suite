@@ -12,6 +12,7 @@
 - INVOICE : fix message on generate of subscription invoice
 - ACCOUNTING MOVE : remove all possibility to cancel a validate move.
 - ICalendar : Update event synchronization.
+- Move line : Correctly display reconcile tab (credit or debit) when the account is reconcilable.
 
 ## [5.3.8] - 2020-07-15
 ## Improvements
@@ -63,7 +64,6 @@
 - Bill of Material: Replace NPE by an explicit message to the user when product unit is not configured.
 - EMPLOYEE: add button for Employee.rptdesign report on form.
 - Employee email address: prevent the selection of existing email addresses.
-- Move line : Correctly display reconcile tab (credit or debit) when the account is reconcilable.
 
 ## [5.3.6] - 2020-05-26
 ## Improvements
