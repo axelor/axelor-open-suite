@@ -739,8 +739,7 @@
 	<cards name="sale-order-cards" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" width="300px"  css="rect-image" orderBy="-orderDate">
 		<menubar>
 			<menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
-				<item name="mergeQuotationsItem" title="Merge quotations" action="action-open-sale-quotation-merge-form"/>
-				<item name="seeQuotationLinesItem" title="See quotation lines" action="action-view-open-quotation-lines"/>
+				<item name="seeSaleOrderLinesItem" title="See sale orders lines" action="action-view-open-sale-order-lines"/>
 			</menu>
 		</menubar>
 		<field name="saleOrderSeq"/>
