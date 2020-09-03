@@ -8,6 +8,7 @@
 - TRACKING MAIL NOTIFICATION : corrected wrong partner receiving email selected. 
 - Sale Invoice Details : Fixed the empty report generation
 - Fix NPE when user try to ventilate customer refund invoice.
+- Move line : Correctly display reconcile tab (credit or debit) when the account is reconcilable.
 
 ## [5.2.14] - 2020-08-20
 ## Bug Fixes
