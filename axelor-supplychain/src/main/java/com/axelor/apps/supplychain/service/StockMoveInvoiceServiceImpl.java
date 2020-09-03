@@ -172,6 +172,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       }
       invoice.setSaleOrder(saleOrder);
       this.extendInternalReference(stockMove, invoice);
+      invoice.setDeliveryAddress(stockMove.getToAddress());
+      invoice.setDeliveryAddressStr(stockMove.getToAddressStr());
       invoice.setAddressStr(saleOrder.getMainInvoicingAddressStr());
 
       // fill default advance payment invoice

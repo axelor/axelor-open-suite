@@ -25,6 +25,7 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.tool.template.TemplateMaker;
 import com.google.inject.Inject;
@@ -63,7 +64,7 @@ public class UnitConversionService {
    * @param endUnit The end unit
    * @param value The value to convert
    * @param scale The wanted scale of the result
-   * @param product Optionnal, a product used for complex conversions. Input null if needless.
+   * @param product Optional, a product used for complex conversions. Input null if needless.
    * @return The converted value with the specified scale
    * @throws AxelorException
    */
@@ -71,10 +72,23 @@ public class UnitConversionService {
       Unit startUnit, Unit endUnit, BigDecimal value, int scale, Product product)
       throws AxelorException {
 
-    if (startUnit == null || endUnit == null)
+    if ((startUnit == null && endUnit == null)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.UNIT_CONVERSION_3));
+    }
+
+    if (startUnit == null && endUnit != null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.UNIT_CONVERSION_2));
+    }
+
+    if (endUnit == null && startUnit != null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.UNIT_CONVERSION_4));
+    }
 
     if (startUnit.equals(endUnit)) return value;
     else {
@@ -84,7 +98,7 @@ public class UnitConversionService {
 
         return value.multiply(coefficient).setScale(scale, RoundingMode.HALF_EVEN);
       } catch (IOException | ClassNotFoundException e) {
-        e.printStackTrace();
+        TraceBackService.trace(e);
       }
     }
     return value;
@@ -98,7 +112,7 @@ public class UnitConversionService {
    * @param unitConversionList A list of conversions between units
    * @param startUnit The start unit
    * @param endUnit The end unit
-   * @param product Optionnal, a product used for complex conversions. INput null if needless.
+   * @param product Optional, a product used for complex conversions. INput null if needless.
    * @return A conversion coefficient to convert from startUnit to endUnit.
    * @throws AxelorException The required units are not found in the conversion list.
    * @throws CompilationFailedException
