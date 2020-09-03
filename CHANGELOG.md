@@ -5,6 +5,7 @@
 
 ## Bug Fixes
 - AccountManagement :  Fix NPE when product not present in invoiceLine.
+- Partner : fix supplierQualityRating not being synchronized with supplierQualityRatingSelect
 
 ## [5.3.12] - 2020-09-16
 ## Bug Fixes
