@@ -17,6 +17,7 @@
 - INVOICE : Changed french traduction for Contact
 - Bank reconciliation line : is posted is now read only.
 - Move line : Correctly display reconcile tab (credit or debit) when the account is reconcilable.
+- PurchaseOrder : Fixed error on requesting due to missing production module field in report
 
 ## [5.3.10] - 2020-08-27
 ## Features
