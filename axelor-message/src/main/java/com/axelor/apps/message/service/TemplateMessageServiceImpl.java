@@ -82,9 +82,14 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
   public Message generateMessage(Model model, Template template)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           AxelorException, IOException {
+
     Class<?> klass = EntityHelper.getEntityClass(model);
-    return generateMessage(
-        model.getId(), klass.getCanonicalName(), klass.getSimpleName(), template);
+    String modelName =
+        template.getIsJson() ? ((MetaJsonRecord) model).getJsonModel() : klass.getCanonicalName();
+    String tag =
+        template.getIsJson() ? ((MetaJsonRecord) model).getJsonModel() : klass.getSimpleName();
+
+    return generateMessage(model.getId(), modelName, tag, template);
   }
 
   @Override
