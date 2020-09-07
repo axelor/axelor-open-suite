@@ -75,7 +75,7 @@ public class MrpController {
           .generateProposals(
               Beans.get(MrpRepository.class).find(id),
               isProposalsPerSupplier == null ? false : isProposalsPerSupplier);
-      response.setFlash(I18n.get("Proposals were generated successfully."));
+      response.setFlash(I18n.get("Proposals have been generated successfully."));
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
     } finally {

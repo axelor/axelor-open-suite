@@ -35,7 +35,7 @@ public class MrpLineController {
     MrpLine mrpLine = request.getContext().asType(MrpLine.class);
     Beans.get(MrpLineService.class)
         .generateProposal(Beans.get(MrpLineRepository.class).find(mrpLine.getId()));
-    response.setFlash(I18n.get("The proposal has been successfully generated"));
+    response.setFlash(I18n.get("The proposal has been successfully generated."));
     response.setReload(true);
   }
 }
