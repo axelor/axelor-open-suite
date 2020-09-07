@@ -140,5 +140,13 @@
 	<selection name='trace.back.origin.select' id="trace.back.origin.select.production" >
 		<option value='costSheet'>Cost sheet valuation</option>
 	</selection>
+	
+	<selection name="production.order.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Planned</option>
+		<option value="3">Started</option>
+		<option value="4">Canceled</option>
+		<option value="5">Completed</option>
+	</selection>
 
 </object-views>

@@ -48,6 +48,7 @@ import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
+import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
@@ -180,6 +181,7 @@ public class ManufOrderWorkflowService {
       manufOrder.setCancelReasonStr(null);
 
       manufOrderRepo.save(manufOrder);
+      Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrder());
     }
     return manufOrderList;
   }
@@ -198,6 +200,7 @@ public class ManufOrderWorkflowService {
     }
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_IN_PROGRESS);
     manufOrderRepo.save(manufOrder);
+    Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrder());
   }
 
   @Transactional
@@ -282,6 +285,7 @@ public class ManufOrderWorkflowService {
             ChronoUnit.MINUTES.between(
                 manufOrder.getPlannedEndDateT(), manufOrder.getRealEndDateT())));
     manufOrderRepo.save(manufOrder);
+    Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrder());
     ProductionConfig productionConfig =
         manufOrder.getCompany() != null
             ? productionConfigRepo.findByCompany(manufOrder.getCompany())
@@ -379,6 +383,7 @@ public class ManufOrderWorkflowService {
       }
     }
     manufOrderRepo.save(manufOrder);
+    Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrder());
   }
 
   public LocalDateTime computePlannedStartDateT(ManufOrder manufOrder) {

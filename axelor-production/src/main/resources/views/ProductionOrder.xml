@@ -22,6 +22,7 @@
             <button name="showManufOrderWizardBtn" title="Add Manuf. Order" onClick="save,action-production-order-view-add-manuf-order-wizard"/>
         </toolbar>
         <panel name="mainPanel">
+        	<field name="statusSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
             <field name="productionOrderSeq"/>
             <field name="prioritySelect">
                 <viewer>
@@ -56,7 +57,7 @@
     
     <form name="add-manuf-order-wizard-form" model="com.axelor.apps.base.db.Wizard" title="Add Manuf. Order" onNew="action-production-order-record-default-wizard,action-add-manuf-order-wizard-attrs-scale">
     	<panel name="wizardPanel">
-     		<field name="$product" title="Product" type="many-to-one" target="com.axelor.apps.base.db.Product" canEdit="false" domain="self.expense = false and self.productTypeSelect = 'storable' and self.procurementMethodSelect = 'produce'" form-view="product-form" grid-view="product-grid" onChange="action-production-order-wizard-record-bill-of-materials"/>
+     		<field name="$product" title="Product" type="many-to-one" target="com.axelor.apps.base.db.Product" canEdit="false"  form-view="product-form" grid-view="product-grid" onChange="action-production-order-wizard-record-bill-of-materials"/>
         	<field name="$billOfMaterial" title="BOM" type="many-to-one" onChange="action-production-order-wizard-record-product" onSelect="action-production-order-wizard-attrs-bill-of-material-dummy-domain" target="com.axelor.apps.production.db.BillOfMaterial" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
         	<field name="$qty" title="Quantity" type="decimal"/>
         	<field name="$_startDate" widget="dateTime" title="Planned start date"/>
@@ -69,6 +70,8 @@
     
     <action-attrs name="action-add-manuf-order-wizard-attrs-scale">
     	<attribute name="scale" for="$qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    	<attribute name="domain" for="$product" expr="eval:&quot;self.expense = false and self.productTypeSelect = 'storable' and self.procurementMethodSelect = 'produce'&quot;" if=" __config__.app.isApp('expense')" />
+    	<attribute name="domain" for="$product" expr="eval:&quot;self.productTypeSelect = 'storable' and self.procurementMethodSelect = 'produce'&quot;" if="!__config__.app.isApp('expense')" />
     </action-attrs>
 
     <action-attrs if-module="axelor-business-production" name="action-production-order-attrs-title-project">
