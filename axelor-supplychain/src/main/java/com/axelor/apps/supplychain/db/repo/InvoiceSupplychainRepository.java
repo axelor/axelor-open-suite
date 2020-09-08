@@ -48,4 +48,23 @@ public class InvoiceSupplychainRepository extends InvoiceManagementRepository {
       throw new PersistenceException(e.getLocalizedMessage());
     }
   }
+
+  @Override
+  public Invoice copy(Invoice entity, boolean deep) {
+    Invoice copy = super.copy(entity, deep);
+
+    copy.setSaleOrder(null);
+    copy.setPurchaseOrder(null);
+
+    for (InvoiceLine line : copy.getInvoiceLineList()) {
+      line.setSaleOrderLine(null);
+      line.setPurchaseOrderLine(null);
+      line.setIncomingStockMove(null);
+      line.setOutgoingStockMove(null);
+      line.setOutgoingStockMove(null);
+      line.setIncomingStockMove(null);
+    }
+
+    return copy;
+  }
 }

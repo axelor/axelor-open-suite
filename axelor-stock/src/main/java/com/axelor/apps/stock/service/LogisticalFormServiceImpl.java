@@ -485,7 +485,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
           BigDecimal toAdd = logisticalFormLineService.evalVolume(logisticalFormLine, scriptHelper);
           if (toAdd == null) {
             throw new LogisticalFormError(
-                    logisticalForm, I18n.get(IExceptionMessage.LOGISTICAL_FORM_INVALID_DIMENSIONS));
+                logisticalForm, I18n.get(IExceptionMessage.LOGISTICAL_FORM_INVALID_DIMENSIONS));
           } else {
             totalVolume = totalVolume.add(toAdd);
           }
