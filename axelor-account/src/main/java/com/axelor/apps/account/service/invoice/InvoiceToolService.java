@@ -242,5 +242,7 @@ public class InvoiceToolService {
     copy.setVentilatedDate(null);
     copy.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_AWAITING);
     copy.setDecisionPfpTakenDate(null);
+    copy.setInternalReference(null);
+    copy.setExternalReference(null);
   }
 }
