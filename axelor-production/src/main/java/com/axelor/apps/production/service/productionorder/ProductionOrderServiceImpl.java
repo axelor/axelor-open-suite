@@ -174,6 +174,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
           allCompleted = false;
           break;
         case (ManufOrderRepository.STATUS_IN_PROGRESS):
+        case (ManufOrderRepository.STATUS_STANDBY):
           oneStarted = true;
           allCancel = false;
           allCompleted = false;
@@ -181,8 +182,9 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
         case (ManufOrderRepository.STATUS_FINISHED):
           allCancel = false;
           break;
+        case (ManufOrderRepository.STATUS_CANCELED):
+          break;
         default:
-          allCancel = false;
           allCompleted = false;
           break;
       }
@@ -196,7 +198,8 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
       statusSelect = ProductionOrderRepository.STATUS_STARTED;
     } else if (onePlanned
         && (productionOrder.getStatusSelect() == ProductionOrderRepository.STATUS_DRAFT
-            || productionOrder.getStatusSelect() == ProductionOrderRepository.STATUS_CANCELED)) {
+            || productionOrder.getStatusSelect() == ProductionOrderRepository.STATUS_CANCELED
+            || productionOrder.getStatusSelect() == ProductionOrderRepository.STATUS_COMPLETED)) {
       statusSelect = ProductionOrderRepository.STATUS_PLANNED;
     }
 
