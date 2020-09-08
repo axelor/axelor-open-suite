@@ -57,6 +57,26 @@ public class MoveLineController {
     }
   }
 
+  public void balanceCreditDebit(ActionRequest request, ActionResponse response) {
+    MoveLine moveLine = request.getContext().asType(MoveLine.class);
+
+    BigDecimal totalCredit =
+        moveLine.getMove().getMoveLineList().stream()
+            .map(it -> it.getDebit())
+            .reduce((a, b) -> a.add(b))
+            .orElse(BigDecimal.ZERO);
+    BigDecimal totalDebit =
+        moveLine.getMove().getMoveLineList().stream()
+            .map(it -> it.getCredit())
+            .reduce((a, b) -> a.add(b))
+            .orElse(BigDecimal.ZERO);
+    if (totalCredit.compareTo(totalDebit) < 0) {
+      moveLine.setCredit(totalDebit.subtract(totalCredit));
+    } else if (totalCredit.compareTo(totalDebit) > 0) {
+      moveLine.setDebit(totalCredit.subtract(totalDebit));
+    }
+  }
+
   public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response)
       throws AxelorException {
     try {
