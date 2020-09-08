@@ -1,0 +1,5 @@
+"importId";"name";"code";"journal";"type";"endOfValidityDateShift"
+1;"Rental";"REN";15;1;6
+2;"Bank loan";"BAL";3;1;12
+3;"Bank transfer";"BAT";19;2;
+4;"Purchase";"PUR";3;2;

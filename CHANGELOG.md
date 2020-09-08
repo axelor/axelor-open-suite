@@ -13,6 +13,7 @@
 - Move template : Add details button to grid view to display fields
 - Move template : Wizard dataInputList is now an editable grid
 - Move template : Add change track on update
+- Move template : Add demo data
 - EMPLOYEE : set seniorityDate by hireDate
 - Studio : Add CSRF protection for every request header.
 - Add CSRF protection for timesheet line editor and project planning editor
