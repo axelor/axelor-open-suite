@@ -628,6 +628,8 @@ public class StockMoveServiceImpl implements StockMoveService {
     StockMove newStockMove = stockMoveRepo.copy(stockMove, false);
     // In copy OriginTypeSelect set null.
     newStockMove.setOriginTypeSelect(stockMove.getOriginTypeSelect());
+    newStockMove.setOriginId(stockMove.getOriginId());
+    newStockMove.setOrigin(stockMove.getOrigin());
     for (StockMoveLine stockMoveLine : stockMoveLines) {
 
       if (stockMoveLine.getQty().compareTo(stockMoveLine.getRealQty()) > 0) {
@@ -1171,6 +1173,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     ReportSettings reportSettings =
         ReportFactory.createReport(reportType, title + "-${date}")
             .addParam("StockMoveId", stockMoveIds)
+            .addParam("Timezone", null)
             .addParam("Locale", locale);
 
     if (reportType.equals(IReport.CONFORMITY_CERTIFICATE)) {

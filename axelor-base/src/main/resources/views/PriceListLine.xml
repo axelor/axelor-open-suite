@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 	
 	
     <grid name="price-list-line-grid" title="Price list lines" model="com.axelor.apps.base.db.PriceListLine" > 
@@ -17,7 +17,7 @@
 	onNew="action-group-base-pricelistline-onnew"
 	onLoad="action-price-list-line-attrs-scale-and-precision" width="large">
 		<panel name="applicationPanel" title="Apply on" colSpan="11">
-			<field name="product" canEdit="false" colSpan="5" onChange="action-price-list-line-record-product" form-view="product-form" grid-view="product-grid" requiredIf="productCategory == null" hideIf="productCategory != null"/> 
+			<field name="product" canEdit="false" colSpan="5" onChange="action-price-list-line-record-product" form-view="product-form" grid-view="product-grid" requiredIf="productCategory == null" hideIf="productCategory != null" domain="dtype = 'Product'"/> 
 			<label name="orLabel" title="Or" colSpan="1" hideIf="product != null || productCategory != null"/>
 			<field name="productCategory" colSpan="5" form-view="product-category-form" grid-view="product-category-grid" requiredIf="product == null" hideIf="product != null" onChange="action-price-list-line-attrs-product-category-change"/>
 		</panel>

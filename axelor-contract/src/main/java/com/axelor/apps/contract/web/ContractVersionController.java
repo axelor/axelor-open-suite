@@ -91,6 +91,7 @@ public class ContractVersionController {
               .model(Contract.class.getName())
               .add("form", "contract-form")
               .add("grid", "contract-grid")
+              .param("search-filters", "contract-filters")
               .context("_showRecord", contractVersion.getContract().getId())
               .map());
     } catch (Exception e) {

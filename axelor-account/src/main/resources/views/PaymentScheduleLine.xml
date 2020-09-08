@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 	<grid name="payment-schedule-line-grid" title="Schedule lines"
 		model="com.axelor.apps.account.db.PaymentScheduleLine" orderBy="scheduleDate,scheduleLineSeq,id">
@@ -83,6 +83,14 @@
 	</form>
 
 	<search-filters name="payment-schedule-line-filters" model="com.axelor.apps.account.db.PaymentScheduleLine" title="Payment schedule line filters">
+		<field name="debitBlockingOk" hidden="true" if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
+		<field name="rejectDate" hidden="true" if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
+		<field name="interbankCodeLine" hidden="true" if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
+		<field name="debitNumber" hidden="true" if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
+		<field name="fromReject" hidden="true" if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
+        <field name="rejectMoveLine" hidden="true" if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
+		<field name="advanceOrPaymentMove" hidden="true" if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
+		<field name="advanceMoveLine" hidden="true" if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
 		<filter title="Rejected schedule lines">
 			<domain>self.rejectDate IS NOT NULL</domain>
 		</filter>

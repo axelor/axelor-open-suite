@@ -28,6 +28,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.exception.AxelorException;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.google.inject.Inject;
@@ -68,7 +69,8 @@ public class ProjectGeneratorFactoryPhase implements ProjectGeneratorFactory {
 
   @Override
   @Transactional
-  public ActionViewBuilder fill(Project project, SaleOrder saleOrder, LocalDateTime startDate) {
+  public ActionViewBuilder fill(Project project, SaleOrder saleOrder, LocalDateTime startDate)
+      throws AxelorException {
     List<Project> projects = new ArrayList<>();
     projectRepository.save(project);
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
@@ -98,6 +100,7 @@ public class ProjectGeneratorFactoryPhase implements ProjectGeneratorFactory {
         .model(Project.class.getName())
         .add("grid", "project-grid")
         .add("form", "project-form")
+        .param("search-filters", "project-filters")
         .domain(String.format("self.id in (%s)", StringTool.getIdListString(projects)));
   }
 }

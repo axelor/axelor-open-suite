@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.3.xsd">
   
 <!--     IMPORT DU PACKAGE 'AUTH' -->
 
@@ -177,8 +177,9 @@
 		<bind column="importId" to="importId"/>
 	</input>
 	
-	<input file="base_appBase.csv" separator=";" type="com.axelor.apps.base.db.AppBase"  search="self.code = :code" update="true" >
+	<input file="base_appBase.csv" separator=";" type="com.axelor.apps.base.db.AppBase" search="self.code = :code" update="true" >
 		<bind to="defaultPartnerLanguage" search="self.code = :defaultPartnerLanguageCode"/>
+		<bind to="companySpecificProductFieldsList" column="companySpecificFieldName" search="self.name IN :companySpecificFieldName AND self.metaModel.name = 'Product'" eval="companySpecificFieldName.split('\\|') as List"/>
 	</input>
 
 	<input file="base_period.csv" separator=";" type="com.axelor.apps.base.db.Period" />

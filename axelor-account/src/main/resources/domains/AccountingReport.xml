@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
   
   <module name="account" package="com.axelor.apps.account.db"/>
   
@@ -17,7 +17,7 @@
     <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment Mode"/>
     <many-to-many name="accountSet" ref="Account" title="Accounting.Accounts"/>
     <string name="exportTypeSelect" title="Export type" selection="iadministration.export.type.select"/>
-    <integer name="typeSelect" title="Printing output"  required="true"/>
+    <integer name="typeSelect" title="Printing output"  required="true"  selection="accounting.report.type.select" />
     <many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner" title="Partners"/>
     <many-to-one name="year" ref="com.axelor.apps.base.db.Year" title="Fiscal year"/>
     <date name="date" column="date_val" title="Closing date" required="true"/>

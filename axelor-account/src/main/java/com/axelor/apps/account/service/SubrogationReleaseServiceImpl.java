@@ -160,6 +160,11 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
     ReportSettings reportSettings = ReportFactory.createReport(IReport.SUBROGATION_RELEASE, name);
     reportSettings.addParam("SubrogationReleaseId", subrogationRelease.getId());
     reportSettings.addParam("Locale", ReportSettings.getPrintingLocale(null));
+    reportSettings.addParam(
+        "Timezone",
+        subrogationRelease.getCompany() != null
+            ? subrogationRelease.getCompany().getTimezone()
+            : null);
     reportSettings.addFormat("pdf");
     reportSettings.toAttach(subrogationRelease);
     reportSettings.generate();

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 	
     <grid name="user-grid" title="Users list" model="com.axelor.auth.db.User" id="user-grid-base">
     	<toolbar>
@@ -124,6 +124,7 @@
 	            <panel name="passwordOptionsPanel" showIf="code != $user">
 	              <field name="$generateRandomPassword" title="Generate random password" widget="boolean" onChange="action-user-generate-random-password"/>
 	              <field name="sendEmailUponPasswordChange"/>
+	              <field name="forcePasswordChange"/>
 	            </panel>
 	          </panel>
 	        </panel>
@@ -136,6 +137,7 @@
 	        <panel-related name="permissionsPanel" field="permissions" grid-view="simple-permission-grid" form-view="permission-form" colSpan="12"/>
     	  </panel>
           <panel-related name="metaPermissionsPanel" field="metaPermissions" showIf="[1,5].indexOf(stepStatusSelect) > -1"/>
+          <panel-dashlet name="userPermissionPanel" title="All permissions" action="action-user-view-show-all-permissions" showIf="id"/>
           <panel-related name="projectSetPanel" field="projectSet" canEdit="false" showIf="stepStatusSelect == 1" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('project')" colSpan="12"/>
         </panel-tabs>
         <!-- /from axelor-core -->
@@ -334,9 +336,32 @@
     <action-method name="action-user-method-generate-random-passwords">
     	<call class="com.axelor.apps.base.web.UserController" method="generateRandomPasswords"/>
     </action-method>
+    
+    <action-view name="action-user-view-show-all-permissions" title="All permissions" model="com.axelor.auth.db.Permission">
+   		<view name="permission-grid" type="grid"/>
+   		<view name="permission-form" type="form"/>
+   		<domain>self IN (SELECT p FROM User u join u.permissions p WHERE u.id = :userId) OR self IN (SELECT p FROM User u join u.group g join g.permissions p WHERE u.id = :userId) OR self IN(SELECT p FROM User u join u.roles r join r.permissions p WHERE u.id = :userId) OR self IN(SELECT p FROM User u join u.group g join g.roles r join r.permissions p WHERE u.id = :userId)</domain>
+   		<context name="userId" expr="eval: id"/>
+    </action-view>
 
     <search-filters name="user-filters" model="com.axelor.auth.db.User" title="User filters">
-    	<filter title="Active users">
+    	<field name="workshopStockLocation" hidden="true" if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop())"/>
+    	<field name="activeTeam" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
+    	<field name="teamSet" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
+    	<field name="emailAccountList" hidden="true" if="!__config__.app.getApp('base').getEmailAccountByUser()"/>
+    	<field name="isPfpValidator" hidden="true" if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment())"/>
+        <field name="isSuperPfpUser" hidden="true" if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment())"/>
+        <field name="substitutePfpValidatorList" hidden="true" if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment())"/>
+        <field name="activeCompany.accountConfig" hidden="true" if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment())"/>
+        <field name="activeCompany.accountConfig.isManagePassedForPayment" hidden="true" if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment())"/>
+        <field name="employee" hidden="true" if="!__config__.app.isApp('employee')"/>
+        <field name="appPermissions" hidden="true" if="!__config__.app.isApp('mobile')"/>
+        <field name="projectSet" hidden="true" if="!__config__.app.isApp('project')"/>
+		<field name="electronicSignature" hidden="true" if="!(__config__.app.isApp('sale') || __config__.app.isApp('purchase') || __config__.app.isApp('stock'))"/>
+		<field name="useSignatureForQuotations" hidden="true" if="!(__config__.app.isApp('sale') || __config__.app.isApp('purchase'))"/>
+		<field name="useSignatureForStock" hidden="true" if="!__config__.app.isApp('stock')"/>
+		<field name="projectSet" hidden="true" if="!__config__.app.isApp('project')"/>
+        <filter title="Active users">
     		<domain>self.blocked = false AND (self.activateOn IS NULL OR self.activateOn &lt;= :_today) AND (self.expiresOn IS NULL OR self.expiresOn &gt;= :_today)</domain>
     	</filter>
     </search-filters>

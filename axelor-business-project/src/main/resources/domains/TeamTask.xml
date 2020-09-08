@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
 	<module name="project" package="com.axelor.team.db"/>
 
@@ -13,7 +13,7 @@
   		<integer name="discountTypeSelect" title="Discount type" selection="base.price.list.line.amount.type.select" default="3"/>
 		<decimal name="discountAmount" title="Discount amount" precision="20" scale="10"/>
 		<decimal name="priceDiscounted" title="Unit price discounted" precision="20" scale="10"/>
-		<integer name="invoicingType" selection="business.team.task.invoicing.type.select" title="Invoicing Type"/>
+		<integer name="invoicingType" selection="business.team.task.invoicing.type.select" default="3" title="Invoicing Type"/>
 		<boolean name="isPaid" title="Paid"/>
 		<many-to-one name="customerReferral" ref="com.axelor.auth.db.User" title="Customer referral"/>
 		<many-to-one name="saleOrderLine" title="Related sale order line" ref="com.axelor.apps.sale.db.SaleOrderLine"/>

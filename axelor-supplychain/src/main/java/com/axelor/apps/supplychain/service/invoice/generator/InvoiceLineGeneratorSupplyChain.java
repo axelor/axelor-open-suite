@@ -226,7 +226,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
       invoiceLine.setFixedAssets(purchaseOrderLine.getFixedAssets());
 
       if (product != null) {
-        invoiceLine.setProductCode(product.getCode());
+        invoiceLine.setProductCode(
+            (String) productCompanyService.get(product, "code", invoice.getCompany()));
         Account account =
             accountManagementService.getProductAccount(
                 product,

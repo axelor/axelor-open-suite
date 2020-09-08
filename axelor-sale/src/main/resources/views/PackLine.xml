@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
     <grid name="pack-line-grid" title="PackLine" model="com.axelor.apps.sale.db.PackLine">
     	<field name="product.code"/>
     	<field name="productName"/>
-    	<field name="quantity" x-sclae="2"/>
+    	<field name="quantity" x-scale="2"/>
     	<field name="unit"/>
     	<field name="price"/>
     </grid>
@@ -59,7 +59,7 @@
     </action-group>
 
     <action-attrs name="action-pack-line-attrs-domain-product">
-    	<attribute name="domain" for="product" expr="eval: &quot; self.isModel = false and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true &quot;"/>
+    	<attribute name="domain" for="product" expr="eval: &quot; self.isModel = false and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true and dtype = 'Product'&quot;"/>
     </action-attrs>
 
 </object-views>

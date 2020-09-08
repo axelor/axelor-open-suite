@@ -100,6 +100,7 @@ public class PurchaseRequestController {
                 .model(PurchaseOrder.class.getName())
                 .add("grid", "purchase-order-quotation-grid")
                 .add("form", "purchase-order-form")
+                .param("search-filters", "purchase-order-filters")
                 .context("_showSingle", true)
                 .domain(
                     String.format(

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
   <grid name="stock-move-line-consumed-production-grid" title="Stock move lines"
     orderBy="stockMove.statusSelect,product.code,trackingNumber.trackingNumberSeq" model="com.axelor.apps.stock.db.StockMoveLine"
     canNew="false" canDelete="false">
     <hilite if="$get('stockMove.statusSelect') == 3" background="success" />
-    <field name="product" form-view="product-form" grid-view="product-grid" readonlyIf="id" />
+    <field name="product" form-view="product-form" grid-view="product-grid" readonlyIf="id" domain="dtype = 'Product'"/>
     <field name="productModel" form-view="product-form" grid-view="product-grid"
       if="__config__.app.getApp('base').manageProductVariants" readonlyIf="product || id" />
     <field name="qty" title="Consumed quantity" x-scale="2"/>
@@ -36,7 +36,7 @@
     orderBy="stockMove.statusSelect,product.code,trackingNumber.trackingNumberSeq" model="com.axelor.apps.stock.db.StockMoveLine"
     canNew="false" canDelete="false">
     <hilite if="$get('stockMove.statusSelect') == 3" background="success" />
-    <field name="product" form-view="product-form" grid-view="product-grid" readonlyIf="id" />
+    <field name="product" form-view="product-form" grid-view="product-grid" readonlyIf="id" domain="dtype = 'Product'"/>
     <field name="productModel" form-view="product-form" grid-view="product-grid"
       if="__config__.app.getApp('base').manageProductVariants" readonlyIf="product || id" />
     <field name="qty" title="Produced quantity" x-scale="2"/>
@@ -63,11 +63,11 @@
     onNew="action-group-stock-stockmoveline-production-onnew"
     onLoad="action-stock-move-line-attrs-scale-and-precision" width="large">
     <panel name="mainPanel" readonlyIf="stockMove.statusSelect == 3">
-      <field name="product" canEdit="false" domain="self.expense = false"
+      <field name="product" canEdit="false" domain="self.expense = false AND dtype = 'Product'"
         onChange="action-group-stock-stockmoveline-product-onchange"
         onSelect="action-stock-move-line-attrs-product-domain" form-view="product-form"
         grid-view="product-grid" readonlyIf="id" />
-      <field name="productModel" canEdit="false" domain="self.isModel = true"
+      <field name="productModel" canEdit="false" domain="self.isModel = true AND dtype = 'Product'"
         form-view="product-form" grid-view="product-grid"
         if="__config__.app.getApp('base').manageProductVariants" readonlyIf="product || id" />
       <field name="productName" required="true" />

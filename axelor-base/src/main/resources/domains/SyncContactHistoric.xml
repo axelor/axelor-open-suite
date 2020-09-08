@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+  
+	<module name="base" package="com.axelor.apps.base.db"/>
+	
+	<entity name="SyncContactHistoric">
+	  <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User"/>
+	  <many-to-many name="partnerSet" ref="com.axelor.apps.base.db.Partner" title="Imported contact"/>
+	  <many-to-one name="syncContact" ref="com.axelor.apps.base.db.SyncContact" title="SyncContact"/>
+	</entity>
+  
+</domain-models>

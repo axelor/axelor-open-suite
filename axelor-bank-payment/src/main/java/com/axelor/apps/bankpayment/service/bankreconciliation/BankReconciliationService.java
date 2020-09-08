@@ -39,6 +39,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -125,22 +126,10 @@ public class BankReconciliationService {
     String journalIds = null;
     Set<String> journalIdSet = new HashSet<String>();
 
-    List<AccountManagement> accountManagementList =
-        accountManagementRepository
-            .all()
-            .filter("self.bankDetails = ?1", bankReconciliation.getBankDetails())
-            .fetch();
+    journalIdSet.addAll(getAccountManagementJournals(bankReconciliation));
 
-    for (AccountManagement accountManagement : accountManagementList) {
-      if (accountManagement.getJournal() != null) {
-        journalIdSet.add(accountManagement.getJournal().getId().toString());
-      }
-    }
-
-    if (journalIdSet.isEmpty()) {
-      if (bankReconciliation.getBankDetails().getJournal() != null) {
-        return bankReconciliation.getBankDetails().getJournal().getId().toString();
-      }
+    if (bankReconciliation.getBankDetails().getJournal() != null) {
+      journalIdSet.add(bankReconciliation.getBankDetails().getJournal().getId().toString());
     }
 
     journalIds = String.join(",", journalIdSet);
@@ -148,24 +137,65 @@ public class BankReconciliationService {
     return journalIds;
   }
 
+  protected Set<String> getAccountManagementJournals(BankReconciliation bankReconciliation) {
+    Set<String> journalIdSet = new HashSet<String>();
+    Account cashAccount = bankReconciliation.getCashAccount();
+    List<AccountManagement> accountManagementList = new ArrayList<>();
+
+    if (cashAccount != null) {
+      accountManagementList =
+          accountManagementRepository
+              .all()
+              .filter(
+                  "self.bankDetails = ?1 and self.cashAccount = ?2",
+                  bankReconciliation.getBankDetails(),
+                  cashAccount)
+              .fetch();
+    } else {
+      accountManagementList =
+          accountManagementRepository
+              .all()
+              .filter("self.bankDetails = ?1", bankReconciliation.getBankDetails())
+              .fetch();
+    }
+
+    for (AccountManagement accountManagement : accountManagementList) {
+      if (accountManagement.getJournal() != null) {
+        journalIdSet.add(accountManagement.getJournal().getId().toString());
+      }
+    }
+    return journalIdSet;
+  }
+
   public Journal getJournal(BankReconciliation bankReconciliation) {
 
     Journal journal = null;
-    String journalIds = getJournalDomain(bankReconciliation);
-    if (Strings.isNullOrEmpty(journalIds)) {
-      if (bankReconciliation.getBankDetails().getJournal() != null) {
-        journal = bankReconciliation.getBankDetails().getJournal();
-      }
-    } else if ((journalIds.split(",").length) == 1) {
+    String journalIds = String.join(",", getAccountManagementJournals(bankReconciliation));
+    if (bankReconciliation.getBankDetails().getJournal() != null) {
+      journal = bankReconciliation.getBankDetails().getJournal();
+    } else if (!Strings.isNullOrEmpty(journalIds) && (journalIds.split(",").length) == 1) {
       journal = Beans.get(JournalRepository.class).find(Long.parseLong(journalIds));
     }
-
     return journal;
   }
 
   public String getCashAccountDomain(BankReconciliation bankReconciliation) {
 
     String cashAccountIds = null;
+    Set<String> cashAccountIdSet = new HashSet<String>();
+
+    cashAccountIdSet.addAll(getAccountManagementCashAccounts(bankReconciliation));
+
+    if (bankReconciliation.getBankDetails().getBankAccount() != null) {
+      cashAccountIdSet.add(bankReconciliation.getBankDetails().getBankAccount().getId().toString());
+    }
+
+    cashAccountIds = String.join(",", cashAccountIdSet);
+
+    return cashAccountIds;
+  }
+
+  protected Set<String> getAccountManagementCashAccounts(BankReconciliation bankReconciliation) {
     List<AccountManagement> accountManagementList;
     Journal journal = bankReconciliation.getJournal();
     Set<String> cashAccountIdSet = new HashSet<String>();
@@ -187,27 +217,17 @@ public class BankReconciliationService {
         cashAccountIdSet.add(accountManagement.getCashAccount().getId().toString());
       }
     }
-
-    if (cashAccountIdSet.isEmpty()) {
-      if (bankReconciliation.getBankDetails().getBankAccount() != null) {
-        return bankReconciliation.getBankDetails().getBankAccount().getId().toString();
-      }
-    }
-
-    cashAccountIds = String.join(",", cashAccountIdSet);
-
-    return cashAccountIds;
+    return cashAccountIdSet;
   }
 
   public Account getCashAccount(BankReconciliation bankReconciliation) {
 
     Account cashAccount = null;
-    String cashAccountIds = getCashAccountDomain(bankReconciliation);
-    if (Strings.isNullOrEmpty(cashAccountIds)) {
-      if (bankReconciliation.getBankDetails().getBankAccount() != null) {
-        cashAccount = bankReconciliation.getBankDetails().getBankAccount();
-      }
-    } else if ((cashAccountIds.split(",").length) == 1) {
+    String cashAccountIds = String.join(",", getAccountManagementCashAccounts(bankReconciliation));
+    if (bankReconciliation.getBankDetails().getBankAccount() != null) {
+      cashAccount = bankReconciliation.getBankDetails().getBankAccount();
+
+    } else if (!Strings.isNullOrEmpty(cashAccountIds) && (cashAccountIds.split(",").length) == 1) {
       cashAccount = Beans.get(AccountRepository.class).find(Long.parseLong(cashAccountIds));
     }
     return cashAccount;

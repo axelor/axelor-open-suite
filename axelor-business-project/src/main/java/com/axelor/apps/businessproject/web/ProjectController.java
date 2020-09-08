@@ -71,6 +71,7 @@ public class ProjectController {
               .model(PurchaseOrder.class.getName())
               .add("form", "purchase-order-form")
               .add("grid", "purchase-order-quotation-grid")
+              .param("search-filters", "purchase-order-filters")
               .context("_project", Beans.get(ProjectRepository.class).find(project.getId()))
               .map());
     }
@@ -84,6 +85,9 @@ public class ProjectController {
     String fileLink =
         ReportFactory.createReport(IReport.PROJECT, name + "-${date}")
             .addParam("ProjectId", project.getId())
+            .addParam(
+                "Timezone",
+                project.getCompany() != null ? project.getCompany().getTimezone() : null)
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
             .toAttach(project)
             .generate()
@@ -157,6 +161,9 @@ public class ProjectController {
     String fileLink =
         ReportFactory.createReport(IReport.PLANNIF_AND_COST, name)
             .addParam("ProjectId", project.getId())
+            .addParam(
+                "Timezone",
+                project.getCompany() != null ? project.getCompany().getTimezone() : null)
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
             .toAttach(project)
             .generate()

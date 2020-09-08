@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
 	<grid name="contract-template-grid" title="Contract templates" model="com.axelor.apps.contract.db.ContractTemplate">
 		<field name="name"/>
@@ -11,7 +11,7 @@
     <form name="contract-template-form" title="Contract template" model="com.axelor.apps.contract.db.ContractTemplate" width="large" onNew="action-contract-template-record-default-record-onnew" readonlyIf="statusSelect == 3">
         <panel name="mainPanel">
             <panel colSpan="9" name="subMainPanel">
-                <field name="targetTypeSelect" readonlyIf="id" onChange="action-contract-attrs-domains-template"/>
+                <field name="targetTypeSelect" readonlyIf="id" onChange="action-contract-attrs-domains-template,action-contract-template-attrs-set-payment-mode"/>
                 <field name="company" readonlyIf="statusSelect >= 2" canEdit="false"/>
                 <field name="name" colSpan="12" css="highlight"/>
                 <field if="__config__.app.getApp('contract').getIsInvoicingManagement()" colSpan="4" name="currency"/>
@@ -49,7 +49,7 @@
                         <field name="currentContractVersion" showTitle="false" readonlyIf="currentContractVersion.statusSelect > 2" colSpan="12" x-show-icons="false">
                             <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
                                 <panel colSpan="6" name="paymentPanel">
-                                    <field name="paymentMode" colSpan="6" widget="SuggestBox" canEdit="false" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
+                                    <field name="paymentMode" colSpan="6" widget="SuggestBox" canEdit="false" form-view="payment-mode-form" grid-view="payment-mode-grid" onSelect="action-contract-template-attrs-set-payment-mode-domain"/>
                                     <field name="paymentCondition" colSpan="6" widget="SuggestBox" canEdit="false" form-view="payment-condition-form" grid-view="payment-condition-grid"/>
                                 </panel>
                                 <panel colSpan="6"  name="automaticInvoicingPanel">
@@ -107,5 +107,22 @@
     <action-method name="action-contract-template-method-change-product">
         <call class="com.axelor.apps.contract.web.ContractTemplateController" method="changeProduct"/>
     </action-method>
+    
+    <action-attrs name="action-contract-template-attrs-set-payment-mode-domain">
+    	<attribute name="domain" for="paymentMode" expr="self.inOutSelect = 1" if="targetTypeSelect == 1"/>
+    	<attribute name="domain" for="paymentMode" expr="self.inOutSelect = 2" if="targetTypeSelect == 2"/>
+    </action-attrs>
+    
+    <action-attrs name="action-contract-template-attrs-set-payment-mode">
+    	<attribute name="value" for="paymentMode" expr="eval: null"/>
+    </action-attrs>
+
+    <search-filters name="contract-template-filters" model="com.axelor.apps.contract.db.ContractTemplate" title="Contract template filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+        <field name="currency" hidden="true" if="!__config__.app.getApp('contract').getIsInvoicingManagement()"/>
+        <field name="isInvoicingManagement" hidden="true" if="!__config__.app.getApp('contract').isInvoicingManagement"/>
+        <field name="isAdditionaBenefitManagement" hidden="true" if="!__config__.app.getApp('contract')isAdditionalBenefitManagement"/>
+        <field name="isConsumptionManagement" hidden="true" if="!__config__.app.getApp('contract').isConsumptionManagement"/>
+    </search-filters>
 
 </object-views>

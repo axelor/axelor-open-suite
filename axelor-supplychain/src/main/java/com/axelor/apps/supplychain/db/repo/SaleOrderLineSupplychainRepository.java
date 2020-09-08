@@ -37,8 +37,10 @@ public class SaleOrderLineSupplychainRepository extends SaleOrderLineRepository 
     SaleOrder saleOrder = saleOrderLine.getSaleOrder();
 
     if (saleOrder == null
+        || saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE
         || saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_ORDER_CONFIRMED
-        || saleOrder.getStockLocation() == null) {
+        || saleOrder.getStockLocation() == null
+        || saleOrderLine.getDeliveryState() == SaleOrderLineRepository.DELIVERY_STATE_DELIVERED) {
       return super.populate(json, context);
     }
 

@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -71,6 +72,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   protected StockMoveLineRepository stockMoveLineRepository;
   protected AppBaseService appBaseService;
   protected SaleOrderRepository saleOrderRepository;
+  protected ProductCompanyService productCompanyService;
 
   @Inject
   public SaleOrderStockServiceImpl(
@@ -82,7 +84,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       StockMoveLineServiceSupplychain stockMoveLineSupplychainService,
       StockMoveLineRepository stockMoveLineRepository,
       AppBaseService appBaseService,
-      SaleOrderRepository saleOrderRepository) {
+      SaleOrderRepository saleOrderRepository,
+      ProductCompanyService productCompanyService) {
 
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
@@ -93,6 +96,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.appBaseService = appBaseService;
     this.saleOrderRepository = saleOrderRepository;
+    this.productCompanyService = productCompanyService;
   }
 
   @Override
@@ -344,7 +348,14 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       BigDecimal requestedReservedQty =
           saleOrderLine.getRequestedReservedQty().subtract(saleOrderLine.getDeliveredQty());
 
-      BigDecimal companyUnitPriceUntaxed = saleOrderLine.getProduct().getCostPrice();
+      BigDecimal companyUnitPriceUntaxed =
+          (BigDecimal)
+              productCompanyService.get(
+                  saleOrderLine.getProduct(),
+                  "costPrice",
+                  saleOrderLine.getSaleOrder() != null
+                      ? saleOrderLine.getSaleOrder().getCompany()
+                      : null);
       if (unit != null && !unit.equals(saleOrderLine.getUnit())) {
         qty =
             unitConversionService.convert(
@@ -470,16 +481,14 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       if (this.isStockMoveProduct(saleOrderLine, saleOrder)) {
 
         if (saleOrderLine.getDeliveryState() == SaleOrderLineRepository.DELIVERY_STATE_DELIVERED) {
-          if (deliveryState == SaleOrderRepository.DELIVERY_STATE_NOT_DELIVERED
-              || deliveryState == SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED) {
+          if (deliveryState == SaleOrderRepository.DELIVERY_STATE_NOT_DELIVERED) {
             return SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED;
           } else {
             deliveryState = SaleOrderRepository.DELIVERY_STATE_DELIVERED;
           }
         } else if (saleOrderLine.getDeliveryState()
             == SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED) {
-          if (deliveryState == SaleOrderRepository.DELIVERY_STATE_DELIVERED
-              || deliveryState == SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED) {
+          if (deliveryState == SaleOrderRepository.DELIVERY_STATE_DELIVERED) {
             return SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED;
           } else {
             deliveryState = SaleOrderRepository.DELIVERY_STATE_NOT_DELIVERED;
