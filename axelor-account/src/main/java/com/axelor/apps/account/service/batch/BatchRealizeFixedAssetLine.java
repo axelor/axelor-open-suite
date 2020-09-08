@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.FixedAssetLineService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -38,11 +39,15 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
 
   protected FixedAssetLineService fixedAssetLineService;
   protected FixedAssetLineRepository fixedAssetLineRepo;
+  protected AppBaseService appBaseService;
   protected boolean stop = false;
 
   @Inject
   public BatchRealizeFixedAssetLine(
-      FixedAssetLineService fixedAssetLineService, FixedAssetLineRepository fixedAssetLineRepo) {
+      FixedAssetLineService fixedAssetLineService,
+      FixedAssetLineRepository fixedAssetLineRepo,
+      AppBaseService appBaseService) {
+    this.appBaseService = appBaseService;
     this.fixedAssetLineService = fixedAssetLineService;
     this.fixedAssetLineRepo = fixedAssetLineRepo;
   }
@@ -80,7 +85,7 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
               .bind("statusSelect", FixedAssetLineRepository.STATUS_PLANNED)
               .bind("startDate", startDate)
               .bind("endDate", endDate)
-              .bind("dateNow", LocalDate.now())
+              .bind("dateNow", appBaseService.getTodayDate())
               .bind("company", batch.getAccountingBatch().getCompany())
               .fetch();
       int moveStatus =
