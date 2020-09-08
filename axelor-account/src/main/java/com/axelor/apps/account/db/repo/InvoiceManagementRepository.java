@@ -65,6 +65,8 @@ public class InvoiceManagementRepository extends InvoiceRepository {
     copy.setValidatedDate(null);
     copy.setVentilatedByUser(null);
     copy.setVentilatedDate(null);
+    copy.setInternalReference(null);
+    copy.setExternalReference(null);
     return copy;
   }
 

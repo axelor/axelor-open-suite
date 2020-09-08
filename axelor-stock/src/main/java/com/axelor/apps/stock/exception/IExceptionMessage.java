@@ -101,7 +101,7 @@ public interface IExceptionMessage {
       "Too many iterations while trying to generate stock move line with tracking numbers." /*)*/;
   static final String STOCK_MOVE_CANNOT_GO_BACK_TO_DRAFT = /*$$(*/
       "Cannot go back to draft status." /*)*/;
-  static final String LOGISTICAL_FORM_INVALID_DIMENSIONS= /*$$(*/ "Invalid field dimensions" /*)*/;
+  static final String LOGISTICAL_FORM_INVALID_DIMENSIONS = /*$$(*/ "Invalid field dimensions" /*)*/;
 
   /*
    * Stock Move printing
