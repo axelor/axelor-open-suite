@@ -102,24 +102,24 @@ public class InvoiceManagementRepository extends InvoiceRepository {
     }
   }
 
-  @SuppressWarnings({"unchecked", "rawtypes"})
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
     try {
+      final String subrogationStatusSelect = "$subrogationStatusSelect";
       if (context.get("_model") != null
-          && context.get("_model").toString().contains("SubrogationRelease")) {
+          && context.get("_model").toString().equals(SubrogationRelease.class.getName())) {
         if (context.get("id") != null) {
           long id = (long) context.get("id");
           SubrogationRelease subrogationRelease =
               Beans.get(SubrogationReleaseRepository.class).find(id);
           if (subrogationRelease != null && subrogationRelease.getStatusSelect() != null) {
-            json.put("$subrogationStatusSelect", subrogationRelease.getStatusSelect());
+            json.put(subrogationStatusSelect, subrogationRelease.getStatusSelect());
           } else {
-            json.put("$subrogationStatusSelect", SubrogationReleaseRepository.STATUS_NEW);
+            json.put(subrogationStatusSelect, SubrogationReleaseRepository.STATUS_NEW);
           }
         }
       } else {
-        json.put("$subrogationStatusSelect", SubrogationReleaseRepository.STATUS_NEW);
+        json.put(subrogationStatusSelect, SubrogationReleaseRepository.STATUS_NEW);
       }
     } catch (Exception e) {
       TraceBackService.trace(e);
