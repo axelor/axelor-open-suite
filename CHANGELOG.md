@@ -1,5 +1,8 @@
 # Changelog
 ## [Unreleased 5.3.11]
+## Features
+- PSR : use the boEbicsPartnerServiceList to get the bank codification
+
 ## Improvements
 - Tracking number : Added product / origin reference on message error when estimated delivery date is null"
 - INVENTORY : Added annual / not annual inventory type select on product demo data
