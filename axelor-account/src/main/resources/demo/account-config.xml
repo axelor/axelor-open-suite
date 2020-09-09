@@ -94,7 +94,7 @@
 		<bind search="self.code = :cashAccount_code and self.company.importId = :company_id" to="cashAccount" update="true" if="cashAccount_code"/>
  		<bind search="self.code = :saleAccount_code and self.company.importId = :company_id" to="saleAccount" update="true" if="saleAccount_code"/>
  		<bind search="self.code = :purchaseAccount_code and self.company.importId = :company_id" to="purchaseAccount" update="true" if="purchaseAccount_code"/>
- 		<bind search="self.importId = :sequence_importId and self.company.importId = :company_id" to="sequence" update="true" if="sequence_importId"/>
+ 		<bind search="self.importId = :sequence_importId" to="sequence" update="true" if="sequence_importId"/>
  		<bind search="self.importId = :journal_importId and self.company.importId = :company_id" to="journal" update="true" if="journal_importId"/>
   		<bind search="self.importId = :bankDetails_importId" to="bankDetails" update="true" if="bankDetails_importId"/>
 	</input>	

@@ -15,19 +15,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.cash.management.module;
+package com.axelor.apps.supplychain.service;
 
-import com.axelor.app.AxelorModule;
-import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
-import com.axelor.apps.cash.management.db.repo.CashManagementForecastRecapRepository;
-import com.axelor.apps.cash.management.db.repo.ForecastRecapRepository;
-import com.axelor.apps.cash.management.service.InvoiceServiceManagementImpl;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.exception.AxelorException;
 
-public class CashManagementModule extends AxelorModule {
+public interface StockMoveReservedQtyService {
 
-  @Override
-  protected void configure() {
-    bind(ForecastRecapRepository.class).to(CashManagementForecastRecapRepository.class);
-    bind(InvoiceServiceProjectImpl.class).to(InvoiceServiceManagementImpl.class);
-  }
+  /**
+   * Try to allocate every line, meaning the allocated quantity of the line will be changed to match
+   * the requested quantity. Ignore line with real qty at 0.
+   *
+   * @param stockMove a planned stock move.
+   * @throws AxelorException if the sale order does not have a stock move.
+   */
+  void allocateAll(StockMove stockMove) throws AxelorException;
 }
