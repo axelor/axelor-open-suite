@@ -15,27 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.purchase.service.print;
+package com.axelor.apps.hr.service.app;
 
-import com.axelor.apps.purchase.db.PurchaseOrder;
-import com.axelor.exception.AxelorException;
-import java.io.IOException;
-import java.util.List;
-
-public interface PurchaseOrderPrintService {
-
-  /**
-   * Print a purchase order
-   *
-   * @return ReportSettings
-   * @throws IOException
-   * @throws AxelorException
-   */
-  String printPurchaseOrders(List<Long> ids) throws IOException;
-
-  String printPurchaseOrder(PurchaseOrder purchaseOrder, String formatPdf) throws AxelorException;
-
-  String getFileName(PurchaseOrder purchaseOrder);
-
-  String getPurchaseOrderLineDataSetQuery(Long purchaseOrderId);
+public interface AppTimesheetService {
+  public void switchTimesheetEditors(Boolean state);
 }

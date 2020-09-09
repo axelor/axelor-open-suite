@@ -1,10 +1,46 @@
 # Changelog
-## [Unreleased 5.2.13]
+## [Unreleased 5.2.15]
 ## Improvements
+- AnalyticDistribution : Autocomplete analyticDistribution details while creating SaleOrder / PurchaseOrder with interco = true.
+
 ## Bug Fixes
-- MRP : Remove duplicate information
-- ACCOUNTING INFORMATION : Add missing translation
+- PurchaseOrder : removed action which is setting dotted field explicitly.
+- TRACKING MAIL NOTIFICATION : corrected wrong partner receiving email selected. 
+- Sale Invoice Details : Fixed the empty report generation
+- Fix NPE when user try to ventilate customer refund invoice.
+- Move line : Correctly display reconcile tab (credit or debit) when the account is reconcilable.
+- PurchaseOrder : Fixed error on requesting due to missing production module field in report
+
+## [5.2.14] - 2020-08-20
+## Bug Fixes
+- DASHLET: fix invoice sale amount by month not updated.
+- Accounting report: corrected bank reconciliation statement report, now displays lines reconciled after report date.
+- ACCOUNTING REPORT: Add missing translations in report.
+- INVOICE: Fix chart not taking refunds into account.
+- INVOICE: Fix subscription invoice issue on sub type select change.
+- Invoice: on invoice form view corrected display of empty column in invoice payment line grid viewer.
+- Accounting batch: Year and accounts are now required for close annual year batch.
+- Batch payroll preparation generation: corrected batch error no session.
+- Fiscal year: corrected sql error on close function.
+- Invoice line: corrected view error when trying to change an invoice line.
+- BANK RECONCILIATION STATEMENT REPORT: change French translation of balance from "balance" to "solde".
 - BANK ORDER : Fix NPE when validating a bank order
+
+## [5.2.13] - 2020-07-21
+## Improvements
+- OPPORTUNITY: Change the data type of bestCase and worstCase fields from string to decimal.
+- INVOICE: generate invoice from timetableList from purchase order.
+- SaleOrder: Change title of numberOfPeriods.
+
+## Bug Fixes
+- MRP: Remove duplicate information.
+- ACCOUNTING INFORMATION: Add missing translation.
+- BANK PAYMENT: fix ICS number being linked to EBICS.
+- AdvancedExport: Fix records being exported twice.
+- INVOICE: corrected the possibility to add a payment when the amount remaining is inferior or equal to 0.
+- Invoice: Fix multiple invoices not ventilating when generated from sale order with advance payment.
+- TIMESHEET: Fix editor still being displayed even with a disabled config.
+- ACCOUNTING MOVE: remove all possibility to cancel a validate move.
 
 ## [5.2.12] - 2020-06-19
 ## Improvements
@@ -661,7 +697,9 @@ In this case, the file is correctly retrieved from the bank server, but not save
 - LEAVE REQUEST: Add error when leave reason has no unit.
 - LEAVE REQUEST: Set duration value 0 if day planning of selected weekly planning is empty
 
-[Unreleased 5.2.13]: https://github.com/axelor/axelor-open-suite/compare/v5.2.12...5.2-dev
+[Unreleased 5.2.15]: https://github.com/axelor/axelor-open-suite/compare/v5.2.14...5.2-dev
+[5.2.14]: https://github.com/axelor/axelor-open-suite/compare/v5.2.13...v5.2.14
+[5.2.13]: https://github.com/axelor/axelor-open-suite/compare/v5.2.12...v5.2.13
 [5.2.12]: https://github.com/axelor/axelor-open-suite/compare/v5.2.11...v5.2.12
 [5.2.11]: https://github.com/axelor/axelor-open-suite/compare/v5.2.10...v5.2.11
 [5.2.10]: https://github.com/axelor/axelor-open-suite/compare/v5.2.9...v5.2.10

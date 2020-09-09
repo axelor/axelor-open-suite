@@ -619,11 +619,17 @@ public interface IExceptionMessage {
   static final String MOVE_CANCEL_3 = /*$$(*/
       "So many accounting operations are used on this move, so move can't be canceled" /*)*/;
 
+  static final String MOVE_CANCEL_4 = /*$$(*/
+      "The move is validated and so can not be canceled." /*)*/;
+
   static final String INVOICE_CANCEL_1 = /*$$(*/
       "Invoice is passed in doubfult debit, and can't be canceled" /*)*/;
 
   static final String INVOICE_PAYMENT_CANCEL = /*$$(*/
       "The bank order linked to this invoice payment has already been carried out/rejected, and thus can't be canceled" /*)*/;
+
+  public static final String INVOICE_PAYMENT_NO_AMOUNT_REMAINING = /*$$(*/
+      "The payment cannot be done because the amount remaining on the invoice %s is inferior or equal to 0." /*)*/;
 
   /** Ventilate state */
   static final String VENTILATE_STATE_1 = /*$$(*/
@@ -713,6 +719,9 @@ public interface IExceptionMessage {
   static final String INVOICE_4 = /*$$(*/ "Refunds from invoice %s" /*)*/;
 
   static final String INVOICE_NO_INVOICE_TO_PAY = /*$$(*/ "No invoice to pay" /*)*/;
+  static final String
+      INVOICE_CAN_NOT_GO_BACK_TO_VALIDATE_STATUS_OR_CANCEL_VENTILATED_INVOICE = /*$$(*/
+          "It is not possible to go back to validate status or cancel a ventilated invoice." /*)*/;
 
   /** Move template controller */
   static final String MOVE_TEMPLATE_1 = /*$$(*/ "Template move is not balanced" /*)*/;
@@ -809,4 +818,11 @@ public interface IExceptionMessage {
 
   static final String INVALID_ANALYTIC_MOVE_LINE = /*$$(*/
       "Invalid Analytic moveLines, some axes percentage values are higher than 100%." /*)*/;
+
+  /*Close annual account batch */
+  static final String BATCH_CLOSE_ANNUAL_ACCOUNT_1 = /*$$(*/
+      "%s : Error : You must configure accounts for the batch configurator %s" /*)*/;
+
+  static final String BATCH_CLOSE_ANNUAL_ACCOUNT_2 = /*$$(*/
+      "%s : Error : You must configure a year for the batch configurator %s" /*)*/;
 }

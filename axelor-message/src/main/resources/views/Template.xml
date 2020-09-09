@@ -7,6 +7,8 @@
         <field name="name"/>
         <field name="subject"/>
         <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
+        <field name="metaJsonModel" form-view="json-model-form" grid-view="json-model-grid"/>
+        <field name="isJson"/>
 		<field name="mediaTypeSelect"/>
     </grid>
     
