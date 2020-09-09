@@ -58,6 +58,7 @@
 - EBICS PARTNER : added tracking to the fields of the ebics partner object.
 - Move : It is now possible to change date until the move is validated
 - Employee : added a view to the employee's main contract company in the top right in view form
+- EbicsUser : Enable searching on requestLog dashlet.
 
 ## Bug Fixes
 - HR : A leave-line cannot be saved whitout employee or leave-reason.
