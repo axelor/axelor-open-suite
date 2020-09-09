@@ -141,8 +141,6 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
   /**
    * Method to create a sender record for international transfer AFB320
    *
-   * @param company
-   * @param ZonedDateTime
    * @return
    * @throws AxelorException
    */
@@ -244,6 +242,12 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
               cfonbToolService.FORMAT_ALPHA_NUMERIC,
               34);
 
+      if (senderCurrency == null) {
+        throw new AxelorException(
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
+                I18n.get(IExceptionMessage.BANK_ORDER_NO_SENDER_CURRENCY),
+                senderCompany.getName());
+      }
       // Zone 12 : Code devise du compte à débiter à la banque d'éxécution
       senderRecord +=
           cfonbToolService.createZone(
@@ -483,8 +487,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
   /**
    * Method to create a recipient record for international transfer AFB320
    *
-   * @param company
-   * @param ZonedDateTime
+   * @param bankOrderLine
    * @return
    * @throws AxelorException
    */
@@ -823,8 +826,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
   /**
    * Method to create a dependent receiver bank record for international transfer AFB320
    *
-   * @param company
-   * @param ZonedDateTime
+   * @param bankOrderLine
    * @return
    * @throws AxelorException
    */
@@ -943,8 +945,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
   /**
    * Method to create an optional further information record for international transfer AFB320
    *
-   * @param company
-   * @param ZonedDateTime
+   * @param bankOrderLine
    * @return
    * @throws AxelorException
    */
@@ -1121,8 +1122,6 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
   /**
    * Method to create a total record for internationnal transfer AFB320
    *
-   * @param company
-   * @param ZonedDateTime
    * @return
    * @throws AxelorException
    */

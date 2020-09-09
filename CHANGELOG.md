@@ -7,6 +7,7 @@
 - AccountManagement :  Fix NPE when product not present in invoiceLine.
 - BATCH RH: corrected payroll preparation batch, now the batch is runnable.
 - ACCOUNT MANAGEMENT : Change visibility of product and product family
+- BANK ORDER : Fix NPE when validating a bank order
 
 ## [5.1.16] - 2020-09-09
 ## Improvements
