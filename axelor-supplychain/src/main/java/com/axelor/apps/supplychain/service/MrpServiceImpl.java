@@ -828,27 +828,31 @@ public class MrpServiceImpl implements MrpService {
   }
 
   /**
-   * retrieve the maturityDate of some MrpLineType. 
-   *  - PurchaseOrderLine : estimatedDelivDate or purchaseOrder.deliveryDate if estimatedDelivDate is null
-   *  - MrpForecast : forecastDate
-   *  - SaleOrderLine : estimatedDelivDate or saleOrder.deliveryDate if estimatedDelivDate is null
-   *  
-   *  select maturityDays + NbDays if mrpLineType.selet is CURRENT_DATE_PLUS_DAYS with selecting a NbDays
-   *  else maturityDate is todayDate
-   * @param maturityDate
-   * @param mrpLineType
-   * @return maturityDate
+   * This method allows to give a default value to maturity date if null, else return the original
+   * value. Also set any date in the past to today. <br>
+   * The default value is decided using the configuration in mrp line type.
+   *
+   * @param maturityDate a date that can be null.
+   * @param mrpLineType a mrp line type.
+   * @return updated maturity date or null.
    */
   protected LocalDate computeMaturityDate(LocalDate maturityDate, MrpLineType mrpLineType) {
-    if ((maturityDate != null && maturityDate.isBefore(today))
-        || (maturityDate == null
-            && mrpLineType.getIncludeElementWithoutDate()
-            && mrpLineType.getSetElementToSelect() == MrpLineTypeRepository.CURRENT_DATE)) {
+    if (maturityDate != null && maturityDate.isBefore(today)) {
+      return today;
+    }
+    if (maturityDate != null) {
+      return maturityDate;
+    }
+    // maturity date is null
+    if (!mrpLineType.getIncludeElementWithoutDate()) {
+      // do not include element with date set to null
+      return null;
+    }
+    // else fetch default value
+    if (mrpLineType.getSetElementToSelect() == MrpLineTypeRepository.CURRENT_DATE) {
       maturityDate = today;
-    } else if (maturityDate == null
-        && mrpLineType.getIncludeElementWithoutDate()
-        && mrpLineType.getSetElementToSelect() == MrpLineTypeRepository.CURRENT_DATE_PLUS_DAYS
-        && mrpLineType.getNumberOfDays().compareTo(BigDecimal.ZERO) >= 0) {
+    } else if (mrpLineType.getSetElementToSelect()
+        == MrpLineTypeRepository.CURRENT_DATE_PLUS_DAYS) {
       maturityDate = today.plusDays(mrpLineType.getNumberOfDays().longValue());
     }
     return maturityDate;

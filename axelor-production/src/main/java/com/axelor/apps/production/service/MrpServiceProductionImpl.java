@@ -207,8 +207,6 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
           if (this.isMrpProduct(product)) {
 
-            maturityDate = null;
-
             if (operationOrder.getPlannedEndDateT() != null) {
               maturityDate = operationOrder.getPlannedEndDateT().toLocalDate();
             } else {
