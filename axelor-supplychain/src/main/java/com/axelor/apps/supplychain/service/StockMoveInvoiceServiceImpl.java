@@ -151,7 +151,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
         && computeNonCanceledInvoiceQty(stockMove).signum() > 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.STOCK_MOVE_PARTIAL_INVOICE_ERROR));
+          I18n.get(IExceptionMessage.STOCK_MOVE_PARTIAL_INVOICE_ERROR),
+          stockMove.getStockMoveSeq());
     }
 
     InvoiceGenerator invoiceGenerator =
@@ -172,6 +173,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       }
       invoice.setSaleOrder(saleOrder);
       this.extendInternalReference(stockMove, invoice);
+      invoice.setDeliveryAddress(stockMove.getToAddress());
+      invoice.setDeliveryAddressStr(stockMove.getToAddressStr());
       invoice.setAddressStr(saleOrder.getMainInvoicingAddressStr());
 
       // fill default advance payment invoice
