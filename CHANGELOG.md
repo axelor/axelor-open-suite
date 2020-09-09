@@ -12,6 +12,7 @@
 - Account management: Fix visibility issue on product and product family fields.
 - Stock Move status change: improve performance on cancelling and planning stock move.
 - Opportunity : Add sequence on demo data
+- BANK ORDER : Fix NPE when validating a bank order
 
 ## [5.4.0] - 2020-09-16
 ## Features
