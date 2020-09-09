@@ -10,6 +10,7 @@
 - Fix NPE when user try to ventilate customer refund invoice.
 - Move line : Correctly display reconcile tab (credit or debit) when the account is reconcilable.
 - PurchaseOrder : Fixed error on requesting due to missing production module field in report
+- BANK ORDER : Fix NPE when validating a bank order
 
 ## [5.2.14] - 2020-08-20
 ## Bug Fixes
@@ -24,7 +25,6 @@
 - Fiscal year: corrected sql error on close function.
 - Invoice line: corrected view error when trying to change an invoice line.
 - BANK RECONCILIATION STATEMENT REPORT: change French translation of balance from "balance" to "solde".
-- BANK ORDER : Fix NPE when validating a bank order
 
 ## [5.2.13] - 2020-07-21
 ## Improvements
