@@ -4,6 +4,7 @@
 - Tracking number : Added product / origin reference on message error when estimated delivery date is null"
 - INVENTORY : Added annual / not annual inventory type select on product demo data
 - AnalyticDistribution : Autocomplete analyticDistribution details while creating SaleOrder / PurchaseOrder with interco = true.
+- STOCK MOVE : Changed error message when trying to invoice a stockmove which has already been invoiced
 
 ## Bug Fixes
 - BANK STATEMENT : corrected npe on bank details in import file function.
