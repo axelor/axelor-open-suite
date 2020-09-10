@@ -61,7 +61,7 @@
 
 	<input file="meta_schedule.csv" separator=";" type="com.axelor.meta.db.MetaSchedule"/>
     
-	<input file="GlobalTrackingConfigurationLine.csv" separator=";" type="com.axelor.apps.admin.db.GlobalTrackingConfigurationLine" >
+	<input file="base_globalTrackingConfigurationLine.csv" separator=";" type="com.axelor.apps.base.db.GlobalTrackingConfigurationLine" >
 		<bind column="Model" to="metaModel" search="self.name = :Model"/>
 		<bind column="field" to="metaField" search="(self.metaModel.name = :Model) AND (self.name = :field)"/>
 		<bind column="Creation" to="trackCreation" adapter="Boolean"/>
