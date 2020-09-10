@@ -9,6 +9,8 @@
         <boolean name="isWkf" />
         <many-to-one name="appBuilder" ref="com.axelor.studio.db.AppBuilder"
             title="App builder" />
+        <many-to-one name="metaSelect" ref="com.axelor.meta.db.MetaSelect" title="Existing select" />
+        <string name="selectionText" title="Selection" large="true" />
 		<track>
 			<field name="name" />
 			<field name="title" />
