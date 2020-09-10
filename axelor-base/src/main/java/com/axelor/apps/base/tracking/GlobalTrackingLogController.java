@@ -1,4 +1,4 @@
-package com.axelor.apps.admin.web;
+package com.axelor.apps.base.tracking;
 
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;

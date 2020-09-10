@@ -1,7 +1,7 @@
-package com.axelor.apps.admin.service;
+package com.axelor.apps.base.tracking;
 
-import com.axelor.apps.admin.db.GlobalTrackingLog;
-import com.axelor.apps.admin.db.repo.GlobalTrackingLogRepository;
+import com.axelor.apps.base.db.GlobalTrackingLog;
+import com.axelor.apps.base.db.repo.GlobalTrackingLogRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -28,13 +28,14 @@ public class GlobalTrackingLogServiceImpl implements GlobalTrackingLogService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public GlobalTrackingLog createExportLog(MetaModel model) {
+  public GlobalTrackingLog createExportLog(MetaModel model, MetaFile metaFile) {
 
     GlobalTrackingLog log = new GlobalTrackingLog();
     log.setDateT(LocalDateTime.now());
     log.setMetaModel(model);
     log.setTypeSelect(GlobalTrackingLogRepository.TYPE_EXPORT);
     log.setUser(AuthUtils.getUser());
+    log.setMetaFile(metaFile);
     return globalTrackingLogRepo.save(log);
   }
 

@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
-	<grid name="global-tracking-log-grid" title="Global tracking logs" model="com.axelor.apps.admin.db.GlobalTrackingLog" orderBy="dateT" >
+	<grid name="global-tracking-log-grid" title="Global tracking logs" model="com.axelor.apps.base.db.GlobalTrackingLog" orderBy="dateT" >
 		<field name="metaModel" />
 		<field name="relatedId" />
 		<field name="typeSelect" />
@@ -13,14 +13,14 @@
 	
 	
 
-	<form name="global-tracking-log-form" title="Global tracking log" model="com.axelor.apps.admin.db.GlobalTrackingLog" >
+	<form name="global-tracking-log-form" title="Global tracking log" model="com.axelor.apps.base.db.GlobalTrackingLog" >
 		<panel colSpan="12">
 			<field name="metaModel" />
 			<field name="relatedId" colSpan="3" />
 			<field name="typeSelect" colSpan="3" />
 			<field name="user" />
 			<field name="dateT" />
-			
+			<field name="metaFile" showIf="typeSelect == 5" widget="binary-link" />
 		</panel>
 		<panel-related field="globalTrackingLogLineList" title="Global tracking log lines" form-view="global-tracking-log-line-form" grid-view="global-tracking-log-line-grid" colSpan="12" />
 	</form>
@@ -47,7 +47,7 @@
 	</action-record>
 	
 	
-	<action-view name="action-view-global-tracking-log" title="Global tracking logs" model="com.axelor.apps.admin.db.GlobalTrackingLog">
+	<action-view name="action-view-global-tracking-log" title="Global tracking logs" model="com.axelor.apps.base.db.GlobalTrackingLog">
 		<view type="grid" name="global-tracking-log-grid"/>
 		<view type="form" name="global-tracking-log-form"/>
 		<domain>  (:metaModel is null OR self.metaModel = :metaModel)
@@ -65,7 +65,7 @@
 	</action-view>
 	
 	
-	<action-view name="action-view-global-tracking-log-line" title="Global tracking log lines" model="com.axelor.apps.admin.db.GlobalTrackingLogLine">
+	<action-view name="action-view-global-tracking-log-line" title="Global tracking log lines" model="com.axelor.apps.base.db.GlobalTrackingLogLine">
 		<view type="grid" name="global-tracking-log-line-large-grid"/>
 		<view type="form" name="global-tracking-log-line-form"/>
 		<domain> (:metaModel is null OR self.globalTrackingLog.metaModel = :metaModel)
@@ -85,7 +85,7 @@
 	</action-view>
 	
 	<action-method name="action-method-show-global-tracking-logs-in-wizard">
-		<call class="com.axelor.apps.admin.web.GlobalTrackingLogController" method="showGlobalTrackingLogsInWizard"/>
+		<call class="com.axelor.apps.base.tracking.GlobalTrackingLogController" method="showGlobalTrackingLogsInWizard"/>
 	</action-method>
 	
 	

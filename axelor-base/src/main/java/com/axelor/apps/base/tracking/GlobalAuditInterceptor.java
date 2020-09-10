@@ -1,14 +1,27 @@
-package com.axelor.admin.auth;
+package com.axelor.apps.base.tracking;
 
-import com.axelor.apps.admin.db.GlobalTrackingLog;
-import com.axelor.apps.admin.db.GlobalTrackingLogLine;
-import com.axelor.apps.admin.db.repo.GlobalTrackingLogRepository;
+import com.axelor.apps.base.db.GlobalTrackingConfigurationLine;
+import com.axelor.apps.base.db.GlobalTrackingLog;
+import com.axelor.apps.base.db.GlobalTrackingLogLine;
+import com.axelor.apps.base.db.repo.GlobalTrackingLogRepository;
 import com.axelor.auth.AuditInterceptor;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.AuditableModel;
+import com.axelor.auth.db.Group;
+import com.axelor.auth.db.Role;
 import com.axelor.exception.db.TraceBack;
+import com.axelor.mail.db.MailFlags;
+import com.axelor.mail.db.MailFollower;
 import com.axelor.mail.db.MailMessage;
+import com.axelor.meta.db.MetaAction;
+import com.axelor.meta.db.MetaField;
+import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.db.MetaModule;
+import com.axelor.meta.db.MetaSelect;
+import com.axelor.meta.db.MetaSelectItem;
+import com.axelor.meta.db.MetaTranslation;
+import com.axelor.meta.db.MetaView;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
@@ -16,7 +29,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
-import org.hibernate.CallbackException;
 import org.hibernate.Transaction;
 import org.hibernate.type.Type;
 
@@ -31,8 +43,21 @@ public class GlobalAuditInterceptor extends AuditInterceptor {
   protected static final Class[] BACKLISTED_CLASSES = {
     GlobalTrackingLogLine.class,
     GlobalTrackingLog.class,
+    GlobalTrackingConfigurationLine.class,
     MailMessage.class,
+    MailFlags.class,
+    MailFollower.class,
     MetaModel.class,
+    MetaField.class,
+    MetaModule.class,
+    MetaView.class,
+    MetaAction.class,
+    MetaTranslation.class,
+    MetaMenu.class,
+    MetaSelect.class,
+    MetaSelectItem.class,
+    Group.class,
+    Role.class,
     TraceBack.class
   };
 
@@ -131,7 +156,6 @@ public class GlobalAuditInterceptor extends AuditInterceptor {
       globalTracker.set(new GlobalAuditTracker());
       globalTracker.get().init();
     }
-
     GlobalTrackingLog log =
         globalTracker
             .get()
@@ -144,10 +168,11 @@ public class GlobalAuditInterceptor extends AuditInterceptor {
           || UPDATED_BY.equals(propertyNames[i])) {
         continue;
       }
+
       GlobalTrackingLogLine logLine = new GlobalTrackingLogLine();
       logLine.setMetaFieldName(propertyNames[i]);
 
-      if (currentState[i] instanceof AuditableModel) {
+      if (currentState[i] instanceof AuditableModel || previousState[i] instanceof AuditableModel) {
 
         logLine.setNewValue(
             currentState[i] == null
@@ -158,7 +183,7 @@ public class GlobalAuditInterceptor extends AuditInterceptor {
                 ? ""
                 : String.valueOf(((AuditableModel) previousState[i]).getId()));
 
-      } else if (currentState[i] instanceof Collection) {
+      } else if (currentState[i] instanceof Collection || previousState[i] instanceof Collection) {
 
         String prevVal = "";
         String newVal = "";
@@ -189,8 +214,10 @@ public class GlobalAuditInterceptor extends AuditInterceptor {
         logLine.setNewValue(String.valueOf(Optional.ofNullable(currentState[i]).orElse("")));
         logLine.setPreviousValue(String.valueOf(Optional.ofNullable(previousState[i]).orElse("")));
       }
+
       log.addGlobalTrackingLogLineListItem(logLine);
     }
+
     return true;
   }
 
@@ -204,7 +231,15 @@ public class GlobalAuditInterceptor extends AuditInterceptor {
   }
 
   @Override
-  public void onCollectionUpdate(Object collection, Serializable key) throws CallbackException {
+  public boolean onLoad(
+      Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
+
+    // may be used to track reading
+    return false;
+  }
+
+  @Override
+  public void onCollectionUpdate(Object collection, Serializable key) {
     globalTracker.get().addCollectionModification(collection, (Long) key);
   }
 }

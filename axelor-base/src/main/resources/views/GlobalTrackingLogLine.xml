@@ -3,13 +3,13 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
-	<grid name="global-tracking-log-line-grid" title="Global tracking log lines" model="com.axelor.apps.admin.db.GlobalTrackingLogLine" >
+	<grid name="global-tracking-log-line-grid" title="Global tracking log lines" model="com.axelor.apps.base.db.GlobalTrackingLogLine" >
 		<field name="metaField" />
 		<field name="previousValue" />
 		<field name="newValue" />
 	</grid>
 	
-	<grid name="global-tracking-log-line-large-grid" title="Global tracking log lines" model="com.axelor.apps.admin.db.GlobalTrackingLogLine" orderBy="globalTrackingLog.dateT" >
+	<grid name="global-tracking-log-line-large-grid" title="Global tracking log lines" model="com.axelor.apps.base.db.GlobalTrackingLogLine" orderBy="globalTrackingLog.dateT" >
 		<field name="globalTrackingLog.metaModel" />
 		<field name="metaField" />
 		<field name="globalTrackingLog.relatedId" />
@@ -20,7 +20,7 @@
 		<field name="globalTrackingLog" hidden="true" />
 	</grid>
 
-	<form name="global-tracking-log-line-form" title="Global tracking log line" model="com.axelor.apps.admin.db.GlobalTrackingLogLine" >
+	<form name="global-tracking-log-line-form" title="Global tracking log line" model="com.axelor.apps.base.db.GlobalTrackingLogLine" >
 		<panel colSpan="12">
 			<field name="globalTrackingLog.metaModel" colSpan="3" />
 			<field name="globalTrackingLog.relatedId" colSpan="2" />
