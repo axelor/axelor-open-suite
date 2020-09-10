@@ -2,6 +2,7 @@
 ## [Unreleased 5.3.12]
 ## Improvements
 ## Bug Fixes
+- Timesheet Line: fix NPE happening when project or task were emptied.
 
 ## [5.3.11] - 2020-09-10
 ## Improvements
