@@ -1,33 +1,31 @@
 # Changelog
-## [Unreleased 5.3.11]
+## [5.3.11] - 2020-09-10
 ## Improvements
-- Tracking number : Added product / origin reference on message error when estimated delivery date is null"
-- INVENTORY : Added annual / not annual inventory type select on product demo data
-- AnalyticDistribution : Autocomplete analyticDistribution details while creating SaleOrder / PurchaseOrder with interco = true.
-- STOCK MOVE : Changed error message when trying to invoice a stockmove which has already been invoiced
-- PROJECT : Change financial report BIRT to match conventions
+- Tracking number: Added product / origin reference on error message when estimated delivery date is null.
+- AnalyticDistribution: Autocomplete analyticDistribution details while creating SaleOrder / PurchaseOrder with interco = true.
+- STOCK MOVE: Changed error message when trying to invoice a stockmove which has already been invoiced.
+- PROJECT: Change financial report BIRT to match conventions.
+- PAYMENT VOUCHER: Set default operation type select to 'Customer sale'.
 
 ## Bug Fixes
-- BANK STATEMENT : corrected npe on bank details in import file function.
-- Accounting report : Add translations to some reports
-- INVOICE : Add 'Periodic contract' sub type viewer in form.
-- CLIENT STOCK MOVE : corrected unable to realize if real quantity > to quantity on a stock move line.
-- FISCAL YEAR : corrected sql error.
-- Sale Invoice Details : Fixed the empty report generation
+- INVENTORY: Added annual / not annual inventory type select on product demo data.
+- BANK STATEMENT: corrected npe on bank details in import file function.
+- Accounting report: Add translations to some reports.
+- INVOICE: Add 'Periodic contract' sub type viewer in form.
+- CLIENT STOCK MOVE: corrected unable to realize if real quantity > to quantity on a stock move line.
+- FISCAL YEAR: corrected sql error.
+- Sale Invoice Details: Fixed report generation.
 - MRP: Fix data rollback on error.
-- Account config : Fix translation
-- INVOICE : Changed french traduction for Contact
-- Bank reconciliation line : is posted is now read only.
-- Move line : Correctly display reconcile tab (credit or debit) when the account is reconcilable.
-- INVOICE : Fix copy still having references to orders and stock moves
+- Account config: Fix translation.
+- INVOICE: Changed french translation for Contact.
+- Bank reconciliation line: "is posted" is now read only.
+- Move line: Correctly display reconcile tab (credit or debit) when the account is reconcilable.
+- INVOICE: Fix copy still having references to orders and stock moves.
 
 ## [5.3.10] - 2020-08-27
 ## Features
-- CRM : Create new objects Catalog and Catelog type
-- Training session, register :  mass register creation.
 - CRM: Create new objects Catalog and Catalog type.
 - Training session, register: mass register creation.
-- PAYMENT VOUCHER: Set default operationTypeSelect to 'Customer sale'.
 
 ## Improvements
 - EBICSTS: add new data init to bank statement file formats.
@@ -464,7 +462,7 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - PRODUCT: Fix economicManufOrderQty displayed twice.
 
 
-[Unreleased 5.3.11]: https://github.com/axelor/axelor-open-suite/compare/v5.3.10...dev
+[5.3.11]: https://github.com/axelor/axelor-open-suite/compare/v5.3.10...v5.3.11
 [5.3.10]: https://github.com/axelor/axelor-open-suite/compare/v5.3.9...v5.3.10
 [5.3.9]: https://github.com/axelor/axelor-open-suite/compare/v5.3.8...v5.3.9
 [5.3.8]: https://github.com/axelor/axelor-open-suite/compare/v5.3.7...v5.3.8
