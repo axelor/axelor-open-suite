@@ -18,7 +18,7 @@
     <decimal name="credit" title="Credit"/> 
     <many-to-one name="bankStatementLine" ref="com.axelor.apps.bankpayment.db.BankStatementLine" title="Bank Statement detail" />
     <many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine" title="Move Line" />
-    <boolean name="isPosted" title="Is posted"/>
+    <boolean name="isPosted" title="Is posted" readonly="true"/>
     
     
   </entity>

@@ -38,6 +38,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
+import com.google.inject.Inject;
 import java.io.UnsupportedEncodingException;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
@@ -54,6 +55,8 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class MailServiceBaseImpl extends MailServiceMessageImpl {
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  @Inject AppBaseService appBaseService;
 
   @Override
   public Model resolve(String email) {
@@ -212,10 +215,12 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
 
   @Override
   public void send(MailMessage message) throws MailException {
-
-    if (!Beans.get(AppBaseService.class).getAppBase().getActivateSendingEmail()) {
-      return;
+    if (appBaseService.isApp("base")) {
+      Boolean activateSendingEmail = appBaseService.getAppBase().getActivateSendingEmail();
+      if (activateSendingEmail == null || !activateSendingEmail) {
+        return;
+      }
+      super.send(message);
     }
-    super.send(message);
   }
 }
