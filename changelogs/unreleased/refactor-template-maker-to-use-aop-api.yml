@@ -1,0 +1,6 @@
+---
+title: "Refactor TemplateMaker to use platform template api"
+type: feature
+description: |
+	Refactor TemplateMaker to use platform template api and removed redundency. 
+	It enable full use of custom model and fields on the template.
