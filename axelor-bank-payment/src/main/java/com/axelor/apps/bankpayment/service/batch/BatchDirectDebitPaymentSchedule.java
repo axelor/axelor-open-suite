@@ -192,7 +192,12 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
             PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
             BankDetails bankDetails = paymentScheduleService.getBankDetails(paymentSchedule);
             Preconditions.checkArgument(
-                bankDetails.getActive(), I18n.get("Bank details are inactive."));
+                bankDetails.getActive(),
+                bankDetails.getPartner() != null
+                    ? bankDetails.getPartner().getFullName()
+                        + " - "
+                        + I18n.get("Bank details are inactive.")
+                    : I18n.get("Bank details are inactive."));
 
             if (directDebitPaymentMode.getOrderTypeSelect()
                 == PaymentModeRepository.ORDER_TYPE_SEPA_DIRECT_DEBIT) {

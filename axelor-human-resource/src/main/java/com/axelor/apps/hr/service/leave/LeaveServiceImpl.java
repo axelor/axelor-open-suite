@@ -390,9 +390,9 @@ public class LeaveServiceImpl implements LeaveService {
           leave.getLeaveLine().getLeaveReason().getName());
     }
     if (leave.getInjectConsumeSelect() == LeaveRequestRepository.SELECT_CONSUME) {
-      leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
-    } else {
       leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().add(leave.getDuration()));
+    } else {
+      leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
     }
   }
 
@@ -439,11 +439,11 @@ public class LeaveServiceImpl implements LeaveService {
             I18n.get(IExceptionMessage.LEAVE_ALLOW_NEGATIVE_VALUE_REASON),
             leave.getLeaveLine().getLeaveReason().getName());
       }
-      leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().add(leave.getDuration()));
+      leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
       leaveLine.setDaysValidated(leaveLine.getDaysValidated().add(leave.getDuration()));
     } else {
       leaveLine.setQuantity(leaveLine.getQuantity().add(leave.getDuration()));
-      leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
+      leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().add(leave.getDuration()));
     }
   }
 
@@ -474,9 +474,9 @@ public class LeaveServiceImpl implements LeaveService {
           leave.getLeaveLine().getLeaveReason().getName());
     }
     if (leave.getInjectConsumeSelect() == LeaveRequestRepository.SELECT_CONSUME) {
-      leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().add(leave.getDuration()));
-    } else {
       leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
+    } else {
+      leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().add(leave.getDuration()));
     }
   }
 
@@ -515,9 +515,9 @@ public class LeaveServiceImpl implements LeaveService {
       leaveLine.setDaysValidated(leaveLine.getDaysValidated().subtract(leave.getDuration()));
     } else if (leave.getStatusSelect() == LeaveRequestRepository.STATUS_AWAITING_VALIDATION) {
       if (leave.getInjectConsumeSelect() == LeaveRequestRepository.SELECT_CONSUME) {
-        leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().add(leave.getDuration()));
-      } else {
         leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
+      } else {
+        leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().add(leave.getDuration()));
       }
     }
   }

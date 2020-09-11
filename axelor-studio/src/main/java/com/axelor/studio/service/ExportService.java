@@ -55,6 +55,7 @@ public class ExportService {
     return "";
   }
 
+  @SuppressWarnings("deprecation")
   public static String exportActionBuilderLines(List<ActionBuilderLine> lines, int count) {
 
     String xml = "";
@@ -123,7 +124,10 @@ public class ExportService {
               + "</value>"
               + indent
               + "<conditionText>"
-              + (line.getConditionText() != null ? line.getConditionText() : "")
+              + (line.getConditionText() != null
+                  ? StringEscapeUtils.escapeXml(
+                      StringEscapeUtils.escapeXml(line.getConditionText()))
+                  : "")
               + "</conditionText>"
               + indent
               + "<filter>"

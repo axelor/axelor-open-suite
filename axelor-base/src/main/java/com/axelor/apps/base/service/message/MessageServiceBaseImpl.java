@@ -27,6 +27,7 @@ import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageServiceImpl;
+import com.axelor.apps.message.service.SendMailQueueService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -64,8 +65,9 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
   public MessageServiceBaseImpl(
       MetaAttachmentRepository metaAttachmentRepository,
       MessageRepository messageRepository,
+      SendMailQueueService sendMailQueueService,
       UserService userService) {
-    super(metaAttachmentRepository, messageRepository);
+    super(metaAttachmentRepository, messageRepository, sendMailQueueService);
     this.userService = userService;
   }
 

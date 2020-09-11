@@ -105,6 +105,7 @@ public class PartnerController {
     String fileLink =
         ReportFactory.createReport(IReport.PARTNER, name + "-${date}")
             .addParam("Locale", ReportSettings.getPrintingLocale(partner))
+            .addParam("Timezone", getTimezone(partner.getUser()))
             .addParam("PartnerId", partner.getId())
             .generate()
             .getFileLink();
@@ -132,6 +133,7 @@ public class PartnerController {
     String fileLink =
         ReportFactory.createReport(IReport.PHONE_BOOK, name + "-${date}")
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
+            .addParam("Timezone", getTimezone(user))
             .addParam("UserId", user.getId())
             .generate()
             .getFileLink();
@@ -159,6 +161,7 @@ public class PartnerController {
     String fileLink =
         ReportFactory.createReport(IReport.COMPANY_PHONE_BOOK, name + "-${date}")
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
+            .addParam("Timezone", getTimezone(user))
             .addParam("UserId", user.getId())
             .generate()
             .getFileLink();
@@ -185,6 +188,7 @@ public class PartnerController {
     String fileLink =
         ReportFactory.createReport(IReport.CLIENT_SITUATION, name + "-${date}")
             .addParam("Locale", ReportSettings.getPrintingLocale(partner))
+            .addParam("Timezone", getTimezone(user))
             .addParam("UserId", user.getId())
             .addParam("PartnerId", partner.getId())
             .addParam(
@@ -198,6 +202,13 @@ public class PartnerController {
     LOG.debug("Printing " + name);
 
     response.setView(ActionView.define(name).add("html", fileLink).map());
+  }
+
+  private String getTimezone(User user) {
+    if (user == null || user.getActiveCompany() == null) {
+      return null;
+    }
+    return user.getActiveCompany().getTimezone();
   }
 
   @CallMethod

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
 		<toolbar>
@@ -253,7 +253,7 @@
 				<button name="cancelManageExpenseLinesBtn" colSpan="4" hidden="true" title="Cancel" onClick="action-project-attrs-expense-line-cancel-manage-lines" />
 				<panel-dashlet name="expenseLinePanel" action="action-project-view-show-validated-expense-lines" colSpan="12" canSearch="true"/>
 			</panel>
-			<panel title="Production" name="productionPanel"  showIf="isBusinessProject"
+			<panel title="Production" name="productionPanel" showIf="isBusinessProject"
 				 if-module="axelor-business-production"
 				 if="__config__.app.isApp('business-project') 
 				 &amp;&amp; __config__.app.getApp('business-project').getShowProductionOrderRelatedToProject()">
@@ -332,7 +332,7 @@
 			<panel title="Configurations" name="configurationsPanel" >
 				<field if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
 					name="productSet" colSpan="12" widget="TagSelect" canEdit="false"
-					domain="self.isActivity = true" form-view="product-activity-form"
+					domain="self.isActivity = true AND dtype = 'Product'" form-view="product-activity-form"
 					grid-view="product-activity-grid" />
 				<field name="teamTaskCategorySet" colSpan="12" widget="TagSelect" />
 				<field name="projectFolderSet" colSpan="12" widget="TagSelect" />
@@ -833,4 +833,29 @@
         <view type="form" name="task-form" />
     </action-view>
 
+	<search-filters name="project-filters" model="com.axelor.apps.project.db.Project" title="Project filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+        <field name="resourceBookingList" hidden="true" if="!__config__.app.getApp('project').resourceManagement"/>
+        <field name="productionOrderList" hidden="true" if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowProductionOrderRelatedToProject())"/>
+        <field name="clientPartner" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="currency" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="priceList" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="contactPartner" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="customerAddress" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="totalPlannedHrs" hidden="true" if="!__config__.app.isApp('employee')"/>
+		<field name="timeSpent" hidden="true" if="!__config__.app.isApp('timesheet')"/>
+		<field name="toInvoice" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="isInvoicingTimesheet" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="isInvoicingExpenses" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="isInvoicingPurchases" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="invoicingSequenceSelect" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="consolidatePhaseWhenInvoicing" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="invoicingComment" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="manualElementList" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="roadmapList" hidden="true" if="!__config__.app.isApp('business-support')"/>
+		<field name="announcementList" hidden="true" if="!__config__.app.isApp('business-support')"/>
+		<field name="productSet" hidden="true" if="!__config__.app.isApp('employee')"/>
+		<field name="imputable" hidden="true" if="!__config__.app.isApp('employee')"/>
+		<field name="isBusinessProject" hidden="true" if="!__config__.app.isApp('business-project')"/>
+    </search-filters>
 </object-views>

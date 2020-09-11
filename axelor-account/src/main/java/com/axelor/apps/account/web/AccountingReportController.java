@@ -72,6 +72,7 @@ public class AccountingReportController {
       actionViewBuilder.model(MoveLine.class.getName());
       actionViewBuilder.add("grid", "move-line-grid");
       actionViewBuilder.add("form", "move-line-form");
+      actionViewBuilder.param("search-filters", "move-line-filters");
       actionViewBuilder.domain(query);
 
       response.setView(actionViewBuilder.map());
@@ -226,6 +227,7 @@ public class AccountingReportController {
         ActionView.define(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_6));
     actionViewBuilder.model(Move.class.getName());
     actionViewBuilder.add("grid", "move-grid");
+    actionViewBuilder.param("search-filters", "move-filters");
     actionViewBuilder.domain("self.accountingReport.id = :_accountingReportId");
     actionViewBuilder.context("_accountingReportId", accountingReport.getId());
 

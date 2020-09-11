@@ -65,6 +65,7 @@ import com.axelor.studio.service.StudioMetaService;
 import com.axelor.studio.service.builder.MenuBuilderService;
 import com.axelor.studio.service.filter.FilterGroovyService;
 import com.google.common.base.Joiner;
+import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -183,7 +184,7 @@ public class WkfService {
       MetaStore.clear();
 
     } catch (Exception e) {
-      if (e.getMessage().equals(IExceptionMessage.CANNOT_ALTER_NODES)) {
+      if (Objects.equal(e.getMessage(), IExceptionMessage.CANNOT_ALTER_NODES)) {
         throw e;
       }
       e.printStackTrace();

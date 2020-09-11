@@ -57,7 +57,11 @@ public interface IExceptionMessage {
   static final String UNIT_CONVERSION_1 = /*$$(*/
       "Please configure unit conversion from '%s' to '%s'." /*)*/;
 
-  static final String UNIT_CONVERSION_2 = /*$$(*/ "Please configure units." /*)*/;
+  static final String UNIT_CONVERSION_2 = /*$$(*/ "Start unit cannot be void." /*)*/;
+
+  static final String UNIT_CONVERSION_3 = /*$$(*/ "Conversion impossible because of no unit." /*)*/;
+
+  static final String UNIT_CONVERSION_4 = /*$$(*/ "End unit cannot be void." /*)*/;
 
   static final String CURRENCY_CONVERSION_1 = /*$$(*/
       "WARNING : Please close the current conversion period before creating new one" /*)*/;
@@ -228,6 +232,12 @@ public interface IExceptionMessage {
   public static final String PRODUCT_2 = /*$$(*/ "Prices updated" /*)*/;
   static final String PRODUCT_NO_ACTIVE_COMPANY = /*$$(*/
       "No active company for this user, please define an active company." /*)*/;
+
+  public static final String PRODUCT_COMPANY_NO_PRODUCT = /*$$(*/
+      "Attempted to get field '%s' for unspecified product." /*)*/;
+
+  public static final String PRODUCT_COMPANY_NO_FIELD = /*$$(*/
+      "Attempted to get a field from product '%s' but forgot to specify which field." /*)*/;
 
   /** Calendar */
   static final String CALENDAR_NOT_VALID = /*$$(*/ "Calendar configuration not valid" /*)*/;

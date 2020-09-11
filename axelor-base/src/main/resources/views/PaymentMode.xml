@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 	
     <grid name="payment-mode-grid" title="Payment Mode" model="com.axelor.apps.account.db.PaymentMode">
         <field name="name"/>
@@ -46,5 +46,18 @@
 	<action-record name="action-payment-mode-set-default" model="com.axelor.apps.account.db.PaymentMode">
 	    <field name="accountManagementList" expr="eval:__repo__(Company).all().fetch().collect{__repo__(AccountManagement).create([company:it])}" if="__config__.app.isApp('account')"/>
 	</action-record>
+	
+	<search-filters name="payment-mode-filters" model="com.axelor.apps.account.db.PaymentMode" title="Payment mode filters">
+    	<field name="validatePaymentByDepositSlipPublication" hidden="true" if="!(__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.paymentVouchersOnInvoice)"/>
+    	<field name="accountManagementList" hidden="true" if="!__config__.app.isApp('account')"/>
+	    <field name="generateBankOrder" hidden="true" if="!__config__.app.isApp('bank-payment')"/>
+		<field name="autoConfirmBankOrder" hidden="true" if="!__config__.app.isApp('bank-payment')"/>
+	  	<field name="automaticTransmission" hidden="true" if="!__config__.app.isApp('bank-payment')"/>
+	  	<field name="generateMoveAutoFromBankOrder" hidden="true" if="!__config__.app.isApp('bank-payment')"/>
+        <field name="consoBankOrderLinePerPartner" hidden="true" if="!__config__.app.isApp('bank-payment')"/>
+	  	<field name="orderTypeSelect" hidden="true" if="!__config__.app.isApp('bank-payment')"/>
+	    <field name="bankOrderExportFolderPath" hidden="true" if="!__config__.app.isApp('bank-payment')"/>
+	  	<field name="bankOrderFileFormat" hidden="true" if="!__config__.app.isApp('bank-payment')"/>
+	</search-filters>
 
 </object-views>

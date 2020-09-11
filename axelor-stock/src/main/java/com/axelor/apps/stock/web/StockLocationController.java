@@ -116,6 +116,7 @@ public class StockLocationController {
       String fileLink =
           ReportFactory.createReport(IReport.STOCK_LOCATION, title + "-${date}")
               .addParam("StockLocationId", locationIds)
+              .addParam("Timezone", null)
               .addParam("Locale", language)
               .addFormat(exportType)
               .addParam("PrintType", printType)

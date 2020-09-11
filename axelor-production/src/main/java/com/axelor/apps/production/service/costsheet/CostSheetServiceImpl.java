@@ -215,7 +215,8 @@ public class CostSheetServiceImpl implements CostSheetService {
             costSheetLineService.createResidualProductCostSheetLine(
                 prodResidualProduct.getProduct(),
                 prodResidualProduct.getUnit(),
-                prodResidualProduct.getQty());
+                prodResidualProduct.getQty(),
+                billOfMaterial.getCompany());
 
         costSheet.addCostSheetLineListItem(costSheetLine);
       }
@@ -502,7 +503,10 @@ public class CostSheetServiceImpl implements CostSheetService {
           && (!stockMoveLine.getProduct().equals(manufOrder.getProduct()))) {
         CostSheetLine costSheetLine =
             costSheetLineService.createResidualProductCostSheetLine(
-                stockMoveLine.getProduct(), stockMoveLine.getUnit(), stockMoveLine.getRealQty());
+                stockMoveLine.getProduct(),
+                stockMoveLine.getUnit(),
+                stockMoveLine.getRealQty(),
+                manufOrder.getCompany());
         costSheet.addCostSheetLineListItem(costSheetLine);
       }
     }

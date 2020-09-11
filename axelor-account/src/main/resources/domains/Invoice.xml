@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
   
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -24,8 +24,11 @@
     <many-to-one name="paymentCondition" ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition" />
     <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank Details"/>
     <many-to-one name="partnerAccount" ref="com.axelor.apps.account.db.Account" title="Partner account"/>
-	<many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address" />
-    <string name="addressStr" title="Address" large="true" multiline="true"/>
+      <many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address" />
+      <many-to-one name="deliveryAddress" ref="com.axelor.apps.base.db.Address" title="Delivery address"/>
+
+		<string name="addressStr" title="Address" large="true" multiline="true"/>
+		<string name="deliveryAddressStr" title="Delivery address" large="true" multiline="true"/>
     <string name="internalReference" title="Internal Ref."/>
     <string name="externalReference" title="External Ref."/>
     <many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList" title="Price list"/>

@@ -100,6 +100,7 @@ public class StockCorrectionController {
                 .model(StockMove.class.getName())
                 .add("grid", "stock-move-grid")
                 .add("form", "stock-move-form")
+                .param("search-filters", "internal-stock-move-filters")
                 .context("_showRecord", stockMove.getId().toString())
                 .map());
       } else {

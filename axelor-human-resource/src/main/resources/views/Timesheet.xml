@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 	<grid name="timesheet-grid" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet" canNew="false" groupBy="user" orderBy="user,-fromDate">
 		<menubar>
@@ -185,7 +185,7 @@
 	</action-group>
 	
 	<action-attrs name="action-hr-timesheet-attrs-domain-product">
-		<attribute name="domain" expr="eval:$project == null || __repo__(Project).find($project.id).productSet?.empty ? &quot;self.isActivity = true&quot; : &quot;self.isActivity = true AND EXISTS(SELECT p FROM Project p WHERE p = :$project AND self MEMBER OF p.productSet)&quot;" for="$product"/>
+		<attribute name="domain" expr="eval:$project == null || __repo__(Project).find($project.id).productSet?.empty ? &quot;self.isActivity = true AND dtype = 'Product'&quot; : &quot;self.isActivity = true AND EXISTS(SELECT p FROM Project p WHERE p = :$project AND self MEMBER OF p.productSet) AND dtype = 'Product'&quot;" for="$product"/>
 	</action-attrs>
 
 	<action-group name="action-timesheet-group-confirm">
@@ -489,5 +489,12 @@
 			(fromGenerationDate != null &amp;&amp; fromGenerationDate > toGenerationDate))" 
 			field="$toGenerationDate" error="Automatic generation dates must be included in the timesheet period"/>
 	</action-condition>
+	
+	<search-filters name="timesheet-filters" model="com.axelor.apps.hr.db.Timesheet" title="Timesheet filters">
+		<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="showEditor" hidden="true" if="!(__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet').getTimesheetEditor())"/>
+		<field name="user.employee.timesheetImputationSelect" hidden="true" if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageBusinessProduction())"/>
+		<field name="timesheetLineList" hidden="true" if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageBusinessProduction())"/>	
+	</search-filters>
 
 </object-views>

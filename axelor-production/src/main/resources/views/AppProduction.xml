@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 	
 	<form name="app-production-config-form" title="App production" model="com.axelor.apps.base.db.AppProduction" canDelete="false" canNew="false" width="large">
 		<panel name="productionConfigurationPanel" colSpan="12">
@@ -21,7 +21,7 @@
 			    <field name="nbDecimalDigitForBomQty"/>
 			</panel>
 			<panel name="manufacturingProcessPanel" title="Manufacturing process">
-   				<field name="workCenterProduct" domain="self.productTypeSelect = 'service'" form-view="product-form" grid-view="product-grid" canEdit="false" colSpan="12"/>
+   				<field name="workCenterProduct" domain="self.productTypeSelect = 'service' AND dtype = 'Product'" form-view="product-form" grid-view="product-grid" canEdit="false" colSpan="12"/>
 			</panel>
 			<panel name="prodProcessPanel" title="Production process">
  				<field name="manageProdProcessVersion" widget="boolean-switch"/>

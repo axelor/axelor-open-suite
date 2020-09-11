@@ -56,6 +56,7 @@ import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -84,6 +85,8 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
   private ExecutorService executor = Executors.newCachedThreadPool();
 
   private String userName = null;
+
+  @Inject AppBaseService appBaseService;
 
   @Override
   public Model resolve(String email) {
@@ -203,7 +206,6 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     final Set<String> recipients = new LinkedHashSet<>();
     final MailFollowerRepository followers = Beans.get(MailFollowerRepository.class);
     String entityName = entity.getClass().getName();
-    PartnerRepository partnerRepo = Beans.get(PartnerRepository.class);
 
     if (message.getRecipients() != null) {
       for (MailAddress address : message.getRecipients()) {
@@ -222,7 +224,7 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
                 .anyMatch(x -> x.getFullName().equals(entityName)))) {
           continue;
         } else {
-          Partner partner = partnerRepo.findByUser(user);
+          Partner partner = user.getPartner();
           if (partner != null && partner.getEmailAddress() != null) {
             recipients.add(partner.getEmailAddress().getAddress());
           } else if (user.getEmail() != null) {
@@ -243,6 +245,9 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
 
   @Override
   public void send(final MailMessage message) throws MailException {
+    if (!appBaseService.isApp("base") || !appBaseService.getAppBase().getActivateSendingEmail()) {
+      return;
+    }
     final EmailAccount emailAccount = mailAccountService.getDefaultSender();
     if (emailAccount == null) {
       super.send(message);

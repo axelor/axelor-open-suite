@@ -97,6 +97,7 @@ public class MrpController {
       String fileLink =
           ReportFactory.createReport(IReport.MRP_WEEKS, name)
               .addParam("mrpId", mrp.getId())
+              .addParam("Timezone", getTimezone(mrp))
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
               .addParam(
                   "endDate",
@@ -110,6 +111,13 @@ public class MrpController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  private String getTimezone(Mrp mrp) {
+    if (mrp.getStockLocation() == null || mrp.getStockLocation().getCompany() == null) {
+      return null;
+    }
+    return mrp.getStockLocation().getCompany().getTimezone();
   }
 
   /**
@@ -126,6 +134,7 @@ public class MrpController {
       String fileLink =
           ReportFactory.createReport(IReport.MRP_LIST, name)
               .addParam("mrpId", mrp.getId())
+              .addParam("Timezone", getTimezone(mrp))
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
               .addFormat(ReportSettings.FORMAT_PDF)
               .generate()

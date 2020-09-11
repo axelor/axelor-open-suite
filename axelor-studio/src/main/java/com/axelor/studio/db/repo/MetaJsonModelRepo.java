@@ -44,7 +44,7 @@ public class MetaJsonModelRepo extends MetaJsonModelRepository {
 
     if (jsonModel.getIsGenerateMenu()) {
       MenuBuilder menuBuilder = jsonModel.getMenuBuilder();
-      if (menuBuilder != null && menuBuilder.getVersion() == 0) {
+      if (menuBuilder != null) {
         menuBuilder =
             Beans.get(MenuBuilderService.class)
                 .updateMenuBuilder(
