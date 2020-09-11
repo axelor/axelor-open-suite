@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
   <module name="message" package="com.axelor.apps.message.db"/>
 
@@ -29,12 +29,17 @@
     <string name="signature" title="Signature"/>
     <boolean name="addSignature" title="Add Signature"/>
 	
+	<integer name="templateEngineSelect" title="Template engine" selection="template.engine.select" default="1"/>
 
 	<extra-code><![CDATA[
 		// MEDIA TYPE SELECT
 		public static final int MEDIA_TYPE_MAIL = 1;
 		public static final int MEDIA_TYPE_EMAIL = 2; 
-		public static final int MEDIA_TYPE_CHAT = 3; 
+		public static final int MEDIA_TYPE_CHAT = 3;
+
+		// TEMPLATE ENGINE TYPE
+		public static final int TEMPLATE_ENGINE_STRING_TEMPLATE = 1;
+		public static final int TEMPLATE_ENGINE_GROOVY_TEMPLATE = 2;
     ]]></extra-code>
     
   </entity>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 	<grid name="accounting-batch-grid" title="Accounting batches" model="com.axelor.apps.account.db.AccountingBatch">
 		<field name="actionSelect" />
@@ -72,7 +72,7 @@
     		<field name="year.toDate" showIf="closeYear" hidden="true"/>
     		<field name="year.reportedBalanceDate" showIf="openYear" hidden="true"/>
     		<field name="moveDescription"/>
-			<field name="accountSet" colSpan="12" form-view="account-form" grid-view="account-grid" widget="TagSelect" canNew="false" canEdit="false" domain="self.company = :company"/> 
+			<field name="accountSet" colSpan="12" form-view="account-form" grid-view="account-grid" widget="TagSelect" canNew="false" canEdit="false" domain="self.company = :company" requiredIf="actionSelect == 21"/> 
 <!-- 			<field name="journalSet" colSpan="12" form-view="journal-form" grid-view="journal-grid" widget="TagSelect" canNew="false" domain="self.company = :company"/> -->
 		</panel>
 		<panel name="informationPanel" title="Information"  >
@@ -178,5 +178,10 @@
     <action-attrs name="action-accounting-batch-attrs-set-empty-year-and-accountset-value">
     	<attribute name="value" expr="eval: null" for="year,accountSet"/>
     </action-attrs>
+    
+    <search-filters name="accounting-batch-filters" model="com.axelor.apps.account.db.AccountingBatch" title="Accounting batch filters">
+    	<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+        <field name="includeOtherBankAccounts" hidden="true" if="!__config__.app.getApp('base').getManageMultiBanks()"/>
+    </search-filters>
 
 </object-views>

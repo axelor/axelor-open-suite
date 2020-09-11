@@ -78,30 +78,6 @@ public class AccountConfigService {
     }
   }
 
-  public void getRejectImportPathAndFileName(AccountConfig accountConfig) throws AxelorException {
-
-    if (accountConfig.getRejectImportPathAndFileName() == null
-        || accountConfig.getRejectImportPathAndFileName().isEmpty()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_8),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
-          accountConfig.getCompany().getName());
-    }
-  }
-
-  public void getTempImportPathAndFileName(AccountConfig accountConfig) throws AxelorException {
-
-    if (accountConfig.getTempImportPathAndFileName() == null
-        || accountConfig.getTempImportPathAndFileName().isEmpty()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_CONFIG_9),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
-          accountConfig.getCompany().getName());
-    }
-  }
-
   public void getReimbursementImportFolderPathCFONB(AccountConfig accountConfig)
       throws AxelorException {
 

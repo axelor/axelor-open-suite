@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
     <calendar name="operation-order-planned-calendar" model="com.axelor.apps.production.db.OperationOrder" 
     eventStart="plannedStartDateT" eventStop="plannedEndDateT" title="Planned operations" colorBy="machineWorkCenter.machine" mode="week"
@@ -243,6 +243,8 @@
     </action-attrs>
     
     <search-filters name="operation-order-filters" model="com.axelor.apps.production.db.OperationOrder" title="Operation order filters">
+		<field name="operationOrderDurationList" hidden="true" if="__config__.app.getApp('production').getEnableTimesheetOnManufOrder()"/>
+		<field name="timesheetLineList" hidden="true" if="!__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"/>
 		<filter title="Draft Operations">
 			<domain>self.statusSelect = 1</domain>
 		</filter>

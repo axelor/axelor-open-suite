@@ -95,6 +95,7 @@ public class LunchVoucherAdvanceController {
       String fileLink =
           ReportFactory.createReport(IReport.LUNCH_VOUCHER_ADVANCE, name)
               .addParam("lunchVoucherAdvId", lunchVoucherAdvance.getId())
+              .addParam("Timezone", getTimezone(lunchVoucherAdvance))
               .addFormat(ReportSettings.FORMAT_PDF)
               .generate()
               .getFileLink();
@@ -102,5 +103,14 @@ public class LunchVoucherAdvanceController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  private String getTimezone(LunchVoucherAdvance lunchVoucherAdvance) {
+    if (lunchVoucherAdvance.getEmployee() == null
+        || lunchVoucherAdvance.getEmployee().getUser() == null
+        || lunchVoucherAdvance.getEmployee().getUser().getActiveCompany() == null) {
+      return null;
+    }
+    return lunchVoucherAdvance.getEmployee().getUser().getActiveCompany().getTimezone();
   }
 }

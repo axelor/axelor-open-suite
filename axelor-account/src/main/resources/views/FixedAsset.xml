@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
 	<grid name="fixed-asset-grid" title="Fixed assets" model="com.axelor.apps.account.db.FixedAsset" orderBy="-createdOn,company">
 		<menubar>
-     		<menu name="fixedAssetToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">	
+     		<menu name="fixedAssetToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
 	      		<item name="validateSelectedFixedAssetsItem" title="Validate selected fixed assets" action="action-fixed-asset-method-mass-validation" prompt="Are you sure you want to validate all selected fixed assets ?" />
     		</menu>
     	</menubar>
@@ -155,5 +155,10 @@
     <action-method name="action-fixed-asset-method-mass-validation">
     	<call class="com.axelor.apps.account.web.FixedAssetController" method="massValidation"/>
     </action-method>
-    
+
+	<search-filters name="fixed-asset-filters" model="com.axelor.apps.account.db.FixedAsset" title="Fixed asset filters">
+    	<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    	<field name="analyticDistributionTemplate" hidden="true" if="!__config__.app.getApp('account').getManageAnalyticAccounting()"/>
+    </search-filters>
+
 </object-views>

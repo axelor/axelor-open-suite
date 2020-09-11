@@ -83,12 +83,20 @@ public class ExcelToCSV {
           Row headerRow = sheet.getRow(row);
           for (int cell = startColumn; cell < headerRow.getLastCellNum(); cell++) {
             Cell headerCell = headerRow.getCell(cell);
-            if (headerCell == null || headerCell.getCellType() != Cell.CELL_TYPE_STRING) {
+            if (headerCell == null
+                || headerCell.getCellType() != Cell.CELL_TYPE_STRING
+                || headerCell.getStringCellValue().isEmpty()) {
               throw new AxelorException(
                   TraceBackRepository.CATEGORY_INCONSISTENCY,
                   I18n.get(IExceptionMessage.INVALID_HEADER));
             }
-            writer.append(headerCell.getStringCellValue() + separator);
+
+            String value = headerCell.getStringCellValue();
+
+            if (cnt != headerRow.getLastCellNum()) {
+              value += separator;
+            }
+            writer.append(value);
             cnt++;
           }
           writer.append("\n");
@@ -96,37 +104,42 @@ public class ExcelToCSV {
         } else {
 
           Row dataRow = sheet.getRow(row);
-          for (int cell = startColumn; cell <= cnt; cell++) {
-            try {
+          for (int cell = startColumn; cell < cnt; cell++) {
 
+            try {
               Cell dataCell = dataRow.getCell(cell);
+              String value = "";
               if (dataCell != null) {
 
                 switch (dataCell.getCellType()) {
                   case Cell.CELL_TYPE_STRING:
                     String strData = dataCell.getStringCellValue();
-                    writer.append("\"" + strData + "\"" + separator);
+                    value = "\"" + strData + "\"";
                     break;
 
                   case Cell.CELL_TYPE_NUMERIC:
                     if (DateUtil.isCellDateFormatted(dataCell)) {
                       String dateInString = getDateValue(dataCell);
-                      writer.append("\"" + dateInString + "\"" + separator);
+                      value = "\"" + dateInString + "\"";
 
                     } else {
                       Integer val = (int) dataCell.getNumericCellValue();
-                      writer.append(val.toString() + separator);
+                      value = val.toString();
                     }
                     break;
 
+                  case Cell.CELL_TYPE_BOOLEAN:
+                    value = new Boolean(dataCell.getBooleanCellValue()).toString();
+                    break;
                   case Cell.CELL_TYPE_BLANK:
                   default:
-                    writer.append("" + separator);
                     break;
                 }
-              } else {
-                writer.append("" + separator);
               }
+              if (cell != cnt) {
+                value += separator;
+              }
+              writer.append(value);
             } catch (Exception e) {
               LOG.error(e.getMessage());
             }

@@ -32,6 +32,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.text.Templates;
 import com.axelor.tool.template.TemplateMaker;
 import com.google.inject.Inject;
 import java.io.File;
@@ -42,6 +43,7 @@ import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.birt.core.data.DataTypeUtil;
@@ -61,16 +63,19 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
   }
 
   @Override
-  public Set<MetaFile> getMetaFiles(Template template) throws AxelorException, IOException {
+  public Set<MetaFile> getMetaFiles(
+      Template template, Templates templates, Map<String, Object> templatesContext)
+      throws AxelorException, IOException {
 
-    Set<MetaFile> metaFiles = super.getMetaFiles(template);
+    Set<MetaFile> metaFiles = super.getMetaFiles(template, templates, templatesContext);
     Set<BirtTemplate> birtTemplates = template.getBirtTemplateSet();
     if (CollectionUtils.isEmpty(birtTemplates)) {
       return metaFiles;
     }
 
     for (BirtTemplate birtTemplate : birtTemplates) {
-      metaFiles.add(createMetaFileUsingBirtTemplate(maker, birtTemplate));
+      metaFiles.add(
+          createMetaFileUsingBirtTemplate(null, birtTemplate, templates, templatesContext));
     }
 
     logger.debug("Metafile to attach: {}", metaFiles);
@@ -78,7 +83,11 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
     return metaFiles;
   }
 
-  public MetaFile createMetaFileUsingBirtTemplate(TemplateMaker maker, BirtTemplate birtTemplate)
+  public MetaFile createMetaFileUsingBirtTemplate(
+      TemplateMaker maker,
+      BirtTemplate birtTemplate,
+      Templates templates,
+      Map<String, Object> templatesContext)
       throws AxelorException, IOException {
 
     logger.debug("Generate birt metafile: {}", birtTemplate.getName());
@@ -90,6 +99,8 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
     File file =
         generateBirtTemplate(
             maker,
+            templates,
+            templatesContext,
             fileName,
             birtTemplate.getTemplateLink(),
             birtTemplate.getFormat(),
@@ -102,6 +113,8 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 
   public File generateBirtTemplate(
       TemplateMaker maker,
+      Templates templates,
+      Map<String, Object> templatesContext,
       String fileName,
       String modelPath,
       String format,
@@ -111,7 +124,14 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
     File birtTemplate = null;
 
     ReportSettings reportSettings =
-        generateTemplate(maker, fileName, modelPath, format, birtTemplateParameterList);
+        generateTemplate(
+            maker,
+            templates,
+            templatesContext,
+            fileName,
+            modelPath,
+            format,
+            birtTemplateParameterList);
 
     if (reportSettings != null) {
       birtTemplate = reportSettings.getFile();
@@ -121,7 +141,8 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
   }
 
   public String generateBirtTemplateLink(
-      TemplateMaker maker,
+      Templates templates,
+      Map<String, Object> templatesContext,
       String fileName,
       String modelPath,
       String format,
@@ -131,7 +152,14 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
     String birtTemplateFileLink = null;
 
     ReportSettings reportSettings =
-        generateTemplate(maker, fileName, modelPath, format, birtTemplateParameterList);
+        generateTemplate(
+            null,
+            templates,
+            templatesContext,
+            fileName,
+            modelPath,
+            format,
+            birtTemplateParameterList);
 
     if (reportSettings != null) {
       birtTemplateFileLink = reportSettings.getFileLink();
@@ -142,6 +170,8 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 
   private ReportSettings generateTemplate(
       TemplateMaker maker,
+      Templates templates,
+      Map<String, Object> templatesContext,
       String fileName,
       String modelPath,
       String format,
@@ -156,12 +186,19 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
         ReportFactory.createReport(modelPath, fileName).addFormat(format);
 
     for (BirtTemplateParameter birtTemplateParameter : birtTemplateParameterList) {
-      maker.setTemplate(birtTemplateParameter.getValue());
 
       try {
+        String parseValue = null;
+        if (maker != null) {
+          maker.setTemplate(birtTemplateParameter.getValue());
+          parseValue = maker.make();
+        } else {
+          parseValue =
+              templates.fromText(birtTemplateParameter.getValue()).make(templatesContext).render();
+        }
         reportSettings.addParam(
             birtTemplateParameter.getName(),
-            convertValue(birtTemplateParameter.getType(), maker.make()));
+            convertValue(birtTemplateParameter.getType(), parseValue));
       } catch (BirtException e) {
         throw new AxelorException(
             e.getCause(),

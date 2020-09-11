@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="userProperties">
         <structure>
             <property name="name">Data Cube.MoveLineDS.x</property>
@@ -1006,12 +1006,14 @@ order by Tax.code ASC]]></xml-property>
                                 <property name="display">inline</property>
                                 <text-property name="text">Du : </text-property>
                             </label>
-                            <text id="4007">
-                                <property name="fontWeight">normal</property>
+                            <data id="4178">
+                                <structure name="dateTimeFormat">
+                                    <property name="category">Short Date</property>
+                                    <property name="pattern">Short Date</property>
+                                </structure>
                                 <property name="display">inline</property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF  format="dd/MM/yyyy">row["date_from"]</VALUE-OF>]]></text-property>
-                            </text>
+                                <property name="resultSetColumn">date_from</property>
+                            </data>
                         </cell>
                         <cell id="4008">
                             <label id="4009">
@@ -1020,12 +1022,14 @@ order by Tax.code ASC]]></xml-property>
                                 <property name="display">inline</property>
                                 <text-property name="text">Au : </text-property>
                             </label>
-                            <text id="4010">
-                                <property name="fontWeight">normal</property>
+                            <data id="4179">
+                                <structure name="dateTimeFormat">
+                                    <property name="category">Short Date</property>
+                                    <property name="pattern">Short Date</property>
+                                </structure>
                                 <property name="display">inline</property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["date_to"]</VALUE-OF>]]></text-property>
-                            </text>
+                                <property name="resultSetColumn">date_to</property>
+                            </data>
                         </cell>
                     </row>
                     <row id="4011">
@@ -1118,15 +1122,17 @@ order by Tax.code ASC]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">date_from</property>
-                    <text-property name="displayName">date_from</text-property>
+                    <text-property name="displayName">DateFrom</text-property>
                     <expression name="expression" type="javascript">dataSetRow["date_from"]</expression>
                     <property name="dataType">date</property>
+                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">date_to</property>
-                    <text-property name="displayName">date_to</text-property>
+                    <text-property name="displayName">DateTo</text-property>
                     <expression name="expression" type="javascript">dataSetRow["date_to"]</expression>
                     <property name="dataType">date</property>
+                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">year_name</property>
@@ -1222,12 +1228,14 @@ order by Tax.code ASC]]></xml-property>
                         <property name="display">inline</property>
                         <text-property name="text">Date d'édition : </text-property>
                     </label>
-                    <text id="4172">
-                        <property name="fontSize">9pt</property>
+                    <data id="4177">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="display">inline</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["ReportDateEdition"]</VALUE-OF>]]></text-property>
-                    </text>
+                        <property name="resultSetColumn">ReportDateEdition</property>
+                    </data>
                 </cell>
                 <cell id="3588">
                     <label id="528">
@@ -1236,11 +1244,14 @@ order by Tax.code ASC]]></xml-property>
                         <property name="display">inline</property>
                         <text-property name="text">Du : </text-property>
                     </label>
-                    <text id="556">
+                    <data id="4175">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="display">inline</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF  format="dd/MM/yyyy">row["date_from"]</VALUE-OF>]]></text-property>
-                    </text>
+                        <property name="resultSetColumn">date_from</property>
+                    </data>
                 </cell>
                 <cell id="3589">
                     <label id="529">
@@ -1249,11 +1260,14 @@ order by Tax.code ASC]]></xml-property>
                         <property name="display">inline</property>
                         <text-property name="text">Au : </text-property>
                     </label>
-                    <text id="557">
+                    <data id="4176">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="display">inline</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["date_to"]</VALUE-OF>]]></text-property>
-                    </text>
+                        <property name="resultSetColumn">date_to</property>
+                    </data>
                 </cell>
             </row>
             <row id="3923">

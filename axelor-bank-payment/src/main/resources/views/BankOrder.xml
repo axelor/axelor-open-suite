@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
     <grid name="bank-order-bank-to-bank-grid" orderBy="-bankOrderDate" title="Bank Orders" model="com.axelor.apps.bankpayment.db.BankOrder">
         <toolbar>
@@ -611,5 +611,9 @@
 	<action-method name="action-bank-order-method-display-bank-order-lines-bank-to-bank">
 		<call class="com.axelor.apps.bankpayment.web.BankOrderController" method="displayBankOrderLinesBankToBank"/>
 	</action-method>
+	
+	<search-filters name="bank-order-filters" model="com.axelor.apps.bankpayment.db.BankOrder" title="Bank Order filters">
+        <field name="signatoryEbicsUser" hidden="true" if="eval: !__config__.app.getApp('bank-payment').enableEbicsModule"/>
+	</search-filters>
 
 </object-views>

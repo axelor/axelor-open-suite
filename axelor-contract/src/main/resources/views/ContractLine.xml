@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views
-              http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+              http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
     <grid name="contract-line-grid" title="Contract Lines"
           model="com.axelor.apps.contract.db.ContractLine" canMove="true"
@@ -22,7 +22,7 @@
           
           <panel-tabs name="mainPanelTab">
         		<panel name="informationsPanel" title="Information">
-            		<field name="product" canEdit="false" onChange="action-method-contract-version-change-product,action-method-contract-line-compute-total"/>
+            		<field name="product" canEdit="false" onChange="action-method-contract-version-change-product,action-method-contract-line-compute-total" domain="dtype = 'Product'"/>
             		<field name="productName"/>
             		<field name="qty" readonlyIf="isConsumptionLine" onChange="action-method-contract-line-compute-total"/>
             		<field name="price" onChange="action-method-contract-line-compute-total"/>
@@ -88,7 +88,7 @@
           
           <panel-tabs name="mainPanelTab">
         		<panel name="informationsPanel" title="Information">
-            		<field name="product" canEdit="false" onChange="action-method-contract-change-product,action-method-contract-line-compute-total"/>
+            		<field name="product" canEdit="false" onChange="action-method-contract-change-product,action-method-contract-line-compute-total" domain="dtype = 'Product'"/>
             		<field name="productName"/>
             		<field name="qty" readonlyIf="isConsumptionLine" onChange="action-method-contract-line-compute-total"/>
             		<field name="price" onChange="action-method-contract-line-compute-total"/>
@@ -124,7 +124,8 @@
       model="com.axelor.apps.contract.db.ContractLine">
         <panel name="mainPanel">
             <field name="product" canEdit="false"
-              onChange="action-contract-template-method-change-product"/>
+              onChange="action-contract-template-method-change-product"
+              domain="dtype = 'Product'"/>
             <field name="productName"/>
             <field name="qty" readonlyIf="isConsumptionLine"/>
             <field name="price"/>
@@ -147,7 +148,8 @@
       model="com.axelor.apps.contract.db.ContractLine">
         <panel name="mainPanel">
             <field name="product" canEdit="false"
-              onChange="action-contract-template-method-change-product"/>
+              onChange="action-contract-template-method-change-product"
+              domain="dtype = 'Product'"/>
             <field name="productName"/>
             <field name="qty"/>
             <field name="price"/>

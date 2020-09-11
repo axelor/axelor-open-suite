@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
 <!--     ACCOUNTING REPORT -->
     
@@ -288,5 +288,11 @@
     <action-validate name="action-account-report-alert-typeselect">
 		<alert message="Make sure that all accounting moves are validated." if="typeSelect == 12 || typeSelect == 15"/>
     </action-validate>
+    
+    <search-filters name="accounting-report-filters" model="com.axelor.apps.account.db.AccountingReport" title="Accounting report filters">
+    	<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    	<field name="journalSet" hidden="true" if="!__config__.app.isApp('bank-payment')"/>
+    	<field name="bankDetailsSet" hidden="true" if="!__config__.app.isApp('bank-payment')"/>
+	</search-filters>
 
 </object-views>

@@ -94,6 +94,7 @@ public class SaleOrderController {
                   .model(StockMove.class.getName())
                   .add("form", "stock-move-form")
                   .add("grid", "stock-move-grid")
+                  .param("search-filters", "internal-stock-move-filters")
                   .param("forceEdit", "true")
                   .domain("self.id = " + stockMoveList.get(0))
                   .context("_showRecord", String.valueOf(stockMoveList.get(0)))
@@ -105,6 +106,7 @@ public class SaleOrderController {
                   .model(StockMove.class.getName())
                   .add("grid", "stock-move-grid")
                   .add("form", "stock-move-form")
+                  .param("search-filters", "internal-stock-move-filters")
                   .domain("self.id in (" + Joiner.on(",").join(stockMoveList) + ")")
                   .context("_userType", StockMoveRepository.USER_TYPE_SALESPERSON)
                   .map());
@@ -330,6 +332,7 @@ public class SaleOrderController {
                 .model(Invoice.class.getName())
                 .add("form", "invoice-form")
                 .add("grid", "invoice-grid")
+                .param("search-filters", "customer-invoices-filters")
                 .context("_showRecord", String.valueOf(invoice.getId()))
                 .context("_operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
                 .context("todayDate", Beans.get(AppSupplychainService.class).getTodayDate())
@@ -546,6 +549,7 @@ public class SaleOrderController {
                 .model(SaleOrder.class.getName())
                 .add("grid", "sale-order-grid")
                 .add("form", "sale-order-form")
+                .param("search-filters", "sale-order-filters")
                 .param("forceEdit", "true")
                 .context("_showRecord", String.valueOf(saleOrder.getId()))
                 .map());
@@ -854,6 +858,7 @@ public class SaleOrderController {
                 .model(Invoice.class.getName())
                 .add("form", "invoice-form")
                 .add("grid", "invoice-grid")
+                .param("search-filters", "customer-invoices-filters")
                 .context("_showRecord", String.valueOf(invoice.getId()))
                 .map());
       }

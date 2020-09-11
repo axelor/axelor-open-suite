@@ -15,6 +15,8 @@ libs.commons_validator = 'commons-validator:commons-validator:1.4.0'
 
 libs.pdfbox = 'org.apache.pdfbox:pdfbox:2.0.9'
 libs.itextpdf = 'com.itextpdf:itextpdf:5.5.13.1'
+libs.itext7_core = 'com.itextpdf:itext7-core:7.0.4'
+libs.html2pdf = 'com.itextpdf:html2pdf:2.0.0'
 libs.flying_saucer_pdf = 'org.xhtmlrenderer:flying-saucer-pdf:9.1.4'
 
 libs.iban4j = 'org.iban4j:iban4j:3.2.1'
