@@ -25,7 +25,6 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
-import com.axelor.meta.MetaFiles;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
@@ -88,8 +87,7 @@ public class ConfiguratorCreatorController {
     try {
       String pathDiff = (String) ((Map) request.getContext().get("dataFile")).get("filePath");
       String importLog =
-          Beans.get(ConfiguratorCreatorImportService.class)
-              .importConfiguratorCreators(MetaFiles.getPath(pathDiff).toString());
+          Beans.get(ConfiguratorCreatorImportService.class).importConfiguratorCreators(pathDiff);
       response.setValue("importLog", importLog);
     } catch (Exception e) {
       TraceBackService.trace(e);
