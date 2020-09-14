@@ -3,6 +3,7 @@
 ## Improvements
 ## Bug Fixes
 - Timesheet Line: fix NPE happening when project or task were emptied.
+- BANK RECONCILIATION STATEMENT REPORT : corrected sql request error.
 
 ## [5.3.11] - 2020-09-10
 ## Improvements
