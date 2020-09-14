@@ -25,14 +25,17 @@
     	</panel>
     	<panel-dashlet action="mps-charge-show-mps-charge-lines" name="test" title="Charge lines" colSpan="12"/>
     	<panel name="filterInfoPanel" title="Filters" showIf="company &amp;&amp; startMonthDate &amp;&amp; endMonthDate">
-    		<field name="workCenter" onChange="action-mps-charge-group-date-on-change"/>
+    		<field name="workCenter" onSelect="action-method-mps-charge-work-center-domain" onChange="save,action-mps-charge-group-date-on-change"/>
     	</panel>
     	<panel name="detailsPanel" title="MPS Weekly schedules" showIf="workCenter">
     		<panel-dashlet action="custom:mps-charge-mps-weekley-schedule-custom" name="mpsWeeklySchedualCustomPanel" colSpan="12" showTitle="false"/>
     		<panel-dashlet action="chart:mps.charge.mps.weekley.schedule.chart.first.year" name="mpsWeeklySchedualChartFirstYearPanel" colSpan="12"/>
     	</panel>
-    	
     </form>
+	
+	<action-method name="action-method-mps-charge-work-center-domain">
+		<call class="com.axelor.apps.production.web.MpsChargeController" method="computeWorkCenterDomain"/>
+	</action-method>
 	
 	 <custom name="mps-charge-mps-weekley-schedule-custom" title="">
 	 	<dataset type="rpc">
