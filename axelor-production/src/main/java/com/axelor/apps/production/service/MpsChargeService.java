@@ -17,15 +17,13 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.production.db.MpsCharge;
+import com.axelor.apps.production.db.MpsWeeklySchedule;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Map;
-
-import com.axelor.apps.production.db.MpsCharge;
-import com.axelor.apps.production.db.MpsWeeklySchedule;
-import com.axelor.apps.production.db.WorkCenter;
 
 public interface MpsChargeService {
 
@@ -48,6 +46,6 @@ public interface MpsChargeService {
       Map<MpsWeeklySchedule, Map<YearMonth, BigDecimal>> totalHoursCountMap, MpsCharge mpsCharge);
 
   public String getReportData(Long id);
-  
+
   public List<Long> computeWorkCenterDomain(MpsCharge mpsCharge);
 }

@@ -27,7 +27,6 @@ import com.axelor.apps.production.service.MpsChargeService;
 import com.axelor.apps.production.service.MpsChargeServiceImpl;
 import com.axelor.apps.production.translation.ITranslation;
 import com.axelor.auth.AuthUtils;
-import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -46,7 +45,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,24 +65,33 @@ public class MpsChargeController {
     }
     response.setReload(true);
   }
-  
+
   public void computeWorkCenterDomain(ActionRequest request, ActionResponse response) {
-	  MpsCharge mpsCharge = request.getContext().asType(MpsCharge.class);
-	  List<Long> workCenterList = Beans.get(MpsChargeServiceImpl.class).computeWorkCenterDomain(mpsCharge);
-	  response.setAttr("workCenter", "domain", "self.id IN (" + workCenterList.stream().map(it -> String.valueOf(it)).collect(Collectors.joining(",")) +")");
+    MpsCharge mpsCharge = request.getContext().asType(MpsCharge.class);
+    List<Long> workCenterList =
+        Beans.get(MpsChargeServiceImpl.class).computeWorkCenterDomain(mpsCharge);
+    response.setAttr(
+        "workCenter",
+        "domain",
+        "self.id IN ("
+            + workCenterList.stream().map(it -> String.valueOf(it)).collect(Collectors.joining(","))
+            + ")");
   }
-  
-  
+
   public void getMpsWeeklyScheduleCustom(ActionRequest request, ActionResponse response) {
-	Long mpsChargeId = Long.parseLong(request.getData().get("id").toString());
-	MpsCharge mpsCharge = Beans.get(MpsChargeRepository.class).find(mpsChargeId);
+    Long mpsChargeId = Long.parseLong(request.getData().get("id").toString());
+    MpsCharge mpsCharge = Beans.get(MpsChargeRepository.class).find(mpsChargeId);
     MpsChargeService mpsChargeService = Beans.get(MpsChargeService.class);
     List<MpsWeeklySchedule> mpsWeeklyScheduleList =
-        Beans.get(MpsWeeklyScheduleRepository.class).all().filter("self.company = :company AND ( self.agency = :agency OR self.agency IS NULL) AND (self.workCenter = :workCenter OR self.workCenter IS NULL)")
-        .bind("company",mpsCharge.getCompany())
-        .bind("agency",mpsCharge.getAgency())
-        .bind("workCenter",mpsCharge.getWorkCenter())
-        .order("totalHours").fetch();
+        Beans.get(MpsWeeklyScheduleRepository.class)
+            .all()
+            .filter(
+                "self.company = :company AND ( self.agency = :agency OR self.agency IS NULL) AND (self.workCenter = :workCenter OR self.workCenter IS NULL)")
+            .bind("company", mpsCharge.getCompany())
+            .bind("agency", mpsCharge.getAgency())
+            .bind("workCenter", mpsCharge.getWorkCenter())
+            .order("totalHours")
+            .fetch();
 
     Map<MpsWeeklySchedule, Map<Integer, BigDecimal>> totalHoursWeekCountMap = new LinkedHashMap<>();
     for (MpsWeeklySchedule mpsWeeklySchedule : mpsWeeklyScheduleList) {
@@ -132,7 +139,7 @@ public class MpsChargeController {
     startMonthDate = endMonthDate.with(TemporalAdjusters.firstDayOfYear());
     MpsChargeService mpsChargeService = Beans.get(MpsChargeService.class);
     Map<MpsWeeklySchedule, Map<YearMonth, BigDecimal>> totalHoursCountMap =
-        mpsChargeService.countTotalHours(startMonthDate, endMonthDate,mpsCharge);
+        mpsChargeService.countTotalHours(startMonthDate, endMonthDate, mpsCharge);
     List<Map<String, Object>> dataMapList =
         mpsChargeService.getChartDataMapList(totalHoursCountMap, mpsCharge);
 

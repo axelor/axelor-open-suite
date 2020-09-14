@@ -17,6 +17,21 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.production.db.MpsCharge;
+import com.axelor.apps.production.db.MpsChargeLine;
+import com.axelor.apps.production.db.MpsWeeklySchedule;
+import com.axelor.apps.production.db.WorkCenter;
+import com.axelor.apps.production.db.repo.MpsChargeLineRepository;
+import com.axelor.apps.production.db.repo.MpsChargeRepository;
+import com.axelor.apps.production.db.repo.MpsWeeklyScheduleRepository;
+import com.axelor.apps.production.db.repo.WorkCenterRepository;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.exception.service.TraceBackService;
+import com.axelor.inject.Beans;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -37,22 +52,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import com.axelor.apps.production.db.MpsCharge;
-import com.axelor.apps.production.db.MpsChargeLine;
-import com.axelor.apps.production.db.MpsWeeklySchedule;
-import com.axelor.apps.production.db.WorkCenter;
-import com.axelor.apps.production.db.repo.MpsChargeLineRepository;
-import com.axelor.apps.production.db.repo.MpsChargeRepository;
-import com.axelor.apps.production.db.repo.MpsWeeklyScheduleRepository;
-import com.axelor.apps.production.db.repo.WorkCenterRepository;
-import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.exception.service.TraceBackService;
-import com.axelor.inject.Beans;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.inject.persist.Transactional;
-
 public class MpsChargeServiceImpl implements MpsChargeService {
 
   final String TITLE_CODE = "code";
@@ -66,12 +65,16 @@ public class MpsChargeServiceImpl implements MpsChargeService {
   public Map<MpsWeeklySchedule, Map<YearMonth, BigDecimal>> countTotalHours(
       LocalDate startMonthDate, LocalDate endMonthDate, MpsCharge mpsCharge) {
 
-	  List<MpsWeeklySchedule> mpsWeeklyScheduleList =
-		        Beans.get(MpsWeeklyScheduleRepository.class).all().filter("self.company = :company AND ( self.agency = :agency OR self.agency IS NULL) AND (self.workCenter = :workCenter OR self.workCenter IS NULL)")
-		        .bind("company",mpsCharge.getCompany())
-		        .bind("agency",mpsCharge.getAgency())
-		        .bind("workCenter",mpsCharge.getWorkCenter())
-		        .order("totalHours").fetch();
+    List<MpsWeeklySchedule> mpsWeeklyScheduleList =
+        Beans.get(MpsWeeklyScheduleRepository.class)
+            .all()
+            .filter(
+                "self.company = :company AND ( self.agency = :agency OR self.agency IS NULL) AND (self.workCenter = :workCenter OR self.workCenter IS NULL)")
+            .bind("company", mpsCharge.getCompany())
+            .bind("agency", mpsCharge.getAgency())
+            .bind("workCenter", mpsCharge.getWorkCenter())
+            .order("totalHours")
+            .fetch();
     Map<MpsWeeklySchedule, Map<YearMonth, BigDecimal>> totalHoursCountMap = new LinkedHashMap<>();
     for (MpsWeeklySchedule mpsWeeklySchedule : mpsWeeklyScheduleList) {
       Map<YearMonth, BigDecimal> totalHoursCountYearForMpsWeeklySchedualMap =
@@ -105,11 +108,15 @@ public class MpsChargeServiceImpl implements MpsChargeService {
   public Map<MpsWeeklySchedule, Map<Integer, BigDecimal>> countTotalWeekHours(
       LocalDate startMonthDate, LocalDate endMonthDate, MpsCharge mpsCharge) {
     List<MpsWeeklySchedule> mpsWeeklyScheduleList =
-        Beans.get(MpsWeeklyScheduleRepository.class).all().filter("self.company = :company AND ( self.agency = :agency OR self.agency IS NULL) AND (self.workCenter = :workCenter OR self.workCenter IS NULL)")
-        .bind("company",mpsCharge.getCompany())
-        .bind("agency",mpsCharge.getAgency())
-        .bind("workCenter",mpsCharge.getWorkCenter())
-        .order("totalHours").fetch();
+        Beans.get(MpsWeeklyScheduleRepository.class)
+            .all()
+            .filter(
+                "self.company = :company AND ( self.agency = :agency OR self.agency IS NULL) AND (self.workCenter = :workCenter OR self.workCenter IS NULL)")
+            .bind("company", mpsCharge.getCompany())
+            .bind("agency", mpsCharge.getAgency())
+            .bind("workCenter", mpsCharge.getWorkCenter())
+            .order("totalHours")
+            .fetch();
 
     Map<MpsWeeklySchedule, Map<Integer, BigDecimal>> totalHoursWeekCountMap = new LinkedHashMap<>();
     for (MpsWeeklySchedule mpsWeeklySchedule : mpsWeeklyScheduleList) {
@@ -362,13 +369,18 @@ public class MpsChargeServiceImpl implements MpsChargeService {
     }
     return chargeDataMapList;
   }
-  
-  public List<Long> computeWorkCenterDomain(MpsCharge mpsCharge){
-	  return Beans.get(MpsChargeLineRepository.class).all().filter(
-	            "self.mpsCharge = :mpsChargeId")
-		        .bind("mpsChargeId", mpsCharge.getId()).fetchStream().map(it -> it.getWorkCenter().getId()).distinct().collect(Collectors.toList());
+
+  public List<Long> computeWorkCenterDomain(MpsCharge mpsCharge) {
+    return Beans.get(MpsChargeLineRepository.class)
+        .all()
+        .filter("self.mpsCharge = :mpsChargeId")
+        .bind("mpsChargeId", mpsCharge.getId())
+        .fetchStream()
+        .map(it -> it.getWorkCenter().getId())
+        .distinct()
+        .collect(Collectors.toList());
   }
-  
+
   public BigDecimal getChargeLinesDataMap(YearMonth month, MpsCharge mpsCharge) {
     if (mpsCharge.getWorkCenter() == null) return BigDecimal.ZERO;
     return Beans.get(MpsChargeLineRepository.class)
