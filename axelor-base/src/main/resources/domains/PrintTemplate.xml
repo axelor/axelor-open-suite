@@ -11,7 +11,6 @@
         <many-to-one name="metaModel" title="Model" ref="com.axelor.meta.db.MetaModel"/>
         <string name="documentName" title="Document name"/>
         <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"/>
-        <many-to-one name="printSettings" title="Print settings" ref="com.axelor.apps.base.db.PrintingSettings"/>
         <one-to-many name="printTemplateLineList" title="Content lines" ref="com.axelor.apps.base.db.PrintTemplateLine" mappedBy="printTemplate" orderBy="sequence"/>
         <many-to-one name="language" title="Language" ref="com.axelor.apps.base.db.Language"/>
         <many-to-many name="birtTemplateSet" title="Birt templates" ref="com.axelor.apps.base.db.BirtTemplate"/>
@@ -23,7 +22,18 @@
         <string name="metaFileField" title="File field name"/>
         <many-to-many name="printTemplateSet" title="Print template sublist" ref="com.axelor.apps.base.db.PrintTemplate"/>
         <string name="metaModelDefaultPath" title="Model default Path" large="true"/>
-
+		
+		<boolean name="isFooterUnderLine" title="UnderLine"/>
+        <decimal name="footerFontSize" title="Font Size"/>
+        <string name="footerTextAlignment" title="Text Alignment" selection="base.print.settings.footer.text.alignment.select"/>
+        <string name="footerFontType" title="Font Type" selection="base.print.settings.footer.font.select"/>
+        <string name="printTemplatePdfHeader" large="true" title="Template Header"/>
+		<string name="printTemplatePdfFooter" multiline="true" large="true" title="Template Footer"/>
+		<integer name="logoPositionSelect" title="Company Logo position" selection="printing.setting.logo.position"/>
+		<string name="footerFontColor" title="Font Color" selection="base.print.settings.footer.font.color.select"/>
+		<string name="headerContentWidth" title="Header Content Width"/>
+		<string name="logoWidth" title="Company Logo Width"/>
+		
     </entity>
 
 </domain-models>

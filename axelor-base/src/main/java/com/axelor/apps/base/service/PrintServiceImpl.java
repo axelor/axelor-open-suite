@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.app.AppSettings;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Print;
 import com.axelor.apps.base.db.PrintLine;
 import com.axelor.apps.base.db.repo.PrintRepository;
@@ -36,7 +38,12 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
+import com.itextpdf.kernel.events.PdfDocumentEvent;
+import com.itextpdf.kernel.geom.PageSize;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -59,11 +66,19 @@ public class PrintServiceImpl implements PrintService {
 
   protected PrintRepository printRepo;
   protected MetaFiles metaFiles;
+  protected String attachmentPath;
 
   @Inject
   PrintServiceImpl(PrintRepository printRepo, MetaFiles metaFiles) {
     this.printRepo = printRepo;
     this.metaFiles = metaFiles;
+    this.attachmentPath = AppSettings.get().getPath("file.upload.dir", "");
+    if (attachmentPath != null) {
+      attachmentPath =
+          attachmentPath.endsWith(File.separator)
+              ? attachmentPath
+              : attachmentPath + File.separator;
+    }
   }
 
   @Override
@@ -74,14 +89,28 @@ public class PrintServiceImpl implements PrintService {
       String html = generateHtml(print);
 
       ByteArrayOutputStream pdfOutputStream = new ByteArrayOutputStream();
-      HtmlConverter.convertToPdf(html, pdfOutputStream);
+      try (PdfDocument pdfDoc = new PdfDocument(new PdfWriter(pdfOutputStream))) {
+        pdfDoc.setDefaultPageSize(
+            print.getDisplayTypeSelect() == PrintRepository.DISPLAY_TYPE_LANDSCAPE
+                ? PageSize.A4.rotate()
+                : PageSize.A4);
+
+        if (print.getPrintPdfFooter() != null && !print.getHidePrintSettings()) {
+          com.itextpdf.layout.Document doc = new com.itextpdf.layout.Document(pdfDoc);
+          pdfDoc.addEventHandler(
+              PdfDocumentEvent.END_PAGE, new TableFooterEventHandler(doc, print));
+        }
+
+        ConverterProperties converterProperties = new ConverterProperties();
+        converterProperties.setBaseUri(attachmentPath);
+        HtmlConverter.convertToPdf(html, pdfDoc, converterProperties);
+      }
 
       String documentName =
           (StringUtils.notEmpty(print.getDocumentName()) ? print.getDocumentName() : "")
               + "-"
               + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
               + FILE_EXTENSION_PDF;
-
       InputStream pdfInputStream = new ByteArrayInputStream(pdfOutputStream.toByteArray());
       MetaFile metaFile = metaFiles.upload(pdfInputStream, documentName);
       File file = MetaFiles.getPath(metaFile).toFile();
@@ -134,6 +163,7 @@ public class PrintServiceImpl implements PrintService {
 
   protected String generateHtml(Print print) {
     StringBuilder htmlBuilder = new StringBuilder();
+
     htmlBuilder.append("<!DOCTYPE html>");
     htmlBuilder.append("<html>");
     htmlBuilder.append("<head>");
@@ -144,16 +174,94 @@ public class PrintServiceImpl implements PrintService {
     htmlBuilder.append("</head>");
     htmlBuilder.append("<body>");
 
+    if (!print.getHidePrintSettings()) {
+      Company company = print.getCompany();
+      Integer logoPosition = print.getLogoPositionSelect();
+      String pdfHeader = print.getPrintPdfHeader() != null ? print.getPrintPdfHeader() : "";
+      String imageTag = "";
+      String logoWidth =
+          print.getLogoWidth() != null ? "width: " + print.getLogoWidth() + ";" : "width: 50%;";
+      String headerWidth =
+          print.getHeaderContentWidth() != null
+              ? "width: " + print.getHeaderContentWidth() + ";"
+              : "width: 40%;";
+
+      if (company != null
+          && company.getLogo() != null
+          && logoPosition != PrintRepository.LOGO_POSITION_NONE
+          && new File(attachmentPath + company.getLogo().getFilePath()).exists()) {
+        String width = company.getWidth() != 0 ? "width='" + company.getWidth() + "px'" : "";
+        String height = company.getHeight() != 0 ? company.getHeight() + "px" : "71px";
+        imageTag =
+            "<img src='"
+                + company.getLogo().getFilePath()
+                + "' height='"
+                + height
+                + "' "
+                + width
+                + "/>";
+      }
+
+      switch (logoPosition) {
+        case PrintRepository.LOGO_POSITION_LEFT:
+          htmlBuilder.append(
+              "<table style='width: 100%;'><tr><td valign='top' style='text-align: left; "
+                  + logoWidth
+                  + "'>"
+                  + imageTag
+                  + "</td><td valign='top' style='width: 10%'></td><td valign='top' style='text-align: left; "
+                  + headerWidth
+                  + "'>"
+                  + pdfHeader
+                  + "</td></tr></table>");
+          break;
+        case PrintRepository.LOGO_POSITION_CENTER:
+          htmlBuilder.append(
+              "<table style=\"width: 100%;\"><tr><td valign='top' style='width: 33.33%;'></td><td valign='top' style='text-align: center; width: 33.33%;'>"
+                  + imageTag
+                  + "</td><td valign='top' style='text-align: left; width: 33.33%;'>"
+                  + pdfHeader
+                  + "</td></tr></table>");
+          break;
+        case PrintRepository.LOGO_POSITION_RIGHT:
+          htmlBuilder.append(
+              "<table style='width: 100%;'><tr><td valign='top' style='text-align: left; "
+                  + headerWidth
+                  + "'>"
+                  + pdfHeader
+                  + "</td><td valign='top' style='width: 10%'></td><td valign='top' style='text-align: center; "
+                  + logoWidth
+                  + "'>"
+                  + imageTag
+                  + "</td></tr></table>");
+          break;
+        default:
+          htmlBuilder.append(
+              "<table style='width: 100%;'><tr><td style='width: 60%;'></td><td valign='top' style='text-align: left; width: 40%'>"
+                  + pdfHeader
+                  + "</td></tr></table>");
+          break;
+      }
+      if (!pdfHeader.isEmpty() || !imageTag.isEmpty()) {
+        htmlBuilder.append("<hr>");
+      }
+    }
+
     if (ObjectUtils.notEmpty(print)) {
       List<PrintLine> printLineList = print.getPrintLineList();
       if (CollectionUtils.isNotEmpty(printLineList)) {
         for (PrintLine printLine : printLineList) {
+          htmlBuilder.append(
+              printLine.getIsWithPageBreakAfter()
+                  ? "<div style=\"page-break-after: always;\">"
+                  : "<div>");
           if (StringUtils.notEmpty(printLine.getTitle())) {
             htmlBuilder.append(printLine.getTitle());
           }
           if (StringUtils.notEmpty(printLine.getContent())) {
             htmlBuilder.append(printLine.getContent());
           }
+          htmlBuilder.append("</div>");
         }
       }
     }

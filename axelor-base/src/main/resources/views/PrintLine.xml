@@ -13,7 +13,8 @@
             <field name="rank" readonly="true"/>
             <field name="title" widget="html" colSpan="12" readonlyIf="!isEditable"/>
             <field name="content" widget="html" colSpan="12" readonlyIf="!isEditable"/>                     
-            <field name="isEditable" readonly="true"/>            
+            <field name="isEditable" readonly="true"/>
+            <field name="isWithPageBreakAfter"/>            
             <field name="sequence" hidden="true"/>
             <field name="parent" hidden="true"/>            
         </panel>
