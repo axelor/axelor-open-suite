@@ -3,6 +3,7 @@
 ## Improvements
 ## Bug Fixes
 - Timesheet Line: fix NPE happening when project or task were emptied.
+- BANK RECONCILIATION STATEMENT REPORT : corrected sql request error.
 
 ## [5.3.11] - 2020-09-10
 ## Improvements
@@ -26,7 +27,6 @@
 - Bank reconciliation line: "is posted" is now read only.
 - Move line: Correctly display reconcile tab (credit or debit) when the account is reconcilable.
 - INVOICE: Fix copy still having references to orders and stock moves.
-- BANK RECONCILIATION STATEMENT REPORT : corrected sql request error.
 
 ## [5.3.10] - 2020-08-27
 ## Features
