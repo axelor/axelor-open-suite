@@ -113,7 +113,6 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
     print.setMetaModel(metaModel);
     print.setObjectId(objectId);
     print.setCompany(printTemplate.getCompany());
-    print.setPrintSettings(printTemplate.getPrintSettings());
     print.setLanguage(printTemplate.getLanguage());
     print.setHidePrintSettings(printTemplate.getHidePrintSettings());
     print.setFormatSelect(printTemplate.getFormatSelect());
@@ -121,6 +120,27 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
     print.setIsEditable(printTemplate.getIsEditable());
     print.setAttach(printTemplate.getAttach());
     print.setMetaFileField(printTemplate.getMetaFileField());
+
+    if (!printTemplate.getHidePrintSettings()) {
+      if (StringUtils.notEmpty(printTemplate.getPrintTemplatePdfHeader())) {
+        maker.setTemplate(printTemplate.getPrintTemplatePdfHeader());
+        print.setPrintPdfHeader(maker.make());
+      }
+
+      if (StringUtils.notEmpty(printTemplate.getPrintTemplatePdfFooter())) {
+        maker.setTemplate(printTemplate.getPrintTemplatePdfFooter());
+        print.setPrintPdfFooter(maker.make());
+        print.setFooterFontSize(printTemplate.getFooterFontSize());
+        print.setFooterFontType(printTemplate.getFooterFontType());
+        print.setFooterTextAlignment(printTemplate.getFooterTextAlignment());
+        print.setIsFooterUnderLine(printTemplate.getIsFooterUnderLine());
+        print.setFooterFontColor(printTemplate.getFooterFontColor());
+      }
+
+      print.setLogoPositionSelect(printTemplate.getLogoPositionSelect());
+      print.setLogoWidth(printTemplate.getLogoWidth());
+      print.setHeaderContentWidth(printTemplate.getHeaderContentWidth());
+    }
 
     Context scriptContext = null;
     if (StringUtils.notEmpty(model)) {
@@ -226,6 +246,7 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
           printLine.setContent(content);
           printLine.setIsEditable(printTemplateLine.getIsEditable());
           printLine.setParent(parent);
+          printLine.setIsWithPageBreakAfter(printTemplateLine.getIsWithPageBreakAfter());
 
           if (CollectionUtils.isNotEmpty(printTemplateLine.getPrintTemplateLineList())) {
             processPrintTemplateLineList(

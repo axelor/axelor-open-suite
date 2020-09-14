@@ -10,7 +10,6 @@
         <string name="documentName" title="Document name" namecolumn="true"/>
         <many-to-one name="metaModel" title="Model" ref="com.axelor.meta.db.MetaModel"/>
         <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"/>
-        <many-to-one name="printSettings" title="Print settings" ref="com.axelor.apps.base.db.PrintingSettings"/>
         <one-to-many name="printLineList" title="Content lines" ref="com.axelor.apps.base.db.PrintLine" mappedBy="print" orderBy="rank"/>
         <many-to-one name="language" title="Language" ref="com.axelor.apps.base.db.Language"/>
         <boolean name="hidePrintSettings" title="Hide print settings" hidden="true"/>
@@ -22,11 +21,28 @@
         <long name="objectId" title="Object id"/>
         <many-to-many name="printSet" title="Print sublist" ref="com.axelor.apps.base.db.Print"/>
         
+        <boolean name="isFooterUnderLine" title="UnderLine"/>
+        <decimal name="footerFontSize" title="Font Size"/>
+        <string name="footerTextAlignment" title="Text Alignment" selection="base.print.settings.footer.text.alignment.select"/>
+        <string name="footerFontType" title="Font Type" selection="base.print.settings.footer.font.select"/>
+        <string name="printPdfHeader" large="true" title="Print Header"/>
+		<string name="printPdfFooter" large="true" multiline="true" title="Print Footer"/>
+		<integer name="logoPositionSelect" title="Company Logo position" selection="printing.setting.logo.position"/>
+		<string name="footerFontColor" title="Font Color" selection="base.print.settings.footer.font.color.select"/>
+		<string name="headerContentWidth" title="Header Content Width"/>
+		<string name="logoWidth" title="Company Logo Width"/>
+		        
         <extra-code><![CDATA[
         
         //SEQUENCE SELECT
         public static final int DISPLAY_TYPE_PORTRAIT = 1;
         public static final int DISPLAY_TYPE_LANDSCAPE = 2;
+        
+        //LOGOPOSITION SELECT
+        public static final int LOGO_POSITION_NONE = 0;
+        public static final int LOGO_POSITION_LEFT = 1;
+        public static final int LOGO_POSITION_CENTER = 2;
+        public static final int LOGO_POSITION_RIGHT = 3;
         
      ]]></extra-code>
 

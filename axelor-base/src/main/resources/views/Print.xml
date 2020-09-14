@@ -17,11 +17,24 @@
             <field name="documentName" title="Document name"/>
             <field name="formatSelect"/>
             <field name="displayTypeSelect"/>
+            <panel name="headerSettingsPanel" title="Pdf Header Settings" showIf="!hidePrintSettings" colSpan="12">
+            	<field name="printPdfHeader" showTitle="false" widget="html" colSpan="12"/>
+            	<field name="logoPositionSelect" onChange="action-print-hide-logo-header-width-field" colSpan="4"/>
+            	<field name="logoWidth" hideIf="logoPositionSelect == 0 || logoPositionSelect == 2" help="in percantage or pixel like (50%, 50px)" colSpan="4"/>
+            	<field name="headerContentWidth" hideIf="logoPositionSelect == 0 || logoPositionSelect == 2" help="in percantage or pixel like (50%, 50px)" colSpan="4"/>
+            </panel>
+            <panel name="footerSettingsPanel" title="Pdf Footer Settings" showIf="!hidePrintSettings" colSpan="12">
+            	<field name="printPdfFooter" colSpan="12"/>
+            	<field name="footerFontType" colSpan="4"/>
+                <field name="footerTextAlignment" colSpan="4"/>
+            	<field name="footerFontSize" colSpan="4"/>
+                <field name="footerFontColor" colSpan="4"/>
+                <field name="isFooterUnderLine" colSpan="4"/>
+            </panel>
             <panel-related name="printLineListPanel" field="printLineList" grid-view="print-line-grid" form-view="print-line-form" colSpan="12" orderBy="rank"/>
             <field name="metaModel" grid-view="meta-model-grid" form-view="meta-model-form" hidden="true"/>
             <field name="company" grid-view="company-grid" form-view="company-form" hidden="true"/>
             <field name="hidePrintSettings" hidden="true"/>
-            <field name="printSettings" grid-view="printing-setting-grid" form-view="printing-setting-form" hidden="true"/>
             <field name="language" grid-view="language-grid" form-view="language-form" hidden="true"/>
             <panel-related name="printSetPanel" field="printSet" grid-view="print-grid" form-view="print-form" colSpan="12"/>
         </panel>
