@@ -54,6 +54,7 @@
         <field name="origin" width="120"/>
         <field name="description"/>
         <field name="analyticMoveLineList" hidden="true"/>
+        <field name="reconcileGroup" hidden="true"/>
 	</grid>
 
   <grid name="move-line-journal-grid" orderBy="account,-date" title="Move lines" model="com.axelor.apps.account.db.MoveLine" canDelete="false" canNew="false"

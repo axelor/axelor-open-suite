@@ -201,6 +201,7 @@
 		<action name="action-move-attrs-hide-move-line-name-in-draft-status"/>
 		<action name="action-move-attrs-validate-button-title"/>
 		<action name="action-move-is-hidden-move-line-list-viewer-attrs-method"/>
+		<action name="action-move-attrs-hide-move-line-reconcile-group-in-draft-cancel-status"/>
 	</action-group>
 	
 	<action-group name="action-account-move-group-onload">
@@ -209,6 +210,7 @@
 		<action name="action-move-attrs-validate-button-title"/>
 		<action name="action-account-move-method-compute-totals"/>
 		<action name="action-move-is-hidden-move-line-list-viewer-attrs-method"/>
+		<action name="action-move-attrs-hide-move-line-reconcile-group-in-draft-cancel-status"/>
 	</action-group>
 
     <action-group name="action-group-account-move-validate-click">
@@ -269,6 +271,10 @@
 		<attribute name="title" for="validateBtn" expr="eval: com.axelor.i18n.I18n.get('Accounting.toAccount')" if="eval: company?.accountConfig?.accountingDaybook &amp;&amp; statusSelect != MoveRepository.STATUS_DAYBOOK"/>
 	</action-attrs>
 	
+	<action-attrs name="action-move-attrs-hide-move-line-reconcile-group-in-draft-cancel-status">
+		<attribute name="hidden" for="moveLineList.reconcileGroup" expr="eval: statusSelect == 1 || statuSelect == 4"/>
+	</action-attrs>
+
 	<action-attrs name="action-move-attrs-set-generate-reverse-wizard-defaults">
 		<attribute name="value" for="isAutomaticReconcile" expr="eval: true"/>
 		<attribute name="value" for="dateOfReversionSelect" expr="eval: 2"/>
