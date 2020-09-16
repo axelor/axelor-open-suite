@@ -38,16 +38,16 @@
   </action-method>
 
   <action-attrs name="action-chart-filter-meta-json-field-domain">
-  	<attribute for="metaJsonField" name="domain" expr="eval:&quot;self.jsonModel.name = '${_parent.model}' AND self.type NOT IN ('json-one-to-many','one-to-many','many-to-many','json-many-to-many')&quot;" if="_parent?.isJson"/>
-  	<attribute for="metaJsonField" name="domain" expr="eval:&quot;self.model = '${_parent.model}' AND self.type NOT IN ('json-one-to-many','one-to-many','many-to-many','json-many-to-many')&quot;" if="!_parent?.isJson"/>
+  	<attribute for="metaJsonField" name="domain" expr="eval:&quot;self.jsonModel.name = '${__parent__.model}' AND self.type NOT IN ('json-one-to-many','one-to-many','many-to-many','json-many-to-many')&quot;" if="__parent__?.isJson"/>
+  	<attribute for="metaJsonField" name="domain" expr="eval:&quot;self.model = '${__parent__.model}' AND self.type NOT IN ('json-one-to-many','one-to-many','many-to-many','json-many-to-many')&quot;" if="!__parent__?.isJson"/>
   </action-attrs>
   
   <action-attrs name="action-filter-line-defaults">
-  	<attribute name="value" for="isJson" expr="eval:_parent?.isJson" />
+  	<attribute name="value" for="isJson" expr="eval:__parent__?.isJson" />
   </action-attrs>
   
   <action-attrs name="action-chart-filter-meta-field-domain">
-      <attribute for="metaField" name="domain" expr="eval:&quot;self.metaModel.fullName = '${_parent.model}' AND (self.relationship IS NULL OR self.relationship NOT IN ('OneToMany','ManyToMany'))&quot;"/>
+      <attribute for="metaField" name="domain" expr="eval:&quot;self.metaModel.fullName = '${__parent__.model}' AND (self.relationship IS NULL OR self.relationship NOT IN ('OneToMany','ManyToMany'))&quot;"/>
   </action-attrs>
   
   <action-validate name="action-studio-filter-validate-values">

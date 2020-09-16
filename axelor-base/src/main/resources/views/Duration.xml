@@ -17,9 +17,9 @@
     </form>
     
     <action-record name="action-duration-application-type-select-record" model="com.axelor.apps.base.db.Duration">
-      <field name="applicationTypeSelect" expr="1" if="_parent != null &amp;&amp; _parent?._model=='com.axelor.apps.sale.db.SaleOrder'"/>
-      <field name="applicationTypeSelect" expr="2" if="_parent != null &amp;&amp; _parent?._model=='com.axelor.apps.contract.db.ContractVersion'"/>
-      <field name="applicationTypeSelect" expr="eval: _applicatioTypeSelect" if="_parent == null &amp;&amp; _applicatioTypeSelect != null"/>
+      <field name="applicationTypeSelect" expr="1" if="__parent__ != null &amp;&amp; __parent__?._model=='com.axelor.apps.sale.db.SaleOrder'"/>
+      <field name="applicationTypeSelect" expr="2" if="__parent__ != null &amp;&amp; __parent__?._model=='com.axelor.apps.contract.db.ContractVersion'"/>
+      <field name="applicationTypeSelect" expr="eval: _applicatioTypeSelect" if="__parent__ == null &amp;&amp; _applicatioTypeSelect != null"/>
     </action-record>
 
 </object-views>

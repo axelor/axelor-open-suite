@@ -827,7 +827,14 @@
     <domain>self.typeSelect = :_typeSelect</domain>
     <context name="_typeSelect" expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TASK"/>
   </action-view>
-  
+
+	<menuitem name="admin-global-tracking-log-show" title="Global tracking logs" parent="admin-root-maintenance" action="admin.global.tracking.log.show"/>
+
+	<action-view name="admin.global.tracking.log.show" title="Global tracking logs" model="com.axelor.apps.base.db.Wizard" >
+		<view type="form" name="global-tracking-log-view-wizard-form"/>
+	</action-view>
+
+
   <!-- Print -->
   <menuitem name="print-conf" parent="admin-root" if="__config__.app.isApp('base')" title="Printing"  order="41" />
 

@@ -216,7 +216,7 @@ public class FilterGroovyService {
       return value;
     }
 
-    value = value.replace("$$", "_parent.");
+    value = value.replace("$$", "__parent__.");
 
     return filterCommonService.getTagValue(value, false);
   }

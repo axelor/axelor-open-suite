@@ -18,100 +18,46 @@
 package com.axelor.studio.service;
 
 import com.axelor.meta.db.MetaJsonField;
-import com.axelor.meta.db.MetaSelect;
-import com.axelor.meta.db.MetaSelectItem;
-import com.axelor.meta.db.repo.MetaSelectRepository;
+import com.axelor.studio.service.builder.SelectionBuilderService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.util.HashMap;
-import java.util.Map;
 
 public class JsonFieldService {
 
-  public static final String SELECT_PREFIX = "custom-json-select-";
+  public static final String SELECTION_PREFIX = "custom-json-select-";
 
-  @Inject private MetaSelectRepository metaSelectRepository;
+  @Inject private SelectionBuilderService selectionBuilderService;
 
   @Transactional
   public void updateSelection(MetaJsonField metaJsonField) {
 
     String selectionText = metaJsonField.getSelectionText();
 
+    String name = SELECTION_PREFIX + metaJsonField.getId();
+
     if (Strings.isNullOrEmpty(selectionText)) {
-      removeSelection(metaJsonField);
+      selectionBuilderService.removeSelection(name, null);
 
       if (metaJsonField.getSelection() != null
-          && metaJsonField.getSelection().equals(SELECT_PREFIX + metaJsonField.getId())) {
+          && metaJsonField.getSelection().equals(SELECTION_PREFIX + metaJsonField.getId())) {
         metaJsonField.setSelection(null);
       }
 
       return;
     }
 
-    processSelectionText(metaJsonField, selectionText);
-  }
-
-  private void processSelectionText(MetaJsonField metaJsonField, String selectionText) {
-
-    String[] selection = selectionText.split("\n");
-
-    MetaSelect metaSelect = findMetaSelect(metaJsonField.getId());
-    Map<String, MetaSelectItem> itemMap = new HashMap<String, MetaSelectItem>();
-    if (metaSelect == null) {
-      metaSelect = new MetaSelect(SELECT_PREFIX + metaJsonField.getId());
-    } else {
-      for (MetaSelectItem item : metaSelect.getItems()) {
-        itemMap.put(item.getValue(), item);
-      }
-    }
-    metaSelect.clearItems();
-
-    int order = 1;
-
-    for (String option : selection) {
-      option = option.trim();
-      String title = option;
-      String value = option;
-
-      if (option.contains(":") && option.indexOf(":") != option.length() - 1) {
-        title = option.substring(option.indexOf(":") + 1);
-        value = option.substring(0, option.indexOf(":"));
-      }
-
-      MetaSelectItem metaSelectItem = itemMap.get(value);
-      if (metaSelectItem == null) {
-        metaSelectItem = new MetaSelectItem();
-      }
-
-      metaSelectItem.setTitle(title);
-      metaSelectItem.setValue(value);
-      metaSelectItem.setOrder(order);
-      order++;
-
-      metaSelect.addItem(metaSelectItem);
-    }
-
-    metaSelect.setIsCustom(true);
-    metaSelectRepository.save(metaSelect);
-    metaJsonField.setSelection(metaSelect.getName());
-  }
-
-  private MetaSelect findMetaSelect(Long jsonFieldId) {
-
-    return metaSelectRepository
-        .all()
-        .filter("self.name = ?1 and self.isCustom = true", SELECT_PREFIX + jsonFieldId)
-        .fetchOne();
+    metaJsonField.setSelection(
+        selectionBuilderService.updateMetaSelectFromText(selectionText, name, null));
   }
 
   @Transactional
   public void removeSelection(MetaJsonField metaJsonField) {
 
-    MetaSelect metaSelect = findMetaSelect(metaJsonField.getId());
+    String name = SELECTION_PREFIX + metaJsonField.getId();
 
-    if (metaSelect != null) {
-      metaSelectRepository.remove(metaSelect);
+    if (metaJsonField.getSelection() != null && metaJsonField.getSelection().equals(name)) {
+      selectionBuilderService.removeSelection(name, null);
     }
   }
 }

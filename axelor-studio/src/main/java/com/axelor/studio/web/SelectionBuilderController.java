@@ -15,25 +15,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.businessproject.web;
+package com.axelor.studio.web;
 
-import com.axelor.apps.businessproject.service.TimesheetLineBusinessService;
-import com.axelor.apps.hr.db.TimesheetLine;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaSelect;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.studio.service.builder.SelectionBuilderService;
 
-public class TimesheetLineBusinessController {
+public class SelectionBuilderController {
 
-  public void setDefaultToInvoice(ActionRequest request, ActionResponse response) {
-    try {
-      TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
-      timesheetLine =
-          Beans.get(TimesheetLineBusinessService.class).getDefaultToInvoice(timesheetLine);
-      response.setValue("toInvoice", timesheetLine.getToInvoice());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+  public void fillSelectionText(ActionRequest request, ActionResponse response) {
+
+    MetaSelect metaSelect = (MetaSelect) request.getContext().get("metaSelect");
+
+    if (metaSelect != null) {
+      String name = metaSelect.getName();
+      response.setValue(
+          "selectionText", Beans.get(SelectionBuilderService.class).createSelectionText(name));
+      response.setValue("name", name);
+    } else {
+      response.setValue("selectionText", null);
+      response.setValue("name", null);
     }
   }
 }

@@ -15,25 +15,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.csv.script;
+package com.axelor.studio.db.repo;
 
-import com.axelor.apps.account.db.MoveTemplate;
-import java.io.IOException;
-import java.util.Map;
+import com.axelor.inject.Beans;
+import com.axelor.studio.db.SelectionBuilder;
+import com.axelor.studio.service.builder.SelectionBuilderService;
 
-public class ImportMoveTemplate {
-  public Object setCompany(Object bean, Map<String, Object> values) throws IOException {
-    assert bean instanceof MoveTemplate;
-    MoveTemplate moveTemplate = (MoveTemplate) bean;
+public class SelectionBuilderRepo extends SelectionBuilderRepository {
 
-    try {
-      if (moveTemplate.getJournal() != null) {
-        moveTemplate.setCompany(moveTemplate.getJournal().getCompany());
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+  @Override
+  public SelectionBuilder save(SelectionBuilder selectionBuilder) {
 
-    return moveTemplate;
+    Beans.get(SelectionBuilderService.class).build(selectionBuilder);
+
+    return super.save(selectionBuilder);
+  }
+
+  @Override
+  public void remove(SelectionBuilder selectionBuilder) {
+
+    Beans.get(SelectionBuilderService.class)
+        .removeSelection(null, SelectionBuilderService.SELECTION_PREFIX + selectionBuilder.getId());
+
+    super.remove(selectionBuilder);
   }
 }

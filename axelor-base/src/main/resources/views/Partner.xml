@@ -793,7 +793,7 @@
 
 	<action-attrs name="action-partner-attrs-partner-seq-editable">
 		<attribute name="readonly" for="partnerSeq" expr="__config__.app.getApp('base').getGeneratePartnerSequence()"/>
-        <attribute name="readonly" for="companyPanel" expr="#{_parent != null &amp;&amp; _parent._model == 'com.axelor.apps.base.db.Partner'}"/>
+        <attribute name="readonly" for="companyPanel" expr="#{__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
 	</action-attrs>
 
     <action-attrs name="action-partner-attrs-change-name">
@@ -910,14 +910,14 @@
 	<action-record name="action-partner-contact-record-default" model="com.axelor.apps.base.db.Partner">
 		<field name="partnerTypeSelect" expr="#{2}" />
 		<field name="isContact" expr="#{true}"/>
-		<field name="companySet" expr="#{_parent.companySet}"/>
-		<field name="language" expr="#{_parent != null ? _parent.language : __config__.app.getApp('base').getDefaultPartnerLanguage()}"/>
-		<field name="user"  expr="#{_parent.user}" if="#{_parent != null &amp;&amp; _parent._model == 'com.axelor.apps.base.db.Partner'}"/>
-		<field name="team"  expr="#{_parent.team}" if="#{_parent != null &amp;&amp; _parent._model == 'com.axelor.apps.base.db.Partner'}"/>
-		<field name="user"  expr="#{__user__}" if="#{_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'}"/>
-		<field name="team"  expr="#{__user__.activeTeam}" if="#{_parent == null || _parent._model != 'com.axelor.apps.base.db.Partner'}"/>
+		<field name="companySet" expr="#{__parent__.companySet}"/>
+		<field name="language" expr="#{__parent__ != null ? __parent__.language : __config__.app.getApp('base').getDefaultPartnerLanguage()}"/>
+		<field name="user"  expr="#{__parent__.user}" if="#{__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
+		<field name="team"  expr="#{__parent__.team}" if="#{__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
+		<field name="user"  expr="#{__user__}" if="#{__parent__ == null || __parent__._model != 'com.axelor.apps.base.db.Partner'}"/>
+		<field name="team"  expr="#{__user__.activeTeam}" if="#{__parent__ == null || __parent__._model != 'com.axelor.apps.base.db.Partner'}"/>
 		<field name="companySet" expr="eval: __repo__(Company).all().fetchOne()" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
-		<field name="mainPartner" expr="eval: __parent__" if="#{_parent != null &amp;&amp; _parent._model == 'com.axelor.apps.base.db.Partner'}"/>
+		<field name="mainPartner" expr="eval: __parent__" if="#{__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
 	</action-record>
 
 	<action-record name="action-partner-employee-record-default" model="com.axelor.apps.base.db.Partner">

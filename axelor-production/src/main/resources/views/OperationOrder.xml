@@ -144,13 +144,13 @@
 	</action-attrs>
 
 	<action-attrs name="action-operation-order-attrs-domain-prod-process-line">
-		<attribute name="domain" for="prodProcessLine" expr="eval: &quot; self.prodProcess.id = ${_parent?.prodProcess?.id} &quot;" if="_parent != null"/>
-		<attribute name="domain" for="prodProcessLine" expr="eval: &quot; self.prodProcess.id = ${manufOrder?.prodProcess?.id} &quot;" if="_parent == null"/>
+		<attribute name="domain" for="prodProcessLine" expr="eval: &quot; self.prodProcess.id = ${__parent__?.prodProcess?.id} &quot;" if="__parent__ != null"/>
+		<attribute name="domain" for="prodProcessLine" expr="eval: &quot; self.prodProcess.id = ${manufOrder?.prodProcess?.id} &quot;" if="__parent__ == null"/>
 	</action-attrs>
     
     <action-record name="action-operation-order-default-record" model="com.axelor.apps.production.db.OperationOrder">
     	<field name="statusSelect" expr="eval: 1"/>
-    	<field name="manufOrder" expr="eval: _parent"/>
+    	<field name="manufOrder" expr="eval: __parent__"/>
     	<field name="outsourcing" expr="eval: __parent__?.outsourcing"/>
     </action-record>
     
@@ -237,8 +237,8 @@
 	<action-attrs name="action-operation-order-attrs-is-cons-pro-on-operation">
     	<attribute name="hidden" for="consumedProductPanel" expr="eval: !manufOrder?.isConsProOnOperation"/>
     	<attribute name="hidden" for="stockMovesPanel" expr="eval: !manufOrder?.isConsProOnOperation"/>
-    	<attribute name="hidden" for="consumedProductPanel" expr="eval: !_parent?.isConsProOnOperation"/>
-    	<attribute name="hidden" for="stockMovesPanel" expr="eval: !_parent?.isConsProOnOperation"/>
+    	<attribute name="hidden" for="consumedProductPanel" expr="eval: !__parent__?.isConsProOnOperation"/>
+    	<attribute name="hidden" for="stockMovesPanel" expr="eval: !__parent__?.isConsProOnOperation"/>
     	<attribute name="hidden" for="machineWorkCenter" expr="eval: workCenter?.workCenterTypeSelect == 1"/>
     </action-attrs>
     

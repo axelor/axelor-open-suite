@@ -72,7 +72,7 @@
     </action-record>
     
     <action-attrs name="action-prod-process-line-attrs-default">
-    	<attribute name="hidden" for="toConsumeProdProductList" expr="eval: _parent != null ? !_parent.isConsProOnOperation : !prodProcess.isConsProOnOperation"/>
+    	<attribute name="hidden" for="toConsumeProdProductList" expr="eval: __parent__ != null ? !__parent__.isConsProOnOperation : !prodProcess.isConsProOnOperation"/>
 		<attribute name="hidden" for="stockLocation" expr="eval: !__parent__.isConsProOnOperation"/>
 		<attribute name="hidden" for="outsourcing" expr="eval: !__parent__.outsourcing" if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.production.db.ProdProcess'"/>
 		<attribute name="hidden" for="useLineInGeneratedPurchaseOrder" expr="eval: !((__parent__.outsourcing || outsourcing) &amp;&amp; __parent__.generatePurchaseOrderOnMoPlanning)" if="__parent__ != null"/>

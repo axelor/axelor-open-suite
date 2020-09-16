@@ -118,7 +118,7 @@ public class WorkflowVentilationServiceImpl implements WorkflowVentilationServic
     if (totalPayments.compareTo(invoice.getInTaxTotal()) > 0) {
       throw new AxelorException(
           invoice,
-          TraceBackRepository.TYPE_FUNCTIONNAL,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.AMOUNT_ADVANCE_PAYMENTS_TOO_HIGH));
     }
   }

@@ -303,7 +303,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
       if (generateTrakingNumberCounter == 1000) {
         throw new AxelorException(
-            TraceBackRepository.TYPE_TECHNICAL,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.STOCK_MOVE_TOO_MANY_ITERATION));
       }
     }
