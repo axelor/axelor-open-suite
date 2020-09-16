@@ -35,7 +35,8 @@
 - QUALITY TAG : add colorSelect field for tag color
 - User : add forcePasswordChange field in user-form.
 - Invoice : Specify button css.
-- Studio: Selection create/update support
+- Studio: Selection create/update support for a field.
+- Studio: Added a selection builder to update existing selection or to create a new one.
 
 ## Improvements
 - USER : Default User language is based on application.locale from application.properties
