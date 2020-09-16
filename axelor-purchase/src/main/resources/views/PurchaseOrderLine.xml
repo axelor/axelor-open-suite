@@ -8,6 +8,8 @@
 		<hilite color="danger" if="receiptState == 1"/>
 		<hilite color="warning" if="receiptState == 2"/>
 		<hilite color="success" if="receiptState == 3"/>
+		<field name="$hasWarning" hidden="true"/>
+		<button name="errorIconButton" showIf="$hasWarning" onClick="refresh" readonlyIf="true" icon="fa-exclamation-triangle"/>
 		<field name="sequence" if="__config__.app.getApp('purchase')?.isDisplayPurchaseOrderLineNumber" width="51"/>
 		<field name="receiptState" hidden="true" if="__config__.app.isApp('supplychain')" />
     	<field name="productName"/>
@@ -19,7 +21,7 @@
         <field name="exTaxTotal" aggregate="sum"/>
 	    <field name="inTaxTotal" aggregate="sum"/>
         <field name="isTitleLine" hidden="true"/>
-	<field name="desiredDelivDate"/>
+		<field name="desiredDelivDate"/>
     	<field name="estimatedDelivDate"/>
     </grid>
     
@@ -85,6 +87,8 @@
 
 		<panel-tabs name="mainPanelTab" hideIf="isTitleLine">
 			<panel name="informationsPanel" title="Information">
+				
+				<label name="differentSupplierLabel" hidden="true" colSpan="12"/>
 				<field name="receiptState" showTitle="false" colSpan="3" showIf="receiptState > 0" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 					<viewer><![CDATA[
 	                    <h4>
@@ -240,7 +244,6 @@
 	<!-- ACTION GROUPs -->
 	
 	<action-group name="action-group-purchase-purchase-orderline-onnew">
-		<action name="action-purchase-order-line-attrs-hide-qty-warning-label"/>
 		<action name="action-purchase-order-line-attrs-title-project"/>
 		<action name="action-purchase-order-line-attrs-scale-and-precision"/>
 		<action name="action-purchase-order-line-record-new"/>
@@ -248,6 +251,7 @@
 		<action name="action-purchase-order-attrs-hide-ati"/>
 		<action name="action-purchase-order-line-attrs-show-priceDiscounted"/>
 		<action name="action-purchase-order-line-attrs-hide-qty-warning-label"/>
+		<action name="action-purchase-order-line-attrs-hide-different-supplier-warning-label"/>
 	</action-group>
 	
 	<action-group name="action-group-purchase-purchase-orderline-onload">
@@ -260,6 +264,7 @@
 		<action name="action-purchase-order-line-attrs-delivery-panel"/>
 		<action name="action-budget-distribution-attrs-budget-amount-available" if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget').getManageMultiBudget()"/>
 		<action name="action-purchase-order-line-attrs-set-isFilterOnSupplier"/>
+		<action name="action-purchase-order-line-method-check-different-supplier"/>
 	</action-group>
 	
 	<action-group name="action-group-purchase-purchase-orderline-product-onchange">
@@ -268,6 +273,7 @@
 		<action name="action-purchase-order-line-method-compute" if="price != 0"/>
 		<action name="action-purchase-order-line-method-check-qty" if="price != 0"/>
 		<action name="action-budget-validate-exceed-line-amount"/>
+		<action name="action-purchase-order-line-method-check-different-supplier"/>
 	</action-group>
 	
 	<action-group name="action-group-purchase-purchase-orderline-qty-onchange">
@@ -385,6 +391,10 @@
 	<action-method name="action-purchase-order-method-compute-budget-distribution-sum-amount">
 		<call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController" method="computeBudgetDistributionSumAmount"/>
 	</action-method>
+	
+	<action-method name="action-purchase-order-line-method-check-different-supplier">
+		<call class="com.axelor.apps.purchase.web.PurchaseOrderLineController" method="checkDifferentSupplier"/>
+	</action-method>
 
 	<!-- ACTION ATTRS -->
 	
@@ -428,6 +438,10 @@
 	<action-attrs name="action-purchase-order-line-attrs-set-isFilterOnSupplier">
 		<attribute name="value" for="$isFilterOnSupplier" expr="eval: true"/>
 	</action-attrs>
+	
+	<action-attrs name="action-purchase-order-line-attrs-hide-different-supplier-warning-label">
+		<attribute name="hidden" for="differentSupplierLabel" expr="true"/>
+	</action-attrs>	
     
 <!--     ACTION VIEW -->
     <action-view name="action-purchase-order-line-view-stock-move-line" title="" model="com.axelor.apps.stock.db.StockMoveLine">
@@ -435,6 +449,7 @@
 		<view type="form" name="stock-move-line-all-form"/>
   		<domain>self.purchaseOrderLine.id = :id</domain>
   		<context name="id" expr="eval: id"/>
-  	</action-view>
+  	</action-view>  	
+	
 	
 </object-views>

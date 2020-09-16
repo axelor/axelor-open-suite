@@ -388,4 +388,17 @@ public class PurchaseOrderLineController {
 
     response.setAttr("supplierPartner", "domain", domain);
   }
+
+  public void checkDifferentSupplier(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
+      PurchaseOrder purchaseOrder = getPurchaseOrder(context);
+      PurchaseOrderLineService service = Beans.get(PurchaseOrderLineService.class);
+
+      service.checkDifferentSupplier(purchaseOrder, purchaseOrderLine, response);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

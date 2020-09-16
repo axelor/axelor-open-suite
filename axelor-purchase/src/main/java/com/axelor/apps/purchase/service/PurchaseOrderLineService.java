@@ -122,4 +122,7 @@ public interface PurchaseOrderLineService {
       throws AxelorException;
 
   PurchaseOrderLine reset(PurchaseOrderLine line);
+
+  public void checkDifferentSupplier(
+      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, ActionResponse response);
 }
