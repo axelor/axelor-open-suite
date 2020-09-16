@@ -272,7 +272,7 @@
 				<field name="isInvoicingExpenses" colSpan="3" />
 				<field name="isInvoicingPurchases" colSpan="3" />
 				<field name="invoicingSequenceSelect" showIf="toInvoice" requiredIf="toInvoice" selection-in="[1,2]" colSpan="6"/>
-				<field name="consolidatePhaseWhenInvoicing" showIf="projectTypeSelect == 1" colSpan="4"/>
+				<field name="consolidatePhaseWhenInvoicing" colSpan="4"/>
 				<spacer name="invoicingSequenceSelectSpacer" colSpan="2"/>
 				<button name="showInvoicingProjectsBtn" title="Create invoicing project"
 						css="btn-custom" icon="fa-file-text-o"

@@ -28,9 +28,8 @@
 			<field name="attachAnnexToInvoice" widget="boolean-switch"  readonlyIf="invoice"/>
 			<button name="generateInvoiceBtn" title="Generate Invoice" onClick="save,action-invoicing-project-method-generate-invoice" hideIf="invoice != null"/>
 			<field name="invoice" readonly="true" form-view="invoice-form" grid-view="invoice-grid" edit-window="blank"/>
-			<field name="consolidatePhaseWhenInvoicing" showIf="project.projectTypeSelect == 1"/>
+			<field name="consolidatePhaseWhenInvoicing"/>
 			<button name="seeLinkedTimesheetLinesBtn" title="See Linked Timesheet Lines" onClick="action-invoicing-project-show-timesheet-lines" hidden="true" showIf="invoice != null"/>
-			<field name="project.projectTypeSelect" hidden="true"/>
 		</panel>
 
         <panel name="commentsPanel">
