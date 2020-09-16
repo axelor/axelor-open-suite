@@ -1,12 +1,9 @@
 # Changelog
-## [Unreleased 5.3.12]
-## Improvements
-- SALE ORDER: set endOfValidityDate when create sale order from opportunity and project.
-
+## [5.3.12] - 2020-09-16
 ## Bug Fixes
+- SALE ORDER: set end of validity date when creating a sale order from opportunity and project.
 - Timesheet Line: fix NPE happening when project or task were emptied.
-- BANK RECONCILIATION STATEMENT REPORT : corrected sql request error.
-- TraceBack : Replace deprecated constants with appropriate CATEGORY constant 
+- BANK RECONCILIATION STATEMENT REPORT: corrected sql request error.
 
 ## [5.3.11] - 2020-09-10
 ## Improvements
@@ -471,7 +468,7 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - PRODUCT: Fix economicManufOrderQty displayed twice.
 
 
-[Unreleased 5.3.12]: https://github.com/axelor/axelor-open-suite/compare/v5.3.11...dev
+[5.3.12]: https://github.com/axelor/axelor-open-suite/compare/v5.3.11...v5.3.12
 [5.3.11]: https://github.com/axelor/axelor-open-suite/compare/v5.3.10...v5.3.11
 [5.3.10]: https://github.com/axelor/axelor-open-suite/compare/v5.3.9...v5.3.10
 [5.3.9]: https://github.com/axelor/axelor-open-suite/compare/v5.3.8...v5.3.9
