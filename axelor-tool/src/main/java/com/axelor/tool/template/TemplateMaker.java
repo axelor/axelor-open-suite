@@ -20,6 +20,7 @@ package com.axelor.tool.template;
 import com.axelor.apps.tool.exception.IExceptionMessage;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaJsonRecord;
@@ -82,7 +83,9 @@ public class TemplateMaker {
     Map<String, Object> ctx =
         model instanceof MetaJsonRecord
             ? Beans.get(MetaJsonRecordRepository.class).create((MetaJsonRecord) model)
-            : new Context(model.getId(), EntityHelper.getEntityClass(model));
+            : model.getId() != null
+                ? new Context(model.getId(), EntityHelper.getEntityClass(model))
+                : Mapper.toMap(model);
 
     if (nameInContext != null) {
       res.put(nameInContext, ctx);
