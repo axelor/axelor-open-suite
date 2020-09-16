@@ -32,12 +32,12 @@
     </action-group>
     
     <action-attrs name="action-sale-order-schedule-line-attrs-hide-nb-of-day">
-    	<attribute name="hidden" for="nbOfDay" expr="eval: _parent?.invoicingMomentSelect == 1"/>
+    	<attribute name="hidden" for="nbOfDay" expr="eval: __parent__?.invoicingMomentSelect == 1"/>
     </action-attrs>
     
     <action-record name="action-sale-order-schedule-line-record-sequence" model="com.axelor.apps.sale.db.SaleOrderScheduleLine">
-    	<field name="sequence" expr="eval: _parent.saleOrderScheduleLineList.size()+1" if="_parent.saleOrderScheduleLineList != null" />
-    	<field name="sequence" expr="eval: 1" if="_parent.saleOrderScheduleLineList == null" />
+    	<field name="sequence" expr="eval: __parent__.saleOrderScheduleLineList.size()+1" if="__parent__.saleOrderScheduleLineList != null" />
+    	<field name="sequence" expr="eval: 1" if="__parent__.saleOrderScheduleLineList == null" />
     </action-record>
     
 </object-views>

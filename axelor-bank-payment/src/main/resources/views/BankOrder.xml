@@ -552,16 +552,16 @@
 		<!-- Actions Attributes -->
 		
     <action-attrs name="action-bank-order-line-attrs-partner-domain">
-		<attribute name="domain" for="partner" expr="self.isCustomer = true" if="_parent.partnerTypeSelect == 3"/>    
-		<attribute name="domain" for="partner" expr="self.isEmployee = true" if="_parent.partnerTypeSelect == 2"/>
-		<attribute name="domain" for="partner" expr="self.isSupplier = true" if="_parent.partnerTypeSelect == 1"/>
+		<attribute name="domain" for="partner" expr="self.isCustomer = true" if="__parent__.partnerTypeSelect == 3"/>    
+		<attribute name="domain" for="partner" expr="self.isEmployee = true" if="__parent__.partnerTypeSelect == 2"/>
+		<attribute name="domain" for="partner" expr="self.isSupplier = true" if="__parent__.partnerTypeSelect == 1"/>
 		<attribute name="domain" for="partner" expr="self.isSupplier = false AND self.isEmployee = false AND self.isCustomer = false AND self.isContact = false" if="__parent__.partnerTypeSelect == 5"/>
     </action-attrs>
     
      <action-attrs name="action-bank-order-attrs-interbank-code-line-domain">
-		<attribute name="domain" for="interbankCodeLine" expr="self.transferCfonbOk = true" if="_parent.orderTypeSelect in (3,5,6)"/>
-		<attribute name="domain" for="interbankCodeLine" expr="self.directDebitSepaOk = true" if="_parent.orderTypeSelect == 2"/>
-		<attribute name="domain" for="interbankCodeLine" expr="self.directDebitAndTipCfonbOk = true" if="_parent.orderTypeSelect == 4"/>      
+		<attribute name="domain" for="interbankCodeLine" expr="self.transferCfonbOk = true" if="__parent__.orderTypeSelect in (3,5,6)"/>
+		<attribute name="domain" for="interbankCodeLine" expr="self.directDebitSepaOk = true" if="__parent__.orderTypeSelect == 2"/>
+		<attribute name="domain" for="interbankCodeLine" expr="self.directDebitAndTipCfonbOk = true" if="__parent__.orderTypeSelect == 4"/>      
     </action-attrs>
 
 	<action-attrs name="action-bank-order-line-attrs-show-partner-or-receiver-company">

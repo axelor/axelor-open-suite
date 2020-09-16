@@ -13,8 +13,8 @@
       <panel name="mainPanel">
         <field name="name" readonly="true"/>
         <spacer name="nameSpacer" />
-        <field name="source" domain="self.wkf = :wkf OR self.wkf = :_parent" readonly="true" required="true"/>
-        <field name="target" domain="self.wkf = :wkf OR self.wkf = :_parent" readonly="true" required="true"/>
+        <field name="source" domain="self.wkf = :wkf OR self.wkf = :__parent__" readonly="true" required="true"/>
+        <field name="target" domain="self.wkf = :wkf OR self.wkf = :__parent__" readonly="true" required="true"/>
         <field name="isButton"/>
         <field name="buttonTitle" showIf="isButton" requiredIf="isButton"/>
         <field name="alertTypeSelect" widget="RadioSelect" showIf="isButton"/>
@@ -45,15 +45,15 @@
   </form>
   
   <action-attrs name="action-wkf-transition-filter-meta-json-field-domain">
-  	<attribute for="metaJsonField" name="domain" expr="eval:&quot;(self.jsonModel.name = '${_parent.wkf.model}' OR self.model = '${_parent.wkf.model}') AND self.targetModel IS NULL AND self.targetJsonModel IS NULL&quot;"/>
+  	<attribute for="metaJsonField" name="domain" expr="eval:&quot;(self.jsonModel.name = '${__parent__.wkf.model}' OR self.model = '${__parent__.wkf.model}') AND self.targetModel IS NULL AND self.targetJsonModel IS NULL&quot;"/>
   </action-attrs>
   
   <action-attrs name="action-wkf-transition-filter-meta-field-domain">
-  	<attribute for="metaField" name="domain" expr="eval:&quot;self.metaModel.fullName = '${_parent.wkf.model}' AND self.relationship IS NULL&quot;"/>
+  	<attribute for="metaField" name="domain" expr="eval:&quot;self.metaModel.fullName = '${__parent__.wkf.model}' AND self.relationship IS NULL&quot;"/>
   </action-attrs>
   
   <action-attrs name="action-wkf-transition-filter-set-defaults">
-  	<attribute name="value" expr="eval:_parent?.wkf.isJson" for="isJson"/>
+  	<attribute name="value" expr="eval:__parent__?.wkf.isJson" for="isJson"/>
   </action-attrs>
   
   <action-attrs name="action-wkf-transition-attrs-onload">

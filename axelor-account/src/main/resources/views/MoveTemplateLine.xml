@@ -58,9 +58,9 @@
     
     <action-record name="action-move-template-line-get-account" model="com.axelor.apps.account.db.MoveTemplateLine">
     	<field name="account" expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,moveTemplate.company,true)" if="product != null &amp;&amp; moveTemplate?.company != null &amp;&amp; (debitCreditSelect == 'D' || debit &gt; 0) "/>
-    	<field name="account" expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,__repo__(Company).find(_parent.company.id),true)" if="product != null &amp;&amp; _parent?.company != null &amp;&amp; (debitCreditSelect == 'D' || debit &gt; 0) "/>
+    	<field name="account" expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,__repo__(Company).find(__parent__.company.id),true)" if="product != null &amp;&amp; __parent__?.company != null &amp;&amp; (debitCreditSelect == 'D' || debit &gt; 0) "/>
     	<field name="account" expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,moveTemplate.company,false)" if="product != null &amp;&amp; moveTemplate?.company != null &amp;&amp; (debitCreditSelect == 'C' || credit &gt; 0) "/>
-    	<field name="account" expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,__repo__(Company).find(_parent.company.id),false)" if="product != null &amp;&amp; _parent?.company != null &amp;&amp; (debitCreditSelect == 'C' || credit &gt; 0) "/>
+    	<field name="account" expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,__repo__(Company).find(__parent__.company.id),false)" if="product != null &amp;&amp; __parent__?.company != null &amp;&amp; (debitCreditSelect == 'C' || credit &gt; 0) "/>
     </action-record>
     
     <action-validate name="action-template-move-line-check-percent">
@@ -72,7 +72,7 @@
     </action-record>
     
     <action-attrs name="action-move-template-line-set-account-domain">
-        <attribute name="domain" for="account" expr="eval:&quot;self.company.id = ${_parent?.company?.id} &quot;" if="_parent != null" />
+        <attribute name="domain" for="account" expr="eval:&quot;self.company.id = ${__parent__?.company?.id} &quot;" if="__parent__ != null" />
         <attribute name="domain" for="account" expr="eval:&quot;self.company.id = ${moveTemplate?.company?.id} &quot;" if="moveTemplate != null" />
     </action-attrs>
     

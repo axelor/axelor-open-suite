@@ -52,9 +52,9 @@
 	</form>
 
     <action-record name="action-template-record-new" model="com.axelor.apps.message.db.Template">
-    	<field name="metaModel" expr="eval: _parent?.targetSelect == 1 ? __repo__(MetaModel).all().filter('self.name = \'Partner\'').fetchOne() : (_parent?.targetSelect == 2 ? __repo__(MetaModel).all().filter('self.name = \'Lead\'').fetchOne() : null)" if="_parent?.targetSelect"/>
-    	<field name="metaModel" expr="eval: _parent?.metaModel" if="_parent?.metaModel"/>
-    	<field name="metaModel" expr="eval: _parent?._parent?.metaModel" if="_parent?._parent?.metaModel"/>
+    	<field name="metaModel" expr="eval: __parent__?.targetSelect == 1 ? __repo__(MetaModel).all().filter('self.name = \'Partner\'').fetchOne() : (__parent__?.targetSelect == 2 ? __repo__(MetaModel).all().filter('self.name = \'Lead\'').fetchOne() : null)" if="__parent__?.targetSelect"/>
+    	<field name="metaModel" expr="eval: __parent__?.metaModel" if="__parent__?.metaModel"/>
+    	<field name="metaModel" expr="eval: __parent__?.__parent__?.metaModel" if="__parent__?.__parent__?.metaModel"/>
     	<field if="_mediaType != null" name="mediaTypeSelect" expr="eval:_mediaType"/>
     </action-record>
     

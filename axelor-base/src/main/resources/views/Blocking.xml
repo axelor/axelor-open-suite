@@ -28,12 +28,12 @@
     </action-record>
     
     <action-record name="action-blocking-record-default-companies" model="com.axelor.apps.base.db.Blocking">
-    	<field name="companySet" expr="eval: __repo__(Company).all().filter('self.id IN (?)', _parent?.companySet?.collect{ it.id }).fetch().toSet()" if="_parent?.companySet &amp;&amp; !_parent.companySet.isEmpty()"/>
+    	<field name="companySet" expr="eval: __repo__(Company).all().filter('self.id IN (?)', __parent__?.companySet?.collect{ it.id }).fetch().toSet()" if="__parent__?.companySet &amp;&amp; !__parent__.companySet.isEmpty()"/>
     </action-record>
 
     <action-attrs name="action-blocking-attrs-domain-companySet">
         <attribute name="domain" for="companySet" expr="eval: null"/>
-        <attribute name="domain" for="companySet" expr="eval: 'self.id IN (' + _parent?.companySet?.collect{ it.id }.join(',') + ')'" if="_parent?.companySet &amp;&amp; !_parent.companySet.isEmpty()"/>
+        <attribute name="domain" for="companySet" expr="eval: 'self.id IN (' + __parent__?.companySet?.collect{ it.id }.join(',') + ')'" if="__parent__?.companySet &amp;&amp; !__parent__.companySet.isEmpty()"/>
     </action-attrs>
 
 </object-views>

@@ -72,9 +72,9 @@ xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/
     <action-record name="action-sequence-default" model="com.axelor.apps.base.db.Sequence">
     	<field name="padding" expr="3"/>
     	<field name="toBeAdded" expr="1"/>
-    	<field name="company" expr="eval: _parent?.company"/>
-    	<field name="company" expr="eval:__user__.activeCompany" if="(_parent == null || _parent.company == null) &amp;&amp; __user__.activeCompany != null"/>
-    	<field name="company" expr="eval:__repo__(Company).all().fetchOne()" if="(_parent == null || _parent.company == null) &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
+    	<field name="company" expr="eval: __parent__?.company"/>
+    	<field name="company" expr="eval:__user__.activeCompany" if="(__parent__ == null || __parent__.company == null) &amp;&amp; __user__.activeCompany != null"/>
+    	<field name="company" expr="eval:__repo__(Company).all().fetchOne()" if="(__parent__ == null || __parent__.company == null) &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     </action-record>
     
 	<action-record name="action-sequence-monthly-reset" model="com.axelor.apps.base.db.Sequence">

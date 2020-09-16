@@ -91,15 +91,15 @@
 	</grid>
 	
 	<action-attrs name="action-configurator-set-json-field-default" >
-    	<attribute name="value"	for="model" expr="eval:'com.axelor.apps.sale.db.Configurator'" if="_parent._model == 'com.axelor.apps.sale.db.ConfiguratorCreator'"/>
-    	<attribute name="value" for="modelField" expr="eval:'attributes'" if="_parent._model == 'com.axelor.apps.sale.db.ConfiguratorCreator'"/>
-<!--     	<attribute name="value" for="showIf" expr="eval:'configuratorCreator?.id == ' + id" if="_parent.model == 'com.axelor.apps.production.db.ConfiguratorCreator'"/> -->
+    	<attribute name="value"	for="model" expr="eval:'com.axelor.apps.sale.db.Configurator'" if="__parent__._model == 'com.axelor.apps.sale.db.ConfiguratorCreator'"/>
+    	<attribute name="value" for="modelField" expr="eval:'attributes'" if="__parent__._model == 'com.axelor.apps.sale.db.ConfiguratorCreator'"/>
+<!--     	<attribute name="value" for="showIf" expr="eval:'configuratorCreator?.id == ' + id" if="__parent__.model == 'com.axelor.apps.production.db.ConfiguratorCreator'"/> -->
     </action-attrs>
 
 	<action-attrs name="action-configurator-json-field-onload">
-		<attribute name="value" for="$simpleName" expr="eval: name.substring(0, name.indexOf('_'))" if="_parent._model == 'com.axelor.apps.sale.db.ConfiguratorCreator'"/>
+		<attribute name="value" for="$simpleName" expr="eval: name.substring(0, name.indexOf('_'))" if="__parent__._model == 'com.axelor.apps.sale.db.ConfiguratorCreator'"/>
 		<attribute name="value" for="$showedOnChange" expr="eval: onChange.substring(0, onChange.indexOf(','))"
-				   if="_parent._model == 'com.axelor.apps.sale.db.ConfiguratorCreator' &amp;&amp; onChange &amp;&amp; onChange != '' &amp;&amp; onChange != 'save,action-configurator-update-indicators,save'"/>
+				   if="__parent__._model == 'com.axelor.apps.sale.db.ConfiguratorCreator' &amp;&amp; onChange &amp;&amp; onChange != '' &amp;&amp; onChange != 'save,action-configurator-update-indicators,save'"/>
 	</action-attrs>
 
 	<action-record name="action-configurator-json-field-record-name" model="com.axelor.meta.db.MetaJsonField">

@@ -17,7 +17,7 @@
     </form>
     
     <action-record name="action-template-rule-record-new" model="com.axelor.apps.base.db.TemplateRule">
-    	<field name="metaModel" expr="eval: (_parent?.targetSelect == 1) ? __repo__(MetaModel).all().filter('self.name = \'Partner\'').fetchOne() : __repo__(MetaModel).all().filter('self.name = \'Lead\'').fetchOne()" if="_parent?.targetSelect"/>
+    	<field name="metaModel" expr="eval: (__parent__?.targetSelect == 1) ? __repo__(MetaModel).all().filter('self.name = \'Partner\'').fetchOne() : __repo__(MetaModel).all().filter('self.name = \'Lead\'').fetchOne()" if="__parent__?.targetSelect"/>
     </action-record>
     
 </object-views>

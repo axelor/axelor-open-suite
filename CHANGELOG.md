@@ -75,4 +75,5 @@
 - Bank reconciliation : add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - MOVE LINE : Fix taxLine required issue.
 - AccountManagement :  Fix NPE when product not present in invoiceLine.
+- Change eval: _parent to eval: __ parent __ in all actions and views.
 
