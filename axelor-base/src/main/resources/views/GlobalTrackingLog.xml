@@ -53,14 +53,14 @@
 		<domain>  (:metaModel is null OR self.metaModel = :metaModel)
 			AND (:typeSelect is null OR self.typeSelect = :typeSelect)
 			AND (:relatedId is null OR self.relatedId = :relatedId)
-			AND (self.dateT BETWEEN :fromDateT AND :toDateT)
+			AND (self.dateT BETWEEN :_fromDateT AND :_toDateT)
 			AND (:user is null OR self.user = :user)
 		</domain>
 		<context name="metaModel" expr="eval: metaModel"/>
 		<context name="typeSelect" expr="eval: typeSelect"/>
 		<context name="relatedId" expr="eval: relatedId"/>
-		<context name="fromDateT" expr="eval: !fromDateT ? LocalDateTime.of(0,1,1,0,0) : LocalDateTime.parse(fromDateT, java.time.format.DateTimeFormatter.ISO_DATE_TIME).atZone(java.time.ZoneOffset.UTC).withZoneSameInstant(java.time.ZoneId.systemDefault()).toLocalDateTime()"/>
-  		<context name="toDateT" expr="eval: !toDateT ? __datetime__ : LocalDateTime.parse(toDateT, java.time.format.DateTimeFormatter.ISO_DATE_TIME).atZone(java.time.ZoneOffset.UTC).withZoneSameInstant(java.time.ZoneId.systemDefault()).toLocalDateTime() "/>
+		<context name="_fromDateT" expr="eval: !fromDateT ? LocalDateTime.of(0,1,1,0,0) : LocalDateTime.parse(fromDateT, java.time.format.DateTimeFormatter.ISO_DATE_TIME).atZone(java.time.ZoneOffset.UTC).withZoneSameInstant(java.time.ZoneId.systemDefault()).toLocalDateTime()"/>
+  		<context name="_toDateT" expr="eval: !toDateT ? __datetime__ : LocalDateTime.parse(toDateT, java.time.format.DateTimeFormatter.ISO_DATE_TIME).atZone(java.time.ZoneOffset.UTC).withZoneSameInstant(java.time.ZoneId.systemDefault()).toLocalDateTime() "/>
 		<context name="user" expr="eval: user"/>
 	</action-view>
 	
@@ -72,15 +72,15 @@
 			AND (:metaField is null OR self.metaField = :metaField)
 			AND (:typeSelect is null OR self.globalTrackingLog.typeSelect = :typeSelect)
 			AND (:relatedId is null OR self.globalTrackingLog.relatedId = :relatedId)
-			AND (self.globalTrackingLog.dateT BETWEEN :fromDateT AND :toDateT)
+			AND (self.globalTrackingLog.dateT BETWEEN :_fromDateT AND :_toDateT)
 			AND (:user is null OR self.globalTrackingLog.user = :user)
 		</domain>
 		<context name="metaModel" expr="eval: metaModel"/>
 		<context name="metaField" expr="eval: metaField"/>
 		<context name="typeSelect" expr="eval: typeSelect"/>
 		<context name="relatedId" expr="eval: relatedId"/>
-		<context name="fromDateT" expr="eval: !fromDateT ? LocalDateTime.of(0,1,1,0,0) : LocalDateTime.parse(fromDateT, java.time.format.DateTimeFormatter.ISO_DATE_TIME).atZone(java.time.ZoneOffset.UTC).withZoneSameInstant(java.time.ZoneId.systemDefault()).toLocalDateTime()"/>
-  		<context name="toDateT" expr="eval: !toDateT ? __datetime__ : LocalDateTime.parse(toDateT, java.time.format.DateTimeFormatter.ISO_DATE_TIME).atZone(java.time.ZoneOffset.UTC).withZoneSameInstant(java.time.ZoneId.systemDefault()).toLocalDateTime() "/>
+		<context name="_fromDateT" expr="eval: !fromDateT ? LocalDateTime.of(0,1,1,0,0) : LocalDateTime.parse(fromDateT, java.time.format.DateTimeFormatter.ISO_DATE_TIME).atZone(java.time.ZoneOffset.UTC).withZoneSameInstant(java.time.ZoneId.systemDefault()).toLocalDateTime()"/>
+  		<context name="_toDateT" expr="eval: !toDateT ? __datetime__ : LocalDateTime.parse(toDateT, java.time.format.DateTimeFormatter.ISO_DATE_TIME).atZone(java.time.ZoneOffset.UTC).withZoneSameInstant(java.time.ZoneId.systemDefault()).toLocalDateTime() "/>
 		<context name="user" expr="eval: user"/>
 	</action-view>
 	
