@@ -1,6 +1,8 @@
 # Changelog
 ## [Unreleased 5.3.12]
 ## Improvements
+- SALE ORDER: set endOfValidityDate when create sale order from opportunity and project.
+
 ## Bug Fixes
 - Timesheet Line: fix NPE happening when project or task were emptied.
 - BANK RECONCILIATION STATEMENT REPORT : corrected sql request error.
