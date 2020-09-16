@@ -42,7 +42,7 @@
 	    		<field name="computationMethodSelect" required="true" onChange="action-fixed-asset-attrs-set-degressive-coef"/>
 	    		<field name="degressiveCoef" showIf="computationMethodSelect == 'degressive'"/>
 	        	<field name="numberOfDepreciation" min="0" onChange="action-fixed-asset-attrs-set-degressive-coef,action-fixed-asset-category-record-compute-duration"/>
-	    		<field name="periodicityInMonth" min="0" onChange="action-fixed-asset-category-record-compute-duration"/>
+	    		<field name="periodicityInMonth" min="1" onChange="action-fixed-asset-category-record-compute-duration"/>
 	        	<field name="durationInMonth" readonly="true"/>
 	        	<field name="fixedAssetCategory.isProrataTemporis"/>
 	        	<field name="fixedAssetCategory.isUSProrataTemporis" showIf="fixedAssetCategory.isProrataTemporis"/>
