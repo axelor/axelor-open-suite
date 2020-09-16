@@ -92,7 +92,7 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
         .addFormat(formatPdf);
   }
 
-  @Override  // returns sql query for PurchaseOrderLineDataSet in PurchaseOrder.rptdesign
+  @Override // returns sql query for PurchaseOrderLineDataSet in PurchaseOrder.rptdesign
   public String getPurchaseOrderLineDataSetQuery(Long purchaseOrderId) {
 
     String selectClause = this.getPurchaseOrderLineQuerySelectClause();

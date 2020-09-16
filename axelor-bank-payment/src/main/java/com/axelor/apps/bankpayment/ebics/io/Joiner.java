@@ -50,7 +50,8 @@ public class Joiner {
       buffer.write(data);
       buffer.flush();
     } catch (IOException e) {
-      throw new AxelorException(e.getCause(), TraceBackRepository.TYPE_TECHNICAL, e.getMessage());
+      throw new AxelorException(
+          e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }
   }
 
@@ -74,7 +75,8 @@ public class Joiner {
       throw new AxelorException(
           e.getCause(), TraceBackRepository.CATEGORY_INCONSISTENCY, e.getMessage());
     } catch (IOException e) {
-      throw new AxelorException(e.getCause(), TraceBackRepository.TYPE_TECHNICAL, e.getMessage());
+      throw new AxelorException(
+          e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }
   }
 

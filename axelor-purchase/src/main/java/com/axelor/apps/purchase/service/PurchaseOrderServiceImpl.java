@@ -299,7 +299,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
       String reason =
           blocking.getBlockingReason() != null ? blocking.getBlockingReason().getName() : "";
       throw new AxelorException(
-          TraceBackRepository.TYPE_FUNCTIONNAL,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.SUPPLIER_BLOCKED) + " " + reason,
           partner);
     }

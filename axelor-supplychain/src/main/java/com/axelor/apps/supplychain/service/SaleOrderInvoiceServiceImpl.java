@@ -708,7 +708,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     if (checkInvoicedAmount && amountInvoiced.compareTo(saleOrder.getExTaxTotal()) > 0) {
       throw new AxelorException(
           saleOrder,
-          TraceBackRepository.TYPE_FUNCTIONNAL,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.SO_INVOICE_TOO_MUCH_INVOICED),
           saleOrder.getSaleOrderSeq());
     }

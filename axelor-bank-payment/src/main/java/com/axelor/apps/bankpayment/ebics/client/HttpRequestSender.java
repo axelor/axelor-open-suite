@@ -238,7 +238,9 @@ public class HttpRequestSender {
     } catch (Exception e) {
       e.printStackTrace();
       throw new AxelorException(
-          e.getCause(), TraceBackRepository.TYPE_TECHNICAL, I18n.get("Error adding certificate"));
+          e.getCause(),
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get("Error adding certificate"));
     }
 
     return client;

@@ -2,6 +2,7 @@
 ## [Unreleased 5.2.15]
 ## Improvements
 - AnalyticDistribution : Autocomplete analyticDistribution details while creating SaleOrder / PurchaseOrder with interco = true.
+- TraceBack : Replace deprecated constants with appropriate CATEGORY constant
 
 ## Bug Fixes
 - PurchaseOrder : removed action which is setting dotted field explicitly.
