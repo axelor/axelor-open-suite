@@ -1,6 +1,8 @@
 # Changelog
 ## [Unreleased 5.1.17]
 ## Improvements
+- SALE ORDER: set endOfValidityDate when create sale order from opportunity and project.
+
 ## Bug Fixes
 
 ## [5.1.16] - 2020-09-09
