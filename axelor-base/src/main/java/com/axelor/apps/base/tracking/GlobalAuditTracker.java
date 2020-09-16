@@ -99,8 +99,8 @@ public class GlobalAuditTracker {
 
           if (configLine == null
               || !this.canTrack(configLine, log.getTypeSelect())
-              || (Strings.isNullOrEmpty(configLine.getTrackingCondition())
-                  || Boolean.FALSE.equals(
+              || (!Strings.isNullOrEmpty(configLine.getTrackingCondition())
+                  && !Boolean.TRUE.equals(
                       new GroovyScriptHelper(bindings).eval(configLine.getTrackingCondition())))) {
             continue;
           }
@@ -154,7 +154,9 @@ public class GlobalAuditTracker {
     Method reader = null;
     for (PropertyDescriptor pd : info.getPropertyDescriptors()) {
       reader = pd.getReadMethod();
-      if (reader != null) result.put(pd.getName(), reader.invoke(obj));
+      if (reader != null) {
+        result.put(pd.getName(), reader.invoke(obj));
+      }
     }
     return result;
   }

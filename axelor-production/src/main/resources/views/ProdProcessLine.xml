@@ -70,7 +70,7 @@
     </action-record>
     
     <action-attrs name="action-prod-process-line-attrs-default">
-    	<attribute name="hidden" for="toConsumeProdProductList" expr="eval: _parent != null ? !_parent.isConsProOnOperation : !prodProcess.isConsProOnOperation"/>
+    	<attribute name="hidden" for="toConsumeProdProductList" expr="eval: __parent__ != null ? !__parent__.isConsProOnOperation : !prodProcess.isConsProOnOperation"/>
 		<attribute name="hidden" for="stockLocation" expr="eval: !__parent__.isConsProOnOperation"/>
     </action-attrs>
     

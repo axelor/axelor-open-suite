@@ -35,7 +35,8 @@
 - QUALITY TAG : add colorSelect field for tag color
 - User : add forcePasswordChange field in user-form.
 - Invoice : Specify button css.
-- Studio: Selection create/update support
+- Studio: Selection create/update support for a field.
+- Studio: Added a selection builder to update existing selection or to create a new one.
 
 ## Improvements
 - USER : Default User language is based on application.locale from application.properties
@@ -72,4 +73,6 @@
 - INVOICE : Resolve report binding issue.
 - MRP LINE : Fix the mrp-line-form dirty view issue.
 - Bank reconciliation : add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
+- AccountManagement :  Fix NPE when product not present in invoiceLine.
+- Change eval: _parent to eval: __ parent __ in all actions and views.
 - MOVE LINE : Removed taxLine required.

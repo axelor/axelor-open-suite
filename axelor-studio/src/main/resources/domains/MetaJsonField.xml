@@ -11,6 +11,7 @@
             title="App builder" />
         <many-to-one name="metaSelect" ref="com.axelor.meta.db.MetaSelect" title="Existing select" />
         <string name="selectionText" title="Selection" large="true" />
+        <boolean name="isSelectionField" />
 		<track>
 			<field name="name" />
 			<field name="title" />

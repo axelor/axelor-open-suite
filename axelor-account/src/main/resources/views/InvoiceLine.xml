@@ -178,14 +178,14 @@
 	</action-attrs>
 	
 	<action-attrs name="action-invoice-line-attrs-set-domain-analytic-distribution-template">
-		<attribute name="domain" for="analyticDistributionTemplate" expr="eval: &quot; self.company.id = ${_parent?.company.id} &quot;"/>
+		<attribute name="domain" for="analyticDistributionTemplate" expr="eval: &quot; self.company.id = ${__parent__?.company.id} &quot;"/>
 	</action-attrs>
     
     <action-attrs name="action-invoice-line-attrs-domain-project">
-    	<attribute name="domain" for="project" expr="eval: &quot; self.clientPartner.id = ${_parent?.partner.id} AND self.isBusinessProject = true &quot;" if="_parent?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; (_parent?.operationTypeSelect == 3 || _parent?.operationTypeSelect == 4)"/>
-    	<attribute name="domain" for="project" expr="eval: &quot; self.isBusinessProject = true &quot;" if="_parent?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; (_parent?.operationTypeSelect == 1 || _parent?.operationTypeSelect == 2)"/>
-    	<attribute name="domain" for="project" expr="eval: &quot; self.clientPartner.id = ${invoice.partner.id} AND self.isBusinessProject = true &quot;" if="invoice != null &amp;&amp; (invoice.operationTypeSelect == 3 || invoice.operationTypeSelect == 4) &amp;&amp; _parent?._model != 'com.axelor.apps.account.db.Invoice'"/>
-    	<attribute name="domain" for="project" expr="eval: &quot; self.isBusinessProject = true &quot;" if="invoice != null &amp;&amp; (invoice.operationTypeSelect == 1 || invoice.operationTypeSelect == 2) &amp;&amp; _parent?._model != 'com.axelor.apps.account.db.Invoice'"/>
+    	<attribute name="domain" for="project" expr="eval: &quot; self.clientPartner.id = ${__parent__?.partner.id} AND self.isBusinessProject = true &quot;" if="__parent__?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; (__parent__?.operationTypeSelect == 3 || __parent__?.operationTypeSelect == 4)"/>
+    	<attribute name="domain" for="project" expr="eval: &quot; self.isBusinessProject = true &quot;" if="__parent__?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; (__parent__?.operationTypeSelect == 1 || __parent__?.operationTypeSelect == 2)"/>
+    	<attribute name="domain" for="project" expr="eval: &quot; self.clientPartner.id = ${invoice.partner.id} AND self.isBusinessProject = true &quot;" if="invoice != null &amp;&amp; (invoice.operationTypeSelect == 3 || invoice.operationTypeSelect == 4) &amp;&amp; __parent__?._model != 'com.axelor.apps.account.db.Invoice'"/>
+    	<attribute name="domain" for="project" expr="eval: &quot; self.isBusinessProject = true &quot;" if="invoice != null &amp;&amp; (invoice.operationTypeSelect == 1 || invoice.operationTypeSelect == 2) &amp;&amp; __parent__?._model != 'com.axelor.apps.account.db.Invoice'"/>
     </action-attrs>
 
 	<action-attrs name="action-invoice-line-attrs-readonly-form">
@@ -355,7 +355,7 @@
 	</action-attrs>
 
   	<action-attrs name="action-attrs-account-invoice-line-account-onchange">
-    	<attribute name="required" for="analyticDistributionTemplate" expr="_parent?.statusSelect &gt; 1 &amp;&amp; analyticMoveLineList.isEmpty() &amp;&amp; account?.analyticDistributionAuthorized &amp;&amp; account?.analyticDistributionRequiredOnInvoiceLines" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" />
+    	<attribute name="required" for="analyticDistributionTemplate" expr="__parent__?.statusSelect &gt; 1 &amp;&amp; analyticMoveLineList.isEmpty() &amp;&amp; account?.analyticDistributionAuthorized &amp;&amp; account?.analyticDistributionRequiredOnInvoiceLines" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" />
   	</action-attrs>
 
     <action-attrs name="action-invoice-line-attrs-discountamount-title">
@@ -364,7 +364,7 @@
 	</action-attrs>
 	
 	<action-record name="action-invoice-line-record-project" model="com.axelor.apps.account.db.InvoiceLine" if-module="axelor-business-project">
-		<field name="project" expr="eval: _parent?.project" if="__config__.app.isApp('business-project')" />
+		<field name="project" expr="eval: __parent__?.project" if="__config__.app.isApp('business-project')" />
 	</action-record>
 
 	<action-attrs name="action-invoice-line-attrs-compute-total-pack">

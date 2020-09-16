@@ -229,7 +229,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-purchase-order-line-attrs-set-domain-analytic-distribution-template">
-		<attribute name="domain" for="analyticDistributionTemplate" expr="eval: &quot; self.company.id = ${_parent?.company.id} &quot;"/>
+		<attribute name="domain" for="analyticDistributionTemplate" expr="eval: &quot; self.company.id = ${__parent__?.company.id} &quot;"/>
 	</action-attrs>
 	
 	<action-view name="action-purchase-order-line-view-show-invoice-lines" title="Invoice Lines" model="com.axelor.apps.account.db.InvoiceLine">	
@@ -298,15 +298,15 @@
 	</action-attrs>
 	
 	<action-attrs name="action-purchase-order-attrs-hide-ati">
-		<attribute name="hidden" for="exTaxTotal" expr="eval:_parent?.inAti" if="_parent?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
-		<attribute name="hidden" for="inTaxTotal" expr="eval:!_parent?.inAti" if="_parent?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
-		<attribute name="hidden" for="price" expr="eval:_parent?.inAti" if="_parent?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
-		<attribute name="hidden" for="inTaxPrice" expr="eval:!_parent?.inAti" if="_parent?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
+		<attribute name="hidden" for="exTaxTotal" expr="eval:__parent__?.inAti" if="__parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
+		<attribute name="hidden" for="inTaxTotal" expr="eval:!__parent__?.inAti" if="__parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
+		<attribute name="hidden" for="price" expr="eval:__parent__?.inAti" if="__parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
+		<attribute name="hidden" for="inTaxPrice" expr="eval:!__parent__?.inAti" if="__parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
 		
-		<attribute name="hidden" for="exTaxTotal" expr="eval: purchaseOrder?.inAti" if="purchaseOrder != null &amp;&amp; _parent?._model != 'com.axelor.apps.purchase.db.PurchaseOrder'" />
-		<attribute name="hidden" for="inTaxTotal" expr="eval: !purchaseOrder?.inAti" if="purchaseOrder != null &amp;&amp; _parent?._model != 'com.axelor.apps.purchase.db.PurchaseOrder'" />
-		<attribute name="hidden" for="price" expr="eval: purchaseOrder?.inAti" if="purchaseOrder != null &amp;&amp; _parent?._model != 'com.axelor.apps.purchase.db.PurchaseOrder'" />
-		<attribute name="hidden" for="inTaxPrice" expr="eval: !purchaseOrder?.inAti" if="purchaseOrder != null &amp;&amp; _parent?._model != 'com.axelor.apps.purchase.db.PurchaseOrder'" />
+		<attribute name="hidden" for="exTaxTotal" expr="eval: purchaseOrder?.inAti" if="purchaseOrder != null &amp;&amp; __parent__?._model != 'com.axelor.apps.purchase.db.PurchaseOrder'" />
+		<attribute name="hidden" for="inTaxTotal" expr="eval: !purchaseOrder?.inAti" if="purchaseOrder != null &amp;&amp; __parent__?._model != 'com.axelor.apps.purchase.db.PurchaseOrder'" />
+		<attribute name="hidden" for="price" expr="eval: purchaseOrder?.inAti" if="purchaseOrder != null &amp;&amp; __parent__?._model != 'com.axelor.apps.purchase.db.PurchaseOrder'" />
+		<attribute name="hidden" for="inTaxPrice" expr="eval: !purchaseOrder?.inAti" if="purchaseOrder != null &amp;&amp; __parent__?._model != 'com.axelor.apps.purchase.db.PurchaseOrder'" />
 	</action-attrs>
 
 	<action-attrs if-module="axelor-business-project" name="action-purchase-order-line-attrs-title-project">
@@ -315,10 +315,10 @@
 	</action-attrs>
 	
 	<action-attrs name="action-purchase-order-line-attrs-show-priceDiscounted">
-		<attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == price" if="_parent?._model == 'com.axelor.apps.purchase.db.PurchaseOrder' &amp;&amp; !_parent?.inAti"/>
-		<attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == inTaxPrice" if="_parent?._model == 'com.axelor.apps.purchase.db.PurchaseOrder' &amp;&amp; _parent?.inAti"/>
-		<attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == price" if="purchaseOrder != null &amp;&amp; _parent?._model != 'com.axelor.apps.purchase.db.PurchaseOrder' &amp;&amp; !purchaseOrder?.inAti"/>
-		<attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == inTaxPrice" if="purchaseOrder != null &amp;&amp; _parent?._model != 'com.axelor.apps.purchase.db.PurchaseOrder' &amp;&amp; purchaseOrder?.inAti"/>
+		<attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == price" if="__parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrder' &amp;&amp; !__parent__?.inAti"/>
+		<attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == inTaxPrice" if="__parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrder' &amp;&amp; __parent__?.inAti"/>
+		<attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == price" if="purchaseOrder != null &amp;&amp; __parent__?._model != 'com.axelor.apps.purchase.db.PurchaseOrder' &amp;&amp; !purchaseOrder?.inAti"/>
+		<attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == inTaxPrice" if="purchaseOrder != null &amp;&amp; __parent__?._model != 'com.axelor.apps.purchase.db.PurchaseOrder' &amp;&amp; purchaseOrder?.inAti"/>
 	</action-attrs>
 	
 	<action-attrs name="action-purchase-order-line-attrs-hide-qty-warning-label">
@@ -331,13 +331,13 @@
 	
     <action-record name="action-purchase-order-line-record-new" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     	<field name="qty" expr="eval: 1"/>
-    	<field name="desiredDelivDate" expr="eval: _parent?.deliveryDate"/>
+    	<field name="desiredDelivDate" expr="eval: __parent__?.deliveryDate"/>
     	<field name="$isFilterOnSupplier" expr="eval: true"/>
-    	<field name="estimatedDelivDate" expr="eval: _parent?.deliveryDate" if="_parent != null &amp;&amp; _parent._model == 'com.axelor.apps.purchase.db.PurchaseOrder' &amp;&amp; receiptState &lt; 2"/>
+    	<field name="estimatedDelivDate" expr="eval: __parent__?.deliveryDate" if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.purchase.db.PurchaseOrder' &amp;&amp; receiptState &lt; 2"/>
     </action-record>
     
     <action-record name="action-purchase-order-line-record-project" model="com.axelor.apps.purchase.db.PurchaseOrderLine" if-module="axelor-business-project">
-		<field name="project" expr="eval: _parent?.project" if="__config__.app.isApp('business-project')" />
+		<field name="project" expr="eval: __parent__?.project" if="__config__.app.isApp('business-project')" />
 		<field name="toInvoice" expr="eval: __parent__?.project?.isInvoicingPurchases" if="__config__.app.isApp('business-project')"/>
 	</action-record>
     
@@ -392,7 +392,7 @@
 	<action-attrs name="action-purchase-order-line-attrs-product-domain">
 		<attribute name="domain" for="product"
 		expr="eval: isFilterOnSupplier &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog()
-		? &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true and self.id IN (SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = ${_parent?.supplierPartner?.id}) and dtype = 'Product'&quot; 
+		? &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true and self.id IN (SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = ${__parent__?.supplierPartner?.id}) and dtype = 'Product'&quot; 
 		: &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true and dtype = 'Product'&quot;" />
 	</action-attrs>
 	

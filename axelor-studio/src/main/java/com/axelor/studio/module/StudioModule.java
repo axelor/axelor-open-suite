@@ -32,6 +32,8 @@ import com.axelor.studio.db.repo.MenuBuilderRepo;
 import com.axelor.studio.db.repo.MenuBuilderRepository;
 import com.axelor.studio.db.repo.MetaJsonFieldRepo;
 import com.axelor.studio.db.repo.MetaJsonModelRepo;
+import com.axelor.studio.db.repo.SelectionBuilderRepo;
+import com.axelor.studio.db.repo.SelectionBuilderRepository;
 import com.axelor.studio.db.repo.StudioWkfNodeRepo;
 import com.axelor.studio.db.repo.StudioWkfRepository;
 import com.axelor.studio.db.repo.WkfNodeRepository;
@@ -50,5 +52,6 @@ public class StudioModule extends AxelorModule {
     bind(MetaJsonFieldRepository.class).to(MetaJsonFieldRepo.class);
     bind(MetaJsonModelRepository.class).to(MetaJsonModelRepo.class);
     bind(WkfNodeRepository.class).to(StudioWkfNodeRepo.class);
+    bind(SelectionBuilderRepository.class).to(SelectionBuilderRepo.class);
   }
 }
