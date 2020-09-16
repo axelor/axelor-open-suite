@@ -18,6 +18,7 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -46,6 +47,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -398,12 +400,15 @@ public class InvoiceLineController {
             || invoice.getOperationTypeSelect()
                 == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)) {
 
-      fixedAssetCategory =
+      Optional<AccountManagement> optionalFixedAssetCategory =
           product.getAccountManagementList().stream()
               .filter(am -> am.getCompany() == invoice.getCompany())
-              .findFirst()
-              .get()
-              .getFixedAssetCategory();
+              .findFirst();
+
+      fixedAssetCategory =
+          optionalFixedAssetCategory.isPresent()
+              ? optionalFixedAssetCategory.get().getFixedAssetCategory()
+              : null;
     }
     response.setValue("fixedAssetCategory", fixedAssetCategory);
   }
