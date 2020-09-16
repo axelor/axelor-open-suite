@@ -4,6 +4,7 @@
 - SALE ORDER: set endOfValidityDate when create sale order from opportunity and project.
 
 ## Bug Fixes
+- AccountManagement :  Fix NPE when product not present in invoiceLine.
 
 ## [5.1.16] - 2020-09-09
 ## Improvements
