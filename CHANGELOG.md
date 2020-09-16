@@ -2,6 +2,7 @@
 ## [Unreleased 5.3.13]
 ## Improvements
 ## Bug Fixes
+- AccountManagement :  Fix NPE when product not present in invoiceLine.
 
 ## [5.3.12] - 2020-09-16
 ## Bug Fixes
