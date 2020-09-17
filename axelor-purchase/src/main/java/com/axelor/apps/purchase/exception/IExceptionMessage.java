@@ -63,4 +63,7 @@ public interface IExceptionMessage {
       "There is no sequence set for the purchase requests for the company %s" /*)*/;
   public static final String PURCHASE_REQUEST_MISSING_SUPPLIER_USER = /*$$(*/
       "Please enter supplier for following purchase request : %s" /*)*/;
+
+  public static final String DIFFERENT_SUPPLIER = /*$$(*/
+      "The supplier of the purchase order is different from the default supplier of the product." /*)*/;
 }

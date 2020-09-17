@@ -734,11 +734,10 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
     if (supplierOnPurchaseOrder != defaultSupplierOnProduct) {
 
-      String message =
+      String message = String.format(I18n.get(IExceptionMessage.DIFFERENT_SUPPLIER));
+      String title =
           String.format(
-              I18n.get(
-                  "The supplier of the purchase order is different from the default supplier of the product."));
-      String title = String.format("<span class='label %s'>%s</span>", ContextTool.SPAN_CLASS_WARNING, message);
+              "<span class='label %s'>%s</span>", ContextTool.SPAN_CLASS_WARNING, message);
 
       response.setAttr("differentSupplierLabel", "title", title);
       response.setAttr("differentSupplierLabel", "hidden", false);
