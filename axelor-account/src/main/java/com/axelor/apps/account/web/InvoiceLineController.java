@@ -401,7 +401,9 @@ public class InvoiceLineController {
                 == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)) {
 
       Optional<AccountManagement> optionalFixedAssetCategory =
-          product.getAccountManagementList().stream()
+          product
+              .getAccountManagementList()
+              .stream()
               .filter(am -> am.getCompany() == invoice.getCompany())
               .findFirst();
 
