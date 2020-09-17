@@ -303,6 +303,7 @@
 "The field 'Stock Location' must be filled.","Le champs ""Emplacement de stock"" doit être rempli",,
 "The line cannot be null.","La ligne ne peut pas être nul",,
 "The minimum order quantity of %s to the supplier is not respected.","La quantité minimum de commande de %s auprès du fournisseur n’est pas respectée.",,
+"The supplier of the purchase order is different from the default supplier of the product.","Le fournisseur de la commande est différent du fournisseur par défaut du produit.",,
 "The supplier Partner is required and must be the same for all purchase orders","Le fournisseur est requis et doit être le même pour toutes les commandes d'achat",,
 "The trading name must be the same for all purchase orders",,,
 "There is no sequence set for the purchase requests for the company %s","Aucune séquence n'est définie pour les demandes d'achats portant sur la société %s",,

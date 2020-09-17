@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.CurrencyService;
@@ -709,5 +710,39 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
         product.getPurchaseProductMultipleQtyList(),
         product.getAllowToForcePurchaseQty(),
         response);
+  }
+
+  @Override
+  public void checkDifferentSupplier(
+      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, ActionResponse response) {
+    if (!appBaseService.getAppBase().getEnableTradingNamesManagement()) {
+      return;
+    }
+
+    Product product = purchaseOrderLine.getProduct();
+    TradingName tradingName = purchaseOrder.getTradingName();
+
+    if (product == null || tradingName == null) {
+      return;
+    }
+
+    Partner supplierOnPurchaseOrder = purchaseOrder.getSupplierPartner();
+    Partner defaultSupplierOnProduct = product.getDefaultSupplierPartner();
+    if (defaultSupplierOnProduct == null) {
+      return;
+    }
+
+    if (supplierOnPurchaseOrder != defaultSupplierOnProduct) {
+
+      String message = String.format(I18n.get(IExceptionMessage.DIFFERENT_SUPPLIER));
+      String title =
+          String.format(
+              "<span class='label %s'>%s</span>", ContextTool.SPAN_CLASS_WARNING, message);
+
+      response.setAttr("differentSupplierLabel", "title", title);
+      response.setAttr("differentSupplierLabel", "hidden", false);
+    } else {
+      response.setAttr("differentSupplierLabel", "hidden", true);
+    }
   }
 }
