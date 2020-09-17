@@ -3,6 +3,7 @@
 ## Features
 ## Improvements
 ## Bug Fixes
+- Move : Fix NPE when changing date.
 
 ## [5.4.0] - 2020-09-16
 ## Features
