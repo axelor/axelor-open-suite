@@ -2,6 +2,8 @@
 ## [Unreleased 5.4.1]
 ## Features
 ## Improvements
+- SaleOrder : Set team according to sale config.
+
 ## Bug Fixes
 - Move : Fix NPE when changing date.
 
