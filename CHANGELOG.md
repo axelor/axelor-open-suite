@@ -1,6 +1,8 @@
 # Changelog
 ## [Unreleased 5.3.13]
 ## Improvements
+- SaleOrder : Set team according to sale config. 
+
 ## Bug Fixes
 - AccountManagement :  Fix NPE when product not present in invoiceLine.
 
