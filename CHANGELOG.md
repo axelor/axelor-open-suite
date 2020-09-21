@@ -6,6 +6,7 @@
 
 ## Bug Fixes
 - Move : Fix NPE when changing date.
+- Account management : Remove mix usage of showIf and hidden
 
 ## [5.4.0] - 2020-09-16
 ## Features
