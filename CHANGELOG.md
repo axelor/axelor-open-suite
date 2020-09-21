@@ -5,6 +5,7 @@
 
 ## Bug Fixes
 - AccountManagement :  Fix NPE when product not present in invoiceLine.
+- BATCH RH: corrected payroll preparation batch, now the batch is runnable.
 
 ## [5.3.12] - 2020-09-16
 ## Bug Fixes
