@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.11.0.v202007221505</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -511,7 +511,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                     <structure>
                         <property name="position">9</property>
                         <property name="name">invoice_date</property>
-                        <property name="dataType">date</property>
+                        <property name="dataType">date-time</property>
                     </structure>
                     <structure>
                         <property name="position">10</property>
@@ -581,7 +581,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                     <structure>
                         <property name="position">23</property>
                         <property name="name">due_date</property>
-                        <property name="dataType">date</property>
+                        <property name="dataType">date-time</property>
                     </structure>
                     <structure>
                         <property name="position">24</property>
@@ -748,7 +748,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                     <property name="position">9</property>
                     <property name="name">invoice_date</property>
                     <property name="nativeName">invoice_date</property>
-                    <property name="dataType">date</property>
+                    <property name="dataType">date-time</property>
                     <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
@@ -846,7 +846,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                     <property name="position">23</property>
                     <property name="name">due_date</property>
                     <property name="nativeName">due_date</property>
-                    <property name="dataType">date</property>
+                    <property name="dataType">date-time</property>
                     <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
@@ -998,7 +998,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
 	Invoice.operation_type_select, 
 	Invoice.status_select as status_select,
 	Country.name as "invoicecountry", 
-	Invoice.invoice_date, 
+	Invoice.invoice_date::timestamp, 
 	Partner.partner_type_select, 
 	Partner.name as "partnerName", 
 	Partner.first_name as "partnerFirstName",
@@ -1012,7 +1012,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
 	Address.addressl6, 
 	Country.name as "countryName", 
 	PaymentCondition.name as "paymentConditionName", 
-	Invoice.due_date, 
+	Invoice.due_date::timestamp, 
 	Currency.code as "currencyCode", 
 	Invoice.in_tax_total as "invoice_in_tax_total", 
 	Invoice.ex_tax_total as "invoice_ex_tax_total", 
@@ -1613,7 +1613,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <structure>
                         <property name="position">6</property>
                         <property name="name">ts_date</property>
-                        <property name="dataType">date</property>
+                        <property name="dataType">date-time</property>
                     </structure>
                     <structure>
                         <property name="position">7</property>
@@ -1674,7 +1674,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="position">6</property>
                     <property name="name">ts_date</property>
                     <property name="nativeName">ts_date</property>
-                    <property name="dataType">date</property>
+                    <property name="dataType">date-time</property>
                     <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
@@ -1703,7 +1703,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 product.name AS ts_activity, 
 line.hours_duration AS ts_duration,
 product_unit.name AS ts_product_unit, 
-line.date_val AS ts_date,
+line.date_val::timestamp AS ts_date,
 invproj.invoice AS invoice_id,
 (CASE WHEN project.unit_on_printing IS NULL THEN product_unit.label_to_printing
 	ELSE select_item.title END ) AS ts_project_unit,
@@ -1870,7 +1870,7 @@ AND (invproj.invoice IN (@INJECTID))]]></xml-property>
                     <structure>
                         <property name="position">2</property>
                         <property name="name">expense_date</property>
-                        <property name="dataType">date</property>
+                        <property name="dataType">date-time</property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
@@ -1903,7 +1903,7 @@ AND (invproj.invoice IN (@INJECTID))]]></xml-property>
                     <property name="position">2</property>
                     <property name="name">expense_date</property>
                     <property name="nativeName">expense_date</property>
-                    <property name="dataType">date</property>
+                    <property name="dataType">date-time</property>
                     <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
@@ -1929,7 +1929,7 @@ AND (invproj.invoice IN (@INJECTID))]]></xml-property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT product.name AS expense_type, 
-line.expense_date AS expense_date, 
+line.expense_date::timestamp AS expense_date, 
 line.total_amount AS expense_total_amount, 
 line.total_tax AS expense_total_tax, 
 invproj.invoice AS invoice_id
@@ -2153,7 +2153,7 @@ WHERE invproj.invoice IN (@INJECTID)]]></xml-property>
                                         <property name="name">invoice_date</property>
                                         <text-property name="displayName">invoice_date</text-property>
                                         <expression name="expression" type="javascript">dataSetRow["invoice_date"]</expression>
-                                        <property name="dataType">date</property>
+                                        <property name="dataType">date-time</property>
                                     </structure>
                                     <structure>
                                         <property name="name">partner_type_select</property>
@@ -2237,7 +2237,7 @@ WHERE invproj.invoice IN (@INJECTID)]]></xml-property>
                                         <property name="name">due_date</property>
                                         <text-property name="displayName">due_date</text-property>
                                         <expression name="expression" type="javascript">dataSetRow["due_date"]</expression>
-                                        <property name="dataType">date</property>
+                                        <property name="dataType">date-time</property>
                                     </structure>
                                     <structure>
                                         <property name="name">currencyCode</property>
@@ -2412,7 +2412,7 @@ WHERE invproj.invoice IN (@INJECTID)]]></xml-property>
                     <property name="name">invoice_date</property>
                     <text-property name="displayName">invoice_date</text-property>
                     <expression name="expression" type="javascript">dataSetRow["invoice_date"]</expression>
-                    <property name="dataType">date</property>
+                    <property name="dataType">date-time</property>
                 </structure>
                 <structure>
                     <property name="name">partner_type_select</property>
@@ -2496,7 +2496,7 @@ WHERE invproj.invoice IN (@INJECTID)]]></xml-property>
                     <property name="name">due_date</property>
                     <text-property name="displayName">due_date</text-property>
                     <expression name="expression" type="javascript">dataSetRow["due_date"]</expression>
-                    <property name="dataType">date</property>
+                    <property name="dataType">date-time</property>
                 </structure>
                 <structure>
                     <property name="name">currencyCode</property>
@@ -2759,7 +2759,7 @@ WHERE invproj.invoice IN (@INJECTID)]]></xml-property>
                                                 <property name="name">invoice_date</property>
                                                 <text-property name="displayName">invoice_date</text-property>
                                                 <expression name="expression" type="javascript">dataSetRow["invoice_date"]</expression>
-                                                <property name="dataType">date</property>
+                                                <property name="dataType">date-time</property>
                                             </structure>
                                             <structure>
                                                 <property name="name">partner_type_select</property>
@@ -2843,7 +2843,7 @@ WHERE invproj.invoice IN (@INJECTID)]]></xml-property>
                                                 <property name="name">due_date</property>
                                                 <text-property name="displayName">due_date</text-property>
                                                 <expression name="expression" type="javascript">dataSetRow["due_date"]</expression>
-                                                <property name="dataType">date</property>
+                                                <property name="dataType">date-time</property>
                                             </structure>
                                             <structure>
                                                 <property name="name">currencyCode</property>
@@ -3054,14 +3054,35 @@ WHERE invproj.invoice IN (@INJECTID)]]></xml-property>
                                                     <property name="contentType">html</property>
                                                     <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : ]]></text-property>
                                                 </text>
-                                                <data id="5374">
-                                                    <structure name="dateTimeFormat">
-                                                        <property name="category">Short Date</property>
-                                                        <property name="pattern">Short Date</property>
-                                                    </structure>
+                                                <text id="5667">
+                                                    <property name="marginLeft">2pt</property>
                                                     <property name="display">inline</property>
-                                                    <property name="resultSetColumn">invoice_date</property>
-                                                </data>
+                                                    <property name="dataSet">TranslateDS</property>
+                                                    <list-property name="paramBindings">
+                                                        <structure>
+                                                            <property name="paramName">param_1</property>
+                                                            <simple-property-list name="expression">
+                                                                <value type="javascript">'Invoice.date'</value>
+                                                            </simple-property-list>
+                                                        </structure>
+                                                    </list-property>
+                                                    <list-property name="boundDataColumns">
+                                                        <structure>
+                                                            <property name="name">key</property>
+                                                            <text-property name="displayName">key</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                        <structure>
+                                                            <property name="name">translation</property>
+                                                            <text-property name="displayName">translation</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                    </list-property>
+                                                    <property name="contentType">html</property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF format="Short Date">row._outer["invoice_date"]</VALUE-OF>]]></text-property>
+                                                </text>
                                             </cell>
                                         </row>
                                         <row id="3654">
@@ -3168,14 +3189,35 @@ WHERE invproj.invoice IN (@INJECTID)]]></xml-property>
                                                     <property name="contentType">html</property>
                                                     <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF format="^">"  "</VALUE-OF>]]></text-property>
                                                 </text>
-                                                <data id="5375">
-                                                    <structure name="dateTimeFormat">
-                                                        <property name="category">Short Date</property>
-                                                        <property name="pattern">Short Date</property>
-                                                    </structure>
+                                                <text id="5668">
+                                                    <property name="marginLeft">2pt</property>
                                                     <property name="display">inline</property>
-                                                    <property name="resultSetColumn">due_date</property>
-                                                </data>
+                                                    <property name="dataSet">TranslateDS</property>
+                                                    <list-property name="paramBindings">
+                                                        <structure>
+                                                            <property name="paramName">param_1</property>
+                                                            <simple-property-list name="expression">
+                                                                <value type="javascript">'Invoice.date'</value>
+                                                            </simple-property-list>
+                                                        </structure>
+                                                    </list-property>
+                                                    <list-property name="boundDataColumns">
+                                                        <structure>
+                                                            <property name="name">key</property>
+                                                            <text-property name="displayName">key</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                        <structure>
+                                                            <property name="name">translation</property>
+                                                            <text-property name="displayName">translation</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                    </list-property>
+                                                    <property name="contentType">html</property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF format="Short Date">row._outer["due_date"]</VALUE-OF>]]></text-property>
+                                                </text>
                                             </cell>
                                         </row>
                                         <row id="3658">
@@ -3321,7 +3363,7 @@ row["partnerFirstName"]
                                                 <property name="name">invoice_date</property>
                                                 <text-property name="displayName">invoice_date</text-property>
                                                 <expression name="expression" type="javascript">dataSetRow["invoice_date"]</expression>
-                                                <property name="dataType">date</property>
+                                                <property name="dataType">date-time</property>
                                             </structure>
                                             <structure>
                                                 <property name="name">partner_type_select</property>
@@ -3405,7 +3447,7 @@ row["partnerFirstName"]
                                                 <property name="name">due_date</property>
                                                 <text-property name="displayName">due_date</text-property>
                                                 <expression name="expression" type="javascript">dataSetRow["due_date"]</expression>
-                                                <property name="dataType">date</property>
+                                                <property name="dataType">date-time</property>
                                             </structure>
                                             <structure>
                                                 <property name="name">currencyCode</property>
@@ -3708,7 +3750,7 @@ row["partnerFirstName"]
                                                 <property name="name">ts_date</property>
                                                 <text-property name="displayName">ts_date</text-property>
                                                 <expression name="expression" type="javascript">dataSetRow["ts_date"]</expression>
-                                                <property name="dataType">date</property>
+                                                <property name="dataType">date-time</property>
                                             </structure>
                                             <structure>
                                                 <property name="name">ts_project_unit_id</property>
@@ -3990,15 +4032,35 @@ row._outer["ts_duration"];
                                                     </data>
                                                 </cell>
                                                 <cell id="4248">
-                                                    <data id="4249">
-                                                        <structure name="dateTimeFormat">
-                                                            <property name="category">Short Date</property>
-                                                            <property name="pattern">Short Date</property>
-                                                        </structure>
-                                                        <property name="textAlign">center</property>
-                                                        <structure name="toc"/>
-                                                        <property name="resultSetColumn">ts_date</property>
-                                                    </data>
+                                                    <text id="5669">
+                                                        <property name="marginLeft">2pt</property>
+                                                        <property name="display">inline</property>
+                                                        <property name="dataSet">TranslateDS</property>
+                                                        <list-property name="paramBindings">
+                                                            <structure>
+                                                                <property name="paramName">param_1</property>
+                                                                <simple-property-list name="expression">
+                                                                    <value type="javascript">'Invoice.date'</value>
+                                                                </simple-property-list>
+                                                            </structure>
+                                                        </list-property>
+                                                        <list-property name="boundDataColumns">
+                                                            <structure>
+                                                                <property name="name">key</property>
+                                                                <text-property name="displayName">key</text-property>
+                                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                                <property name="dataType">string</property>
+                                                            </structure>
+                                                            <structure>
+                                                                <property name="name">translation</property>
+                                                                <text-property name="displayName">translation</text-property>
+                                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                                <property name="dataType">string</property>
+                                                            </structure>
+                                                        </list-property>
+                                                        <property name="contentType">html</property>
+                                                        <text-property name="content"><![CDATA[<VALUE-OF format="Short Date">row._outer["ts_date"]</VALUE-OF>]]></text-property>
+                                                    </text>
                                                 </cell>
                                             </row>
                                         </detail>
@@ -4099,7 +4161,7 @@ row._outer["ts_duration"];
                                                 <property name="name">expense_date</property>
                                                 <text-property name="displayName">expense_date</text-property>
                                                 <expression name="expression" type="javascript">dataSetRow["expense_date"]</expression>
-                                                <property name="dataType">date</property>
+                                                <property name="dataType">date-time</property>
                                             </structure>
                                             <structure>
                                                 <property name="name">expense_total_amount</property>
@@ -4326,14 +4388,35 @@ row._outer["ts_duration"];
                                                 <cell id="4328">
                                                     <property name="borderRightStyle">solid</property>
                                                     <property name="borderRightWidth">thin</property>
-                                                    <data id="4329">
-                                                        <structure name="dateTimeFormat">
-                                                            <property name="category">Short Date</property>
-                                                            <property name="pattern">Short Date</property>
-                                                        </structure>
-                                                        <property name="textAlign">center</property>
-                                                        <property name="resultSetColumn">expense_date</property>
-                                                    </data>
+                                                    <text id="5670">
+                                                        <property name="marginLeft">2pt</property>
+                                                        <property name="display">inline</property>
+                                                        <property name="dataSet">TranslateDS</property>
+                                                        <list-property name="paramBindings">
+                                                            <structure>
+                                                                <property name="paramName">param_1</property>
+                                                                <simple-property-list name="expression">
+                                                                    <value type="javascript">'Invoice.date'</value>
+                                                                </simple-property-list>
+                                                            </structure>
+                                                        </list-property>
+                                                        <list-property name="boundDataColumns">
+                                                            <structure>
+                                                                <property name="name">key</property>
+                                                                <text-property name="displayName">key</text-property>
+                                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                                <property name="dataType">string</property>
+                                                            </structure>
+                                                            <structure>
+                                                                <property name="name">translation</property>
+                                                                <text-property name="displayName">translation</text-property>
+                                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                                <property name="dataType">string</property>
+                                                            </structure>
+                                                        </list-property>
+                                                        <property name="contentType">html</property>
+                                                        <text-property name="content"><![CDATA[<VALUE-OF format="Short Date">row._outer["expense_date"]</VALUE-OF>]]></text-property>
+                                                    </text>
                                                 </cell>
                                                 <cell id="4373">
                                                     <text id="4376">
