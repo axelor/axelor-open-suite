@@ -231,7 +231,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     }
     if (!lineInvoiced.isEmpty()) {
       throw new AxelorException(
-          TraceBackRepository.TYPE_FUNCTIONNAL,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.CONTRACT_CANT_REMOVE_INVOICED_LINE));
     }
   }
@@ -251,7 +251,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     }
     if (!lineInvoiced.isEmpty()) {
       throw new AxelorException(
-          TraceBackRepository.TYPE_FUNCTIONNAL,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.CONTRACT_CANT_REMOVE_INVOICED_LINE));
     }
   }
@@ -315,7 +315,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
     if (contract.getTerminatedDate().isBefore(version.getActivationDate())) {
       throw new AxelorException(
-          TraceBackRepository.TYPE_FUNCTIONNAL,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.CONTRACT_UNVALIDE_TERMINATE_DATE));
     }
 
@@ -331,7 +331,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
               durationService.computeDuration(
                   version.getEngagementDuration(), contract.getEngagementStartDate()))) {
         throw new AxelorException(
-            TraceBackRepository.TYPE_FUNCTIONNAL,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.CONTRACT_ENGAGEMENT_DURATION_NOT_RESPECTED));
       }
     }
@@ -344,7 +344,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
                     version.getPriorNoticeDuration(),
                     Beans.get(AppBaseService.class).getTodayDate()))) {
       throw new AxelorException(
-          TraceBackRepository.TYPE_FUNCTIONNAL,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.CONTRACT_PRIOR_DURATION_NOT_RESPECTED));
     }
   }

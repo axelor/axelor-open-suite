@@ -43,6 +43,7 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.report.IReport;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
+import com.axelor.apps.purchase.service.print.PurchaseOrderPrintService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -272,6 +273,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     ReportFactory.createReport(IReport.PURCHASE_ORDER, title + "-${date}")
         .addParam("PurchaseOrderId", purchaseOrder.getId())
+        .addParam(
+            "PurchaseOrderLineQuery",
+            Beans.get(PurchaseOrderPrintService.class)
+                .getPurchaseOrderLineDataSetQuery(purchaseOrder.getId()))
         .addParam("Locale", language)
         .addParam("HeaderHeight", purchaseOrder.getPrintingSettings().getPdfHeaderHeight())
         .addParam("FooterHeight", purchaseOrder.getPrintingSettings().getPdfFooterHeight())
@@ -294,7 +299,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
       String reason =
           blocking.getBlockingReason() != null ? blocking.getBlockingReason().getName() : "";
       throw new AxelorException(
-          TraceBackRepository.TYPE_FUNCTIONNAL,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.SUPPLIER_BLOCKED) + " " + reason,
           partner);
     }

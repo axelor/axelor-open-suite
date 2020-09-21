@@ -141,7 +141,7 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
               | IllegalAccessException
               | MessagingException
               | IOException e) {
-            throw new AxelorException(e, TraceBackRepository.TYPE_TECHNICAL);
+            throw new AxelorException(e, TraceBackRepository.CATEGORY_INCONSISTENCY);
           }
         }
 

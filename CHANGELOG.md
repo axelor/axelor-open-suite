@@ -1,9 +1,20 @@
 # Changelog
 ## [Unreleased 5.2.15]
 ## Improvements
+- AnalyticDistribution : Autocomplete analyticDistribution details while creating SaleOrder / PurchaseOrder with interco = true.
+- TraceBack : Replace deprecated constants with appropriate CATEGORY constant
+- SALE ORDER: set endOfValidityDate when create sale order from opportunity and project
+
 ## Bug Fixes
 - PurchaseOrder : removed action which is setting dotted field explicitly.
 - TRACKING MAIL NOTIFICATION : corrected wrong partner receiving email selected. 
+- Sale Invoice Details : Fixed the empty report generation
+- Fix NPE when user try to ventilate customer refund invoice.
+- Move line : Correctly display reconcile tab (credit or debit) when the account is reconcilable.
+- PurchaseOrder : Fixed error on requesting due to missing production module field in report
+- BANK ORDER : Fix NPE when validating a bank order
+- AccountManagement :  Fix NPE when product not present in invoiceLine.
+- FISCAL YEAR : corrected sql error.
 - ACCOUNT MANAGEMENT : Change visibility of product and product family
 
 ## [5.2.14] - 2020-08-20
