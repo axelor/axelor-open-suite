@@ -268,7 +268,7 @@ public class PartnerController {
       Beans.get(PartnerService.class)
           .addContactToPartner(Beans.get(PartnerRepository.class).find(contact.getId()));
     } catch (Exception e) {
-      TraceBackService.trace(e);
+      TraceBackService.trace(response, e);
     }
   }
 
