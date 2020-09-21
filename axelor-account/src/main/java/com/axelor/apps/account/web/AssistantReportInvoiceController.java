@@ -20,6 +20,9 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.AssistantReportInvoice;
 import com.axelor.apps.account.report.IReport;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductCompany;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
@@ -30,6 +33,8 @@ import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,5 +101,28 @@ public class AssistantReportInvoiceController {
     logger.debug("Printing " + name);
 
     response.setView(ActionView.define(name).add("html", fileLink).map());
+  }
+
+  public void clearProductSet(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    AssistantReportInvoice assistant = request.getContext().asType(AssistantReportInvoice.class);
+
+    Company assistantCompany = assistant.getCompany();
+    Set<Product> productSet = assistant.getProductSet();
+    Set<Product> finalProductSet = new HashSet<>();
+
+    if (productSet != null && assistantCompany != null) {
+      for (Product product : productSet) {
+        for (ProductCompany productCompany : product.getProductCompanyList()) {
+          if (productCompany.getCompany() == assistantCompany) {
+            finalProductSet.add(product);
+            break;
+          }
+        }
+      }
+
+      response.setValue("productSet", finalProductSet);
+    }
   }
 }

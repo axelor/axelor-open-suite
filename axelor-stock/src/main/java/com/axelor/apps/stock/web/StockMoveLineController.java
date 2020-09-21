@@ -216,6 +216,13 @@ public class StockMoveLineController {
             : stockMoveLine.getStockMove();
     String domain =
         Beans.get(StockMoveLineService.class).createDomainForProduct(stockMoveLine, stockMove);
+
+    domain =
+        domain
+            + " AND self.id in (select product from ProductCompany prodComp where prodComp.company.id = "
+            + stockMove.getCompany().getId()
+            + ")";
+
     response.setAttr("product", "domain", domain);
   }
 

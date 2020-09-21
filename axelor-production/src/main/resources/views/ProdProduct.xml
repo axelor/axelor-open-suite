@@ -38,7 +38,7 @@
     <form name="prod-product-form" title="Product" model="com.axelor.apps.production.db.ProdProduct"
     onNew="action-product-record-default,action-prod-product-attrs-scale-and-precision" onLoad="action-prod-product-attrs-on-load,action-prod-product-attrs-scale-and-precision">
     	<panel name="mainPanel">
-	    	<field name="product" canEdit="false" domain="self.productTypeSelect = 'storable' AND dtype = 'Product'" onChange="action-product-record-product-information" form-view="product-form" grid-view="product-grid" required="true"/>
+	    	<field name="product" onSelect="action-prod-product-form-product-domain-for-user-company-attrs" canEdit="false" onChange="action-product-record-product-information" form-view="product-form" grid-view="product-grid" required="true"/>
 	    	<field name="qty" required="true"/>
 	        <field name="unit" form-view="unit-form" grid-view="unit-grid" required="true"/>
         </panel>
@@ -68,5 +68,10 @@
 	<action-attrs name="action-prod-product-attrs-scale-and-precision">
 		<attribute name="scale" for="qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
 	</action-attrs>
+	
+	<action-attrs name="action-prod-product-form-product-domain-for-user-company-attrs">
+		<attribute name="domain" for="product" expr="eval: &quot;self.productTypeSelect = 'storable' AND self.id in (select product from ProductCompany prodComp where prodComp.company.id = ${__parent__?.company?.id}) AND dtype = 'Product'&quot;"/>
+	</action-attrs>
+	
     
 </object-views>

@@ -18,7 +18,10 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductCompany;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.report.IReport;
@@ -35,10 +38,14 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -136,6 +143,83 @@ public class ProductController {
       response.setView(ActionView.define(name).add("html", fileLink).map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public void addProductCompany(ActionRequest request, ActionResponse response) {
+
+    Context context = request.getContext();
+
+    if (context.getParent() != null) {
+      Context parentContext = context.getParent();
+      List<ProductCompany> productCompanieList = new ArrayList<>();
+      CompanyRepository companyRepository = Beans.get(CompanyRepository.class);
+
+      if (parentContext.get("company") != null) {
+        Company company = companyRepository.find(((Company) parentContext.get("company")).getId());
+        if (company != null) {
+          ProductCompany productCompany = new ProductCompany();
+          productCompany.setCompany(company);
+          productCompanieList.add(productCompany);
+        }
+
+      } else if (parentContext.get("companySet") != null) {
+        Set<Company> companyList = (Set<Company>) parentContext.get("companySet");
+        if (companyList != null) {
+
+          for (Company company : companyList) {
+            Company parentCompany = companyRepository.find(company.getId());
+            ProductCompany productCompany = new ProductCompany();
+            productCompany.setCompany(parentCompany);
+            productCompanieList.add(productCompany);
+          }
+        }
+      }
+
+      response.setValue("productCompanyList", productCompanieList);
+    }
+  }
+
+  public void setProductCompanyData(ActionRequest request, ActionResponse response) {
+
+    Context context = request.getContext();
+
+    if (context.getParent() != null) {
+
+      Product product = context.asType(Product.class);
+      List<ProductCompany> productCompanyList = product.getProductCompanyList();
+
+      if (productCompanyList != null) {
+
+        for (ProductCompany productCompany : productCompanyList) {
+          if (productCompany.getSalePrice().compareTo(BigDecimal.ZERO) == 0) {
+            productCompany.setSalePrice(product.getSalePrice());
+          }
+
+          if (productCompany.getSaleCurrency() == null) {
+            productCompany.setSaleCurrency(product.getSaleCurrency());
+          }
+
+          if (productCompany.getPurchasePrice().compareTo(BigDecimal.ZERO) == 0) {
+            productCompany.setPurchasePrice(product.getPurchasePrice());
+          }
+
+          if (productCompany.getPurchaseCurrency() == null) {
+            productCompany.setPurchaseCurrency(product.getPurchaseCurrency());
+          }
+
+          if (productCompany.getCostPrice().compareTo(BigDecimal.ZERO) == 0) {
+            productCompany.setCostPrice(product.getCostPrice());
+          }
+
+          if (productCompany.getManagPriceCoef().compareTo(BigDecimal.ZERO) == 0) {
+            productCompany.setManagPriceCoef(product.getManagPriceCoef());
+          }
+        }
+
+        response.setValue("productCompanyList", product.getProductCompanyList());
+      }
     }
   }
 }

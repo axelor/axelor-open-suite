@@ -19,10 +19,10 @@
 			<field name="name" colSpan="8" required="true"/>
 		</panel>
 		<panel name="startFilterPanel" colSpan="12" showIf="statusSelect == 1">
-			<field name="companySet" widget="TagSelect" required="true"/>
+			<field name="companySet" widget="TagSelect" required="true" onChange="action-cost-calculation-company-on-change-method"/>
 			<field name="productSubTypeSelect" widget="MultiSelect" selection-in="1,2" required="true"/>
 			<field name="allBomLevels"/>
-			<field name="productSet" widget="TagSelect" onSelect="action-unit-cost-calculation-attrs-domain-on-product" colSpan="12"/>
+			<field name="productSet" widget="TagSelect" onSelect="action-unit-cost-calculation-attrs-domain-on-product" form-view="product-form" colSpan="12"/>
 			<field name="productCategorySet" widget="TagSelect" colSpan="12"/>
 			<field name="productFamilySet" widget="TagSelect" colSpan="12"/>
 		</panel>
@@ -31,10 +31,10 @@
 			 	<field name="description" widget="html" colSpan="12" showTitle="false"/>
 			</panel>
 			<panel name="filtersPanel" title="Filters" showIf="statusSelect != 1" readonlyIf="statusSelect == 3">
-				<field name="companySet" widget="TagSelect" required="true"/>
+				<field name="companySet" widget="TagSelect" required="true" onChange="action-cost-calculation-company-on-change-method"/>
 				<field name="productSubTypeSelect" widget="MultiSelect" selection-in="1,2" required="true" />
 				<field name="allBomLevels"/>
-				<field name="productSet" widget="TagSelect" onSelect="action-unit-cost-calculation-attrs-domain-on-product" colSpan="12"/>
+				<field name="productSet" form-view="product-form" widget="TagSelect" onSelect="action-unit-cost-calculation-attrs-domain-on-product" colSpan="12"/>
 				<field name="productCategorySet" widget="TagSelect" colSpan="12"/>
 				<field name="productFamilySet" widget="TagSelect" colSpan="12"/>
 			</panel>
@@ -70,8 +70,7 @@
 	<action-attrs name="action-unit-cost-calculation-attrs-domain-on-product">
 	  <attribute name="domain" for="productSet" expr="eval: &quot;self.productTypeSelect = 'storable' and self.productSubTypeSelect in (&quot;+productSubTypeSelect+&quot;) 
 	  and self.defaultBillOfMaterial.company in (&quot;+com.axelor.apps.tool.StringTool.getIdListString(companySet)+&quot;) 
-	  and self.procurementMethodSelect in ('produce', 'buyAndProduce')
-	  and dtype = 'Product'&quot;"/>
+	  and dtype = 'Product' and self.procurementMethodSelect in ('produce', 'buyAndProduce') &quot;+com.axelor.apps.production.service.costsheet.UnitCostCalculationServiceImpl.createUnitCostCalculatiomProductDomain(companySet)+&quot;&quot;"/>
 	</action-attrs>
 
 	<action-method name="action-unit-cost-calculation-method-run-calculation">
@@ -88,6 +87,10 @@
 	
 	<action-method name="action-unit-cost-calculation-method-import-csv">
 		<call class="com.axelor.apps.production.web.UnitCostCalculationController" method="importUnitCostCalc"/>
+	</action-method>
+	
+	<action-method name="action-cost-calculation-company-on-change-method">
+		<call class="com.axelor.apps.production.web.UnitCostCalculationController" method="clearUnitCostCalculationProduct"/>
 	</action-method>
 	
 	<action-view name="action-unit-cost-calculation-view-import-csv" title="Import" model="com.axelor.apps.base.db.Wizard">

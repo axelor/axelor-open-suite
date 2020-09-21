@@ -39,8 +39,8 @@
                 </viewer>
             </field>
 	    	<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-            <field name="product" requiredIf="!isEnabledForAllProducts" canEdit="false" grid-view="product-grid" form-view="product-form" domain="self.productTypeSelect = 'storable' AND dtype = 'Product'"/>
-            <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+            <field name="product" requiredIf="!isEnabledForAllProducts" canEdit="false" grid-view="product-grid" form-view="product-form" domain="self.productTypeSelect = 'storable' AND dtype = 'Product' AND self.id in (select product from ProductCompany prodComp where prodComp.company = :company)"/>
+            <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid" onChange="action-prod-process-company-on-change-method"/>
             <field name="workshopStockLocation" canEdit="false" domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect = 1 and self.isWorkshop = true" if="__config__.app.getApp('production').getManageWorkshop()"/>
         </panel>
 
@@ -156,6 +156,10 @@
 		<domain>self.prodProcess.id = :prodProcessId</domain>
 		<context name="prodProcessId" expr="eval: id"/>
     </action-view>
+    
+    <action-method name="action-prod-process-company-on-change-method">
+    	<call class="com.axelor.apps.production.web.ProdProcessController" method="clearProduct"/>
+    </action-method>
 
 	<search-filters name="prod-process-filters" model="com.axelor.apps.production.db.ProdProcess" title="Prod process filters">
         <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>

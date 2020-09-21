@@ -84,7 +84,7 @@
 
    <form name="product-activity-form" title="Product Activity" model="com.axelor.apps.base.db.Product" 
    onNew="action-group-base-product-onnew, action-product-activity-record-default-activity" 
-   onLoad="action-product-attrs-scale-and-precision" width="large">
+   onLoad="action-product-attrs-scale-and-precision" onSave="action-base-product-onsave-method" width="large">
     <toolbar>
     		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
 			<button name="showProductSheetBtn" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>

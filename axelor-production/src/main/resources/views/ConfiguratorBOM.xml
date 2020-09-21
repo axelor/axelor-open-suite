@@ -8,7 +8,7 @@
     		model="com.axelor.apps.production.db.ConfiguratorBOM">
         <panel name="mainPanel">
             <panel>
-                <field name="company"/>
+                <field name="company" onChange="action-configuration-bom-company-on-change-method"/>
                 <field name="statusSelect" selection-in="[2,3]"/>
             </panel>
             <panel name="labelPanel" title="Label">
@@ -124,9 +124,9 @@
     
     <action-attrs name="action-configurator-bom-attrs-product-domain">
         <attribute name="domain" for="product"
-                   expr="eval: &quot; self.productTypeSelect = 'storable' AND dtype = 'Product'&quot;"/>
-    	<attribute name="domain" for="product" if="parentConfiguratorBOM == null" 
-                   expr="eval: &quot; self.productTypeSelect = 'storable' AND self.productSubTypeSelect != 3 AND dtype = 'Product'&quot;" />
+                   expr="eval: &quot; self.productTypeSelect = 'storable' AND self.id in (select product from ProductCompany prodComp where prodComp.company = :company) AND dtype = 'Product'&quot;"/>
+    	<attribute name="domain" for="product" if="parentConfiguratorBOM == null"
+                   expr="eval: &quot; self.productTypeSelect = 'storable' AND self.productSubTypeSelect != 3 AND self.id in (select product from ProductCompany prodComp where prodComp.company = :company) AND dtype = 'Product'&quot;" />
     </action-attrs>
 
     <tree name="configurator-bom-tree" title="Configurators BOMs tree">
@@ -158,5 +158,9 @@
 		</node>
 
 	</tree>
+	
+    <action-method name="action-configuration-bom-company-on-change-method">
+    	<call class="com.axelor.apps.production.web.ConfiguratorBOMController" method="clearConfigBOMProuct"/>
+    </action-method>
 
 </object-views>

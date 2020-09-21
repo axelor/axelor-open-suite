@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.production.web;
 
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductCompany;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.TempBomTree;
@@ -219,6 +222,27 @@ public class BillOfMaterialController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void clearProuct(ActionRequest request, ActionResponse response) {
+    BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+
+    Product product = billOfMaterial.getProduct();
+    Company bomCompany = billOfMaterial.getCompany();
+    boolean remove = true;
+
+    if (product != null && bomCompany != null) {
+      for (ProductCompany productCompany : product.getProductCompanyList()) {
+        if (bomCompany == productCompany.getCompany()) {
+          remove = false;
+          break;
+        }
+      }
+
+      if (remove) {
+        response.setValue("product", null);
+      }
     }
   }
 }

@@ -823,8 +823,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             (BigDecimal)
                 productCompanyService.get(
                     stockMoveLine.getProduct(), "salePrice", stockMove.getCompany());
-        BigDecimal wapPrice =
-            computeFromStockLocation(stockMoveLine, stockMove.getToStockLocation());
+
+        BigDecimal wapPrice = BigDecimal.ZERO;
+
+        if (stockMove.getToStockLocation() != null) {
+          wapPrice = computeFromStockLocation(stockMoveLine, stockMove.getToStockLocation());
+        }
+
         stockMoveLine.setWapPrice(wapPrice);
       } else if ((stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
               && stockMove.getIsReversion())
@@ -1177,6 +1182,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       domain += " AND self.parentProduct.id = " + stockMoveLine.getProductModel().getId();
     }
     if (stockMoveLine.getFilterOnAvailableProducts()
+        && stockMove.getFromStockLocation() != null
         && stockMove.getFromStockLocation().getTypeSelect() != 3) {
       domain +=
           " AND self.id in (select sll.product.id from StockLocation sl inner join sl.stockLocationLineList sll WHERE sl.id = "

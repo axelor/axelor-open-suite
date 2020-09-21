@@ -19,6 +19,9 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.ABCAnalysis;
 import com.axelor.apps.base.db.ABCAnalysisClass;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductCompany;
 import com.axelor.apps.base.db.repo.ABCAnalysisRepository;
 import com.axelor.apps.base.service.ABCAnalysisService;
 import com.axelor.apps.base.service.ABCAnalysisServiceImpl;
@@ -32,7 +35,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ABCAnalysisController {
 
@@ -88,6 +93,31 @@ public class ABCAnalysisController {
       Beans.get(ABCAnalysisServiceImpl.class).checkClasses(abcAnalysis);
     } catch (AxelorException e) {
       response.setError(e.getMessage());
+    }
+  }
+
+  public void clearProductSet(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    ABCAnalysis abcAnalysis = request.getContext().asType(ABCAnalysis.class);
+
+    Set<Product> productSet = abcAnalysis.getProductSet();
+    Company analysisCompany = abcAnalysis.getCompany();
+
+    if (productSet != null && analysisCompany != null) {
+
+      Set<Product> finalProductSet = new HashSet<>();
+
+      for (Product product : productSet) {
+        for (ProductCompany prodCompany : product.getProductCompanyList()) {
+          if (prodCompany.getCompany() == analysisCompany) {
+            finalProductSet.add(product);
+            break;
+          }
+        }
+      }
+
+      response.setValue("productSet", finalProductSet);
     }
   }
 }

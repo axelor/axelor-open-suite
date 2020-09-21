@@ -25,7 +25,7 @@
 
 		<panel name="detailsPanel">
 			<panel name="generalInfoPanel" colSpan="12">
-				<field name="company" form-view="company-form" grid-view="company-grid" colSpan="3" canEdit="false"/>
+				<field name="company" form-view="company-form" grid-view="company-grid" colSpan="3" canEdit="false" onChange="action-project-project-template-clear-product-method"/>
 			</panel>
 			<field name="description" colSpan="12" widget="html" />
 		</panel>
@@ -53,7 +53,7 @@
 			</panel>
 
 			<panel title="Configurations" name="configurationsPanel" >
-				<field if="__config__.app.isApp('employee')" if-module="axelor-human-resource" name="productSet" colSpan="12" widget="TagSelect" canEdit="false" domain="self.isActivity = true AND dtype = 'Product'" form-view="product-activity-form" grid-view="product-activity-grid" />
+				<field if="__config__.app.isApp('employee')" if-module="axelor-human-resource" name="productSet" colSpan="12" widget="TagSelect" canEdit="false" domain="self.isActivity = true AND dtype = 'Product' AND self.id in (select product from ProductCompany prodComp where prodComp.company = :company)" form-view="product-activity-form" grid-view="product-activity-grid" />
 				<field name="teamTaskCategorySet" colSpan="12" widget="TagSelect" />
 				<field name="projectFolderSet" colSpan="12" widget="TagSelect" />
 				<field name="imputable" colSpan="4" widget="boolean-switch" if="__config__.app.isApp('employee')" if-module="axelor-human-resource" />
@@ -90,6 +90,10 @@
 
 	<action-method name="action-project-template-method-generate-project-from-wizard">
 		<call class="com.axelor.apps.project.web.ProjectTemplateController" method="createProjectFromWizard"/>
+	</action-method>
+	
+	<action-method name="action-project-project-template-clear-product-method">
+		<call class="com.axelor.apps.project.web.ProjectTemplateController" method="clearProject"/>
 	</action-method>
 
 	<action-attrs name="action-attrs-project-template-set-wizard-hidden">

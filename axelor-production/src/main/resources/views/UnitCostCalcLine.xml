@@ -18,8 +18,8 @@
 	onLoad="action-unit-cost-calc-line-attrs-price-digits">
 		<panel name="mainPanel">
 			<field name="unitCostCalculation" hidden="true"/>
-			<field name="product" readonly="true"/>
-			<field name="company" readonly="true"/>
+			<field name="product" readonly="true" domain="self.id in (select product from ProductCompany prodComp where prodComp.company = :company)"/>
+			<field name="company" readonly="true" onChange="action-unit-cost-calc-line-company-on-change-method"/>
 			<field name="maxLevel" readonly="true"/>
 			<field name="company.currency"/>
 			<field name="previousCost" readonly="true"/>
@@ -32,5 +32,9 @@
 	<action-attrs name="action-unit-cost-calc-line-attrs-price-digits">
         <attribute name="scale" for="previousCost,computedCost,costToApply" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
     </action-attrs>
-	
+    
+    <action-method name="action-unit-cost-calc-line-company-on-change-method">
+      <call class="com.axelor.apps.production.web.UnitCostCalcLineController" method="clearUnitCostCalcLineProduct"/>
+    </action-method>
+    
 </object-views>

@@ -18,7 +18,10 @@
 package com.axelor.apps.project.web;
 
 import com.axelor.apps.base.db.AppProject;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductCompany;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.project.db.Project;
@@ -35,7 +38,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Singleton;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.Set;
 
 @Singleton
 public class ProjectTemplateController {
@@ -118,6 +123,28 @@ public class ProjectTemplateController {
               .map());
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void clearProject(ActionRequest request, ActionResponse response) {
+
+    ProjectTemplate projectTemplate = request.getContext().asType(ProjectTemplate.class);
+
+    Company projectTemplateCompany = projectTemplate.getCompany();
+    Set<Product> productSet = projectTemplate.getProductSet();
+    Set<Product> finalProductSet = new HashSet<>();
+
+    if (productSet != null && projectTemplateCompany != null) {
+      for (Product product : productSet) {
+        for (ProductCompany ProductCompany : product.getProductCompanyList()) {
+          if (ProductCompany.getCompany() == projectTemplateCompany) {
+            finalProductSet.add(product);
+            break;
+          }
+        }
+      }
+
+      response.setValue("productSet", finalProductSet);
     }
   }
 }

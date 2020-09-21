@@ -12,7 +12,7 @@
 			<button name="showInvoiceBtn" title="Invoices" onClick="save,action-company-view-invoice"/>
 		</toolbar>
 		<panel name="mainPanel">
-			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+			<field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid" onChange="action-account-account-config-reset-product"/>
 			<spacer/>
 			<field name="accountChart" readonlyIf="hasChartImported" form-view="account-chart-form" grid-view="account-chart-grid" canNew="true" />
 			<button name="installTemplateBtn" title="Import a chart" readonlyIf="hasChartImported || company == null || accountChart == null" icon="fa-import" onClick="action-group-account-config-installchart-click" />
@@ -121,8 +121,8 @@
 				</panel>
 
 				<panel name="productsPanel" title="Products" colSpan="12">
-					<field name="invoicingProduct" domain="dtype = 'Product'" form-view="product-form" grid-view="product-grid"/>
-					<field name="advancePaymentProduct" domain="dtype = 'Product'" form-view="product-form" grid-view="product-grid"/>
+					<field name="invoicingProduct" form-view="product-form" grid-view="product-grid" domain="dtype = 'Product' AND self.id in (select product from ProductCompany prodComp where prodComp.company = :company)"/>
+					<field name="advancePaymentProduct" form-view="product-form" grid-view="product-grid" domain="dtype = 'Product' AND self.id in (select product from ProductCompany prodComp where prodComp.company = :company)"/>
 				</panel>
 
 				<panel name="printingSettingsPanel" title="Printing settings" colSpan="12">
@@ -272,6 +272,10 @@
 
 	<action-method name="action-method-account-config-install-chart">
 		<call class="com.axelor.apps.account.web.AccountChartController" method="installChart"/>
+	</action-method>
+	
+	<action-method name="action-account-account-config-reset-product">
+		<call class="com.axelor.apps.account.web.AccountConfigController" method="clearProduct"/>
 	</action-method>
 
 	<action-view name="action-company-view-invoice" title="Invoices" model="com.axelor.apps.account.db.Invoice">

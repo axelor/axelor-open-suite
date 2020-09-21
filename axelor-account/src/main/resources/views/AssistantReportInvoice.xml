@@ -20,9 +20,9 @@
     	<panel name="mainPanel" >
     		<field name="fromDate" required="true"/>
     		<field name="toDate" required="true"/>
-    		<field name="company" canEdit="false" required="true"/>
+    		<field name="company" canEdit="false" required="true" onChange="action-assistance-report-invoice-company-on-change-method"/>
     		<field name="partnerSet" colSpan="12" widget="TagSelect" title="Customers" domain="self.isContact = false AND self.isCustomer = true AND :company member of self.companySet"/>
-    		<field name="productSet" canEdit="false" colSpan="12" widget="TagSelect" domain="dtype = 'Product'"/>
+    		<field name="productSet" canEdit="false" colSpan="12" widget="TagSelect" domain="dtype = 'Product' AND self.id in (select product from ProductCompany prodComp where prodComp.company = :company)"/>
     		<label name="orLabel" title="OR"/>
     		<field name="productCategorySet" colSpan="12" widget="TagSelect" domain="dtype = 'Product'"/>
     	</panel>
@@ -41,9 +41,9 @@
     	<panel name="mainPanel" >
     		<field name="fromDate" required="true"/>
     		<field name="toDate" required="true"/>
-    		<field name="company" canEdit="false" required="true"/>
+    		<field name="company" canEdit="false" required="true" onChange="action-assistance-report-invoice-company-on-change-method"/>
     		<field name="partnerSet" colSpan="12" widget="TagSelect" title="Suppliers" domain="self.isContact = false AND self.isSupplier = true AND :company member of self.companySet"/>
-    		<field name="productSet" canEdit="false" colSpan="12" widget="TagSelect" domain="dtype = 'Product'"/>
+    		<field name="productSet" canEdit="false" colSpan="12" widget="TagSelect" domain="dtype = 'Product' AND self.id in (select product from ProductCompany prodComp where prodComp.company = :company)"/>
     		<label name="orLabel" title="OR"/>
     		<field name="productCategorySet" colSpan="12" widget="TagSelect" domain="dtype = 'Product'"/>
     	</panel>
@@ -99,4 +99,8 @@
     <search-filters name="accounting-report-invoice-filters" model="com.axelor.apps.account.db.AssistantReportInvoice" title="Accounting report invoice filters">
         <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
     </search-filters>
+
+    <action-method name="action-assistance-report-invoice-company-on-change-method">
+    	<call class="com.axelor.apps.account.web.AssistantReportInvoiceController" method="clearProductSet"/>
+    </action-method>
 </object-views>

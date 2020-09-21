@@ -34,6 +34,7 @@
     <action-group name="action-group-account-account-management-onchange-common">
     	<action name="action-account-management-clean-company"/>
     	<action name="action-account-management-product-validate"/>
+    	<action name="action-account-management-company-on-change-method"/>
     </action-group>
     
     <!-- ACTION RECORD -->
@@ -53,5 +54,9 @@
         <attribute for="bankDetails" name="value" expr="null"/>
 		<attribute for="bankDetails" name="value" expr="eval: company?.defaultBankDetails" if="company?.defaultBankDetails?.active"/>
 	</action-attrs>
+	
+	<action-method name="action-account-management-company-on-change-method">
+    	<call class="com.axelor.apps.account.web.AccountManagementController" method="clearAccountManagementProduct"/>
+    </action-method>
 
 </object-views>

@@ -18,6 +18,9 @@
 package com.axelor.apps.stock.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductCompany;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -238,6 +241,26 @@ public class InventoryController {
 
     } catch (NoResultException e) {
       // if control came here means no duplicate product.
+    }
+  }
+
+  public void clearProduct(ActionRequest request, ActionResponse response) throws AxelorException {
+    Inventory inventory = request.getContext().asType(Inventory.class);
+    Product product = inventory.getProduct();
+    Company company = inventory.getCompany();
+    boolean remove = true;
+
+    if (product != null && company != null) {
+      for (ProductCompany productCompany : product.getProductCompanyList()) {
+        if (company == productCompany.getCompany()) {
+          remove = false;
+          break;
+        }
+      }
+
+      if (remove) {
+        response.setValue("product", null);
+      }
     }
   }
 }
