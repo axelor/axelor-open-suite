@@ -15,6 +15,7 @@
 - BANK ORDER : Fix NPE when validating a bank order
 - AccountManagement :  Fix NPE when product not present in invoiceLine.
 - FISCAL YEAR : corrected sql error.
+- BATCH RH: corrected payroll preparation batch, now the batch is runnable.
 
 ## [5.2.14] - 2020-08-20
 ## Bug Fixes
