@@ -117,8 +117,8 @@
 	
 	<action-view name="action-batch-show-stock-move" title="Stock moves"
 		model="com.axelor.apps.stock.db.StockMove">
-		<view type="grid" name="stock-move-in-grid" if="supplychainBatch.accountingCutOffTypeSelect == 1"/>
-		<view type="grid" name="stock-move-out-grid" if="supplychainBatch.accountingCutOffTypeSelect == 2"/>
+		<view type="grid" name="stock-move-in-grid" if="supplychainBatch.actionSelect == __repo__(SupplychainBatch).ACTION_ACCOUNTING_CUT_OFF &amp;&amp; supplychainBatch.accountingCutOffTypeSelect == 1"/>
+		<view type="grid" name="stock-move-out-grid" if="supplychainBatch.actionSelect != __repo__(SupplychainBatch).ACTION_ACCOUNTING_CUT_OFF || supplychainBatch.accountingCutOffTypeSelect == 2"/>
 		<view type="form" name="stock-move-form"/>
 		<domain>:batch MEMBER OF self.batchSet</domain>
 		<context name="batch" expr="eval: __self__"/>
@@ -133,5 +133,8 @@
 	</action-view>
 	
 	
+	<search-filters name="supplychain-batch-filters" model="com.axelor.apps.supplychain.db.SupplychainBatch" title="Supplychain batch filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
 
 </object-views>

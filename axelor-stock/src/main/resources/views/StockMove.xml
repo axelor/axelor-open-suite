@@ -44,7 +44,7 @@
 		<field name="stockMoveSeq" width="120">
 			<hilite color="warning" strong="true" if="pickingIsEdited"/>
 		</field>
-    <field name="company" form-view="company-form" grid-view="company-grid"/>
+    <field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
         <field name="fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="toAddressStr"/>
@@ -52,7 +52,7 @@
     <field name="realDate"/>
     <field name="origin" width="120"/>
     <field name="statusSelect"/>
-    <field name="fromAddressStr" hidden="true" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="fromAddressStr" hidden="true" />
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
     <field name="availableStatusSelect">
 	  	<hilite strong="true" color="success" if="availableStatusSelect == 1"/>
@@ -114,7 +114,7 @@
     <button name="seeStockMoveLinesBtn" title="See stock move lines" onClick="action-stock-move-view-stock-move-line" icon="fa-tasks"/>
     	</toolbar>
 		<field name="stockMoveSeq" width="120"/>
-		<field name="company" form-view="company-form" grid-view="company-grid"/>
+		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
         <field name="toStockLocation"  form-view="stock-location-form" grid-view="stock-location-grid"/>
         <field name="partner"  form-view="partner-form" grid-view="partner-grid"/>
         <field name="fromAddressStr"/>
@@ -123,7 +123,7 @@
 		<field name="supplierShipmentRef"/>
 		<field name="origin" width="120"/>
 		<field name="statusSelect"/>
-        <field name="toAddressStr" hidden="true" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+        <field name="toAddressStr" hidden="true" />
 		<field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
     <field name="typeSelect" hidden="true" />
     <button name="printStockMoveBtn" title="Print" icon="fa-print" onClick="action-print-stock-move" readonlyIf="statusSelect == 1"/>
@@ -304,6 +304,7 @@
 
 			<panel name="outgoingMovePanel" showIf="typeSelect == 2" itemSpan="3" colSpan="12">
 				<field name="company" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-onchange-company" canEdit="false" grid-view="company-grid" form-view="company-form"/>
+				<field if="__config__.app.getApp('base').enableTradingNamesManagement" name="tradingName" readonlyIf="statusSelect >= 2" canEdit="false" onChange="action-stock-move-method-printing-settings-default-value" domain=":company MEMBER OF self.companySet" form-view="trading-name-form" grid-view="trading-name-grid" colSpan="3"/>
 				<field name="partner" canEdit="false" domain="self.isContact = false AND :company member of self.companySet" readonlyIf="statusSelect != 1" onChange="action-stock-move-group-partner-onchange" grid-view="partner-grid" form-view="partner-form"/>
 				<field name="fromStockLocation" canEdit="false" domain="self.company = :company" onChange="action-stock-move-group-from-location-onchange" readonlyIf="statusSelect != 1" grid-view="stock-location-grid" form-view="stock-location-form"/>
 				<field name="toAddress" onSelect="action-stock-move-attrs-domain-address" onChange="action-stock-move-method-set-addresses-str,action-stock-move-record-ispm-field" readonlyIf="statusSelect == 3 || statusSelect == 4" form-view="address-partner-address-form"/>
@@ -604,8 +605,8 @@
 	  	<action name="save"/>
     	<action name="action-stock-move-check-stock-move-line-real-qty"/>
     	<action name="action-stock-move-validate-shipment-informations" if="typeSelect == __repo__(StockMove).TYPE_INCOMING &amp;&amp; !isReversion"/>
-	    <action name="action-stock-move-method-manage-backorder" if="stockMoveLineList.any{it?.realQty.compareTo(it?.qty) != 0} &amp;&amp; !isWithBackorder"/> <!-- first condition = is it necessary to split SM -->
-	    <action name="action-stock-move-method-realize" if="!stockMoveLineList.any{it?.realQty.compareTo(it?.qty) != 0} || isWithBackorder"/>
+	    <action name="action-stock-move-method-manage-backorder" if="stockMoveLineList.any{it?.realQty.compareTo(it?.qty) &lt; 0} &amp;&amp; !isWithBackorder"/> <!-- first condition = is it necessary to split SM -->
+	    <action name="action-stock-move-method-realize" if="!stockMoveLineList.any{it?.realQty.compareTo(it?.qty) &lt; 0} || isWithBackorder"/>
     	<action name="save"/>
 	</action-group>
 
@@ -641,6 +642,7 @@
     <action-group name="action-stock-move-group-available-qty-onchange">
         <action name="action-stock-move-method-verify-product-stock"/>
         <action name="action-stock-move-validate-check-reservation"/>
+				<action name="save"/>
         <action name="action-stock-move-method-allocate-all"/>
     </action-group>
 
@@ -902,6 +904,15 @@
     </action-view>
 
 	<search-filters name="customer-deliveries-filters" model="com.axelor.apps.stock.db.StockMove" title="Customer deliveries filters">
+		<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="tradingName" hidden="true" if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+		<field name="availabilityRequest" hidden="true" if="!__config__.app.getApp('stock').isSeparateShipmentOperations"/>
+		<field name="pickingIsEdited" hidden="true" if="!__config__.app.getApp('stock').isSeparateShipmentOperations"/>
+		<field name="pfpValidateStatusSelect" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="originTypeSelect" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="reversionOriginStockMove" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="invoiceSet" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="backorderId" hidden="true" if="!__config__.app.isApp('supplychain')"/>
 		<filter title="Deliveries to prepare">
 			<domain>self.statusSelect = 2</domain>
 		</filter>
@@ -917,6 +928,15 @@
 	</search-filters>
 	
 	<search-filters name="supplier-arrivals-filters" model="com.axelor.apps.stock.db.StockMove" title="Supplier arrivals filters">
+		<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="tradingName" hidden="true" if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+		<field name="availabilityRequest" hidden="true" if="!__config__.app.getApp('stock').isSeparateShipmentOperations"/>
+		<field name="pickingIsEdited" hidden="true" if="!__config__.app.getApp('stock').isSeparateShipmentOperations"/>
+		<field name="pfpValidateStatusSelect" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="originTypeSelect" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="reversionOriginStockMove" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="invoiceSet" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="backorderId" hidden="true" if="!__config__.app.isApp('supplychain')"/>
 		<filter title="Today Arrivals">
 			<domain>self.estimatedDate = CURRENT_DATE</domain>
 		</filter>
@@ -932,6 +952,15 @@
 	</search-filters>
 	
 	<search-filters name="internal-stock-move-filters" model="com.axelor.apps.stock.db.StockMove" title="Internal Stock Move filters">
+		<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="tradingName" hidden="true" if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+		<field name="availabilityRequest" hidden="true" if="!__config__.app.getApp('stock').isSeparateShipmentOperations"/>
+		<field name="pickingIsEdited" hidden="true" if="!__config__.app.getApp('stock').isSeparateShipmentOperations"/>
+		<field name="pfpValidateStatusSelect" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="originTypeSelect" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="reversionOriginStockMove" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="invoiceSet" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="backorderId" hidden="true" if="!__config__.app.isApp('supplychain')"/>
 		<filter title="Moves To Prepare">
 			<domain>self.statusSelect = 2</domain>
 		</filter>

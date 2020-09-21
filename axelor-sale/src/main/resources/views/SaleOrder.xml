@@ -77,7 +77,6 @@
     <field name="creationDate"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="inTaxTotal" aggregate="sum"/>
-		<field name="externalReference"/>
 		<field name="statusSelect"/>
     <button name="printBtn" title="Print" icon="fa-print" onClick="action-sale-order-method-show-sale-order"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
@@ -740,8 +739,7 @@
 	<cards name="sale-order-cards" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" width="300px"  css="rect-image" orderBy="-orderDate">
 		<menubar>
 			<menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
-				<item name="mergeQuotationsItem" title="Merge quotations" action="action-open-sale-quotation-merge-form"/>
-				<item name="seeQuotationLinesItem" title="See quotation lines" action="action-view-open-quotation-lines"/>
+				<item name="seeSaleOrderLinesItem" title="See sale orders lines" action="action-view-open-sale-order-lines"/>
 			</menu>
 		</menubar>
 		<field name="saleOrderSeq"/>
@@ -949,7 +947,7 @@
     </action-record>
 
    <action-record name="action-sale-order-record-set-salemanuser-from-opportunity" model="com.axelor.apps.sale.db.SaleOrder">
-      <field name="salemanUser" expr="eval: _parent?.user"/>
+      <field name="salespersonUser" expr="eval: _parent?.user"/>
    </action-record>
 
     <action-group name="action-group-sale-saleorder-onload">
@@ -1153,7 +1151,7 @@
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
     	<field name="salespersonUser" expr="eval:__user__" if="__config__.app.getApp('sale').getSalemanSelect() == 1"/>
     	<field name="salespersonUser" expr="eval: clientPartner?.getUser()" if="__config__.app.getApp('sale').getSalemanSelect() == 2"/>
-    	<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+    	<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()" if="__config__.app.getApp('sale').getSalemanSelect() == 1"/>
     	<field name="template" expr="eval:_template" />
 		<field name="printingSettings" expr="eval: __user__.activeCompany?.printingSettings" if="__user__.activeCompany != null"/>
     </action-record>
@@ -1180,6 +1178,7 @@
 		<field name="description" expr="eval: clientPartner?.saleOrderComments"/>
 		<field name="pickingOrderComments" expr="eval: clientPartner?.pickingOrderComments"/>
 		<field name="proformaComments" expr="eval: clientPartner?.proformaComments"/>
+		<field name="team" expr="eval: clientPartner?.team" if="__config__.app.getApp('sale').getSalemanSelect() == 2"/>
     </action-record>
 
     <action-record name="action-sale-order-record-hide-discount" model="com.axelor.apps.sale.db.SaleOrder">
@@ -1229,6 +1228,47 @@
 	</action-method>
 
 	<search-filters name="sale-order-filters" model="com.axelor.apps.sale.db.SaleOrder" title="Sales Order filters">
+		<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="tradingName" hidden="true" if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+		<field name="saleOrderTypeSelect" hidden="true" if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowSusbcriptionSaleOrder())"/>
+		<field name="versionNumber" hidden="true" if="!__config__.app.getApp('sale').getManageSaleOrderVersion()"/>
+		<field name="project" hidden="true" if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
+        <field name="toInvoiceViaTask" hidden="true" if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
+        <field name="timetableTemplate" hidden="true" if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing())"/>
+	    <field name="computationDate" hidden="true" if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing())"/>
+	    <field name="timetableList" hidden="true" if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing())"/>
+	    <field name="amountToBeSpreadOverTheTimetable" hidden="true" if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing())"/>
+	    <field name="advancePaymentList" hidden="true" if="!(__config__.app.isApp('account') &amp;&amp; !__config__.app.getApp('account').getManageAdvancePaymentInvoice())"/>
+	    <field name="advancePaymentNeeded" hidden="true" if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions)"/>
+        <field name="advancePaymentAmountNeeded" hidden="true" if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions)"/>
+        <field name="printingSettings" hidden="true" if="!__config__.app.getApp('sale').getPrintingConfigPerSaleOrder()"/>
+	    <field name="hideDiscount" hidden="true" if="!__config__.app.getApp('sale').getPrintingConfigPerSaleOrder()"/>
+	    <field name="specificNotes" hidden="true" if="!__config__.app.getApp('sale').getPrintingConfigPerSaleOrder()"/>
+	    <field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
+	    <field name="expectedRealisationDate" hidden="true" if="!__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
+	    <field name="stockLocation" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="amountInvoiced" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="deliveryState" hidden="true" if="!__config__.app.isApp('supplychain')" />
+		<field name="directOrderLocation" hidden="true" if="!__config__.app.isApp('supplychain')" />
+		<field name="interco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+	    <field name="createdByInterco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+	    <field name="specificPackage" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+	    <field name="deliveryDate" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+	    <field name="deliveryCondition" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+	    <field name="shipmentMode" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+	    <field name="freightCarrierMode" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+	    <field name="carrierPartner" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+	    <field name="forwarderPartner" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+	    <field name="incoterm" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+	    <field name="isNeedingConformityCertificate" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+	    <field name="isIspmRequired" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+	    <field name="deliveryComments" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+	    <field name="pickingOrderComments" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+	    <field name="productionNote" hidden="true" if="!__config__.app.isApp('production')"/>
+      	<field name="paymentMode" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="paymentCondition" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="shipmentDate" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="standardDelay" hidden="true" if="!__config__.app.isApp('supplychain')"/>
 		<field name="saleOrderLineList.product.name" title="Product Name"/>
 		<field name="companyExTaxTotal" title="Total W.T. in company currency"/>
 		<field name="cancelReason" hidden="true"/>

@@ -512,9 +512,178 @@ where
                     <property name="isOutput">false</property>
                 </structure>
             </list-property>
-            <structure name="cachedMetaData"/>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">productName</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">productCode</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">barcode_picture</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">bar_code</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">current_qty</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">real_qty</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">description</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">unit</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">rack</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
+                        <property name="name">TrackingNumberSeq</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">ProductCategory</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">Inventory Date</property>
+                        <property name="dataType">date-time</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">GAP</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
+                        <property name="name">GAP value</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">15</property>
+                        <property name="name">Real valuation</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                </list-property>
+            </structure>
             <property name="dataSource">Data Source</property>
-            <list-property name="resultSet"/>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">productName</property>
+                    <property name="nativeName">productName</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">productCode</property>
+                    <property name="nativeName">productCode</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">barcode_picture</property>
+                    <property name="nativeName">barcode_picture</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">bar_code</property>
+                    <property name="nativeName">bar_code</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">current_qty</property>
+                    <property name="nativeName">current_qty</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">real_qty</property>
+                    <property name="nativeName">real_qty</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">description</property>
+                    <property name="nativeName">description</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">unit</property>
+                    <property name="nativeName">unit</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">9</property>
+                    <property name="name">rack</property>
+                    <property name="nativeName">rack</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">10</property>
+                    <property name="name">TrackingNumberSeq</property>
+                    <property name="nativeName">TrackingNumberSeq</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">11</property>
+                    <property name="name">ProductCategory</property>
+                    <property name="nativeName">ProductCategory</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">Inventory Date</property>
+                    <property name="nativeName">Inventory Date</property>
+                    <property name="dataType">date-time</property>
+                </structure>
+                <structure>
+                    <property name="position">13</property>
+                    <property name="name">GAP</property>
+                    <property name="nativeName">GAP</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">14</property>
+                    <property name="name">GAP value</property>
+                    <property name="nativeName">GAP value</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">15</property>
+                    <property name="name">Real valuation</property>
+                    <property name="nativeName">Real valuation</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+            </list-property>
             <xml-property name="queryText"><![CDATA[select Product.name as "productName",
 	Product.code as "productCode",BarCodeFile.file_path as "barcode_picture",Product.bar_code as "bar_code",
 	InventoryLine.current_qty,
@@ -1852,38 +2021,22 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="dataType">date-time</property>
                 </structure>
                 <structure>
-                    <property name="name">is_barcode_available</property>
-                    <property name="dataType">integer</property>
-                    <property name="aggregateFunction">COUNT</property>
-                    <list-property name="arguments">
-                        <structure>
-                            <property name="name">Expression</property>
-                            <expression name="value" type="javascript">row["bar_code"]</expression>
-                        </structure>
-                    </list-property>
-                    <expression name="filterExpr" type="javascript">row["bar_code"]!=null</expression>
-                    <property name="allowExport">true</property>
+                    <property name="name">GAP</property>
+                    <text-property name="displayName">GAP</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["GAP"]</expression>
+                    <property name="dataType">decimal</property>
                 </structure>
                 <structure>
-                    <property name="name">gap</property>
-                    <text-property name="displayName">gap</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["gap"]</expression>
+                    <property name="name">GAP value</property>
+                    <text-property name="displayName">GAP value</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["GAP value"]</expression>
                     <property name="dataType">decimal</property>
-                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
-                    <property name="name">gap_value</property>
-                    <text-property name="displayName">gap_value</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["gap_value"]</expression>
+                    <property name="name">Real valuation</property>
+                    <text-property name="displayName">Real valuation</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["Real valuation"]</expression>
                     <property name="dataType">decimal</property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">real_valuation</property>
-                    <text-property name="displayName">real_valuation</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["real_valuation"]</expression>
-                    <property name="dataType">decimal</property>
-                    <property name="allowExport">true</property>
                 </structure>
             </list-property>
             <property name="pageBreakInterval">0</property>
@@ -2531,7 +2684,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                 <structure>
                                     <property name="paramName">param_1</property>
                                     <simple-property-list name="expression">
-                                        <value type="javascript">'Gap valuation'</value>
+                                        <value type="javascript">'Real valuation'</value>
                                     </simple-property-list>
                                 </structure>
                             </list-property>
@@ -2845,7 +2998,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <text id="5413">
                             <property name="textAlign">center</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["gap"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["GAP"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="5402">
@@ -2864,7 +3017,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <text id="5414">
                             <property name="textAlign">center</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["gap_value"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["GAP value"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="5397">
@@ -2883,7 +3036,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <text id="5415">
                             <property name="textAlign">center</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>row["real_valuation"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF>row["Real valuation"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                 </row>

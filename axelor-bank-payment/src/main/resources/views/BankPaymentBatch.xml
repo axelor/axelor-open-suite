@@ -51,4 +51,8 @@
 		<call class="com.axelor.apps.bankpayment.web.BankPaymentBatchController" method="actionBankStatement" />
 	</action-method>
 
+	<search-filters name="bank-payment-batch-filters" model="com.axelor.apps.bankpayment.db.BankPaymentBatch" title="Bank payment batch filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
+    
 </object-views>

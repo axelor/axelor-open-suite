@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.service.message;
 
+import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.PrintingSettings;
@@ -27,6 +28,7 @@ import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageServiceImpl;
+import com.axelor.apps.message.service.SendMailQueueService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -43,7 +45,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import javax.mail.MessagingException;
 import org.slf4j.Logger;
@@ -59,8 +60,9 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
   public MessageServiceBaseImpl(
       MetaAttachmentRepository metaAttachmentRepository,
       MessageRepository messageRepository,
+      SendMailQueueService sendMailQueueService,
       UserService userService) {
-    super(metaAttachmentRepository, messageRepository);
+    super(metaAttachmentRepository, messageRepository, sendMailQueueService);
     this.userService = userService;
   }
 
@@ -122,10 +124,8 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 
     logger.debug("Default BirtTemplate : {}", birtTemplate);
 
-    String language = AuthUtils.getUser().getLanguage();
-
-    TemplateMaker maker = new TemplateMaker(new Locale(language), '$', '$');
-    maker.setContext(messageRepository.find(message.getId()), "Message");
+    TemplateMaker maker = new TemplateMaker(AppFilter.getLocale(), '$', '$');
+    maker.setContext(messageRepository.find(message.getId()), Message.class.getSimpleName());
 
     String fileName =
         "Message "

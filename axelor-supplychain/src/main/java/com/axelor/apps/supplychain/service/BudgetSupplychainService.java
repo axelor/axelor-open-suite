@@ -100,6 +100,7 @@ public class BudgetSupplychainService extends BudgetService {
               .fetch();
       for (BudgetDistribution budgetDistribution : budgetDistributionList) {
         Optional<LocalDate> optionaldate = getDate(budgetDistribution);
+        Invoice invoice = budgetDistribution.getInvoiceLine().getInvoice();
         optionaldate.ifPresent(
             date -> {
               for (BudgetLine budgetLine : budget.getBudgetLineList()) {
@@ -110,7 +111,10 @@ public class BudgetSupplychainService extends BudgetService {
                     && (fromDate.isBefore(date) || fromDate.isEqual(date))
                     && (toDate.isAfter(date) || toDate.isEqual(date))) {
                   budgetLine.setAmountRealized(
-                      budgetLine.getAmountRealized().add(budgetDistribution.getAmount()));
+                      invoice.getOperationTypeSelect()
+                              == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+                          ? budgetLine.getAmountRealized().subtract(budgetDistribution.getAmount())
+                          : budgetLine.getAmountRealized().add(budgetDistribution.getAmount()));
                   break;
                 }
               }

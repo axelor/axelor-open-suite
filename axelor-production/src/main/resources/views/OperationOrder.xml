@@ -75,7 +75,7 @@
 		<panel name="mainPanel">
 			<field name="priority" colSpan="3" readonlyIf="statusSelect == 6"/>
 			<field name="operationName" readonlyIf="statusSelect == 6" required="true"/>
-			<field name="manufOrder"  colSpan="3" hideIf="$popup()" requiredIf="!$popup()" readonlyIf="statusSelect == 6" onChange="action-operation-order-name" grid-view="manuf-order-grid" form-view="manuf-order-form"/>
+			<field name="manufOrder"  colSpan="3" requiredIf="!$popup()" readonlyIf="statusSelect == 6" onChange="action-operation-order-name" grid-view="manuf-order-grid" form-view="manuf-order-form"/>
 			<field name="prodProcessLine" colSpan="3" onSelect="action-operation-order-attrs-domain-prod-process-line" required="true" readonlyIf="statusSelect == 6" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>
 			<field name="prodProcessLine.outsourcing" colSpan="3"/>
 			<field name="isToInvoice" colSpan="3"/>
@@ -235,6 +235,8 @@
     </action-attrs>
     
     <search-filters name="operation-order-filters" model="com.axelor.apps.production.db.OperationOrder" title="Operation order filters">
+		<field name="operationOrderDurationList" hidden="true" if="__config__.app.getApp('production').getEnableTimesheetOnManufOrder()"/>
+		<field name="timesheetLineList" hidden="true" if="!__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"/>
 		<filter title="Draft Operations">
 			<domain>self.statusSelect = 1</domain>
 		</filter>

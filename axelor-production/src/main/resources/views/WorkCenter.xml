@@ -106,6 +106,10 @@
 		<field name="machine" expr="eval: null" if="workCenterTypeSelect == 1"/>
 		<field name="prodHumanResourceList" expr="eval: null" if="workCenterTypeSelect == 2"/>
 	</action-record>
+	
+	<search-filters name="work-center-filters" model="com.axelor.apps.production.db.WorkCenter" title="Work center filters">
+        <field name="costSheetGroup" hidden="true" if="!__config__.app.getApp('production')?.getManageCostSheetGroup()"/>
+    </search-filters>
     
 </object-views>
 

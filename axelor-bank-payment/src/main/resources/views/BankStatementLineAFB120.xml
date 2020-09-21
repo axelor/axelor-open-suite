@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
-	<grid name="bank-statement-line-afb-120-grid" title="Bank Statement lines" model="com.axelor.apps.bankpayment.db.BankStatementLineAFB120" orderBy="-operationDate,-sequence" edit-icon="true">
+	<grid name="bank-statement-line-afb-120-grid" title="Bank Statement lines" model="com.axelor.apps.bankpayment.db.BankStatementLineAFB120" orderBy="-bankStatement.toDate,-sequence" edit-icon="true">
 		<hilite color="info" if="lineTypeSelect == 1"/>
 		<hilite color="primary" if="lineTypeSelect == 3"/>
 		<hilite color="danger" if="amountRemainToReconcile > 0 &amp;&amp; amountRemainToReconcile >= debit + credit"/>
@@ -24,7 +24,7 @@
 		<field name="amountRemainToReconcile" width="80"/>
 	</grid>
 
-	<grid name="bank-statement-line-afb-120-grid-dashlet" title="Bank Statement lines" model="com.axelor.apps.bankpayment.db.BankStatementLineAFB120" orderBy="-sequence" edit-icon="true">
+	<grid name="bank-statement-line-afb-120-grid-dashlet" title="Bank Statement lines" model="com.axelor.apps.bankpayment.db.BankStatementLineAFB120" orderBy="-bankStatement.toDate,bankDetails,-sequence" edit-icon="true">
 		<hilite color="info" if="lineTypeSelect == 1"/>
 		<hilite color="primary" if="lineTypeSelect == 3"/>
 		<hilite color="danger" if="amountRemainToReconcile > 0 &amp;&amp; amountRemainToReconcile >= debit + credit"/>

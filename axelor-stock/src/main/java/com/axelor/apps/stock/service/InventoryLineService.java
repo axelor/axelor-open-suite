@@ -26,7 +26,6 @@ import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.StockConfigRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.inject.Beans;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -120,8 +119,7 @@ public class InventoryLineService {
       inventoryLine.setRealValue(
           inventoryLine.getRealQty() != null
               ? inventoryLine.getRealQty().multiply(price).setScale(2, RoundingMode.HALF_EVEN)
-              : BigDecimal.ZERO
-      );
+              : BigDecimal.ZERO);
     }
 
     return inventoryLine;
