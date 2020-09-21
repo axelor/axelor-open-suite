@@ -6,6 +6,7 @@
 
 ## Bug Fixes
 - Move : Fix NPE when changing date.
+- Studio : Manage Custom model menu in export / import operation.
 
 ## [5.4.0] - 2020-09-16
 ## Features
