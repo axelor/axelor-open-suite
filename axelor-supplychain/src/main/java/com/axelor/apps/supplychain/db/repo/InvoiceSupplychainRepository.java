@@ -15,25 +15,29 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.businessproject.db.repo;
+package com.axelor.apps.supplychain.db.repo;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
-import com.axelor.apps.supplychain.db.repo.InvoiceSupplychainRepository;
-import com.axelor.inject.Beans;
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
 
-public class InvoiceProjectRepository extends InvoiceSupplychainRepository {
-
+public class InvoiceSupplychainRepository extends InvoiceManagementRepository {
   @Override
-  public void remove(Invoice entity) {
+  public Invoice copy(Invoice entity, boolean deep) {
+    Invoice copy = super.copy(entity, deep);
 
-    if (Beans.get(AppBusinessProjectService.class).isApp("business-project")) {
-      Beans.get(InvoicingProjectRepository.class)
-          .all()
-          .filter("self.invoice.id = ?", entity.getId())
-          .remove();
+    copy.setSaleOrder(null);
+    copy.setPurchaseOrder(null);
+    copy.setStockMoveSet(null);
+
+    for (InvoiceLine line : copy.getInvoiceLineList()) {
+      line.setSaleOrderLine(null);
+      line.setPurchaseOrderLine(null);
+      line.setStockMoveLine(null);
+      line.setOutgoingStockMove(null);
+      line.setIncomingStockMove(null);
     }
 
-    super.remove(entity);
+    return copy;
   }
 }

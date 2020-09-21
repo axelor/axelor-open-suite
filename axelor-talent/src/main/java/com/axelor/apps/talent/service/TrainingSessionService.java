@@ -27,7 +27,7 @@ public interface TrainingSessionService {
 
   public void updateAllRating(TrainingSession trainingSession);
 
-  public void cancle(TrainingSession trainingSession);
+  public void cancel(TrainingSession trainingSession);
 
   public TrainingSession updateTraingRegisterTraining(TrainingSession trainingSession);
 }

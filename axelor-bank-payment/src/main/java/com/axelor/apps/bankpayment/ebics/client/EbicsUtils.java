@@ -119,7 +119,8 @@ public class EbicsUtils {
       secureRandom = SecureRandom.getInstance("SHA1PRNG");
       return secureRandom.generateSeed(16);
     } catch (NoSuchAlgorithmException e) {
-      throw new AxelorException(e.getCause(), TraceBackRepository.TYPE_FUNCTIONNAL, e.getMessage());
+      throw new AxelorException(
+          e.getCause(), TraceBackRepository.CATEGORY_INCONSISTENCY, e.getMessage());
     }
   }
 
@@ -149,7 +150,7 @@ public class EbicsUtils {
         count = decompressor.inflate(buf);
       } catch (DataFormatException e) {
         throw new AxelorException(
-            e.getCause(), TraceBackRepository.TYPE_FUNCTIONNAL, e.getMessage());
+            e.getCause(), TraceBackRepository.CATEGORY_INCONSISTENCY, e.getMessage());
       }
       output.write(buf, 0, count);
     }
@@ -157,7 +158,8 @@ public class EbicsUtils {
     try {
       output.close();
     } catch (IOException e) {
-      throw new AxelorException(e.getCause(), TraceBackRepository.TYPE_FUNCTIONNAL, e.getMessage());
+      throw new AxelorException(
+          e.getCause(), TraceBackRepository.CATEGORY_INCONSISTENCY, e.getMessage());
     }
 
     decompressor.end();
@@ -316,7 +318,7 @@ public class EbicsUtils {
   public static void checkHttpCode(int httpCode) throws AxelorException {
     if (httpCode != 200) {
       throw new AxelorException(
-          TraceBackRepository.TYPE_FUNCTIONNAL, "http.code.error[Code:%s]", httpCode);
+          TraceBackRepository.CATEGORY_INCONSISTENCY, "http.code.error[Code:%s]", httpCode);
     }
   }
 }
