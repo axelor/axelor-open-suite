@@ -70,7 +70,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
     log.debug(
         "Get the account for the product {} (company : {}, purchase : {}, fixed asset : {}, fiscal position : {})",
         new Object[] {
-          product.getCode(),
+          product != null ? product.getCode() : null,
           company.getName(),
           isPurchase,
           fixedAsset,
@@ -90,7 +90,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
         I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_1_ACCOUNT),
-        product.getCode(),
+        product != null ? product.getCode() : null,
         company.getName());
   }
 
