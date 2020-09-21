@@ -6,6 +6,7 @@
 
 ## Bug Fixes
 - Move : Fix NPE when changing date.
+- BATCH RH: corrected payroll preparation batch, now the batch is runnable.
 
 ## [5.4.0] - 2020-09-16
 ## Features
