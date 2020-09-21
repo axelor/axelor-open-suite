@@ -23,7 +23,6 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTemplate;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import java.math.BigDecimal;
 
 public interface ProjectService {
   Project generateProject(
@@ -32,10 +31,6 @@ public interface ProjectService {
       User assignedTo,
       Company company,
       Partner clientPartner);
-
-  Partner getClientPartnerFromProject(Project project) throws AxelorException;
-
-  BigDecimal computeDurationFromChildren(Long projectId);
 
   /**
    * Generate a project from a partner.

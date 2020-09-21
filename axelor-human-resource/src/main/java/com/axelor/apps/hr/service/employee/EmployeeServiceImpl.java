@@ -233,17 +233,17 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
     newDPAE.setFirstName(employee.getContactPartner().getFirstName());
     newDPAE.setSocialSecurityNumber(employee.getSocialSecurityNumber());
     newDPAE.setSexSelect(employee.getSexSelect());
-    newDPAE.setDateOfBirth(employee.getBirthDate());
+    newDPAE.setBirthDate(employee.getBirthDate());
     newDPAE.setDepartmentOfBirth(employee.getDepartmentOfBirth());
     newDPAE.setCityOfBirth(employee.getCityOfBirth());
     newDPAE.setCountryOfBirth(employee.getCountryOfBirth());
 
     // Contract
-    newDPAE.setDateOfHire(mainEmploymentContract.getStartDate());
-    newDPAE.setTimeOfHire(mainEmploymentContract.getStartTime());
+    newDPAE.setHireDate(mainEmploymentContract.getStartDate());
+    newDPAE.setHireTime(mainEmploymentContract.getStartTime());
     newDPAE.setTrialPeriodDuration(mainEmploymentContract.getTrialPeriodDuration());
     newDPAE.setContractType(mainEmploymentContract.getContractType());
-    newDPAE.setEndDateOfContract(mainEmploymentContract.getEndDate());
+    newDPAE.setContractEndDate(mainEmploymentContract.getEndDate());
 
     employee.addDpaeListItem(newDPAE);
 

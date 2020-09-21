@@ -188,7 +188,7 @@ public class LeaveServiceImpl implements LeaveService {
               leave.getLeaveLine().getLeaveReason(),
               TraceBackRepository.CATEGORY_NO_VALUE,
               I18n.get(IExceptionMessage.LEAVE_REASON_NO_UNIT),
-              leave.getLeaveLine().getLeaveReason().getLeaveReason());
+              leave.getLeaveLine().getLeaveReason().getName());
       }
     }
 
@@ -387,12 +387,12 @@ public class LeaveServiceImpl implements LeaveService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.LEAVE_LINE),
           employee.getName(),
-          leave.getLeaveLine().getLeaveReason().getLeaveReason());
+          leave.getLeaveLine().getLeaveReason().getName());
     }
     if (leave.getInjectConsumeSelect() == LeaveRequestRepository.SELECT_CONSUME) {
-      leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
-    } else {
       leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().add(leave.getDuration()));
+    } else {
+      leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
     }
   }
 
@@ -420,7 +420,7 @@ public class LeaveServiceImpl implements LeaveService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.LEAVE_LINE),
           employee.getName(),
-          leave.getLeaveLine().getLeaveReason().getLeaveReason());
+          leave.getLeaveLine().getLeaveReason().getName());
     }
     if (leave.getInjectConsumeSelect() == LeaveRequestRepository.SELECT_CONSUME) {
       leaveLine.setQuantity(leaveLine.getQuantity().subtract(leave.getDuration()));
@@ -437,13 +437,13 @@ public class LeaveServiceImpl implements LeaveService {
             leave,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.LEAVE_ALLOW_NEGATIVE_VALUE_REASON),
-            leave.getLeaveLine().getLeaveReason().getLeaveReason());
+            leave.getLeaveLine().getLeaveReason().getName());
       }
-      leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().add(leave.getDuration()));
+      leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
       leaveLine.setDaysValidated(leaveLine.getDaysValidated().add(leave.getDuration()));
     } else {
       leaveLine.setQuantity(leaveLine.getQuantity().add(leave.getDuration()));
-      leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
+      leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().add(leave.getDuration()));
     }
   }
 
@@ -471,12 +471,12 @@ public class LeaveServiceImpl implements LeaveService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.LEAVE_LINE),
           employee.getName(),
-          leave.getLeaveLine().getLeaveReason().getLeaveReason());
+          leave.getLeaveLine().getLeaveReason().getName());
     }
     if (leave.getInjectConsumeSelect() == LeaveRequestRepository.SELECT_CONSUME) {
-      leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().add(leave.getDuration()));
-    } else {
       leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
+    } else {
+      leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().add(leave.getDuration()));
     }
   }
 
@@ -504,7 +504,7 @@ public class LeaveServiceImpl implements LeaveService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.LEAVE_LINE),
           employee.getName(),
-          leave.getLeaveLine().getLeaveReason().getLeaveReason());
+          leave.getLeaveLine().getLeaveReason().getName());
     }
     if (leave.getStatusSelect() == LeaveRequestRepository.STATUS_VALIDATED) {
       if (leave.getInjectConsumeSelect() == LeaveRequestRepository.SELECT_CONSUME) {
@@ -515,9 +515,9 @@ public class LeaveServiceImpl implements LeaveService {
       leaveLine.setDaysValidated(leaveLine.getDaysValidated().subtract(leave.getDuration()));
     } else if (leave.getStatusSelect() == LeaveRequestRepository.STATUS_AWAITING_VALIDATION) {
       if (leave.getInjectConsumeSelect() == LeaveRequestRepository.SELECT_CONSUME) {
-        leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().add(leave.getDuration()));
-      } else {
         leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().subtract(leave.getDuration()));
+      } else {
+        leaveLine.setDaysToValidate(leaveLine.getDaysToValidate().add(leave.getDuration()));
       }
     }
   }
@@ -593,9 +593,7 @@ public class LeaveServiceImpl implements LeaveService {
             leave.getUser(),
             leave.getComments(),
             4,
-            leave.getLeaveLine().getLeaveReason().getLeaveReason()
-                + " "
-                + leave.getUser().getFullName());
+            leave.getLeaveLine().getLeaveReason().getName() + " " + leave.getUser().getFullName());
     icalEventRepo.save(event);
     leave.setIcalendarEvent(event);
 

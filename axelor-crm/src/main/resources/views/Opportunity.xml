@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
   <grid name="opportunity-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="salesStageSelect,expectedCloseDate">
 	 	<toolbar>
@@ -13,6 +13,7 @@
 		<hilite color="primary" if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 7"/>
 		<hilite background="success" if="salesStageSelect == 5"/>
 		<hilite background="danger" if="salesStageSelect == 6"/>
+		<field name="opportunitySeq"/>
 		<field name="name" required="true"/>
 		<field name="createdOn" hidden="true"/>
 		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
@@ -24,7 +25,8 @@
 		<field name="probability" aggregate="avg" widget="Progress"/>
 		<field name="expectedCloseDate"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
-		<button name="grabOpportunityBtn" icon="fa-suitcase" help="Take charge" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe" />
+		<button name="grabOpportunityBtn" icon="fa-suitcase" help="Take charge" onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe"
+			hideIf="user.id == _internalUserId"/>
 		<button name="next-stageBtn" icon="fa-chevron-circle-right" help="Next stage" onClick="action-group-crm-opportunity-nextstage-click" readonlyIf="salesStageSelect &gt; 3" />
 		<button name="closed-wonBtn" icon="fa-check-circle" help="Closed won" onClick="action-group-crm-opportunity-closedwon-click" readonlyIf="salesStageSelect &gt; 4" />
 		<button name="closed-lostBtn" icon="fa-minus-circle" help="Closed lost" onClick="action-group-crm-opportunity-closedlost-click" readonlyIf="salesStageSelect &gt; 4" />
@@ -36,6 +38,7 @@
 		<hilite color="primary" if="salesStageSelect != 5 &amp;&amp; salesStageSelect != 6 &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 7"/>
 		<hilite background="success" if="salesStageSelect == 5"/>
 		<hilite background="danger" if="salesStageSelect == 6"/>
+	<field name="opportunitySeq"/>
     <field name="name" width="300"/>
     <field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
@@ -52,6 +55,7 @@
   	</grid>
 
   <grid name="opportunity-grid-group" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" groupBy="partner">
+  		<field name="opportunitySeq"/>
 		<field name="name"/>
 		<field name="user" form-view="user-form" grid-view="user-grid"/>
 		<field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
@@ -63,18 +67,21 @@
   </grid>
 	
 	<grid name="opportunity-top-deal-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="-amount" >
+		<field name="opportunitySeq"/>
         <field name="name"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="amount" aggregate="sum"/>
     </grid>
     
     <grid groupBy="partner" name="opportunity-key-account-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="amount">
+        <field name="opportunitySeq"/>
         <field name="name"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
         <field name="amount" aggregate="sum"/>
     </grid>
     
     <grid name="opportunity-dashlet-grid" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity" orderBy="amount">
+        <field name="opportunitySeq"/>
         <field name="name"/>
         <field name="salesStageSelect"/>
         <field name="amount" aggregate="sum"/>
@@ -92,7 +99,17 @@
         </menubar>
         <panel name="mainPanel" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6">
             <field name="salesStageSelect" colSpan="12" widget="NavSelect" showTitle="false" readonly="true"/>
-            <field name="name" showTitle="false" colSpan="12">
+           <field name="opportunitySeq" showTitle="false" colSpan="2">
+              <viewer depends="opportunitySeq"><![CDATA[
+                 <h3>
+                    <span style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.opportunitySeq}}</span>
+                 </h3>
+              ]]></viewer>
+              <editor>
+                 <field name="opportunitySeq" showTitle="true" readonly="true" css="label-bold bold"/>
+              </editor>
+           </field>
+            <field name="name" showTitle="false" colSpan="10">
                 <viewer depends="name">
                     <![CDATA[
 						<h3>
@@ -124,14 +141,14 @@
             	<panel name="customerDescriptionPanel" title="Customer Description" if="__config__.app.getApp('crm')?.displayCustomerDescriptionInOpportunity">
             		<field name="customerDescription" showTitle="false" colSpan="12" widget="html"/>
             	</panel>
-            <panel-related name="saleOrderListPanel" if="__config__.app.isApp('sale')" if-module="axelor-sale" title="Sale quotations/orders" field="saleOrderList" form-view="sale-order-form" grid-view="sale-order-opportunity-grid"/>
+            <panel-related name="saleOrderListPanel" if="__config__.app.isApp('sale')" if-module="axelor-sale" title="Sale quotations/orders" field="saleOrderList" form-view="sale-order-form" grid-view="sale-order-opportunity-grid" canNew="false"/>
         </panel-tabs>
 
         <panel name="otherDetailsPanel" sidebar="true">
-            <button name="previous-stageBtn" help="Previous stage" title="Previous step" hideIf="salesStageSelect &lt; 2" icon="fa-chevron-circle-left" onClick="save,action-opportunity-set-previous-stage,save"/>
-            <button name="next-stageBtn" help="Next stage" title="Next step" hideIf="salesStageSelect &gt; 3" icon="fa-chevron-circle-right" onClick="save,action-opportunity-set-next-stage,save"/>
-            <button name="closed-wonBtn" help="Closed won" title="Win" hideIf="salesStageSelect &gt; 4" icon="fa-check-circle" onClick="save,action-opportunity-set-closed-won,save"/>
-            <button name="closed-lostBtn" help="Closed lost" title="Lose" css="btn-danger" hideIf="salesStageSelect &gt; 4" icon="fa-times" onClick="save,action-opportunity-view-opportunity-lost-popup-view"/>
+            <button name="previous-stageBtn" title="Previous step" hideIf="salesStageSelect &lt; 2" icon="fa-chevron-circle-left" onClick="save,action-opportunity-set-previous-stage,save"/>
+            <button name="next-stageBtn" title="Next step" hideIf="salesStageSelect &gt; 3" icon="fa-chevron-circle-right" onClick="save,action-opportunity-set-next-stage,save"/>
+            <button name="closed-wonBtn" title="Win" hideIf="salesStageSelect &gt; 4" icon="fa-check-circle" onClick="save,action-opportunity-set-closed-won,save"/>
+            <button name="closed-lostBtn" title="Lose" css="btn-danger" hideIf="salesStageSelect &gt; 4" icon="fa-times" onClick="save,action-opportunity-view-opportunity-lost-popup-view"/>
             <panel name="followUpPanel" title="Follow-up" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6" canCollapse="true">
                 <field name="user" canNew="false" canView="false" canEdit="false" form-view="user-form" grid-view="user-grid"/>
                 <field name="company" widget="SuggestBox" canEdit="false" form-view="company-form" grid-view="company-grid"/>
@@ -286,6 +303,13 @@
         <field name="partner.fixedPhone" title="Customer fixed phone" />
         <field name="partner.mobilePhone" title="Customer mobile phone" />
         <field name="amount" />
+        <field name="customerDescription" hidden="true" if="!__config__.app.getApp('crm')?.displayCustomerDescriptionInOpportunity"/>
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="tradingName" hidden="true" if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+		<field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
+        <field name="tradingName" hidden="true" if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+		<field name="bankDetails" hidden="true" if="!__config__.app.getApp('base').getManageMultiBanks()"/>
+		<field name="saleOrderList" hidden="true" if="!__config__.app.isApp('sale')"/>
 		<filter title="My opportunities">
 			<domain>self.user.id = :_internalUserId</domain>
 		</filter>

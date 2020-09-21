@@ -533,6 +533,11 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     return ReportFactory.createReport(file, name + "-${date}")
         .addParam("AccountingReportId", accountingReport.getId())
         .addParam("Locale", ReportSettings.getPrintingLocale(null))
+        .addParam(
+            "Timezone",
+            accountingReport.getCompany() != null
+                ? accountingReport.getCompany().getTimezone()
+                : null)
         .addFormat(accountingReport.getExportTypeSelect())
         .toAttach(accountingReport)
         .generate()

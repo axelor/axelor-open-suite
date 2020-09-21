@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
@@ -44,7 +44,7 @@
   	
   	<many-to-one name="supplierPartner" ref="com.axelor.apps.base.db.Partner" title="Supplier"/>
   	<decimal name="discountAmount" title="Discount amount" precision="20" scale="10"/>
-  	<integer name="discountTypeSelect" title="Discount Type" selection="base.price.list.line.amount.type.select" default="0"/>
+  	<integer name="discountTypeSelect" title="Discount type" selection="base.price.list.line.amount.type.select" default="0"/>
   	  	
   	<date name="estimatedDelivDate" title="Estimated shipping date"/>
 	<date name="desiredDelivDate" title="Desired delivery date"/>

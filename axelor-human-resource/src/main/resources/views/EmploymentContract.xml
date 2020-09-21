@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 	<grid name="employment-contract-grid" title="Employment contracts" model="com.axelor.apps.hr.db.EmploymentContract">
         <hilite color="warning" if="$moment(endDate).diff(todayDate) &gt;= 0 &amp;&amp; $moment(todayDate).diff(startDate) &gt;= 0"/>
@@ -37,6 +37,13 @@
         </panel>
         <panel-stack name="generalDetailsPanel">
 			<panel name="employeeDetailsPanel">
+			  <field name="ref" showTitle="false" readonly="true" colSpan="12">
+				<viewer depends="ref"><![CDATA[
+					<h3>
+						{{record.ref}}
+					</h3>
+				]]></viewer>
+			  </field>
 			  <field name="employee" canSuggest="false" canNew="false" canEdit="false" canView="false" hideIf="$popup()" requiredIf="!$popup()"/>
 			  <field name="payCompany" canEdit="false" canSuggest="false" onChange="action-employment-contract-paycompany-onchange"/>
 			  <field name="companyDepartment" onSelect="action-employment-contract-attrs-department-domain"/>
@@ -53,7 +60,8 @@
 			<field name="contractType" canNew="true"
 				   grid-view="employment-contract-type-grid"
 				   form-view="employment-contract-type-form" colSpan="4"
-				   onChange="action-employment-contract-record-contract-type-on-change"/>
+				   onChange="action-employment-contract-record-contract-type-on-change,action-employment-contract-attrs-contract-type-on-change"/>
+			<field name="employmentContractSubType" colSpan="4" showIf="contractType != null" onSelect="action-employment-contract-attrs-employment-contract-sub-type-on-select"/>
 			<field name="executiveStatusSelect" colSpan="4"/>
 			<field name="employment" colSpan="4"/>
 			<panel name="organizationPanel" title="Organization" colSpan="12">
@@ -124,5 +132,14 @@
 		<view type="grid" name="payroll-preparation-grid"/>
     	<context name="_idEmploymentContract" expr="eval: id"/>
 	</action-view>
+	
+	<action-attrs name="action-employment-contract-attrs-contract-type-on-change">
+		<attribute name="value" for="employmentContractSubType" expr="eval: null" if="contractType == null"/>
+	</action-attrs>
+	
+	<action-attrs name="action-employment-contract-attrs-employment-contract-sub-type-on-select">
+		<attribute name="domain" for="employmentContractSubType" expr="eval: &quot;self.id IN (${contractType.employmentContractSubTypeList.collect{it.id}.join(',')})&quot;" if="!contractType.employmentContractSubTypeList.isEmpty()"/>
+		<attribute name="domain" for="employmentContractSubType" expr="eval: &quot; self.id IN (0) &quot;" if="contractType.employmentContractSubTypeList.isEmpty()"/>
+	</action-attrs>
 
 </object-views>

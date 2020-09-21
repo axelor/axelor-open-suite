@@ -1,4 +1,4 @@
-"importId";"leaveReason.leaveReason";"employee.importId";"quantity";"daysToValidate";"daysValidated";"totalQuantity"
+"importId";"leaveReason.name";"employee.importId";"quantity";"daysToValidate";"daysValidated";"totalQuantity"
 1;"Congé payé légal et ancienneté";1;12;0;0;12
 2;"Congé payé légal et ancienneté";2;52;0;0;52
 3;"Congé payé légal et ancienneté";3;45;0;0;45

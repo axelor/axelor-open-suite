@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" 
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
   
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
@@ -18,7 +18,7 @@
     <decimal name="credit" title="Credit"/> 
     <many-to-one name="bankStatementLine" ref="com.axelor.apps.bankpayment.db.BankStatementLine" title="Bank Statement detail" />
     <many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine" title="Move Line" />
-    <boolean name="isPosted" title="Is posted"/>
+    <boolean name="isPosted" title="Is posted" readonly="true"/>
     
     
   </entity>

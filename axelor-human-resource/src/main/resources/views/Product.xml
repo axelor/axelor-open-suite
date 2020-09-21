@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
     <grid name="product-expense-grid" title="Expense types" model="com.axelor.apps.base.db.Product" orderBy="name">
+	    <field name="picture" widget="Image"/>
 	    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 	    <field name="name" width="400"/>
 	    <field name="productFamily" form-view="product-family-form" grid-view="product-family-grid"/>
@@ -16,15 +17,15 @@
 
    <form name="product-expense-form" onNew="action-group-base-product-expense-onnew" title="Expense type" model="com.axelor.apps.base.db.Product" onLoad="action-product-attrs-scale-and-precision">
         <toolbar>
-    		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+    		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
 			<button name="showProductSheetBtn" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
     	</toolbar>
 	    <panel name="mainPanel">
-			<field name="name" showTitle="false" css="label-bold bold" placeholder="Name"	colSpan="8"/>
+			<field name="name" required="true" showTitle="false" css="label-bold bold" placeholder="Name" colSpan="8"/>
 			<field name="code" x-bind="{{code|unaccent|uppercase}}"  showTitle="false" css="label-bold bold" placeholder="Code" colSpan="4" required="true" if="!__config__.app.getApp('base').getGenerateProductSequence()"/>
 			<field name="code" x-bind="{{code|unaccent|uppercase}}"  showTitle="false" css="label-bold bold" placeholder="Code" colSpan="4" if="__config__.app.getApp('base').getGenerateProductSequence()" readonly="true"/>
 			<panel name="productTypologyPanel" title="Product typology" colSpan="12">
-				<field name="productTypeSelect" readonly="true" />
+				<field name="productTypeSelect" required="true" readonly="true" />
 				<field name="deductLunchVoucher" hideIf="!expense" />
 				<field name="blockExpenseTax" />
 				<field name="personalExpense" />
@@ -70,6 +71,7 @@
    		<toolbar>
         	<button name="catalogBtn" title="Catalog" onClick="action-print-product-catalog" icon="fa-book"/>
 	    </toolbar>
+	    <field name="picture" widget="Image"/>
 	    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
 	    <field name="name" width="400"/>
 	    <field name="productCategory" form-view="product-category-form" grid-view="product-category-grid"/>
@@ -84,11 +86,11 @@
    onNew="action-group-base-product-onnew, action-product-activity-record-default-activity" 
    onLoad="action-product-attrs-scale-and-precision" width="large">
     <toolbar>
-    		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+    		<button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="save,action-send-by-email-with-template"/>
 			<button name="showProductSheetBtn" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
     	</toolbar>
 	    <panel name="mainPanel">
-        <field name="productTypeSelect" hidden="true"/>
+        <field name="productTypeSelect" required="true" hidden="true"/>
           <panel name="productDetailsPanel" colSpan="12">
             <panel name="imagePanel" colSpan="2">
               <field name="picture" showTitle="false" widget="Image" colSpan="12"/>
@@ -97,7 +99,7 @@
               <field name="fullName" showTitle="false" css="label-bold bold large" colSpan="12">
                 <editor x-show-titles="false">
                   <field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false" colSpan="3" css="label-bold bold large" placeholder="Code" />
-                  <field name="name" showTitle="false" colSpan="9" css="label-bold bold large" placeholder="Name"/>
+                  <field name="name" required="true" showTitle="false" colSpan="9" css="label-bold bold large" placeholder="Name"/>
                 </editor>
               </field>
               <panel name="productTypologyPanel" title="Product typology" colSpan="6" colWidths="30%,70%">
@@ -204,5 +206,14 @@
     <action-record name="hr-action-product-record-default-new" model="com.axelor.apps.base.db.Product">
     	<field name="expense" expr="false"/>
     </action-record>
+    
+    <search-filters name="product-expense-filters" model="com.axelor.apps.base.db.Product" title="Product expense filters">
+    	<field name="hasWarranty" hidden="true" if="!__config__.app.isApp('stock')"/>
+	    <field name="warrantyNbrOfMonths" hidden="true" if="!__config__.app.isApp('stock')"/>
+        <field name="isPerishable" hidden="true" if="!__config__.app.isApp('stock')"/>
+	    <field name="perishableNbrOfMonths" hidden="true" if="!__config__.app.isApp('stock')"/>
+        <field name="trackingNumberConfiguration" hidden="true" if="!__config__.app.isApp('stock')"/>
+        <field name="isAnalyticCapture" hidden="true" if="!__config__.app.isApp('account')" />
+	</search-filters>
 	
 </object-views>

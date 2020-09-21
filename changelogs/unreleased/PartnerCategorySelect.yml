@@ -1,0 +1,5 @@
+title: Partner: Default partner category in company's configurations
+type: feature
+description: |
+	Added a field to select a default partner category in company's configurations
+	The previous behavior for partner created from Customer or Supplier submenus will stay the same

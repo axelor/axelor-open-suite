@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
@@ -18,9 +18,11 @@
 	<many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder" title="Sale order" />
 
     <string name="manufOrderSeq" title="MO" namecolumn="true" initParam="true"/>
-    <integer name="prioritySelect" title="Priority" selection="production.order.priority.select" default="2" initParam="true"/><boolean name="isPermanent"/> <!-- Permanent manuf orders are used to log time and have a planned quantity set to 0 -->
-    
-    
+    <integer name="prioritySelect" title="Priority" selection="production.order.priority.select" default="2" initParam="true"/>
+
+    <!-- Permanent manuf orders are used to log time and have a planned quantity set to 0 -->
+    <integer name="typeSelect" default="1" title="Type" selection="manuf.order.type.select"/>
+
     <one-to-many name="toConsumeProdProductList" ref="com.axelor.apps.production.db.ProdProduct" mappedBy="toConsumeManufOrder" title="Products to consume"/>
   	<one-to-many name="consumedStockMoveLineList" ref="com.axelor.apps.stock.db.StockMoveLine" mappedBy="consumedManufOrder" title="Consumed products" orphanRemoval="false"/>
   	<one-to-many name="diffConsumeProdProductList" ref="com.axelor.apps.production.db.ProdProduct" mappedBy="diffConsumeManufOrder" title="Difference"/>
@@ -78,6 +80,10 @@
 		public static final int STATUS_IN_PROGRESS = 4;
 		public static final int STATUS_STANDBY = 5;
 		public static final int STATUS_FINISHED = 6;
+
+		//TYPE SELECT
+		public static final int TYPE_PRODUCTION = 1;
+		public static final int TYPE_PERMANENT = 2;
 	]]></extra-code>
     
     <track>

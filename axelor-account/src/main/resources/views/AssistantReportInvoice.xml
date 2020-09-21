@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
 	<grid model="com.axelor.apps.account.db.AssistantReportInvoice" title="Sale Invoices Details" name="print-sale-invoices-details-grid">
 		<field name="fromDate"/>
@@ -22,9 +22,9 @@
     		<field name="toDate" required="true"/>
     		<field name="company" canEdit="false" required="true"/>
     		<field name="partnerSet" colSpan="12" widget="TagSelect" title="Customers" domain="self.isContact = false AND self.isCustomer = true AND :company member of self.companySet"/>
-    		<field name="productSet" canEdit="false" colSpan="12" widget="TagSelect"/>
+    		<field name="productSet" canEdit="false" colSpan="12" widget="TagSelect" domain="dtype = 'Product'"/>
     		<label name="orLabel" title="OR"/>
-    		<field name="productCategorySet" colSpan="12" widget="TagSelect"/>
+    		<field name="productCategorySet" colSpan="12" widget="TagSelect" domain="dtype = 'Product'"/>
     	</panel>
     	<panel name="optionsPanel" title="Options" sidebar="true">
     		<field name="graphTypeSelect" widget="RadioSelect"/>
@@ -43,9 +43,9 @@
     		<field name="toDate" required="true"/>
     		<field name="company" canEdit="false" required="true"/>
     		<field name="partnerSet" colSpan="12" widget="TagSelect" title="Suppliers" domain="self.isContact = false AND self.isSupplier = true AND :company member of self.companySet"/>
-    		<field name="productSet" canEdit="false" colSpan="12" widget="TagSelect"/>
+    		<field name="productSet" canEdit="false" colSpan="12" widget="TagSelect" domain="dtype = 'Product'"/>
     		<label name="orLabel" title="OR"/>
-    		<field name="productCategorySet" colSpan="12" widget="TagSelect"/>
+    		<field name="productCategorySet" colSpan="12" widget="TagSelect" domain="dtype = 'Product'"/>
     	</panel>
     	<panel name="optionsPanel" title="Options" sidebar="true">
             <field name="graphTypeSelect" widget="RadioSelect"/>
@@ -96,4 +96,7 @@
     	<call class="com.axelor.apps.account.web.AssistantReportInvoiceController" method="printPurchases"/>
     </action-method>
     
+    <search-filters name="accounting-report-invoice-filters" model="com.axelor.apps.account.db.AssistantReportInvoice" title="Accounting report invoice filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
 </object-views>

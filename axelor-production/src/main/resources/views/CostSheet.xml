@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
     <grid name="cost-sheet-grid" title="Cost sheet" model="com.axelor.apps.production.db.CostSheet" orderBy="-createdOn">
         <field name="createdOn"/>
@@ -28,7 +28,7 @@
 	    <field name="createdOn"/>
   		<field name="createdBy"/>
   		<field name="billOfMaterial" form-view="bill-of-material-form" grid-view="bill-of-material-grid"/>
-  		<field name="billOfMaterial.product" form-view="product-form" grid-view="product-grid"/>
+  		<field name="billOfMaterial.product" form-view="product-form" grid-view="product-grid" domain="dtype = 'Product'"/>
   		<field name="billOfMaterial.qty"/>
   		<field name="costPrice"/>
   		<field name="calculationTypeSelect"/>
@@ -43,12 +43,12 @@
 	    <field name="createdOn" readonly="true"/>
   		<field name="createdBy" readonly="true"/>
  		<field name="costPrice" readonly="true"/>
- 		<field name="calculationTypeSelect"/>
- 		<field name="calculationDate"/>
- 		<field name="manufOrderProducedRatio"/>
+ 		<field name="calculationTypeSelect" readonly="true"/>
+ 		<field name="calculationDate" readonly="true"/>
+ 		<field name="manufOrderProducedRatio" readonly="true"/>
  		<field name="currency" readonly="true" grid-view="currency-grid" form-view="currency-form"/>
- 		<button name="printTheCostSheetLineDetailBtn" title="Print the cost sheet line detail" onClick="action-cost-sheet-method-print-cost-sheet-line-detail"/>
-  		<panel-dashlet name="costSheetLineTreePanel" action="action-cost-sheet-line-view-tree" colSpan="12"  height="600"/>
+ 		<button name="printTheCostSheetLineDetailBtn" title="Print the cost sheet line detail" readonly="false" onClick="action-cost-sheet-method-print-cost-sheet-line-detail"/>
+  		<panel-dashlet name="costSheetLineTreePanel" action="action-cost-sheet-line-view-tree" readonly="true" colSpan="12"  height="600"/>
 	  </panel>
 	</form>
 	

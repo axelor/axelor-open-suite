@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
   <module name="studio" package="com.axelor.studio.db" />
   
@@ -10,8 +10,9 @@
 	    This class is a root class used to store the workflow. A workflow is linked with a model and a form view of that model. 
 	    Wkf stores the bpmn xml of the worklfow diagram. The nodes and transitions of a wkf will be created by using the bpmn xml. 
 	  ]]>
-      <string name="name" title="Name" required="true" />
-      <string name="model" title="Object" required="true" />
+      <string name="code" title="Code" unique="true"/>
+      <string name="name" title="Name" required="true"/>
+      <string name="model" title="Object" required="true"/>
       <string name="jsonField" title="Json Field"/>
       <boolean name="isJson" title="Custom" />
       <many-to-one name="statusField" ref="com.axelor.meta.db.MetaJsonField" title="Wkf field"/>
@@ -21,7 +22,7 @@
       <one-to-many name="wkfTrackings" ref="WkfTracking" mappedBy="wkf"/>
       <integer name="displayTypeSelect" title="Process display type" selection="studio.business.wkf.display.type.select"/>
       <string name="bpmnXml" title="Bpmn xml" large="true" />
-      <many-to-one name="appBuilder" ref="AppBuilder" title="App builder" required="true" />
+      <many-to-one name="appBuilder" ref="AppBuilder" title="App builder"/>
       <string name="description" title="Description" large="true"/>
       <one-to-many name="conditions" ref="Filter" title="Apply if" mappedBy="wkf"/>
       <integer name="wkfSequence" title="Wkf sequence" />

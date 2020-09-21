@@ -330,7 +330,10 @@ public class HumanResourceMobileController {
     List<Map<String, String>> dataList = new ArrayList<>();
     try {
       List<Product> productList =
-          Beans.get(ProductRepository.class).all().filter("self.isActivity = true").fetch();
+          Beans.get(ProductRepository.class)
+              .all()
+              .filter("self.isActivity = true AND dtype = 'Product'")
+              .fetch();
       for (Product product : productList) {
         Map<String, String> map = new HashMap<>();
         map.put("name", product.getName());
@@ -495,7 +498,7 @@ public class HumanResourceMobileController {
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.LEAVE_LINE),
             employee.getName(),
-            leaveReason.getLeaveReason());
+            leaveReason.getName());
       }
       leave.setLeaveLine(leaveLine);
       leave.setRequestDate(appBaseService.getTodayDate());
@@ -552,7 +555,7 @@ public class HumanResourceMobileController {
         for (LeaveReason leaveReason : leaveReasonList) {
           if (leaveReason.getUnitSelect() == LeaveReasonRepository.UNIT_SELECT_DAYS) {
             Map<String, String> map = new HashMap<>();
-            map.put("name", leaveReason.getLeaveReason());
+            map.put("name", leaveReason.getName());
             map.put("id", leaveReason.getId().toString());
             dataList.add(map);
           }
@@ -612,7 +615,7 @@ public class HumanResourceMobileController {
           Beans.get(ProductRepository.class)
               .all()
               .filter(
-                  "self.expense = true AND coalesce(self.unavailableToUsers, false) = false AND coalesce(self.personalExpense, false) = false")
+                  "self.expense = true AND coalesce(self.unavailableToUsers, false) = false AND coalesce(self.personalExpense, false) = false AND dtype = 'Product'")
               .fetch();
       for (Product product : productList) {
         Map<String, String> map = new HashMap<>();

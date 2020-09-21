@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 
 	<grid name="ticket-grid" title="All tickets" model="com.axelor.apps.helpdesk.db.Ticket">
@@ -18,7 +18,7 @@
 		<field name="statusSelect"/>
 		<field name="timerState" hidden="true"/>
 		<field name="progressSelect" widget="SelectProgress"/>
-		<button name="takeChargeBtn" icon="fa-suitcase" help="Take charge" onClick="com.axelor.apps.helpdesk.web.TicketController:assignToMeTicket" readonlyIf="statusSelect == 3"/>
+		<button name="takeChargeBtn" icon="fa-suitcase"  hideIf="assignedToUser.id == _user.id" help="Take charge" onClick="com.axelor.apps.helpdesk.web.TicketController:assignToMeTicket" readonlyIf="statusSelect == 3"/>
 		<button name="startTicketBtn" icon="fa-play" onClick="action-ticket-group-on-start" readonlyIf="timerState == true || statusSelect == 3"/>
 		<button name="pauseBtn" icon="fa-pause" onClick="action-ticket-group-on-pause" readonlyIf="timerState == false || statusSelect == 3"/>
 		<button name="validateTicketBtn" icon="fa-check" onClick="action-ticket-group-on-validate" readonlyIf="statusSelect == 3"/>
@@ -287,4 +287,10 @@
 	<action-method name="action-ticket-method-compute-real-total-duration">
 		<call class="com.axelor.apps.helpdesk.web.TicketController" method="computeRealDuration"/>
 	</action-method>
+	
+	<search-filters name="ticket-filters" model="com.axelor.apps.helpdesk.db.Ticket" title="Ticket filters">
+        <field name="realTotalDuration" hidden="true" if="!__config__.app.getApp('helpdesk').getManageTimer()"/>
+		<field name="timerState" hidden="true" if="!__config__.app.getApp('helpdesk').getManageTimer()"/>
+		<field name="lead" hidden="true" if="!__config__.app.isApp('crm')"/>
+    </search-filters>
 </object-views>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 	
 	<grid name="analytic-distribution-template-grid" title="Analytic distribution templates" model="com.axelor.apps.account.db.AnalyticDistributionTemplate">
 		<field name="name"/>
@@ -20,5 +20,9 @@
     <action-method name="action-analytic-dist-template-method-validate-tot-percentage">
     	<call class="com.axelor.apps.account.web.AnalyticDistributionLineController" method="validateLines"/>
     </action-method>
+    
+    <search-filters name="analytic-distribution-template-filters" model="com.axelor.apps.account.db.AnalyticDistributionTemplate" title="Analytic distribution template filters">
+    	<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
     
 </object-views>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+    <grid name="print-grid" title="Prints" model="com.axelor.apps.base.db.Print">
+        <field name="name"/>
+        <field name="metaModel"/>
+        <field name="language"/>
+    </grid>
+
+    <form name="print-form" title="PRINT_NOUN" model="com.axelor.apps.base.db.Print">
+        <toolbar>
+            <button name="print" title="Print" icon="fa-print" onClick="save,action-print-method-print" readonlyIf="id == null"/>
+        </toolbar>
+        <panel>
+            <field name="documentName" title="Document name"/>
+            <field name="formatSelect"/>
+            <field name="displayTypeSelect"/>
+            <panel-related name="printLineListPanel" field="printLineList" grid-view="print-line-grid" form-view="print-line-form" colSpan="12" orderBy="rank"/>
+            <field name="metaModel" grid-view="meta-model-grid" form-view="meta-model-form" hidden="true"/>
+            <field name="company" grid-view="company-grid" form-view="company-form" hidden="true"/>
+            <field name="hidePrintSettings" hidden="true"/>
+            <field name="printSettings" grid-view="printing-setting-grid" form-view="printing-setting-form" hidden="true"/>
+            <field name="language" grid-view="language-grid" form-view="language-form" hidden="true"/>
+            <panel-related name="printSetPanel" field="printSet" grid-view="print-grid" form-view="print-form" colSpan="12"/>
+        </panel>
+    </form>
+
+    <action-method name="action-print-method-print">
+        <call class="com.axelor.apps.base.web.PrintController" method="generatePDF"/>
+    </action-method>
+
+</object-views>

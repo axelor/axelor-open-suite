@@ -468,6 +468,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   public Invoice generateInvoice(SaleOrder saleOrder) throws AxelorException {
 
     Invoice invoice = this.createInvoice(saleOrder);
+    invoice.setDeliveryAddress(saleOrder.getDeliveryAddress());
+    invoice.setDeliveryAddressStr(saleOrder.getDeliveryAddressStr());
 
     invoiceRepo.save(invoice);
 
@@ -499,6 +501,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       throws AxelorException {
 
     Invoice invoice = this.createInvoice(saleOrder, saleOrderLinesSelected, qtyToInvoiceMap);
+    invoice.setDeliveryAddress(saleOrder.getDeliveryAddress());
+    invoice.setDeliveryAddressStr(saleOrder.getDeliveryAddressStr());
+
     invoiceRepo.save(invoice);
 
     saleOrderRepo.save(fillSaleOrder(saleOrder, invoice));
@@ -938,9 +943,11 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent) throws AxelorException {
     List<Invoice> invoices =
         Query.of(Invoice.class)
-            .filter(" self.saleOrder.id = :saleOrderId AND self.statusSelect != :invoiceStatus")
+            .filter(
+                " self.saleOrder.id = :saleOrderId AND self.statusSelect != :invoiceStatus AND self.operationTypeSelect = :operationTypeSelect")
             .bind("saleOrderId", saleOrder.getId())
             .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
+            .bind("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
             .fetch();
     if (isPercent) {
       amountToInvoice =

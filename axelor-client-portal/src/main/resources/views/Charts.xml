@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 	
 
   <chart name="chart.client.portal.sum.invoices.four.months" title="Sum of last 4 months invoices">
@@ -14,6 +14,7 @@
         Invoice self
   WHERE
         self.invoiceDate >= :fromDate
+      	and self.partner = :userPartner
   GROUP BY
         MONTH(self.invoiceDate)
   ORDER BY
@@ -28,6 +29,7 @@
   <action-view name="dashlet.client.portal.sum.invoices.four.months" title="chart">
     <view type="chart" name="chart.client.portal.sum.invoices.four.months"/>
     <context name="fromDate" expr="eval: java.time.LocalDate.now().minusMonths(3)"/>
+  	<context name="userPartner" expr="eval: __user__.partner"/>
   </action-view>
 	
 </object-views>

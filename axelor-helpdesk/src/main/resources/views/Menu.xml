@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 	<menuitem name="helpdesk-root" title="Helpdesk" order="-80" if="__config__.app.isApp('helpdesk')"
 		icon="fa-life-ring" icon-background="#b6473f"/>
@@ -13,6 +13,7 @@
 		<view type="grid" name="ticket-grid"/>
 		<view type="form" name="ticket-form"/>
 		<view type="calendar" name="ticket-calendar"/>
+		<view-param name="search-filters" value="ticket-filters"/>
 		<domain>self.statusSelect in (0,1)</domain>
 		<context name="_user" expr="eval: __user__"/>
 	</action-view>
@@ -24,6 +25,7 @@
 		<view type="grid" name="ticket-grid"/>
 		<view type="form" name="ticket-form"/>
 		<view type="calendar" name="ticket-calendar"/>
+		<view-param name="search-filters" value="ticket-filters"/>
 		<domain>self.assignedToUser = :_user</domain>
 		<context name="_user" expr="eval: __user__"/>
 	</action-view>
@@ -35,6 +37,7 @@
 		<view type="grid" name="ticket-grid"/>
 		<view type="form" name="ticket-form"/>
 		<view type="calendar" name="ticket-calendar"/>
+		<view-param name="search-filters" value="ticket-filters"/>
 		<domain>self.assignedToUser.activeTeam = :_myActiveTeam</domain>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="_user" expr="eval: __user__"/>
@@ -47,6 +50,7 @@
 		<view type="grid" name="ticket-grid"/>
 		<view type="form" name="ticket-form"/>
 		<view type="calendar" name="ticket-calendar"/>
+		<view-param name="search-filters" value="ticket-filters"/>
 		<domain>self.assignedToUser = null</domain>
 		<context name="_user" expr="eval: __user__"/>
 	</action-view>
@@ -58,6 +62,7 @@
 		<view type="grid" name="ticket-grid"/>
 		<view type="form" name="ticket-form"/>
 		<view type="calendar" name="ticket-calendar"/>
+		<view-param name="search-filters" value="ticket-filters"/>
 		<domain>(self.endDateT != null and self.endDateT &gt; self.deadlineDateT) or (self.endDateT = null and self.deadlineDateT &lt; :_date)</domain>
 		<context name="_date" expr="eval: __datetime__"/>
 		<context name="_user" expr="eval: __user__"/>
@@ -70,6 +75,7 @@
 		<view type="grid" name="ticket-grid"/>
 		<view type="form" name="ticket-form"/>
 		<view type="calendar" name="ticket-calendar"/>
+		<view-param name="search-filters" value="ticket-filters"/>
 		<context name="_user" expr="eval: __user__"/>
 	</action-view>
 	

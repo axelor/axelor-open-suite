@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -33,7 +33,12 @@
 		<option value="0">On Start</option>
 		<option value="1">On Finish</option>
 	</selection>
-	
+
+	<selection name="manuf.order.type.select">
+		<option value="1">Production</option>
+		<option value="2">Permanent</option>
+	</selection>
+
 	<selection name="production.order.priority.select">
 		<option value="1">Low</option>
 		<option value="2">Normal</option>
@@ -130,6 +135,18 @@
 		<option value="1">Draft</option>
 		<option value="2">Costs computed</option>
 		<option value="3">Costs updated</option>
+	</selection>
+
+	<selection name='trace.back.origin.select' id="trace.back.origin.select.production" >
+		<option value='costSheet'>Cost sheet valuation</option>
+	</selection>
+	
+	<selection name="production.order.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Planned</option>
+		<option value="3">Started</option>
+		<option value="4">Canceled</option>
+		<option value="5">Completed</option>
 	</selection>
 
 </object-views>

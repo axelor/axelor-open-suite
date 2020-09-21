@@ -1,0 +1,8 @@
+---
+title: Sales: new charts
+type: feature
+description : |
+	Add 2 new charts in customer dashbord (from sales):
+	- Average markup per customer
+	- Avergae margin rate per customer
+	On the customer form view added a new indicator of products bought by the customer

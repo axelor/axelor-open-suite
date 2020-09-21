@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 	
 	
 	<menuitem name="menu-products-dashboard-1" parent="referential-report"  if="__config__.app.isApp('supplychain')"
@@ -20,6 +20,7 @@
 		model="com.axelor.apps.supplychain.db.SupplychainBatch">
 		<view type="grid" name="supplychain-batch-grid" />
 		<view type="form" name="supplychain-batch-form" />
+		<view-param name="search-filters" value="supplychain-batch-filters"/>
 		<domain>self.actionSelect != :disabledActionSelect</domain>
 		<context name="disabledActionSelect"
 			expr="eval: __repo__(SupplychainBatch).ACTION_INVOICE_OUTGOING_STOCK_MOVES"
@@ -30,7 +31,7 @@
 	
 <!-- 	MRP -->
 	
-	<menuitem name="stock-mrp" parent="stock-root" title="MRP" if="__config__.app.isApp('supplychain')"  order="40"/> 
+	<menuitem name="stock-mrp" parent="stock-root" title="MPS" if="__config__.app.isApp('supplychain')"  order="40"/> 
 	
 	<menuitem name="stock-mrp-calculation" parent="stock-mrp" title="Calculation" action="stock.mrp.calculation" order="1"/>
 	
@@ -77,6 +78,7 @@
       model="com.axelor.apps.supplychain.db.DeclarationOfExchanges">
       <view type="grid" name="declaration-of-exchanges-grid"/>
       <view type="form" name="declaration-of-exchanges-form"/>
+      <view-param name="search-filters" value="declaration-of-exchanges-filters"/>
       <context name="YEAR_TYPE_FISCAL" expr="eval: com.axelor.apps.base.db.repo.YearRepository.TYPE_FISCAL"/>
       <context name="STOCK_MOVE_TYPE_OUTGOING" expr="eval: com.axelor.apps.stock.db.repo.StockMoveRepository.TYPE_OUTGOING"/>
       <context name="STOCK_MOVE_TYPE_INCOMING" expr="eval: com.axelor.apps.stock.db.repo.StockMoveRepository.TYPE_INCOMING"/>
@@ -116,6 +118,7 @@
 		<view type="cards" name="purchase-order-cards"/>
 		<view type="grid" name="purchase-order-grid" />
 		<view type="form" name="purchase-order-form" />
+		<view-param name="search-filters" value="purchase-order-filters"/>
 		<domain>self.statusSelect = 3 AND self IN (select p.purchaseOrder from PurchaseOrderLine as p where p.receiptState != 3 AND p.product.productTypeSelect = 'storable' AND p.product.stockManaged = true) AND self.id NOT IN (SELECT s.originId FROM StockMove s WHERE s.originTypeSelect LIKE 'com.axelor.apps.purchase.db.PurchaseOrder' AND s.statusSelect = 2)</domain>
 	</action-view>
 	
@@ -129,6 +132,7 @@
 		<view type="grid" name="sale-order-grid"/>
 		<view type="calendar" name="sale-order-calendar"/>
 		<view type="form" name="sale-order-form"/>
+		<view-param name="search-filters" value="sale-order-filters"/>
 		<domain>self.statusSelect = 3 AND self IN (select s.saleOrder from SaleOrderLine as s where s.deliveryState != 3 AND s.product.productTypeSelect = 'storable' AND s.product.stockManaged = true) AND self.id NOT IN (SELECT s.originId FROM StockMove s WHERE s.originTypeSelect LIKE 'com.axelor.apps.sale.db.SaleOrder' AND s.statusSelect = 2)</domain>
 	</action-view>
 	
@@ -178,8 +182,15 @@
     
     <action-view name="stock.root.stock.details.by.product" title="Stock details by product" model="com.axelor.apps.base.db.Product">
       <view type="form" name="supplychain-stock-details-by-product-form"/>
+      <domain>dtype = 'Product'</domain>
       <context name="_isFromMenu" expr="eval: true"/>
     </action-view>
+    
+    <action-view id="supplychain.admin.root.batch.sale" name="admin.root.batch.sale" title="Sale batches"	model="com.axelor.apps.sale.db.SaleBatch" >
+		<view type="grid" name="sale-batch-grid" />
+		<view type="form" name="sale-batch-form"/>
+		<view-param name="search-filters" value="sale-batch-filters"/>
+	</action-view>
 	
 </object-views>
 

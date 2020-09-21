@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
   <module name="stock" package="com.axelor.apps.supplychain.db"/>
 
@@ -9,10 +9,10 @@
      
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     
-  	<boolean name="hasOutSmForStorableProduct" title="Generate out. moves for storable products"/>
-  	<boolean name="hasOutSmForNonStorableProduct" title="Generate out. moves for non storable products"/>
-  	<boolean name="hasInSmForStorableProduct" title="Generate inc. moves for storable products"/>
-  	<boolean name="hasInSmForNonStorableProduct" title="Generate inc. moves for non storable products"/>
+  	<boolean name="hasOutSmForStorableProduct" title="Generate out. moves for products"/>
+  	<boolean name="hasOutSmForNonStorableProduct" title="Generate out. moves for services"/>
+  	<boolean name="hasInSmForStorableProduct" title="Generate inc. moves for products"/>
+  	<boolean name="hasInSmForNonStorableProduct" title="Generate inc. moves for services"/>
 
     <boolean name="autoAllocateOnReceipt" title="Auto allocate stock on receipt"/>
     <boolean name="autoAllocateOnAllocation" title="Auto allocate stock on other stock moves" help="If true, after allocating quantity for a given stock move we allocate the remaining quantity in others stock moves."/>
@@ -26,6 +26,9 @@
     <integer name="defaultEstimatedDateForPurchaseOrder" title="Default estimated date in stock move from purchase order" selection="supplychain.estimated.date.select" default="1" />
     
     <decimal name="numberOfDaysForPurchaseOrder" title="Number of days" min="0" />
+		
+		<boolean name="activateIncStockMovePartialInvoicing" title="Activate partial invoicing for incoming moves" default="true"/>
+		<boolean name="activateOutStockMovePartialInvoicing" title="Activate partial invoicing for outgoing moves" default="false"/>
 
     <extra-code><![CDATA[
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.3.xsd">
   	
   	<input file="account_accountType.csv" separator=";" type="com.axelor.apps.account.db.AccountType"/>
   	
@@ -27,7 +27,9 @@
 		<bind to="endDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(endDate)" column="endDate"/>
 	</input>
 
-	<input file="account_journalType.csv" separator=";" type="com.axelor.apps.account.db.JournalType" search="self.importId = :importId" />
+	<input file="account_journalType.csv" separator=";" type="com.axelor.apps.account.db.JournalType" search="self.importId = :importId">
+		<bind column="accountTypeSet" to="accountTypeSet" search="self.technicalTypeSelect in :accountTypeSet" eval="accountTypeSet.split('\\|') as List"/>
+	</input>
 	
 	<input file="account_journal.csv" separator=";" type="com.axelor.apps.account.db.Journal" search="self.importId = :importId" call="com.axelor.csv.script.ImportJournal:importAccountType"/>
      
@@ -36,6 +38,8 @@
 	<input file="account_paymentCondition.csv" separator=";" type="com.axelor.apps.account.db.PaymentCondition" search="self.importId = :importId" />
 	
 	<input file="account_analyticAxis.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAxis" search="self.importId = :importId" />
+	
+	<input file="account_analyticJournal.csv" separator=";" type="com.axelor.apps.account.db.AnalyticJournal" search="self.importId = :importId" />
 	
 	<input file="account_analyticAccount.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAccount" search="self.importId = :importId" />
 	
@@ -92,7 +96,7 @@
 		<bind search="self.code = :cashAccount_code and self.company.importId = :company_id" to="cashAccount" update="true" if="cashAccount_code"/>
  		<bind search="self.code = :saleAccount_code and self.company.importId = :company_id" to="saleAccount" update="true" if="saleAccount_code"/>
  		<bind search="self.code = :purchaseAccount_code and self.company.importId = :company_id" to="purchaseAccount" update="true" if="purchaseAccount_code"/>
- 		<bind search="self.importId = :sequence_importId and self.company.importId = :company_id" to="sequence" update="true" if="sequence_importId"/>
+ 		<bind search="self.importId = :sequence_importId" to="sequence" update="true" if="sequence_importId"/>
  		<bind search="self.importId = :journal_importId and self.company.importId = :company_id" to="journal" update="true" if="journal_importId"/>
   		<bind search="self.importId = :bankDetails_importId" to="bankDetails" update="true" if="bankDetails_importId"/>
 	</input>	
@@ -137,6 +141,31 @@
 	
 	 <input file="meta_schedule.csv" separator=";" type="com.axelor.meta.db.MetaSchedule"/>
 
+	<input file="account_moveTemplateType.csv" separator=";" search="self.importId = :importId" type="com.axelor.apps.account.db.MoveTemplateType"/>
+
+	<input file="account_moveTemplate.csv" separator=";" search="self.importId = :importId"
+				 type="com.axelor.apps.account.db.MoveTemplate" call="com.axelor.csv.script.ImportMoveTemplate:setCompany">
+		<bind to="name" column="name"/>
+		<bind to="code" column="code"/>
+		<bind to="journal" column="journal" search="self.importId = :journal"/>
+		<bind to="moveTemplateType" search="self.importId = :type"/>
+		<bind to="endOfValidityDate" eval="java.time.LocalDate.now().plusMonths(Integer.parseInt(endOfValidityDateShift))"
+					if="!endOfValidityDateShift.empty"/>
+	</input>
+
+	<input file="account_moveTemplateLine.csv" separator=";" search="self.importId = :importId" type="com.axelor.apps.account.db.MoveTemplateLine">
+		<bind to="name" column="label"/>
+		<bind to="debitCreditSelect" column="debitCreditSelect"/>
+		<bind to="percentage" column="percentage" if="!percentage.empty"/>
+		<bind to="credit" column="credit" if="!credit.empty"/>
+		<bind to="debit" column="debit" if="!debit.empty"/>
+		<bind to="account" column="account" search="self.code = :account"/>
+		<bind to="hasPartnerToDebit" column="hasPartnerToDebit" adapter="Boolean" if="!hasPartnerToDebit.empty"/>
+		<bind to="hasPartnerToCredit" column="hasPartnerToCredit" adapter="Boolean" if="!hasPartnerToCredit.empty"/>
+		<bind to="product" column="product" search="self.code = :product" if="!product.empty"/>
+		<bind to="moveTemplate" column="moveTemplate" search="self.importId = :moveTemplate"/>
+	</input>
+
 	<input file="account_accountingReportConfigLine.csv" separator=";" type="com.axelor.apps.account.db.AccountingReportConfigLine"
 				 search="self.importId = :importId" call="com.axelor.csv.script.ImportAccountingReportConfigLine:setAccounts">
 		<bind	to="typeSelect" column="type"/>
@@ -155,5 +184,5 @@
 		<bind to="reportTitle" column="name"/>
 		<bind to="company" column="company" search="self.importId = :company"/>
 	</input>
-    
+
 </csv-inputs>

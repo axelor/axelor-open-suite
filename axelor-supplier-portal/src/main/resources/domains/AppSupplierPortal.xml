@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+
+	<module name="base" package="com.axelor.apps.base.db"/>
+
+	<entity name="AppSupplierPortal" cacheable="true" extends="App">
+
+		<boolean name="managePurchaseOrders" title="Manage purchase orders" default="true"/>
+		<boolean name="manageInvoices" title="Manage invoices" default="true"/>
+		<boolean name="manageDelivery" title="Manage delivery" default="true"/>
+		<boolean name="showCatalog" title="Display product catalog" default="true"/>
+		<boolean name="allowSupplierToCreateProducts" title="Allow supplier to create products" default="false"/>
+		
+		<track>
+			<field name="managePurchaseOrders" on="UPDATE"/>
+			<field name="manageInvoices" on="UPDATE"/>
+			<field name="manageDelivery" on="UPDATE"/>
+			<field name="showCatalog" on="UPDATE"/>
+			<field name="allowSupplierToCreateProducts" on="UPDATE"/>
+		</track>
+   	</entity>
+
+</domain-models>

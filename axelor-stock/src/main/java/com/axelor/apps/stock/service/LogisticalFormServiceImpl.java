@@ -475,9 +475,13 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
             totalGrossMass = totalGrossMass.add(logisticalFormLine.getGrossMass());
           }
 
-          totalVolume =
-              totalVolume.add(
-                  logisticalFormLineService.evalVolume(logisticalFormLine, scriptHelper));
+          BigDecimal toAdd = logisticalFormLineService.evalVolume(logisticalFormLine, scriptHelper);
+          if (toAdd == null) {
+            throw new LogisticalFormError(
+                logisticalForm, I18n.get(IExceptionMessage.LOGISTICAL_FORM_INVALID_DIMENSIONS));
+          } else {
+            totalVolume = totalVolume.add(toAdd);
+          }
         } else if (stockMoveLine != null) {
           totalNetMass =
               totalNetMass.add(logisticalFormLine.getQty().multiply(stockMoveLine.getNetMass()));

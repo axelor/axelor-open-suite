@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
@@ -62,6 +63,7 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
       TimesheetLineService timesheetLineService,
       ProjectPlanningTimeRepository projectPlanningTimeRepository,
       TeamTaskRepository teamTaskRepository,
+      ProductCompanyService productCompanyService,
       TimesheetLineRepository timesheetLineRepo,
       TimesheetRepository timeSheetRepository) {
     super(
@@ -75,6 +77,7 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
         timesheetLineService,
         projectPlanningTimeRepository,
         teamTaskRepository,
+        productCompanyService,
         timesheetLineRepo,
         timeSheetRepository);
   }

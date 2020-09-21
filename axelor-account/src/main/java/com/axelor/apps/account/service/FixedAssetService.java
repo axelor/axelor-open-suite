@@ -61,4 +61,8 @@ public interface FixedAssetService {
       throws AxelorException;
 
   public void updateAnalytic(FixedAsset fixedAsset) throws AxelorException;
+
+  public void validate(FixedAsset fixedAsset);
+
+  public int massValidation(List<Long> fixedAssetIds);
 }

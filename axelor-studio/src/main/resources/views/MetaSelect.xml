@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
    <grid model="com.axelor.meta.db.MetaSelect" title="Selection" name="studio-meta-select-grid" groupBy="appBuilder">
      <field name="name"/>
@@ -9,11 +9,18 @@
      <field name="priority"/>
      <field name="appBuilder" hidden="true"/>
    </grid>
+
+   <grid model="com.axelor.meta.db.MetaSelect" title="Selection" name="studio-meta-select-disable-appbuilder-grid">
+     <field name="name"/>
+     <field name="module"/>
+     <field name="priority"/>
+   </grid>
+
   	<form id="studio-meta-select-form" name="meta-select-form" title="Selection" model="com.axelor.meta.db.MetaSelect"
   		onNew="action-studio-meta-select-record-onnew,action-studio-meta-select-attrs-onnew-onload" 
   		onLoad="action-studio-meta-select-attrs-onnew-onload">
 		<panel name="appBuilderPanel">
-      		<field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
+      		<field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
  			<field name="isCustom" hidden="true"/>
     	</panel>
 	    <panel-include view="meta-select-form" from="axelor-core"/>

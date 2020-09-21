@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	
+	<grid name="dms-version-grid" title="DMS versions" model="com.axelor.apps.projectdms.db.DMSVersion">
+		<field name="metaFile" widget="binary-link"/>
+		<field name="documentId" form-view="dms-file-form" grid-view="dms-file-form"/>
+		<field name="documentVersion"/>
+	</grid>
+	
+	<form name="dms-version-form" title="DMS version" model="com.axelor.apps.projectdms.db.DMSVersion" width="large">
+		<panel name="mainPanel">
+			<field name="metaFile" widget="binary-link"/>
+			<field name="documentId" form-view="dms-file-form" grid-view="dms-file-form"/>
+			<field name="documentVersion"/>
+		</panel>
+	</form>
+	
+</object-views>

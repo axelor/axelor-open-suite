@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
 	<grid name="move-grid" orderBy="-date" canArchive="false"  title="Account moves" model="com.axelor.apps.account.db.Move" canDelete="false">
 		<toolbar>
@@ -45,11 +45,11 @@
         <panel name="mainPanel" readonlyIf="statusSelect == 3" colSpan="12">
 			<panel name="moveDetailsPanel" colSpan="9">
                 <field name="reference" colSpan="12"/>
-                <panel name="moveContentPanel" readonlyIf="moveLineList.length &gt; 0" colSpan="12">
-                    <field name="company" canEdit="false" widget="SuggestBox" onChange="action-move-record-journal,action-move-method-get-period,action-move-attrs-validate-button-title" form-view="company-form" grid-view="company-grid"/>
-                    <field name="journal" domain="self.statusSelect = 1 AND self.company = :company" canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"/>
-                    <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
-                    <field name="date" onChange="action-move-method-get-period" hideIf="statusSelect == 3"/>
+                <panel name="moveContentPanel" colSpan="12">
+                    <field name="company" readonlyIf="moveLineList.length &gt; 0"  canEdit="false" widget="SuggestBox" onChange="action-move-record-journal,action-move-method-get-period,action-move-attrs-validate-button-title" form-view="company-form" grid-view="company-grid"/>
+                    <field name="journal" readonlyIf="moveLineList.length &gt; 0"  domain="self.statusSelect = 1 AND self.company = :company" canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"/>
+                    <field name="period" readonlyIf="moveLineList.length &gt; 0"  form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
+                    <field name="date" onChange="action-move-method-get-period,action-move-method-update-lines" hideIf="statusSelect == 3"/>
                 </panel>
                 <field name="partner" colSpan="12" canNew="false" canEdit="false" form-view="partner-form" grid-view="partner-grid" onSelect="action-account-move-method-filter-partner"/>
             </panel>
@@ -201,6 +201,7 @@
 		<action name="action-move-attrs-hide-move-line-name-in-draft-status"/>
 		<action name="action-move-attrs-validate-button-title"/>
 		<action name="action-move-is-hidden-move-line-list-viewer-attrs-method"/>
+		<action name="action-move-attrs-hide-move-line-reconcile-group-in-draft-cancel-status"/>
 	</action-group>
 	
 	<action-group name="action-account-move-group-onload">
@@ -209,6 +210,7 @@
 		<action name="action-move-attrs-validate-button-title"/>
 		<action name="action-account-move-method-compute-totals"/>
 		<action name="action-move-is-hidden-move-line-list-viewer-attrs-method"/>
+		<action name="action-move-attrs-hide-move-line-reconcile-group-in-draft-cancel-status"/>
 	</action-group>
 
     <action-group name="action-group-account-move-validate-click">
@@ -269,6 +271,10 @@
 		<attribute name="title" for="validateBtn" expr="eval: com.axelor.i18n.I18n.get('Accounting.toAccount')" if="eval: company?.accountConfig?.accountingDaybook &amp;&amp; statusSelect != MoveRepository.STATUS_DAYBOOK"/>
 	</action-attrs>
 	
+	<action-attrs name="action-move-attrs-hide-move-line-reconcile-group-in-draft-cancel-status">
+		<attribute name="hidden" for="moveLineList.reconcileGroup" expr="eval: statusSelect == 1 || statuSelect == 4"/>
+	</action-attrs>
+
 	<action-attrs name="action-move-attrs-set-generate-reverse-wizard-defaults">
 		<attribute name="value" for="isAutomaticReconcile" expr="eval: true"/>
 		<attribute name="value" for="dateOfReversionSelect" expr="eval: 2"/>
@@ -297,6 +303,10 @@
 	
 	<action-method name="action-move-method-get-period">
 		<call class="com.axelor.apps.account.web.MoveController" method="getPeriod"/>
+	</action-method>
+	
+	<action-method name="action-move-method-update-lines">
+		<call class="com.axelor.apps.account.web.MoveController" method="updateLines"/>
 	</action-method>
 	
 	<action-method name="action-move-method-validate-multiple-moves">
@@ -350,6 +360,7 @@
 	</action-view>
 
 	<search-filters name="move-filters" model="com.axelor.apps.account.db.Move" title="Move filters">
+		<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<filter title="Current Period Entries">
 			<domain>self.period IS NULL OR (CURRENT_DATE &gt;= self.period.fromDate and CURRENT_DATE &lt;= self.period.toDate)</domain>
 		</filter>
