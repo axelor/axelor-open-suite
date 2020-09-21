@@ -7,7 +7,9 @@ import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class ImportAccountingReportType {
 
@@ -15,7 +17,9 @@ public class ImportAccountingReportType {
   private AccountingReportConfigLineRepository configLineRepo;
 
   @Inject
-  public ImportAccountingReportType(AccountingReportTypeRepository reportTypeRepo, AccountingReportConfigLineRepository configLineRepo) {
+  public ImportAccountingReportType(
+      AccountingReportTypeRepository reportTypeRepo,
+      AccountingReportConfigLineRepository configLineRepo) {
     this.reportTypeRepo = reportTypeRepo;
     this.configLineRepo = configLineRepo;
   }

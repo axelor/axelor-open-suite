@@ -20,7 +20,10 @@ public class ImportAccountingReportConfigLine {
   private AccountingReportConfigLineRepository accountingReportConfigLineRepo;
 
   @Inject
-  public ImportAccountingReportConfigLine(AccountRepository accountRepo, AccountTypeRepository accountTypeRepo, AccountingReportConfigLineRepository accountingReportConfigLineRepo) {
+  public ImportAccountingReportConfigLine(
+      AccountRepository accountRepo,
+      AccountTypeRepository accountTypeRepo,
+      AccountingReportConfigLineRepository accountingReportConfigLineRepo) {
     this.accountRepo = accountRepo;
     this.accountTypeRepo = accountTypeRepo;
     this.accountingReportConfigLineRepo = accountingReportConfigLineRepo;
@@ -31,7 +34,8 @@ public class ImportAccountingReportConfigLine {
     assert bean instanceof AccountingReportConfigLine;
     AccountingReportConfigLine configLine = (AccountingReportConfigLine) bean;
 
-    if (configLine.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_SUM_OF_ACCOUNTS) {
+    if (configLine.getRuleTypeSelect()
+        == AccountingReportConfigLineRepository.RULE_TYPE_SUM_OF_ACCOUNTS) {
       String accountTypeValues = (String) values.get("accountType");
       if (accountTypeValues != null && !accountTypeValues.isEmpty()) {
         String[] types = accountTypeValues.split("\\|");
