@@ -1,0 +1,3 @@
+---
+title: "Fix concurrent modification error when adding contact to customer"
+type: fix
