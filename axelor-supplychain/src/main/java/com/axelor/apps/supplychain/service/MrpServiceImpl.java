@@ -865,7 +865,7 @@ public class MrpServiceImpl implements MrpService {
     }
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected MrpLine createAvailableStockMrpLine(
       Mrp mrp, Product product, StockLocation stockLocation, MrpLineType availableStockMrpLineType)
       throws AxelorException {

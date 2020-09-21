@@ -18,6 +18,7 @@
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.CurrencyConversionService;
 import com.axelor.apps.base.service.DurationService;
@@ -67,7 +68,11 @@ public class SaleOrderServiceImpl implements SaleOrderService {
 
   @Override
   public SaleOrder computeEndOfValidityDate(SaleOrder saleOrder) {
-    if (saleOrder.getDuration() != null && saleOrder.getCreationDate() != null) {
+    Company company = saleOrder.getCompany();
+    if (saleOrder.getDuration() == null && company != null && company.getSaleConfig() != null) {
+      saleOrder.setDuration(company.getSaleConfig().getDefaultValidityDuration());
+    }
+    if (saleOrder.getCreationDate() != null) {
       saleOrder.setEndOfValidityDate(
           Beans.get(DurationService.class)
               .computeDuration(saleOrder.getDuration(), saleOrder.getCreationDate()));

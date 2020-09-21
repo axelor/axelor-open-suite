@@ -539,6 +539,12 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                     <text-property name="heading">head_office_address</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">delivery_address_str</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">delivery_address_str</text-property>
+                    <text-property name="heading">delivery_address_str</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">displayHeadOfficeAddress</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">displayHeadOfficeAddress</text-property>
@@ -819,16 +825,21 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                     </structure>
                     <structure>
                         <property name="position">50</property>
+                        <property name="name">delivery_address_str</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">51</property>
                         <property name="name">displayHeadOfficeAddress</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">51</property>
+                        <property name="position">52</property>
                         <property name="name">enablePackMangement</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">52</property>
+                        <property name="position">53</property>
                         <property name="name">contactPartnerTitleSelect</property>
                         <property name="dataType">integer</property>
                     </structure>
@@ -1181,20 +1192,27 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                 </structure>
                 <structure>
                     <property name="position">50</property>
+                    <property name="name">delivery_address_str</property>
+                    <property name="nativeName">delivery_address_str</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">51</property>
                     <property name="name">displayHeadOfficeAddress</property>
                     <property name="nativeName">displayHeadOfficeAddress</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">51</property>
+                    <property name="position">52</property>
                     <property name="name">enablePackMangement</property>
                     <property name="nativeName">enablePackMangement</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">52</property>
+                    <property name="position">53</property>
                     <property name="name">contactPartnerTitleSelect</property>
                     <property name="nativeName">contactPartnerTitleSelect</property>
                     <property name="dataType">integer</property>
@@ -1250,6 +1268,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
 	Invoice.amount_remaining,
 	Invoice.proforma_comments,
 	Invoice.head_office_address,
+	Invoice.delivery_address_str,
 	AccountConfig.display_head_office_addr_on_invoice_printing as "displayHeadOfficeAddress",
     AppSale.enable_pack_management as "enablePackMangement",
     ContactPartner.title_select as "contactPartnerTitleSelect"
@@ -3548,6 +3567,12 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                     <expression name="expression" type="javascript">dataSetRow["contactPartnerTitleSelect"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
+                <structure>
+                    <property name="name">delivery_address_str</property>
+                    <text-property name="displayName">delivery_address_str</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["delivery_address_str"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <method name="onPrepare"><![CDATA[String.prototype.repeat = String.prototype.repeat ||
   function(n) {
@@ -4116,15 +4141,40 @@ row["partnerFirstName"]
                     <text id="4263">
                         <property name="fontSize">12pt</property>
                         <property name="fontWeight">bold</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">if(row["contactPartnerTitleSelect"] == "1"){'M.'}
+else if(row["contactPartnerTitleSelect"] == "2"){'Ms.'}
+else if(row["contactPartnerTitleSelect"] == "3"){'Dr'}
+else if(row["contactPartnerTitleSelect"] == "4"){'Prof.'}</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["contactPartnerTitleSelect"] != null){
-if(row["contactPartnerTitleSelect"] == "1"){"M."}
-else if(row["contactPartnerTitleSelect"] == "2"){"Ms."}
-else if(row["contactPartnerTitleSelect"] == "3"){"Dr"}
-else if(row["contactPartnerTitleSelect"] == "4"){"Prof."}
+                        <text-property name="content"><![CDATA[<VALUE-OF>if(params["Locale"].value != 'en') {
+row["translation"]
+} else {
+row["message_key"]
 }</VALUE-OF> 
 <VALUE-OF format="^">"  "</VALUE-OF>
-<VALUE-OF>row["contactName"]</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row["contactFirstName"]</VALUE-OF>]]></text-property>
+<VALUE-OF>row._outer["contactName"]</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["contactFirstName"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="4467">
@@ -4223,6 +4273,53 @@ else if(row["contactPartnerTitleSelect"] == "4"){"Prof."}
                     </text>
                 </cell>
                 <cell id="4516"/>
+            </row>
+            <row id="5654">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">row["DisplayDelAddr"] == false || row["operation_type_select"] != 3</expression>
+                    </structure>
+                </list-property>
+                <cell id="5655">
+                    <property name="colSpan">2</property>
+                    <property name="rowSpan">1</property>
+                    <text id="5664">
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">"Invoice.deliveryAddress"</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                    </text>
+                </cell>
+                <cell id="5657">
+                    <property name="colSpan">7</property>
+                    <property name="rowSpan">1</property>
+                    <text id="5665">
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["delivery_address_str"].replace(/\n/g, "<br>")</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
             </row>
             <row id="3637">
                 <cell id="3638">

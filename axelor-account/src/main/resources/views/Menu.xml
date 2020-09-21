@@ -157,6 +157,7 @@
 		<view type="grid" name="payment-voucher-grid"/>
 		<view type="form" name="payment-voucher-form"/>
 		<view-param name="search-filters" value="payment-voucher-filters"/>
+        <context name="_operationTypeSelect" expr="eval: 3"/>
 	</action-view>
 	
 	<menuitem name="account-root-payments-suppl-invoices-to-pay"

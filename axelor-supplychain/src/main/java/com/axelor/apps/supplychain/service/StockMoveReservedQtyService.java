@@ -15,12 +15,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.talent.translation;
+package com.axelor.apps.supplychain.service;
 
-public interface ITranslation {
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.exception.AxelorException;
 
-  public static final String TRAINING_APP_NAME = /*$$(*/ "value:Training"; /*)*/
-  public static final String RECRUITMENT_APP_NAME = /*$$(*/ "value:Recruitment"; /*)*/
-  public static final String APPRAISAL_APP_NAME = /*$$(*/ "value:Appraisal"; /*)*/
-  public static final String OVERALL_RATING = /*$$(*/ "Overall rating"; /*)*/
+public interface StockMoveReservedQtyService {
+
+  /**
+   * Try to allocate every line, meaning the allocated quantity of the line will be changed to match
+   * the requested quantity. Ignore line with real qty at 0.
+   *
+   * @param stockMove a planned stock move.
+   * @throws AxelorException if the sale order does not have a stock move.
+   */
+  void allocateAll(StockMove stockMove) throws AxelorException;
 }

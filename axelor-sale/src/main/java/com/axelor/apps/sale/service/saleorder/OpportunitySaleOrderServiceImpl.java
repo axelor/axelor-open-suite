@@ -53,9 +53,6 @@ public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderServ
     }
 
     SaleOrder saleOrder = createSaleOrder(opportunity, currency);
-    if (company != null && company.getSaleConfig() != null) {
-      saleOrder.setDuration(company.getSaleConfig().getDefaultValidityDuration());
-    }
 
     opportunity.addSaleOrderListItem(saleOrder);
 

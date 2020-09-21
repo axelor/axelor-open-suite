@@ -289,13 +289,17 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           stockMoveLine,
           minQty,
           trackingNumberService.getTrackingNumber(
-              product, qtyByTracking, stockMove.getCompany(), stockMove.getEstimatedDate()));
+              product,
+              qtyByTracking,
+              stockMove.getCompany(),
+              stockMove.getEstimatedDate(),
+              stockMove.getOrigin()));
 
       generateTrakingNumberCounter++;
 
       if (generateTrakingNumberCounter == 1000) {
         throw new AxelorException(
-            TraceBackRepository.TYPE_TECHNICAL,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.STOCK_MOVE_TOO_MANY_ITERATION));
       }
     }
@@ -303,7 +307,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
       stockMoveLine.setTrackingNumber(
           trackingNumberService.getTrackingNumber(
-              product, qtyByTracking, stockMove.getCompany(), stockMove.getEstimatedDate()));
+              product,
+              qtyByTracking,
+              stockMove.getCompany(),
+              stockMove.getEstimatedDate(),
+              stockMove.getOrigin()));
     }
   }
 

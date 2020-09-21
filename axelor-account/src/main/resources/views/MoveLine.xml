@@ -157,6 +157,7 @@
 			<field name="origin" colSpan="12"/>
 			<field name="description" colSpan="12"/>
 			<field name="taxAmount" hidden="true"/>
+			<field name="account.reconcileOk" hidden="true" />
 		</panel>
 		<panel-tabs name="mainPanelTab">
 			<panel-related name="debitReconcileListPanel" showIf="id &amp;&amp; (account.reconcileOk &amp;&amp; (move.statusSelect == 2 || move.statusSelect == 3)) &amp;&amp; $number(debit) &gt; 0.00" field="debitReconcileList" form-view="reconcile-form" grid-view="move-line-reconcile-grid" canNew="false" canRemove="false"/>

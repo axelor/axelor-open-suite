@@ -82,7 +82,7 @@ public class TrainingSessionServiceImpl implements TrainingSessionService {
 
   @Override
   @Transactional
-  public void cancle(TrainingSession trainingSession) {
+  public void cancel(TrainingSession trainingSession) {
 
     trainingSession.setStatusSelect(3);
 

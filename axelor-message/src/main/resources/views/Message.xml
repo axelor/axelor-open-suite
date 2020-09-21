@@ -31,6 +31,15 @@
     	<panel name="informationsPanel" title="Information" readonlyIf="statusSelect != 1">
             <field name="mediaTypeSelect" readonlyIf="statusSelect != 1"/>
 			<field name="statusSelect"/>
+			<field name="$statusSelectTag" colSpan="2" css="label-bold bold" showTitle="false" readonly="true">
+				<viewer><![CDATA[
+					<h5>
+						<span class='label label-info' ng-show="record.statusSelect == 1 &amp;&amp; record.sentDateT == null" x-translate>Not sent</span>
+						<span class='label label-success' ng-show="record.statusSelect == 3 &amp;&amp; record.sentDateT != null" x-translate>Successful send</span>
+						<span class='label label-important' ng-show="record.statusSelect == 2 &amp;&amp; record.sentDateT == null" x-translate>Failure send</span>
+					</h5>
+				]]></viewer>
+			</field>
 			<field name="senderUser" form-view="user-form" grid-view="user-grid"/>
 			<field name="sentDateT" colSpan="4"/>
 			<panel name="emailAddressPanel" colSpan="12" showIf="mediaTypeSelect == 2">

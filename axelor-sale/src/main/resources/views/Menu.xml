@@ -131,6 +131,7 @@
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="_template" expr="eval:false" />
+		<context name="status" expr="eval: [1,2,3,4,5]"/>
 	</action-view>
 	
 	<menuitem name="sc-root-sale-report" parent="sc-root-sale" title="Reportings"  order="40" icon="fa-bar-chart"/>

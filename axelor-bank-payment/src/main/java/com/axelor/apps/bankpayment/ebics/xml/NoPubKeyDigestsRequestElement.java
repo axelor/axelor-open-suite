@@ -68,7 +68,8 @@ public class NoPubKeyDigestsRequestElement extends DefaultEbicsRootElement {
     try {
       return MessageDigest.getInstance("SHA-256", "BC").digest(EbicsUtils.canonize(toByteArray()));
     } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
-      throw new AxelorException(e.getCause(), TraceBackRepository.TYPE_TECHNICAL, e.getMessage());
+      throw new AxelorException(
+          e.getCause(), TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }
   }
 
