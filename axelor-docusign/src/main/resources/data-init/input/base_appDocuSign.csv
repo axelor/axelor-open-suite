@@ -1,0 +1,2 @@
+"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
+"DocuSign";"docusign";40;"DocuSign configuration";"app-docusign.png";"axelor-docusign";"base";111
