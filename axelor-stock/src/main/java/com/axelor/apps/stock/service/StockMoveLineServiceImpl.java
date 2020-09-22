@@ -629,11 +629,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       }
 
       if (product.getHasWarranty()
-              && trackingNumber.getWarrantyExpirationDate().isBefore(appBaseService.getTodayDate())
+              && trackingNumber
+                  .getWarrantyExpirationDate()
+                  .isBefore(appBaseService.getTodayDate(stockMove.getCompany()))
           || product.getIsPerishable()
               && trackingNumber
                   .getPerishableExpirationDate()
-                  .isBefore(appBaseService.getTodayDate())) {
+                  .isBefore(appBaseService.getTodayDate(stockMove.getCompany()))) {
         errorList.add(product.getName());
       }
     }

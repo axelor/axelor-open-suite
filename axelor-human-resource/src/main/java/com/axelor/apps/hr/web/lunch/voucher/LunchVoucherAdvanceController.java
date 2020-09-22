@@ -19,6 +19,7 @@ package com.axelor.apps.hr.web.lunch.voucher;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LunchVoucherAdvance;
 import com.axelor.apps.hr.exception.IExceptionMessage;
@@ -37,7 +38,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 @Singleton
@@ -90,7 +90,9 @@ public class LunchVoucherAdvanceController {
     String name =
         lunchVoucherAdvance.getEmployee().getName()
             + "-"
-            + LocalDate.now().format(DateTimeFormatter.ISO_DATE);
+            + Beans.get(AppBaseService.class)
+                .getTodayDate(lunchVoucherAdvance.getEmployee().getUser().getActiveCompany())
+                .format(DateTimeFormatter.ISO_DATE);
     try {
       String fileLink =
           ReportFactory.createReport(IReport.LUNCH_VOUCHER_ADVANCE, name)

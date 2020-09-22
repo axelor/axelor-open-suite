@@ -316,7 +316,7 @@ public class InventoryService {
   @Transactional(rollbackOn = {Exception.class})
   public void validateInventory(Inventory inventory) throws AxelorException {
 
-    inventory.setValidatedOn(appBaseService.getTodayDate());
+    inventory.setValidatedOn(appBaseService.getTodayDate(inventory.getCompany()));
     inventory.setStatusSelect(InventoryRepository.STATUS_VALIDATED);
     inventory.setValidatedBy(AuthUtils.getUser());
     generateStockMove(inventory, true);

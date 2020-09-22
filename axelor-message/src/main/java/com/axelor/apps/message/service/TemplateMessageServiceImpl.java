@@ -65,17 +65,20 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected TemplateMaker maker =
-      new TemplateMaker(AppFilter.getLocale(), TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
+  protected TemplateMaker maker;
 
   protected MessageService messageService;
   protected TemplateContextService templateContextService;
 
   @Inject
   public TemplateMessageServiceImpl(
-      MessageService messageService, TemplateContextService templateContextService) {
+      String timeZone,
+      MessageService messageService,
+      TemplateContextService templateContextService) {
     this.messageService = messageService;
     this.templateContextService = templateContextService;
+    this.maker =
+        new TemplateMaker(timeZone, AppFilter.getLocale(), TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
   }
 
   @Override

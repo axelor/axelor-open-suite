@@ -18,6 +18,7 @@
 package com.axelor.apps.base.service.app;
 
 import com.axelor.apps.base.db.AppBase;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.Unit;
 import java.math.BigDecimal;
@@ -36,20 +37,31 @@ public interface AppBaseService extends AppService {
   // Date du jour
 
   /**
-   * Récupérer la date du jour avec l'heure. Retourne la date du jour paramétré dans l'utilisateur
-   * si existe, sinon récupère celle de l'administration générale, sinon date du jour. private
+   * Récupérer la date du jour avec l'heure en fonction de la timezone du serveur. Retourne la date
+   * du jour paramétré dans l'utilisateur si existe, sinon récupère celle de l'administration
+   * générale, sinon date du jour. private
    *
    * @return
    */
   public ZonedDateTime getTodayDateTime();
 
   /**
-   * Récupérer la date du jour. Retourne la date du jour paramétré dans l'utilisateur si existe,
-   * sinon récupère celle de l'administration générale, sinon date du jour.
+   * Récupérer la date du jour avec l'heure en fonction de la timezone renseignée dans la société
+   * donnée. Retourne la date du jour paramétré dans l'utilisateur si existe, sinon récupère celle
+   * de l'administration générale, sinon date du jour. private
    *
    * @return
    */
-  public LocalDate getTodayDate();
+  public ZonedDateTime getTodayDateTime(Company company);
+
+  /**
+   * Récupérer la date du jour en fonction de la timezone renseignée dans la société donnée.
+   * Retourne la date du jour paramétré dans l'utilisateur si existe, sinon récupère celle de
+   * l'administration générale, sinon date du jour.
+   *
+   * @return
+   */
+  public LocalDate getTodayDate(Company company);
 
   public Unit getUnit();
 

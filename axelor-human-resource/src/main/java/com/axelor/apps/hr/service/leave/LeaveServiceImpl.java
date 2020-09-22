@@ -747,7 +747,7 @@ public class LeaveServiceImpl implements LeaveService {
     }
 
     leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_AWAITING_VALIDATION);
-    leaveRequest.setRequestDate(appBaseService.getTodayDate());
+    leaveRequest.setRequestDate(appBaseService.getTodayDate(leaveRequest.getCompany()));
 
     leaveRequestRepo.save(leaveRequest);
   }
@@ -777,7 +777,7 @@ public class LeaveServiceImpl implements LeaveService {
 
     leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_VALIDATED);
     leaveRequest.setValidatedBy(AuthUtils.getUser());
-    leaveRequest.setValidationDate(appBaseService.getTodayDate());
+    leaveRequest.setValidationDate(appBaseService.getTodayDate(leaveRequest.getCompany()));
     leaveRequest.setQuantityBeforeValidation(leaveLine.getQuantity());
 
     leaveRequestRepo.save(leaveRequest);
@@ -809,7 +809,7 @@ public class LeaveServiceImpl implements LeaveService {
 
     leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_REFUSED);
     leaveRequest.setRefusedBy(AuthUtils.getUser());
-    leaveRequest.setRefusalDate(appBaseService.getTodayDate());
+    leaveRequest.setRefusalDate(appBaseService.getTodayDate(leaveRequest.getCompany()));
 
     leaveRequestRepo.save(leaveRequest);
   }

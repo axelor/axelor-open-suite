@@ -155,7 +155,8 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
     if ((analyticMoveLineList == null || analyticMoveLineList.isEmpty())) {
       createAnalyticDistributionWithTemplate(purchaseOrderLine);
     } else {
-      LocalDate date = appAccountService.getTodayDate();
+      LocalDate date =
+          appAccountService.getTodayDate(purchaseOrderLine.getPurchaseOrder().getCompany());
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
         analyticMoveLineService.updateAnalyticMoveLine(
             analyticMoveLine, purchaseOrderLine.getCompanyExTaxTotal(), date);
@@ -172,7 +173,7 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
             purchaseOrderLine.getAnalyticDistributionTemplate(),
             purchaseOrderLine.getExTaxTotal(),
             AnalyticMoveLineRepository.STATUS_FORECAST_ORDER,
-            appBaseService.getTodayDate());
+            appBaseService.getTodayDate(purchaseOrderLine.getPurchaseOrder().getCompany()));
 
     purchaseOrderLine.clearAnalyticMoveLineList();
     analyticMoveLineList.forEach(purchaseOrderLine::addAnalyticMoveLineListItem);

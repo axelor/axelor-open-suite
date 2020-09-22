@@ -107,7 +107,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       createAnalyticDistributionWithTemplate(saleOrderLine);
     }
     if (analyticMoveLineList != null) {
-      LocalDate date = appAccountService.getTodayDate();
+      LocalDate date = appAccountService.getTodayDate(saleOrderLine.getSaleOrder().getCompany());
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
         analyticMoveLineService.updateAnalyticMoveLine(
             analyticMoveLine, saleOrderLine.getCompanyExTaxTotal(), date);
@@ -122,7 +122,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
             saleOrderLine.getAnalyticDistributionTemplate(),
             saleOrderLine.getCompanyExTaxTotal(),
             AnalyticMoveLineRepository.STATUS_FORECAST_ORDER,
-            appAccountService.getTodayDate());
+            appAccountService.getTodayDate(saleOrderLine.getSaleOrder().getCompany()));
 
     saleOrderLine.setAnalyticMoveLineList(analyticMoveLineList);
     return saleOrderLine;

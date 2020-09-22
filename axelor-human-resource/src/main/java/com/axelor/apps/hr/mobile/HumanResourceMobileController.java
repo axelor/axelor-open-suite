@@ -501,7 +501,7 @@ public class HumanResourceMobileController {
             leaveReason.getLeaveReason());
       }
       leave.setLeaveLine(leaveLine);
-      leave.setRequestDate(appBaseService.getTodayDate());
+      leave.setRequestDate(appBaseService.getTodayDate(company));
       if (requestData.get("fromDateT") != null) {
         leave.setFromDateT(
             LocalDateTime.parse(

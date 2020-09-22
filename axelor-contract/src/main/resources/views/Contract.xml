@@ -236,7 +236,7 @@
     </form>
 
   <action-attrs name="action-contract-attrs-show-close-btn">
-    <attribute for="closeContractBtn" name="hidden" expr="terminatedDate == null || statusSelect != 2 || __config__.app.getTodayDate() &lt; terminatedDate"/>
+    <attribute for="closeContractBtn" name="hidden" expr="terminatedDate == null || statusSelect != 2 || __config__.app.getTodayDate(__user__.activeCompany) &lt; terminatedDate"/>
   </action-attrs>
 
   <action-method name="action-contract-method-close">

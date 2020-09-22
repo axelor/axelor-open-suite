@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.UnitConversion;
 import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -127,7 +128,12 @@ public class UnitConversionService {
       throws AxelorException, CompilationFailedException, ClassNotFoundException, IOException {
     /* Looking for the start unit and the end unit in the unitConversionList to get the coefficient */
     if (product != null) {
-      this.maker = new TemplateMaker(Locale.FRENCH, TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
+      this.maker =
+          new TemplateMaker(
+              AuthUtils.getUser().getActiveCompany().getTimezone(),
+              Locale.FRENCH,
+              TEMPLATE_DELIMITER,
+              TEMPLATE_DELIMITER);
       this.maker.setContext(product, "Product");
     }
     String eval = null;

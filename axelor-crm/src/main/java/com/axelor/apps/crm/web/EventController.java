@@ -18,6 +18,7 @@
 package com.axelor.apps.crm.web;
 
 import com.axelor.apps.base.service.MapService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.EventReminder;
 import com.axelor.apps.crm.db.Lead;
@@ -410,7 +411,8 @@ public class EventController {
             IExceptionMessage.RECURRENCE_REPETITION_NUMBER);
       }
     }
-    LocalDate endDate = LocalDate.now();
+    LocalDate endDate =
+        Beans.get(AppBaseService.class).getTodayDate(event.getUser().getActiveCompany());
     if (endType == 2) {
       if (conf.getEndDate() == null) {
         throw new AxelorException(

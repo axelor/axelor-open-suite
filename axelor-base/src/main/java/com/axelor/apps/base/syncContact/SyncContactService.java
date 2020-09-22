@@ -42,6 +42,7 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.apps.tool.EmailTool;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
@@ -81,7 +82,8 @@ public class SyncContactService {
   private FunctionRepository functionRepo;
 
   private String importOrigin =
-      "Import Google Contact " + Beans.get(AppBaseService.class).getTodayDate();
+      "Import Google Contact "
+          + Beans.get(AppBaseService.class).getTodayDate(AuthUtils.getUser().getActiveCompany());
 
   private static final String SYNC_CONTACT_OLD_EMAIL = /*$$(*/ "Old email" /*)*/;
   private static final String SYNC_CONTACT_GOOGLE_EMAIL = /*$$(*/ "Google email" /*)*/;

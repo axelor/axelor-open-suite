@@ -18,10 +18,8 @@
 package com.axelor.apps.base.service.app;
 
 import com.axelor.app.AppSettings;
-import com.axelor.apps.base.db.AppBase;
-import com.axelor.apps.base.db.CurrencyConversionLine;
-import com.axelor.apps.base.db.Language;
-import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.*;
+import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
@@ -44,14 +42,17 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
     return Query.of(AppBase.class).cacheable().fetchOne();
   }
 
-  /**
-   * Get the today date time Get the value defined in User if not null, Else get the valued defined
-   * in Base app Else get the server current date time
-   */
   @Override
   public ZonedDateTime getTodayDateTime() {
+    return getTodayDateTime(null);
+  }
+
+  public ZonedDateTime getTodayDateTime(Company company) {
 
     ZonedDateTime todayDateTime = ZonedDateTime.now();
+    if (company != null) {
+      todayDateTime = DateTool.getTodayDateTime(company.getTimezone());
+    }
 
     String applicationMode = AppSettings.get().get("application.mode", "prod");
 
@@ -70,14 +71,10 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
     return todayDateTime;
   }
 
-  /**
-   * Get the today date Get the value defined in User if not null, Else get the valued defined in
-   * Base app Else get the server current date
-   */
   @Override
-  public LocalDate getTodayDate() {
+  public LocalDate getTodayDate(Company company) {
 
-    return getTodayDateTime().toLocalDate();
+    return getTodayDateTime(company).toLocalDate();
   }
 
   @Override

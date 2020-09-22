@@ -172,7 +172,7 @@ public class ExpenseServiceImpl implements ExpenseService {
       createAnalyticDistributionWithTemplate(expenseLine);
     }
     if (analyticMoveLineList != null) {
-      LocalDate date = appAccountService.getTodayDate();
+      LocalDate date = appAccountService.getTodayDate(expenseLine.getExpense().getCompany());
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
         analyticMoveLineService.updateAnalyticMoveLine(
             analyticMoveLine, expenseLine.getUntaxedAmount(), date);
@@ -188,7 +188,7 @@ public class ExpenseServiceImpl implements ExpenseService {
             expenseLine.getAnalyticDistributionTemplate(),
             expenseLine.getUntaxedAmount(),
             AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE,
-            appAccountService.getTodayDate());
+            appAccountService.getTodayDate(expenseLine.getExpense().getCompany()));
 
     expenseLine.setAnalyticMoveLineList(analyticMoveLineList);
     return expenseLine;
@@ -234,7 +234,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   public void confirm(Expense expense) throws AxelorException {
 
     expense.setStatusSelect(ExpenseRepository.STATUS_CONFIRMED);
-    expense.setSentDate(appAccountService.getTodayDate());
+    expense.setSentDate(appAccountService.getTodayDate(expense.getCompany()));
     expenseRepository.save(expense);
   }
 
@@ -290,7 +290,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     Beans.get(EmployeeAdvanceService.class).fillExpenseWithAdvances(expense);
     expense.setStatusSelect(ExpenseRepository.STATUS_VALIDATED);
     expense.setValidatedBy(AuthUtils.getUser());
-    expense.setValidationDate(appAccountService.getTodayDate());
+    expense.setValidationDate(appAccountService.getTodayDate(expense.getCompany()));
 
     if (expense.getUser().getPartner() != null) {
       PaymentMode paymentMode = expense.getUser().getPartner().getOutPaymentMode();
@@ -321,7 +321,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     expense.setStatusSelect(ExpenseRepository.STATUS_REFUSED);
     expense.setRefusedBy(AuthUtils.getUser());
-    expense.setRefusalDate(appAccountService.getTodayDate());
+    expense.setRefusalDate(appAccountService.getTodayDate(expense.getCompany()));
     expenseRepository.save(expense);
   }
 
@@ -360,7 +360,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   protected Move createAndSetMove(Expense expense) throws AxelorException {
     LocalDate moveDate = expense.getMoveDate();
     if (moveDate == null) {
-      moveDate = appAccountService.getTodayDate();
+      moveDate = appAccountService.getTodayDate(expense.getCompany());
       expense.setMoveDate(moveDate);
     }
     Company company = expense.getCompany();
@@ -530,7 +530,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   @Transactional(rollbackOn = {Exception.class})
   public void addPayment(Expense expense, BankDetails bankDetails) throws AxelorException {
 
-    expense.setPaymentDate(appAccountService.getTodayDate());
+    expense.setPaymentDate(appAccountService.getTodayDate(expense.getCompany()));
 
     PaymentMode paymentMode = expense.getPaymentMode();
 
@@ -804,7 +804,7 @@ public class ExpenseServiceImpl implements ExpenseService {
               .all()
               .filter(
                   "self.fromDate <= ?1 AND self.toDate >= ?1 AND self.allowExpenseCreation = true AND self.year.company = ?2 AND self.year.typeSelect = ?3",
-                  Beans.get(AppBaseService.class).getTodayDate(),
+                  Beans.get(AppBaseService.class).getTodayDate(company),
                   company,
                   YearBaseRepository.STATUS_OPENED)
               .fetchOne();

@@ -95,7 +95,7 @@ public class MoveAdjustementService {
             account,
             debitAmountRemaining,
             false,
-            appAccountService.getTodayDate(),
+            appAccountService.getTodayDate(company),
             1,
             null,
             null);
@@ -108,7 +108,7 @@ public class MoveAdjustementService {
             accountConfigService.getCashPositionVariationAccount(accountConfig),
             debitAmountRemaining,
             true,
-            appAccountService.getTodayDate(),
+            appAccountService.getTodayDate(company),
             2,
             null,
             null);
@@ -155,7 +155,7 @@ public class MoveAdjustementService {
             account,
             debitAmountRemaining,
             false,
-            appAccountService.getTodayDate(),
+            appAccountService.getTodayDate(company),
             1,
             null,
             null);
@@ -168,7 +168,7 @@ public class MoveAdjustementService {
             accountConfigService.getCashPositionVariationAccount(accountConfig),
             debitAmountRemaining,
             true,
-            appAccountService.getTodayDate(),
+            appAccountService.getTodayDate(company),
             2,
             null,
             null);
@@ -216,7 +216,7 @@ public class MoveAdjustementService {
             creditMoveLineToReconcile.getAccount(),
             amount,
             true,
-            appAccountService.getTodayDate(),
+            appAccountService.getTodayDate(company),
             1,
             null,
             null);
@@ -228,7 +228,7 @@ public class MoveAdjustementService {
             debitMoveLineToReconcile.getAccount(),
             amount,
             false,
-            appAccountService.getTodayDate(),
+            appAccountService.getTodayDate(company),
             2,
             null,
             null);

@@ -164,7 +164,7 @@
     </action-attrs>
     
 	<action-record name="action-move-template-wizard-line-set-move-template" model="com.axelor.apps.base.db.Wizard">
-	    <field name="date" expr="eval:__config__.app.getTodayDate()" if="date == null"/>
+	    <field name="date" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" if="date == null"/>
 		<field name="moveTemplate" expr="eval:__repo__(MoveTemplate).find(__parent__.moveTemplate.id)" />
 		<field name="partnerInputSelect" expr="eval:__repo__(MoveTemplate).find(__parent__.moveTemplate.id).partnerInputSelect"/>
 	</action-record>

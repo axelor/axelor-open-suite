@@ -96,7 +96,7 @@
 
     <action-record name="action-logistical-form-record-on-new" model="com.axelor.apps.stock.db.LogisticalForm">
         <field name="company" expr="eval: __user__.activeCompany" />
-        <field name="collectionDate" expr="eval: __config__.app.getTodayDate()" />
+        <field name="collectionDate" expr="eval: __config__.app.getTodayDate(__user__.activeCompany)" />
     </action-record>
 
     <action-group name="action-group-logistical-form-carrier-validated">

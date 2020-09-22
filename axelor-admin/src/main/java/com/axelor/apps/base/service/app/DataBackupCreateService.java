@@ -563,7 +563,7 @@ public class DataBackupCreateService {
   }
 
   public String createRelativeDate(LocalDate date) {
-    LocalDate currentDate = LocalDate.now();
+    LocalDate currentDate = LocalDateTime.now().toLocalDate();
     long years = currentDate.until(date, ChronoUnit.YEARS);
     currentDate = currentDate.plusYears(years);
 

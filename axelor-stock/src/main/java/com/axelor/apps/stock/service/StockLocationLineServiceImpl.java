@@ -752,7 +752,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     wapHistoryRepo.save(
         new WapHistory(
             stockLocationLine,
-            appBaseService.getTodayDate(),
+            appBaseService.getTodayDate(stockLocationLine.getStockLocation().getCompany()),
             wap,
             stockLocationLine.getCurrentQty(),
             stockLocationLine.getUnit(),

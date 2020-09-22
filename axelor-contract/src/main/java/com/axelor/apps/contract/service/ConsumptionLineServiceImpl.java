@@ -37,7 +37,9 @@ public class ConsumptionLineServiceImpl implements ConsumptionLineService {
   @Override
   public ConsumptionLine fill(ConsumptionLine line, Product product) {
     Preconditions.checkNotNull(product, I18n.get(IExceptionMessage.CONTRACT_EMPTY_PRODUCT));
-    line.setLineDate(appBaseService.getTodayDate());
+    line.setLineDate(
+        appBaseService.getTodayDate(
+            line.getContractLine().getContractVersion().getContract().getCompany()));
     line.setProduct(product);
     line.setReference(product.getName());
     line.setUnit(product.getUnit());

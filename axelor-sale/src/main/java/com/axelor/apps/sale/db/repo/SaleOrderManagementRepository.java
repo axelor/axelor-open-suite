@@ -45,7 +45,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
     copy.setSaleOrderSeq(null);
     copy.clearBatchSet();
     copy.setImportId(null);
-    copy.setCreationDate(Beans.get(AppBaseService.class).getTodayDate());
+    copy.setCreationDate(Beans.get(AppBaseService.class).getTodayDate(entity.getCompany()));
     copy.setConfirmationDateTime(null);
     copy.setConfirmedByUser(null);
     copy.setOrderDate(null);

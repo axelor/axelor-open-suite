@@ -76,7 +76,7 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
     }
 
     reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_FINAL);
-    reconcileGroup.setDateOfLettering(appBaseService.getTodayDate());
+    reconcileGroup.setDateOfLettering(appBaseService.getTodayDate(reconcileGroup.getCompany()));
 
     reconcileGroupSequenceService.fillCodeFromSequence(reconcileGroup);
   }
@@ -236,7 +236,7 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
       // it is not balanced or the collection is empty.
       if (CollectionUtils.isEmpty(reconcileList)) {
         reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_UNLETTERED);
-        reconcileGroup.setUnletteringDate(appBaseService.getTodayDate());
+        reconcileGroup.setUnletteringDate(appBaseService.getTodayDate(reconcileGroup.getCompany()));
         reconcileGroupRepository.save(reconcileGroup);
       } else {
         reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_TEMPORARY);
@@ -254,7 +254,7 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
       reconcileService.unreconcile(reconcile);
     }
 
-    reconcileGroup.setUnletteringDate(appBaseService.getTodayDate());
+    reconcileGroup.setUnletteringDate(appBaseService.getTodayDate(reconcileGroup.getCompany()));
     reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_UNLETTERED);
     reconcileGroupRepository.save(reconcileGroup);
   }

@@ -111,7 +111,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     if ((analyticMoveLineList == null || analyticMoveLineList.isEmpty())) {
       return createAnalyticDistributionWithTemplate(invoiceLine);
     } else {
-      LocalDate date = appAccountService.getTodayDate();
+      LocalDate date = appAccountService.getTodayDate(invoiceLine.getInvoice().getCompany());
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
         analyticMoveLineService.updateAnalyticMoveLine(
             analyticMoveLine, invoiceLine.getCompanyExTaxTotal(), date);
@@ -127,7 +127,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
             invoiceLine.getAnalyticDistributionTemplate(),
             invoiceLine.getCompanyExTaxTotal(),
             AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE,
-            appAccountService.getTodayDate());
+            appAccountService.getTodayDate(invoiceLine.getInvoice().getCompany()));
 
     return analyticMoveLineList;
   }
@@ -137,7 +137,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       throws AxelorException {
 
     return accountManagementAccountService.getTaxLine(
-        appAccountService.getTodayDate(),
+        appAccountService.getTodayDate(invoice.getCompany()),
         invoiceLine.getProduct(),
         invoice.getCompany(),
         invoice.getPartner().getFiscalPosition(),

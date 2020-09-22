@@ -165,7 +165,7 @@ public class SequenceService {
       return null;
     }
 
-    return this.getSequenceNumber(sequence, appBaseService.getTodayDate());
+    return this.getSequenceNumber(sequence, appBaseService.getTodayDate(company));
   }
 
   /**
@@ -179,7 +179,7 @@ public class SequenceService {
   }
 
   public String getSequenceNumber(Sequence sequence) {
-    return getSequenceNumber(sequence, appBaseService.getTodayDate());
+    return getSequenceNumber(sequence, appBaseService.getTodayDate(sequence.getCompany()));
   }
 
   /**
