@@ -10,6 +10,7 @@
 - Studio : Manage Custom model menu in export / import operation.
 - Fix concurrent modification error when adding contact to customer.
 - Account management: Fix visibility issue on product and product family fields.
+- Stock Move status change: improve performance on cancelling and planning stock move.
 
 ## [5.4.0] - 2020-09-16
 ## Features

@@ -472,10 +472,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             toStatus,
             lastFutureStockMoveDate,
             stockMoveLine.getTrackingNumber());
-        if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+        if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL
+            && toStatus == StockMoveRepository.STATUS_REALIZED) {
           this.updateAveragePriceLocationLine(toStockLocation, stockMoveLine, fromStatus, toStatus);
+          weightedAveragePriceService.computeAvgPriceForProduct(stockMoveLine.getProduct());
         }
-        weightedAveragePriceService.computeAvgPriceForProduct(stockMoveLine.getProduct());
       }
     }
   }
