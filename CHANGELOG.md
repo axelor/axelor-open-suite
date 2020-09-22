@@ -17,6 +17,7 @@
 - FISCAL YEAR : corrected sql error.
 - BATCH RH: corrected payroll preparation batch, now the batch is runnable.
 - Bank reconciliation line : is posted is now read only.
+- ACCOUNT MANAGEMENT : Change visibility of product and product family.
 
 ## [5.2.14] - 2020-08-20
 ## Bug Fixes
