@@ -70,12 +70,14 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
       PayrollPreparationService payrollPreparationService,
       CompanyRepository companyRepository,
       PeriodRepository periodRepository,
-      HrBatchRepository hrBatchRepository) {
+      HrBatchRepository hrBatchRepository,
+      PayrollPreparationRepository payrollPreparationRepository) {
     super();
     this.payrollPreparationService = payrollPreparationService;
     this.companyRepository = companyRepository;
     this.periodRepository = periodRepository;
     this.hrBatchRepository = hrBatchRepository;
+    this.payrollPreparationRepository = payrollPreparationRepository;
   }
 
   @Override
