@@ -9,6 +9,7 @@
 - BATCH RH: corrected payroll preparation batch, now the batch is runnable.
 - Studio : Manage Custom model menu in export / import operation.
 - Fix concurrent modification error when adding contact to customer.
+- Account management: Fix visibility issue on product and product family fields.
 
 ## [5.4.0] - 2020-09-16
 ## Features
