@@ -244,9 +244,9 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
 
       if (senderCurrency == null) {
         throw new AxelorException(
-                TraceBackRepository.CATEGORY_MISSING_FIELD,
-                I18n.get(IExceptionMessage.BANK_ORDER_NO_SENDER_CURRENCY),
-                senderCompany.getName());
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.BANK_ORDER_NO_SENDER_CURRENCY),
+            senderCompany.getName());
       }
       // Zone 12 : Code devise du compte à débiter à la banque d'éxécution
       senderRecord +=
