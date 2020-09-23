@@ -18,6 +18,7 @@
 - BATCH RH: corrected payroll preparation batch, now the batch is runnable.
 - Bank reconciliation line : is posted is now read only.
 - ACCOUNT MANAGEMENT : Change visibility of product and product family.
+- CLIENT STOCK MOVE : corrected unable to realize if real quantity > to quantity on a stock move line.
 
 ## [5.2.14] - 2020-08-20
 ## Bug Fixes
