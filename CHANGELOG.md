@@ -5,6 +5,9 @@
 
 ## Bug Fixes
 - AccountManagement :  Fix NPE when product not present in invoiceLine.
+- BATCH RH: corrected payroll preparation batch, now the batch is runnable.
+- Opportunity : Add sequence on demo data
+- BANK ORDER : Fix NPE when validating a bank order
 - Partner : fix supplierQualityRating not being synchronized with supplierQualityRatingSelect
 
 ## [5.3.12] - 2020-09-16
