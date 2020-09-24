@@ -14,6 +14,7 @@
 - Opportunity : Add sequence on demo data
 - BANK ORDER : Fix NPE when validating a bank order
 - Partner : fix supplierQualityRating not being synchronized with supplierQualityRatingSelect
+- LOGISTICAL FORM : Fix exception translation
 
 ## [5.4.0] - 2020-09-16
 ## Features
