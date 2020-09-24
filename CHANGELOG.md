@@ -1,6 +1,8 @@
 # Changelog
 ## [Unreleased 5.4.1]
 ## Features
+- EMPLOYEE : added field tracking.
+
 ## Improvements
 - SaleOrder : Set team according to sale config.
 
