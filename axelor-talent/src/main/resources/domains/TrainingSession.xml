@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
 	<module name="talent" package="com.axelor.apps.talent.db"/>
 
@@ -14,6 +14,8 @@
 		<decimal name="rating" title="Rating" />
 		<string name="fullName" title="Full name" namecolumn="true" />
 		<string name="location" title="Location" />
+		<one-to-many name="trainingRegisterList" ref="com.axelor.apps.talent.db.TrainingRegister" title="Training register list" mappedBy="trainingSession"/>
+		<decimal name="overallRatingToApply" title="Overall rating to apply"/>
 	</entity>
 
 </domain-models>

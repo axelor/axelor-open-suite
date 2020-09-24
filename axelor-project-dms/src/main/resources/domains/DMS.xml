@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+
+	<module name="dms" package="com.axelor.dms.db" />
+
+	<entity name="DMSFile" lang="java">
+		<boolean name="isLock" title="Lock"/>
+		<many-to-one name="lockedBy" ref="com.axelor.auth.db.User" title="Locked by"/>
+		<many-to-many name="favouriteUserSet" ref="com.axelor.auth.db.User" title="Favourite users"/>
+	</entity>
+	
+	<entity name="DMSFileTag" lang="java">
+		<one-to-many name="tagList" title="Tags" ref="com.axelor.dms.db.DMSFileTag"/>
+		<many-to-many name="projectSet" ref="com.axelor.apps.project.db.Project" title="Projects"/>
+	</entity>
+
+</domain-models>

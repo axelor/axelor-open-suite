@@ -460,6 +460,11 @@ public class EbicsController {
         ReportFactory.createReport(IReport.EBICS_CERTIFICATE, title + "-${date}${time}");
     report.addParam("CertificateId", Joiner.on(",").join(certIds));
     report.addParam("EbicsUserId", ebicsUser.getId());
+    report.addParam(
+        "Timezone",
+        ebicsUser.getAssociatedUser() != null
+            ? ebicsUser.getAssociatedUser().getActiveCompany()
+            : null);
     report.toAttach(ebicsUser);
     report.generate();
 

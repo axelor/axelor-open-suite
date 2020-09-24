@@ -71,6 +71,7 @@ public class ContractController {
                 .model(Invoice.class.getName())
                 .add("form", "invoice-form")
                 .add("grid", "invoice-grid")
+                .param("search-filters", "customer-invoices-filters")
                 .param("forceTitle", "true")
                 .context("_showRecord", invoice.getId().toString())
                 .map());
@@ -92,6 +93,7 @@ public class ContractController {
               .model(Invoice.class.getName())
               .add("form", "invoice-form")
               .add("grid", "invoice-grid")
+              .param("search-filters", "customer-invoices-filters")
               .param("forceTitle", "true")
               .context("_showRecord", invoice.getId().toString())
               .map());

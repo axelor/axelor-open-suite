@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
 	<module name="talent" package="com.axelor.apps.talent.db"/>
 
@@ -10,10 +10,11 @@
 		<many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee" required="true"/>
 		<datetime name="fromDate" title="From date" required="true"/>
 		<datetime name="toDate" title="To date" required="true"/>
-		<integer name="ratingSelect" title="Rating" selection="training.register.rating.select"/>
+		<decimal name="rating" title="Rating"/>
 		<integer name="statusSelect" title="Status" selection="training.register.status.select" />
 		<many-to-one name="calendar" ref="com.axelor.apps.base.db.ICalendar" title="Calendar"/>
 		<string name="fullName" namecolumn="true"/>
+		<one-to-many name="eventList" title="Event list" ref="com.axelor.apps.crm.db.Event"/>
 	</entity>
 
 </domain-models>

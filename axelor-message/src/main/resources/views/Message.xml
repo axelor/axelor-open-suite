@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 	
     <grid name="message-grid" title="Emails" model="com.axelor.apps.message.db.Message" orderBy="-sentDateT">
         <field name="sentDateT"/>
@@ -31,6 +31,15 @@
     	<panel name="informationsPanel" title="Information" readonlyIf="statusSelect != 1">
             <field name="mediaTypeSelect" readonlyIf="statusSelect != 1"/>
 			<field name="statusSelect"/>
+			<field name="$statusSelectTag" colSpan="2" css="label-bold bold" showTitle="false" readonly="true">
+				<viewer><![CDATA[
+					<h5>
+						<span class='label label-info' ng-show="record.statusSelect == 1 &amp;&amp; record.sentDateT == null" x-translate>Not sent</span>
+						<span class='label label-success' ng-show="record.statusSelect == 3 &amp;&amp; record.sentDateT != null" x-translate>Successful send</span>
+						<span class='label label-important' ng-show="record.statusSelect == 2 &amp;&amp; record.sentDateT == null" x-translate>Failure send</span>
+					</h5>
+				]]></viewer>
+			</field>
 			<field name="senderUser" form-view="user-form" grid-view="user-grid"/>
 			<field name="sentDateT" colSpan="4"/>
 			<panel name="emailAddressPanel" colSpan="12" showIf="mediaTypeSelect == 2">

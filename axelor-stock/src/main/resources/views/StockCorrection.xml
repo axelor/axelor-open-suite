@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
     <grid name="stock-correction-grid" title="Stock Corrections" model="com.axelor.apps.stock.db.StockCorrection">
 		<field name="stockLocation"/>
@@ -58,8 +58,8 @@
     </action-record>
 
 	<action-attrs name="action-stock-correction-on-select-product">
-		<attribute name="domain" for="product" expr="eval: &quot; self.id IN (0) &quot;" if="stockLocation == null || stockLocation?.stockLocationLineList?.isEmpty()"/>
-		<attribute name="domain" for="product" expr="eval: &quot; self IN (SELECT p FROM StockLocation s JOIN s.stockLocationLineList sl JOIN sl.product p WHERE s = :stockLocation)&quot;" if="stockLocation != null"/>
+		<attribute name="domain" for="product" expr="eval: &quot; self.id IN (0) AND dtype = 'Product'&quot;" if="stockLocation == null || stockLocation?.stockLocationLineList?.isEmpty()"/>
+		<attribute name="domain" for="product" expr="eval: &quot; self IN (SELECT p FROM StockLocation s JOIN s.stockLocationLineList sl JOIN sl.product p WHERE s = :stockLocation) AND dtype = 'Product'&quot;" if="stockLocation != null"/>
     </action-attrs>
 
     <action-attrs name="action-stock-correction-on-select-tracking-number">

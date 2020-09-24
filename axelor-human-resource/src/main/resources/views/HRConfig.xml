@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
   <grid name="hr-config-grid" title="Human Resources configurations" model="com.axelor.apps.hr.db.HRConfig">
     <field name="company" form-view="company-form" grid-view="company-grid" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
@@ -20,7 +20,7 @@
 	  	<panel-tabs name="mainPanelTab">
 			<panel name="timesheetPanel" title="Timesheet" if="__config__.app.isApp('timesheet')">
 				<field name="useUniqueProductForTimesheet" />
-				<field name="uniqueTimesheetProduct" requiredIf="useUniqueProductForTimesheet" showIf="useUniqueProductForTimesheet" canNew="true" form-view="product-activity-grid" />
+				<field name="uniqueTimesheetProduct" requiredIf="useUniqueProductForTimesheet" showIf="useUniqueProductForTimesheet" canNew="true" form-view="product-activity-grid" domain="dtype = 'Product'"/>
 			    <panel name="timesheetTemplatesPanel" title="Timesheet Templates" colSpan="12">
 					<field name="timesheetMailNotification" colSpan="12"/>
 			    	<field name="sentTimesheetTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!timesheetMailNotification" domain="self.metaModel.name = 'Timesheet'"/>
@@ -46,7 +46,7 @@
 			    	<field name="refusedExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification" domain="self.metaModel.name = 'Expense'"/>
 					<field name="canceledExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification" domain="self.metaModel.name = 'Expense'"/>
 			  	</panel>
-		  		<field name="kilometricExpenseProduct" canEdit="false" canView="false" domain="self.expense = true" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid" />
+		  		<field name="kilometricExpenseProduct" canEdit="false" canView="false" domain="self.expense = true AND dtype = 'Product'" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid" />
 				<field name="expenseSequence" domain="self.codeSelect = 'expense' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
 			  	<panel-related name="kilometricAllowanceRateListPanel" field="kilometricAllowanceRateList" colSpan="12" form-view="kilometric-allowance-rate-form" grid-view="kilometric-allowance-rate-grid"/>
 			</panel>

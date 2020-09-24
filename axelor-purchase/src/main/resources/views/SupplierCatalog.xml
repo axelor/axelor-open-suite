@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
     <grid name="supplier-catalog-grid" title="Supplier Catalog" model="com.axelor.apps.purchase.db.SupplierCatalog">
         <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
@@ -44,7 +44,7 @@
 	<form name="supplier-catalog-partner-form" title="Supplier Catalog" model="com.axelor.apps.purchase.db.SupplierCatalog"
 		  onNew="action-supplier-catalog-attrs-init" onLoad="action-supplier-catalog-attrs-init" width="large">
 		<panel name="mainPanel" colSpan="12">
-			<field name="product" form-view="product-form" grid-view="product-grid" onChange="action-supplier-catalog-attrs-update"/>
+			<field name="product" form-view="product-form" grid-view="product-grid" onChange="action-supplier-catalog-attrs-update" domain="dtype = 'Product'"/>
 			<field name="supplierPartner.currency" form-view="currency-form" grid-view="currency-grid"/>
 			<field name="updateDate"/>
 			<field name="productSupplierCode"/>

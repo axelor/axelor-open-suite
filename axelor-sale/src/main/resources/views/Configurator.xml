@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
     <grid name="configurator-grid" title="Configurators" model="com.axelor.apps.sale.db.Configurator" >
         <field name="configuratorCreator"/>
@@ -12,7 +12,7 @@
           onLoad="action-configurator-update-indicators,save">
         <panel name="mainPanel" readonlyIf="product">
             <field name="product" readonly="true" showTitle="false"
-                   showIf="product" colSpan="12">
+                   showIf="product" colSpan="12" domain="dtype = 'Product'">
                 <viewer>
                     <![CDATA[
 			 			<h3>

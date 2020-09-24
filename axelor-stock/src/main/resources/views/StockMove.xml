@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
   <grid name="stock-move-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="statusSelect,-estimatedDate">
     <toolbar>
@@ -505,7 +505,7 @@
     		<field name="stockFromDate" title="From Date" type="date" required="true"/>
     		<field name="stockToDate" title="To Date" type="date" required="true"/>
 	        <field name="stockLocation" title="Stock location" type="many-to-one" target="com.axelor.apps.stock.db.StockLocation" required="true" />
-	        <field name="productSet" title="Products" type="many-to-many" target="com.axelor.apps.base.db.Product" colSpan="12" canEdit="false"/>
+	        <field name="productSet" title="Products" type="many-to-many" target="com.axelor.apps.base.db.Product" colSpan="12" canEdit="false" domain="dtype = 'Product'"/>
         </panel>
     </form>
     
@@ -606,7 +606,7 @@
     	<action name="action-stock-move-check-stock-move-line-real-qty"/>
     	<action name="action-stock-move-validate-shipment-informations" if="typeSelect == __repo__(StockMove).TYPE_INCOMING &amp;&amp; !isReversion"/>
 	    <action name="action-stock-move-method-manage-backorder" if="stockMoveLineList.any{it?.realQty.compareTo(it?.qty) &lt; 0} &amp;&amp; !isWithBackorder"/> <!-- first condition = is it necessary to split SM -->
-	    <action name="action-stock-move-method-realize" if="!stockMoveLineList.any{it?.realQty.compareTo(it?.qty) != 0} || isWithBackorder"/>
+	    <action name="action-stock-move-method-realize" if="!stockMoveLineList.any{it?.realQty.compareTo(it?.qty) &lt; 0} || isWithBackorder"/>
     	<action name="save"/>
 	</action-group>
 
@@ -642,6 +642,7 @@
     <action-group name="action-stock-move-group-available-qty-onchange">
         <action name="action-stock-move-method-verify-product-stock"/>
         <action name="action-stock-move-validate-check-reservation"/>
+				<action name="save"/>
         <action name="action-stock-move-method-allocate-all"/>
     </action-group>
 
@@ -903,6 +904,15 @@
     </action-view>
 
 	<search-filters name="customer-deliveries-filters" model="com.axelor.apps.stock.db.StockMove" title="Customer deliveries filters">
+		<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="tradingName" hidden="true" if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+		<field name="availabilityRequest" hidden="true" if="!__config__.app.getApp('stock').isSeparateShipmentOperations"/>
+		<field name="pickingIsEdited" hidden="true" if="!__config__.app.getApp('stock').isSeparateShipmentOperations"/>
+		<field name="pfpValidateStatusSelect" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="originTypeSelect" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="reversionOriginStockMove" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="invoiceSet" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="backorderId" hidden="true" if="!__config__.app.isApp('supplychain')"/>
 		<filter title="Deliveries to prepare">
 			<domain>self.statusSelect = 2</domain>
 		</filter>
@@ -918,6 +928,15 @@
 	</search-filters>
 	
 	<search-filters name="supplier-arrivals-filters" model="com.axelor.apps.stock.db.StockMove" title="Supplier arrivals filters">
+		<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="tradingName" hidden="true" if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+		<field name="availabilityRequest" hidden="true" if="!__config__.app.getApp('stock').isSeparateShipmentOperations"/>
+		<field name="pickingIsEdited" hidden="true" if="!__config__.app.getApp('stock').isSeparateShipmentOperations"/>
+		<field name="pfpValidateStatusSelect" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="originTypeSelect" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="reversionOriginStockMove" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="invoiceSet" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="backorderId" hidden="true" if="!__config__.app.isApp('supplychain')"/>
 		<filter title="Today Arrivals">
 			<domain>self.estimatedDate = CURRENT_DATE</domain>
 		</filter>
@@ -933,6 +952,15 @@
 	</search-filters>
 	
 	<search-filters name="internal-stock-move-filters" model="com.axelor.apps.stock.db.StockMove" title="Internal Stock Move filters">
+		<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="tradingName" hidden="true" if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+		<field name="availabilityRequest" hidden="true" if="!__config__.app.getApp('stock').isSeparateShipmentOperations"/>
+		<field name="pickingIsEdited" hidden="true" if="!__config__.app.getApp('stock').isSeparateShipmentOperations"/>
+		<field name="pfpValidateStatusSelect" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="originTypeSelect" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="reversionOriginStockMove" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="invoiceSet" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="backorderId" hidden="true" if="!__config__.app.isApp('supplychain')"/>
 		<filter title="Moves To Prepare">
 			<domain>self.statusSelect = 2</domain>
 		</filter>

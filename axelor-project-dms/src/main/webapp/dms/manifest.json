@@ -1,0 +1,9 @@
+{
+  "short_name": "Axelor DMS",
+  "name": "Axelor DMS",
+  "icons": [],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}

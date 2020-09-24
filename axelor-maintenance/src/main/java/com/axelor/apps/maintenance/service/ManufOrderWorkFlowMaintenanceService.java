@@ -17,11 +17,13 @@
  */
 package com.axelor.apps.maintenance.service;
 
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
@@ -47,12 +49,16 @@ public class ManufOrderWorkFlowMaintenanceService extends ManufOrderWorkflowServ
       OperationOrderWorkflowService operationOrderWorkflowService,
       OperationOrderRepository operationOrderRepo,
       ManufOrderStockMoveService manufOrderStockMoveService,
-      ManufOrderRepository manufOrderRepo) {
+      ManufOrderRepository manufOrderRepo,
+      ProductCompanyService productCompanyService,
+      ProductionConfigRepository productionConfigRepo) {
     super(
         operationOrderWorkflowService,
         operationOrderRepo,
         manufOrderStockMoveService,
-        manufOrderRepo);
+        manufOrderRepo,
+        productCompanyService,
+        productionConfigRepo);
   }
 
   @Transactional

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -1275,12 +1275,18 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                             </data>
                                         </cell>
                                         <cell id="4367">
-                                            <text id="4389">
-                                                <property name="fontSize">11pt</property>
-                                                <property name="fontWeight">normal</property>
-                                                <property name="contentType">html</property>
-                                                <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["DepositDate"]</VALUE-OF>]]></text-property>
-                                            </text>
+                                            <label id="4469">
+                                                <property name="display">inline</property>
+                                                <text-property name="text"> </text-property>
+                                            </label>
+                                            <data id="4466">
+                                                <structure name="dateTimeFormat">
+                                                    <property name="category">Short Date</property>
+                                                    <property name="pattern">Short Date</property>
+                                                </structure>
+                                                <property name="display">inline</property>
+                                                <property name="resultSetColumn">DepositDate</property>
+                                            </data>
                                         </cell>
                                     </row>
                                     <row id="4368">
@@ -1858,10 +1864,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <property name="borderRightWidth">thin</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <text id="4448">
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["PaymentDate"]</VALUE-OF>]]></text-property>
-                                    </text>
+                                    <data id="4468">
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
+                                        </structure>
+                                        <property name="resultSetColumn">PaymentDate</property>
+                                    </data>
                                 </cell>
                                 <cell id="4425">
                                     <property name="borderBottomStyle">solid</property>
@@ -1872,10 +1881,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                     <property name="borderRightWidth">thin</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <text id="4447">
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/YYYY">row["ChqDate"]</VALUE-OF>]]></text-property>
-                                    </text>
+                                    <data id="4467">
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
+                                        </structure>
+                                        <property name="resultSetColumn">ChqDate</property>
+                                    </data>
                                 </cell>
                                 <cell id="4427">
                                     <property name="borderBottomStyle">solid</property>

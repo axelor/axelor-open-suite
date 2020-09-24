@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 
 	<chart name="chart.planned.charge.by.machine.hours" title="Previsional charge by machine (per hour)" onInit="action.production.chart.set.from.date.to.date">
@@ -27,7 +27,7 @@
 	
 	<chart name="chart.wastes.by.product" title="Products Wastes">
 		<search-fields>
-			<field name="name" title="Product" type="reference" target="com.axelor.apps.base.db.Product" x-required="true"/>
+			<field name="name" title="Product" type="reference" target="com.axelor.apps.base.db.Product" x-required="true" domain="dtype = 'Product'"/>
 		</search-fields>
 		<dataset type="jpql">
 			<![CDATA[

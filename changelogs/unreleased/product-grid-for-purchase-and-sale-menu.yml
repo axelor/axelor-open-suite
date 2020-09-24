@@ -1,0 +1,6 @@
+---
+title: "PRODUCT : product grid for purchase, sale, stock and production menus"
+type: feature
+description: |
+	In purchase menu for product grid insted of sale price it should show purchase price.
+        For Production and Stock menu, doesn't display any price.  

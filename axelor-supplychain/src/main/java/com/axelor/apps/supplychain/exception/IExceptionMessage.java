@@ -123,6 +123,8 @@ public interface IExceptionMessage {
 
   static final String MRP_NO_PRODUCT = /*$$(*/ "Please select an element to run calculation" /*)*/;
 
+  static final String MRP_NO_PRODUCT_UNIT = /*$$(*/ "Please fill unit for product %s" /*)*/;
+
   /** Sale order Stock Service Implement */
   static final String SO_NO_DELIVERY_STOCK_MOVE_TO_GENERATE = /*$$(*/
       "No delivery stock move to generate for this sale order" /*)*/;
@@ -243,7 +245,7 @@ public interface IExceptionMessage {
       "The invoice's unit is different and inconvertible into the stock move's unit." /*)*/;
 
   static final String STOCK_MOVE_PARTIAL_INVOICE_ERROR = /*$$(*/
-      "Stock move has already been invoiced." /*)*/;
+      "Stock move %s has already been invoiced." /*)*/;
 
   static final String STOCK_MOVE_INVOICE_QTY_MAX = /*$$(*/
       "The quantity to invoice is greater than the quantity in the stock move" /*)*/;
@@ -258,4 +260,13 @@ public interface IExceptionMessage {
       "Partial invoicing of outgoing stock move with tracking number activated is not supported." /*)*/;
 
   String STOCK_MOVE_NO_LINES_TO_INVOICE = /*$$(*/ "Please fill a quantity to invoice." /*)*/;
+
+  public static final String TIMETABLE_PURCHASE_OREDR_NOT_VALIDATED = /*$$(*/
+      "Please validate the purchase order before invoicing." /*)*/;
+
+  static final String PO_INVOICE_QTY_MAX = /*$$(*/
+      "The quantity to invoice is greater than the quantity in the purchase order" /*)*/;
+
+  static final String SALE_ORDER_CLIENT_PARTNER_EXCEEDED_CREDIT = /*$$(*/
+      "%s blocked : maximal accepted credit exceeded for %s." /*)*/;
 }

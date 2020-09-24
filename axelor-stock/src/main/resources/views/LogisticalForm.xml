@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+    xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
   <grid model="com.axelor.apps.stock.db.LogisticalForm" title="Logistical forms" name="logistical-form-grid" orderBy="-deliveryNumberSeq,-collectionDate">
 		<field name="tracking" />
@@ -181,5 +181,9 @@
 	<action-method name="action-logistical-form-method-refresh-net-mass">
 		<call class="com.axelor.apps.stock.web.LogisticalFormController" method="refreshProductNetMass"/>
 	</action-method>
+	
+	<search-filters name="logistical-form-filters" model="com.axelor.apps.stock.db.LogisticalForm" title="Logistical form filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
 
 </object-views>

@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.cash.management.web;
 
+import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.cash.management.db.ForecastRecap;
 import com.axelor.apps.cash.management.db.ForecastRecapLine;
 import com.axelor.apps.cash.management.db.repo.ForecastRecapRepository;
@@ -25,6 +27,7 @@ import com.axelor.apps.cash.management.service.ForecastRecapService;
 import com.axelor.apps.cash.management.translation.ITranslation;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -33,6 +36,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,6 +60,36 @@ public class ForecastRecapController {
     Beans.get(ForecastRecapService.class)
         .populate(Beans.get(ForecastRecapRepository.class).find(forecastRecap.getId()));
     response.setReload(true);
+  }
+
+  public void fillStartingBalance(ActionRequest request, ActionResponse response) {
+    ForecastRecap forecastRecap = request.getContext().asType(ForecastRecap.class);
+    try {
+      if (forecastRecap.getBankDetails() != null) {
+        BigDecimal amount =
+            Beans.get(CurrencyService.class)
+                .getAmountCurrencyConvertedAtDate(
+                    forecastRecap.getBankDetails().getCurrency(),
+                    forecastRecap.getCompany().getCurrency(),
+                    forecastRecap.getBankDetails().getBalance(),
+                    Beans.get(AppBaseService.class).getTodayDate())
+                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+        forecastRecap.setStartingBalance(amount);
+      } else {
+        BigDecimal amount =
+            Beans.get(CurrencyService.class)
+                .getAmountCurrencyConvertedAtDate(
+                    forecastRecap.getCompany().getDefaultBankDetails().getCurrency(),
+                    forecastRecap.getCompany().getCurrency(),
+                    forecastRecap.getCompany().getDefaultBankDetails().getBalance(),
+                    Beans.get(AppBaseService.class).getTodayDate())
+                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+        forecastRecap.setStartingBalance(amount);
+      }
+      response.setValues(forecastRecap);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
   }
 
   public void sales(ActionRequest request, ActionResponse response) throws AxelorException {
@@ -95,14 +129,7 @@ public class ForecastRecapController {
 
   public void spending(ActionRequest request, ActionResponse response) throws AxelorException {
     Long id = new Long(request.getContext().get("_id").toString());
-    ForecastRecapService forecastRecapService = Beans.get(ForecastRecapService.class);
     ForecastRecap forecastRecap = Beans.get(ForecastRecapRepository.class).find(id);
-    forecastRecap.setForecastRecapLineList(new ArrayList<ForecastRecapLine>());
-
-    forecastRecapService.populateWithTimetablesOrOrders(forecastRecap);
-    forecastRecapService.populateWithExpenses(forecastRecap);
-    forecastRecapService.populateWithSalaries(forecastRecap);
-    forecastRecapService.populateWithForecastsNoSave(forecastRecap);
     List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
     Map<LocalDate, BigDecimal> map = new HashMap<LocalDate, BigDecimal>();
     for (ForecastRecapLine forecastRecapLine : forecastRecap.getForecastRecapLineList()) {
@@ -128,20 +155,7 @@ public class ForecastRecapController {
 
   public void marges(ActionRequest request, ActionResponse response) throws AxelorException {
     Long id = new Long(request.getContext().get("_id").toString());
-    ForecastRecapService forecastRecapService = Beans.get(ForecastRecapService.class);
     ForecastRecap forecastRecap = Beans.get(ForecastRecapRepository.class).find(id);
-    forecastRecap.setForecastRecapLineList(new ArrayList<ForecastRecapLine>());
-
-    forecastRecapService.populateWithTimetablesOrOrders(forecastRecap);
-    forecastRecapService.populateWithExpenses(forecastRecap);
-    forecastRecapService.populateWithSalaries(forecastRecap);
-    forecastRecapService.populateWithForecastsNoSave(forecastRecap);
-    forecastRecapService.populateWithInvoices(forecastRecap);
-    if (forecastRecap.getOpportunitiesTypeSelect() != null
-        && forecastRecap.getOpportunitiesTypeSelect()
-            > ForecastRecapRepository.OPPORTUNITY_TYPE_NO) {
-      forecastRecapService.populateWithOpportunities(forecastRecap);
-    }
     List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
     Map<LocalDate, BigDecimal> map = new HashMap<LocalDate, BigDecimal>();
     for (ForecastRecapLine forecastRecapLine : forecastRecap.getForecastRecapLineList()) {

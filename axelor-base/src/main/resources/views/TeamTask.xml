@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
   <grid name="team-task-grid" id="base-team-task-grid" title="Tasks" model="com.axelor.team.db.TeamTask">
     <field name="name"/>
@@ -25,7 +25,7 @@
       <field name="taskDeadline"/>
       <field name="taskDuration"/>
       <field name="assignedTo"/>
-      <field name="description" colSpan="12"/>
+      <field name="description" colSpan="12" widget="html" />
 
       <field name="typeSelect" hidden="true"/>
     </panel>
@@ -59,5 +59,40 @@
   <action-record name="action-team-task-record-set-date-or-frequency-changed" model="com.axelor.team.db.TeamTask">
     <field name="hasDateOrFrequencyChanged" expr="true" if="nextTeamTask"/>
   </action-record>
+  
+  	<search-filters name="team-task-filters" model="com.axelor.team.db.TeamTask" title="Team task filters">
+		<field name="targetVersion" hidden="true" if="!__config__.app.isApp('business-support')"/>
+		<field name="team" hidden="true" if="__config__.app.isApp('business-support')"/>
+		<field name="customerReferral" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="isPrivate" hidden="true" if="!__config__.app.isApp('business-support')"/>
+		<field name="isOrderAccepted" hidden="true" if="!__config__.app.isApp('business-support')"/>
+		<field name="isOrderProposed" hidden="true" if="!__config__.app.isApp('business-support')"/>
+		<field name="assignment" hidden="true" if="!__config__.app.isApp('business-support')"/>
+		<field name="taskDeadline" hidden="true" if="__config__.app.isApp('business-support')"/>
+		<field name="internalDescription" hidden="true" if="!__config__.app.isApp('business-support')"/>
+		<field name="totalPlannedHrs" hidden="true" if="!__config__.app.isApp('employee')"/>
+		<field name="budgetedTime" hidden="true" if="!__config__.app.isApp('employee')"/>
+		<field name="plannedProgress" hidden="true" if="!__config__.app.isApp('employee')"/>
+		<field name="invoicingType" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="toInvoice" hidden="true" if="!__config__.app.isApp('business-project')"/>				
+		<field name="isPaid" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="isTaskRefused" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="invoiced" hidden="true" if="!__config__.app.isApp('business-project')"/>
+      	<field name="project.invoicingSequenceSelect" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="saleOrderLine" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="invoiceLine" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="product" hidden="true" if="!__config__.app.isApp('business-project')"/>								
+		<field name="quantity" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="unit" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="unitPrice" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="currency" hidden="true" if="!__config__.app.isApp('business-project')"/>	
+		<field name="discountTypeSelect" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="discountAmount" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="priceDiscounted" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="exTaxTotal" hidden="true" if="!__config__.app.isApp('business-project')"/>
+		<field name="metaFile" hidden="true" if="!__config__.app.getApp('project').isEnableSignature"/>	
+		<field name="totalRealHrs" hidden="true" if="!__config__.app.isApp('timesheet')"/>
+	</search-filters>
+  
 
 </object-views>

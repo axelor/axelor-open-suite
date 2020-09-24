@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.3.xsd">
   
 <!--     IMPORT DU PACKAGE 'AUTH' -->
 
@@ -46,6 +46,7 @@
 	     
 	<input file="base_template.csv" separator=";" type="com.axelor.apps.message.db.Template" search="self.name = :name" >
 		<bind to="language" search="self.code = :languageCode"/>
+		<bind column="birtTemplateSet_importId" to="birtTemplateSet" search="self.importId in :birtTemplateSet_importId" eval="birtTemplateSet_importId.split('\\|') as List" update="true"/>
 	</input>
     
 	<input file="base_team.csv" separator=";" type="com.axelor.team.db.Team" search="self.importId = :importId">
@@ -177,18 +178,14 @@
 		<bind column="importId" to="importId"/>
 	</input>
 	
-	<input file="base_appBase.csv" separator=";" type="com.axelor.apps.base.db.AppBase"  search="self.code = :code" update="true" >
+	<input file="base_appBase.csv" separator=";" type="com.axelor.apps.base.db.AppBase" search="self.code = :code" update="true" >
 		<bind to="defaultPartnerLanguage" search="self.code = :defaultPartnerLanguageCode"/>
+		<bind to="companySpecificProductFieldsList" column="companySpecificFieldName" search="self.name IN :companySpecificFieldName AND self.metaModel.name = 'Product'" eval="companySpecificFieldName.split('\\|') as List"/>
 	</input>
 
 	<input file="base_period.csv" separator=";" type="com.axelor.apps.base.db.Period" />
 	
-	<input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User" search="self.code = :code" call="com.axelor.csv.script.ImportUser:importUser">
- 		<bind to="partner" column="partner.importId" if="false"/>
- 		<bind to="activeTeam" column="activeTeam.importId" if="false"/>
- 		<bind to="teamSet" column="teamSet.importId" if="false"/>
- 		<bind to="employee" column="employee.importId" if="false"/>
- 	</input>
+	<input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User" search="self.code = :code" call="com.axelor.csv.script.ImportUser:importUser"/>
  	
 	<input file="account_tax.csv" separator=";" type="com.axelor.apps.account.db.Tax" search="self.code = :code" />
   	

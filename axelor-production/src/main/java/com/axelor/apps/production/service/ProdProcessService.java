@@ -176,6 +176,9 @@ public class ProdProcessService {
     return ReportFactory.createReport(IReport.PROD_PROCESS, prodProcess.getName() + "-${date}")
         .addParam("Locale", ReportSettings.getPrintingLocale(null))
         .addParam("ProdProcessId", prodProcess.getId().toString())
+        .addParam(
+            "Timezone",
+            prodProcess.getCompany() != null ? prodProcess.getCompany().getTimezone() : null)
         .generate()
         .getFileLink();
   }

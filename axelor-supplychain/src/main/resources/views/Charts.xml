@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 	
 	<chart name="chart.nbr.product.per.family" title="Number of Product per Accounting Family">
 		<dataset type="sql">
@@ -14,6 +14,7 @@
 				base_product_family AS _family
 			ON
 				_family.id = _product.product_family
+			WHERE dtype = 'Product'
 			GROUP BY
 				_prod_family
 			ORDER BY
@@ -34,6 +35,7 @@
 			  base_product_category AS _category
 			ON
 			  _category.id = _product.product_category
+			WHERE dtype = 'Product'
 			GROUP BY
 			  _prod_category
 			ORDER BY
@@ -57,6 +59,7 @@
 			  meta_select_item AS _item
 			  ON _item.select_id = selection.id
 			  AND _item.value = self.product_type_select
+			WHERE dtype = 'Product'
 			GROUP BY
 			  _type
 		</dataset>
@@ -83,7 +86,7 @@
 					FROM
 						base_product AS self
 					WHERE
-						self.start_date BETWEEN DATE(:fromDate) AND DATE(:toDate)
+						self.start_date BETWEEN DATE(:fromDate) AND DATE(:toDate) AND dtype = 'Product'
 					GROUP BY
 					  _month)
 				UNION ALL
@@ -94,7 +97,7 @@
 				  	FROM
 				    	base_product AS self
 				  	WHERE
-				    	self.end_date BETWEEN DATE(:fromDate)  AND DATE(:toDate)
+				    	self.end_date BETWEEN DATE(:fromDate)  AND DATE(:toDate) AND dtype = 'Product'
 				  	GROUP BY
 				    	_month)
 				) prod_status

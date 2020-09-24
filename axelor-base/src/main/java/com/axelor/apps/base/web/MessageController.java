@@ -55,6 +55,7 @@ public class MessageController extends com.axelor.apps.message.web.MessageContro
   public void printMessage(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Message message = request.getContext().asType(Message.class);
+    message = Beans.get(MessageRepository.class).find(message.getId());
     String pdfPath = Beans.get(MessageService.class).printMessage(message);
 
     if (pdfPath != null) {
@@ -97,6 +98,7 @@ public class MessageController extends com.axelor.apps.message.web.MessageContro
           ReportFactory.createReport(IReport.MESSAGE_PDF, title + "-${date}")
               .addParam("Locale", language)
               .addParam("MessageId", messageIds)
+              .addParam("Timezone", null)
               .addFormat(ReportSettings.FORMAT_XLS)
               .generate()
               .getFileLink();

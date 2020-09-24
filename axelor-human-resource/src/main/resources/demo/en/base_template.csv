@@ -1,4 +1,4 @@
-"importId";"name";"metaModel.name";"language.importId";"target";"birtTemplate.name";"filePath";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect"
+"importId";"name";"metaModel.name";"language.importId";"target";"birtTemplateSet_importId";"filePath";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect"
 25;"Timesheet Reminder";"TimesheetReminder";1;;;;"true";;"Provide details for timesheet";"<p>Hi $TimesheetReminder.employee.name$, </p><br>
 <p>Please provide full details asap, please see below missing information.</p>
 $TimesheetReminder.timesheetReminderLineList : { it | 
