@@ -562,7 +562,6 @@
 "Products to consume",,,
 "Products to produce",,,
 "Profile",,,
-"Purchase Order",,,
 "Purchase order",,,
 "Purchase currency is missing for product %s, please configure it.",,,
 "Qty",,,

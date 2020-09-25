@@ -345,7 +345,7 @@
 		<view type="grid" name="accounting-report-grid" />
 		<view type="form" name="accounting-report-form" />
 		<view-param name="search-filters" value="accounting-report-filter"/>
-		<domain>self.typeSelect &lt; 1000 or self.typeSelect &gt;= 2000</domain>
+		<domain>self.reportType.typeSelect &lt; 1000 or self.reportType.typeSelect &gt;= 2000</domain>
 	</action-view>
 
 	<menuitem name="account-root-accounting-accounting-exports" parent="account-root-accounting"
@@ -355,7 +355,28 @@
 		title="Accounting exports" model="com.axelor.apps.account.db.AccountingReport" >
 		<view type="grid" name="accounting-report-export-grid" />
 		<view type="form" name="accounting-report-export-form" />
-		<domain>self.typeSelect &gt;= 1000 and self.typeSelect &lt; 2000</domain>
+		<domain>self.reportType.typeSelect &gt;= 1000 and self.reportType.typeSelect &lt; 2000</domain>
+	</action-view>
+
+	<menuitem name="account-conf-reporting" parent="account-conf"
+						title="Reportings/Exports" />
+
+	<menuitem name="account-conf-reporting-interbank-code" parent="account-conf-reporting"
+						title="Interbank codes" action="account.conf.reporting.interbank.code" />
+
+	<action-view name="account.conf.reporting.interbank.code"
+							 title="Interbank codes" model="com.axelor.apps.account.db.InterbankCode" >
+		<view type="grid" name="interbank-code-grid"/>
+		<view type="form" name="interbank-code-form"/>
+	</action-view>
+
+	<menuitem name="account-root-accounting-conf-report-types" parent="account-conf-reporting"
+						title="Report types" action="account.conf.reporting.accounting.report.types"/>
+
+	<action-view name="account.conf.reporting.accounting.report.types"
+							 title="Report types" model="com.axelor.apps.account.db.AccountingReportType">
+		<view type="grid" name="accounting-report-type-grid"/>
+		<view type="form" name="accounting-report-type-form"/>
 	</action-view>
 	
 	<menuitem name="account-root-budget-management" parent="account-root"  if="__config__.app.isApp('budget')"
@@ -613,18 +634,6 @@
 		<view type="grid" name="payment-condition-grid" />
 		<view type="form" name="payment-condition-form"/>
 		<view-param name="search-filters" value="payment-condition-filters"/>
-	</action-view>
-
-	<menuitem name="account-conf-reporting" parent="account-conf"
-		title="Reportings/Exports" />
-
-	<menuitem name="account-conf-reporting-interbank-code" parent="account-conf-reporting"
-		title="Interbank codes" action="account.conf.reporting.interbank.code" />
-
-	<action-view name="account.conf.reporting.interbank.code"
-		title="Interbank codes" model="com.axelor.apps.account.db.InterbankCode" >
-		<view type="grid" name="interbank-code-grid"/>
-		<view type="form" name="interbank-code-form"/>
 	</action-view>
 	
 	<menuitem name="admin-root-batch-accounting" parent="admin-root-batch" if="__config__.app.isApp('account')" if-module="axelor-account"

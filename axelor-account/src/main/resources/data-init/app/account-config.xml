@@ -10,5 +10,12 @@
      	<bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
      	<bind to="resetDate" eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate()" />
      </input>
+
+	<input file="account_accountingReportType.csv" separator=";" search="self.importId = :importId" type="com.axelor.apps.account.db.AccountingReportType">
+		<bind to="name" column="name"/>
+		<bind to="reportExportTypeSelect" column="docType"/>
+		<bind to="typeSelect" column="type"/>
+		<bind to="company" column="company" search="self.importId = :company"/>
+	</input>
     
 </csv-inputs>

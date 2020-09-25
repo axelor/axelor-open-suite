@@ -30,7 +30,6 @@ import com.axelor.apps.base.db.App;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
@@ -157,11 +156,11 @@ public class AccountingReportController {
 
     try {
 
-      int typeSelect = accountingReport.getTypeSelect();
+      int typeSelect = accountingReport.getReportType().getTypeSelect();
 
       if (accountingReport.getExportTypeSelect() == null
           || accountingReport.getExportTypeSelect().isEmpty()
-          || accountingReport.getTypeSelect() == 0) {
+          || typeSelect == 0) {
         response.setFlash(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_4));
         response.setReload(true);
         return;
@@ -195,17 +194,9 @@ public class AccountingReportController {
                   .map());
         }
       } else {
-
         accountingReportService.setPublicationDateTime(accountingReport);
 
-        String name =
-            I18n.get(
-                    MetaStore.getSelectionItem(
-                            "accounting.report.type.select",
-                            accountingReport.getTypeSelect().toString())
-                        .getTitle())
-                + " "
-                + accountingReport.getRef();
+        String name = accountingReport.getReportType().getName() + " " + accountingReport.getRef();
 
         String fileLink = accountingReportService.getReportFileLink(accountingReport, name);
 

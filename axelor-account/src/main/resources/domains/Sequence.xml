@@ -12,6 +12,7 @@
         //SEQUENCE SELECT
 		public static final String ACCOUNT_CLEARANCE = "accountClearance";
 		public static final String ACCOUNTING_REPORT = "accountingReport";
+		public static final String CUSTOM_ACCOUNTING_REPORT = "customAccountingReport";
 		public static final String ANALYTIC_REPORT = "analyticReport";
 		public static final String CHEQUE_REJECT = "chequeReject";
 		public static final String DEPOSIT_SLIP = "depositSlip";
