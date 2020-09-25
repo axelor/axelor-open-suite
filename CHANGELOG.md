@@ -18,6 +18,7 @@
 - BANK ORDER : Fix NPE when validating a bank order
 - Partner : fix supplierQualityRating not being synchronized with supplierQualityRatingSelect
 - LOGISTICAL FORM : Fix exception translation
+- Invoice Refund: fix refund not updating invoiced state of stock move and orders.
 - Vehicle contract / service log : Fix form view
 
 ## [5.4.0] - 2020-09-16
