@@ -5,6 +5,7 @@
 
 ## Improvements
 - SaleOrder : Set team according to sale config.
+- DeclarationOfExchanges : corrected wrong translation for product type select
 
 ## Bug Fixes
 - Move : Fix NPE when changing date.
