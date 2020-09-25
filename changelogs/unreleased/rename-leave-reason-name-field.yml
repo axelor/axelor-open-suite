@@ -1,0 +1,6 @@
+---
+title: LeaveReason, rename 'leaveReason' field into 'name'
+type: fix
+description: |
+  LeaveReason name field was uncorrectly name 'leaveReason' it has been changed to 'name'
+  All consequents changed done in java & xml
