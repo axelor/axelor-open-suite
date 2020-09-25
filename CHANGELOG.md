@@ -2,6 +2,7 @@
 ## [Unreleased 5.1.17]
 ## Improvements
 - SALE ORDER: set endOfValidityDate when create sale order from opportunity and project.
+- Stock move : "Refresh the products net mass" button placed in the "Tools" menu.
 
 ## Bug Fixes
 - AccountManagement :  Fix NPE when product not present in invoiceLine.
