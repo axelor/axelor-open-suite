@@ -312,8 +312,12 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
               I18n.get(IExceptionMessage.STOCK_MOVE_INVOICE_QTY_MAX));
         }
       } else {
-        // set qty invoiced to the maximum for all stock move lines
-        stockMoveLine.setQtyInvoiced(stockMoveLine.getRealQty());
+        // set qty invoiced to the maximum (or emptying it if refund) for all stock move lines
+        boolean invoiceIsRefund =
+            stockMoveInvoiceService.isInvoiceRefundingStockMove(
+                stockMoveLine.getStockMove(), invoice);
+        stockMoveLine.setQtyInvoiced(
+            invoiceIsRefund ? BigDecimal.ZERO : stockMoveLine.getRealQty());
         // search in sale/purchase order lines to set split stock move lines to invoiced.
         if (stockMoveLine.getSaleOrderLine() != null) {
           stockMoveLineRepository
@@ -323,7 +327,10 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
               .bind("saleOrderLineId", stockMoveLine.getSaleOrderLine().getId())
               .bind("stockMoveId", stockMoveLine.getStockMove().getId())
               .fetch()
-              .forEach(stockMvLine -> stockMvLine.setQtyInvoiced(stockMvLine.getRealQty()));
+              .forEach(
+                  stockMvLine ->
+                      stockMvLine.setQtyInvoiced(
+                          invoiceIsRefund ? BigDecimal.ZERO : stockMvLine.getRealQty()));
         }
         if (stockMoveLine.getPurchaseOrderLine() != null) {
           stockMoveLineRepository
@@ -333,7 +340,10 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
               .bind("purchaseOrderLineId", stockMoveLine.getPurchaseOrderLine().getId())
               .bind("stockMoveId", stockMoveLine.getStockMove().getId())
               .fetch()
-              .forEach(stockMvLine -> stockMvLine.setQtyInvoiced(stockMvLine.getRealQty()));
+              .forEach(
+                  stockMvLine ->
+                      stockMvLine.setQtyInvoiced(
+                          invoiceIsRefund ? BigDecimal.ZERO : stockMvLine.getRealQty()));
         }
       }
     }

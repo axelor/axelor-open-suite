@@ -21,6 +21,7 @@
 - ACCOUNT MANAGEMENT : Change visibility of product and product family.
 - CLIENT STOCK MOVE : corrected unable to realize if real quantity > to quantity on a stock move line.
 - Partner : fix supplierQualityRating not being synchronized with supplierQualityRatingSelect
+- Invoice Refund: fix refund not updating invoiced state of stock move and orders.
 
 ## [5.2.14] - 2020-08-20
 ## Bug Fixes
