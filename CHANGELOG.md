@@ -4,6 +4,7 @@
 - AnalyticDistribution : Autocomplete analyticDistribution details while creating SaleOrder / PurchaseOrder with interco = true.
 - TraceBack : Replace deprecated constants with appropriate CATEGORY constant
 - SALE ORDER: set endOfValidityDate when create sale order from opportunity and project
+- Stock move : "Refresh the products net mass" button placed in the "Tools" menu.
 
 ## Bug Fixes
 - PurchaseOrder : removed action which is setting dotted field explicitly.
