@@ -2,6 +2,7 @@
 ## [Unreleased 5.3.13]
 ## Improvements
 - SaleOrder : Set team according to sale config. 
+- Stock move : "Refresh the products net mass" button placed in the "Tools" menu.
 
 ## Bug Fixes
 - AccountManagement :  Fix NPE when product not present in invoiceLine.
