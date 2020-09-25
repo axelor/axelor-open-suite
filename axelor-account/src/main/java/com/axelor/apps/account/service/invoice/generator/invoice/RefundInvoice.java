@@ -19,14 +19,13 @@ package com.axelor.apps.account.service.invoice.generator.invoice;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,13 +47,14 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
   @Override
   public Invoice generate() throws AxelorException {
 
-    LOG.debug("Créer un avoir pour la facture {}", new Object[] {invoice.getInvoiceId()});
+    LOG.debug("Creating a refund for invoice {}", invoice.getInvoiceId());
 
-    Invoice refund = Beans.get(InvoiceRepository.class).copy(invoice, true);
+    Invoice refund = JPA.copy(invoice, true);
+    InvoiceToolService.resetInvoiceStatusOnCopy(refund);
 
     refund.setOperationTypeSelect(this.inverseOperationType(refund.getOperationTypeSelect()));
 
-    List<InvoiceLine> refundLines = new ArrayList<InvoiceLine>();
+    List<InvoiceLine> refundLines = new ArrayList<>();
     if (refund.getInvoiceLineList() != null) {
       refundLines.addAll(refund.getInvoiceLineList());
     }
