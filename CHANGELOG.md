@@ -1,8 +1,11 @@
 # Changelog
 ## [Unreleased 5.4.1]
 ## Features
+- EMPLOYEE : added field tracking.
+
 ## Improvements
 - SaleOrder : Set team according to sale config.
+- Stock move : "Refresh the products net mass" button placed in the "Tools" menu.
 
 ## Bug Fixes
 - Move : Fix NPE when changing date.
@@ -15,6 +18,7 @@
 - BANK ORDER : Fix NPE when validating a bank order
 - Partner : fix supplierQualityRating not being synchronized with supplierQualityRatingSelect
 - LOGISTICAL FORM : Fix exception translation
+- Invoice Refund: fix refund not updating invoiced state of stock move and orders.
 
 ## [5.4.0] - 2020-09-16
 ## Features
