@@ -51,16 +51,21 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class FixedAssetServiceImpl implements FixedAssetService {
 
-  @Inject FixedAssetRepository fixedAssetRepo;
+  protected FixedAssetRepository fixedAssetRepo;
 
-  @Inject FixedAssetLineService fixedAssetLineService;
+  protected FixedAssetLineService fixedAssetLineService;
 
   protected MoveLineService moveLineService;
 
   protected static int calculationScale = 6;
 
   @Inject
-  public FixedAssetServiceImpl(MoveLineService moveLineService) {
+  public FixedAssetServiceImpl(
+      FixedAssetRepository fixedAssetRepo,
+      FixedAssetLineService fixedAssetLineService,
+      MoveLineService moveLineService) {
+    this.fixedAssetRepo = fixedAssetRepo;
+    this.fixedAssetLineService = fixedAssetLineService;
     this.moveLineService = moveLineService;
   }
 
@@ -70,7 +75,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         fixedAsset
             .getComputationMethodSelect()
             .equals(FixedAssetRepository.COMPUTATION_METHOD_LINEAR);
-    BigDecimal depreciationValue = this.computeDepreciationValue(fixedAsset, isLinear);
+    BigDecimal depreciationValue =
+        this.computeDepreciation(fixedAsset, fixedAsset.getGrossValue(), true, isLinear);
     BigDecimal cumulativeValue = depreciationValue;
     LocalDate depreciationDate = fixedAsset.getFirstDepreciationDate();
     LocalDate firstDepreciationDate = fixedAsset.getFirstDepreciationDate();
@@ -172,13 +178,6 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     return depreciationDate;
   }
 
-  protected BigDecimal computeDepreciationValue(FixedAsset fixedAsset, boolean isLinear) {
-    BigDecimal depreciationValue = BigDecimal.ZERO;
-    depreciationValue =
-        this.computeDepreciation(fixedAsset, fixedAsset.getGrossValue(), true, isLinear);
-    return depreciationValue;
-  }
-
   protected BigDecimal computeProrataTemporis(FixedAsset fixedAsset, boolean isFirstYear) {
     BigDecimal prorataTemporis = BigDecimal.ONE;
     if (isFirstYear
@@ -238,9 +237,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       BigDecimal nbDaysOfPeriod =
           BigDecimal.valueOf(fixedAsset.getPeriodicityInMonth() * 30).setScale(calculationScale);
       prorataTemporis =
-          nbDaysBetweenAcqAndFirstDepDate
-              .divide(nbDaysOfPeriod, BigDecimal.ROUND_HALF_EVEN)
-              .setScale(calculationScale);
+          nbDaysBetweenAcqAndFirstDepDate.divide(
+              nbDaysOfPeriod, calculationScale, BigDecimal.ROUND_HALF_EVEN);
     }
     return prorataTemporis;
   }
@@ -280,7 +278,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
   public List<FixedAsset> createFixedAssets(Invoice invoice) throws AxelorException {
 
     if (invoice == null || CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
-      return null;
+      return new ArrayList<>();
     }
 
     AccountConfig accountConfig =
@@ -412,33 +410,30 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     BigDecimal prorataTemporis =
         BigDecimal.valueOf(monthsBetweenDates)
             .divide(
-                BigDecimal.valueOf(fixedAsset.getPeriodicityInMonth()), BigDecimal.ROUND_HALF_EVEN)
-            .setScale(calculationScale);
+                BigDecimal.valueOf(fixedAsset.getPeriodicityInMonth()),
+                calculationScale,
+                BigDecimal.ROUND_HALF_EVEN);
 
-    int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
     int numberOfDepreciation =
         fixedAsset.getFixedAssetCategory().getIsProrataTemporis()
             ? fixedAsset.getNumberOfDepreciation() - 1
             : fixedAsset.getNumberOfDepreciation();
-    BigDecimal depreciationRate =
-        BigDecimal.valueOf(100)
-            .divide(
-                BigDecimal.valueOf(numberOfDepreciation),
-                calculationScale,
-                BigDecimal.ROUND_HALF_EVEN);
+
     BigDecimal ddRate = BigDecimal.ONE;
     if (fixedAsset
         .getComputationMethodSelect()
         .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
       ddRate = fixedAsset.getDegressiveCoef();
     }
+
+    int scale = Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice();
     BigDecimal deprecationValue =
         fixedAsset
             .getGrossValue()
-            .multiply(depreciationRate)
             .multiply(ddRate)
             .multiply(prorataTemporis)
-            .divide(new BigDecimal(100), scale, BigDecimal.ROUND_HALF_EVEN);
+            .divide(BigDecimal.valueOf(numberOfDepreciation), scale, BigDecimal.ROUND_HALF_EVEN);
+    ;
 
     fixedAssetLine.setDepreciation(deprecationValue);
     BigDecimal cumulativeValue =

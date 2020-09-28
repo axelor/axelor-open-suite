@@ -8,6 +8,7 @@
 - Stock move : "Refresh the products net mass" button placed in the "Tools" menu.
 - SaleOrder / StockMove : remove available status for service type product.
 - DeclarationOfExchanges : corrected wrong translation for product type select
+- Fixed asset : improve code quality
 
 ## Bug Fixes
 - Move : Fix NPE when changing date.
