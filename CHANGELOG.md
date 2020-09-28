@@ -1,6 +1,8 @@
 # Changelog
 ## [Unreleased 5.2.16]
 ## Improvements
+- DeclarationOfExchanges : corrected wrong translation for product type select
+
 ## Bug Fixes
 
 ## [5.2.15] - 2020-09-28
