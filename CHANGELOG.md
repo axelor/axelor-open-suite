@@ -22,6 +22,7 @@
 - LOGISTICAL FORM : Fix exception translation
 - Invoice Refund: fix refund not updating invoiced state of stock move and orders.
 - Logistical form : Remove duplicate status select
+- Tracking number : Fix wrong form view on search
 
 ## [5.4.0] - 2020-09-16
 ## Features
