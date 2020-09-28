@@ -4,6 +4,7 @@
 - SaleOrder : Set team according to sale config. 
 - Stock move : "Refresh the products net mass" button placed in the "Tools" menu.
 - SaleOrder / StockMove : remove available status for service type product.
+- DeclarationOfExchanges : corrected wrong translation for product type select.
 
 ## Bug Fixes
 - AccountManagement :  Fix NPE when product not present in invoiceLine.
