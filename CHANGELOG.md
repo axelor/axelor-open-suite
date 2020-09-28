@@ -13,6 +13,7 @@
 - Partner : fix supplierQualityRating not being synchronized with supplierQualityRatingSelect
 - LOGISTICAL FORM : Fix exception translation
 - Invoice Refund: fix refund not updating invoiced state of stock move and orders.
+- Logistical form : Remove duplicate status select
 
 ## [5.3.12] - 2020-09-16
 ## Bug Fixes
