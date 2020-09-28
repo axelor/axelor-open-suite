@@ -98,4 +98,11 @@
 		<option value="2">Current date + days</option>
 	</selection>
 
+	
+	<selection name='supplychain.declaration.of.exchanges.product.type.select'>
+		<option value='service'>declarationOfExchanges.Service</option>
+		<option value='storable'>declarationOfExchanges.ProductType.product</option>
+	</selection>
+
 </object-views>
+
