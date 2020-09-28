@@ -6,6 +6,7 @@
 ## Improvements
 - SaleOrder : Set team according to sale config.
 - Stock move : "Refresh the products net mass" button placed in the "Tools" menu.
+- DeclarationOfExchanges : corrected wrong translation for product type select
 
 ## Bug Fixes
 - Move : Fix NPE when changing date.
