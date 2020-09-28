@@ -55,6 +55,16 @@ public interface AppBaseService extends AppService {
   public ZonedDateTime getTodayDateTime(Company company);
 
   /**
+   * This method is deprecated. Please use the
+   * com.axelor.apps.base.service.app.AppBaseService#getTodayDate(com.axelor.apps.base.db.Company)
+   * method instead.
+   *
+   * @return
+   */
+  @Deprecated
+  public LocalDate getTodayDate();
+
+    /**
    * Récupérer la date du jour en fonction de la timezone renseignée dans la société donnée.
    * Retourne la date du jour paramétré dans l'utilisateur si existe, sinon récupère celle de
    * l'administration générale, sinon date du jour.
