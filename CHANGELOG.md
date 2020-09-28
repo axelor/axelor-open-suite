@@ -1,26 +1,25 @@
 # Changelog
-## [Unreleased 5.2.15]
+## [5.2.15] - 2020-09-28
 ## Improvements
-- AnalyticDistribution : Autocomplete analyticDistribution details while creating SaleOrder / PurchaseOrder with interco = true.
-- TraceBack : Replace deprecated constants with appropriate CATEGORY constant
-- SALE ORDER: set endOfValidityDate when create sale order from opportunity and project
-- Stock move : "Refresh the products net mass" button placed in the "Tools" menu.
+- Analytic distribution: Autocomplete analytic distribution details while creating intercompany sale order or purchase order.
+- SALE ORDER: set end of validity date when creating sale order from opportunity and project.
+- Stock move: Move "Refresh the products net mass" button to the "Tools" menu.
 
 ## Bug Fixes
-- PurchaseOrder : removed action which is setting dotted field explicitly.
-- TRACKING MAIL NOTIFICATION : corrected wrong partner receiving email selected. 
-- Sale Invoice Details : Fixed the empty report generation
-- Fix NPE when user try to ventilate customer refund invoice.
-- Move line : Correctly display reconcile tab (credit or debit) when the account is reconcilable.
-- PurchaseOrder : Fixed error on requesting due to missing production module field in report
-- BANK ORDER : Fix NPE when validating a bank order
-- AccountManagement :  Fix NPE when product not present in invoiceLine.
-- FISCAL YEAR : corrected sql error.
+- Purchase Order; Fix NullPointerException on purchase order creation.
+- TRACKING MAIL NOTIFICATION: corrected wrong partner receiving selected email.
+- Sale Invoice Details: Fixed empty report generation.
+- Fix NPE when user tries to ventilate customer refund invoice.
+- Move line: Correctly displays reconcile tab (credit or debit) when the account is reconcilable.
+- PurchaseOrder: Fixed error on requesting when production module was missing.
+- BANK ORDER: Fix NPE when validating a bank order.
+- AccountManagement:  Fix NPE when the product is not present in invoice line.
+- FISCAL YEAR: corrected sql error when closing a fiscal year.
 - BATCH RH: corrected payroll preparation batch, now the batch is runnable.
-- Bank reconciliation line : is posted is now read only.
-- ACCOUNT MANAGEMENT : Change visibility of product and product family.
-- CLIENT STOCK MOVE : corrected unable to realize if real quantity > to quantity on a stock move line.
-- Partner : fix supplierQualityRating not being synchronized with supplierQualityRatingSelect
+- Bank reconciliation line: is posted is now read only.
+- ACCOUNT MANAGEMENT: Change visibility of product and product family.
+- CLIENT STOCK MOVE: corrected unable to realize if real quantity > to quantity on a stock move line.
+- Partner: fix supplier quality rating not updated on supplier quality rating select change.
 - Invoice Refund: fix refund not updating invoiced state of stock move and orders.
 
 ## [5.2.14] - 2020-08-20
@@ -708,7 +707,7 @@ In this case, the file is correctly retrieved from the bank server, but not save
 - LEAVE REQUEST: Add error when leave reason has no unit.
 - LEAVE REQUEST: Set duration value 0 if day planning of selected weekly planning is empty
 
-[Unreleased 5.2.15]: https://github.com/axelor/axelor-open-suite/compare/v5.2.14...5.2-dev
+[5.2.15]: https://github.com/axelor/axelor-open-suite/compare/v5.2.14...v5.2.15
 [5.2.14]: https://github.com/axelor/axelor-open-suite/compare/v5.2.13...v5.2.14
 [5.2.13]: https://github.com/axelor/axelor-open-suite/compare/v5.2.12...v5.2.13
 [5.2.12]: https://github.com/axelor/axelor-open-suite/compare/v5.2.11...v5.2.12
