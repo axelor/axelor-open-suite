@@ -64,7 +64,7 @@ public interface AppBaseService extends AppService {
   @Deprecated
   public LocalDate getTodayDate();
 
-    /**
+  /**
    * Récupérer la date du jour en fonction de la timezone renseignée dans la société donnée.
    * Retourne la date du jour paramétré dans l'utilisateur si existe, sinon récupère celle de
    * l'administration générale, sinon date du jour.
