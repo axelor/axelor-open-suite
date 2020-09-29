@@ -21,6 +21,7 @@
 - SaleOrderLine : Not showing picking order info for services
 - Logistical form : Remove duplicate status select in form view.
 - Invoice : fix for hideDiscount doesn't work.
+- Tracking number : Fix wrong form view on search
 
 ## [5.3.12] - 2020-09-16
 ## Bug Fixes
