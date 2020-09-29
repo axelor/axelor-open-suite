@@ -6,6 +6,7 @@
 
 ## Bug Fixes
 - INVOICE : Fix copy still having references to orders and stock moves
+- Tracking number : Fix wrong form view on search
 
 ## [5.2.15] - 2020-09-28
 ## Improvements
