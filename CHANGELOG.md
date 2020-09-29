@@ -8,7 +8,7 @@
 - Product form: fix typo in help message.
 - Inventory: fix error on stock location select when company is not filled.
 - TRACKING MAIL NOTIFICATION : corrected wrong partner receiving email selected. 
-
+- Tracking number : Fix wrong form view on search
 
 ## [5.0.12] - 2020-04-02
 ## Improvements
