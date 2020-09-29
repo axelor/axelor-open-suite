@@ -113,6 +113,7 @@
 	          <field name="activateOn" validIf="!activateOn || (activateOn &amp;&amp; !expiresOn) || (activateOn &amp;&amp; expiresOn &amp;&amp; $moment(expiresOn) >= $moment(activateOn))"/>
 	          <field name="expiresOn" validIf="!expiresOn || (!activateOn &amp;&amp; expiresOn) || (activateOn &amp;&amp; expiresOn &amp;&amp; $moment(expiresOn) >= $moment(activateOn))"/>
 	          <field name="blocked"/>
+						<field name="forcePasswordChange" showIf="id &amp;&amp; !$readonly()" widget="boolean"/>
 	          <field name="change" title="Change password?" showIf="id &amp;&amp; !$readonly()" widget="boolean"/>
 	          <panel showIf="change || !id" colSpan="12" itemSpan="12" name="allPasswordsPanel">
 	            <field name="oldPassword" title="Your password" placeholder="your password" widget="password" requiredIf="change || !id"/>
@@ -124,7 +125,6 @@
 	            <panel name="passwordOptionsPanel" showIf="code != $user" itemSpan="4">
 	              <field name="$generateRandomPassword" title="Generate random password" widget="boolean" onChange="action-user-generate-random-password"/>
 	              <field name="sendEmailUponPasswordChange"/>
-								<field name="forcePasswordChange"/>
 	            </panel>
 	          </panel>
 	        </panel>
