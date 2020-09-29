@@ -340,7 +340,9 @@ public class ForecastRecapService {
             .all()
             .filter(
                 "self.company = ?1"
-                    + (forecastRecap.getBankDetails() != null ? " AND self.companyBankDetails = ?2" : "")
+                    + (forecastRecap.getBankDetails() != null
+                        ? " AND self.companyBankDetails = ?2"
+                        : "")
                     + " AND self.statusSelect IN (?3) AND self.operationTypeSelect = ?4 AND self.estimatedPaymentDate BETWEEN ?5 AND ?6 AND self.companyInTaxTotalRemaining != 0",
                 forecastRecap.getCompany(),
                 forecastRecap.getBankDetails(),
