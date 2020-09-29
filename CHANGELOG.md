@@ -5,6 +5,7 @@
 - SaleOrderLine : Not showing picking order info for services
 
 ## Bug Fixes
+- INVOICE : Fix copy still having references to orders and stock moves
 
 ## [5.2.15] - 2020-09-28
 ## Improvements
@@ -28,7 +29,6 @@
 - CLIENT STOCK MOVE: corrected unable to realize if real quantity > to quantity on a stock move line.
 - Partner: fix supplier quality rating not updated on supplier quality rating select change.
 - Invoice Refund: fix refund not updating invoiced state of stock move and orders.
-- INVOICE : Fix copy still having references to orders and stock moves
 
 ## [5.2.14] - 2020-08-20
 ## Bug Fixes
