@@ -19,6 +19,7 @@ package com.axelor.apps.tool.date;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
+import com.axelor.common.StringUtils;
 import java.lang.invoke.MethodHandles;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -309,7 +310,9 @@ public class DateTool {
   }
 
   public static ZonedDateTime getTodayDateTime(String timeZone) {
-    return ZonedDateTime.now(ZoneId.of(timeZone));
+    return StringUtils.notBlank(timeZone)
+        ? ZonedDateTime.now(ZoneId.of(timeZone))
+        : ZonedDateTime.now();
   }
 
   public static LocalDate getTodayDate(String timeZone) {
