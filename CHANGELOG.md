@@ -25,6 +25,7 @@
 - Logistical form : Remove duplicate status select
 - SaleOrderLine : Not showing picking order info for services
 - FORECAST RECAP : Fix fitler on invoices which was using bankDetails field instead of companyBankDetails
+- Tracking number : Fix wrong form view on search
 
 ## [5.4.0] - 2020-09-16
 ## Features
