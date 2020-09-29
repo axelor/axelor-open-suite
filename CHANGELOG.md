@@ -6,6 +6,8 @@
 ## Improvements
 - SaleOrder : Set team according to sale config.
 - Stock move : "Refresh the products net mass" button placed in the "Tools" menu.
+- SaleOrder / StockMove : remove available status for service type product.
+- DeclarationOfExchanges : corrected wrong translation for product type select
 
 ## Bug Fixes
 - Move : Fix NPE when changing date.
@@ -19,6 +21,7 @@
 - Partner : fix supplierQualityRating not being synchronized with supplierQualityRatingSelect
 - LOGISTICAL FORM : Fix exception translation
 - Invoice Refund: fix refund not updating invoiced state of stock move and orders.
+- Logistical form : Remove duplicate status select
 - SaleOrderLine : Not showing picking order info for services
 
 ## [5.4.0] - 2020-09-16
