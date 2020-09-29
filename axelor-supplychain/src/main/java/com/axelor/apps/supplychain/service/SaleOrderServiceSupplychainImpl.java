@@ -29,6 +29,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.supplychain.db.Timetable;
@@ -134,8 +135,15 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
             IExceptionMessage.SUPPLYCHAIN_MISSING_CANCEL_REASON_ON_CHANGING_SALE_ORDER);
       }
       for (StockMove stockMove : stockMoves) {
-        stockMoveService.cancel(stockMove, cancelReason);
-        stockMoveRepository.remove(stockMove);
+        if (stockMove.getStatusSelect().equals(StockMoveRepository.STATUS_DRAFT)) {
+          stockMoveService.cancel(stockMove, cancelReason);
+          stockMoveRepository.remove(stockMove);
+        } else {
+          stockMoveService.cancel(stockMove, cancelReason);
+          for (StockMoveLine stockMoveline : stockMove.getStockMoveLineList()) {
+            stockMoveline.setSaleOrderLine(null);
+          }
+        }
       }
     }
     return checkAvailabiltyRequest;

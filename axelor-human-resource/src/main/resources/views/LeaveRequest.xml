@@ -61,28 +61,28 @@
             <field name="requestDate" colSpan="12" width="50%" />
             <field name="leaveLine" onSelect="action-leave-request-attrs-line-domain" title="Reason" canEdit="false" canNew="false" widget="SuggestBox" required="true"
                 onChange="action-leave-request-attrs-select,action-leave-request-attrs-inject-change,action-leave-request-methode-compute-duration" form-view="leave-line-form" grid-view="leave-line-grid" />
-            <panel>
+            <panel name="quantityPanel">
                 <field name="leaveLine.quantity" title="Available quantity (acquired)" showIf="statusSelect != 3" colSpan="12" />
                 <field name="quantityBeforeValidation" showIf="statusSelect == 3" colSpan="12" />
             </panel>
             <field name="injectConsumeSelect" hidden="true" onChange="action-leave-request-attrs-inject-change" />
             <spacer name="injectConsumeSelectSpacer" />
 
-            <panel colSpan="12">
-                <panel hideIf="leaveLine.leaveReason.unitSelect == 2" colSpan="12">
+            <panel name="fromDatesPanel" colSpan="12">
+                <panel name="fromDatesFirstInferiorPanel" hideIf="leaveLine.leaveReason.unitSelect == 2" colSpan="12">
                     <field name="fromDateT" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration" widget="date" />
                     <field name="startOnSelect" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration" />
                 </panel>
-                <panel showIf="leaveLine.leaveReason.unitSelect == 2" colSpan="12">
+                <panel name="fromDatesSecondInferiorPanel" showIf="leaveLine.leaveReason.unitSelect == 2" colSpan="12">
                     <field name="fromDateT" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration" widget="datetime" />
                 </panel>
             </panel>
-            <panel colSpan="12">
-                <panel hideIf="leaveLine.leaveReason.unitSelect == 2" colSpan="12">
+            <panel name="toDatesPanel" colSpan="12">
+                <panel name="toDatesFirstInferiorPanel" hideIf="leaveLine.leaveReason.unitSelect == 2" colSpan="12">
                     <field name="toDateT" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration" widget="date" />
                     <field name="endOnSelect" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration" />
                 </panel>
-                <panel showIf="leaveLine.leaveReason.unitSelect == 2" colSpan="12">
+                <panel name="toDatesSecondInferiorPanel" showIf="leaveLine.leaveReason.unitSelect == 2" colSpan="12">
                     <field name="toDateT" onChange="action-leave-request-validate-dates,action-leave-request-methode-compute-duration" widget="datetime" />
                 </panel>
             </panel>

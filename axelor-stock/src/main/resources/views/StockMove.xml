@@ -152,9 +152,6 @@
 
    <form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove" width="large"
                onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew" onSave="save,action-stock-move-method-update-stocks">
-		<toolbar>
-			<button showIf="typeSelect == 2 &amp;&amp; !isReversion" name="refreshProductNetMassBtn" title="Refresh the products net mass" onClick="action-stock-move-method-refresh-net-mass"/>
-		</toolbar>
 		<menubar>
 			 <menu name="stockMoveReportsMenu" title="Reports" icon="fa-files-o">
                 <item name="printInternalMoveItem" title="Print Internal Move" action="save,action-print-stock-move" readonlyIf="statusSelect == 1" showIf="typeSelect == 1"/>
@@ -170,6 +167,7 @@
                 <item name="splitByUnitItem" title="Split by unit" action="save,action-stock-move-method-split-stock-move-lines-unit" showIf="statusSelect &lt;= 2"/>
                 <item name="specialSplitItem" title="Special split" action="save,action-stock-move-wizard-special-split" showIf="statusSelect &lt;= 2"/>
                 <item name="shipReceiveAllProductsItem" title="Ship/Receive all products" action="save,action-stock-move-ship-recieve-all-products"/>
+                <item name="refreshProductNetMassItem" showIf="typeSelect == 2 &amp;&amp; !isReversion" title="Refresh the products net mass" action="action-stock-move-method-refresh-net-mass" />
             </menu>
 		</menubar>
 
@@ -606,7 +604,7 @@
     	<action name="action-stock-move-check-stock-move-line-real-qty"/>
     	<action name="action-stock-move-validate-shipment-informations" if="typeSelect == __repo__(StockMove).TYPE_INCOMING &amp;&amp; !isReversion"/>
 	    <action name="action-stock-move-method-manage-backorder" if="stockMoveLineList.any{it?.realQty.compareTo(it?.qty) &lt; 0} &amp;&amp; !isWithBackorder"/> <!-- first condition = is it necessary to split SM -->
-	    <action name="action-stock-move-method-realize" if="!stockMoveLineList.any{it?.realQty.compareTo(it?.qty) != 0} || isWithBackorder"/>
+	    <action name="action-stock-move-method-realize" if="!stockMoveLineList.any{it?.realQty.compareTo(it?.qty) &lt; 0} || isWithBackorder"/>
     	<action name="save"/>
 	</action-group>
 
@@ -642,6 +640,7 @@
     <action-group name="action-stock-move-group-available-qty-onchange">
         <action name="action-stock-move-method-verify-product-stock"/>
         <action name="action-stock-move-validate-check-reservation"/>
+				<action name="save"/>
         <action name="action-stock-move-method-allocate-all"/>
     </action-group>
 

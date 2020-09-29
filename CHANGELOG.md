@@ -1,13 +1,137 @@
 # Changelog
-## [Unreleased 5.3.8]
+## [Unreleased 5.3.13]
 ## Improvements
-## Bug Fixes
-- EXTRA HOURS : Fix missing translation
-- ACCOUNTING REPORT : Add missing translations in report
-- MRP : Remove duplicate information
-- ACCOUNTING INFORMATION : Add missing translation
-- TeamTaskCategory : Added translation for title of grid-view and fields
+- SaleOrder : Set team according to sale config. 
+- Stock move : "Refresh the products net mass" button placed in the "Tools" menu.
+- SaleOrder / StockMove : remove available status for service type product.
+- DeclarationOfExchanges : corrected wrong translation for product type select.
 - ACCOUNTING REPORT : Rework fixed asset summary report
+
+## Bug Fixes
+- AccountManagement :  Fix NPE when product not present in invoiceLine.
+- BATCH RH: corrected payroll preparation batch, now the batch is runnable.
+- Opportunity : Add sequence on demo data
+- BANK ORDER : Fix NPE when validating a bank order
+- Partner : fix supplierQualityRating not being synchronized with supplierQualityRatingSelect
+- LOGISTICAL FORM : Fix exception translation
+- Invoice Refund: fix refund not updating invoiced state of stock move and orders.
+- SaleOrderLine : Not showing picking order info for services
+
+## [5.3.12] - 2020-09-16
+## Bug Fixes
+- SALE ORDER: set end of validity date when creating a sale order from opportunity and project.
+- Timesheet Line: fix NPE happening when project or task were emptied.
+- BANK RECONCILIATION STATEMENT REPORT: corrected sql request error.
+
+## [5.3.11] - 2020-09-10
+## Improvements
+- Tracking number: Added product / origin reference on error message when estimated delivery date is null.
+- AnalyticDistribution: Autocomplete analyticDistribution details while creating SaleOrder / PurchaseOrder with interco = true.
+- STOCK MOVE: Changed error message when trying to invoice a stockmove which has already been invoiced.
+- PROJECT: Change financial report BIRT to match conventions.
+- PAYMENT VOUCHER: Set default operation type select to 'Customer sale'.
+
+## Bug Fixes
+- INVENTORY: Added annual / not annual inventory type select on product demo data.
+- BANK STATEMENT: corrected npe on bank details in import file function.
+- Accounting report: Add translations to some reports.
+- INVOICE: Add 'Periodic contract' sub type viewer in form.
+- CLIENT STOCK MOVE: corrected unable to realize if real quantity > to quantity on a stock move line.
+- FISCAL YEAR: corrected sql error.
+- Sale Invoice Details: Fixed report generation.
+- MRP: Fix data rollback on error.
+- Account config: Fix translation.
+- INVOICE: Changed french translation for Contact.
+- Bank reconciliation line: "is posted" is now read only.
+- Move line: Correctly display reconcile tab (credit or debit) when the account is reconcilable.
+- INVOICE: Fix copy still having references to orders and stock moves.
+
+## [5.3.10] - 2020-08-27
+## Features
+- CRM: Create new objects Catalog and Catalog type.
+- Training session, register: mass register creation.
+
+## Improvements
+- EBICSTS: add new data init to bank statement file formats.
+- Customer grid: show main address details.
+- Forecast Recap: Visual changes to dashlet grid, some recap line type modified, recap take into account sale orders and purchase orders in addition to timetables, also added demo data.
+- LEAD: Added description field on reports
+- ACCOUNT MANAGEMENT: Change visiblity of product and product family.
+- TemplateRuleService: service removed because not used.
+- Invoice: Addition of new field to display delivery address on form and in report.
+- Mail Notification: Send notification only if activate sending email is true in config & specify tag for message.
+
+## Bug Fixes
+- Forecast Report: Fix unit translation.
+- ACCOUNTING REPORT: change translation.
+- MRP: Shows error message instead of NPE when a product has no unit.
+- ICalendar: Fix IndexOutOfBound Exception on event creation & Manage synchronisation select.
+- CRM: Add menu industry sector in CRM config and changes in lead form view.
+- Batch payroll preparation generation: corrected batch error no session.
+- Fiscal year: corrected sql error on close function.
+- Accounting batch: put to required mandatory fields for close annual year batch.
+- Invoice: on invoice form view corrected display of empty column in invoice payment line grid viewer.
+- Invoice line: corrected view error when trying to change an invoice line.
+- BANK RECONCILIATION STATEMENT REPORT: change French translation of balance from "balance" to "solde".
+- Sale order: removed the behavior of removing stock move with a status different than draft after clicking on edit sale order button.
+- Sale Order: Adding Partner name and SaleOrder sequence in Customer credit traceback.
+- PRODUCT: Format number of decimal digits for displayed quantities.
+- PurchaseOrder: removed action which is setting dotted field explicitly.
+- TRACKING MAIL NOTIFICATION: corrected wrong partner receiving email selected.
+- MANUF ORDER: Fix number of decimal digit displayed for missing quantity on to consume production product list field.
+- Invoice: added invoice reference on traceback when trying to ventilate invoice and exception occurs.
+- AccountManagement demo data: sequences are now linked with the account managements.
+- Stock Move: allocation on availability request is now per line instead of allocating the whole sale order.
+
+## [5.3.9] - 2020-07-29
+## Improvements
+- USER: add a dashlet showing all user's permissions.
+- EBICSTS: add new data init to bank statement file formats.
+- Customer grid: show mainAddress details.
+
+## Bug Fixes
+- Report: Fix unit translation.
+- TIMESHEET: Fix editor still being displayed even with a disabled config.
+- BankDetails: Fix validation flow of iban.
+- INVOICE: fix message on generate of subscription invoice.
+- ACCOUNTING MOVE: remove all possibility to cancel a validated move.
+- ICalendar: Update event synchronization.
+- Template Maker: fix selection value translation based on locale.
+- SaleOrder: Consider today's date also in invoice sale amount dashboard.
+- CRM: set default nbrEmployees to 0.
+- Conversion: corrected the case of conversion from void to void and improved message in case of conversion from void to unit or from unit to void.
+- Accounting report: corrected bank reconciliation statement report, now display lines reconciled after date report.
+- Invoice: Fix wrong translation in report.
+- Project: Add missing translations.
+- ACCOUNT CONFIG: Add missing translations.
+- BANK PAYMENT: fix ICS number being linked to EBICS.
+- INVOICE: Fix chart not taking refunds into account.
+- INVOICE : Fix subscription invoice sub type change issue on ventilation.
+
+## [5.3.8] - 2020-07-15
+## Improvements
+- ACCOUNT SITUATION: update account situation on invoice payment cancel and improve moveLine calculation.
+- OPPORTUNITY: Change the data type of bestCase and worstCase fields from string to decimal.
+- INVOICE: generate invoice from timetable list from purchase order.
+- SaleOrder: Change title of numberOfPeriods.
+- BankStatementLine: orderBy modification in AFB 120.
+- Add tagCount for Expense, Timesheet, Leave request and Extra hours menus.
+
+## Bug Fixes
+- EXTRA HOURS: Fix missing translation.
+- ACCOUNTING REPORT: Add missing translations in report.
+- MRP: Remove duplicate information.
+- ACCOUNTING INFORMATION: Add missing translation.
+- TeamTaskCategory: Added translation for title of grid view and fields.
+- AccountingBatch: Adding partner name in the bankDetails' not active anomaly message.
+- Application config: Add missing translations.
+- UnitCostCalculation: check NPE on product select.
+- SaleOrder: Remove one externalReference which appears twice in grid view.
+- AdvancedExport: Fix the bug of records being exported twice.
+- INVOICE: corrected the possibility to add a payment when the amount remaining is inferior or equal to 0.
+- EMPLOYEE: add first name search in advance search.
+- Invoice: Fix multiple invoices not ventilating when generated from sale order with advance payment.
+- TRAINING: Added domain to 'Required training' so it does not display itself.
 
 ## [5.3.7] - 2020-06-26
 ## Improvements
@@ -31,6 +155,8 @@
 - SALE ORDER: Set duration when created from opportunity.
 - Advance import: Fix multiple search on same field.
 - Bill of Material: Replace NPE by an explicit message to the user when product unit is not configured.
+- EMPLOYEE: add button for Employee.rptdesign report on form.
+- Employee email address: prevent the selection of existing email addresses.
 
 ## [5.3.6] - 2020-05-26
 ## Improvements
@@ -360,7 +486,12 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - PRODUCT: Fix economicManufOrderQty displayed twice.
 
 
-[Unreleased 5.3.8]: https://github.com/axelor/axelor-open-suite/compare/v5.3.7...dev
+[Unreleased 5.3.13]: https://github.com/axelor/axelor-open-suite/compare/v5.3.12...5.3-dev
+[5.3.12]: https://github.com/axelor/axelor-open-suite/compare/v5.3.11...v5.3.12
+[5.3.11]: https://github.com/axelor/axelor-open-suite/compare/v5.3.10...v5.3.11
+[5.3.10]: https://github.com/axelor/axelor-open-suite/compare/v5.3.9...v5.3.10
+[5.3.9]: https://github.com/axelor/axelor-open-suite/compare/v5.3.8...v5.3.9
+[5.3.8]: https://github.com/axelor/axelor-open-suite/compare/v5.3.7...v5.3.8
 [5.3.7]: https://github.com/axelor/axelor-open-suite/compare/v5.3.6...v5.3.7
 [5.3.6]: https://github.com/axelor/axelor-open-suite/compare/v5.3.5...v5.3.6
 [5.3.5]: https://github.com/axelor/axelor-open-suite/compare/v5.3.4...v5.3.5

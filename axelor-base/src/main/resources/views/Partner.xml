@@ -43,6 +43,8 @@
 		<field name="fiscalPosition.code" title="Fiscal position"/>
 		<field name="registrationCode" />
 		<field name="mainAddress"/>
+		<field name="mainAddress.zip"/>
+		<field name="mainAddress.city"/>
 		<field name="companyStr" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<button name="scheduleEventBtn" title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
 		<button name="sendByEmailBtn" title="Send Email"  icon="fa-envelope" onClick="action-send-by-email-with-template" if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
@@ -342,7 +344,8 @@
 				<field name="purchaseOrderInformation"/>
 				<field name="purchasePartnerPriceList" canEdit="false" domain="self.typeSelect = 2" form-view="purchase-partner-price-list-form" grid-view="partner-price-list-grid"/>
 				<field name="supplierCatalogList" colSpan="12" x-can-copy="true" form-view="supplier-catalog-partner-form" grid-view="supplier-catalog-partner-grid" if-module="axelor-purchase" if="__config__.app.isApp('purchase') &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog()"/>
-				<field name="supplierQualityRatingSelect" widget="ImageSelect" x-labels="false" colSpan="3"/>
+				<field name="supplierQualityRating" hidden="true"/>
+				<field name="supplierQualityRatingSelect" widget="ImageSelect" x-labels="false" colSpan="3" onChange="action-record-set-supplier-quality-rating"/>
 				<field name="supplierArrivalProductQty" colSpan="3"/>
 				<spacer name="supplierSpacer"/>
 				<field name="partnerProductQualityRatingList" colSpan="12" grid-view="partner-product-quality-rating-grid" form-view="partner-product-quality-rating-form"/>
@@ -923,6 +926,10 @@
 		<field name="user"  expr="#{__user__}" if="#{__parent__ == null || __parent__._model != 'com.axelor.apps.base.db.Partner'}"/>
 		<field name="team"  expr="#{__user__.activeTeam}" if="#{__parent__ == null || __parent__._model != 'com.axelor.apps.base.db.Partner'}"/>
 		<field name="mainPartner" expr="#{__repo__(Partner).find(__parent__.id)}" if="#{__parent__ &amp;&amp; __parent__.id != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
+	</action-record>
+
+	<action-record name="action-record-set-supplier-quality-rating" model="com.axelor.apps.base.db.Partner">
+		<field name="supplierQualityRating" expr="eval: supplierQualityRatingSelect"/>
 	</action-record>
 
     <action-method name="action-partner-method-normalize-fixedPhone">

@@ -24,4 +24,7 @@ public interface IExceptionMessage {
 
   public static final String INVALID_TR_DATE = /*$$(*/
       "Training dates must be under training session date range." /*)*/;
+
+  public static final String NO_EVENT_GENERATED = /*$$(*/
+      "No Training register is generated because selected employees don't have any user." /*)*/;
 }

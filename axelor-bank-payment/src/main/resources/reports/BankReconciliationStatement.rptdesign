@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -740,7 +740,7 @@ MoveLine.account_code as accountCode,
 Journal.code as journalCode,
 MoveLine.debit as debit, 
 MoveLine.credit as credit, 
-(MoveLine.debit + MoveLine.credit) - SUM(CASE WHEN BankReconciliationLine.is_posted = true THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as amountRemaining,
+(MoveLine.debit + MoveLine.credit) - SUM(CASE WHEN BankReconciliationLine.is_posted = true AND BankReconciliation.validated_date <=  AccountingReport.date_val THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as amountRemaining,
 Account.id as accountId
 from public.account_accounting_report as AccountingReport
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
@@ -761,7 +761,7 @@ AND(AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
 AND(JournalSet.journal_set IS NULL OR JournalSet.journal_set = Journal.id)
 AND Move.status_select not in (1,4)
 AND AccountType.technical_type_select like 'cash'
-AND BankReconciliation.validated_date <=  AccountingReport.date_val
+AND BankReconciliation.validated_date is not null
 AND Move.ignore_in_accounting_ok in (false,null)
 group by MoveLine.id,
 MoveLine.name,
@@ -772,7 +772,7 @@ MoveLine.debit,
 MoveLine.credit,
 concatJournal,
 accountId
-HAVING SUM(CASE WHEN BankReconciliationLine.is_posted = true THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) < (MoveLine.debit + MoveLine.credit)
+HAVING SUM(CASE WHEN BankReconciliationLine.is_posted = true AND BankReconciliation.validated_date <=  AccountingReport.date_val THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) < (MoveLine.debit + MoveLine.credit)
 
 order by accountCode,journalCode,move_line_name
 
@@ -987,7 +987,7 @@ BankStatementLine.reference as reference,
 BankStatementLine.description as name,
 BankStatementLine.debit AS debit , 
 BankStatementLine.credit AS credit,
-(BankStatementLine.debit + BankStatementLine.credit) - SUM(CASE WHEN BankReconciliationLine.is_posted = true THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as amountRemaining,
+(BankStatementLine.debit + BankStatementLine.credit) - SUM(CASE WHEN BankReconciliationLine.is_posted = true AND BankReconciliation.validated_date <=  AccountingReport.date_val THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as amountRemaining,
 BankDetails.id as bankDetailsId
 FROM public.account_accounting_report as AccountingReport
 LEFT JOIN public.bankpayment_bank_statement_line_afb120 as BankStatementLine on (AccountingReport.id = ?)
@@ -1002,7 +1002,7 @@ and AccountingReport.currency = BankStatementLine.currency
 AND BankStatementLine.operation_date <= AccountingReport.date_val
 AND(AccountingReportBankDetailsSet.bank_details_set is null OR AccountingReportBankDetailsSet.bank_details_set = BankStatementLine.bank_details)
 AND AccountingReport.company = Company.id
-AND BankReconciliation.validated_date <=  AccountingReport.date_val
+AND BankReconciliation.validated_date is not null
 AND BankStatementLine.amount_remain_to_reconcile > 0
 AND BankStatementLine.line_type_select = 2
 group by BankStatementLine.id,
@@ -1014,7 +1014,7 @@ BankStatementLine.debit,
 BankStatementLine.credit,
 BankDetails.full_name,
 BankDetails.id
-HAVING SUM(CASE WHEN BankReconciliationLine.is_posted = true THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) < (BankStatementLine.debit + BankStatementLine.credit)
+HAVING SUM(CASE WHEN BankReconciliationLine.is_posted = true AND BankReconciliation.validated_date <=  AccountingReport.date_val THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) < (BankStatementLine.debit + BankStatementLine.credit)
 order by date
 
 ]]></xml-property>
@@ -1453,8 +1453,7 @@ CROSS JOIN
 FROM public.account_accounting_report as AccountingReport
 LEFT JOIN base_bank_details as BankDetails on (AccountingReport.id = ?)
 LEFT JOIN bankpayment_bank_statement_line_afb120 as BankStatementLine on BankDetails.id = BankStatementLine.bank_details
-LEFT JOIN public.base_company_bank_details_set as CompanyBankDetailsSet on BankDetails.id = CompanyBankDetailsSet.bank_details_set
-LEFT JOIN public.base_company as Company on CompanyBankDetailsSet.base_company = Company.id
+LEFT JOIN public.base_company as Company on BankDetails.company = Company.id
 WHERE BankDetails.id = ?
 AND BankDetails.id is not null
 AND AccountingReport.company = Company.id
@@ -1492,7 +1491,7 @@ UNION
 select coalesce(SUM(coalesce(UnreconcileAmountTable.unreconcileAmount,0)),0) as totalUnreconcileAmount
 from(
 SELECT (MoveLine.debit - MoveLine.credit) 
-- SUM(CASE WHEN BankReconciliationLine.is_posted = true THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as unreconcileAmount
+- SUM(CASE WHEN BankReconciliationLine.is_posted = true AND BankReconciliation.validated_date <=  AccountingReport.date_val THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) as unreconcileAmount
 from public.account_accounting_report as AccountingReport
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join public.bankpayment_bank_reconciliation_line as BankReconciliationLine on MoveLine.id = BankReconciliationLine.move_line
@@ -1513,11 +1512,11 @@ AND(AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
 AND(JournalSet.journal_set IS NULL OR JournalSet.journal_set = Journal.id)
 AND Move.status_select not in (1,4)
 AND AccountType.technical_type_select like 'cash'
-AND BankReconciliation.validated_date <=  AccountingReport.date_val
+AND BankReconciliation.validated_date is not null
 AND Move.ignore_in_accounting_ok in (false,null)
 group by MoveLine.debit,
 MoveLine.credit
-HAVING SUM(CASE WHEN BankReconciliationLine.is_posted = true THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) < (MoveLine.debit + MoveLine.credit)) as UnreconcileAmountTable) as UnreconcileAmountTableSup)
+HAVING SUM(CASE WHEN BankReconciliationLine.is_posted = true AND BankReconciliation.validated_date <=  AccountingReport.date_val THEN BankReconciliationLine.credit+BankReconciliationLine.debit ELSE 0 END) < (MoveLine.debit + MoveLine.credit)) as UnreconcileAmountTable) as UnreconcileAmountTableSup)
 as UnreconcileAmountTableSupSup
 ]]></xml-property>
         </oda-data-set>

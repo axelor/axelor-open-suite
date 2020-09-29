@@ -468,6 +468,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   public Invoice generateInvoice(SaleOrder saleOrder) throws AxelorException {
 
     Invoice invoice = this.createInvoice(saleOrder);
+    invoice.setDeliveryAddress(saleOrder.getDeliveryAddress());
+    invoice.setDeliveryAddressStr(saleOrder.getDeliveryAddressStr());
 
     invoiceRepo.save(invoice);
 
@@ -499,6 +501,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       throws AxelorException {
 
     Invoice invoice = this.createInvoice(saleOrder, saleOrderLinesSelected, qtyToInvoiceMap);
+    invoice.setDeliveryAddress(saleOrder.getDeliveryAddress());
+    invoice.setDeliveryAddressStr(saleOrder.getDeliveryAddressStr());
+
     invoiceRepo.save(invoice);
 
     saleOrderRepo.save(fillSaleOrder(saleOrder, invoice));
@@ -671,7 +676,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     if (checkInvoicedAmount && amountInvoiced.compareTo(saleOrder.getExTaxTotal()) > 0) {
       throw new AxelorException(
           saleOrder,
-          TraceBackRepository.TYPE_FUNCTIONNAL,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.SO_INVOICE_TOO_MUCH_INVOICED),
           saleOrder.getSaleOrderSeq());
     }

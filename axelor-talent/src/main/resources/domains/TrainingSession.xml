@@ -14,6 +14,8 @@
 		<decimal name="rating" title="Rating" />
 		<string name="fullName" title="Full name" namecolumn="true" />
 		<string name="location" title="Location" />
+		<one-to-many name="trainingRegisterList" ref="com.axelor.apps.talent.db.TrainingRegister" title="Training register list" mappedBy="trainingSession"/>
+		<decimal name="overallRatingToApply" title="Overall rating to apply"/>
 	</entity>
 
 </domain-models>

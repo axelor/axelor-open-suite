@@ -9,7 +9,7 @@
     <many-to-one name="country" ref="com.axelor.apps.base.db.Country" required="true"/>
     <many-to-one name="fiscalYear" ref="com.axelor.apps.base.db.Year" required="true"/>
     <many-to-one name="period" ref="com.axelor.apps.base.db.Period" required="true"/>
-    <string name="productTypeSelect" selection="product.product.type.select" required="true"
+    <string name="productTypeSelect" selection="supplychain.declaration.of.exchanges.product.type.select" required="true"
       default="storable" title="Product type"/>
     <integer name="stockMoveTypeSelect" required="true" selection="stock.move.type.select"
       default="2" title="Stock move type"/>
