@@ -90,7 +90,7 @@
 		<panel name="detailsPanel">
 			<panel name="generalInfoPanel" colSpan="12">
 				<field name="company" form-view="company-form" grid-view="company-grid"
-					colSpan="3"  canEdit="false"/>
+					colSpan="3"  canEdit="false" onChange="action-project-company-on-change-method"/>
 				<field name="clientPartner" domain="self.isCustomer = true AND :company member of self.companySet" onChange="action-project-method-get-partner-data"
 					requiredIf="isBusinessProject" form-view="partner-form" grid-view="partner-grid"
 					colSpan="3" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
@@ -332,7 +332,7 @@
 			<panel title="Configurations" name="configurationsPanel" >
 				<field if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
 					name="productSet" colSpan="12" widget="TagSelect" canEdit="false"
-					domain="self.isActivity = true AND dtype = 'Product'" form-view="product-activity-form"
+					domain="self.isActivity = true AND dtype = 'Product' AND self.id in (select product from ProductCompany prodComp where prodComp.company = :company)" form-view="product-activity-form"
 					grid-view="product-activity-grid" />
 				<field name="teamTaskCategorySet" colSpan="12" widget="TagSelect" />
 				<field name="projectFolderSet" colSpan="12" widget="TagSelect" />
@@ -832,6 +832,10 @@
         <view type="grid" name="task-grid" />
         <view type="form" name="task-form" />
     </action-view>
+ 
+	<action-method name="action-project-company-on-change-method">
+	 	<call class="com.axelor.apps.project.web.ProjectController" method="clearProductSet"/>
+     </action-method>
 
 	<search-filters name="project-filters" model="com.axelor.apps.project.db.Project" title="Project filters">
         <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>

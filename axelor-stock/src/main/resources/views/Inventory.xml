@@ -38,7 +38,7 @@
         <panel-tabs name="mainPanelTab">
         	<panel title="Details">
 	        	<panel name="detailPanel"  colSpan="12">
-              <field name="company" readonlyIf="statusSelect >= 2" onChange="action-inventory-attrs-reset-stock-location" required="true" canEdit="false"/>
+              <field name="company" readonlyIf="statusSelect >= 2" onChange="action-inventory-attrs-reset-stock-location,action-inventory-method-reset-product" required="true" canEdit="false"/>
 							<field name="plannedStartDateT" readonlyIf="statusSelect >= 3" required="true" colSpan="2"/>
 							<field name="plannedEndDateT" readonlyIf="statusSelect >= 5" required="true" colSpan="2" validIf="plannedStartDateT &lt; plannedEndDateT"/>
 							<field name="createdOn" readonly="true" colSpan="2"/>
@@ -69,7 +69,7 @@
 			<panel name="filterPanel" title="Filters" hideIf="statusSelect &lt; 2" readonly="true">
 				<field name="productFamily" grid-view="product-family-grid" form-view="product-family-form"/>
 				<field name="productCategory" grid-view="product-category-grid" form-view="product-category-form"/>
-				<field name="product" grid-view="product-grid" form-view="product-form" domain="dtype = 'Product'"/>
+				<field name="product" grid-view="product-grid" form-view="product-form" domain="dtype = 'Product' AND self.id in (select product from ProductCompany prodComp where prodComp.company = :company)"/>
 				<field name="excludeOutOfStock" colSpan="3"/>
 				<field name="includeObsolete" colSpan="3"/>
 				<panel name="racksRangePanel" title="Racks range">
@@ -82,7 +82,7 @@
     <panel name="fillInventoryPanel" title="Fill inventory with" hideIf="statusSelect >= 2 || stockLocation == null">
 			<field name="productFamily" canEdit="false" grid-view="product-family-grid" form-view="product-family-form"/>
 			<field name="productCategory" canEdit="false" grid-view="product-category-grid" form-view="product-category-form"/>
-			<field name="product" canEdit="false" onSelect="action-inventory-on-select-product" onChange="action-inventory-on-change-product" grid-view="product-grid" form-view="product-form" domain="dtype = 'Product'"/>
+			<field name="product" canEdit="false" onSelect="action-inventory-on-select-product" onChange="action-inventory-on-change-product" grid-view="product-grid" form-view="product-form"/>
       <field name="excludeOutOfStock" colSpan="3"/>
       <field name="includeObsolete" colSpan="3"/>
       <panel name="racksRangePanel" title="Racks range">
@@ -213,12 +213,12 @@
 	</action-attrs>
 	
 	<action-attrs name="action-inventory-on-select-product">
-    	<attribute name="domain" for="product" expr="eval:&quot;self.productCategory.id = ${productCategory.id} AND self.inventoryTypeSelect = :typeSelect AND dtype = 'Product'&quot;" if="productCategory != null &amp;&amp; typeSelect == 2"/>
-		<attribute name="domain" for="product" expr="eval:&quot;self.productCategory.id = ${productCategory.id} AND dtype = 'Product'&quot;" if="productCategory != null &amp;&amp; typeSelect != 2"/>
-		<attribute name="domain" for="product" expr="eval:&quot;self.productFamily.id = ${productFamily.id} AND self.inventoryTypeSelect = :typeSelect AND dtype = 'Product'&quot;" if="productCategory == null &amp;&amp; productFamily != null &amp;&amp; typeSelect == 2"/>
-		<attribute name="domain" for="product" expr="eval:&quot;self.productFamily.id = ${productFamily.id} AND dtype = 'Product'&quot;" if="productCategory == null &amp;&amp; productFamily != null &amp;&amp; typeSelect != 2"/>
-		<attribute name="domain" for="product" expr="eval:&quot;self.inventoryTypeSelect = :typeSelect AND dtype = 'Product'&quot;" if="productCategory == null &amp;&amp; productFamily == null &amp;&amp; typeSelect == 2"/>
-    	<attribute name="domain" for="product" expr="eval:&quot;dtype = 'Product'&quot;" if="productCategory == null &amp;&amp; productFamily == null &amp;&amp; typeSelect != 2"/>
+    <attribute name="domain" for="product" expr="eval:&quot; self.id in (select product from ProductCompany prodComp where prodComp.company = :company) AND dtype = 'Product' AND self.productCategory.id = ${productCategory.id} AND self.inventoryTypeSelect = :typeSelect&quot;" if="productCategory != null &amp;&amp; typeSelect == 2"/>
+		<attribute name="domain" for="product" expr="eval:&quot; self.id in (select product from ProductCompany prodComp where prodComp.company = :company) AND dtype = 'Product' AND self.productCategory.id = ${productCategory.id}&quot;" if="productCategory != null &amp;&amp; typeSelect != 2"/>
+		<attribute name="domain" for="product" expr="eval:&quot; self.id in (select product from ProductCompany prodComp where prodComp.company = :company) AND dtype = 'Product' AND self.productFamily.id = ${productFamily.id} AND self.inventoryTypeSelect = :typeSelect&quot;" if="productCategory == null &amp;&amp; productFamily != null &amp;&amp; typeSelect == 2"/>
+		<attribute name="domain" for="product" expr="eval:&quot; self.id in (select product from ProductCompany prodComp where prodComp.company = :company) AND dtype = 'Product' AND self.productFamily.id = ${productFamily.id}&quot;" if="productCategory == null &amp;&amp; productFamily != null &amp;&amp; typeSelect != 2"/>
+		<attribute name="domain" for="product" expr="eval:&quot; self.id in (select product from ProductCompany prodComp where prodComp.company = :company) AND dtype = 'Product' AND self.inventoryTypeSelect = :typeSelect&quot;" if="productCategory == null &amp;&amp; productFamily == null &amp;&amp; typeSelect == 2"/>
+    <attribute name="domain" for="product" expr="eval:&quot; self.id in (select product from ProductCompany prodComp where prodComp.company = :company) AND dtype = 'Product'&quot;" if="productCategory == null &amp;&amp; productFamily == null &amp;&amp; typeSelect != 2"/>
 	</action-attrs>
 	
 	<action-method name="action-inventory-method-show-stockmoves">
@@ -238,6 +238,10 @@
 	<action-attrs name="action-inventory-attrs-reset-stock-location">
 		<attribute name="value" for="stockLocation" expr="eval: null"/>
 	</action-attrs>
+	
+	<action-method name="action-inventory-method-reset-product">
+		<call class="com.axelor.apps.stock.web.InventoryController" method="clearProduct"/>
+	</action-method>
 	
 	<action-validate name="action-inventory-validate-inventory-line-list">
 		<error message="Please fill all inventory lines" if="inventoryLineList.any { it?.realQty == null }"/>

@@ -17,10 +17,16 @@
  */
 package com.axelor.apps.project.web;
 
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductCompany;
 import com.axelor.apps.project.db.Project;
+import com.axelor.exception.AxelorException;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.util.HashSet;
+import java.util.Set;
 
 @Singleton
 public class ProjectController {
@@ -30,6 +36,31 @@ public class ProjectController {
     if (project.getTeam() != null) {
       project.getTeam().getMembers().forEach(project::addMembersUserSetItem);
       response.setValue("membersUserSet", project.getMembersUserSet());
+    }
+  }
+
+  public void clearProductSet(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    Project project = request.getContext().asType(Project.class);
+
+    Set<Product> productSet = project.getProductSet();
+    Company projectCompany = project.getCompany();
+
+    if (productSet != null && projectCompany != null) {
+
+      Set<Product> finalProductSet = new HashSet<>();
+
+      for (Product product : productSet) {
+        for (ProductCompany productCompany : product.getProductCompanyList()) {
+          if (productCompany.getCompany() == projectCompany) {
+            finalProductSet.add(product);
+            break;
+          }
+        }
+      }
+
+      response.setValue("productSet", finalProductSet);
     }
   }
 }

@@ -59,4 +59,21 @@ public class ContractLineController {
             .createAnalyticDistributionWithTemplate(contractLine, contract);
     response.setValue("analyticMoveLineList", contractLine.getAnalyticMoveLineList());
   }
+
+  public void setProductDomain(ActionRequest request, ActionResponse response) {
+
+    Contract contract = request.getContext().getParent().getParent().asType(Contract.class);
+
+    String domain = "dtype = 'Product'";
+
+    if (contract != null && contract.getCompany() != null) {
+      domain =
+          domain
+              + " AND self.id in (select product from ProductCompany prodComp where prodComp.company.id = "
+              + contract.getCompany().getId()
+              + ")";
+    }
+
+    response.setAttr("product", "domain", domain);
+  }
 }

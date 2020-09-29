@@ -18,6 +18,9 @@
 package com.axelor.apps.production.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductCompany;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.ManufOrder;
@@ -460,6 +463,26 @@ public class ManufOrderController {
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void clearProduct(ActionRequest request, ActionResponse response) {
+    ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+    Product product = manufOrder.getProduct();
+    Company company = manufOrder.getCompany();
+    boolean remove = true;
+
+    if (product != null && company != null) {
+      for (ProductCompany productCompany : product.getProductCompanyList()) {
+        if (company == productCompany.getCompany()) {
+          remove = false;
+          break;
+        }
+      }
+
+      if (remove) {
+        response.setValue("product", null);
+      }
     }
   }
 }

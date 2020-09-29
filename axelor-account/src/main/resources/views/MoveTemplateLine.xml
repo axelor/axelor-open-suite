@@ -29,7 +29,7 @@
 			<field name="partner" canEdit="false" form-view="partner-form" grid-view="partner-grid"/>
 			<field name="debit" readonlyIf="credit > 0" onChange="action-move-template-line-record-update-need-to-check-validity"/>
         	<field name="credit" readonlyIf="debit > 0" onChange="action-move-template-line-record-update-need-to-check-validity"/>
-        	<field name="product" canEdit="false" onChange="action-move-template-line-get-account" form-view="product-form" grid-view="product-grid" domain="dtype = 'Product'"/>
+        	<field name="product" canEdit="false" onSelect="action-consumption-line-product-domain-for-user-company-attrs" onChange="action-move-template-line-get-account" form-view="product-form" grid-view="product-grid"/>
 			<field name="account" canEdit="false" onSelect="action-move-template-line-set-account-domain" grid-view="account-grid" form-view="account-form"/>
 	        <field name="tax" canEdit="false" grid-view="tax-grid" form-view="tax-form"/>
 	        <field name="analyticDistributionTemplate" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form"/>
@@ -42,7 +42,7 @@
 			<field name="name"/>
 			<field name="debitCreditSelect" onChange="action-move-template-line-get-account" required="true"/>
 			<field name="percentage" placeholder="80" onChange="action-template-move-line-check-percent,action-move-template-line-record-update-need-to-check-validity"/>
-			<field name="product" canEdit="false" onChange="action-move-template-line-get-account" form-view="product-form" grid-view="product-grid" domain="dtype = 'Product'"/>
+			<field name="product" canEdit="false" onSelect="action-consumption-line-product-domain-for-user-company-attrs" onChange="action-move-template-line-get-account" form-view="product-form" grid-view="product-grid"/>
 			<field name="account" canEdit="false" onSelect="action-move-template-line-set-account-domain" grid-view="account-grid" form-view="account-form"/>
 			<field name="hasPartnerToDebit" showIf="debitCreditSelect == 'D'"/>
 			<field name="hasPartnerToCredit" showIf="debitCreditSelect == 'C'"/>

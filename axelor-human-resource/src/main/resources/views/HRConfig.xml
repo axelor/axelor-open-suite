@@ -9,7 +9,7 @@
 
 	<form name="hr-config-form" title="Human Resources configuration" model="com.axelor.apps.hr.db.HRConfig" onNew="action-hr-config-record-default" width="large">
 	  	<panel name="mainPanel">
-	    	<field name="company" canEdit="false" form-view="company-form" colSpan="4" grid-view="company-grid"/>
+	    	<field name="company" canEdit="false" form-view="company-form" colSpan="4" grid-view="company-grid" onChange="action-hr-config-company-on-change-method"/>
 	  	</panel>
 	  	<panel name="generalPanel" title="General">
 	  		<field name="publicHolidayEventsPlanning" canNew="true"/>
@@ -20,7 +20,7 @@
 	  	<panel-tabs name="mainPanelTab">
 			<panel name="timesheetPanel" title="Timesheet" if="__config__.app.isApp('timesheet')">
 				<field name="useUniqueProductForTimesheet" />
-				<field name="uniqueTimesheetProduct" requiredIf="useUniqueProductForTimesheet" showIf="useUniqueProductForTimesheet" canNew="true" form-view="product-activity-grid" domain="dtype = 'Product'"/>
+				<field name="uniqueTimesheetProduct" domain="dtype = 'Product' AND self.id in (select product from ProductCompany prodComp where prodComp.company = :company)" requiredIf="useUniqueProductForTimesheet" showIf="useUniqueProductForTimesheet" canNew="true" grid-view="product-activity-grid" form-view="product-activity-form" />
 			    <panel name="timesheetTemplatesPanel" title="Timesheet Templates" colSpan="12">
 					<field name="timesheetMailNotification" colSpan="12"/>
 			    	<field name="sentTimesheetTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!timesheetMailNotification" domain="self.metaModel.name = 'Timesheet'"/>
@@ -46,7 +46,7 @@
 			    	<field name="refusedExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification" domain="self.metaModel.name = 'Expense'"/>
 					<field name="canceledExpenseTemplate" canNew="true" form-view="template-form" grid-view="template-grid" hideIf="!expenseMailNotification" domain="self.metaModel.name = 'Expense'"/>
 			  	</panel>
-		  		<field name="kilometricExpenseProduct" canEdit="false" canView="false" domain="self.expense = true AND dtype = 'Product'" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid" />
+		  		<field name="kilometricExpenseProduct" domain="dtype = 'Product' AND self.id in (select product from ProductCompany prodComp where prodComp.company = :company)" canEdit="false" canView="false" widget="SuggestBox" form-view="product-expense-form" grid-view="product-expense-grid" />
 				<field name="expenseSequence" domain="self.codeSelect = 'expense' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid"/>
 			  	<panel-related name="kilometricAllowanceRateListPanel" field="kilometricAllowanceRateList" colSpan="12" form-view="kilometric-allowance-rate-form" grid-view="kilometric-allowance-rate-grid"/>
 			</panel>
@@ -104,5 +104,9 @@
     	<context name="_showRecord" expr="eval: __self__.hrConfig?.id"/>
     	<context name="_company" expr="eval: __this__"/>
     </action-view>
+    
+	<action-method name="action-hr-config-company-on-change-method">
+	  <call class="com.axelor.apps.hr.web.HRConfigController" method="clearHRConfigProducts"/>
+    </action-method>
 
 </object-views>

@@ -21,8 +21,7 @@
     <form name="consumption-line-form" title="Consumption Line" model="com.axelor.apps.contract.db.ConsumptionLine">
         <panel readonlyIf="isInvoiced" name="mainPanel">
             <field name="product" required="true" canEdit="false"
-                   onChange="action-consumption-line-method-change-product"
-                   domain="dtype = 'Product'"/>
+                   onChange="action-consumption-line-method-change-product" onSelect="action-consumption-line-product-domain-for-user-company-attrs"/>
             <field name="lineDate" required="true"/>
             <field name="reference"/>
             <field name="unit" canEdit="false"/>
@@ -36,5 +35,10 @@
         <call class="com.axelor.apps.contract.web.ConsumptionLineController"
               method="changeProduct"/>
     </action-method>
+    
+    <action-attrs name="action-consumption-line-product-domain-for-user-company-attrs">
+        <attribute for="product" name="domain" expr="eval:&quot;dtype = 'Product' AND self.id in (select product from ProductCompany prodComp where prodComp.company.id = ${__parent__?.company?.id})&quot;"/>
+    </action-attrs>
+    
 
 </object-views>

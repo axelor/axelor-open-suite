@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 	<action-attrs name="action-sale-order-line-attrs-domain-product" id="hr-action-sale-order-line-attrs-domain-product">
-		<attribute name="domain" for="product" expr="self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true and dtype = 'Product'"/>
+		<attribute name="domain" for="product" expr="eval: &quot;self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true AND self.id in (select product from ProductCompany prodComp where prodComp.company.id = ${__parent__?.company?.id}) and dtype = 'Product'&quot;"/>
 	</action-attrs>
 	
 </object-views>

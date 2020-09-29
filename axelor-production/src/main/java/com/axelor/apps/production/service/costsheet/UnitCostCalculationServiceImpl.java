@@ -35,6 +35,7 @@ import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.db.JPA;
+import com.axelor.db.Model;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -59,6 +60,7 @@ import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -478,5 +480,25 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     unitCostCalculation.setStatusSelect(UnitCostCalculationRepository.STATUS_COSTS_UPDATED);
 
     unitCostCalculationRepository.save(unitCostCalculation);
+  }
+
+  @SuppressWarnings("unused")
+  public static String createUnitCostCalculatiomProductDomain(
+      Collection<? extends Model> companySet) {
+    List<Long> companyIds = new ArrayList<>();
+    String domain = "";
+
+    if (companySet != null) {
+      for (Model item : companySet) {
+        companyIds.add(item.getId());
+      }
+
+      domain =
+          "AND self.id in (select product.id from ProductCompany prodComp where prodComp.company.id in "
+              + companyIds.toString().replace("[", "(").replace("]", ")")
+              + ")";
+    }
+
+    return domain;
   }
 }

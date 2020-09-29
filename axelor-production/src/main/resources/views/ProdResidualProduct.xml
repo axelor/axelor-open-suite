@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
     <grid name="prod-residual-product-grid" title="Residual products" model="com.axelor.apps.production.db.ProdResidualProduct" editable="true">
-        <field name="product" form-view="product-form" grid-view="product-grid" onChange="action-prod-residual-product-record-product" domain="self.productTypeSelect = 'storable' AND dtype = 'Product'"/>
+        <field name="product" form-view="product-form" grid-view="product-grid" onChange="action-prod-residual-product-record-product" onSelect="action-prod-residual-product-form-product-domain-for-user-company-attrs"/>
         <field name="qty" aggregate="sum" x-scale="2"/>
         <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     </grid>
@@ -13,7 +13,7 @@
      onNew="action-prod-residual-product-attrs-qty-digits"
      onLoad="action-prod-residual-product-attrs-qty-digits">
 		<panel name="mainPanel">        
-	        <field name="product" canEdit="false" form-view="product-form" grid-view="product-grid" onChange="action-prod-residual-product-record-product" domain="self.productTypeSelect = 'storable' AND dtype = 'Product'"/>
+	        <field name="product" onSelect="action-prod-residual-product-form-product-domain-for-user-company-attrs" canEdit="false" form-view="product-form" grid-view="product-grid" onChange="action-prod-residual-product-record-product"/>
 	        <field name="qty"/>
 	        <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
         </panel>
@@ -25,6 +25,10 @@
     
     <action-attrs name="action-prod-residual-product-attrs-qty-digits">
     	<attribute name="scale" for="qty" expr="eval: __config__.app.getApp('production').nbDecimalDigitForBomQty"/>
+    </action-attrs>
+    
+    <action-attrs name="action-prod-residual-product-form-product-domain-for-user-company-attrs">
+    	<attribute name="domain" for="product" expr="eval: &quot;self.productTypeSelect = 'storable' AND self.id in (select product from ProductCompany prodComp where prodComp.company.id = ${__parent__?.company?.id}) AND dtype = 'Product'&quot;"/>
     </action-attrs>
     
 </object-views>

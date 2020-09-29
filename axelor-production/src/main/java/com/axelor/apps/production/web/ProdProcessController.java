@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.production.web;
 
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductCompany;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
@@ -142,5 +145,27 @@ public class ProdProcessController {
             .param("search-filters", "prod-process-filters")
             .context("_showRecord", String.valueOf(copy.getId()))
             .map());
+  }
+
+  public void clearProduct(ActionRequest request, ActionResponse response) {
+
+    ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
+
+    Product product = prodProcess.getProduct();
+    Company company = prodProcess.getCompany();
+    boolean remove = true;
+
+    if (product != null && company != null) {
+      for (ProductCompany productCompany : product.getProductCompanyList()) {
+        if (company == productCompany.getCompany()) {
+          remove = false;
+          break;
+        }
+      }
+
+      if (remove) {
+        response.setValue("product", null);
+      }
+    }
   }
 }

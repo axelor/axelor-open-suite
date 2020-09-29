@@ -19,7 +19,7 @@
     	  onNew="action-inventory-line-attrs-scale-and-precision" onLoad="action-inventory-line-attrs-scale-and-precision">
     	<panel name="mainPanel">
 	        <field name="product" canEdit="false" onChange="action-inventory-line-method-on-change-product,action-inventory-line-method-compute"
-	        	domain="self.expense = false and self.productTypeSelect = 'storable' and self.stockManaged = true and dtype = 'Product'" form-view="product-form" grid-view="product-grid"/>
+	        	onSelect="action-inventory-line-form-product-domain-for-user-company-attrs" form-view="product-form" grid-view="product-grid"/>
 	        <field name="currentQty" readonly="true"/>
 	        <field name="realQty" onChange="action-inventory-line-method-compute"/>
 	        <field name="unit" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
@@ -43,4 +43,9 @@
     <action-method name="action-inventory-line-method-compute">
     	<call class="com.axelor.apps.stock.web.InventoryLineController" method="compute"/>
     </action-method>
+    
+    <action-attrs name="action-inventory-line-form-product-domain-for-user-company-attrs">
+	 <attribute name="domain" for="product" expr="eval: &quot;self.expense = false and self.productTypeSelect = 'storable' and self.stockManaged = true AND self.id in (select product from ProductCompany prodComp where prodComp.company.id = ${__parent__?.company?.id}) and dtype = 'Product' &quot;"/>
+	</action-attrs>
+	
 </object-views>

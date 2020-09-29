@@ -93,7 +93,7 @@
 		<panel name="detailsPanel" colSpan="8">
 			<field name="manufOrderSeq"  readonly="true" css="bold" colSpan="2"/>
 			<field name="prioritySelect" readonlyIf="statusSelect == 6" colSpan="2"/>
-			<field name="company" widget="SuggestBox" onChange="action-manuf-order-record-empty-workshop" canEdit="false" readonlyIf="statusSelect &gt; 1" colSpan="2" form-view="company-form" grid-view="company-grid"/>
+			<field name="company" widget="SuggestBox" onChange="action-manuf-order-record-empty-workshop,action-manuf-order-method-empty-product-on-company-change" canEdit="false" readonlyIf="statusSelect &gt; 1" colSpan="2" form-view="company-form" grid-view="company-grid"/>
 			<field name="workshopStockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="2" canEdit="false" onChange="action-manuf-order-record-workshop-onchange" readonlyIf="statusSelect &gt; 1" if="__config__.app.getApp('production').getManageWorkshop()" domain="self.company = :company and self.typeSelect = 1 and self.isWorkshop = true"/>
 			<field name="$viewerIsOutsourcing" showTitle="false" readonly="true" showIf="$readonly()" colSpan="2" depends="prodProcess.outsourcing">
 				<viewer>
@@ -374,6 +374,7 @@
     <action name="action-manuf-order-attrs-scale-and-precision"/>
 		<action name="action-production-attrs-hide-purchaseOrder"/>
 	</action-group>
+
 	<action-attrs name="action-production-attrs-hide-purchaseOrder" >
 	    <attribute name="hidden" for="purchaseOrder" expr="eval: !(outsourcing &amp;&amp; prodProcess?.generatePurchaseOrderOnMoPlanning)"/>
 	</action-attrs>
@@ -470,6 +471,10 @@
 	<action-method name="action-manuf-order-method-update-produced-stock-move">
 		<call class="com.axelor.apps.production.web.ManufOrderController" method="updateProducedStockMoveFromManufOrder"/>
 	</action-method>
+	
+	<action-method name="action-manuf-order-method-empty-product-on-company-change">
+    	<call class="com.axelor.apps.production.web.ManufOrderController" method="clearProduct"/>
+    </action-method>
 
    	<action-view name="action-manuf-order-view-operation-order-to-consume-product" title="To consume products" model="com.axelor.apps.production.db.ProdProduct">
   		<view type="grid" name="prod-product-consume-manuf-order-grid"/>
@@ -506,10 +511,10 @@
 	</action-attrs>
 
 	<action-attrs name="action-manuf-order-attrs-filter-product">
-		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.product.id = '${billOfMaterial?.product?.id}' AND self.defaultBillOfMaterial.prodProcess.id = '${prodProcess?.id}' AND dtype = 'Product'&quot;" if="billOfMaterial?.product != null &amp;&amp; prodProcess != null"/>
-		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.product.id = '${billOfMaterial?.product?.id}' AND dtype = 'Product'&quot;" if="billOfMaterial?.product != null &amp;&amp; prodProcess == null"/>
-		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.prodProcess.id = '${prodProcess?.id}' AND dtype = 'Product'&quot;" if="billOfMaterial?.product == null &amp;&amp; prodProcess != null"/>
-		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND dtype = 'Product'&quot;" if="billOfMaterial?.product == null &amp;&amp; prodProcess == null"/>
+		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.product.id = '${billOfMaterial?.product?.id}' AND self.defaultBillOfMaterial.prodProcess.id = '${prodProcess?.id}' AND self.id in (select product from ProductCompany prodComp where prodComp.company = :company) AND dtype = 'Product'&quot;" if="billOfMaterial?.product != null &amp;&amp; prodProcess != null"/>
+		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.product.id = '${billOfMaterial?.product?.id}' AND self.id in (select product from ProductCompany prodComp where prodComp.company = :company) AND dtype = 'Product'&quot;" if="billOfMaterial?.product != null &amp;&amp; prodProcess == null"/>
+		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.defaultBillOfMaterial.prodProcess.id = '${prodProcess?.id}' AND self.id in (select product from ProductCompany prodComp where prodComp.company = :company) AND dtype = 'Product'&quot;" if="billOfMaterial?.product == null &amp;&amp; prodProcess != null"/>
+		<attribute name="domain" for="product" expr="eval: &quot; self.productTypeSelect = 'storable' AND (self.productSubTypeSelect = 1 OR self.productSubTypeSelect = 2) AND self.id in (select product from ProductCompany prodComp where prodComp.company = :company) AND dtype = 'Product'&quot;" if="billOfMaterial?.product == null &amp;&amp; prodProcess == null"/>
 	</action-attrs>
 
 	<action-attrs name="action-manuf-order-attrs-filter-bill-of-material">

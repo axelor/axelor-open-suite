@@ -17,6 +17,9 @@
  */
 package com.axelor.apps.production.web;
 
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductCompany;
 import com.axelor.apps.production.db.UnitCostCalculation;
 import com.axelor.apps.production.db.repo.UnitCostCalculationRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
@@ -36,7 +39,9 @@ import com.google.inject.Singleton;
 import java.io.File;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.Set;
 
 @Singleton
 public class UnitCostCalculationController {
@@ -130,6 +135,29 @@ public class UnitCostCalculationController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void clearUnitCostCalculationProduct(ActionRequest request, ActionResponse response) {
+
+    UnitCostCalculation unitCostCalculation =
+        request.getContext().asType(UnitCostCalculation.class);
+
+    Set<Company> companySet = unitCostCalculation.getCompanySet();
+    Set<Product> productSet = unitCostCalculation.getProductSet();
+    Set<Product> finalProductSet = new HashSet<>();
+
+    if (productSet != null && companySet != null) {
+      for (Product product : productSet) {
+        for (ProductCompany ProductCompany : product.getProductCompanyList()) {
+          if (companySet.contains(ProductCompany.getCompany())) {
+            finalProductSet.add(product);
+            break;
+          }
+        }
+      }
+
+      response.setValue("productSet", finalProductSet);
     }
   }
 }

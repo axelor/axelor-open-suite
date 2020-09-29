@@ -61,7 +61,7 @@
     </grid>
 
 	<form name="product-form" title="Product" model="com.axelor.apps.base.db.Product" 
-	onNew="action-group-base-product-onnew"
+	onNew="action-group-base-product-onnew" onSave="action-base-product-onsave-method"
 	onLoad="action-group-product-onload" width="large">
  		<toolbar>
     		<button name="showProductSheetBtn" title="Product sheet" icon="fa-print" onClick="save,action-product-method-show-product-sheet"/>
@@ -409,6 +409,7 @@
 		<action name="action-product-attrs-title-unit"/>
 		<action name="action-product-attrs-enable-product-company-list"/>
 		<action name="action-product-record-service-stock-managed"/>
+		<action name="action-product-method-add-product-company"/>
     </action-group>
 
     <action-group name="action-group-base-product-producttype-onchange">
@@ -572,8 +573,16 @@
 		<call class="com.axelor.apps.base.web.ProductController" method="generateProductVariants"/>
 	</action-method>
 	
+	<action-method name="action-product-method-add-product-company" >
+		<call class="com.axelor.apps.base.web.ProductController" method="addProductCompany"/>
+	</action-method>
+	
 	<action-method name="action-product-method-update-products-prices" >
 		<call class="com.axelor.apps.base.web.ProductController" method="updateProductsPrices"/>
+	</action-method>
+	
+	<action-method name="action-base-product-onsave-method" >
+		<call class="com.axelor.apps.base.web.ProductController" method="setProductCompanyData"/>
 	</action-method>
 	
     <action-validate name="action-product-validate-end-date">

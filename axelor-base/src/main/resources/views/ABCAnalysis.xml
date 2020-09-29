@@ -34,7 +34,7 @@
                 </viewer>
             </field>
             <field name="name" readonlyIf="statusSelect != 1" required="true"/>
-            <field name="company" onChange="action-abc-analysis-record-reset-stock-location" readonlyIf="statusSelect == 2"/>
+            <field name="company" onChange="action-abc-analysis-record-reset-stock-location,action-abc-analysis-company-on-change-method" readonlyIf="statusSelect == 2"/>
             <field name="createdOn"/>
             <field name="createdBy"/>
             <field name="startDate" showIf="typeSelect == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || typeSelect == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" requiredIf="typeSelect == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl' || typeSelect == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'" onChange="action-abc-analysis-validate-check-dates" readonlyIf="statusSelect == 2"/>
@@ -103,11 +103,11 @@
 
     <action-attrs name="action-abc-analysis-attrs-product-set-domain">
         <attribute name="domain" for="productSet" if="typeSelect == 'com.axelor.apps.purchase.service.ABCAnalysisServicePurchaseImpl'"
-                   expr="eval: &quot; self.productTypeSelect = 'storable' and self.purchasable = true and dtype = 'Product'&quot; "/>
+                   expr="eval: &quot; self.productTypeSelect = 'storable' and self.purchasable = true and dtype = 'Product' AND self.id in (select product from ProductCompany prodComp where prodComp.company = :company) &quot; "/>
         <attribute name="domain" for="productSet" if="typeSelect == 'com.axelor.apps.sale.service.ABCAnalysisServiceSaleImpl'"
-                   expr="eval: &quot; self.productTypeSelect = 'storable' and self.sellable = true and dtype = 'Product'&quot; "/>
+                   expr="eval: &quot; self.productTypeSelect = 'storable' and self.sellable = true and dtype = 'Product' AND self.id in (select product from ProductCompany prodComp where prodComp.company = :company) &quot; "/>
         <attribute name="domain" for="productSet" if="typeSelect == 'com.axelor.apps.stock.service.ABCAnalysisServiceStockImpl'"
-                   expr="eval: &quot; self.productTypeSelect = 'storable' and self.stockManaged = true and dtype = 'Product'&quot; "/>
+                   expr="eval: &quot; self.productTypeSelect = 'storable' and self.stockManaged = true and dtype = 'Product' AND self.id in (select product from ProductCompany prodComp where prodComp.company = :company) &quot; "/>
     </action-attrs>
 
     <action-method name="action-abc-analysis-method-init-abc-classes">
@@ -128,6 +128,10 @@
 
     <action-method name="action-abc-analysis-method-print-report">
         <call class="com.axelor.apps.base.web.ABCAnalysisController" method="printReport"/>
+    </action-method>
+    
+    <action-method name="action-abc-analysis-company-on-change-method">
+    	<call class="com.axelor.apps.base.web.ABCAnalysisController" method="clearProductSet"/>
     </action-method>
 
 </object-views>
