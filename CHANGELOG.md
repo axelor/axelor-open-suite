@@ -8,6 +8,7 @@
 - Stock move : "Refresh the products net mass" button placed in the "Tools" menu.
 - SaleOrder / StockMove : remove available status for service type product.
 - DeclarationOfExchanges : corrected wrong translation for product type select
+- ACCOUNTING REPORT : Rework fixed asset summary report
 
 ## Bug Fixes
 - Move : Fix NPE when changing date.
@@ -22,6 +23,8 @@
 - LOGISTICAL FORM : Fix exception translation
 - Invoice Refund: fix refund not updating invoiced state of stock move and orders.
 - Logistical form : Remove duplicate status select
+- SaleOrderLine : Not showing picking order info for services
+- FORECAST RECAP : Fix fitler on invoices which was using bankDetails field instead of companyBankDetails
 - Tracking number : Fix wrong form view on search
 
 ## [5.4.0] - 2020-09-16
