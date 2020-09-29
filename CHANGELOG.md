@@ -22,6 +22,7 @@
 - LOGISTICAL FORM : Fix exception translation
 - Invoice Refund: fix refund not updating invoiced state of stock move and orders.
 - Logistical form : Remove duplicate status select
+- SaleOrderLine : Not showing picking order info for services
 
 ## [5.4.0] - 2020-09-16
 ## Features
