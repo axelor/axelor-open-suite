@@ -1,11 +1,14 @@
 # Changelog
 ## [Unreleased 5.0.13]
 ## Improvements
+- SaleOrderLine : Not showing picking order info for services
+
 ## Bug Fixes
 - BANK ORDER REPORT: fix the ordering by sequence.
 - Product form: fix typo in help message.
 - Inventory: fix error on stock location select when company is not filled.
 - TRACKING MAIL NOTIFICATION : corrected wrong partner receiving email selected. 
+
 
 ## [5.0.12] - 2020-04-02
 ## Improvements
