@@ -565,6 +565,8 @@
 "com.axelor.apps.supplychain.job.BillSubJob",,,
 "com.axelor.apps.supplychain.service.batch.SupplychainBatchService",,,
 "day(s)",,,
+"declarationOfExchanges.ProductType.product","Bien",,
+"declarationOfExchanges.Service","Service",,
 "mainPanel",,,
 "month(s)",,,
 "value:Supplychain","Supplychain",,
