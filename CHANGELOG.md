@@ -2,6 +2,7 @@
 ## [Unreleased 5.2.16]
 ## Improvements
 - DeclarationOfExchanges : corrected wrong translation for product type select
+- SaleOrderLine : Not showing picking order info for services
 
 ## Bug Fixes
 

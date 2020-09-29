@@ -184,6 +184,7 @@
 					<field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
 				</panel>
 				<field name="$isReadOnly" hidden="true"/>
+				<field name="product.productTypeSelect" hidden="true"/>
 			</panel>
 			<panel name="packPanel" title="Pack lines" showIf="typeSelect == 2" readonlyIf="packPriceSelect == 0 || $isReadOnly !== false" if="__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt()" >
 				<panel-related name="subLineListPanel" field="subLineList" onChange="action-sale-order-line-compute-total-pack" colSpan="12" form-view="sale-order-line-form" grid-view="sale-order-line-grid" canNew="false" canRemove="false"/>
@@ -201,7 +202,7 @@
 				<field name="estimatedDelivDate" readonlyIf="$availabiltyRequest"/>
 				<field name="deliveredQty" readonly="true" readonlyIf="$isReadOnly !== false"/>
                 <button name="$previewBtn" title="See stock details"  icon="fa-cubes" colSpan="4" widget="info-button" onClick="action-stock-location-line-view-for-a-product-from-saleorderline-view" if-module="axelor-supplychain"/>
-				<field name="pickingOrderInfo" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" readonlyIf="$isReadOnly !== false"/>
+				<field name="pickingOrderInfo" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" readonlyIf="$isReadOnly !== false" hideIf="product.productTypeSelect == 'service'"/>
 				<panel-dashlet name="stockMoveLineOfSOPanel" title="Stock Moves" action="action-sale-order-line-view-stock-move-line" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" readonlyIf="$isReadOnly !== false"/>
 			</panel>
 			<panel name="invoicingFollowUpPanel" title="Invoicing" readonlyIf="$isReadOnly !== false" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
