@@ -87,4 +87,9 @@
     	<call class="com.axelor.apps.bankpayment.web.BankStatementController" method="runBankReconciliation"/>	
     </action-method>
 
+	<search-filters name="bank-statement-filters" model="com.axelor.apps.bankpayment.db.BankStatement" title="Bank Statement filters">
+        <field name="ebicsPartner.ebicsBank" hidden="true" if="eval: !__config__.app.getApp('bank-payment').enableEbicsModule"/>
+		<field name="ebicsPartner" hidden="true" if="eval: !__config__.app.getApp('bank-payment').enableEbicsModule"/>
+    </search-filters>
+    
 </object-views>

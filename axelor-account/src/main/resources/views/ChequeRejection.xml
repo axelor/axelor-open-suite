@@ -84,6 +84,7 @@
     </action-record>
     
     <search-filters name="cheque-rejection-filters" model="com.axelor.apps.account.db.ChequeRejection" title="Cheque rejection filters">
+    	<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
 		<filter title="Recent rejects">
 			<domain>self.rejectionDate &gt;= :_newDate1</domain>
 		</filter>

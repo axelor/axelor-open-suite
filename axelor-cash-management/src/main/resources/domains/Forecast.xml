@@ -8,11 +8,10 @@
 	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true" title="Company" />
 	<many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank" required="true"/>
 	<many-to-one name="forecastReason" ref="com.axelor.apps.cash.management.db.ForecastReason" required="true" title="Reason" />
-	<integer name="typeSelect" selection="iaccount.payment.mode.in.out.select" title="Type" required="true"/>
 	<decimal name="amount" title="Amount"/>
 	<date name="estimatedDate" title="Estimated date"/>
+	<date name="realizationDate" title="Realization date"/>
 	<string name="comments" title="Comments" large="true"/>
-	<integer name="realizedSelect" selection="forecast.realized.select" title="Realized" default="2"/>
 	<many-to-one name="forecastGenerator" ref="com.axelor.apps.cash.management.db.ForecastGenerator"/>
 	
 	<extra-code><![CDATA[

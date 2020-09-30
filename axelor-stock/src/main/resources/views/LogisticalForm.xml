@@ -55,8 +55,7 @@
         </panel>
         <panel-tabs colSpan="12" name="mainPanelTab">
             <panel name="generalInfoPanel" title="General">
-                <field name="statusSelect" widget="NavSelect"/>
-                <field name="isEmailSent" showIf="isEmailSent"/>
+                <field name="isEmailSent" showIf="isEmailSent" colSpan="12"/>
                 <field name="carrierPartner"
                     domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)"
                     form-view="partner-form" grid-view="partner-grid" canEdit="false"
@@ -181,5 +180,9 @@
 	<action-method name="action-logistical-form-method-refresh-net-mass">
 		<call class="com.axelor.apps.stock.web.LogisticalFormController" method="refreshProductNetMass"/>
 	</action-method>
+	
+	<search-filters name="logistical-form-filters" model="com.axelor.apps.stock.db.LogisticalForm" title="Logistical form filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
 
 </object-views>

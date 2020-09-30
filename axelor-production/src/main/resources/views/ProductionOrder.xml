@@ -117,6 +117,7 @@
 	</action-view>
 
     <search-filters name="production-order-filters" model="com.axelor.apps.production.db.ProductionOrder" title="Production order filters">
+		<field name="project" hidden="true" if="!__config__.app.getApp('production').getManageBusinessProduction()"/>
 		<filter title="Production orders closed">
 			<domain>self.isClosed = true</domain>
 		</filter>

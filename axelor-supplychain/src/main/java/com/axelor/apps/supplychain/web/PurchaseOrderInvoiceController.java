@@ -49,6 +49,7 @@ public class PurchaseOrderInvoiceController {
                 .model(Invoice.class.getName())
                 .add("form", "invoice-form")
                 .add("grid", "invoice-grid")
+                .param("search-filters", "customer-invoices-filters")
                 .domain("self.purchaseOrder.id = " + String.valueOf(invoice.getId()))
                 .context("_showRecord", String.valueOf(invoice.getId()))
                 .map());

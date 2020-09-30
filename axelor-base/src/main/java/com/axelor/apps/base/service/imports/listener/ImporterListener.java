@@ -81,7 +81,7 @@ public class ImporterListener implements Listener {
     TraceBackService.trace(
         new AxelorException(
             e,
-            TraceBackRepository.TYPE_FUNCTIONNAL,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.IMPORTER_LISTERNER_4),
             name),
         ExceptionOriginRepository.IMPORT);

@@ -56,5 +56,9 @@
   <action-method name="action-reconcile-group-method-unletter">
     <call class="com.axelor.apps.account.web.ReconcileGroupController" method="unletter"/>
   </action-method>
+  
+  <search-filters name="reconcile-group-filters" model="com.axelor.apps.account.db.ReconcileGroup" title="Reconcile group filters">
+    	<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+  </search-filters>
 
 </object-views>

@@ -83,6 +83,14 @@
 	</form>
 
 	<search-filters name="payment-schedule-line-filters" model="com.axelor.apps.account.db.PaymentScheduleLine" title="Payment schedule line filters">
+		<field name="debitBlockingOk" hidden="true" if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
+		<field name="rejectDate" hidden="true" if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
+		<field name="interbankCodeLine" hidden="true" if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
+		<field name="debitNumber" hidden="true" if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
+		<field name="fromReject" hidden="true" if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
+        <field name="rejectMoveLine" hidden="true" if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
+		<field name="advanceOrPaymentMove" hidden="true" if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
+		<field name="advanceMoveLine" hidden="true" if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
 		<filter title="Rejected schedule lines">
 			<domain>self.rejectDate IS NOT NULL</domain>
 		</filter>

@@ -25,7 +25,6 @@
        	   	<field name="toDate" onChange="action-forecast-generator-validate-dates"/>
 		   	<field name="periodicitySelect"/>
 	       	<field name="forecastReason"/>
-	       	<field name="realizedSelect" widget="RadioSelect"/>
 	       	<field name="comments" colSpan="12"/>
 	       	<panel-dashlet name="forecastListPanel" title="Forecasts generated" action="action-forecast-generator-view-show-forecast-list" showIf="id" colSpan="12"/>
 	 	</panel>
@@ -63,4 +62,7 @@
 		<context name="forecastGeneratorId" expr="eval: __self__?.id"/>
 	</action-view>
     
+    <search-filters name="forecast-generator-filters" model="com.axelor.apps.cash.management.db.ForecastGenerator" title="Forecast Assistant filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
 </object-views>

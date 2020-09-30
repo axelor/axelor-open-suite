@@ -35,7 +35,6 @@ import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -58,16 +57,27 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
 
   protected PayrollPreparationService payrollPreparationService;
 
-  @Inject protected PayrollPreparationRepository payrollPreparationRepository;
+  protected PayrollPreparationRepository payrollPreparationRepository;
 
-  @Inject protected CompanyRepository companyRepository;
+  protected CompanyRepository companyRepository;
 
-  @Inject protected PeriodRepository periodRepository;
+  protected PeriodRepository periodRepository;
+
+  protected HrBatchRepository hrBatchRepository;
 
   @Inject
-  public BatchPayrollPreparationGeneration(PayrollPreparationService payrollPreparationService) {
+  public BatchPayrollPreparationGeneration(
+      PayrollPreparationService payrollPreparationService,
+      CompanyRepository companyRepository,
+      PeriodRepository periodRepository,
+      HrBatchRepository hrBatchRepository,
+      PayrollPreparationRepository payrollPreparationRepository) {
     super();
     this.payrollPreparationService = payrollPreparationService;
+    this.companyRepository = companyRepository;
+    this.periodRepository = periodRepository;
+    this.hrBatchRepository = hrBatchRepository;
+    this.payrollPreparationRepository = payrollPreparationRepository;
   }
 
   @Override
@@ -78,9 +88,9 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
     duplicateAnomaly = 0;
     configurationAnomaly = 0;
     total = 0;
-    hrBatch = Beans.get(HrBatchRepository.class).find(batch.getHrBatch().getId());
+    hrBatch = hrBatchRepository.find(batch.getHrBatch().getId());
     if (hrBatch.getCompany() != null) {
-      company = Beans.get(CompanyRepository.class).find(hrBatch.getCompany().getId());
+      company = companyRepository.find(hrBatch.getCompany().getId());
     }
     checkPoint();
   }
@@ -129,6 +139,10 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
     for (Employee employee : employeeList) {
       try {
         employee = employeeRepository.find(employee.getId());
+        hrBatch = hrBatchRepository.find(batch.getHrBatch().getId());
+        if (hrBatch.getCompany() != null) {
+          company = companyRepository.find(hrBatch.getCompany().getId());
+        }
         if (employee.getMainEmploymentContract() != null
             && employee.getMainEmploymentContract().getStatus()
                 != EmploymentContractRepository.STATUS_CLOSED) {
