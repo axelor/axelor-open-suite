@@ -20,6 +20,7 @@
 - Invoice Refund: fix refund not updating invoiced state of stock move and orders.
 - SaleOrderLine : Not showing picking order info for services
 - Logistical form : Remove duplicate status select in form view.
+- Invoice : fix for hideDiscount doesn't work.
 
 ## [5.3.12] - 2020-09-16
 ## Bug Fixes
