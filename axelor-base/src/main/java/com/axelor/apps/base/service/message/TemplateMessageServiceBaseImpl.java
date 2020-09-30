@@ -62,7 +62,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
   public TemplateMessageServiceBaseImpl(
       MessageService messageService, TemplateContextService templateContextService) {
     super(
-        AuthUtils.getUser().getActiveCompany().getTimezone(),
+        AuthUtils.getUser().getActiveCompany() != null ? AuthUtils.getUser().getActiveCompany().getTimezone() : "",
         messageService,
         templateContextService);
   }
