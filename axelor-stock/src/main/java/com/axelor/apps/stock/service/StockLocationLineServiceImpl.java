@@ -35,6 +35,7 @@ import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.db.repo.WapHistoryRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -752,7 +753,10 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     wapHistoryRepo.save(
         new WapHistory(
             stockLocationLine,
-            appBaseService.getTodayDate(stockLocationLine.getStockLocation().getCompany()),
+            appBaseService.getTodayDate(
+                stockLocationLine.getStockLocation() != null
+                    ? stockLocationLine.getStockLocation().getCompany()
+                    : AuthUtils.getUser().getActiveCompany()),
             wap,
             stockLocationLine.getCurrentQty(),
             stockLocationLine.getUnit(),

@@ -53,6 +53,7 @@ import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
@@ -718,7 +719,10 @@ public class IrrecoverableService {
     BigDecimal taxRate =
         taxService.getTaxRate(
             tax,
-            appAccountService.getTodayDate(paymentScheduleLine.getPaymentSchedule().getCompany()));
+            appAccountService.getTodayDate(
+                paymentScheduleLine.getPaymentSchedule() != null
+                    ? paymentScheduleLine.getPaymentSchedule().getCompany()
+                    : AuthUtils.getUser().getActiveCompany()));
 
     BigDecimal amount = paymentScheduleLine.getInTaxAmount();
 

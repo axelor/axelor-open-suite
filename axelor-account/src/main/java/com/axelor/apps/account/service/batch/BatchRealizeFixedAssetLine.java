@@ -24,6 +24,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.FixedAssetLineService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -66,7 +67,12 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
             .bind("statusSelect", FixedAssetLineRepository.STATUS_PLANNED)
             .bind("startDate", startDate)
             .bind("endDate", endDate)
-            .bind("dateNow", appBaseService.getTodayDate(batch.getAccountingBatch().getCompany()))
+            .bind(
+                "dateNow",
+                appBaseService.getTodayDate(
+                    batch.getAccountingBatch() != null
+                        ? batch.getAccountingBatch().getCompany()
+                        : AuthUtils.getUser().getActiveCompany()))
             .fetch();
 
     for (FixedAssetLine fixedAssetLine : fixedAssetLineList) {

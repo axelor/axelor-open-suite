@@ -28,6 +28,7 @@ import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherAdvanceService;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtService;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -91,7 +92,7 @@ public class LunchVoucherAdvanceController {
         lunchVoucherAdvance.getEmployee().getName()
             + "-"
             + Beans.get(AppBaseService.class)
-                .getTodayDate(lunchVoucherAdvance.getEmployee().getUser().getActiveCompany())
+                .getTodayDate(getCompany(lunchVoucherAdvance))
                 .format(DateTimeFormatter.ISO_DATE);
     try {
       String fileLink =
@@ -105,6 +106,14 @@ public class LunchVoucherAdvanceController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  private Company getCompany(LunchVoucherAdvance lunchVoucherAdvance) {
+    if (lunchVoucherAdvance.getEmployee() != null
+        && lunchVoucherAdvance.getEmployee().getUser() != null) {
+      return lunchVoucherAdvance.getEmployee().getUser().getActiveCompany();
+    }
+    return AuthUtils.getUser().getActiveCompany();
   }
 
   private String getTimezone(LunchVoucherAdvance lunchVoucherAdvance) {

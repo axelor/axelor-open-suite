@@ -172,7 +172,11 @@ public class ExpenseServiceImpl implements ExpenseService {
       createAnalyticDistributionWithTemplate(expenseLine);
     }
     if (analyticMoveLineList != null) {
-      LocalDate date = appAccountService.getTodayDate(expenseLine.getExpense().getCompany());
+      LocalDate date =
+          appAccountService.getTodayDate(
+              expenseLine.getExpense() != null
+                  ? expenseLine.getExpense().getCompany()
+                  : AuthUtils.getUser().getActiveCompany());
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
         analyticMoveLineService.updateAnalyticMoveLine(
             analyticMoveLine, expenseLine.getUntaxedAmount(), date);
@@ -188,7 +192,10 @@ public class ExpenseServiceImpl implements ExpenseService {
             expenseLine.getAnalyticDistributionTemplate(),
             expenseLine.getUntaxedAmount(),
             AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE,
-            appAccountService.getTodayDate(expenseLine.getExpense().getCompany()));
+            appAccountService.getTodayDate(
+                expenseLine.getExpense() != null
+                    ? expenseLine.getExpense().getCompany()
+                    : AuthUtils.getUser().getActiveCompany()));
 
     expenseLine.setAnalyticMoveLineList(analyticMoveLineList);
     return expenseLine;

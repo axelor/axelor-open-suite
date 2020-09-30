@@ -412,7 +412,11 @@ public class EventController {
       }
     }
     LocalDate endDate =
-        Beans.get(AppBaseService.class).getTodayDate(event.getUser().getActiveCompany());
+        Beans.get(AppBaseService.class)
+            .getTodayDate(
+                event.getUser() != null
+                    ? event.getUser().getActiveCompany()
+                    : AuthUtils.getUser().getActiveCompany());
     if (endType == 2) {
       if (conf.getEndDate() == null) {
         throw new AxelorException(

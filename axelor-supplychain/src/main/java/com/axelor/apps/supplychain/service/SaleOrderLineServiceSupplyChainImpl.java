@@ -40,6 +40,7 @@ import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
@@ -107,7 +108,11 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       createAnalyticDistributionWithTemplate(saleOrderLine);
     }
     if (analyticMoveLineList != null) {
-      LocalDate date = appAccountService.getTodayDate(saleOrderLine.getSaleOrder().getCompany());
+      LocalDate date =
+          appAccountService.getTodayDate(
+              saleOrderLine.getSaleOrder() != null
+                  ? saleOrderLine.getSaleOrder().getCompany()
+                  : AuthUtils.getUser().getActiveCompany());
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
         analyticMoveLineService.updateAnalyticMoveLine(
             analyticMoveLine, saleOrderLine.getCompanyExTaxTotal(), date);
@@ -122,7 +127,10 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
             saleOrderLine.getAnalyticDistributionTemplate(),
             saleOrderLine.getCompanyExTaxTotal(),
             AnalyticMoveLineRepository.STATUS_FORECAST_ORDER,
-            appAccountService.getTodayDate(saleOrderLine.getSaleOrder().getCompany()));
+            appAccountService.getTodayDate(
+                saleOrderLine.getSaleOrder() != null
+                    ? saleOrderLine.getSaleOrder().getCompany()
+                    : AuthUtils.getUser().getActiveCompany()));
 
     saleOrderLine.setAnalyticMoveLineList(analyticMoveLineList);
     return saleOrderLine;
