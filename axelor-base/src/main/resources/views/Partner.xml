@@ -882,7 +882,7 @@
 	</action-record>
 
 	<action-record name="action-partner-record-partner-type-select" model="com.axelor.apps.base.db.Partner" >
-		<field name="partnerTypeSelect" expr="#{__user__.activeCompany.defaultPartnerTypeSelect}"/>
+		<field name="partnerTypeSelect" expr="eval: __user__.activeCompany?.defaultPartnerTypeSelect"/>
 	</action-record>
 	
 	<action-record name="action-partner-record-simple-and-full-name" model="com.axelor.apps.base.db.Partner" >
@@ -891,7 +891,7 @@
 	</action-record>
 	
 	<action-record name="action-partner-record-set-default" model="com.axelor.apps.base.db.Partner">
-		<field name="currency" expr="#{__user__.activeCompany.currency}" if="#{!isContact}"/>
+		<field name="currency" expr="eval: __user__.activeCompany?.currency" if="#{!isContact}"/>
 		<field name="invoiceSendingFormatSelect" expr="#{'emailpaper'}" if="#{!isContact}" />
 		<field name="user"  expr="#{__user__}"/>
 		<field name="team"  expr="#{__user__.activeTeam}"/>

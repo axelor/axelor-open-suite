@@ -259,7 +259,7 @@
         <field name="targetTypeSelect" expr="eval: _xTargetType" if="_xTargetType != null"/>
         <field name="currentContractVersion" expr="action:action-record-contract-version-default-record"/>
         <field name="partner" expr="eval: _partner"/>
-        <field name="currency" expr="eval: __user__.activeCompany.currency"/>
+        <field name="currency" expr="eval: __user__.activeCompany?.currency"/>
         <field name="project" expr="eval:_project" if="_project != null"/>
     </action-record>
 

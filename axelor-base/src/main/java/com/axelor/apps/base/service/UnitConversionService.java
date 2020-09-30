@@ -130,7 +130,9 @@ public class UnitConversionService {
     if (product != null) {
       this.maker =
           new TemplateMaker(
-                  AuthUtils.getUser().getActiveCompany() != null ? AuthUtils.getUser().getActiveCompany().getTimezone() : "",
+              AuthUtils.getUser().getActiveCompany() != null
+                  ? AuthUtils.getUser().getActiveCompany().getTimezone()
+                  : "",
               Locale.FRENCH,
               TEMPLATE_DELIMITER,
               TEMPLATE_DELIMITER);
