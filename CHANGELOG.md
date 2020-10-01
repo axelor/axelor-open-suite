@@ -3,6 +3,7 @@
 ## Improvements
 - DeclarationOfExchanges : corrected wrong translation for product type select
 - SaleOrderLine : Not showing picking order info for services
+- Stock config : set all the booleans of the stock move printing settings section by default to true.
 
 ## Bug Fixes
 - INVOICE : Fix copy still having references to orders and stock moves
