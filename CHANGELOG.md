@@ -29,6 +29,7 @@
 - FORECAST RECAP : Fix fitler on invoices which was using bankDetails field instead of companyBankDetails
 - Tracking number : Fix wrong form view on search
 - Invoice : fix for hideDiscount doesn't work.
+- ACCOUNTING BATCH : corrected conflict between boolean isTaxRequiredOnMoveLine and closure/opening accounting batch. 
 
 ## [5.4.0] - 2020-09-16
 ## Features

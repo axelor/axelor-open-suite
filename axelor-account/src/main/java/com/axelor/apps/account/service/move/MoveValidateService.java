@@ -151,19 +151,19 @@ public class MoveValidateService {
 
     MoveLineService moveLineService = Beans.get(MoveLineService.class);
 
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      Account account = moveLine.getAccount();
-      if (account.getIsTaxAuthorizedOnMoveLine()
-          && account.getIsTaxRequiredOnMoveLine()
-          && moveLine.getTaxLine() == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            String.format(
-                I18n.get(IExceptionMessage.MOVE_9), account.getName(), moveLine.getName()));
-      }
+    if (move.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE
+        && move.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_OPENING) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        Account account = moveLine.getAccount();
+        if (account.getIsTaxAuthorizedOnMoveLine()
+            && account.getIsTaxRequiredOnMoveLine()
+            && moveLine.getTaxLine() == null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_MISSING_FIELD,
+              String.format(
+                  I18n.get(IExceptionMessage.MOVE_9), account.getName(), moveLine.getName()));
+        }
 
-      if (move.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE
-          && move.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_OPENING) {
         if (moveLine.getAnalyticDistributionTemplate() == null
             && ObjectUtils.isEmpty(moveLine.getAnalyticMoveLineList())
             && account.getAnalyticDistributionAuthorized()
@@ -184,11 +184,10 @@ public class MoveValidateService {
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               String.format(I18n.get(IExceptionMessage.MOVE_11), moveLine.getName()));
         }
+        moveLineService.validateMoveLine(moveLine);
       }
-      moveLineService.validateMoveLine(moveLine);
+      this.validateWellBalancedMove(move);
     }
-
-    this.validateWellBalancedMove(move);
   }
 
   /**
