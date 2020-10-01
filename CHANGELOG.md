@@ -31,6 +31,7 @@
 - CLIENT STOCK MOVE: corrected unable to realize if real quantity > to quantity on a stock move line.
 - Partner: fix supplier quality rating not updated on supplier quality rating select change.
 - Invoice Refund: fix refund not updating invoiced state of stock move and orders.
+- ACCOUNTING BATCH : corrected conflict between boolean isTaxRequiredOnMoveLine and closure/opening accounting batch. 
 
 ## [5.2.14] - 2020-08-20
 ## Bug Fixes
