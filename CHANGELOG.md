@@ -14,6 +14,7 @@
 - LOGISTICAL FORM : Fix NPE when computing volume
 - INVOICE : Fix copy still having references to orders and stock moves
 - Tracking number : Fix wrong form view on search
+- ACCOUNTING BATCH : corrected conflict between boolean isTaxRequiredOnMoveLine and closure/opening accounting batch. 
 
 ## [5.1.16] - 2020-09-09
 ## Improvements
