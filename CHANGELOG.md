@@ -10,6 +10,7 @@
 - SaleOrder / StockMove : remove available status for service type product.
 - DeclarationOfExchanges : corrected wrong translation for product type select
 - ACCOUNTING REPORT : Rework fixed asset summary report
+- Stock config : set all the booleans of the stock move printing settings section by default to true.
 
 ## Bug Fixes
 - Move : Fix NPE when changing date.
