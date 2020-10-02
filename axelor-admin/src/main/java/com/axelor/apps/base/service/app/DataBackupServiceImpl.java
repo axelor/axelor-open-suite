@@ -143,7 +143,7 @@ public class DataBackupServiceImpl implements DataBackupService {
     runner.run(job);
   }
 
-  public boolean SeuencesExist() {
-    return restoreService.SeuencesExist();
+  public boolean sequencesOrMrpLineTypesExist() {
+    return restoreService.sequencesOrMrpLineTypesExist();
   }
 }
