@@ -14,6 +14,7 @@
 - LOGISTICAL FORM : Fix NPE when computing volume
 - INVOICE : Fix copy still having references to orders and stock moves
 - Tracking number : Fix wrong form view on search
+- Account Equiv - NPE solved and made toAccount and fromAccount required.
 
 ## [5.1.16] - 2020-09-09
 ## Improvements
