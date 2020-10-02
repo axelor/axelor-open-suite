@@ -35,7 +35,7 @@ public class DataBackupController {
   public void RestoreBackUp(ActionRequest req, ActionResponse res) throws IOException {
     DataBackupService dataBackupService = Beans.get(DataBackupService.class);
     DataBackup dataBackup = req.getContext().asType(DataBackup.class);
-    if (dataBackupService.SeuencesExist()) {
+    if (dataBackupService.sequencesOrMrpLineTypesExist()) {
       res.setError("Remove all Sequences And MrpLineTypes to restore backup");
     } else {
       dataBackupService.restoreBackUp(dataBackup);
