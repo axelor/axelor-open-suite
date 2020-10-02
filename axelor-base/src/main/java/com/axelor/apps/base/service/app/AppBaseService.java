@@ -37,18 +37,18 @@ public interface AppBaseService extends AppService {
   // Date du jour
 
   /**
-   * Récupérer la date du jour avec l'heure en fonction de la timezone du serveur. Retourne la date
-   * du jour paramétré dans l'utilisateur si existe, sinon récupère celle de l'administration
-   * générale, sinon date du jour. private
+   * Retrieve the current date and time according to the server timezone. Returns the current date
+   * set in the user if it exists, otherwise retrieves the one from the general administration,
+   * otherwise the current date.
    *
    * @return
    */
   public ZonedDateTime getTodayDateTime();
 
   /**
-   * Récupérer la date du jour avec l'heure en fonction de la timezone renseignée dans la société
-   * donnée. Retourne la date du jour paramétré dans l'utilisateur si existe, sinon récupère celle
-   * de l'administration générale, sinon date du jour. private
+   * Retrieve the current date and time according to the timezone entered in the given company.
+   * Returns the current date set in the user if it exists, otherwise retrieve the general
+   * administration's one, otherwise current date.
    *
    * @return
    */
@@ -65,9 +65,9 @@ public interface AppBaseService extends AppService {
   public LocalDate getTodayDate();
 
   /**
-   * Récupérer la date du jour en fonction de la timezone renseignée dans la société donnée.
-   * Retourne la date du jour paramétré dans l'utilisateur si existe, sinon récupère celle de
-   * l'administration générale, sinon date du jour.
+   * Retrieve the current date according to the timezone entered in the given company. Returns the
+   * current date set in the user if it exists, otherwise retrieves the one from the general
+   * administration, otherwise the current date.
    *
    * @return
    */
@@ -86,7 +86,7 @@ public interface AppBaseService extends AppService {
   // Conversion de devise
 
   /**
-   * Obtenir la tva à 0%
+   * Get 0% vat
    *
    * @return
    */
