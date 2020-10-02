@@ -54,9 +54,10 @@
 				<field name="company" widget="SuggestBox"
 					onChange="action-group-account-account-management-onchange-common"
 					form-view="company-form" grid-view="company-grid" canEdit="false"/>
-				<field name="product" canEdit="false" form-view="product-form"
-					grid-view="product-grid" showIf="typeSelect == 1" domain="dtype = 'Product'"/>
-				<field name="productFamily" canEdit="false" form-view="product-family-form" grid-view="product-family-grid" showIf="typeSelect == 1"/>
+				<field name="product" canEdit="false" form-view="product-form" grid-view="product-grid"
+							 hidden="true" domain="dtype = 'Product'"/>
+				<field name="productFamily" canEdit="false" form-view="product-family-form" grid-view="product-family-grid"
+							 hidden="true"/>
 			</panel>
 
 			<!-- PRODUCT -->
@@ -206,7 +207,9 @@
 	</action-group>
 	
 	<action-attrs name="action-account-management-attrs-onLoad">
-		<attribute name="hidden"  expr="eval:__parent__?._model == 'com.axelor.apps.base.db.Product'" for="productFamily"/>
-		<attribute name="hidden"  expr="eval:__parent__?._model == 'com.axelor.apps.base.db.ProductFamily'" for="product"/>
+		<attribute name="hidden"  expr="eval:__parent__?._model == 'com.axelor.apps.base.db.Product' || typeSelect != 1"
+							 for="productFamily"/>
+		<attribute name="hidden"  expr="eval:__parent__?._model == 'com.axelor.apps.base.db.ProductFamily' || typeSelect != 1"
+							 for="product"/>
 	</action-attrs>
 </object-views>

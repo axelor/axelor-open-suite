@@ -472,10 +472,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             toStatus,
             lastFutureStockMoveDate,
             stockMoveLine.getTrackingNumber());
-        if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+        if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL
+            && toStatus == StockMoveRepository.STATUS_REALIZED) {
           this.updateAveragePriceLocationLine(toStockLocation, stockMoveLine, fromStatus, toStatus);
+          weightedAveragePriceService.computeAvgPriceForProduct(stockMoveLine.getProduct());
         }
-        weightedAveragePriceService.computeAvgPriceForProduct(stockMoveLine.getProduct());
       }
     }
   }
@@ -1193,7 +1194,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     if (stockMoveLine.getStockMove() != null) {
       this.updateAvailableQty(stockMoveLine, stockMoveLine.getStockMove().getFromStockLocation());
     }
-    if (stockMoveLine.getProduct() != null) {
+    if (stockMoveLine.getProduct() != null
+        && !stockMoveLine
+            .getProduct()
+            .getProductTypeSelect()
+            .equals(ProductRepository.PRODUCT_TYPE_SERVICE)) {
       BigDecimal availableQty = stockMoveLine.getAvailableQty();
       BigDecimal availableQtyForProduct = stockMoveLine.getAvailableQtyForProduct();
       BigDecimal realQty = stockMoveLine.getRealQty();
