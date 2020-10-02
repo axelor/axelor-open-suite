@@ -3,6 +3,7 @@
 ## Features
 ## Improvements
 - SaleOrder : Set team according to sale config.
+- Base App Service : getTodayDate method now take a required timezone parameter to fix time shift. The old getTodayDate method is now deprecated.
 
 ## Bug Fixes
 - Move : Fix NPE when changing date.
