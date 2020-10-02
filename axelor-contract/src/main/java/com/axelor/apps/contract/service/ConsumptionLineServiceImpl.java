@@ -20,10 +20,15 @@ package com.axelor.apps.contract.service;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.ConsumptionLine;
+import com.axelor.apps.contract.db.Contract;
+import com.axelor.apps.contract.db.ContractLine;
+import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.exception.IExceptionMessage;
+import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
+import java.util.Optional;
 
 public class ConsumptionLineServiceImpl implements ConsumptionLineService {
 
@@ -39,7 +44,11 @@ public class ConsumptionLineServiceImpl implements ConsumptionLineService {
     Preconditions.checkNotNull(product, I18n.get(IExceptionMessage.CONTRACT_EMPTY_PRODUCT));
     line.setLineDate(
         appBaseService.getTodayDate(
-            line.getContractLine().getContractVersion().getContract().getCompany()));
+            Optional.ofNullable(line.getContractLine())
+                .map(ContractLine::getContractVersion)
+                .map(ContractVersion::getContract)
+                .map(Contract::getCompany)
+                .orElse(AuthUtils.getUser().getActiveCompany())));
     line.setProduct(product);
     line.setReference(product.getName());
     line.setUnit(product.getUnit());

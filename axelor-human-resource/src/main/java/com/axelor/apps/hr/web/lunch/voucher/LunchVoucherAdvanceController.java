@@ -20,6 +20,7 @@ package com.axelor.apps.hr.web.lunch.voucher;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LunchVoucherAdvance;
 import com.axelor.apps.hr.exception.IExceptionMessage;
@@ -29,6 +30,7 @@ import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherAdvanceService;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherMgtService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.db.EntityHelper;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -40,6 +42,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 @Singleton
 public class LunchVoucherAdvanceController {
@@ -92,7 +95,11 @@ public class LunchVoucherAdvanceController {
         lunchVoucherAdvance.getEmployee().getName()
             + "-"
             + Beans.get(AppBaseService.class)
-                .getTodayDate(getCompany(lunchVoucherAdvance))
+                .getTodayDate(
+                    Optional.ofNullable(lunchVoucherAdvance.getEmployee())
+                        .map(Employee::getUser)
+                        .map(User::getActiveCompany)
+                        .orElse(AuthUtils.getUser().getActiveCompany()))
                 .format(DateTimeFormatter.ISO_DATE);
     try {
       String fileLink =
@@ -106,14 +113,6 @@ public class LunchVoucherAdvanceController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-  }
-
-  private Company getCompany(LunchVoucherAdvance lunchVoucherAdvance) {
-    if (lunchVoucherAdvance.getEmployee() != null
-        && lunchVoucherAdvance.getEmployee().getUser() != null) {
-      return lunchVoucherAdvance.getEmployee().getUser().getActiveCompany();
-    }
-    return AuthUtils.getUser().getActiveCompany();
   }
 
   private String getTimezone(LunchVoucherAdvance lunchVoucherAdvance) {
