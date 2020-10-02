@@ -321,7 +321,7 @@
     	<action name="action-event-method-compute-from-start-date-time" if="endDateTime != null"/>
     	<action name="action-event-default-record-user" if="_lead == null &amp;&amp; _partner == null"/>
     	<action name="action-event-record-event-from-lead" if="_lead != null"/>
-    	<action name="action-event-record-event-from-partner" if="_partner != null || _parentPartner != null"/>
+    	<action name="action-event-record-event-from-partner" if="_partner != null"/>
     	<action name="action-event-record-task-status-select" if="typeSelect == 3"/>
     	<action name="action-event-record-event-from-sale-order" if="_saleOrder != null" />
     	<action name="action-event-method-add-guest"/>
@@ -414,7 +414,6 @@
     <action-record name="action-event-record-event-from-partner" model="com.axelor.apps.crm.db.Event">
     	<field name="partner" expr="eval: _partner" if="_partner != null &amp;&amp; _partner.isContact == false &amp;&amp; _partner.isCustomer == true"/>
     	<field name="partner" expr="eval: _partner.mainPartner" if="_partner.isContact == true"/>
-    	<field name="partner" expr="eval: _parentPartner" if="_parentPartner != null  &amp;&amp; _partner == null"/>
     	<field name="contactPartner" expr="eval: _partner" if="_partner.isContact == true"/>
     	<field name="description" expr="eval: _partner.description"/>
     	<field name="user" expr="eval: __repo__(User).find(_partner.user.id)" if="_partner.user != null" />

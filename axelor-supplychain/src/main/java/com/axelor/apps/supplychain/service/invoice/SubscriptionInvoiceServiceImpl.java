@@ -23,6 +23,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -67,7 +68,9 @@ public class SubscriptionInvoiceServiceImpl implements SubscriptionInvoiceServic
                     + "AND (self.contractEndDate IS NULL OR self.contractEndDate >= :subScriptionDate)")
             .bind("saleOrderType", SaleOrderRepository.SALE_ORDER_TYPE_SUBSCRIPTION)
             .bind("saleOrderStatus", SaleOrderRepository.STATUS_ORDER_CONFIRMED)
-            .bind("subScriptionDate", appBaseService.getTodayDate());
+            .bind(
+                "subScriptionDate",
+                appBaseService.getTodayDate(AuthUtils.getUser().getActiveCompany()));
 
     if (limit != null) {
       return query.fetch(limit);
@@ -89,7 +92,7 @@ public class SubscriptionInvoiceServiceImpl implements SubscriptionInvoiceServic
       if (saleOrder.getPeriodicityTypeSelect() == 1) {
         temporalUnit = ChronoUnit.DAYS;
       }
-      invoice.setInvoiceDate(appBaseService.getTodayDate());
+      invoice.setInvoiceDate(appBaseService.getTodayDate(saleOrder.getCompany()));
       invoice.setOperationSubTypeSelect(InvoiceRepository.OPERATION_SUB_TYPE_SUBSCRIPTION);
 
       LocalDate invoicingPeriodStartDate = saleOrder.getNextInvoicingStartPeriodDate();

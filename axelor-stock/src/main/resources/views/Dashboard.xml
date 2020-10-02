@@ -7,29 +7,29 @@
 	<action-view title="Customer deliveries by country" name="dashlet.stockMove.nbr.delivery.by.country">
 	  <view type="chart" name="chart.stockMove.nbr.delivery.by.country"/>
 	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()" />
-	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
 	</action-view>
 	
 	<action-view title="Product deliveries in qty by country" name="dashlet.stockMoveLine.product.delivery.by.country">
 	  <view type="chart" name="chart.stockMoveLine.product.delivery.by.country"/>
 	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()" />
-	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
 	</action-view>
 	
 	<action-view title="Product deliveries in qty by country by accounting family" name="dashlet.stockMoveLine.product.delivery.by.country.by.family">
 	  <view type="chart" name="chart.stockMoveLine.product.delivery.by.country.by.family"/>
 	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()" />
-	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
 	</action-view>
 	
 	<action-view title="Customer deliveries statistics" name="dashlet.stockMove.deliveries.time.delay.in.nbr">
 	  <view type="chart" name="chart.stockMove.deliveries.time.delay.in.nbr"/>  
-	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
 	</action-view>
 	
 	<action-view title="Customer average delivery delay" name="dashlet.stockMove.average.delivery.time.delay">
 	  <view type="chart" name="chart.stockMove.average.delivery.time.delay"/>  
-	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
 	</action-view>
 
 <!-- 	Stock Dashboard -->

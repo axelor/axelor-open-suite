@@ -44,6 +44,7 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.MoreObjects;
@@ -111,7 +112,11 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     if ((analyticMoveLineList == null || analyticMoveLineList.isEmpty())) {
       return createAnalyticDistributionWithTemplate(invoiceLine);
     } else {
-      LocalDate date = appAccountService.getTodayDate();
+      LocalDate date =
+          appAccountService.getTodayDate(
+              invoiceLine.getInvoice() != null
+                  ? invoiceLine.getInvoice().getCompany()
+                  : AuthUtils.getUser().getActiveCompany());
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
         analyticMoveLineService.updateAnalyticMoveLine(
             analyticMoveLine, invoiceLine.getCompanyExTaxTotal(), date);
@@ -127,7 +132,10 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
             invoiceLine.getAnalyticDistributionTemplate(),
             invoiceLine.getCompanyExTaxTotal(),
             AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE,
-            appAccountService.getTodayDate());
+            appAccountService.getTodayDate(
+                invoiceLine.getInvoice() != null
+                    ? invoiceLine.getInvoice().getCompany()
+                    : AuthUtils.getUser().getActiveCompany()));
 
     return analyticMoveLineList;
   }
@@ -137,7 +145,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       throws AxelorException {
 
     return accountManagementAccountService.getTaxLine(
-        appAccountService.getTodayDate(),
+        appAccountService.getTodayDate(invoice.getCompany()),
         invoiceLine.getProduct(),
         invoice.getCompany(),
         invoice.getPartner().getFiscalPosition(),

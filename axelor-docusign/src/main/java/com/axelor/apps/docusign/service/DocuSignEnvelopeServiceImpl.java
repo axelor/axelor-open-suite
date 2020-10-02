@@ -16,6 +16,7 @@ import com.axelor.apps.docusign.db.repo.DocuSignEnvelopeRepository;
 import com.axelor.apps.docusign.db.repo.DocuSignFieldSettingRepository;
 import com.axelor.apps.docusign.exceptions.IExceptionMessage;
 import com.axelor.apps.message.service.TemplateContextService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
@@ -131,8 +132,13 @@ public class DocuSignEnvelopeServiceImpl implements DocuSignEnvelopeService {
             (Class<? extends Model>) Class.forName(metaModel.getFullName());
         Model model = JPA.find(modelClass, objectId);
         if (ObjectUtils.notEmpty(model)) {
+          String timezone = null;
+          Company activeCompany = AuthUtils.getUser().getActiveCompany();
+          if (activeCompany != null) {
+            timezone = activeCompany.getTimezone();
+          }
           TemplateMaker maker =
-              new TemplateMaker(Locale.FRENCH, TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
+              new TemplateMaker(timezone, Locale.FRENCH, TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
           maker.setContext(model);
           if (StringUtils.notEmpty(envelopeSetting.getName())) {
             maker.setTemplate(envelopeSetting.getName());

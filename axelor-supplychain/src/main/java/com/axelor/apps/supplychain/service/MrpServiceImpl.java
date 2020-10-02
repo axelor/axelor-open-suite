@@ -155,7 +155,7 @@ public class MrpServiceImpl implements MrpService {
     // TODO check that the different types used for purchase/manufOrder proposal are in stock type
     // TODO check that all types exist + override the method on production module
 
-    today = appBaseService.getTodayDate();
+    today = appBaseService.getTodayDate(mrp.getStockLocation().getCompany());
 
     mrpRepository.save(mrp);
   }
