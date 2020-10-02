@@ -18,6 +18,7 @@
 package com.axelor.apps.contract.web;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
@@ -49,7 +50,8 @@ public class ContractController {
         Beans.get(ContractRepository.class)
             .find(request.getContext().asType(Contract.class).getId());
     try {
-      Beans.get(ContractService.class).waitingCurrentVersion(contract, getTodayDate());
+      Beans.get(ContractService.class)
+          .waitingCurrentVersion(contract, getTodayDate(contract.getCompany()));
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -62,7 +64,8 @@ public class ContractController {
             .find(request.getContext().asType(Contract.class).getId());
     try {
       Invoice invoice =
-          Beans.get(ContractService.class).ongoingCurrentVersion(contract, getTodayDate());
+          Beans.get(ContractService.class)
+              .ongoingCurrentVersion(contract, getTodayDate(contract.getCompany()));
       if (invoice == null) {
         response.setReload(true);
       } else {
@@ -136,7 +139,7 @@ public class ContractController {
         Beans.get(ContractRepository.class)
             .find(request.getContext().asType(Contract.class).getId());
     try {
-      Beans.get(ContractService.class).renewContract(contract, getTodayDate());
+      Beans.get(ContractService.class).renewContract(contract, getTodayDate(contract.getCompany()));
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -232,8 +235,8 @@ public class ContractController {
     }
   }
 
-  private LocalDate getTodayDate() {
-    return Beans.get(AppBaseService.class).getTodayDate();
+  private LocalDate getTodayDate(Company company) {
+    return Beans.get(AppBaseService.class).getTodayDate(company);
   }
 
   public void isValid(ActionRequest request, ActionResponse response) {

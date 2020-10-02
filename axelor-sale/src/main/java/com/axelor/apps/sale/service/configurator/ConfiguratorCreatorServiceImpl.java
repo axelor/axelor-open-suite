@@ -48,8 +48,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -63,10 +61,13 @@ import javax.validation.constraints.NotNull;
 public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorService {
 
   private ConfiguratorCreatorRepository configuratorCreatorRepo;
+  private AppBaseService appBaseService;
 
   @Inject
-  public ConfiguratorCreatorServiceImpl(ConfiguratorCreatorRepository configuratorCreatorRepo) {
+  public ConfiguratorCreatorServiceImpl(
+      ConfiguratorCreatorRepository configuratorCreatorRepo, AppBaseService appBaseService) {
     this.configuratorCreatorRepo = configuratorCreatorRepo;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -153,9 +154,9 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
       case "boolean":
         return true;
       case "datetime":
-        return LocalDateTime.of(LocalDate.now(), LocalTime.now());
+        return appBaseService.getTodayDateTime(AuthUtils.getUser().getActiveCompany());
       case "date":
-        return LocalDate.now();
+        return appBaseService.getTodayDate(AuthUtils.getUser().getActiveCompany());
       case "time":
         return LocalTime.now();
       case "panel":

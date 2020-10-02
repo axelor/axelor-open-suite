@@ -19,6 +19,7 @@ package com.axelor.apps.base.service.app;
 
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.DataBackup;
+import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.common.StringUtils;
 import com.axelor.data.csv.CSVBind;
@@ -563,7 +564,7 @@ public class DataBackupCreateService {
   }
 
   public String createRelativeDate(LocalDate date) {
-    LocalDate currentDate = LocalDate.now();
+    LocalDate currentDate = DateTool.getTodayDate(null);
     long years = currentDate.until(date, ChronoUnit.YEARS);
     currentDate = currentDate.plusYears(years);
 

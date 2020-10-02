@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
@@ -51,12 +52,14 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
 
   protected AccountConfigService accountConfigService;
   protected SaleOrderRepository saleOrderRepository;
+  protected AppBaseService appBaseService;
 
   @Inject
   public SaleOrderCreateServiceSupplychainImpl(
       PartnerService partnerService,
       SaleOrderRepository saleOrderRepo,
       AppSaleService appSaleService,
+      AppBaseService appBaseService,
       SaleOrderService saleOrderService,
       SaleOrderComputeService saleOrderComputeService,
       AccountConfigService accountConfigService,
@@ -66,6 +69,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
 
     this.accountConfigService = accountConfigService;
     this.saleOrderRepository = saleOrderRepository;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -214,7 +218,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
             numSeq,
             externalRef,
             stockLocation,
-            LocalDate.now(),
+            appBaseService.getTodayDate(company),
             priceList,
             clientPartner,
             team,

@@ -124,7 +124,8 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
 
     subrogationRelease.setSequenceNumber(sequenceNumber);
     subrogationRelease.setStatusSelect(SubrogationReleaseRepository.STATUS_TRANSMITTED);
-    subrogationRelease.setTransmissionDate(appBaseService.getTodayDate());
+    subrogationRelease.setTransmissionDate(
+        appBaseService.getTodayDate(subrogationRelease.getCompany()));
   }
 
   protected void checkIfAnOtherSubrogationAlreadyExist(SubrogationRelease subrogationRelease)
@@ -241,7 +242,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
     Account factorDebitAccount = accountConfigService.getFactorDebitAccount(accountConfig);
 
     if (subrogationRelease.getAccountingDate() == null) {
-      subrogationRelease.setAccountingDate(appBaseService.getTodayDate());
+      subrogationRelease.setAccountingDate(appBaseService.getTodayDate(company));
     }
 
     this.checkIfAnOtherSubrogationAlreadyExist(subrogationRelease);

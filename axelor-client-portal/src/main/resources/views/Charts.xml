@@ -28,7 +28,7 @@
 	
   <action-view name="dashlet.client.portal.sum.invoices.four.months" title="chart">
     <view type="chart" name="chart.client.portal.sum.invoices.four.months"/>
-    <context name="fromDate" expr="eval: java.time.LocalDate.now().minusMonths(3)"/>
+    <context name="fromDate" expr="eval: __config__.app.getTodayDate(__user__.activeCompany).minusMonths(3)"/>
   	<context name="userPartner" expr="eval: __user__.partner"/>
   </action-view>
 	
