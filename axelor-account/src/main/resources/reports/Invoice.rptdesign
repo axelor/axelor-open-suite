@@ -6844,7 +6844,7 @@ vars["in_total"] = vars["temp_in_total"];
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">row["invoice_sum_discount_line"] == 0 || row["in_ati"]</expression>
+                                                    <expression name="valueExpr" type="javascript">row["invoice_sum_discount_line"] == 0 || row["in_ati"] || row._outer["hideDiscount"] == 1</expression>
                                                 </structure>
                                             </list-property>
                                             <cell id="4433">
