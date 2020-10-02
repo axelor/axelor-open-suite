@@ -18,7 +18,11 @@
 package com.axelor.apps.base.service.app;
 
 import com.axelor.app.AppSettings;
-import com.axelor.apps.base.db.*;
+import com.axelor.apps.base.db.AppBase;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.CurrencyConversionLine;
+import com.axelor.apps.base.db.Language;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
