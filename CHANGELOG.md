@@ -30,6 +30,7 @@
 - Tracking number : Fix wrong form view on search
 - Invoice : fix for hideDiscount doesn't work.
 - Account Equiv - NPE solved and made toAccount and fromAccount required.
+- Databackup : remove transient fields from backup.
 
 ## [5.4.0] - 2020-09-16
 ## Features

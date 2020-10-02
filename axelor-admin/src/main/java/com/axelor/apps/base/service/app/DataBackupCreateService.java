@@ -377,7 +377,8 @@ public class DataBackupCreateService {
                         .getPackage()
                         .equals(Package.getPackage("com.axelor.meta.db"))
                     && !property.getTarget().isAssignableFrom(MetaFile.class)
-                    && !property.getTarget().isAssignableFrom(MetaJsonField.class))))) {
+                    && !property.getTarget().isAssignableFrom(MetaJsonField.class))))
+        && !property.isTransient()) {
       return true;
     }
     return false;
