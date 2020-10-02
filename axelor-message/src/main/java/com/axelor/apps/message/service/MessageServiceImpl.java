@@ -288,19 +288,22 @@ public class MessageServiceImpl extends JpaSupport implements MessageService {
 
     mailBuilder.subject(message.getSubject());
 
-    if (message.getFromEmailAddress() != null) {
-      if (!Strings.isNullOrEmpty(message.getFromEmailAddress().getAddress())) {
-        log.debug("Override from :::  {}", this.getFullEmailAddress(message.getFromEmailAddress()));
-        mailBuilder.from(this.getFullEmailAddress(message.getFromEmailAddress()));
-      } else {
-        throw new AxelorException(
-            message, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, IExceptionMessage.MESSAGE_5);
-      }
-    } else if (!Strings.isNullOrEmpty(mailAccount.getFromAddress())) {
+    if (!Strings.isNullOrEmpty(mailAccount.getFromAddress())) {
       String fromAddress = mailAccount.getFromAddress();
       if (!Strings.isNullOrEmpty(mailAccount.getFromName())) {
         fromAddress =
             String.format("%s <%s>", mailAccount.getFromName(), mailAccount.getFromAddress());
+      } else if (message.getFromEmailAddress() != null) {
+        if (!Strings.isNullOrEmpty(message.getFromEmailAddress().getAddress())) {
+          log.debug(
+              "Override from :::  {}", this.getFullEmailAddress(message.getFromEmailAddress()));
+          mailBuilder.from(this.getFullEmailAddress(message.getFromEmailAddress()));
+        } else {
+          throw new AxelorException(
+              message,
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              IExceptionMessage.MESSAGE_5);
+        }
       }
       mailBuilder.from(fromAddress);
     }

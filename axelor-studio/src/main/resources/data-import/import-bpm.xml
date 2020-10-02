@@ -239,7 +239,6 @@
 				<bind node="mediaTypeSelect" to="mediaTypeSelect"/>
 				<bind node="language" to="language" search="self.code = :language" create="false"/>
 				<bind node="metaModel" to="metaModel" search="self.name = :metaModel" create="false"/>
-				<bind node="fromAdress" to="fromAdress"/>
 				<bind node="replyToRecipients" to="replyToRecipients"/>
 				<bind node="toRecipients" to="toRecipients"/>
 				<bind node="ccRecipients" to="ccRecipients"/>

@@ -1,0 +1,7 @@
+---
+title: Email message template: remove from address in template
+type: fix
+description: |
+  Setting a custom `from` address per email template is now disabled, as the from
+  address should depend only on the SMTP account. The `from` should now always
+  be set in SMTP account configuration.
