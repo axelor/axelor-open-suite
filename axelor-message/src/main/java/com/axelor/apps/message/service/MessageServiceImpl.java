@@ -284,6 +284,13 @@ public class MessageServiceImpl implements MessageService {
         throw new AxelorException(
             message, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, IExceptionMessage.MESSAGE_7);
       }
+    } else if (!Strings.isNullOrEmpty(mailAccount.getFromAddress())) {
+      String fromAddress = mailAccount.getFromAddress();
+      if (!Strings.isNullOrEmpty(mailAccount.getFromName())) {
+        fromAddress =
+            String.format("%s <%s>", mailAccount.getFromName(), mailAccount.getFromAddress());
+      }
+      mailBuilder.from(fromAddress);
     }
     if (replytoRecipients != null && !replytoRecipients.isEmpty()) {
       mailBuilder.replyTo(Joiner.on(",").join(replytoRecipients));

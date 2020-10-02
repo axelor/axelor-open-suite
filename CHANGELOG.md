@@ -10,6 +10,7 @@
 - TRACKING MAIL NOTIFICATION : corrected wrong partner receiving email selected. 
 - Tracking number : Fix wrong form view on search
 - Account Equiv - NPE solved and made toAccount and fromAccount required.
+- SMTP Account: the user can now configure the sending email address instead of using the login.
 
 ## [5.0.12] - 2020-04-02
 ## Improvements
