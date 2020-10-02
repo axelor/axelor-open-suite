@@ -17,6 +17,8 @@
 		<boolean name="isDefault" title="Default account"/>
 		<boolean name="isValid" title="Valid"/>
 		<string name="signature" title="Signature" large="true"/>
+		<string name="fromName" title="From email name"/>
+		<string name="fromAddress" title="From email address"/>
 
 		<extra-code><![CDATA[
 	
