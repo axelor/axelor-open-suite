@@ -233,7 +233,9 @@
 		<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
 		<field name="getInfoFromFirstMoveLineOk" expr="eval: true"/>
-		<field name="date" expr="eval:__config__.app.getTodayDate()" if="date == null"/>
+		<field name="date" expr="eval:__config__.app.getTodayDate(null)" if="date == null"/>
+		<field name="date" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" if="date == null &amp;&amp; __user__.activeCompany != null"/>
+		<field name="date" expr="eval:__config__.app.getTodayDate(__repo__(Company).all().fetchOne())" if="date == null &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
 		<field name="technicalOriginSelect" expr="1"/>
     </action-record>
     

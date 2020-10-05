@@ -60,7 +60,7 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
       generateTimesheetLine(timer);
     } else {
       throw new AxelorException(
-          TraceBackRepository.TYPE_FUNCTIONNAL,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.NO_TIMESHEET_CREATED),
           timer);
     }

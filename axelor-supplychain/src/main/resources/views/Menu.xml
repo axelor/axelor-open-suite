@@ -45,7 +45,7 @@
 	<action-view name="stock.mrp.forecast" title="Forecasts" model="com.axelor.apps.supplychain.db.MrpForecast">
    	    <view type="grid" name="mrp-forecast-grid"/>
 	    <view type="form" name="mrp-forecast-form"/>
-   		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+   		<context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
 	</action-view>
 
 	
@@ -68,7 +68,7 @@
 		<domain>self.operationSubTypeSelect = 6 and self.statusSelect = 1</domain>
 		<context name="_operationTypeSelect" expr="eval:3"/>
 		<context name="_operationSubTypeSelect" expr="eval:6"/>
-		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
 	</action-view>
 	
 	<menuitem title="Declarations of exchanges" name="supplychain-declarations-of-exchanges"

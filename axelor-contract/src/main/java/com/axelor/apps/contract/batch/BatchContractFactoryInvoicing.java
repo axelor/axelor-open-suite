@@ -44,7 +44,11 @@ public class BatchContractFactoryInvoicing extends BatchContractFactory {
                 + "AND self.currentContractVersion.automaticInvoicing = TRUE "
                 + "AND self.invoicingDate <= :date "
                 + "AND :batch NOT MEMBER of self.batchSet")
-        .bind("date", baseService.getTodayDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+        .bind(
+            "date",
+            baseService
+                .getTodayDate(batch.getContractBatch().getCompany())
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
         .bind("batch", batch);
   }
 

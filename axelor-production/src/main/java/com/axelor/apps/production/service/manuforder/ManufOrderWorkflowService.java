@@ -257,7 +257,7 @@ public class ManufOrderWorkflowService {
         .computeCostPrice(
             manufOrder,
             CostSheetRepository.CALCULATION_END_OF_PRODUCTION,
-            Beans.get(AppBaseService.class).getTodayDate());
+            Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()));
 
     // update price in product
     Product product = manufOrder.getProduct();
@@ -344,7 +344,7 @@ public class ManufOrderWorkflowService {
         .computeCostPrice(
             manufOrder,
             CostSheetRepository.CALCULATION_PARTIAL_END_OF_PRODUCTION,
-            Beans.get(AppBaseService.class).getTodayDate());
+            Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()));
     Beans.get(ManufOrderStockMoveService.class).partialFinish(manufOrder);
     ProductionConfig productionConfig =
         manufOrder.getCompany() != null

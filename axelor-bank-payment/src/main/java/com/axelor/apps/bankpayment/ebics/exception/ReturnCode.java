@@ -48,7 +48,7 @@ public class ReturnCode {
    * @throws EbicsException
    */
   public void throwException() throws AxelorException {
-    throw new AxelorException(TraceBackRepository.TYPE_FUNCTIONNAL, I18n.get(text));
+    throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(text));
   }
 
   /**

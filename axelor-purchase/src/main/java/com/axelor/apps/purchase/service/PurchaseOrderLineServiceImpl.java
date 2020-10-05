@@ -282,7 +282,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
     if (price == null || inTaxPrice == null) {
       throw new AxelorException(
-          TraceBackRepository.TYPE_FUNCTIONNAL,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG));
     }
 

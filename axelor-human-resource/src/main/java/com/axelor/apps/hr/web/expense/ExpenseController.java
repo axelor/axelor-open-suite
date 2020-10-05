@@ -492,7 +492,9 @@ public class ExpenseController {
     int compt = 0;
     for (ExpenseLine expenseLine : expenseService.getExpenseLineList(expense)) {
       compt++;
-      if (expenseLine.getExpenseDate().isAfter(Beans.get(AppBaseService.class).getTodayDate())) {
+      if (expenseLine
+          .getExpenseDate()
+          .isAfter(Beans.get(AppBaseService.class).getTodayDate(expense.getCompany()))) {
         expenseLineListId.add(compt);
       }
     }

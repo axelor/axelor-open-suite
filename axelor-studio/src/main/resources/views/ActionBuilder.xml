@@ -84,8 +84,8 @@
   
   <action-attrs name="action-action-builder-view-name-domain">
     <attribute name="domain" for="viewName" expr="eval:&quot;self.type = '${viewType}' &quot;" if="viewType == 'dashboard'"/>
-  	<attribute name="domain" for="viewName" expr="eval:&quot;self.type = '${viewType}' and self.model = 'com.axelor.meta.db.MetaJsonRecord' and self.name = 'custom-model-${_parent.model}-${viewType}' &quot;" if="_parent.isJson &amp;&amp; viewType != 'dashboard'"/>
-  	<attribute name="domain" for="viewName" expr="eval:&quot;self.type = '${viewType}' and self.model = '${_parent.model}'&quot;" if="!_parent.isJson &amp;&amp; viewType != 'dashboard'"/>
+  	<attribute name="domain" for="viewName" expr="eval:&quot;self.type = '${viewType}' and self.model = 'com.axelor.meta.db.MetaJsonRecord' and self.name = 'custom-model-${__parent__.model}-${viewType}' &quot;" if="__parent__.isJson &amp;&amp; viewType != 'dashboard'"/>
+  	<attribute name="domain" for="viewName" expr="eval:&quot;self.type = '${viewType}' and self.model = '${__parent__.model}'&quot;" if="!__parent__.isJson &amp;&amp; viewType != 'dashboard'"/>
   </action-attrs>
   
   <action-attrs name="action-action-builder-attrs-template-domain">

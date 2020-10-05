@@ -44,7 +44,6 @@
 				</panel>
 				<panel name="senderPanel" title="Sender" colSpan="12"
 					showIf="mediaTypeSelect == 2 || mediaTypeSelect == 4">
-					<field name="fromAdress" height="2" />
 					<field name="replyToRecipients" height="2" />
 				</panel>
 				<panel name="recipientsPanel" title="Recipients"

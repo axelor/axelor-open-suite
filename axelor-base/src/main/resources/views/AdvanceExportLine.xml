@@ -35,7 +35,7 @@
   	</form>
   	
   	<action-record name="action-advanced-export-line-record-set-current-domain" model="com.axelor.apps.base.db.AdvancedExportLine">
-  		<field name="currentDomain" expr="eval: _parent?.metaModel.name" if="_parent?.metaModel" />
+  		<field name="currentDomain" expr="eval: __parent__?.metaModel.name" if="__parent__?.metaModel" />
   	</action-record>
   	
   	<action-method name="action-advanced-export-line-method-validate-field">
@@ -55,7 +55,7 @@
   		<attribute name="value" for="title" expr="eval: null"/>
   		<attribute name="value" for="targetField" expr="eval: null"/>
   		<attribute name="value" for="orderBy" expr="eval: false"/>
-  		<attribute name="value" for="currentDomain" expr="eval: _parent?.metaModel.name" if="_parent?.metaModel"/>
+  		<attribute name="value" for="currentDomain" expr="eval: __parent__?.metaModel.name" if="__parent__?.metaModel"/>
   		<attribute name="hidden" for="$viewerMessage" expr="eval: true"/>
   		<attribute name="value" for="$isValidate" expr="eval: null"/>
   		<attribute name="readonly" for="validateFieldSelectionBtn" expr="eval: false"/>

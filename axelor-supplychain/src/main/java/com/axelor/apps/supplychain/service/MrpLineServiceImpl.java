@@ -169,7 +169,7 @@ public class MrpLineServiceImpl implements MrpLineService {
                   this.getPurchaseOrderOrigin(mrpLine),
                   null,
                   stockLocation,
-                  appBaseService.getTodayDate(),
+                  appBaseService.getTodayDate(company),
                   Beans.get(PartnerPriceListService.class)
                       .getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
                   supplierPartner,

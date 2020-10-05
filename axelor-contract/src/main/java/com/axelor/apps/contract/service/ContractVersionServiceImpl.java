@@ -45,7 +45,12 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
 
   @Override
   public void waiting(ContractVersion version) throws AxelorException {
-    waiting(version, appBaseService.getTodayDate());
+    waiting(
+        version,
+        appBaseService.getTodayDate(
+            version.getContract() != null
+                ? version.getContract().getCompany()
+                : AuthUtils.getUser().getActiveCompany()));
   }
 
   @Override
@@ -74,7 +79,12 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
 
   @Override
   public void ongoing(ContractVersion version) throws AxelorException {
-    ongoing(version, appBaseService.getTodayDate());
+    ongoing(
+        version,
+        appBaseService.getTodayDate(
+            version.getContract() != null
+                ? version.getContract().getCompany()
+                : AuthUtils.getUser().getActiveCompany()));
   }
 
   @Override
@@ -106,7 +116,12 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
 
   @Override
   public void terminate(ContractVersion version) {
-    terminate(version, appBaseService.getTodayDate());
+    terminate(
+        version,
+        appBaseService.getTodayDate(
+            version.getContract() != null
+                ? version.getContract().getCompany()
+                : AuthUtils.getUser().getActiveCompany()));
   }
 
   @Override

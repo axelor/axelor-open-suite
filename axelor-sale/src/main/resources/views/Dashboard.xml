@@ -22,7 +22,7 @@
 	
 	<action-view title="My Turnover per month" name="dashlet.my.turnover.per.month">
 	  <view type="chart" name="chart.my.turnover.per.month"/>
-	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
 	</action-view>
 	
 	<action-view name="dashlet.salesman.dashboard.activities" title="My Today Activities"
@@ -66,7 +66,7 @@
 	
 	<action-view title="Sales turnover comparison per month this year vs past years" model="com.axelor.apps.sale.db.SaleOrder" name="dashlet.sales.turnover.ytd.vs.previous.years.by.month">
 	  <view type="chart" name="chart.sale.turnover.ytd.vs.previous.years.by.month"/>
-	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 	</action-view>
 
 	<action-view name="dashlet.sales.turnover.ytd.vs.lastyear" title="Sales Turnover This year vs Last year" model="com.axelor.apps.sale.db.SaleOrder">
@@ -77,7 +77,7 @@
 	<action-view title="Sales turnover this year vs past years" model="com.axelor.apps.sale.db.SaleOrder" name="dashlet.sales.turnover.ytd.vs.past.year">
 	  <view type="chart" name="chart.sale.turnover.ytd.vs.past.year"/>
 
-	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 	</action-view>
 	
 	<action-view name="dashlet.sales.turnover.by.product.ytd.vs.lastyear" title="Sales TurnOver by Product this year vs last year" model="com.axelor.apps.sale.db.SaleOrder">
@@ -100,49 +100,49 @@
 
 	<action-view name="dashlet.sales.manager.dashboard.turnover.per.team" title="Turnover (excl. Tax) per team">
 	  <view type="chart" name="chart.sale.manager.dashboard.turnover.per.team"/>
-	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
 
 	</action-view>
 	
 	<action-view name="dashlet.sales.manager.dashboard.sales.orders.per.salesman" title="Sales Orders per salesman">
 	  <view type="chart" name="chart.sale.manager.dashboard.sales.orders.per.saleman"/>
-	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
 
 	</action-view>
 	
 	<action-view name="dashlet.sales.manager.dashboard.sales.distribution.per.family" title="Sales distribution per product accounting family">
 	  <view type="chart" name="chart.sale.manager.dashboard.sale.distribution.per.family"/>
-	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
 
 	</action-view>
 	
 	<action-view name="dashlet.sales.manager.dashboard.product.sales.per.category" title="Sales distribution per product category">
 	  <view type="chart" name="chart.sale.manager.dashboard.product.sale.per.category"/>
-	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
 
 	</action-view>
 	
 	<action-view name="dashlet.sales.manager.dashboard.sales.per.country" title="Sales per country">
 	  <view type="chart" name="chart.sale.manager.dashboard.sale.per.country"/>
-	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
 
 	</action-view>
 	
 	<action-view name="dashlet.turnover.sales.by.month.by.category" title="Sales Turnover (Orders) by month by category">
 	  <view type="chart" name="chart.turnover.sale.by.month.by.category"/>
-	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
 
 	</action-view>
 	
 	<action-view name="dashlet.units.sold.on.cust.sales.by.category" title="Nbr of Units sold (Orders) by category">
 	  <view type="chart" name="chart.units.sold.on.cust.sale.by.category"/>
-	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
 
 	</action-view>
 	
 	<action-view name="dashlet.product.sale.turnover.last.12.month" title="Product sale turnover (Excl. Tax) last 12 month" model="com.axelor.apps.base.db.Product">
 	  <view type="chart" name="chart.product.sale.turnover.last.12.month"/>
-	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
 	</action-view>
 	
@@ -179,31 +179,31 @@
 	
     <action-view title="Turnover per month per saleman (6 month)" model="com.axelor.apps.sale.db.SaleOrder" name="dashlet.turnover.per.month.per.salesman.over.6mth">
 		  <view type="chart" name="chart.turnover.per.month.per.saleman.over.6mth"/>
-		  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+		  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 		  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
 	</action-view>
 	
 	<action-view title="Turnover per month per saleman (4 month)" model="com.axelor.apps.sale.db.SaleOrder" name="dashlet.turnover.per.month.per.salesman.over.4mth">
 		  <view type="chart" name="chart.turnover.per.month.per.saleman.over.4mth"/>
-		  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+		  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 		  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
 	</action-view>
 	
 	<action-view title="Turnover per customer type" model="com.axelor.apps.sale.db.SaleOrder" name="dashlet.sales.turnover.per.customer.type">
 		  <view type="chart" name="chart.sale.turnover.per.customer.type"/>
-		  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+		  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 		  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
 	</action-view>
 
 	<action-view title="Turnover per customer category" model="com.axelor.apps.sale.db.SaleOrder" name="dashlet.sales.turnover.per.customer.category">
 		  <view type="chart" name="chart.sale.turnover.per.customer.category"/>
-		  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+		  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 		  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
 	</action-view>
 
 	<action-view title="Turnover per customer sector" model="com.axelor.apps.sale.db.SaleOrder" name="dashlet.sales.turnover.per.customer.sector">
 		  <view type="chart" name="chart.sale.turnover.per.customer.sector"/>
-		  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+		  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 		  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
 	</action-view>
 	
@@ -222,7 +222,7 @@
 	<!-- This portlet is called from Product-Category-Form Axelor Base -->
     <action-view title="Category sale turnover (Excl. Tax) per month" model="com.axelor.apps.base.db.Product" name="dashlet.category.sales.turnover.per.month">
 		  <view type="chart" name="chart.category.sale.turnover.per.month"/>
-		  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+		  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 		  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
 	</action-view>
 		
@@ -230,7 +230,7 @@
 	<action-view name="dashlet.customer.sales.lastYear.vs.ytd.by.family" title="Sales turnover comparison per month this year vs past years by accounting family" model="com.axelor.apps.sale.db.SaleOrderLine">
 	  <view type="chart" name="chart.customer.sale.lastYear.vs.ytd.by.family"/>
 	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>  
-	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 	</action-view>
 		
 		

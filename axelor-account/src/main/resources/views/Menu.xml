@@ -16,7 +16,7 @@
 		<view-param name="search-filters" value="customer-invoices-filters"/>
 		<domain>self.operationTypeSelect = 3</domain>
 		<context name="_operationTypeSelect" expr="eval:3"/>
-		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
 	</action-view>
 
 	<menuitem name="invoice-root-custrefunds" parent="invoice-root" order="10"
@@ -29,7 +29,7 @@
 		<view-param name="search-filters" value="customer-refunds-filters"/>
 		<domain>self.operationTypeSelect = 4</domain>
 		<context name="_operationTypeSelect" expr="eval:4"/>
-		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
 	</action-view>
 			
 	<menuitem name="invoice-root-purchase-supinvoices" parent="invoice-root" order="15"
@@ -42,7 +42,7 @@
 		<view-param name="search-filters" value="supplier-invoices-filters"/>
 		<domain>self.operationTypeSelect = 1</domain>
 		<context name="_operationTypeSelect" expr="eval:1"/>
-		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
 	</action-view>
 	
 	<menuitem name="invoice-root-my-awaiting-pfp" title="My awaiting PFP" action="invoice.root.my.awaiting.pfp" 
@@ -86,7 +86,7 @@
 		<view-param name="search-filters" value="supplier-refunds-filters"/>
 		<domain>self.operationTypeSelect = 2</domain>
 		<context name="_operationTypeSelect" expr="eval:2"/>
-		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
 	</action-view>	
 		
 		
@@ -171,7 +171,7 @@
 		<view-param name="search-filters" value="supplier-invoices-filters"/>
 		<domain>self.operationTypeSelect = 1 and self.statusSelect = 3 and self.amountRemaining != 0 and self.pfpValidateStatusSelect in :_pfpStatus</domain>
 		<context name="_operationTypeSelect" expr="eval:1"/>
-		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
 		<context  name="_pfpStatus" expr="eval:__config__.app.getApp('account').getActivatePassedForPayment()?[2]:[1,2,3]"/>
 	</action-view>
 

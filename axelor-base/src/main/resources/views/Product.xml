@@ -519,7 +519,7 @@
     <action-record name="action-product-record-default-new" model="com.axelor.apps.base.db.Product">
     	<field name="productTypeSelect" expr="eval: _productTypeSelect"/>
     	<field name="procurementMethodSelect" expr="buy"/>
-    	<field name="startDate" expr="eval:__config__.app.getTodayDate()" if="startDate == null"/>
+    	<field name="startDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" if="startDate == null"/>
     	<field name="salePrice" expr="0"/>
     	<field name="purchasePrice" expr="0"/>
     	<field name="lastPurchasePrice" expr="0"/>
@@ -581,7 +581,7 @@
     </action-validate>
     
     <action-record name="action-product-record-reset-end-date" model="com.axelor.apps.base.db.Product">
-    	<field name="endDate" expr="eval:__config__.app.getTodayDate()" if="endDate &lt; startDate"/>
+    	<field name="endDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" if="endDate &lt; startDate"/>
     </action-record>
     
     <action-view name="action-product-view-product-variant" title="Products variants"

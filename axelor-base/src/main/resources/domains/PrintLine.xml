@@ -13,7 +13,8 @@
         <integer name="rank" title="Rank"/>
         <integer name="sequence" title="Seq."/>        
         <boolean name="isEditable" title="Editable"/>        
-        <many-to-one name="parent" title="Parent" ref="com.axelor.apps.base.db.PrintLine"/>        
+        <many-to-one name="parent" title="Parent" ref="com.axelor.apps.base.db.PrintLine"/>
+        <boolean name="isWithPageBreakAfter" title="With page break"/>        
 
     </entity>
 

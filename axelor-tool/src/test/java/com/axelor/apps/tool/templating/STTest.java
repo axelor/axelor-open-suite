@@ -141,7 +141,7 @@ public class STTest {
 
   @Test
   public void test1() {
-    TemplateMaker maker = new TemplateMaker(Locale.FRENCH, '$', '$');
+    TemplateMaker maker = new TemplateMaker("Europe/Paris", Locale.FRENCH, '$', '$');
 
     maker.setTemplate(content);
     maker.setContext(contact, map, "contact");
@@ -154,7 +154,7 @@ public class STTest {
   public void test2() {
     long start = System.currentTimeMillis();
 
-    TemplateMaker maker = new TemplateMaker(Locale.FRENCH, '$', '$');
+    TemplateMaker maker = new TemplateMaker("Europe/Paris", Locale.FRENCH, '$', '$');
 
     for (int i = 0; i < 10000; i++) {
       maker.setTemplate(content);
@@ -182,7 +182,7 @@ public class STTest {
     public void run() {
       long start = System.currentTimeMillis();
 
-      TemplateMaker maker = new TemplateMaker(Locale.FRENCH, '$', '$');
+      TemplateMaker maker = new TemplateMaker("Europe/Paris", Locale.FRENCH, '$', '$');
 
       for (int i = 0; i < 10000; i++) {
         maker.setTemplate(content);

@@ -214,5 +214,17 @@
     
     <input file="base_fileType.csv" type="com.axelor.apps.base.db.FileType" separator=";" />
 
+	<input file="base_globalTrackingConfigurationLine.csv" separator=";" type="com.axelor.apps.base.db.GlobalTrackingConfigurationLine" >
+		<bind column="Model" to="metaModel" search="self.name = :Model"/>
+		<bind column="field" to="metaField" search="(self.metaModel.name = :Model) AND (self.name = :field)"/>
+		<bind column="Creation" to="trackCreation" adapter="Boolean"/>
+		<bind column="Deletion" to="trackDeletion" adapter="Boolean"/>
+		<bind column="Update" to="trackUpdate" adapter="Boolean"/>
+		<bind column="Export" to="trackExport" adapter="Boolean"/>
+		<bind column="Reading" to="trackReading" adapter="Boolean"/>
+		<bind column="Condition" to="trackingCondition" />
+		<bind to="appBase" search="self.id = '1'" />
+	</input>
+
 </csv-inputs>
 

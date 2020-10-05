@@ -10,7 +10,6 @@
   	<string name="name" title="Name" required="true" namecolumn="true"/>
   	<string name="content" large="true" multiline="true" title="Content"/>
   	<string name="subject" large="true" multiline="true" title="Subject"/>
-  	<string name="fromAdress" large="true" multiline="true" title="From" />
   	<string name="replyToRecipients" large="true" multiline="true" title="Reply to" />
   	<string name="toRecipients" large="true" multiline="true" title="To"/>
   	<string name="ccRecipients" large="true" multiline="true" title="Cc"/>

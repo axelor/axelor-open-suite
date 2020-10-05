@@ -97,7 +97,7 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
    * Création d'une ligne d'échéancier
    *
    * @param paymentSchedule L'échéancié attaché.
-   * @param invoiceTerm La facture d'échéance.
+   * @param inTaxAmount Le montant TTC.
    * @param scheduleLineSeq Le numéro d'échéance.
    * @param scheduleDate La date d'échéance.
    * @return
@@ -189,7 +189,7 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
         paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails);
     BigDecimal amount = paymentScheduleLine.getInTaxAmount();
     String name = paymentScheduleLine.getName();
-    LocalDate todayDate = appBaseService.getTodayDate();
+    LocalDate todayDate = appBaseService.getTodayDate(company);
     Account account = accountingSituationService.getCustomerAccount(partner, company);
 
     Move move =

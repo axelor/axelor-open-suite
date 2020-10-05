@@ -18,12 +18,14 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.app.internal.AppFilter;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Language;
 import com.axelor.apps.base.db.PrintTemplateLine;
 import com.axelor.apps.base.db.PrintTemplateLineTest;
 import com.axelor.apps.base.db.repo.PrintTemplateLineRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.message.service.TemplateContextService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
@@ -137,7 +139,13 @@ public class PrintTemplateLineServiceImpl implements PrintTemplateLineService {
   @SuppressWarnings("unchecked")
   protected TemplateMaker initMaker(Long objectId, String model, String simpleModel, Locale locale)
       throws ClassNotFoundException {
-    TemplateMaker maker = new TemplateMaker(locale, TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
+    String timezone = null;
+    Company activeCompany = AuthUtils.getUser().getActiveCompany();
+    if (activeCompany != null) {
+      timezone = activeCompany.getTimezone();
+    }
+    TemplateMaker maker =
+        new TemplateMaker(timezone, locale, TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
 
     Class<? extends Model> modelClass = (Class<? extends Model>) Class.forName(model);
     maker.setContext(JPA.find(modelClass, objectId), simpleModel);

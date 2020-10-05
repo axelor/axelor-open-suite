@@ -89,7 +89,7 @@ public class InvoicePaymentCancelServiceBankPayImpl extends InvoicePaymentCancel
           || paymentBankOrder.getStatusSelect() == BankOrderRepository.STATUS_REJECTED) {
         throw new AxelorException(
             invoicePayment,
-            TraceBackRepository.TYPE_FUNCTIONNAL,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.INVOICE_PAYMENT_CANCEL));
       } else if (paymentBankOrder.getStatusSelect() != BankOrderRepository.STATUS_CANCELED) {
         bankOrderService.cancelBankOrder(paymentBankOrder);

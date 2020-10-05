@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+  
+  <grid name="selection-builder-grid" title="Selection builder" model="com.axelor.studio.db.SelectionBuilder">
+  	  <field name="name" />	
+  </grid>
+  
+  <form name="selection-builder-form" title="Selection builder" model="com.axelor.studio.db.SelectionBuilder" width="large">
+  	  <panel name="mainPanel">
+  	  	  <field name="metaSelect" domain="self.isCustom = false and self.priority = (select min(ms.priority) from MetaSelect ms where ms.name = self.name))" onChange="action-selection-builder-method-fill-selection-text"/>
+  	  	  <spacer/>
+	  	  <field name="name" readonlyIf="metaSelect != null"/>
+  		  <field name="selectionText" colSpan="12"/>
+      </panel>
+  </form>
+  
+  <action-method name="action-selection-builder-method-fill-selection-text">
+  	<call class="com.axelor.studio.web.SelectionBuilderController" method="fillSelectionText"/>
+  </action-method>
+  
+</object-views>

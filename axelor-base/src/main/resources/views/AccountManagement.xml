@@ -54,9 +54,10 @@
 				<field name="company" widget="SuggestBox"
 					onChange="action-group-account-account-management-onchange-common"
 					form-view="company-form" grid-view="company-grid" canEdit="false"/>
-				<field name="product" canEdit="false" form-view="product-form"
-					grid-view="product-grid" showIf="typeSelect == 1" domain="dtype = 'Product'"/>
-				<field name="productFamily" canEdit="false" form-view="product-family-form" grid-view="product-family-grid" showIf="typeSelect == 1"/>
+				<field name="product" canEdit="false" form-view="product-form" grid-view="product-grid"
+							 hidden="true" domain="dtype = 'Product'"/>
+				<field name="productFamily" canEdit="false" form-view="product-family-form" grid-view="product-family-grid"
+							 hidden="true"/>
 			</panel>
 
 			<!-- PRODUCT -->
@@ -153,15 +154,15 @@
 
 	<action-attrs name="action-account-management-attrs-hide-sale">
 		<attribute name="hidden" for="saleAccount"
-			expr="eval: !_parent?.sellable || _parent?.expense" if="_parent?._model == 'com.axelor.apps.base.db.Partner'" />
+			expr="eval: !__parent__?.sellable || __parent__?.expense" if="__parent__?._model == 'com.axelor.apps.base.db.Partner'" />
 		<attribute name="hidden" for="saleTax"
-			expr="eval: !_parent?.sellable || _parent?.expense" if="_parent?._model == 'com.axelor.apps.base.db.Partner'" />
+			expr="eval: !__parent__?.sellable || __parent__?.expense" if="__parent__?._model == 'com.axelor.apps.base.db.Partner'" />
 		<attribute name="hidden" for="saleAccount"
-			expr="eval: !_parent?._parent?.sellable || _parent?._parent?.expense"
-			if="!_parent?._model == 'com.axelor.apps.base.db.Partner'" />
+			expr="eval: !__parent__?.__parent__?.sellable || __parent__?.__parent__?.expense"
+			if="!__parent__?._model == 'com.axelor.apps.base.db.Partner'" />
 		<attribute name="hidden" for="saleTax"
-			expr="eval: !_parent?._parent?.sellable || _parent?._parent?.expense"
-			if="!_parent?._model == 'com.axelor.apps.base.db.Partner'" />
+			expr="eval: !__parent__?.__parent__?.sellable || __parent__?.__parent__?.expense"
+			if="!__parent__?._model == 'com.axelor.apps.base.db.Partner'" />
 	</action-attrs>
 
 	<action-attrs name="action-account-management-attrs-bank-details-domain">
@@ -205,7 +206,9 @@
 	</action-group>
 
 	<action-attrs name="action-account-management-attrs-onLoad">
-		<attribute name="hidden"  expr="eval:__parent__?._model == 'com.axelor.apps.base.db.Product'" for="productFamily"/>
-		<attribute name="hidden"  expr="eval:__parent__?._model == 'com.axelor.apps.base.db.ProductFamily'" for="product"/>
+		<attribute name="hidden"  expr="eval:__parent__?._model == 'com.axelor.apps.base.db.Product' || typeSelect != 1"
+							 for="productFamily"/>
+		<attribute name="hidden"  expr="eval:__parent__?._model == 'com.axelor.apps.base.db.ProductFamily' || typeSelect != 1"
+							 for="product"/>
 	</action-attrs>
 </object-views>

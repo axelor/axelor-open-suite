@@ -57,8 +57,8 @@
 	</action-attrs>
 	
 	<action-attrs name="action-bank-payment-attrs-bank-reconciliation-line-partner-domain">
-    	<attribute name="domain" for="partner" expr="eval: &quot;self.isContact = false AND ${_parent?.company?.id} member of self.companySet&quot;" if="_parent != null"/>
-    	<attribute name="domain" for="partner" expr="eval: &quot;self.isContact = false" if="_parent == null"/>
+    	<attribute name="domain" for="partner" expr="eval: &quot;self.isContact = false AND ${__parent__?.company?.id} member of self.companySet&quot;" if="__parent__ != null"/>
+    	<attribute name="domain" for="partner" expr="eval: &quot;self.isContact = false" if="__parent__ == null"/>
     </action-attrs>
     
    <action-record name="action-bank-reconciliation-line-record-set-account" model="com.axelor.apps.bankpayment.db.BankReconciliationLine">

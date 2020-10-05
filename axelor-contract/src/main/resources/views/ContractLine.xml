@@ -50,7 +50,7 @@
   </action-attrs>
   
   <action-attrs name="action-contract-line-attrs-set-analytic-distribution-template-domain">
-  	<attribute name="domain" for="analyticDistributionTemplate" expr="eval: &quot; self.company.id = ${_parent?.company.id} &quot;"/>
+  	<attribute name="domain" for="analyticDistributionTemplate" expr="eval: &quot; self.company.id = ${__parent__?.company.id} &quot;"/>
   </action-attrs>
   
   <action-attrs name="action-contract-line-attrs-read-only-distribution-lines">

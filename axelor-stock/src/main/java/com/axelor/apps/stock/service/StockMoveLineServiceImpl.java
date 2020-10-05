@@ -303,7 +303,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
       if (generateTrakingNumberCounter == 1000) {
         throw new AxelorException(
-            TraceBackRepository.TYPE_TECHNICAL,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.STOCK_MOVE_TOO_MANY_ITERATION));
       }
     }
@@ -472,10 +472,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             toStatus,
             lastFutureStockMoveDate,
             stockMoveLine.getTrackingNumber());
-        if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+        if (toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL
+            && toStatus == StockMoveRepository.STATUS_REALIZED) {
           this.updateAveragePriceLocationLine(toStockLocation, stockMoveLine, fromStatus, toStatus);
+          weightedAveragePriceService.computeAvgPriceForProduct(stockMoveLine.getProduct());
         }
-        weightedAveragePriceService.computeAvgPriceForProduct(stockMoveLine.getProduct());
       }
     }
   }
@@ -629,11 +630,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       }
 
       if (product.getHasWarranty()
-              && trackingNumber.getWarrantyExpirationDate().isBefore(appBaseService.getTodayDate())
+              && trackingNumber
+                  .getWarrantyExpirationDate()
+                  .isBefore(appBaseService.getTodayDate(stockMove.getCompany()))
           || product.getIsPerishable()
               && trackingNumber
                   .getPerishableExpirationDate()
-                  .isBefore(appBaseService.getTodayDate())) {
+                  .isBefore(appBaseService.getTodayDate(stockMove.getCompany()))) {
         errorList.add(product.getName());
       }
     }
@@ -1191,7 +1194,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     if (stockMoveLine.getStockMove() != null) {
       this.updateAvailableQty(stockMoveLine, stockMoveLine.getStockMove().getFromStockLocation());
     }
-    if (stockMoveLine.getProduct() != null) {
+    if (stockMoveLine.getProduct() != null
+        && !stockMoveLine
+            .getProduct()
+            .getProductTypeSelect()
+            .equals(ProductRepository.PRODUCT_TYPE_SERVICE)) {
       BigDecimal availableQty = stockMoveLine.getAvailableQty();
       BigDecimal availableQtyForProduct = stockMoveLine.getAvailableQtyForProduct();
       BigDecimal realQty = stockMoveLine.getRealQty();

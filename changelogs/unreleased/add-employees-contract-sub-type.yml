@@ -1,7 +1,0 @@
----
-title: "EmploymentContract:  add new field employmentContractSubType"
-type: feature
-description: |
-	Create a new object : employmentContractSubType
-	add employmentContractSubType M2O field on EmploymentContract
-	add employmentContractSubType O2M field on EmploymentContractType

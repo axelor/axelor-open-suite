@@ -32,6 +32,7 @@ import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.TeamTaskCategory;
@@ -70,8 +71,9 @@ public class TeamTaskBusinessProjectServiceImpl extends TeamTaskProjectServiceIm
       TeamTaskRepository teamTaskRepo,
       PriceListLineRepository priceListLineRepository,
       PriceListService priceListService,
-      ProductCompanyService productCompanyService) {
-    super(teamTaskRepo);
+      ProductCompanyService productCompanyService,
+      AppBaseService appBaseService) {
+    super(teamTaskRepo, appBaseService);
     this.priceListLineRepository = priceListLineRepository;
     this.priceListService = priceListService;
     this.productCompanyService = productCompanyService;

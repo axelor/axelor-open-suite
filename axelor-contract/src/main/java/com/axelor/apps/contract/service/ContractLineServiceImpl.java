@@ -110,7 +110,7 @@ public class ContractLineServiceImpl implements ContractLineService {
 
     TaxLine taxLine =
         accountManagementService.getTaxLine(
-            appBaseService.getTodayDate(),
+            appBaseService.getTodayDate(contract.getCompany()),
             product,
             contract.getCompany(),
             contractLine.getFiscalPosition(),
@@ -129,7 +129,7 @@ public class ContractLineServiceImpl implements ContractLineService {
         currencyService.getCurrencyConversionRate(
             (Currency) productCompanyService.get(product, "saleCurrency", contract.getCompany()),
             contract.getCurrency(),
-            appBaseService.getTodayDate());
+            appBaseService.getTodayDate(contract.getCompany()));
     contractLine.setPrice(price.multiply(convert));
 
     return contractLine;
@@ -172,7 +172,7 @@ public class ContractLineServiceImpl implements ContractLineService {
                 contractLine.getAnalyticDistributionTemplate(),
                 contractLine.getExTaxTotal(),
                 AnalyticMoveLineRepository.STATUS_FORECAST_CONTRACT,
-                appAccountService.getTodayDate());
+                appAccountService.getTodayDate(contract.getCompany()));
 
     contractLine.setAnalyticMoveLineList(analyticMoveLineList);
     return contractLine;

@@ -25,6 +25,7 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.ThrowConsumer;
 import com.axelor.apps.tool.file.PdfTool;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -84,7 +85,9 @@ public class ManufOrderPrintServiceImpl implements ManufOrderPrintService {
   public String getManufOrdersFilename() {
     return I18n.get("Manufacturing orders")
         + " - "
-        + Beans.get(AppBaseService.class).getTodayDate().format(DateTimeFormatter.BASIC_ISO_DATE)
+        + Beans.get(AppBaseService.class)
+            .getTodayDate(AuthUtils.getUser().getActiveCompany())
+            .format(DateTimeFormatter.BASIC_ISO_DATE)
         + "."
         + ReportSettings.FORMAT_PDF;
   }

@@ -119,7 +119,7 @@
     </action-validate>
     
     <action-record name="action-move-template-set-default" model="com.axelor.apps.account.db.MoveTemplate">
-		<field name="company" expr="eval:__repo__(Company).find(__user__.activeCompany.id)" if="__user__.activeCompany != null"/>        
+		<field name="company" expr="eval:__repo__(Company).find(__user__.activeCompany.id)" if="__user__.activeCompany != null"/>
     </action-record>
     
     <action-record model="com.axelor.apps.base.db.Wizard" name="action-move-template-wizard-reset-value">
@@ -160,13 +160,13 @@
     
     
     <action-attrs name="action-account-attrs-move-template-partner-domain">
-    	<attribute name="domain" for="debitPartner,creditPartner" expr="eval: &quot;self.isContact = false AND ${_parent?.company?.id} member of self.companySet&quot;"/>
+    	<attribute name="domain" for="debitPartner,creditPartner" expr="eval: &quot;self.isContact = false AND ${__parent__?.company?.id} member of self.companySet&quot;"/>
     </action-attrs>
     
 	<action-record name="action-move-template-wizard-line-set-move-template" model="com.axelor.apps.base.db.Wizard">
-	    <field name="date" expr="eval:__config__.app.getTodayDate()" if="date == null"/>
-		<field name="moveTemplate" expr="eval:__repo__(MoveTemplate).find(_parent.moveTemplate.id)" />
-		<field name="partnerInputSelect" expr="eval:__repo__(MoveTemplate).find(_parent.moveTemplate.id).partnerInputSelect"/>
+	    <field name="date" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" if="date == null"/>
+		<field name="moveTemplate" expr="eval:__repo__(MoveTemplate).find(__parent__.moveTemplate.id)" />
+		<field name="partnerInputSelect" expr="eval:__repo__(MoveTemplate).find(__parent__.moveTemplate.id).partnerInputSelect"/>
 	</action-record>
     
 </object-views>

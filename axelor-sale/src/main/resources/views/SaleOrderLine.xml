@@ -189,6 +189,7 @@
 					<field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
 				</panel>
 				<field name="$isReadOnly" hidden="true"/>
+				<field name="product.productTypeSelect" hidden="true"/>
 			</panel>
 			<panel name="marginPanel" title="Margin" readonlyIf="$isReadOnly !== false">
 				<field name="subTotalCostPrice" onChange="action-sale-order-line-method-compute-subMargin"/>
@@ -202,7 +203,7 @@
 				<field name="estimatedDelivDate" readonlyIf="$availabiltyRequest"/>
 				<field name="deliveredQty" readonly="true" readonlyIf="$isReadOnly !== false"/>
                 <button name="$previewBtn" title="See stock details"  icon="fa-cubes" colSpan="4" widget="info-button" onClick="action-stock-location-line-view-for-a-product-from-saleorderline-view" if-module="axelor-supplychain"/>
-				<field name="pickingOrderInfo" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" readonlyIf="$isReadOnly !== false"/>
+				<field name="pickingOrderInfo" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" readonlyIf="$isReadOnly !== false" hideIf="product.productTypeSelect == 'service'"/>
 				<panel-dashlet name="stockMoveLineOfSOPanel" title="Stock Moves" action="action-sale-order-line-view-stock-move-line" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" readonlyIf="$isReadOnly !== false"/>
 			</panel>
 			<panel name="invoicingFollowUpPanel" title="Invoicing" readonlyIf="$isReadOnly !== false" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
@@ -363,12 +364,12 @@
 	</action-view>
 	
 	<action-attrs name="action-sale-order-line-attrs-domain-project">
-		<attribute name="domain" for="project" expr="eval: &quot; self.clientPartner.id = ${_parent?.clientPartner?.id} AND self.isBusinessProject = true &quot;" if="_parent?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
-		<attribute name="domain" for="project" expr="eval: &quot; self.clientPartner.id = ${saleOrder.clientPartner?.id} AND self.isBusinessProject = true &quot;" if="saleOrder != null &amp;&amp; _parent?._model != 'com.axelor.apps.sale.db.SaleOrder'"/>
+		<attribute name="domain" for="project" expr="eval: &quot; self.clientPartner.id = ${__parent__?.clientPartner?.id} AND self.isBusinessProject = true &quot;" if="__parent__?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
+		<attribute name="domain" for="project" expr="eval: &quot; self.clientPartner.id = ${saleOrder.clientPartner?.id} AND self.isBusinessProject = true &quot;" if="saleOrder != null &amp;&amp; __parent__?._model != 'com.axelor.apps.sale.db.SaleOrder'"/>
 	</action-attrs>
 
 	<action-attrs name="action-sale-order-line-attrs-set-domain-analytic-distribution-template">
-		<attribute name="domain" for="analyticDistributionTemplate" expr="eval: &quot; self.company.id = ${_parent?.company.id} &quot;"/>
+		<attribute name="domain" for="analyticDistributionTemplate" expr="eval: &quot; self.company.id = ${__parent__?.company.id} &quot;"/>
 	</action-attrs>
     
     <action-group name="action-group-sale-saleorderline-onnew">
@@ -450,30 +451,30 @@
     </action-group>
     
     <action-attrs name="action-sale-order-attrs-hide-ati">
-		<attribute name="hidden" for="exTaxTotal" expr="eval: _parent.inAti || typeSelect == 2" if="_parent?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
-		<attribute name="hidden" for="inTaxTotal" expr="eval: !_parent.inAti || typeSelect == 2" if="_parent?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
-		<attribute name="hidden" for="price" expr="eval: _parent.inAti || typeSelect == 2" if="_parent?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
-		<attribute name="hidden" for="inTaxPrice" expr="eval: !_parent.inAti || typeSelect == 2" if="_parent?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
+		<attribute name="hidden" for="exTaxTotal" expr="eval: __parent__.inAti || typeSelect == 2" if="__parent__?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
+		<attribute name="hidden" for="inTaxTotal" expr="eval: !__parent__.inAti || typeSelect == 2" if="__parent__?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
+		<attribute name="hidden" for="price" expr="eval: __parent__.inAti || typeSelect == 2" if="__parent__?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
+		<attribute name="hidden" for="inTaxPrice" expr="eval: !__parent__.inAti || typeSelect == 2" if="__parent__?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
 		
-		<attribute name="hidden" for="exTaxTotal" expr="eval: saleOrder?.inAti || typeSelect == 2" if="saleOrder != null &amp;&amp; _parent?._model != 'com.axelor.apps.sale.db.SaleOrder'" />
-		<attribute name="hidden" for="inTaxTotal" expr="eval: !saleOrder?.inAti || typeSelect == 2" if="saleOrder != null &amp;&amp; _parent?._model != 'com.axelor.apps.sale.db.SaleOrder'" />
-		<attribute name="hidden" for="price" expr="eval: saleOrder?.inAti || typeSelect == 2" if="saleOrder != null &amp;&amp; _parent?._model != 'com.axelor.apps.sale.db.SaleOrder'"/>
-		<attribute name="hidden" for="inTaxPrice" expr="eval: !saleOrder?.inAti || typeSelect == 2" if="saleOrder != null &amp;&amp; _parent?._model != 'com.axelor.apps.sale.db.SaleOrder'"/>
+		<attribute name="hidden" for="exTaxTotal" expr="eval: saleOrder?.inAti || typeSelect == 2" if="saleOrder != null &amp;&amp; __parent__?._model != 'com.axelor.apps.sale.db.SaleOrder'" />
+		<attribute name="hidden" for="inTaxTotal" expr="eval: !saleOrder?.inAti || typeSelect == 2" if="saleOrder != null &amp;&amp; __parent__?._model != 'com.axelor.apps.sale.db.SaleOrder'" />
+		<attribute name="hidden" for="price" expr="eval: saleOrder?.inAti || typeSelect == 2" if="saleOrder != null &amp;&amp; __parent__?._model != 'com.axelor.apps.sale.db.SaleOrder'"/>
+		<attribute name="hidden" for="inTaxPrice" expr="eval: !saleOrder?.inAti || typeSelect == 2" if="saleOrder != null &amp;&amp; __parent__?._model != 'com.axelor.apps.sale.db.SaleOrder'"/>
 	</action-attrs>
 
 <!--     <action-attrs name="action-sale-order-attrs-hide-ati"> -->
-<!-- 		<attribute name="hidden" for="exTaxTotal,price" expr="eval: _parent.inAti || typeSelect == 2" if="_parent?._model == 'com.axelor.apps.sale.db.SaleOrder'"/> -->
-<!-- 		<attribute name="hidden" for="subLineList.exTaxTotal,subLineList.price" expr="eval: _parent.inAti || typeSelect == 2 &amp;&amp; packPriceSelect == 0" if="_parent?._model == 'com.axelor.apps.sale.db.SaleOrder'"/> -->
-<!-- 		<attribute name="hidden" for="inTaxTotal,inTaxPrice" expr="eval: !_parent.inAti || typeSelect == 2 &amp;&amp; packPriceSelect == 1 || isSubLine &amp;&amp; parentLine?.packPriceSelect == 0" if="_parent?._model == 'com.axelor.apps.sale.db.SaleOrder'"/> -->
-<!-- 		<attribute name="hidden" for="subLineList.inTaxTotal,subLineList.inTaxPrice" expr="eval: !_parent.inAti || typeSelect == 2 &amp;&amp; packPriceSelect == 0" if="_parent?._model == 'com.axelor.apps.sale.db.SaleOrder'"/> -->
+<!-- 		<attribute name="hidden" for="exTaxTotal,price" expr="eval: __parent__.inAti || typeSelect == 2" if="__parent__?._model == 'com.axelor.apps.sale.db.SaleOrder'"/> -->
+<!-- 		<attribute name="hidden" for="subLineList.exTaxTotal,subLineList.price" expr="eval: __parent__.inAti || typeSelect == 2 &amp;&amp; packPriceSelect == 0" if="__parent__?._model == 'com.axelor.apps.sale.db.SaleOrder'"/> -->
+<!-- 		<attribute name="hidden" for="inTaxTotal,inTaxPrice" expr="eval: !__parent__.inAti || typeSelect == 2 &amp;&amp; packPriceSelect == 1 || isSubLine &amp;&amp; parentLine?.packPriceSelect == 0" if="__parent__?._model == 'com.axelor.apps.sale.db.SaleOrder'"/> -->
+<!-- 		<attribute name="hidden" for="subLineList.inTaxTotal,subLineList.inTaxPrice" expr="eval: !__parent__.inAti || typeSelect == 2 &amp;&amp; packPriceSelect == 0" if="__parent__?._model == 'com.axelor.apps.sale.db.SaleOrder'"/> -->
 		
-<!-- 		<attribute name="hidden" for="exTaxTotal,price" expr="eval: saleOrder?.inAti || typeSelect == 2 &amp;&amp; packPriceSelect == 1 || isSubLine &amp;&amp; parentLine?.packPriceSelect == 0" if="saleOrder != null &amp;&amp; _parent?._model != 'com.axelor.apps.sale.db.SaleOrder'" /> -->
-<!-- 		<attribute name="hidden" for="subLineList.exTaxTotal,subLineList.price" expr="eval: saleOrder?.inAti || typeSelect == 2 &amp;&amp; packPriceSelect == 0" if="saleOrder != null &amp;&amp; _parent?._model != 'com.axelor.apps.sale.db.SaleOrder'" /> -->
-<!-- 		<attribute name="hidden" for="inTaxTotal,inTaxPrice" expr="eval: !saleOrder?.inAti || typeSelect == 2 &amp;&amp; packPriceSelect == 1 || isSubLine &amp;&amp; parentLine?.packPriceSelect == 0" if="saleOrder != null &amp;&amp; _parent?._model != 'com.axelor.apps.sale.db.SaleOrder'" /> -->
-<!-- 		<attribute name="hidden" for="subLineList.inTaxTotal,subLineList.inTaxPrice" expr="eval: !saleOrder?.inAti || typeSelect == 2 &amp;&amp; packPriceSelect == 0" if="saleOrder != null &amp;&amp; _parent?._model != 'com.axelor.apps.sale.db.SaleOrder'" /> -->
+<!-- 		<attribute name="hidden" for="exTaxTotal,price" expr="eval: saleOrder?.inAti || typeSelect == 2 &amp;&amp; packPriceSelect == 1 || isSubLine &amp;&amp; parentLine?.packPriceSelect == 0" if="saleOrder != null &amp;&amp; __parent__?._model != 'com.axelor.apps.sale.db.SaleOrder'" /> -->
+<!-- 		<attribute name="hidden" for="subLineList.exTaxTotal,subLineList.price" expr="eval: saleOrder?.inAti || typeSelect == 2 &amp;&amp; packPriceSelect == 0" if="saleOrder != null &amp;&amp; __parent__?._model != 'com.axelor.apps.sale.db.SaleOrder'" /> -->
+<!-- 		<attribute name="hidden" for="inTaxTotal,inTaxPrice" expr="eval: !saleOrder?.inAti || typeSelect == 2 &amp;&amp; packPriceSelect == 1 || isSubLine &amp;&amp; parentLine?.packPriceSelect == 0" if="saleOrder != null &amp;&amp; __parent__?._model != 'com.axelor.apps.sale.db.SaleOrder'" /> -->
+<!-- 		<attribute name="hidden" for="subLineList.inTaxTotal,subLineList.inTaxPrice" expr="eval: !saleOrder?.inAti || typeSelect == 2 &amp;&amp; packPriceSelect == 0" if="saleOrder != null &amp;&amp; __parent__?._model != 'com.axelor.apps.sale.db.SaleOrder'" /> -->
 
-<!-- 		<attribute name="hidden" for="exTaxTotal,price" expr="eval: _parent?._parent?.inAti || _parent?.packPriceSelect == 0" if="isSubLine &amp;&amp; _parent?._model == 'com.axelor.apps.sale.db.SaleOrderLine'" /> -->
-<!-- 		<attribute name="hidden" for="inTaxTotal,inTaxPrice" expr="eval: !_parent?._parent?.inAti || _parent?.packPriceSelect == 0" if="isSubLine &amp;&amp; _parent._model == 'com.axelor.apps.sale.db.SaleOrderLine'" /> -->
+<!-- 		<attribute name="hidden" for="exTaxTotal,price" expr="eval: __parent__?.__parent__?.inAti || __parent__?.packPriceSelect == 0" if="isSubLine &amp;&amp; __parent__?._model == 'com.axelor.apps.sale.db.SaleOrderLine'" /> -->
+<!-- 		<attribute name="hidden" for="inTaxTotal,inTaxPrice" expr="eval: !__parent__?.__parent__?.inAti || __parent__?.packPriceSelect == 0" if="isSubLine &amp;&amp; __parent__._model == 'com.axelor.apps.sale.db.SaleOrderLine'" /> -->
 <!-- 	</action-attrs> -->
 	
 	<action-attrs if-module="axelor-business-project" name="action-sale-order-line-attrs-title-project-task">
@@ -482,10 +483,10 @@
 	</action-attrs>
 	
 	<action-attrs name="action-sale-order-line-attrs-show-priceDiscounted">
-		  <attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == price" if="_parent?._model == 'com.axelor.apps.sale.db.SaleOrder' &amp;&amp; !_parent?.inAti"/>
-		  <attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == inTaxPrice" if="_parent?._model == 'com.axelor.apps.sale.db.SaleOrder' &amp;&amp; _parent?.inAti"/>
-		  <attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == price" if="saleOrder != null &amp;&amp; _parent?._model != 'com.axelor.apps.sale.db.SaleOrder' &amp;&amp; !saleOrder?.inAti"/>
-		  <attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == inTaxPrice" if="saleOrder != null &amp;&amp; _parent?._model != 'com.axelor.apps.sale.db.SaleOrder' &amp;&amp; saleOrder?.inAti"/>
+		  <attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == price" if="__parent__?._model == 'com.axelor.apps.sale.db.SaleOrder' &amp;&amp; !__parent__?.inAti"/>
+		  <attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == inTaxPrice" if="__parent__?._model == 'com.axelor.apps.sale.db.SaleOrder' &amp;&amp; __parent__?.inAti"/>
+		  <attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == price" if="saleOrder != null &amp;&amp; __parent__?._model != 'com.axelor.apps.sale.db.SaleOrder' &amp;&amp; !saleOrder?.inAti"/>
+		  <attribute name="hidden" for="priceDiscounted" expr="eval: priceDiscounted == inTaxPrice" if="saleOrder != null &amp;&amp; __parent__?._model != 'com.axelor.apps.sale.db.SaleOrder' &amp;&amp; saleOrder?.inAti"/>
 	</action-attrs>
 	
 	<action-attrs name="action-sale-order-line-attrs-hide-qty-warning-label">
@@ -508,7 +509,7 @@
     </action-record>
 
     <action-record name="action-sale-order-line-record-project" model="com.axelor.apps.sale.db.SaleOrderLine" if-module="axelor-business-project">
-		<field name="project" expr="eval: _parent?.project" if="__config__.app.isApp('business-project')" />
+		<field name="project" expr="eval: __parent__?.project" if="__config__.app.isApp('business-project')" />
 	</action-record>
 
 <!--     TODO : should be splited per module -->
@@ -602,7 +603,7 @@
 	</action-attrs>
 
 	<action-attrs name="action-sale-order-line-attrs-set-company-currency">
-		<attribute name="value" for="$companyCurrency" expr="eval:_parent?.company?.currency" if="_parent != null &amp;&amp; _parent._model == 'com.axelor.apps.sale.db.SaleOrder'" />
+		<attribute name="value" for="$companyCurrency" expr="eval:__parent__?.company?.currency" if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.sale.db.SaleOrder'" />
     	<attribute name="value" for="$companyCurrency" expr="eval:saleOrder?.company?.currency" if="saleOrder != null" />
 	</action-attrs>
 
@@ -620,7 +621,7 @@
     </action-attrs>
 
 	<action-attrs name="action-sale-order-line-attrs-fill-estimated-date">
-		<attribute name="value" expr="eval: _parent?.deliveryDate" for="estimatedDelivDate" if="_parent != null &amp;&amp; _parent._model == 'com.axelor.apps.sale.db.SaleOrder' &amp;&amp; deliveryState &lt; 2"/>
+		<attribute name="value" expr="eval: __parent__?.deliveryDate" for="estimatedDelivDate" if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.sale.db.SaleOrder' &amp;&amp; deliveryState &lt; 2"/>
 	</action-attrs>
 
     <action-attrs name="action-sale-order-line-attrs-selection-in-type-select">

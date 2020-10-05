@@ -144,13 +144,11 @@
 	<input file="account_moveTemplateType.csv" separator=";" search="self.importId = :importId" type="com.axelor.apps.account.db.MoveTemplateType"/>
 
 	<input file="account_moveTemplate.csv" separator=";" search="self.importId = :importId"
-				 type="com.axelor.apps.account.db.MoveTemplate" call="com.axelor.csv.script.ImportMoveTemplate:setCompany">
+				 type="com.axelor.apps.account.db.MoveTemplate" call="com.axelor.csv.script.ImportMoveTemplate:importMove">
 		<bind to="name" column="name"/>
 		<bind to="code" column="code"/>
 		<bind to="journal" column="journal" search="self.importId = :journal"/>
 		<bind to="moveTemplateType" search="self.importId = :type"/>
-		<bind to="endOfValidityDate" eval="java.time.LocalDate.now().plusMonths(Integer.parseInt(endOfValidityDateShift))"
-					if="!endOfValidityDateShift.empty"/>
 	</input>
 
 	<input file="account_moveTemplateLine.csv" separator=";" search="self.importId = :importId" type="com.axelor.apps.account.db.MoveTemplateLine">

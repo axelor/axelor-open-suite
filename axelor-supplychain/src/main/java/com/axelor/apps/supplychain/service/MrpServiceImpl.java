@@ -161,7 +161,7 @@ public class MrpServiceImpl implements MrpService {
   @Override
   @Transactional
   public void reset(Mrp mrp) {
-    today = appBaseService.getTodayDate();
+    today = appBaseService.getTodayDate(mrp.getStockLocation().getCompany());
 
     mrpLineRepository
         .all()

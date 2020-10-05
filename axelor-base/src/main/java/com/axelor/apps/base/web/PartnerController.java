@@ -51,6 +51,7 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
@@ -61,6 +62,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.eclipse.birt.core.exception.BirtException;
 import org.iban4j.IbanFormatException;
 import org.iban4j.InvalidCheckDigitException;
@@ -252,9 +254,22 @@ public class PartnerController {
   }
 
   public void addContactToPartner(ActionRequest request, ActionResponse response) {
-    Partner contact =
-        Beans.get(PartnerRepository.class).find(request.getContext().asType(Partner.class).getId());
-    Beans.get(PartnerService.class).addContactToPartner(contact);
+    try {
+      final Context context = request.getContext();
+      final Partner contact = context.asType(Partner.class);
+      final Context parentContext = context.getParent();
+
+      if (parentContext != null
+          && Partner.class.isAssignableFrom(parentContext.getContextClass())
+          && Objects.equals(parentContext.asType(Partner.class), contact.getMainPartner())) {
+        return;
+      }
+
+      Beans.get(PartnerService.class)
+          .addContactToPartner(Beans.get(PartnerRepository.class).find(contact.getId()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void findContactMails(ActionRequest request, ActionResponse response) {

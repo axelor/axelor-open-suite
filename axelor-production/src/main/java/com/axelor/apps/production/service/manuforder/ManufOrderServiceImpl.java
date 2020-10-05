@@ -446,7 +446,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             virtualStockLocation,
             wasteStockLocation,
             null,
-            appBaseService.getTodayDate(),
+            appBaseService.getTodayDate(company),
             manufOrder.getWasteProdDescription(),
             StockMoveRepository.TYPE_INTERNAL);
 
