@@ -17,6 +17,7 @@
 - Account Equiv - NPE solved and made toAccount and fromAccount required.
 - SMTP Account: the user can now configure the sending email address instead of using the login.
 - App Supplychain : Add boolean 'Block deallocation on availability request' visibility based on 'Manage stock reservation' boolean
+- Stock location line : Fix visibility issue of button text on popup
 
 ## [5.1.16] - 2020-09-09
 ## Improvements
