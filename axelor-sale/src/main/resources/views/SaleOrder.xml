@@ -1151,7 +1151,7 @@
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
     	<field name="salespersonUser" expr="eval:__user__" if="__config__.app.getApp('sale').getSalemanSelect() == 1"/>
     	<field name="salespersonUser" expr="eval: clientPartner?.getUser()" if="__config__.app.getApp('sale').getSalemanSelect() == 2"/>
-    	<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+    	<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()" if="__config__.app.getApp('sale').getSalemanSelect() == 1"/>
     	<field name="template" expr="eval:_template" />
 		<field name="printingSettings" expr="eval: __user__.activeCompany?.printingSettings" if="__user__.activeCompany != null"/>
     </action-record>
@@ -1178,6 +1178,8 @@
 		<field name="description" expr="eval: clientPartner?.saleOrderComments"/>
 		<field name="pickingOrderComments" expr="eval: clientPartner?.pickingOrderComments"/>
 		<field name="proformaComments" expr="eval: clientPartner?.proformaComments"/>
+		<field name="team" expr="eval: clientPartner?.team" if="__config__.app.getApp('sale').getSalemanSelect() == 2"/>
+		<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()" if="__config__.app.getApp('sale').getSalemanSelect() == 1"/>
     </action-record>
 
     <action-record name="action-sale-order-record-hide-discount" model="com.axelor.apps.sale.db.SaleOrder">

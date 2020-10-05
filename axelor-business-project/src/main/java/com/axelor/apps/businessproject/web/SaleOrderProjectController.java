@@ -25,6 +25,7 @@ import com.axelor.apps.project.db.ProjectGeneratorType;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
@@ -125,7 +126,10 @@ public class SaleOrderProjectController {
     if (!Strings.isNullOrEmpty(stringStartDate)) {
       date = LocalDateTime.ofInstant(Instant.parse(stringStartDate), ZoneId.systemDefault());
     } else {
-      date = Beans.get(AppBaseService.class).getTodayDate().atStartOfDay();
+      date =
+          Beans.get(AppBaseService.class)
+              .getTodayDate(AuthUtils.getUser().getActiveCompany())
+              .atStartOfDay();
     }
     return date;
   }

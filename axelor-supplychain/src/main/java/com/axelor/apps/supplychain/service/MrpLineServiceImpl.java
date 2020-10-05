@@ -152,10 +152,10 @@ public class MrpLineServiceImpl implements MrpLineService {
                   null,
                   supplierPartner.getCurrency(),
                   maturityDate,
-                  "MRP-" + appBaseService.getTodayDate().toString(), // TODO sequence on mrp
+                  "MRP-" + appBaseService.getTodayDate(company).toString(), // TODO sequence on mrp
                   null,
                   stockLocation,
-                  appBaseService.getTodayDate(),
+                  appBaseService.getTodayDate(company),
                   Beans.get(PartnerPriceListService.class)
                       .getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
                   supplierPartner,

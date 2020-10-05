@@ -3,10 +3,10 @@ name: Java CI
 on:
   push:
     branches:
-      - wip
+      - dev
   pull_request:
     branches:
-      - wip
+      - dev
 
 jobs:
   build:
@@ -20,13 +20,15 @@ jobs:
       with:
         java-version: 1.8
     - name: Install webapp
-      run: git clone -b wip https://github.com/axelor/open-suite-webapp.git open-suite-webapp
+      run: git clone -b dev https://github.com/axelor/open-suite-webapp.git open-suite-webapp
     - name: move to the right place
       run: mkdir -p open-suite-webapp/modules/axelor-open-suite && ls | grep -v open-suite-webapp | xargs -I{} mv {} open-suite-webapp/modules/axelor-open-suite
     - name: Grant execute permission for gradlew
       run: chmod +x open-suite-webapp/gradlew
     - name: Check spotless format with gradle task
       run: cd open-suite-webapp && ./gradlew spotlessCheck
+    - name: Check changelog generation with gradle task
+      run: cd open-suite-webapp && ./gradlew generateChangelog
     - name: Build without tests
       run: cd open-suite-webapp && ./gradlew -xtest clean build
     - name: Run tests

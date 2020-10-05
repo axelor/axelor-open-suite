@@ -352,7 +352,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             null,
             numSeq,
             externalRef,
-            LocalDate.now(),
+            appPurchaseService.getTodayDate(company),
             priceList,
             supplierPartner,
             tradingName);
@@ -479,7 +479,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     computePurchaseOrder(purchaseOrder);
 
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_VALIDATED);
-    purchaseOrder.setValidationDate(appPurchaseService.getTodayDate());
+    purchaseOrder.setValidationDate(appPurchaseService.getTodayDate(purchaseOrder.getCompany()));
     purchaseOrder.setValidatedByUser(AuthUtils.getUser());
 
     purchaseOrder.setSupplierPartner(validateSupplier(purchaseOrder));

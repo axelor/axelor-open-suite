@@ -52,8 +52,8 @@
 	</action-group>
 
 	<action-record name="action-human-resource-record-timesheet-report-onnew" model="com.axelor.apps.hr.db.TimesheetReport">
-		<field name="fromDate" expr="eval: __config__.app.getTodayDate().withDayOfMonth(1)" />
-		<field name="toDate" expr="eval:__config__.app.getTodayDate()" />
+		<field name="fromDate" expr="eval: __config__.app.getTodayDate(__user__.activeCompany).withDayOfMonth(1)" />
+		<field name="toDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
 		<field name="typeSelect" expr="eval: 1"/>
 	</action-record>
 

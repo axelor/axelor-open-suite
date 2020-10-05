@@ -89,7 +89,8 @@ public class BankReconciliationValidateService {
 
     bankReconciliation.setStatusSelect(BankReconciliationRepository.STATUS_VALIDATED);
     bankReconciliation.setValidatedByUser(AuthUtils.getUser());
-    bankReconciliation.setValidatedDate(Beans.get(AppBaseService.class).getTodayDate());
+    bankReconciliation.setValidatedDate(
+        Beans.get(AppBaseService.class).getTodayDate(bankReconciliation.getCompany()));
 
     bankReconciliationRepository.save(bankReconciliation);
   }

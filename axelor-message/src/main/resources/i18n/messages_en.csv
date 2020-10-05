@@ -33,6 +33,8 @@
 "Fetch emails",,,
 "Forecasted Sent Date",,,
 "From",,,
+"From email address",,,
+"From email name",,,
 "Generate message",,,
 "Groovy Template",,,
 "Group",,,

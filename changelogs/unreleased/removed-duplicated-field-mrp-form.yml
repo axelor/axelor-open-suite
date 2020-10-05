@@ -1,5 +1,5 @@
 title: Removed some fields from mrp-form
-type: anomaly
+type: fix
 description: |
   Removed some fields duplicated on 
   the mrp-form view

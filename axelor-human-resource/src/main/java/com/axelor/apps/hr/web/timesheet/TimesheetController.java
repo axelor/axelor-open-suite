@@ -217,7 +217,8 @@ public class TimesheetController {
             .add("grid", "timesheet-validate-grid")
             .add("form", "timesheet-form")
             .param("search-filters", "timesheet-filters")
-            .context("todayDate", Beans.get(AppBaseService.class).getTodayDate());
+            .context(
+                "todayDate", Beans.get(AppBaseService.class).getTodayDate(user.getActiveCompany()));
 
     Beans.get(HRMenuValidateService.class).createValidateDomain(user, employee, actionView);
 
@@ -234,7 +235,8 @@ public class TimesheetController {
             .model(TimesheetLine.class.getName())
             .add("grid", "timesheet-line-grid")
             .add("form", "timesheet-line-form")
-            .context("todayDate", Beans.get(AppBaseService.class).getTodayDate());
+            .context(
+                "todayDate", Beans.get(AppBaseService.class).getTodayDate(user.getActiveCompany()));
 
     Beans.get(TimesheetService.class).createValidateDomainTimesheetLine(user, employee, actionView);
 

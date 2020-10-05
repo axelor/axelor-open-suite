@@ -614,6 +614,7 @@
 "Please select some bank orders that have the same sender bank details","Proszę wybrać kilka zleceń bankowych, które mają te same dane bankowe nadawcy",,
 "Please select some bank orders that have the same sender company","Proszę wybrać kilka zleceń bankowych, które mają tego samego nadawcę",,
 "Please select some bank orders that have the same status","Proszę wybrać niektóre zlecenia bankowe, które mają ten sam status",,
+"Please set a currency in the sender bank details : %s.",,,
 "Print","Drukuj",,
 "Print certificates","Wydrukuj certyfikaty",,
 "Print the bank reconciliation","Wydrukuj uzgodnienie bankowe",,

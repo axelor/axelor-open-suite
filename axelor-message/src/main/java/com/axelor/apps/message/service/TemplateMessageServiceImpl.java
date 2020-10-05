@@ -131,7 +131,6 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
 
     String content = "";
     String subject = "";
-    String from = "";
     String replyToRecipients = "";
     String toRecipients = "";
     String ccRecipients = "";
@@ -151,11 +150,6 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
     if (!Strings.isNullOrEmpty(template.getSubject())) {
       subject = templates.fromText(template.getSubject()).make(templatesContext).render();
       log.debug("Subject ::: {}", subject);
-    }
-
-    if (!Strings.isNullOrEmpty(template.getFromAdress())) {
-      from = templates.fromText(template.getFromAdress()).make(templatesContext).render();
-      log.debug("From ::: {}", from);
     }
 
     if (!Strings.isNullOrEmpty(template.getReplyToRecipients())) {
@@ -187,14 +181,14 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
       signature = templates.fromText(template.getSignature()).make(templatesContext).render();
       log.debug("Signature ::: {}", signature);
     }
-
+    EmailAccount mailAccount = getMailAccount();
     Message message =
         messageService.createMessage(
             model,
             Math.toIntExact(objectId),
             subject,
             content,
-            getEmailAddress(from),
+            getEmailAddress(mailAccount.getFromAddress()),
             getEmailAddresses(replyToRecipients),
             getEmailAddresses(toRecipients),
             getEmailAddresses(ccRecipients),
@@ -202,7 +196,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
             null,
             addressBlock,
             mediaTypeSelect,
-            getMailAccount(),
+            mailAccount,
             signature);
 
     message.setTemplate(Beans.get(TemplateRepository.class).find(template.getId()));

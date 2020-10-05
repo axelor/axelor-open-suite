@@ -189,6 +189,7 @@
 					<field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
 				</panel>
 				<field name="$isReadOnly" hidden="true"/>
+				<field name="product.productTypeSelect" hidden="true"/>
 			</panel>
 			<panel name="marginPanel" title="Margin" readonlyIf="$isReadOnly !== false">
 				<field name="subTotalCostPrice" onChange="action-sale-order-line-method-compute-subMargin"/>
@@ -202,7 +203,7 @@
 				<field name="estimatedDelivDate" readonlyIf="$availabiltyRequest"/>
 				<field name="deliveredQty" readonly="true" readonlyIf="$isReadOnly !== false"/>
                 <button name="$previewBtn" title="See stock details"  icon="fa-cubes" colSpan="4" widget="info-button" onClick="action-stock-location-line-view-for-a-product-from-saleorderline-view" if-module="axelor-supplychain"/>
-				<field name="pickingOrderInfo" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" readonlyIf="$isReadOnly !== false"/>
+				<field name="pickingOrderInfo" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" readonlyIf="$isReadOnly !== false" hideIf="product.productTypeSelect == 'service'"/>
 				<panel-dashlet name="stockMoveLineOfSOPanel" title="Stock Moves" action="action-sale-order-line-view-stock-move-line" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" readonlyIf="$isReadOnly !== false"/>
 			</panel>
 			<panel name="invoicingFollowUpPanel" title="Invoicing" readonlyIf="$isReadOnly !== false" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">

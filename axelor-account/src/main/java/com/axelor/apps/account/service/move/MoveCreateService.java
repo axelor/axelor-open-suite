@@ -92,7 +92,7 @@ public class MoveCreateService {
         company,
         currency,
         partner,
-        appAccountService.getTodayDate(),
+        appAccountService.getTodayDate(company),
         paymentMode,
         technicalOriginSelect);
   }

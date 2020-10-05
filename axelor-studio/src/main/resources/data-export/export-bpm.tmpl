@@ -82,6 +82,8 @@
                 \n\t\t\t<onNew>${model.onNew}</onNew>
 				\n\t\t\t<onSave>${model.onSave}</onSave>
 				\n\t\t\t<formWidth>${model.formWidth}</formWidth>
+				\n\t\t\t<isGenerateMenu>${model.isGenerateMenu}</isGenerateMenu>
+				\n\t\t\t<menuBuilder name='${model.menuBuilder?.name}' title='${model.menuBuilder?.title}'/>
                 \n\t\t\t<menuTitle>${model.menuTitle}</menuTitle>
                 \n\t\t\t<menuIcon>${model.menuIcon}</menuIcon>
                 \n\t\t\t<menuBackground>${model.menuBackground}</menuBackground>
@@ -282,7 +284,6 @@
 					\n\t\t\t\t<mediaTypeSelect>${action.emailTemplate?.mediaTypeSelect}</mediaTypeSelect>
 					\n\t\t\t\t<language>${action.emailTemplate?.language?.code}</language>
 					\n\t\t\t\t<metaModel>${action.emailTemplate?.metaModel?.name}</metaModel>
-					\n\t\t\t\t<fromAdress>${action.emailTemplate?.fromAdress}</fromAdress>
 					\n\t\t\t\t<replyToRecipients>${action.emailTemplate?.replyToRecipients}</replyToRecipients>
 					\n\t\t\t\t<toRecipients>${action.emailTemplate?.toRecipients}</toRecipients>
 					\n\t\t\t\t<ccRecipients>${action.emailTemplate?.ccRecipients}</ccRecipients>

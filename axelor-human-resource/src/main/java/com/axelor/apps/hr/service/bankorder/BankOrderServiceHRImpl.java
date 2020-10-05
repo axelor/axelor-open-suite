@@ -28,6 +28,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderMoveService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderServiceImpl;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
@@ -53,7 +54,8 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
       SequenceService sequenceService,
       BankOrderLineOriginService bankOrderLineOriginService,
       ExpenseService expenseService,
-      BankOrderMoveService bankOrderMoveService) {
+      BankOrderMoveService bankOrderMoveService,
+      AppBaseService appBaseService) {
     super(
         bankOrderRepo,
         invoicePaymentRepo,
@@ -63,7 +65,8 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
         bankPaymentConfigService,
         sequenceService,
         bankOrderLineOriginService,
-        bankOrderMoveService);
+        bankOrderMoveService,
+        appBaseService);
     this.expenseService = expenseService;
   }
 

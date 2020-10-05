@@ -1,5 +1,5 @@
 title: Fixed NPE when trying to generate proposal from mrp-form view
-type: anomaly
+type: fix
 description: |
   Changed the action called when generating proposals
   the called action wasn't calling the wizard from which

@@ -614,6 +614,7 @@
 "Please select some bank orders that have the same sender bank details",,,
 "Please select some bank orders that have the same sender company",,,
 "Please select some bank orders that have the same status",,,
+"Please set a currency in the sender bank details : %s.",,,
 "Print",,,
 "Print certificates",,,
 "Print the bank reconciliation","Print the bank reconciliation",,

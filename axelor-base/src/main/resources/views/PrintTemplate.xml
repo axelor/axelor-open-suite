@@ -20,14 +20,27 @@
             <field name="metaModelDefaultPath"/>
             <field name="company" grid-view="company-grid" form-view="company-form"/>            
             <field name="language" grid-view="language-grid" form-view="language-form"/>
-            <field name="printSettings" grid-view="printing-setting-grid" form-view="printing-setting-form" hideIf="hidePrintSettings"/>
-            <field name="hidePrintSettings" widget="boolean-switch" onChange="action-print-template-attrs-hidePrintSettings-onchange"/>
+            <field name="hidePrintSettings" widget="boolean-switch"/>
             <field name="formatSelect"/>
             <field name="displayTypeSelect"/>
             <field name="documentName"/>
+            <field name="metaFileField" help="Name of the field in the model where to save the file"/>
             <field name="isEditable"/>
             <field name="attach"/>
-            <field name="metaFileField" help="Name of the field in the model where to save the file"/>
+            <panel name="headerSettingsPanel" title="Pdf Header Settings" showIf="!hidePrintSettings" colSpan="12">
+            	<field name="printTemplatePdfHeader" showTitle="false" widget="html" colSpan="12"/>
+            	<field name="logoPositionSelect" onChange="action-print-hide-logo-header-width-field" colSpan="4"/>
+            	<field name="logoWidth" hideIf="logoPositionSelect == 0 || logoPositionSelect == 2" help="in percantage or pixel like (50%, 50px)" colSpan="4"/>
+            	<field name="headerContentWidth" hideIf="logoPositionSelect == 0 || logoPositionSelect == 2" help="in percantage or pixel like (50%, 50px)" colSpan="4"/>
+            </panel>
+            <panel name="footerSettingsPanel" title="Pdf Footer Settings" showIf="!hidePrintSettings" colSpan="12">
+            	<field name="printTemplatePdfFooter" colSpan="12"/>
+            	<field name="footerFontType" colSpan="4"/>
+                <field name="footerTextAlignment" colSpan="4"/>
+            	<field name="footerFontSize" colSpan="4"/>
+                <field name="footerFontColor" colSpan="4"/>
+                 <field name="isFooterUnderLine" colSpan="4"/>
+            </panel>
             <panel-related name="printTemplateLineListPanel" field="printTemplateLineList" grid-view="print-template-line-grid" form-view="print-template-line-form" colSpan="12" orderBy="sequence" canMove="true"/>
             <field name="birtTemplateSet" widget="TagSelect" grid-view="birt-template-grid" form-view="birt-template-form" colSpan="12"/>
             <panel-related name="printTemplateSetPanel" field="printTemplateSet" grid-view="print-template-grid" form-view="print-template-form" colSpan="12"/>
@@ -62,6 +75,11 @@
     <action-attrs name="action-print-template-wizard-attrs-reset-template">
         <attribute for="$template" name="value" expr="eval: null"/>
     </action-attrs>
+    
+    <action-attrs name="action-print-hide-logo-header-width-field">
+    	<attribute name="hidden" for="logoWidth" expr="eval: logoPositionSelect == 0 || logoPositionSelect == 2"/>
+    	<attribute name="hidden" for="headerContentWidth" expr="eval: logoPositionSelect == 0 || logoPositionSelect == 2"/>
+    </action-attrs>
 
     <action-method name="action-print-template-wizard-method-generate-print">
         <call class="com.axelor.apps.base.web.PrintTemplateController" method="generatePrint"/>
@@ -70,10 +88,6 @@
     <action-method name="action-print-template-method-open-print">
         <call class="com.axelor.apps.base.web.PrintTemplateController" method="openPrint"/>
     </action-method>
-    
-    <action-attrs name="action-print-template-attrs-hidePrintSettings-onchange">
-        <attribute for="printSettings" name="value" expr="eval: null"/>
-    </action-attrs>
     
     <action-export name="action-export-print-template" output="${date}${time}" download="true">
          <export name="PrintTemplate-${__datetime__.format(java.time.format.DateTimeFormatter.ofPattern('ddMMyyyyHHmmSS'))}.xml"

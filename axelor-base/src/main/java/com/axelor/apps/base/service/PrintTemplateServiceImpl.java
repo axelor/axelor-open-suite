@@ -19,6 +19,7 @@ package com.axelor.apps.base.service;
 
 import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.base.db.BirtTemplate;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Language;
 import com.axelor.apps.base.db.Print;
 import com.axelor.apps.base.db.PrintLine;
@@ -29,6 +30,7 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
 import com.axelor.apps.message.db.TemplateContext;
 import com.axelor.apps.message.service.TemplateContextService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
@@ -113,7 +115,6 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
     print.setMetaModel(metaModel);
     print.setObjectId(objectId);
     print.setCompany(printTemplate.getCompany());
-    print.setPrintSettings(printTemplate.getPrintSettings());
     print.setLanguage(printTemplate.getLanguage());
     print.setHidePrintSettings(printTemplate.getHidePrintSettings());
     print.setFormatSelect(printTemplate.getFormatSelect());
@@ -121,6 +122,27 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
     print.setIsEditable(printTemplate.getIsEditable());
     print.setAttach(printTemplate.getAttach());
     print.setMetaFileField(printTemplate.getMetaFileField());
+
+    if (!printTemplate.getHidePrintSettings()) {
+      if (StringUtils.notEmpty(printTemplate.getPrintTemplatePdfHeader())) {
+        maker.setTemplate(printTemplate.getPrintTemplatePdfHeader());
+        print.setPrintPdfHeader(maker.make());
+      }
+
+      if (StringUtils.notEmpty(printTemplate.getPrintTemplatePdfFooter())) {
+        maker.setTemplate(printTemplate.getPrintTemplatePdfFooter());
+        print.setPrintPdfFooter(maker.make());
+        print.setFooterFontSize(printTemplate.getFooterFontSize());
+        print.setFooterFontType(printTemplate.getFooterFontType());
+        print.setFooterTextAlignment(printTemplate.getFooterTextAlignment());
+        print.setIsFooterUnderLine(printTemplate.getIsFooterUnderLine());
+        print.setFooterFontColor(printTemplate.getFooterFontColor());
+      }
+
+      print.setLogoPositionSelect(printTemplate.getLogoPositionSelect());
+      print.setLogoWidth(printTemplate.getLogoWidth());
+      print.setHeaderContentWidth(printTemplate.getHeaderContentWidth());
+    }
 
     Context scriptContext = null;
     if (StringUtils.notEmpty(model)) {
@@ -226,6 +248,7 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
           printLine.setContent(content);
           printLine.setIsEditable(printTemplateLine.getIsEditable());
           printLine.setParent(parent);
+          printLine.setIsWithPageBreakAfter(printTemplateLine.getIsWithPageBreakAfter());
 
           if (CollectionUtils.isNotEmpty(printTemplateLine.getPrintTemplateLineList())) {
             processPrintTemplateLineList(
@@ -260,7 +283,13 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
   @SuppressWarnings("unchecked")
   protected TemplateMaker initMaker(Long objectId, String model, String simpleModel, Locale locale)
       throws ClassNotFoundException {
-    TemplateMaker maker = new TemplateMaker(locale, TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
+    String timezone = null;
+    Company activeCompany = AuthUtils.getUser().getActiveCompany();
+    if (activeCompany != null) {
+      timezone = activeCompany.getTimezone();
+    }
+    TemplateMaker maker =
+        new TemplateMaker(timezone, locale, TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
 
     Class<? extends Model> myClass = (Class<? extends Model>) Class.forName(model);
     maker.setContext(JPA.find(myClass, objectId), simpleModel);

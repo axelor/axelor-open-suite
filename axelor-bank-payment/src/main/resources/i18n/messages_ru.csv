@@ -614,6 +614,7 @@
 "Please select some bank orders that have the same sender bank details","Пожалуйста, выберите некоторые банковские поручения, содержащие те же банковские реквизиты отправителя.",,
 "Please select some bank orders that have the same sender company","Пожалуйста, выберите некоторые банковские поручения, которые имеют ту же самую компанию-отправителя.",,
 "Please select some bank orders that have the same status","Пожалуйста, выберите некоторые банковские поручения, которые имеют тот же статус.",,
+"Please set a currency in the sender bank details : %s.",,,
 "Print","Печать",,
 "Print certificates","Печать сертификатов",,
 "Print the bank reconciliation","Распечатать выверку банковских счетов",,

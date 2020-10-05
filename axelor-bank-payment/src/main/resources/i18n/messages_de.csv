@@ -614,6 +614,7 @@
 "Please select some bank orders that have the same sender bank details","Bitte wählen Sie einige Banküberweisungen mit der gleichen Absenderbankverbindung aus.",,
 "Please select some bank orders that have the same sender company","Bitte wählen Sie einige Banküberweisungen aus, die das gleiche Absenderunternehmen haben.",,
 "Please select some bank orders that have the same status","Bitte wählen Sie einige Banküberweisungen aus, die den gleichen Status haben.",,
+"Please set a currency in the sender bank details : %s.",,,
 "Print","Drucken",,
 "Print certificates","Zertifikate drucken",,
 "Print the bank reconciliation","Drucken der Bankabstimmung",,

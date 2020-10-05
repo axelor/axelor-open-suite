@@ -18,6 +18,7 @@
         <one-to-many name="printTemplateLineList" title="Content lines" ref="com.axelor.apps.base.db.PrintTemplateLine" mappedBy="parent" orderBy="sequence"/>
         <boolean name="ignoreTheLine" title="Ignore the line"/>
         <one-to-one name="printTemplateLineTest" ref="com.axelor.apps.base.db.PrintTemplateLineTest" title="Print template line test"/>
+        <boolean name="isWithPageBreakAfter" title="With page break"/>
 
     </entity>
 

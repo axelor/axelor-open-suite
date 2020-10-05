@@ -426,7 +426,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Transactional(rollbackOn = {Exception.class})
   public Invoice createRefund(Invoice invoice) throws AxelorException {
 
-    log.debug("Créer un avoir pour la facture {}", new Object[] {invoice.getInvoiceId()});
     Invoice refund = new RefundInvoice(invoice).generate();
     invoice.addRefundInvoiceListItem(refund);
     invoiceRepo.save(invoice);
@@ -861,7 +860,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   public void refusalToPay(
       Invoice invoice, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr) {
     invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_LITIGATION);
-    invoice.setDecisionPfpTakenDate(Beans.get(AppBaseService.class).getTodayDate());
+    invoice.setDecisionPfpTakenDate(
+        Beans.get(AppBaseService.class).getTodayDate(invoice.getCompany()));
     invoice.setReasonOfRefusalToPay(reasonOfRefusalToPay);
     invoice.setReasonOfRefusalToPayStr(
         reasonOfRefusalToPayStr != null ? reasonOfRefusalToPayStr : reasonOfRefusalToPay.getName());
@@ -892,7 +892,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         pfpValidatorUser.getSubstitutePfpValidatorList();
     List<User> validPfpValidatorUserList = new ArrayList<>();
     StringBuilder pfpValidatorUserDomain = new StringBuilder("self.id in ");
-    LocalDate todayDate = Beans.get(AppBaseService.class).getTodayDate();
+    LocalDate todayDate = Beans.get(AppBaseService.class).getTodayDate(invoice.getCompany());
 
     validPfpValidatorUserList.add(pfpValidatorUser);
 
