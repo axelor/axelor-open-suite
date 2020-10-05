@@ -122,7 +122,7 @@ public class StockRulesServiceSupplychainImpl extends StockRulesServiceImpl {
         if (supplierPartner != null) {
 
           Company company = stockLocation.getCompany();
-          LocalDate today = Beans.get(AppBaseService.class).getTodayDate();
+          LocalDate today = Beans.get(AppBaseService.class).getTodayDate(company);
 
           PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl =
               Beans.get(PurchaseOrderServiceSupplychainImpl.class);

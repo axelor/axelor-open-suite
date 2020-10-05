@@ -28,6 +28,7 @@ import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateContextService;
 import com.axelor.apps.message.service.TemplateMessageServiceImpl;
 import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -60,7 +61,12 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
   @Inject
   public TemplateMessageServiceBaseImpl(
       MessageService messageService, TemplateContextService templateContextService) {
-    super(messageService, templateContextService);
+    super(
+        AuthUtils.getUser().getActiveCompany() != null
+            ? AuthUtils.getUser().getActiveCompany().getTimezone()
+            : "",
+        messageService,
+        templateContextService);
   }
 
   @Override

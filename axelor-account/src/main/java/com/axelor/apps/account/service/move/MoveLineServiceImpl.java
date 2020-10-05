@@ -1246,7 +1246,7 @@ public class MoveLineServiceImpl implements MoveLineService {
               reconcile,
               vatRate,
               detailPaymentAmount,
-              Beans.get(AppBaseService.class).getTodayDate());
+              Beans.get(AppBaseService.class).getTodayDate(reconcile.getCompany()));
 
       taxPaymentMoveLine = taxPaymentMoveLineService.computeTaxAmount(taxPaymentMoveLine);
 

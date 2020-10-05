@@ -17,6 +17,7 @@
  */
 package com.axelor.tool.template;
 
+import com.axelor.apps.tool.date.DateTool;
 import com.axelor.apps.tool.exception.IExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.StringUtils;
@@ -61,9 +62,12 @@ public class TemplateMaker {
   private String template;
   private STGroup stGroup;
   private Locale locale;
+  private String timeZone;
 
-  public TemplateMaker(Locale locale, char delimiterStartChar, char delimiterStopChar) {
+  public TemplateMaker(
+      String timeZone, Locale locale, char delimiterStartChar, char delimiterStopChar) {
     this.locale = locale;
+    this.timeZone = timeZone;
     this.stGroup = new STGroup(delimiterStartChar, delimiterStopChar);
     // Custom renderer
     this.stGroup.registerModelAdaptor(Model.class, new ModelFormatRenderer());
@@ -181,9 +185,9 @@ public class TemplateMaker {
 
     // Internal context
     _map.put("__user__", AuthUtils.getUser());
-    _map.put("__date__", LocalDate.now());
+    _map.put("__date__", DateTool.getTodayDate(timeZone));
     _map.put("__time__", LocalTime.now());
-    _map.put("__datetime__", LocalDateTime.now());
+    _map.put("__datetime__", DateTool.getTodayDateTime(timeZone));
 
     for (String key : _map.keySet()) {
       Object value = _map.get(key);

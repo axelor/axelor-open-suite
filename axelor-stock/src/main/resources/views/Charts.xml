@@ -351,9 +351,9 @@
 	</chart>
 
 	<action-record name="action-product-set-today-date" model="com.axelor.apps.base.db.Product">
-    	<field name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+    	<field name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
     	<field name="fromDate" expr="call:com.axelor.csv.script.ImportDateTime:importDate('TODAY[-6M]')"/>
-    	<field name="toDate" expr="eval:__config__.app.getTodayDate()" />
+    	<field name="toDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
     </action-record>
 	
 	<chart name="chart.stock.history.report.for.product.variant" title="Stock History" onInit="action-product-set-today-date">

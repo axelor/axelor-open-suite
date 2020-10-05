@@ -99,7 +99,7 @@ public class DoubtfulCustomerService {
    * Procédure permettant de créer les écritures de passage en client douteux pour chaque écriture
    * de facture
    *
-   * @param moveLineList Une liste d'écritures de facture
+   * @param moveList Une liste d'écritures de facture
    * @param doubtfulCustomerAccount Un compte client douteux
    * @param debtPassReason Un motif de passage en client douteux
    * @throws AxelorException
@@ -118,7 +118,7 @@ public class DoubtfulCustomerService {
    * Procédure permettant de créer les écritures de passage en client douteux pour chaque écriture
    * de facture
    *
-   * @param moveLineList Une liste d'écritures de facture
+   * @param move Une écritures de facture
    * @param doubtfulCustomerAccount Un compte client douteux
    * @param debtPassReason Un motif de passage en client douteux
    * @throws AxelorException
@@ -143,7 +143,7 @@ public class DoubtfulCustomerService {
                 move.getPaymentMode(),
                 MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
     newMove.setInvoice(invoice);
-    LocalDate todayDate = appBaseService.getTodayDate();
+    LocalDate todayDate = appBaseService.getTodayDate(company);
 
     MoveLine invoicePartnerMoveLine = null;
 
@@ -213,7 +213,7 @@ public class DoubtfulCustomerService {
    * Procédure permettant de créer les écritures de passage en client douteux pour chaque ligne
    * d'écriture de rejet de facture
    *
-   * @param moveLineList Une liste de lignes d'écritures de rejet de facture
+   * @param moveLine Une ligne d'écritures de rejet de facture
    * @param doubtfulCustomerAccount Un compte client douteux
    * @param debtPassReason Un motif de passage en client douteux
    * @throws AxelorException
@@ -226,7 +226,7 @@ public class DoubtfulCustomerService {
     log.debug("Ecriture concernée : {} ", moveLine.getName());
     Company company = moveLine.getMove().getCompany();
     Partner partner = moveLine.getPartner();
-    LocalDate todayDate = appBaseService.getTodayDate();
+    LocalDate todayDate = appBaseService.getTodayDate(company);
 
     Move newMove =
         moveService
@@ -347,7 +347,7 @@ public class DoubtfulCustomerService {
    * Procédure permettant de mettre à jour les champs d'une facture rejetée avec la nouvelle
    * écriture de débit sur le compte 416
    *
-   * @param move La nouvelle ligne d'écriture de débit sur le compte 416
+   * @param moveLine La nouvelle ligne d'écriture de débit sur le compte 416
    * @param doubtfulCustomerAccount Un compte client douteux
    * @param debtPassReason Un motif de passage en client douteux
    */
@@ -387,7 +387,7 @@ public class DoubtfulCustomerService {
       case 0:
         date =
             Beans.get(AppBaseService.class)
-                .getTodayDate()
+                .getTodayDate(company)
                 .minusMonths(company.getAccountConfig().getSixMonthDebtMonthNumber());
         break;
 
@@ -395,7 +395,7 @@ public class DoubtfulCustomerService {
       case 1:
         date =
             Beans.get(AppBaseService.class)
-                .getTodayDate()
+                .getTodayDate(company)
                 .minusMonths(company.getAccountConfig().getThreeMonthDebtMontsNumber());
         break;
 
@@ -408,7 +408,7 @@ public class DoubtfulCustomerService {
     String request =
         "SELECT DISTINCT m FROM MoveLine ml, Move m WHERE ml.move = m AND m.company.id = "
             + company.getId()
-            + " AND ml.account.useForPartnerBalance = 'true' "
+            + " AND ml.account.useForPartnerBalance = true "
             + "AND m.invoice IS NOT NULL AND ml.amountRemaining > 0.00 AND ml.debit > 0.00 AND ml.dueDate < '"
             + date.toString()
             + "' AND ml.account.id != "
@@ -452,7 +452,7 @@ public class DoubtfulCustomerService {
       case 0:
         date =
             Beans.get(AppBaseService.class)
-                .getTodayDate()
+                .getTodayDate(company)
                 .minusMonths(company.getAccountConfig().getSixMonthDebtMonthNumber());
         moveLineList =
             moveLineRepo
@@ -473,7 +473,7 @@ public class DoubtfulCustomerService {
       case 1:
         date =
             Beans.get(AppBaseService.class)
-                .getTodayDate()
+                .getTodayDate(company)
                 .minusMonths(company.getAccountConfig().getThreeMonthDebtMontsNumber());
         moveLineList =
             moveLineRepo

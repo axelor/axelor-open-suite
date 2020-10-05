@@ -93,7 +93,6 @@ public class ReimbursementExportService {
     this.appAccountService = appAccountService;
   }
 
-  /** @param reimbursementExport */
   public void fillMoveLineSet(
       Reimbursement reimbursement, List<MoveLine> moveLineList, BigDecimal total) {
 
@@ -111,10 +110,6 @@ public class ReimbursementExportService {
     log.debug("End fillMoveLineSet");
   }
 
-  /**
-   * @param reimbursementExport
-   * @throws AxelorException
-   */
   @Transactional(rollbackOn = {Exception.class})
   public Reimbursement runCreateReimbursement(
       List<MoveLine> moveLineList, Company company, Partner partner) throws AxelorException {
@@ -151,7 +146,7 @@ public class ReimbursementExportService {
   /**
    * Fonction permettant de calculer le montant total restant à payer / à lettrer
    *
-   * @param movelineList Une liste de ligne d'écriture
+   * @param moveLineList Une liste de ligne d'écriture
    * @return Le montant total restant à payer / à lettrer
    */
   public BigDecimal getTotalAmountRemaining(List<MoveLine> moveLineList) {
@@ -168,7 +163,7 @@ public class ReimbursementExportService {
   /**
    * Methode permettant de créer l'écriture de remboursement
    *
-   * @param reimbursementExport Un objet d'export des prélèvements
+   * @param reimbursement Un objet d'export des prélèvements
    * @throws AxelorException
    */
   public void createReimbursementMove(Reimbursement reimbursement, Company company)
@@ -212,7 +207,7 @@ public class ReimbursementExportService {
                   moveLine.getAccount(),
                   amountRemaining,
                   true,
-                  appAccountService.getTodayDate(),
+                  appAccountService.getTodayDate(company),
                   seq,
                   reimbursement.getRef(),
                   reimbursement.getDescription());
@@ -239,7 +234,7 @@ public class ReimbursementExportService {
               accountConfig.getReimbursementAccount(),
               reimbursement.getAmountReimbursed(),
               false,
-              appAccountService.getTodayDate(),
+              appAccountService.getTodayDate(company),
               seq,
               reimbursement.getRef(),
               reimbursement.getDescription());
@@ -290,7 +285,6 @@ public class ReimbursementExportService {
    *
    * @param partner Un tiers
    * @param company Une société
-   * @param reimbursementExport Un export des remboursement
    * @return Le remboursmeent créé
    * @throws AxelorException
    */
@@ -508,7 +502,7 @@ public class ReimbursementExportService {
    *
    * @param partner Un tiers
    * @param company Une société
-   * @param moveLine Un trop-perçu
+   * @param moveLineList Une liste de trop-perçu
    * @throws AxelorException
    */
   @SuppressWarnings("unchecked")

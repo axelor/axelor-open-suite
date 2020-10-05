@@ -80,7 +80,11 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
           invoice);
     }
 
-    if (!AuthUtils.getUser().getActiveCompany().getAccountConfig().getDisplayTimesheetOnPrinting()
+    if (AuthUtils.getUser().getActiveCompany() != null
+        && !AuthUtils.getUser()
+            .getActiveCompany()
+            .getAccountConfig()
+            .getDisplayTimesheetOnPrinting()
         && !AuthUtils.getUser()
             .getActiveCompany()
             .getAccountConfig()

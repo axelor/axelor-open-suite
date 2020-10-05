@@ -206,7 +206,7 @@
 		<field name="inTaxTotal" expr="eval: 0"/>
 		<field name="multipleUsers" expr="eval: setMultipleUsers" if="setMultipleUsers"/>
 		<field name="bankDetails"
-		  expr="eval: __user__?.employee?.mainEmploymentContract?.payCompany ? __user__.employee.mainEmploymentContract.payCompany.defaultBankDetails : __user__.activeCompany.defaultBankDetails"/>
+		  expr="eval: __user__?.employee?.mainEmploymentContract?.payCompany ? __user__.employee.mainEmploymentContract.payCompany.defaultBankDetails : __user__.activeCompany?.defaultBankDetails"/>
 	</action-record>
 
   <action-record name="action-expense-record-user-onchange" model="com.axelor.apps.hr.db.Expense">

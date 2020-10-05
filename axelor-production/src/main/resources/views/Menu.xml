@@ -119,7 +119,7 @@
 
 	<action-view name="manufacturing.root.charge.by.machine.dashboard" title="Charge by machine">
 		<view type="dashboard" name="charge.by.machine.dashboard" />
-		<context name="today" expr="eval:__config__.app.getTodayDate()"/>
+		<context name="today" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 	</action-view>
 
 	<menuitem name="manufacturing-root-raw-material-requirement" parent="manufacturing-root"

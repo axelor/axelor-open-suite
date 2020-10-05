@@ -55,8 +55,7 @@
         </panel>
         <panel-tabs colSpan="12" name="mainPanelTab">
             <panel name="generalInfoPanel" title="General">
-                <field name="statusSelect" widget="NavSelect"/>
-                <field name="isEmailSent" showIf="isEmailSent"/>
+                <field name="isEmailSent" showIf="isEmailSent" colSpan="12"/>
                 <field name="carrierPartner"
                     domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)"
                     form-view="partner-form" grid-view="partner-grid" canEdit="false"
@@ -96,7 +95,7 @@
 
     <action-record name="action-logistical-form-record-on-new" model="com.axelor.apps.stock.db.LogisticalForm">
         <field name="company" expr="eval: __user__.activeCompany" />
-        <field name="collectionDate" expr="eval: __config__.app.getTodayDate()" />
+        <field name="collectionDate" expr="eval: __config__.app.getTodayDate(__user__.activeCompany)" />
     </action-record>
 
     <action-group name="action-group-logistical-form-carrier-validated">

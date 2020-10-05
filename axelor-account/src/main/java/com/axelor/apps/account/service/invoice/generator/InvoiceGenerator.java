@@ -111,7 +111,7 @@ public abstract class InvoiceGenerator {
     this.inAti = inAti;
     this.companyBankDetails = companyBankDetails;
     this.tradingName = tradingName;
-    this.today = Beans.get(AppAccountService.class).getTodayDate();
+    this.today = Beans.get(AppAccountService.class).getTodayDate(company);
   }
 
   /**
@@ -144,11 +144,11 @@ public abstract class InvoiceGenerator {
     this.externalReference = externalReference;
     this.inAti = inAti;
     this.tradingName = tradingName;
-    this.today = Beans.get(AppAccountService.class).getTodayDate();
+    this.today = Beans.get(AppAccountService.class).getTodayDate(company);
   }
 
   protected InvoiceGenerator() {
-    this.today = Beans.get(AppAccountService.class).getTodayDate();
+    this.today = Beans.get(AppAccountService.class).getTodayDate(company);
   }
 
   protected int inverseOperationType(int operationType) throws AxelorException {

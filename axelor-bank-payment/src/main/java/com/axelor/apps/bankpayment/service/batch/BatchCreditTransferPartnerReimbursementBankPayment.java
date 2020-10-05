@@ -129,7 +129,7 @@ public class BatchCreditTransferPartnerReimbursementBankPayment
     LocalDate bankOrderDate =
         accountingBatch.getDueDate() != null
             ? accountingBatch.getDueDate()
-            : appBaseService.getTodayDate();
+            : appBaseService.getTodayDate(accountingBatch.getCompany());
     BankOrder bankOrder =
         bankOrderCreateService.createBankOrder(
             accountingBatch.getPaymentMode(),

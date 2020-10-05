@@ -60,7 +60,7 @@ public class BatchComputeWorkInProgressValuation extends AbstractBatch {
     StockLocation workshopStockLocation = productionBatch.getWorkshopStockLocation();
 
     if (productionBatch.getValuationDate() == null) {
-      productionBatch.setValuationDate(Beans.get(AppBaseService.class).getTodayDate());
+      productionBatch.setValuationDate(Beans.get(AppBaseService.class).getTodayDate(company));
     }
     LocalDate valuationDate = productionBatch.getValuationDate();
 
