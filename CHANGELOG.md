@@ -35,6 +35,7 @@
 - Databackup : remove transient fields from backup.
 - SMTP Account: the user can now configure the sending email address instead of using the login.
 - App Supplychain : Add boolean 'Block deallocation on availability request' visibility based on 'Manage stock reservation' boolean
+- Stock location line : Fix visibility issue of button text on popup
 
 ## [5.4.0] - 2020-09-16
 ## Features
