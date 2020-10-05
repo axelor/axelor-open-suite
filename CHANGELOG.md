@@ -1,41 +1,39 @@
 # Changelog
-## [Unreleased 5.4.1]
-## Features
-- EMPLOYEE : added field tracking.
-- USER FORM : Add search feature on userPermissionPanel.
-
+## [5.4.1] - 2020-10-05
 ## Improvements
-- SaleOrder : Set team according to sale config.
-- Stock move : "Refresh the products net mass" button placed in the "Tools" menu.
-- SaleOrder / StockMove : remove available status for service type product.
-- DeclarationOfExchanges : corrected wrong translation for product type select
-- ACCOUNTING REPORT : Rework fixed asset summary report
-- Stock config : set all the booleans of the stock move printing settings section by default to true.
-- Base App Service : getTodayDate method now take a required timezone parameter to fix time shift. The old getTodayDate method is now deprecated.
-- DEBT RECOVERY CONFIGLINE : set the field partner category mandatory in debt recovery configline.
+- USER FORM: Add search feature on user permission panel.
+- Sale Order: Set team according to sale config.
+- Stock move: "Refresh the products net mass" button placed in the "Tools" menu.
+- Sale Order / Stock Move: remove available status for service type products.
+- Declaration Of Exchanges: corrected wrong translation for product type select.
+- ACCOUNTING REPORT: Rework fixed asset summary report.
+- Stock config: set all the booleans of the stock move printing settings section by default to true.
+- Base App Service: Manage correctly timezone in date fields without time using company configuration.
+- DEBT RECOVERY CONFIGLINE: Partner category is now mandatory in debt recovery configuration.
+- EMPLOYEE: add tracking on most fields.
 
 ## Bug Fixes
-- Move : Fix NPE when changing date.
+- Move: Fix NPE on date change.
 - BATCH RH: corrected payroll preparation batch, now the batch is runnable.
-- Studio : Manage Custom model menu in export / import operation.
+- Studio: Manage Custom model menu in export / import operation.
 - Fix concurrent modification error when adding contact to customer.
 - Account management: Fix visibility issue on product and product family fields.
 - Stock Move status change: improve performance on cancelling and planning stock move.
-- Opportunity : Add sequence on demo data
-- BANK ORDER : Fix NPE when validating a bank order
-- Partner : fix supplierQualityRating not being synchronized with supplierQualityRatingSelect
-- LOGISTICAL FORM : Fix exception translation
+- Opportunity: Add sequence on demo data.
+- BANK ORDER: Fix NPE when validating a bank order.
+- Partner: fix supplier quality rating not being synchronized with supplier quality rating widget in partner form.
+- LOGISTICAL FORM: Fix exception translation.
 - Invoice Refund: fix refund not updating invoiced state of stock move and orders.
-- Logistical form : Remove duplicate status select
-- SaleOrderLine : Not showing picking order info for services
-- FORECAST RECAP : Fix fitler on invoices which was using bankDetails field instead of companyBankDetails
-- Tracking number : Fix wrong form view on search
-- Invoice : fix for hideDiscount doesn't work.
-- Account Equiv - NPE solved and made toAccount and fromAccount required.
-- Databackup : remove transient fields from backup.
+- Logistical form: Remove duplicate status select.
+- SaleOrderLine: Not showing picking order info for services.
+- FORECAST RECAP: Fix filter on invoices which was using bank details instead of company bank details.
+- Tracking number: Fix wrong form view on search.
+- Invoice: correctly hide discounts on the printing if the option is active.
+- Account Equiv: fix NPE and make accounts fields required.
+- Databackup: remove transient fields from backup.
 - SMTP Account: the user can now configure the sending email address instead of using the login.
-- App Supplychain : Add boolean 'Block deallocation on availability request' visibility based on 'Manage stock reservation' boolean
-- Stock location line : Fix visibility issue of button text on popup
+- App Supplychain: Hide configuration 'Block deallocation on availability request' if 'Manage stock reservation' is disabled.
+- Stock location line: Fix display issue of button text on popup.
 
 ## [5.4.0] - 2020-09-16
 ## Features
@@ -103,5 +101,5 @@
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
-[Unreleased 5.4.1]: https://github.com/axelor/axelor-open-suite/compare/v5.4.0...dev
+[5.4.1]: https://github.com/axelor/axelor-open-suite/compare/v5.4.0...v5.4.1
 [5.4.0]: https://github.com/axelor/axelor-open-suite/compare/v5.3.12...v5.4.0
