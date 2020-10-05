@@ -10,6 +10,7 @@
 - Tracking number : Fix wrong form view on search
 - Account Equiv - NPE solved and made toAccount and fromAccount required.
 - SMTP Account: the user can now configure the sending email address instead of using the login.
+- App Supplychain : Add boolean 'Block deallocation on availability request' visibility based on 'Manage stock reservation' boolean
 
 ## [5.2.15] - 2020-09-28
 ## Improvements
