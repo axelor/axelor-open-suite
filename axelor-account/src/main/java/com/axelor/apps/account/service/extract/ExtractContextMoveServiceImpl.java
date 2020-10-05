@@ -42,7 +42,7 @@ public class ExtractContextMoveServiceImpl implements ExtractContextMoveService 
     LocalDate dateOfReversion;
     switch (dateOfReversionSelect) {
       case MoveRepository.DATE_OF_REVERSION_TODAY:
-        dateOfReversion = Beans.get(AppBaseService.class).getTodayDate();
+        dateOfReversion = Beans.get(AppBaseService.class).getTodayDate(move.getCompany());
         break;
 
       case MoveRepository.DATE_OF_REVERSION_ORIGINAL_MOVE_DATE:

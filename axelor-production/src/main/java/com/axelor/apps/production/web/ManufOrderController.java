@@ -435,7 +435,7 @@ public class ManufOrderController {
               .computeCostPrice(
                   manufOrder,
                   CostSheetRepository.CALCULATION_WORK_IN_PROGRESS,
-                  Beans.get(AppBaseService.class).getTodayDate());
+                  Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()));
 
       response.setView(
           ActionView.define(I18n.get("Cost sheet"))

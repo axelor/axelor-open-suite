@@ -90,6 +90,7 @@ public class BankOrderServiceImpl implements BankOrderService {
   protected SequenceService sequenceService;
   protected BankOrderLineOriginService bankOrderLineOriginService;
   protected BankOrderMoveService bankOrderMoveService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public BankOrderServiceImpl(
@@ -101,7 +102,8 @@ public class BankOrderServiceImpl implements BankOrderService {
       BankPaymentConfigService bankPaymentConfigService,
       SequenceService sequenceService,
       BankOrderLineOriginService bankOrderLineOriginService,
-      BankOrderMoveService bankOrderMoveService) {
+      BankOrderMoveService bankOrderMoveService,
+      AppBaseService appBaseService) {
 
     this.bankOrderRepo = bankOrderRepo;
     this.invoicePaymentRepo = invoicePaymentRepo;
@@ -112,6 +114,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     this.sequenceService = sequenceService;
     this.bankOrderLineOriginService = bankOrderLineOriginService;
     this.bankOrderMoveService = bankOrderMoveService;
+    this.appBaseService = appBaseService;
   }
 
   public void checkPreconditions(BankOrder bankOrder) throws AxelorException {
@@ -119,7 +122,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     LocalDate brankOrderDate = bankOrder.getBankOrderDate();
 
     if (brankOrderDate != null) {
-      if (brankOrderDate.isBefore(LocalDate.now())) {
+      if (brankOrderDate.isBefore(appBaseService.getTodayDate(bankOrder.getSenderCompany()))) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(IExceptionMessage.BANK_ORDER_DATE));

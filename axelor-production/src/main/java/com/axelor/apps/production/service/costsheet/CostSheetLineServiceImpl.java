@@ -342,7 +342,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
               (Currency) productCompanyService.get(product, "purchaseCurrency", company),
               companyCurrency,
               price,
-              appProductionService.getTodayDate());
+              appProductionService.getTodayDate(company));
 
       if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
         @SuppressWarnings("unchecked")
@@ -372,7 +372,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
                       supplierPartner.getCurrency(),
                       companyCurrency,
                       price,
-                      appProductionService.getTodayDate());
+                      appProductionService.getTodayDate(company));
             }
             break;
           }

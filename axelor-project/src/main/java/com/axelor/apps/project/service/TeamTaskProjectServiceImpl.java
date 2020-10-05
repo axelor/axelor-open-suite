@@ -18,6 +18,7 @@
 package com.axelor.apps.project.service;
 
 import com.axelor.apps.base.service.TeamTaskServiceImpl;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.auth.db.User;
 import com.axelor.team.db.TeamTask;
@@ -28,9 +29,13 @@ import java.time.LocalDate;
 public class TeamTaskProjectServiceImpl extends TeamTaskServiceImpl
     implements TeamTaskProjectService {
 
+  protected AppBaseService appBaseService;
+
   @Inject
-  public TeamTaskProjectServiceImpl(TeamTaskRepository teamTaskRepo) {
+  public TeamTaskProjectServiceImpl(
+      TeamTaskRepository teamTaskRepo, AppBaseService appBaseService) {
     super(teamTaskRepo);
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -38,7 +43,7 @@ public class TeamTaskProjectServiceImpl extends TeamTaskServiceImpl
     TeamTask task = new TeamTask();
     task.setName(subject);
     task.setAssignedTo(assignedTo);
-    task.setTaskDate(LocalDate.now());
+    task.setTaskDate(appBaseService.getTodayDate(project.getCompany()));
     task.setStatus("new");
     task.setPriority("normal");
     project.addTeamTaskListItem(task);

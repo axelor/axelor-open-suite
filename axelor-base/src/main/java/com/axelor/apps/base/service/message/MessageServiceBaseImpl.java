@@ -42,7 +42,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
@@ -55,15 +54,18 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected UserService userService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public MessageServiceBaseImpl(
       MetaAttachmentRepository metaAttachmentRepository,
       MessageRepository messageRepository,
       SendMailQueueService sendMailQueueService,
-      UserService userService) {
+      UserService userService,
+      AppBaseService appBaseService) {
     super(metaAttachmentRepository, messageRepository, sendMailQueueService);
     this.userService = userService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -124,14 +126,14 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 
     logger.debug("Default BirtTemplate : {}", birtTemplate);
 
-    TemplateMaker maker = new TemplateMaker(AppFilter.getLocale(), '$', '$');
+    TemplateMaker maker = new TemplateMaker(company.getTimezone(), AppFilter.getLocale(), '$', '$');
     maker.setContext(messageRepository.find(message.getId()), Message.class.getSimpleName());
 
     String fileName =
         "Message "
             + message.getSubject()
             + "-"
-            + LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
+            + appBaseService.getTodayDate(company).format(DateTimeFormatter.BASIC_ISO_DATE);
 
     return Beans.get(TemplateMessageServiceBaseImpl.class)
         .generateBirtTemplateLink(
