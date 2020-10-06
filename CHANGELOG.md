@@ -2,6 +2,7 @@
 ## [Unreleased 5.4.2]
 ## Improvements
 ## Bug Fixes
+- ACCOUNTING BATCH : corrected conflict between boolean isTaxRequiredOnMoveLine and closure/opening accounting batch. 
 
 ## [5.4.1] - 2020-10-05
 ## Improvements
