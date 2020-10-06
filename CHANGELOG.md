@@ -11,6 +11,7 @@
 - ACCOUNTING REPORT : Rework fixed asset summary report
 - Stock config : set all the booleans of the stock move printing settings section by default to true.
 - ANALYTIC MOVE LINE : hide fields when open from a invoiceLine.
+- ANALYTIC MOVE LINE : hide fields when open from a saleOrder or a purchaseOrder
 
 ## Bug Fixes
 - AccountManagement :  Fix NPE when product not present in invoiceLine.
