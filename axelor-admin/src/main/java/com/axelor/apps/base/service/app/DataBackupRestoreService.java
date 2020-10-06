@@ -130,7 +130,7 @@ public class DataBackupRestoreService {
     }
   }
 
-  public boolean SeuencesExist() {
+  public boolean sequencesOrMrpLineTypesExist() {
     long total = (long) JPA.em().createQuery("SELECT count(*) FROM Sequence").getSingleResult();
     long total1 = (long) JPA.em().createQuery("SELECT count(*) FROM MrpLineType").getSingleResult();
     return total > 0 || total1 > 0 ? true : false;
