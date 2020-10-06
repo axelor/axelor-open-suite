@@ -12,6 +12,7 @@
 - SMTP Account: the user can now configure the sending email address instead of using the login.
 - App Supplychain : Add boolean 'Block deallocation on availability request' visibility based on 'Manage stock reservation' boolean
 - Stock location line : Fix visibility issue of button text on popup
+- ACCOUNTING BATCH : corrected conflict between boolean isTaxRequiredOnMoveLine and closure/opening accounting batch. 
 
 ## [5.2.15] - 2020-09-28
 ## Improvements
