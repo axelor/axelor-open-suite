@@ -17,8 +17,9 @@
 	<menuitem name="recruitment-job-application-all" parent="recruitment-root" title="Applications" action="recruitment.job.application.all"  />
 	
 	<action-view name="recruitment.job.application.all" model="com.axelor.apps.talent.db.JobApplication" title="Applications">
-		<view name="job-application-grid" type="grid" />
-		<view name="job-application-form" type="form" />
+		<view name="job-application-kanban" type="kanban"/>
+		<view name="job-application-grid" type="grid"/>
+		<view name="job-application-form" type="form"/>
 		<view-param name="search-filters" value="job-application-filters"/>
 	</action-view>
 	
