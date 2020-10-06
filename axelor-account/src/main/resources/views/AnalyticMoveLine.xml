@@ -53,7 +53,7 @@
 
     </form>
     
-    <form name="analytic-move-line-distribution-form" title="Analytic move line" model="com.axelor.apps.account.db.AnalyticMoveLine" onNew="action-analytic-move-line-attrs-set-original-piece-amount">
+    <form name="analytic-move-line-distribution-form" title="Analytic move line" model="com.axelor.apps.account.db.AnalyticMoveLine" onLoad="action-analytic-move-line-attrs-hide-fields" onNew="action-analytic-move-line-group-analytic-move-line-distribution-on-new">
         <panel name="mainPanel" >
    	        <field name="analyticJournal" grid-view="analytic-journal-grid" form-view="analytic-journal-form"/>
 	        <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
@@ -96,7 +96,23 @@
     <action-attrs if-module="axelor-supplychain" name="action-analytic-move-line-attrs-set-original-piece-amount">
          <attribute for="originalPieceAmount" name="value" expr="eval: __parent__.exTaxTotal" if="__parent__ &amp;&amp; (__parent__._model == 'com.axelor.apps.purchase.db.PurchaseOrderLine' || __parent__._model == 'com.axelor.apps.sale.db.SaleOrderLine' || __parent__._model == 'com.axelor.apps.account.db.InvoiceLine')"/>
     </action-attrs>
+    
+    <action-attrs name="action-analytic-move-line-attrs-set-type-select">
+         <attribute for="typeSelect" name="value" if="__parent__?._model == 'com.axelor.apps.account.db.InvoiceLine' " expr="eval: AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE"/>
+    </action-attrs>
+    
+    <action-attrs name="action-analytic-move-line-attrs-hide-fields">
+         <attribute for="date" name="hidden" expr=" eval: __parent__?._model == 'com.axelor.apps.account.db.InvoiceLine'"/>
+         <attribute for="typeSelect" name="hidden" expr=" eval: __parent__?._model == 'com.axelor.apps.account.db.InvoiceLine'"/>
+         <attribute for="accountType" name="hidden" expr=" eval: __parent__?._model == 'com.axelor.apps.account.db.InvoiceLine'"/>
+    </action-attrs>
 
+    <action-group name="action-analytic-move-line-group-analytic-move-line-distribution-on-new">
+		<action name="action-analytic-move-line-attrs-set-original-piece-amount"/>
+		<action name="action-analytic-move-line-attrs-hide-fields"/>
+		<action name="action-analytic-move-line-attrs-set-type-select"/>
+	</action-group>
+	
 	<action-attrs name="action-analytic-move-line-attrs-valid-analytic-move-line-list">
 		<attribute name="value" for="isValidAnalyticMoveLineList" expr="call: com.axelor.apps.account.service.AnalyticMoveLineService:validateAnalyticMoveLines(analyticMoveLineList)"/>
     </action-attrs>

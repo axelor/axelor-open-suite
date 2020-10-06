@@ -10,6 +10,7 @@
 - DeclarationOfExchanges : corrected wrong translation for product type select.
 - ACCOUNTING REPORT : Rework fixed asset summary report
 - Stock config : set all the booleans of the stock move printing settings section by default to true.
+- ANALYTIC MOVE LINE : hide fields when open from a invoiceLine.
 
 ## Bug Fixes
 - AccountManagement :  Fix NPE when product not present in invoiceLine.
@@ -511,3 +512,4 @@ When printing multiple manufacturing orders, operations from all orders were pri
 [5.3.2]: https://github.com/axelor/axelor-open-suite/compare/v5.3.1...v5.3.2
 [5.3.1]: https://github.com/axelor/axelor-open-suite/compare/v5.3.0...v5.3.1
 [5.3.0]: https://github.com/axelor/axelor-open-suite/compare/v5.2.5...v5.3.0
+
