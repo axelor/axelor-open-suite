@@ -1,7 +1,7 @@
 ---
-title: ProductionOrder : Status
+title: "ProductionOrder : Status"
 type: feature
 description : |
-	Add support for Production order Status : 
-	   Draft , Planned , Started , Cancelled , Completed.
-	And update it according to related manufacturing orders status.
+  "Add support for Production order Status : 
+  Draft , Planned , Started , Cancelled , Completed.
+  And update it according to related manufacturing orders status."

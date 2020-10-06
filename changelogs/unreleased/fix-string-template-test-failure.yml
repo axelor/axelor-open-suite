@@ -1,5 +1,5 @@
 ---
 title: "Fix string template tests failure"
-type: Anomaly
+type: fix
 description: |
-	Fixing string template tests failure.
+  Fixing string template tests failure.

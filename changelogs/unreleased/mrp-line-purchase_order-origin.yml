@@ -1,7 +1,7 @@
 ---
-title: Mrp : Link purchase order to sale order
+title: "Mrp : Link purchase order to sale order"
 type: feature
 description : |
-	Added the reference to each generated purchaseOrder from mrpLines
-	if the origin is a saleOrder it's linked to it
-	via purchaseOrder.generatedSaleOrderId
+  Added the reference to each generated purchaseOrder from mrpLines
+  if the origin is a saleOrder it's linked to it
+  via purchaseOrder.generatedSaleOrderId

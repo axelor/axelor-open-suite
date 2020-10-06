@@ -1,6 +1,6 @@
 ---
-title: MRP : update the date on the manually updated line
+title: "MRP : update the date on the manually updated line"
 type: feature
 description : |
-	When we manually update a quantity on a proposal and run again the mrp calculation
-	if the mrp line date is in the past, it update with the today date.
+  When we manually update a quantity on a proposal and run again the mrp calculation
+  if the mrp line date is in the past, it update with the today date.
