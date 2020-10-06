@@ -52,7 +52,7 @@ public class TemplateMaker {
       String timeZone, Locale locale, char delimiterStartChar, char delimiterStopChar) {
     this.locale = locale;
     this.timeZone = timeZone;
-    this.st = new StringTemplates(delimiterStartChar, delimiterStopChar).withLocale(locale);
+    this.st = new StringTemplates(delimiterStartChar, delimiterStopChar);
   }
 
   public void setContext(Model model) {
