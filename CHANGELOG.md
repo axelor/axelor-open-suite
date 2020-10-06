@@ -38,6 +38,7 @@ Add new configurations for print template: print format, sequence, columns
 * USER: the admin can now force the user to change password on the next connection.
 * Invoice: Add tracking for most fields.
 * ANALYTIC MOVE LINE : hide fields when open from a invoiceLine.
+* ANALYTIC MOVE LINE : hide fields when open from a saleOrder or a purchaseOrder
 
 #### Fixed
 
