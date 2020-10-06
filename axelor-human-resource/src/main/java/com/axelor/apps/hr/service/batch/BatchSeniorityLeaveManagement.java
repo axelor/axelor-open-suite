@@ -105,7 +105,12 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
     total = 0;
     noValueAnomaly = 0;
     confAnomaly = 0;
-    this.maker = new TemplateMaker(AppFilter.getLocale(), TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
+    this.maker =
+        new TemplateMaker(
+            batch.getHrBatch().getCompany().getTimezone(),
+            AppFilter.getLocale(),
+            TEMPLATE_DELIMITER,
+            TEMPLATE_DELIMITER);
     hrConfig =
         Beans.get(HRConfigRepository.class)
             .all()

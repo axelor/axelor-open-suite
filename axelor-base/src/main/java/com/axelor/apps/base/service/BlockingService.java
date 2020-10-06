@@ -44,7 +44,7 @@ public class BlockingService {
             && blocking.getBlockingSelect().equals(blockingType)
             && blocking
                     .getBlockingToDate()
-                    .compareTo(Beans.get(AppBaseService.class).getTodayDate())
+                    .compareTo(Beans.get(AppBaseService.class).getTodayDate(company))
                 >= 0) {
           return blocking;
         }
@@ -69,7 +69,7 @@ public class BlockingService {
             + "AND company.id = %d",
         blockingType,
         Beans.get(AppBaseService.class)
-            .getTodayDate()
+            .getTodayDate(company)
             .format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
         company.getId());
   }

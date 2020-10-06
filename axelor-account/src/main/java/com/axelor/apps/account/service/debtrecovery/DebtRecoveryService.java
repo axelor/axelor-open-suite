@@ -40,6 +40,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.tool.date.DateTool;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -141,9 +142,14 @@ public class DebtRecoveryService {
    * @return la plus ancienne date d'échéance
    */
   public LocalDate getOldDateMoveLine(List<MoveLine> moveLineList) {
-    LocalDate minMoveLineDate = LocalDate.now();
+    LocalDate minMoveLineDate;
 
-    if (moveLineList != null && !moveLineList.isEmpty()) {
+    if (!moveLineList.isEmpty()) {
+      minMoveLineDate =
+          appAccountService.getTodayDate(
+              moveLineList.get(0).getMove() != null
+                  ? moveLineList.get(0).getMove().getCompany()
+                  : AuthUtils.getUser().getActiveCompany());
       for (MoveLine moveLine : moveLineList) {
         if (minMoveLineDate.isAfter(moveLine.getDueDate())) {
           minMoveLineDate = moveLine.getDueDate();
@@ -163,7 +169,7 @@ public class DebtRecoveryService {
    * @return minDate La plus ancienne date
    */
   public LocalDate getLastDate(LocalDate date1, LocalDate date2) {
-    LocalDate minDate = LocalDate.now();
+    LocalDate minDate;
     if (date1 != null && date2 != null) {
       if (date1.isAfter(date2)) {
         minDate = date1;
@@ -242,11 +248,11 @@ public class DebtRecoveryService {
             && !move.getInvoice().getDebtRecoveryBlockingOk()
             && !move.getInvoice().getSchedulePaymentOk()
             && ((move.getInvoice().getInvoiceDate()).plusDays(mailTransitTime))
-                .isBefore(appAccountService.getTodayDate())) {
+                .isBefore(appAccountService.getTodayDate(company))) {
           if ((moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0)
               && moveLine.getDueDate() != null
-              && (appAccountService.getTodayDate().isAfter(moveLine.getDueDate())
-                  || appAccountService.getTodayDate().isEqual(moveLine.getDueDate()))) {
+              && (appAccountService.getTodayDate(company).isAfter(moveLine.getDueDate())
+                  || appAccountService.getTodayDate(company).isEqual(moveLine.getDueDate()))) {
             if (moveLine.getAccount() != null && moveLine.getAccount().getUseForPartnerBalance()) {
               if (moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
                 moveLineList.add(moveLine);
@@ -259,8 +265,8 @@ public class DebtRecoveryService {
           if (moveLine.getPaymentScheduleLine() != null
               && (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0)
               && moveLine.getDueDate() != null
-              && (appAccountService.getTodayDate().isAfter(moveLine.getDueDate())
-                  || appAccountService.getTodayDate().isEqual(moveLine.getDueDate()))) {
+              && (appAccountService.getTodayDate(company).isAfter(moveLine.getDueDate())
+                  || appAccountService.getTodayDate(company).isEqual(moveLine.getDueDate()))) {
             if (moveLine.getAccount() != null && moveLine.getAccount().getUseForPartnerBalance()) {
               if (moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
                 moveLineList.add(moveLine);
@@ -337,10 +343,10 @@ public class DebtRecoveryService {
    * @param monthEnd Le mois de fin de la période
    * @return Sommes-nous dans la période?
    */
-  public boolean periodOk(int dayBegin, int dayEnd, int monthBegin, int monthEnd) {
+  public boolean periodOk(Company company, int dayBegin, int dayEnd, int monthBegin, int monthEnd) {
 
     return DateTool.dateInPeriod(
-        appAccountService.getTodayDate(), dayBegin, monthBegin, dayEnd, monthEnd);
+        appAccountService.getTodayDate(company), dayBegin, monthBegin, dayEnd, monthEnd);
   }
 
   public DebtRecovery getDebtRecovery(Partner partner, Company company) throws AxelorException {

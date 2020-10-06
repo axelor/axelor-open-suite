@@ -32,6 +32,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
@@ -155,7 +156,8 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
     if ((analyticMoveLineList == null || analyticMoveLineList.isEmpty())) {
       createAnalyticDistributionWithTemplate(purchaseOrderLine);
     } else {
-      LocalDate date = appAccountService.getTodayDate();
+      LocalDate date =
+          appAccountService.getTodayDate(purchaseOrderLine.getPurchaseOrder().getCompany());
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
         analyticMoveLineService.updateAnalyticMoveLine(
             analyticMoveLine, purchaseOrderLine.getCompanyExTaxTotal(), date);
@@ -172,7 +174,10 @@ public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineSe
             purchaseOrderLine.getAnalyticDistributionTemplate(),
             purchaseOrderLine.getExTaxTotal(),
             AnalyticMoveLineRepository.STATUS_FORECAST_ORDER,
-            appBaseService.getTodayDate());
+            appBaseService.getTodayDate(
+                purchaseOrderLine.getPurchaseOrder() != null
+                    ? purchaseOrderLine.getPurchaseOrder().getCompany()
+                    : AuthUtils.getUser().getActiveCompany()));
 
     purchaseOrderLine.clearAnalyticMoveLineList();
     analyticMoveLineList.forEach(purchaseOrderLine::addAnalyticMoveLineListItem);

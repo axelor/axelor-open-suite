@@ -73,8 +73,12 @@ public class TemplateService {
   }
 
   public String processSubject(
-      Template template, Model bean, String beanName, Map<String, Object> context) {
-    TemplateMaker maker = new TemplateMaker(new Locale("fr"), '$', '$');
+      String timeZone,
+      Template template,
+      Model bean,
+      String beanName,
+      Map<String, Object> context) {
+    TemplateMaker maker = new TemplateMaker(timeZone, new Locale("fr"), '$', '$');
 
     maker.setTemplate(template.getSubject());
     maker.setContext(bean, context, beanName);
@@ -82,8 +86,12 @@ public class TemplateService {
   }
 
   public String processContent(
-      Template template, Model bean, String beanName, Map<String, Object> context) {
-    TemplateMaker maker = new TemplateMaker(new Locale("fr"), '$', '$');
+      String timeZone,
+      Template template,
+      Model bean,
+      String beanName,
+      Map<String, Object> context) {
+    TemplateMaker maker = new TemplateMaker(timeZone, new Locale("fr"), '$', '$');
 
     maker.setTemplate(template.getContent());
     maker.setContext(bean, context, beanName);

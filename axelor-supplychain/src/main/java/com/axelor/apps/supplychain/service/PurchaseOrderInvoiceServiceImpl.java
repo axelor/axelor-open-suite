@@ -421,7 +421,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 
   public PurchaseOrder fillPurchaseOrder(PurchaseOrder purchaseOrder, Invoice invoice) {
 
-    purchaseOrder.setOrderDate(appSupplychainService.getTodayDate());
+    purchaseOrder.setOrderDate(appSupplychainService.getTodayDate(purchaseOrder.getCompany()));
 
     return purchaseOrder;
   }

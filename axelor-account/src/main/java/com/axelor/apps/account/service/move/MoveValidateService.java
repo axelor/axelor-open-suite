@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -60,6 +61,7 @@ public class MoveValidateService {
   protected MoveRepository moveRepository;
   protected AccountRepository accountRepository;
   protected PartnerRepository partnerRepository;
+  protected AppBaseService appBaseService;
 
   @Inject
   public MoveValidateService(
@@ -68,7 +70,8 @@ public class MoveValidateService {
       MoveCustAccountService moveCustAccountService,
       MoveRepository moveRepository,
       AccountRepository accountRepository,
-      PartnerRepository partnerRepository) {
+      PartnerRepository partnerRepository,
+      AppBaseService appBaseService) {
 
     this.accountConfigService = accountConfigService;
     this.moveSequenceService = moveSequenceService;
@@ -76,6 +79,7 @@ public class MoveValidateService {
     this.moveRepository = moveRepository;
     this.accountRepository = accountRepository;
     this.partnerRepository = partnerRepository;
+    this.appBaseService = appBaseService;
   }
 
   /**
@@ -293,7 +297,7 @@ public class MoveValidateService {
       move.setStatusSelect(MoveRepository.STATUS_DAYBOOK);
     } else {
       move.setStatusSelect(MoveRepository.STATUS_VALIDATED);
-      move.setValidationDate(LocalDate.now());
+      move.setValidationDate(appBaseService.getTodayDate(move.getCompany()));
     }
   }
 

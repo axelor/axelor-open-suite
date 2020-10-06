@@ -42,7 +42,7 @@ public class MoveManagementRepository extends MoveRepository {
 
     Move copy = super.copy(entity, deep);
 
-    copy.setDate(Beans.get(AppBaseService.class).getTodayDate());
+    copy.setDate(Beans.get(AppBaseService.class).getTodayDate(copy.getCompany()));
 
     Period period = null;
     try {

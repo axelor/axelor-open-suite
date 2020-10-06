@@ -68,7 +68,8 @@ public class DepositSlipServiceImpl implements DepositSlipService {
         depositSlip.getCompany() != null ? depositSlip.getCompany().getTimezone() : null);
     settings.addFormat("pdf");
     String fileLink = settings.toAttach(depositSlip).generate().getFileLink();
-    depositSlip.setPublicationDate(Beans.get(AppBaseService.class).getTodayDate());
+    depositSlip.setPublicationDate(
+        Beans.get(AppBaseService.class).getTodayDate(depositSlip.getCompany()));
     return fileLink;
   }
 

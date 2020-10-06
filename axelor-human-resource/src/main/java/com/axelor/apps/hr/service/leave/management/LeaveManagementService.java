@@ -60,7 +60,7 @@ public class LeaveManagementService {
     leaveManagement.setUser(user);
     leaveManagement.setComments(comments);
     if (date == null) {
-      leaveManagement.setDate(appBaseService.getTodayDate());
+      leaveManagement.setDate(appBaseService.getTodayDate(user.getActiveCompany()));
     } else {
       leaveManagement.setDate(date);
     }
