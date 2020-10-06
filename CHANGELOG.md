@@ -37,6 +37,7 @@ Add new configurations for print template: print format, sequence, columns
 * PURCHASE ORDER LINE: Replace the min sale price field by a field that indicates the maximum purchase price recommended.
 * USER: the admin can now force the user to change password on the next connection.
 * Invoice: Add tracking for most fields.
+* ANALYTIC MOVE LINE : hide fields when open from a invoiceLine.
 
 #### Fixed
 
