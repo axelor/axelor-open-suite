@@ -135,8 +135,7 @@ public class MoveValidateService {
           TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get(IExceptionMessage.MOVE_8));
     }
 
-    if (move.getMoveLineList()
-        .stream()
+    if (move.getMoveLineList().stream()
         .allMatch(
             moveLine ->
                 moveLine.getDebit().add(moveLine.getCredit()).compareTo(BigDecimal.ZERO) == 0)) {
@@ -146,42 +145,43 @@ public class MoveValidateService {
 
     MoveLineService moveLineService = Beans.get(MoveLineService.class);
 
-    for (MoveLine moveLine : move.getMoveLineList()) {
-      Account account = moveLine.getAccount();
-      if (account.getIsTaxAuthorizedOnMoveLine()
-          && account.getIsTaxRequiredOnMoveLine()
-          && moveLine.getTaxLine() == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.MOVE_9),
-            account.getName());
-      }
+    if (move.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE
+        && move.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_OPENING) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        Account account = moveLine.getAccount();
+        if (account.getIsTaxAuthorizedOnMoveLine()
+            && account.getIsTaxRequiredOnMoveLine()
+            && moveLine.getTaxLine() == null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_MISSING_FIELD,
+              I18n.get(IExceptionMessage.MOVE_9),
+              account.getName());
+        }
 
-      if (moveLine.getAnalyticDistributionTemplate() == null
-          && ObjectUtils.isEmpty(moveLine.getAnalyticMoveLineList())
-          && account.getAnalyticDistributionAuthorized()
-          && account.getAnalyticDistributionRequiredOnMoveLines()) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.MOVE_10),
-            account.getName());
-      }
+        if (moveLine.getAnalyticDistributionTemplate() == null
+            && ObjectUtils.isEmpty(moveLine.getAnalyticMoveLineList())
+            && account.getAnalyticDistributionAuthorized()
+            && account.getAnalyticDistributionRequiredOnMoveLines()) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_MISSING_FIELD,
+              I18n.get(IExceptionMessage.MOVE_10),
+              account.getName());
+        }
 
-      if (account != null
-          && !account.getAnalyticDistributionAuthorized()
-          && (moveLine.getAnalyticDistributionTemplate() != null
-              || (moveLine.getAnalyticMoveLineList() != null
-                  && !moveLine.getAnalyticMoveLineList().isEmpty()))) {
-        throw new AxelorException(
-            move,
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.VENTILATE_STATE_7));
-      }
+        if (account != null
+            && !account.getAnalyticDistributionAuthorized()
+            && (moveLine.getAnalyticDistributionTemplate() != null
+                || (moveLine.getAnalyticMoveLineList() != null
+                    && !moveLine.getAnalyticMoveLineList().isEmpty()))) {
+          throw new AxelorException(
+              move,
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(IExceptionMessage.VENTILATE_STATE_7));
+        }
 
-      moveLineService.validateMoveLine(moveLine);
+        moveLineService.validateMoveLine(moveLine);
+      }
     }
-
-    this.validateWellBalancedMove(move);
   }
 
   /**
