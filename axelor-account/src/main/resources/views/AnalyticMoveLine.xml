@@ -99,12 +99,13 @@
     
     <action-attrs name="action-analytic-move-line-attrs-set-type-select">
          <attribute for="typeSelect" name="value" if="__parent__?._model == 'com.axelor.apps.account.db.InvoiceLine' " expr="eval: AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE"/>
+         <attribute for="typeSelect" name="value" if="__parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrderLine' || __parent__?._model == 'com.axelor.apps.sale.db.SaleOrderLine'" expr="eval: AnalyticMoveLineRepository.STATUS_FORECAST_ORDER"/>
     </action-attrs>
     
     <action-attrs name="action-analytic-move-line-attrs-hide-fields">
-         <attribute for="date" name="hidden" expr=" eval: __parent__?._model == 'com.axelor.apps.account.db.InvoiceLine'"/>
-         <attribute for="typeSelect" name="hidden" expr=" eval: __parent__?._model == 'com.axelor.apps.account.db.InvoiceLine'"/>
-         <attribute for="accountType" name="hidden" expr=" eval: __parent__?._model == 'com.axelor.apps.account.db.InvoiceLine'"/>
+         <attribute for="date" name="hidden" expr="eval: __parent__?._model == 'com.axelor.apps.account.db.InvoiceLine' || __parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrderLine' || __parent__?._model == 'com.axelor.apps.sale.db.SaleOrderLine'"/>
+         <attribute for="typeSelect" name="hidden" expr="eval: __parent__?._model == 'com.axelor.apps.account.db.InvoiceLine' || __parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrderLine' || __parent__?._model == 'com.axelor.apps.sale.db.SaleOrderLine'"/>
+         <attribute for="accountType" name="hidden" expr="eval: __parent__?._model == 'com.axelor.apps.account.db.InvoiceLine' || __parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrderLine' || __parent__?._model == 'com.axelor.apps.sale.db.SaleOrderLine'"/>
     </action-attrs>
 
     <action-group name="action-analytic-move-line-group-analytic-move-line-distribution-on-new">
