@@ -20,8 +20,10 @@ package com.axelor.apps.hr.db.repo;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmploymentContract;
+import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
 import java.time.LocalDate;
@@ -106,9 +108,13 @@ public class EmployeeHRRepository extends EmployeeRepository {
    */
   public static boolean isEmployeeFormerOrNew(Employee employee) {
     Objects.requireNonNull(employee);
-    return (employee.getLeavingDate() != null
-            && employee.getLeavingDate().compareTo(LocalDate.now()) < 0)
-        || (employee.getHireDate() != null
-            && employee.getHireDate().compareTo(LocalDate.now()) > 0);
+    AppBaseService appBaseService = Beans.get(AppBaseService.class);
+    LocalDate today =
+        appBaseService.getTodayDate(
+            employee.getUser() != null
+                ? employee.getUser().getActiveCompany()
+                : AuthUtils.getUser().getActiveCompany());
+    return (employee.getLeavingDate() != null && employee.getLeavingDate().compareTo(today) < 0)
+        || (employee.getHireDate() != null && employee.getHireDate().compareTo(today) > 0);
   }
 }
