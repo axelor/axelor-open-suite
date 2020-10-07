@@ -48,8 +48,13 @@
   			<field name="account" onSelect="action-analytic-move-line-attrs-account-domain" onChange="action-analytic-move-line-record-account-onchange"/>
             <field name="accountType" onChange="action-analytic-move-line-record-account-type-onchange"/>
 	        <field name="typeSelect"/>
-           <field name="moveLine" width="135" form-view="move-line-form" grid-view="move-line-grid" showIf="moveLine"/>
+           <field name="moveLine" colSpan="12" requiredIf="typeSelect == 3" form-view="move-line-form" grid-view="move-line-grid" showIf="moveLine || typeSelect == 3"/>
+           <field name="invoiceLine" if="__config__.app.isApp('invoice')" colSpan="12" requiredIf="typeSelect == 2" form-view="invoice-line-form" grid-view="invoice-line-grid" showIf="invoiceLine || typeSelect == 2"/>
        </panel>
+       <panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+	   </panel-mail>
 
     </form>
     
