@@ -502,7 +502,7 @@ InvoiceSet.length > 0))"
                         <font x-translate ng-if="record.typeSelect == 4">Inv. on</font>
                         <font x-translate ng-if="record.typeSelect == 5">Other on</font>
                         <font x-translate ng-if="record.typeSelect == 6">Imputed on</font>
-                        <font> {{record.paymentDate | date : 'dd/MM/yyyy'}}</font>
+                        <font> {{$fmt('paymentDate')}}</font>
                         <dd>-{{record.amount}} {{record.currency.symbol}}</dd>
                       </dt>
                    	</dl>
@@ -708,7 +708,7 @@ InvoiceSet.length > 0))"
                         <font x-translate ng-if="record.typeSelect == 4">Inv. on</font>
                         <font x-translate ng-if="record.typeSelect == 5">Other on</font>
                         <font x-translate ng-if="record.typeSelect == 6">Imputed on</font>
-                        <font> {{record.paymentDate | date : 'dd/MM/yyyy'}}</font>
+                        <font> {{$fmt('paymentDate')}}</font>
                         <dd>-{{record.amount}} {{record.currency.symbol}}</dd>
                       </dt>
                    	</dl>

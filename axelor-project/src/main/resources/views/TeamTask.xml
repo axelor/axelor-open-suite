@@ -302,7 +302,7 @@
 				</div>
 			</div>
 			<div class="card-footer">
-				<i class='fa fa-clock-o'></i> <span ng-if="taskDate">{{taskDate | date:'dd/MM/yyyy'}}</span><span ng-if="!taskDate" x-translate>Not specified</span>
+				<i class='fa fa-clock-o'></i> <span ng-if="taskDate">{{$fmt('taskDate')}}</span><span ng-if="!taskDate" x-translate>Not specified</span>
 			</div>
 		]]>
 		</template>
