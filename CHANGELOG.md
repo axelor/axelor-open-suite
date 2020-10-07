@@ -2,6 +2,7 @@
 ## [Unreleased 5.4.2]
 ## Improvements
 - ANALYTIC MOVE LINE : made some field mandatory and added tracking
+- DEBTRECOVERYMETHODLINE : make debtRecoveryLevel field required.
 
 ## Bug Fixes
 - ACCOUNTING BATCH : corrected conflict between boolean isTaxRequiredOnMoveLine and closure/opening accounting batch. 
