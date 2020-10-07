@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UnitConversion;
@@ -38,7 +39,6 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
-import java.util.Locale;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
@@ -133,7 +133,7 @@ public class UnitConversionService {
               AuthUtils.getUser().getActiveCompany() != null
                   ? AuthUtils.getUser().getActiveCompany().getTimezone()
                   : "",
-              Locale.FRENCH,
+              AppFilter.getLocale(),
               TEMPLATE_DELIMITER,
               TEMPLATE_DELIMITER);
       this.maker.setContext(product, "Product");
