@@ -32,8 +32,8 @@ import com.axelor.apps.tool.xml.Marschaller;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -72,8 +72,6 @@ public class BankOrderFileService {
   protected Object fileToCreate;
   protected String context;
   protected String fileExtension;
-
-  @Inject protected AppService appService;
 
   public BankOrderFileService(BankOrder bankOrder) {
 
@@ -117,7 +115,7 @@ public class BankOrderFileService {
           I18n.get(IExceptionMessage.BANK_ORDER_FILE_NO_FOLDER_PATH),
           paymentMode.getName());
     }
-    return appService.getDataExportDir() + folderPath;
+    return Beans.get(AppService.class).getDataExportDir() + folderPath;
   }
 
   /**
