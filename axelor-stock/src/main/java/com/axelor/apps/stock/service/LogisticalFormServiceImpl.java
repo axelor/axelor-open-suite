@@ -17,9 +17,9 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.stock.db.FreightCarrierCustomerAccountNumber;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.LogisticalFormLine;
@@ -186,7 +186,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
       LogisticalForm logisticalForm, List<String> errorMessageList) {
     Map<StockMoveLine, BigDecimal> spreadableQtyMap = getSpreadableQtyMap(logisticalForm);
     Map<StockMoveLine, BigDecimal> spreadQtyMap = getSpreadQtyMap(logisticalForm);
-    Locale locale = new Locale(Beans.get(UserService.class).getLanguage());
+    Locale locale = AppFilter.getLocale();
     NumberFormat nf = NumberFormat.getInstance(locale);
 
     for (Entry<StockMoveLine, BigDecimal> entry : spreadableQtyMap.entrySet()) {
