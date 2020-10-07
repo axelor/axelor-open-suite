@@ -1,0 +1,3 @@
+---
+title: "Sale order : make allocateQty, requestQty, cancelReservation buttons of the sale order line and stock move line to readonly for product type service."
+type: change

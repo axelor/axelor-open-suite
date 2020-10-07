@@ -35,7 +35,7 @@
 		<field name="reservedQty" if-module="axelor-supplychain"
 			if="__config__.app.getApp('supplychain').getManageStockReservation()"
 			aggregate="sum" readonly="true" x-scale="2"/>
-		<button name="allocateAll" if="__config__.app.getApp('supplychain')?.manageStockReservation" hidden="true" title="Allocate" icon="fa-plus-square" readonlyIf="$get('stockMove.statusSelect') != 2 || $number(reservedQty) == $number(qty)" onClick="save,action-supplychain-stock-move-line-allocate-all"/>
+		<button name="allocateAll" if="__config__.app.getApp('supplychain')?.manageStockReservation" hidden="true" title="Allocate" icon="fa-plus-square" readonlyIf="$get('stockMove.statusSelect') != 2 || $number(reservedQty) == $number(qty) || $get('product.productTypeSelect') == 'service'" onClick="save,action-supplychain-stock-move-line-allocate-all"/>
 		<button name="deallocate"  if="__config__.app.getApp('supplychain')?.manageStockReservation" hidden="true" title="Deallocate" icon="fa-minus-square" readonlyIf="$get('stockMove.statusSelect') != 2 || $number(reservedQty) == 0" onClick="save,action-supplychain-stock-move-line-deallocate-all"/>
 		<field name="qtyInvoiced" readonly="true" x-scale="2"/>
         <field name="unitPriceUntaxed" x-scale="2" width="120px"
@@ -69,6 +69,7 @@
         <field name="stockMove" width="120" hidden="true" />
         <field name="stockMove.pickingIsEdited" hidden="true"/>
         <field name="stockMove.statusSelect" hidden="true"/>
+        <field name="product.productTypeSelect" hidden="true"/>
         <button name="trackNumberWizardBtn" title="Split by tracking numbers"
 			icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard"
 			readonlyIf="lineTypeSelect == 1 || ($get('stockMove.statusSelect') > 1 || !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; (!$get('product.trackingNumberConfiguration.isSaleTrackingManaged') || $get('stockMove.typeSelect') != 2))" />
@@ -444,6 +445,7 @@
     	<action name="action-stock-move-line-store-product-type"/>
     	<action name="action-stock-move-line-method-compute-available-qty" if="__parent__?.statusSelect &lt; 3"/>
     	<action name="action-stock-move-line-method-set-available-status"/>
+    	<action name="action-supplychain-stock-move-line-attrs-hide-button"/>
     </action-group>
     
     <action-group name="action-group-stock-stockmoveline-production-onnew">
