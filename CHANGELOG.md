@@ -1,6 +1,8 @@
 # Changelog
 ## [Unreleased 5.4.2]
 ## Improvements
+- ANALYTIC MOVE LINE : made some field mandatory and added tracking
+
 ## Bug Fixes
 - ACCOUNTING BATCH : corrected conflict between boolean isTaxRequiredOnMoveLine and closure/opening accounting batch. 
 
