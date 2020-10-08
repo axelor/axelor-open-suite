@@ -27,6 +27,8 @@ jobs:
       run: chmod +x open-suite-webapp/gradlew
     - name: Check spotless format with gradle task
       run: cd open-suite-webapp && ./gradlew spotlessCheck
+    - name: Check changelog generation with gradle task
+      run: cd open-suite-webapp && ./gradlew generateChangelog
     - name: Build without tests
       run: cd open-suite-webapp && ./gradlew -xtest clean build
     - name: Run tests
