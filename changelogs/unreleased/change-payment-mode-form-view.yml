@@ -1,0 +1,3 @@
+---
+title: "PaymentMode : make typeSelect and inOutSelect fields required in payment-mode-form view."
+type: change
