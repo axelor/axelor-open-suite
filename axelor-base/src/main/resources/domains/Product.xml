@@ -136,6 +136,8 @@
       
         <!-- Json field -->
         <string name="productAttrs" title="Fields" json="true" />
+        
+        <boolean name="expense" title="Expense"/>
 
 		<extra-code>
 	   		<![CDATA[
