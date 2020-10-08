@@ -1,12 +1,4 @@
 # Changelog
-## [Unreleased 5.4.2]
-## Improvements
-- ANALYTIC MOVE LINE : made some field mandatory and added tracking
-- DEBTRECOVERYMETHODLINE : make debtRecoveryLevel field required.
-
-## Bug Fixes
-- ACCOUNTING BATCH : corrected conflict between boolean isTaxRequiredOnMoveLine and closure/opening accounting batch. 
-
 ## [5.4.1] - 2020-10-05
 ## Improvements
 - USER FORM: Add search feature on user permission panel.
@@ -109,6 +101,5 @@
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
-[Unreleased 5.4.2]: https://github.com/axelor/axelor-open-suite/compare/v5.4.1...5.4-dev
 [5.4.1]: https://github.com/axelor/axelor-open-suite/compare/v5.4.0...v5.4.1
 [5.4.0]: https://github.com/axelor/axelor-open-suite/compare/v5.3.12...v5.4.0
