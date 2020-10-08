@@ -55,9 +55,9 @@
 					onChange="action-group-account-account-management-onchange-common"
 					form-view="company-form" grid-view="company-grid" canEdit="false"/>
 				<field name="product" canEdit="false" form-view="product-form" grid-view="product-grid"
-							 hidden="true" domain="dtype = 'Product'"/>
+							 domain="dtype = 'Product'" showIf="typeSelect == 1" requiredIf="typeSelect==1 &amp;&amp; !productFamily"/>
 				<field name="productFamily" canEdit="false" form-view="product-family-form" grid-view="product-family-grid"
-							 hidden="true"/>
+							 requiredIf="typeSelect==1 &amp;&amp; !product" showIf="typeSelect == 1"/>
 			</panel>
 
 			<!-- PRODUCT -->
@@ -122,16 +122,16 @@
 				<field name="cashAccount"
 					domain="self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"
 					if-module="axelor-account" form-view="account-form" grid-view="account-grid"
-					if="__config__.app.isApp('account')" canEdit="false"/>
+					if="__config__.app.isApp('account')" canEdit="false" requiredIf="typeSelect == 3"/>
 				<field name="paymentMode" form-view="payment-mode-form"
-					grid-view="payment-mode-grid" canEdit="false"/>
+					grid-view="payment-mode-grid" canEdit="false" requiredIf="typeSelect == 3"/>
 				<field name="journal"
 					domain="self.company = :company AND self.statusSelect = 1"
-					form-view="journal-form" grid-view="journal-grid" canEdit="false"/>
+					form-view="journal-form" grid-view="journal-grid" canEdit="false" requiredIf="typeSelect == 3"/>
 				<field name="bankDetails" form-view="bank-details-form"
-					grid-view="bank-details-grid" onSelect="action-account-management-attrs-bank-details-domain" onChange="action-account-management-attrs-bank-details-on-change"/>
+					grid-view="bank-details-grid" onSelect="action-account-management-attrs-bank-details-domain" onChange="action-account-management-attrs-bank-details-on-change" requiredIf="typeSelect == 3"/>
 				<field name="sequence" domain="self.company = :company  AND self.codeSelect='paymentVoucher'"
-					canNew="true" form-view="sequence-form" grid-view="sequence-grid" />
+					canNew="true" form-view="sequence-form" grid-view="sequence-grid" requiredIf="typeSelect == 3"/>
 			</panel>
 
 			<panel name="analyticsPanel" title="Analytics" colSpan="12"
@@ -139,6 +139,9 @@
 				<field name="analyticDistributionTemplate" canNew="true"
 					if-module="axelor-account" if="__config__.app.isApp('account')" />
 			</panel>
+			<panel name="taxPanel" title="Tax" showIf="typeSelect == 2"  colSpan="12">
+      			<field name="tax" form-view="tax-form" grid-view="tax-grid" requiredIf="typeSelect == 2"/>
+    		</panel>
 
 		</panel>
 	</form>
