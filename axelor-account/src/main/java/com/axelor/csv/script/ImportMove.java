@@ -40,11 +40,13 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import javax.transaction.Transactional;
+import java.util.Map;
 
 public class ImportMove {
 
   @Inject private MoveRepository moveRepository;
   @Inject private MoveLineRepository moveLineRepo;
+  @Inject private MoveValidateService moveValidateService;
 
   @Transactional
   public Object importFECMove(Object bean, Map<String, Object> values) throws AxelorException {
@@ -147,5 +149,21 @@ public class ImportMove {
     } else {
       return Beans.get(CompanyRepository.class).all().fetchOne();
     }
+  }
+
+  @Transactional(rollbackOn = Exception.class)
+  public Object validateMove(Object bean, Map<String, Object> values) throws AxelorException {
+    assert bean instanceof Move;
+    Move move = (Move) bean;
+    try {
+      if (move.getStatusSelect() == 2 || move.getStatusSelect() == 3) {
+        moveValidateService.validate(move);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      move.setStatusSelect(1);
+    }
+    moveRepository.save(move);
+    return move;
   }
 }

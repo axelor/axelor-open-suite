@@ -18,13 +18,29 @@
 package com.axelor.csv.script;
 
 import com.axelor.apps.account.db.MoveTemplate;
+import com.axelor.apps.account.db.repo.MoveTemplateRepository;
+import com.axelor.apps.account.service.move.MoveTemplateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
+import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.util.Map;
 
 public class ImportMoveTemplate {
+
+  private MoveTemplateRepository moveTemplateRepository;
+  private MoveTemplateService moveTemplateService;
+
+  @Inject
+  public ImportMoveTemplate(
+      MoveTemplateRepository moveTemplateRepository, MoveTemplateService moveTemplateService) {
+    this.moveTemplateRepository = moveTemplateRepository;
+    this.moveTemplateService = moveTemplateService;
+  }
+
   public Object importMove(Object bean, Map<String, Object> values) throws IOException {
     assert bean instanceof MoveTemplate;
     MoveTemplate moveTemplate = (MoveTemplate) bean;
@@ -44,6 +60,15 @@ public class ImportMoveTemplate {
       e.printStackTrace();
     }
 
+    return moveTemplate;
+  }
+
+  @Transactional(rollbackOn = Exception.class)
+  public Object isValid(Object bean, Map<String, Object> values) throws AxelorException {
+    assert bean instanceof MoveTemplate;
+    MoveTemplate moveTemplate = (MoveTemplate) bean;
+    moveTemplate.setIsValid(moveTemplateService.checkValidity(moveTemplate));
+    moveTemplateRepository.save(moveTemplate);
     return moveTemplate;
   }
 }
