@@ -47,7 +47,7 @@
 	        <field name="project" domain="self.imputable = true AND self.isBusinessProject = true" if-module="axelor-business-project" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('business-project')" title="Business project"/>
   			<field name="account" onSelect="action-analytic-move-line-attrs-account-domain" onChange="action-analytic-move-line-record-account-onchange"/>
             <field name="accountType" onChange="action-analytic-move-line-record-account-type-onchange"/>
-	        <field name="typeSelect"/>
+	        <field name="typeSelect" required="true"/>
            <field name="moveLine" colSpan="12" requiredIf="typeSelect == 3" form-view="move-line-form" grid-view="move-line-grid" showIf="moveLine || typeSelect == 3"/>
            <field name="invoiceLine" if="__config__.app.isApp('invoice')" colSpan="12" requiredIf="typeSelect == 2" form-view="invoice-line-form" grid-view="invoice-line-grid" showIf="invoiceLine || typeSelect == 2"/>
        </panel>
