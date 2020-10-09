@@ -1,23 +1,23 @@
 # Changelog
-## [Unreleased 5.1.17]
+## [5.1.17] - 2020-10-09
 ## Improvements
-- SALE ORDER: set endOfValidityDate when create sale order from opportunity and project.
-- Stock move : "Refresh the products net mass" button placed in the "Tools" menu.
-- DeclarationOfExchanges : corrected wrong translation for product type select
-- SaleOrderLine : Not showing picking order info for services
+- SALE ORDER: set end of validity date when creating sale order from opportunity and project.
+- Stock move: Move "Refresh the products net mass" button to the "Tools" menu.
+- Declaration Of Exchanges: corrected wrong translation for product type.
+- SaleOrderLine: Not showing picking order info for services.
 
 ## Bug Fixes
-- AccountManagement :  Fix NPE when product not present in invoiceLine.
+- AccountManagement:  Fix NPE when the product is not present in invoice line.
 - BATCH RH: corrected payroll preparation batch, now the batch is runnable.
-- ACCOUNT MANAGEMENT : Change visibility of product and product family
-- BANK ORDER : Fix NPE when validating a bank order
-- LOGISTICAL FORM : Fix NPE when computing volume
-- INVOICE : Fix copy still having references to orders and stock moves
-- Tracking number : Fix wrong form view on search
-- Account Equiv - NPE solved and made toAccount and fromAccount required.
+- ACCOUNT MANAGEMENT: Change visibility of product and product family.
+- BANK ORDER: Fix NPE when validating a bank order.
+- Logistical Form: Fix NPE when computing volume.
+- INVOICE: Fix copy still having references to orders and stock moves.
+- Tracking number: Fix wrong form view on search.
+- Account Equiv: fix NPE and make accounts fields required.
 - SMTP Account: the user can now configure the sending email address instead of using the login.
-- App Supplychain : Add boolean 'Block deallocation on availability request' visibility based on 'Manage stock reservation' boolean
-- Stock location line : Fix visibility issue of button text on popup
+- App Supplychain: Hide configuration 'Block deallocation on availability request' if 'Manage stock reservation' is disabled.
+- Stock location line: Fix display issue of button text on popup.
 
 ## [5.1.16] - 2020-09-09
 ## Improvements
@@ -1600,7 +1600,7 @@ Moreover, the amount_remaining calculation on move line was wrong. Now we comput
 - Purchase Order: remove save on loading purchase order form.
 
 
-[Unreleased 5.1.17]: https://github.com/axelor/axelor-open-suite/compare/v5.1.16...5.1-dev
+[5.1.17]: https://github.com/axelor/axelor-open-suite/compare/v5.1.16...v5.1.17
 [5.1.16]: https://github.com/axelor/axelor-open-suite/compare/v5.1.15...v5.1.16
 [5.1.15]: https://github.com/axelor/axelor-open-suite/compare/v5.1.14...v5.1.15
 [5.1.14]: https://github.com/axelor/axelor-open-suite/compare/v5.1.13...v5.1.14
