@@ -22,7 +22,7 @@ jobs:
     - name: Install webapp
       run: git clone -b 5.1-dev https://github.com/axelor/open-suite-webapp.git open-suite-webapp
     - name: move to the right place
-      run: mkdir -p open-suite-webapp/modules/axelor-open-suite && ls | grep -v open-suite-webapp | xargs -I{} mv {} open-suite-webapp/modules/axelor-open-suite
+      run: mkdir -p open-suite-webapp/modules/axelor-open-suite && ls | grep -v open-suite-webapp | xargs -I{} mv {} open-suite-webapp/modules/abs
     - name: Grant execute permission for gradlew
       run: chmod +x open-suite-webapp/gradlew
     - name: Check spotless format with gradle task
