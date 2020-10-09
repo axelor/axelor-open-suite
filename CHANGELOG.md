@@ -1,15 +1,15 @@
 # Changelog
-## [Unreleased 5.0.13]
+## [5.0.13] - 2020-10-09
 ## Improvements
-- SaleOrderLine : Not showing picking order info for services
+- SaleOrderLine: Not showing picking order info for services.
 
 ## Bug Fixes
 - BANK ORDER REPORT: fix the ordering by sequence.
 - Product form: fix typo in help message.
 - Inventory: fix error on stock location select when company is not filled.
-- TRACKING MAIL NOTIFICATION : corrected wrong partner receiving email selected. 
-- Tracking number : Fix wrong form view on search
-- Account Equiv - NPE solved and made toAccount and fromAccount required.
+- TRACKING MAIL NOTIFICATION: corrected wrong partner receiving email selected.
+- Tracking number: Fix wrong form view on search.
+- Account Equiv: fix NPE and make accounts fields required.
 - SMTP Account: the user can now configure the sending email address instead of using the login.
 
 ## [5.0.12] - 2020-04-02
@@ -1158,7 +1158,7 @@ Fully responsive mobile ready views, gradle based build system and much more.
 - Multi-company, multi-currency and multi-lingual
 
 
-[Unreleased 5.0.13]: https://github.com/axelor/axelor-open-suite/compare/v5.0.12...dev
+[5.0.13]: https://github.com/axelor/axelor-open-suite/compare/v5.0.12...v5.0.13
 [5.0.12]: https://github.com/axelor/axelor-open-suite/compare/v5.0.11...v5.0.12
 [5.0.11]: https://github.com/axelor/axelor-open-suite/compare/v5.0.10...5.0.11
 [5.0.10]: https://github.com/axelor/axelor-open-suite/compare/v5.0.9...v5.0.10
