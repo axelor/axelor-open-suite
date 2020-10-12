@@ -87,7 +87,7 @@ public class ManufOrderWorkFlowMaintenanceService extends ManufOrderWorkflowServ
     }
 
     for (OperationOrder operationOrder : getSortedOperationOrderList(manufOrder)) {
-      operationOrderWorkflowService.plan(operationOrder);
+      operationOrderWorkflowService.plan(operationOrder, null);
     }
 
     manufOrder.setPlannedEndDateT(this.computePlannedEndDateT(manufOrder));
