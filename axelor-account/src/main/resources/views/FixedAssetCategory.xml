@@ -29,13 +29,13 @@
         		<field name="depreciationAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'" form-view="account-form" grid-view="account-grid"/>
         	</panel>
         	<panel name="periodicityPanel" title="Periodicity">
-	        	<field name="numberOfDepreciation" onChange="action-fixed-asset-attrs-set-degressive-coef,action-fixed-asset-category-record-compute-duration"/>
+	        	<field name="numberOfDepreciation" onChange="action-fixed-asset-attrs-set-degressive-coef,action-fixed-asset-category-record-compute-duration" min="1"/>
 	        	<field name="periodicityInMonth" onChange="action-fixed-asset-category-record-compute-duration"/>
 	        	<field name="durationInMonth" readonly="true"/>
         	</panel>
         	<panel name="depreciationPanel" title="Depreciation method">
-        		<field name="computationMethodSelect" onChange="action-fixed-asset-attrs-set-degressive-coef"/>
-	        	<field name="degressiveCoef" showIf="computationMethodSelect == 'degressive'"/>
+        		<field name="computationMethodSelect" onChange="action-fixed-asset-attrs-set-degressive-coef" required="true"/>
+	        	<field name="degressiveCoef" showIf="computationMethodSelect == 'degressive'" validIf="computationMethodSelect == 'linear' || (computationMethodSelect == 'degressive' &amp;&amp; degressiveCoef != 0.00)"/>
 	        	<field name="isProrataTemporis"/>
 	        	<field name="isUSProrataTemporis" showIf="isProrataTemporis"/>
         	</panel>
