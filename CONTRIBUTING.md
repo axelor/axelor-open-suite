@@ -37,9 +37,19 @@ Please make sure you don’t post any sensitive information while reporting issu
 
 * [Fork](https://help.github.com/articles/fork-a-repo/) the repo.
 * Code!
+* Format the java code to follow Google Code Format. Tools:
+  * Gradle Task: `./gradlew spotlessApply`
+  * IDE plugin
+    * [Eclipse](https://github.com/google/google-java-format#eclipse)
+    * [IntelliJ](https://github.com/google/google-java-format#intellij)
+* You must create a changelog entry to describe the change.
+See [the README in changelogs folder](https://github.com/axelor/axelor-open-suite/blob/master/changelogs/README.md)
+and follow the instructions.
 * Push your changes to the topic branch in your fork of the repository.
-* Initiate a [pull request](http://help.github.com/send-pull-requests/)
-* Update the issue, adding a comment including a link to the created pull request
+
+* Initiate a [pull request](http://help.github.com/send-pull-requests/) on the development branch
+that has the issue. For example, if the issue appears in `master` branch then choose `dev` branch,
+ if the issue appears in `5.3` branch choose `5.3-dev`, etc...
 
 ## Code of Conduct
 

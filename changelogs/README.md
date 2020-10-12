@@ -41,6 +41,46 @@ The `type` can be :
 The `description` is optional and should provide detail description about the changes including
 migration steps if any.
 
+#### How to know whether a new changelog entry is needed
+
+**Except in some rare cases, you do not have to add a changelog entry
+for a fix made in a wip branch**.
+
+A changelog needs to list the change from previous version to current
+version. When the version is in development, new features are creating
+regression. If we fix these regressions before the version is released,
+then these bugs will never appear on any released version, so the fix
+stays out of the changelog. Now if we are fixing a released version in
+which the bug appeared, then we must add the changelog entry.
+
+
+### How to choose the section of the entry
+
+-   **If you are on a dev branch, most of the time the type is either
+    `fix` or `change`.**
+-   **If you are on a wip branch, the type can be `change` or `feature`
+    (see above).**
+
+A `change` is current "Improvements" section: adding a simple field in
+existing class is not a feature, but a change.
+
+Special cases of feature in dev branch and fix in wip can exist, but it
+is supposed to happen only in rare cases.
+
+### Changelog is about application usage
+
+**Do not use technical field name.** You must write what is the
+consequence of the change for the user of the application.
+Any technical information about the change can go if needed to the commit message, but should be avoided in the changelog.
+
+For example, instead of
+
+> Update hidden attribute of typeSelect to true when statusSelect is equal to `STATUS_CANCELED`.
+
+write
+
+> In invoice form view, hide the type for canceled invoices.
+
 #### Generate CHANGELOG.md
 
 To generate the `CHANGELOG.md` with unreleased entries, run following gradle task:
