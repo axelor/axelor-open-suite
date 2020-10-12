@@ -3,6 +3,18 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
+  <search-filters name="employee-filters" model="com.axelor.apps.hr.db.Employee" title="Employee filters">
+    <filter title="New employees">
+      <domain>self.leavingDate IS NULL AND self.dateOfHire &gt; CURRENT_DATE - 30</domain>
+    </filter>
+    <filter title="Active employees">
+      <domain>(self.leavingDate IS NULL OR self.leavingDate &gt; CURRENT_DATE) AND (self.dateOfHire IS NULL OR self.dateOfHire &lt; CURRENT_DATE)</domain>
+    </filter>
+    <filter title="Former employees">
+      <domain>self.leavingDate &lt; CURRENT_DATE</domain>
+    </filter>
+  </search-filters>
+
 	<grid name="employee-grid" title="Employee" model="com.axelor.apps.hr.db.Employee" orderBy="contactPartner.simpleFullName">
 		 <toolbar>
 			<button name="printEmployeePhoneBookBtn" title="Employee PhoneBook" icon="fa-print" onClick="action-print-employee-phonebook"/>
@@ -157,11 +169,23 @@
 
   	<panel name="headerPanel">
 	    <panel name="contactPanel" showIf="stepByStepSelect == 5" colSpan="10">
+        <panel name="viewerTagsPanel" colSpan="12">
+          <field name="$viewerTags" showTitle="false" readonly="true" showIf="$readonly()" colSpan="12">
+            <viewer>
+              <![CDATA[
+            <h4 class="text-right">
+                <span class="label label-default" style="background-color: #20BCB5; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.leavingDate == null && $moment(record.dateOfHire) > $moment().subtract(30, 'days')" x-translate>New employee</span>
+                <span class="label label-default" style="background-color: #BC2026; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.leavingDate != null && $moment(record.leavingDate) < $moment()" x-translate>Former employee</span>
+            </h4>
+	        ]]>
+            </viewer>
+          </field>
+        </panel>
 	      <field name="contactPartner" colSpan="12" domain="self.employee = null AND (self.partnerTypeSelect = 2 OR self.isContact = true)" form-view="partner-contact-form" grid-view="partner-contact-grid" showTitle="false">
 	        <editor x-viewer="true">
 	          <panel name="imagePanel" colSpan="2">
 	            <field name="picture" colSpan="12" css="center" showTitle="false" widget="Image"/>
-	
+
 	            <panel name="socialNetworkPanel" colSpan="12" showIf="fullName != null">
 	              <label name="facebookLabel" title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;" colSpan="2"/>
 	              <label name="twitterLabel" title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;" colSpan="2"/>
@@ -171,14 +195,14 @@
 	          </panel>
 	          <panel name="contactDetailsPanel" colSpan="10">
 	            <field name="simpleFullName" colSpan="12" showTitle="false" showIf="$readonly()" css="bold large"/>
-	
+
 	            <field name="titleSelect" colSpan="2" showIf="!$readonly()"/>
 	            <field name="firstName" onChange="action-partner-record-simple-and-full-name,action-employee-contact-method-set-social-network-url" colSpan="5" showIf="!$readonly()"/>
 	            <field name="name" title="Name" onChange="action-partner-record-simple-and-full-name,action-employee-contact-method-set-social-network-url" colSpan="5" showIf="!$readonly()"/>
-	
+
 	            <field name="emailAddress" canNew="true" form-view="email-address-simple-form" canSelect="false"/>
 	            <field name="webSite" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$" placeholder="http://www.url.com"/>
-	
+
 	            <field name="fixedPhone" onChange="action-partner-method-normalize-fixedPhone" colSpan="4" pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33100000000"/>
 	            <field name="mobilePhone" onChange="action-partner-method-normalize-mobilePhone" colSpan="4" pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33600000000"/>
 	            <field name="fax" onChange="action-partner-method-normalize-fax" colSpan="4" pattern="^\+?([\s()-.]*\d){7,}$" placeholder="+33000000000"/>
@@ -186,7 +210,7 @@
 	        </editor>
 	      </field>
 	    </panel>
-	    
+
 		<panel name="companyPanel" showIf="stepByStepSelect == 5 &amp;&amp; mainEmploymentContract.payCompany != null" colSpan="2" readonly="true">
 		      <field name="mainEmploymentContract" showTitle="false" colSpan="12" domain="self.employee.id = :id">
 		        <editor x-viewer="true">
@@ -247,10 +271,11 @@
 
       <panel name="employmentContractsPanel" title="Employment contracts">
         <panel name="contractualInfoPanel" title="Contractual information" colSpan="12">
-          <field name="hireDate" colSpan="3" onChange="action-employee-attrs-set-seniority-date"/>
-          <field name="seniorityDate" colSpan="3"/>
-          <field name="bonusCoef" colSpan="3"/>
-          <field name="profitSharingBeneficiary" colSpan="3"/>
+          <field name="hireDate" colSpan="4" onChange="action-employee-attrs-set-seniority-date"/>
+          <field name="seniorityDate" colSpan="4"/>
+          <field name="leavingDate" colSpan="4"/>
+          <field name="bonusCoef" colSpan="6"/>
+          <field name="profitSharingBeneficiary" colSpan="6"/>
 
           <field name="weeklyWorkHours" colSpan="3"/>
           <field name="dailyWorkHours" colSpan="3"/>
@@ -343,12 +368,12 @@
         </field>
       </panel>
     </panel-tabs>
-    
+
     <panel-mail name="mailPanel">
 	  <mail-messages limit="4"/>
 	  <mail-followers/>
     </panel-mail>
-		
+
   </form>
 
   <action-method name="action-employee-method-generate-new-dpae">
@@ -410,6 +435,8 @@
 		<field name="contactPartner.mobilePhone" />
 		<field name="mainEmploymentContract.payCompany"/>
 		<field name="mainEmploymentContract.companyDepartment"/>
+    <field name="hireDate"/>
+    <field name="leavingDate"/>
 		<field name="hrManager"/>
 		<template><![CDATA[
 			<div>
@@ -427,6 +454,8 @@
 			  </div>
 			  <div class="span12" style="margin-left:30px;">
 			   <span class="label label-important" ng-show="hrManager" x-translate>{{ "HR manager" }}</span>
+			   <span class="label label-default" style="background-color: #20BCB5; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.leavingDate == null && $moment(record.hireDate) > $moment().subtract(30, 'days')" x-translate>New employee</span>
+         <span class="label label-default" style="background-color: #BC2026; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.leavingDate != null && $moment(record.leavingDate) < $moment()" x-translate>Former employee</span>
 			  </div>
 			</div>
 		]]>
@@ -514,7 +543,7 @@
     <action-method name="action-print-employee-phonebook" >
 		<call class="com.axelor.apps.hr.web.EmployeeController" method="printEmployeePhonebook"/>
 	</action-method>
-	
+
 	<action-method name="action-employee-method-print-employee-report" >
 		<call class="com.axelor.apps.hr.web.EmployeeController" method="printEmployeeReport"/>
 	</action-method>
@@ -522,7 +551,7 @@
 	<action-method name="action-employee-method-print-employee-report" >
 		<call class="com.axelor.apps.hr.web.EmployeeController" method="printEmployeeReport"/>
 	</action-method>
-	
+
 	<action-condition name="action-employee-validate-dates">
 		<check error="Invalid date" field="endDate" if="startDate != null &amp;&amp; endDate != null  &amp;&amp; (endDate &lt; startDate)"/>
 	</action-condition>
@@ -530,7 +559,7 @@
 	<action-attrs name="action-employee-attrs-set-seniority-date">
 		<attribute name="value" for="seniorityDate" expr="eval: hireDate" if="seniorityDate == null"/>
 	</action-attrs>
-	
+
     <search-filters name="employee-filters" model="com.axelor.apps.hr.db.Employee"
         title="Employee filters">
         <field name="bankDetails" hidden="true" if="!__config__.app.getApp('base').getManageMultiBanks()"/>
@@ -542,9 +571,9 @@
       	<field name="negativeValueLeave" hidden="true" if="!__config__.app.isApp('leave')"/>
     	<field name="timeLoggingPreferenceSelect" hidden="true" if="!__config__.app.isApp('timesheet')"/>
       	<field name="product" hidden="true" if="!__config__.app.isApp('timesheet')"/>
-      	<field name="timesheetReminder" hidden="true" if="!__config__.app.isApp('timesheet')"/> 
+      	<field name="timesheetReminder" hidden="true" if="!__config__.app.isApp('timesheet')"/>
       	<field name="kilometricLogList" hidden="true" if="!__config__.app.isApp('timesheet')"/>
-      	<field name="employeeVehicleList" hidden="true" if="!__config__.app.isApp('expense')"/> 
+      	<field name="employeeVehicleList" hidden="true" if="!__config__.app.isApp('expense')"/>
         <field name="mainEmploymentContract.payCompany"
             title="Pay company main employment contract"/>
         <field name="mainEmploymentContract.executiveStatusSelect"

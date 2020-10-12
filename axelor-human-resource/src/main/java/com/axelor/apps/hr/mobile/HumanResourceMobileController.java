@@ -31,6 +31,7 @@ import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.EmployeeVehicleRepository;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
@@ -122,7 +123,7 @@ public class HumanResourceMobileController {
       expenseLine.setExpenseProduct(expenseProduct);
 
       Employee employee = user.getEmployee();
-      if (employee != null) {
+      if (employee != null && !EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
         KilometricAllowParamRepository kilometricAllowParamRepo =
             Beans.get(KilometricAllowParamRepository.class);
 

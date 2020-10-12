@@ -38,6 +38,7 @@ import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
+import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -456,6 +457,9 @@ public class ForecastRecapService {
                   : salaryForecastRecapLineType.getPayDaySelect());
       if (itDate.isEqual(payDay)) {
         for (Employee employee : employeeList) {
+          if (EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+            continue;
+          }
           employeeRepo.find(employee.getId());
           this.createForecastRecapLine(
               itDate,
