@@ -2,13 +2,8 @@
 title: "EMPLOYEE : Implement new employees and former employees feature"
 type: feature
 description : |
-  Add "Leaving date" on Employee. If this date is in the past or if the hire date is in the futur, exclude this employee from automatic process like lunchVouncherManagment, LeaveRequest batch or Bonuses management...
-  This new field is hidden while the stepByStepSelect != 5.
-  Add viewer on employee form and on employee cards that display :
-  - "New employee" with the hire date when the hire date is filled and in the futur or in the last 30 days, and when the leaving date is null.
-  - "Former employee" with the leaving date when the leaving date is in the past
-  Add three new advanced searchs :
-  - New employees : hire date is in the futur or in the last 30 days, and the leaving date is null
-  - Active employees : hire date is null or in the past, and the leaving date is null or in the futur
-  - Former employees : leaving date is in the past
+  Add "Leaving date" on Employee.
+  If this date is in the past or if the hire date is in the futur, exclude this employee from automatic process.
+  Modify Employee's form and card view to quickly see if an employee is former or new.
+  Add three new advanced searchs based on this new field.
   Updated demo data to fill this new field.
