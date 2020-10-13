@@ -1,3 +1,3 @@
 ---
-title: "YEAR : now it's possible to close a fiscal year without bug"
+title: "YEAR : corrected sql error and hibernate error when closing a fiscal year."
 type: fix
