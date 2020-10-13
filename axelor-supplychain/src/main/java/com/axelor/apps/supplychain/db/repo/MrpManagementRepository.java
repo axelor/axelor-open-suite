@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -29,5 +29,14 @@ public class MrpManagementRepository extends MrpRepository {
     Beans.get(MrpService.class).reset(entity);
 
     super.save(entity);
+  }
+
+  @Override
+  public Mrp copy(Mrp entity, boolean deep) {
+    Mrp copy = super.copy(entity, deep);
+    copy.setStatusSelect(MrpManagementRepository.STATUS_DRAFT);
+    copy.setStartDateTime(null);
+    copy.setEndDateTime(null);
+    return copy;
   }
 }

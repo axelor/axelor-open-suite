@@ -23,7 +23,6 @@
   	<boolean name="deceasedPartnerOk" title="Owner deceased"/>
 	<many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batches"/>
 	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" />
-	<string name="partnerFullName" title="Partner"/>
 	<many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
 
     <string name="name" namecolumn="true" search="referenceDate,id" title="Name">

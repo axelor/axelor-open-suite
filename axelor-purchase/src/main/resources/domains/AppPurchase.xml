@@ -18,6 +18,7 @@
 			<field name="manageMultiplePurchaseQuantity" on="UPDATE"/>
 			<field name="isEnabledProductDescriptionCopy" on="UPDATE"/>
 			<field name="manageSupplierCatalog" on="UPDATE"/>
+			<field name="isDisplayPurchaseOrderLineNumber" on="UPDATE"/>
 		</track>
 		
 	</entity>

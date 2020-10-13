@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -199,7 +199,7 @@ public class DuplicateObjectsService {
    */ private String concatFields(Class<?> modelClass, Set<String> fieldSet)
       throws AxelorException {
 
-    StringBuilder fields = new StringBuilder("concat(");
+    StringBuilder fields = new StringBuilder("LOWER(concat(");
     Mapper mapper = Mapper.of(modelClass);
 
     int count = 0;
@@ -230,7 +230,7 @@ public class DuplicateObjectsService {
       }
       fields.append(" as string)");
     }
-    fields.append(")");
+    fields.append("))");
 
     return fields.toString();
   }

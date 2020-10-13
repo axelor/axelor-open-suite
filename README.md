@@ -19,7 +19,7 @@ Axelor Business Suite is built on top of [Axelor Development Kit](https://github
 Code Format
 ================================
 
-Axelor respect Google Code Format. Thanks for applying this style.
+Axelor follows Google Code Format. 
 Tools:
 * Gradle Task: ./gradlew spotlessApply
 * IDE plugin

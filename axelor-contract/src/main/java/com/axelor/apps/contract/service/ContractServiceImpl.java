@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -492,14 +492,17 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   InvoiceLineService invoiceLineService = Beans.get(InvoiceLineService.class);
 
   public InvoiceLine generate(Invoice invoice, ContractLine line) throws AxelorException {
+
+    BigDecimal inTaxPriceComputed =
+        invoiceLineService.convertUnitPrice(false, line.getTaxLine(), line.getPrice());
     InvoiceLineGenerator invoiceLineGenerator =
         new InvoiceLineGenerator(
             invoice,
             line.getProduct(),
             line.getProductName(),
             line.getPrice(),
-            invoiceLineService.convertUnitPrice(false, line.getTaxLine(), line.getPrice()),
-            null,
+            inTaxPriceComputed,
+            invoice.getInAti() ? inTaxPriceComputed : line.getPrice(),
             line.getDescription(),
             line.getQty(),
             line.getUnit(),

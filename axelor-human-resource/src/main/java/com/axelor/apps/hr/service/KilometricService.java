@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -145,19 +145,24 @@ public class KilometricService {
     BigDecimal previousDistance = log == null ? BigDecimal.ZERO : log.getDistanceTravelled();
 
     KilometricAllowanceRate allowance =
-        Beans.get(KilometricAllowanceRateRepository.class)
-            .all()
-            .filter(
-                "self.kilometricAllowParam.id = :_kilometricAllowParamId "
-                    + "and self.hrConfig.id = :_hrConfigId")
-            .bind("_kilometricAllowParamId", expenseLine.getKilometricAllowParam().getId())
-            .bind("_hrConfigId", Beans.get(HRConfigService.class).getHRConfig(company).getId())
-            .fetchOne();
+        expenseLine.getKilometricAllowParam() != null
+            ? Beans.get(KilometricAllowanceRateRepository.class)
+                .all()
+                .filter(
+                    "self.kilometricAllowParam.id = :_kilometricAllowParamId "
+                        + "and self.hrConfig.id = :_hrConfigId")
+                .bind("_kilometricAllowParamId", expenseLine.getKilometricAllowParam().getId())
+                .bind("_hrConfigId", Beans.get(HRConfigService.class).getHRConfig(company).getId())
+                .fetchOne()
+            : null;
+
     if (allowance == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.KILOMETRIC_ALLOWANCE_RATE_MISSING),
-          expenseLine.getKilometricAllowParam().getName(),
+          expenseLine.getKilometricAllowParam() != null
+              ? expenseLine.getKilometricAllowParam().getName()
+              : "",
           company.getName());
     }
 
@@ -196,7 +201,7 @@ public class KilometricService {
       }
     }
 
-    return price.setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+    return price.setScale(2, RoundingMode.HALF_UP);
   }
 
   @Transactional

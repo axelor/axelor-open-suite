@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -44,6 +44,7 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 import javax.activation.DataSource;
 import javax.mail.AuthenticationFailedException;
@@ -207,6 +208,13 @@ public class MailAccountServiceImpl implements MailAccountService {
               getSecurity(mailAccount));
     }
 
+    Properties props = account.getSession().getProperties();
+    if (mailAccount.getFromAddress() != null && !"".equals(mailAccount.getFromAddress())) {
+      props.setProperty("mail.smtp.from", mailAccount.getFromAddress());
+    }
+    if (mailAccount.getFromName() != null && !"".equals(mailAccount.getFromName())) {
+      props.setProperty("mail.smtp.from.personal", mailAccount.getFromName());
+    }
     account.setConnectionTimeout(CHECK_CONF_TIMEOUT);
 
     return account;

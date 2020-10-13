@@ -20,5 +20,9 @@
 	
 	<input file="base_expenseTemplate.csv" separator=";" type="com.axelor.apps.message.db.Template" search="self.importId = :importId"/>
 	
+	<input file="account_accountConfig.csv" separator=";" type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId" update="true"/>
+	
+	<input file="hr_hrConfig.csv" type="com.axelor.apps.hr.db.HRConfig" separator=";" search="self.importId = :importId" update="true"/>
+	
 </csv-inputs>
 

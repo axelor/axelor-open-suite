@@ -21,5 +21,19 @@
 
     <one-to-many name="toConsumeProdProductList" ref="com.axelor.apps.production.db.ProdProduct" mappedBy="toConsumeProdProcessLine" title="Products to consume"/>
     <one-to-many name="objectDescriptionList" ref="com.axelor.apps.production.db.ObjectDescription" mappedBy="prodProcessLine" title="Descriptions"/>
+    
+    <track>
+    	<field name="prodProcess"/>
+    	<field name="workCenter"/>
+    	<field name="name"/>
+    	<field name="priority"/>
+    	<field name="description"/>
+    	<field name="minCapacityPerCycle"/>
+    	<field name="maxCapacityPerCycle"/>
+    	<field name="durationPerCycle"/>
+    	<field name="outsourcing"/>
+    	<field name="optional"/>
+    	<field name="stockLocation"/>
+    </track>
   </entity>
 </domain-models>

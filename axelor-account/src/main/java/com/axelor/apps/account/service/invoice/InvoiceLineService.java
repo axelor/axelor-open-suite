@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -56,7 +56,7 @@ public interface InvoiceLineService {
 
   BigDecimal getCompanyExTaxTotal(BigDecimal exTaxTotal, Invoice invoice) throws AxelorException;
 
-  PriceListLine getPriceListLine(InvoiceLine invoiceLine, PriceList priceList);
+  PriceListLine getPriceListLine(InvoiceLine invoiceLine, PriceList priceList, BigDecimal price);
 
   BigDecimal computeDiscount(InvoiceLine invoiceLine, Boolean inAti);
 
@@ -68,7 +68,7 @@ public interface InvoiceLineService {
   Map<String, Object> getDiscountsFromPriceLists(
       Invoice invoice, InvoiceLine invoiceLine, BigDecimal price);
 
-  int getDiscountTypeSelect(Invoice invoice, InvoiceLine invoiceLine);
+  int getDiscountTypeSelect(Invoice invoice, InvoiceLine invoiceLine, BigDecimal price);
 
   Unit getUnit(Product product, boolean isPurchase);
 

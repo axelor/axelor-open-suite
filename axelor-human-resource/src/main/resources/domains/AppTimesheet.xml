@@ -14,6 +14,9 @@
 		<boolean name="enableTimer" title="Start&amp;Stop" default="true"/>
 		<boolean name="editModeTSTimer" title="Edit Start&amp;Stop Timer On Stop" default="true"/>
 		<boolean name="keepProject" title="Keep Project for Start&amp;Stop Timer" default="true"/>
+
+		<boolean name="createLinesForLeaves" title="Create lines for day leaves"/>
+		<boolean name="createLinesForHolidays" title="Create lines for public holidays"/>
 		
 		<boolean name="timesheetEditor" title="Timesheet editor"/>
 		
@@ -25,6 +28,9 @@
 			<field name="enableTimer" on="UPDATE"/>
 			<field name="editModeTSTimer" on="UPDATE"/>
 			<field name="keepProject" on="UPDATE"/>
+
+			<field name="createLinesForLeaves" on="UPDATE"/>
+			<field name="createLinesForHolidays" on="UPDATE"/>
 			
 			<field name="timesheetEditor" on="UPDATE"/>
 		</track>

@@ -46,6 +46,7 @@
     	<boolean name="isVerifyProductStock" title="Verify product stock before availabity request"/>
     	<boolean name="isSaleOrderWithoutOutgoingStockMove" title="Sale order without outgoing stock move"/>
     	<boolean name="isPurchaseOrderWithoutIncomingStockMove" title="Purchase order without incoming stock move"/>
+    	<boolean name="manageAdvancePaymentsFromPaymentConditions" title="Manage advance payments from payment conditions" default="false"/>
     
     <track>
     	<field name="manageInvoicedAmountByLine" on="UPDATE"/>
@@ -83,6 +84,9 @@
     	<field name="intercoInvoiceCreateValidated" on="UPDATE"/>
     	<field name="blockDeallocationOnAvailabilityRequest" on="UPDATE"/>
     	<field name="isVerifyProductStock" on="UPDATE"/>
+    	<field name="isSaleOrderWithoutOutgoingStockMove" on="UPDATE"/>
+    	<field name="isPurchaseOrderWithoutIncomingStockMove" on="UPDATE"/>
+    	<field name="manageAdvancePaymentsFromPaymentConditions" on="UPDATE"/>
     </track>
 	</entity>
 

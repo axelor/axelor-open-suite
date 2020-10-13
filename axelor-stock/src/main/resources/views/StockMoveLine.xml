@@ -46,6 +46,7 @@
         <field name="netMass"
             onChange="action-stock-move-line-group-net-mass-onchange"
             width="100px"/>
+		<field name="wapPrice" x-scale="2" hidden="true"/>
         <field name="trackingNumber"
 			canNew="$get('stockMove.fromStockLocation.typeSelect') == 3 &amp;&amp; ($get('stockMove.toStockLocation.typeSelect') == 1 || $get('stockMove.toStockLocation.typeSelect') == 2)"
 			onSelect="action-stock-move-line-attrs-tracking-number-domain"
@@ -100,10 +101,11 @@
 			</field>
 			<field name="product.trackingNumberConfiguration" hidden="true"/>
 	        <field name="oldQty"/>
-			    <field name="requestedReservedQty" onChange="action-supplychain-attrs-stock-order-line-max-reserved-qty" readonly="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
-					<field name="reservedQty" onChange="action-supplychain-attrs-stock-order-line-max-reserved-qty" readonly="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
 	        <field name="unitPriceUntaxed"/>
+			<field name="requestedReservedQty" onChange="action-supplychain-attrs-stock-order-line-max-reserved-qty" readonly="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
+		    <field name="reservedQty" onChange="action-supplychain-attrs-stock-order-line-max-reserved-qty" readonly="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
         	<field name="unitPriceTaxed" hidden="true"/>
+			<field name="wapPrice" hidden="true"/>
 	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid"/>
     	    <field name="netMass" x-scale="5" onChange="action-stock-move-line-group-net-mass-onchange" colSpan="3"/>
 	        <field name="totalNetMass" readonly="true" showIf="totalNetMass" colSpan="3"/>
@@ -173,7 +175,7 @@
     
     <grid name="stock-move-line-all-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine" orderBy="stockMove.statusSelect,-stockMove.estimatedDate"
     	canNew="false" canDelete="false">
-    	<field name="stockMove.stockMoveSeq" width="120"/>
+    	<field name="name" width="120"/>
     	<field name="stockMove.realDate"/>
     	<field name="stockMove.estimatedDate"/>
     	<field name="stockMove.reservationDateTime" if-module="axelor-supplychain"  if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation())"/>
@@ -199,7 +201,7 @@
 
 	<grid name="stock-move-line-all-grid-planned" title="Planned stock move lines" model="com.axelor.apps.stock.db.StockMoveLine" orderBy="stockMove.statusSelect,-stockMove.estimatedDate"
 		canNew="false" canDelete="false">
-		<field name="stockMove.stockMoveSeq" width="120"/>
+		<field name="name" width="120"/>
 		<field name="stockMove.estimatedDate" />
 		<field name="stockMove.typeSelect"/>
 		<field name="stockMove.fromStockLocation" />
@@ -226,15 +228,21 @@
     	onNew="action-stock-move-line-group-onnew" onLoad="action-stock-move-line-group-all-onload" width="large"
     	canNew="false" canDelete="false">
         <panel name="stockMovePanel" title="Stock move" readonlyIf="stockMove.statusSelect == 3">
-	    	<field name="stockMove.stockMoveSeq" width="120"/>
-	    	<field name="stockMove" form-view="stock-move-form" grid-view="stock-move-grid"/>
-	    	<field name="stockMove.estimatedDate"/>
-            <field name="stockMove.reservationDateTime" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation())"/>
-	    	<field name="stockMove.realDate"/>
-   			<field name="stockMove.typeSelect"/>
-			<field name="stockMove.origin"/>
-	        <field name="stockMove.fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
-	        <field name="stockMove.toStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"/>
+	    	<panel colSpan="12">
+    			<field name="name" width="120" colSpan="4"/>
+    			<field name="stockMove" form-view="stock-move-form" grid-view="stock-move-grid" colSpan="4"/>
+    			<field name="stockMove.origin" colSpan="4"/>
+    		</panel>
+   	 		<panel colSpan="12">
+    			<field name="stockMove.estimatedDate" colSpan="4"/>
+    			<field name="stockMove.realDate" colSpan="4"/>
+    			<field name="stockMove.reservationDateTime" colSpan="4" if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation())" />
+    		</panel>
+    		<panel colSpan="12">
+				<field name="stockMove.typeSelect" colSpan="4"/>
+    			<field name="stockMove.fromStockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="4"/>
+    			<field name="stockMove.toStockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="4"/>    
+  			 </panel>
         </panel>
         <panel name="moveDetailsPanel" title="Move details">
 	        <field name="product" canEdit="false" domain="self.expense = false" onChange="action-group-stock-stockmoveline-product-onchange" onSelect="action-stock-move-line-method-product-domain" form-view="product-form" grid-view="product-grid" readonlyIf="$get('stockMove.statusSelect') > 1"/>
@@ -363,11 +371,17 @@
 		<action name="action-stock-move-line-attrs-scale-and-precision"/>
 		<action name="action-stock-move-line-tracking-number-attrs"/>
 		<action name="action-stock-move-line-qty-attrs"/>
+		<action name="action-stock-move-line-attrs-hide-avg-price"/>
 		<action name="action-stock-move-line-price-attrs-readonly" if="(__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
 		<action name="action-stock-move-subline-price-attrs-readonly" if="isSubLine &amp;&amp; (__config__.app.isApp('sale') &amp;&amp; __config__.app.getApp('sale').getProductPackMgt())"/>
 		<action name="action-stock-move-line-method-compute-available-qty" if="_parent?.statusSelect &lt; 3"/>
         <action name="action-stock-move-picking-is-edit-attrs"/>
+        <action name="action-stock-move-line-hide-reserved-qty-attrs"/>
 	</action-group>
+	
+	<action-attrs name="action-stock-move-line-hide-reserved-qty-attrs">
+	    <attribute name="hidden" for="reservedQty,requestedReservedQty" expr="eval: __parent__?.typeSelect == 3 || stockMove?.typeSelect == 3"/>
+	</action-attrs>
 	
 	<action-group name="action-stock-move-line-group-all-onload">
 		<action name="action-stock-move-line-attrs"/>
@@ -459,6 +473,7 @@
 
 	<action-record name="action-stock-move-line-record-qty" model="com.axelor.apps.stock.db.StockMoveLine">
 		<field name="realQty" expr="eval: qty" if="_parent?.statusSelect &lt;= 2"/>
+		<field name="realQty" expr="eval: qty" if="stockMove?.statusSelect &lt;= 2"/>
 	</action-record>
 	
     <action-method name="action-stock-move-line-set-product-info">
@@ -517,6 +532,7 @@
 
 	<action-attrs name="action-stock-move-line-attrs-scale-and-precision">
 		<attribute name="scale" for="unitPriceUntaxed" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+		<attribute name="scale" for="wapPrice" expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
 	</action-attrs>
 	
 	<action-view name="action-stock-move-line-product-default-planned" title="${fullName} plan. st. move"
@@ -585,6 +601,11 @@
     <attribute name="readonly" expr="__parent__?.pickingIsEdited" for="realQty"/>
     <attribute name="readonly" expr="__parent__?.pickingIsEdited" for="productModel"/>
   </action-attrs>
+
+	<action-attrs name="action-stock-move-line-attrs-hide-avg-price">
+		<attribute name="hidden" for="wapPrice" expr="eval: stockMove.typeSelect != 3 || !stockMove.isReversion || !stockMove.reversionOriginStockMove" if="stockMove"/>
+		<attribute name="hidden" for="wapPrice" expr="eval: __parent__.typeSelect != 3 || !__parent__.isReversion || !__parent__.reversionOriginStockMove" if="!stockMove"/>
+	</action-attrs>
 
 	<action-method name="action-stock-move-subline-method-reset-data-on-select-pack-line">
 		<call class="com.axelor.apps.supplychain.web.StockMoveLineController" method="resetSubLines"/>

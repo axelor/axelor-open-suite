@@ -158,8 +158,9 @@
         <view type="calendar" name="stock-move-calendar" />
 		<view type="form" name="stock-move-form"/>
 		<view-param name="search-filters" value="customer-deliveries-filters"/>
-        <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE</domain>
+        <domain>self.typeSelect = :_typeSelect AND self.isReversion = :_isReversion</domain>
 		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
+		<context name="_isReversion" expr="eval: false"/>
 		<context name="_userType" expr="eval: __repo__(StockMove).USER_TYPE_SALESPERSON"/>
 	</action-view>
 	

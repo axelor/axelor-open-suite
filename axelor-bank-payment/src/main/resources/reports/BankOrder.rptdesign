@@ -978,7 +978,7 @@ LEFT JOIN bankpayment_bank_order bankOrder ON bankOrder.id = bankOrderLine.bank_
 LEFT JOIN base_currency currency ON currency.id = bankOrder.bank_order_currency
 LEFT JOIN base_bank Bank ON bankDetails.bank = Bank.id
 WHERE bankOrderLine.bank_order = ?
-ORDER BY bankOrderLine.sequence]]></xml-property>
+ORDER BY NULLIF(regexp_replace(bankOrderLine.sequence, '\D', '', 'g'), '')::bigint]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>

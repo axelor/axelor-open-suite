@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -22,6 +22,7 @@ import com.axelor.apps.production.db.ConfiguratorProdProcess;
 import com.axelor.apps.production.db.ConfiguratorProdProcessLine;
 import com.axelor.apps.production.db.repo.ConfiguratorBOMRepository;
 import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
@@ -62,6 +63,10 @@ public class ConfiguratorCreatorImportServiceProductionImpl
   protected void updateAttributeNameInFormulas(
       ConfiguratorCreator creator, String oldName, String newName) throws AxelorException {
     super.updateAttributeNameInFormulas(creator, oldName, newName);
+
+    if (!Beans.get(AppProductionService.class).isApp("production")) {
+      return;
+    }
     ConfiguratorBOM configuratorBom = creator.getConfiguratorBom();
     if (configuratorBom != null) {
       updateAttributeNameInFormulas(configuratorBom, oldName, newName, 0);

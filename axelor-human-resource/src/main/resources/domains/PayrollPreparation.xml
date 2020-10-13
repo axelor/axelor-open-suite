@@ -24,7 +24,7 @@
       <one-to-many name="employeeBonusMgtLineList" ref="com.axelor.apps.hr.db.EmployeeBonusMgtLine" title="Employee bonuses" mappedBy="payrollPreparation" orphanRemoval="false"/>
       <one-to-many name="lunchVoucherMgtLineList" ref="com.axelor.apps.hr.db.LunchVoucherMgtLine" title="Lunch vouchers" mappedBy="payrollPreparation" orphanRemoval="false"/>
       
-      <decimal name="extraHoursNumber" title="Extra hours' number" scale="1" precision="5" readonly="true"/>
+      <decimal name="extraHoursNumber" title="Extra hours' number" scale="2" precision="5" readonly="true"/>
       <decimal name="expenseAmount" title="Expenses amount to pay" scale="2" precision="15" readonly="true"/>
       <decimal name="employeeBonusAmount" title="Employee bonus amount" scale="2" precision="15" readonly="true"/>
       <decimal name="lunchVoucherNumber" title="Lunch vouchers' number" scale="1" precision="5" readonly="true"/>

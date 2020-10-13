@@ -50,8 +50,9 @@
 		
 		// STATUS SELECT
 		public static final int STATUS_DRAFT = 1;
-		public static final int STATUS_SENT = 2; 
-		public static final int STATUS_DELETED = 3; 
+		public static final int STATUS_IN_PROGRESS = 2;
+		public static final int STATUS_SENT = 3; 
+		public static final int STATUS_DELETED = 4; 
 		
 		// MEDIA TYPE SELECT
 		public static final int MEDIA_TYPE_MAIL = 1;

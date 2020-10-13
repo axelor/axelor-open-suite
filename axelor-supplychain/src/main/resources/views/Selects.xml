@@ -49,6 +49,7 @@
 	
 	<selection name="meta.schedule.job.select" id="supplychain.meta.schedule.job.select">
 		<option value="com.axelor.apps.supplychain.job.BillSubJob">com.axelor.apps.supplychain.job.BillSubJob</option>
+		<option value="com.axelor.apps.supplychain.job.MrpJob">com.axelor.apps.supplychain.job.MrpJob</option>
 	</selection>
 
 	<selection name="meta.schedule.batch.service.select" id="supplychain.meta.schedule.batch.service.select">
@@ -94,6 +95,14 @@
 	<selection name="supplychain.estimated.date.select">
 		<option value="0">Current date</option>
 		<option value="1">Left empty</option>
+		<option value="2">Current date + days</option>
+	</selection>
+
+	
+	<selection name='supplychain.declaration.of.exchanges.product.type.select'>
+		<option value='service'>declarationOfExchanges.Service</option>
+		<option value='storable'>declarationOfExchanges.ProductType.product</option>
 	</selection>
 
 </object-views>
+

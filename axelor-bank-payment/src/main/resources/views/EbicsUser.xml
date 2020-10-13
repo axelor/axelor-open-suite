@@ -20,18 +20,19 @@
 		<field name="statusSelect"/>
 	</grid>
 	
-	<form name="ebics-user-form" title="Ebics user" model="com.axelor.apps.bankpayment.db.EbicsUser" onSave="save,action-ebics-user-method-generate-dn">
+	<form name="ebics-user-form" title="Ebics user" model="com.axelor.apps.bankpayment.db.EbicsUser" onSave="save,action-ebics-user-method-generate-dn" onLoad="action-ebics-user-attrs-set-change-password">
 		<panel name="generalInformationPanel" title="General information" colSpan="12">
 			<field name="statusSelect" colSpan="12"/>
 			<field name="fullName" colSpan="12" hidden="true"/>
 			<field name="name" onChange="action-ebics-user-record-set-fullname"/>
-			<field name="password" requiredIf="ebicsPartner.ebicsTypeSelect == 0"/>
+			<field name="$changePassword" type="boolean" title="Change password" hideIf="!id" colSpan="2"/>
+			<field name="password" showIf="$changePassword || !id" colSpan="4" requiredIf="$changePassword"/>
 			<field name="userId" help="Name of the user or service" x-bind="{{userId|uppercase}}" pattern='^[A-Z0-9]+$' readonlyIf="statusSelect &gt; 2"/>
 			<field name="securityMedium" readonlyIf="statusSelect == 3"/>
 			<field name="userTypeSelect" widget="RadioSelect" readonlyIf="statusSelect == 3" onChange="action-ebics-user-record-set-fullname"/>
 			<field name="associatedUser" canNew="false" canEdit="false" canView="false" onChange="action-ebics-user-record-set-fullname" showIf="userTypeSelect == 1"/>
 			<field name="nextOrderId"/>
-			<field name="ebicsPartner" help="Subscription or contract to which the user is associated" readonlyIf="statusSelect &gt; 2"/>
+			<field name="ebicsPartner" help="Subscription or contract to which the user is associated" readonlyIf="statusSelect &gt; 2" onChange="action-ebics-user-attrs-set-change-password"/>
 			<field name="ebicsPartner.ebicsTypeSelect" widget="RadioSelect"/>
 			<field name="ebicsPartner.ebicsBank"/>
 		</panel>
@@ -154,6 +155,11 @@
     	<attribute name="readonly" for="nextOrderId" expr="false"/>
     </action-attrs>
     
+    <action-attrs name="action-ebics-user-attrs-set-change-password">
+        <attribute name="value" expr="eval: ebicsPartner?.ebicsTypeSelect == 0 &amp;&amp; !password" for="$changePassword"/>
+        <attribute  name="readonly" expr="eval: ebicsPartner?.ebicsTypeSelect == 0 &amp;&amp; !password" for="$changePassword"/>
+    </action-attrs>
+
     <action-view name="action-ebics-open-import-ebics-users" title="Import ebics users" model="com.axelor.apps.bankpayment.db.EbicsUser">
     	<view type="form" name="import-ebics-user-form"/>
     	<view-param name="popup" value="true"/>

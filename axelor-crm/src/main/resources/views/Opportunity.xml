@@ -85,8 +85,8 @@
 	
     <form name="opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity" onNew="action-opportunity-group-new">
         <menubar>
-            <menu title="Tools" showTitle="true" icon="fa-wrench">
-                <item if="__config__.app.isApp('sale')" if-module="axelor-sale" title="Convert into quotation" action="action-sale-group-generate-sale-order"/>
+            <menu name="opportunityToolsMenu" title="Tools" showTitle="true" icon="fa-wrench">
+                <item name="convertIntoQuotationItem" if="__config__.app.isApp('sale')" if-module="axelor-sale" title="Convert into quotation" action="action-sale-group-generate-sale-order"/>
             </menu>
         </menubar>
         <panel name="mainPanel" readonlyIf="salesStageSelect == 5 || salesStageSelect == 6">
@@ -194,6 +194,11 @@
             <div class="card-footer">
                 <i class='fa fa-clock-o'></i> <span>{{record.expectedCloseDate|date:'dd/MM/yyyy'}}</span>
             </div>
+						<div class="card-summary popover">
+							<p style="margin:2px;">
+                <span style="word-break:break-all;max-width:250px;">{{description.length>250?description.substring(0,250)+'...':description}}</span>
+              </p>
+						</div>
             ]]>
         </template>
 	</kanban>

@@ -445,5 +445,11 @@
 		<option value="pl">Polish Beta</option>
 		<option value="ru">Russian Beta</option>
 	</selection>
+  
+    <selection name="line.type.select">
+        <option value="0">Standard</option>
+        <option value="1">Title</option>
+        <option value="2">Pack</option>
+    </selection>
 	
 </object-views>

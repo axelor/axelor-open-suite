@@ -14,7 +14,7 @@
  	
  	<string name="name" title="Name">
  		<![CDATA[
-	    	if (invoice != null) return invoice.getInvoiceId() + " - " + invoiceLineSeq;
+	    	if (invoice != null && invoice.getInvoiceId() != null) return invoice.getInvoiceId() + " - " + invoiceLineSeq;
 	    	else return invoiceLineSeq.toString();
 	    ]]>
 	</string>

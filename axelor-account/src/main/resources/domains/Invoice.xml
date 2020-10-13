@@ -127,7 +127,12 @@
     
     <date name="subscriptionFromDate" title="From" />
     <date name="subscriptionToDate" title="To" />
+    
+    <many-to-one name="subrogationRelease" ref="com.axelor.apps.account.db.SubrogationRelease" title="Subrogation release"/>
+    <many-to-one name="subrogationReleaseMove" ref="com.axelor.apps.account.db.Move" title="Subrogation release Move"/>
 	
+    <string name="headOfficeAddress" title="Head office address"/>
+
   	<unique-constraint columns="invoiceId,company"/>
 
 	<extra-code><![CDATA[
@@ -165,7 +170,7 @@
       <message if="true" on="CREATE">Invoice created</message>
       <message if="statusSelect == 2" tag="important">Validated</message>
       <message if="statusSelect == 3" tag="success">Ventilated</message>
-      <message if="statusSelect == 3 &amp;&amp; dueDate.isAfter(__date__)">Important</message>
+      <message if="statusSelect == 3 &amp;&amp; dueDate &amp;&amp; dueDate.isAfter(__date__)">Important</message>
     </track>
 
   </entity>

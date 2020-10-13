@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -47,5 +47,24 @@ public class InvoiceSupplychainRepository extends InvoiceManagementRepository {
     } catch (Exception e) {
       throw new PersistenceException(e.getLocalizedMessage());
     }
+  }
+
+  @Override
+  public Invoice copy(Invoice entity, boolean deep) {
+    Invoice copy = super.copy(entity, deep);
+
+    copy.setSaleOrder(null);
+    copy.setPurchaseOrder(null);
+
+    for (InvoiceLine line : copy.getInvoiceLineList()) {
+      line.setSaleOrderLine(null);
+      line.setPurchaseOrderLine(null);
+      line.setIncomingStockMove(null);
+      line.setOutgoingStockMove(null);
+      line.setOutgoingStockMove(null);
+      line.setIncomingStockMove(null);
+    }
+
+    return copy;
   }
 }

@@ -21,6 +21,11 @@
 	        <field name="company" widget="SuggestBox" form-view="company-form" grid-view="company-grid" canEdit="false"/>
 	        <field name="typeSelect" readonly="true" />
 	    </panel>
+	    <panel-related name="periodListPanel" field="periodList" colSpan="12" readonlyIf="statusSelect == 2" form-view="period-year-form" grid-view="period-grid"/>
+	    <panel sidebar="true" name="periodsGenerationAssistantPanel" title="Periods generation assistant" hideIf="statusSelect == 2">
+			<field name="periodDurationSelect"/>
+			<button name="generatePeriodsBtn" title="Generate periods" onClick="action-year-group-generate-period-click" />
+		</panel>
     </form>
     
      <action-record name="action-year-record-new" model="com.axelor.apps.base.db.Year">
@@ -42,5 +47,23 @@
 		<field name="fromDate" expr="eval:null" />
 		<field name="toDate" expr="eval:null" />
 	</action-record>
+	
+	<action-group name="action-year-group-generate-period-click">
+    	<action name="action-year-check-date"/>
+    	<action name="save"/>
+    	<action name="action-year-validate-generate-period"/>
+    	<action name="action-year-method-generate-periods"/>
+    	<action name="save"/>
+    </action-group>
+    
+    <action-validate name="action-year-validate-generate-period">
+	    <error message="To generate periods, please fill in the limits of the year." if="fromDate == null || toDate == null" />
+	    <error message="To generate periods, please fill in the Period duration." if="periodDurationSelect == null || periodDurationSelect == 0"/>
+	    <error message="Please clear all existing periods before generating new ones" if="!periodList.empty"/>
+	</action-validate>
+    
+    <action-method name="action-year-method-generate-periods">
+    	<call class="com.axelor.apps.base.web.YearController" method="generatePeriods"/>
+    </action-method>
     
 </object-views>

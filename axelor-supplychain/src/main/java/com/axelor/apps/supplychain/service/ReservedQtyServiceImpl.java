@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -618,7 +618,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
 
     BigDecimal qtyLeftToBeAllocated =
         stockLocationLine.getCurrentQty().subtract(stockLocationLine.getReservedQty());
-    return qtyLeftToBeAllocated.min(requestedReservedQty);
+    return qtyLeftToBeAllocated.min(requestedReservedQty).max(BigDecimal.ZERO);
   }
 
   @Override
@@ -925,6 +925,11 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
       return;
     }
     saleOrderLine.setIsQtyRequested(true);
+    if (saleOrderLine.getQty().signum() < 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.SALE_ORDER_LINE_REQUEST_QTY_NEGATIVE));
+    }
     this.updateRequestedReservedQty(saleOrderLine, saleOrderLine.getQty());
   }
 

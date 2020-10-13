@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -139,7 +139,7 @@ public class SaleOrderController {
     }
   }
 
-  @SuppressWarnings("rawtypes")
+  @SuppressWarnings({"unchecked"})
   public void generatePurchaseOrdersFromSelectedSOLines(
       ActionRequest request, ActionResponse response) {
 
@@ -148,53 +148,21 @@ public class SaleOrderController {
     try {
       if (saleOrder.getId() != null) {
 
-        if (request.getContext().get("supplierPartnerSelect") != null) {
-          Partner partner =
-              JPA.em()
-                  .find(
-                      Partner.class,
-                      new Long(
-                          (Integer)
-                              ((Map) request.getContext().get("supplierPartnerSelect")).get("id")));
-          List<Long> saleOrderLineIdSelected = new ArrayList<>();
-          String saleOrderLineIdSelectedStr =
-              (String) request.getContext().get("saleOrderLineIdSelected");
-          for (String saleOrderId : saleOrderLineIdSelectedStr.split(",")) {
-            saleOrderLineIdSelected.add(new Long(saleOrderId));
-          }
-          List<SaleOrderLine> saleOrderLinesSelected =
-              JPA.all(SaleOrderLine.class)
-                  .filter("self.id IN (:saleOderLineIdList)")
-                  .bind("saleOderLineIdList", saleOrderLineIdSelected)
-                  .fetch();
-          PurchaseOrder purchaseOrder =
-              Beans.get(SaleOrderPurchaseService.class)
-                  .createPurchaseOrder(
-                      partner, saleOrderLinesSelected, saleOrderRepo.find(saleOrder.getId()));
-          response.setView(
-              ActionView.define(I18n.get("Purchase order"))
-                  .model(PurchaseOrder.class.getName())
-                  .add("form", "purchase-order-form")
-                  .param("forceEdit", "true")
-                  .context("_showRecord", String.valueOf(purchaseOrder.getId()))
-                  .map());
-          response.setCanClose(true);
-        } else {
-          Partner supplierPartner = null;
-          List<Long> saleOrderLineIdSelected = new ArrayList<>();
+        Partner supplierPartner = null;
+        List<Long> saleOrderLineIdSelected = new ArrayList<>();
+        Boolean isDirectOrderLocation = false;
+        Map<String, Object> values = getSelectedId(request, response, saleOrder);
+        supplierPartner = (Partner) values.get("supplierPartner");
+        saleOrderLineIdSelected = (List<Long>) values.get("saleOrderLineIdSelected");
+        isDirectOrderLocation = (Boolean) values.get("isDirectOrderLocation");
 
-          // Check if supplier partners of each sale order line are the same. If it is,
-          // send the
-          // partner id to view to load this partner by default into select
+        if (supplierPartner == null) {
+          saleOrderLineIdSelected = new ArrayList<>();
+
           for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
             if (saleOrderLine.isSelected()) {
               if (supplierPartner == null) {
                 supplierPartner = saleOrderLine.getSupplierPartner();
-              } else {
-                if (!supplierPartner.equals(saleOrderLine.getSupplierPartner())) {
-                  supplierPartner = null;
-                  break;
-                }
               }
               saleOrderLineIdSelected.add(saleOrderLine.getId());
             }
@@ -220,11 +188,82 @@ public class SaleOrderController {
                         "saleOrderLineIdSelected", Joiner.on(",").join(saleOrderLineIdSelected))
                     .map());
           }
+        } else {
+          List<SaleOrderLine> saleOrderLinesSelected =
+              JPA.all(SaleOrderLine.class)
+                  .filter("self.id IN (:saleOderLineIdList)")
+                  .bind("saleOderLineIdList", saleOrderLineIdSelected)
+                  .fetch();
+          PurchaseOrder purchaseOrder =
+              Beans.get(SaleOrderPurchaseService.class)
+                  .createPurchaseOrder(
+                      supplierPartner,
+                      saleOrderLinesSelected,
+                      saleOrderRepo.find(saleOrder.getId()));
+          response.setView(
+              ActionView.define(I18n.get("Purchase order"))
+                  .model(PurchaseOrder.class.getName())
+                  .add("form", "purchase-order-form")
+                  .param("forceEdit", "true")
+                  .context("_showRecord", String.valueOf(purchaseOrder.getId()))
+                  .map());
+
+          if (isDirectOrderLocation == false) {
+            response.setCanClose(true);
+          }
         }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  @SuppressWarnings("rawtypes")
+  private Map<String, Object> getSelectedId(
+      ActionRequest request, ActionResponse response, SaleOrder saleOrder) throws AxelorException {
+    Partner supplierPartner = null;
+    List<Long> saleOrderLineIdSelected = new ArrayList<>();
+    Map<String, Object> values = new HashMap<String, Object>();
+    Boolean isDirectOrderLocation = false;
+
+    if (saleOrder.getDirectOrderLocation()
+        && saleOrder.getStockLocation() != null
+        && saleOrder.getStockLocation().getPartner() != null
+        && saleOrder.getStockLocation().getPartner().getIsSupplier()) {
+      values.put("supplierPartner", saleOrder.getStockLocation().getPartner());
+
+      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+        if (saleOrderLine.isSelected()) {
+          saleOrderLineIdSelected.add(saleOrderLine.getId());
+        }
+      }
+      values.put("saleOrderLineIdSelected", saleOrderLineIdSelected);
+      isDirectOrderLocation = true;
+      values.put("isDirectOrderLocation", isDirectOrderLocation);
+
+      if (saleOrderLineIdSelected.isEmpty()) {
+        throw new AxelorException(3, I18n.get(IExceptionMessage.SO_LINE_PURCHASE_AT_LEAST_ONE));
+      }
+    } else if (request.getContext().get("supplierPartnerSelect") != null) {
+      supplierPartner =
+          JPA.em()
+              .find(
+                  Partner.class,
+                  new Long(
+                      (Integer)
+                          ((Map) request.getContext().get("supplierPartnerSelect")).get("id")));
+      values.put("supplierPartner", supplierPartner);
+      String saleOrderLineIdSelectedStr =
+          (String) request.getContext().get("saleOrderLineIdSelected");
+
+      for (String saleOrderId : saleOrderLineIdSelectedStr.split(",")) {
+        saleOrderLineIdSelected.add(new Long(saleOrderId));
+      }
+      values.put("saleOrderLineIdSelected", saleOrderLineIdSelected);
+      values.put("isDirectOrderLocation", isDirectOrderLocation);
+    }
+
+    return values;
   }
 
   /**
@@ -791,6 +830,40 @@ public class SaleOrderController {
             productList);
       }
     } catch (AxelorException e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void generateAdvancePaymentInvoice(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    try {
+      SaleOrder saleOrder = context.asType(SaleOrder.class);
+      Beans.get(SaleOrderInvoiceService.class).displayErrorMessageBtnGenerateInvoice(saleOrder);
+      Boolean isPercent = (Boolean) context.getOrDefault("isPercent", false);
+      BigDecimal amountToInvoice =
+          new BigDecimal(context.getOrDefault("amountToInvoice", "0").toString());
+      saleOrder = saleOrderRepo.find(saleOrder.getId());
+
+      Invoice invoice =
+          Beans.get(SaleOrderInvoiceService.class)
+              .generateInvoice(
+                  saleOrder,
+                  SaleOrderRepository.INVOICE_ADVANCE_PAYMENT,
+                  amountToInvoice,
+                  isPercent,
+                  null);
+
+      if (invoice != null) {
+        response.setCanClose(true);
+        response.setView(
+            ActionView.define(I18n.get("Invoice generated"))
+                .model(Invoice.class.getName())
+                .add("form", "invoice-form")
+                .add("grid", "invoice-grid")
+                .context("_showRecord", String.valueOf(invoice.getId()))
+                .map());
+      }
+    } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }

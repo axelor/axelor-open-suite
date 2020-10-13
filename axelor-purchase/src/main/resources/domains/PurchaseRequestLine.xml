@@ -4,8 +4,8 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
   
    <module name="purchase" package="com.axelor.apps.purchase.db"/>
-   
-   <entity name="PurchaseRequestLine" lang="java" cachable="true">
+
+   <entity name="PurchaseRequestLine" lang="java">
 	   <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
 	   <boolean name="newProduct" title="New product" />
 	   <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit" />

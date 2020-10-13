@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -70,7 +70,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
     log.debug(
         "Get the account for the product {} (company : {}, purchase : {}, fixed asset : {}, fiscal position : {})",
         new Object[] {
-          product.getCode(),
+          product != null ? product.getCode() : null,
           company.getName(),
           isPurchase,
           fixedAsset,
@@ -90,7 +90,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
     throw new AxelorException(
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
         I18n.get(IExceptionMessage.ACCOUNT_MANAGEMENT_1_ACCOUNT),
-        product.getCode(),
+        product != null ? product.getCode() : null,
         company.getName());
   }
 

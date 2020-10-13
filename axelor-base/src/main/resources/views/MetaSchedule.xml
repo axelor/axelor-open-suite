@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
 
-  <grid name="meta-schedule-grid" id="base-meta-schedule-grid" title="Schedules" model="com.axelor.meta.db.MetaSchedule" editable="true">
+  <grid name="meta-schedule-grid" id="base-meta-schedule-grid" title="Schedules" model="com.axelor.meta.db.MetaSchedule">
     <field name="name" />
     <field name="job" selection="meta.schedule.job.select" />
     <field name="cron" />

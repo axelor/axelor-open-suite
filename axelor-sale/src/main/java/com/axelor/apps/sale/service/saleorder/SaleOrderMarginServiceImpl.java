@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -52,12 +52,12 @@ public class SaleOrderMarginServiceImpl implements SaleOrderMarginService {
           totalGrossProfit = totalGrossProfit.add(saleOrderLineList.getSubTotalGrossMargin());
           marginRate =
               totalGrossProfit
-                  .divide(accountedRevenue, RoundingMode.HALF_EVEN)
-                  .multiply(new BigDecimal(100));
+                  .multiply(new BigDecimal(100))
+                  .divide(accountedRevenue, 2, RoundingMode.HALF_EVEN);
           markup =
               totalGrossProfit
-                  .divide(totalCostPrice, RoundingMode.HALF_EVEN)
-                  .multiply(new BigDecimal(100));
+                  .multiply(new BigDecimal(100))
+                  .divide(totalCostPrice, 2, RoundingMode.HALF_EVEN);
         }
       }
     }

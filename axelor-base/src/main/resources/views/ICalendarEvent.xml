@@ -79,7 +79,7 @@
     </calendar>
     
     <calendar name="calendar-event-leave-request" model="com.axelor.apps.base.db.ICalendarEvent" title="Calendar"
-	  eventStart="startDateTime" eventStop="endDateTime" colorBy="user">
+	  eventStart="startDateTime" eventStop="endDateTime" colorBy="user" editable="false">
         <field name="subject" />
     </calendar>
 	

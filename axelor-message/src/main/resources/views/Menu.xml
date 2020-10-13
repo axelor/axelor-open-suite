@@ -51,7 +51,7 @@
 	<action-view name="mail.root.messages.not.send" title="Messages not sent" model="com.axelor.apps.message.db.Message">
 		<view type="grid" name="message-not-sent-grid"/>
 		<view type="form" name="message-form"/>
-        <domain>self.statusSelect = 1 AND self.sentDateT = null</domain>
+        <domain>(self.statusSelect = 1 AND self.sentDateT = null) OR self.statusSelect = 2</domain>
 	</action-view>
 
 	<menuitem name="mail-root-email-conf-routing" parent="mail-conf" title="Routings" action="mail.root.email.conf.routing" order="30"  />	

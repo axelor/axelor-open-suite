@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -482,9 +482,13 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
             totalGrossMass = totalGrossMass.add(logisticalFormLine.getGrossMass());
           }
 
-          totalVolume =
-              totalVolume.add(
-                  logisticalFormLineService.evalVolume(logisticalFormLine, scriptHelper));
+          BigDecimal toAdd = logisticalFormLineService.evalVolume(logisticalFormLine, scriptHelper);
+          if (toAdd == null) {
+            throw new LogisticalFormError(
+                logisticalForm, I18n.get(IExceptionMessage.LOGISTICAL_FORM_INVALID_DIMENSIONS));
+          } else {
+            totalVolume = totalVolume.add(toAdd);
+          }
         } else if (stockMoveLine != null) {
           totalNetMass =
               totalNetMass.add(logisticalFormLine.getQty().multiply(stockMoveLine.getNetMass()));

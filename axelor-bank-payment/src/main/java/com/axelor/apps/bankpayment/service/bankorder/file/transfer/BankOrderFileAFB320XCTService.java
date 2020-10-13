@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -141,8 +141,6 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
   /**
    * Method to create a sender record for international transfer AFB320
    *
-   * @param company
-   * @param ZonedDateTime
    * @return
    * @throws AxelorException
    */
@@ -244,6 +242,12 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
               cfonbToolService.FORMAT_ALPHA_NUMERIC,
               34);
 
+      if (senderCurrency == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(IExceptionMessage.BANK_ORDER_NO_SENDER_CURRENCY),
+            senderCompany.getName());
+      }
       // Zone 12 : Code devise du compte à débiter à la banque d'éxécution
       senderRecord +=
           cfonbToolService.createZone(
@@ -483,8 +487,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
   /**
    * Method to create a recipient record for international transfer AFB320
    *
-   * @param company
-   * @param ZonedDateTime
+   * @param bankOrderLine
    * @return
    * @throws AxelorException
    */
@@ -540,6 +543,18 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
               cfonbToolService.FORMAT_ALPHA_NUMERIC,
               34);
 
+      // Zone 6 et 7 attribution des longueurs des zones en fonction de la longueur du nom:
+      int ownerNameLength = receiverBankDetails.getOwnerName().length();
+      int adressLength = 3 * 35;
+      if (ownerNameLength <= 35) {
+        ownerNameLength = 35;
+      } else if (35 < ownerNameLength && ownerNameLength <= 70) {
+        adressLength = 3 * 35 - (ownerNameLength - 35);
+      } else if (ownerNameLength > 70) {
+        ownerNameLength = 2 * 35;
+        adressLength = 2 * 35;
+      }
+
       // Zone 6 : Nom du bénéficiaire
       detailRecord +=
           cfonbToolService.createZone(
@@ -547,20 +562,19 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
               receiverBankDetails.getOwnerName(),
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_ALPHA_NUMERIC,
-              35);
+              ownerNameLength);
 
       // Zone 7 : Adresse du bénéficiaire (Obligatoire si mode de règlement par chèque (zone 18 =
       // "1" ou "2")
       // Si le nom du bénéficiaire contient plus de 35 caractères, utiliser le début de la première
       // zone pour le compléter et le reste de cette zone pour indiquer le début de l'adresse)
-
       detailRecord +=
           cfonbToolService.createZone(
               "7",
               getReceiverAddress(bankOrderLine),
               cfonbToolService.STATUS_DEPENDENT,
               cfonbToolService.FORMAT_ALPHA_NUMERIC,
-              3 * 35);
+              adressLength);
 
       // Zone 8 : Identification nationale du bénéficiaire (Cette zone n'est pas utilisée)
       detailRecord +=
@@ -812,8 +826,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
   /**
    * Method to create a dependent receiver bank record for international transfer AFB320
    *
-   * @param company
-   * @param ZonedDateTime
+   * @param bankOrderLine
    * @return
    * @throws AxelorException
    */
@@ -932,8 +945,7 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
   /**
    * Method to create an optional further information record for international transfer AFB320
    *
-   * @param company
-   * @param ZonedDateTime
+   * @param bankOrderLine
    * @return
    * @throws AxelorException
    */
@@ -1110,8 +1122,6 @@ public class BankOrderFileAFB320XCTService extends BankOrderFileService {
   /**
    * Method to create a total record for internationnal transfer AFB320
    *
-   * @param company
-   * @param ZonedDateTime
    * @return
    * @throws AxelorException
    */

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -66,7 +66,8 @@ public interface PurchaseOrderLineService {
   public BigDecimal getCompanyExTaxTotal(BigDecimal exTaxTotal, PurchaseOrder purchaseOrder)
       throws AxelorException;
 
-  public PriceListLine getPriceListLine(PurchaseOrderLine purchaseOrderLine, PriceList priceList);
+  public PriceListLine getPriceListLine(
+      PurchaseOrderLine purchaseOrderLine, PriceList priceList, BigDecimal price);
 
   public Map<String, BigDecimal> compute(
       PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) throws AxelorException;
@@ -96,7 +97,7 @@ public interface PurchaseOrderLineService {
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine, BigDecimal price);
 
   public int getDiscountTypeSelect(
-      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder);
+      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder, BigDecimal price);
 
   public Unit getPurchaseUnit(PurchaseOrderLine purchaseOrderLine);
 

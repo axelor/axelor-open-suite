@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,8 +18,10 @@
 package com.axelor.apps.helpdesk.service;
 
 import com.axelor.apps.base.service.MailServiceBaseImpl;
+import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.db.Model;
+import com.axelor.inject.Beans;
 import com.axelor.mail.db.MailMessage;
 import com.google.common.base.Strings;
 import java.io.IOException;
@@ -32,7 +34,7 @@ public class MailServiceHelpDeskImpl extends MailServiceBaseImpl {
 
   @Override
   protected String getSubject(MailMessage message, Model entity) {
-    if (!(Ticket.class.isInstance(entity))) {
+    if (!(Ticket.class.isInstance(entity)) || !Beans.get(AppService.class).isApp("helpdesk")) {
       return super.getSubject(message, entity);
     }
     Ticket ticket = (Ticket) entity;
@@ -46,6 +48,9 @@ public class MailServiceHelpDeskImpl extends MailServiceBaseImpl {
   protected MailMessage messageReceived(MimeMessage email) throws MessagingException, IOException {
     MailMessage message = super.messageReceived(email);
 
+    if (!Beans.get(AppService.class).isApp("helpdesk")) {
+      return message;
+    }
     Document doc = Jsoup.parse(message.getBody());
     doc.select("div.gmail_extra").remove();
     message.setBody(doc.outerHtml());

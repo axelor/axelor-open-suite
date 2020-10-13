@@ -5,5 +5,7 @@
   	
   	<input file="base_appBusinessProject.csv" separator=";" type="com.axelor.apps.base.db.AppBusinessProject" search="self.code = :code" update="true" />
   	
+  	<input file="account_accountConfig.csv" separator=";" type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId" update="true"/>
+	
 </csv-inputs>
 	

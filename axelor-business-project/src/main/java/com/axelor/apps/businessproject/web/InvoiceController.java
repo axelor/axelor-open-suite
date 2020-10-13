@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -35,6 +35,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -311,15 +312,19 @@ public class InvoiceController {
     Invoice invoice =
         Beans.get(InvoiceRepository.class).find(request.getContext().asType(Invoice.class).getId());
 
-    List<String> reportInfo =
-        Beans.get(InvoiceServiceProjectImpl.class)
-            .editInvoiceAnnex(invoice, invoice.getId().toString(), false);
+    try {
+      List<String> reportInfo =
+          Beans.get(InvoiceServiceProjectImpl.class)
+              .editInvoiceAnnex(invoice, invoice.getId().toString(), false);
 
-    if (reportInfo == null || reportInfo.isEmpty()) {
-      return;
+      if (reportInfo == null || reportInfo.isEmpty()) {
+        return;
+      }
+
+      response.setView(ActionView.define(reportInfo.get(0)).add("html", reportInfo.get(1)).map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-
-    response.setView(ActionView.define(reportInfo.get(0)).add("html", reportInfo.get(1)).map());
   }
 
   public void updateLines(ActionRequest request, ActionResponse response) throws AxelorException {

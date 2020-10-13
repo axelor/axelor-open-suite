@@ -29,6 +29,7 @@
 		<panel sidebar="true" name="actionsPanel">
 			<button name="validateBtn" title="Validate"
 				onClick="save,action-notification-validate" hideIf="statusSelect > 1" />
+			<button name="displayMoveLines" title="See Move Lines" onClick="action-notification-display-move-lines-view" showIf="statusSelect == 2"/>
 		</panel>
 	</form>
 
@@ -53,6 +54,11 @@
 	<action-method name="action-notification-validate">
 		<call class="com.axelor.apps.account.web.NotificationController"
 			method="validate" />
+	</action-method>
+	
+	<action-method name="action-notification-display-move-lines-view">
+		<call class="com.axelor.apps.account.web.NotificationController"
+			method="displayMoveLines" />
 	</action-method>
 
 </object-views>

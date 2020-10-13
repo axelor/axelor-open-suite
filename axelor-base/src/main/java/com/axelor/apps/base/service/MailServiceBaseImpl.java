@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -171,7 +171,6 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     final Set<String> recipients = new LinkedHashSet<>();
     final MailFollowerRepository followers = Beans.get(MailFollowerRepository.class);
     String entityName = entity.getClass().getName();
-    PartnerRepository partnerRepo = Beans.get(PartnerRepository.class);
 
     if (message.getRecipients() != null) {
       for (MailAddress address : message.getRecipients()) {
@@ -191,7 +190,7 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
                 .anyMatch(x -> x.getFullName().equals(entityName)))) {
           continue;
         } else {
-          Partner partner = partnerRepo.findByUser(user);
+          Partner partner = user.getPartner();
           if (partner != null && partner.getEmailAddress() != null) {
             recipients.add(partner.getEmailAddress().getAddress());
           } else if (user.getEmail() != null) {

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -42,6 +42,7 @@ import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.BankDetails;
@@ -93,6 +94,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected PartnerService partnerService;
   protected InvoiceLineService invoiceLineService;
   protected AccountConfigService accountConfigService;
+  protected MoveToolService moveToolService;
 
   @Inject
   public InvoiceServiceImpl(
@@ -104,7 +106,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       AppAccountService appAccountService,
       PartnerService partnerService,
       InvoiceLineService invoiceLineService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      MoveToolService moveToolService) {
 
     this.validateFactory = validateFactory;
     this.ventilateFactory = ventilateFactory;
@@ -115,6 +118,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.partnerService = partnerService;
     this.invoiceLineService = invoiceLineService;
     this.accountConfigService = accountConfigService;
+    this.moveToolService = moveToolService;
   }
 
   // WKF
@@ -411,7 +415,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public Invoice createRefund(Invoice invoice) throws AxelorException {
 
-    log.debug("Créer un avoir pour la facture {}", new Object[] {invoice.getInvoiceId()});
     Invoice refund = new RefundInvoice(invoice).generate();
     invoice.addRefundInvoiceListItem(refund);
     invoiceRepo.save(invoice);

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -63,6 +63,12 @@ public class ProductionOrderWizardServiceBusinessImpl extends ProductionOrderWiz
   @Override
   @SuppressWarnings("unchecked")
   public Long validate(Context context) throws AxelorException {
+
+    AppProductionService appProductionService = Beans.get(AppProductionService.class);
+    if (!appProductionService.isApp("production")
+        || !appProductionService.getAppProduction().getManageBusinessProduction()) {
+      return super.validate(context);
+    }
 
     Map<String, Object> bomContext = (Map<String, Object>) context.get("billOfMaterial");
     BillOfMaterial billOfMaterial =

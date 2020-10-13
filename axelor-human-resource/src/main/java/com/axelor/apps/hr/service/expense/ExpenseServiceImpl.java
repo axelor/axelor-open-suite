@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -35,6 +35,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.AnalyticMoveLineService;
+import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.service.move.MoveCancelService;
@@ -93,6 +94,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.mail.MessagingException;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class ExpenseServiceImpl implements ExpenseService {
@@ -289,10 +291,10 @@ public class ExpenseServiceImpl implements ExpenseService {
     expense.setStatusSelect(ExpenseRepository.STATUS_VALIDATED);
     expense.setValidatedBy(AuthUtils.getUser());
     expense.setValidationDate(appAccountService.getTodayDate());
-
-    PaymentMode paymentMode = expense.getUser().getPartner().getOutPaymentMode();
-    expense.setPaymentMode(paymentMode);
-
+    if (expense.getUser().getPartner() != null) {
+      PaymentMode paymentMode = expense.getUser().getPartner().getOutPaymentMode();
+      expense.setPaymentMode(paymentMode);
+    }
     expenseRepository.save(expense);
   }
 
@@ -355,11 +357,11 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   protected Move createAndSetMove(Expense expense) throws AxelorException {
-    LocalDate moveDate = expense.getPeriod().getToDate();
+    LocalDate moveDate = expense.getMoveDate();
     if (moveDate == null) {
       moveDate = appAccountService.getTodayDate();
+      expense.setMoveDate(moveDate);
     }
-    expense.setMoveDate(moveDate);
     Company company = expense.getCompany();
     Partner partner = expense.getUser().getPartner();
 
@@ -436,7 +438,9 @@ public class ExpenseServiceImpl implements ExpenseService {
               moveDate,
               moveLineId++,
               expense.getExpenseSeq(),
-              expenseLine.getComments());
+              expenseLine.getComments() != null
+                  ? expenseLine.getComments().replaceAll("(\r\n|\n\r|\r|\n)", " ")
+                  : null);
       for (AnalyticMoveLine analyticDistributionLineIt : expenseLine.getAnalyticMoveLineList()) {
         AnalyticMoveLine analyticDistributionLine =
             Beans.get(AnalyticMoveLineRepository.class).copy(analyticDistributionLineIt, false);
@@ -631,6 +635,8 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     moveService.getMoveValidateService().validate(move);
     expense.setPaymentMove(move);
+
+    Beans.get(ReconcileService.class).reconcile(expenseMoveLine, employeeMoveLine, true, false);
 
     expenseRepository.save(expense);
 
@@ -1013,5 +1019,36 @@ public class ExpenseServiceImpl implements ExpenseService {
         }
       }
     }
+  }
+
+  @Override
+  public Expense updateMoveDateAndPeriod(Expense expense) {
+    if (CollectionUtils.isNotEmpty(expense.getGeneralExpenseLineList())) {
+      LocalDate recentDate =
+          expense
+              .getGeneralExpenseLineList()
+              .stream()
+              .map(ExpenseLine::getExpenseDate)
+              .max(LocalDate::compareTo)
+              .get();
+      expense.setMoveDate(recentDate);
+
+      PeriodRepository periodRepository = Beans.get(PeriodRepository.class);
+      if (expense.getPeriod() == null
+          || !(recentDate.compareTo(expense.getPeriod().getFromDate()) >= 0)
+          || !(recentDate.compareTo(expense.getPeriod().getToDate()) <= 0)) {
+        expense.setPeriod(
+            periodRepository
+                .all()
+                .filter(
+                    "self.fromDate <= :_moveDate AND self.toDate >= :_moveDate AND"
+                        + " self.statusSelect = 1 AND self.allowExpenseCreation = true AND"
+                        + " self.year.company = :_company AND self.year.typeSelect = 1")
+                .bind("_moveDate", expense.getMoveDate())
+                .bind("_company", expense.getCompany())
+                .fetchOne());
+      }
+    }
+    return expense;
   }
 }

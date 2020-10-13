@@ -11,7 +11,7 @@
        <field name="unit" readonlyIf="invoice" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
        <field name="qty" readonlyIf="invoice" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()" required="true"/>
        <field name="comments" readonlyIf="invoice" width="300%"/>
-       <button name="generateInvoiceBtn" readonlyIf="!id || invoice" help="Generate Invoice" icon="fa-credit-card" onClick="save, action-timetable-method-generate-invoice, action-timetable-attrs-readonly" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
+       <button name="generateInvoiceBtn" readonlyIf="!id || invoice" help="Generate Invoice" icon="fa-credit-card" onClick="save, action-timetable-method-generate-invoice" if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
         <field name="invoice" width="120" hidden="true"/>
     </grid>
  

@@ -30,7 +30,7 @@
 	   			public static final Integer STATUS_OPEN = 1;
 	   			public static final Integer STATUS_ON_HOLD = 2;
 	   			public static final Integer STATUS_CLOSED = 3;
-	   			public static final Integer STATUS_CANCELED = 3;
+	   			public static final Integer STATUS_CANCELED = 4;
 	   		]]>
    		</extra-code>
 	</entity>

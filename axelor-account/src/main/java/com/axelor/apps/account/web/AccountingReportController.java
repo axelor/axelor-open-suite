@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -169,6 +169,12 @@ public class AccountingReportController {
         response.setFlash(I18n.get(IExceptionMessage.ACCOUNTING_REPORT_4));
         response.setReload(true);
         return;
+      }
+
+      if (accountingReportService.isThereTooManyLines(accountingReport)) {
+        response.setAlert(
+            I18n.get(
+                "A large number of recording has been fetched in this period. Edition can take a while. Do you want to proceed ?"));
       }
 
       logger.debug("Type selected : {}", typeSelect);

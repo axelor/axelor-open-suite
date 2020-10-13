@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -75,6 +75,10 @@ public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreate
             bankDepositDate,
             chequeNumber);
 
+    if (!Beans.get(AppBaseService.class).isApp("bank-payment")) {
+      return invoicePaymentList;
+    }
+
     if (invoicePaymentList.isEmpty()) {
       return invoicePaymentList;
     }
@@ -88,6 +92,11 @@ public class InvoicePaymentCreateServiceBankPayImpl extends InvoicePaymentCreate
   @Override
   public List<Long> getInvoiceIdsToPay(List<Long> invoiceIdList) throws AxelorException {
     List<Long> invoiceToPay = super.getInvoiceIdsToPay(invoiceIdList);
+
+    if (!Beans.get(AppBaseService.class).isApp("bank-payment")) {
+      return invoiceToPay;
+    }
+
     for (Long invoiceId : invoiceToPay) {
       Invoice invoice = Beans.get(InvoiceRepository.class).find(invoiceId);
       if (invoice.getPaymentMode().getGenerateBankOrder()) {

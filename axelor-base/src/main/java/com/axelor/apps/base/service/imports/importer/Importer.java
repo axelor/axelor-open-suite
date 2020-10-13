@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -45,7 +45,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -164,52 +163,42 @@ public abstract class Importer {
     return Files.getFileExtension(file.getName()).equals("zip");
   }
 
-  protected void unZip(File file, File directory) throws ZipException, IOException {
+  protected void unZip(File file, File directory) throws IOException {
 
     File extractFile = null;
     FileOutputStream fileOutputStream = null;
-    ZipFile zipFile = new ZipFile(file);
-    Enumeration<? extends ZipEntry> entries = zipFile.entries();
+    try (ZipFile zipFile = new ZipFile(file); ) {
+      Enumeration<? extends ZipEntry> entries = zipFile.entries();
 
-    while (entries.hasMoreElements()) {
-      try {
+      while (entries.hasMoreElements()) {
         ZipEntry entry = entries.nextElement();
-        InputStream entryInputStream = zipFile.getInputStream(entry);
-        byte[] buffer = new byte[1024];
-        int bytesRead = 0;
+        try (InputStream entryInputStream = zipFile.getInputStream(entry)) {
+          byte[] buffer = new byte[1024];
+          int bytesRead = 0;
 
-        extractFile = new File(directory, entry.getName());
-        if (entry.isDirectory()) {
-          extractFile.mkdirs();
+          extractFile = new File(directory, entry.getName());
+          if (entry.isDirectory()) {
+            extractFile.mkdirs();
+            continue;
+          } else {
+            extractFile.getParentFile().mkdirs();
+            extractFile.createNewFile();
+          }
+
+          fileOutputStream = new FileOutputStream(extractFile);
+          while ((bytesRead = entryInputStream.read(buffer)) != -1) {
+            fileOutputStream.write(buffer, 0, bytesRead);
+          }
+
+          if (Files.getFileExtension(extractFile.getName()).equals("xlsx")) {
+            importExcel(extractFile);
+          }
+        } catch (IOException ioException) {
+          log.error(ioException.getMessage());
           continue;
-        } else {
-          extractFile.getParentFile().mkdirs();
-          extractFile.createNewFile();
-        }
-
-        fileOutputStream = new FileOutputStream(extractFile);
-        while ((bytesRead = entryInputStream.read(buffer)) != -1) {
-          fileOutputStream.write(buffer, 0, bytesRead);
-        }
-
-        if (Files.getFileExtension(extractFile.getName()).equals("xlsx")) {
-          importExcel(extractFile);
-        }
-      } catch (IOException ioException) {
-        log.error(ioException.getMessage());
-        continue;
-      } finally {
-        if (fileOutputStream == null) {
-          continue;
-        }
-        try {
-          fileOutputStream.close();
-        } catch (IOException e) {
         }
       }
     }
-
-    zipFile.close();
   }
 
   /**

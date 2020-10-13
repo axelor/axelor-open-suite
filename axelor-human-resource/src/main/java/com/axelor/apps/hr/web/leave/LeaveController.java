@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.hr.web.leave;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
@@ -157,6 +158,36 @@ public class LeaveController {
             .context("_user", user);
       }
 
+      response.setView(actionView.map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void leaveCalendar(ActionRequest request, ActionResponse response) {
+    try {
+
+      User user = AuthUtils.getUser();
+      Employee employee = user.getEmployee();
+
+      ActionViewBuilder actionView =
+          ActionView.define(I18n.get("Leaves calendar"))
+              .model(ICalendarEvent.class.getName())
+              .add("calendar", "calendar-event-leave-request")
+              .add("grid", "calendar-event-grid")
+              .add("form", "calendar-event-form");
+
+      actionView.domain(
+          "self.typeSelect = 4 AND self.id IN (SELECT leaveRequest.icalendarEvent FROM LeaveRequest leaveRequest WHERE leaveRequest.statusSelect = 3");
+
+      if (employee == null || !employee.getHrManager()) {
+        actionView
+            .domain(
+                actionView.get().getDomain()
+                    + " AND leaveRequest.user.employee.managerUser = :_user")
+            .context("_user", user);
+      }
+      actionView.domain(actionView.get().getDomain() + ")");
       response.setView(actionView.map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);

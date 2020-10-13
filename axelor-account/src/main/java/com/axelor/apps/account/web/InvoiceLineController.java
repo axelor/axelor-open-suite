@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -18,6 +18,7 @@
 package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -44,6 +45,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 @Singleton
 public class InvoiceLineController {
@@ -383,14 +385,17 @@ public class InvoiceLineController {
             || invoice.getOperationTypeSelect()
                 == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND)) {
 
-      fixedAssetCategory =
+      Optional<AccountManagement> optionalFixedAssetCategory =
           product
               .getAccountManagementList()
               .stream()
               .filter(am -> am.getCompany() == invoice.getCompany())
-              .findFirst()
-              .get()
-              .getFixedAssetCategory();
+              .findFirst();
+
+      fixedAssetCategory =
+          optionalFixedAssetCategory.isPresent()
+              ? optionalFixedAssetCategory.get().getFixedAssetCategory()
+              : null;
     }
     response.setValue("fixedAssetCategory", fixedAssetCategory);
   }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -19,6 +19,7 @@ package com.axelor.apps.businessproject.report;
 
 public interface ITranslation {
 
+  public static final String PROJECT_TITLE = /*$$(*/ "Project.title"; /*)*/
   public static final String PROJECT_CUSTOMER = /*$$(*/ "Project.customer"; /*)*/
   public static final String PROJECT_CURRENCY = /*$$(*/ "Project.currency"; /*)*/
   public static final String PROJECT_INITIAL = /*$$(*/ "Project.initial"; /*)*/
@@ -44,6 +45,7 @@ public interface ITranslation {
   public static final String PROJECT_TURNOVER = /*$$(*/ "Project.turnover"; /*)*/
   public static final String PROJECT_SALES_INVOICE = /*$$(*/ "Project.salesInvoice"; /*)*/
   public static final String PROJECT_INVOICE_NUMBER = /*$$(*/ "Project.invoiceNumber"; /*)*/
+  public static final String PROJECT_SUB_TYPE = /*$$(*/ "Project.subType"; /*)*/
   public static final String PROJECT_AMOUNT = /*$$(*/ "Project.amount"; /*)*/
   public static final String PROJECT_PURCHASE = /*$$(*/ "Project.purchase"; /*)*/
   public static final String PROJECT_EXPENSE = /*$$(*/ "Project.expense"; /*)*/
@@ -79,6 +81,7 @@ public interface ITranslation {
   public static final String INVOICE_TIMESHEET_USER = /*$$(*/ "Invoice.timesheetUser"; /*)*/
   public static final String INVOICE_TIMESHEET_ACTIVITY = /*$$(*/ "Invoice.timesheetActivity"; /*)*/
   public static final String INVOICE_TIMESHEET_DURATION = /*$$(*/ "Invoice.timesheetDuration"; /*)*/
+  public static final String INVOICE_SUPPLIER_REFERENCE = /*$$(*/ "Invoice.supplierReference"; /*)*/
 
   public static final String INVOICE_EXPENSE_TOTAL_AMOUNT = /*$$(*/
       "Invoice.expenseTotalAmount"; /*)*/

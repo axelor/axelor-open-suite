@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -24,7 +24,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.AddressService;
-import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
@@ -122,12 +121,6 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       }
     }
 
-    if (order.getDuration() != null && order.getCreationDate() != null) {
-      order.setEndOfValidityDate(
-          Beans.get(DurationService.class)
-              .computeDuration(order.getDuration(), order.getCreationDate()));
-    }
-
     AppSupplychain appSupplychain = Beans.get(AppSupplychainService.class).getAppSupplychain();
     if (appSupplychain != null) {
       order.setShipmentMode(clientPartner.getShipmentMode());
@@ -177,6 +170,11 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       Partner clientPartner) {
     Project project =
         super.generateProject(parentProject, fullName, assignedTo, company, clientPartner);
+
+    if (!Beans.get(AppBusinessProjectService.class).isApp("business-project")) {
+      return project;
+    }
+
     project.addMembersUserSetItem(assignedTo);
     project.setImputable(true);
     project.setProjInvTypeSelect(ProjectRepository.INVOICING_TYPE_NONE);

@@ -6,6 +6,8 @@
     <grid name="mrp-grid" model="com.axelor.apps.supplychain.db.Mrp" title="Mrp">
         <hilite if="statusSelect == 1" strong="true" color="warning"/>
         <hilite if="statusSelect == 2" strong="true" color="success"/>
+        <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+        <field name="name"/>
         <field name="createdOn"/>
         <field name="createdBy"/>
         <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="6"/>
@@ -24,6 +26,7 @@
 	    </toolbar>
 	    <panel name="filtersPanel" title="Filters" collapseIf="statusSelect != 0" colSpan="12">
 			<field name="id"/><spacer/>
+			<field name="code" x-bind="{{code|unaccent|uppercase}}"/>			<field name="name"/>
 	        <field name="createdOn" colSpan="4"/>
 	        <field name="startDateTime" colSpan="4" readonly="true"/>
 	        <field name="endDateTime" colSpan="4" readonly="true"/>

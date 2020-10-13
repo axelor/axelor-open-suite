@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -32,6 +32,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -345,6 +346,13 @@ public class PartnerService {
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public String getSIRENNumber(Partner partner) throws AxelorException {
     char[] Str = new char[9];
+    if (partner == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.PARTNER_2),
+          I18n.get(IExceptionMessage.EXCEPTION),
+          "");
+    }
     if (partner.getRegistrationCode() == null || partner.getRegistrationCode().isEmpty()) {
       throw new AxelorException(
           partner,
@@ -376,36 +384,7 @@ public class PartnerService {
    * @return if there is a duplicate partner
    */
   public boolean isThereDuplicatePartner(Partner partner) {
-    String newName = this.computeSimpleFullName(partner);
-    if (Strings.isNullOrEmpty(newName)) {
-      return false;
-    }
-    Long partnerId = partner.getId();
-    if (partnerId == null) {
-      Partner existingPartner =
-          partnerRepo
-              .all()
-              .filter(
-                  "lower(self.simpleFullName) = lower(:newName) "
-                      + "and self.partnerTypeSelect = :_partnerTypeSelect")
-              .bind("newName", newName)
-              .bind("_partnerTypeSelect", partner.getPartnerTypeSelect())
-              .fetchOne();
-      return existingPartner != null;
-    } else {
-      Partner existingPartner =
-          partnerRepo
-              .all()
-              .filter(
-                  "lower(self.simpleFullName) = lower(:newName) "
-                      + "and self.id != :partnerId "
-                      + "and self.partnerTypeSelect = :_partnerTypeSelect")
-              .bind("newName", newName)
-              .bind("partnerId", partnerId)
-              .bind("_partnerTypeSelect", partner.getPartnerTypeSelect())
-              .fetchOne();
-      return existingPartner != null;
-    }
+    return isThereDuplicatePartnerQuery(partner, false) != null;
   }
 
   /**
@@ -513,5 +492,39 @@ public class PartnerService {
       return companyStr.substring(0, companyStr.length() - 1);
     }
     return null;
+  }
+
+  public Partner isThereDuplicatePartnerInArchive(Partner partner) {
+    return isThereDuplicatePartnerQuery(partner, true);
+  }
+
+  protected Partner isThereDuplicatePartnerQuery(Partner partner, boolean isInArchived) {
+    String newName = this.computeSimpleFullName(partner);
+    if (Strings.isNullOrEmpty(newName)) {
+      return null;
+    }
+    Long partnerId = partner.getId();
+    String filter =
+        "lower(self.simpleFullName) = lower(:newName) "
+            + "and self.partnerTypeSelect = :_partnerTypeSelect ";
+    if (partner != null) {
+      filter += "and self.id != :partnerId ";
+    }
+    if (isInArchived) {
+      filter += "and self.archived = true ";
+    } else {
+      filter += "and ( self.archived != true OR self.archived is null ) ";
+    }
+
+    Query<Partner> partnerQuery =
+        partnerRepo
+            .all()
+            .filter(filter)
+            .bind("newName", newName)
+            .bind("_partnerTypeSelect", partner.getPartnerTypeSelect());
+    if (partner != null) {
+      partnerQuery = partnerQuery.bind("partnerId", partnerId);
+    }
+    return partnerQuery.fetchOne();
   }
 }

@@ -203,7 +203,7 @@
 		title="Ebics certificates" action="account.conf.ebics.ebics.certificate" />
 		
 	<menuitem name="admin-root-batch-bank-payment" parent="admin-root-batch"
-		title="Bank payment batches" action="admin.root.batch.bank.payment" />
+		title="Bank payment batches" action="admin.root.batch.bank.payment" if="__config__.app.isApp('bank-payment')"/>
 
 	<action-view name="admin.root.batch.bank.payment" title="Bank payment batches"
 		model="com.axelor.apps.bankpayment.db.BankPaymentBatch" >

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.BudgetService;
 import com.axelor.apps.purchase.db.IPurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -49,6 +50,10 @@ public class BudgetSupplychainService extends BudgetService {
   @Override
   @Transactional
   public List<BudgetLine> updateLines(Budget budget) {
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return super.updateLines(budget);
+    }
+
     if (budget.getBudgetLineList() != null && !budget.getBudgetLineList().isEmpty()) {
       for (BudgetLine budgetLine : budget.getBudgetLineList()) {
         budgetLine.setAmountCommitted(BigDecimal.ZERO);
@@ -71,7 +76,8 @@ public class BudgetSupplychainService extends BudgetService {
           for (BudgetLine budgetLine : budget.getBudgetLineList()) {
             LocalDate fromDate = budgetLine.getFromDate();
             LocalDate toDate = budgetLine.getToDate();
-            if ((fromDate.isBefore(orderDate) || fromDate.isEqual(orderDate))
+            if ((fromDate != null && toDate != null)
+                && (fromDate.isBefore(orderDate) || fromDate.isEqual(orderDate))
                 && (toDate.isAfter(orderDate) || toDate.isEqual(orderDate))) {
               budgetLine.setAmountCommitted(
                   budgetLine.getAmountCommitted().add(budgetDistribution.getAmount()));
@@ -113,6 +119,10 @@ public class BudgetSupplychainService extends BudgetService {
 
   @Override
   protected Optional<LocalDate> getDate(BudgetDistribution budgetDistribution) {
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return super.getDate(budgetDistribution);
+    }
+
     InvoiceLine invoiceLine = budgetDistribution.getInvoiceLine();
 
     if (invoiceLine == null) {

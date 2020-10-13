@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.businessproject.db.repo;
 
+import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
+import com.axelor.inject.Beans;
 
 public class SaleOrderProjectRepository extends SaleOrderSupplychainRepository {
   @Override
@@ -26,7 +28,9 @@ public class SaleOrderProjectRepository extends SaleOrderSupplychainRepository {
 
     SaleOrder copy = super.copy(entity, deep);
 
-    copy.setProject(null);
+    if (Beans.get(AppBusinessProjectService.class).isApp("business-project")) {
+      copy.setProject(null);
+    }
 
     return copy;
   }

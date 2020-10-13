@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -241,7 +241,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
   }
 
   protected BigDecimal getComponentCostPrice(
-      Product product, int componentsValuationMethod, Company company) {
+      Product product, int componentsValuationMethod, Company company) throws AxelorException {
 
     BigDecimal price = null;
 
@@ -257,12 +257,26 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       price = weightedAveragePriceService.computeAvgPriceForCompany(product, company);
     }
     if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
-      price = product.getPurchasePrice();
+      price =
+          unitConversionService.convert(
+              product.getUnit(),
+              product.getPurchasesUnit() != null ? product.getPurchasesUnit() : product.getUnit(),
+              product.getPurchasePrice(),
+              appProductionService.getNbDecimalDigitForUnitPrice(),
+              product);
     }
     if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
       for (SupplierCatalog supplierCatalog : product.getSupplierCatalogList()) {
         if (BigDecimal.ZERO.compareTo(supplierCatalog.getPrice()) < 0) {
-          price = supplierCatalog.getPrice();
+          price =
+              unitConversionService.convert(
+                  product.getUnit(),
+                  product.getPurchasesUnit() != null
+                      ? product.getPurchasesUnit()
+                      : product.getUnit(),
+                  supplierCatalog.getPrice(),
+                  appProductionService.getNbDecimalDigitForUnitPrice(),
+                  product);
           break;
         }
       }

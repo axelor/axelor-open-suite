@@ -7,7 +7,7 @@
 
   <entity name="User" sequential="true" lang="java">
 
-  	<string name="appPermissions" title="Apps permissions" selection="mobile.user.app.permissions.select"/>
+	<string name="appPermissions" title="Mobile app permissions" selection="mobile.user.app.permissions.select"/>
 
 	 <track>
 	   <field name="appPermissions"/>

@@ -10,10 +10,10 @@
 	
 	<form name="calendar-form" model="com.axelor.apps.base.db.ICalendar" title="Calendar" onSave="com.axelor.apps.base.web.ICalendarController:validate" width="large">
 		<menubar>
-			<menu title="Actions">
-				<item title="Export calendar" action="com.axelor.apps.base.web.ICalendarController:exportCalendar"/>
-				<item title="Import calendar" action="com.axelor.apps.base.web.ICalendarController:importCalendar"/>
-				<item title="Synchronize calendar" action="save,com.axelor.apps.base.web.ICalendarController:validate,save,com.axelor.apps.base.web.ICalendarController:synchronizeCalendar"/>
+			<menu name="iCalendarActionsMenu" title="Actions">
+				<item name="exportCalendarItem" title="Export calendar" action="com.axelor.apps.base.web.ICalendarController:exportCalendar"/>
+				<item name="importCalendarItem" title="Import calendar" action="com.axelor.apps.base.web.ICalendarController:importCalendar"/>
+				<item name="synchronizeCalendarItem" title="Synchronize calendar" action="save,com.axelor.apps.base.web.ICalendarController:validate,save,com.axelor.apps.base.web.ICalendarController:synchronizeCalendar"/>
 			</menu>
 		</menubar>
 		<panel name="mainPanel" colSpan="12">

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.db.PayrollPreparation;
+import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
 import com.axelor.apps.hr.db.repo.HrBatchRepository;
 import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
@@ -35,11 +36,10 @@ import com.axelor.exception.db.IException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
-import com.beust.jcommander.internal.Lists;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -59,16 +59,27 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
 
   protected PayrollPreparationService payrollPreparationService;
 
-  @Inject protected PayrollPreparationRepository payrollPreparationRepository;
+  protected PayrollPreparationRepository payrollPreparationRepository;
 
-  @Inject protected CompanyRepository companyRepository;
+  protected CompanyRepository companyRepository;
 
-  @Inject protected PeriodRepository periodRepository;
+  protected PeriodRepository periodRepository;
+
+  protected HrBatchRepository hrBatchRepository;
 
   @Inject
-  public BatchPayrollPreparationGeneration(PayrollPreparationService payrollPreparationService) {
+  public BatchPayrollPreparationGeneration(
+      PayrollPreparationService payrollPreparationService,
+      CompanyRepository companyRepository,
+      PeriodRepository periodRepository,
+      HrBatchRepository hrBatchRepository,
+      PayrollPreparationRepository payrollPreparationRepository) {
     super();
     this.payrollPreparationService = payrollPreparationService;
+    this.companyRepository = companyRepository;
+    this.periodRepository = periodRepository;
+    this.hrBatchRepository = hrBatchRepository;
+    this.payrollPreparationRepository = payrollPreparationRepository;
   }
 
   @Override
@@ -79,9 +90,10 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
     duplicateAnomaly = 0;
     configurationAnomaly = 0;
     total = 0;
-    hrBatch = Beans.get(HrBatchRepository.class).find(batch.getHrBatch().getId());
-    company = Beans.get(CompanyRepository.class).find(hrBatch.getCompany().getId());
-
+    hrBatch = hrBatchRepository.find(batch.getHrBatch().getId());
+    if (hrBatch.getCompany() != null) {
+      company = companyRepository.find(hrBatch.getCompany().getId());
+    }
     checkPoint();
   }
 
@@ -146,7 +158,16 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
 
     for (Employee employee : employeeList) {
       try {
-        createPayrollPreparation(employeeRepository.find(employee.getId()));
+        employee = employeeRepository.find(employee.getId());
+        hrBatch = hrBatchRepository.find(batch.getHrBatch().getId());
+        if (hrBatch.getCompany() != null) {
+          company = companyRepository.find(hrBatch.getCompany().getId());
+        }
+        if (employee.getMainEmploymentContract() != null
+            && employee.getMainEmploymentContract().getStatus()
+                != EmploymentContractRepository.STATUS_CLOSED) {
+          createPayrollPreparation(employee);
+        }
       } catch (AxelorException e) {
         TraceBackService.trace(e, IException.LEAVE_MANAGEMENT, batch.getId());
         incrementAnomaly();
@@ -164,15 +185,14 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
 
   @Transactional
   public void createPayrollPreparation(Employee employee) throws AxelorException {
+    String filter = "self.period = ?1 AND self.employee = ?2";
+    String companyFilter = filter + " AND self.company = ?3";
 
     List<PayrollPreparation> payrollPreparationList =
         payrollPreparationRepository
             .all()
             .filter(
-                "self.period = ?1 AND self.employee = ?2 AND self.company = ?3",
-                hrBatch.getPeriod(),
-                employee,
-                company)
+                (company != null) ? companyFilter : filter, hrBatch.getPeriod(), employee, company)
             .fetch();
     log.debug("list : " + payrollPreparationList);
     if (!payrollPreparationList.isEmpty()) {
@@ -181,15 +201,17 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
           TraceBackRepository.CATEGORY_NO_UNIQUE_KEY,
           I18n.get(IExceptionMessage.PAYROLL_PREPARATION_DUPLICATE),
           employee.getName(),
-          hrBatch.getCompany().getName(),
+          (company != null) ? hrBatch.getCompany().getName() : null,
           hrBatch.getPeriod().getName());
     }
-    Company currentCompany = companyRepository.find(company.getId());
-    Period period = periodRepository.find(hrBatch.getPeriod().getId());
-
     PayrollPreparation payrollPreparation = new PayrollPreparation();
-
-    payrollPreparation.setCompany(currentCompany);
+    if (company != null) {
+      Company currentCompany = companyRepository.find(company.getId());
+      payrollPreparation.setCompany(currentCompany);
+    } else {
+      payrollPreparation.setCompany(employee.getMainEmploymentContract().getPayCompany());
+    }
+    Period period = periodRepository.find(hrBatch.getPeriod().getId());
     payrollPreparation.setEmployee(employee);
     payrollPreparation.setEmploymentContract(employee.getMainEmploymentContract());
     payrollPreparation.setPeriod(period);
