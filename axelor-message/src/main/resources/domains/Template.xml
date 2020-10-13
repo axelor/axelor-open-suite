@@ -26,6 +26,9 @@
 	
 	<one-to-many name="templateContextList" ref="com.axelor.apps.message.db.TemplateContext" mappedBy="template" title="Context"/>
 	
+    <string name="signature" title="Signature"/>
+    <boolean name="addSignature" title="Add Signature"/>
+	
 
 	<extra-code><![CDATA[
 		// MEDIA TYPE SELECT

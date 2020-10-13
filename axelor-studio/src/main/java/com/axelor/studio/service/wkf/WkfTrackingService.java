@@ -17,11 +17,12 @@
  */
 package com.axelor.studio.service.wkf;
 
+import com.axelor.common.Inflector;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
+import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
 import com.axelor.meta.MetaStore;
-import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaJsonRecord;
 import com.axelor.meta.schema.views.Selection.Option;
 import com.axelor.rpc.Context;
@@ -112,19 +113,24 @@ public class WkfTrackingService {
         return;
       }
 
-      MetaJsonField wkfField = wkfTracking.getWkf().getStatusField();
+      String wkfFieldName = Beans.get(WkfService.class).getWkfFieldInfo(wkfTracking.getWkf())[0];
+      String selection =
+          "wkf."
+              + Inflector.getInstance().dasherize(wkfTracking.getWkf().getName()).replace("_", ".");
+      selection +=
+          "." + Inflector.getInstance().dasherize(wkfFieldName).replace("_", ".") + ".select";
 
       Object status = null;
-      status = ctx.get(wkfField.getName());
+      status = ctx.get(wkfFieldName);
       log.debug("Status value: {}", status);
 
       if (status == null) {
         return;
       }
 
-      Option item = MetaStore.getSelectionItem(wkfField.getSelection(), status.toString());
+      Option item = MetaStore.getSelectionItem(selection, status.toString());
 
-      log.debug("Fetching option {} from selection {}", status, wkfField.getSelection());
+      log.debug("Fetching option {} from selection {}", status, selection);
       if (item == null) {
         return;
       }

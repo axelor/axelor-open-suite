@@ -4,6 +4,7 @@
   
   <json-model name="ProductCategory" title="Catégorie de produit" appBuilder="PRD">
   	<fields>
+  		<field name="main" type="panel" sequence="0" widgetAttrs="{&quot;colSpan&quot; : &quot;12&quot;}"/>
 		<field name="name" title="Nom" required="true" type="string" sequence="1" visibleInGrid="true"/>
 		<field name="code" title="Code" type="string" sequence="2" visibleInGrid="true"/>
   	</fields>
@@ -11,6 +12,7 @@
   
   <json-model name="Product" title="Produit" appBuilder="PRD">
   	<fields>
+  		<field name="main" type="panel" sequence="0" widgetAttrs="{&quot;colSpan&quot; : &quot;12&quot;}"/>
 		<field name="name" title="Nom" required="true" type="string" sequence="1" visibleInGrid="true"/>
 		<field name="code" title="Code" type="string" sequence="2" visibleInGrid="true"/>
 		<field name="price" title="Prix" type="decimal" sequence="3" visibleInGrid="true"/>
@@ -22,6 +24,7 @@
   
   <json-model name="ProductOrderLine" title="Ligne de commande produit" appBuilder="PRD">
   	<fields>
+  		<field name="main" type="panel" sequence="0" widgetAttrs="{&quot;colSpan&quot; : &quot;12&quot;}"/>
   		<field name="product" title="Produit" type="json-many-to-one" target-json-model="Product"  sequence="1" onChange="action-product-order-line-get-product-details,action-product-order-line-update-total" visibleInGrid="true"/>
   		<field name="price" title="Prix" type="decimal" sequence="2" onChange="action-product-order-line-update-total" visibleInGrid="true"/>
   		<field name="qty" title="Qté" type="integer" sequence="3" onChange="action-product-order-line-update-total" visibleInGrid="true"/>
@@ -31,11 +34,12 @@
   
   <json-model name="ProductOrder" title="Commande produit" appBuilder="PRD">
   	<fields>
+  		<field name="main" type="panel" sequence="0" widgetAttrs="{&quot;colSpan&quot; : &quot;12&quot;}"/>
 		<field name="reference" title="Réf" type="string" sequence="1" visibleInGrid="true"/>
 		<field name="customer" title="Client" type="many-to-one" target-model="com.axelor.apps.base.db.Partner" domain="isCustomer = true" sequence="2" visibleInGrid="true"/>
 		<field name="orderDate" title="Date de commande" type="date" sequence="3" visibleInGrid="true"/>
 		<field name="total" title="Total" type="decimal" sequence="4" visibleInGrid="true"/>
-		<field name="lines" title="Lignes" type="json-one-to-many" target-json-model="ProductOrderLine" sequence="5" onChange="action-product-order-update-total"/>
+		<field name="lines" title="Lignes" type="json-one-to-many" target-json-model="ProductOrderLine" sequence="5" onChange="action-product-order-update-total" widgetAttrs="{&quot;colSpan&quot; : &quot;12&quot;}"/>
 		<field name="status" title="Statut" type="integer" sequence="6" visibleInGrid="true"/>
   	</fields>
   </json-model>

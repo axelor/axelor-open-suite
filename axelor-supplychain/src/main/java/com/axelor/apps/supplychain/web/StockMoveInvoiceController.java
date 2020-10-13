@@ -21,13 +21,16 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveMultiInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.translation.ITranslation;
 import com.axelor.db.JPA;
 import com.axelor.exception.service.TraceBackService;
@@ -82,6 +85,8 @@ public class StockMoveInvoiceController {
                   .context("todayDate", Beans.get(AppSupplychainService.class).getTodayDate())
                   .map());
           response.setCanClose(true);
+        } else {
+          response.setError(I18n.get(IExceptionMessage.STOCK_MOVE_NO_LINES_TO_INVOICE));
         }
       }
     } catch (Exception e) {
@@ -510,10 +515,21 @@ public class StockMoveInvoiceController {
     try {
       response.setReload(true);
       StockMove stockMove = request.getContext().asType(StockMove.class);
+      stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
+      StockMoveInvoiceService stockMoveInvoiceService = Beans.get(StockMoveInvoiceService.class);
       List<Map<String, Object>> stockMoveLines =
-          Beans.get(StockMoveInvoiceService.class).getStockMoveLinesToInvoice(stockMove);
+          stockMoveInvoiceService.getStockMoveLinesToInvoice(stockMove);
+      Company company = stockMove.getCompany();
+      SupplyChainConfig supplyChainConfig =
+          Beans.get(SupplyChainConfigService.class).getSupplyChainConfig(company);
+      boolean isPartialInvoicingActivated =
+          (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+                  && supplyChainConfig.getActivateIncStockMovePartialInvoicing())
+              || (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+                  && supplyChainConfig.getActivateOutStockMovePartialInvoicing());
 
-      if (!stockMoveLines.isEmpty()) {
+      if (isPartialInvoicingActivated && !stockMoveLines.isEmpty()) {
+        // open wizard view for partial invoicing
         response.setView(
             ActionView.define(I18n.get(ITranslation.INVOICING))
                 .model(StockMove.class.getName())
@@ -525,6 +541,22 @@ public class StockMoveInvoiceController {
                 .param("popup-save", "false")
                 .context("_id", stockMove.getId())
                 .map());
+      } else if (!stockMoveLines.isEmpty()) {
+        // invoice everything if config is disabled.
+        Invoice invoice =
+            stockMoveInvoiceService.createInvoice(stockMove, StockMoveRepository.INVOICE_ALL, null);
+        if (invoice != null) {
+          response.setView(
+              ActionView.define(I18n.get(ITranslation.INVOICE))
+                  .model(Invoice.class.getName())
+                  .add("grid", "invoice-grid")
+                  .add("form", "invoice-form")
+                  .param("forceEdit", "true")
+                  .context("_showRecord", String.valueOf(invoice.getId()))
+                  .context("_operationTypeSelect", invoice.getOperationTypeSelect())
+                  .context("todayDate", Beans.get(AppSupplychainService.class).getTodayDate())
+                  .map());
+        }
       } else {
         response.setAlert(I18n.get(IExceptionMessage.STOCK_MOVE_INVOICE_ERROR));
       }

@@ -25,6 +25,7 @@ import com.axelor.apps.crm.service.config.CrmConfigService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.apps.message.service.SendMailQueueService;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -39,8 +40,9 @@ public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
   public MessageServiceCrmImpl(
       MetaAttachmentRepository metaAttachmentRepository,
       MessageRepository messageRepository,
+      SendMailQueueService sendMailQueueService,
       UserService userService) {
-    super(metaAttachmentRepository, messageRepository, userService);
+    super(metaAttachmentRepository, messageRepository, sendMailQueueService, userService);
   }
 
   @Transactional(rollbackOn = {Exception.class})

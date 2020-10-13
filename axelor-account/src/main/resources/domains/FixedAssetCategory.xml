@@ -23,6 +23,7 @@
 	<integer name="durationInMonth" title="Duration in month"/>
 	
 	<boolean name="isProrataTemporis" title="Prorata temporis"/>
+	<boolean name="isUSProrataTemporis" title="Use US prorata temoris" default="false"/>
 	
 	<many-to-one name="journal" ref="com.axelor.apps.account.db.Journal" title="Journal" required="true"/>
 	<many-to-one name="chargeAccount" ref="com.axelor.apps.account.db.Account" title="Charge account" required="true"/>

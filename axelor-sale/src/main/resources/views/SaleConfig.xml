@@ -15,7 +15,7 @@
 		</panel>
 		<panel name="customerCreditPanel" title="Customer Credit" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 			<field name="acceptedCredit"/>
-			<button name="updateCustomerAcceptedCreditBtn" title="Update customer's accepted credit" onClick="save,action-sale-config-method-update-customer-accepted-credit"/>
+			<button name="updateCustomerAcceptedCreditBtn" title="Update customer's accepted credit" onClick="save,action-sale-config-method-update-customer-accepted-credit" prompt="All customer credit will be updated."/>
 		</panel>
 		<panel name="printingSettingsPanel" title="Printing settings">
 			<field name="displaySalemanOnPrinting" widget="boolean-switch"/>
@@ -42,9 +42,9 @@
 		<field name="company" expr="eval:__user__.activeCompany" if="_company == null &amp;&amp; __user__.activeCompany != null"/>
 		<field name="company" expr="eval:__repo__(Company).all().fetchOne()" if="_company == null &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
 	</action-record>
-
+	
 	<action-method name="action-sale-config-method-update-customer-accepted-credit">
-		<call class="com.axelor.apps.supplychain.service.SupplychainSaleConfigService" method="updateCustomerCredit(__self__)"/>
+		<call class="com.axelor.apps.supplychain.web.SupplychainSaleConfigController" method="updateCustomerCredit"/>
 	</action-method>
 
 	<action-view name="action-company-view-sale-config" title="Sale config (${ name })" model="com.axelor.apps.sale.db.SaleConfig">

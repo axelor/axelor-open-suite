@@ -382,6 +382,7 @@ public class EbicsController {
       response.setValue("fullName", ebicsCertificate.getFullName());
       response.setValue("pemString", ebicsCertificate.getPemString());
       response.setValue("sha2has", ebicsCertificate.getSha2has());
+      response.setValue("serial", ebicsCertificate.getSerial());
     }
   }
 

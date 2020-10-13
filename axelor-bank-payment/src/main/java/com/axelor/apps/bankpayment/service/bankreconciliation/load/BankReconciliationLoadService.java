@@ -78,14 +78,14 @@ public class BankReconciliationLoadService {
       boolean includeOtherBankStatements, boolean includeBankStatement) {
 
     String filter;
-    if (!includeOtherBankStatements) {
+    if (!includeOtherBankStatements && includeBankStatement) {
       filter =
           "self.bankDetails = :bankDetails"
               + " and self.currency = :currency"
               + " and self.amountRemainToReconcile > 0"
               + " and self.bankStatement.statusSelect = :statusImported"
               + " and self.bankStatement = :bankStatement";
-    } else if (includeBankStatement) {
+    } else if (includeOtherBankStatements && includeBankStatement) {
       filter =
           "self.bankDetails = :bankDetails"
               + " and self.currency = :currency"

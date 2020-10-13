@@ -54,5 +54,8 @@ public interface ITranslation {
   public static final String QUALITY_CONTROL_OBSERVATION = /*$$(*/
       "QualityControl.observation"; /*)*/
 
+  public static final String QUALITY_CONTROL_GENERAL_OBSERVATION = /*$$(*/
+      "QualityControl.generalObservation"; /*)*/
+
   public static final String QUALITY_CONTROL_REFERENCE = /*$$(*/ "QualityControl.reference"; /*)*/
 }

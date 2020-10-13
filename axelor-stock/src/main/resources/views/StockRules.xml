@@ -14,6 +14,7 @@
         <field name="idealQty" aggregate="min"/>
         <field name="maxQty" aggregate="min"/>
         <field name="reOrderQty" aggregate="sum"/>
+        <field name="comments"/>
 		<field name="useCaseSelect"/>
         <field name="typeSelect"/>
         <field name="orderAlertSelect"/>
@@ -47,6 +48,9 @@
 				<field name="maxQty" showIf="useMaxQty" colSpan="6" onChange="action-stock-rules-maxqty-change" validIf="!useMaxQty &amp;&amp; $number(maxQty) == 0 || $number(maxQty) >= $number(minQty)"/>
 			</panel>
 			<field name="product.procurementMethodSelect" hidden="true"/>
+			<panel name="commentPanel" title="Comments" colSpan="12">
+				<field name="comments" showTitle="false" colSpan="12"/>
+    		</panel>
 		</panel>
 		<panel-mail name="mailPanel">
 	    	<mail-messages limit="4"/>

@@ -125,6 +125,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
               taxed,
               taxRate);
       stockMoveLine.setRequestedReservedQty(requestedReservedQty);
+      stockMoveLine.setIsQtyRequested(
+          requestedReservedQty != null && requestedReservedQty.signum() > 0);
       stockMoveLine.setSaleOrderLine(saleOrderLine);
       stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
       TrackingNumberConfiguration trackingNumberConfiguration =
@@ -164,7 +166,10 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       return stockMoveLine;
     }
 
-    if (stockMove.getOriginId() != null && stockMove.getOriginId() != 0L) {
+    if (stockMove.getOriginId() != null
+        && stockMove.getOriginId() != 0L
+        && (stockMoveLine.getSaleOrderLine() != null
+            || stockMoveLine.getPurchaseOrderLine() != null)) {
       // the stock move comes from a sale or purchase order, we take the price from the order.
       stockMoveLine = computeFromOrder(stockMoveLine, stockMove);
     } else {
@@ -184,7 +189,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         // log the exception
         TraceBackService.trace(
             new AxelorException(
-                TraceBackRepository.TYPE_TECHNICAL,
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
                 IExceptionMessage.STOCK_MOVE_MISSING_SALE_ORDER,
                 stockMove.getOriginId(),
                 stockMove.getName()));
@@ -199,7 +204,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         // log the exception
         TraceBackService.trace(
             new AxelorException(
-                TraceBackRepository.TYPE_TECHNICAL,
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
                 IExceptionMessage.STOCK_MOVE_MISSING_PURCHASE_ORDER,
                 stockMove.getOriginId(),
                 stockMove.getName()));
@@ -331,6 +336,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     if (stockMoveLineList.size() == 1) {
       return stockMoveLineList.get(0);
     }
+    StockMove stockMove = stockMoveLineList.get(0).getStockMove();
 
     SaleOrderLine saleOrderLine = stockMoveLineList.get(0).getSaleOrderLine();
     PurchaseOrderLine purchaseOrderLine = stockMoveLineList.get(0).getPurchaseOrderLine();
@@ -372,11 +378,12 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
             BigDecimal.ZERO,
             BigDecimal.ZERO,
             unit,
-            null,
+            stockMove,
             null);
 
     generatedStockMoveLine.setSaleOrderLine(saleOrderLine);
     generatedStockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
+    generatedStockMoveLine.setIsMergedStockMoveLine(true);
     return generatedStockMoveLine;
   }
 
@@ -471,5 +478,11 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       stockMoveLine.setAvailableStatus(I18n.get("Invoiced"));
       stockMoveLine.setAvailableStatusSelect(1);
     }
+  }
+
+  @Override
+  public boolean isAllocatedStockMoveLine(StockMoveLine stockMoveLine) {
+    return stockMoveLine.getReservedQty().compareTo(BigDecimal.ZERO) > 0
+        || stockMoveLine.getRequestedReservedQty().compareTo(BigDecimal.ZERO) > 0;
   }
 }

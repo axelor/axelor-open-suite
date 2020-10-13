@@ -27,6 +27,7 @@ import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.businessproject.report.IReport;
@@ -52,7 +53,8 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
       AppAccountService appAccountService,
       PartnerService partnerService,
       InvoiceLineService invoiceLineService,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      MoveToolService moveToolService) {
     super(
         validateFactory,
         ventilateFactory,
@@ -62,7 +64,8 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
         appAccountService,
         partnerService,
         invoiceLineService,
-        accountConfigService);
+        accountConfigService,
+        moveToolService);
   }
 
   public List<String> editInvoiceAnnex(Invoice invoice, String invoiceIds, boolean toAttach)

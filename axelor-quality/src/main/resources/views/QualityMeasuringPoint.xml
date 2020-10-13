@@ -5,7 +5,7 @@
 	<grid name="quality-measuring-point-grid" title="Measuring points" model="com.axelor.apps.quality.db.QualityMeasuringPoint" edit-icon="true">
 		<field name="name"/>
 		<field name="measuringNote" widget="ImageSelect" x-labels="false"/>
-		<field name="observations"/>
+		<field name="observations" widget="html"/>
 	</grid>
 
 	<grid name="quality-measuring-point-model-grid" title="Measuring points" model="com.axelor.apps.quality.db.QualityMeasuringPoint" edit-icon="true">

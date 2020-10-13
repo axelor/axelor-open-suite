@@ -44,14 +44,27 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
 
   @Override
   protected void process() {
+    String query = "self.statusSelect = :statusSelect";
+    LocalDate startDate = batch.getAccountingBatch().getStartDate();
+    LocalDate endDate = batch.getAccountingBatch().getEndDate();
+    if (!batch.getAccountingBatch().getUpdateAllRealizedFixedAssetLines()
+        && startDate != null
+        && endDate != null
+        && startDate.isBefore(endDate)) {
+      query += " AND self.depreciationDate < :endDate AND self.depreciationDate > :startDate";
+    } else {
+      query += " AND self.depreciationDate < :dateNow";
+    }
     List<FixedAssetLine> fixedAssetLineList =
         Beans.get(FixedAssetLineRepository.class)
             .all()
-            .filter(
-                "self.statusSelect = ?1 and self.depreciationDate < ?2",
-                FixedAssetLineRepository.STATUS_PLANNED,
-                LocalDate.now())
+            .filter(query)
+            .bind("statusSelect", FixedAssetLineRepository.STATUS_PLANNED)
+            .bind("startDate", startDate)
+            .bind("endDate", endDate)
+            .bind("dateNow", LocalDate.now())
             .fetch();
+
     for (FixedAssetLine fixedAssetLine : fixedAssetLineList) {
       try {
         fixedAssetLine = fixedAssetLineRepo.find(fixedAssetLine.getId());

@@ -303,7 +303,9 @@ public abstract class InvoiceGenerator {
 
   public int getInvoiceCopy() {
     if (partner.getIsCustomer()) {
-      return partner.getInvoicesCopySelect();
+      return (partner.getInvoicesCopySelect() == 0)
+          ? DEFAULT_INVOICE_COPY
+          : partner.getInvoicesCopySelect();
     }
     return DEFAULT_INVOICE_COPY;
   }

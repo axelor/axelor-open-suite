@@ -176,6 +176,10 @@ public class InvoiceController {
     if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
         && invoice.getCompany().getAccountConfig() != null
         && !invoice.getCompany().getAccountConfig().getAllowCancelVentilatedInvoice()) {
+      response.setError(
+          I18n.get(
+              IExceptionMessage
+                  .INVOICE_CAN_NOT_GO_BACK_TO_VALIDATE_STATUS_OR_CANCEL_VENTILATED_INVOICE));
       return;
     }
 

@@ -99,6 +99,7 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
     return saleOrderLine;
   }
 
+  @Override
   public SaleOrderLine computeAnalyticDistribution(SaleOrderLine saleOrderLine) {
 
     List<AnalyticMoveLine> analyticMoveLineList = saleOrderLine.getAnalyticMoveLineList();

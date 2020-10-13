@@ -30,7 +30,7 @@
     <integer name="reimbursementStatusSelect" title="Reimbursement status" default="0" selection="move.line.reimbursement.status.select"/>
     <string name="passageReason" title="Irrecoverable Shift Reason" readonly="true"/>
     <boolean name="usherPassageOk" title="Transfer(ed) to Usher"/>
-    <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax" massUpdate="true"/>
+    <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
     <many-to-one name="sourceTaxLine" ref="com.axelor.apps.account.db.TaxLine" title="Source Tax"/>
    
     <decimal name="currencyRate" title="Currency Rate" precision="20" scale="5" initParam="true"/>

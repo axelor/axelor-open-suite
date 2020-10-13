@@ -102,6 +102,8 @@ public interface ITranslation {
   public static final String STOCK_MOVE_SUPPLIER_PARTNER_SEQ = /*$$(*/
       "StockMove.supplierPartnerSeq"; /*)*/
   public static final String STOCK_MOVE_NET_MASS = /*$$(*/ "StockMove.netMass"; /*)*/
+  public static final String STOCK_MOVE_LINE_UNIT_PRICE = /*$$(*/ "StockMove.unitPrice"; /*)*/
+  public static final String STOCK_MOVE_ORDER_DATE = /*$$(*/ "StockMove.orderDate"; /*)*/
 
   // PickingStockMove
   public static final String STOCK_MOVE_PICKING_ORDER = /*$$(*/ "StockMove.pickingOrder"; /*)*/

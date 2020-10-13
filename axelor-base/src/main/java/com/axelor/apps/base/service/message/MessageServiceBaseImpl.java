@@ -27,6 +27,7 @@ import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageServiceImpl;
+import com.axelor.apps.message.service.SendMailQueueService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -59,8 +60,9 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
   public MessageServiceBaseImpl(
       MetaAttachmentRepository metaAttachmentRepository,
       MessageRepository messageRepository,
+      SendMailQueueService sendMailQueueService,
       UserService userService) {
-    super(metaAttachmentRepository, messageRepository);
+    super(metaAttachmentRepository, messageRepository, sendMailQueueService);
     this.userService = userService;
   }
 
@@ -79,7 +81,8 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
       Set<MetaFile> metaFiles,
       String addressBlock,
       int mediaTypeSelect,
-      EmailAccount emailAccount) {
+      EmailAccount emailAccount,
+      String signature) {
 
     Message message =
         super.createMessage(
@@ -95,7 +98,8 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
             metaFiles,
             addressBlock,
             mediaTypeSelect,
-            emailAccount);
+            emailAccount,
+            signature);
 
     message.setSenderUser(AuthUtils.getUser());
     message.setCompany(userService.getUserActiveCompany());

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -513,7 +513,7 @@ bankOrder.sender_reference,
 bankOrder.sender_label,
 meta_file.file_name as "generated_meta_file_name",
 Bank.bank_name as bank,
-EbicsUser.name as signatoryEbicsUser
+associatedUser.name as signatoryEbicsUser
 
 FROM bankpayment_bank_order bankOrder
 LEFT JOIN account_payment_mode paymentMode ON paymentMode.id =  bankOrder.payment_mode
@@ -522,7 +522,8 @@ LEFT JOIN base_currency currency ON currency.id = bankOrder.bank_order_currency
 LEFT JOIN base_bank_details bankDetails ON bankDetails.id = bankOrder.sender_bank_details
 LEFT JOIN base_bank Bank ON bankDetails.bank = Bank.id
 LEFT JOIN meta_file ON meta_file.id = bankOrder.generated_meta_file
-LEFT JOIN auth_user EbicsUser ON EbicsUser.id = bankOrder.signatory_ebics_user
+LEFT JOIN bankpayment_ebics_user EbicsUser ON EbicsUser.id = bankOrder.signatory_ebics_user
+LEFT JOIN auth_user associatedUser ON associatedUser.id = EbicsUser.associated_user
 WHERE bankOrder.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -1029,7 +1030,7 @@ LEFT JOIN bankpayment_bank_order bankOrder ON bankOrder.id = bankOrderLine.bank_
 LEFT JOIN base_currency currency ON currency.id = bankOrder.bank_order_currency
 LEFT JOIN base_bank Bank ON bankDetails.bank = Bank.id
 WHERE bankOrderLine.bank_order = ?
-ORDER BY NULLIF(regexp_replace(bankOrderLine.sequence, '\D', '', 'g'), '')::int]]></xml-property>
+ORDER BY NULLIF(regexp_replace(bankOrderLine.sequence, '\D', '', 'g'), '')::bigint]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>

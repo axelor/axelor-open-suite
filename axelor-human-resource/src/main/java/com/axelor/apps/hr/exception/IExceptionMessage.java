@@ -208,4 +208,7 @@ public interface IExceptionMessage {
 
   static final String EMPLOYEE_TIMESHEET_REMINDER_TEMPLATE = /*$$(*/
       "Please configure the template for email reminder" /*)*/;
+
+  static final String NO_TIMESHEET_FOUND_FOR_EMPLOYEE = /*$$(*/
+      "No time sheet found for employee %s" /*)*/;
 }

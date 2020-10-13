@@ -26,6 +26,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -49,19 +50,24 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
+public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
+    implements SaleOrderSupplychainService {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected AppSupplychain appSupplychain;
   protected SaleOrderStockService saleOrderStockService;
+  protected SaleOrderRepository saleOrderRepository;
 
   @Inject
   public SaleOrderServiceSupplychainImpl(
-      AppSupplychainService appSupplychainService, SaleOrderStockService saleOrderStockService) {
+      AppSupplychainService appSupplychainService,
+      SaleOrderStockService saleOrderStockService,
+      SaleOrderRepository saleOrderRepository) {
 
     this.appSupplychain = appSupplychainService.getAppSupplychain();
     this.saleOrderStockService = saleOrderStockService;
+    this.saleOrderRepository = saleOrderRepository;
   }
 
   public SaleOrder getClientInformations(SaleOrder saleOrder) {
@@ -200,5 +206,12 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl {
     if (appSupplychain.getCustomerStockMoveGenerationAuto()) {
       saleOrderStockService.createStocksMovesFromSaleOrder(saleOrder);
     }
+  }
+
+  @Override
+  @Transactional
+  public void updateToConfirmedStatus(SaleOrder saleOrder) {
+    saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
+    saleOrderRepository.save(saleOrder);
   }
 }

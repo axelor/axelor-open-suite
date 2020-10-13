@@ -364,7 +364,7 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     if (abcAnalysis.getStatusSelect() != ABCAnalysisRepository.STATUS_FINISHED) {
       throw new AxelorException(
           abcAnalysis,
-          TraceBackRepository.TYPE_FUNCTIONNAL,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.ABC_CLASSES_INVALID_STATE_FOR_REPORTING));
     }
 

@@ -60,6 +60,8 @@
   	
   	<boolean name="isTitleLine" title="Title Line"/>
   	
+  	<boolean name="enableFreezeFields" title="Freeze fields" default="false"/>
+  	
   </entity>
 
 </domain-models>

@@ -18,13 +18,14 @@
 package com.axelor.studio.service.wkf;
 
 import com.axelor.auth.db.Role;
+import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaPermission;
 import com.axelor.meta.db.MetaPermissionRule;
 import com.axelor.meta.db.repo.MetaPermissionRepository;
 import com.axelor.meta.loader.XMLViews;
-import com.axelor.meta.schema.actions.ActionAttrs;
-import com.axelor.meta.schema.actions.ActionAttrs.Attribute;
+import com.axelor.meta.schema.actions.ActionRecord;
+import com.axelor.meta.schema.actions.ActionRecord.RecordField;
 import com.axelor.meta.schema.actions.ActionValidate;
 import com.axelor.meta.schema.actions.ActionValidate.Alert;
 import com.axelor.meta.schema.actions.ActionValidate.Info;
@@ -74,20 +75,26 @@ class WkfTransitionService {
    * Root method to access the service. Method call different method to process transition. Create
    * wkf action that call on save of model to update status. It save all changes to ViewBuilder
    * linked with Workflow.
+   *
+   * @throws AxelorException
    */
-  protected List<String[]> process() {
+  protected List<String[]> process() throws AxelorException {
 
     log.debug("Processing transitions");
     List<String[]> actions = new ArrayList<String[]>();
 
     String action = "action-" + wkfService.wkfId;
+    String model =
+        (wkfService.workflow.getIsJson() || wkfService.workflow.getJsonField() != null)
+            ? "com.axelor.meta.db.MetaJsonRecord"
+            : wkfService.workflow.getModel();
     wkfButtonNames = new ArrayList<String>();
 
-    List<ActionAttrs.Attribute> fields = proccessTransitions();
+    List<ActionRecord.RecordField> fields = proccessTransitions();
 
     if (!fields.isEmpty()) {
-      String xml = getActionXML(action, fields);
-      metaService.updateMetaAction(action, "action-attrs", xml, null);
+      String xml = getActionXML(action, model, fields);
+      metaService.updateMetaAction(action, "action-record", xml, model);
       actions.add(new String[] {action});
     } else {
       metaService.removeMetaActions(action);
@@ -105,31 +112,42 @@ class WkfTransitionService {
    * button for transition if transition executed based on button.
    *
    * @return List of RecordField
+   * @throws AxelorException
    */
-  private List<ActionAttrs.Attribute> proccessTransitions() {
+  private List<ActionRecord.RecordField> proccessTransitions() throws AxelorException {
 
-    List<ActionAttrs.Attribute> fields = new ArrayList<ActionAttrs.Attribute>();
+    List<ActionRecord.RecordField> fields = new ArrayList<ActionRecord.RecordField>();
 
     Integer buttonSeq = wkfService.wkfSequence - 46;
 
     for (WkfTransition transition : wkfService.workflow.getTransitions()) {
 
-      MetaJsonField status = wkfService.workflow.getStatusField();
+      String wkfFieldInfo[] = wkfService.getWkfFieldInfo(wkfService.workflow);
+      String wkfFieldName = wkfFieldInfo[0];
+      String wkfFieldType = wkfFieldInfo[1];
+
       String condition =
-          status.getName() + " == " + getTyped(transition.getSource().getSequence(), status);
+          wkfFieldName + " == " + getTyped(transition.getSource().getSequence(), wkfFieldType);
 
       log.debug(
           "Processing transition : {}, isButton: {}",
           transition.getName(),
           transition.getIsButton());
 
-      String filters = getFilters(transition.getConditions());
+      String filters =
+          getFilters(
+              transition.getConditions(), transition.getIsButton(), !transition.getIsButton());
       if (filters != null) {
         condition += " && (" + filters + ")";
       }
 
-      if (wkfService.applyCondition != null) {
-        condition += " && " + wkfService.applyCondition;
+      String applyCondition =
+          getFilters(
+              wkfService.workflow.getConditions(),
+              transition.getIsButton(),
+              !transition.getIsButton());
+      if (applyCondition != null) {
+        condition += " && " + applyCondition;
       }
 
       if (transition.getIsButton()) {
@@ -140,35 +158,35 @@ class WkfTransitionService {
 
       log.debug("Conditions : {}", transition.getConditions());
 
-      ActionAttrs.Attribute attrs = new ActionAttrs.Attribute();
-      attrs.setName("value");
-      attrs.setFieldName(status.getName());
-      attrs.setCondition(condition);
-      attrs.setExpression("eval:" + getTyped(transition.getTarget().getSequence(), status));
+      ActionRecord.RecordField recordField = new ActionRecord.RecordField();
+      recordField.setName(wkfFieldName);
+      recordField.setExpression(
+          "eval:" + getTyped(transition.getTarget().getSequence(), wkfFieldType));
+      recordField.setCondition(condition);
 
-      fields.add(attrs);
+      fields.add(recordField);
     }
 
     return fields;
   }
 
-  private String getFilters(List<Filter> filterList) {
+  private String getFilters(List<Filter> filterList, boolean isButton, boolean isField)
+      throws AxelorException {
 
     String jsonField =
         wkfService.workflow.getIsJson() ? null : "$" + wkfService.workflow.getJsonField();
-    if (jsonField != null && jsonField.equals("$attrs")) {
+    if (jsonField != null && jsonField.equals("$null")) {
       jsonField = null;
     }
-    String filters = filterGroovyService.getGroovyFilters(filterList, jsonField);
+    String filters = filterGroovyService.getGroovyFilters(filterList, jsonField, isButton, isField);
     log.debug("Filters : {}", filters);
 
     return filters;
   }
 
-  private String getTyped(Integer value, MetaJsonField status) {
+  private String getTyped(Integer value, String wkfFieldType) {
 
-    String typeName = status.getType();
-    if (typeName.equals("integer")) {
+    if (wkfFieldType.equals("integer") || wkfFieldType.equals("Integer")) {
       return value.toString();
     }
 
@@ -183,8 +201,10 @@ class WkfTransitionService {
    * @param transition WkfTransition to process.
    * @param condition Condition to show button
    * @param sequence Sequence of button to add in toolbar.
+   * @throws AxelorException
    */
-  private void addButton(WkfTransition transition, String condition, Integer sequence) {
+  private void addButton(WkfTransition transition, String condition, Integer sequence)
+      throws AxelorException {
 
     //    String source = transition.getSource().getName();
     String title = transition.getButtonTitle();
@@ -198,7 +218,11 @@ class WkfTransitionService {
 
     MetaJsonField button = wkfService.getJsonField(name, "button");
     button.setTitle(title);
-    button.setShowIf(condition);
+    button.setShowIf(
+        (!wkfService.workflow.getIsJson() && wkfService.workflow.getJsonField() == null
+                ? "$record."
+                : "")
+            + condition);
     button.setSequence(sequence);
     button.setVisibleInGrid(false);
     button.setIsWkf(true);
@@ -228,11 +252,17 @@ class WkfTransitionService {
    * @param viewButton ViewButton to update for onClick.
    * @param transition WkfTransition from where action created.
    * @param buttonName Name of button used in creation of action name.
+   * @throws AxelorException
    */
-  private String addButtonActions(WkfTransition transition, String buttonName) {
+  private String addButtonActions(WkfTransition transition, String buttonName)
+      throws AxelorException {
 
     String actionName = buttonName.toLowerCase().replace(" ", "-");
     actionName = "action-" + wkfService.wkfId + "-" + actionName;
+    String model =
+        (wkfService.workflow.getIsJson() || wkfService.workflow.getJsonField() != null)
+            ? "com.axelor.meta.db.MetaJsonRecord"
+            : wkfService.workflow.getModel();
     List<String> actions = new ArrayList<String>();
     String xml = "";
     Integer alterType = transition.getAlertTypeSelect();
@@ -248,16 +278,19 @@ class WkfTransitionService {
       actions.add(alertAction);
     }
 
-    List<Attribute> attrs = new ArrayList<Attribute>();
-    Attribute attr = new Attribute();
-    MetaJsonField wkfField = wkfService.workflow.getStatusField();
-    attr.setName("value");
-    attr.setFieldName(wkfField.getName());
-    attr.setExpression("eval:" + getTyped(transition.getTarget().getSequence(), wkfField));
-    attrs.add(attr);
+    actions.add("save");
+    List<RecordField> recordFields = new ArrayList<RecordField>();
+    RecordField recordField = new RecordField();
+    String wkfFieldInfo[] = wkfService.getWkfFieldInfo(wkfService.workflow);
+    String wkfFieldName = wkfFieldInfo[0];
+    String wkfFieldType = wkfFieldInfo[1];
+    recordField.setName(wkfFieldName);
+    recordField.setExpression(
+        "eval:" + getTyped(transition.getTarget().getSequence(), wkfFieldType));
+    recordFields.add(recordField);
     actions.add(actionName);
-    xml = getActionXML(actionName, attrs);
-    metaService.updateMetaAction(actionName, "action-record", xml, null);
+    xml = getActionXML(actionName, model, recordFields);
+    metaService.updateMetaAction(actionName, "action-record", xml, model);
     //    actions.add("save");
     //    actions.add(wkfService.trackingAction);
 
@@ -284,12 +317,13 @@ class WkfTransitionService {
    * @param fields List of ActionRecord.
    * @return Xml of ActionRecord created.
    */
-  private String getActionXML(String name, List<Attribute> attrs) {
+  private String getActionXML(String name, String model, List<RecordField> recordFields) {
 
-    log.debug("Creating action attrs: {}", name);
-    ActionAttrs action = new ActionAttrs();
+    log.debug("Creating action record: {}", name);
+    ActionRecord action = new ActionRecord();
     action.setName(name);
-    action.setAttributes(attrs);
+    action.setModel(model);
+    action.setFields(recordFields);
 
     return XMLViews.toXml(action, true);
   }
@@ -301,14 +335,15 @@ class WkfTransitionService {
    * @param type Type of validate action ('notify','info' or 'alert').
    * @param message Message to display for action.
    * @return Xml generated from ActionValidate.
+   * @throws AxelorException
    */
   private String getActionValidateXML(
-      String name, String type, String message, List<Filter> conditions) {
+      String name, String type, String message, List<Filter> conditions) throws AxelorException {
 
     ActionValidate actionValidate = new ActionValidate();
     actionValidate.setName(name);
     List<Validator> validators = new ArrayList<ActionValidate.Validator>();
-    String condition = getFilters(conditions);
+    String condition = getFilters(conditions, false, true);
     switch (type) {
       case "notify":
         Notify notify = new Notify();

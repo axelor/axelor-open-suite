@@ -57,7 +57,7 @@
     	<field name="startDateTime" />
 		<field name="subject" />
 		<field name="user" />
-		<field name="description" />
+		<field name="description" widget="html" />
     </grid>
     
 	<form name="event-form" title="Events" model="com.axelor.apps.crm.db.Event"

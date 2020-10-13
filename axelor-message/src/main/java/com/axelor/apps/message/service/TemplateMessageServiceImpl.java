@@ -82,9 +82,14 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
   public Message generateMessage(Model model, Template template)
       throws ClassNotFoundException, InstantiationException, IllegalAccessException,
           AxelorException, IOException {
+
     Class<?> klass = EntityHelper.getEntityClass(model);
-    return generateMessage(
-        model.getId(), klass.getCanonicalName(), klass.getSimpleName(), template);
+    String modelName =
+        template.getIsJson() ? ((MetaJsonRecord) model).getJsonModel() : klass.getCanonicalName();
+    String tag =
+        template.getIsJson() ? ((MetaJsonRecord) model).getJsonModel() : klass.getSimpleName();
+
+    return generateMessage(model.getId(), modelName, tag, template);
   }
 
   @Override
@@ -126,6 +131,7 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
     String bccRecipients = "";
     String addressBlock = "";
     int mediaTypeSelect;
+    String signature = "";
 
     if (!Strings.isNullOrEmpty(template.getContent())) {
       // Set template
@@ -178,6 +184,12 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
     mediaTypeSelect = this.getMediaTypeSelect(template);
     log.debug("Media ::: {}", mediaTypeSelect);
 
+    if (template.getSignature() != null) {
+      maker.setTemplate(template.getSignature());
+      signature = maker.make();
+      log.debug("Signature ::: {}", signature);
+    }
+
     Message message =
         messageService.createMessage(
             model,
@@ -192,7 +204,8 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
             null,
             addressBlock,
             mediaTypeSelect,
-            getMailAccount());
+            getMailAccount(),
+            signature);
 
     message.setTemplate(Beans.get(TemplateRepository.class).find(template.getId()));
 

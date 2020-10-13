@@ -32,11 +32,11 @@ import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
+import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.util.List;
 
 public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceImpl {
 
@@ -49,7 +49,8 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
       SaleOrderRepository saleOrderRepo,
       PurchaseOrderRepository purchaseOrderRepo,
       StockMoveLineRepository stockMoveLineRepository,
-      InvoiceLineRepository invoiceLineRepository) {
+      InvoiceLineRepository invoiceLineRepository,
+      SupplyChainConfigService supplyChainConfigService) {
     super(
         saleOrderInvoiceService,
         purchaseOrderInvoiceService,
@@ -58,30 +59,30 @@ public class ProjectStockMoveInvoiceServiceImpl extends StockMoveInvoiceServiceI
         saleOrderRepo,
         purchaseOrderRepo,
         stockMoveLineRepository,
-        invoiceLineRepository);
+        invoiceLineRepository,
+        supplyChainConfigService);
   }
 
   @Override
-  public List<InvoiceLine> createInvoiceLine(
-      Invoice invoice, StockMoveLine stockMoveLine, BigDecimal qty) throws AxelorException {
+  public InvoiceLine createInvoiceLine(Invoice invoice, StockMoveLine stockMoveLine, BigDecimal qty)
+      throws AxelorException {
 
-    List<InvoiceLine> invoiceLines = super.createInvoiceLine(invoice, stockMoveLine, qty);
-    if (!Beans.get(AppBusinessProjectService.class).isApp("business-project")) {
-      return invoiceLines;
+    InvoiceLine invoiceLine = super.createInvoiceLine(invoice, stockMoveLine, qty);
+    if (invoiceLine == null
+        || !Beans.get(AppBusinessProjectService.class).isApp("business-project")) {
+      return invoiceLine;
     }
 
-    for (InvoiceLine invoiceLine : invoiceLines) {
-      SaleOrderLine saleOrderLine = invoiceLine.getSaleOrderLine();
-      if (saleOrderLine != null) {
-        invoiceLine.setProject(saleOrderLine.getProject());
-      }
-
-      PurchaseOrderLine purchaseOrderLine = invoiceLine.getPurchaseOrderLine();
-      if (purchaseOrderLine != null) {
-        invoiceLine.setProject(purchaseOrderLine.getProject());
-      }
+    SaleOrderLine saleOrderLine = invoiceLine.getSaleOrderLine();
+    if (saleOrderLine != null) {
+      invoiceLine.setProject(saleOrderLine.getProject());
     }
 
-    return invoiceLines;
+    PurchaseOrderLine purchaseOrderLine = invoiceLine.getPurchaseOrderLine();
+    if (purchaseOrderLine != null) {
+      invoiceLine.setProject(purchaseOrderLine.getProject());
+    }
+
+    return invoiceLine;
   }
 }

@@ -237,8 +237,8 @@ public class CampaignServiceImpl implements CampaignService {
     }
   }
 
-  @Transactional
-  public void generateTargets(Campaign campaign) {
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public void generateTargets(Campaign campaign) throws AxelorException {
 
     TargetListService targetListService = Beans.get(TargetListService.class);
 

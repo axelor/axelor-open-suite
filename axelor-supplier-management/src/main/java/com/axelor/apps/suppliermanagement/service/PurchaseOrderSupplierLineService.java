@@ -51,7 +51,7 @@ public class PurchaseOrderSupplierLineService {
             .getBlocking(supplierPartner, company, BlockingRepository.PURCHASE_BLOCKING)
         != null) {
       throw new AxelorException(
-          TraceBackRepository.TYPE_FUNCTIONNAL,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.SUPPLIER_BLOCKED),
           supplierPartner);
     }

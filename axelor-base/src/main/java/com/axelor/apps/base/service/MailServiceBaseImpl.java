@@ -171,7 +171,6 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     final Set<String> recipients = new LinkedHashSet<>();
     final MailFollowerRepository followers = Beans.get(MailFollowerRepository.class);
     String entityName = entity.getClass().getName();
-    PartnerRepository partnerRepo = Beans.get(PartnerRepository.class);
 
     if (message.getRecipients() != null) {
       for (MailAddress address : message.getRecipients()) {
@@ -191,7 +190,7 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
                 .anyMatch(x -> x.getFullName().equals(entityName)))) {
           continue;
         } else {
-          Partner partner = partnerRepo.findByUser(user);
+          Partner partner = user.getPartner();
           if (partner != null && partner.getEmailAddress() != null) {
             recipients.add(partner.getEmailAddress().getAddress());
           } else if (user.getEmail() != null) {

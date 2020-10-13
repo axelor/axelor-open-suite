@@ -95,7 +95,7 @@ public class AccessTemplateServiceImpl implements AccessTemplateService {
       return createExcel();
     } catch (Exception e) {
       TraceBackService.trace(e);
-      throw new AxelorException(TraceBackRepository.TYPE_TECHNICAL, e.getMessage());
+      throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }
   }
 

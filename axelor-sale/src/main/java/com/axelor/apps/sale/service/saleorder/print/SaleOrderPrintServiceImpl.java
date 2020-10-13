@@ -40,7 +40,7 @@ import java.util.List;
 
 public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
 
-  @Inject SaleOrderService saleOrderService;
+  @Inject protected SaleOrderService saleOrderService;
 
   @Override
   public String printSaleOrder(SaleOrder saleOrder, boolean proforma, String format)

@@ -7,6 +7,8 @@
         <field name="name"/>
         <field name="subject"/>
         <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
+        <field name="metaJsonModel" form-view="json-model-form" grid-view="json-model-grid"/>
+        <field name="isJson"/>
 		<field name="mediaTypeSelect"/>
     </grid>
     
@@ -42,6 +44,11 @@
 				<field name="content" showTitle="false" widget="html" colSpan="12"/>
 			</panel>
 			<panel-dashlet name="templateMessagePanel" action="template.messages.by.template" title="Messages"/>
+			<panel name="signature-panel" title="Signature"
+				showIf="mediaTypeSelect != 3" colSpan="12">
+				<field name="addSignature" widget="inline-checkbox" colSpan="3"/>
+				<field name="signature" colSpan="9" showIf="addSignature" help="If you leave this field empty or fill it with an incorrect formula, the default email account's signature will be used.\nExamples of a correct formulas:\n$__user__.emailSignature$\n$first(__user__.emailAccountList).signature$"/>
+			</panel>
 		</panel-tabs>
 		<panel-related name="templateContextPanel" field="templateContextList" colSpan="12"/>
 	</form>

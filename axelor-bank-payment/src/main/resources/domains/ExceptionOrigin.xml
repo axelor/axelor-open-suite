@@ -5,15 +5,23 @@
   
   <module name="exception" package="com.axelor.exception.db"/>
   
-  <entity name="ExceptionOrigin" lang="java">
-  
-    <extra-code>
-  	  <![CDATA[
-  	  public static final String DIRECT_DEBIT = "directDebit";
-  	  public static final String INTERBANK_PAYMENT_ORDER = "interbankPaymentOrder";
-  	  public static final String BANK_STATEMENT = "bankStatement";    			
-  	  ]]>
-    </extra-code>
-  </entity>
+	<entity name="ExceptionOrigin" lang="java">
+	
+		<extra-code>
+			<![CDATA[
+			public static final String DIRECT_DEBIT = "directDebit";
+			/**
+			 * @deprecated
+			 * Do not forget to delete the corresponding option in Select.xml :
+			 * <selection name='trace.back.origin.select' id="trace.back.origin.select.bank.payment">
+			 * when deleting this constant
+			 */
+			@Deprecated
+			public static final String INTERBANK_PAYMENT_ORDER = "interbankPaymentOrder";
+			public static final String BANK_STATEMENT = "bankStatement";
+			]]>
+		</extra-code>
+		
+	</entity>
   
   </domain-models>

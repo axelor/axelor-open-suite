@@ -1,7 +1,7 @@
 "importId";"name";"replyToRecipients";"toRecipients";"ccRecipients";"subject";"content";"metaModel.name";"metaModel.packageName";"isSystem";"mediaTypeSelect"
 4;"Demande de congé";"$LeaveRequest.user.partner.emailAddress.address$";"$LeaveRequest.user.employee.managerUser.partner.emailAddress.address$";"$LeaveRequest.user.partner.emailAddress.address$";"Demande d'absence de ($LeaveRequest.user.name$)";"<p>Bonjour $LeaveRequest.user.employee.managerUser.name$,</p>
 <p><br></p>
-<p>$LeaveRequest.user.name$ vous fait part d'une demande d'absence du $LeaveRequest.fromDateT; format=""E. d MMM yyyy""$ au $LeaveRequest.toDateT; format=""E. d MMM yyyy""$ en $LeaveRequest.leaveReason.leaveReason$ ($LeaveRequest.duration$ jour(s)).</p>
+<p>$LeaveRequest.user.name$ vous fait part d'une demande d'absence du $LeaveRequest.fromDateT; format=""E. d MMM yyyy""$ au $LeaveRequest.toDateT; format=""E. d MMM yyyy""$ en $LeaveRequest.leaveLine.leaveReason.leaveReason$ ($LeaveRequest.duration$ $LeaveRequest.leaveLine.leaveReason.unitSelect$).</p>
 <a href=""http://localhost:8080/open-suite-webapp/#/ds/leave.validate/edit/$LeaveRequest.id$"">Veuillez vous connecter pour la consulter.</a>
 
 <div>

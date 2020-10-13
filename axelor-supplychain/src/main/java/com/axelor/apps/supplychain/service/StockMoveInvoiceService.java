@@ -57,8 +57,8 @@ public interface StockMoveInvoiceService {
       Invoice invoice, List<StockMoveLine> stockMoveLineList, Map<Long, BigDecimal> qtyToInvoiceMap)
       throws AxelorException;
 
-  public List<InvoiceLine> createInvoiceLine(
-      Invoice invoice, StockMoveLine stockMoveLine, BigDecimal qty) throws AxelorException;
+  public InvoiceLine createInvoiceLine(Invoice invoice, StockMoveLine stockMoveLine, BigDecimal qty)
+      throws AxelorException;
 
   public List<Map<String, Object>> getStockMoveLinesToInvoice(StockMove stockMove)
       throws AxelorException;
@@ -96,4 +96,11 @@ public interface StockMoveInvoiceService {
    * the opposite.
    */
   boolean isInvoiceRefundingStockMove(StockMove stockMove, Invoice invoice) throws AxelorException;
+
+  /**
+   * Throws AxelorException if we have split stock move lines with partial invoicing config
+   * activated. We do not support tracking numbers with partial invoicing for sale orders.
+   */
+  void checkSplitSalePartiallyInvoicedStockMoveLines(
+      StockMove stockMove, List<StockMoveLine> stockMoveLineList) throws AxelorException;
 }

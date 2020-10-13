@@ -37,6 +37,8 @@
 	
 	<input file="account_analyticAxis.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAxis" search="self.importId = :importId" />
 	
+	<input file="account_analyticJournal.csv" separator=";" type="com.axelor.apps.account.db.AnalyticJournal" search="self.importId = :importId" />
+	
 	<input file="account_analyticAccount.csv" separator=";" type="com.axelor.apps.account.db.AnalyticAccount" search="self.importId = :importId" />
 	
 	<input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company" search="self.importId = :importId" update="true" call="com.axelor.csv.script.UpdateAll:updatePeriod">

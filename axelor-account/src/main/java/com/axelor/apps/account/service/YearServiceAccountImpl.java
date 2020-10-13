@@ -108,7 +108,7 @@ public class YearServiceAccountImpl extends YearServiceImpl {
       q =
           JPA.em()
               .createQuery(
-                  "select DISTINCT(ml.partner) FROM MoveLine as self WHERE self.move.ignoreInAccountingOk = false AND self.move.year = ?1 "
+                  "select DISTINCT(self.partner) FROM MoveLine as self WHERE self.move.ignoreInAccountingOk = false AND self.move.period.year = ?1 "
                       + "AND self.move.statusSelect = ?2 AND self.move.adjustingMove = true AND self.date >= ?3 AND self.date <= ?4");
 
       q.setParameter(1, year);
@@ -120,7 +120,7 @@ public class YearServiceAccountImpl extends YearServiceImpl {
       q =
           JPA.em()
               .createQuery(
-                  "select DISTINCT(ml.partner) FROM MoveLine as self WHERE self.move.ignoreInAccountingOk = false AND self.move.year = ?1 "
+                  "select DISTINCT(self.partner) FROM MoveLine as self WHERE self.move.ignoreInAccountingOk = false AND self.move.period.year = ?1 "
                       + "AND self.move.statusSelect = ?2 AND self.date >= ?3 AND self.date <= ?4");
 
       q.setParameter(1, year);
@@ -201,7 +201,7 @@ public class YearServiceAccountImpl extends YearServiceImpl {
             .createQuery(
                 "select SUM(self.debit - self.credit) FROM MoveLine as self "
                     + "WHERE self.partner = ?1 AND self.move.ignoreInAccountingOk = false AND self.date >= ?2 AND self.date <= ?3 "
-                    + "AND self.move.year = ?4 AND self.move.statusSelect = ?5 AND self.account.useForPartnerBalance is true",
+                    + "AND self.move.period.year = ?4 AND self.move.statusSelect = ?5 AND self.account.useForPartnerBalance is true",
                 BigDecimal.class);
     q.setParameter(1, partner);
     q.setParameter(2, fromDate);

@@ -17,7 +17,7 @@
      		<field name="title" required="true"/>
      		<field name="targetField"/>
 	        <field name="orderBy" colSpan="2"/>
-	         <field name="orderByType" hideIf="!orderBy" colSpan="4"/>
+	         <field name="orderByType" requiredIf="orderBy" hideIf="!orderBy" colSpan="4"/>
 	        <field name="$isValidate" type="boolean" title="Validate" hidden="true" required="true" readonly="true" colSpan="2"/>
 	        <field name="currentDomain" hidden="true"/>
 	        <field name="$viewerMessage" showTitle="false" readonly="true" hidden="true">

@@ -36,14 +36,15 @@
     </tree>
 
 	<form name="account-form" title="Accounting.Account" model="com.axelor.apps.account.db.Account" width="large"
-		onNew="action-account-record-new" onLoad="action-account-method-compute-balance">
+		onNew="action-account-record-new" onLoad="action-account-method-compute-balance" onSave="action-account-method-check-if-code-already-exist-for-company">
 		<panel name="mainPanel">
 			<panel name="accountDetailsPanel" colSpan="8">
 				<field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"/>
 				<field name="name" colSpan="9" css="bold"/>
 			</panel>
 			<panel name="balancePanel" colSpan="4" showIf="id">
-				<button name="$balanceBtn" title="Total balance" icon="fa-money" widget="info-button" onClick="action-account-view-show-move-lines" x-currency="company.currency.symbol"/>
+				<button name="$balanceBtn" title="Total balance" icon="fa-money" widget="info-button"
+                onClick="action-account-view-show-move-lines" x-currency="company.currency.symbol"/>
 			</panel>
 			<panel name="settingsPanel" title="Settings" colSpan="12">
 				<field name="accountType" form-view="account-type-form" grid-view="account-type-grid"/>
@@ -60,8 +61,8 @@
 				<field name="isTaxRequiredOnMoveLine" showIf="isTaxAuthorizedOnMoveLine" widget="boolean-switch" colSpan="4"/>
 			</panel>
 			<panel name="showMoveLinesPanel" colSpan="12" showIf="id">
-				<button name="showMoveLineBtn" title="Show move lines" colSpan="3" onClick="action-account-view-show-move-lines"/>      
-      		</panel>
+				<button name="showMoveLineBtn" title="Show move lines" colSpan="3" onClick="action-account-view-show-move-lines"/>
+      </panel>
 		</panel>
 		<panel-mail name="mailPanel">
 			<mail-messages limit="4"/>
@@ -154,6 +155,10 @@
     
     <action-method name="action-account-method-compute-balance">
     	<call class="com.axelor.apps.account.web.AccountController" method="computeBalance"/>
+    </action-method>
+    
+    <action-method name="action-account-method-check-if-code-already-exist-for-company">
+    	<call class="com.axelor.apps.account.web.AccountController" method="checkIfCodeAccountAlreadyExistForCompany"/>
     </action-method>
     
 </object-views>

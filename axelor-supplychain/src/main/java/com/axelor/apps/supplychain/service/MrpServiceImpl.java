@@ -606,6 +606,9 @@ public class MrpServiceImpl implements MrpService {
     if (maturityDate == null) {
       maturityDate = purchaseOrder.getDeliveryDate();
     }
+    if (maturityDate == null) {
+      maturityDate = purchaseOrderLine.getDesiredDelivDate();
+    }
 
     maturityDate = this.computeMaturityDate(maturityDate, purchaseOrderMrpLineType);
 
@@ -703,6 +706,9 @@ public class MrpServiceImpl implements MrpService {
 
     if (maturityDate == null) {
       maturityDate = saleOrder.getDeliveryDate();
+    }
+    if (maturityDate == null) {
+      maturityDate = saleOrderLine.getDesiredDelivDate();
     }
     maturityDate = this.computeMaturityDate(maturityDate, saleOrderMrpLineType);
 

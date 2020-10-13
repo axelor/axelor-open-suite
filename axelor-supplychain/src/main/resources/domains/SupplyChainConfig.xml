@@ -26,6 +26,9 @@
     <integer name="defaultEstimatedDateForPurchaseOrder" title="Default estimated date in stock move from purchase order" selection="supplychain.estimated.date.select" default="1" />
     
     <decimal name="numberOfDaysForPurchaseOrder" title="Number of days" min="0" />
+		
+		<boolean name="activateIncStockMovePartialInvoicing" title="Activate partial invoicing for incoming moves" default="true"/>
+		<boolean name="activateOutStockMovePartialInvoicing" title="Activate partial invoicing for outgoing moves" default="false"/>
 
     <extra-code><![CDATA[
 

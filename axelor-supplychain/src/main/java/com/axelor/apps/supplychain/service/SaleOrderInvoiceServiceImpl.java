@@ -97,6 +97,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
   protected SaleOrderWorkflowServiceImpl saleOrderWorkflowServiceImpl;
 
+  protected TimetableRepository timetableRepo;
+
   @Inject
   public SaleOrderInvoiceServiceImpl(
       AppSupplychainService appSupplychainService,
@@ -105,7 +107,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       InvoiceService invoiceService,
       SaleOrderLineService saleOrderLineService,
       StockMoveRepository stockMoveRepository,
-      SaleOrderWorkflowServiceImpl saleOrderWorkflowServiceImpl) {
+      SaleOrderWorkflowServiceImpl saleOrderWorkflowServiceImpl,
+      TimetableRepository timetableRepo) {
 
     this.appSupplychainService = appSupplychainService;
     this.saleOrderRepo = saleOrderRepo;
@@ -114,6 +117,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     this.stockMoveRepository = stockMoveRepository;
     this.saleOrderLineService = saleOrderLineService;
     this.saleOrderWorkflowServiceImpl = saleOrderWorkflowServiceImpl;
+    this.timetableRepo = timetableRepo;
   }
 
   @Override
@@ -142,31 +146,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         break;
 
       case SaleOrderRepository.INVOICE_TIMETABLES:
-        BigDecimal percentSum = BigDecimal.ZERO;
-        TimetableRepository timetableRepo = Beans.get(TimetableRepository.class);
-        List<Timetable> timetableList = new ArrayList<>();
-        if (timetableIdList == null || timetableIdList.isEmpty()) {
-          throw new AxelorException(
-              saleOrder,
-              TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(IExceptionMessage.SO_INVOICE_NO_TIMETABLES_SELECTED));
-        }
-        for (Long timetableId : timetableIdList) {
-          Timetable timetable = timetableRepo.find(timetableId);
-          timetableList.add(timetable);
-          percentSum = percentSum.add(timetable.getPercentage());
-        }
-        invoice =
-            generateInvoiceFromLines(
-                saleOrder, this.generateQtyToInvoiceMap(saleOrder, percentSum), true);
-
-        if (!timetableList.isEmpty()) {
-          for (Timetable timetable : timetableList) {
-            timetable.setInvoice(invoice);
-            timetableRepo.save(timetable);
-          }
-        }
-
+        invoice = generateInvoiceFromTimetable(saleOrder, timetableIdList);
         break;
 
       default:
@@ -195,7 +175,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     return invoice;
   }
 
-  private Map<Long, BigDecimal> generateQtyToInvoiceMap(
+  protected Map<Long, BigDecimal> generateQtyToInvoiceMap(
       SaleOrder saleOrder, BigDecimal percentage) {
     Map<Long, BigDecimal> map = new HashMap<>();
 
@@ -728,7 +708,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     if (checkInvoicedAmount && amountInvoiced.compareTo(saleOrder.getExTaxTotal()) > 0) {
       throw new AxelorException(
           saleOrder,
-          TraceBackRepository.TYPE_FUNCTIONNAL,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.SO_INVOICE_TOO_MUCH_INVOICED),
           saleOrder.getSaleOrderSeq());
     }
@@ -960,28 +940,36 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   }
 
   @Override
-  public Map<String, Integer> getInvoicingWizardOperationDomain(SaleOrder saleOrder) {
+  public List<Integer> getInvoicingWizardOperationDomain(SaleOrder saleOrder) {
     boolean manageAdvanceInvoice =
         Beans.get(AppAccountService.class).getAppAccount().getManageAdvancePaymentInvoice();
+    boolean allowTimetableInvoicing =
+        Beans.get(AppSupplychainService.class).getAppSupplychain().getAllowTimetableInvoicing();
     BigDecimal amountInvoiced = saleOrder.getAmountInvoiced();
     BigDecimal exTaxTotal = saleOrder.getExTaxTotal();
+    Invoice invoice =
+        Query.of(Invoice.class)
+            .filter(" self.saleOrder.id = :saleOrderId AND self.statusSelect != :invoiceStatus")
+            .bind("saleOrderId", saleOrder.getId())
+            .bind("invoiceStatus", InvoiceRepository.STATUS_CANCELED)
+            .fetchOne();
+    List<Integer> operationSelectList = new ArrayList<>();
+    operationSelectList.add(0);
+    if (exTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
+      operationSelectList.add(Integer.valueOf(SaleOrderRepository.INVOICE_LINES));
+    }
+    if (manageAdvanceInvoice && exTaxTotal.compareTo(BigDecimal.ZERO) != 0) {
+      operationSelectList.add(Integer.valueOf(SaleOrderRepository.INVOICE_ADVANCE_PAYMENT));
+    }
+    if (allowTimetableInvoicing) {
+      operationSelectList.add(Integer.valueOf(SaleOrderRepository.INVOICE_TIMETABLES));
+    }
+    if (invoice == null && amountInvoiced.compareTo(BigDecimal.ZERO) == 0
+        || exTaxTotal.compareTo(BigDecimal.ZERO) == 0) {
+      operationSelectList.add(Integer.valueOf(SaleOrderRepository.INVOICE_ALL));
+    }
 
-    Map<String, Integer> contextValues = new HashMap<>();
-    contextValues.put(
-        "invoiceAll",
-        amountInvoiced.compareTo(BigDecimal.ZERO) == 0 || exTaxTotal.compareTo(BigDecimal.ZERO) == 0
-            ? SaleOrderRepository.INVOICE_ALL
-            : 0);
-
-    contextValues.put(
-        "invoiceLines",
-        exTaxTotal.compareTo(BigDecimal.ZERO) == 0 ? 0 : SaleOrderRepository.INVOICE_LINES);
-    contextValues.put(
-        "invoiceAdvPayment",
-        manageAdvanceInvoice && exTaxTotal.compareTo(BigDecimal.ZERO) != 0
-            ? SaleOrderRepository.INVOICE_ADVANCE_PAYMENT
-            : 0);
-    return contextValues;
+    return operationSelectList;
   }
 
   @Override
@@ -1040,5 +1028,32 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       }
     }
     return sumInvoices;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected Invoice generateInvoiceFromTimetable(SaleOrder saleOrder, List<Long> timetableIdList)
+      throws AxelorException {
+    if (ObjectUtils.isEmpty(timetableIdList)) {
+      throw new AxelorException(
+          saleOrder,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(IExceptionMessage.SO_INVOICE_NO_TIMETABLES_SELECTED));
+    }
+    BigDecimal percentSum = BigDecimal.ZERO;
+    List<Timetable> timetableList = new ArrayList<>();
+    for (Long timetableId : timetableIdList) {
+      Timetable timetable = timetableRepo.find(timetableId);
+      timetableList.add(timetable);
+      percentSum = percentSum.add(timetable.getPercentage());
+    }
+    Invoice invoice =
+        generateInvoiceFromLines(
+            saleOrder, this.generateQtyToInvoiceMap(saleOrder, percentSum), true);
+
+    for (Timetable timetable : timetableList) {
+      timetable.setInvoice(invoice);
+      timetableRepo.save(timetable);
+    }
+    return invoice;
   }
 }

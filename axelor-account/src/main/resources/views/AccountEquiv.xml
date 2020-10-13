@@ -16,7 +16,7 @@
     </form>
     
     <action-attrs name="action-account-equiv-attrs-domain-to-account">
-    	<attribute name="domain" for="toAccount" expr="eval: &quot; self.company = ${fromAccount.company.id} &quot;"/>
+    	<attribute name="domain" for="toAccount" expr="eval: &quot; self.company = ${fromAccount?.company?.id} &quot;"/>
     </action-attrs>
     
     <action-attrs name="action-account-equiv-attrs-reset-to-account">

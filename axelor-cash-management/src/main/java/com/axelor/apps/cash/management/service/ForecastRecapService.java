@@ -154,7 +154,8 @@ public class ForecastRecapService {
                 .getAmountCurrencyConvertedAtDate(
                     opportunity.getCurrency(),
                     opportunity.getCompany().getCurrency(),
-                    new BigDecimal(opportunity.getBestCase())
+                    opportunity
+                        .getBestCase()
                         .multiply(opportunity.getProbability())
                         .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP),
                     appBaseService.getTodayDate())
@@ -168,7 +169,8 @@ public class ForecastRecapService {
                 .getAmountCurrencyConvertedAtDate(
                     opportunity.getCurrency(),
                     opportunity.getCompany().getCurrency(),
-                    new BigDecimal(opportunity.getWorstCase())
+                    opportunity
+                        .getWorstCase()
                         .multiply(opportunity.getProbability())
                         .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP),
                     appBaseService.getTodayDate())
@@ -230,7 +232,8 @@ public class ForecastRecapService {
                 .getAmountCurrencyConvertedAtDate(
                     opportunity.getCurrency(),
                     opportunity.getCompany().getCurrency(),
-                    new BigDecimal(opportunity.getBestCase())
+                    opportunity
+                        .getBestCase()
                         .multiply(opportunity.getProbability())
                         .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP),
                     appBaseService.getTodayDate())
@@ -241,7 +244,8 @@ public class ForecastRecapService {
                 .getAmountCurrencyConvertedAtDate(
                     opportunity.getCurrency(),
                     opportunity.getCompany().getCurrency(),
-                    new BigDecimal(opportunity.getWorstCase())
+                    opportunity
+                        .getWorstCase()
                         .multiply(opportunity.getProbability())
                         .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP),
                     appBaseService.getTodayDate())

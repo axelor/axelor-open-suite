@@ -674,11 +674,7 @@ public class ICalendarService {
       lastSynchro =
           calendar.getLastSynchronizationDateT().toInstant(OffsetDateTime.now().getOffset());
     } else {
-      lastSynchro =
-          Beans.get(AppBaseService.class)
-              .getTodayDateTime()
-              .toLocalDateTime()
-              .toInstant(OffsetDateTime.now().getOffset());
+      lastSynchro = LocalDateTime.MIN.toInstant(OffsetDateTime.now().getOffset());
     }
 
     if (startDate == null || endDate == null) {

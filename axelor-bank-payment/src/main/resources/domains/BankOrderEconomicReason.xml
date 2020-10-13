@@ -10,7 +10,7 @@
 	<string name="code" title="Code" min="3" max="3" required="true"/>
 	<string name="label" title="Label"/>
 	<string name="description" title="Description" large="true" multiline="true"/>
-	<string name="name" title="Name"/>
+	<string name="name" title="Name" namecolumn="true"/>
   	
   </entity>
 

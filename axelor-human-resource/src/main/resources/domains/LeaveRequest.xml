@@ -14,7 +14,7 @@
       <integer name="startOnSelect" title="Start On" selection="hr.start.on.select" required="true" default="1"/>
       <datetime name="toDateT" title="To (included)" />
       <integer name="endOnSelect" title="End On" selection="hr.start.on.select" required="true" default="2"/>
-      <decimal name="duration" title="Duration" scale="1" precision="5"/>
+      <decimal name="duration" title="Duration" scale="1" precision="20"/>
       <string name="comments" title="Comments" large="true"/>
       <many-to-one name="company" ref="com.axelor.apps.base.db.Company"/>
 	  <integer name="injectConsumeSelect" title="Inject/Consume" selection="hrs.leave.reason.inject.consume.select" default="1"/>

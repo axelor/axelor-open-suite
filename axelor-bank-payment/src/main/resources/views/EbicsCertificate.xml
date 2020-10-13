@@ -30,6 +30,7 @@
 				<field name="fullName" hidden="true" />
 				<field name="pemString" hidden="true" />
 				<field name="sha2has" hidden="true" />
+				<field name="serial" hidden="true"/>
 			</panel>
 		</panel>
 	</form>

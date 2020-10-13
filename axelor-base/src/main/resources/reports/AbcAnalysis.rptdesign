@@ -2901,6 +2901,7 @@ WHERE message_key = ? AND language = ?]]></xml-property>
                     <property name="dataType">integer</property>
                 </structure>
             </list-property>
+            <property name="pageBreakInterval">0</property>
             <column id="167">
                 <property name="width">95px</property>
             </column>

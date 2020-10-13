@@ -18,10 +18,14 @@
 package com.axelor.studio.web;
 
 import com.axelor.common.Inflector;
+import com.axelor.db.Model;
+import com.axelor.db.mapper.Mapper;
+import com.axelor.db.mapper.Property;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaStore;
+import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.views.Selection.Option;
@@ -37,6 +41,7 @@ import com.axelor.studio.exception.IExceptionMessage;
 import com.axelor.studio.service.wkf.WkfDesignerService;
 import com.axelor.studio.service.wkf.WkfService;
 import com.axelor.studio.translation.ITranslation;
+import com.google.common.base.Strings;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +68,9 @@ public class WkfController {
       Beans.get(WkfService.class).process(workflow);
       response.setReload(true);
     } catch (Exception e) {
+      if (e.getMessage().equals(IExceptionMessage.CANNOT_ALTER_NODES)) {
+        this.setDefaultNodes(request, response);
+      }
       TraceBackService.trace(response, e);
     }
   }
@@ -129,10 +137,12 @@ public class WkfController {
 
     Wkf wkf = request.getContext().asType(Wkf.class);
 
-    MetaJsonField wkfField = wkf.getStatusField();
+    Object wkfField =
+        wkf.getIsJson() || wkf.getJsonField() != null
+            ? wkf.getStatusField()
+            : wkf.getStatusMetaField();
 
     if (wkfField != null) {
-
       Optional<Pair<String, String>> nodesOpt = getDefaultNodes(wkfField);
       nodesOpt.ifPresent(
           nodes -> {
@@ -161,7 +171,7 @@ public class WkfController {
     }
   }
 
-  private Optional<Pair<String, String>> getDefaultNodes(MetaJsonField statusField) {
+  private Optional<Pair<String, String>> getDefaultNodes(Object statusField) {
 
     //		String[] nodes = new String[] {
     //				"<startEvent id=\"StartEvent_1\" /><task id=\"Task_1\" /><endEvent id=\"EndEvent_1\"/>",
@@ -239,16 +249,33 @@ public class WkfController {
     return Optional.empty();
   }
 
-  private List<Option> getSelect(MetaJsonField wkfField) {
+  @SuppressWarnings("unchecked")
+  public List<Option> getSelect(Object wkfField) {
 
     if (wkfField == null) {
       return Collections.emptyList();
     }
 
-    if (wkfField.getSelection() != null) {
-      return MetaStore.getSelectionList(wkfField.getSelection());
-    }
+    if (wkfField instanceof MetaJsonField) {
+      MetaJsonField wkfJsonField = (MetaJsonField) wkfField;
+      if (!Strings.isNullOrEmpty(wkfJsonField.getSelection())) {
+        return MetaStore.getSelectionList(wkfJsonField.getSelection());
+      }
+    } else if (wkfField instanceof MetaField) {
 
+      MetaField wkfMetaField = (MetaField) wkfField;
+      try {
+        Class<? extends Model> klass =
+            (Class<? extends Model>) Class.forName(wkfMetaField.getMetaModel().getFullName());
+        Mapper mapper = Mapper.of(klass);
+        Property property = mapper.getProperty(wkfMetaField.getName());
+        if (property != null && !Strings.isNullOrEmpty(property.getSelection())) {
+          return MetaStore.getSelectionList(property.getSelection());
+        }
+      } catch (ClassNotFoundException e) {
+        e.printStackTrace();
+      }
+    }
     return Collections.emptyList();
   }
 }

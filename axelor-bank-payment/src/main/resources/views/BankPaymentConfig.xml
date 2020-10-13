@@ -14,7 +14,7 @@
             </panel>
             <panel colSpan="12" name="detailsPanel">
                 <field name="generateMoveOnBankOrderValidation"/>
-                <field name="icsNumber" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment"/>
+                <field name="icsNumber" if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"/>
                 <field name="internalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
                 <field name="externalBankToBankAccount" domain="self.company = :company" grid-view="account-grid" form-view="account-form"/>
             </panel>

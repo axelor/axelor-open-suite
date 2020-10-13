@@ -17,8 +17,15 @@
  */
 package com.axelor.studio.service.filter;
 
+import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
+import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.db.repo.MetaJsonFieldRepository;
+import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.db.Filter;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
@@ -31,6 +38,12 @@ public class FilterGroovyService {
 
   @Inject private FilterCommonService filterCommonService;
 
+  @Inject private MetaModelRepository metaModelRepo;
+
+  @Inject private MetaJsonFieldRepository metaJsonFieldRepo;
+
+  @Inject private FilterSqlService filterSqlService;
+
   /**
    * Method to convert chart filter list to groovy expression string. Each filter of list will be
    * joined by logical operator(logicalOp) selected.
@@ -38,8 +51,11 @@ public class FilterGroovyService {
    * @param conditions List for chart filters.
    * @param parentField Field that represent parent.
    * @return Groovy expression string.
+   * @throws AxelorException
    */
-  public String getGroovyFilters(List<Filter> conditions, String parentField) {
+  public String getGroovyFilters(
+      List<Filter> conditions, String parentField, boolean isButton, boolean isField)
+      throws AxelorException {
 
     String condition = null;
 
@@ -48,7 +64,7 @@ public class FilterGroovyService {
     }
 
     for (Filter filter : conditions) {
-      String activeFilter = createGroovyFilter(filter, parentField);
+      String activeFilter = createGroovyFilter(filter, parentField, isButton, isField);
       log.debug("Active filter: {}", filter);
 
       if (condition == null) {
@@ -73,30 +89,124 @@ public class FilterGroovyService {
    * @param chartFilter Chart filter to use .
    * @param parentField Parent field.
    * @return Groovy expression string.
+   * @throws AxelorException
    */
-  private String createGroovyFilter(Filter filter, String parentField) {
+  private String createGroovyFilter(
+      Filter filter, String parentField, boolean isButton, boolean isField) throws AxelorException {
 
-    MetaJsonField metaJsonField = filter.getMetaJsonField();
-    String field =
-        parentField != null ? parentField + "." + metaJsonField.getName() : metaJsonField.getName();
-    String targetField =
-        parentField != null ? parentField + "." + filter.getTargetField() : filter.getTargetField();
+    String fieldType = null;
+    boolean isJson =
+        (!filter.getIsJson() && filter.getMetaField() != null)
+            ? false
+            : (filter.getIsJson() && filter.getMetaJsonField() != null) ? true : false;
+
+    if (!isJson) {
+      fieldType = this.getMetaFieldType(filter.getMetaField(), filter.getTargetField(), true);
+    } else {
+      fieldType = this.getJsonFieldType(filter.getMetaJsonField(), filter.getTargetField());
+    }
+
+    String targetField = filter.getTargetField();
+    targetField = !isButton ? targetField.replace(".", "?.") : targetField;
+
     String value = processValue(filter);
     String operator = filter.getOperator();
 
-    if (targetField != null) {
-      targetField = targetField.replace(".", "?.");
-      if (metaJsonField.getType().equals("many-to-one")
-          || metaJsonField.getType().equals("json-many-to-one")) {
-        field = targetField;
-      } else if (metaJsonField.getType().equals("many-to-many") && !operator.contains("empty")) {
-        targetField = targetField.replace(field + "?.", "it?.");
-        String condition = getConditionExpr(operator, targetField, value);
-        return field + ".findAll{it->" + condition + "}.size() > 0";
+    if (isButton || isField) {
+      if (isJson && !Strings.isNullOrEmpty(parentField)) {
+        boolean isModelFieldSame =
+            ("$" + filter.getMetaJsonField().getModelField()).equals(parentField);
+        if (!isModelFieldSame && isButton) {
+          targetField =
+              "$record." + "$" + filter.getMetaJsonField().getModelField() + "." + targetField;
+        } else if ((!isModelFieldSame || isModelFieldSame) && isField) {
+          targetField = "$" + filter.getMetaJsonField().getModelField() + "." + targetField;
+        }
+      } else if (!isJson && isButton) {
+        targetField = "$record." + targetField;
       }
     }
 
-    return getConditionExpr(operator, field, value);
+    return getConditionExpr(operator, targetField, fieldType, value, isButton);
+  }
+
+  private String getJsonFieldType(MetaJsonField jsonField, String targetField)
+      throws AxelorException {
+
+    if (targetField == null || !targetField.contains(".")) {
+      return jsonField.getType();
+    }
+
+    targetField = targetField.substring(targetField.indexOf(".") + 1);
+    String targetName =
+        targetField.contains(".")
+            ? targetField.substring(0, targetField.indexOf("."))
+            : targetField;
+
+    if (jsonField.getTargetJsonModel() != null) {
+      MetaJsonField subJson =
+          metaJsonFieldRepo
+              .all()
+              .filter(
+                  "self.name = ?1 and self.jsonModel = ?2",
+                  targetName,
+                  jsonField.getTargetJsonModel())
+              .fetchOne();
+      if (subJson == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            "No sub field found model: %s field %s ",
+            jsonField.getTargetJsonModel().getName(),
+            targetName);
+      }
+      return getJsonFieldType(subJson, targetField);
+
+    } else {
+      MetaField subMeta = filterSqlService.findMetaField(targetName, jsonField.getTargetModel());
+      if (subMeta == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            "No sub field found model: %s field %s ",
+            jsonField.getTargetModel(),
+            targetName);
+      }
+      return getMetaFieldType(subMeta, targetField, true);
+    }
+  }
+
+  private String getMetaFieldType(MetaField field, String targetField, boolean isJson)
+      throws AxelorException {
+
+    if (targetField == null || !targetField.contains(".")) {
+      return field.getTypeName();
+    }
+
+    targetField = targetField.substring(targetField.indexOf(".") + 1);
+    String targetName =
+        targetField.contains(".")
+            ? targetField.substring(0, targetField.indexOf("."))
+            : targetField;
+
+    MetaModel model = metaModelRepo.findByName(field.getTypeName());
+    if (model == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD, "No model found: %s ", field.getName());
+    }
+
+    MetaField subMeta = filterSqlService.findMetaField(targetName, model.getFullName());
+    if (subMeta != null) {
+      return getMetaFieldType(subMeta, targetField, isJson);
+    } else if (isJson) {
+      MetaJsonField subJson = filterSqlService.findJsonField(targetName, model.getName());
+      if (subJson != null) {
+        return getJsonFieldType(subJson, targetField);
+      }
+    }
+    throw new AxelorException(
+        TraceBackRepository.CATEGORY_MISSING_FIELD,
+        "No sub field found field: %s model: %s ",
+        targetName,
+        model.getFullName());
   }
 
   private String processValue(Filter filter) {
@@ -111,15 +221,37 @@ public class FilterGroovyService {
     return filterCommonService.getTagValue(value, false);
   }
 
-  private String getConditionExpr(String operator, String field, String value) {
+  private String getConditionExpr(
+      String operator, String field, String fieldType, String value, boolean isButton) {
 
     switch (operator) {
-      case "=":
-        return field + " == " + value;
       case "isNull":
         return field + " == null";
       case "notNull":
         return field + " != null";
+    }
+
+    if (isButton) {
+      switch (fieldType) {
+        case "date":
+        case "datetime":
+        case "LocalDate":
+        case "LocalDateTime":
+          value = "$moment(" + value + ")";
+          field = "$moment(" + field + ")";
+
+          switch (operator) {
+            case "=":
+              return field + ".isSame(" + value + ", 'days')";
+            case "!=":
+              return "!" + field + ".isSame(" + value + ", 'days')";
+          }
+      }
+    }
+
+    switch (operator) {
+      case "=":
+        return field + " == " + value;
       case "empty":
         return field + ".empty";
       case "notEmpty":

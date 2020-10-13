@@ -47,6 +47,9 @@ public interface IExceptionMessage {
   /** Bill of Material Service */
   static final String BOM_1 = /*$$(*/ "Personalized" /*)*/;
 
+  static final String BOM_MISSING_UNIT_ON_PRODUCT = /*$$(*/
+      "Please fill unit for product %s." /*)*/;
+
   /** Production Order Wizard and controller */
   static final String PRODUCTION_ORDER_1 = /*$$(*/ "Production's order created" /*)*/;
 
@@ -111,6 +114,15 @@ public interface IExceptionMessage {
   String CONFIGURATOR_BOM_IMPORT_TOO_MANY_CALLS = /*$$(*/
       "Too many recursive calls to import the bill of material configurator." /*)*/;
 
+  String CONFIGURATOR_BOM_IMPORT_GENERATED_PRODUCT_NULL = /*$$(*/
+      "Error while generating bill of material: the product of the bill of material is supposed to be generated from the configurator but the configurator did not generate a product." /*)*/;
+
+  String CONFIGURATOR_BOM_IMPORT_FORMULA_PRODUCT_NULL = /*$$(*/
+      "Error while generating bill of material: the product of the bill of material is supposed to be computed from a script but the script did not return a product." /*)*/;
+
+  String CONFIGURATOR_BOM_IMPORT_FILLED_PRODUCT_NULL = /*$$(*/
+      "Error while generating bill of material: the product of the bill of material is supposed to be filled in the configurator BOM but it was empty." /*)*/;
+
   /** Stock move line production controller */
   String STOCK_MOVE_LINE_UNKNOWN_PARENT_CONTEXT = /*$$(*/ "Unknown parent context class." /*)*/;
 
@@ -147,4 +159,8 @@ public interface IExceptionMessage {
 
   static final String UNIT_COST_CALCULATION_NO_PRODUCT = /*$$(*/
       "Please select an element (a product, a product category or a product family) to run calculation" /*)*/;
+
+  // CostSheetLine service
+  static final String MISSING_PRODUCT_PURCHASE_CURRENCY = /*$$(*/
+      "Purchase currency is missing for product %s, please configure it." /*)*/;
 }

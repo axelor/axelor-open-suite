@@ -7,6 +7,7 @@
 			<toolbar>
 				<button name="showBankStatementLinesBtn" title="See bank statement lines" onClick="account-bank-statement-view-bank-statement-lines" />
 			</toolbar>
+			<field name="id" hidden="false" width="120"/>
 		  	<field name="ebicsPartner.ebicsBank" width="250" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
 		  	<field name="ebicsPartner" width="150" if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
 		  	<field name="bankStatementFileFormat" />
