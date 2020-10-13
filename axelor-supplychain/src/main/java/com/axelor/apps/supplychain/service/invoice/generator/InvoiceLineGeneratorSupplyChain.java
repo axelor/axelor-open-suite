@@ -39,6 +39,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -195,7 +196,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
     if (saleOrderLine != null) {
 
-      if (saleOrderLine.getAnalyticDistributionTemplate() != null) {
+      if (saleOrderLine.getAnalyticDistributionTemplate() != null
+          || !ObjectUtils.isEmpty(saleOrderLine.getAnalyticMoveLineList())) {
         invoiceLine.setAnalyticDistributionTemplate(
             saleOrderLine.getAnalyticDistributionTemplate());
         this.copyAnalyticMoveLines(saleOrderLine.getAnalyticMoveLineList(), invoiceLine);
@@ -208,7 +210,8 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
     } else if (purchaseOrderLine != null) {
 
-      if (purchaseOrderLine.getAnalyticDistributionTemplate() != null) {
+      if (purchaseOrderLine.getAnalyticDistributionTemplate() != null
+          || !ObjectUtils.isEmpty(purchaseOrderLine.getAnalyticMoveLineList())) {
         invoiceLine.setAnalyticDistributionTemplate(
             purchaseOrderLine.getAnalyticDistributionTemplate());
         this.copyAnalyticMoveLines(purchaseOrderLine.getAnalyticMoveLineList(), invoiceLine);
