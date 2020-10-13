@@ -1,8 +1,6 @@
 title: Fix Employees and expenses issues
 type: fix
 description: |
-  On kilometric log, the total distance travelled is now updated only if the expense line is added
-  YearRepository.getYear() method now take a year type in parameters to filter on type
-  DateTool.isBetween() is now used to search for an existing kilometric log into the employee
-  The kilometric log now have an unique constraint on employee and year
-  Error message has been created for the 3 year's types
+  - On kilometric log, the total distance travelled is now updated only if the expense line is added.
+  - The kilometric log now has an unique constraint on employee and year.
+  - Error message when missing year has been improved to display the year's type.
