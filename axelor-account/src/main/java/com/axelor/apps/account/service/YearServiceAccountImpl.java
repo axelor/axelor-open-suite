@@ -156,7 +156,7 @@ public class YearServiceAccountImpl extends YearServiceImpl {
       }
       JPA.clear();
     }
-
+    year = yearRepository.find(year.getId());
     closeYear(year);
   }
 
