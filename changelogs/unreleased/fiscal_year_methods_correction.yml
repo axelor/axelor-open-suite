@@ -1,3 +1,3 @@
 ---
-title: "YEAR : corrected sql error and 1664 entries error when closing a fiscal year."
+title: "YEAR : corrected sql error and hibernate error when closing a fiscal year."
 type: fix
