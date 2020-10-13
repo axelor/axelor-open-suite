@@ -109,7 +109,7 @@ public class YearServiceAccountImpl extends YearServiceImpl {
           JPA.em()
               .createQuery(
                   "select DISTINCT(self.partner) FROM MoveLine as self WHERE self.move.ignoreInAccountingOk = false AND self.move.period.year = ?1 "
-                      + "AND self.move.statusSelect = ?2 AND self.move.adjustingMove = true AND self.date >= ?3 AND self.date <= ?4");
+                      + "AND self.move.statusSelect = ?2 AND self.move.adjustingMove = true AND self.date >= ?3 AND self.date <= ?4 AND self.move.company = ?5");
 
       q.setParameter(1, year);
       q.setParameter(2, MoveRepository.STATUS_VALIDATED);
@@ -121,14 +121,14 @@ public class YearServiceAccountImpl extends YearServiceImpl {
           JPA.em()
               .createQuery(
                   "select DISTINCT(self.partner) FROM MoveLine as self WHERE self.move.ignoreInAccountingOk = false AND self.move.period.year = ?1 "
-                      + "AND self.move.statusSelect = ?2 AND self.date >= ?3 AND self.date <= ?4");
+                      + "AND self.move.statusSelect = ?2 AND self.date >= ?3 AND self.date <= ?4 AND self.move.company = ?5");
 
       q.setParameter(1, year);
       q.setParameter(2, MoveRepository.STATUS_VALIDATED);
-      q.setParameter(1, year.getFromDate());
-      q.setParameter(2, year.getToDate());
+      q.setParameter(3, year.getFromDate());
+      q.setParameter(4, year.getToDate());
     }
-    q.setParameter(3, year.getCompany());
+    q.setParameter(5, year.getCompany());
 
     @SuppressWarnings("unchecked")
     List<Partner> partnerList = q.getResultList();
@@ -156,7 +156,7 @@ public class YearServiceAccountImpl extends YearServiceImpl {
       }
       JPA.clear();
     }
-
+    year = yearRepository.find(year.getId());
     closeYear(year);
   }
 
