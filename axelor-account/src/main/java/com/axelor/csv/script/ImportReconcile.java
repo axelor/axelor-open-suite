@@ -1,6 +1,7 @@
 package com.axelor.csv.script;
 
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.ReconcileServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
@@ -19,7 +20,7 @@ public class ImportReconcile {
       throws AxelorException {
     assert bean instanceof Reconcile;
     Reconcile reconcile = (Reconcile) bean;
-    if (reconcile.getStatusSelect() == 2) {
+    if (reconcile.getStatusSelect() == ReconcileRepository.STATUS_CONFIRMED) {
       reconcileService.updateInvoicePayments(reconcile);
     }
     return reconcile;
