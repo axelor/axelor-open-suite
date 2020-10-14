@@ -81,9 +81,7 @@ public class KilometricService {
   }
 
   public KilometricLog getKilometricLog(Employee employee, LocalDate refDate) {
-    return employee
-        .getKilometricLogList()
-        .stream()
+    return employee.getKilometricLogList().stream()
         .filter(
             log ->
                 DateTool.isBetween(log.getYear().getFromDate(), log.getYear().getToDate(), refDate))
