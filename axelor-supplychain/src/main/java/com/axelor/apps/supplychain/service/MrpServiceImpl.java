@@ -1020,7 +1020,7 @@ public class MrpServiceImpl implements MrpService {
     return false;
   }
 
-  protected void assignProductAndLevel(Set<Product> productList) {
+  protected void assignProductAndLevel(Set<Product> productList) throws AxelorException {
 
     productMap = Maps.newHashMap();
 
@@ -1030,7 +1030,7 @@ public class MrpServiceImpl implements MrpService {
     }
   }
 
-  protected void assignProductAndLevel(Product product) {
+  protected void assignProductAndLevel(Product product) throws AxelorException {
 
     log.debug("Add of the product : {}", product.getFullName());
     this.productMap.put(product.getId(), 0);
