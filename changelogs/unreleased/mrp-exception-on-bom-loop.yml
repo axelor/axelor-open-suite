@@ -1,0 +1,3 @@
+---
+title: "MRP: Stop the MRP computation if a loop in bill of materials component is happening."
+type: fix
