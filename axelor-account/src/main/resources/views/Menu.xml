@@ -799,5 +799,14 @@
 		<domain>self.applicationType = :_xApplicationType</domain>
 		<context name="_xApplicationType" expr="eval: com.axelor.apps.account.db.Invoice"/>
 	</action-view>
+	
+	<!-- FEC Import -->
+	
+	<menuitem name="fec-import" title="FEC import" parent="account-conf" action="fec.import" />
+	
+	<action-view name="fec.import" title="FEC import" model="com.axelor.apps.account.db.FECImport">
+		<view type="grid" name="fec-import-grid"/>
+		<view type="form" name="fec-import-form"/>
+	</action-view>
 		
 </object-views>
