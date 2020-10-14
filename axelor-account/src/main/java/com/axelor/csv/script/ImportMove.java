@@ -156,12 +156,13 @@ public class ImportMove {
     assert bean instanceof Move;
     Move move = (Move) bean;
     try {
-      if (move.getStatusSelect() == 2 || move.getStatusSelect() == 3) {
+      if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
+          || move.getStatusSelect() == MoveRepository.STATUS_VALIDATED) {
         moveValidateService.validate(move);
       }
     } catch (Exception e) {
       e.printStackTrace();
-      move.setStatusSelect(1);
+      move.setStatusSelect(MoveRepository.STATUS_NEW);
     }
     moveRepository.save(move);
     return move;
