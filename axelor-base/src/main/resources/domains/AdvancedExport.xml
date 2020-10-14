@@ -12,6 +12,9 @@
   	 <integer name="maxExportLimit" title="Maximum export limit" default="1000" help="Maximum number of records to export by using this advance export."/>
   	 <integer name="queryFetchSize" title="Query fetch size" default="100" 
   	 	help="Number of records to fetch from database on one query run. It will fetch upto 'Maximum export limit'."/>
+      
+      <string name="filterCondition" large="true" title="Filter condition"/>
+      <one-to-many name="advancedExportRecordList" ref="com.axelor.apps.base.db.AdvancedExportRecord" title="Filter records" mappedBy="advancedExport"/>
   </entity>
   
 </domain-models>

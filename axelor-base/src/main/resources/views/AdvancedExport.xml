@@ -18,6 +18,12 @@
 			<field name="queryFetchSize" colSpan="4" onChange="action-advanced-export-validate-query-fetch-size" required="true"/>
     		<label name="technicalHelperLabel" title="Warning, modifying those configuration can have technical repercussions." colSpan="12" css="label-bold label-danger"/>
     	</panel>
+        <panel name="advancedExportGroupPanel" showIf="metaModel">
+            <field name="filterCondition" colSpan="12" x-code-syntax="JPQL"/>
+            <panel-related field="advancedExportRecordList" name="advancedExportRecordListPanel" canNew="false" editable="true" 
+               readonly="true" grid-view="advanced-export-record-grid" colSpan="9"/>
+            <button onClick="save,action-advanced-export-view-filter-records-wizard" name="addFilterRecordBtn" colSpan="3" title="Add filter record"/>
+        </panel>    
      	<panel-related name="advancedExportLineListPanel" field="advancedExportLineList" title="Fields" hideIf="metaModel == null" grid-view="advanced-export-line-grid" form-view="advanced-export-line-form" canMove="true" orderBy="sequence"/>
      	<panel name="actionsPanel">
      		<button name="exportPDFBtn" title="Export PDF" icon="fa-reply" colSpan="3" onClick="save,action-export-pdf-method,save"/>
@@ -26,6 +32,14 @@
      	</panel>
   	</form>
   	
+	<form model="com.axelor.apps.base.db.Wizard" title="Filter Record" name="advanced-export-filter-record-wizard-form">
+		<panel colSpan="12">
+			<button onClick="action-advanced-export-wizard-method-get-selected-id" name="getIdBtn" title="Select"/>
+		</panel>
+		<panel-dashlet action="action-advanced-export-method-show-dashlet" colSpan="12"/>
+		
+	</form>
+   
   	<action-record name="action-advanced-export-record-on-new" model="com.axelor.apps.base.db.AdvancedExport">
 		<field name="metaModel" expr="eval: _metaModel" if="_metaModel"/>
 	</action-record>
@@ -72,4 +86,22 @@
 		<error message="Query fetch size must be less than export limit." if="queryFetchSize &gt; maxExportLimit" action="action-advanced-export-record-set-last-fetch-size"/>
 	</action-validate>
 	
+	<action-view name="action-advanced-export-view-filter-records-wizard" title="Records" model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="advanced-export-filter-record-wizard-form"/>
+		<view-param name="show-toolbar" value="false"/>
+		<view-param name="popup" value="true"/>
+		<view-param name="show-confirm" value="false"/>
+		<view-param name="popup-save" value="false"/>
+		<view-param name="popup" value="reload"/>
+		<view-param name="forceTitle" value="true"/>
+	</action-view>
+   
+	<action-method name="action-advanced-export-method-show-dashlet">
+		<call class="com.axelor.apps.base.web.AdvancedExportController" method="getModelGrid"/>
+	</action-method>
+	
+ 	<action-method name="action-advanced-export-wizard-method-get-selected-id">
+ 		<call class="com.axelor.apps.base.web.AdvancedExportController" method="showIds"/>
+ 	</action-method>
+ 	
 </object-views>

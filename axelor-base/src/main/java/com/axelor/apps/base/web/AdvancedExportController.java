@@ -40,6 +40,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.rpc.filter.Filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.CaseFormat;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
@@ -301,6 +302,32 @@ public class AdvancedExportController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void getModelGrid(ActionRequest request, ActionResponse response) {
+
+    Integer advanceExportId = (Integer) request.getContext().get("_id");
+
+    if (advanceExportId != null) {
+      AdvancedExport advancedExport =
+          Beans.get(AdvancedExportRepository.class).find(advanceExportId.longValue());
+
+      String gridView =
+          CaseFormat.UPPER_CAMEL.to(
+              CaseFormat.LOWER_HYPHEN, advancedExport.getMetaModel().getName());
+      gridView += "-grid";
+
+      response.setView(
+          ActionView.define(I18n.get(advancedExport.getMetaModel().getName()))
+              .model(advancedExport.getMetaModel().getFullName())
+              .add("grid", gridView)
+              .map());
+    }
+  }
+
+  public void showIds(ActionRequest request, ActionResponse response) {
+
+    System.out.println(request.getContext().get("_selected"));
   }
 
   private void downloadExportFile(ActionResponse response, MetaFile exportFile) {

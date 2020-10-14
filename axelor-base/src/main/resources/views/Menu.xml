@@ -853,4 +853,14 @@
      <view type="grid" name="print-template-grid"/>
      <view type="form" name="print-template-form"/>
   </action-view>
+  
+  <menuitem title="Group Export/Import" name="admin-root-group-export-import" parent="admin-root"/>
+
+  <menuitem title="Group Export" name="admin-root-group-export-import-advance-export" parent="admin-root-group-export-import" action="action-group-export-view-all"/>
+  <action-view name="action-group-export-view-all" title="Group exports" model="com.axelor.apps.base.db.GroupExport">
+      <view type="grid" name="group-export-grid"/>
+      <view type="form" name="group-export-form"/>
+  </action-view>
+  
+  <menuitem title="Group import" name="admin-root-group-export-import-advance-import" parent="admin-root-group-export-import"/>
 </object-views>
