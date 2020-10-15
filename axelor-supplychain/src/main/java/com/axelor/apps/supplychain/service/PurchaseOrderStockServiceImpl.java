@@ -39,6 +39,7 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
@@ -79,6 +80,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
   protected ShippingCoefService shippingCoefService;
   protected StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
   protected StockMoveService stockMoveService;
+  protected PartnerStockSettingsService partnerStockSettingsService;
 
   @Inject
   public PurchaseOrderStockServiceImpl(
@@ -88,7 +90,8 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       AppBaseService appBaseService,
       ShippingCoefService shippingCoefService,
       StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
-      StockMoveService stockMoveService) {
+      StockMoveService stockMoveService,
+      PartnerStockSettingsService partnerStockSettingsService) {
 
     this.unitConversionService = unitConversionService;
     this.stockMoveLineRepository = stockMoveLineRepository;
@@ -97,6 +100,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     this.shippingCoefService = shippingCoefService;
     this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
     this.stockMoveService = stockMoveService;
+    this.partnerStockSettingsService = partnerStockSettingsService;
   }
 
   /**
@@ -260,7 +264,14 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     Company company = purchaseOrder.getCompany();
 
     StockLocation startLocation =
-        Beans.get(StockLocationRepository.class).findByPartner(purchaseOrder.getSupplierPartner());
+        partnerStockSettingsService
+            .getDefaultExternalStockLocation(purchaseOrder.getSupplierPartner(), company)
+            .orElse(null);
+    if (startLocation == null) {
+      startLocation =
+          Beans.get(StockLocationRepository.class)
+              .findByPartner(purchaseOrder.getSupplierPartner());
+    }
 
     if (startLocation == null) {
       StockConfigService stockConfigService = Beans.get(StockConfigService.class);
