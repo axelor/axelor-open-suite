@@ -83,7 +83,7 @@ public class PartnerStockSettingsServiceImpl implements PartnerStockSettingsServ
   }
 
   @Override
-  public Optional<StockLocation> getDefaultExternalStockLocation(Partner partner, Company company) {
+  public StockLocation getDefaultExternalStockLocation(Partner partner, Company company) {
 
     if (partner != null && company != null) {
       PartnerStockSettings partnerStockSettings =
@@ -93,9 +93,9 @@ public class PartnerStockSettingsServiceImpl implements PartnerStockSettingsServ
               .fetchOne();
 
       if (partnerStockSettings != null) {
-        return Optional.ofNullable(partnerStockSettings.getDefaultExternalStockLocation());
+        return partnerStockSettings.getDefaultExternalStockLocation();
       }
     }
-    return Optional.empty();
+    return null;
   }
 }
