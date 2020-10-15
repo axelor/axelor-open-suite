@@ -1,0 +1,8 @@
+---
+title: "EbicsUser : Manage fields visibilty"
+type: change
+description: |
+  In EbicsUser form view 
+  	display Serial number (CORP) only if User type = Signatory and Ebics Partner Mode = Ebics TS,
+  	display Password only if User type = Signatory and Ebics Partner Mode = Ebics T,
+  	AND Password will be required if User type = Signatory and Ebics Partner Mode = Ebics T.
