@@ -12,11 +12,11 @@
 	<many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine"/>
 
 	<many-to-one name="analyticAxis" ref="com.axelor.apps.account.db.AnalyticAxis" title="Axis"/>
-	<many-to-one name="analyticAccount" ref="com.axelor.apps.account.db.AnalyticAccount" title="Analytic Acc."/>
+	<many-to-one name="analyticAccount" required="true" ref="com.axelor.apps.account.db.AnalyticAccount" title="Analytic Acc."/>
     <decimal name="percentage" title="%"/>
     <decimal name="originalPieceAmount" title="Original piece amount" hidden="true"/>
     <decimal name="amount" title="Amount"/>
-    <date name="date" title="Date" column="date_val"/>
+    <date name="date" required="true" title="Date" column="date_val"/>
     <many-to-one name="analyticJournal" ref="com.axelor.apps.account.db.AnalyticJournal" title="Analytic Journal" required="true"/>
     <many-to-one name="account" ref="com.axelor.apps.account.db.Account" title="Accounting.Account"/>
     <many-to-one name="accountType" ref="com.axelor.apps.account.db.AccountType" title="Account Type"/>
@@ -34,6 +34,14 @@
 		public static final int STATUS_REAL_ACCOUNTING = 3;
 		
 	]]></extra-code>
+	
+	<track>
+		<field name="date" on="UPDATE"/>
+		<field name="analyticAccount" on="UPDATE"/>
+		<field name="analyticJournal" on="UPDATE"/>
+		<field name="invoiceLine" on="UPDATE"/>
+		<field name="moveLine" on="UPDATE"/>
+	</track>
     
   </entity>
 

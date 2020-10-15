@@ -3,6 +3,19 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
+	<form id="marketing-template-form" name="template-form" title="Template" model="com.axelor.apps.message.db.Template" extension="true">
+		
+		<extend target="/">
+			<attribute name="onNew" value="action-template-record-new,action-template-attrs-onnew-onload"/>
+			<attribute name="onLoad" value="action-template-attrs-onnew-onload"/>
+		</extend>
+		
+		<extend target="//field[@name='metaModel']">
+			<attribute name="onSelect" value="action-template-attrs-meta-model-domain"/>
+		</extend>
+		
+	</form>
+	
 	<action-attrs name="action-template-attrs-meta-model-domain">
 		<attribute name="domain" for="metaModel" expr="eval: &quot; self.name = 'Partner' OR self.name = 'Lead' &quot;" if="_mediaType == 4"/>
 	</action-attrs>

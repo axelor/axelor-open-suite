@@ -80,7 +80,7 @@
 	<action-view name="dashlet.customers.with.first.sale.order" model="com.axelor.apps.base.db.Partner"
 				title="New customers with first sale order">
 		<view type="chart" name="chart.customers.with.first.sale.order" />
-		<context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>				
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 	</action-view>
   	
 </object-views>

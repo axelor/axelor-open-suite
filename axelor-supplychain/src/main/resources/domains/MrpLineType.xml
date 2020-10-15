@@ -18,6 +18,8 @@
       help="Purchase order or sale order without estimated delivery date and manufacturing order without planned date. In this case, we use the MRP start date (today)"/>
       <boolean name="ignoreEndDate" title="Ignore end date" help="Include elements with a date later than MRP end date."/>
 
+	  <string name="applicationFieldSelect" title="Field of application" selection="supplychain.mrp.line.type.application.field.select"/>
+	  
       <extra-code><![CDATA[
 	
 	
@@ -39,6 +41,11 @@
 		// TYPE SELECT
 		public static final int TYPE_IN = 1;  // Entry of stock
 		public static final int TYPE_OUT = 2;  // Out of stock
+		
+		// APPLICATION FIELD SELECT
+		public static final int APPLICATION_FIELD_MRP = 1;  
+		public static final int APPLICATION_FIELD_MPS = 2;  
+	
 	
 	]]></extra-code>
       

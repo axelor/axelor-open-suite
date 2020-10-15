@@ -17,6 +17,8 @@
       <datetime name="endDateTime" title="Calculation End Date"/>
       <string name="mrpSeq" title="MRP number" readonly="true"/>
       <boolean name="displayProductWithoutProposal" title="Display product without proposal" default="false"/>
+      <integer name="mrpTypeSelect" title="MRP Type" selection="supplychain.mrp.mrp.type.select"/>
+
       <extra-code><![CDATA[
 	
 	   	// STATUS SELECT
@@ -24,6 +26,10 @@
 		public static final int STATUS_CALCULATION_STARTED = 1;
 		public static final int STATUS_CALCULATION_ENDED = 2;
 	
+	   	// MRP TYPE SELECT
+		public static final int MRP_TYPE_MRP = 1;
+		public static final int MRP_TYPE_MPS = 2;
+
 	]]></extra-code>
       
   </entity>

@@ -252,23 +252,23 @@
 
 	<action-view name="dashlet.leads.by.source" title="Leads by Source">
 		<view type="chart" name="chart.leads.by.source.bar" />
-		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
 	</action-view>
 
 	<action-view name="dashlet.leads.by.country" title="Leads by Country">
 		<view type="chart" name="chart.leads.by.country.bar" />
-		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
 	</action-view>
 
 	<action-view name="dashlet.leads.by.team.by.status" title="Leads by Team by Status">
 		<view type="chart" name="chart.leads.by.team.by.status.bar" />
-		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
 	</action-view>
 
 	<action-view name="dashlet.leads.by.saleman.by.status"
 		title="Leads by Salesperson by Status">
 		<view type="chart" name="chart.leads.by.saleman.by.status.bar" />
-		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
 	</action-view>
 	
 	<action-view name="dashlet.my.leads" title="My Leads"
@@ -299,23 +299,23 @@
 
 	<action-view name="dashlet.created.leads.per.month" title="Created leads per month" model="com.axelor.apps.crm.db.Lead">
 	  <view type="chart" name="chart.created.leads.per.month"/>
-	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 	</action-view>
 	
 	
 	<action-view name="dashlet.created.leads.by.industry.sector" title="Created leads by industry sector" model="com.axelor.apps.crm.db.Lead">
 	  <view type="chart" name="chart.created.leads.by.industry.sector"/>
-	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 	</action-view>
 	
 	<action-view name="dashlet.created.leads.with.opportunity" title="Created leads with at least one opportunity" model="com.axelor.apps.crm.db.Lead">
 	  <view type="chart" name="chart.created.leads.with.opportunity"/>
-    <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+    <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 	</action-view>
 	
 	<action-view name="dashlet.created.leads.average.duration.first.opportunity" title="Average duration between lead and first opportunity (days)" model="com.axelor.apps.crm.db.Lead">
 	  <view type="chart" name="chart.created.leads.average.duration.first.opportunity"/>
-	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 	</action-view>
 
 	<!-- Event Call Dashboard -->
@@ -338,29 +338,29 @@
 
 	<action-view name="dashlet.calls.types.by.user" title="Calls type by user">
 		<view type="chart" name="chart.calls.types.by.user.bar" />
-		<context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 	</action-view>
 
 	<action-view name="dashlet.calls.types.by.team" title="Calls type by team">
 		<view type="chart" name="chart.calls.types.by.team.bar" />
-		<context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 	</action-view>
 
 	<action-view name="dashlet.calls.by.team.by.user" title="Calls by team by user">
 		<view type="chart" name="chart.calls.types.by.team.by.user.bar" />
-		<context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 	</action-view>
 	<action-view name="dashlet.held.calls.types.by.user" title="Calls held by type by user">
 		<view type="chart" name="chart.held.calls.types.by.user.bar" />
-		<context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 	</action-view>
 	<action-view name="dashlet.held.calls.types.by.team" title="Calls held by team by type">
 		<view type="chart" name="chart.held.calls.types.by.team.bar" />
-		<context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 	</action-view>
 	<action-view name="dashlet.daily.team.calls.summary.by.user" title="portal.daily.team.calls.summary.by.user">
 		<view type="chart" name="chart.daily.team.calls.summary.by.user.bar" />
-		<context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 	</action-view>
 
 	<action-view title="Open Cases by Agents" name="dashlet.user.by.open.cases">

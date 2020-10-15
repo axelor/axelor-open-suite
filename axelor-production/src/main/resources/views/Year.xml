@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+    
+    <form name="year-manuf-order-form" title="Manufacturing period" model="com.axelor.apps.base.db.Year" 
+    	onSave="action-year-check-date" onNew="action-year-manuf-order-group-onnew" onLoad="action-year-manuf-order-group-onload">
+		<panel-include view="year-account-form"/>
+	</form>
+	
+	<action-group name="action-year-manuf-order-group-onnew">
+		<action name="action-year-manuf-order-record-onnew"/>
+		<action name="action-year-manuf-order-attrs-hide-actionsPanel-reportedBalanceDate"/>
+	</action-group>
+	
+	<action-group name="action-year-manuf-order-group-onload">
+		<action name="action-year-manuf-order-attrs-hide-actionsPanel-reportedBalanceDate"/>
+		<action name="action-attrs-period-hide-linked-adjusting-moves-dashlet"/>
+	</action-group>
+    
+    <action-record name="action-year-manuf-order-record-onnew" model="com.axelor.apps.base.db.Year" >
+    	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
+    	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
+    	<field name="typeSelect"  expr="eval:3"/>
+    </action-record>
+    
+    <action-attrs name="action-year-manuf-order-attrs-hide-actionsPanel-reportedBalanceDate">
+    	<attribute name="hidden" for="actionsPanel" expr="eval: true"/>
+    	<attribute name="hidden" for="reportedBalanceDate" expr="eval: true"/>
+    </action-attrs>
+	
+</object-views>

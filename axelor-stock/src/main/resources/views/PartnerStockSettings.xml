@@ -46,9 +46,20 @@
         </panel>
     </form>
 
-    <action-attrs name="action-partner-default-stock-location-form-domain"
-                  model="com.axelor.apps.stock.db.PartnerStockSettings">
-        <attribute for="defaultStockLocation" name="domain" expr="eval: &quot; self.company = :company AND (self.typeSelect = 1 OR (self.typeSelect = 2 AND self.partner.id = ${__parent__?.id})) AND (self.usableOnSaleOrder = true OR self.usableOnPurchaseOrder = true) &quot;"/>
+    <action-attrs name="action-partner-default-stock-location-form-domain" model="com.axelor.apps.stock.db.PartnerStockSettings">
+    	
+    	<attribute for="defaultStockLocation" name="domain"  if="!__parent__.isSubcontractor" 
+    		expr="eval: company == null ? &quot; (self.typeSelect = 1 OR self.typeSelect = 2) AND (self.usableOnSaleOrder = true OR self.usableOnPurchaseOrder = true) &quot;
+    		: &quot; self.company = :company AND (self.typeSelect = 1 OR self.typeSelect = 2) AND (self.usableOnSaleOrder = true OR self.usableOnPurchaseOrder = true) &quot;"/>
+		          
+	<attribute for="defaultStockLocation" name="domain"  if="__parent__.isSubcontractor &amp;&amp; !__parent__.isSupplier"
+          	expr="eval: company == null ? &quot; self.usableOnProduction = true AND self.isOutsourcingLocation = true &quot;
+		: &quot; self.company = :company AND self.usableOnProduction = true AND self.isOutsourcingLocation = true &quot;"/>
+          	
+	<attribute for="defaultStockLocation" name="domain"  if="__parent__.isSubcontractor &amp;&amp; __parent__.isSupplier"
+          	expr="eval: company == null ? &quot; self.usableOnProduction = true OR self.usableOnSaleOrder = true OR self.usableOnPurchaseOrder = true &quot;
+          	: &quot; self.company = :company AND self.usableOnProduction = true OR self.usableOnSaleOrder = true OR self.usableOnPurchaseOrder = true &quot;"/>
+
     </action-attrs>
     
     <action-group name="action-partner-stock-settings-group-company-onchange">

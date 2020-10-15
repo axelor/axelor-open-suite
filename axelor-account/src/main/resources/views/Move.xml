@@ -45,11 +45,11 @@
         <panel name="mainPanel" readonlyIf="statusSelect == 3" colSpan="12">
 			<panel name="moveDetailsPanel" colSpan="9">
                 <field name="reference" colSpan="12"/>
-                <panel name="moveContentPanel" readonlyIf="moveLineList.length &gt; 0" colSpan="12">
-                    <field name="company" canEdit="false" widget="SuggestBox" onChange="action-move-record-journal,action-move-method-get-period,action-move-attrs-validate-button-title" form-view="company-form" grid-view="company-grid"/>
-                    <field name="journal" domain="self.statusSelect = 1 AND self.company = :company" canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"/>
-                    <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
-                    <field name="date" onChange="action-move-method-get-period" hideIf="statusSelect == 3"/>
+                <panel name="moveContentPanel" colSpan="12">
+                    <field name="company" readonlyIf="moveLineList.length &gt; 0"  canEdit="false" widget="SuggestBox" onChange="action-move-record-journal,action-move-method-get-period,action-move-attrs-validate-button-title" form-view="company-form" grid-view="company-grid"/>
+                    <field name="journal" readonlyIf="moveLineList.length &gt; 0"  domain="self.statusSelect = 1 AND self.company = :company" canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"/>
+                    <field name="period" readonlyIf="moveLineList.length &gt; 0"  form-view="period-form" grid-view="period-grid" canEdit="false" canView="false"/>
+                    <field name="date" onChange="action-move-method-get-period,action-move-method-update-lines" hideIf="statusSelect == 3" required="true"/>
                 </panel>
                 <field name="partner" colSpan="12" canNew="false" canEdit="false" form-view="partner-form" grid-view="partner-grid" onSelect="action-account-move-method-filter-partner"/>
             </panel>
@@ -154,7 +154,8 @@
             </panel>
 
             <panel name="currencyPanel" title="Currencies">
-                <field name="currency" readonlyIf="moveLineList != null &amp;&amp; moveLineList.length != 0" onChange="action-move-record-set-currency-code"/>
+                <field name="currency" readonlyIf="moveLineList != null &amp;&amp; moveLineList.length != 0" 
+                	required="true" onChange="action-move-record-set-currency-code"/>
                 <field name="companyCurrency" readonly="true"/>
                 <field name="currencyCode" hidden="true"/>
             </panel>
@@ -231,7 +232,9 @@
 		<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
 		<field name="getInfoFromFirstMoveLineOk" expr="eval: true"/>
-		<field name="date" expr="eval:__config__.app.getTodayDate()" if="date == null"/>
+		<field name="date" expr="eval:__config__.app.getTodayDate(null)" if="date == null"/>
+		<field name="date" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" if="date == null &amp;&amp; __user__.activeCompany != null"/>
+		<field name="date" expr="eval:__config__.app.getTodayDate(__repo__(Company).all().fetchOne())" if="date == null &amp;&amp; __user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
 		<field name="technicalOriginSelect" expr="1"/>
     </action-record>
     
@@ -242,7 +245,7 @@
     </action-record>
 
     <action-record name="action-move-record-set-currency-code" model="com.axelor.apps.account.db.Move">
-    	<field name="currencyCode" expr="eval: currency.code"/>
+    	<field name="currencyCode" expr="eval: currency?.code"/>
     </action-record>
 
     <action-record name="action-move-record-journal" model="com.axelor.apps.account.db.Move">
@@ -297,6 +300,10 @@
 	
 	<action-method name="action-move-method-get-period">
 		<call class="com.axelor.apps.account.web.MoveController" method="getPeriod"/>
+	</action-method>
+	
+	<action-method name="action-move-method-update-lines">
+		<call class="com.axelor.apps.account.web.MoveController" method="updateLines"/>
 	</action-method>
 	
 	<action-method name="action-move-method-validate-multiple-moves">

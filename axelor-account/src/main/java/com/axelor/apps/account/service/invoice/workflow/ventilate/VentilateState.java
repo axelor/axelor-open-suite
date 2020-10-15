@@ -114,7 +114,7 @@ public class VentilateState extends WorkflowInvoice {
   }
 
   protected void setVentilatedLog() {
-    invoice.setVentilatedDate(appAccountService.getTodayDate());
+    invoice.setVentilatedDate(appAccountService.getTodayDate(invoice.getCompany()));
     invoice.setVentilatedByUser(userService.getUser());
   }
 
@@ -154,7 +154,7 @@ public class VentilateState extends WorkflowInvoice {
 
   protected void setDate() throws AxelorException {
 
-    LocalDate todayDate = appAccountService.getTodayDate();
+    LocalDate todayDate = appAccountService.getTodayDate(invoice.getCompany());
 
     if (invoice.getInvoiceDate() == null) {
       invoice.setInvoiceDate(todayDate);

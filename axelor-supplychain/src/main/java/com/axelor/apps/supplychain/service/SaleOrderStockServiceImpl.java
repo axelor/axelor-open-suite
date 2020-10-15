@@ -188,12 +188,14 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     if (supplychainConfig.getDefaultEstimatedDate() != null
         && supplychainConfig.getDefaultEstimatedDate() == SupplyChainConfigRepository.CURRENT_DATE
         && stockMove.getEstimatedDate() == null) {
-      stockMove.setEstimatedDate(appBaseService.getTodayDate());
+      stockMove.setEstimatedDate(appBaseService.getTodayDate(saleOrder.getCompany()));
     } else if (supplychainConfig.getDefaultEstimatedDate()
             == SupplyChainConfigRepository.CURRENT_DATE_PLUS_DAYS
         && stockMove.getEstimatedDate() == null) {
       stockMove.setEstimatedDate(
-          appBaseService.getTodayDate().plusDays(supplychainConfig.getNumberOfDays().longValue()));
+          appBaseService
+              .getTodayDate(saleOrder.getCompany())
+              .plusDays(supplychainConfig.getNumberOfDays().longValue()));
     }
 
     setReservationDateTime(stockMove, saleOrder);

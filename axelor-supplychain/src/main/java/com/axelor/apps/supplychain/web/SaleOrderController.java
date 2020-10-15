@@ -335,7 +335,9 @@ public class SaleOrderController {
                 .param("search-filters", "customer-invoices-filters")
                 .context("_showRecord", String.valueOf(invoice.getId()))
                 .context("_operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
-                .context("todayDate", Beans.get(AppSupplychainService.class).getTodayDate())
+                .context(
+                    "todayDate",
+                    Beans.get(AppSupplychainService.class).getTodayDate(saleOrder.getCompany()))
                 .map());
       }
     } catch (Exception e) {

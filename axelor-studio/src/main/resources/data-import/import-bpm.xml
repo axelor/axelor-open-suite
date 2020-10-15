@@ -24,11 +24,16 @@
             <bind node="onNew" to="onNew" />
             <bind node="onSave" to="onSave" />
             <bind node="formWidth" to="formWidth" />
+            <bind node="isGenerateMenu" to="isGenerateMenu" />
             <bind node="menuTitle" to="menuTitle" />
             <bind node="menuIcon" to="menuIcon" />
             <bind node="menuBackground" to="menuBackground" />
             <bind node="menuOrder" to="menuOrder" />
             <bind node="menuTop" to="menuTop" />
+            <bind node="menuBuilder" to="menuBuilder" search="self.name = :menuBuilderName" update="true" if="isGenerateMenu != null &amp;&amp; isGenerateMenu == 'true'">
+            	<bind node="@name" to="name" alias="menuBuilderName"/>
+            	<bind node="@title" to="title"/>
+            </bind>
             <bind node="menuParent" to="menuParent" search="self.id = :menuParent" create="false"  />
  			<bind node="appBuilder" to="appBuilder" search="self.code = :appBuilder" create="false"  />
  		</bind>
@@ -234,7 +239,6 @@
 				<bind node="mediaTypeSelect" to="mediaTypeSelect"/>
 				<bind node="language" to="language" search="self.code = :language" create="false"/>
 				<bind node="metaModel" to="metaModel" search="self.name = :metaModel" create="false"/>
-				<bind node="fromAdress" to="fromAdress"/>
 				<bind node="replyToRecipients" to="replyToRecipients"/>
 				<bind node="toRecipients" to="toRecipients"/>
 				<bind node="ccRecipients" to="ccRecipients"/>

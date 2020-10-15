@@ -1,0 +1,5 @@
+---
+title: "UNIT : fill automatically the field labelToPrinting"
+type: feature
+description : |
+   Unit: If the field labelToPrinting is empty then it fills automatically with the field name.

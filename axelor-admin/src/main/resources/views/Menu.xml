@@ -77,11 +77,4 @@
 	<domain>self.restoreDate != null</domain>
   </action-view>
   
-  <menuitem name="admin-global-traking-log-show" title="Global tracking logs" parent="admin-root-maintenance" action="admin.global.tracking.log.show"/>
-  
-  <action-view name="admin.global.tracking.log.show" title="Global tracking logs" model="com.axelor.apps.base.db.Wizard" >
-	<view type="form" name="global-tracking-log-view-wizard-form"/>
-  </action-view>
-  
-  
 </object-views>

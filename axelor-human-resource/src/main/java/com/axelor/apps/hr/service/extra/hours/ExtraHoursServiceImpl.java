@@ -80,7 +80,7 @@ public class ExtraHoursServiceImpl implements ExtraHoursService {
   public void confirm(ExtraHours extraHours) throws AxelorException {
 
     extraHours.setStatusSelect(ExtraHoursRepository.STATUS_CONFIRMED);
-    extraHours.setSentDate(appBaseService.getTodayDate());
+    extraHours.setSentDate(appBaseService.getTodayDate(extraHours.getCompany()));
 
     extraHoursRepo.save(extraHours);
   }
@@ -105,7 +105,7 @@ public class ExtraHoursServiceImpl implements ExtraHoursService {
 
     extraHours.setStatusSelect(ExtraHoursRepository.STATUS_VALIDATED);
     extraHours.setValidatedBy(AuthUtils.getUser());
-    extraHours.setValidationDate(appBaseService.getTodayDate());
+    extraHours.setValidationDate(appBaseService.getTodayDate(extraHours.getCompany()));
 
     extraHoursRepo.save(extraHours);
   }
@@ -130,7 +130,7 @@ public class ExtraHoursServiceImpl implements ExtraHoursService {
 
     extraHours.setStatusSelect(ExtraHoursRepository.STATUS_REFUSED);
     extraHours.setRefusedBy(AuthUtils.getUser());
-    extraHours.setRefusalDate(appBaseService.getTodayDate());
+    extraHours.setRefusalDate(appBaseService.getTodayDate(extraHours.getCompany()));
 
     extraHoursRepo.save(extraHours);
   }

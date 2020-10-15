@@ -27,7 +27,7 @@
 	        <field name="isPurchaseTrackingManaged" onChange="action-tracking-number-set-default-purchase-qty"/>
 		    <panel name="purchaseTrackingManagementPanel" title="Purchase tracking management" showIf="isPurchaseTrackingManaged" colSpan="12">
 		        <field name="generatePurchaseAutoTrackingNbr"/>
-				<field name="sequence" onChange="action-tracking-number-config-record-compute-fullname" requiredIf="generatePurchaseAutoTrackingNbr" showIf="generatePurchaseAutoTrackingNbr || generateProductionAutoTrackingNbr || generateSaleAutoTrackingNbr" domain="self.code = 'productTrackingNumber'" form-view="sequence-form" grid-view="sequence-grid"/>
+				<field name="sequence" onChange="action-tracking-number-config-record-compute-fullname" requiredIf="generatePurchaseAutoTrackingNbr" showIf="generatePurchaseAutoTrackingNbr || generateProductionAutoTrackingNbr || generateSaleAutoTrackingNbr" domain="self.codeSelect = 'productTrackingNumber'" form-view="sequence-form" grid-view="sequence-grid"/>
 				<field name="purchaseQtyByTracking" colSpan="12"/>
 		    </panel>
 	   </panel>
@@ -35,7 +35,7 @@
 		    <field name="isProductionTrackingManaged" onChange="action-tracking-number-set-default-production-qty" />
 		    <panel name="productionTrackingManagementPanel" title="Production tracking management" showIf="isProductionTrackingManaged" colSpan="12">
 		        <field name="generateProductionAutoTrackingNbr"/>
-				<field name="sequence" onChange="action-tracking-number-config-record-compute-fullname" requiredIf="generateProductionAutoTrackingNbr" showIf="generatePurchaseAutoTrackingNbr || generateProductionAutoTrackingNbr || generateSaleAutoTrackingNbr" domain="self.code = 'productTrackingNumber'" form-view="sequence-form" grid-view="sequence-grid"/>
+				<field name="sequence" onChange="action-tracking-number-config-record-compute-fullname" requiredIf="generateProductionAutoTrackingNbr" showIf="generatePurchaseAutoTrackingNbr || generateProductionAutoTrackingNbr || generateSaleAutoTrackingNbr" domain="self.codeSelect = 'productTrackingNumber'" form-view="sequence-form" grid-view="sequence-grid"/>
 				<field name="hasProductAutoSelectTrackingNbr" showIf="isProductionTrackingManaged" colSpan="12"/>
 				<field name="productAutoTrackingNbrOrderSelect" showIf="hasProductAutoSelectTrackingNbr" colSpan="12"/>
 		        <field name="productionQtyByTracking" colSpan="12"/>
@@ -45,7 +45,7 @@
 		    <field name="isSaleTrackingManaged" onChange="action-tracking-number-set-default-sale-qty"/>
 		    <panel name="saleTrackingManagementPanel" title="Sale tracking management" showIf="isSaleTrackingManaged" colSpan="12">
 		        <field name="generateSaleAutoTrackingNbr"  readonlyIf="isProductionTrackingManaged || isPurchaseTrackingManaged"/>
-				<field name="sequence" onChange="action-tracking-number-config-record-compute-fullname" requiredIf="generateSaleAutoTrackingNbr" showIf="generatePurchaseAutoTrackingNbr || generateProductionAutoTrackingNbr || generateSaleAutoTrackingNbr" domain="self.code = 'productTrackingNumber'" form-view="sequence-form" grid-view="sequence-grid"/>
+				<field name="sequence" onChange="action-tracking-number-config-record-compute-fullname" requiredIf="generateSaleAutoTrackingNbr" showIf="generatePurchaseAutoTrackingNbr || generateProductionAutoTrackingNbr || generateSaleAutoTrackingNbr" domain="self.codeSelect = 'productTrackingNumber'" form-view="sequence-form" grid-view="sequence-grid"/>
 				<field name="hasSaleAutoSelectTrackingNbr" showIf="isSaleTrackingManaged" colSpan="12"/>
 		        <field name="saleAutoTrackingNbrOrderSelect" showIf="hasSaleAutoSelectTrackingNbr" colSpan="12"/>
 		        <field name="saleQtyByTracking" colSpan="12" readonlyIf="hasSaleAutoSelectTrackingNbr"/>

@@ -30,6 +30,10 @@
     <decimal name="launchQty" title="Launch quantity" precision="20" scale="10"/>
     <integer name="stockMoveRealizeOrderSelect" default="1" massUpdate="true"
             selection="production.manuf.order.stock.move.realize.order.select"/>
+            
+    <many-to-one name="subcontractors" ref="com.axelor.apps.base.db.Partner" title="Subcontractor"/>
+    <many-to-one name="outsourcingStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Outsourcing stock location"/>
+    <boolean name="generatePurchaseOrderOnMoPlanning" title="Generate a purchase order on MO planning" />
 
     <extra-code><![CDATA[
 

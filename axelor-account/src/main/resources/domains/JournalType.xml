@@ -9,6 +9,8 @@
   
     <string name="name" title="Name" required="true" unique="true"/>
     <string name="code" title="Code" min="2" required="true" unique="true"/>
+    <boolean name="isDisplayBalances" title="Display the balances"/>
+    <many-to-many name="accountTypeSet" ref="com.axelor.apps.account.db.AccountType" title="Balance computations on the following accounts"/>
   
   </entity>
 

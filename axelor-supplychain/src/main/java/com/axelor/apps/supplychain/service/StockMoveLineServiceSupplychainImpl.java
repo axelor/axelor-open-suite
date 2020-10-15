@@ -185,7 +185,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         // log the exception
         TraceBackService.trace(
             new AxelorException(
-                TraceBackRepository.TYPE_TECHNICAL,
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
                 IExceptionMessage.STOCK_MOVE_MISSING_SALE_ORDER,
                 stockMove.getOriginId(),
                 stockMove.getName()));
@@ -200,7 +200,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         // log the exception
         TraceBackService.trace(
             new AxelorException(
-                TraceBackRepository.TYPE_TECHNICAL,
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
                 IExceptionMessage.STOCK_MOVE_MISSING_PURCHASE_ORDER,
                 stockMove.getOriginId(),
                 stockMove.getName()));

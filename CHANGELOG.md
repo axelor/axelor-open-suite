@@ -1,65 +1,54 @@
-# Changelog
-## [Unreleased 5.4.0]
-## Features
-- Add global tracking log feature.
-- Update to Gradle 5.6.4
-- Update to Axelor Open Platform 5.3
-- Bank details : Add new fields journal and bank account.
-- Move template : Add boolean to validate automatically the wizard generated moves
-- Move template : Add journal field to wizard
-- Move template : Add new field description
-- HR : Added a leave line configuration menu in leave management
-- Move Template : Add totals for amount type
-- Move template : Add details button to grid view to display fields
-- Move template : Wizard dataInputList is now an editable grid
-- Move template : Add change track on update
-- EMPLOYEE : set seniorityDate by hireDate
-- Studio : Add CSRF protection for every request header.
-- Add CSRF protection for timesheet line editor and project planning editor
-- Studio : Add support of menu creation for custom model and BPM node.
-- DURATION : add new field applicationType;
-- MRP: add configuration to ignore end date on incoming mrp line type.
-- BPM : Add overview of the result of the wkf.
-- SUPPLIER PORTAL : Creation of new Supplier portal
-- INVOICE : Added the possibility to add a watermark to the printings
-- Reports: Manage locale, date format and timezone following company configuration.
-- Product: add products per company to configure different prices depending on the company.
-- Product: add product image in grid view.
-- HRConfig : Import formula variables.
-- PRODUCT: Add json field.
-- MRP: hideIf on generateProposalBtn on mrpLine grid.
-- Opportunity: Addition of hideIf attribute for 'take charge' button in opportunity grid.
-- LEAD : hide Take charge button on grid view.
-- TICKET : hide Take charge button on grid view.
-- QUALITY TAG : add colorSelect field for tag color
-- User : add forcePasswordChange field in user-form.
-- Invoice : Specify button css.
+## [6.0.0] (2020-10-05)
 
-## Improvements
-- USER : Default User language is based on application.locale from application.properties
-- BASE : Cache memory performace improved by not stocking geographical entities anymore
-- Accounting move line : When creating a new line the default debit or credit is set in order to balance the move
-- Accounting Move Line : When debit/credit is filled the other field is set to 0 instead of being set to a readonly mode
-- Invoice/Orders : The printing filename has been changed to show the id of the printed order/invoice
-- Employee : renamed dateOfHire, timeOfHire, endDateContract, dateOfBirth fields to hireDate, hireTime, contractEndDate, birthDate
-- Removed block permission from demo data.
-- SaleOrder/Invoice/PurchaseOrder Line : Unit is now required
-- TeamTask: add new field categorySet.
-- Studio: Make app builder optional
-- Birt report: Change display of date
-- Invoice report : Change in font size in Invoice report.
-- Report : Fix unit translation.
-- Forecast Recap : default value set to today for from date field
-- Product : Added possibility to add a color to the product variant value tag with the field displayColor
+#### Features
 
-## Bug Fixes
-- HR : A leave-line cannot be saved whitout employee or leave-reason.
-- Lead: Fix city name and state name issue in report printing.
-- EMPLOYEE : add translation of "Employee PhoneBook".
-- Studio: Add and fixed attributes of model and fields for import and export app.
-- EMPLOYEE : add button for Employee.rptdesign report on form.
-- XML : Update all xml files XSD version to AOP 5.3.
-- INVOICE : Change Invoicing menu translation.
-- INVOICE : Resolve report binding issue.
-- MRP LINE : Fix the mrp-line-form dirty view issue.
+* PRINT TEMPLATE: create test button to check print template line expression.
+* HR: add employment contract sub type.
+* PRODUCTION: created buttons in product to create new bill of material and production process.
+* Axelor DocuSign: add new module axelor-docusign.
+* Axelor Project DMS: add new module axelor-project-dms.
+* PRINT TEMPLATE: Rework print template feature.
 
+Add new configurations for print template: print format, sequence, columns
+    number, conditions, signature
+
+* TEMPLATE: update template engine: the user can now choose between StringTemplate or groovy.
+* MANUFACTURING: Sales & Operation Planning (PIC).
+* MACHINE: Implement tool management on machines.
+* MAIL MESSAGE: use template object for email generated from a notification message.
+* Partner: Add a new partner type 'Subcontractor' and add field related to outsourcing in manufacturing.
+* PRINT TEMPLATE: Add XML export and import.
+* Production: Manage MPS (Master Production Schedule) process.
+* PRINT TEMPLATE: Use Itext instead of birt to generate templates.
+* PRODUCTION: Add Master production scheduling charge.
+* New changelog management.
+
+#### Changes
+
+* PRINT TEMPLATE: Add header and footer settings in print template.
+* Print Template: use locale based on selected language in Template.
+* PRINT TEMPLATE LINE: add new field 'ignore the line'.
+* Production: machine work center is now a machine instead of a work center.
+* MPS/MRP: title before sequence to change depending on the type.
+* Use relative path instead of absolute path in configuration file path fields.
+* Production: Remove stock location in machine type.
+* Project DMS: Move 'Project DMS' menu inside projects main menu.
+* MANUF ORDER: Print residual products on report and add panel of residual products.
+* PURCHASE ORDER LINE: Replace the min sale price field by a field that indicates the maximum purchase price recommended.
+* USER: the admin can now force the user to change password on the next connection.
+* Invoice: Add tracking for most fields.
+
+#### Fixed
+
+* Production configuration: fix stock location filter in workshop sequence config line and make the grid editable.
+* Quality Alert: Show title of fields description, corrective actions and preventive actions.
+* Email message template: remove from address in template.
+
+Setting a custom `from` address per email template is now disabled, as the from
+address should depend only on the SMTP account. The `from` should now always
+be set in SMTP account configuration.
+
+* LeaveReason: rename `leaveReason` field into `name`.
+* JobPosition: Remove character limit on Profile Wanted field.
+
+[6.0.0]: https://github.com/axelor/axelor-open-suite/compare/v5.4.1...v6.0.0

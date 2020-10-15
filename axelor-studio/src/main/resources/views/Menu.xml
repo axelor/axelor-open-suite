@@ -89,7 +89,14 @@
   		<context name="_fromStudio" expr="eval:true"/>
 	</action-view>
 	
-	<menuitem title="Actions" name="app-builder-config-actions" parent="app-builder-config" action="action.studio.meta.action.view" order="47"/>
+	<menuitem title="Selection builders" name="app-builder-config-selection-builders" parent="app-builder-config" action="app.builder.config.selection.builders" order="47"/>
+	
+	<action-view name="app.builder.config.selection.builders" title="Selection builders" model="com.axelor.studio.db.SelectionBuilder">
+		<view name="selection-builder-grid" type="grid" />
+  		<view name="selection-builder-form" type="form"/>
+	</action-view>
+	
+	<menuitem title="Actions" name="app-builder-config-actions" parent="app-builder-config" action="action.studio.meta.action.view" order="48"/>
 
 	<action-view name="action.studio.meta.action.view" title="Actions" model="com.axelor.meta.db.MetaAction">
 		<view type="grid" name="studio-meta-action-grid" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>

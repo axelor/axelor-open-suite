@@ -274,7 +274,7 @@
 
     <action-record name="action-lead-default-record-new" model="com.axelor.apps.crm.db.Lead">
     	<field name="statusSelect" expr="1"/>
-    	<field name="contactDate" expr="eval:__config__.app.getTodayDate()" if="contactDate == null"/>
+    	<field name="contactDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" if="contactDate == null"/>
     	<field name="user"  expr="eval:__user__"/>
     	<field name="team"  expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     </action-record>

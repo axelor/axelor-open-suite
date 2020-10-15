@@ -18,7 +18,7 @@
 <!--   	<decimal name="qty" title="Quantity"/> -->
   
   	<many-to-one name="workCenter" ref="com.axelor.apps.production.db.WorkCenter" title="Work center" initParam="true"/>
-  	<many-to-one name="machineWorkCenter" ref="com.axelor.apps.production.db.WorkCenter" title="Machine" initParam="true"/>
+  	<many-to-one name="machineWorkCenter" ref="com.axelor.apps.production.db.Machine" title="Machine" initParam="true"/>
   
   	<one-to-many name="prodHumanResourceList" ref="com.axelor.apps.production.db.ProdHumanResource" mappedBy="operationOrder" title="Human resources"/>
   
@@ -35,9 +35,8 @@
 
       <datetime name="realStartDateT" title="Real start"/>
       <datetime name="realEndDateT" title="Real end"/>
-    
+
     <one-to-many name="inStockMoveList" ref="com.axelor.apps.stock.db.StockMove" title="Stock move in" mappedBy="inOperationOrder"/>
-    
     <long name="plannedDuration" title="Planned duration (hh:mm:ss)"/>
     <long name="realDuration" title="Real duration (hh:mm:ss)"/>
     
@@ -54,6 +53,11 @@
     <string name="comments" title="Comments" large="true"/>
     
     <many-to-one name="barCode" ref="com.axelor.meta.db.MetaFile" title="Barcode" readonly="true"/>
+
+    <many-to-one name="machineTool" ref="com.axelor.apps.production.db.MachineTool" title="Tools" initParam="true"/>
+    <boolean name="useLineInGeneratedPurchaseOrder" title="Use this line in the generated purchase order" />
+    
+    <boolean name="outsourcing" title="Outsourcing"/>
 
 	<extra-code><![CDATA[
 		// STATUS SELECT
