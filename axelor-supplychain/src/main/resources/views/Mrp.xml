@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 	
     <grid name="mrp-grid" model="com.axelor.apps.supplychain.db.Mrp" title="MPS">
         <hilite if="statusSelect == 1" strong="true" color="warning"/>
@@ -20,7 +20,7 @@
 	     <menubar>
 	     	<menu title="Tools" showTitle="true" icon="fa-wrench">
 	    		<item name="runCalculationItem" title="Run calculation"  showIf="statusSelect != 1" action="save,action-method-mrp-run-calculation" prompt="Are you sure you want run the calculation ? Calculation can take a long time."/>
-	    		<item name="generateAllProposalsItem" title="Generate all proposals" showIf="statusSelect == 2" action="save,action-method-mrp-generate-all-proposal" prompt="Are you sure you want generate all proposals ?"/>
+	    		<item name="generateAllProposalsItem" title="Generate all proposals" showIf="statusSelect == 2" action="save,action-mrp-view-generate-proposal-wizard" prompt="Are you sure you want generate all proposals ?"/>
 	    		<item action="save,action-method-mrp-undo-manual-changes" title="Undo manual changes" name="undoManualChangesItem"/>
 	    	</menu>
 	    	<menu title="Reports" showTitle="true" icon="fa-files-o">
@@ -38,11 +38,6 @@
 					</h3>
 				]]></viewer>
 			</field>
-			<field name="createdOn" colSpan="4"/>
-			<field name="createdBy" colSpan="4"/>
-			<field name="endDate" colSpan="4"/>
-			<field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="4" domain="self.typeSelect != 3" canEdit="false"/>
-			<field name="stockLocation.company" colSpan="4"/>
 	    </panel>
 	    <panel name="filtersPanel" title="Filters" collapseIf="statusSelect != 0" colSpan="12">
 			<field name="id"/><spacer/>
@@ -50,12 +45,12 @@
 	        <field name="startDateTime" colSpan="4" readonly="true"/>
 	        <field name="endDateTime" colSpan="4" readonly="true"/>
 	        <field name="createdBy"/>
-	        <field name="mrpTypeSelect" hidden="true"/>
 	        <field name="endDate" colSpan="6" hideIf="mrpTypeSelect == 2"/>
 	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="6" domain="self.typeSelect != 3 AND (self.isNotInMrp = false OR self.isNotInMrp = null)" canEdit="false"/>
 	        <field name="stockLocation.company"/>
 	        <field name="displayProductWithoutProposal" widget="boolean-switch"/>
-	        <spacer name="companySpacer"/>
+	        <panel-related name="productSetPanel" field="productSet" canEdit="false" form-view="product-form" grid-view="product-grid" canNew="false" colSpan="12" domain="self.productTypeSelect = 'storable' AND self.excludeFromMrp = false AND self.stockManaged = true AND dtype = 'Product'"/>
+	        <field name="mrpTypeSelect" hidden="true"/>
 	        <field name="year" showIf="mrpTypeSelect == 2" domain="self.typeSelect = 3" onChange="action-mrp-manuf-order-record-reset-period" form-view="year-manuf-order-form" grid-view="year-account-grid"/>
 	        <field name="period" showIf="mrpTypeSelect == 2" domain="self.year = :year" form-view="period-form" grid-view="period-grid"/>
 	        <panel-related name="productSetPanel" field="productSet" canEdit="false" form-view="product-form" grid-view="product-grid" canNew="false" colSpan="12" domain="self.productTypeSelect = 'storable' AND self.excludeFromMrp = false AND self.stockManaged = true AND (:mrpTypeSelect = 1 OR self.productSubTypeSelect = 1)"/>

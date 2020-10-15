@@ -288,6 +288,7 @@ public class InvoiceController {
                 .model(Invoice.class.getName())
                 .add("grid", "invoice-grid")
                 .add("form", "invoice-form")
+                .param("search-filters", "customer-invoices-filters")
                 .param("forceEdit", "true")
                 .context("_showRecord", String.valueOf(invoice.getId()))
                 .map());

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	
+	<grid name="invoice-supplier-portal-grid" title="Invoice supplier" model="com.axelor.apps.supplierportal.db.InvoiceSupplier">
+		<field name="partner" form-view="partner-form" grid-view="partner-grid" />
+	  	<field name="invoiceDate" />  	
+	  	<field name="dueDate"/>  	
+	</grid>
+
+	<form name="invoice-supplier-portal-form" title="Invoice supplier" model="com.axelor.apps.supplierportal.db.InvoiceSupplier"
+		onNew="action-record-invoice-supplier-new" onSave="action-validate-supplier-portal-invoice-file">
+		<panel name="mainPanel" colSpan="12">
+			<field name="partner" readonly="true"/>	
+			<field name="invoiceFile" widget="binary-link" onChange="action-validate-supplier-portal-invoice-file"/>
+			<field name="invoiceDate" />	
+			<field name="dueDate" />		
+		</panel>
+	</form>
+	
+	
+	<action-record name="action-record-invoice-supplier-new" model="com.axelor.apps.supplierportal.db.InvoiceSupplier">
+        <field name="partner"  expr="call:com.axelor.apps.base.service.user.UserService:getUserPartner()" />
+	</action-record>
+	
+	<action-validate name="action-validate-supplier-portal-invoice-file">
+	  	<error message="Please download a PDF file for invoice."  action="action-attrs-supplier-portal-invoice-reset-value" 
+	  	if="invoiceFile != null &amp;&amp; !(invoiceFile?.fileName?.endsWith(&quot;.pdf&quot;))"/>
+	</action-validate>
+  
+	<action-attrs name="action-attrs-supplier-portal-invoice-reset-value">
+		<attribute name="value" for="invoiceFile" expr="eval:null"/>
+	</action-attrs>
+	
+</object-views>

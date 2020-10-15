@@ -91,7 +91,10 @@ public class KilometricService {
   }
 
   public KilometricLog getCurrentKilometricLog(Employee employee) {
-    return getKilometricLog(employee, appBaseService.getTodayDate());
+    return getKilometricLog(
+        employee,
+        appBaseService.getTodayDate(
+            employee.getUser() != null ? employee.getUser().getActiveCompany() : null));
   }
 
   public KilometricLog createKilometricLog(Employee employee, BigDecimal distance, Year year) {

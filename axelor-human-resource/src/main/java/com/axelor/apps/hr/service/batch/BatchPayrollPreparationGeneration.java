@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.db.PayrollPreparation;
+import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
 import com.axelor.apps.hr.db.repo.HrBatchRepository;
 import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
@@ -35,7 +36,6 @@ import com.axelor.exception.db.repo.ExceptionOriginRepository;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -43,6 +43,8 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,16 +60,27 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
 
   protected PayrollPreparationService payrollPreparationService;
 
-  @Inject protected PayrollPreparationRepository payrollPreparationRepository;
+  protected PayrollPreparationRepository payrollPreparationRepository;
 
-  @Inject protected CompanyRepository companyRepository;
+  protected CompanyRepository companyRepository;
 
-  @Inject protected PeriodRepository periodRepository;
+  protected PeriodRepository periodRepository;
+
+  protected HrBatchRepository hrBatchRepository;
 
   @Inject
-  public BatchPayrollPreparationGeneration(PayrollPreparationService payrollPreparationService) {
+  public BatchPayrollPreparationGeneration(
+      PayrollPreparationService payrollPreparationService,
+      CompanyRepository companyRepository,
+      PeriodRepository periodRepository,
+      HrBatchRepository hrBatchRepository,
+      PayrollPreparationRepository payrollPreparationRepository) {
     super();
     this.payrollPreparationService = payrollPreparationService;
+    this.companyRepository = companyRepository;
+    this.periodRepository = periodRepository;
+    this.hrBatchRepository = hrBatchRepository;
+    this.payrollPreparationRepository = payrollPreparationRepository;
   }
 
   @Override
@@ -78,9 +91,9 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
     duplicateAnomaly = 0;
     configurationAnomaly = 0;
     total = 0;
-    hrBatch = Beans.get(HrBatchRepository.class).find(batch.getHrBatch().getId());
+    hrBatch = hrBatchRepository.find(batch.getHrBatch().getId());
     if (hrBatch.getCompany() != null) {
-      company = Beans.get(CompanyRepository.class).find(hrBatch.getCompany().getId());
+      company = companyRepository.find(hrBatch.getCompany().getId());
     }
     checkPoint();
   }
@@ -126,9 +139,14 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
 
   public void generatePayrollPreparations(List<Employee> employeeList) {
 
-    for (Employee employee : employeeList) {
+    for (Employee employee :
+        employeeList.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
       try {
         employee = employeeRepository.find(employee.getId());
+        hrBatch = hrBatchRepository.find(batch.getHrBatch().getId());
+        if (hrBatch.getCompany() != null) {
+          company = companyRepository.find(hrBatch.getCompany().getId());
+        }
         if (employee.getMainEmploymentContract() != null
             && employee.getMainEmploymentContract().getStatus()
                 != EmploymentContractRepository.STATUS_CLOSED) {
@@ -151,6 +169,9 @@ public class BatchPayrollPreparationGeneration extends BatchStrategy {
 
   @Transactional(rollbackOn = {Exception.class})
   public void createPayrollPreparation(Employee employee) throws AxelorException {
+    if (employee == null || EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+      return;
+    }
     String filter = "self.period = ?1 AND self.employee = ?2";
     String companyFilter = filter + " AND self.company = ?3";
 

@@ -102,7 +102,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
             partner,
             invoice,
             company,
-            appAccountService.getTodayDate(),
+            appAccountService.getTodayDate(company),
             startDate,
             nbrTerm,
             partnerService.getDefaultBankDetails(partner),
@@ -125,9 +125,6 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
    * @param nbrTerm Nombre d'échéances.
    * @param bankDetails RIB.
    * @param paymentMode Mode de paiement.
-   * @param payerPartner Tiers payeur.
-   * @param type Type de l'échéancier. <code>0 = paiement</code> <code>1 = mensu masse</code> <code>
-   *     2 = mensu grand-compte</code>
    * @return L'échéancier créé.
    * @throws AxelorException
    */
@@ -172,7 +169,6 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
    * Fonction permettant de tester et de récupérer une séquence de prélèvement
    *
    * @param company Une société
-   * @param journal Un journal
    * @return
    * @throws AxelorException
    */
@@ -264,7 +260,6 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
    * @param nbrTerm Nombre d'échéances.
    * @param bankDetails RIB.
    * @param paymentMode Mode de paiement.
-   * @param payerPartner Tiers payeur.
    * @return L'échéancier créé.
    * @throws AxelorException
    */
@@ -302,7 +297,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
    * This method is used to get the movelines to be paid based on a paymentSchedule It loops on the
    * invoice M2M content and gets the movelines which are to pay
    *
-   * @param ps
+   * @param paymentSchedule
    * @return
    */
   @Override
@@ -460,7 +455,7 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
    * Méthode permettant de passer les statuts des lignes d'échéances et de l'échéancier à 'clo' ie
    * cloturé
    *
-   * @param invoice Une facture de fin de cycle
+   * @param paymentSchedule
    * @throws AxelorException
    */
   @Override
@@ -501,9 +496,12 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
   @Override
   public LocalDate getMostOldDatePaymentScheduleLine(
       List<PaymentScheduleLine> paymentScheduleLineList) {
-    LocalDate minPaymentScheduleLineDate = LocalDate.now();
+    LocalDate minPaymentScheduleLineDate;
 
     if (paymentScheduleLineList != null && !paymentScheduleLineList.isEmpty()) {
+      minPaymentScheduleLineDate =
+          appAccountService.getTodayDate(
+              paymentScheduleLineList.get(0).getPaymentSchedule().getCompany());
       for (PaymentScheduleLine paymentScheduleLine : paymentScheduleLineList) {
         if (minPaymentScheduleLineDate.isAfter(paymentScheduleLine.getScheduleDate())) {
           minPaymentScheduleLineDate = paymentScheduleLine.getScheduleDate();
@@ -518,9 +516,12 @@ public class PaymentScheduleServiceImpl implements PaymentScheduleService {
   @Override
   public LocalDate getMostRecentDatePaymentScheduleLine(
       List<PaymentScheduleLine> paymentScheduleLineList) {
-    LocalDate minPaymentScheduleLineDate = LocalDate.now();
+    LocalDate minPaymentScheduleLineDate;
 
     if (paymentScheduleLineList != null && !paymentScheduleLineList.isEmpty()) {
+      minPaymentScheduleLineDate =
+          appAccountService.getTodayDate(
+              paymentScheduleLineList.get(0).getPaymentSchedule().getCompany());
       for (PaymentScheduleLine paymentScheduleLine : paymentScheduleLineList) {
         if (minPaymentScheduleLineDate.isBefore(paymentScheduleLine.getScheduleDate())) {
           minPaymentScheduleLineDate = paymentScheduleLine.getScheduleDate();

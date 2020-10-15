@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 	
 	<grid name="training-grid" title="Trainings" model="com.axelor.apps.talent.db.Training">
 		<field name="name" />
@@ -20,7 +20,7 @@
 			<field name="duration" />
 			<field name="mandatoryTraining" colSpan="4" />
 			<field name="skillSet" colSpan="8" widget="tag-select" />
-			<field name="requiredTrainingSet" colSpan="12" />
+			<field name="requiredTrainingSet" colSpan="12" domain="self.id != :id" />
 			<field name="description" colSpan="12" />
 			<field name="program" colSpan="12" widget="html" />
 			<field name="objectives" colSpan="12" />
@@ -39,4 +39,7 @@
 		<context name="_training" expr="eval:__self__"/>
 	</action-view>
 	
+	<search-filters name="training-filters" model="com.axelor.apps.talent.db.Training" title="Training filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
 </object-views>

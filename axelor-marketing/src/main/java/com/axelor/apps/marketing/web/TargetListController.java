@@ -51,6 +51,7 @@ public class TargetListController {
                 .model(Lead.class.getName())
                 .add("grid", "lead-grid")
                 .add("form", "lead-form")
+                .param("search-filters", "lead-filters")
                 .domain(leadFilters)
                 .map());
       }
@@ -73,6 +74,7 @@ public class TargetListController {
                 .model(Partner.class.getName())
                 .add("grid", "partner-grid")
                 .add("form", "partner-form")
+                .param("search-filters", "partner-filters")
                 .domain(partnerFilters)
                 .map());
       }

@@ -372,6 +372,7 @@ public class StockMoveController {
                 .model(StockMove.class.getName())
                 .add("grid", "stock-move-grid")
                 .add("form", "stock-move-form")
+                .param("search-filters", "internal-stock-move-filters")
                 .param("forceEdit", "true")
                 .context("_showRecord", String.valueOf(reversion.get().getId()))
                 .map());
@@ -401,6 +402,7 @@ public class StockMoveController {
                 .model(StockMove.class.getName())
                 .add("grid", "stock-move-grid")
                 .add("form", "stock-move-form")
+                .param("search-filters", "internal-stock-move-filters")
                 .param("forceEdit", "true")
                 .context("_showRecord", String.valueOf(newStockMove.getId()))
                 .map());

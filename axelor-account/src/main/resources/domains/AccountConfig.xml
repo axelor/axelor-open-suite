@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                xmlns="http://axelor.com/xml/ns/domain-models"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
 	<module name="account" package="com.axelor.apps.account.db"/>
 
 	<entity name="AccountConfig" lang="java" cacheable="true">
 
 		<one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" unique="true"/>
-
+		
 		<!-- JOURNAL -->
 		<many-to-one name="customerSalesJournal" ref="com.axelor.apps.account.db.Journal" title="Sales Journal"/>
 		<many-to-one name="customerCreditNoteJournal" ref="com.axelor.apps.account.db.Journal" title="Customer Credit note Journal"/>
@@ -50,7 +50,7 @@
         <many-to-one name="customerAccountSequence" ref="com.axelor.apps.base.db.Sequence"/>
         <many-to-one name="supplierAccountSequence" ref="com.axelor.apps.base.db.Sequence"/>
         <many-to-one name="employeeAccountSequence" ref="com.axelor.apps.base.db.Sequence"/>
-
+		
 		<decimal name="thresholdDistanceFromRegulation" title="Allowed payment range"/>
 
 		<boolean name="autoReconcileOnInvoice" title="Authorize auto reconcile on invoice"/>
@@ -100,8 +100,6 @@
 		<many-to-one name="rejectionPaymentMode" ref="com.axelor.apps.account.db.PaymentMode" title="Payment mode after rejection"/>
 		<integer name="paymentScheduleRejectNumLimit" title="Max Nbr. for payment schedule rejection"/>
 		<integer name="invoiceRejectNumLimit" title="Max Nbr. of invoices rejection"/>
-		<string name="rejectImportPathAndFileName" title="Filepath to import rejected records"/>
-		<string name="tempImportPathAndFileName" title="Temporary filepath to import rejected records"/>
 		<many-to-one name="rejectPaymentScheduleTemplate" ref="com.axelor.apps.message.db.Template" title="Email template for invoice and payment schedule rejections"/>
 
 		<!-- Onglet Apurements -->
@@ -148,9 +146,9 @@
 		<boolean name="displayHeadOfficeAddrOnInvoicePrinting" title="Display head office address on invoice printing"/>
 		<string name="invoiceClientBox" large="true" multiline="true" title="Client box in invoice"/>
 		<string name="saleInvoiceLegalNote" large="true" multiline="true" title="Legal note on sale invoices" help="Short legal note to be displayed on sale invoices"/>
-
 		<string name="termsAndConditions" large="true" title="Terms and Conditions"/>
-
+		<many-to-one ref="com.axelor.meta.db.MetaFile" name="invoiceWatermark" title="Watermark"/>
+		
 		<!-- Invoice mail -->
 		<boolean name="invoiceAutomaticMail" title="Send email on invoice ventilation" default="false"/>
 		<many-to-one name="invoiceMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
@@ -257,8 +255,6 @@
 		<field name="rejectionPaymentMode" on="UPDATE"/>
 		<field name="paymentScheduleRejectNumLimit" on="UPDATE"/>
 		<field name="invoiceRejectNumLimit" on="UPDATE"/>
-		<field name="rejectImportPathAndFileName" on="UPDATE"/>
-		<field name="tempImportPathAndFileName" on="UPDATE"/>
 		<field name="rejectPaymentScheduleTemplate" on="UPDATE"/>
 		
 		<field name="profitAccount" on="UPDATE"/>

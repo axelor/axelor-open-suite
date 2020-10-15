@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 	<grid name="payroll-preparation-grid" title="Payroll preparations" model="com.axelor.apps.hr.db.PayrollPreparation">
 		<field name="employee"/>
@@ -101,5 +101,9 @@
 		<attribute name="readonly" for="mainPanel" expr="true"/>
 		<attribute name="hidden" for="refreshButton" expr="true"/>
 	</action-attrs>
+	
+	<search-filters name="payroll-preparation-filters" model="com.axelor.apps.hr.db.PayrollPreparation" title="Payroll preparation filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
 	
 </object-views>

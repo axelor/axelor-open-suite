@@ -410,7 +410,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     stockMoveLineService.storeCustomsCodes(stockMove.getStockMoveLineList());
 
-    stockMove.setRealDate(appBaseService.getTodayDate());
+    stockMove.setRealDate(appBaseService.getTodayDate(stockMove.getCompany()));
     resetMasses(stockMove);
 
     if (stockMove.getIsWithBackorder() && mustBeSplit(stockMove.getStockMoveLineList())) {
@@ -800,7 +800,7 @@ public class StockMoveServiceImpl implements StockMoveService {
           stockMove.getEstimatedDate(),
           true);
 
-      stockMove.setRealDate(appBaseService.getTodayDate());
+      stockMove.setRealDate(appBaseService.getTodayDate(stockMove.getCompany()));
     }
 
     stockMove.clearPlannedStockMoveLineList();
@@ -1173,6 +1173,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     ReportSettings reportSettings =
         ReportFactory.createReport(reportType, title + "-${date}")
             .addParam("StockMoveId", stockMoveIds)
+            .addParam("Timezone", null)
             .addParam("Locale", locale);
 
     if (reportType.equals(IReport.CONFORMITY_CERTIFICATE)) {
@@ -1238,7 +1239,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     if ((!stockMove.getPickingIsEdited() || stockMove.getPickingEditDate() == null)
         && stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED
         && StockMoveRepository.USER_TYPE_SENDER.equals(userType)) {
-      stockMove.setPickingEditDate(LocalDate.now());
+      stockMove.setPickingEditDate(appBaseService.getTodayDate(stockMove.getCompany()));
       stockMove.setPickingIsEdited(true);
     }
   }

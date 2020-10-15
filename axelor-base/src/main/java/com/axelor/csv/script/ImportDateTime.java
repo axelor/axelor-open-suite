@@ -17,6 +17,9 @@
  */
 package com.axelor.csv.script;
 
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
 import com.google.common.base.Strings;
 import java.time.LocalDate;
@@ -133,7 +136,12 @@ public class ImportDateTime {
     try {
       if (!Strings.isNullOrEmpty(inputDate) && inputDate.matches(patDate)) {
         List<String> dates = Arrays.asList(inputDate.split("\\["));
-        inputDate = dates.get(0).equals("TODAY") ? LocalDate.now().toString() : dates.get(0);
+        inputDate =
+            dates.get(0).equals("TODAY")
+                ? Beans.get(AppBaseService.class)
+                    .getTodayDate(AuthUtils.getUser().getActiveCompany())
+                    .toString()
+                : dates.get(0);
         if (dates.size() > 1) {
           LocalDateTime localDate =
               LocalDate.parse(inputDate, DateTimeFormatter.ISO_DATE).atStartOfDay();

@@ -1,4 +1,4 @@
-"name";"metaModel.name";"language.importId";"target";"birtTemplate.name";"filePath";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect"
+"name";"metaModel.name";"language.importId";"target";"birtTemplateSet_importId";"filePath";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect"
 "Demande de prix";"PurchaseOrder";2;;;;"true";;"Demande de cotation N° $PurchaseOrder.PurchaseOrderSeq$";"<p>Bonjour, </p>
 
 <p>Vous trouverez ci-joint notre demande de cotation N° $PurchaseOrder.PurchaseOrderSeq$.</p>

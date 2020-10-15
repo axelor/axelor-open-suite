@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	
+	
+ <grid name="stock-move-line-supplier-grid" title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine" editable="true">
+        <field name="product" readonly="true"/>
+        <field name="shippedQty" x-scale="2"/>
+        <field name="unit" readonly="true"/>
+		<field name="shippedDate"/>
+    </grid>
+    
+    <form name="stock-move-line-supplier-form" title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine">
+    	<panel name="mainPanel" >
+	        <field name="product" readonly="true"/>
+	        <field name="shippedQty"/>
+	        <field name="unit" readonly="true"/>
+			<field name="shippedDate"/>
+		</panel>
+    </form>
+	
+</object-views>

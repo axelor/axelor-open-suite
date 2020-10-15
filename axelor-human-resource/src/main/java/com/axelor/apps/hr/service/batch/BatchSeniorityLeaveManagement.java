@@ -32,6 +32,7 @@
  */
 package com.axelor.apps.hr.service.batch;
 
+import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.HRConfig;
@@ -39,6 +40,7 @@ import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveManagement;
 import com.axelor.apps.hr.db.LeaveManagementBatchRule;
+import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.HRConfigRepository;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveManagementRepository;
@@ -60,7 +62,8 @@ import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Locale;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 
@@ -105,7 +108,12 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
     total = 0;
     noValueAnomaly = 0;
     confAnomaly = 0;
-    this.maker = new TemplateMaker(Locale.FRENCH, TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
+    this.maker =
+        new TemplateMaker(
+            batch.getHrBatch().getCompany().getTimezone(),
+            AppFilter.getLocale(),
+            TEMPLATE_DELIMITER,
+            TEMPLATE_DELIMITER);
     hrConfig =
         Beans.get(HRConfigRepository.class)
             .all()
@@ -138,7 +146,8 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 
   public void generateLeaveManagementLines(List<Employee> employeeList) {
 
-    for (Employee employee : employeeList) {
+    for (Employee employee :
+        employeeList.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
       try {
         createLeaveManagement(employeeRepository.find(employee.getId()));
       } catch (AxelorException e) {
@@ -159,7 +168,9 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 
   @Transactional(rollbackOn = {Exception.class})
   public void createLeaveManagement(Employee employee) throws AxelorException {
-
+    if (employee == null || EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+      return;
+    }
     batch = batchRepo.find(batch.getId());
     int count = 0;
     String eval = null;

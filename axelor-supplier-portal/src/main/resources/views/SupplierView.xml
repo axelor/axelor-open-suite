@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	
+	<action-view name="wizard-supplier-view" title="My space" model="com.axelor.apps.base.db.Wizard">
+		<view type="form" name="wizard-supplier-form"/>
+		<view-param name="show-toolbar" value="false"/>
+	</action-view>
+	
+	<form name="wizard-supplier-form" title="My space" model="com.axelor.apps.base.db.Wizard" onNew="action-group-supplier-view-onnew" width="large" editable="false" canDelete="false" canEdit="false" canNew="false" canSave="false" canCopy="false" canArchive="false" canAttach="false">
+		<panel name="moduleIconPanel" colSpan="12">
+			<panel name="mainModulePanel" colSpan="10" itemSpan="2" colOffset="2">
+				<button name="myOrdersBtn" hidden="true" title="Orders" onClick="wizard-supplier-form-open-my-purchase-order" css="img-button client-img-menu btn-default" icon="img/128px/app-sale.png" if-module="axelor-purchase" />
+				<button name="myInvoicesBtn" hidden="true" title="Invoicing" onClick="wizard-supplier-form-open-my-invoices" css="img-button client-img-menu btn-default" icon="img/128px/app-invoice.png" if-module="axelor-account" />
+				<button name="myDeliveriesBtn" hidden="true" title="Delivery" onClick="wizard-supplier-form-open-stock-move" css="img-button client-img-menu btn-default" icon="img/128px/app-stock.png" if-module="axelor-stock" />
+			    <button name="myCatalogBtn" hidden="true" title="Catalog" onClick="wizard-supplier-form-open-my-catalog" css="img-button client-img-menu btn-default" icon="tes" />
+				<button name="newProductBtn" hidden="true" title="Create new product" onClick="wizard-supplier-form-open-product-supplier" css="img-button client-img-menu btn-default" icon="img/128px/product-default_100.png" />
+			</panel>
+		</panel>
+		<panel name="indicatorsPanel" colSpan="12">
+			<panel name="mainDashboardPanel" colSpan="10" itemSpan="2" colOffset="2">
+				<panel name="purchaseOrderPanel" title="Order" if-module="axelor-purchase" itemSpan="12">
+					<button name="$orders" title="Orders" width="190px" widget="info-button" onClick="action"/>
+	                <button name="$quotationInProgress" title="Quotation in progress" width="190px" widget="info-button" onClick="action"/>
+					<button name="$lastOrder" title="Last order" width="190px" widget="info-button" onClick="action"/>
+				</panel>
+				<panel name="invoicePanel"  title="Invoicing" if-module="axelor-account" itemSpan="12">
+					<button name="$overdueInvoices" title="Overdue invoices" width="190px" widget="info-button" onClick="action"/>
+					<button name="$awaitingInvoices" title="Awaiting invoices" width="190px" widget="info-button" onClick="action"/>
+					<button name="$totalRemaining" title="Total remaining" width="190px" widget="info-button" onClick="action"/>
+					<button name="$openView" title="Open view" width="190px" widget="info-button" onClick="wizard-supplier-form-open-invoice-supplier"/>
+				</panel>
+				<panel name="shipPanel" title="Delivery" if-module="axelor-stock" itemSpan="12" >
+					<button name="$lastDelivery" title="Last delivery" width="190px" widget="info-button" onClick="action"/>
+	                <button name="$nextDelivery" title="Next delivery" width="190px" widget="info-button" onClick="action"/>
+	                <button name="$deliveriesToPrepare" title="Deliveries" width="190px" widget="info-button" onClick="action"/>
+				</panel>
+			</panel>
+		</panel>
+	</form>
+	
+	<action-group name="action-group-supplier-view-onnew">
+        <action name="action-method-complete-supplier-view-indicators"/>
+		<action name="action-attrs-supplier-view-hide-modules"/>
+    </action-group>
+    
+    <action-method name="action-method-complete-supplier-view-indicators" model="com.axelor.apps.base.db.Wizard">
+		<call class="com.axelor.apps.supplierportal.web.SupplierViewController" method="completeSupplierViewIndicators"/>
+	</action-method>
+	
+	<action-attrs name="action-attrs-supplier-view-hide-modules">
+		<attribute name="hidden" for="myOrdersBtn" expr="eval: !(__config__.app.isApp('supplier-portal') &amp;&amp; __config__.app.getApp('supplier-portal').getManagePurchaseOrders())"/>
+		<attribute name="hidden" for="purchaseOrderPanel" expr="eval: !(__config__.app.isApp('supplier-portal') &amp;&amp; __config__.app.getApp('supplier-portal').getManagePurchaseOrders())"/>
+		<attribute name="hidden" for="myInvoicesBtn" expr="eval: !(__config__.app.isApp('supplier-portal') &amp;&amp; __config__.app.getApp('supplier-portal').getManageInvoices())"/>
+		<attribute name="hidden" for="invoicePanel" expr="eval: !(__config__.app.isApp('supplier-portal') &amp;&amp; __config__.app.getApp('supplier-portal').getManageInvoices())"/>
+		<attribute name="hidden" for="myDeliveriesBtn" expr="eval: !(__config__.app.isApp('supplier-portal') &amp;&amp; __config__.app.getApp('supplier-portal').getManageDelivery())"/>
+		<attribute name="hidden" for="shipPanel" expr="eval: !(__config__.app.isApp('supplier-portal') &amp;&amp; __config__.app.getApp('supplier-portal').getManageDelivery())"/>
+		<attribute name="hidden" for="myCatalogBtn" expr="eval: !(__config__.app.isApp('supplier-portal') &amp;&amp; __config__.app.getApp('supplier-portal').getShowCatalog())"/>
+		<attribute name="hidden" for="newProductBtn" expr="eval: !(__config__.app.isApp('supplier-portal') &amp;&amp; __config__.app.getApp('supplier-portal').getAllowSupplierToCreateProducts())"/>
+	</action-attrs>
+    
+	<action-view name="wizard-supplier-form-open-my-catalog" title="Catalog" model="com.axelor.apps.base.db.Product" >
+		<view type="cards" name="product-cards" />
+        <view type="grid" name="product-grid" />
+        <view type="form" name="product-form" />
+        <domain>self.purchasable = true</domain>
+	</action-view>
+	
+	<action-view name="wizard-supplier-form-open-my-purchase-order" title="My purchase orders"
+		model="com.axelor.apps.purchase.db.PurchaseOrder">
+		<view type="grid" name="purchase-order-grid"/>
+		<view type="form" name="purchase-order-form"/>
+		<domain>self.supplierPartner = :_myPartner</domain>
+		<context name="_myPartner" expr="call:com.axelor.apps.base.service.user.UserService:getUserPartner()"/>
+	</action-view>
+	
+	<action-view name="wizard-supplier-form-open-my-invoices" title="My invoices"
+		model="com.axelor.apps.account.db.Invoice" >
+		<view type="grid" name="invoice-grid"/>
+		<view type="form" name="invoice-form" />
+		<domain>self.partner = :_myPartner</domain>
+		<context name="_myPartner" expr="eval:__user__.partner"/>
+	</action-view>
+	
+	<action-view name="wizard-supplier-form-open-my-deliveries" title="My deliveries"
+		model="com.axelor.apps.stock.db.StockMove" >
+		<view type="grid" name="stock-move-grid"/>
+		<view type="form" name="stock-move-form" />
+		<domain>self.partner = :_myPartner</domain>
+		<context name="_myPartner" expr="eval:__user__.partner"/>
+	</action-view>
+	
+	<action-view name="wizard-supplier-form-open-product-supplier" title="My deliveries"
+		model="com.axelor.apps.supplierportal.db.ProductSupplier" >
+		<view type="grid" name="product-supplier-portal-grid"/>
+		<view type="form" name="product-supplier-portal-form" />
+	</action-view>
+	
+	<action-view name="wizard-supplier-form-open-stock-move" title="My deliveries"
+		model="com.axelor.apps.stock.db.StockMove">
+		<view type="grid" name="stock-move-supplier-grid"/>
+		<view type="form" name="stock-move-supplier-form"/>
+		<domain>self.typeSelect = 3 AND self.partner = :_myPartner</domain>
+		<context name="_myPartner" expr="call:com.axelor.apps.base.service.user.UserService:getUserPartner()"/>
+	</action-view>	
+	
+	<action-view name="wizard-supplier-form-open-invoice-supplier" title="My invoices"
+		model="com.axelor.apps.supplierportal.db.InvoiceSupplier">
+		<view type="grid" name="invoice-supplier-portal-grid"/>
+		<view type="form" name="invoice-supplier-portal-form"/>
+		<domain>self.partner = :_myPartner</domain>
+		<context name="_myPartner" expr="call:com.axelor.apps.base.service.user.UserService:getUserPartner()"/>
+	</action-view>	
+	
+</object-views>

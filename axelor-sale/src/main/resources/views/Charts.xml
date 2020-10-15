@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 	  
 	<action-record model="com.axelor.apps.sale.db.SaleOrder" name="action.sale.chart.set.dates.this.last.year">
 		<field name="toDate" expr="eval:LocalDate.parse(todayDate)"/>
@@ -551,7 +551,7 @@
 	<chart onInit="action.base.chart.set.date.6m" name="chart.product.sale.turnover.last.12.month" title="Product sale turnover (Excl. Tax) last 12 month">
 		<search-fields>
 			<field type="date" name="toDate" title="To Date" x-required="true"/>
-			<field type="reference" target="com.axelor.apps.base.db.Product" name="product" title="Product" x-required="true"/>
+			<field type="reference" target="com.axelor.apps.base.db.Product" name="product" title="Product" x-required="true" domain="dtype = 'Product'"/>
 		</search-fields>
 		<dataset type="jpql">
 			SELECT

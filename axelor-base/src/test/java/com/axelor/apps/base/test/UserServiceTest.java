@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.base.test;
 
+import com.axelor.app.AppModule;
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.base.module.AdminModule;
 import com.axelor.apps.base.module.BaseModule;
@@ -47,6 +48,7 @@ public class UserServiceTest {
       install(new MessageModule());
       install(new AdminModule());
       install(new BaseModule());
+      install(new AppModule());
     }
   }
 

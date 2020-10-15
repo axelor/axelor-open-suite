@@ -107,6 +107,8 @@ public interface IExceptionMessage {
       "The bank order is not properly signed. Please correct it and sign it again." /*)*/;
   static final String BANK_ORDER_CANNOT_REMOVE = /*$$(*/
       "Bank orders can only be deleted at draft or canceled status." /*)*/;
+  static final String BANK_ORDER_NO_SENDER_CURRENCY = /*$$(*/
+      "Please set a currency in the sender bank details : %s." /*)*/;
 
   String BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_BANK_ADDRESS = /*$$(*/
       "Please fill the bank address in the receiver bank details." /*)*/;

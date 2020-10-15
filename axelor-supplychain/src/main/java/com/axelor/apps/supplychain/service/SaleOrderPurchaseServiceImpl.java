@@ -129,7 +129,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
                 ? saleOrder.getStockLocation()
                 : Beans.get(StockLocationService.class)
                     .getDefaultReceiptStockLocation(saleOrder.getCompany()),
-            Beans.get(AppBaseService.class).getTodayDate(),
+            Beans.get(AppBaseService.class).getTodayDate(saleOrder.getCompany()),
             Beans.get(PartnerPriceListService.class)
                 .getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
             supplierPartner,

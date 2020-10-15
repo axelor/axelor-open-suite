@@ -316,6 +316,9 @@ public class ManufOrderController {
       String fileLink =
           ReportFactory.createReport(IReport.PROD_PROCESS, prodProcessLable + "-${date}")
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
+              .addParam(
+                  "Timezone",
+                  manufOrder.getCompany() != null ? manufOrder.getCompany().getTimezone() : null)
               .addParam("ProdProcessId", prodProcessId)
               .generate()
               .getFileLink();
@@ -440,7 +443,7 @@ public class ManufOrderController {
               .computeCostPrice(
                   manufOrder,
                   CostSheetRepository.CALCULATION_WORK_IN_PROGRESS,
-                  Beans.get(AppBaseService.class).getTodayDate());
+                  Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()));
 
       response.setView(
           ActionView.define(I18n.get("Cost sheet"))

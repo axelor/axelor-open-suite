@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  
+  <module name="docusign" package="com.axelor.apps.docusign.db"/>
+
+  <entity name="DocuSignField" lang="java">
+    
+    <many-to-one name="docuSignDocument" title="Document" ref="com.axelor.apps.docusign.db.DocuSignDocument"/>
+    <many-to-one name="docuSignSigner" title="Signer" ref="com.axelor.apps.docusign.db.DocuSignSigner"/>    
+    <string name="name" title="Name"/>
+    <integer name="typeSelect" title="Type" selection="docusign.field.setting.type.select"/>
+    <string name="value" title="Value"/>
+    <string name="status" title="Status"/>            
+    <string name="tabLabel" title="Tab label"/>
+    <string name="pageNumber" title="Page number"/>
+    <string name="anchor" title="Anchor"/>
+    <string name="anchorUnits" title="Anchor units"/>
+    <string name="anchorYOffset" title="Anchor Y offset"/>
+    <string name="anchorXOffset" title="Anchor X offset"/>
+    <string name="xPosition" title="X position"/>
+    <string name="yPosition" title="Y position"/>
+    <boolean name="isRequired" title="Required" default="true"/>
+    <string name="font" title="Font"/>
+    <string name="fontSize" title="Font size"/>
+    <string name="fontColor" title="Font color"/>
+    <boolean name="isBold" title="Bold"/>
+    
+    <many-to-one name="parent" title="Parent" ref="com.axelor.apps.docusign.db.DocuSignField"/>
+    <one-to-many name="docuSignFieldList" title="Fields" ref="com.axelor.apps.docusign.db.DocuSignField" mappedBy="parent"/>   
+  
+  </entity>  
+  
+</domain-models>

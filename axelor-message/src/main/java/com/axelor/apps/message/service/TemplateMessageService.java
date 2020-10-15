@@ -22,8 +22,9 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.tool.template.TemplateMaker;
+import com.axelor.text.Templates;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Set;
 import javax.mail.MessagingException;
 
@@ -41,8 +42,11 @@ public interface TemplateMessageService {
       throws MessagingException, IOException, AxelorException, ClassNotFoundException,
           InstantiationException, IllegalAccessException;
 
-  public Set<MetaFile> getMetaFiles(Template template) throws AxelorException, IOException;
+  public Set<MetaFile> getMetaFiles(
+      Template template, Templates templates, Map<String, Object> templatesContext)
+      throws AxelorException, IOException;
 
-  public TemplateMaker initMaker(long objectId, String model, String tag, boolean isJson)
+  public Map<String, Object> initMaker(
+      long objectId, String model, String tag, boolean isJson, Map<String, Object> templatesContext)
       throws InstantiationException, IllegalAccessException, ClassNotFoundException;
 }

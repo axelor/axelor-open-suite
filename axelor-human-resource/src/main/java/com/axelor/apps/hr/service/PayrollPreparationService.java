@@ -326,7 +326,8 @@ public class PayrollPreparationService {
     }
 
     payrollPreparation.setExported(true);
-    payrollPreparation.setExportDate(Beans.get(AppBaseService.class).getTodayDate());
+    payrollPreparation.setExportDate(
+        Beans.get(AppBaseService.class).getTodayDate(payrollPreparation.getCompany()));
     payrollPreparationRepo.save(payrollPreparation);
 
     return filePath + System.getProperty("file.separator") + fileName;

@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.hr.service;
 
+import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmployeeBonusMgt;
@@ -24,6 +25,7 @@ import com.axelor.apps.hr.db.EmployeeBonusMgtLine;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.EmployeeBonusMgtLineRepository;
 import com.axelor.apps.hr.db.repo.EmployeeBonusMgtRepository;
+import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.employee.EmployeeServiceImpl;
@@ -41,7 +43,6 @@ import groovy.lang.GroovyShell;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
@@ -68,7 +69,12 @@ public class EmployeeBonusService {
             .all()
             .filter("self.mainEmploymentContract.payCompany = ?1", bonus.getCompany())
             .fetch();
-    TemplateMaker maker = new TemplateMaker(Locale.FRENCH, TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
+    TemplateMaker maker =
+        new TemplateMaker(
+            bonus.getCompany().getTimezone(),
+            AppFilter.getLocale(),
+            TEMPLATE_DELIMITER,
+            TEMPLATE_DELIMITER);
     String eval;
     CompilerConfiguration conf = new CompilerConfiguration();
     ImportCustomizer customizer = new ImportCustomizer();
@@ -79,6 +85,9 @@ public class EmployeeBonusService {
 
     Integer employeeBonusStatus = EmployeeBonusMgtRepository.STATUS_CALCULATED;
     for (Employee employee : allEmployee) {
+      if (EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+        continue;
+      }
 
       // check if line is already calculated
       if (employeeStatus.get(employee) != null) {

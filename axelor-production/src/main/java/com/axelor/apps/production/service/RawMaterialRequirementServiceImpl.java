@@ -43,6 +43,11 @@ public class RawMaterialRequirementServiceImpl implements RawMaterialRequirement
     String locale = ReportSettings.getPrintingLocale(null);
     return reportSetting
         .addParam("RawMaterialRequirementId", rawMaterialRequirement.getId())
+        .addParam(
+            "Timezone",
+            rawMaterialRequirement.getCompany() != null
+                ? rawMaterialRequirement.getCompany().getTimezone()
+                : null)
         .addParam("Locale", locale)
         .generate()
         .getFileLink();

@@ -118,7 +118,8 @@ public class CostSheetServiceImpl implements CostSheetService {
 
     costSheet.addCostSheetLineListItem(producedCostSheetLine);
     costSheet.setCalculationTypeSelect(CostSheetRepository.CALCULATION_BILL_OF_MATERIAL);
-    costSheet.setCalculationDate(Beans.get(AppBaseService.class).getTodayDate());
+    costSheet.setCalculationDate(
+        Beans.get(AppBaseService.class).getTodayDate(billOfMaterial.getCompany()));
     Company company = billOfMaterial.getCompany();
     if (company != null && company.getCurrency() != null) {
       costSheet.setCurrency(company.getCurrency());
@@ -166,7 +167,9 @@ public class CostSheetServiceImpl implements CostSheetService {
 
     costSheet.setCalculationTypeSelect(calculationTypeSelect);
     costSheet.setCalculationDate(
-        calculationDate != null ? calculationDate : Beans.get(AppBaseService.class).getTodayDate());
+        calculationDate != null
+            ? calculationDate
+            : Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()));
 
     BigDecimal producedQty =
         computeTotalProducedQty(
@@ -215,7 +218,8 @@ public class CostSheetServiceImpl implements CostSheetService {
             costSheetLineService.createResidualProductCostSheetLine(
                 prodResidualProduct.getProduct(),
                 prodResidualProduct.getUnit(),
-                prodResidualProduct.getQty());
+                prodResidualProduct.getQty(),
+                billOfMaterial.getCompany());
 
         costSheet.addCostSheetLineListItem(costSheetLine);
       }
@@ -502,7 +506,10 @@ public class CostSheetServiceImpl implements CostSheetService {
           && (!stockMoveLine.getProduct().equals(manufOrder.getProduct()))) {
         CostSheetLine costSheetLine =
             costSheetLineService.createResidualProductCostSheetLine(
-                stockMoveLine.getProduct(), stockMoveLine.getUnit(), stockMoveLine.getRealQty());
+                stockMoveLine.getProduct(),
+                stockMoveLine.getUnit(),
+                stockMoveLine.getRealQty(),
+                manufOrder.getCompany());
         costSheet.addCostSheetLineListItem(costSheetLine);
       }
     }

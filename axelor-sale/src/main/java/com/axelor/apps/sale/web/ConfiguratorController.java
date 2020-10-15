@@ -78,6 +78,7 @@ public class ConfiguratorController {
                 .model(Product.class.getName())
                 .add("form", "product-form")
                 .add("grid", "product-grid")
+                .param("search-filters", "products-filters")
                 .context("_showRecord", configurator.getProduct().getId())
                 .map());
       }

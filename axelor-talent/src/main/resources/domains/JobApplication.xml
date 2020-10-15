@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
 	<module name="talent" package="com.axelor.apps.talent.db"/>
 
@@ -34,6 +34,7 @@
 		<integer name="titleSelect" title="Title" selection="partner.title.type.select"/>
 		<string name="fax" title="Fax"/>
 		<many-to-one name="employeeAddress" title="Address" ref="com.axelor.apps.base.db.Address"/>
+		<many-to-one name="resume" title="JobApplication.resume" ref="com.axelor.meta.db.MetaFile"/>
 		<extra-code>
 	   		<![CDATA[
 	   			public static final Integer STATUS_OPEN = 0;

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	
+   <grid name="docusign-document-setting-grid" title="Document settings" model="com.axelor.apps.docusign.db.DocuSignDocumentSetting">
+       <field name="sequence" width="100"/>
+	   <field name="name"/>
+	   <field name="documentId"/>
+	   <field name="fileExtension"/>
+	   <field name="unsignedMetaFileDefaultPath"/>
+	</grid>
+	
+	<form name="docusign-document-setting-form" title="Document setting" model="com.axelor.apps.docusign.db.DocuSignDocumentSetting">    
+       <panel name="mainPanel" colSpan="12">         
+         <field name="name"/>
+         <field name="documentId"/>
+         <field name="fileExtension"/>
+         <field name="unsignedMetaFileDefaultPath"/>
+         <panel-related name="docuSignFieldSettingListPanel" field="docuSignFieldSettingList" colSpan="12" grid-view="docusign-field-setting-grid" form-view="docusign-field-setting-form"/>             
+       </panel>       
+    </form>
+
+</object-views>

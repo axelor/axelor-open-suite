@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
-	
-	
-	<selection name="forecast.realized.select">
-		<option value="1">Yes</option>
-		<option value="2">No</option>
-		<option value="3">Auto</option>
-	</selection>
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 	
 	<selection name="forecast.opportunities.type.select">
 		<option value="1">No</option>
@@ -29,6 +22,8 @@
 		<option value="com.axelor.apps.account.db.Invoice" data-grid="invoice-grid" data-form="invoice-form">Invoice</option>
 		<option value="com.axelor.apps.hr.db.Expense" data-grid="expense-grid" data-form="expense-form">Expense</option>
 		<option value="com.axelor.apps.cash.management.db.ForecastReason" data-grid="forecast-reason-grid" data-form="forecast-reason-form">Forecast reason</option>
+		<option value="com.axelor.apps.hr.db.Employee" data-grid="employee-grid" data-form="employee-form">Employee</option>
+		<option value="com.axelor.apps.crm.db.Opportunity" data-grid="opportunity-grid" data-form="opportunity-form">Opportunity</option>
 	</selection>
 	
 	<selection name="sequence.generic.code.select" id="cash.management.sequence.generic.code.select">
@@ -49,12 +44,38 @@
         <option value="5">Forecast</option>
         <option value="6">Opportunity</option>
         <option value="7">Salary</option>
-        <option value="8">Timetable</option>
     </selection>
     
-    <selection name="forecast.recap.line.type.timetable.linked.select">
-         <option value="1">Sale Order</option>
-         <option value="2">Purchase Order</option>
+    <selection name="forecast.recap.line.type.pay.day.select">
+    	<option value="1">1</option>
+    	<option value="2">2</option>
+    	<option value="3">3</option>
+    	<option value="4">4</option>
+    	<option value="5">5</option>
+    	<option value="6">6</option>
+    	<option value="7">7</option>
+    	<option value="8">8</option>
+    	<option value="9">9</option>
+    	<option value="10">10</option>
+    	<option value="11">11</option>
+    	<option value="12">12</option>
+    	<option value="13">13</option>
+    	<option value="14">14</option>
+    	<option value="15">15</option>
+    	<option value="16">16</option>
+    	<option value="17">17</option>
+    	<option value="18">18</option>
+    	<option value="19">19</option>
+    	<option value="20">20</option>
+    	<option value="21">21</option>
+    	<option value="22">22</option>
+    	<option value="23">23</option>
+    	<option value="24">24</option>
+    	<option value="25">25</option>
+    	<option value="26">26</option>
+    	<option value="27">27</option>
+    	<option value="28">28</option>
+    	<option value="0">End Of Month</option>
     </selection>
 
 

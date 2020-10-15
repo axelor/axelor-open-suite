@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+
+	<module name="project-dms" package="com.axelor.apps.projectdms.db" />
+
+	<entity name="DMSVersion" lang="java">
+
+		<many-to-one name="metaFile" ref="com.axelor.meta.db.MetaFile" title="File"/>
+		<many-to-one name="documentId" ref="com.axelor.dms.db.DMSFile" title="Document id"/>
+		<decimal name="documentVersion" title="Document version"/>
+				
+	</entity>
+
+</domain-models>

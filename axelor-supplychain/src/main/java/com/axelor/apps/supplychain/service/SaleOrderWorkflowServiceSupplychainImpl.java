@@ -179,7 +179,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       for (StockMove stockMove : stockMoves) {
         if (stockMove.getStatusSelect() == 1 || stockMove.getStatusSelect() == 2) {
           throw new AxelorException(
-              TraceBackRepository.TYPE_FUNCTIONNAL,
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
               I18n.get(IExceptionMessage.SALE_ORDER_COMPLETE_MANUALLY));
         }
       }

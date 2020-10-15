@@ -28,6 +28,7 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.ThrowConsumer;
 import com.axelor.apps.tool.file.PdfTool;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -94,6 +95,9 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
         ReportFactory.createReport(IReport.PURCHASE_ORDER, title + " - ${date}");
     return reportSetting
         .addParam("PurchaseOrderId", purchaseOrder.getId())
+        .addParam(
+            "Timezone",
+            purchaseOrder.getCompany() != null ? purchaseOrder.getCompany().getTimezone() : null)
         .addParam("Locale", locale)
         .addParam("HeaderHeight", purchaseOrder.getPrintingSettings().getPdfHeaderHeight())
         .addParam("FooterHeight", purchaseOrder.getPrintingSettings().getPdfFooterHeight())
@@ -108,7 +112,9 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
     }
     return prefixFileName
         + " - "
-        + Beans.get(AppBaseService.class).getTodayDate().format(DateTimeFormatter.BASIC_ISO_DATE)
+        + Beans.get(AppBaseService.class)
+            .getTodayDate(AuthUtils.getUser().getActiveCompany())
+            .format(DateTimeFormatter.BASIC_ISO_DATE)
         + "."
         + ReportSettings.FORMAT_PDF;
   }

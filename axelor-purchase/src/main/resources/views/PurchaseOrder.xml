@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
   <grid name="purchase-order-quotation-grid" title="Sale quotations" model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
     <menubar>
@@ -379,7 +379,6 @@
     	<action name="action-purchase-order-record-new"/>
     	<action name="action-purchase-order-record-company-configuration"/>
     	<action name="action-purchase-order-method-get-stock-location"/>
-    	<action name="action-purchase-order-attrs-stock-location-address"/>
     	<action name="action-purchase-order-record-in-ati"/>
     	<action name="action-purchase-order-attrs-in-ati"/>
     	<action name="action-purchase-order-dispaly-price"/>
@@ -456,10 +455,6 @@
     	<attribute name="hidden" for="purchaseOrderLineList.inTaxPrice" expr="!inAti"/>
     	<attribute name="hidden" for="inAti" expr=" eval: __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 1
     									|| __repo__(PurchaseConfig).all().filter('self.company = ?',company).fetchOne()?.purchaseOrderInAtiSelect == 2" if="company"/>
-    </action-attrs>
-
-    <action-attrs name="action-purchase-order-attrs-stock-location-address">
-    	<attribute name="value" for="stockLocation.address" expr="eval: stockLocation.address"/>
     </action-attrs>
 
     <action-record name="action-purchase-order-record-in-ati" model="com.axelor.apps.purchase.db.PurchaseOrder">
@@ -669,6 +664,21 @@
 	
 
 	<search-filters name="purchase-order-filters" model="com.axelor.apps.purchase.db.PurchaseOrder" title="Purchases Order filters">
+		<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+		<field name="versionNumber" hidden="true" if="!__config__.app.getApp('purchase').getManagePurchaseOrderVersion()"/>
+		<field name="project" hidden="true" if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
+		<field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
+		<field name="tradingName" hidden="true" if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
+		<field name="companyBankDetails" hidden="true" if="!__config__.app.getApp('base').getManageMultiBanks()"/>
+		<field name="stockLocation" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="interco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="createdByInterco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+        <field name="expectedRealisationDate" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="amountToBeSpreadOverTheTimetable" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="timetableList" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="budget" hidden="true" if="!__config__.app.isApp('budget')"/>
+		<field name="paymentMode" hidden="true" if="!__config__.app.isApp('supplychain')"/> 
+		<field name="paymentCondition" hidden="true" if="!__config__.app.isApp('supplychain')"/>
 		<filter title="My RFQs">
 			<domain>(self.statusSelect = 1 or self.statusSelect = 2) and self.buyerUser.id = :_internalUser</domain>
 		</filter>

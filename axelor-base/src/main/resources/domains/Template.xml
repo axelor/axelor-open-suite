@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
   <module name="message" package="com.axelor.apps.message.db"/>
 
   <entity name="Template" lang="java">
   	
-  	<many-to-one name="birtTemplate" ref="com.axelor.apps.base.db.BirtTemplate" title="Birt Template"/>
+  	<many-to-many name="birtTemplateSet" ref="com.axelor.apps.base.db.BirtTemplate" title="Birt Template"/>
     <many-to-one name="language" ref="com.axelor.apps.base.db.Language" title="Language"/>
     
   </entity>

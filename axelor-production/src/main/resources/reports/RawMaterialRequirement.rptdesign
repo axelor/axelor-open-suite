@@ -923,7 +923,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <text id="4826">
                                 <property name="fontSize">9pt</property>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF format="d MMM y kk:mm">BirtDateTime.now()</VALUE-OF>]]></text-property>
+                                <text-property name="content"><![CDATA[<VALUE-OF format="Short Date">BirtDateTime.now()</VALUE-OF> <VALUE-OF format="Short Time">BirtDateTime.now()</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
                         <cell id="4240">
@@ -1012,6 +1012,19 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="displayName">show_requirements_bymo</text-property>
                     <expression name="expression" type="javascript">dataSetRow["show_requirements_bymo"]</expression>
                     <property name="dataType">boolean</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding</property>
+                    <text-property name="displayName">Date</text-property>
+                    <expression name="expression" type="javascript">function addDays(date, days) {
+  var result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}
+
+addDays(new Date(), row["duration"])</expression>
+                    <property name="dataType">date</property>
                     <property name="allowExport">true</property>
                 </structure>
             </list-property>
@@ -1151,7 +1164,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 <cell id="4094">
                     <text id="4101">
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/YYYY">new Date()</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="Short Date">BirtDateTime.now()</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>
@@ -1238,16 +1251,14 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </text>
                 </cell>
                 <cell id="4151">
-                    <text id="4153">
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/YYYY">function addDays(date, days) {
-  var result = new Date(date);
-  result.setDate(result.getDate() + days);
-  return result;
-}
-
-addDays(new Date(), row["duration"])</VALUE-OF>]]></text-property>
-                    </text>
+                    <data id="4885">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
+                        <property name="display">inline</property>
+                        <property name="resultSetColumn">Column Binding</property>
+                    </data>
                 </cell>
             </row>
             <row id="3814">

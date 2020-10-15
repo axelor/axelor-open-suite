@@ -227,7 +227,11 @@ public class InventoryService {
 
         InventoryLine inventoryLine = new InventoryLine();
         List<Product> productList =
-            productRepo.all().filter("self.code = :code").bind("code", code).fetch();
+            productRepo
+                .all()
+                .filter("self.code = :code AND dtype = 'Product'")
+                .bind("code", code)
+                .fetch();
         if (productList != null && !productList.isEmpty()) {
           if (productList.size() > 1) {
             throw new AxelorException(
@@ -312,7 +316,7 @@ public class InventoryService {
   @Transactional(rollbackOn = {Exception.class})
   public void validateInventory(Inventory inventory) throws AxelorException {
 
-    inventory.setValidatedOn(appBaseService.getTodayDate());
+    inventory.setValidatedOn(appBaseService.getTodayDate(inventory.getCompany()));
     inventory.setStatusSelect(InventoryRepository.STATUS_VALIDATED);
     inventory.setValidatedBy(AuthUtils.getUser());
     generateStockMove(inventory, true);

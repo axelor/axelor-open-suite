@@ -17,7 +17,7 @@
  */
 package com.axelor.apps.report.engine;
 
-import com.axelor.app.internal.AppFilter;
+import com.axelor.apps.base.service.ReportingTool;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.inject.Beans;
@@ -41,7 +41,7 @@ public class EmbeddedReportSettings extends ReportSettings {
 
       final ReportGenerator generator = Beans.get(ReportGenerator.class);
 
-      this.output = generator.generate(rptdesign, format, params, AppFilter.getLocale());
+      this.output = generator.generate(rptdesign, format, params, ReportingTool.getCompanyLocale());
 
       this.attach();
 
