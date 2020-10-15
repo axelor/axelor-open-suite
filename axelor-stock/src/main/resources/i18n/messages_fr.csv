@@ -842,6 +842,7 @@
 "Workshop",,,
 "XLS",,,
 "Yes","Oui",,
+"You cannot choose external stock locations for both fields","Vous ne pouvez pas choisir des emplacements externes pour les deux champs à la fois.",,
 "You must configure a Stock module for the company %s","Veuillez configurer le module stock pour la société %s",,
 "You must configure a customer virtual stock location for the company %s","Veuillez configurer un Emplacement Virtuel Client pour la société %s",,
 "You must configure a default pickup stock location for the company %s","Veuillez configurer un emplacement pour l'expédition pour la société %s",,

@@ -263,14 +263,12 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
 
     Company company = purchaseOrder.getCompany();
 
-    StockLocation startLocation =
-        partnerStockSettingsService
-            .getDefaultExternalStockLocation(purchaseOrder.getSupplierPartner(), company)
-            .orElse(null);
+    StockLocation startLocation = purchaseOrder.getFromStockLocation();
+
     if (startLocation == null) {
       startLocation =
-          Beans.get(StockLocationRepository.class)
-              .findByPartner(purchaseOrder.getSupplierPartner());
+          partnerStockSettingsService.getDefaultExternalStockLocation(
+              purchaseOrder.getSupplierPartner(), company);
     }
 
     if (startLocation == null) {

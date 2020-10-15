@@ -314,7 +314,8 @@
 	    <panel if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" name="deliveryInformationPanel" title="Delivery" colSpan="12">
 	      <field name="specificPackage" colSpan="12"/>
 	      <field name="stockLocation" canEdit="false" onSelect="action-sale-order-attrs-set-stock-location-domain" form-view="stock-location-form" grid-view="stock-location-grid"/>
-	      <field name="deliveryDate" onChange="action-sale-order-method-fill-sale-order-lines-estimated-date"/>
+				<field name="toStockLocation" canEdit="false" domain="self.company = :company and self.typeSelect != 1 and self.usableOnSaleOrder = true" form-view="stock-location-form" grid-view="stock-location-grid"/>
+				<field name="deliveryDate" onChange="action-sale-order-method-fill-sale-order-lines-estimated-date"/>
 	      <field name="deliveryCondition" colSpan="12"/>
 	      <field name="shipmentMode" canEdit="false" form-view="shipment-mode-grid" grid-view="shipment-mode-grid"/>
 	      <field name="freightCarrierMode" canEdit="false" onChange="action-sale-order-record-freight-carrier" domain="self.shipmentMode = :shipmentMode" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid"/>
@@ -1248,6 +1249,7 @@
 	    <field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
 	    <field name="expectedRealisationDate" hidden="true" if="!__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
 	    <field name="stockLocation" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="toStockLocation" hidden="true" if="!__config__.app.isApp('supplychain')"/>
 		<field name="amountInvoiced" hidden="true" if="!__config__.app.isApp('supplychain')"/>
 		<field name="deliveryState" hidden="true" if="!__config__.app.isApp('supplychain')" />
 		<field name="directOrderLocation" hidden="true" if="!__config__.app.isApp('supplychain')" />

@@ -132,7 +132,8 @@
 				<field name="deliveryDate" colSpan="3" onChange="action-purchase-order-method-update-purchase-order-lines-estimated-deliv-date"/>
 		        <field name="stockLocation"  canEdit="false" domain="self.company = :company and self.typeSelect in (1,2) and self.usableOnPurchaseOrder = true" if-module="axelor-supplychain" colSpan="3" form-view="stock-location-form" grid-view="stock-location-grid" if="__config__.app.isApp('supplychain')" />
 		        <field name="stockLocation.address" if-module="axelor-supplychain" form-view="address-form" grid-view="address-grid" if="__config__.app.isApp('supplychain')" />
-	  		    <field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-form" grid-view="shipment-mode-grid" onChange="action-purchase-order-record-empty-freight-carrier-mode" if="__config__.app.isApp('stock')" />
+						<field name="fromStockLocation" canEdit="false" domain="self.company = :company and self.typeSelect in (2,3) and self.usableOnPurchaseOrder = true" if-module="axelor-supplychain" colSpan="3" form-view="stock-location-form" grid-view="stock-location-grid" if="__config__.app.isApp('supplychain')" />
+				<field name="shipmentMode" if-module="axelor-stock" form-view="shipment-mode-form" grid-view="shipment-mode-grid" onChange="action-purchase-order-record-empty-freight-carrier-mode" if="__config__.app.isApp('stock')" />
 				<field name="freightCarrierMode" domain="self.shipmentMode = :shipmentMode" if-module="axelor-stock" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid" if="__config__.app.isApp('stock')" />
 				<panel-dashlet name="POStockMovesPanel" colSpan="12" action="action-purchase-order-view-stock-moves" height="178" showIf="statusSelect >= 3"/>
 		    </panel>
@@ -499,7 +500,8 @@
     	<field name="freightCarrierMode" expr="eval: supplierPartner?.freightCarrierMode"/>
     	<field name="notes" expr="eval: supplierPartner?.purchaseOrderComments"/>
     	<field name="stockLocation" expr="call: com.axelor.apps.stock.service.PartnerStockSettingsService:getDefaultStockLocation(supplierPartner, company)" if="__config__.app.isApp('supplychain')"/>
- 	</action-record>
+			<field name="fromStockLocation" expr="call: com.axelor.apps.stock.service.PartnerStockSettingsService:getDefaultExternalStockLocation(supplierPartner, company)" if="__config__.app.isApp('supplychain')"/>
+		</action-record>
 
 	<action-record name="action-purchase-order-record-payment-mode" model="com.axelor.apps.purchase.db.PurchaseOrder">
 		<field name="paymentMode" expr="eval: supplierPartner?.outPaymentMode" if="supplierPartner?.outPaymentMode != null"/>
@@ -671,6 +673,7 @@
 		<field name="tradingName" hidden="true" if="!__config__.app.getApp('base').enableTradingNamesManagement"/>
 		<field name="companyBankDetails" hidden="true" if="!__config__.app.getApp('base').getManageMultiBanks()"/>
 		<field name="stockLocation" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="fromStockLocation" hidden="true" if="!__config__.app.isApp('supplychain')"/>
 		<field name="interco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
         <field name="createdByInterco" hidden="true" if="!__config__.app.isApp('supplychain')"/>
         <field name="expectedRealisationDate" hidden="true" if="!__config__.app.isApp('supplychain')"/>
