@@ -23,6 +23,7 @@ import com.axelor.apps.stock.db.PartnerStockSettings;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
+import java.util.Optional;
 
 public interface PartnerStockSettingsService {
 
@@ -51,4 +52,14 @@ public interface PartnerStockSettingsService {
    */
   @CallMethod
   public StockLocation getDefaultStockLocation(Partner partner, Company company);
+
+  /**
+   * Search for partner stock settings and returns default external default location for given
+   * partner and company
+   *
+   * @param partner
+   * @param company
+   * @return empty optional if the config is empty, else the found stock location.
+   */
+  Optional<StockLocation> getDefaultExternalStockLocation(Partner partner, Company company);
 }
