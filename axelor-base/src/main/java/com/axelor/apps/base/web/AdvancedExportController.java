@@ -217,14 +217,23 @@ public class AdvancedExportController {
   }
 
   @SuppressWarnings("unchecked")
-  private List<Long> createCriteria(ActionRequest request, AdvancedExport advancedExport) {
+  private List<Long> createCriteria(ActionRequest request, AdvancedExport advancedExport)
+      throws AxelorException {
+
+    List<Long> recordIds = null;
+
+    if (request.getContext().get("filterCondition") != null) {
+      recordIds = Beans.get(AdvancedExportService.class).getFilterConditionRecords(advancedExport);
+    }
 
     if (request.getContext().get("_criteria") != null) {
+
       if (request.getContext().get("_criteria").toString().startsWith("[")) {
         String ids = request.getContext().get("_criteria").toString();
-        return Splitter.on(", ").splitToList(ids.substring(1, ids.length() - 1)).stream()
-            .map(id -> Long.valueOf(id.toString()))
-            .collect(Collectors.toList());
+        recordIds.addAll(
+            Splitter.on(", ").splitToList(ids.substring(1, ids.length() - 1)).stream()
+                .map(id -> Long.valueOf(id.toString()))
+                .collect(Collectors.toList()));
 
       } else {
         ObjectMapper mapper = new ObjectMapper();
@@ -239,10 +248,10 @@ public class AdvancedExportController {
                 .getCriteria()
                 .createQuery(klass, filter)
                 .fetchSteam(advancedExport.getMaxExportLimit());
-        return listObj.map(it -> it.getId()).collect(Collectors.toList());
+        recordIds.addAll(listObj.map(it -> it.getId()).collect(Collectors.toList()));
       }
     }
-    return null;
+    return recordIds;
   }
 
   @SuppressWarnings("unchecked")

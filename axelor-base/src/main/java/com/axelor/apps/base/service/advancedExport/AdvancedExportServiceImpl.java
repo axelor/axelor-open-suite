@@ -613,4 +613,28 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
       return " " + Joiner.on(" ").join(joinItems);
     }
   }
+
+  @Override
+  public List<Long> getFilterConditionRecords(AdvancedExport advancedExport)
+      throws AxelorException {
+
+    List<Long> ids = null;
+    try {
+      StringBuilder recordsListQuery = new StringBuilder();
+      recordsListQuery.append(
+          "SELECT id FROM " + advancedExport.getMetaModel().getName() + " self WHERE (");
+      recordsListQuery.append(
+          StringUtils.isBlank(advancedExport.getFilterCondition())
+              ? ""
+              : advancedExport.getFilterCondition());
+      recordsListQuery.append(")");
+
+      Query query = JPA.em().createQuery(recordsListQuery.toString(), Long.class);
+      ids = query.getResultList();
+
+    } catch (Exception e) {
+      throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
+    }
+    return ids;
+  }
 }

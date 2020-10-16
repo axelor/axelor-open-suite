@@ -44,4 +44,6 @@ public interface AdvancedExportService {
   public boolean getIsReachMaxExportLimit();
 
   public String getExportFileName();
+
+  public List<Long> getFilterConditionRecords(AdvancedExport advancedExport) throws AxelorException;
 }
