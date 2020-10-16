@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+               
+	<module name="production" package="com.axelor.apps.production.db"/>
+	
+	<entity name="MachineTool" lang="java">
+		<string name="code" title="Code"/>
+		<string name="name" title="Name"/>
+		<string name="description" title="Description" large="true"/>
+		<string name="manufacturer" title="Manufacturer"/>
+		<decimal name="buyingPrice" title="Buying price"/>
+		<many-to-one name="buyingCurrency" ref="com.axelor.apps.base.db.Currency" title="Buying currency"/>
+		<decimal name="maintenanceCost" title="Maintenance cost"/>
+		<date name="buyingDate" title="Buying date"/>
+		<date name="manufDate" title="Manuf. date"/>
+		<long name="hoursOfUse" title="Hours of use"/>
+		<date name="lastOverhaulDate" title="Last overhaul date"/>
+		<date name="nextOverhaulDate" title="Next overhaul date"/>
+		<date name="disposalDate" title="Disposal date"/>
+		<many-to-one name="image" ref="com.axelor.meta.db.MetaFile" title="Image"/>
+		<many-to-one name="machine" ref="com.axelor.apps.production.db.Machine" title="Machine"/>
+	</entity>
+</domain-models>

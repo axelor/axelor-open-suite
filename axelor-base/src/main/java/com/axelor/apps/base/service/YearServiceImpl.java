@@ -79,11 +79,15 @@ public class YearServiceImpl implements YearService {
   }
 
   @Override
-  public Year getYear(LocalDate date, Company company) {
+  public Year getYear(LocalDate date, Company company, Integer type) {
 
     return yearRepository
         .all()
-        .filter("self.company = ?1 AND self.fromDate < ?2 AND self.toDate >= ?2", company, date)
+        .filter(
+            "self.company = ?1 AND self.fromDate <= ?2 AND self.toDate >= ?2 AND self.typeSelect = ?3",
+            company,
+            date,
+            type)
         .fetchOne();
   }
 }

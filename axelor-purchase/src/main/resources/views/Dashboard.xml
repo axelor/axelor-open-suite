@@ -44,39 +44,39 @@
 	<action-view name="dashlet.my.purchase.per.product.family.volume" title="My purchased qty by product accounting family"
 		model="com.axelor.apps.purchase.db.PurchaseOrder">
 	  <view type="chart" name="chart.my.purchase.per.product.family.volume"/>
-	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
 	</action-view>
 
 	<action-view name="dashlet.my.purchase.amount.per.product.family" title="My purchased amount by product accounting family"
 		model="com.axelor.apps.purchase.db.PurchaseOrder">
 	  <view type="chart" name="chart.my.purchase.amount.per.product.family"/>
-	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
 	</action-view>
 
 	<action-view name="dashlet.purchase.amount.per.product.family" title="Purchased amount by product accounting family"
 		model="com.axelor.apps.purchase.db.PurchaseOrder">
 	  <view type="chart" name="chart.purchase.amount.per.product.family"/>
-	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 	  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
 	</action-view>
 
 	<action-view name="dashlet.nbr.of.po.per.month" title="Nbr of PO by month" model="com.axelor.apps.purchase.db.PurchaseOrder">
 	  <view type="chart" name="chart.nbr.of.po.per.month"/>
-	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 
 	</action-view>
 	
 	<action-view name="dashlet.total.purchase.amount" title="Total Purchased Amount by month" model="com.axelor.apps.purchase.db.PurchaseOrder">
 	  <view type="chart" name="chart.total.purchase.amount"/>
-	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 
 	</action-view>	
 	
 	<action-view name="dashlet.total.purchase.qty" title="Total Purchased Qty by month" model="com.axelor.apps.purchase.db.PurchaseOrder">
 	  <view type="chart" name="chart.total.purchase.qty"/>
-	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 
 	</action-view>
 
@@ -109,19 +109,19 @@
 	
 	<action-view name="dashlet.purchase.order.volume.by.buyer.by.family" title="POs Volume by buyer by accounting family">
 	  <view type="chart" name="chart.purchase.order.volume.by.buyer.by.family"/>
-	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 
 	</action-view>
 	
 	<action-view name="dashlet.purchase.order.amount.by.family" title="Purchased amount by accounting family">
 	  <view type="chart" name="chart.purchase.order.amount.by.family"/>
-	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 
 	</action-view>
 	
 	<action-view name="dashlet.purchase.order.amount.distribution.by.family" title="Purchased amount distribution by accounting family">
 	  <view type="chart" name="chart.purchase.order.amount.distribution.by.family"/>
-	  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+	  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 
 	</action-view>
 

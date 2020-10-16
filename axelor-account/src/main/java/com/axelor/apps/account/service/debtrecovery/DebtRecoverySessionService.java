@@ -110,8 +110,8 @@ public class DebtRecoverySessionService {
     int levelMax = this.getMaxLevel(debtRecovery);
 
     // Test inutile... à verifier
-    if ((appAccountService.getTodayDate().isAfter(referenceDate)
-            || appAccountService.getTodayDate().isEqual(referenceDate))
+    if ((appAccountService.getTodayDate(debtRecovery.getCompany()).isAfter(referenceDate)
+            || appAccountService.getTodayDate(debtRecovery.getCompany()).isEqual(referenceDate))
         && balanceDueDebtRecovery.compareTo(BigDecimal.ZERO) > 0) {
       log.debug(
           "Si la date actuelle est égale ou ultérieur à la date de référence et le solde due relançable positif");
@@ -129,7 +129,7 @@ public class DebtRecoverySessionService {
           this.getDebtRecoveryMethodLine(debtRecovery, theoricalDebtRecoveryLevel);
 
       if ((!(referenceDate.plusDays(debtRecoveryMethodLine.getStandardDeadline()))
-              .isAfter(appAccountService.getTodayDate()))
+              .isAfter(appAccountService.getTodayDate(debtRecovery.getCompany())))
           && balanceDueDebtRecovery.compareTo(debtRecoveryMethodLine.getMinThreshold()) > 0) {
         log.debug("Si le seuil du solde exigible relançable est respecté et le délai est respecté");
 

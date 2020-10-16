@@ -15,7 +15,7 @@
 		<view type="form" name="lead-form"/>
 		<view-param name="search-filters" value="lead-filters"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 	
@@ -88,7 +88,7 @@
 		<view-param name="search-filters" value="opportunity-filters"/>
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
 	</action-view>
 			
 	<menuitem name="crm-root-meeting-my-calendar" parent="menu-calendar"
@@ -247,7 +247,7 @@
 		<view type="form" name="lead-form"/>
 		<view-param name="search-filters" value="lead-filters"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 	</action-view>
 	
@@ -262,7 +262,7 @@
 		<view-param name="search-filters" value="opportunity-filters"/>
 		<context name="_internalUserId" expr="eval:__user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-		<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+		<context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
 	</action-view>
 
 	<!-- CRM Dashboard Entry for CRM.... -->
@@ -301,7 +301,7 @@
 	<action-view name="crm.target.team.dashboard.view" title="Objectives team Dashboard">
 		<view type="dashboard" name="crm.target.team.dashboard" />
 		<context name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeamId()"/>
-		<context name="date" expr="eval:__config__.app.getTodayDate()"/>
+		<context name="date" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 	</action-view>
 	
 	

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+	<grid name="sop-grid" title="Sales and Operations Planning" model="com.axelor.apps.production.db.Sop">
+		<field name="categoryFamily" />
+	</grid>
+
+	<form name="sop-form" title="Sales and Operations Planning" model="com.axelor.apps.production.db.Sop" width="large">
+		<panel name="mainPanel">
+			<field name="categoryFamily" canEdit="false" />
+			<spacer name="categoryFamilySpacer" />
+			<panel-related name="sopLineListPanel" field="sopLineList" showIf="categoryFamily" form-view="sop-line-form" grid-view="sop-line-grid" colSpan="12" />
+		</panel>
+	</form>
+
+</object-views>
+

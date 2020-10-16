@@ -20,6 +20,7 @@ package com.axelor.csv.script;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -131,7 +132,7 @@ public class ImportSupplyChain {
         if (purchaseOrder.getValidationDate() != null) {
           date = purchaseOrder.getValidationDate();
         } else {
-          date = LocalDate.now();
+          date = Beans.get(AppBaseService.class).getTodayDate(purchaseOrder.getCompany());
         }
         invoice.setInvoiceDate(date);
         invoice.setOriginDate(date.minusDays(15));
@@ -175,7 +176,8 @@ public class ImportSupplyChain {
           invoice.setInvoiceDate(saleOrder.getConfirmationDateTime().toLocalDate());
 
         } else {
-          invoice.setInvoiceDate(LocalDate.now());
+          invoice.setInvoiceDate(
+              Beans.get(AppBaseService.class).getTodayDate(saleOrder.getCompany()));
         }
         invoiceService.validateAndVentilate(invoice);
 

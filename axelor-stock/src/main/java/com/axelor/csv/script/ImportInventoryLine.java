@@ -77,7 +77,8 @@ public class ImportInventoryLine {
             trackingNumberService.createTrackingNumber(
                 inventoryLine.getProduct(),
                 inventoryLine.getInventory().getStockLocation().getCompany(),
-                appBaseService.getTodayDate(),
+                appBaseService.getTodayDate(
+                    inventoryLine.getInventory().getStockLocation().getCompany()),
                 inventoryLine.getInventory().getInventorySeq());
 
         if (realQtyRemaning.compareTo(qtyByTracking) < 0) {

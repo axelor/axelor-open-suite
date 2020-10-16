@@ -125,7 +125,7 @@ public class ForecastRecapService {
     forecastRecap.clearForecastRecapLineList();
     forecastRecap.setCurrentBalance(forecastRecap.getStartingBalance());
 
-    today = appBaseService.getTodayDate();
+    today = appBaseService.getTodayDate(forecastRecap.getCompany());
     forecastRecapRepo.save(forecastRecap);
   }
 
@@ -277,7 +277,7 @@ public class ForecastRecapService {
                         .getAmount()
                         .multiply(opportunity.getProbability())
                         .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP),
-                    appBaseService.getTodayDate())
+                    appBaseService.getTodayDate(forecastRecap.getCompany()))
                 .setScale(2, RoundingMode.HALF_UP);
       } else if (forecastRecap.getOpportunitiesTypeSelect()
           == ForecastRecapRepository.OPPORTUNITY_TYPE_BEST) {
@@ -290,7 +290,7 @@ public class ForecastRecapService {
                         .getBestCase()
                         .multiply(opportunity.getProbability())
                         .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP),
-                    appBaseService.getTodayDate())
+                    appBaseService.getTodayDate(forecastRecap.getCompany()))
                 .setScale(2, RoundingMode.HALF_UP);
       } else {
         amountCompanyCurr =
@@ -302,7 +302,7 @@ public class ForecastRecapService {
                         .getWorstCase()
                         .multiply(opportunity.getProbability())
                         .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP),
-                    appBaseService.getTodayDate())
+                    appBaseService.getTodayDate(forecastRecap.getCompany()))
                 .setScale(2, RoundingMode.HALF_UP);
       }
       if (opportunity.getSalesStageSelect() == 9) {
@@ -340,7 +340,9 @@ public class ForecastRecapService {
             .all()
             .filter(
                 "self.company = ?1"
-                    + (forecastRecap.getBankDetails() != null ? " AND self.bankDetails = ?2" : "")
+                    + (forecastRecap.getBankDetails() != null
+                        ? " AND self.companyBankDetails = ?2"
+                        : "")
                     + " AND self.statusSelect IN (?3) AND self.operationTypeSelect = ?4 AND self.estimatedPaymentDate BETWEEN ?5 AND ?6 AND self.companyInTaxTotalRemaining != 0",
                 forecastRecap.getCompany(),
                 forecastRecap.getBankDetails(),
@@ -760,7 +762,7 @@ public class ForecastRecapService {
                   timetable.getSaleOrder().getCurrency(),
                   timetable.getSaleOrder().getCompany().getCurrency(),
                   timetable.getAmount(),
-                  appBaseService.getTodayDate())
+                  appBaseService.getTodayDate(forecastRecap.getCompany()))
               .setScale(2, RoundingMode.HALF_UP);
       if (timetable.getSaleOrder().getStatusSelect() == 2) {
         if (mapExpected.containsKey(timetable.getEstimatedDate())) {
@@ -852,9 +854,11 @@ public class ForecastRecapService {
       forecast = forecastRepo.find(forecast.getId());
       ForecastReason forecastReason = forecast.getForecastReason();
       LocalDate realizationDate =
-          forecast.getEstimatedDate().isAfter(appBaseService.getTodayDate())
+          forecast
+                  .getEstimatedDate()
+                  .isAfter(appBaseService.getTodayDate(forecastRecap.getCompany()))
               ? forecast.getEstimatedDate()
-              : appBaseService.getTodayDate();
+              : appBaseService.getTodayDate(forecastRecap.getCompany());
       this.createForecastRecapLine(
           realizationDate,
           forecast.getAmount().compareTo(BigDecimal.ZERO) == -1 ? 2 : 1,
@@ -889,9 +893,11 @@ public class ForecastRecapService {
       forecast = forecastRepo.find(forecast.getId());
       ForecastReason forecastReason = forecast.getForecastReason();
       LocalDate realizationDate =
-          forecast.getEstimatedDate().isAfter(appBaseService.getTodayDate())
+          forecast
+                  .getEstimatedDate()
+                  .isAfter(appBaseService.getTodayDate(forecastRecap.getCompany()))
               ? forecast.getEstimatedDate()
-              : appBaseService.getTodayDate();
+              : appBaseService.getTodayDate(forecastRecap.getCompany());
       this.createForecastRecapLine(
           realizationDate,
           forecast.getAmount().compareTo(BigDecimal.ZERO) == -1 ? 2 : 1,

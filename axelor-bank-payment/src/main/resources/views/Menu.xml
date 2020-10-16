@@ -145,7 +145,7 @@
 		<view type="grid" name="bank-statement-grid"/>
 		<view type="form" name="bank-statement-form"/>
 		<view-param name="search-filters" value="bank-statement-filters"/>
-	    <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+	    <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 	</action-view>
 	
 	<menuitem name="account-root-bank-reconciliation" parent="account-root"
@@ -160,7 +160,7 @@
 		<view type="grid" name="bank-reconciliation-grid"/>
 		<view type="form" name="bank-reconciliation-form"/>
 		<view-param name="search-filters" value="bank-reconciliation-filters"/>
-	    <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+	    <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 	</action-view>
 	
 	<menuitem name="account-root-bank-reconciliation-bank-reconciliation-line"

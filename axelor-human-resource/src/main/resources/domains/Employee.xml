@@ -81,7 +81,22 @@
    			public static final String SEX_M = "M";
    		]]>
    	</extra-code>
-      
+   	
+   	<track>
+		<field name="fixedProPhone" on="UPDATE"/>
+		<field name="mobileProPhone" on="UPDATE"/>
+		<field name="phoneAtCustomer" on="UPDATE"/>
+		<field name="managerUser" on="UPDATE"/>
+		<field name="exportCode" on="UPDATE"/>
+		<field name="weeklyPlanning" on="UPDATE"/>
+		<field name="hrManager" on="UPDATE"/>
+		<field name="external" on="UPDATE"/>
+		<field name="bonusCoef" on="UPDATE"/>
+		<field name="negativeValueLeave" on="UPDATE"/>
+		<field name="lunchVoucherFormatSelect" on="UPDATE"/>
+		<field name="companyCbSelect" on="UPDATE"/>
+	</track>
+   	
   </entity>
   
 </domain-models>

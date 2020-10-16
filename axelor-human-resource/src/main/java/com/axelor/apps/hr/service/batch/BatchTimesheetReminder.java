@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.hr.service.batch;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
@@ -27,6 +28,7 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -90,8 +92,8 @@ public class BatchTimesheetReminder extends BatchStrategy {
     super.stop();
   }
 
-  private List<Employee> getEmployeesWithoutRecentTimesheet() {
-    LocalDate now = LocalDate.now();
+  private List<Employee> getEmployeesWithoutRecentTimesheet(Company company) {
+    LocalDate now = appBaseService.getTodayDate(company);
     long daysBeforeReminder = batch.getHrBatch().getDaysBeforeReminder().longValue();
 
     List<Employee> employees =
@@ -129,7 +131,8 @@ public class BatchTimesheetReminder extends BatchStrategy {
   protected void sendReminderUsingEmployees(Template template)
       throws AxelorException, MessagingException, IOException, ClassNotFoundException,
           InstantiationException, IllegalAccessException {
-    for (Employee employee : getEmployeesWithoutRecentTimesheet()) {
+    for (Employee employee :
+        getEmployeesWithoutRecentTimesheet(AuthUtils.getUser().getActiveCompany())) {
       Message message = templateMessageService.generateMessage(employee, template);
       messageService.sendByEmail(message);
       incrementDone();
@@ -139,7 +142,8 @@ public class BatchTimesheetReminder extends BatchStrategy {
   protected void sendReminderUsingTimesheets(Template template)
       throws AxelorException, MessagingException, IOException, ClassNotFoundException,
           InstantiationException, IllegalAccessException {
-    for (Employee employee : getEmployeesWithoutRecentTimesheet()) {
+    for (Employee employee :
+        getEmployeesWithoutRecentTimesheet(AuthUtils.getUser().getActiveCompany())) {
       Timesheet timeSheet = getRecentEmployeeTimesheet(employee);
       if (timeSheet != null) {
         Message message = templateMessageService.generateMessage(timeSheet, template);

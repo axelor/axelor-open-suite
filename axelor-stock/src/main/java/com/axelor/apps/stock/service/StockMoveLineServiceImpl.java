@@ -630,11 +630,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       }
 
       if (product.getHasWarranty()
-              && trackingNumber.getWarrantyExpirationDate().isBefore(appBaseService.getTodayDate())
+              && trackingNumber
+                  .getWarrantyExpirationDate()
+                  .isBefore(appBaseService.getTodayDate(stockMove.getCompany()))
           || product.getIsPerishable()
               && trackingNumber
                   .getPerishableExpirationDate()
-                  .isBefore(appBaseService.getTodayDate())) {
+                  .isBefore(appBaseService.getTodayDate(stockMove.getCompany()))) {
         errorList.add(product.getName());
       }
     }
@@ -1192,7 +1194,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     if (stockMoveLine.getStockMove() != null) {
       this.updateAvailableQty(stockMoveLine, stockMoveLine.getStockMove().getFromStockLocation());
     }
-    if (stockMoveLine.getProduct() != null) {
+    if (stockMoveLine.getProduct() != null
+        && !stockMoveLine
+            .getProduct()
+            .getProductTypeSelect()
+            .equals(ProductRepository.PRODUCT_TYPE_SERVICE)) {
       BigDecimal availableQty = stockMoveLine.getAvailableQty();
       BigDecimal availableQtyForProduct = stockMoveLine.getAvailableQtyForProduct();
       BigDecimal realQty = stockMoveLine.getRealQty();

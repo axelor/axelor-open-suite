@@ -9,6 +9,10 @@
       
       <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Bank"/>
       
+      <track>
+	   <field name="bankDetails" on="UPDATE"/>
+      </track>
+      
   </entity>
   
 </domain-models>

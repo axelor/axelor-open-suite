@@ -163,4 +163,10 @@ public interface IExceptionMessage {
   // CostSheetLine service
   static final String MISSING_PRODUCT_PURCHASE_CURRENCY = /*$$(*/
       "Purchase currency is missing for product %s, please configure it." /*)*/;
+
+  //  Mrp service
+  String MRP_BOM_LEVEL_TOO_HIGH = /*$$(*/
+      "Configuration issue: the MRP execution was canceled because a loop was detected when searching for components in BOM." /*)*/;
+  String MRP_BOM_LEVEL_TOO_HIGH_PRODUCT = /*$$(*/
+      "Configuration issue in product %s: the MRP execution was canceled because a loop was detected when searching for components in BOM." /*)*/;
 }
