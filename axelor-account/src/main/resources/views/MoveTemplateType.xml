@@ -13,7 +13,7 @@
         <panel name="mainPanel" >
         	<field name="name"/>
         	<field name="code" x-bind="{{code|unaccent|uppercase}}" />
-        	<field name="typeSelect"/>
+        	<field name="typeSelect" required="true"/>
         </panel>
         
     </form>

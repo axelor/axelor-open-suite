@@ -118,7 +118,8 @@ public class CostSheetServiceImpl implements CostSheetService {
 
     costSheet.addCostSheetLineListItem(producedCostSheetLine);
     costSheet.setCalculationTypeSelect(CostSheetRepository.CALCULATION_BILL_OF_MATERIAL);
-    costSheet.setCalculationDate(Beans.get(AppBaseService.class).getTodayDate());
+    costSheet.setCalculationDate(
+        Beans.get(AppBaseService.class).getTodayDate(billOfMaterial.getCompany()));
     Company company = billOfMaterial.getCompany();
     if (company != null && company.getCurrency() != null) {
       costSheet.setCurrency(company.getCurrency());
@@ -166,7 +167,9 @@ public class CostSheetServiceImpl implements CostSheetService {
 
     costSheet.setCalculationTypeSelect(calculationTypeSelect);
     costSheet.setCalculationDate(
-        calculationDate != null ? calculationDate : Beans.get(AppBaseService.class).getTodayDate());
+        calculationDate != null
+            ? calculationDate
+            : Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()));
 
     BigDecimal producedQty =
         computeTotalProducedQty(
@@ -737,10 +740,7 @@ public class CostSheetServiceImpl implements CostSheetService {
       throws AxelorException {
     for (OperationOrder operationOrder : operationOrders) {
 
-      WorkCenter workCenter = operationOrder.getMachineWorkCenter();
-      if (workCenter == null) {
-        workCenter = operationOrder.getWorkCenter();
-      }
+      WorkCenter workCenter = operationOrder.getWorkCenter();
       if (workCenter == null) {
         continue;
       }

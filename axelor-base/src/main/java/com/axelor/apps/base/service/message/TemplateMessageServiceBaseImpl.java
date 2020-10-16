@@ -17,11 +17,9 @@
  */
 package com.axelor.apps.base.service.message;
 
-import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.BirtTemplateParameter;
-import com.axelor.apps.base.db.Language;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.service.MessageService;
@@ -34,6 +32,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.text.Templates;
 import com.axelor.tool.template.TemplateMaker;
 import com.google.inject.Inject;
 import java.io.File;
@@ -44,8 +43,7 @@ import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.Map;
 import java.util.Set;
 import org.eclipse.birt.core.data.DataTypeUtil;
 import org.eclipse.birt.core.exception.BirtException;
@@ -64,41 +62,29 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
   }
 
   @Override
-  public Set<MetaFile> getMetaFiles(Template template) throws AxelorException, IOException {
+  public Set<MetaFile> getMetaFiles(
+      Template template, Templates templates, Map<String, Object> templatesContext)
+      throws AxelorException, IOException {
 
-    Set<MetaFile> metaFiles = super.getMetaFiles(template);
+    Set<MetaFile> metaFiles = super.getMetaFiles(template, templates, templatesContext);
     if (template.getBirtTemplate() == null) {
       return metaFiles;
     }
 
-    Locale locale =
-        Optional.ofNullable(template.getLanguage())
-            .map(Language::getCode)
-            .map(Locale::new)
-            .orElseGet(AppFilter::getLocale);
-    maker.setLocale(locale);
-
-    metaFiles.add(createMetaFileUsingBirtTemplate(maker, template.getBirtTemplate()));
+    metaFiles.add(
+        createMetaFileUsingBirtTemplate(
+            null, template.getBirtTemplate(), templates, templatesContext));
 
     logger.debug("Metafile to attach: {}", metaFiles);
 
     return metaFiles;
   }
 
-  @Override
-  public TemplateMaker initMaker(long objectId, String model, String tag, Template template)
-      throws ClassNotFoundException {
-    Locale locale =
-        Optional.ofNullable(template.getLanguage())
-            .map(Language::getCode)
-            .map(Locale::new)
-            .orElseGet(AppFilter::getLocale);
-    maker.setLocale(locale);
-
-    return super.initMaker(objectId, model, tag, template);
-  }
-
-  public MetaFile createMetaFileUsingBirtTemplate(TemplateMaker maker, BirtTemplate birtTemplate)
+  public MetaFile createMetaFileUsingBirtTemplate(
+      TemplateMaker maker,
+      BirtTemplate birtTemplate,
+      Templates templates,
+      Map<String, Object> templatesContext)
       throws AxelorException, IOException {
 
     logger.debug("Generate birt metafile: {}", birtTemplate.getName());
@@ -110,6 +96,8 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
     File file =
         generateBirtTemplate(
             maker,
+            templates,
+            templatesContext,
             fileName,
             birtTemplate.getTemplateLink(),
             birtTemplate.getFormat(),
@@ -122,6 +110,8 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 
   public File generateBirtTemplate(
       TemplateMaker maker,
+      Templates templates,
+      Map<String, Object> templatesContext,
       String fileName,
       String modelPath,
       String format,
@@ -131,7 +121,14 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
     File birtTemplate = null;
 
     ReportSettings reportSettings =
-        generateTemplate(maker, fileName, modelPath, format, birtTemplateParameterList);
+        generateTemplate(
+            maker,
+            templates,
+            templatesContext,
+            fileName,
+            modelPath,
+            format,
+            birtTemplateParameterList);
 
     if (reportSettings != null) {
       birtTemplate = reportSettings.getFile();
@@ -141,7 +138,8 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
   }
 
   public String generateBirtTemplateLink(
-      TemplateMaker maker,
+      Templates templates,
+      Map<String, Object> templatesContext,
       String fileName,
       String modelPath,
       String format,
@@ -151,7 +149,14 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
     String birtTemplateFileLink = null;
 
     ReportSettings reportSettings =
-        generateTemplate(maker, fileName, modelPath, format, birtTemplateParameterList);
+        generateTemplate(
+            null,
+            templates,
+            templatesContext,
+            fileName,
+            modelPath,
+            format,
+            birtTemplateParameterList);
 
     if (reportSettings != null) {
       birtTemplateFileLink = reportSettings.getFileLink();
@@ -162,6 +167,8 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 
   private ReportSettings generateTemplate(
       TemplateMaker maker,
+      Templates templates,
+      Map<String, Object> templatesContext,
       String fileName,
       String modelPath,
       String format,
@@ -176,12 +183,19 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
         ReportFactory.createReport(modelPath, fileName).addFormat(format);
 
     for (BirtTemplateParameter birtTemplateParameter : birtTemplateParameterList) {
-      maker.setTemplate(birtTemplateParameter.getValue());
 
       try {
+        String parseValue = null;
+        if (maker != null) {
+          maker.setTemplate(birtTemplateParameter.getValue());
+          parseValue = maker.make();
+        } else {
+          parseValue =
+              templates.fromText(birtTemplateParameter.getValue()).make(templatesContext).render();
+        }
         reportSettings.addParam(
             birtTemplateParameter.getName(),
-            convertValue(birtTemplateParameter.getType(), maker.make()));
+            convertValue(birtTemplateParameter.getType(), parseValue));
       } catch (BirtException e) {
         throw new AxelorException(
             e.getCause(),

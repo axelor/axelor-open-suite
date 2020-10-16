@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  
+  <module name="docusign" package="com.axelor.apps.docusign.db"/>
+
+  <entity name="DocuSignEnvelopeSetting" lang="java">
+    
+    <string name="name" title="Name"/>
+    <many-to-one name="metaModel" title="Model" ref="com.axelor.meta.db.MetaModel"/>
+    <string name="emailSubject" title="Email subject"/>
+    <many-to-one name="docuSignAccount" title="DocuSign account" ref="com.axelor.apps.docusign.db.DocuSignAccount"/>
+    <one-to-many name="docuSignDocumentSettingList" title="Document settings" ref="com.axelor.apps.docusign.db.DocuSignDocumentSetting" mappedBy="docuSignEnvelopeSetting"/>     
+    <one-to-many name="docuSignSignerSettingList" title="Signer settings" ref="com.axelor.apps.docusign.db.DocuSignSignerSetting" mappedBy="docuSignEnvelopeSetting"/>
+    <boolean name="isOrderedDocuments" title="Ordered documents"/>
+    <boolean name="isOrderedSigners" title="Ordered signers"/>
+    <boolean name="activeWebhook" title="Active webhook" default="true"/>
+    <boolean name="checkEnvelopeStatus" title="Check envelope status" default="true"/>
+    <boolean name="checkRecipientStatus" title="Check recipient status"/>
+    <boolean name="checkEnvelopeStatusDelivered" title="Delivered"/>
+    <boolean name="checkEnvelopeStatusCompleted" title="Completed"  default="true"/>
+    <boolean name="checkEnvelopeStatusDeclined" title="Declined"  default="true"/>
+    <boolean name="checkEnvelopeStatusVoided" title="Voided"  default="true"/>
+    <boolean name="checkRecipientStatusDelivered" title="Delivered"/>
+    <boolean name="checkRecipientStatusCompleted" title="Completed"/>
+    <boolean name="checkRecipientStatusDeclined" title="Declined"/>    
+    
+  </entity>  
+  
+</domain-models>

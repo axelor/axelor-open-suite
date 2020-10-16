@@ -151,9 +151,11 @@ public class ManufOrderController {
     try {
       Context context = request.getContext();
       List<ManufOrder> manufOrders = new ArrayList<>();
+
       if (context.get("id") != null) {
         Long manufOrderId = (Long) request.getContext().get("id");
         manufOrders.add(Beans.get(ManufOrderRepository.class).find(manufOrderId));
+
       } else if (context.get("_ids") != null) {
         manufOrders =
             Beans.get(ManufOrderRepository.class)
@@ -165,9 +167,16 @@ public class ManufOrderController {
                     ManufOrderRepository.STATUS_CANCELED)
                 .fetch();
       }
+
       for (ManufOrder manufOrder : manufOrders) {
+
         Beans.get(ManufOrderWorkflowService.class).plan(manufOrder);
+
+        if (manufOrder.getProdProcess().getGeneratePurchaseOrderOnMoPlanning()) {
+          Beans.get(ManufOrderWorkflowService.class).createPurchaseOrder(manufOrder);
+        }
       }
+
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -187,7 +196,6 @@ public class ManufOrderController {
 
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
       manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
-
       Beans.get(ManufOrderStockMoveService.class).consumeInStockMoves(manufOrder);
       response.setReload(true);
     } catch (Exception e) {
@@ -435,7 +443,7 @@ public class ManufOrderController {
               .computeCostPrice(
                   manufOrder,
                   CostSheetRepository.CALCULATION_WORK_IN_PROGRESS,
-                  Beans.get(AppBaseService.class).getTodayDate());
+                  Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()));
 
       response.setView(
           ActionView.define(I18n.get("Cost sheet"))

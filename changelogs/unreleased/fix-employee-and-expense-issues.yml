@@ -1,0 +1,6 @@
+title: Fix Employees and expenses issues
+type: fix
+description: |
+  - On kilometric log, the total distance travelled is now updated only if the expense line is added.
+  - The kilometric log now has an unique constraint on employee and year.
+  - Error message when missing year has been improved to display the year's type.

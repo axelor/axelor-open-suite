@@ -106,7 +106,8 @@ public class GlobalAuditInterceptor extends AuditInterceptor {
       Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
 
     if (!super.onSave(entity, id, state, propertyNames, types)
-        || Arrays.asList(BACKLISTED_CLASSES).contains(entity.getClass())) {
+        || Arrays.asList(BACKLISTED_CLASSES).contains(entity.getClass())
+        || !(entity instanceof AuditableModel)) {
       return false;
     }
 
@@ -165,7 +166,8 @@ public class GlobalAuditInterceptor extends AuditInterceptor {
       Type[] types) {
 
     if (!super.onFlushDirty(entity, id, currentState, previousState, propertyNames, types)
-        || Arrays.asList(BACKLISTED_CLASSES).contains(entity.getClass())) {
+        || Arrays.asList(BACKLISTED_CLASSES).contains(entity.getClass())
+        || !(entity instanceof AuditableModel)) {
       return false;
     }
 
@@ -192,13 +194,13 @@ public class GlobalAuditInterceptor extends AuditInterceptor {
       if (currentState[i] instanceof AuditableModel || previousState[i] instanceof AuditableModel) {
 
         logLine.setNewValue(
-            currentState[i] == null
-                ? ""
-                : String.valueOf(((AuditableModel) currentState[i]).getId()));
+            currentState[i] instanceof AuditableModel
+                ? String.valueOf(((AuditableModel) currentState[i]).getId())
+                : "");
         logLine.setPreviousValue(
-            previousState[i] == null
-                ? ""
-                : String.valueOf(((AuditableModel) previousState[i]).getId()));
+            previousState[i] instanceof AuditableModel
+                ? String.valueOf(((AuditableModel) previousState[i]).getId())
+                : "");
 
       } else if (currentState[i] instanceof Collection || previousState[i] instanceof Collection) {
 
@@ -242,7 +244,8 @@ public class GlobalAuditInterceptor extends AuditInterceptor {
   public void onDelete(
       Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
     super.onDelete(entity, id, state, propertyNames, types);
-    if (!Arrays.asList(BACKLISTED_CLASSES).contains(entity.getClass())) {
+    if (entity instanceof AuditableModel
+        && !Arrays.asList(BACKLISTED_CLASSES).contains(entity.getClass())) {
       globalTracker.get().addLog((AuditableModel) entity, GlobalTrackingLogRepository.TYPE_DELETE);
     }
   }

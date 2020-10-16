@@ -72,7 +72,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
   @Override
   public SaleOrder createSaleOrder(Company company) throws AxelorException {
     SaleOrder saleOrder = new SaleOrder();
-    saleOrder.setCreationDate(appSaleService.getTodayDate());
+    saleOrder.setCreationDate(appSaleService.getTodayDate(company));
     if (company != null) {
       saleOrder.setCompany(company);
       saleOrder.setCurrency(company.getCurrency());
@@ -108,7 +108,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
 
     SaleOrder saleOrder = new SaleOrder();
     saleOrder.setClientPartner(clientPartner);
-    saleOrder.setCreationDate(appSaleService.getTodayDate());
+    saleOrder.setCreationDate(appSaleService.getTodayDate(company));
     saleOrder.setContactPartner(contactPartner);
     saleOrder.setCurrency(currency);
     saleOrder.setExternalReference(externalReference);
@@ -191,7 +191,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
             null,
             numSeq,
             externalRef,
-            LocalDate.now(),
+            appSaleService.getTodayDate(company),
             priceList,
             clientPartner,
             team);
@@ -232,7 +232,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       SaleOrder context, Currency wizardCurrency, PriceList wizardPriceList)
       throws AxelorException {
     SaleOrder copy = saleOrderRepo.copy(context, true);
-    copy.setCreationDate(appSaleService.getTodayDate());
+    copy.setCreationDate(appSaleService.getTodayDate(context.getCompany()));
     copy.setCurrency(wizardCurrency);
     copy.setPriceList(wizardPriceList);
 

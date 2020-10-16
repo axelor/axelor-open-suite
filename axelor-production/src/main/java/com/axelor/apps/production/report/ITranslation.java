@@ -145,6 +145,8 @@ public interface ITranslation {
       "BOM.defineSubBillOfMaterial"; /*)*/
   public static final String BILL_OF_MATERIAL_HAS_NO_MANAGE_STOCK = /*$$(*/
       "BOM.hasNoManageStock"; /*)*/
+  public static final String BILL_OF_MATERIAL_RESIDUAL_PRODUCTS = /*$$(*/
+      "BOM.residualProducts"; /*)*/
 
   String RAW_MATERIAL_REQUIREMENT_TITLE = /*$$(*/ "RawMaterialRequirement.title"; /*)*/
   String RAW_MATERIAL_REQUIREMENT_COMPANY = /*$$(*/ "RawMaterialRequirement.company"; /*)*/
@@ -211,4 +213,9 @@ public interface ITranslation {
       "CostSheet.calculationTypeBillOfMaterial"; /*)*/
   public static final String COST_SHEET_CALCULATION_DATE = /*$$(*/
       "CostSheet.calculationDate"; /*)*/
+
+  public static final String MPS_CHARGE_TITLE = /*$$(*/ "MpsCharge.title"; /*)*/
+  public static final String MPS_CHARGE_CODE = /*$$(*/ "MpsCharge.code"; /*)*/
+  public static final String MPS_CHARGE_START_MONTH = /*$$(*/ "MpsCharge.startMonth"; /*)*/
+  public static final String MPS_CHARGE_END_MONTH = /*$$(*/ "MpsCharge.endMonth"; /*)*/
 }

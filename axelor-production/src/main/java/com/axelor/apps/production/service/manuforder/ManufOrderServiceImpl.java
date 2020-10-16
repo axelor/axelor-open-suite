@@ -435,7 +435,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
     StockConfig stockConfig = stockConfigService.getStockConfig(company);
     StockLocation virtualStockLocation =
-        stockConfigService.getProductionVirtualStockLocation(stockConfig);
+        stockConfigService.getProductionVirtualStockLocation(stockConfig, false);
     StockLocation wasteStockLocation = stockConfigService.getWasteStockLocation(stockConfig);
 
     wasteStockMove =
@@ -446,7 +446,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             virtualStockLocation,
             wasteStockLocation,
             null,
-            appBaseService.getTodayDate(),
+            appBaseService.getTodayDate(company),
             manufOrder.getWasteProdDescription(),
             StockMoveRepository.TYPE_INTERNAL);
 

@@ -76,6 +76,13 @@ public class ProdProcessController {
       Beans.get(ProdProcessService.class).changeProdProcessListOutsourcing(prodProcess);
     }
     response.setValue("prodProcessLineList", prodProcess.getProdProcessLineList());
+    response.setHidden("prodProcessLineList.outsourcing", !prodProcess.getOutsourcing());
+
+    if (!prodProcess.getOutsourcing()) {
+      response.setValue("generatePurchaseOrderOnMoPlanning", false);
+      response.setValue("subcontractors", null);
+      response.setValue("outsourcingStockLocation", null);
+    }
   }
 
   public void print(ActionRequest request, ActionResponse response) throws AxelorException {

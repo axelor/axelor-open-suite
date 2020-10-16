@@ -1,0 +1,16 @@
+apply plugin: "com.axelor.app-module"
+
+apply from: "../version.gradle"
+
+apply {
+	version = openSuiteVersion
+}
+
+axelor {
+	title "Axelor :: Project DMS"
+	description "Axelor Project DMS Module"
+}
+
+dependencies {
+	api project(":modules:axelor-project")
+}

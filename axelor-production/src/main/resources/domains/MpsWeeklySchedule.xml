@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+  <module name="production" package="com.axelor.apps.production.db"/>
+
+  <entity name="MpsWeeklySchedule" lang="java" cachable="true">
+  		
+  		<string name="code" title="Code" unique="true"/>
+  		<string name="label" title="Label" namecolumn="true"/>
+  		
+  		<decimal name="hoursMonday" title="Monday hours"/>
+  		<decimal name="hoursTuesday" title="Tuesday hours"/>
+  		<decimal name="hoursWednesday" title="Wednesday hours"/>
+  		<decimal name="hoursThursday" title="Thursday hours"/>
+  		<decimal name="hoursFriday" title="Friday hours"/>
+  		<decimal name="hoursSaturday" title="Saturday hours"/>
+  		<decimal name="hoursSunday" title="Sunday hours"/>
+  		<decimal name="totalHours" title="Total hours" readonly="true"/>
+  		  	
+  </entity>
+  
+</domain-models>

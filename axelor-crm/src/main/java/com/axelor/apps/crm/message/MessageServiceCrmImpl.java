@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.crm.message;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Event;
@@ -41,8 +42,14 @@ public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
       MetaAttachmentRepository metaAttachmentRepository,
       MessageRepository messageRepository,
       SendMailQueueService sendMailQueueService,
-      UserService userService) {
-    super(metaAttachmentRepository, messageRepository, sendMailQueueService, userService);
+      UserService userService,
+      AppBaseService appBaseService) {
+    super(
+        metaAttachmentRepository,
+        messageRepository,
+        sendMailQueueService,
+        userService,
+        appBaseService);
   }
 
   @Transactional(rollbackOn = {Exception.class})

@@ -78,6 +78,10 @@
 		<many-to-many name="companySpecificProductFieldsList" ref="com.axelor.meta.db.MetaField" title="Company-specific product fields"/>
 
 	   	<one-to-many name="globalTrackingConfigurationLines" ref="com.axelor.apps.base.db.GlobalTrackingConfigurationLine" mappedBy="appBase" orphanRemoval="true"/>
+
+	   	<many-to-one name="defaultMailMessageTemplate" title="Default mail message template" ref="com.axelor.apps.message.db.Template"/>
+
+	   	<one-to-many name="mailTemplateAssociationList" title="Email template list for notifications" ref="com.axelor.apps.base.db.MailTemplateAssociation"/>
 		<extra-code>
 	   		<![CDATA[
 	   			public static final int DISCOUNT_SEPARATE = 1;

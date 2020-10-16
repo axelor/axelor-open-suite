@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -108,12 +109,16 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
                     (priceList.getApplicationBeginDate() == null
                             || priceList
                                     .getApplicationBeginDate()
-                                    .compareTo(appBaseService.getTodayDate())
+                                    .compareTo(
+                                        appBaseService.getTodayDate(
+                                            AuthUtils.getUser().getActiveCompany()))
                                 <= 0)
                         && (priceList.getApplicationEndDate() == null
                             || priceList
                                     .getApplicationEndDate()
-                                    .compareTo(appBaseService.getTodayDate())
+                                    .compareTo(
+                                        appBaseService.getTodayDate(
+                                            AuthUtils.getUser().getActiveCompany()))
                                 >= 0))
             .collect(Collectors.toList());
     if (priceLists.size() == 1) {
@@ -151,12 +156,16 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
                         && (priceList.getApplicationBeginDate() == null
                             || priceList
                                     .getApplicationBeginDate()
-                                    .compareTo(appBaseService.getTodayDate())
+                                    .compareTo(
+                                        appBaseService.getTodayDate(
+                                            AuthUtils.getUser().getActiveCompany()))
                                 <= 0)
                         && (priceList.getApplicationEndDate() == null
                             || priceList
                                     .getApplicationEndDate()
-                                    .compareTo(appBaseService.getTodayDate())
+                                    .compareTo(
+                                        appBaseService.getTodayDate(
+                                            AuthUtils.getUser().getActiveCompany()))
                                 >= 0))
             .collect(Collectors.toList());
     return "self.id IN (" + StringTool.getIdListString(priceLists) + ")";

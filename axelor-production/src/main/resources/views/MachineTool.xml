@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+			  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+
+	<grid model="com.axelor.apps.production.db.MachineTool" title="Tools" name="machine-tool-grid">
+		<hilite if="$moment(nextOverhaulDate).diff(todayDate,'days') &lt;= 0" color="danger"/>
+		<hilite if="$moment(nextOverhaulDate).diff(todayDate,'days') &lt; 30" color="warning"/>
+		<field name="code"/>
+		<field name="name"/>
+		<field name="description"/>
+		<field name="manufacturer"/>
+		<field name="buyingPrice"/>
+		<field name="buyingCurrency"/>
+		<field name="maintenanceCost"/>
+		<field name="buyingDate"/>
+		<field name="manufDate"/>
+		<field name="hoursOfUse" widget="duration"/>
+		<field name="lastOverhaulDate"/>
+		<field name="nextOverhaulDate"/>
+		<field name="disposalDate"/>
+		<field name="machine" hideIf="__parent__"/>
+	</grid>
+	
+	<grid model="com.axelor.apps.production.db.MachineTool" title="Tools" name="machine-tool-machine-grid">
+		<field name="code"/>
+		<field name="name"/>
+		<field name="description"/>
+		<field name="manufacturer"/>
+		<field name="buyingPrice"/>
+		<field name="buyingCurrency"/>
+		<field name="maintenanceCost"/>
+		<field name="buyingDate"/>
+		<field name="manufDate"/>
+		<field name="hoursOfUse" widget="duration"/>
+		<field name="lastOverhaulDate"/>
+		<field name="nextOverhaulDate"/>
+		<field name="disposalDate"/>
+	</grid>
+	
+	<form model="com.axelor.apps.production.db.MachineTool" title="Tool" name="machine-tool-form" width="large">
+	 	<panel name="mainPanel">
+	 		<panel name="informationPanel" colSpan="9">
+				<field name="image" showTitle="false" widget="Image" colSpan="12"/>
+				<field name="code" colSpan="6" x-bind="{{code|unaccent|uppercase}}"/>
+				<field name="name" colSpan="6"/>
+			</panel>
+		</panel>
+		<panel name="toolInformationPanel" title="Tool Information">
+			<field name="manufacturer"/>
+			<field name="buyingPrice"/>
+			<field name="buyingCurrency"/>
+			<field name="maintenanceCost"/>
+			<field name="machine" hideIf="$popup()"/>
+			<field name="buyingDate"/>
+			<field name="manufDate"/>
+			<field name="hoursOfUse" widget="duration" x-seconds="true" x-big="true"/>
+			<field name="lastOverhaulDate" colSpan="4"/>
+			<field name="nextOverhaulDate" colSpan="4"/>
+			<field name="disposalDate" colSpan="4"/>
+			<field name="description" colSpan="12"/>
+		</panel>	
+	</form>
+	
+</object-views>

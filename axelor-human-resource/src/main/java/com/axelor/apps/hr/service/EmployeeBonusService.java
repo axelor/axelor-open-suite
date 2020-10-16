@@ -69,7 +69,11 @@ public class EmployeeBonusService {
             .filter("self.mainEmploymentContract.payCompany = ?1", bonus.getCompany())
             .fetch();
     TemplateMaker maker =
-        new TemplateMaker(AppFilter.getLocale(), TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
+        new TemplateMaker(
+            bonus.getCompany().getTimezone(),
+            AppFilter.getLocale(),
+            TEMPLATE_DELIMITER,
+            TEMPLATE_DELIMITER);
     String eval;
     CompilerConfiguration conf = new CompilerConfiguration();
     ImportCustomizer customizer = new ImportCustomizer();

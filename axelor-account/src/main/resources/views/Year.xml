@@ -22,7 +22,7 @@
 			<panel name="datesPanel" title="Dates" colSpan="12">
 				<field name="fromDate" colSpan="3" readonlyIf="periodList.length > 0"/>
 				<field name="toDate" colSpan="3" readonlyIf="periodList.length > 0"/>
-				<field name="reportedBalanceDate" colSpan="3"/>
+				<field name="reportedBalanceDate" required="true" colSpan="3"/>
 			</panel>
 		</panel>
 		<panel-related name="periodListPanel" field="periodList" colSpan="12" readonlyIf="statusSelect == 2" form-view="period-year-form" grid-view="period-grid"/>

@@ -202,7 +202,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
           }
           break;
         default:
-          contract.setInvoicingDate(appBaseService.getTodayDate());
+          contract.setInvoicingDate(appBaseService.getTodayDate(contract.getCompany()));
       }
     }
   }
@@ -338,7 +338,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
             .isBefore(
                 durationService.computeDuration(
                     version.getPriorNoticeDuration(),
-                    Beans.get(AppBaseService.class).getTodayDate()))) {
+                    Beans.get(AppBaseService.class).getTodayDate(contract.getCompany())))) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.CONTRACT_PRIOR_DURATION_NOT_RESPECTED));
@@ -359,7 +359,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     contract.setTerminatedManually(isManual);
     contract.setTerminatedDate(date);
     if (isManual) {
-      contract.setTerminationDemandDate(appBaseService.getTodayDate());
+      contract.setTerminationDemandDate(appBaseService.getTodayDate(contract.getCompany()));
       contract.setTerminatedByUser(AuthUtils.getUser());
     }
     contract.setEndDate(date);
@@ -372,7 +372,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   @Override
   @Transactional
   public void close(Contract contract, LocalDate terminationDate) {
-    LocalDate today = appBaseService.getTodayDate();
+    LocalDate today = appBaseService.getTodayDate(contract.getCompany());
 
     ContractVersion currentVersion = contract.getCurrentContractVersion();
 
@@ -562,7 +562,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     TaxLine taxLine =
         Beans.get(AccountManagementService.class)
             .getTaxLine(
-                appBaseService.getTodayDate(),
+                appBaseService.getTodayDate(invoice.getCompany()),
                 invoiceLine.getProduct(),
                 invoice.getCompany(),
                 fiscalPosition,

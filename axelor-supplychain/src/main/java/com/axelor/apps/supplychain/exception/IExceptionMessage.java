@@ -118,9 +118,6 @@ public interface IExceptionMessage {
   static final String MRP_LINE_1 = /*$$(*/
       "No default supplier is defined for the product %s" /*)*/;
 
-  static final String MRP_MISSING_MRP_LINE_TYPE = /*$$(*/
-      "No move type found for element : %s" /*)*/;
-
   static final String MRP_MISSING_STOCK_LOCATION_VALID = /*$$(*/
       "No stock location valid. Please uncheck the chosen stock location 'is not in MRP'." /*)*/;
 
