@@ -17,6 +17,8 @@
  */
 package com.axelor.apps.talent.db.repo;
 
+import com.axelor.apps.crm.db.Event;
+import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.talent.db.Training;
 import com.axelor.apps.talent.db.TrainingRegister;
 import com.axelor.apps.talent.db.TrainingSession;
@@ -24,11 +26,14 @@ import com.axelor.apps.talent.exception.IExceptionMessage;
 import com.axelor.apps.talent.service.TrainingRegisterService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import java.util.List;
 import javax.validation.ValidationException;
 
 public class TrainingRegisterTalentRepository extends TrainingRegisterRepository {
 
   @Inject private TrainingRegisterService trainingRegisterService;
+
+  @Inject private EventRepository eventRepo;
 
   @Override
   public TrainingRegister save(TrainingRegister trainingRegister) {
@@ -65,6 +70,12 @@ public class TrainingRegisterTalentRepository extends TrainingRegisterRepository
 
     Training training = trainingRegister.getTraining();
     TrainingSession session = trainingRegister.getTrainingSession();
+
+    List<Event> eventList = trainingRegister.getEventList();
+
+    for (Event event : eventList) {
+      eventRepo.remove(event);
+    }
 
     super.remove(trainingRegister);
 

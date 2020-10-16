@@ -21,6 +21,7 @@ import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
@@ -28,6 +29,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
@@ -66,6 +68,8 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   @Inject protected AppSaleService appSaleService;
 
   @Inject protected AccountManagementService accountManagementService;
+
+  @Inject protected ProductCompanyService productCompanyService;
 
   @Override
   public void computeProductInformation(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
@@ -219,9 +223,16 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     }
 
     if (saleOrderLine.getProduct() != null
-        && saleOrderLine.getProduct().getCostPrice().compareTo(BigDecimal.ZERO) != 0) {
+        && ((BigDecimal)
+                    productCompanyService.get(
+                        saleOrderLine.getProduct(), "costPrice", saleOrder.getCompany()))
+                .compareTo(BigDecimal.ZERO)
+            != 0) {
       subTotalCostPrice =
-          saleOrderLine.getProduct().getCostPrice().multiply(saleOrderLine.getQty());
+          ((BigDecimal)
+                  productCompanyService.get(
+                      saleOrderLine.getProduct(), "costPrice", saleOrder.getCompany()))
+              .multiply(saleOrderLine.getQty());
     }
 
     saleOrderLine.setInTaxTotal(inTaxTotal);
@@ -299,14 +310,22 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       throws AxelorException {
     Product product = saleOrderLine.getProduct();
 
+    Boolean productInAti =
+        (Boolean) productCompanyService.get(product, "inAti", saleOrder.getCompany());
+    BigDecimal productSalePrice =
+        (BigDecimal) productCompanyService.get(product, "salePrice", saleOrder.getCompany());
+
     BigDecimal price =
-        (product.getInAti() == resultInAti)
-            ? product.getSalePrice()
-            : this.convertUnitPrice(product.getInAti(), taxLine, product.getSalePrice());
+        (productInAti == resultInAti)
+            ? productSalePrice
+            : this.convertUnitPrice(productInAti, taxLine, productSalePrice);
 
     return currencyService
         .getAmountCurrencyConvertedAtDate(
-            product.getSaleCurrency(), saleOrder.getCurrency(), price, saleOrder.getCreationDate())
+            (Currency) productCompanyService.get(product, "saleCurrency", saleOrder.getCompany()),
+            saleOrder.getCurrency(),
+            price,
+            saleOrder.getCreationDate())
         .setScale(appSaleService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
   }
 
@@ -344,9 +363,10 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
     return currencyService
         .getAmountCurrencyConvertedAtDate(
-            product.getPurchaseCurrency(),
+            (Currency)
+                productCompanyService.get(product, "purchaseCurrency", saleOrder.getCompany()),
             saleOrder.getCompany().getCurrency(),
-            product.getCostPrice(),
+            (BigDecimal) productCompanyService.get(product, "costPrice", saleOrder.getCompany()),
             saleOrder.getCreationDate())
         .setScale(AppSaleService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
   }
@@ -480,7 +500,11 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     BigDecimal totalWT = BigDecimal.ZERO;
 
     if (saleOrderLine.getProduct() != null
-        && saleOrderLine.getProduct().getCostPrice().compareTo(BigDecimal.ZERO) != 0
+        && ((BigDecimal)
+                    productCompanyService.get(
+                        saleOrderLine.getProduct(), "costPrice", saleOrder.getCompany()))
+                .compareTo(BigDecimal.ZERO)
+            != 0
         && saleOrderLine.getExTaxTotal().compareTo(BigDecimal.ZERO) != 0) {
 
       totalWT =

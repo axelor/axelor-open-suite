@@ -151,7 +151,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
         && computeNonCanceledInvoiceQty(stockMove).signum() > 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.STOCK_MOVE_PARTIAL_INVOICE_ERROR));
+          I18n.get(IExceptionMessage.STOCK_MOVE_PARTIAL_INVOICE_ERROR),
+          stockMove.getStockMoveSeq());
     }
 
     InvoiceGenerator invoiceGenerator =
@@ -172,6 +173,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       }
       invoice.setSaleOrder(saleOrder);
       this.extendInternalReference(stockMove, invoice);
+      invoice.setDeliveryAddress(stockMove.getToAddress());
+      invoice.setDeliveryAddressStr(stockMove.getToAddressStr());
       invoice.setAddressStr(saleOrder.getMainInvoicingAddressStr());
 
       // fill default advance payment invoice
@@ -210,13 +213,11 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
         supplyChainConfigService.getSupplyChainConfig(stockMove.getCompany());
     if (stockMoveLineList != null && supplyChainConfig.getActivateOutStockMovePartialInvoicing()) {
       for (SaleOrderLine saleOrderLine :
-          stockMoveLineList
-              .stream()
+          stockMoveLineList.stream()
               .map(StockMoveLine::getSaleOrderLine)
               .filter(Objects::nonNull)
               .collect(Collectors.toList())) {
-        if (stockMoveLineList
-                .stream()
+        if (stockMoveLineList.stream()
                 .filter(stockMoveLine -> saleOrderLine.equals(stockMoveLine.getSaleOrderLine()))
                 .count()
             > 1) {
@@ -625,16 +626,12 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
         && stockMove.getInvoiceSet() != null
         && !stockMove.getInvoiceSet().isEmpty()) {
       BigDecimal totalInvoicedQty =
-          stockMove
-              .getStockMoveLineList()
-              .stream()
+          stockMove.getStockMoveLineList().stream()
               .map(StockMoveLine::getQtyInvoiced)
               .reduce(BigDecimal::add)
               .orElse(BigDecimal.ZERO);
       BigDecimal totalRealQty =
-          stockMove
-              .getStockMoveLineList()
-              .stream()
+          stockMove.getStockMoveLineList().stream()
               .map(StockMoveLine::getRealQty)
               .reduce(BigDecimal::add)
               .orElse(BigDecimal.ZERO);

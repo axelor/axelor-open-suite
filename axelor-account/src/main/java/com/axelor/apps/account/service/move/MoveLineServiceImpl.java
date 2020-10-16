@@ -997,15 +997,11 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected Pair<List<MoveLine>, List<MoveLine>> findMoveLineLists(
       Pair<List<MoveLine>, List<MoveLine>> moveLineLists) {
     List<MoveLine> fetchedDebitMoveLineList =
-        moveLineLists
-            .getLeft()
-            .stream()
+        moveLineLists.getLeft().stream()
             .map(moveLine -> moveLineRepository.find(moveLine.getId()))
             .collect(Collectors.toList());
     List<MoveLine> fetchedCreditMoveLineList =
-        moveLineLists
-            .getRight()
-            .stream()
+        moveLineLists.getRight().stream()
             .map(moveLine -> moveLineRepository.find(moveLine.getId()))
             .collect(Collectors.toList());
     return Pair.of(fetchedDebitMoveLineList, fetchedCreditMoveLineList);
@@ -1250,7 +1246,7 @@ public class MoveLineServiceImpl implements MoveLineService {
               reconcile,
               vatRate,
               detailPaymentAmount,
-              Beans.get(AppBaseService.class).getTodayDate());
+              Beans.get(AppBaseService.class).getTodayDate(reconcile.getCompany()));
 
       taxPaymentMoveLine = taxPaymentMoveLineService.computeTaxAmount(taxPaymentMoveLine);
 

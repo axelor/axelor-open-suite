@@ -37,12 +37,13 @@ public class MrpController {
 
   public void undoManualChanges(ActionRequest request, ActionResponse response) {
     Mrp mrp = request.getContext().asType(Mrp.class);
+    MrpService mrpService = Beans.get(MrpService.class);
+    MrpRepository mrpRepository = Beans.get(MrpRepository.class);
     try {
-      Beans.get(MrpService.class)
-          .undoManualChanges(Beans.get(MrpRepository.class).find(mrp.getId()));
+      mrpService.undoManualChanges(mrpRepository.find(mrp.getId()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-      Beans.get(MrpService.class).reset(Beans.get(MrpRepository.class).find(mrp.getId()));
+      mrpService.reset(mrpRepository.find(mrp.getId()));
     } finally {
       response.setReload(true);
     }
@@ -51,11 +52,13 @@ public class MrpController {
   public void runCalculation(ActionRequest request, ActionResponse response) {
 
     Mrp mrp = request.getContext().asType(Mrp.class);
+    MrpService mrpService = Beans.get(MrpService.class);
+    MrpRepository mrpRepository = Beans.get(MrpRepository.class);
     try {
-      Beans.get(MrpService.class).runCalculation(Beans.get(MrpRepository.class).find(mrp.getId()));
+      mrpService.runCalculation(mrpRepository.find(mrp.getId()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-      Beans.get(MrpService.class).reset(Beans.get(MrpRepository.class).find(mrp.getId()));
+      mrpService.reset(mrpRepository.find(mrp.getId()));
     } finally {
       response.setReload(true);
     }
@@ -94,6 +97,7 @@ public class MrpController {
       String fileLink =
           ReportFactory.createReport(IReport.MRP_WEEKS, name)
               .addParam("mrpId", mrp.getId())
+              .addParam("Timezone", getTimezone(mrp))
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
               .addParam(
                   "endDate",
@@ -107,6 +111,13 @@ public class MrpController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  private String getTimezone(Mrp mrp) {
+    if (mrp.getStockLocation() == null || mrp.getStockLocation().getCompany() == null) {
+      return null;
+    }
+    return mrp.getStockLocation().getCompany().getTimezone();
   }
 
   /**
@@ -123,6 +134,7 @@ public class MrpController {
       String fileLink =
           ReportFactory.createReport(IReport.MRP_LIST, name)
               .addParam("mrpId", mrp.getId())
+              .addParam("Timezone", getTimezone(mrp))
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
               .addFormat(ReportSettings.FORMAT_PDF)
               .generate()

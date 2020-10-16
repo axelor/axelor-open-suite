@@ -24,7 +24,6 @@ import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Function;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
-import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.SyncContact;
 import com.axelor.apps.base.db.SyncContactHistoric;
 import com.axelor.apps.base.db.repo.AddressRepository;
@@ -42,17 +41,18 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.apps.tool.EmailTool;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Response;
-import com.beust.jcommander.Strings;
 import com.google.api.services.people.v1.model.Name;
 import com.google.api.services.people.v1.model.Organization;
 import com.google.api.services.people.v1.model.Person;
 import com.google.api.services.people.v1.model.PhoneNumber;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.HashSet;
@@ -81,7 +81,8 @@ public class SyncContactService {
   private FunctionRepository functionRepo;
 
   private String importOrigin =
-      "Import Google Contact " + Beans.get(AppBaseService.class).getTodayDate();
+      "Import Google Contact "
+          + Beans.get(AppBaseService.class).getTodayDate(AuthUtils.getUser().getActiveCompany());
 
   private static final String SYNC_CONTACT_OLD_EMAIL = /*$$(*/ "Old email" /*)*/;
   private static final String SYNC_CONTACT_GOOGLE_EMAIL = /*$$(*/ "Google email" /*)*/;
@@ -188,12 +189,12 @@ public class SyncContactService {
       return null;
     }
     Name nameGoogle = Mapper.toBean(Name.class, googlePerson.getNames().get(0));
-    if (Strings.isStringEmpty(nameGoogle.getFamilyName())) {
+    if (Strings.isNullOrEmpty(nameGoogle.getFamilyName())) {
       return null;
     }
     nameGoogle.setFamilyName(nameGoogle.getFamilyName().trim());
     String query = "self.name = '" + nameGoogle.getFamilyName() + "' ";
-    if (!Strings.isStringEmpty(nameGoogle.getGivenName())) {
+    if (!Strings.isNullOrEmpty(nameGoogle.getGivenName())) {
       nameGoogle.setGivenName(nameGoogle.getGivenName().trim());
       query += " AND self.firstName = '" + nameGoogle.getGivenName() + "' ";
     }
@@ -219,9 +220,7 @@ public class SyncContactService {
 
   protected void setDefaultPartnerValue(Partner partner) {
     partner.setPartnerTypeSelect(PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
-    Sequence partnerSeq =
-        Beans.get(SequenceRepository.class).findByCode(SequenceRepository.PARTNER);
-    String seq = Beans.get(SequenceService.class).getSequenceNumber(partnerSeq);
+    String seq = Beans.get(SequenceService.class).getSequenceNumber(SequenceRepository.PARTNER);
     partner.setUser(userService.getUser());
     partner.setPartnerSeq(seq);
     partner.setIsContact(true);
@@ -245,12 +244,12 @@ public class SyncContactService {
         Mapper.toBean(
             com.google.api.services.people.v1.model.EmailAddress.class,
             googlePerson.getEmailAddresses().get(0));
-    if (Strings.isStringEmpty(googleEmail.getValue())
+    if (Strings.isNullOrEmpty(googleEmail.getValue())
         || !EmailTool.isValidEmailAddress(googleEmail.getValue())) {
       return;
     }
     if (partner.getEmailAddress() == null
-        || Strings.isStringEmpty(partner.getEmailAddress().getAddress())) {
+        || Strings.isNullOrEmpty(partner.getEmailAddress().getAddress())) {
       EmailAddress partnerEmail = createEmailAddress(googleEmail.getValue());
       partnerEmail.setPartner(partner);
       partner.setEmailAddress(partnerEmail);
@@ -286,10 +285,10 @@ public class SyncContactService {
             com.google.api.services.people.v1.model.Address.class,
             googlePerson.getAddresses().get(0));
     // Google contact has empty address or not enough fields to create an address
-    if (Strings.isStringEmpty(googleAddr.getCountryCode())
-        || Strings.isStringEmpty(googleAddr.getCountry())
-        || Strings.isStringEmpty(googleAddr.getStreetAddress())
-        || Strings.isStringEmpty(googleAddr.getPostalCode())) {
+    if (Strings.isNullOrEmpty(googleAddr.getCountryCode())
+        || Strings.isNullOrEmpty(googleAddr.getCountry())
+        || Strings.isNullOrEmpty(googleAddr.getStreetAddress())
+        || Strings.isNullOrEmpty(googleAddr.getPostalCode())) {
       return;
     }
     String query =
@@ -300,7 +299,7 @@ public class SyncContactService {
             + "' AND self.addressL4 = '"
             + googleAddr.getStreetAddress()
             + "'";
-    if (!Strings.isStringEmpty(googleAddr.getCity())) {
+    if (!Strings.isNullOrEmpty(googleAddr.getCity())) {
       query += " AND self.city.name = '" + googleAddr.getCity() + "'";
     }
     Address partnerAddr = addressRepo.all().filter(query).fetchOne();
@@ -317,7 +316,7 @@ public class SyncContactService {
               partner, I18n.get(SYNC_CONTACT_OLD_ADDR), partner.getMainAddress().getFullName());
           partner.setMainAddress(partnerAddr);
           createPartnerAddress(partner, partnerAddr);
-        } else if (Strings.isStringEmpty(partner.getDescription())
+        } else if (Strings.isNullOrEmpty(partner.getDescription())
             || (partner.getDescription() != null
                 && !partner.getDescription().contains(googleAddr.getStreetAddress()))) {
           updateDescription(
@@ -344,7 +343,7 @@ public class SyncContactService {
       partnerCountry = createCountry(googleAddr.getCountry(), googleAddr.getCountryCode());
     }
     partnerAddr.setAddressL7Country(partnerCountry);
-    if (!Strings.isStringEmpty(googleAddr.getCity())) {
+    if (!Strings.isNullOrEmpty(googleAddr.getCity())) {
       City partnerCity = cityRepo.findByName(googleAddr.getCity());
       if (partnerCity == null) {
         partnerCity = createCity(googleAddr.getCity(), partnerCountry);
@@ -352,7 +351,7 @@ public class SyncContactService {
       partnerAddr.setCity(partnerCity);
     }
     StringBuilder addrL4 = new StringBuilder();
-    if (!Strings.isStringEmpty(googleAddr.getPoBox())) {
+    if (!Strings.isNullOrEmpty(googleAddr.getPoBox())) {
       addrL4.append(googleAddr.getPoBox()).append(" - ");
     }
     partnerAddr.setZip(googleAddr.getPostalCode());
@@ -389,7 +388,7 @@ public class SyncContactService {
     }
     PhoneNumber googleNumb =
         Mapper.toBean(PhoneNumber.class, googlePerson.getPhoneNumbers().get(0));
-    if (!Strings.isStringEmpty(googleNumb.getCanonicalForm())) {
+    if (!Strings.isNullOrEmpty(googleNumb.getCanonicalForm())) {
       if (partner.getMobilePhone() == null) {
         partner.setMobilePhone(googleNumb.getCanonicalForm().trim());
       } else {
@@ -433,7 +432,7 @@ public class SyncContactService {
     }
     Organization googleCompany =
         Mapper.toBean(Organization.class, googlePerson.getOrganizations().get(0));
-    if (!Strings.isStringEmpty(googleCompany.getName())) {
+    if (!Strings.isNullOrEmpty(googleCompany.getName())) {
       Company company = companyRepo.findByName(googleCompany.getName().trim());
       if (company == null) {
         updateDescription(partner, I18n.get(SYNC_CONTACT_COMPANY), googleCompany.getName());
@@ -454,7 +453,7 @@ public class SyncContactService {
   protected void importJobTitle(
       Partner partner, Boolean updateContactField, Organization googleCompany) {
     String jobTitle = googleCompany.getTitle();
-    if (!Strings.isStringEmpty(jobTitle)) {
+    if (!Strings.isNullOrEmpty(jobTitle)) {
       Function jobTitleFunction = functionRepo.findByName(jobTitle);
       if (partner.getJobTitleFunction() == null) {
         if (jobTitleFunction == null) {
@@ -496,7 +495,7 @@ public class SyncContactService {
   }
 
   protected String getPartnerDescription(Partner partner) {
-    if (Strings.isStringEmpty(partner.getDescription())) {
+    if (Strings.isNullOrEmpty(partner.getDescription())) {
       return "";
     }
     return partner.getDescription().equals("<br>") ? "" : partner.getDescription() + "<br>";

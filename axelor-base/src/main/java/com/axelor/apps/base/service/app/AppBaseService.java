@@ -18,6 +18,7 @@
 package com.axelor.apps.base.service.app;
 
 import com.axelor.apps.base.db.AppBase;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.Unit;
 import java.math.BigDecimal;
@@ -29,25 +30,48 @@ public interface AppBaseService extends AppService {
 
   public static final int DEFAULT_NB_DECIMAL_DIGITS = 2;
 
+  public static final int DEFAULT_TRACKING_MONTHS_PERSISTENCE = 1;
+
   public AppBase getAppBase();
 
   // Date du jour
 
   /**
-   * Récupérer la date du jour avec l'heure. Retourne la date du jour paramétré dans l'utilisateur
-   * si existe, sinon récupère celle de l'administration générale, sinon date du jour. private
+   * Retrieve the current date and time according to the server timezone. Returns the current date
+   * set in the user if it exists, otherwise retrieves the one from the general administration,
+   * otherwise the current date.
    *
    * @return
    */
   public ZonedDateTime getTodayDateTime();
 
   /**
-   * Récupérer la date du jour. Retourne la date du jour paramétré dans l'utilisateur si existe,
-   * sinon récupère celle de l'administration générale, sinon date du jour.
+   * Retrieve the current date and time according to the timezone entered in the given company.
+   * Returns the current date set in the user if it exists, otherwise retrieve the general
+   * administration's one, otherwise current date.
    *
    * @return
    */
+  public ZonedDateTime getTodayDateTime(Company company);
+
+  /**
+   * This method is deprecated. Please use the
+   * com.axelor.apps.base.service.app.AppBaseService#getTodayDate(com.axelor.apps.base.db.Company)
+   * method instead.
+   *
+   * @return
+   */
+  @Deprecated
   public LocalDate getTodayDate();
+
+  /**
+   * Retrieve the current date according to the timezone entered in the given company. Returns the
+   * current date set in the user if it exists, otherwise retrieves the one from the general
+   * administration, otherwise the current date.
+   *
+   * @return
+   */
+  public LocalDate getTodayDate(Company company);
 
   public Unit getUnit();
 
@@ -55,12 +79,14 @@ public interface AppBaseService extends AppService {
 
   public int getNbDecimalDigitForQty();
 
+  public int getGlobalTrackingLogPersistence();
+
   public String getDefaultPartnerLanguageCode();
 
   // Conversion de devise
 
   /**
-   * Obtenir la tva à 0%
+   * Get 0% vat
    *
    * @return
    */

@@ -110,12 +110,8 @@ public class AccountService {
 
   public List<Long> getSubAccounts(Long accountId) {
 
-    return accountRepository
-        .all()
-        .filter("self.parentAccount.id = ?1", accountId)
-        .select("id")
-        .fetch(0, 0)
-        .stream()
+    return accountRepository.all().filter("self.parentAccount.id = ?1", accountId).select("id")
+        .fetch(0, 0).stream()
         .map(m -> (Long) m.get("id"))
         .collect(Collectors.toList());
   }

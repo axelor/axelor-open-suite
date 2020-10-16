@@ -12,6 +12,6 @@ axelor {
 }
 
 dependencies {
-	compile project(":modules:axelor-production")
-	compile project(":modules:axelor-human-resource")
+	api project(":modules:axelor-production")
+	api project(":modules:axelor-human-resource")
 }

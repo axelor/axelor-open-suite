@@ -117,9 +117,8 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
 
   @Override
   @Transactional(
-    rollbackOn = {AxelorException.class, RuntimeException.class},
-    ignore = {BlockedSaleOrderException.class}
-  )
+      rollbackOn = {AxelorException.class, RuntimeException.class},
+      ignore = {BlockedSaleOrderException.class})
   public void finalizeQuotation(SaleOrder saleOrder) throws AxelorException {
 
     if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
@@ -180,7 +179,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       for (StockMove stockMove : stockMoves) {
         if (stockMove.getStatusSelect() == 1 || stockMove.getStatusSelect() == 2) {
           throw new AxelorException(
-              TraceBackRepository.TYPE_FUNCTIONNAL,
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
               I18n.get(IExceptionMessage.SALE_ORDER_COMPLETE_MANUALLY));
         }
       }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 	
 	<grid name="ticket-type-grid" title="All ticket types" model="com.axelor.apps.helpdesk.db.TicketType">
@@ -25,6 +25,7 @@
         <view type="grid" name="ticket-grid"/>
         <view type="form" name="ticket-form"/>
         <domain>self.ticketType = :id </domain>
+        <context name="_user" expr="eval: __user__"/>
     </action-view>
 
 </object-views>

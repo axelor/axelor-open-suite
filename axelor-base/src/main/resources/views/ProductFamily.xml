@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
     <grid name="product-family-grid" title="Product accounting families" model="com.axelor.apps.base.db.ProductFamily" orderBy="name">
         <field name="name"/>
@@ -26,7 +26,7 @@
     <action-view name="action-view-product-by-family" title="Products (${ name })" model="com.axelor.apps.base.db.Product">
 		<view type="grid" name="product-grid"/>
 		<view type="form" name="product-form"/>
-		<domain>self.productFamily.id = :_productFamilyId</domain>
+		<domain>self.productFamily.id = :_productFamilyId AND dtype = 'Product'</domain>
 		<context name="_productFamilyId" expr="eval: __this__.id"/>
 	</action-view>
 	

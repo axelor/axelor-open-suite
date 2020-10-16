@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 
 	<!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -251,6 +251,11 @@
 		<option value="2">Day</option>
 	</selection>
 	
+	<selection name="base.duration.application.type.select">
+		<option value="1">Sale order</option>
+		<option value="2">Contract</option>
+	</selection>
+	
 	<selection name="base.compute.method.discount.select">
 		<option value="1">Compute Discount Separately</option>
 		<option value="2">Include Discount in unit price only for replace type</option>
@@ -386,6 +391,7 @@
 
 	<selection name="meta.schedule.job.select">
 		<option value="com.axelor.mail.service.MailFetchJob">com.axelor.mail.service.MailFetchJob</option>
+		<option value="com.axelor.apps.base.job.GlobalTrackingLogCleaningJob">com.axelor.apps.base.job.GlobalTrackingLogCleaningJob</option>
 		<option value="com.axelor.apps.base.job.MailJob">com.axelor.apps.base.job.MailJob</option>
 		<option value="com.axelor.apps.base.job.BatchJob">com.axelor.apps.base.job.BatchJob</option>
 		<option value="com.axelor.apps.base.job.CurrencyConversionJob">com.axelor.apps.base.job.CurrencyConversionJob</option>
@@ -495,10 +501,69 @@
     <selection name="line.type.select">
         <option value="0">Standard</option>
         <option value="1">Title</option>
-    </selection>
+    </selection>    
     
     <selection name='trace.back.origin.select' id="trace.back.origin.select.base" >
     	<option value="import">Importing</option>
     </selection>
+    
+    <selection name="base.print.template.format.select">
+       <option value="PDF">PDF</option>
+       <option value="WORD">WORD</option>
+       <option value="ODT">ODT</option>
+    </selection>
+    
+    <selection name="base.print.display.type.select">
+       <option value="1">Portrait</option>
+       <option value="2">Landscape</option>
+    </selection>
+    
+    <selection name="print.template.line.test.reference.select">
+    	<option value="Default" order="0" hidden="true">Default</option>
+    </selection>
+    
+    <selection name="base.print.settings.footer.font.select">
+    	<option value="Courier">Courier</option>
+    	<option value="Courier-Bold">Courier-Bold</option>
+    	<option value="Courier-Oblique">Courier-Oblique</option>
+    	<option value="Courier-BoldOblique">Courier-BoldOblique</option>
+    	<option value="Helvetica">Helvetica</option>
+    	<option value="Helvetica-Bold">Helvetica-Bold</option>
+    	<option value="Helvetica-Oblique">Helvetica-Oblique</option>
+    	<option value="Helvetica-BoldOblique">Helvetica-BoldOblique</option>
+    	<option value="Symbol">Symbol</option>
+    	<option value="Times-Roman">Times-Roman</option>
+    	<option value="Times">Times</option>
+    	<option value="Times-Bold">Times-Bold</option>
+    	<option value="Times-Italic">Times-Italic</option>
+    	<option value="Times-BoldItalic">Times-BoldItalic</option>
+    	<option value="ZapfDingbats">ZapfDingbats</option>
+    </selection>
+    
+    <selection name="base.print.settings.footer.text.alignment.select">
+    	<option value="left">Left</option>
+    	<option value="right">Right</option>
+    	<option value="center">Center</option>
+    </selection>
+    
+    <selection name="base.print.settings.footer.font.color.select">
+    	<option value="blue">blue</option>
+    	<option value="cyan">cyan</option>
+    	<option value="dark-gray">dark-gray</option>
+    	<option value="gray">gray</option>
+    	<option value="green">green</option>
+    	<option value="light-gray">light-gray</option>
+    	<option value="magneta">magneta</option>
+    	<option value="orange">orange</option>
+    	<option value="pink">pink</option>
+    	<option value="red">red</option>
+    	<option value="white">white</option>
+    	<option value="yellow">yellow</option>
+    </selection>
+
+	<selection name="company.timezone.select">
+		<option value="Europe/Paris">Europe/Paris</option>
+		<option value="America/New_York">America/New_York</option>
+	</selection>
 
 </object-views>

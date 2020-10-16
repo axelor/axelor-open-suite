@@ -120,7 +120,7 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
       throws IOException {
 
     List<String[]> list = new ArrayList<>();
-    LocalDate today = Beans.get(AppBaseService.class).getTodayDate();
+    LocalDate today = Beans.get(AppBaseService.class).getTodayDate(hrBatch.getCompany());
 
     for (PayrollPreparation payrollPreparation : payrollPreparationList) {
       String[] item = new String[5];

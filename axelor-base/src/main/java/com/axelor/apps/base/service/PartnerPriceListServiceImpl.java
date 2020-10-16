@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.StringTool;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -54,8 +55,7 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
       return;
     }
     Set<PriceList> sortedPriceListSet =
-        priceListSet
-            .stream()
+        priceListSet.stream()
             .sorted(
                 Comparator.comparing(
                     priceList ->
@@ -103,19 +103,22 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
       return null;
     }
     List<PriceList> priceLists =
-        priceListSet
-            .stream()
+        priceListSet.stream()
             .filter(
                 priceList ->
                     (priceList.getApplicationBeginDate() == null
                             || priceList
                                     .getApplicationBeginDate()
-                                    .compareTo(appBaseService.getTodayDate())
+                                    .compareTo(
+                                        appBaseService.getTodayDate(
+                                            AuthUtils.getUser().getActiveCompany()))
                                 <= 0)
                         && (priceList.getApplicationEndDate() == null
                             || priceList
                                     .getApplicationEndDate()
-                                    .compareTo(appBaseService.getTodayDate())
+                                    .compareTo(
+                                        appBaseService.getTodayDate(
+                                            AuthUtils.getUser().getActiveCompany()))
                                 >= 0))
             .collect(Collectors.toList());
     if (priceLists.size() == 1) {
@@ -145,8 +148,7 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
       return "self.id IN (0)";
     }
     List<PriceList> priceLists =
-        partnerPriceLists
-            .stream()
+        partnerPriceLists.stream()
             .flatMap(partnerPriceList1 -> partnerPriceList1.getPriceListSet().stream())
             .filter(
                 priceList ->
@@ -154,12 +156,16 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
                         && (priceList.getApplicationBeginDate() == null
                             || priceList
                                     .getApplicationBeginDate()
-                                    .compareTo(appBaseService.getTodayDate())
+                                    .compareTo(
+                                        appBaseService.getTodayDate(
+                                            AuthUtils.getUser().getActiveCompany()))
                                 <= 0)
                         && (priceList.getApplicationEndDate() == null
                             || priceList
                                     .getApplicationEndDate()
-                                    .compareTo(appBaseService.getTodayDate())
+                                    .compareTo(
+                                        appBaseService.getTodayDate(
+                                            AuthUtils.getUser().getActiveCompany()))
                                 >= 0))
             .collect(Collectors.toList());
     return "self.id IN (" + StringTool.getIdListString(priceLists) + ")";

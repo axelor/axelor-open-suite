@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	
+	<form name="app-supplier-portal-config-form" title="App Supplier Portal" model="com.axelor.apps.base.db.AppSupplierPortal" canDelete="false" canNew="false" width="large">
+		<panel title="Displaying module portal" name="appPortalConfigPanel" colSpan="12" itemSpan="4">
+		    	<field name="managePurchaseOrders" widget="boolean-switch"/>
+		    	<field name="manageInvoices"  widget="boolean-switch"/>
+		    	<field name="manageDelivery" widget="boolean-switch"/>
+		    	<field name="showCatalog" widget="boolean-switch"/>
+		    	<field name="allowSupplierToCreateProducts"  widget="boolean-switch"/>
+		    </panel>
+				        
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+			<mail-followers/>
+		</panel-mail>
+        
+	</form>
+	
+	
+</object-views>

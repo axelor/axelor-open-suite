@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 	<grid name="bank-details-grid" title="Bank details" model="com.axelor.apps.base.db.BankDetails">
 		<toolbar>
@@ -32,6 +32,8 @@
         <panel name="currencyPanel">
 			<field name="label"/>
 			<field name="currency"/>
+			<field name="bankAccount" showIf="company != null" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"/>
+			<field name="journal" showIf="company != null" domain="self.company = :company AND self.statusSelect = 1"/>
             <field name="code" x-bind="{{code|uppercase}}" hidden="true" />
 		</panel>
 		<panel name="activePanel" sidebar="true">
@@ -157,9 +159,9 @@
 	</action-record>
 
 	<action-record name="action-set-default-partner" model="com.axelor.apps.base.db.BankDetails">
-		<field name="partner" expr="eval:_parent" if="_parent != null &amp;&amp; _parent.get('_model') == 'com.axelor.apps.base.db.Partner'" />
-		<field name="ownerName" if="_parent != null &amp;&amp; _parent.get('_model') == 'com.axelor.apps.base.db.Partner'"
-			expr="eval:_parent != null ? (_parent.name != null ? _parent.name : '') + ' ' + (_parent.firstName != null ? _parent.firstName : '') : ''" />
+		<field name="partner" expr="eval:__parent__" if="__parent__ != null &amp;&amp; __parent__.get('_model') == 'com.axelor.apps.base.db.Partner'" />
+		<field name="ownerName" if="__parent__ != null &amp;&amp; __parent__.get('_model') == 'com.axelor.apps.base.db.Partner'"
+			expr="eval:__parent__ != null ? (__parent__.name != null ? __parent__.name : '') + ' ' + (__parent__.firstName != null ? __parent__.firstName : '') : ''" />
 	</action-record>
 
 	<action-record name="action-set-default-bank" model="com.axelor.apps.base.db.BankDetails">
@@ -167,9 +169,9 @@
 	</action-record>
 
 	<action-validate name="action-validate-bank-details-bbanKey">
-		<error message="Incorrect BBAN Key"
-			if="bank.bankDetailsTypeSelect == 1 &amp;&amp; ( 97 - ( ( 89 * Long.parseLong( bankCode ) + 15 * Long.parseLong( sortCode ) + 3 * Long.parseLong( accountNbr.replaceAll('[ajAJ]','1').replaceAll('[bksBKS]','2').replaceAll('[cltCLT]','3').replaceAll('[dmuDMU]','4').replaceAll('[envENV]','5').replaceAll('[fowFOW]','6').replaceAll('[gpxGPX]','7').replaceAll('[hqyHQY]','8').replaceAll('[irzIRZ]','9') ) ) % 97 )  != Long.parseLong( bbanKey ))" />
-	</action-validate>
+      <error message="Incorrect BBAN Key"
+         if="bankCode == null || sortCode == null  || accountNbr == null || bbanKey == null || ( bank.bankDetailsTypeSelect == 1 &amp;&amp; ( 97 - ( ( 89 * Long.parseLong( bankCode ) + 15 * Long.parseLong( sortCode ) + 3 * Long.parseLong( accountNbr.replaceAll('[ajAJ]','1').replaceAll('[bksBKS]','2').replaceAll('[cltCLT]','3').replaceAll('[dmuDMU]','4').replaceAll('[envENV]','5').replaceAll('[fowFOW]','6').replaceAll('[gpxGPX]','7').replaceAll('[hqyHQY]','8').replaceAll('[irzIRZ]','9') ) ) % 97 )  != Long.parseLong( bbanKey )))" />
+   </action-validate>
 
 	<action-attrs name="action-attrs-account-bankdetails-bank-empty-address">
 		<attribute for="bankAddress" name="value" expr="eval: null"/>

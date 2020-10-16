@@ -52,6 +52,7 @@ public class TimesheetReportController {
     String fileLink =
         ReportFactory.createReport(IReport.EMPLOYEE_TIMESHEET, name)
             .addParam("TimesheetReportId", timesheetReport.getId().toString())
+            .addParam("Timezone", null)
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
             .addParam(
                 "FromDate",

@@ -192,8 +192,7 @@ public class ClientViewServiceImpl implements ClientViewService {
     List<Invoice> invoiceList = Filter.and(filters).build(Invoice.class).fetch();
     if (!invoiceList.isEmpty()) {
       BigDecimal total =
-          invoiceList
-              .stream()
+          invoiceList.stream()
               .map(Invoice::getAmountRemaining)
               .reduce((x, y) -> x.add(y))
               .orElse(BigDecimal.ZERO);

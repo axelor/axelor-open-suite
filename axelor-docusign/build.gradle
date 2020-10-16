@@ -1,0 +1,65 @@
+plugins {
+  id 'com.github.johnrengelman.shadow' version '5.2.0'
+  id 'java'
+}
+apply plugin: "com.axelor.app-module"
+
+apply from: "../libs.gradle"
+apply from: "../version.gradle"
+
+apply {
+	version = openSuiteVersion
+}
+
+axelor {
+	title "Axelor DocuSign"
+	description "Axelor DocuSign Module"
+}
+
+configurations {
+    docusignDeps
+}
+
+ext {
+	docusignVersion = "3.8.0"
+	docusignJarDir = ".jar"
+    docusignJarName = 'shadow-docusign.jar'    
+}
+
+dependencies {
+	api project(":modules:axelor-base")     
+ 
+	docusignDeps "com.docusign:docusign-esign-java:${docusignVersion}"	                      
+	implementation files("${docusignJarDir}/${docusignJarName}")	
+}
+
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+task shadowDocusignDeps(type: ShadowJar) {    
+    destinationDir = file(docusignJarDir)
+    archiveName = docusignJarName
+    zip64 true    
+    configurations = [project.configurations.docusignDeps]
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'    
+    
+    relocate "com.auth0","shadow.docusign.com.auth0"
+    relocate "com.fasterxml","shadow.docusign.com.fasterxml"
+    relocate "com.migcomponents","shadow.docusign.com.migcomponents"
+    relocate "io.swagger","shadow.docusign.io.swagger"
+    relocate "javassist","shadow.docusign.javassist"
+    relocate "javax.activation","shadow.docusign.javax.activation"
+    relocate "javax.annotation","shadow.docusign.javax.annotation"
+    relocate "javax.inject","shadow.docusign.javax.inject"
+    relocate "javax.ws","shadow.docusign.javax.ws"      
+    relocate "org.aopalliance","shadow.docusign.org.aopalliance"
+    relocate "org.apache","shadow.docusign.org.apache"    
+    relocate "org.joda","shadow.docusign.org.joda"
+    relocate "org.json","shadow.docusign.org.json"    
+    relocate "org.slf4j","shadow.docusign.org.slf4j"        
+}
+
+task cleanDocusignJarDir(type: Delete){
+  delete docusignJarDir
+}
+
+clean.finalizedBy cleanDocusignJarDir
+compileJava.dependsOn shadowDocusignDeps

@@ -70,8 +70,7 @@ public class BudgetService {
     }
 
     BigDecimal totalAmountRealized =
-        budgetLineList
-            .stream()
+        budgetLineList.stream()
             .map(BudgetLine::getAmountRealized)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
@@ -227,8 +226,7 @@ public class BudgetService {
       return;
     }
 
-    invoiceLineList
-        .stream()
+    invoiceLineList.stream()
         .filter(invoiceLine -> invoiceLine.getBudgetDistributionList() != null)
         .flatMap(x -> x.getBudgetDistributionList().stream())
         .forEach(

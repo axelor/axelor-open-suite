@@ -44,6 +44,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.CallMethod;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
@@ -273,7 +274,7 @@ public class LeaveController {
           response.setAlert(
               String.format(
                       I18n.get(IExceptionMessage.LEAVE_ALLOW_NEGATIVE_VALUE_REASON),
-                      leaveRequest.getLeaveLine().getLeaveReason().getLeaveReason())
+                      leaveRequest.getLeaveLine().getLeaveReason().getName())
                   + " "
                   + instruction);
           return;
@@ -281,7 +282,7 @@ public class LeaveController {
           response.setNotify(
               String.format(
                   I18n.get(IExceptionMessage.LEAVE_ALLOW_NEGATIVE_ALERT),
-                  leaveRequest.getLeaveLine().getLeaveReason().getLeaveReason()));
+                  leaveRequest.getLeaveLine().getLeaveReason().getName()));
         }
       }
 
@@ -432,6 +433,7 @@ public class LeaveController {
     }
   }
 
+  @CallMethod
   public String leaveValidateMenuTag() {
 
     return Beans.get(HRMenuTagService.class)

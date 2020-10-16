@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+
+  <module name="supplierportal" package="com.axelor.apps.supplierportal.db"/>
+
+  <entity name="ProductSupplier" lang="java">
+  	<string name="productCode" title="Code" unique="true"/>
+  	<string name="productName" title="Name"/>
+  	<many-to-one name="imgProduct" ref="com.axelor.meta.db.MetaFile" title="Picture" />
+  	<many-to-one name="purchaseUnit" ref="com.axelor.apps.base.db.Unit" title="Purchase unit" />
+  	<decimal name="purchasePrice" title="Purchase price W.T." precision="20" scale="10" />
+  	<many-to-one name="purchaseCurrency" ref="com.axelor.apps.base.db.Currency"	title="Purchase currency" />
+	<string name="description" large="true" title="Description"	translatable="true" />
+	<many-to-one name="productCreated" title="Product created" ref="com.axelor.apps.base.db.Product" readonly="true" />
+  </entity>
+  
+</domain-models>

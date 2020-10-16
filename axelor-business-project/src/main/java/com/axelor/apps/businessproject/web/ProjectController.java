@@ -85,6 +85,9 @@ public class ProjectController {
     String fileLink =
         ReportFactory.createReport(IReport.PROJECT, name + "-${date}")
             .addParam("ProjectId", project.getId())
+            .addParam(
+                "Timezone",
+                project.getCompany() != null ? project.getCompany().getTimezone() : null)
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
             .toAttach(project)
             .generate()
@@ -158,6 +161,9 @@ public class ProjectController {
     String fileLink =
         ReportFactory.createReport(IReport.PLANNIF_AND_COST, name)
             .addParam("ProjectId", project.getId())
+            .addParam(
+                "Timezone",
+                project.getCompany() != null ? project.getCompany().getTimezone() : null)
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
             .toAttach(project)
             .generate()

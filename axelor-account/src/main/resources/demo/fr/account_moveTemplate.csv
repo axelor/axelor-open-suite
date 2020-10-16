@@ -1,0 +1,5 @@
+"importId";"name";"code";"journal";"type";"endOfValidityDateShift"
+1;"Location";"LOC";15;1;6
+2;"Prêt bancaire";"PBA";3;1;12
+3;"Encaissement par virement";"EPV";19;2;
+4;"Achat";"ACH";3;2;

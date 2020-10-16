@@ -1,12 +1,13 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
     <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
     <entity name="EmploymentContractType" lang="java">
     	<string name="name" title="Name" required="true" />
+    	<one-to-many name="employmentContractSubTypeList" ref="com.axelor.apps.hr.db.EmploymentContractSubType" title="Contract sub type"/>
     </entity>
 
 </domain-models>

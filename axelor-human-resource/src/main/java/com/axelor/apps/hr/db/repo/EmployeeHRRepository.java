@@ -55,7 +55,7 @@ public class EmployeeHRRepository extends EmployeeRepository {
     entity.setPhoneAtCustomer(null);
     entity.setEmergencyContact(null);
     entity.setEmergencyNumber(null);
-    entity.setDateOfHire(null);
+    entity.setHireDate(null);
     entity.setSeniorityDate(null);
     entity.setProfitSharingBeneficiary(null);
     entity.setMainEmploymentContract(null);
@@ -82,6 +82,9 @@ public class EmployeeHRRepository extends EmployeeRepository {
         userRepo.save(user);
       }
     }
+
+    super.remove(employee);
+
     if (employee.getContactPartner() != null) {
       PartnerBaseRepository partnerRepo = Beans.get(PartnerBaseRepository.class);
       Partner partner = partnerRepo.find(employee.getContactPartner().getId());
@@ -90,6 +93,5 @@ public class EmployeeHRRepository extends EmployeeRepository {
         partnerRepo.save(partner);
       }
     }
-    super.remove(employee);
   }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="userProperties">
         <structure>
             <property name="name">test</property>
@@ -58,9 +58,6 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">1</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
@@ -74,9 +71,6 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">axelor</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -89,9 +83,6 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor_open_suite</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -2856,6 +2847,13 @@ from base_app_base]]></xml-property>
                     <expression name="expression" type="javascript">dataSetRow["contactPartnerTitleSelect"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
+                <structure>
+                    <property name="name">EndValidityDate</property>
+                    <text-property name="displayName">EndValidityDate</text-property>
+                    <expression name="expression" type="javascript">row["end_of_validity_date"]</expression>
+                    <property name="dataType">date</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <method name="onPrepare"><![CDATA[String.prototype.repeat = String.prototype.repeat ||
   function(n) {
@@ -2997,6 +2995,7 @@ from base_app_base]]></xml-property>
                                 <text id="3425">
                                     <property name="fontSize">9pt</property>
                                     <property name="marginLeft">2pt</property>
+                                    <property name="display">inline</property>
                                     <property name="dataSet">TranslateDS</property>
                                     <list-property name="visibility">
                                         <structure>
@@ -3027,8 +3026,17 @@ from base_app_base]]></xml-property>
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF format="dd/MM/yyyy">row._outer["CreationDate"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
                                 </text>
+                                <data id="5399">
+                                    <property name="fontSize">9pt</property>
+                                    <structure name="dateTimeFormat">
+                                        <property name="category">Short Date</property>
+                                        <property name="pattern">Short Date</property>
+                                    </structure>
+                                    <property name="display">inline</property>
+                                    <property name="resultSetColumn">CreationDate</property>
+                                </data>
                             </cell>
                         </row>
                         <row id="4381">
@@ -3154,35 +3162,14 @@ from base_app_base]]></xml-property>
                                 </structure>
                             </list-property>
                             <cell id="4385">
-                                <text id="4386">
+                                <data id="5396">
                                     <property name="fontSize">9pt</property>
-                                    <property name="marginLeft">2pt</property>
-                                    <property name="dataSet">TranslateDS</property>
-                                    <list-property name="paramBindings">
-                                        <structure>
-                                            <property name="paramName">param_1</property>
-                                            <simple-property-list name="expression">
-                                                <value type="javascript">'SaleOrder.validityDate'</value>
-                                            </simple-property-list>
-                                        </structure>
-                                    </list-property>
-                                    <list-property name="boundDataColumns">
-                                        <structure>
-                                            <property name="name">message_key</property>
-                                            <text-property name="displayName">message_key</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                            <property name="dataType">string</property>
-                                        </structure>
-                                        <structure>
-                                            <property name="name">translation</property>
-                                            <text-property name="displayName">translation</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                            <property name="dataType">string</property>
-                                        </structure>
-                                    </list-property>
-                                    <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF format="Short Date">row._outer["end_of_validity_date"]</VALUE-OF>]]></text-property>
-                                </text>
+                                    <structure name="dateTimeFormat">
+                                        <property name="category">Short Date</property>
+                                        <property name="pattern">Short Date</property>
+                                    </structure>
+                                    <property name="resultSetColumn">EndValidityDate</property>
+                                </data>
                             </cell>
                         </row>
                         <row id="3884">
@@ -3509,41 +3496,14 @@ from base_app_base]]></xml-property>
                         </row>
                         <row id="3864">
                             <cell id="3865">
-                                <text id="3866">
+                                <data id="5397">
                                     <property name="fontSize">9pt</property>
-                                    <property name="marginLeft">2pt</property>
-                                    <property name="dataSet">TranslateDS</property>
-                                    <list-property name="visibility">
-                                        <structure>
-                                            <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">row._outer["ShipmentDate"] == null</expression>
-                                        </structure>
-                                    </list-property>
-                                    <list-property name="paramBindings">
-                                        <structure>
-                                            <property name="paramName">param_1</property>
-                                            <simple-property-list name="expression">
-                                                <value type="javascript">'SaleOrder.shipmentDate'</value>
-                                            </simple-property-list>
-                                        </structure>
-                                    </list-property>
-                                    <list-property name="boundDataColumns">
-                                        <structure>
-                                            <property name="name">key</property>
-                                            <text-property name="displayName">key</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                            <property name="dataType">string</property>
-                                        </structure>
-                                        <structure>
-                                            <property name="name">translation</property>
-                                            <text-property name="displayName">translation</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                            <property name="dataType">string</property>
-                                        </structure>
-                                    </list-property>
-                                    <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF>row._outer["ShipmentDate"]</VALUE-OF>]]></text-property>
-                                </text>
+                                    <structure name="dateTimeFormat">
+                                        <property name="category">Short Date</property>
+                                        <property name="pattern">Short Date</property>
+                                    </structure>
+                                    <property name="resultSetColumn">ShipmentDate</property>
+                                </data>
                             </cell>
                         </row>
                         <row id="4503">
@@ -3615,21 +3575,46 @@ row["ClientPartFirstName"]
                         <property name="fontSize">12pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="marginLeft">0pt</property>
+                        <property name="dataSet">TranslateDS</property>
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row["ContactName"] == null  &amp;&amp;  row["ContactFirstName"] == null</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["ContactName"] == null  &amp;&amp;  row._outer["ContactFirstName"] == null</expression>
+                            </structure>
+                        </list-property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">if(row["contactPartnerTitleSelect"] == "1"){'M.'}
+else if(row["contactPartnerTitleSelect"] == "2"){'Ms.'}
+else if(row["contactPartnerTitleSelect"] == "3"){'Dr'}
+else if(row["contactPartnerTitleSelect"] == "4"){'Prof.'}</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["contactPartnerTitleSelect"] != null){
-if(row["contactPartnerTitleSelect"] == "1"){"M."}
-else if(row["contactPartnerTitleSelect"] == "2"){"Ms."}
-else if(row["contactPartnerTitleSelect"] == "3"){"Dr"}
-else if(row["contactPartnerTitleSelect"] == "4"){"Prof."}
+                        <text-property name="content"><![CDATA[<VALUE-OF>if(params["Locale"].value != 'en') {
+row["translation"]
+} else {
+row["message_key"]
 }</VALUE-OF> 
 <VALUE-OF format="^">"  "</VALUE-OF>
-<VALUE-OF>row["ContactName"]</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row["ContactFirstName"]</VALUE-OF>]]></text-property>
+<VALUE-OF>row._outer["ContactName"]</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["ContactFirstName"]</VALUE-OF>]]></text-property>
                     </text>
                     <text id="3670">
                         <property name="textUnderline">underline</property>
@@ -3753,6 +3738,7 @@ else if(row["contactPartnerTitleSelect"] == "4"){"Prof."}
                     <text id="3905">
                         <property name="fontSize">9pt</property>
                         <property name="marginLeft">2pt</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="visibility">
                             <structure>
@@ -3783,8 +3769,17 @@ else if(row["contactPartnerTitleSelect"] == "4"){"Prof."}
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF>row._outer["deliveryDate"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;]]></text-property>
                     </text>
+                    <data id="5398">
+                        <property name="fontSize">9pt</property>
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
+                        <property name="display">inline</property>
+                        <property name="resultSetColumn">deliveryDate</property>
+                    </data>
                 </cell>
             </row>
             <row id="3898">
@@ -5290,50 +5285,132 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                                         <property name="borderLeftWidth">thin</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
-                                        <text id="4566">
+                                        <grid id="4623">
                                             <property name="fontSize">8pt</property>
                                             <property name="textAlign">center</property>
-                                            <property name="dataSet">AppBaseDS</property>
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
                                                     <expression name="valueExpr" type="javascript">row._outer["is_title_line"]</expression>
                                                 </structure>
                                             </list-property>
-                                            <list-property name="boundDataColumns">
-                                                <structure>
-                                                    <property name="name">nb_decimal_digit_for_qty</property>
-                                                    <text-property name="displayName">nb_decimal_digit_for_qty</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["nb_decimal_digit_for_qty"]</expression>
-                                                    <property name="dataType">integer</property>
-                                                </structure>
-                                            </list-property>
-                                            <structure name="toc"/>
-                                            <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["quantity"],"#,##0."+Array((row["nb_decimal_digit_for_qty"] || 2)+1).join("0"))</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["UnitCode"]</VALUE-OF>]]></text-property>
-                                        </text>
-                                        <text id="5378">
+                                            <column id="5400"/>
+                                            <column id="4625"/>
+                                            <row id="4626">
+                                                <cell id="4627">
+                                                    <text id="4566">
+                                                        <property name="fontSize">8pt</property>
+                                                        <property name="textAlign">right</property>
+                                                        <property name="dataSet">AppBaseDS</property>
+                                                        <list-property name="boundDataColumns">
+                                                            <structure>
+                                                                <property name="name">nb_decimal_digit_for_qty</property>
+                                                                <text-property name="displayName">nb_decimal_digit_for_qty</text-property>
+                                                                <expression name="expression" type="javascript">dataSetRow["nb_decimal_digit_for_qty"]</expression>
+                                                                <property name="dataType">integer</property>
+                                                            </structure>
+                                                        </list-property>
+                                                        <structure name="toc"/>
+                                                        <property name="contentType">html</property>
+                                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["quantity"],"#,##0."+Array((row["nb_decimal_digit_for_qty"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                                    </text>
+                                                </cell>
+                                                <cell id="4628">
+                                                    <text id="4630">
+                                                        <property name="fontSize">8pt</property>
+                                                        <property name="textAlign">left</property>
+                                                        <property name="dataSet">TranslateDS</property>
+                                                        <list-property name="paramBindings">
+                                                            <structure>
+                                                                <property name="paramName">param_1</property>
+                                                                <simple-property-list name="expression">
+                                                                    <value type="javascript">'value:'+row["UnitCode"]</value>
+                                                                </simple-property-list>
+                                                            </structure>
+                                                        </list-property>
+                                                        <list-property name="boundDataColumns">
+                                                            <structure>
+                                                                <property name="name">message_key</property>
+                                                                <text-property name="displayName">message_key</text-property>
+                                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                                <property name="dataType">string</property>
+                                                            </structure>
+                                                            <structure>
+                                                                <property name="name">translation</property>
+                                                                <text-property name="displayName">translation</text-property>
+                                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                                <property name="dataType">string</property>
+                                                            </structure>
+                                                        </list-property>
+                                                        <property name="contentType">html</property>
+                                                        <text-property name="content"><![CDATA[<VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>if(row["translation"] != null) {row["translation"]} else {row._outer["UnitCode"]}</VALUE-OF>]]></text-property>
+                                                    </text>
+                                                </cell>
+                                            </row>
+                                        </grid>
+                                        <grid id="5401">
                                             <property name="fontSize">8pt</property>
-                                            <property name="fontWeight">bold</property>
                                             <property name="textAlign">center</property>
-                                            <property name="dataSet">AppBaseDS</property>
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
                                                     <expression name="valueExpr" type="javascript">!row._outer["is_title_line"] || row._outer["quantity"] == 0 || !vars["is_first_title_line"]</expression>
                                                 </structure>
                                             </list-property>
-                                            <list-property name="boundDataColumns">
-                                                <structure>
-                                                    <property name="name">nb_decimal_digit_for_qty</property>
-                                                    <text-property name="displayName">nb_decimal_digit_for_qty</text-property>
-                                                    <expression name="expression" type="javascript">dataSetRow["nb_decimal_digit_for_qty"]</expression>
-                                                    <property name="dataType">integer</property>
-                                                </structure>
-                                            </list-property>
-                                            <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["quantity"],"#,##0."+Array((row["nb_decimal_digit_for_qty"] || 2)+1).join("0"))</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["UnitCode"]</VALUE-OF>]]></text-property>
-                                        </text>
+                                            <column id="5402"/>
+                                            <column id="5403"/>
+                                            <row id="5404">
+                                                <cell id="5405">
+                                                    <text id="5378">
+                                                        <property name="fontSize">8pt</property>
+                                                        <property name="fontWeight">bold</property>
+                                                        <property name="textAlign">right</property>
+                                                        <property name="dataSet">AppBaseDS</property>
+                                                        <list-property name="boundDataColumns">
+                                                            <structure>
+                                                                <property name="name">nb_decimal_digit_for_qty</property>
+                                                                <text-property name="displayName">nb_decimal_digit_for_qty</text-property>
+                                                                <expression name="expression" type="javascript">dataSetRow["nb_decimal_digit_for_qty"]</expression>
+                                                                <property name="dataType">integer</property>
+                                                            </structure>
+                                                        </list-property>
+                                                        <property name="contentType">html</property>
+                                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["quantity"],"#,##0."+Array((row["nb_decimal_digit_for_qty"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                                    </text>
+                                                </cell>
+                                                <cell id="5407">
+                                                    <text id="5408">
+                                                        <property name="fontSize">8pt</property>
+                                                        <property name="fontWeight">bold</property>
+                                                        <property name="dataSet">TranslateDS</property>
+                                                        <list-property name="paramBindings">
+                                                            <structure>
+                                                                <property name="paramName">param_1</property>
+                                                                <simple-property-list name="expression">
+                                                                    <value type="javascript">'value:'+row["UnitCode"]</value>
+                                                                </simple-property-list>
+                                                            </structure>
+                                                        </list-property>
+                                                        <list-property name="boundDataColumns">
+                                                            <structure>
+                                                                <property name="name">message_key</property>
+                                                                <text-property name="displayName">message_key</text-property>
+                                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                                <property name="dataType">string</property>
+                                                            </structure>
+                                                            <structure>
+                                                                <property name="name">translation</property>
+                                                                <text-property name="displayName">translation</text-property>
+                                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                                <property name="dataType">string</property>
+                                                            </structure>
+                                                        </list-property>
+                                                        <property name="contentType">html</property>
+                                                        <text-property name="content"><![CDATA[<VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>if(row["translation"] != null) {row["translation"]} else {row._outer["UnitCode"]}</VALUE-OF>]]></text-property>
+                                                    </text>
+                                                </cell>
+                                            </row>
+                                        </grid>
                                     </cell>
                                     <cell id="4567">
                                         <property name="borderLeftStyle">solid</property>
@@ -5554,6 +5631,10 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                                         <property name="textAlign">center</property>
                                         <data id="4584">
                                             <property name="fontSize">8pt</property>
+                                            <structure name="dateTimeFormat">
+                                                <property name="category">Short Date</property>
+                                                <property name="pattern">Short Date</property>
+                                            </structure>
                                             <property name="textAlign">center</property>
                                             <property name="resultSetColumn">EstimatedDeliveryDate</property>
                                         </data>
@@ -5983,339 +6064,42 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                     <property name="borderRightWidth">thin</property>
                     <property name="borderTopStyle">solid</property>
                     <property name="borderTopWidth">thin</property>
-                    <table id="4481">
-                        <property name="dataSet">OrderLineDS</property>
-                        <list-property name="boundDataColumns">
+                    <text id="4484">
+                        <property name="fontSize">9pt</property>
+                        <property name="fontWeight">normal</property>
+                        <property name="textAlign">left</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
                             <structure>
-                                <property name="name">id</property>
-                                <text-property name="displayName">id</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["id"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">description</property>
-                                <text-property name="displayName">description</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["description"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">quantity</property>
-                                <text-property name="displayName">quantity</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["quantity"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">UnitCode</property>
-                                <text-property name="displayName">UnitCode</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["UnitCode"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">ProductName</property>
-                                <text-property name="displayName">ProductName</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["ProductName"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">unit_price</property>
-                                <text-property name="displayName">unit_price</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["unit_price"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">ex_tax_total</property>
-                                <text-property name="displayName">ex_tax_total</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["ex_tax_total"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">CurrencyCode</property>
-                                <text-property name="displayName">CurrencyCode</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["CurrencyCode"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">quantity_1</property>
-                                <text-property name="displayName">quantity</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["quantity"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">tax_line</property>
-                                <text-property name="displayName">tax_line</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["tax_line"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">productCode</property>
-                                <text-property name="displayName">productCode</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["productCode"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">totalDiscountAmount</property>
-                                <text-property name="displayName">totalDiscountAmount</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["totalDiscountAmount"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">nb_diff_tax_line</property>
-                                <text-property name="displayName">nb_diff_tax_line</text-property>
-                                <property name="dataType">integer</property>
-                                <property name="aggregateFunction">COUNTDISTINCT</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["tax_line"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">sumDiscountLine</property>
-                                <property name="dataType">float</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["totalDiscountAmount"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">totalDiscount</property>
-                                <expression name="expression" type="javascript">row["sumDiscountLine"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">totalExTaxTotalBeforeDiscount</property>
-                                <property name="dataType">float</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["ex_tax_total"]-dataSetRow["totalDiscountAmount"]</expression>
-                                    </structure>
-                                </list-property>
-                                <expression name="filterExpr" type="javascript">dataSetRow["ex_tax_total"]>=0</expression>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">totalWithoutDiscount</property>
-                                <expression name="expression" type="javascript">row["totalExTaxTotalBeforeDiscount"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">sequence</property>
-                                <text-property name="displayName">sequence</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["sequence"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">sale_order_type_select</property>
-                                <text-property name="displayName">sale_order_type_select</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["sale_order_type_select"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">product_type_select</property>
-                                <text-property name="displayName">product_type_select</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["product_type_select"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">is_title_line</property>
-                                <text-property name="displayName">is_title_line</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["is_title_line"]</expression>
-                                <property name="dataType">integer</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Column Binding_tot_all_sub</property>
-                                <text-property name="displayName">tot_all_sub</text-property>
-                                <property name="dataType">float</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">dataSetRow["totalDiscountAmount"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">total_pack</property>
-                                <text-property name="displayName">total_pack</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["total_pack"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">in_ati</property>
-                                <text-property name="displayName">in_ati</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["in_ati"]</expression>
-                                <property name="dataType">integer</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">in_tax_total</property>
-                                <text-property name="displayName">in_tax_total</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["in_tax_total"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">is_sub_line</property>
-                                <text-property name="displayName">is_sub_line</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["is_sub_line"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">is_pack_line</property>
-                                <text-property name="displayName">is_pack_line</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["is_pack_line"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">pack_price_select</property>
-                                <text-property name="displayName">pack_price_select</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["pack_price_select"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">parent_pack_price_select</property>
-                                <text-property name="displayName">parent_pack_price_select</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["parent_pack_price_select"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">CustomerProductCode</property>
-                                <text-property name="displayName">CustomerProductCode</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["CustomerProductCode"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">CustomerProductName</property>
-                                <text-property name="displayName">CustomerProductName</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["CustomerProductName"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">in_ati_1</property>
-                                <text-property name="displayName">in_ati</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["in_ati"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">EstimatedDeliveryDate</property>
-                                <text-property name="displayName">EstimatedDeliveryDate</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["EstimatedDeliveryDate"]</expression>
-                                <property name="dataType">date</property>
-                            </structure>
-                            <structure>
-                                <property name="name">productPicture</property>
-                                <text-property name="displayName">productPicture</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["productPicture"]</expression>
-                                <property name="dataType">string</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">is_product_picture_available</property>
-                                <text-property name="displayName">is_product_picture_available</text-property>
-                                <property name="dataType">integer</property>
-                                <property name="aggregateFunction">COUNT</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                    </structure>
-                                </list-property>
-                                <expression name="filterExpr" type="javascript">row["productPicture"]!=null</expression>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">price_discounted</property>
-                                <text-property name="displayName">price_discounted</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["price_discounted"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">showTotal</property>
-                                <text-property name="displayName">showTotal</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["showTotal"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">hideUnitAmounts</property>
-                                <text-property name="displayName">hideUnitAmounts</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["hideUnitAmounts"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">PackHideUnitAmounts</property>
-                                <text-property name="displayName">PackHideUnitAmounts</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["PackHideUnitAmounts"]</expression>
-                                <property name="dataType">integer</property>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer._outer["hideDiscount"]== 1 || row._outer["Column Binding_tot_all_sub"] == 0 || row._outer["in_ati"]</expression>
                             </structure>
                         </list-property>
-                        <column id="4486"/>
-                        <header>
-                            <row id="4482">
-                                <cell id="4483">
-                                    <text id="4484">
-                                        <property name="fontSize">9pt</property>
-                                        <property name="fontWeight">normal</property>
-                                        <property name="textAlign">left</property>
-                                        <property name="dataSet">TranslateDS</property>
-                                        <list-property name="visibility">
-                                            <structure>
-                                                <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">row._outer._outer["hideDiscount"]== 1 || row._outer["Column Binding_tot_all_sub"] == 0 || row._outer["in_ati"]</expression>
-                                            </structure>
-                                        </list-property>
-                                        <list-property name="paramBindings">
-                                            <structure>
-                                                <property name="paramName">param_1</property>
-                                                <simple-property-list name="expression">
-                                                    <value type="javascript">'SaleOrder.totalExclTaxWithoutDiscount'</value>
-                                                </simple-property-list>
-                                            </structure>
-                                        </list-property>
-                                        <list-property name="boundDataColumns">
-                                            <structure>
-                                                <property name="name">key</property>
-                                                <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">translation</property>
-                                                <text-property name="displayName">translation</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                        </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
-                                    </text>
-                                </cell>
-                            </row>
-                        </header>
-                        <group id="5384">
-                            <property name="groupName">SaleOrderLine</property>
-                            <expression name="keyExpr" type="javascript">row["id"]</expression>
-                            <list-property name="sort">
-                                <structure>
-                                    <expression name="key" type="javascript">row["sequence"]</expression>
-                                    <property name="direction">asc</property>
-                                    <property name="strength">-1</property>
-                                </structure>
-                            </list-property>
-                        </group>
-                    </table>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'SaleOrder.totalExclTaxWithoutDiscount'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
                 </cell>
                 <cell id="4133">
                     <property name="borderLeftStyle">solid</property>
@@ -6373,7 +6157,6 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                                 <text-property name="displayName">quantity</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["quantity"]</expression>
                                 <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">UnitCode</property>
@@ -6400,16 +6183,16 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                                 <property name="dataType">decimal</property>
                             </structure>
                             <structure>
+                                <property name="name">in_tax_total</property>
+                                <text-property name="displayName">in_tax_total</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["in_tax_total"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
                                 <property name="name">CurrencyCode</property>
                                 <text-property name="displayName">CurrencyCode</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["CurrencyCode"]</expression>
                                 <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">quantity_1</property>
-                                <text-property name="displayName">quantity</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["quantity"]</expression>
-                                <property name="dataType">decimal</property>
                             </structure>
                             <structure>
                                 <property name="name">tax_line</property>
@@ -6424,60 +6207,16 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
+                                <property name="name">productPicture</property>
+                                <text-property name="displayName">productPicture</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["productPicture"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
                                 <property name="name">totalDiscountAmount</property>
                                 <text-property name="displayName">totalDiscountAmount</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["totalDiscountAmount"]</expression>
                                 <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">nb_diff_tax_line</property>
-                                <text-property name="displayName">nb_diff_tax_line</text-property>
-                                <property name="dataType">integer</property>
-                                <property name="aggregateFunction">COUNTDISTINCT</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["tax_line"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">sumDiscountLine</property>
-                                <property name="dataType">float</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["totalDiscountAmount"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">totalDiscount</property>
-                                <expression name="expression" type="javascript">row["sumDiscountLine"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">totalExTaxTotalBeforeDiscount</property>
-                                <property name="dataType">float</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["ex_tax_total"]-dataSetRow["totalDiscountAmount"]</expression>
-                                    </structure>
-                                </list-property>
-                                <expression name="filterExpr" type="javascript">dataSetRow["ex_tax_total"]>=0</expression>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">totalWithoutDiscount</property>
-                                <expression name="expression" type="javascript">row["totalExTaxTotalBeforeDiscount"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">sequence</property>
@@ -6492,6 +6231,12 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                                 <property name="dataType">integer</property>
                             </structure>
                             <structure>
+                                <property name="name">in_ati</property>
+                                <text-property name="displayName">in_ati</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["in_ati"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
                                 <property name="name">product_type_select</property>
                                 <text-property name="displayName">product_type_select</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["product_type_select"]</expression>
@@ -6501,65 +6246,6 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                                 <property name="name">is_title_line</property>
                                 <text-property name="displayName">is_title_line</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["is_title_line"]</expression>
-                                <property name="dataType">integer</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Column Binding_tot_all_sub</property>
-                                <text-property name="displayName">tot_all_sub</text-property>
-                                <property name="dataType">float</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">dataSetRow["totalDiscountAmount"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">total_pack</property>
-                                <text-property name="displayName">total_pack</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["total_pack"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">in_ati</property>
-                                <text-property name="displayName">in_ati</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["in_ati"]</expression>
-                                <property name="dataType">integer</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">in_tax_total</property>
-                                <text-property name="displayName">in_tax_total</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["in_tax_total"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">is_sub_line</property>
-                                <text-property name="displayName">is_sub_line</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["is_sub_line"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">is_pack_line</property>
-                                <text-property name="displayName">is_pack_line</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["is_pack_line"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">pack_price_select</property>
-                                <text-property name="displayName">pack_price_select</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["pack_price_select"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">parent_pack_price_select</property>
-                                <text-property name="displayName">parent_pack_price_select</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["parent_pack_price_select"]</expression>
                                 <property name="dataType">integer</property>
                             </structure>
                             <structure>
@@ -6575,36 +6261,10 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
-                                <property name="name">in_ati_1</property>
-                                <text-property name="displayName">in_ati</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["in_ati"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
                                 <property name="name">EstimatedDeliveryDate</property>
                                 <text-property name="displayName">EstimatedDeliveryDate</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["EstimatedDeliveryDate"]</expression>
                                 <property name="dataType">date</property>
-                            </structure>
-                            <structure>
-                                <property name="name">productPicture</property>
-                                <text-property name="displayName">productPicture</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["productPicture"]</expression>
-                                <property name="dataType">string</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">is_product_picture_available</property>
-                                <text-property name="displayName">is_product_picture_available</text-property>
-                                <property name="dataType">integer</property>
-                                <property name="aggregateFunction">COUNT</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                    </structure>
-                                </list-property>
-                                <expression name="filterExpr" type="javascript">row["productPicture"]!=null</expression>
-                                <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">price_discounted</property>
@@ -6622,12 +6282,6 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                                 <property name="name">hideUnitAmounts</property>
                                 <text-property name="displayName">hideUnitAmounts</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["hideUnitAmounts"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">PackHideUnitAmounts</property>
-                                <text-property name="displayName">PackHideUnitAmounts</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["PackHideUnitAmounts"]</expression>
                                 <property name="dataType">integer</property>
                             </structure>
                         </list-property>
@@ -6651,339 +6305,42 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                     <property name="borderLeftWidth">thin</property>
                     <property name="borderRightStyle">solid</property>
                     <property name="borderRightWidth">thin</property>
-                    <table id="4293">
-                        <property name="dataSet">OrderLineDS</property>
-                        <list-property name="boundDataColumns">
+                    <text id="4175">
+                        <property name="fontSize">9pt</property>
+                        <property name="fontWeight">normal</property>
+                        <property name="textAlign">left</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
                             <structure>
-                                <property name="name">id</property>
-                                <text-property name="displayName">id</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["id"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">description</property>
-                                <text-property name="displayName">description</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["description"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">quantity</property>
-                                <text-property name="displayName">quantity</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["quantity"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">UnitCode</property>
-                                <text-property name="displayName">UnitCode</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["UnitCode"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">ProductName</property>
-                                <text-property name="displayName">ProductName</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["ProductName"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">unit_price</property>
-                                <text-property name="displayName">unit_price</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["unit_price"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">ex_tax_total</property>
-                                <text-property name="displayName">ex_tax_total</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["ex_tax_total"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">CurrencyCode</property>
-                                <text-property name="displayName">CurrencyCode</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["CurrencyCode"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">quantity_1</property>
-                                <text-property name="displayName">quantity</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["quantity"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">tax_line</property>
-                                <text-property name="displayName">tax_line</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["tax_line"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">productCode</property>
-                                <text-property name="displayName">productCode</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["productCode"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">totalDiscountAmount</property>
-                                <text-property name="displayName">totalDiscountAmount</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["totalDiscountAmount"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">nb_diff_tax_line</property>
-                                <text-property name="displayName">nb_diff_tax_line</text-property>
-                                <property name="dataType">integer</property>
-                                <property name="aggregateFunction">COUNTDISTINCT</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["tax_line"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">sumDiscountLine</property>
-                                <property name="dataType">float</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["totalDiscountAmount"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">totalDiscount</property>
-                                <expression name="expression" type="javascript">row["sumDiscountLine"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">totalExTaxTotalBeforeDiscount</property>
-                                <property name="dataType">float</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["ex_tax_total"]-dataSetRow["totalDiscountAmount"]</expression>
-                                    </structure>
-                                </list-property>
-                                <expression name="filterExpr" type="javascript">dataSetRow["ex_tax_total"]>=0</expression>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">totalWithoutDiscount</property>
-                                <expression name="expression" type="javascript">row["totalExTaxTotalBeforeDiscount"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">sequence</property>
-                                <text-property name="displayName">sequence</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["sequence"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">sale_order_type_select</property>
-                                <text-property name="displayName">sale_order_type_select</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["sale_order_type_select"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">product_type_select</property>
-                                <text-property name="displayName">product_type_select</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["product_type_select"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">is_title_line</property>
-                                <text-property name="displayName">is_title_line</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["is_title_line"]</expression>
-                                <property name="dataType">integer</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Column Binding_tot_all_sub</property>
-                                <text-property name="displayName">tot_all_sub</text-property>
-                                <property name="dataType">float</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">dataSetRow["totalDiscountAmount"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">total_pack</property>
-                                <text-property name="displayName">total_pack</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["total_pack"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">in_ati</property>
-                                <text-property name="displayName">in_ati</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["in_ati"]</expression>
-                                <property name="dataType">integer</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">in_tax_total</property>
-                                <text-property name="displayName">in_tax_total</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["in_tax_total"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">is_sub_line</property>
-                                <text-property name="displayName">is_sub_line</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["is_sub_line"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">is_pack_line</property>
-                                <text-property name="displayName">is_pack_line</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["is_pack_line"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">pack_price_select</property>
-                                <text-property name="displayName">pack_price_select</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["pack_price_select"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">parent_pack_price_select</property>
-                                <text-property name="displayName">parent_pack_price_select</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["parent_pack_price_select"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">CustomerProductCode</property>
-                                <text-property name="displayName">CustomerProductCode</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["CustomerProductCode"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">CustomerProductName</property>
-                                <text-property name="displayName">CustomerProductName</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["CustomerProductName"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">in_ati_1</property>
-                                <text-property name="displayName">in_ati</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["in_ati"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">EstimatedDeliveryDate</property>
-                                <text-property name="displayName">EstimatedDeliveryDate</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["EstimatedDeliveryDate"]</expression>
-                                <property name="dataType">date</property>
-                            </structure>
-                            <structure>
-                                <property name="name">productPicture</property>
-                                <text-property name="displayName">productPicture</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["productPicture"]</expression>
-                                <property name="dataType">string</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">is_product_picture_available</property>
-                                <text-property name="displayName">is_product_picture_available</text-property>
-                                <property name="dataType">integer</property>
-                                <property name="aggregateFunction">COUNT</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                    </structure>
-                                </list-property>
-                                <expression name="filterExpr" type="javascript">row["productPicture"]!=null</expression>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">price_discounted</property>
-                                <text-property name="displayName">price_discounted</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["price_discounted"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">showTotal</property>
-                                <text-property name="displayName">showTotal</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["showTotal"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">hideUnitAmounts</property>
-                                <text-property name="displayName">hideUnitAmounts</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["hideUnitAmounts"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">PackHideUnitAmounts</property>
-                                <text-property name="displayName">PackHideUnitAmounts</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["PackHideUnitAmounts"]</expression>
-                                <property name="dataType">integer</property>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer._outer["hideDiscount"]== 1 || row._outer["Column Binding_tot_all_sub"] == 0</expression>
                             </structure>
                         </list-property>
-                        <column id="4300"/>
-                        <header>
-                            <row id="4294">
-                                <cell id="4295">
-                                    <text id="4175">
-                                        <property name="fontSize">9pt</property>
-                                        <property name="fontWeight">normal</property>
-                                        <property name="textAlign">left</property>
-                                        <property name="dataSet">TranslateDS</property>
-                                        <list-property name="visibility">
-                                            <structure>
-                                                <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">row._outer._outer["hideDiscount"]== 1 || row._outer["Column Binding_tot_all_sub"] == 0</expression>
-                                            </structure>
-                                        </list-property>
-                                        <list-property name="paramBindings">
-                                            <structure>
-                                                <property name="paramName">param_1</property>
-                                                <simple-property-list name="expression">
-                                                    <value type="javascript">'SaleOrder.totalDiscount'</value>
-                                                </simple-property-list>
-                                            </structure>
-                                        </list-property>
-                                        <list-property name="boundDataColumns">
-                                            <structure>
-                                                <property name="name">key</property>
-                                                <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">translation</property>
-                                                <text-property name="displayName">translation</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                        </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
-                                    </text>
-                                </cell>
-                            </row>
-                        </header>
-                        <group id="5385">
-                            <property name="groupName">SaleOrderLine</property>
-                            <expression name="keyExpr" type="javascript">row["id"]</expression>
-                            <list-property name="sort">
-                                <structure>
-                                    <expression name="key" type="javascript">row["sequence"]</expression>
-                                    <property name="direction">asc</property>
-                                    <property name="strength">-1</property>
-                                </structure>
-                            </list-property>
-                        </group>
-                    </table>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'SaleOrder.totalDiscount'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
                 </cell>
                 <cell id="4164">
                     <property name="borderLeftStyle">solid</property>
@@ -7036,7 +6393,6 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                                 <text-property name="displayName">quantity</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["quantity"]</expression>
                                 <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">UnitCode</property>
@@ -7063,16 +6419,16 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                                 <property name="dataType">decimal</property>
                             </structure>
                             <structure>
+                                <property name="name">in_tax_total</property>
+                                <text-property name="displayName">in_tax_total</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["in_tax_total"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
                                 <property name="name">CurrencyCode</property>
                                 <text-property name="displayName">CurrencyCode</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["CurrencyCode"]</expression>
                                 <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">quantity_1</property>
-                                <text-property name="displayName">quantity</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["quantity"]</expression>
-                                <property name="dataType">decimal</property>
                             </structure>
                             <structure>
                                 <property name="name">tax_line</property>
@@ -7087,60 +6443,16 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
+                                <property name="name">productPicture</property>
+                                <text-property name="displayName">productPicture</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["productPicture"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
                                 <property name="name">totalDiscountAmount</property>
                                 <text-property name="displayName">totalDiscountAmount</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["totalDiscountAmount"]</expression>
                                 <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">nb_diff_tax_line</property>
-                                <text-property name="displayName">nb_diff_tax_line</text-property>
-                                <property name="dataType">integer</property>
-                                <property name="aggregateFunction">COUNTDISTINCT</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["tax_line"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">sumDiscountLine</property>
-                                <property name="dataType">float</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["totalDiscountAmount"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">totalDiscount</property>
-                                <expression name="expression" type="javascript">row["sumDiscountLine"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">totalExTaxTotalBeforeDiscount</property>
-                                <property name="dataType">float</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["ex_tax_total"]-dataSetRow["totalDiscountAmount"]</expression>
-                                    </structure>
-                                </list-property>
-                                <expression name="filterExpr" type="javascript">dataSetRow["ex_tax_total"]>=0</expression>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">totalWithoutDiscount</property>
-                                <expression name="expression" type="javascript">row["totalExTaxTotalBeforeDiscount"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">sequence</property>
@@ -7155,6 +6467,12 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                                 <property name="dataType">integer</property>
                             </structure>
                             <structure>
+                                <property name="name">in_ati</property>
+                                <text-property name="displayName">in_ati</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["in_ati"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
                                 <property name="name">product_type_select</property>
                                 <text-property name="displayName">product_type_select</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["product_type_select"]</expression>
@@ -7164,65 +6482,6 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                                 <property name="name">is_title_line</property>
                                 <text-property name="displayName">is_title_line</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["is_title_line"]</expression>
-                                <property name="dataType">integer</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Column Binding_tot_all_sub</property>
-                                <text-property name="displayName">tot_all_sub</text-property>
-                                <property name="dataType">float</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">dataSetRow["totalDiscountAmount"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">total_pack</property>
-                                <text-property name="displayName">total_pack</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["total_pack"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">in_ati</property>
-                                <text-property name="displayName">in_ati</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["in_ati"]</expression>
-                                <property name="dataType">integer</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">in_tax_total</property>
-                                <text-property name="displayName">in_tax_total</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["in_tax_total"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">is_sub_line</property>
-                                <text-property name="displayName">is_sub_line</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["is_sub_line"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">is_pack_line</property>
-                                <text-property name="displayName">is_pack_line</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["is_pack_line"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">pack_price_select</property>
-                                <text-property name="displayName">pack_price_select</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["pack_price_select"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">parent_pack_price_select</property>
-                                <text-property name="displayName">parent_pack_price_select</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["parent_pack_price_select"]</expression>
                                 <property name="dataType">integer</property>
                             </structure>
                             <structure>
@@ -7238,36 +6497,10 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
-                                <property name="name">in_ati_1</property>
-                                <text-property name="displayName">in_ati</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["in_ati"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
                                 <property name="name">EstimatedDeliveryDate</property>
                                 <text-property name="displayName">EstimatedDeliveryDate</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["EstimatedDeliveryDate"]</expression>
                                 <property name="dataType">date</property>
-                            </structure>
-                            <structure>
-                                <property name="name">productPicture</property>
-                                <text-property name="displayName">productPicture</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["productPicture"]</expression>
-                                <property name="dataType">string</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">is_product_picture_available</property>
-                                <text-property name="displayName">is_product_picture_available</text-property>
-                                <property name="dataType">integer</property>
-                                <property name="aggregateFunction">COUNT</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                    </structure>
-                                </list-property>
-                                <expression name="filterExpr" type="javascript">row["productPicture"]!=null</expression>
-                                <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">price_discounted</property>
@@ -7285,12 +6518,6 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                                 <property name="name">hideUnitAmounts</property>
                                 <text-property name="displayName">hideUnitAmounts</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["hideUnitAmounts"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">PackHideUnitAmounts</property>
-                                <text-property name="displayName">PackHideUnitAmounts</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["PackHideUnitAmounts"]</expression>
                                 <property name="dataType">integer</property>
                             </structure>
                         </list-property>
@@ -7520,339 +6747,42 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                     <property name="borderRightStyle">solid</property>
                     <property name="borderRightWidth">thin</property>
                     <property name="verticalAlign">middle</property>
-                    <table id="4469">
-                        <property name="dataSet">OrderLineDS</property>
-                        <list-property name="boundDataColumns">
+                    <text id="4472">
+                        <property name="fontSize">9pt</property>
+                        <property name="fontWeight">normal</property>
+                        <property name="textAlign">left</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
                             <structure>
-                                <property name="name">id</property>
-                                <text-property name="displayName">id</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["id"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">description</property>
-                                <text-property name="displayName">description</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["description"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">quantity</property>
-                                <text-property name="displayName">quantity</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["quantity"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">UnitCode</property>
-                                <text-property name="displayName">UnitCode</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["UnitCode"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">ProductName</property>
-                                <text-property name="displayName">ProductName</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["ProductName"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">unit_price</property>
-                                <text-property name="displayName">unit_price</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["unit_price"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">ex_tax_total</property>
-                                <text-property name="displayName">ex_tax_total</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["ex_tax_total"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">CurrencyCode</property>
-                                <text-property name="displayName">CurrencyCode</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["CurrencyCode"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">quantity_1</property>
-                                <text-property name="displayName">quantity</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["quantity"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">tax_line</property>
-                                <text-property name="displayName">tax_line</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["tax_line"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">productCode</property>
-                                <text-property name="displayName">productCode</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["productCode"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">totalDiscountAmount</property>
-                                <text-property name="displayName">totalDiscountAmount</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["totalDiscountAmount"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">nb_diff_tax_line</property>
-                                <text-property name="displayName">nb_diff_tax_line</text-property>
-                                <property name="dataType">integer</property>
-                                <property name="aggregateFunction">COUNTDISTINCT</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["tax_line"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">sumDiscountLine</property>
-                                <property name="dataType">float</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["totalDiscountAmount"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">totalDiscount</property>
-                                <expression name="expression" type="javascript">row["sumDiscountLine"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">totalExTaxTotalBeforeDiscount</property>
-                                <property name="dataType">float</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["ex_tax_total"]-dataSetRow["totalDiscountAmount"]</expression>
-                                    </structure>
-                                </list-property>
-                                <expression name="filterExpr" type="javascript">dataSetRow["ex_tax_total"]>=0</expression>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">totalWithoutDiscount</property>
-                                <expression name="expression" type="javascript">row["totalExTaxTotalBeforeDiscount"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">sequence</property>
-                                <text-property name="displayName">sequence</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["sequence"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">sale_order_type_select</property>
-                                <text-property name="displayName">sale_order_type_select</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["sale_order_type_select"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">product_type_select</property>
-                                <text-property name="displayName">product_type_select</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["product_type_select"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">is_title_line</property>
-                                <text-property name="displayName">is_title_line</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["is_title_line"]</expression>
-                                <property name="dataType">integer</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Column Binding_tot_all_sub</property>
-                                <text-property name="displayName">tot_all_sub</text-property>
-                                <property name="dataType">float</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">dataSetRow["totalDiscountAmount"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">total_pack</property>
-                                <text-property name="displayName">total_pack</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["total_pack"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">in_ati</property>
-                                <text-property name="displayName">in_ati</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["in_ati"]</expression>
-                                <property name="dataType">integer</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">in_tax_total</property>
-                                <text-property name="displayName">in_tax_total</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["in_tax_total"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">is_sub_line</property>
-                                <text-property name="displayName">is_sub_line</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["is_sub_line"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">is_pack_line</property>
-                                <text-property name="displayName">is_pack_line</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["is_pack_line"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">pack_price_select</property>
-                                <text-property name="displayName">pack_price_select</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["pack_price_select"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">parent_pack_price_select</property>
-                                <text-property name="displayName">parent_pack_price_select</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["parent_pack_price_select"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">CustomerProductCode</property>
-                                <text-property name="displayName">CustomerProductCode</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["CustomerProductCode"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">CustomerProductName</property>
-                                <text-property name="displayName">CustomerProductName</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["CustomerProductName"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">in_ati_1</property>
-                                <text-property name="displayName">in_ati</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["in_ati"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">EstimatedDeliveryDate</property>
-                                <text-property name="displayName">EstimatedDeliveryDate</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["EstimatedDeliveryDate"]</expression>
-                                <property name="dataType">date</property>
-                            </structure>
-                            <structure>
-                                <property name="name">productPicture</property>
-                                <text-property name="displayName">productPicture</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["productPicture"]</expression>
-                                <property name="dataType">string</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">is_product_picture_available</property>
-                                <text-property name="displayName">is_product_picture_available</text-property>
-                                <property name="dataType">integer</property>
-                                <property name="aggregateFunction">COUNT</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                    </structure>
-                                </list-property>
-                                <expression name="filterExpr" type="javascript">row["productPicture"]!=null</expression>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">price_discounted</property>
-                                <text-property name="displayName">price_discounted</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["price_discounted"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">showTotal</property>
-                                <text-property name="displayName">showTotal</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["showTotal"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">hideUnitAmounts</property>
-                                <text-property name="displayName">hideUnitAmounts</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["hideUnitAmounts"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">PackHideUnitAmounts</property>
-                                <text-property name="displayName">PackHideUnitAmounts</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["PackHideUnitAmounts"]</expression>
-                                <property name="dataType">integer</property>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer._outer["hideDiscount"]== 1 || (row._outer["Column Binding_tot_all_sub"]== 0) || !row._outer["in_ati"]</expression>
                             </structure>
                         </list-property>
-                        <column id="4474"/>
-                        <header>
-                            <row id="4470">
-                                <cell id="4471">
-                                    <text id="4472">
-                                        <property name="fontSize">9pt</property>
-                                        <property name="fontWeight">normal</property>
-                                        <property name="textAlign">left</property>
-                                        <property name="dataSet">TranslateDS</property>
-                                        <list-property name="visibility">
-                                            <structure>
-                                                <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">row._outer._outer["hideDiscount"]== 1 || (row._outer["Column Binding_tot_all_sub"]== 0) || !row._outer["in_ati"]</expression>
-                                            </structure>
-                                        </list-property>
-                                        <list-property name="paramBindings">
-                                            <structure>
-                                                <property name="paramName">param_1</property>
-                                                <simple-property-list name="expression">
-                                                    <value type="javascript">'SaleOrder.afterDiscount'</value>
-                                                </simple-property-list>
-                                            </structure>
-                                        </list-property>
-                                        <list-property name="boundDataColumns">
-                                            <structure>
-                                                <property name="name">key</property>
-                                                <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">translation</property>
-                                                <text-property name="displayName">translation</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                        </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
-                                    </text>
-                                </cell>
-                            </row>
-                        </header>
-                        <group id="5386">
-                            <property name="groupName">SaleOrderLine</property>
-                            <expression name="keyExpr" type="javascript">row["id"]</expression>
-                            <list-property name="sort">
-                                <structure>
-                                    <expression name="key" type="javascript">row["sequence"]</expression>
-                                    <property name="direction">asc</property>
-                                    <property name="strength">-1</property>
-                                </structure>
-                            </list-property>
-                        </group>
-                    </table>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'SaleOrder.afterDiscount'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">key</property>
+                                <text-property name="displayName">key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
                 </cell>
                 <cell id="4464">
                     <property name="borderBottomStyle">solid</property>
@@ -8037,13 +6967,6 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
-                                <property name="name">total_pack</property>
-                                <text-property name="displayName">total_pack</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["total_pack"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
                                 <property name="name">in_ati</property>
                                 <text-property name="displayName">in_ati</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["in_ati"]</expression>
@@ -8056,30 +6979,6 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                                 <expression name="expression" type="javascript">dataSetRow["in_tax_total"]</expression>
                                 <property name="dataType">decimal</property>
                                 <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">is_sub_line</property>
-                                <text-property name="displayName">is_sub_line</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["is_sub_line"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">is_pack_line</property>
-                                <text-property name="displayName">is_pack_line</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["is_pack_line"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">pack_price_select</property>
-                                <text-property name="displayName">pack_price_select</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["pack_price_select"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">parent_pack_price_select</property>
-                                <text-property name="displayName">parent_pack_price_select</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["parent_pack_price_select"]</expression>
-                                <property name="dataType">integer</property>
                             </structure>
                             <structure>
                                 <property name="name">CustomerProductCode</property>
@@ -8141,12 +7040,6 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                                 <property name="name">hideUnitAmounts</property>
                                 <text-property name="displayName">hideUnitAmounts</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["hideUnitAmounts"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">PackHideUnitAmounts</property>
-                                <text-property name="displayName">PackHideUnitAmounts</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["PackHideUnitAmounts"]</expression>
                                 <property name="dataType">integer</property>
                             </structure>
                         </list-property>
@@ -8188,7 +7081,6 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                                 <text-property name="displayName">quantity</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["quantity"]</expression>
                                 <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">UnitCode</property>
@@ -8215,16 +7107,16 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                                 <property name="dataType">decimal</property>
                             </structure>
                             <structure>
+                                <property name="name">in_tax_total</property>
+                                <text-property name="displayName">in_tax_total</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["in_tax_total"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
                                 <property name="name">CurrencyCode</property>
                                 <text-property name="displayName">CurrencyCode</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["CurrencyCode"]</expression>
                                 <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">quantity_1</property>
-                                <text-property name="displayName">quantity</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["quantity"]</expression>
-                                <property name="dataType">decimal</property>
                             </structure>
                             <structure>
                                 <property name="name">tax_line</property>
@@ -8239,60 +7131,16 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
+                                <property name="name">productPicture</property>
+                                <text-property name="displayName">productPicture</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["productPicture"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
                                 <property name="name">totalDiscountAmount</property>
                                 <text-property name="displayName">totalDiscountAmount</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["totalDiscountAmount"]</expression>
                                 <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">nb_diff_tax_line</property>
-                                <text-property name="displayName">nb_diff_tax_line</text-property>
-                                <property name="dataType">integer</property>
-                                <property name="aggregateFunction">COUNTDISTINCT</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["tax_line"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">sumDiscountLine</property>
-                                <property name="dataType">float</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["totalDiscountAmount"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">totalDiscount</property>
-                                <expression name="expression" type="javascript">row["sumDiscountLine"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">totalExTaxTotalBeforeDiscount</property>
-                                <property name="dataType">float</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["ex_tax_total"]-dataSetRow["totalDiscountAmount"]</expression>
-                                    </structure>
-                                </list-property>
-                                <expression name="filterExpr" type="javascript">dataSetRow["ex_tax_total"]>=0</expression>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">totalWithoutDiscount</property>
-                                <expression name="expression" type="javascript">row["totalExTaxTotalBeforeDiscount"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">sequence</property>
@@ -8307,6 +7155,12 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                                 <property name="dataType">integer</property>
                             </structure>
                             <structure>
+                                <property name="name">in_ati</property>
+                                <text-property name="displayName">in_ati</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["in_ati"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
                                 <property name="name">product_type_select</property>
                                 <text-property name="displayName">product_type_select</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["product_type_select"]</expression>
@@ -8316,65 +7170,6 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                                 <property name="name">is_title_line</property>
                                 <text-property name="displayName">is_title_line</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["is_title_line"]</expression>
-                                <property name="dataType">integer</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">Column Binding_tot_all_sub</property>
-                                <text-property name="displayName">tot_all_sub</text-property>
-                                <property name="dataType">float</property>
-                                <property name="aggregateFunction">SUM</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">dataSetRow["totalDiscountAmount"]</expression>
-                                    </structure>
-                                </list-property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">total_pack</property>
-                                <text-property name="displayName">total_pack</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["total_pack"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">in_ati</property>
-                                <text-property name="displayName">in_ati</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["in_ati"]</expression>
-                                <property name="dataType">integer</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">in_tax_total</property>
-                                <text-property name="displayName">in_tax_total</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["in_tax_total"]</expression>
-                                <property name="dataType">decimal</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">is_sub_line</property>
-                                <text-property name="displayName">is_sub_line</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["is_sub_line"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">is_pack_line</property>
-                                <text-property name="displayName">is_pack_line</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["is_pack_line"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">pack_price_select</property>
-                                <text-property name="displayName">pack_price_select</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["pack_price_select"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">parent_pack_price_select</property>
-                                <text-property name="displayName">parent_pack_price_select</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["parent_pack_price_select"]</expression>
                                 <property name="dataType">integer</property>
                             </structure>
                             <structure>
@@ -8390,36 +7185,10 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
-                                <property name="name">in_ati_1</property>
-                                <text-property name="displayName">in_ati</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["in_ati"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
                                 <property name="name">EstimatedDeliveryDate</property>
                                 <text-property name="displayName">EstimatedDeliveryDate</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["EstimatedDeliveryDate"]</expression>
                                 <property name="dataType">date</property>
-                            </structure>
-                            <structure>
-                                <property name="name">productPicture</property>
-                                <text-property name="displayName">productPicture</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["productPicture"]</expression>
-                                <property name="dataType">string</property>
-                                <property name="allowExport">true</property>
-                            </structure>
-                            <structure>
-                                <property name="name">is_product_picture_available</property>
-                                <text-property name="displayName">is_product_picture_available</text-property>
-                                <property name="dataType">integer</property>
-                                <property name="aggregateFunction">COUNT</property>
-                                <list-property name="arguments">
-                                    <structure>
-                                        <property name="name">Expression</property>
-                                    </structure>
-                                </list-property>
-                                <expression name="filterExpr" type="javascript">row["productPicture"]!=null</expression>
-                                <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">price_discounted</property>
@@ -8437,12 +7206,6 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                                 <property name="name">hideUnitAmounts</property>
                                 <text-property name="displayName">hideUnitAmounts</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["hideUnitAmounts"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">PackHideUnitAmounts</property>
-                                <text-property name="displayName">PackHideUnitAmounts</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["PackHideUnitAmounts"]</expression>
                                 <property name="dataType">integer</property>
                             </structure>
                         </list-property>
@@ -8736,9 +7499,9 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                     <property name="textAlign">right</property>
                     <image id="4328">
                         <property name="height">50px</property>
-                        <expression name="altText">""</expression>
                         <property name="source">file</property>
                         <expression name="uri" type="javascript">params["AttachmentPath"].value+row["salesperson_signature_path"]</expression>
+                        <expression name="altText">""</expression>
                     </image>
                     <text-data id="4329">
                         <expression name="valueExpr">row["SalemanName"]</expression>

@@ -101,6 +101,11 @@ public class IrrecoverableController {
       String fileLink =
           ReportFactory.createReport(IReport.IRRECOVERABLE, name + "-${date}")
               .addParam("IrrecoverableID", irrecoverable.getId())
+              .addParam(
+                  "Timezone",
+                  irrecoverable.getCompany() != null
+                      ? irrecoverable.getCompany().getTimezone()
+                      : null)
               .addFormat(irrecoverable.getExportTypeSelect())
               .toAttach(irrecoverable)
               .generate()

@@ -76,7 +76,7 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
     }
 
     reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_FINAL);
-    reconcileGroup.setDateOfLettering(appBaseService.getTodayDate());
+    reconcileGroup.setDateOfLettering(appBaseService.getTodayDate(reconcileGroup.getCompany()));
 
     reconcileGroupSequenceService.fillCodeFromSequence(reconcileGroup);
   }
@@ -84,41 +84,35 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
   @Override
   public boolean isBalanced(List<Reconcile> reconcileList) {
     List<MoveLine> debitMoveLineList =
-        reconcileList
-            .stream()
+        reconcileList.stream()
             .map(Reconcile::getDebitMoveLine)
             .distinct()
             .collect(Collectors.toList());
     List<MoveLine> creditMoveLineList =
-        reconcileList
-            .stream()
+        reconcileList.stream()
             .map(Reconcile::getCreditMoveLine)
             .distinct()
             .collect(Collectors.toList());
     List<Account> accountList =
-        debitMoveLineList
-            .stream()
+        debitMoveLineList.stream()
             .map(MoveLine::getAccount)
             .distinct()
             .collect(Collectors.toList());
     accountList.addAll(
-        creditMoveLineList
-            .stream()
+        creditMoveLineList.stream()
             .map(MoveLine::getAccount)
             .distinct()
             .collect(Collectors.toList()));
 
     for (Account account : accountList) {
       BigDecimal totalDebit =
-          debitMoveLineList
-              .stream()
+          debitMoveLineList.stream()
               .filter(moveLine -> moveLine.getAccount().equals(account))
               .map(MoveLine::getDebit)
               .reduce(BigDecimal::add)
               .orElse(BigDecimal.ZERO);
       BigDecimal totalCredit =
-          creditMoveLineList
-              .stream()
+          creditMoveLineList.stream()
               .filter(moveLine -> moveLine.getAccount().equals(account))
               .map(MoveLine::getCredit)
               .reduce(BigDecimal::add)
@@ -219,12 +213,10 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
     moveLineToRemoveList.forEach(moveLine -> moveLine.setReconcileGroup(null));
 
     List<Reconcile> reconcileList = this.getReconcileList(reconcileGroup);
-    reconcileList
-        .stream()
+    reconcileList.stream()
         .map(Reconcile::getDebitMoveLine)
         .forEach(moveLine -> moveLine.setReconcileGroup(reconcileGroup));
-    reconcileList
-        .stream()
+    reconcileList.stream()
         .map(Reconcile::getCreditMoveLine)
         .forEach(moveLine -> moveLine.setReconcileGroup(reconcileGroup));
 
@@ -244,7 +236,7 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
       // it is not balanced or the collection is empty.
       if (CollectionUtils.isEmpty(reconcileList)) {
         reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_UNLETTERED);
-        reconcileGroup.setUnletteringDate(appBaseService.getTodayDate());
+        reconcileGroup.setUnletteringDate(appBaseService.getTodayDate(reconcileGroup.getCompany()));
         reconcileGroupRepository.save(reconcileGroup);
       } else {
         reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_TEMPORARY);
@@ -262,7 +254,7 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
       reconcileService.unreconcile(reconcile);
     }
 
-    reconcileGroup.setUnletteringDate(appBaseService.getTodayDate());
+    reconcileGroup.setUnletteringDate(appBaseService.getTodayDate(reconcileGroup.getCompany()));
     reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_UNLETTERED);
     reconcileGroupRepository.save(reconcileGroup);
   }

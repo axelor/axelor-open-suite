@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.translation.ITranslation;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -32,7 +33,6 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.List;
-import org.springframework.util.ObjectUtils;
 
 @Singleton
 public class AccountController {

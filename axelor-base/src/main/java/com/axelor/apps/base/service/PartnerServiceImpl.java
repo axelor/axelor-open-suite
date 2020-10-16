@@ -34,6 +34,7 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.EmailAddress;
+import com.axelor.auth.AuthUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -186,9 +187,7 @@ public class PartnerServiceImpl implements PartnerService {
               .fetchOne());
 
     } else if (partner.getPartnerAddressList() != null
-        && partner
-            .getPartnerAddressList()
-            .stream()
+        && partner.getPartnerAddressList().stream()
             .map(PartnerAddress::getAddress)
             .noneMatch(address::equals)) {
       PartnerAddress mainAddress = new PartnerAddress();
@@ -552,7 +551,8 @@ public class PartnerServiceImpl implements PartnerService {
     if (priceListSet == null) {
       return null;
     }
-    LocalDate today = Beans.get(AppBaseService.class).getTodayDate();
+    LocalDate today =
+        Beans.get(AppBaseService.class).getTodayDate(AuthUtils.getUser().getActiveCompany());
     List<PriceList> candidatePriceListList = new ArrayList<>();
     for (PriceList priceList : priceListSet) {
       LocalDate beginDate =

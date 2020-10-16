@@ -31,8 +31,7 @@ public class TeamProjectRepository extends TeamRepository {
             .filter("self.team = :team AND self.synchronize = true")
             .bind("team", team)
             .fetch();
-    projects
-        .stream()
+    projects.stream()
         .peek(Project::clearMembersUserSet)
         .peek(p -> team.getMembers().forEach(p::addMembersUserSetItem))
         .forEach(ProjectManagementRepository::setAllProjectMembersUserSet);

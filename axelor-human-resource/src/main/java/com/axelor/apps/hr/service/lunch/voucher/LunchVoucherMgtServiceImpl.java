@@ -36,7 +36,6 @@ import com.google.inject.persist.Transactional;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,17 +50,21 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
 
   protected HRConfigService hrConfigService;
 
+  protected AppBaseService appBaseService;
+
   @Inject
   public LunchVoucherMgtServiceImpl(
       LunchVoucherMgtLineService lunchVoucherMgtLineService,
       LunchVoucherAdvanceService lunchVoucherAdvanceService,
       LunchVoucherMgtRepository lunchVoucherMgtRepository,
-      HRConfigService hrConfigService) {
+      HRConfigService hrConfigService,
+      AppBaseService appBaseService) {
 
     this.lunchVoucherMgtLineService = lunchVoucherMgtLineService;
     this.lunchVoucherMgtRepository = lunchVoucherMgtRepository;
     this.lunchVoucherAdvanceService = lunchVoucherAdvanceService;
     this.hrConfigService = hrConfigService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -198,7 +201,9 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
     metaFile.setFileName(
         I18n.get("LunchVoucherCommand")
             + " - "
-            + LocalDate.now().format(DateTimeFormatter.ISO_DATE)
+            + appBaseService
+                .getTodayDate(lunchVoucherMgt.getCompany())
+                .format(DateTimeFormatter.ISO_DATE)
             + ".csv");
 
     Path tempFile = MetaFiles.createTempFile(null, ".csv");
@@ -238,7 +243,7 @@ public class LunchVoucherMgtServiceImpl implements LunchVoucherMgtService {
      */
     // lunchVoucherMgt.setExported(true);
     lunchVoucherMgt.setCsvFile(metaFile);
-    lunchVoucherMgt.setExportDate(Beans.get(AppBaseService.class).getTodayDate());
+    lunchVoucherMgt.setExportDate(appBaseService.getTodayDate(lunchVoucherMgt.getCompany()));
 
     lunchVoucherMgtRepository.save(lunchVoucherMgt);
   }

@@ -63,9 +63,13 @@ public class DepositSlipServiceImpl implements DepositSlipService {
         ReportFactory.createReport(getReportName(depositSlip), getFilename(depositSlip));
     settings.addParam("DepositSlipId", depositSlip.getId());
     settings.addParam("Locale", ReportSettings.getPrintingLocale(null));
+    settings.addParam(
+        "Timezone",
+        depositSlip.getCompany() != null ? depositSlip.getCompany().getTimezone() : null);
     settings.addFormat("pdf");
     String fileLink = settings.toAttach(depositSlip).generate().getFileLink();
-    depositSlip.setPublicationDate(Beans.get(AppBaseService.class).getTodayDate());
+    depositSlip.setPublicationDate(
+        Beans.get(AppBaseService.class).getTodayDate(depositSlip.getCompany()));
     return fileLink;
   }
 
@@ -108,8 +112,7 @@ public class DepositSlipServiceImpl implements DepositSlipService {
     if (depositSlip.getPaymentVoucherList() != null) {
       List<PaymentVoucher> paymentVoucherList = depositSlip.getPaymentVoucherList();
       BigDecimal totalAmount =
-          paymentVoucherList
-              .stream()
+          paymentVoucherList.stream()
               .map(PaymentVoucher::getPaidAmount)
               .reduce(BigDecimal.ZERO, BigDecimal::add);
       depositSlip.setTotalAmount(totalAmount);

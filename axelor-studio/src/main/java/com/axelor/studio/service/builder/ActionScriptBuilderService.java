@@ -150,7 +150,10 @@ public class ActionScriptBuilderService {
       stb.append(format("target = $json.save(target);", level));
       stb.append(
           format(
-              "Beans.get(" + WkfTrackingService.class.getName() + ".class).track(target);", level));
+              "Beans.get("
+                  + WkfTrackingService.class.getName()
+                  + ".class).track(0, target, false);",
+              level));
     } else {
       stb.append(format("var target = new " + targetModel + "();", level));
       stb.append(format("target = setVar0(null, ctx, {});", level));

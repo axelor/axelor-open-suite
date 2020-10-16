@@ -501,7 +501,7 @@ Group by SaleOrder.expected_realisation_date,Product.full_name, ProductCategory.
 UNION
 
 SELECT  Timetable.estimated_date as "date",
-SUM(Timetable.amount * Timetable.qty - (CASE WHEN TimetableInvoice.status_select = 3 THEN TimetableInvoice.company_ex_tax_total ELSE 0 END)) as sum,
+SUM(Timetable.amount - (CASE WHEN TimetableInvoice.status_select = 3 THEN TimetableInvoice.company_ex_tax_total ELSE 0 END)) as sum,
 		'Ordered' as type, 
 		LangTranslate1.message_value as "translation",
 		Product.full_name as product,
@@ -1163,7 +1163,7 @@ Group by date_trunc('month',SaleOrder.expected_realisation_date)::date,LangTrans
 UNION
 
 SELECT  date_trunc('month',Timetable.estimated_date)::date as "date",
-SUM(Timetable.amount * Timetable.qty - (CASE WHEN TimetableInvoice.status_select = 3 THEN TimetableInvoice.company_ex_tax_total ELSE 0 END)) as sum,
+SUM(Timetable.amount - (CASE WHEN TimetableInvoice.status_select = 3 THEN TimetableInvoice.company_ex_tax_total ELSE 0 END)) as sum,
 		'Ordered' as type,
 		LangTranslate1.message_value as "translation"
 FROM sale_sale_order_line as SaleOrderLine
@@ -1569,13 +1569,36 @@ GROUP BY date
                     <property name="colSpan">10</property>
                     <property name="rowSpan">1</property>
                     <property name="verticalAlign">top</property>
+                    <data id="4874">
+                        <property name="fontSize">14pt</property>
+                        <property name="fontWeight">bold</property>
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
+                        <property name="textAlign">center</property>
+                        <property name="display">inline</property>
+                        <property name="resultSetColumn">from_date</property>
+                    </data>
                     <text id="4058">
                         <property name="fontSize">14pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="textAlign">center</property>
+                        <property name="display">inline</property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["from_date"]</VALUE-OF><VALUE-OF format="^">" - "</VALUE-OF><VALUE-OF>row["to_date"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[&amp;nbsp;<VALUE-OF format="^">" - "</VALUE-OF>&amp;nbsp;]]></text-property>
                     </text>
+                    <data id="4873">
+                        <property name="fontSize">14pt</property>
+                        <property name="fontWeight">bold</property>
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
+                        <property name="textAlign">center</property>
+                        <property name="display">inline</property>
+                        <property name="resultSetColumn">to_date</property>
+                    </data>
                 </cell>
             </row>
             <row id="4671">
@@ -1718,8 +1741,17 @@ GROUP BY date
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
                     <property name="verticalAlign">top</property>
+                    <label id="4878">
+                        <property name="display">inline</property>
+                        <text-property name="text"> </text-property>
+                    </label>
                     <data id="4695">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="resultSetColumn">publicationDateTime</property>
                     </data>
                 </cell>
@@ -3124,6 +3156,7 @@ GROUP BY date
                                 <text id="4871">
                                     <property name="fontSize">14pt</property>
                                     <property name="textAlign">left</property>
+                                    <property name="display">inline</property>
                                     <property name="dataSet">TranslateDS</property>
                                     <list-property name="paramBindings">
                                         <structure>
@@ -3148,7 +3181,36 @@ GROUP BY date
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF format="dd/MM/YYYY">row._outer._outer["to_date"]</VALUE-OF><VALUE-OF format="^">" : "</VALUE-OF><VALUE-OF format="####.00">row._outer["TotalTurnover"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF>row._outer._outer["companyCurrency"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>&amp;nbsp;]]></text-property>
+                                </text>
+                                <data id="4875">
+                                    <property name="fontSize">14pt</property>
+                                    <property name="fontWeight">normal</property>
+                                    <structure name="dateTimeFormat">
+                                        <property name="category">Short Date</property>
+                                        <property name="pattern">Short Date</property>
+                                    </structure>
+                                    <property name="textAlign">left</property>
+                                    <property name="display">inline</property>
+                                    <property name="dataSet">Infos</property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">to_date</property>
+                                            <text-property name="displayName">to_date</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["to_date"]</expression>
+                                            <property name="dataType">date</property>
+                                        </structure>
+                                    </list-property>
+                                    <structure name="toc"/>
+                                    <property name="resultSetColumn">to_date</property>
+                                </data>
+                                <text id="4877">
+                                    <property name="fontSize">14pt</property>
+                                    <property name="fontWeight">normal</property>
+                                    <property name="textAlign">left</property>
+                                    <property name="display">inline</property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF format="^">" : "</VALUE-OF><VALUE-OF format="####.00">row._outer["TotalTurnover"]</VALUE-OF><VALUE-OF format="^">" "</VALUE-OF><VALUE-OF>row._outer._outer["companyCurrency"]</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                         </row>

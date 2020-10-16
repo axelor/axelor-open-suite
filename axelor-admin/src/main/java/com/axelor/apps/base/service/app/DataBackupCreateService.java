@@ -19,6 +19,7 @@ package com.axelor.apps.base.service.app;
 
 import com.axelor.apps.base.db.App;
 import com.axelor.apps.base.db.DataBackup;
+import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.common.StringUtils;
 import com.axelor.data.csv.CSVBind;
@@ -123,11 +124,6 @@ public class DataBackupCreateService {
 
     for (MetaModel metaModel : metaModelList) {
 
-      /*Checking and ByPassing non-persistable Classes MetaModel*/
-      if (metaModel.getTableName() == null) {
-        continue;
-      }
-
       try {
         List<String> subClasses = subClassesMap.get(metaModel.getFullName());
         long totalRecord = getMetaModelDataCount(metaModel, subClasses);
@@ -210,7 +206,7 @@ public class DataBackupCreateService {
   /* Get All MetaModels */
   private List<MetaModel> getMetaModels() {
     String filterStr =
-        "self.packageName NOT LIKE '%meta%' AND self.packageName !='com.axelor.studio.db' AND self.name!='DataBackup'";
+        "self.packageName NOT LIKE '%meta%' AND self.packageName !='com.axelor.studio.db' AND self.name!='DataBackup' AND self.tableName IS NOT NULL";
     List<MetaModel> metaModels = metaModelRepo.all().filter(filterStr).order("fullName").fetch();
     metaModels.add(metaModelRepo.findByName(MetaFile.class.getSimpleName()));
     metaModels.add(metaModelRepo.findByName(MetaJsonField.class.getSimpleName()));
@@ -377,7 +373,8 @@ public class DataBackupCreateService {
                         .getPackage()
                         .equals(Package.getPackage("com.axelor.meta.db"))
                     && !property.getTarget().isAssignableFrom(MetaFile.class)
-                    && !property.getTarget().isAssignableFrom(MetaJsonField.class))))) {
+                    && !property.getTarget().isAssignableFrom(MetaJsonField.class))))
+        && !property.isTransient()) {
       return true;
     }
     return false;
@@ -563,7 +560,7 @@ public class DataBackupCreateService {
   }
 
   public String createRelativeDate(LocalDate date) {
-    LocalDate currentDate = LocalDate.now();
+    LocalDate currentDate = DateTool.getTodayDate(null);
     long years = currentDate.until(date, ChronoUnit.YEARS);
     currentDate = currentDate.plusYears(years);
 

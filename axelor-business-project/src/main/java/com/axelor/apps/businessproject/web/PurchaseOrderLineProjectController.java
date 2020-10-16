@@ -63,8 +63,7 @@ public class PurchaseOrderLineProjectController {
       response.setFlash(IExceptionMessage.LINES_NOT_SELECTED);
     } else {
       List<Long> lineIds =
-          purchaseOrderLineSet
-              .stream()
+          purchaseOrderLineSet.stream()
               .map(it -> Long.parseLong(it.get("id").toString()))
               .collect(Collectors.toList());
       Beans.get(PurchaseOrderLineProjectService.class).setProject(lineIds, project);

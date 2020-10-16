@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
   <module name="studio" package="com.axelor.studio.db" />
   
@@ -21,6 +21,8 @@
       <integer name="sequence" title="Sequence" />
       <integer name="nodeType" title="Node type" selection="studio.node.type.select" default="1" />
       <many-to-many name="metaActionSet" ref="com.axelor.meta.db.MetaAction" title="Actions" orderBy="sequence"/>
+      <boolean name="isGenerateMenu" title="Generate menu"/>
+      <many-to-one name="menuBuilder" ref="com.axelor.studio.db.MenuBuilder" title="Menu builder" />
       <unique-constraint columns="wkf,sequence"/>
       
       <extra-code>

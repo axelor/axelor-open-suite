@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.1.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
   
   <module name="cash-management" package="com.axelor.apps.cash.management.db"/>
   
@@ -9,8 +9,9 @@
     <integer name="elementSelect" title="Element" selection="forecast.recap.line.type.element.select"></integer>
 	<integer name="typeSelect" selection="iaccount.payment.mode.in.out.select" title="Type"/>
     <integer name="operationTypeSelect" title="Operaton Type" selection="iinvoice.operation.type.select"/>  
-    <integer name="timetableLinkedSelect" title="Timetable Linked To" selection="forecast.recap.line.type.timetable.linked.select"/>
+    <integer name="payDaySelect" title="Pay Day" selection="forecast.recap.line.type.pay.day.select"/>
     <string name="statusSelect" title="Statuses to take into account" />
+    <integer name="estimatedDuration" title="Estimated duration after order creation (in days)" min="0"/>
     <string name="name" title="Name"/>
 	<extra-code><![CDATA[
   
@@ -22,14 +23,15 @@
       public static final int ELEMENT_FORECAST = 5;  // Forecast
       public static final int ELEMENT_OPPORTUNITY = 6;  // Opportunity
       public static final int ELEMENT_SALARY = 7;  // Salary   
-      public static final int ELEMENT_TIMETABLE = 8;  // Timetable
-      
-      // TIMETABLE LINKED SELECT
-      public static final int TIMETABLE_SALE_ORDER = 1;  // Sale Order
-      public static final int TIMETABLE_PURCHASE_ORDER = 1;  // Purchese Order
-        
+            
   ]]></extra-code>
-    
+    <track>
+      <field name="typeSelect"/>
+      <field name="elementSelect"/>
+      <field name="statusSelect"/>
+      <field name="operationTypeSelect"/>
+      <message if="true" on="UPDATE">Forecast recap line type updated.</message>
+    </track>
   </entity>
   
 </domain-models>

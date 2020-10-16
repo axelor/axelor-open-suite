@@ -28,4 +28,5 @@ public interface IReport {
   public static final String LUNCH_VOUCHER_ADVANCE = "LunchVoucherAdvance.rptdesign";
   public static final String EMPLOYEE_PHONEBOOK = "EmployeePhoneBook.rptdesign";
   public static final String EMPLOYEE_TIMESHEET = "EmployeeTimesheet.rptdesign";
+  public static final String EMPLOYEE = "Employee.rptdesign";
 }
