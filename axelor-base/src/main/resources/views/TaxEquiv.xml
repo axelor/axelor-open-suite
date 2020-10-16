@@ -11,10 +11,10 @@
 
     <form name="tax-equiv-form" title="Tax equivalence" model="com.axelor.apps.account.db.TaxEquiv" onLoad="action-tax-equiv-group-onload">
         <panel name="mainPanel">
-            <field name="fromTax" form-view="tax-form" grid-view="tax-grid"/>
-            <field name="toTax" form-view="tax-form" grid-view="tax-grid"/>
+            <field name="fromTax" form-view="tax-form" grid-view="tax-grid" required="true"/>
+            <field name="toTax" form-view="tax-form" grid-view="tax-grid" required="true"/>
             <field name="reverseCharge" />
-            <field name="reverseChargeTax" form-view="tax-form" grid-view="tax-grid" showIf="reverseCharge"/>
+            <field name="reverseChargeTax" form-view="tax-form" grid-view="tax-grid" showIf="reverseCharge" requiredIf="reverseCharge"/>
             <field name="specificNote" colSpan="12" hidden="true"/>
         </panel>
     </form>

@@ -1,4 +1,4 @@
-"importId";"code";"name";"sequenceTypeSelect";"sequenceLettersTypeSelect";"nextNum";"padding";"prefixe";"suffixe";"toBeAdded";"yearlyResetOk"
+"importId";"codeSelect";"name";"sequenceTypeSelect";"sequenceLettersTypeSelect";"nextNum";"padding";"prefixe";"suffixe";"toBeAdded";"yearlyResetOk"
 100;"accountClearance";"Overpayment clearance";"NUMBERS";"UPPERCASE";1;4;"ACCCLR_%YY_";;1;1
 101;"chequeReject";"Cheque reject";"NUMBERS";"UPPERCASE";1;4;"CHQREJ_%YY_";;1;1
 102;"invoice";"Customer Invoice";"NUMBERS";"UPPERCASE";1;4;"INV_%YY";;1;1

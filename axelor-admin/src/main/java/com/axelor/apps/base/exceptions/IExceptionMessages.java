@@ -41,4 +41,9 @@ public interface IExceptionMessages {
   public static final String OBJECT_DATA_REPLACE_MISSING = /*$$(*/ "No record found for: %s" /*)*/;
 
   public static final String ROLE_IMPORT_SUCCESS = /*$$(*/ "Roles imported successfully" /*)*/;
+
+  public static final String DATA_EXPORT_DIR_ERROR = /*$$(*/ "Export path not configured" /*)*/;;
+
+  public static final String FILE_UPLOAD_DIR_ERROR = /*$$(*/
+      "File upload path not configured" /*)*/;;
 }

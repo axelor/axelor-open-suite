@@ -56,7 +56,7 @@
 		
 			<panel name="configurationsPanel" title="Configurations" hideIf="$popup()">
 				<panel name="moveLinePanel" title="MoveLine" colSpan="12">
-					<field name="sequence" domain="self.code = 'move' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid" canEdit="true" canNew="true"/>
+					<field name="sequence" domain="self.codeSelect = 'move' and self.company = :company" form-view="sequence-form" grid-view="sequence-grid" canEdit="true" canNew="true"/>
 					<field name="isInvoiceMoveConsolidated" widget="Boolean-switch"/>
 					<field name="descriptionModel"/>
 					<field name="descriptionIdentificationOk"/>
@@ -86,7 +86,7 @@
     	<view type="grid" name="move-line-journal-grid"/>
     	<view type="form" name="move-line-form"/>
     	<domain>self.move.journal.id = :id and self.move.ignoreInAccountingOk IN ('false', null) and self.move.period.year.fromDate &lt; :todayDate and self.move.period.year.toDate &gt; :todayDate </domain>	
-    	<context name="todayDate" expr="eval:__config__.app.getTodayDate()" />
+    	<context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" />
     </action-view>
     
     

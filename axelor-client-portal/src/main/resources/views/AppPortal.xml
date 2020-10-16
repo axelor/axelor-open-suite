@@ -20,7 +20,7 @@
 				    <field name="canPayOnline"  widget="boolean-switch" showIf="portalSelect == 2"/>
 				    <field name="onlinePaymentMethodSet" colSpan="12" showIf="manageInvoices &amp;&amp; canPayOnline"/>
 		    	</panel>
-		    	</panel>
+		    </panel>
 		</panel>
 				        
 		<panel-mail name="mailPanel">

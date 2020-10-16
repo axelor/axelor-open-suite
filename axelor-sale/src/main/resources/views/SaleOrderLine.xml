@@ -15,7 +15,7 @@
 		<field name="productName"/>
 		<field name="qty" aggregate="sum" x-scale="2"/>
 		<field name="reservedQty" if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum" x-scale="2"/>
-    	<button name="allocateAll" if="__config__.app.getApp('supplychain')?.manageStockReservation" title="Allocate" icon="fa-plus-square" readonlyIf="$get('saleOrder.statusSelect') != 3 || $get('saleOrder.orderBeingEdited') || $number(reservedQty) == $number(qty) || deliveryState == 3" onClick="save,action-supplychain-sale-order-line-allocate-all"/>
+    	<button name="allocateAll" if="__config__.app.getApp('supplychain')?.manageStockReservation" title="Allocate" icon="fa-plus-square" readonlyIf="$get('saleOrder.statusSelect') != 3 || $get('saleOrder.orderBeingEdited') || $number(reservedQty) == $number(qty) || deliveryState == 3 || $get('product.productTypeSelect') == 'service'" onClick="save,action-supplychain-sale-order-line-allocate-all"/>
 		<button name="deallocate"  if="__config__.app.getApp('supplychain')?.manageStockReservation" title="Deallocate" icon="fa-minus-square" readonlyIf="$get('saleOrder.statusSelect') != 3 || $get('saleOrder.orderBeingEdited') || $number(reservedQty) == 0 || deliveryState == 3" onClick="save,action-supplychain-sale-order-line-deallocate-all"/>
 		<field name="unit" form-view="unit-form" grid-view="unit-grid"/>
 		<field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
@@ -29,6 +29,7 @@
         </field>
 	    <field name="saleOrder.statusSelect" hidden="true"/>
 	    <field name="saleOrder.orderBeingEdited" hidden="true"/>
+	    <field name="product.productTypeSelect" hidden="true"/>
 	</grid>
 
     <grid name="sale-order-line-menu-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine" canNew="false" canDelete="false" canEdit="false">
@@ -124,7 +125,7 @@
 					]]></viewer>
 				</field>
 
-				<field name="isQtyRequested" showTitle="false" colSpan="2" showIf="isQtyRequested" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+				<field name="isQtyRequested" showTitle="false" colSpan="2" showIf="isQtyRequested &amp;&amp; product &amp;&amp; product.productTypeSelect != 'service'" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 					<viewer><![CDATA[
 						<h4>
 							<span class="label label-success" ng-show="record.isQtyRequested" x-translate>Reservation requested</span>
@@ -175,20 +176,21 @@
 					<button name="updateAllocatedQtyBtn" colSpan="6" hidden="true" title="Change allocated qty" onClick="action-view-sale-order-line-allocated-qty-wizard"/>
 				</panel>
         <panel name="requestedReservedQtyBtnqPanel" colSpan="12" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()">
-          <button name="requestQty" title="Request reservation" showIf="!isQtyRequested" onClick="save,action-method-sale-order-line-request-qty"/>
+          <button name="requestQty" title="Request reservation" showIf="product &amp;&amp; product.productTypeSelect != 'service' &amp;&amp; !isQtyRequested" onClick="save,action-method-sale-order-line-request-qty"/>
         </panel>
         <panel name="cancelReservedQtyBtnqPanel" colSpan="12" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()">
-          <button name="cancelReservation" title="Cancel reservation" showIf="isQtyRequested" onClick="save,action-method-sale-order-line-cancel-reservation"/>
+          <button name="cancelReservation" title="Cancel reservation" showIf="product &amp;&amp; product.productTypeSelect != 'service' &amp;&amp; isQtyRequested" onClick="save,action-method-sale-order-line-cancel-reservation"/>
         </panel>
         </panel>
-				<field name="$availableStock" colSpan="3" readonly="true" type="decimal" title="Available stock" if-module="axelor-supplychain"  if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
-				<field name="$allocatedStock" colSpan="3" readonly="true" type="decimal" title="Allocated stock" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
-				<field name="$totalStock" colSpan="3" readonly="true" type="decimal" title="Total stock" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
+				<field name="$availableStock" colSpan="3" readonly="true" showIf="product &amp;&amp; product.productTypeSelect != 'service'" type="decimal" title="Available stock" if-module="axelor-supplychain"  if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
+				<field name="$allocatedStock" colSpan="3" readonly="true" showIf="product &amp;&amp; product.productTypeSelect != 'service'" type="decimal" title="Allocated stock" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
+				<field name="$totalStock" colSpan="3" readonly="true" showIf="product &amp;&amp; product.productTypeSelect != 'service'" type="decimal" title="Total stock" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()"/>
 				<field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
 				<panel name="descriptionPanel" title="Description" colSpan="12" readonlyIf="$isReadOnly !== false">
 					<field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
 				</panel>
 				<field name="$isReadOnly" hidden="true"/>
+				<field name="product.productTypeSelect" hidden="true"/>
 			</panel>
 			<panel name="marginPanel" title="Margin" readonlyIf="$isReadOnly !== false">
 				<field name="subTotalCostPrice" onChange="action-sale-order-line-method-compute-subMargin"/>
@@ -202,7 +204,7 @@
 				<field name="estimatedDelivDate" readonlyIf="$availabiltyRequest"/>
 				<field name="deliveredQty" readonly="true" readonlyIf="$isReadOnly !== false"/>
                 <button name="$previewBtn" title="See stock details"  icon="fa-cubes" colSpan="4" widget="info-button" onClick="action-stock-location-line-view-for-a-product-from-saleorderline-view" if-module="axelor-supplychain"/>
-				<field name="pickingOrderInfo" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" readonlyIf="$isReadOnly !== false"/>
+				<field name="pickingOrderInfo" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" readonlyIf="$isReadOnly !== false" hideIf="product.productTypeSelect == 'service'"/>
 				<panel-dashlet name="stockMoveLineOfSOPanel" title="Stock Moves" action="action-sale-order-line-view-stock-move-line" colSpan="12" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')" readonlyIf="$isReadOnly !== false"/>
 			</panel>
 			<panel name="invoicingFollowUpPanel" title="Invoicing" readonlyIf="$isReadOnly !== false" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">

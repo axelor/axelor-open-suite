@@ -24,7 +24,6 @@ import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Function;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
-import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.SyncContact;
 import com.axelor.apps.base.db.SyncContactHistoric;
 import com.axelor.apps.base.db.repo.AddressRepository;
@@ -42,6 +41,7 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.repo.EmailAddressRepository;
 import com.axelor.apps.tool.EmailTool;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
@@ -81,7 +81,8 @@ public class SyncContactService {
   private FunctionRepository functionRepo;
 
   private String importOrigin =
-      "Import Google Contact " + Beans.get(AppBaseService.class).getTodayDate();
+      "Import Google Contact "
+          + Beans.get(AppBaseService.class).getTodayDate(AuthUtils.getUser().getActiveCompany());
 
   private static final String SYNC_CONTACT_OLD_EMAIL = /*$$(*/ "Old email" /*)*/;
   private static final String SYNC_CONTACT_GOOGLE_EMAIL = /*$$(*/ "Google email" /*)*/;
@@ -219,9 +220,7 @@ public class SyncContactService {
 
   protected void setDefaultPartnerValue(Partner partner) {
     partner.setPartnerTypeSelect(PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
-    Sequence partnerSeq =
-        Beans.get(SequenceRepository.class).findByCode(SequenceRepository.PARTNER);
-    String seq = Beans.get(SequenceService.class).getSequenceNumber(partnerSeq);
+    String seq = Beans.get(SequenceService.class).getSequenceNumber(SequenceRepository.PARTNER);
     partner.setUser(userService.getUser());
     partner.setPartnerSeq(seq);
     partner.setIsContact(true);

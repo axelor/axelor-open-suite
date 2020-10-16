@@ -536,7 +536,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   @Override
   public SaleOrder fillSaleOrder(SaleOrder saleOrder, Invoice invoice) {
 
-    saleOrder.setOrderDate(appSupplychainService.getTodayDate());
+    saleOrder.setOrderDate(appSupplychainService.getTodayDate(invoice.getCompany()));
 
     return saleOrder;
   }
@@ -701,7 +701,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
    *     isn't modify in database but it will be integrated in calculation For ventilation, the
    *     invoice should be integrated in calculation For cancellation, the invoice shouldn't be
    *     integrated in calculation
-   * @param includeInvoice To know if the invoice should be or not integrated in calculation
+   * @param excludeCurrentInvoice To know if the invoice should be or not integrated in calculation
    */
   @Override
   public BigDecimal getInvoicedAmount(

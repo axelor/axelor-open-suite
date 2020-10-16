@@ -18,17 +18,27 @@
 package com.axelor.csv.script;
 
 import com.axelor.apps.account.db.MoveTemplate;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.StringUtils;
+import com.axelor.inject.Beans;
 import java.io.IOException;
 import java.util.Map;
 
 public class ImportMoveTemplate {
-  public Object setCompany(Object bean, Map<String, Object> values) throws IOException {
+  public Object importMove(Object bean, Map<String, Object> values) throws IOException {
     assert bean instanceof MoveTemplate;
     MoveTemplate moveTemplate = (MoveTemplate) bean;
 
     try {
       if (moveTemplate.getJournal() != null) {
         moveTemplate.setCompany(moveTemplate.getJournal().getCompany());
+        String dateShift = values.get("endOfValidityDateShift").toString();
+        if (StringUtils.notBlank(dateShift)) {
+          moveTemplate.setEndOfValidityDate(
+              Beans.get(AppBaseService.class)
+                  .getTodayDate(moveTemplate.getCompany())
+                  .plusMonths(Integer.parseInt(dateShift)));
+        }
       }
     } catch (Exception e) {
       e.printStackTrace();

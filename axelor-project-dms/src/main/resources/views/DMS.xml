@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	
+	<grid id="project-dms-file-grid" name="dms-file-grid" title="Documents" model="com.axelor.dms.db.DMSFile" edit-icon="false" extension="true">
+		<extend target="//field[@name='fileName']">
+			<insert position="after">
+				<field name="isLock"/>
+			</insert>
+		</extend>
+	</grid>
+	
+	<form id="project-dms-file-form" name="dms-file-form" title="Document" model="com.axelor.dms.db.DMSFile" canNew="false"
+    	canAttach="false" canArchive="false" width="large" extension="true">
+		<extend target="//panel[@name='detailsPanel']">
+			<insert position="before">
+				<panel name="fileLockInfoPanel" title="Lock details" sidebar="true" itemSpan="12">
+					<field name="isLock"/>
+					<field name="lockedBy" form-view="user-form" grid-view="user-grid"/>
+				</panel>
+			</insert>
+		</extend>
+		
+		<extend target="/">
+			<insert position="after">
+				<panel name="favouriteUserPanel" colSpan="12">
+      				<field name="favouriteUserSet" colSpan="12" form-view="user-form" grid-view="user-grid"/>
+      			</panel>
+			</insert>
+		</extend>
+	</form>
+	
+	<grid id="project-dms-tag-grid" name="dms-tag-grid" title="Tags" model="com.axelor.dms.db.DMSFileTag" extension="true">
+		<extend target="/">
+			<attribute name="editable" value="false"/>
+		</extend>
+  	</grid>
+	
+	<form id="project-dms-tag-form" name="dms-tag-form" title="Tag" model="com.axelor.dms.db.DMSFileTag" extension="true">
+		<extend target="//field[@name='style']">
+			<insert position="after">
+				<panel-related field="tagList" form-view="dms-tag-form" grid-view="dms-tag-grid" colSpan="12"/>
+				<field name="projectSet" colSpan="12" grid-view="project-grid" form-view="project-form"/>
+			</insert>
+		</extend>
+    	
+		<extend target="/">
+			<attribute name="css" value=""/>
+			<attribute name="width" value="large"/>
+		</extend>
+  	</form>
+	
+	<action-method name="action-dms-file-method-send-email">
+		<call class="com.axelor.apps.projectdms.web.DMSController" method="sendEmail"/>
+	</action-method>
+
+</object-views>

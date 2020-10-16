@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	
+	<grid name="docusign-envelope-grid" title="Envelopes" model="com.axelor.apps.docusign.db.DocuSignEnvelope">
+	   <field name="name"/>
+	   <field name="envelopeId"/>
+	   <field name="statusSelect"/>
+	</grid>
+	
+    <form name="docusign-envelope-form" title="Envelope" model="com.axelor.apps.docusign.db.DocuSignEnvelope">
+        <toolbar>
+            <button name="synchroniseBtn" title="Synchronise status" onClick="action-docusign-envelope-method-synchronise-status"/>
+        </toolbar>
+       <panel name="mainPanel" colSpan="12">
+         <field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect" readonly="true"/>
+         <field name="name"/>
+         <field name="envelopeId" readonly="true"/>
+         <field name="docuSignEnvelopeSetting" form-view="docusign-envelope-setting-form" grid-view="docusign-envelope-setting-grid" readonly="true"/>
+         <field name="emailSubject"/>
+         <field name="isOrderedDocuments"/>
+         <field name="isOrderedSigners"/>
+         <field name="completedDateTime" readonly="true"/>
+         <field name="declinedDateTime" readonly="true"/>
+         <panel-related name="docuSignDocumentListPanel" field="docuSignDocumentList" colSpan="12" grid-view="docusign-document-grid" form-view="docusign-document-form" orderBy="sequence"/>
+         <panel-related name="docuSignSignerListPanel" field="docuSignSignerList" colSpan="12" grid-view="docusign-signer-grid" form-view="docusign-signer-form" orderBy="sequence"/>    
+       </panel>
+       <panel name="actionsPanel" sidebar="true">
+         <button name="sendBtn" title="Send" onClick="save,action-docusign-envelope-method-send-envelope" showIf="envelopeId == null"/>
+       </panel>
+       <panel name="relatedToPanel" title="Related to" sidebar="true" canCollapse="true" collapseIf="relatedTo == null">
+          <field name="relatedToSelect" widget="RefSelect" x-related="relatedToId"/>
+	      <field name="relatedToId" hidden="true"/>
+       </panel>
+       <panel name="certificatePanel" title="Certificate" sidebar="true" canCollapse="true" collapseIf="certificateMetaFile == null">
+           <field name="certificateMetaFile"/>
+       </panel>
+    </form>
+	
+	<form name="docusign-select-envelope-setting-wizard-form" title="Select envelope setting" model="com.axelor.apps.base.db.Wizard">
+        <panel>            
+            <field name="$envelopeSetting" title="Envelope setting" widget="ManyToOne" target="com.axelor.apps.docusign.db.DocuSignEnvelopeSetting"
+                   onSelect="action-docusign-envelope-wizard-attrs-set-envelope-setting-domain" grid-view="envelope-setting-grid" form-view="envelope-setting-form"/>
+            <button name="validate" title="Validate" colOffset="3" onClick="action-docusign-envelope-wizard-method-create-envelope" readonlyIf="!$envelopeSetting"/>
+        </panel>
+    </form>
+    
+    <action-attrs name="action-docusign-envelope-wizard-attrs-set-envelope-setting-domain" model="com.axelor.apps.base.db.Wizard">        
+        <attribute for="$envelopeSetting" name="domain" expr="eval: &quot;self.metaModel.fullName = :_templateContextModel&quot;"/>
+    </action-attrs>
+    
+    <action-method name="action-docusign-envelope-wizard-method-create-envelope">
+        <call class="com.axelor.apps.docusign.web.DocuSignEnvelopeController" method="createEnvelopeFromWizard"/>
+    </action-method>
+    
+    <action-method name="action-docusign-envelope-method-create-envelope">
+        <call class="com.axelor.apps.docusign.web.DocuSignEnvelopeController" method="createEnvelope"/>
+    </action-method>
+    
+    <action-method name="action-docusign-envelope-method-send-envelope">
+        <call class="com.axelor.apps.docusign.web.DocuSignEnvelopeController" method="sendEnvelope"/>
+    </action-method>
+
+    <action-method name="action-docusign-envelope-method-synchronise-status">
+        <call class="com.axelor.apps.docusign.web.DocuSignEnvelopeController" method="synchroniseEnvelopeStatus"/>
+    </action-method>
+	
+</object-views>

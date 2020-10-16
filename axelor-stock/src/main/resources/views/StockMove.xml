@@ -440,8 +440,8 @@
 					<field name="plannedStockMoveAutomaticMail" readonlyIf="statusSelect == 3"/>
                     <field name="realStockMoveAutomaticMail"/>
                 </panel>
-                <field name="fromStockLocation" showIf="typeSelect == 3" canEdit="false" domain="self.company = :company" onChange="action-stock-move-group-from-location-onchange" grid-view="stock-location-grid" form-view="stock-location-form" readonlyIf="statusSelect != 1"/>
-                <field name="toStockLocation" showIf="typeSelect == 2" canEdit="false" domain="self.company = :company" onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid" form-view="stock-location-form" readonlyIf="statusSelect != 1"/>
+                <field name="fromStockLocation" showIf="typeSelect == 3" canEdit="false" domain="self.company = :company AND self.typeSelect IN (2, 3)" onChange="action-stock-move-group-from-location-onchange" grid-view="stock-location-grid" form-view="stock-location-form" readonlyIf="statusSelect != 1"/>
+                <field name="toStockLocation" showIf="typeSelect == 2" canEdit="false" domain="self.company = :company AND self.typeSelect IN (2, 3)" onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid" form-view="stock-location-form" readonlyIf="statusSelect != 1"/>
                 <panel name="realStockMovePanel" colSpan="12" showIf="typeSelect == 2">
                     <field name="plannedStockMoveMessageTemplate" readonlyIf="statusSelect == 3" requiredIf="plannedStockMoveAutomaticMail" showIf="plannedStockMoveAutomaticMail" grid-view="template-grid" form-view="template-form"/>
                     <field name="realStockMoveMessageTemplate" requiredIf="realStockMoveAutomaticMail" showIf="realStockMoveAutomaticMail" grid-view="template-grid" form-view="template-form"/>
@@ -703,7 +703,7 @@
         <field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
 	    <field name="statusSelect" expr="eval: 1"/>
-	    <field name="estimatedDate" expr="eval:__config__.app.getTodayDate()"/>
+	    <field name="estimatedDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 	    <field name="typeSelect" expr="eval: _typeSelect"/>
 	    <field if="_typeSelect == __repo__(StockMove).TYPE_INCOMING" name="toStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.receiptDefaultStockLocation"/>
 	    <field if="_typeSelect == __repo__(StockMove).TYPE_INCOMING" name="fromStockLocation" expr="eval:__repo__(StockConfig).all().filter('company.id = ?',__user__.activeCompany?.id).fetchOne()?.supplierVirtualStockLocation"/>

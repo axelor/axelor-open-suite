@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	
+	<menuitem name="docusign-root" title="DocuSign" order="-104"  if="__config__.app.isApp('docusign')"
+		icon="fa-pencil-square-o"  icon-background="#FFC820" />
+	
+	<menuitem name="docusign-root-envelope-all" title="Envelopes" parent="docusign-root"  order="10" action="docusign.envelope.all"/>
+	
+	<action-view name="docusign.envelope.all" title="Envelopes" model="com.axelor.apps.docusign.db.DocuSignEnvelope">		
+    	<view type="grid" name="docusign-envelope-grid"/>
+	    <view type="form" name="docusign-envelope-form"/>	    
+	</action-view>
+	
+	<menuitem name="docusign-root-conf" title="Configuration" parent="docusign-root" order="20" icon="fa-cog"/>
+	
+	<menuitem name="docusign-root-conf-account-all" title="DocuSign accounts" parent="docusign-root-conf"  order="10" action="docusign.account.all"/>
+	
+	<action-view name="docusign.account.all" title="DocuSign accounts" model="com.axelor.apps.docusign.db.DocuSignAccount">
+    	<view type="grid" name="docusign-account-grid"/>
+	    <view type="form" name="docusign-account-form"/>	    
+	</action-view>
+	
+	<menuitem name="docusign-root-conf-envelope-setting-all" title="Envelope settings" parent="docusign-root-conf"  order="20" action="envelope.setting.all"/>
+	
+	<action-view name="envelope.setting.all" title="Envelope settings" model="com.axelor.apps.docusign.db.DocuSignEnvelopeSetting">		
+    	<view type="grid" name="docusign-envelope-setting-grid"/>
+	    <view type="form" name="docusign-envelope-setting-form"/>	    
+	</action-view>
+
+</object-views>

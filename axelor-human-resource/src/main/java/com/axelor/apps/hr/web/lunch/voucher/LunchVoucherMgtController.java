@@ -19,6 +19,7 @@ package com.axelor.apps.hr.web.lunch.voucher;
 
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.service.PeriodService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.hr.db.LunchVoucherMgt;
 import com.axelor.apps.hr.db.LunchVoucherMgtLine;
@@ -34,7 +35,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -105,7 +105,9 @@ public class LunchVoucherMgtController {
     String name =
         lunchVoucherMgt.getCompany().getName()
             + " - "
-            + LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
+            + Beans.get(AppBaseService.class)
+                .getTodayDate(lunchVoucherMgt.getCompany())
+                .format(DateTimeFormatter.BASIC_ISO_DATE);
 
     try {
       String fileLink =

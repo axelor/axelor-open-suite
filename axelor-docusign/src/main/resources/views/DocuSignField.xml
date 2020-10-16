@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	
+	<grid name="docusign-field-grid" title="Fields" model="com.axelor.apps.docusign.db.DocuSignField">
+       <field name="name"/>
+       <field name="docuSignSigner"/>
+	   <field name="value"/>
+       <field name="status"/>
+	</grid>
+	
+	<form name="docusign-field-form" title="Field" model="com.axelor.apps.docusign.db.DocuSignField">    
+       <panel name="mainPanel" colSpan="12">
+         <field name="name"/>
+         <field name="typeSelect"/>       
+         <field name="docuSignSigner"/>
+         <field name="value"/>
+         <field name="status"/>
+         <field name="tabLabel"/>
+         <field name="pageNumber"/>
+         <field name="anchor"/>
+         <field name="anchorUnits" showIf="anchor" help="For example, use 'pixels'"/>
+         <field name="anchorYOffset" showIf="anchor"/>
+         <field name="anchorXOffset" showIf="anchor"/>
+         <field name="xPosition" hideIf="anchor"/>
+         <field name="yPosition" hideIf="anchor"/>
+         <field name="isRequired"/>
+         <field name="font"/>
+         <field name="fontSize"/>
+         <field name="fontColor"/>
+         <field name="isBold"/>
+         <panel-related name="docuSignFieldListPanel" field="docuSignFieldList" colSpan="12" grid-view="docusign-field-grid" form-view="docusign-field-form" showIf="typeSelect == 6 || typeSelect == 8"/>        
+       </panel>
+    </form>
+	
+</object-views>

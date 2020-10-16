@@ -235,7 +235,8 @@ public class GlobalAuditTracker {
       Object owner = newValues.getOwner();
 
       if (owner == null
-          || Arrays.asList(GlobalAuditInterceptor.BACKLISTED_CLASSES).contains(owner.getClass())) {
+          || Arrays.asList(GlobalAuditInterceptor.BACKLISTED_CLASSES).contains(owner.getClass())
+          || !(owner instanceof AuditableModel)) {
         return;
       }
 

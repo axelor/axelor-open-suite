@@ -7,6 +7,7 @@
 
     <entity name="EmploymentContractType" lang="java">
     	<string name="name" title="Name" required="true" />
+    	<one-to-many name="employmentContractSubTypeList" ref="com.axelor.apps.hr.db.EmploymentContractSubType" title="Contract sub type"/>
     </entity>
 
 </domain-models>

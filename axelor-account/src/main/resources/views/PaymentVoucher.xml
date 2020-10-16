@@ -185,7 +185,7 @@
 	</action-record>
 
 	<action-record name="action-payment-voucher-getDate" model="com.axelor.apps.account.db.PaymentVoucher">
-    	<field name="paymentDate" expr="eval: __config__.app.getTodayDate()"/>
+    	<field name="paymentDate" expr="eval: __config__.app.getTodayDate(__user__.activeCompany)"/>
    	</action-record>
 	
 	<action-attrs name="action-payment-voucher-hidden-fields-if-purchase">

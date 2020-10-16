@@ -13,8 +13,9 @@
     <decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"/>
     
   	<many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location"/>
-  	
-  	<one-to-many name="timetableList" ref="com.axelor.apps.supplychain.db.Timetable" title="Timetable" mappedBy="purchaseOrder"/>
+		<many-to-one name="fromStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="From stock location"/>
+
+		<one-to-many name="timetableList" ref="com.axelor.apps.supplychain.db.Timetable" title="Timetable" mappedBy="purchaseOrder"/>
 	<date name="expectedRealisationDate" title="Expected realisation date"/>
 	<boolean name="interco" title="Interco"/>
 	<boolean name="createdByInterco" default="false"/>

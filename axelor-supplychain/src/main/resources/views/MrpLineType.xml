@@ -8,6 +8,7 @@
         <field name="name"/>
         <field name="elementSelect"/>
         <field name="typeSelect"/>
+		<field name="applicationFieldSelect" widget="MultiSelect"/>
         <field name="sequence"/>
     </grid>
     
@@ -24,7 +25,8 @@
         	<field name="statusSelect" widget="MultiSelect" selection="production.manuf.order.status.select" showIf="elementSelect == 6" if-module="axelor-production" if="__config__.app.isApp('production')"/>
 	   		<field name="includeElementWithoutDate" showIf="$contains([2,3,6,7], elementSelect)"/>
 				<field name="ignoreEndDate" showIf="$contains([2, 6], elementSelect)"/>
-			</panel>
+	   		<field name="applicationFieldSelect" widget="MultiSelect"/>
+	    </panel>
 	 </form>
 	 
 </object-views>

@@ -29,6 +29,7 @@
     <many-to-one name="operationOrder" ref="com.axelor.apps.production.db.OperationOrder" title="Operation order"/>
     
   	<many-to-one name="costSheetGroup" ref="com.axelor.apps.production.db.CostSheetGroup" title="Cost sheet group"/>
+    <many-to-one name="machineTool" ref="com.axelor.apps.production.db.MachineTool" title="Tools"/>
   	
   	<extra-code>
 		<![CDATA[
