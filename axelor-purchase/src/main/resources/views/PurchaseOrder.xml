@@ -189,13 +189,13 @@
                     <![CDATA[
                     <dl class="dl-horizontal">
                         <dt x-translate>Total W.T.</dt>
-                        <dd>{{record.exTaxTotal}}  {{record.currency.symbol}}</dd>
+                        <dd>{{$fmt('exTaxTotal') | currency: record.currency.symbol}}</dd>
                         <dt x-translate>Total tax</dt>
-                        <dd>{{record.taxTotal}}  {{record.currency.symbol}}</dd>
+                        <dd>{{$fmt('taxTotal') | currency: record.currency.symbol}}</dd>
                         <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
-                        <dd class="order-subtotal-total">{{record.inTaxTotal}}  {{record.currency.symbol}}</dd>
+                        <dd class="order-subtotal-total">{{$fmt('inTaxTotal') | currency: record.currency.symbol}}</dd>
                         <dt x-translate>Amount invoiced W.T.</dt>
-                        <dd>{{record.amountInvoiced}}  {{record.currency.symbol}}</dd>
+                        <dd>{{$fmt('amountInvoiced') | currency: record.currency.symbol}}</dd>
                     </dl>
                     ]]>
                 </viewer>
@@ -296,8 +296,8 @@
 						</h5>
 				  </div>
 				  <div class="span6">
-				    <span><strong><span x-translate>WT</span> : {{ $fmt('exTaxTotal') }} {{ currency.symbol }}</strong><br/>
-				    <strong><span x-translate>ATI</span> : {{ $fmt('inTaxTotal') }} {{ currency.symbol }}</strong></span>
+				    <span><strong><span x-translate>WT</span> : {{$fmt('exTaxTotal') | currency: currency.symbol}}</strong><br/>
+				    <strong><span x-translate>ATI</span> : {{$fmt('inTaxTotal') | currency: currency.symbol}}</strong></span>
 				  </div>
 			  </div>
 			</div>
@@ -362,8 +362,8 @@
 					</h5>
 				  </div>
 				  <div class="span6">
-				    <span><strong><span x-translate>WT</span> : {{ $fmt('exTaxTotal') }} {{ currency.symbol }}</strong><br/>
-				    <strong><span x-translate>ATI</span> : {{ $fmt('inTaxTotal') }} {{ currency.symbol }}</strong></span>
+				    <span><strong><span x-translate>WT</span> : {{$fmt('exTaxTotal') | currency: currency.symbol}}</strong><br/>
+				    <strong><span x-translate>ATI</span> : {{$fmt('inTaxTotal') | currency: currency.symbol}}</strong></span>
 				  </div>
 			  </div>
 			</div>

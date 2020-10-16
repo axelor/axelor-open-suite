@@ -140,16 +140,16 @@
         <dl>
 			<dt ng-show="record.progressSelect" x-translate>Progress</dt>
 			<dd ng-if="record.progressSelect == 80 || record.progressSelect == 90 || record.progressSelect == 100"><div class="progress progress-striped progress-success">
-            	<div class="bar" style="width: {{record.progressSelect}}%;"></div></div>
+            	<div class="bar" style="width: {{$fmt('progressSelect')}}%;"></div></div>
             </dd>
             <dd ng-if="record.progressSelect == 50 || record.progressSelect == 60 || record.progressSelect == 70"><div class="progress progress-striped progress-primary">
-            	<div class="bar" style="width: {{record.progressSelect}}%;"></div></div>
+            	<div class="bar" style="width: {{$fmt('.progressSelect')}}%;"></div></div>
             </dd>
              <dd ng-if="record.progressSelect == 30 || record.progressSelect == 40"><div class="progress progress-striped progress-warning">
-            	<div class="bar" style="width: {{record.progressSelect}}%;"></div></div>
+            	<div class="bar" style="width: {{$fmt('progressSelect')}}%;"></div></div>
             </dd>
              <dd ng-if="record.progressSelect == 10 || record.progressSelect == 20"><div class="progress progress-striped progress-danger">
-            	<div class="bar" style="width: {{record.progressSelect}}%;"></div></div>
+            	<div class="bar" style="width: {{$fmt('progressSelect')}}%;"></div></div>
             </dd>
             <dt ng-show="record.project.name" x-translate>Project</dt><dd ng-show="record.project.name">{{record.project.name}}</dd>
             <dt ng-show="record.ticketType.name" x-translate>Ticket Type</dt><dd ng-show="record.ticketType.name">{{record.ticketType.name}}</dd>

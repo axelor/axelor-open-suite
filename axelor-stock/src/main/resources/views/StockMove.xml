@@ -286,7 +286,7 @@
 
 						<dl class="dl-horizontal" style="float: none;">
 							<dt class="order-subtotal-total" style="border-top: none; text-align: left;" x-translate>Total W.T.</dt>
-							<dd class="order-subtotal-total" style="border-top: none; text-align: left;">{{record.exTaxTotal}}</dd>
+							<dd class="order-subtotal-total" style="border-top: none; text-align: left;">{{$fmt('exTaxTotal')}}</dd>
 						</dl>
 	                    ]]>
 	                </viewer>
@@ -326,7 +326,7 @@
                           <![CDATA[
                               <dl class="dl-horizontal" style="float: none;">
                                   <dt class="order-subtotal-total" style="border-top: none; text-align: left;" x-translate>Total W.T.</dt>
-                                  <dd class="order-subtotal-total" style="border-top: none; text-align: left;">{{record.exTaxTotal}}</dd>
+                                  <dd class="order-subtotal-total" style="border-top: none; text-align: left;">{{$fmt('exTaxTotal')}}</dd>
                               </dl>
                           ]]>
                       </viewer>
@@ -350,7 +350,7 @@
 						<viewer><![CDATA[
                               <dl class="dl-horizontal" style="float: none;">
                                   <dt class="order-subtotal-total" style="border-top: none; text-align: left;" x-translate>Total W.T.</dt>
-                                  <dd class="order-subtotal-total" style="border-top: none; text-align: left;">{{record.exTaxTotal}}</dd>
+                                  <dd class="order-subtotal-total" style="border-top: none; text-align: left;">{{$fmt('exTaxTotal')}}</dd>
                               </dl>
                           ]]>
 						</viewer>

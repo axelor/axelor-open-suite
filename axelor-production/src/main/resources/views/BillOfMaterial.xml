@@ -80,11 +80,11 @@
 		<panel-tabs name="mainPanelTab">
 			<panel name="componentsPanel" title="Components">
 				<button name="openBomTreeBtn" title="Open tree" onClick="save,action-bill-of-material-method-open-bom-tree" colSpan="3" css="btn-custom"/>
-				<field name="$numberOfComponents" showTitle="false" readonly="true" colSpan="9" showIf="$numberOfComponents > 0">
+				<field name="$numberOfComponents" showTitle="false" type="integer" readonly="true" colSpan="9" showIf="$numberOfComponents > 0">
 					<viewer depends="$numberOfComponents">
                         <![CDATA[
                             <h4 class="text-right">
-                                <span class="label label-default" style="background-color: #2185D0; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.4em;" x-translate>Number of components</span><span class="label label-default" style="background-color: #23C6C8; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0;">{{record.$numberOfComponents}}</span>
+                                <span class="label label-default" style="background-color: #2185D0; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.4em;" x-translate>Number of components</span><span class="label label-default" style="background-color: #23C6C8; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0;">{{fmt('$numberOfComponents')}}</span>
                             </h4>
 					    ]]>
                     </viewer>

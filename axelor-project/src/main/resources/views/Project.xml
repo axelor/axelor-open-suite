@@ -61,7 +61,7 @@
 						depends="isBusinessProject,isProject,projectTypeSelect,$toInvoiceCounter,id">
 							<![CDATA[
 								<h4 style="text-align: right;">
-									<span class="label label-default" style="background-color: #FD6217; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.4em;" ng-show="record.isBusinessProject" x-translate>To Invoice</span><span class="label label-default" style="background-color: #FFAA00; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0;" ng-show="record.isBusinessProject &amp;&amp; record.id">{{record.$toInvoiceCounter}}</span>
+									<span class="label label-default" style="background-color: #FD6217; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.4em;" ng-show="record.isBusinessProject" x-translate>To Invoice</span><span class="label label-default" style="background-color: #FFAA00; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0;" ng-show="record.isBusinessProject &amp;&amp; record.id">{{$fmt('$toInvoiceCounter')}}</span>
 									<span class="label label-default" style="background-color: #86BC25; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProject &amp;&amp; record.projectTypeSelect == 1" x-translate>Project</span>
 									<span class="label label-default" style="background-color: #86BC25; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProject &amp;&amp; record.projectTypeSelect == 2" x-translate>Project phase</span>
 									<span class="label label-default" style="background-color: #2185D0; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isBusinessProject" x-translate>Business</span>
@@ -159,7 +159,7 @@
 					 if="__config__.app.isApp('employee')" if-module="axelor-human-resource">
 					<field name="totalPlannedHrs" readonly="true">
 						<viewer><![CDATA[
-		                   	<span>{{record.totalPlannedHrs}} </span><span x-translate>hours</span>
+		                   	<span>{{$fmt('totalPlannedHrs')}} </span><span x-translate>hours</span>
 		       			]]></viewer>
 					</field>
 					<spacer name="totalPlannedHrsSpacer" colSpan="6" />
@@ -375,7 +375,7 @@
 					name="isBusinessProject" colSpan="6" widget="boolean-switch" />
 				<field name="isShowPhasesElements" hideIf="projectTypeSelect == 2" colSpan="12" widget="boolean-switch" />
 				<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
-          name="$toInvoiceCounter" showTitle="false" hidden="true" colSpan="6" />
+          name="$toInvoiceCounter" showTitle="false" type="integer" hidden="true" colSpan="6" />
 			</panel>
 			<panel name="projectPanel" showIf="isProject" colSpan="12">
 				<field name="projectTypeSelect" onChange="action-project-record-empty-parent-project"

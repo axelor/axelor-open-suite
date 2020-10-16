@@ -50,7 +50,7 @@
 			<field name="stockLocationValue" readonly="true" hideIf="typeSelect==3">
 			<viewer>
 					<![CDATA[
-						<h4> {{record.stockLocationValue}} </h4>
+						<h4> {{$fmt('stockLocationValue')}} </h4>
 					]]>
 				</viewer>
 			</field>
