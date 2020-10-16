@@ -45,7 +45,8 @@ public class TaxPaymentMoveLineServiceImpl implements TaxPaymentMoveLineService 
             taxPaymentMoveLine.getReconcile(),
             taxPaymentMoveLine.getTaxRate(),
             taxPaymentMoveLine.getDetailPaymentAmount().negate(),
-            Beans.get(AppBaseService.class).getTodayDate());
+            Beans.get(AppBaseService.class)
+                .getTodayDate(taxPaymentMoveLine.getReconcile().getCompany()));
     reversetaxPaymentMoveLine = this.computeTaxAmount(reversetaxPaymentMoveLine);
     reversetaxPaymentMoveLine.setIsAlreadyReverse(true);
     taxPaymentMoveLine.setIsAlreadyReverse(true);

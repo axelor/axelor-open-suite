@@ -24,8 +24,8 @@
 	</grid>
     
 	<action-attrs name="action-purchase-request-creator-set-json-field-default" >
-    	<attribute name="value"	for="model" expr="eval:'com.axelor.apps.purchase.db.PurchaseRequest'" if="_parent._model == 'com.axelor.apps.purchase.db.PurchaseRequestCreator'"/>
-    	<attribute name="value" for="modelField" expr="eval:'attrs'" if="_parent._model == 'com.axelor.apps.purchase.db.PurchaseRequestCreator'"/>
+    	<attribute name="value"	for="model" expr="eval:'com.axelor.apps.purchase.db.PurchaseRequest'" if="__parent__._model == 'com.axelor.apps.purchase.db.PurchaseRequestCreator'"/>
+    	<attribute name="value" for="modelField" expr="eval:'attrs'" if="__parent__._model == 'com.axelor.apps.purchase.db.PurchaseRequestCreator'"/>
     </action-attrs>
     
 </object-views>

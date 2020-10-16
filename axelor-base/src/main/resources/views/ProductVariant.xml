@@ -31,20 +31,20 @@
     <!-- ACTION ATTRS -->
     
     <action-attrs name="action-product-variant-attrs-domain">
-    	<attribute name="domain" for="productVariantValue1" expr="eval: (_parent?.parentProduct?.productVariantConfig?.productVariantValue1Set?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${_parent?.parentProduct?.productVariantConfig?.productVariantValue1Set?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
-    	<attribute name="domain" for="productVariantValue2" expr="eval: (_parent?.parentProduct?.productVariantConfig?.productVariantValue2Set?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${_parent?.parentProduct?.productVariantConfig?.productVariantValue2Set?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
-    	<attribute name="domain" for="productVariantValue3" expr="eval: (_parent?.parentProduct?.productVariantConfig?.productVariantValue3Set?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${_parent?.parentProduct?.productVariantConfig?.productVariantValue3Set?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
-    	<attribute name="domain" for="productVariantValue4" expr="eval: (_parent?.parentProduct?.productVariantConfig?.productVariantValue4Set?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${_parent?.parentProduct?.productVariantConfig?.productVariantValue4Set?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
+    	<attribute name="domain" for="productVariantValue1" expr="eval: (__parent__?.parentProduct?.productVariantConfig?.productVariantValue1Set?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${__parent__?.parentProduct?.productVariantConfig?.productVariantValue1Set?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
+    	<attribute name="domain" for="productVariantValue2" expr="eval: (__parent__?.parentProduct?.productVariantConfig?.productVariantValue2Set?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${__parent__?.parentProduct?.productVariantConfig?.productVariantValue2Set?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
+    	<attribute name="domain" for="productVariantValue3" expr="eval: (__parent__?.parentProduct?.productVariantConfig?.productVariantValue3Set?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${__parent__?.parentProduct?.productVariantConfig?.productVariantValue3Set?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
+    	<attribute name="domain" for="productVariantValue4" expr="eval: (__parent__?.parentProduct?.productVariantConfig?.productVariantValue4Set?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${__parent__?.parentProduct?.productVariantConfig?.productVariantValue4Set?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
     </action-attrs>
     
     
     <!-- ACTION RECORD -->
     
     <action-record name="action-product-variant-record-on-new" model="com.axelor.apps.base.db.ProductVariant">
-    	<field name="productVariantAttr1" expr="eval: _parent?.parentProduct?.productVariantConfig?.productVariantAttr1"/>
-    	<field name="productVariantAttr2" expr="eval: _parent?.parentProduct?.productVariantConfig?.productVariantAttr2"/>
-    	<field name="productVariantAttr3" expr="eval: _parent?.parentProduct?.productVariantConfig?.productVariantAttr3"/>
-    	<field name="productVariantAttr4" expr="eval: _parent?.parentProduct?.productVariantConfig?.productVariantAttr4"/>
+    	<field name="productVariantAttr1" expr="eval: __parent__?.parentProduct?.productVariantConfig?.productVariantAttr1"/>
+    	<field name="productVariantAttr2" expr="eval: __parent__?.parentProduct?.productVariantConfig?.productVariantAttr2"/>
+    	<field name="productVariantAttr3" expr="eval: __parent__?.parentProduct?.productVariantConfig?.productVariantAttr3"/>
+    	<field name="productVariantAttr4" expr="eval: __parent__?.parentProduct?.productVariantConfig?.productVariantAttr4"/>
     </action-record>
 
 </object-views>

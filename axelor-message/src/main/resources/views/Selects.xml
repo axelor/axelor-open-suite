@@ -46,4 +46,9 @@
 		<option value="2">STARTTLS</option>
 	</selection>
 
+	<selection name="template.engine.select">
+		<option value="1">String Template</option>
+		<option value="2">Groovy Template</option>
+	</selection>
+	
 </object-views>

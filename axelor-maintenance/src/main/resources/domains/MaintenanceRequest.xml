@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="maintenance" package="com.axelor.apps.maintenance.db" />
+
+	<entity name="MaintenanceRequest" lang="java">
+		<many-to-one name="equipementMaintenance" ref="EquipementMaintenance" />
+		<integer name="statusSelect" title="State" selection="maintenance.maintenance.request.status.select" />
+		<date name="requestDate" title="Request date" required="true"/>
+		<many-to-one name="requestBy" ref="com.axelor.auth.db.User" title="Request By" />
+		<date name="expectedDate" title="Expected date" required="true"/>
+		<integer name="durationHours" title="Duration (Hours)" />
+		<many-to-one name="assignedTo" ref="com.axelor.auth.db.User" title="Assigned to" />
+		<string name="mtnTask" title="Maintenance task" large="true" />
+		<integer name="actionSelect" title="Action" selection="maintenance.maintenance.request.action.select" />
+		<many-to-one name="manufOrder" ref="com.axelor.apps.production.db.ManufOrder" title="Manufacturing Order" />
+		<date name="doneOn" title="Done on" />
+		<string name="mtnComments" title="Maintenance comments" />
+		<date name="startDate" title="Event start date"/>
+		<date name="endDate" title="Event end date"/>
+		<integer name="sequence"/>
+		<many-to-one name="machine" title="Machine" ref="com.axelor.apps.production.db.Machine"/>
+
+		<extra-code>
+			<![CDATA[
+				public static final int STATUS_PLANNED = 0;
+				public static final int STATUS_IN_PROGRESS = 1;
+				public static final int STATUS_COMPLETED = 2;
+				public static final int STATUS_CANCELED = 3;
+
+				public static final int ACTION_CORRECTIVE = 0;
+				public static final int ACTION_PREVENTIVE = 1;
+			]]>
+		</extra-code>
+	</entity>
+
+</domain-models>

@@ -53,6 +53,7 @@ import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
@@ -239,8 +240,7 @@ public class IrrecoverableService {
   /**
    * Fonction permettant de récupérer les factures à passer en irrécouvrable d'un tiers
    *
-   * @param company Une société
-   * @param payerPartner Un tiers payeur
+   * @param partner Un tiers
    * @param allInvoiceList La liste des factures à passer en irrécouvrable de la société
    * @return
    */
@@ -261,7 +261,6 @@ public class IrrecoverableService {
   /**
    * Fonction permettant de récupérer les échéances rejetées à passer en irrécouvrable d'un tiers
    *
-   * @param company Une société
    * @param payerPartner Un tiers payeur
    * @param allPaymentScheduleLineList La liste des échéances rejetées à passer en irrécouvrable de
    *     la société
@@ -345,7 +344,7 @@ public class IrrecoverableService {
    * @param irrecoverable Un objet Irrécouvrable
    * @param payerPartner Un tiers payeur
    * @param invoiceList Une liste de facture du tiers payeur
-   * @param paymentScheduleLineSet Une liste d'échéancier du tiers payeur
+   * @param paymentScheduleLineList Une liste d'échéancier du tiers payeur
    * @return
    * @throws AxelorException
    */
@@ -717,7 +716,13 @@ public class IrrecoverableService {
       throws AxelorException {
     List<IrrecoverableReportLine> irlList = new ArrayList<IrrecoverableReportLine>();
 
-    BigDecimal taxRate = taxService.getTaxRate(tax, appAccountService.getTodayDate());
+    BigDecimal taxRate =
+        taxService.getTaxRate(
+            tax,
+            appAccountService.getTodayDate(
+                paymentScheduleLine.getPaymentSchedule() != null
+                    ? paymentScheduleLine.getPaymentSchedule().getCompany()
+                    : AuthUtils.getUser().getActiveCompany()));
 
     BigDecimal amount = paymentScheduleLine.getInTaxAmount();
 
@@ -863,7 +868,7 @@ public class IrrecoverableService {
                   invoiceLineTax.getTaxLine().getTax(), company, false, false),
               amount,
               true,
-              appAccountService.getTodayDate(),
+              appAccountService.getTodayDate(company),
               seq,
               irrecoverableName,
               invoice.getInvoiceId());
@@ -881,7 +886,7 @@ public class IrrecoverableService {
             accountConfig.getIrrecoverableAccount(),
             debitAmount,
             true,
-            appAccountService.getTodayDate(),
+            appAccountService.getTodayDate(company),
             seq,
             irrecoverableName,
             invoice.getInvoiceId());
@@ -910,7 +915,7 @@ public class IrrecoverableService {
             customerMoveLine.getAccount(),
             creditAmount,
             false,
-            appAccountService.getTodayDate(),
+            appAccountService.getTodayDate(company),
             seq,
             irrecoverableName,
             invoice.getInvoiceId());
@@ -963,7 +968,7 @@ public class IrrecoverableService {
             moveLine.getAccount(),
             amount,
             false,
-            appAccountService.getTodayDate(),
+            appAccountService.getTodayDate(company),
             seq,
             irrecoverableName,
             moveLine.getDescription());
@@ -976,7 +981,7 @@ public class IrrecoverableService {
 
     Tax tax = accountConfig.getIrrecoverableStandardRateTax();
 
-    BigDecimal taxRate = taxService.getTaxRate(tax, appAccountService.getTodayDate());
+    BigDecimal taxRate = taxService.getTaxRate(tax, appAccountService.getTodayDate(company));
 
     // Debit MoveLine 654. (irrecoverable account)
     BigDecimal divid = taxRate.add(BigDecimal.ONE);
@@ -991,7 +996,7 @@ public class IrrecoverableService {
             accountConfig.getIrrecoverableAccount(),
             irrecoverableAmount,
             true,
-            appAccountService.getTodayDate(),
+            appAccountService.getTodayDate(company),
             2,
             irrecoverableName,
             moveLine.getDescription());
@@ -1007,7 +1012,7 @@ public class IrrecoverableService {
             taxAccount,
             taxAmount,
             true,
-            appAccountService.getTodayDate(),
+            appAccountService.getTodayDate(company),
             3,
             irrecoverableName,
             moveLine.getDescription());

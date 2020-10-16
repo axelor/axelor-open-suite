@@ -1,0 +1,2 @@
+"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
+"CMMS";"cmms";50;"Computerized Maintenance Management System";"app-cmms.png";"axelor-cmms";"production";52

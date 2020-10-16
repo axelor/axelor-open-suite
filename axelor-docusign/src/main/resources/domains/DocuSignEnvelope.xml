@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  
+  <module name="docusign" package="com.axelor.apps.docusign.db"/>
+
+  <entity name="DocuSignEnvelope" lang="java">
+    
+    <many-to-one name="docuSignEnvelopeSetting" title="Envelope setting" ref="com.axelor.apps.docusign.db.DocuSignEnvelopeSetting"/>
+    <string name="name" title="Name"/>
+    <string name="envelopeId" title="Envelope id"/>
+    <string name="emailSubject" title="Email subject"/>
+    <one-to-many name="docuSignDocumentList" title="Documents" ref="com.axelor.apps.docusign.db.DocuSignDocument" mappedBy="docuSignEnvelope"/>
+    <one-to-many name="docuSignSignerList" title="Signers" ref="com.axelor.apps.docusign.db.DocuSignSigner" mappedBy="docuSignEnvelope"/>
+    <string name="statusSelect" title="Status" selection="docusign.envelope.status.select"/>
+    <string name="relatedToSelect" title="Related to" selection="docusign.envelope.related.to.select"/>
+    <long name="relatedToId"/>
+    <boolean name="isOrderedDocuments" title="Ordered documents"/>
+    <boolean name="isOrderedSigners" title="Ordered signers"/>
+    <many-to-one name="certificateMetaFile" title="Certificate of completion" ref="com.axelor.meta.db.MetaFile"/>
+    <datetime name="completedDateTime" title="Completed date time"/>
+    <datetime name="declinedDateTime" title="Declined date time"/>
+   
+    <extra-code><![CDATA[
+      
+      //TYPE SELECT
+	  public static final String STATUS_ANY = "any";
+	  public static final String STATUS_CREATED = "created";
+	  public static final String STATUS_SENT = "sent";
+	  public static final String STATUS_DELIVERED = "delivered";
+	  public static final String STATUS_SIGNED = "signed";
+	  public static final String STATUS_COMPLETED = "completed";
+	  public static final String STATUS_DECLINED = "declined";
+	  public static final String STATUS_TIMEDOUT = "timedout";
+	  public static final String STATUS_VOIDED = "voided";
+	  public static final String STATUS_DELETED = "deleted";
+      
+    ]]></extra-code>
+   
+  </entity>
+  
+  
+</domain-models>

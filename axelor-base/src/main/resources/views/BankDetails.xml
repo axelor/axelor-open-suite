@@ -159,9 +159,9 @@
 	</action-record>
 
 	<action-record name="action-set-default-partner" model="com.axelor.apps.base.db.BankDetails">
-		<field name="partner" expr="eval:_parent" if="_parent != null &amp;&amp; _parent.get('_model') == 'com.axelor.apps.base.db.Partner'" />
-		<field name="ownerName" if="_parent != null &amp;&amp; _parent.get('_model') == 'com.axelor.apps.base.db.Partner'"
-			expr="eval:_parent != null ? (_parent.name != null ? _parent.name : '') + ' ' + (_parent.firstName != null ? _parent.firstName : '') : ''" />
+		<field name="partner" expr="eval:__parent__" if="__parent__ != null &amp;&amp; __parent__.get('_model') == 'com.axelor.apps.base.db.Partner'" />
+		<field name="ownerName" if="__parent__ != null &amp;&amp; __parent__.get('_model') == 'com.axelor.apps.base.db.Partner'"
+			expr="eval:__parent__ != null ? (__parent__.name != null ? __parent__.name : '') + ' ' + (__parent__.firstName != null ? __parent__.firstName : '') : ''" />
 	</action-record>
 
 	<action-record name="action-set-default-bank" model="com.axelor.apps.base.db.BankDetails">

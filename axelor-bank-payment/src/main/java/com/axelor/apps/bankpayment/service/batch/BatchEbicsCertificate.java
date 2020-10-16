@@ -69,7 +69,7 @@ public class BatchEbicsCertificate extends AbstractBatch {
 
     Set<EbicsCertificate> certificatesSet = new HashSet<>();
 
-    LocalDate today = Beans.get(AppBaseService.class).getTodayDate();
+    LocalDate today = Beans.get(AppBaseService.class).getTodayDate(bankPaymentBatch.getCompany());
     LocalDate commingDay = today.plusDays(bankPaymentBatch.getDaysNbr());
 
     for (EbicsUser user : users) {

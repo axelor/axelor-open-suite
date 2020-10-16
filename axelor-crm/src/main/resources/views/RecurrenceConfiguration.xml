@@ -39,7 +39,7 @@
 		<field name="recurrenceType" expr="1"/>
 		<field name="periodicity" expr="1"/>
 		<field name="endType" expr="1"/>
-		<field name="startDate" expr="eval: _parent?.startDateTime"/>
+		<field name="startDate" expr="eval: __parent__?.startDateTime"/>
 		<field name="monthRepeatType" expr="1"/>
 		<field name="repetitionsNumber" expr="1"/>
 	</action-record>

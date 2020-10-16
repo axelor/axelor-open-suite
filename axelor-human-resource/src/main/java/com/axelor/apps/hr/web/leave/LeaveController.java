@@ -274,7 +274,7 @@ public class LeaveController {
           response.setAlert(
               String.format(
                       I18n.get(IExceptionMessage.LEAVE_ALLOW_NEGATIVE_VALUE_REASON),
-                      leaveRequest.getLeaveLine().getLeaveReason().getLeaveReason())
+                      leaveRequest.getLeaveLine().getLeaveReason().getName())
                   + " "
                   + instruction);
           return;
@@ -282,7 +282,7 @@ public class LeaveController {
           response.setNotify(
               String.format(
                   I18n.get(IExceptionMessage.LEAVE_ALLOW_NEGATIVE_ALERT),
-                  leaveRequest.getLeaveLine().getLeaveReason().getLeaveReason()));
+                  leaveRequest.getLeaveLine().getLeaveReason().getName()));
         }
       }
 

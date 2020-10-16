@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.0.xsd">
+
+	<module name="cmms" package="com.axelor.apps.cmms.db" />
+
+	<entity name="EquipementMaintenance" lang="java">
+		<string name="code" title="equipement.maintenance.code" namecolumn="true" readonly="true"/>
+		<string name="name" title="equipement.maintenance.name" required="true"/>
+		<many-to-one name="maintenanceCategory" ref="MaintenanceCategory" title="Maintenance Category"  />
+		<many-to-one name="machine" ref="com.axelor.apps.production.db.Machine" title="Machine" />
+		<integer name="mtnEachDay" title="Generate request each" />
+		<integer name="mtnEachCycle" title="Generate request each" />
+		<integer name="mtnEachDuration" title="Generate request each" />
+		<integer name="createMtnRequestSelect" title="Create maintenance request" selection="cmms.maintenance.create.mtn.select"/>
+		<date name="nextMtnDate" title="Next maintenance date" />
+		<string name="mtnProcedure" title="Maintenance Procedure" />
+		<many-to-one name="mtnFile" title="Maintenance File" ref="com.axelor.meta.db.MetaFile"/>
+		<many-to-one name="image" title="equipement.maintenance.image" ref="com.axelor.meta.db.MetaFile"/>
+		<one-to-many name="maintenanceRequestList" ref="MaintenanceRequest" title="Maintenance Requests" mappedBy="equipementMaintenance"/>
+	</entity>
+
+</domain-models>

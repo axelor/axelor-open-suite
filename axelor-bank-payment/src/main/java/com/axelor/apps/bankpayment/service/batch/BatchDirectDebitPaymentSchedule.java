@@ -94,21 +94,26 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
       Preconditions.checkNotNull(
           companyBankDetails.getCurrency(),
           I18n.get("Currency in company bank details is missing."));
-      Preconditions.checkArgument(
-          new File(accountingBatch.getPaymentMode().getBankOrderExportFolderPath()).exists(),
-          String.format(
-              I18n.get("Bank order export folder does not exist: %s"),
-              accountingBatch.getPaymentMode().getBankOrderExportFolderPath()));
 
-      BankPaymentConfigService bankPaymentConfigService = Beans.get(BankPaymentConfigService.class);
-
+      String bankOrderExportPath = accountingBatch.getPaymentMode().getBankOrderExportFolderPath();
+      String dataExpotDir;
       try {
+        dataExpotDir = appBaseService.getDataExportDir();
+
+        BankPaymentConfigService bankPaymentConfigService =
+            Beans.get(BankPaymentConfigService.class);
+
         BankPaymentConfig bankPaymentConfig =
             bankPaymentConfigService.getBankPaymentConfig(accountingBatch.getCompany());
         bankPaymentConfigService.getIcsNumber(bankPaymentConfig);
       } catch (AxelorException e) {
         throw new RuntimeException(e);
       }
+      Preconditions.checkArgument(
+          bankOrderExportPath != null && new File(dataExpotDir + bankOrderExportPath).exists(),
+          String.format(
+              I18n.get("Bank order export folder does not exist: %s"),
+              dataExpotDir + bankOrderExportPath));
     }
 
     QueryBuilder<PaymentScheduleLine> queryBuilder = QueryBuilder.of(PaymentScheduleLine.class);
@@ -125,7 +130,7 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
     LocalDate dueDate =
         accountingBatch.getDueDate() != null
             ? accountingBatch.getDueDate()
-            : Beans.get(AppBaseService.class).getTodayDate();
+            : Beans.get(AppBaseService.class).getTodayDate(accountingBatch.getCompany());
     queryBuilder.add("self.scheduleDate <= :dueDate");
     queryBuilder.bind("dueDate", dueDate);
 
@@ -138,7 +143,9 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
     queryBuilder.add(
         "self.paymentSchedule.partner.id NOT IN (SELECT DISTINCT partner.id FROM Partner partner LEFT JOIN partner.blockingList blocking WHERE blocking.blockingSelect = :blockingSelect AND blocking.blockingToDate >= :blockingToDate)");
     queryBuilder.bind("blockingSelect", BlockingRepository.DEBIT_BLOCKING);
-    queryBuilder.bind("blockingToDate", Beans.get(AppBaseService.class).getTodayDate());
+    queryBuilder.bind(
+        "blockingToDate",
+        Beans.get(AppBaseService.class).getTodayDate(accountingBatch.getCompany()));
 
     if (accountingBatch.getBankDetails() != null) {
       Set<BankDetails> bankDetailsSet = Sets.newHashSet(accountingBatch.getBankDetails());

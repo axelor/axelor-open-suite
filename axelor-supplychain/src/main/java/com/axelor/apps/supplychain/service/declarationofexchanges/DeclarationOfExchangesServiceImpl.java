@@ -17,13 +17,13 @@
  */
 package com.axelor.apps.supplychain.service.declarationofexchanges;
 
+import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.base.db.EconomicArea;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.DeclarationOfExchanges;
-import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -32,7 +32,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
-import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import org.apache.commons.lang3.tuple.Pair;
@@ -81,8 +80,7 @@ public class DeclarationOfExchangesServiceImpl implements DeclarationOfExchanges
 
     Class<? extends DeclarationOfExchangesExporter> exportServiceClass =
         map.get(declarationOfExchanges.getProductTypeSelect());
-    String languageCode = AuthUtils.getUser().getLanguage();
-    ResourceBundle bundle = I18n.getBundle(new Locale(languageCode));
+    ResourceBundle bundle = I18n.getBundle(AppFilter.getLocale());
 
     if (exportServiceClass == null) {
       throw new UnsupportedOperationException(

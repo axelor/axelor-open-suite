@@ -22,6 +22,7 @@
             <button name="showManufOrderWizardBtn" title="Add Manuf. Order" onClick="save,action-production-order-view-add-manuf-order-wizard"/>
         </toolbar>
         <panel name="mainPanel">
+        	<field name="statusSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
             <field name="productionOrderSeq"/>
             <field name="prioritySelect">
                 <viewer>
@@ -69,6 +70,8 @@
     
     <action-attrs name="action-add-manuf-order-wizard-attrs-scale">
     	<attribute name="scale" for="$qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    	<attribute name="domain" for="$product" expr="eval:&quot;self.expense = false and self.productTypeSelect = 'storable' and self.procurementMethodSelect = 'produce'&quot;" if=" __config__.app.isApp('expense')" />
+    	<attribute name="domain" for="$product" expr="eval:&quot;self.productTypeSelect = 'storable' and self.procurementMethodSelect = 'produce'&quot;" if="!__config__.app.isApp('expense')" />
     </action-attrs>
 
     <action-attrs if-module="axelor-business-production" name="action-production-order-attrs-title-project">

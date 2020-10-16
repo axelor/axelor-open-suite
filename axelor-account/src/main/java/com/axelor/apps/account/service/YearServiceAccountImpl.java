@@ -108,7 +108,7 @@ public class YearServiceAccountImpl extends YearServiceImpl {
       q =
           JPA.em()
               .createQuery(
-                  "select DISTINCT(ml.partner) FROM MoveLine as self WHERE self.move.ignoreInAccountingOk = false AND self.move.period.year = ?1 "
+                  "select DISTINCT(self.partner) FROM MoveLine as self WHERE self.move.ignoreInAccountingOk = false AND self.move.period.year = ?1 "
                       + "AND self.move.statusSelect = ?2 AND self.move.adjustingMove = true AND self.date >= ?3 AND self.date <= ?4");
 
       q.setParameter(1, year);
@@ -120,7 +120,7 @@ public class YearServiceAccountImpl extends YearServiceImpl {
       q =
           JPA.em()
               .createQuery(
-                  "select DISTINCT(ml.partner) FROM MoveLine as self WHERE self.move.ignoreInAccountingOk = false AND self.move.period.year = ?1 "
+                  "select DISTINCT(self.partner) FROM MoveLine as self WHERE self.move.ignoreInAccountingOk = false AND self.move.period.year = ?1 "
                       + "AND self.move.statusSelect = ?2 AND self.date >= ?3 AND self.date <= ?4");
 
       q.setParameter(1, year);

@@ -18,6 +18,15 @@
         <long name="endingDuration" title="Ending duration (hh:mm:ss)"/>
         <many-to-one name="weeklyPlanning" ref="com.axelor.apps.base.db.WeeklyPlanning" title="Machine's planning"/>
         <long name="operatingDuration" title="Operating duration" default="0"/>
-
+		<string name="code" title="Code"/>
+		<string name="manufReference" title="Manuf. reference"/>
+		<decimal name="buyingPrice" title="Buying price"/>
+		<many-to-one name="buyingCurrency" ref="com.axelor.apps.base.db.Currency" title="Buying currency"/>
+		<decimal name="maintenanceCost" title="Maintenance cost"/>
+		<date name="buyingDate" title="Buying date"/>
+		<date name="manufDate" title="Manuf. date"/>
+		<date name="disposalDate" title="Disposal date"/>
+		<integer name="numberOfStations" title="Number of stations"/>
+		<one-to-many name="machineToolLineList" ref="com.axelor.apps.production.db.MachineTool" title="Tools" mappedBy="machine"/>
     </entity>
 </domain-models>

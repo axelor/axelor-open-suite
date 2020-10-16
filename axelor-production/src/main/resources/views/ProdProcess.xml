@@ -15,7 +15,7 @@
     
     <form name="prod-process-form" title="Production process" model="com.axelor.apps.production.db.ProdProcess"
           onNew="action-prod-process-group-on-new"
-          onLoad="action-prod-process-record-count-number-of-phases,action-prod-process-attrs-scale-and-precision"
+          onLoad="action-prod-process-record-count-number-of-phases,action-prod-process-attrs-hide-outsourcing,action-prod-process-attrs-scale-and-precision"
           onSave="action-prod-process-method-validate-prod-process" width="large">
 
     	<toolbar>
@@ -49,13 +49,17 @@
 			<panel-related title="Phases" name="prodProcessLineListPanel" field="prodProcessLineList" colSpan="12" height="15" onChange="action-prod-process-record-count-number-of-phases" grid-view="prod-process-line-grid" form-view="prod-process-line-form"/>
 			
 			<panel title="Details" name="detailsPanel">
-				<field name="stockLocation" canEdit="false" required="true" grid-view="stock-location-grid" form-view="stock-location-form" onChange="action-prod-process-record-set-second-location" domain="self.usableOnProduction = True AND self.company = :company"/>
-				<field name="producedProductStockLocation" canEdit="false" grid-view="stock-location-grid" form-view="stock-location-form" domain="self.usableOnProduction = True AND self.company = :company"/>
+				<field name="stockLocation" canEdit="false" required="true" grid-view="stock-location-grid" form-view="stock-location-form" onChange="action-prod-process-record-set-second-location" domain="self.usableOnProduction = True AND self.company = :company AND self.typeSelect != 3"/>
+				<field name="producedProductStockLocation" canEdit="false" grid-view="stock-location-grid" form-view="stock-location-form" domain="self.usableOnProduction = True AND self.company = :company AND self.typeSelect != 3"/>
 				<field name="launchQty"/>
 				<field name="stockMoveRealizeOrderSelect"/>
 				<field name="isConsProOnOperation" onChange="action-prod-process-validate-is-cons-pro" readonlyIf="isEnabledForAllProducts"/>
-				<field name="outsourcing" colSpan="4" onChange="action-prod-process-method-change-prodprocesslist-outsourcing"/>
+				<field name="outsourcing" colSpan="3" onChange="action-prod-process-method-change-prodprocesslist-outsourcing" if="__config__.app.getApp('production').getManageOutsourcing()"/>
+				<field name="generatePurchaseOrderOnMoPlanning" colSpan="3" if="__config__.app.getApp('production').getManageOutsourcing()" showIf="outsourcing"/>
 				<field name="isEnabledForAllProducts" colSpan="4" readonlyIf="isConsProOnOperation"/>
+				<spacer colSpan="2"/>
+				<field name="subcontractors" domain="self.isSubcontractor = true" colSpan="3" onChange="action-production-record-subcontractors-on-change" if="__config__.app.getApp('production').getManageOutsourcing()" showIf="outsourcing" requiredIf="true" form-view="partner-form"/>
+				<field name="outsourcingStockLocation" domain="self.isOutsourcingLocation = true" colSpan="3" if="__config__.app.getApp('production').getManageOutsourcing()" showIf="outsourcing"/>
 			</panel>
 			
 			<panel-dashlet name="viewBillOfMaterialsPanel" action="action-prod-process-view-bill-of-materials" title="Bills of material"/>
@@ -76,17 +80,34 @@
     <action-attrs name="action-prod-process-attrs-scale-and-precision">
     	<attribute name="scale" for="launchQty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
 	</action-attrs>
+	
+	<action-record name="action-production-record-subcontractors-on-change" model="com.axelor.apps.production.db.ProdProcess">
+	   <field name="outsourcingStockLocation" if="subcontractors != null" expr="eval: subcontractors?.partnerStockSettingsList?.find{it.defaultStockLocation?.isOutsourcingLocation == true} != null ?
+	                                                                                  subcontractors?.partnerStockSettingsList?.find{it.defaultStockLocation?.isOutsourcingLocation == true}?.defaultStockLocation :
+	                                                                                  company?.stockConfig?.virtualOutsourcingStockLocation" />
+	</action-record>
 
 	<action-group name="action-prod-process-group-on-new">
+		<action name="action-prod-process-default-record" if="_product"/>
 		<action name="action-prod-process-record-set-default-company"/>
 		<action name="action-prod-process-record-set-realize-order-select"/>
 		<action name="action-prod-process-attrs-scale-and-precision"/>
 	</action-group>
     
+    <action-attrs name="action-prod-process-attrs-hide-outsourcing">
+    	<attribute name="hidden" for="prodProcessLineList.outsourcing" expr="eval:!__this__.outsourcing"/>
+    </action-attrs>
+    
     <action-validate name="action-prod-process-validate-is-cons-pro">
     	<error message="You can't manage the consumed products on phases because this production process is related to several bills of material"
 			   if="isConsProOnOperation == true &amp;&amp; __repo__(BillOfMaterial).all().filter('self.prodProcess.id = ?1', __self__ ? __self__.id : 0).fetch().size &gt; 1" action="action-prod-process-record-false"/>
     </action-validate>
+    
+    <action-record name="action-prod-process-default-record" model="com.axelor.apps.production.db.ProdProcess">
+     	<field name="product" expr="eval:_product"/>
+  		<field name="name" expr="eval:_product?.name"/>
+  		<field name="code" expr="eval:_product?.code"/>
+    </action-record>
     
     <action-record name="action-prod-process-record-false" model="com.axelor.apps.production.db.ProdProcess">
     	<field name="isConsProOnOperation" expr="false"/>

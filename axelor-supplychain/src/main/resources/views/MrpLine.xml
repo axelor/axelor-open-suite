@@ -22,7 +22,6 @@
         <button name="generateProposalBtn" icon="fa-calendar" onClick="action-mrp-line-method-generate-proposal" readonlyIf="proposalGenerated" hideIf="[5,8].indexOf($get('mrpLineType.elementSelect')) == -1"/>
         <field name="mrpLineType.elementSelect" hidden="true"/>
         <field name="isEditedByUser" hidden="true"/>
-        
     </grid>
     
 	<form name="mrp-line-form" model="com.axelor.apps.supplychain.db.MrpLine" title="Result"
@@ -30,8 +29,8 @@
 	    <panel name="mainPanel">
 	        <field name="product" readonly="true" canEdit="false"/>
 	        <field name="mrpLineType" readonly="true"/>
-        	<field name="qty" readonlyIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5" onChange="action-attrs-change-value-of-isedited-byuser-onchange"/>
-        	<field name="maturityDate" readonlyIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5" onChange="action-attrs-change-value-of-isedited-byuser-onchange"/>
+        	<field name="qty" onChange="action-temp-complete-is-edited-by-user" readonlyIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5  &amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect = 1))" />
+        	<field name="maturityDate" onChange="action-temp-complete-is-edited-by-user" readonlyIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5  &amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect = 1))"/>
         	<field name="cumulativeQty" css="bold" readonly="true"/>
         	<field name="product.unit" readonly="true"/>
    	        <field name="minQty" readonly="true"/>
@@ -48,7 +47,8 @@
             </field>
             <field name="proposalGenerated" hidden="true"/>
             <field name="proposalSelect" title="Proposal" widget="RefSelect" readonly="true" showIf="proposalGenerated"/>
-            <field name="isEditedByUser"  hideIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5"/>
+            <field name="isEditedByUser"  hideIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5 &amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect = 1))"/>
+            <field name="mrp.mrpTypeSelect" hidden="true"/>
 	    </panel>
 	</form>
 	 
@@ -62,8 +62,8 @@
 	    <call class="com.axelor.apps.supplychain.web.MrpLineController" method="generateProposal"/>
 	</action-method>
 	
-	<action-attrs name="action-attrs-change-value-of-isedited-byuser-onchange">
-  		<attribute for="isEditedByUser" name="value"  expr="eval: true"  if="__this__.qty != __self__.qty || __this__.maturityDate !=  __self__.maturityDate"/>  
-	</action-attrs>
+	<action-record name="action-temp-complete-is-edited-by-user" model="com.axelor.apps.supplychain.db.MrpLine">
+		<field name="isEditedByUser" expr="eval: true"/>
+	</action-record>
 	
 </object-views>

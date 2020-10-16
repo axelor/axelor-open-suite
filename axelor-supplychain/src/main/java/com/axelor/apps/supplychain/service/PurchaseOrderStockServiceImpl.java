@@ -223,13 +223,13 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     if (supplychainConfig.getDefaultEstimatedDateForPurchaseOrder()
             == SupplyChainConfigRepository.CURRENT_DATE
         && stockMove.getEstimatedDate() == null) {
-      stockMove.setEstimatedDate(appBaseService.getTodayDate());
+      stockMove.setEstimatedDate(appBaseService.getTodayDate(company));
     } else if (supplychainConfig.getDefaultEstimatedDateForPurchaseOrder()
             == SupplyChainConfigRepository.CURRENT_DATE_PLUS_DAYS
         && stockMove.getEstimatedDate() == null) {
       stockMove.setEstimatedDate(
           appBaseService
-              .getTodayDate()
+              .getTodayDate(company)
               .plusDays(supplychainConfig.getNumberOfDaysForPurchaseOrder().longValue()));
     }
 

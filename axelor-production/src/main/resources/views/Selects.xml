@@ -33,7 +33,12 @@
 		<option value="0">On Start</option>
 		<option value="1">On Finish</option>
 	</selection>
-	
+
+	<selection name="manuf.order.type.select">
+		<option value="1">Production</option>
+		<option value="2">Permanent</option>
+	</selection>
+
 	<selection name="production.order.priority.select">
 		<option value="1">Low</option>
 		<option value="2">Normal</option>
@@ -120,6 +125,11 @@
 		<option value="1">Human resources</option>
 		<option value="2">Machine</option>
 	</selection>
+	
+	<selection name="production.sop.line.status">
+		<option value="1">Draft</option>
+		<option value="2">Confirmed</option>
+	</selection>
 
 	<selection name="production.cost.calculations.status.select">
 		<option value="1">Draft</option>
@@ -129,6 +139,14 @@
 
 	<selection name='trace.back.origin.select' id="trace.back.origin.select.production" >
 		<option value='costSheet'>Cost sheet valuation</option>
+	</selection>
+	
+	<selection name="production.order.status.select">
+		<option value="1">Draft</option>
+		<option value="2">Planned</option>
+		<option value="3">Started</option>
+		<option value="4">Canceled</option>
+		<option value="5">Completed</option>
 	</selection>
 
 </object-views>

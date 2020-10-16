@@ -705,6 +705,26 @@
 		<category key="_industry_sector" type="text" title="Industry Sector"/>
 		<series key="_amount" type="donut" title="Turnover"/>
 	</chart>
+
+	<chart name="chart.margin.rate.per.customer" title="Average margin rate per customer" onInit="action.sale.chart.set.date">
+		<search-fields>
+			<field name="fromDate" title="From Date" type="date" x-required="true"/>
+			<field name="toDate" title="To Date" type="date" x-required="true"/>
+		</search-fields>
+		<dataset type="rpc">com.axelor.apps.sale.web.PartnerSaleController:marginRateByCustomer</dataset>
+		<category key="_customer" type="text" title="Customer"/>
+		<series key="_average" type="bar" title="Average margin rate"/>
+	</chart>
+	
+	<chart onInit="action.sale.chart.set.date" name="chart.markup.rate.per.customer" title="Average markup per customer">
+		<search-fields>
+			<field name="fromDate" title="From Date" type="date" x-required="true"/>
+			<field name="toDate" title="To Date" type="date" x-required="true"/>
+		</search-fields>
+		<dataset type="rpc">com.axelor.apps.sale.web.PartnerSaleController:markupByCustomer</dataset>
+		<category key="_customer" type="text" title="Customer"/>
+		<series key="_average" type="bar" title="Average markup"/>
+	</chart>
 	
 	<chart onInit="action.base.chart.set.date.6m" name="chart.category.sale.turnover.per.month" title="Category sale turnover (Excl. Tax) per month">
 		<search-fields>

@@ -169,7 +169,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
         I18n.get("Invoices")
             + " - "
             + Beans.get(AppBaseService.class)
-                .getTodayDate()
+                .getTodayDate(AuthUtils.getUser().getActiveCompany())
                 .format(DateTimeFormatter.BASIC_ISO_DATE)
             + ".pdf";
     return PdfTool.mergePdfToFileLink(printedInvoices, fileName);

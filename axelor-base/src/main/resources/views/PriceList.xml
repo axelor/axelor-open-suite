@@ -72,10 +72,10 @@
 	</action-group>
    
    <action-record name="action-price-list-record-default" model="com.axelor.apps.base.db.PriceList">
-   		<field name="typeSelect" expr="1" if="_parent?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
-   		<field name="typeSelect" expr="2" if="_parent?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
-   		<field name="typeSelect" expr="1" if="_parent?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; (_parent.operationTypeSelect == 3 || _parent.operationTypeSelect == 4)"/>
-   		<field name="typeSelect" expr="2" if="_parent?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; (_parent.operationTypeSelect == 1 || _parent.operationTypeSelect == 2)"/>
+   		<field name="typeSelect" expr="1" if="__parent__?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
+   		<field name="typeSelect" expr="2" if="__parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
+   		<field name="typeSelect" expr="1" if="__parent__?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; (__parent__.operationTypeSelect == 3 || __parent__.operationTypeSelect == 4)"/>
+   		<field name="typeSelect" expr="2" if="__parent__?._model == 'com.axelor.apps.account.db.Invoice' &amp;&amp; (__parent__.operationTypeSelect == 1 || __parent__.operationTypeSelect == 2)"/>
    		<field name="isActive" expr="true"/>
    		<field name="hideDiscount" expr="false"/>
    </action-record>
@@ -89,7 +89,7 @@
    </action-record>
    
    <action-attrs name="action-price-list-attrs-readonly-type-select">
-   		<attribute name="readonly" for="typeSelect" expr="eval: _parent?._model == 'com.axelor.apps.sale.db.SaleOrder' || _parent?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
+   		<attribute name="readonly" for="typeSelect" expr="eval: __parent__?._model == 'com.axelor.apps.sale.db.SaleOrder' || __parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
    </action-attrs>
    
    <action-attrs name="action-price-list-attrs-readonly-type-select-true">

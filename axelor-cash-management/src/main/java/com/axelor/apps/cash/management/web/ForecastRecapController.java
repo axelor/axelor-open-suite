@@ -72,7 +72,7 @@ public class ForecastRecapController {
                     forecastRecap.getBankDetails().getCurrency(),
                     forecastRecap.getCompany().getCurrency(),
                     forecastRecap.getBankDetails().getBalance(),
-                    Beans.get(AppBaseService.class).getTodayDate())
+                    Beans.get(AppBaseService.class).getTodayDate(forecastRecap.getCompany()))
                 .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
         forecastRecap.setStartingBalance(amount);
       } else {
@@ -82,7 +82,7 @@ public class ForecastRecapController {
                     forecastRecap.getCompany().getDefaultBankDetails().getCurrency(),
                     forecastRecap.getCompany().getCurrency(),
                     forecastRecap.getCompany().getDefaultBankDetails().getBalance(),
-                    Beans.get(AppBaseService.class).getTodayDate())
+                    Beans.get(AppBaseService.class).getTodayDate(forecastRecap.getCompany()))
                 .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
         forecastRecap.setStartingBalance(amount);
       }

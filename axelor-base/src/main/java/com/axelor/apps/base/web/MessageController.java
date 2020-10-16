@@ -55,6 +55,7 @@ public class MessageController extends com.axelor.apps.message.web.MessageContro
   public void printMessage(ActionRequest request, ActionResponse response) throws AxelorException {
 
     Message message = request.getContext().asType(Message.class);
+    message = Beans.get(MessageRepository.class).find(message.getId());
     String pdfPath = Beans.get(MessageService.class).printMessage(message);
 
     if (pdfPath != null) {

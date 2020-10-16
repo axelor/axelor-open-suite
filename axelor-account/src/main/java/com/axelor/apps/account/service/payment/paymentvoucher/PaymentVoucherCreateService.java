@@ -127,9 +127,17 @@ public class PaymentVoucherCreateService {
   /**
    * Generic method to create a payment voucher
    *
-   * @param seq
-   * @param pm
+   * @param company
+   * @param user
+   * @param paymentMode
+   * @param date
    * @param partner
+   * @param amount
+   * @param moveLine
+   * @param invoiceToPay
+   * @param rejectToPay
+   * @param scheduleToPay
+   * @param paymentScheduleToPay
    * @return
    * @throws AxelorException
    */
@@ -150,7 +158,7 @@ public class PaymentVoucherCreateService {
     log.debug("\n\n createPaymentVoucher ....");
     LocalDate date2 = date;
     if (date2 == null) {
-      date2 = appAccountService.getTodayDate();
+      date2 = appAccountService.getTodayDate(company);
     }
 
     BigDecimal amount2 = amount;

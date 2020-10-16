@@ -111,11 +111,11 @@
 		<attribute name="value" for="product" expr="eval: __user__.employee.product" if="_project &amp;&amp; __user__ in __repo__(Project).find(_project.id).membersUserSet &amp;&amp; __user__.employee"/>
 		
 		<attribute name="value" for="date" expr="#{__date__}"/>
-		<attribute name="value" for="user" expr="eval:__user__" if="_parent?._model == 'com.axelor.team.db.TeamTask' &amp;&amp; _parent?.project &amp;&amp; __user__ in __repo__(Project).find(_parent.project.id).membersUserSet"/>
-		<attribute name="value" for="project" expr="eval:_parent?.project" if="_parent?._model == 'com.axelor.team.db.TeamTask'"/>
-		<attribute name="value" for="task" expr="eval:_parent" if="_parent?._model == 'com.axelor.team.db.TeamTask'"/>
-		<attribute name="readonly" for="task" expr="eval:true" if="_parent?._model == 'com.axelor.team.db.TeamTask' || _task"/>
-		<attribute name="value" for="product" expr="eval: __user__.employee.product" if="_parent?._model == 'com.axelor.team.db.TeamTask' &amp;&amp; _parent?.project &amp;&amp; __user__ in __repo__(Project).find(_parent.project.id).membersUserSet &amp;&amp; __user__.employee"/>
+		<attribute name="value" for="user" expr="eval:__user__" if="__parent__?._model == 'com.axelor.team.db.TeamTask' &amp;&amp; __parent__?.project &amp;&amp; __user__ in __repo__(Project).find(__parent__.project.id).membersUserSet"/>
+		<attribute name="value" for="project" expr="eval:__parent__?.project" if="__parent__?._model == 'com.axelor.team.db.TeamTask'"/>
+		<attribute name="value" for="task" expr="eval:__parent__" if="__parent__?._model == 'com.axelor.team.db.TeamTask'"/>
+		<attribute name="readonly" for="task" expr="eval:true" if="__parent__?._model == 'com.axelor.team.db.TeamTask' || _task"/>
+		<attribute name="value" for="product" expr="eval: __user__.employee.product" if="__parent__?._model == 'com.axelor.team.db.TeamTask' &amp;&amp; __parent__?.project &amp;&amp; __user__ in __repo__(Project).find(__parent__.project.id).membersUserSet &amp;&amp; __user__.employee"/>
 	</action-attrs>
 	
 	<action-attrs name="action-project-attrs-project-planning-time-remove">

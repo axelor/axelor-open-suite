@@ -247,7 +247,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
     String senderLabel = "";
 
     if (bankOrderDate == null) {
-      bankOrderDate = appBaseService.getTodayDate();
+      bankOrderDate = appBaseService.getTodayDate(senderCompany);
     }
 
     BankOrder bankOrder =

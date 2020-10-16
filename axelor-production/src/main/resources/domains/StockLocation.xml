@@ -9,6 +9,6 @@
 
     <boolean name="usableOnProduction" title="Usable on production" />
     <boolean name="isWorkshop"/>
-
+	<boolean name="isOutsourcingLocation" title="Outsourcing location"/> 
   </entity>
 </domain-models>

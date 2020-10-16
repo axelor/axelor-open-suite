@@ -43,6 +43,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections4.ListUtils;
 
 @Singleton
 public class MoveController {
@@ -56,6 +57,17 @@ public class MoveController {
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void updateLines(ActionRequest request, ActionResponse response) {
+    Move move = request.getContext().asType(Move.class);
+    try {
+      ListUtils.emptyIfNull(move.getMoveLineList())
+          .forEach(moveLine -> moveLine.setDate(move.getDate()));
+      response.setValues(move);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 

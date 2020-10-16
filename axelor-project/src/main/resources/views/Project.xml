@@ -733,7 +733,7 @@
 	</action-record>
 	
 	<action-record name="action-project-record-bind-customer-parent" model="com.axelor.apps.project.db.Project">
-		<field name="clientPartner" expr="eval: _parent?.clientPartner"/>
+		<field name="clientPartner" expr="eval: __parent__?.clientPartner"/>
 	</action-record>
 
 	<action-method name="action-method-project-compute-progress">
@@ -795,7 +795,7 @@
 	</action-view>
 
 	<action-attrs name="action-business-support-attrs-project-default">
-		<attribute name="hidden" for="project" expr="eval:true" if="_parent &amp;&amp; (_parent?._model == 'com.axelor.apps.project.db.Project' || _parent?._model == 'com.axelor.apps.project.db.ProjectTemplate')"/>
+		<attribute name="hidden" for="project" expr="eval:true" if="__parent__ &amp;&amp; (__parent__?._model == 'com.axelor.apps.project.db.Project' || __parent__?._model == 'com.axelor.apps.project.db.ProjectTemplate')"/>
 	</action-attrs>
 
 	<action-view name="action-project-view-create-new-customer-contract" title="Create new customer contract" model="com.axelor.apps.contract.db.Contract">

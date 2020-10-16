@@ -49,6 +49,10 @@
             form-view="ebics-partner-service-form" editable="true"/>
 
 		<panel-dashlet name="ebicsUsersPanel" action="action-ebics-partner-view-ebics-users"/>
+		
+		<panel-mail name="mailPanel">
+			<mail-messages limit="4"/>
+		</panel-mail>
 
 	</form>
 	
