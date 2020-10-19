@@ -99,7 +99,7 @@
 				<field name="reasonNotHired" colSpan="12" showTitle="false"/>
 			</panel>
 			<panel name="resumePanel" title="JobApplication.resume" colSpan="12">
-				<field name="resume" widget="binary"/>
+				<field name="resume" widget="binary-link" onChange="action-job-application-method-set-dms-file"/>
 			</panel>
 		</panel-tabs>
 
@@ -117,7 +117,7 @@
 		<field name="mobilePhone"/>
 		<field name="jobPosition"/>
 		<field name="statusSelect"/>
-		<field name="resume.id"/>
+		<field name="resumeId"/>
 		<template><![CDATA[
 			<h4>{{ fullName }}</h4>
 			<br>
@@ -126,7 +126,7 @@
 				<span x-translate>Fixed phone</span><span> : {{ fixedPhone }}<br></span>
 				<span x-translate>Mobile phone</span><span> : {{ mobilePhone }}<br></span>
 				<br>
-				<a ng-href="#/ds/form:meta-files-form/edit/{{ resume.id }}" ng-show="resume.id != null" x-translate>JobApplication.resume</a>
+				<a ng-href="#/ds/dms.file/edit/{{ resumeId }}" ng-show="resumeId != null" x-translate>JobApplication.resume</a>
 			</div>
 		]]></template>
 	</kanban>
@@ -174,6 +174,10 @@
 
 	<action-method name="action-job-application-method-show-resume">
 		<call class="com.axelor.apps.talent.web.JobApplicationController" method="showResume"/>
+	</action-method>
+
+	<action-method name="action-job-application-method-set-dms-file">
+		<call class="com.axelor.apps.talent.web.JobApplicationController" method="setDMSFile"/>
 	</action-method>
     
     <search-filters name="job-application-filters" model="com.axelor.apps.talent.db.JobApplication" title="Job Application Filters">

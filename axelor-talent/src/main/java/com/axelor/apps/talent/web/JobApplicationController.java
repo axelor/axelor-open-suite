@@ -22,10 +22,10 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.talent.db.JobApplication;
 import com.axelor.apps.talent.db.repo.JobApplicationRepository;
 import com.axelor.apps.talent.service.JobApplicationService;
+import com.axelor.dms.db.DMSFile;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -70,16 +70,30 @@ public class JobApplicationController {
 
       application = Beans.get(JobApplicationRepository.class).find(application.getId());
 
-      if (application.getResume() != null) {
+      if (application.getResumeId() != null) {
         response.setView(
             ActionView.define(I18n.get("JobApplication.resume"))
-                .model(MetaFile.class.getName())
-                .add("form", "meta-files-form")
-                .context("_showRecord", application.getResume().getId().toString())
+                .model(DMSFile.class.getName())
+                .add("form", "dms-file-form")
+                .context("_showRecord", application.getResumeId().toString())
                 .map());
       } else {
         response.setAlert(I18n.get("No resume found"));
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setDMSFile(ActionRequest request, ActionResponse response) {
+    try {
+      JobApplication application = request.getContext().asType(JobApplication.class);
+
+      application = Beans.get(JobApplicationRepository.class).find(application.getId());
+
+      Beans.get(JobApplicationService.class).setDMSFile(application);
+
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

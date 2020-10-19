@@ -35,6 +35,7 @@
 		<string name="fax" title="Fax"/>
 		<many-to-one name="employeeAddress" title="Address" ref="com.axelor.apps.base.db.Address"/>
 		<many-to-one name="resume" title="JobApplication.resume" ref="com.axelor.meta.db.MetaFile"/>
+		<long name="resumeId" nullable="true"/>
 		<extra-code>
 	   		<![CDATA[
 	   			public static final Integer STATUS_OPEN = 0;
