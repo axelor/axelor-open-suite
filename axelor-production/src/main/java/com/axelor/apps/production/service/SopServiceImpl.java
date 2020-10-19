@@ -53,7 +53,7 @@ public class SopServiceImpl implements SopService {
 
   @Override
   public void generateSOPLines(Sop sop) throws AxelorException {
-    today = appBaseService.getTodayDate(sop.getCompany());
+    today = appBaseService.getTodayDate();
     List<Period> yearPeriods =
         periodRepo
             .all()
