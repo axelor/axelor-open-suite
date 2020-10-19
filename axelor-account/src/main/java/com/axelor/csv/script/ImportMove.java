@@ -161,7 +161,7 @@ public class ImportMove {
         moveValidateService.validate(move);
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      TraceBackService.trace(e);
       move.setStatusSelect(MoveRepository.STATUS_NEW);
     }
     moveRepository.save(move);

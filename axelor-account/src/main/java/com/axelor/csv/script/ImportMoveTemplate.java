@@ -23,6 +23,7 @@ import com.axelor.apps.account.service.move.MoveTemplateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -57,7 +58,7 @@ public class ImportMoveTemplate {
         }
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      TraceBackService.trace(e);
     }
 
     return moveTemplate;
