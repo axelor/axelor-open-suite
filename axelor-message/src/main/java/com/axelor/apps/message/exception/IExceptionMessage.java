@@ -56,4 +56,6 @@ public interface IExceptionMessage {
       "Please set the email template to send" /*)*/;
   static final String INVALID_MODEL_TEMPLATE_EMAIL = /*$$(*/
       "The email template model (%s) is different than the entity generating the email (%s)" /*)*/;
+
+  String SEND_EMAIL_EXCEPTION = /*$$(*/ "Error when sending email: %s" /*)*/;
 }

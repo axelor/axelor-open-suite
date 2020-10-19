@@ -111,29 +111,58 @@ public class InvoiceController {
     invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
 
     try {
+      // we have to inject TraceBackService to use non static methods
+      TraceBackService traceBackService = Beans.get(TraceBackService.class);
+      long tracebackCount = traceBackService.countMessageTraceBack(invoice);
       Beans.get(InvoiceService.class).validate(invoice);
       response.setReload(true);
+      if (traceBackService.countMessageTraceBack(invoice) > tracebackCount) {
+        traceBackService
+            .findLastMessageTraceBack(invoice)
+            .ifPresent(
+                traceback ->
+                    response.setNotify(
+                        String.format(
+                            I18n.get(
+                                com.axelor.apps.message.exception.IExceptionMessage
+                                    .SEND_EMAIL_EXCEPTION),
+                            traceback.getMessage())));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
 
   /**
-   * Fonction appeler par le bouton ventiler
+   * Called from invoice form view, on clicking ventilate button. Call {@link
+   * InvoiceService#ventilate(Invoice)}.
    *
    * @param request
    * @param response
-   * @return
-   * @throws AxelorException
    */
-  public void ventilate(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void ventilate(ActionRequest request, ActionResponse response) {
 
     Invoice invoice = request.getContext().asType(Invoice.class);
     invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
 
     try {
+      // we have to inject TraceBackService to use non static methods
+      TraceBackService traceBackService = Beans.get(TraceBackService.class);
+      long tracebackCount = traceBackService.countMessageTraceBack(invoice);
       Beans.get(InvoiceService.class).ventilate(invoice);
       response.setReload(true);
+      if (traceBackService.countMessageTraceBack(invoice) > tracebackCount) {
+        traceBackService
+            .findLastMessageTraceBack(invoice)
+            .ifPresent(
+                traceback ->
+                    response.setNotify(
+                        String.format(
+                            I18n.get(
+                                com.axelor.apps.message.exception.IExceptionMessage
+                                    .SEND_EMAIL_EXCEPTION),
+                            traceback.getMessage())));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -144,18 +173,30 @@ public class InvoiceController {
    *
    * @param request
    * @param response
-   * @return
-   * @throws AxelorException
    */
-  public void validateAndVentilate(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void validateAndVentilate(ActionRequest request, ActionResponse response) {
 
     Invoice invoice = request.getContext().asType(Invoice.class);
     invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
 
     try {
+      // we have to inject TraceBackService to use non static methods
+      TraceBackService traceBackService = Beans.get(TraceBackService.class);
+      long tracebackCount = traceBackService.countMessageTraceBack(invoice);
       Beans.get(InvoiceService.class).validateAndVentilate(invoice);
       response.setReload(true);
+      if (traceBackService.countMessageTraceBack(invoice) > tracebackCount) {
+        traceBackService
+            .findLastMessageTraceBack(invoice)
+            .ifPresent(
+                traceback ->
+                    response.setNotify(
+                        String.format(
+                            I18n.get(
+                                com.axelor.apps.message.exception.IExceptionMessage
+                                    .SEND_EMAIL_EXCEPTION),
+                            traceback.getMessage())));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
