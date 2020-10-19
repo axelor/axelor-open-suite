@@ -1,6 +1,6 @@
 title: "SOP : Added a panel to generate SOP lines"
 type: feature
 description: |
-	In the sop form we can now generate the lines with the periods of the Year
-	specified. We can also compute sale forecast on sales history. 
+    In the sop form we can now generate the lines with the periods of the Year
+    specified. We can also compute sale forecast on sales history. 
 
