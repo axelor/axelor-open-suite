@@ -4,8 +4,25 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
     
     <form name="year-manuf-order-form" title="Manufacturing period" model="com.axelor.apps.base.db.Year" 
-    	onSave="action-year-check-date" onNew="action-year-manuf-order-group-onnew" onLoad="action-year-manuf-order-group-onload">
-		<panel-include view="year-account-form"/>
+    	onSave="action-year-check-date" onNew="action-year-manuf-order-record-onnew" >
+		<panel name="mainPanel">
+	    <field name="name"/>
+	    <field name="code" colSpan="3"/>
+	    <field name="company" colSpan="3" widget="SuggestBox" required="true" form-view="company-form" grid-view="company-grid"/>
+	    <panel name="datesPanel" title="Dates" colSpan="12">
+	      <field name="fromDate" readonlyIf="periodList.length > 0" colSpan="3"/>
+	      <field name="toDate" readonlyIf="periodList.length > 0" colSpan="3"/>
+	    </panel>
+	  </panel>
+	  <panel-related name="periodListPanel" readonlyIf="statusSelect == 2" colSpan="12" field="periodList" form-view="period-year-form" grid-view="period-grid"/>
+	  <panel name="selectPanel" readonlyIf="statusSelect == 2" sidebar="true">
+	    <field name="typeSelect" readonly="true" colSpan="6"/>
+	    <field name="statusSelect" colSpan="6"/>
+	  </panel>
+	  <panel name="periodsGenerationAssistantPanel" title="Periods generation assistant" sidebar="true">
+	    <field name="periodDurationSelect"/>
+	    <button name="generatePeriodsBtn" title="Generate periods" onClick="action-year-group-generate-period-click"/>
+	  </panel>
 	</form>
 	
 	<action-group name="action-year-manuf-order-group-onnew">
