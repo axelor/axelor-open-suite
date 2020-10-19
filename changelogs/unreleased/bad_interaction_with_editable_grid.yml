@@ -1,0 +1,6 @@
+---
+title: "Logistical form: Bad interaction with editable grid"
+type: fix
+description : |
+   LogisticalFormLine: Fix stock move line domain.
+

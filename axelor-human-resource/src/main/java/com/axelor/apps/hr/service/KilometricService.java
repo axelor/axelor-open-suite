@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.AppBase;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
+import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.YearServiceImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -35,6 +36,7 @@ import com.axelor.apps.hr.db.repo.KilometricLogRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.translation.ITranslation;
+import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -79,15 +81,12 @@ public class KilometricService {
   }
 
   public KilometricLog getKilometricLog(Employee employee, LocalDate refDate) {
-
-    for (KilometricLog log : employee.getKilometricLogList()) {
-
-      if (log.getYear().getFromDate().isBefore(refDate)
-          && log.getYear().getToDate().isAfter(refDate)) {
-        return log;
-      }
-    }
-    return null;
+    return employee.getKilometricLogList().stream()
+        .filter(
+            log ->
+                DateTool.isBetween(log.getYear().getFromDate(), log.getYear().getToDate(), refDate))
+        .findFirst()
+        .orElse(null);
   }
 
   public KilometricLog getCurrentKilometricLog(Employee employee) {
@@ -123,12 +122,15 @@ public class KilometricService {
 
     Year year =
         Beans.get(YearServiceImpl.class)
-            .getYear(date, employee.getMainEmploymentContract().getPayCompany());
+            .getYear(
+                date,
+                employee.getMainEmploymentContract().getPayCompany(),
+                YearRepository.TYPE_CIVIL);
 
     if (year == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.KILOMETRIC_LOG_NO_YEAR),
+          I18n.get(IExceptionMessage.KILOMETRIC_LOG_NO_CIVIL_YEAR),
           employee.getMainEmploymentContract().getPayCompany(),
           date);
     }
@@ -214,11 +216,10 @@ public class KilometricService {
   @Transactional(rollbackOn = {Exception.class})
   public void updateKilometricLog(ExpenseLine expenseLine, Employee employee)
       throws AxelorException {
-
     KilometricLog log = getOrCreateKilometricLog(employee, expenseLine.getExpenseDate());
-    log.setDistanceTravelled(log.getDistanceTravelled().add(expenseLine.getDistance()));
     if (log.getExpenseLineList() == null || !log.getExpenseLineList().contains(expenseLine)) {
       log.addExpenseLineListItem(expenseLine);
+      log.setDistanceTravelled(log.getDistanceTravelled().add(expenseLine.getDistance()));
     }
     kilometricLogRepo.save(log);
   }

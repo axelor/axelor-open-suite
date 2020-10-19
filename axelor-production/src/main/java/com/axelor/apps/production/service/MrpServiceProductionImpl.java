@@ -27,6 +27,7 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
+import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -50,6 +51,8 @@ import com.axelor.apps.supplychain.service.MrpServiceImpl;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -453,7 +456,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
   }
 
   @Override
-  protected void assignProductAndLevel(Product product) {
+  protected void assignProductAndLevel(Product product) throws AxelorException {
 
     if (!Beans.get(AppProductionService.class).isApp("production")) {
       super.assignProductAndLevel(product);
@@ -484,11 +487,24 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
    * @param billOfMaterial
    * @param level
    */
-  protected void assignProductLevel(BillOfMaterial billOfMaterial, int level) {
+  protected void assignProductLevel(BillOfMaterial billOfMaterial, int level)
+      throws AxelorException {
+
+    if (level > 100) {
+      if (billOfMaterial == null || billOfMaterial.getProduct() == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.MRP_BOM_LEVEL_TOO_HIGH));
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.MRP_BOM_LEVEL_TOO_HIGH_PRODUCT),
+            billOfMaterial.getProduct().getFullName());
+      }
+    }
 
     if (billOfMaterial.getBillOfMaterialSet() == null
-        || billOfMaterial.getBillOfMaterialSet().isEmpty()
-        || level > 100) {
+        || billOfMaterial.getBillOfMaterialSet().isEmpty()) {
 
       Product subProduct = billOfMaterial.getProduct();
 

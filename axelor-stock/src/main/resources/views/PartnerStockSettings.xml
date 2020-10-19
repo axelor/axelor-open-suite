@@ -7,7 +7,11 @@
     <field name="company" form-view="company-form" grid-view="company-grid" onChange="action-partner-stock-settings-group-company-onchange"
       canEdit="false" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
     <field name="defaultStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"
+      onChange="action-condition-partner-stock-settings-check-stock-location-type"
       onSelect="action-partner-default-stock-location-form-domain"/>
+    <field name="defaultExternalStockLocation" form-view="stock-location-form" grid-view="stock-location-grid"
+      onChange="action-condition-partner-stock-settings-check-stock-location-type"
+      onSelect="action-partner-default-external-stock-location-form-domain"/>
     <field name="plannedStockMoveAutomaticMail"/>
     <field name="plannedStockMoveMessageTemplate" requiredIf="plannedStockMoveAutomaticMail" showIf="plannedStockMoveAutomaticMail"
       form-view="template-form" grid-view="template-grid" domain="self.metaModel.name='StockMove'"/>
@@ -27,8 +31,13 @@
             <field name="$stockConfig" type="many-to-one" target="com.axelor.apps.stock.db.StockConfig" hidden="true"/>
             <field name="defaultStockLocation" form-view="stock-location-form"
                    grid-view="stock-location-grid"
+                   onChange="action-condition-partner-stock-settings-check-stock-location-type"
                    onSelect="action-partner-default-stock-location-form-domain"/>
-            <panel name="plannedStockMovePanel" colSpan="12">
+          <field name="defaultExternalStockLocation" form-view="stock-location-form"
+            grid-view="stock-location-grid"
+            onChange="action-condition-partner-stock-settings-check-stock-location-type"
+            onSelect="action-partner-default-external-stock-location-form-domain"/>
+          <panel name="plannedStockMovePanel" colSpan="12">
                 <field name="plannedStockMoveAutomaticMail"/>
                 <field name="plannedStockMoveMessageTemplate"
                   requiredIf="plannedStockMoveAutomaticMail"
@@ -61,7 +70,15 @@
           	: &quot; self.company = :company AND self.usableOnProduction = true OR self.usableOnSaleOrder = true OR self.usableOnPurchaseOrder = true &quot;"/>
 
     </action-attrs>
-    
+
+  <action-attrs name="action-partner-default-external-stock-location-form-domain" model="com.axelor.apps.stock.db.PartnerStockSettings">
+
+    <attribute for="defaultExternalStockLocation" name="domain"
+      expr="eval: (company == null ? &quot;&quot; : &quot; self.company = :company AND &quot;)
+      + &quot;(self.typeSelect = 2 OR self.typeSelect = 3) AND (self.usableOnSaleOrder = true OR self.usableOnPurchaseOrder = true) AND (self.partner IS NULL OR self.partner.id = ${__parent__?.id ?: 0})&quot;"/>
+
+  </action-attrs>
+
     <action-group name="action-partner-stock-settings-group-company-onchange">
     	<action name="action-partner-stock-settings-record-set-stock-config"/>
     	<action name="action-partner-stock-settings-record-default-value"/>
@@ -86,4 +103,8 @@
 		<field name="company" expr="eval:__repo__(Company).all().fetchOne()" if="!(__config__.app.getApp('base').getEnableMultiCompany())"/>
     </action-record>
 
+  <action-condition name="action-condition-partner-stock-settings-check-stock-location-type">
+    <check field="defaultExternalStockLocation" if="defaultExternalStockLocation &amp;&amp; defaultStockLocation &amp;&amp; defaultExternalStockLocation.typeSelect == 2 &amp;&amp; defaultStockLocation.typeSelect == 2"
+     error="You cannot choose external stock locations for both fields"/>
+  </action-condition>
 </object-views>

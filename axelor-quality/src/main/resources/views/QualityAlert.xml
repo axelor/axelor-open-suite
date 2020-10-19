@@ -11,7 +11,7 @@
 		<field name="responsible"/>
 		<field name="qualityTagSet"/>
 		<field name="rootCause"/>
-		<field name="prioritySelect"/>
+		<field name="prioritySelect" widget="single-select"/>
 	</grid>
 	
 	<calendar name="quality-alert-calendar" title="Alert calendar" mode="month" colorBy="prioritySelect" 
@@ -30,7 +30,7 @@
 			<field name="team" domain="self.typeSelect = 'quality'"/>
 			<field name="responsible"/>
 			<field name="rootCause"/>
-			<field name="prioritySelect"/>
+			<field name="prioritySelect" widget="single-select"/>
 			<field name="startDate"/>
 			<field name="endDate"/>
 			<field name="deadLineDate"/>
