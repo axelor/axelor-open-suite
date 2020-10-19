@@ -27,6 +27,7 @@ import com.axelor.apps.message.db.EmailAccount;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.TemplateRepository;
 import com.axelor.apps.message.service.MailServiceMessageImpl;
+import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.db.EntityHelper;
@@ -339,12 +340,26 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
       final ObjectMapper mapper = Beans.get(ObjectMapper.class);
       final Map<String, Object> data =
           mapper.readValue(jsonBody, new TypeReference<Map<String, Object>>() {});
+      Class<?> klass = EntityHelper.getEntityClass(entity);
       if (isDefaultTemplate) {
         data.put("entity", entity);
       } else {
-        data.put(entity.getClass().getSimpleName(), entity);
+        data.put(klass.getSimpleName(), entity);
       }
       data.put("username", userName);
+      Map<String, Object> templatesContext = Maps.newHashMap();
+      try {
+        Beans.get(TemplateMessageService.class)
+            .computeTemplateContexts(
+                template.getTemplateContextList(),
+                entity.getId(),
+                klass.getCanonicalName(),
+                template.getIsJson(),
+                templatesContext);
+      } catch (ClassNotFoundException e) {
+        TraceBackService.trace(e);
+      }
+      data.putAll(templatesContext);
       Templates templates = createTemplates(template);
       return templates.fromText(template.getContent()).make(data).render();
     } else {
@@ -363,12 +378,13 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
       template = Beans.get(AppBaseService.class).getAppBase().getDefaultMailMessageTemplate();
       isDefaultTemplate = true;
     }
-    if (template != null) {
+    if (template != null && MESSAGE_TYPE_NOTIFICATION.equals(message.getType())) {
       Map<String, Object> data = Maps.newHashMap();
       if (isDefaultTemplate) {
         data.put("entity", entity);
       } else {
-        data.put(entity.getClass().getSimpleName(), entity);
+        Class<?> klass = EntityHelper.getEntityClass(entity);
+        data.put(klass.getSimpleName(), entity);
       }
       Templates templates = createTemplates(template);
       return templates.fromText(template.getSubject()).make(data).render();
@@ -388,11 +404,12 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
   }
 
   protected Template getTemplateByModel(Model entity) {
+    Class<?> klass = EntityHelper.getEntityClass(entity);
     List<MailTemplateAssociation> mailTemplateAssociationList =
         Beans.get(AppBaseService.class).getAppBase().getMailTemplateAssociationList();
     if (mailTemplateAssociationList != null) {
       for (MailTemplateAssociation item : mailTemplateAssociationList) {
-        if (item.getModel().getFullName().equals(entity.getClass().getName())) {
+        if (item.getModel().getFullName().equals(klass.getName())) {
           return item.getEmailTemplate();
         }
       }
