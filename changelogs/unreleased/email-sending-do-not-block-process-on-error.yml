@@ -1,0 +1,7 @@
+---
+title: "Email: do not block process when an error occurs on sending mail."
+type: change
+description: |
+  Automatic mail notification can be enabled on stock moves, invoices, and
+  manufacturing order. If we have an error when sending the message, the
+  process will now not be blocking but will still show the error to the user.

@@ -515,6 +515,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     return deliveryState;
   }
 
+  @Override
   public Optional<SaleOrder> findSaleOrder(StockMove stockMove) {
     if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())
         && stockMove.getOriginId() != null) {

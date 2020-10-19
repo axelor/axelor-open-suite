@@ -28,6 +28,7 @@
 "Email sending is in progress",,,
 "Email sending is in progress for %d messages.",,,
 "Emails",,,
+"Error when sending email: %s",,,
 "Expr. value",,,
 "Failure send",,,
 "Fetch emails",,,
