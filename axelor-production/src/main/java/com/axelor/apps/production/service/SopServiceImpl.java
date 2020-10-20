@@ -1,8 +1,10 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.ProductCategory;
+import com.axelor.apps.base.db.repo.CurrencyRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -33,6 +35,7 @@ public class SopServiceImpl implements SopService {
   protected SaleOrderLineRepository saleOrderLineRepo;
   protected SopLineRepository sopLineRepo;
   protected CurrencyService currencyService;
+  protected CurrencyRepository currencyRepo;
   protected LocalDate today;
 
   @Inject
@@ -42,13 +45,15 @@ public class SopServiceImpl implements SopService {
       SaleOrderLineRepository saleOrderLineRepo,
       SopLineRepository sopLineRepo,
       CurrencyService currencyService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      CurrencyRepository currencyRepo) {
     this.sopRepo = sopRepo;
     this.periodRepo = periodRepo;
     this.saleOrderLineRepo = saleOrderLineRepo;
     this.sopLineRepo = sopLineRepo;
     this.currencyService = currencyService;
     this.appBaseService = appBaseService;
+    this.currencyRepo = currencyRepo;
   }
 
   @Override
@@ -102,6 +107,7 @@ public class SopServiceImpl implements SopService {
       throws AxelorException {
     sopLine = sopLineRepo.find(sopLine.getId());
     Period period = sopLine.getPeriod();
+    Currency actualCurrency = company.getCurrency();
     ArrayList<Integer> statusList = new ArrayList<Integer>();
     statusList.add(SaleOrderRepository.STATUS_ORDER_COMPLETED);
     statusList.add(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
@@ -118,8 +124,8 @@ public class SopServiceImpl implements SopService {
     int offset = 0;
     List<SaleOrderLine> saleOrderLineList;
     while (!(saleOrderLineList = query.fetch(FETCH_LIMIT, offset)).isEmpty()) {
-
       offset += FETCH_LIMIT;
+      actualCurrency = currencyRepo.find(actualCurrency.getId());
       for (SaleOrderLine saleOrderLine : saleOrderLineList) {
         LocalDate usedDate =
             saleOrderLine.getDesiredDelivDate() != null
@@ -129,8 +135,9 @@ public class SopServiceImpl implements SopService {
                     : saleOrderLine.getSaleOrder().getDeliveryDate() != null
                         ? saleOrderLine.getSaleOrder().getDeliveryDate()
                         : saleOrderLine.getSaleOrder().getConfirmationDateTime().toLocalDate();
+
         if (usedDate.isAfter(period.getFromDate()) && usedDate.isBefore(period.getToDate())) {
-          if (saleOrderLine.getSaleOrder().getCurrency().equals(company.getCurrency())) {
+          if (saleOrderLine.getSaleOrder().getCurrency().equals(actualCurrency)) {
             exTaxSum = exTaxSum.add(saleOrderLine.getExTaxTotal());
           } else {
             exTaxSum =
