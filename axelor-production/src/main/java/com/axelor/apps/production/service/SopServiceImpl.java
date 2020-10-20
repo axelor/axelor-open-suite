@@ -145,7 +145,7 @@ public class SopServiceImpl implements SopService {
                     currencyService
                         .getAmountCurrencyConvertedAtDate(
                             saleOrderLine.getSaleOrder().getCurrency(),
-                            company.getCurrency(),
+                            actualCurrency,
                             saleOrderLine.getExTaxTotal(),
                             today)
                         .setScale(2, RoundingMode.HALF_UP));
