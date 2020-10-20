@@ -67,7 +67,7 @@
 		<view-param name="popup" value="true" />
 		<view-param name="popup-save" value="false" />
 		<view-param name="show-confirm" value="false" />
-		<context name="_productFamily" expr="eval: _parent?.productFamily" />
+		<context name="_categoryFamily" expr="eval: _parent?.categoryFamily" />
 		<context name="_sopLine" expr="eval: __this__" />
 	</action-view>
 
