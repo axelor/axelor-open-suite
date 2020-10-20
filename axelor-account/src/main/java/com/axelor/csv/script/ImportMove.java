@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CompanyRepository;
@@ -45,6 +46,7 @@ public class ImportMove {
 
   @Inject private MoveRepository moveRepository;
   @Inject private MoveLineRepository moveLineRepo;
+  @Inject private MoveValidateService moveValidateService;
 
   @Transactional
   public Object importFECMove(Object bean, Map<String, Object> values) throws AxelorException {
@@ -147,5 +149,22 @@ public class ImportMove {
     } else {
       return Beans.get(CompanyRepository.class).all().fetchOne();
     }
+  }
+
+  @Transactional(rollbackOn = Exception.class)
+  public Object validateMove(Object bean, Map<String, Object> values) throws AxelorException {
+    assert bean instanceof Move;
+    Move move = (Move) bean;
+    try {
+      if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
+          || move.getStatusSelect() == MoveRepository.STATUS_VALIDATED) {
+        moveValidateService.validate(move);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+      move.setStatusSelect(MoveRepository.STATUS_NEW);
+    }
+    moveRepository.save(move);
+    return move;
   }
 }
