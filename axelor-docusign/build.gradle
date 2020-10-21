@@ -27,7 +27,8 @@ ext {
 }
 
 dependencies {
-	api project(":modules:axelor-base")     
+	api project(":modules:axelor-base")
+	api project(":modules:axelor-sale")     
  
 	docusignDeps "com.docusign:docusign-esign-java:${docusignVersion}"	                      
 	implementation files("${docusignJarDir}/${docusignJarName}")	
