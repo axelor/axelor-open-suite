@@ -1,6 +1,0 @@
-title: "Sop line : fixed NPE when openning forecast wizard"
-type: anomaly
-description: |
-        Fixed NPE when openning forecast wizard on sop lines.
-
-
