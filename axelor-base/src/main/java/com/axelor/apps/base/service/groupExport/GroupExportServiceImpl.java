@@ -21,33 +21,53 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.apache.commons.collections4.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GroupExportServiceImpl implements GroupExportService {
 
+  private final Logger log = LoggerFactory.getLogger(GroupExportServiceImpl.class);
+
   private AdvancedExportService advancedExportService;
-  private MetaFiles metaFiles;
-  List<File> exportingFiles = new ArrayList<>();
-  boolean isGenerateConfig = false;
-  File zipFile = null;
+  private GroupExportConfigGenerator groupExportConfigGenerator;
+  private List<File> exportingFiles = new ArrayList<>();
+  private boolean isGenerateConfig = false;
+  private File zipFile = null;
 
   @Inject
-  public GroupExportServiceImpl(AdvancedExportService advanceExportService, MetaFiles metaFiles) {
+  public GroupExportServiceImpl(
+      AdvancedExportService advanceExportService,
+      GroupExportConfigGenerator groupExportConfigGenerator) {
     this.advancedExportService = advanceExportService;
-    this.metaFiles = metaFiles;
+    this.groupExportConfigGenerator = groupExportConfigGenerator;
   }
 
   @Override
   public MetaFile exportAdvanceExports(GroupExport groupExport)
       throws AxelorException, IOException {
 
+    log.debug("Group Export : Start");
+
+    MetaFile exportFile = null;
+    isGenerateConfig = groupExport.getIsGenerateConfig();
     List<GroupAdvancedExport> groupAdvanceExportList = groupExport.getGroupAdvancedExportList();
+
+    // Sorting GroupAdvanceList according to sequence provided
     Collections.sort(
         groupAdvanceExportList, (o1, o2) -> (o1.getSequence().compareTo(o2.getSequence())));
 
-    isGenerateConfig = groupExport.getIsGenerateConfig();
-    MetaFile exportFile = null;
+    log.debug("GenerateConfig : {}", isGenerateConfig);
 
-    this.exportAll(groupAdvanceExportList);
+    // To adding opening and close tag of config in xml
+    if (isGenerateConfig) {
+      groupExportConfigGenerator.initialize();
+      this.exportAll(groupAdvanceExportList);
+      groupExportConfigGenerator.endConfig();
+    } else {
+      this.exportAll(groupAdvanceExportList);
+    }
+
+    // Creating Zip File
     zipFile = this.zipFiles();
 
     if (zipFile != null) {
@@ -67,16 +87,21 @@ public class GroupExportServiceImpl implements GroupExportService {
         CollectionUtils.emptyIfNull(groupAdvanceExportList)) {
       AdvancedExport advancedExport = groupAdvancedExport.getAdvancedExport();
 
-      File file =
-          advancedExportService.export(
-              advancedExport,
-              advancedExportService.getFilterConditionRecords(
-                  groupAdvancedExport.getAdvancedExport()),
-              advancedExportService.CSV,
-              isGenerateConfig);
+      if (advancedExport != null) {
+        File file =
+            advancedExportService.export(
+                advancedExport,
+                advancedExportService.getFilterConditionRecords(
+                    groupAdvancedExport.getAdvancedExport()),
+                advancedExportService.CSV,
+                isGenerateConfig);
 
-      if (file != null) {
-        exportingFiles.add(file);
+        if (file != null) {
+          if (isGenerateConfig) {
+            groupExportConfigGenerator.addFileConfig(file, advancedExport);
+          }
+          exportingFiles.add(file);
+        }
       }
     }
   }
@@ -85,6 +110,10 @@ public class GroupExportServiceImpl implements GroupExportService {
 
     if (exportingFiles == null || exportingFiles.isEmpty()) {
       return null;
+    }
+
+    if (isGenerateConfig) {
+      exportingFiles.add(groupExportConfigGenerator.getConfigFile());
     }
 
     FileOutputStream fileOutStream = null;
