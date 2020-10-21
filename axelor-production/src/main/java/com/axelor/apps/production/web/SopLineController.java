@@ -51,8 +51,8 @@ public class SopLineController {
     Context context = request.getContext();
 
     @SuppressWarnings("unchecked")
-    LinkedHashMap<String, Object> productFamilyMap =
-        (LinkedHashMap<String, Object>) context.get("_productFamily");
+    LinkedHashMap<String, Object> productCategoryMap =
+        (LinkedHashMap<String, Object>) context.get("_productCategory");
     @SuppressWarnings("unchecked")
     LinkedHashMap<String, Object> sopLineMap =
         (LinkedHashMap<String, Object>) context.get("_sopLine");
@@ -61,7 +61,7 @@ public class SopLineController {
         (LinkedHashMap<String, Object>) sopLineMap.get("currency");
 
     BigDecimal sopSalesForecast = new BigDecimal(sopLineMap.get("sopSalesForecast").toString());
-    Integer productFamilyId = (Integer) productFamilyMap.get("id");
+    Long productCategoryId = Long.parseLong(productCategoryMap.get("id").toString());
     Currency currency = currencyRepo.find(Long.parseLong(currencyMap.get("id").toString()));
     BigDecimal totalForecast = BigDecimal.ZERO;
     SortedSet<Map<String, Object>> mrpForecastSet =
@@ -69,7 +69,7 @@ public class SopLineController {
     List<Product> productList =
         Beans.get(ProductRepository.class)
             .all()
-            .filter("self.productFamily.id = ?1 ", productFamilyId)
+            .filter("self.productCategory.id = ?1 ", productCategoryId)
             .fetch();
     if (productList != null) {
       for (Product product : productList) {
