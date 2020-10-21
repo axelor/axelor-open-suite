@@ -33,6 +33,9 @@ import com.axelor.apps.docusign.db.repo.DocuSignEnvelopeRepository;
 import com.axelor.apps.docusign.db.repo.DocuSignFieldSettingRepository;
 import com.axelor.apps.docusign.exceptions.IExceptionMessage;
 import com.axelor.apps.message.service.TemplateContextService;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -95,15 +98,19 @@ public class DocuSignEnvelopeServiceImpl implements DocuSignEnvelopeService {
   protected DocuSignEnvelopeRepository docuSignEnvelopeRepo;
   protected TemplateContextService templateContextService;
   protected MetaFiles metaFiles;
+  protected SaleOrderWorkflowService saleOrderWorkflowService;
 
   @Inject
   public DocuSignEnvelopeServiceImpl(
       DocuSignEnvelopeRepository docuSignEnvelopeRepo,
       TemplateContextService templateContextService,
-      MetaFiles metaFiles) {
+      MetaFiles metaFiles,
+      SaleOrderRepository saleOrderRepo,
+      SaleOrderWorkflowService saleOrderWorkflowService) {
     this.docuSignEnvelopeRepo = docuSignEnvelopeRepo;
     this.templateContextService = templateContextService;
     this.metaFiles = metaFiles;
+    this.saleOrderWorkflowService = saleOrderWorkflowService;
   }
 
   @Override
@@ -770,6 +777,7 @@ public class DocuSignEnvelopeServiceImpl implements DocuSignEnvelopeService {
                       .atZone(ZoneId.systemDefault())
                       .toLocalDateTime());
             }
+            confirmSaleOrder(docuSignEnvelope);
           } else if (DocuSignEnvelopeRepository.STATUS_DECLINED.equals(envelopeStatus)) {
             if (StringUtils.notEmpty(envelope.getDeclinedDateTime())) {
               docuSignEnvelope.setDeclinedDateTime(
@@ -791,6 +799,27 @@ public class DocuSignEnvelopeServiceImpl implements DocuSignEnvelopeService {
           I18n.get(IExceptionMessage.DOCUSIGN_ENVELOPE_SETTING_EMPTY));
     }
     return docuSignEnvelope;
+  }
+
+  protected void confirmSaleOrder(DocuSignEnvelope docuSignEnvelope) throws AxelorException {
+    if (StringUtils.notEmpty(docuSignEnvelope.getRelatedToSelect())
+        && ObjectUtils.notEmpty(docuSignEnvelope.getRelatedToId())) {
+      try {
+        Class<? extends Model> modelClass =
+            (Class<? extends Model>) Class.forName(docuSignEnvelope.getRelatedToSelect());
+        Model model = JPA.find(modelClass, docuSignEnvelope.getRelatedToId());
+
+        if (ObjectUtils.notEmpty(model) && model instanceof SaleOrder) {
+          SaleOrder saleOrder = (SaleOrder) model;
+
+          if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
+            this.saleOrderWorkflowService.confirmSaleOrder(saleOrder);
+          }
+        }
+      } catch (ClassNotFoundException e) {
+        throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+      }
+    }
   }
 
   protected void updateFields(EnvelopesApi envelopesApi, DocuSignEnvelope docuSignEnvelope)
