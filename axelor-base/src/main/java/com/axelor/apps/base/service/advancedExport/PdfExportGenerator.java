@@ -68,7 +68,7 @@ public class PdfExportGenerator extends AdvancedExportGenerator {
   }
 
   @Override
-  public void generateHeader() throws AxelorException {
+  public void generateHeader(boolean isGenerateConfig) throws AxelorException {
     try {
       PdfPCell headerCell;
       for (AdvancedExportLine advancedExportLine : advancedExport.getAdvancedExportLineList()) {

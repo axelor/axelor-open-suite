@@ -56,10 +56,14 @@ public class CsvExportGenerator extends AdvancedExportGenerator {
   }
 
   @Override
-  public void generateHeader() {
+  public void generateHeader(boolean isGenerateConfig) {
     int index = 0;
     for (AdvancedExportLine advancedExportLine : advancedExport.getAdvancedExportLineList()) {
-      totalCols[index++] = I18n.get(advancedExportLine.getTitle());
+      if (isGenerateConfig) {
+        totalCols[index++] = I18n.get(advancedExportLine.getTargetField());
+      } else {
+        totalCols[index++] = I18n.get(advancedExportLine.getTitle());
+      }
     }
     csvWriter.writeNext(totalCols);
   }

@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
-   
-   <grid model="com.axelor.apps.base.db.GroupExport" title="Group exports" name="group-export-grid">
-      <field name="name"/>
-   </grid>
-   
-   <form model="com.axelor.apps.base.db.GroupExport" title="Group export" name="group-export-form">
-      <panel name="groupAdvancedExportPanel">
-         <field name="name"/>
-         <field name="isGenerateConfig"/>
-         <panel-related field="groupAdvancedExportList" editable="true" colSpan="12"/>
-      </panel>
-      <panel name="actionPanel" sidebar="true">
-         <button onClick="" name="exportBtn" title="Export"/>
-      </panel>
-   </form>
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	
+	<grid model="com.axelor.apps.base.db.GroupExport" title="Group exports" name="group-export-grid">
+		<field name="name"/>
+	</grid>
+	
+	<form model="com.axelor.apps.base.db.GroupExport" title="Group export" name="group-export-form">
+		<panel name="groupAdvancedExportPanel">
+		   <field name="name"/>
+		   <field name="isGenerateConfig"/>
+		   <panel-related field="groupAdvancedExportList" editable="true" colSpan="12" grid-view="group-advanced-export-grid" form-view="group-advanced-export-form"/>
+		</panel>
+		<panel name="actionPanel" sidebar="true">
+			<button onClick="action-group-export-method-export-btn-onclick" name="exportBtn" title="Export"/>
+		</panel>
+	</form>
+	
+	<action-method name="action-group-export-method-export-btn-onclick">
+		<call class="com.axelor.apps.base.web.GroupExportController" method="exportGroupExport"/>		
+	</action-method>
 </object-views>

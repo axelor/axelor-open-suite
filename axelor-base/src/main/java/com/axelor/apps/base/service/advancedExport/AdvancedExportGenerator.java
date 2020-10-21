@@ -38,11 +38,12 @@ public abstract class AdvancedExportGenerator {
   /**
    * This method generate the header of export file.
    *
+   * @param isGenerateConfig
    * @throws IOException
    * @throws DocumentException
    * @throws AxelorException
    */
-  public abstract void generateHeader() throws AxelorException;
+  public abstract void generateHeader(boolean isGenerateConfig) throws AxelorException;
 
   /**
    * This method generate the body of export file.
@@ -93,13 +94,13 @@ public abstract class AdvancedExportGenerator {
    * @throws DocumentException
    */
   @SuppressWarnings({"unchecked", "rawtypes"})
-  public File generateFile(Query query) throws AxelorException {
+  public File generateFile(Query query, boolean isGenerateConfig) throws AxelorException {
 
     AdvancedExport advancedExport = getAdvancedExport();
 
     log.debug("Export file : {}", getFileName());
 
-    generateHeader();
+    generateHeader(isGenerateConfig);
 
     int startPosition = 0;
     int reachLimit = 0;

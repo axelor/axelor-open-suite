@@ -198,7 +198,7 @@ public class AdvancedExportController {
     if (!advancedExport.getAdvancedExportLineList().isEmpty()) {
       List<Long> recordIds = createCriteria(request, advancedExport);
 
-      File file = advancedExportService.export(advancedExport, recordIds, fileType);
+      File file = advancedExportService.export(advancedExport, recordIds, fileType, false);
 
       if (advancedExportService.getIsReachMaxExportLimit()) {
         response.setFlash(I18n.get(IExceptionMessage.ADVANCED_EXPORT_3));
@@ -339,7 +339,7 @@ public class AdvancedExportController {
     System.out.println(request.getContext().get("_selected"));
   }
 
-  private void downloadExportFile(ActionResponse response, MetaFile exportFile) {
+  protected void downloadExportFile(ActionResponse response, MetaFile exportFile) {
     if (exportFile != null) {
       response.setView(
           ActionView.define(I18n.get("Export file"))
