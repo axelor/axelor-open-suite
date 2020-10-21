@@ -13,6 +13,8 @@
 	    <integer name="deliveryState" title="Delivery State" selection="sale.order.delivery.state" readonly="true" default="1"/>
 
         <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Stock location"/>
+
+        <many-to-one name="toStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="To stock location"/>
         <date name="shipmentDate" title="Date of shipment" />
         <decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"/>
         <integer name="saleOrderTypeSelect" title="Type" required="true" default="1" selection="supplychain.sale.order.type.select"/>
