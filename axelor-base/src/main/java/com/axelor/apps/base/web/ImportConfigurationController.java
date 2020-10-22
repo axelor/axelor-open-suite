@@ -19,6 +19,8 @@ package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.ImportHistory;
+import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.imports.ImportService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
@@ -40,6 +42,11 @@ public class ImportConfigurationController {
     try {
 
       ImportHistory importHistory = Beans.get(ImportService.class).run(importConfiguration);
+
+      response.setValue("statusSelect", ImportConfigurationRepository.STATUS_COMPLETED);
+      response.setValue(
+          "endDateTime", Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
+
       response.setAttr("importHistoryList", "value:add", importHistory);
       File readFile = MetaFiles.getPath(importHistory.getLogMetaFile()).toFile();
       response.setNotify(
@@ -47,6 +54,7 @@ public class ImportConfigurationController {
               .replaceAll("(\r\n|\n\r|\r|\n)", "<br />"));
 
     } catch (Exception e) {
+      response.setValue("statusSelect", ImportConfigurationRepository.STATUS_ERROR);
       TraceBackService.trace(response, e);
     }
   }
