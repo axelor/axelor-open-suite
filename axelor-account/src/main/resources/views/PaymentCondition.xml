@@ -22,8 +22,6 @@
         <field name="daySelect" colSpan="6" showIf="typeSelect == 4"/>
         <field name="advancePaymentNeeded" if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
       </panel>
-      <panel-related name="importExportInterfacePanel" field="importExportInterfaceList" title="Import/Export"
-                     form-view="import-export-interface-form" grid-view="import-export-interface-grid"/>
     </form>
     
     <search-filters name="payment-condition-filters" model="com.axelor.apps.account.db.PaymentCondition" title="Payment condition filters">

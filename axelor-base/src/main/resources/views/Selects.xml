@@ -575,4 +575,11 @@
 		<option value="1">EDIFACT</option>
 	</selection>
 
+	<selection name="import.export.interface.origin.select">
+		<option value="com.axelor.apps.base.db.Unit" data-grid="unit-grid" data-form="unit-form">Unit</option>
+		<option value="com.axelor.apps.account.db.Tax" data-grid="tax-grid" data-form="tax-form">Tax</option>
+		<option value="com.axelor.apps.account.db.PaymentMode" data-grid="payment-mode-grid" data-form="payment-mode-form">Payment mode</option>
+		<option value="com.axelor.apps.account.db.PaymentCondition" data-grid="payment-condition-grid" data-form="payment-condition-form">Payment condition</option>
+	</selection>
+
 </object-views>

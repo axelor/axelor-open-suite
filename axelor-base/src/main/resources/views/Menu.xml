@@ -144,6 +144,15 @@
         <view type="form" name="language-form"/>
     </action-view>
 
+	<menuitem name="admin-root-general-import-export-interface" parent="admin-root-general"
+						title="Import/Export interfaces" action="admin.root.general.import.export.interface"/>
+
+	<action-view name="admin.root.general.import.export.interface" title="Import/Export interfaces"
+							 model="com.axelor.apps.base.db.ImportExportInterface">
+		<view type="grid" name="import-export-interface-grid"/>
+		<view type="form" name="import-export-interface-form"/>
+	</action-view>
+
 	<menuitem name="referential-root" title="Referential" order="15" parent="admin-root" if="__config__.app.isApp('base')"/>
 		
 	<menuitem name="referential-root-partners" parent="referential-root"

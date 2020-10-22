@@ -31,8 +31,6 @@
 				<field name="bankOrderExportFolderPath" showIf="generateBankOrder" requiredIf="generateBankOrder"/>
 				<field name="bankOrderFileFormat" domain="self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true'" canEdit="false" showIf="generateBankOrder" requiredIf="generateBankOrder" form-view="bank-order-file-format-form" grid-view="bank-order-file-format-grid"/>
 			</panel>
-			<panel-related name="importExportInterfacePanel" field="importExportInterfaceList" title="Import/Export"
-										 form-view="import-export-interface-form" grid-view="import-export-interface-grid"/>
 		</panel-tabs>
     </form>
     
