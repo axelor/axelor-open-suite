@@ -53,9 +53,10 @@ public class ProjectController {
       Project project = request.getContext().asType(Project.class);
       SaleOrder order = Beans.get(ProjectBusinessService.class).generateQuotation(project);
       response.setView(
-          ActionView.define("Sale Order")
+          ActionView.define(I18n.get("Sale quotation"))
               .model(SaleOrder.class.getName())
               .add("form", "sale-order-form")
+              .param("forceTitle", "true")
               .context("_showRecord", String.valueOf(order.getId()))
               .map());
     } catch (Exception e) {
