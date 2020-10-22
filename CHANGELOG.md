@@ -1,3 +1,82 @@
+## [6.0.1] (2020-10-22)
+
+#### Features
+
+* Account: Add import of FEC file exported from accounting export.
+
+#### Changes
+
+* Partner stock settings: add default external stock location.
+
+Add default external stock location in partner configuration, that will be
+used as a destination for sales and a from location for purchases.
+
+* Email: do not block process when an error occurs on sending mail.
+
+Automatic mail notification can be enabled on stock moves, invoices, and
+manufacturing order. If we have an error when sending the message, the
+process will now not be blocking but will still show the error to the user.
+
+* EbicsUser: Manage fields visibilty.
+
+In EbicsUser form view display serial number (CORP) and show required
+password only if user type is signatory and ebics partner mode is ebics TS,
+
+* UNIT: fill automatically the label.
+
+Unit: If the label is empty then it fills automatically with the name.
+* MAIL MESSAGE: add demo template for sale order update.
+* TICKET: Addition of color on selection in ticket grid and form view.
+* QUALITY ALERT: Addition of color on selection in quality alert grid and form view.
+* Unit Conversion: make type required and hide other fields when the type is empty.
+* ManufOrder: Add color to priority field.
+* Period: make from date and to date fields required in form view.
+* DEBT RECOVERY METHOD LINE: Debt recovery level is now required.
+* In Sale order and Stock move, hide/readonly allocation related entities for product type service.
+* TaxEquiv: Make taxes required in form view.
+* ANALYTIC MOVE LINE: hide date, type and account type in form view opened from a invoice line.
+* Accounting Year: make reported balance date required.
+* ACCOUNTING MOVE: change the debit and credit field positions in total calculation form view.
+* SOP: Rename categoryFamily field to productCategory.
+* PaymentMode: make type and in or out select fields required in form view.
+* TraceBackRepository: Remove deprecated constants.
+* Invoice: set unit price value according to hide discount value for invoice report.
+* LEAVELINE: change menu name 'All employees's leave lines' to 'Leave accounts'.
+* ANALYTIC MOVE LINE: made some field mandatory and added tracking.
+* IMPORT CONFIGURATION: add a status and process start date and end date.
+* Tax: make type required in form view.
+* ANALYTIC MOVE LINE: hide date, type and account type in form view opened from a sale order or puchase order line.
+* Payment Condition: make type required in form view.
+* Account: make account type and company required.
+* Fixed Asset Category: make Degressive coef, Computation method and Number of depreciation fields required in form.
+* Account Management: Make fields required in view if they are needed for the account management type.
+* MoveTemplateType: type is now required.
+* AnalyticMoveLine: make type required in form view.
+* AccountMoveTemplate: make company field required.
+* Move Template Line: Make debit, credit and percentage required in line form.
+* INVOICE LINE: make type required in form view.
+
+#### Fixed
+
+* Fix Employees and expenses issues.
+  - On kilometric log, the total distance travelled is now updated only if the expense line is added.
+  - The kilometric log now has an unique constraint on employee and year.
+  - Error message when missing year has been improved to display the year's type.
+* SALE ORDER: Make visible some fields on sale order finished in date panel.
+* ACCOUNTING BATCH: corrected conflict between boolean isTaxRequiredOnMoveLine and closure/opening accounting batch.
+* Account Move: make date and currency required.
+* Demo data: fix ICalendar permission that were not working.
+* MRP: Stop the MRP computation if a loop in bill of materials components is happening.
+* PARTNER: corrected "employee field doesn't exist" after loading a partner if human-resource module is not installed.
+* Sale Order Report: fix warning appearing when launching the report.
+* Remove hard-coded locale to use the correct locale from the user in some template and export generation processes.
+* Fix `cannot be cast` exception on deleting some objects.
+* YEAR: corrected sql error and hibernate error when closing a fiscal year.
+* Copy analytic move lines when generating invoice from sale order and purchase order.
+* BANK ORDER: fix NPE error during file generation.
+* LogisticalFormLine: Fix stock move line domain.
+* Template: Fix missing action error when marketing module is not installed.
+
 ## [6.0.0] (2020-10-05)
 
 #### Features
@@ -51,4 +130,5 @@ be set in SMTP account configuration.
 * LeaveReason: rename `leaveReason` field into `name`.
 * JobPosition: Remove character limit on Profile Wanted field.
 
+[6.0.1]: https://github.com/axelor/axelor-open-suite/compare/v6.0.0...v6.0.1
 [6.0.0]: https://github.com/axelor/axelor-open-suite/compare/v5.4.1...v6.0.0

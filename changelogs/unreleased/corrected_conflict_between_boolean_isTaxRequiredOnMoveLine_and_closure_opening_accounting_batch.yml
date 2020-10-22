@@ -1,3 +1,0 @@
----
-title: "ACCOUNTING BATCH : corrected conflict between boolean isTaxRequiredOnMoveLine and closure/opening accounting batch."
-type: fix
