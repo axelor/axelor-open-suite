@@ -1,4 +1,0 @@
----
-title: "MoveLineTemplate : Some fields are required"
-type: fix
-description: Making fields required in MoveTemplateLineInPercentageForm and MoveTemplateLineInAmountForm
