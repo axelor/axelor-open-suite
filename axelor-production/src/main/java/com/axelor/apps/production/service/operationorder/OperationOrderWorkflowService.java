@@ -162,9 +162,7 @@ public class OperationOrderWorkflowService {
             && lastOperationOrder
                 .getPlannedStartDateT()
                 .isAfter(operationOrder.getManufOrder().getPlannedStartDateT())) {
-          if (lastOperationOrder
-              .getMachineWorkCenter()
-              .equals(operationOrder.getMachineWorkCenter())) {
+          if (lastOperationOrder.getMachine().equals(operationOrder.getMachine())) {
             return lastOperationOrder.getPlannedEndDateT();
           }
           return lastOperationOrder.getPlannedStartDateT();
@@ -331,13 +329,7 @@ public class OperationOrderWorkflowService {
     if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_FINISHED) {
       long durationLong = DurationTool.getSecondsDuration(computeRealDuration(operationOrder));
       operationOrder.setRealDuration(durationLong);
-      WorkCenter machineWorkCenter = operationOrder.getMachineWorkCenter();
-      Machine machine = null;
-      if (machineWorkCenter != null) {
-        machine = machineWorkCenter.getMachine();
-      } else if (operationOrder.getWorkCenter() != null) {
-        machine = operationOrder.getWorkCenter().getMachine();
-      }
+      Machine machine = operationOrder.getMachine();
       if (machine != null) {
         machine.setOperatingDuration(machine.getOperatingDuration() + durationLong);
       }
