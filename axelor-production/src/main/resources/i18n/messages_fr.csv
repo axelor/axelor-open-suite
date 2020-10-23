@@ -90,6 +90,8 @@
 "Computed_cost",,,
 "Condition","Condition",,
 "Configuration",,,
+"Configuration issue in product %s: the MRP execution was canceled because a loop was detected when searching for components in BOM.","Erreur de configuration du produit %s : l'exécution du CBN a été annulée car une boucle a été détectée en parcourant les composants des nomenclatures.",,
+"Configuration issue: the MRP execution was canceled because a loop was detected when searching for components in BOM.","Erreur de configuration: l'exécution du CBN a été annulée car une boucle a été détectée en parcourant les composants des nomenclatures.",,
 "Configurator","Configurateur",,
 "Configurator BOM","Configurateur de nomenclature",,
 "Configurator BOM component","Composants de configurateur de nomenclature",,

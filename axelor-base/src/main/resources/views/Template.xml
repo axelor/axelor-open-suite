@@ -12,7 +12,7 @@
 
 	<form id="template-form-base" name="template-form" title="Template"
 		model="com.axelor.apps.message.db.Template" onSave="action-template-check-receptor"
-		onNew="action-template-record-new,action-template-attrs-onnew-onload" onLoad="action-template-attrs-onnew-onload">
+		onNew="action-template-record-new">
 		<panel name="mainPanel" colSpan="12">
 			<field name="name" showTitle="false" colSpan="12">
 				<viewer depends="name"><![CDATA[
@@ -29,7 +29,7 @@
 			<field name="templateEngineSelect"/>
 			<field name="isJson" onChange="action-template-record-is-json-change"/>
 			<panel itemSpan="12">
-				<field name="metaModel" hideIf="isJson" canEdit="false" form-view="meta-model-form" grid-view="meta-model-grid" onSelect="action-template-attrs-meta-model-domain" />
+				<field name="metaModel" hideIf="isJson" canEdit="false" form-view="meta-model-form" grid-view="meta-model-grid" />
 				<field name="metaJsonModel" showIf="isJson" canEdit="false" form-view="json-model-form" grid-view="json-model-grid" />			
 			</panel>
 			<field name="target" hidden="true" />

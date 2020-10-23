@@ -14,7 +14,7 @@
 		<field name="endDateT"/>
 		<field name="deadlineDateT"/>
 		<field name="assignedToUser"/>
-		<field name="prioritySelect"/>
+		<field name="prioritySelect" widget="single-select"/>
 		<field name="statusSelect"/>
 		<field name="timerState" hidden="true"/>
 		<field name="progressSelect" widget="SelectProgress"/>
@@ -89,7 +89,7 @@
 
 		<panel name="characteristicsPanel" title="Characteristics" sidebar="true" canCollapse="true">
 			<field name="ticketType" colSpan="12"/>
-			<field name="prioritySelect" colSpan="6"/>
+			<field name="prioritySelect" colSpan="6" widget="single-select"/>
 			<field name="deadlineDateT" colSpan="6"/>
 			<field name="isSlaCompleted" hidden="true"/>
 		</panel>

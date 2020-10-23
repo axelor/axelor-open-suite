@@ -7,7 +7,7 @@
 
   <entity name="DebtRecoveryMethodLine" lang="java" cacheable="true">
   
-  	<many-to-one name="debtRecoveryLevel"  ref="com.axelor.apps.account.db.DebtRecoveryLevel" title="Level" />
+  	<many-to-one name="debtRecoveryLevel" required="true" ref="com.axelor.apps.account.db.DebtRecoveryLevel" title="Level" />
   	<string name="debtRecoveryLevelLabel" namecolumn="true" title="Label"/>
   	<integer name="standardDeadline" title="Standard trigger delay (days)"/>
   	<decimal name="minThreshold" title="Min. amount (€)"/>

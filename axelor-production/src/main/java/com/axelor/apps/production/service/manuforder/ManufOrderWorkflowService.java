@@ -35,6 +35,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.EmailAccountRepository;
+import com.axelor.apps.message.exception.AxelorMessageException;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
@@ -59,6 +60,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.MoreObjects;
@@ -515,11 +517,12 @@ public class ManufOrderWorkflowService {
         .collect(Collectors.toList());
   }
 
-  protected boolean sendMail(ManufOrder manufOrder, Template template) throws AxelorException {
+  protected boolean sendMail(ManufOrder manufOrder, Template template) {
     if (template == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MANUF_ORDER_MISSING_TEMPLATE));
+      TraceBackService.trace(
+          new AxelorMessageException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(IExceptionMessage.MANUF_ORDER_MISSING_TEMPLATE)));
     }
     if (Beans.get(EmailAccountRepository.class)
             .all()
@@ -531,8 +534,9 @@ public class ManufOrderWorkflowService {
     try {
       Beans.get(TemplateMessageService.class).generateAndSendMessage(manufOrder, template);
     } catch (Exception e) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage(), manufOrder);
+      TraceBackService.trace(
+          new AxelorMessageException(
+              e, manufOrder, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR));
     }
     return true;
   }

@@ -314,7 +314,8 @@
 	    <panel if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" name="deliveryInformationPanel" title="Delivery" colSpan="12">
 	      <field name="specificPackage" colSpan="12"/>
 	      <field name="stockLocation" canEdit="false" onSelect="action-sale-order-attrs-set-stock-location-domain" form-view="stock-location-form" grid-view="stock-location-grid"/>
-	      <field name="deliveryDate" onChange="action-sale-order-method-fill-sale-order-lines-estimated-date"/>
+				<field name="toStockLocation" canEdit="false" domain="self.company = :company and self.typeSelect != 1 and self.usableOnSaleOrder = true" form-view="stock-location-form" grid-view="stock-location-grid"/>
+				<field name="deliveryDate" onChange="action-sale-order-method-fill-sale-order-lines-estimated-date"/>
 	      <field name="deliveryCondition" colSpan="12"/>
 	      <field name="shipmentMode" canEdit="false" form-view="shipment-mode-grid" grid-view="shipment-mode-grid"/>
 	      <field name="freightCarrierMode" canEdit="false" onChange="action-sale-order-record-freight-carrier" domain="self.shipmentMode = :shipmentMode" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid"/>
@@ -469,11 +470,11 @@
 	  </panel>
 	  <panel name="datesPanel" title="Dates" hideIf="clientPartner == null" sidebar="true" canCollapse="true" collapseIf="true">
 	    <field name="creationDate" readonlyIf="statusSelect != 1" colSpan="6" onChange="action-sale-order-record-compute-end-of-validity-date"/>
-	    <field name="confirmedByUser" readonly="true" showIf="statusSelect == 3" colSpan="6" canNew="false" canView="false" canEdit="false" form-view="user-form" grid-view="user-grid"/>
-	    <field name="confirmationDateTime" readonly="true" showIf="statusSelect == 3" colSpan="6"/>
-	    <field name="orderDate" showIf="statusSelect == 3" colSpan="6"/>
-	    <field name="orderNumber" showIf="statusSelect == 3" colSpan="6"/>
-	    <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" name="shipmentDate" showIf="statusSelect == 3" colSpan="6"/>
+	    <field name="confirmedByUser" readonly="true" showIf="statusSelect == 3 || statusSelect == 4" colSpan="6" canNew="false" canView="false" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+	    <field name="confirmationDateTime" readonly="true" showIf="statusSelect == 3 || statusSelect == 4" colSpan="6"/>
+	    <field name="orderDate" showIf="statusSelect == 3 || statusSelect == 4" colSpan="6"/>
+	    <field name="orderNumber" showIf="statusSelect == 3 || statusSelect == 4" colSpan="6"/>
+	    <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" name="shipmentDate" showIf="statusSelect == 3 || statusSelect == 4" colSpan="6"/>
 	    <field name="duration" domain="self.applicationTypeSelect = 1" canEdit="false" readonlyIf="statusSelect >= 2" colSpan="6" widget="SuggestBox" canNew="true" onChange="action-sale-order-record-compute-end-of-validity-date"/>
 	    <field name="endOfValidityDate" readonly="true" colSpan="6">
 	      <hilite color="danger" if="$moment().diff(endOfValidityDate, 'days') > 0 &amp;&amp; statusSelect != 3"/>
@@ -1248,6 +1249,7 @@
 	    <field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
 	    <field name="expectedRealisationDate" hidden="true" if="!__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
 	    <field name="stockLocation" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="toStockLocation" hidden="true" if="!__config__.app.isApp('supplychain')"/>
 		<field name="amountInvoiced" hidden="true" if="!__config__.app.isApp('supplychain')"/>
 		<field name="deliveryState" hidden="true" if="!__config__.app.isApp('supplychain')" />
 		<field name="directOrderLocation" hidden="true" if="!__config__.app.isApp('supplychain')" />

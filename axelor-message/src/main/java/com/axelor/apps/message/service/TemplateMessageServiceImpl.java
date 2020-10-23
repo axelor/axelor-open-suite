@@ -257,7 +257,8 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
   }
 
   @SuppressWarnings("unchecked")
-  protected Map<String, Object> computeTemplateContexts(
+  @Override
+  public Map<String, Object> computeTemplateContexts(
       List<TemplateContext> templateContextList,
       long objectId,
       String model,

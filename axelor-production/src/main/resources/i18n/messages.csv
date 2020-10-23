@@ -90,6 +90,8 @@
 "Computed_cost",,,
 "Condition",,,
 "Configuration",,,
+"Configuration issue in product %s: the MRP execution was canceled because a loop was detected when searching for components in BOM.",,,
+"Configuration issue: the MRP execution was canceled because a loop was detected when searching for components in BOM.",,,
 "Configurator",,,
 "Configurator BOM",,,
 "Configurator BOM component",,,

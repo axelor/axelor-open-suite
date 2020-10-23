@@ -40,10 +40,10 @@
 	</selection>
 
 	<selection name="production.order.priority.select">
-		<option value="1">Low</option>
-		<option value="2">Normal</option>
-		<option value="3">High</option>
-		<option value="4">Urgent</option>
+		<option value="1" color="cyan">Low</option>
+		<option value="2" color="blue">Normal</option>
+		<option value="3" color="orange">High</option>
+		<option value="4" color="red">Urgent</option>
 	</selection>
 	
 	<selection name="iproduction.work.center.type.select">

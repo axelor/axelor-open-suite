@@ -71,8 +71,8 @@
 	</action-record>
 
 	<action-attrs name="action-supplychain-sale-order-line-attrs-hide-button">
-		<attribute for="updateAllocatedQtyBtn" name="hidden" expr="eval: id == null || __parent__.statusSelect != 3" if="__parent__"/>
-    <attribute for="updateAllocatedQtyBtn" name="hidden" expr="eval: id == null || saleOrder.statusSelect != 3" if="saleOrder"/>
+		<attribute for="updateAllocatedQtyBtn" name="hidden" expr="eval: id == null || __parent__.statusSelect != 3 || product?.productTypeSelect == 'service'" if="__parent__"/>
+    <attribute for="updateAllocatedQtyBtn" name="hidden" expr="eval: id == null || saleOrder.statusSelect != 3 || product?.productTypeSelect == 'service'" if="saleOrder"/>
 	</action-attrs>
 
 	<action-attrs name="action-supplychain-attrs-sale-order-line-max-requested-reserved-qty">
@@ -84,8 +84,8 @@
 	</action-attrs>
   
   <action-attrs name="action-sale-order-line-attrs-reserved-qty-visibility">
-		<attribute for="reservedQty" name="hidden" expr="eval: __parent__.statusSelect != 3" if="__parent__"/>
-		<attribute for="reservedQty" name="hidden" expr="eval: saleOrder.statusSelect != 3" if="saleOrder"/>
+		<attribute for="reservedQty" name="hidden" expr="eval: __parent__.statusSelect != 3 || product?.productTypeSelect == 'service'" if="__parent__"/>
+		<attribute for="reservedQty" name="hidden" expr="eval: saleOrder.statusSelect != 3 || product?.productTypeSelect == 'service'" if="saleOrder"/>
   </action-attrs>
 
   <action-attrs name="action-sale-order-line-attrs-is-requested-qty-readonly">

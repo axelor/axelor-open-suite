@@ -38,9 +38,21 @@
         <bind to="shipmentDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(shipmentDate)" column="shipmentDate"/>
 	</input>
 	
+	<input file="base_template_context.csv" separator=";" type="com.axelor.apps.message.db.TemplateContext" search="self.name = :name"/>
+
 	<input file="base_template.csv" separator=";" type="com.axelor.apps.message.db.Template" search="self.name = :name" >
 		<bind to="language" search="self.code = :languageCode"/>
+		<bind to="templateContextList" search="self.name = :templateContext" if="templateContext != null &amp;&amp; !templateContext.empty"/>
 		<bind column="birtTemplateSet_importId" to="birtTemplateSet" search="self.importId in :birtTemplateSet_importId" eval="birtTemplateSet_importId.split('\\|') as List" update="true"/>
 	</input>
-	
+
+	<input file="base_mail_template_association.csv" separator=";" type="com.axelor.apps.base.db.MailTemplateAssociation" search="self.model.name = :model">
+		<bind to="model" column="model" search="self.name = :model"/>
+		<bind to="emailTemplate" column="template" search="self.name = :template"/>
+	</input>
+
+	<input file="base_appBase.csv" separator=";" type="com.axelor.apps.base.db.AppBase" search="self.code = :code">
+		<bind to="mailTemplateAssociationList" column="model" search="self.model.name = :model" if="model != null &amp;&amp; !model.empty"/>
+	</input>
+
 </csv-inputs>
