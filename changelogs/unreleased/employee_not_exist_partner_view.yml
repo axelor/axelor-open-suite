@@ -1,3 +1,0 @@
----
-title: "PARTNER : corrected employee field doesn't exist after loading a partner if human-resource module is not intalled"
-type: fix

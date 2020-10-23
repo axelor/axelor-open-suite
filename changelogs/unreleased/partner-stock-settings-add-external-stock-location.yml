@@ -1,6 +1,0 @@
----
-title: "Partner stock settings: add default external stock location."
-type: change
-description: |
-  Add default external stock location in partner configuration, that will be
-  used as a to location for sales and from location for purchases.

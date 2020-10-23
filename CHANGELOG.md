@@ -1,4 +1,50 @@
-# Changelog
+## [5.4.2] (2020-10-23)
+
+#### Features
+
+* Account: Add import of FEC file exported from accounting export.
+
+#### Changes
+
+* Partner stock settings: add default external stock location.
+
+Add default external stock location in partner configuration, that will be
+used as a destination for sales and a from location for purchases.
+
+* EbicsUser: Manage fields visibilty.
+
+In EbicsUser form view display serial number (CORP) and show required
+password only if user type is signatory and ebics partner mode is ebics TS,
+
+* TICKET: Addition of color on selection in ticket grid and form view.
+* QUALITY ALERT: Addition of color on selection in quality alert grid and form view.
+* ANALYTIC MOVE LINE: date and analytic account are now mandatory.
+* ManufOrder: Add color to priority field.
+* ANALYTIC MOVE LINE: add tracking on all fields.
+* DEBT RECOVERY METHOD LINE: make debt recovery level required.
+* In Sale order and Stock move, hide/readonly allocation related entities for product type service.
+* Project: When generating sale order from project changed name of the generated tab from 'Sale order' to 'Sale quotation'.
+* ACCOUNTING MOVE: change the debit and credit field positions in total calculation form view.
+* Invoice: set unit price value according to hide discount value for invoice report.
+* LEAVELINE: change menu name 'All employees's leave lines' to 'Leave accounts'.
+* SALE ORDER: Make visible some fields on sale order finished in date panel.
+
+#### Fixed
+
+* Fix Employees and expenses issues.
+  - On kilometric log, the total distance travelled is now updated only if the expense line is added.
+  - The kilometric log now has an unique constraint on employee and year.
+  - Error message when missing year has been improved to display the year's type.
+* ACCOUNTING BATCH: corrected conflict between boolean isTaxRequiredOnMoveLine and closure/opening accounting batch.
+* Demo data: fix ICalendar permission that were not working.
+* MRP: Stop the MRP computation if a loop in bill of materials component is happening.
+* PARTNER: corrected "employee field doesn't exist" after loading a partner if human-resource module is not installed.
+* Sale Order Report: fix warning appearing when launching the report.
+* Fix `cannot be cast` exception on deleting some objects.
+* YEAR: corrected sql error and hibernate error when closing a fiscal year.
+* Copy analytic move lines when generate invoice from saleorder and purchaseorder.
+* LogisticalFormLine: Fix stock move line domain.
+
 ## [5.4.1] - 2020-10-05
 ## Improvements
 - USER FORM: Add search feature on user permission panel.
@@ -101,5 +147,6 @@
 - Bank reconciliation: add management of case of several account management for account domain, journal domain, auto change of journal and cash account fields and now account and journal from bank details are prioritized.
 - Invoice: Fix NullPointerException when the product is not filled in invoice line.
 
+[5.4.2]: https://github.com/axelor/axelor-open-suite/compare/v5.4.1...v5.4.2
 [5.4.1]: https://github.com/axelor/axelor-open-suite/compare/v5.4.0...v5.4.1
 [5.4.0]: https://github.com/axelor/axelor-open-suite/compare/v5.3.12...v5.4.0
