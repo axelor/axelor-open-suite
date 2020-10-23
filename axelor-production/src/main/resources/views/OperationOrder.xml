@@ -24,7 +24,7 @@
         <field name="priority"/>
         <field name="operationName" readonlyIf="statusSelect == 6"/>
         <field name="prodProcessLine.outsourcing"/>
-        <field name="machine" grid-view="prod-process-grid" form-view="prod-process-form"/>
+        <field name="machine" grid-view="machine-grid" form-view="machine-form"/>
         <field name="plannedStartDateT"/>
         <field name="plannedEndDateT"/>
         <field name="realStartDateT"/>
