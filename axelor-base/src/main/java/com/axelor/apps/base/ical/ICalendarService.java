@@ -33,6 +33,7 @@ import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
@@ -513,7 +514,8 @@ public class ICalendarService {
     if (event.getLocation() != null) {
       items.add(new Location(event.getLocation()));
     }
-    if (event.getGeo() != null) {
+    if (StringUtils.notEmpty(event.getGeo()) && event.getGeo().contains(";")) {
+      // new Geo() object seperate the longitude and latitude using ; char
       items.add(new Geo(event.getGeo()));
     }
     if (event.getUid() == null) {
@@ -673,13 +675,13 @@ public class ICalendarService {
     if (calendar.getLastSynchronizationDateT() != null) {
       lastSynchro =
           calendar.getLastSynchronizationDateT().toInstant(OffsetDateTime.now().getOffset());
-    } else {
-      lastSynchro =
-          Beans.get(AppBaseService.class)
-              .getTodayDateTime()
-              .toLocalDateTime()
-              .toInstant(OffsetDateTime.now().getOffset());
-    }
+    } /*else {
+        lastSynchro =
+            Beans.get(AppBaseService.class)
+                .getTodayDateTime()
+                .toLocalDateTime()
+                .toInstant(OffsetDateTime.now().getOffset());
+      }*/
 
     if (startDate == null || endDate == null) {
       events = ICalendarStore.getModifiedEvents(collection, lastSynchro, allRemoteUids);
@@ -688,8 +690,11 @@ public class ICalendarService {
           ICalendarStore.getModifiedEventsInRange(
               collection, lastSynchro, allRemoteUids, startDate, endDate);
     }
-    for (VEvent item : events) {
-      modifiedRemoteEvents.put(item.getUid().getValue(), item);
+
+    if (events != null) {
+      for (VEvent item : events) {
+        modifiedRemoteEvents.put(item.getUid().getValue(), item);
+      }
     }
 
     for (ICalendarEvent item : modifiedLocalEvents) {
@@ -711,7 +716,7 @@ public class ICalendarService {
           target = source;
         } else {
           updateEvent(source, target, keepRemote);
-          modifiedRemoteEvents.remove(target.getUid().getValue());
+          // modifiedRemoteEvents.remove(target.getUid().getValue());
         }
         updatedEvents.add(target);
       }
@@ -727,7 +732,12 @@ public class ICalendarService {
     for (VEvent item : updatedEvents) {
       Calendar cal = newCalendar();
       cal.getComponents().add(item);
-      collection.updateCalendar(cal);
+      // collection.updateCalendar(cal);
+      try {
+        collection.addCalendar(cal);
+      } catch (Exception e) {
+        TraceBackService.trace(e);
+      }
     }
 
     // remove deleted remote events
@@ -962,7 +972,7 @@ public class ICalendarService {
     }
   }
 
-  private List<ICalendarEvent> getICalendarEvents(ICalendar calendar) {
+  public List<ICalendarEvent> getICalendarEvents(ICalendar calendar) {
     LocalDateTime lastSynchro = calendar.getLastSynchronizationDateT();
     if (lastSynchro != null) {
       return iEventRepo
