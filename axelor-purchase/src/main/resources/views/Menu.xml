@@ -212,16 +212,6 @@
 		<view type="form" name="purchase-price-list-form" />
 		<domain>self.typeSelect = 2</domain>
 	</action-view>
-	
-	<menuitem name="sc-root-purchase-conf-purchase-request-creator" parent="sc-root-purchase-conf" if="__config__.app.isApp('purchase-request')"
-		title="Purchase request creator" action="sc.root.purchase.conf.purchase.request.creator" />
-
-	<action-view name="sc.root.purchase.conf.purchase.request.creator" title="Purchase request creator"
-		model="com.axelor.apps.purchase.db.PurchaseRequestCreator" >
-		<view type="grid" name="purchase-request-creator-grid" />
-		<view type="form" name="purchase-request-creator-form" />
-	</action-view>
-
 
 <!-- TOP MENU -->
 
