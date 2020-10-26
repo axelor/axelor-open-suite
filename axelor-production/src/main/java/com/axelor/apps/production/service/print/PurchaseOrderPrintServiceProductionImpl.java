@@ -15,27 +15,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.purchase.service.print;
+package com.axelor.apps.production.service.print;
 
-import com.axelor.apps.purchase.db.PurchaseOrder;
-import com.axelor.exception.AxelorException;
-import java.io.IOException;
-import java.util.List;
+import com.axelor.apps.purchase.service.app.AppPurchaseService;
+import com.axelor.apps.purchase.service.print.PurchaseOrderPrintServiceImpl;
+import com.google.inject.Inject;
 
-public interface PurchaseOrderPrintService {
+public class PurchaseOrderPrintServiceProductionImpl extends PurchaseOrderPrintServiceImpl {
 
-  /**
-   * Print a purchase order
-   *
-   * @return ReportSettings
-   * @throws IOException
-   * @throws AxelorException
-   */
-  String printPurchaseOrders(List<Long> ids) throws IOException;
+  @Inject
+  public PurchaseOrderPrintServiceProductionImpl(AppPurchaseService appPurchaseService) {
+    super(appPurchaseService);
+  }
 
-  String printPurchaseOrder(PurchaseOrder purchaseOrder, String formatPdf) throws AxelorException;
+  @Override
+  public String getPurchaseOrderLineQuerySelectClause() {
 
-  String getFileName(PurchaseOrder purchaseOrder);
-
-  String getPurchaseOrderLineDataSetQuery(Long purchaseOrderId);
+    return super.getPurchaseOrderLineQuerySelectClause()
+        .concat(", Product.product_standard as product_standard");
+  }
 }
