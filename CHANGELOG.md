@@ -1,11 +1,33 @@
 # Changelog
-## [Unreleased 5.3.13]
+## [5.3.13] - 2020-10-08
 ## Improvements
-- SaleOrder : Set team according to sale config. 
+- USER FORM: Add search feature on user permission panel.
+- Sale Order: Set team according to sale config.
+- Stock move: "Refresh the products net mass" button placed in the "Tools" menu.
+- Sale Order / Stock Move: remove available status for service type products.
+- Declaration Of Exchanges: corrected wrong translation for product type.
+- ACCOUNTING REPORT: Rework fixed asset summary report.
+- Stock config: set all the booleans of the stock move printing settings section by default to true.
+- ANALYTIC MOVE LINE: hide date, type and account type in form view opened from a invoice line.
+- ANALYTIC MOVE LINE: hide date, type and account type in form view opened from a sale order or puchase order line.
 
 ## Bug Fixes
-- AccountManagement :  Fix NPE when product not present in invoiceLine.
-- Opportunity : Add sequence on demo data
+- AccountManagement: Fix NPE when product is missing in invoice line.
+- BATCH RH: corrected payroll preparation batch, now the batch is runnable.
+- Opportunity: Add sequence on demo data.
+- BANK ORDER: Fix NPE when validating a bank order.
+- Partner: fix supplier quality rating not being synchronized with supplier quality rating widget in partner form.
+- LOGISTICAL FORM: Fix exception translation.
+- Invoice Refund: fix refund not updating invoiced state of stock move and orders.
+- SaleOrderLine: Not showing picking order info for services.
+- Logistical form: Remove duplicate status select.
+- Invoice: correctly hide discounts on the printing if the option is active.
+- Tracking number: Fix wrong form view on search.
+- Account Equiv: fix NPE and make accounts fields required.
+- SMTP Account: the user can now configure the sending email address instead of using the login.
+- App Supplychain: Hide configuration 'Block deallocation on availability request' if 'Manage stock reservation' is disabled.
+- Stock location line: Fix display issue of button text on popup.
+- ACCOUNTING BATCH: Fixed issue on closure/opening accounting batch due to a conflict with the configuration to require tax on move line.
 
 ## [5.3.12] - 2020-09-16
 ## Bug Fixes
@@ -476,7 +498,7 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - PRODUCT: Fix economicManufOrderQty displayed twice.
 
 
-[Unreleased 5.3.13]: https://github.com/axelor/axelor-open-suite/compare/v5.3.12...5.3-dev
+[5.3.13]: https://github.com/axelor/axelor-open-suite/compare/v5.3.12...v5.3.13
 [5.3.12]: https://github.com/axelor/axelor-open-suite/compare/v5.3.11...v5.3.12
 [5.3.11]: https://github.com/axelor/axelor-open-suite/compare/v5.3.10...v5.3.11
 [5.3.10]: https://github.com/axelor/axelor-open-suite/compare/v5.3.9...v5.3.10
@@ -490,3 +512,4 @@ When printing multiple manufacturing orders, operations from all orders were pri
 [5.3.2]: https://github.com/axelor/axelor-open-suite/compare/v5.3.1...v5.3.2
 [5.3.1]: https://github.com/axelor/axelor-open-suite/compare/v5.3.0...v5.3.1
 [5.3.0]: https://github.com/axelor/axelor-open-suite/compare/v5.2.5...v5.3.0
+

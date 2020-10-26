@@ -55,8 +55,7 @@
         </panel>
         <panel-tabs colSpan="12" name="mainPanelTab">
             <panel name="generalInfoPanel" title="General">
-                <field name="statusSelect" widget="NavSelect"/>
-                <field name="isEmailSent" showIf="isEmailSent"/>
+                <field name="isEmailSent" showIf="isEmailSent" colSpan="12"/>
                 <field name="carrierPartner"
                     domain="self.isCarrier = TRUE AND (self.companySet IS EMPTY OR :company MEMBER OF self.companySet)"
                     form-view="partner-form" grid-view="partner-grid" canEdit="false"
