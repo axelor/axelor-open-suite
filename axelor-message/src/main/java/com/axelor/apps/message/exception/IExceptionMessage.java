@@ -30,6 +30,7 @@ public interface IExceptionMessage {
   static final String MAIL_ACCOUNT_4 = /*$$(*/
       "Provided settings are wrong, please modify them and try again" /*)*/;
   static final String MAIL_ACCOUNT_5 = /*$$(*/ "There is already a default account" /*)*/;
+  static final String MAIL_ACCOUNT_6 = /*$$(*/ "There is no default email account" /*)*/;
 
   /** Template service */
   static final String TEMPLATE_SERVICE_1 = /*$$(*/ "Model empty. Please configure a model." /*)*/;

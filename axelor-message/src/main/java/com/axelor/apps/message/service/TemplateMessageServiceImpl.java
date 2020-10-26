@@ -33,6 +33,7 @@ import com.axelor.db.Query;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -182,13 +183,22 @@ public class TemplateMessageServiceImpl implements TemplateMessageService {
       log.debug("Signature ::: {}", signature);
     }
     EmailAccount mailAccount = getMailAccount();
+    EmailAddress fromAddress = null;
+    if (mailAccount == null) {
+      TraceBackService.trace(
+          new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(IExceptionMessage.MAIL_ACCOUNT_6)));
+    } else {
+      fromAddress = getEmailAddress(mailAccount.getFromAddress());
+    }
     Message message =
         messageService.createMessage(
             model,
             Math.toIntExact(objectId),
             subject,
             content,
-            getEmailAddress(mailAccount.getFromAddress()),
+            fromAddress,
             getEmailAddresses(replyToRecipients),
             getEmailAddresses(toRecipients),
             getEmailAddresses(ccRecipients),
