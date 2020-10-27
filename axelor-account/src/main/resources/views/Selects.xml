@@ -128,7 +128,7 @@
 	
 	<selection name='iaccount.move.status.select'>
 		<option value='1'>New</option>
-		<option value='2'>Daybook</option>
+		<option value='2'>Accounted</option>
 		<option value='3'>Validated</option>
 		<option value='4'>Canceled</option>
 	</selection>
