@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -179,6 +179,17 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
         <scalar-parameter name="FooterHeight" id="4620">
             <property name="valueType">static</property>
             <property name="dataType">decimal</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="PurchaseOrderLineQuery" id="4636">
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
             <property name="distinct">true</property>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -1558,18 +1569,7 @@ where PurchaseOrder.id = ?]]></xml-property>
                     <text-property name="heading">TaxValue</text-property>
                 </structure>
             </list-property>
-            <list-property name="parameters">
-                <structure>
-                    <property name="name">param_1</property>
-                    <property name="paramName">PurchaseOrderId</property>
-                    <property name="nativeName"></property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
-                    <property name="position">1</property>
-                    <property name="isInput">true</property>
-                    <property name="isOutput">false</property>
-                </structure>
-            </list-property>
+            <list-property name="parameters"/>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
                     <structure>
@@ -1669,6 +1669,7 @@ where PurchaseOrder.id = ?]]></xml-property>
                     </structure>
                 </list-property>
             </structure>
+            <method name="beforeOpen"><![CDATA[this.queryText = params["PurchaseOrderLineQuery"].value;]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -1805,41 +1806,7 @@ where PurchaseOrder.id = ?]]></xml-property>
                     <property name="nativeDataType">0</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select 
-	Product.code as product_code,
-	Product.name as product_name,
-	Product.product_standard,
-	PurchaseOrder.id as purchase_id, 
-	PurchaseOrderLine.id as purchase_line_id, 
-	PurchaseOrderLine.product_code as supplier_product_code, 
-	PurchaseOrderLine.product_name as supplier_product_name, 
-	PurchaseOrderLine.description, 
-	PurchaseOrderLine.qty, 
-	PurchaseOrderLine.desired_deliv_date,
-	PurchaseOrderLine.sequence, 
-	Unit.label_to_printing as "UnitCode", 
-	(CASE WHEN PurchaseOrder.in_ati 
-		THEN PurchaseOrderLine.in_tax_price
-		ELSE PurchaseOrderLine.price END)
-		as "UnitPrice", 
-	(PurchaseOrderLine.price_discounted 
-		- (CASE WHEN PurchaseOrder.in_ati 
-			THEN PurchaseOrderLine.in_tax_price
-			ELSE PurchaseOrderLine.price END))
-		* PurchaseOrderLine.qty 
-		as "totalDiscountAmount",
-	PurchaseOrderLine.ex_tax_total,
-	PurchaseOrderLine.in_tax_total,
-	PurchaseOrder.in_ati,
-	PurchaseOrderLine.is_title_line as "isTitleLine",
-	TaxLine.value as "TaxValue"
-from purchase_purchase_order_line as PurchaseOrderLine
-inner join purchase_purchase_order as PurchaseOrder on (PurchaseOrderLine.purchase_order = PurchaseOrder.id)
-left outer join base_product as Product on (PurchaseOrderLine.product = Product.id)
-left outer join base_unit as Unit on (PurchaseOrderLine.unit = Unit.id)
-left outer join account_tax_line as TaxLine on (PurchaseOrderLine.tax_line = TaxLine.id)
-where PurchaseOrder.id = ?
-order by PurchaseOrderLine.sequence]]></xml-property>
+            <xml-property name="queryText"><![CDATA[]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
