@@ -1,3 +1,20 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or  modify
+ * it under the terms of the GNU Affero General Public License, version 3,
+ * as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.base.service.groupExport;
 
 import com.axelor.apps.base.db.AdvancedExport;
@@ -15,6 +32,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -72,7 +91,7 @@ public class GroupExportServiceImpl implements GroupExportService {
 
     if (zipFile != null) {
       try (FileInputStream inStream = new FileInputStream(zipFile)) {
-        exportFile = Beans.get(MetaFiles.class).upload(inStream, "Data.zip");
+        exportFile = Beans.get(MetaFiles.class).upload(inStream, this.getExportFileName());
         inStream.close();
         zipFile.delete();
       }
@@ -106,7 +125,7 @@ public class GroupExportServiceImpl implements GroupExportService {
     }
   }
 
-  public File zipFiles() {
+  protected File zipFiles() {
 
     if (exportingFiles == null || exportingFiles.isEmpty()) {
       return null;
@@ -137,6 +156,7 @@ public class GroupExportServiceImpl implements GroupExportService {
         }
         zipOutStream.flush();
         fileInputStream.close();
+        file.delete();
       }
       zipOutStream.close();
 
@@ -153,5 +173,12 @@ public class GroupExportServiceImpl implements GroupExportService {
       }
     }
     return zipFile;
+  }
+
+  private String getExportFileName() {
+    StringBuilder fileName = new StringBuilder("Group Export - ");
+    fileName.append(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyy hhmmss")));
+    fileName.append(".zip");
+    return fileName.toString();
   }
 }

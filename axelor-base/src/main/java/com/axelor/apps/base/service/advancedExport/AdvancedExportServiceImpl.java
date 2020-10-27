@@ -82,6 +82,8 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
   private boolean isReachMaxExportLimit, isNormalField, isSelectionField = false;
   private int msi, mt;
 
+  private boolean isGenerateConfig = false;
+
   /**
    * This method split and join the all fields/columns which are selected by user and create the
    * query.
@@ -266,7 +268,10 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
       if (parentIndex == 0) {
         selectField = "";
       }
-      if (language.equals(LANGUAGE_FR)) {
+      if (isGenerateConfig) {
+        aliasName = ("msi_" + (msi));
+        selectField += ".value";
+      } else if (language.equals(LANGUAGE_FR)) {
         aliasName =
             "COALESCE ("
                 + "NULLIF"
@@ -436,6 +441,8 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
       String fileType,
       boolean isGenerateConfig)
       throws AxelorException {
+
+    this.isGenerateConfig = isGenerateConfig;
 
     AdvancedExportGenerator exportGenerator =
         exportGeneratorFactory.getAdvancedExportGenerator(advancedExport, fileType);
