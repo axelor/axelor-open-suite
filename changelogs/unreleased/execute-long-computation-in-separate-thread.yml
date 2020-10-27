@@ -1,0 +1,8 @@
+---
+title: "Processes that are too long are now executing in the background instead of making the user wait."
+type: change
+description: |
+  If the process is taking too much time, the user will get a message to inform
+  him that the process is still ongoing. When the process is finished a
+  notification is sent using mail message. This change is fixing internal
+  server error caused by timeouts. Implemented for MRP, 
