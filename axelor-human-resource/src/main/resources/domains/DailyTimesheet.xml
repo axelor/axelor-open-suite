@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+
+	<module name="human-resource" package="com.axelor.apps.hr.db" />
+
+	<entity name="DailyTimesheet" cacheable="true">
+
+		<date name="dailyTimesheetDate" title="Date" />
+		<many-to-one name="dailyTimesheetUser" ref="com.axelor.auth.db.User"
+			title="User" />
+		<one-to-many name="dailyTimesheetLineList" ref="com.axelor.apps.hr.db.TimesheetLine"
+			title="Timesheet Lines" mappedBy="dailyTimesheet" />
+
+	</entity>
+
+</domain-models>

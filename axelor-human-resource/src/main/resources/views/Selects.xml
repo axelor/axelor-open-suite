@@ -96,6 +96,7 @@
 		<option value="5">Leave Management Reset</option>
 		<option value="6">Export des salariés</option>
         <option value="7">Email reminder for timesheets</option>
+        <option value="8">Create daily timesheets</option>
 	</selection>
 	
 	<selection name="hr.batch.employment.contract.export.type.select">

@@ -136,7 +136,20 @@
 	        <panel-related name="permissionsPanel" field="permissions" grid-view="simple-permission-grid" form-view="permission-form" colSpan="12"/>
     	  </panel>
           <panel-related name="metaPermissionsPanel" field="metaPermissions" showIf="[1,5].indexOf(stepStatusSelect) > -1"/>
-          <panel-related name="projectSetPanel" field="projectSet" canEdit="false" showIf="stepStatusSelect == 1" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('project')" colSpan="12"/>
+			<panel name="projectPanel" title="Projects" showIf="stepStatusSelect == 1"
+				if="__config__.app.isApp('project')">
+				<panel-related name="projectSetPanel" field="projectSet"
+					canEdit="false" form-view="project-form" grid-view="project-grid"
+					colSpan="12" />
+				<panel-related name="favouriteProjectSetPanel" field="favouriteProjectSet"
+					form-view="project-form" grid-view="project-grid"
+					onSelect="action-user-attrs-set-domain-for-favourite-projects"
+					colSpan="12" canNew="false" />
+				<panel-related name="favouriteTaskSetPanel" field="favouriteTaskSet"
+					form-view="team-task-form" grid-view="team-task-grid"
+					onSelect="action-user-attrs-set-domain-for-favourite-tasks"
+					colSpan="12" canNew="false" />
+			</panel>
         </panel-tabs>
         <!-- /from axelor-core -->
 
@@ -168,7 +181,20 @@
 					<field name="useSignatureForStock" if="__config__.app.isApp('stock')"/>
 		    </panel>
 		    <panel-related name="emailAccountListPanel" field="emailAccountList" if="__config__.app.getApp('base').getEmailAccountByUser()" colSpan="12" form-view="mail-account-form" grid-view="mail-account-grid" showIf="[2,5].indexOf(stepStatusSelect) > -1"/>
-		    <panel-related name="projectSetPanel" field="projectSet" canEdit="false" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('project')" colSpan="12"/>
+			<panel name="projectPanel" title="Projects"
+				if="__config__.app.isApp('project')">
+				<panel-related name="projectSetPanel" field="projectSet"
+					canEdit="false" form-view="project-form" grid-view="project-grid"
+					colSpan="12" />
+				<panel-related name="favouriteProjectSetPanel" field="favouriteProjectSet"
+					form-view="project-form" grid-view="project-grid"
+					onSelect="action-user-attrs-set-domain-for-favourite-projects"
+					colSpan="12" canNew="false" />
+				<panel-related name="favouriteTaskSetPanel" field="favouriteTaskSet"
+					form-view="team-task-form" grid-view="team-task-grid"
+					onSelect="action-user-attrs-set-domain-for-favourite-tasks"
+					colSpan="12" canNew="false" />
+			</panel>
         	<panel name="substitutePfpValidatorTabPanel" title="PFP Validator" if-module="axelor-account" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()" showIf="activeCompany.accountConfig.isManagePassedForPayment">
 				<field name="isPfpValidator" widget="boolean-switch" colSpan="4"/>
         		<field name="isSuperPfpUser" widget="boolean-switch" colSpan="4"/>
@@ -265,6 +291,16 @@
     <action-attrs name="action-attrs-select-in-step-status-select">
       <attribute name="selection-in" for="stepStatusSelect" expr="eval: __config__.app.isApp('employee') ? [0,1,2,3,4,5] : [0,1,2,4,5]"/>
     </action-attrs>
+
+	<action-attrs name="action-user-attrs-set-domain-for-favourite-projects">
+		<attribute name="domain" for="favouriteProjectSet"
+			expr="eval: projectSet &amp;&amp; !projectSet.isEmpty() ? &quot; self.id IN (${(projectSet?.collect{it.id})?.join(',')}) &quot; : &quot; self.id IN (0) &quot;" />
+	</action-attrs>
+
+	<action-attrs name="action-user-attrs-set-domain-for-favourite-tasks">
+		<attribute name="domain" for="favouriteTaskSet"
+			expr="eval: projectSet &amp;&amp; !projectSet.isEmpty() ? &quot; self.project.id IN (${(projectSet?.collect{it.id})?.join(',')}) &quot; : &quot; self.id IN (0) &quot;" />
+	</action-attrs>
 
     <action-record name="action-user-default-record" model="com.axelor.auth.db.User">
     	<field name="language" expr="fr"/>

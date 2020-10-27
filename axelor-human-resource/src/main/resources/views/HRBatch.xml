@@ -77,6 +77,12 @@
                 <button name="emailReminderForTimesheetsBatchBtn" title="Email reminder for timesheet filling batch" onClick="save, action-hrbatch-method-hr-batch" />
             </panel>
 
+			<panel name="dailyTimesheetCreatePanel" title="Create daily timesheets"
+				showIf="actionSelect == 8">
+				<button name="createDailyTimesheetBtn" title="Create daily timesheets"
+					onClick="save,action-hrbatch-method-hr-batch" />
+			</panel>
+
 			<panel name="informationsPanel" title="Informations">
 				<field name="createdOn" title="Created on"/>
 				<field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid" canEdit="false"/>

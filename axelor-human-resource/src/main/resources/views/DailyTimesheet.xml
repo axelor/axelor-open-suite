@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+	<grid name="daily-timesheet-grid" title="Daily timesheets"
+		model="com.axelor.apps.hr.db.DailyTimesheet" orderBy="-dailyTimesheetDate,dailyTimesheetUser">
+
+		<field name="dailyTimesheetDate" />
+		<field name="dailyTimesheetUser" />
+
+	</grid>
+
+	<form name="daily-timesheet-form" title="Daily timesheet"
+		model="com.axelor.apps.hr.db.DailyTimesheet" onNew="action-daily-timesheet-attrs-default-values"
+		onLoad="action-daily-timesheet-method-update-from-timesheets,save"
+		width="large">
+
+		<panel name="mainPanel">
+			<field name="dailyTimesheetDate" readonly="true" />
+			<field name="dailyTimesheetUser" readonly="true" />
+			<panel-related field="dailyTimesheetLineList" name="dailyTimesheetLineListPanel"
+				grid-view="timesheet-line-daily-timesheet-grid" form-view="timesheet-line-timesheet-form"
+				editable="true" colSpan="12" />
+		</panel>
+		<panel name="actionPanel" sidebar="true">
+			<button name="createLinesFromActivitiesBtn" title="Create lines from activities"
+				onClick="save,action-daily-timesheet-method-update-from-activities" />
+			<button name="createLinesFromEventsBtn" title="Create lines from events"
+				onClick="save,action-daily-timesheet-method-update-from-events" />
+		</panel>
+
+	</form>
+
+	<action-attrs name="action-daily-timesheet-attrs-default-values">
+		<attribute name="value" for="dailyTimesheetDate" expr="eval: __date__" />
+		<attribute name="value" for="dailyTimesheetUser" expr="eval: __user__" />
+	</action-attrs>
+
+	<action-method name="action-daily-timesheet-method-update-from-timesheets">
+		<call class="com.axelor.apps.hr.web.timesheet.DailyTimesheetController"
+			method="updateFromTimesheets" />
+	</action-method>
+
+	<action-method name="action-daily-timesheet-method-update-from-activities">
+		<call class="com.axelor.apps.hr.web.timesheet.DailyTimesheetController"
+			method="updateFromActivities" />
+	</action-method>
+
+	<action-method name="action-daily-timesheet-method-update-from-events">
+		<call class="com.axelor.apps.hr.web.timesheet.DailyTimesheetController"
+			method="updateFromEvents" />
+	</action-method>
+
+</object-views>

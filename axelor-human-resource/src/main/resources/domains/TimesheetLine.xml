@@ -13,6 +13,7 @@
       <many-to-one name="user" title="User" ref="com.axelor.auth.db.User" readonly="true" column="user_id"/>
       <date name="date" column="date_val" required="true" />
       <many-to-one name="timesheet" ref="com.axelor.apps.hr.db.Timesheet" title="Time Sheet" readonly="true"/>
+      <many-to-one name="dailyTimesheet" ref="com.axelor.apps.hr.db.DailyTimesheet" title="Daily timesheet" readonly="true" />
 	  <decimal name="hoursDuration" title="Duration"/>
 	  <decimal name="duration" title="Duration"/>
 	  <decimal name="durationForCustomer" title="Duration adjust for customer" nullable="true"/>
