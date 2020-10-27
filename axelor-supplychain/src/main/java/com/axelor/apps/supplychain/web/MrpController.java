@@ -18,6 +18,7 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
@@ -67,9 +68,10 @@ public class MrpController {
       // Start thread
       Future<Boolean> future = executor.submit(mrpService);
 
-      // Wait 10 seconds
+      int processTimeout = Beans.get(AppBaseService.class).getProcessTimeout();
+      // Wait processTimeout seconds
       int count = 0;
-      while (count++ < 10) {
+      while (count++ < processTimeout) {
         Thread.sleep(1000);
 
         if (future.isDone()) {
