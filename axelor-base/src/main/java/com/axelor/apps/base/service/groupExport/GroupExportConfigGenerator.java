@@ -40,17 +40,19 @@ import org.slf4j.LoggerFactory;
 public class GroupExportConfigGenerator {
 
   private final Logger log = LoggerFactory.getLogger(GroupExportConfigGenerator.class);
+  private static final String CONFIG_FILE_NAME = "input-config.xml";
+  private static final String ONE_TO_ONE = "ONE_TO_ONE";
+  private static final String ONE_TO_MANY = "ONE_TO_MANY";
 
   private File config;
   private StringBuilder configBuilder;
-  private static final String configFileName = "input-config.xml";
   private AdvancedExport advancedExport;
 
   protected void initialize() throws AxelorException {
     try {
 
       // config = File.createTempFile(configFileName, ".xml");
-      config = new File(configFileName);
+      config = new File(CONFIG_FILE_NAME);
       configBuilder = new StringBuilder();
       configBuilder.append(ConfigGeneratorText.CONFIG_START);
 
@@ -72,11 +74,11 @@ public class GroupExportConfigGenerator {
       configBuilder.append("\n</input>\n\n");
 
     } catch (Exception e) {
-      log.debug("Error while adding config of {}", advancedExport.getMetaModel().getName());
+      log.debug("Error while adding config of {}", metaModel.getName());
       throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, e.getMessage());
     }
 
-    log.debug("Adding config of {}", advancedExport.getMetaModel().getName());
+    log.debug("Adding config of {}", metaModel.getName());
     return true;
   }
 
@@ -84,21 +86,33 @@ public class GroupExportConfigGenerator {
     List<AdvancedExportLine> exportLines = advancedExport.getAdvancedExportLineList();
 
     configBuilder.append("<input ");
-    configBuilder.append("file=\"" + fileName + "\" ");
-    configBuilder.append("separator=\";\" ");
-    configBuilder.append("type=\"" + metaModel.getFullName() + "\" ");
+    configBuilder.append("file=\"" + fileName + ConfigGeneratorText.QUOTE);
+    configBuilder.append(" separator=\";\"");
+    configBuilder.append(" type=\"" + metaModel.getFullName() + "\" ");
 
     if (exportLines != null && !exportLines.isEmpty()) {
-      List<String> targetFieldNamesList =
-          exportLines.stream().map(AdvancedExportLine::getTargetField).collect(Collectors.toList());
 
-      this.addSearch(null, targetFieldNamesList);
+      // Allowing all the non related fields for search.
+      List<String> targetFieldNamesList =
+          exportLines.stream()
+              .map(AdvancedExportLine::getTargetField)
+              .filter(it -> !it.contains("."))
+              .collect(Collectors.toList());
+
+      if (targetFieldNamesList != null && targetFieldNamesList.isEmpty()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get("Please export some non-related fields to generate config"));
+      }
+
+      this.addSearch(true, targetFieldNamesList);
     }
     configBuilder.append(">");
   }
 
   private void addInnerBinding(MetaModel metaModel) throws AxelorException {
 
+    // Removing all the non related fields
     List<String> targetFieldsList =
         CollectionUtils.emptyIfNull(advancedExport.getAdvancedExportLineList()).stream()
             .map(it -> it.getTargetField())
@@ -110,25 +124,33 @@ public class GroupExportConfigGenerator {
     try {
       Mapper mapper = Mapper.of(Class.forName(metaModel.getFullName()));
 
-      // Sort all the mapped targetFields
+      // Sort all the mapped targetFields.
       Collections.sort(targetFieldsList);
+
+      /*
+       * This variable is used to check the last bind added object and avoid repeated binding of
+       * same object.
+       */
       String lastBind = "";
+
       for (String field : targetFieldsList) {
 
-        String[] splitField = field.split("\\.");
+        String mainRelatedField = field.substring(0, field.indexOf("."));
 
-        if (!lastBind.equals(splitField[0])) {
+        // Only allow new object's bind.
+        if (!lastBind.equals(mainRelatedField)) {
 
-          Property property = mapper.getProperty(splitField[0]);
-          if (property.getType().toString().equals("ONE_TO_MANY")
-              || property.getType().toString().equals("ONE_TO_ONE")) {
+          Property property = mapper.getProperty(mainRelatedField);
+          if (property.getType().toString().equals(ONE_TO_MANY)
+              || property.getType().toString().equals(ONE_TO_ONE)) {
 
             this.setBind(
-                splitField[0],
+                mainRelatedField,
                 targetFieldsList.stream()
-                    .filter(it -> it.contains(splitField[0] + "."))
-                    .collect(Collectors.toList()));
-            lastBind = splitField[0];
+                    .filter(it -> it.contains(mainRelatedField + "."))
+                    .collect(Collectors.toList()),
+                property.getType().toString());
+            lastBind = mainRelatedField;
           }
         }
       }
@@ -138,87 +160,111 @@ public class GroupExportConfigGenerator {
     }
   }
 
-  protected void setBind(String relatedField, List<String> targetFieldsList)
+  protected void setBind(
+      String relatedField, List<String> targetFieldsList, String relationshipType)
       throws AxelorException {
 
-    configBuilder.append("\n\t<bind to=\"" + relatedField + "\">");
+    targetFieldsList =
+        targetFieldsList.stream()
+            .filter(it -> StringUtils.countMatches(it, ".") == 1)
+            .collect(Collectors.toList());
 
-    for (String field : targetFieldsList) {
-      String[] splitField = field.split("\\.");
+    if (relationshipType.equals(ONE_TO_ONE)) {
 
-      if (splitField.length == 2) {
-        configBuilder.append("\n\t<bind to=");
-        configBuilder.append("\"" + splitField[1] + "\"");
+      this.addDummyBindings(targetFieldsList);
+
+      configBuilder.append(
+          ConfigGeneratorText.BIND_START + ConfigGeneratorText.QUOTE + relatedField + "\" ");
+
+      targetFieldsList = this.addSearch(false, targetFieldsList);
+      configBuilder.append(">");
+
+      for (String field : targetFieldsList) {
+
+        configBuilder.append(ConfigGeneratorText.BIND_START);
+
+        configBuilder.append(ConfigGeneratorText.QUOTE + field + ConfigGeneratorText.QUOTE);
+        configBuilder.append(" eval=");
+        configBuilder.append(ConfigGeneratorText.QUOTE + "_" + field + ConfigGeneratorText.QUOTE);
+        configBuilder.append("/>");
+      }
+
+    } else {
+      configBuilder.append(
+          ConfigGeneratorText.BIND_START + ConfigGeneratorText.QUOTE + relatedField + "\">");
+
+      for (String field : targetFieldsList) {
+        String[] splitField = field.split("\\.");
+
+        configBuilder.append(ConfigGeneratorText.BIND_START);
+        configBuilder.append(ConfigGeneratorText.QUOTE + splitField[1] + ConfigGeneratorText.QUOTE);
         configBuilder.append(" column=");
-        configBuilder.append("\"" + field + "\"");
+        configBuilder.append(ConfigGeneratorText.QUOTE + field + ConfigGeneratorText.QUOTE);
         configBuilder.append("/>");
       }
     }
+
     configBuilder.append("\n\t</bind>");
   }
 
-  protected void addSearch(String[] splitField, List<String> targetFieldsList)
+  protected void addDummyBindings(List<String> targetFieldsList) {
+    for (String field : targetFieldsList) {
+
+      configBuilder.append(ConfigGeneratorText.BIND_START);
+      configBuilder.append(
+          ConfigGeneratorText.QUOTE
+              + "_"
+              + field.substring(field.indexOf(".") + 1)
+              + ConfigGeneratorText.QUOTE);
+      configBuilder.append(" column=\"" + field + ConfigGeneratorText.QUOTE);
+      configBuilder.append("/>");
+    }
+  }
+
+  protected List<String> addSearch(boolean isHeaderInput, List<String> targetFieldsList)
       throws AxelorException {
 
     // For distinguishing between parentInput search and innerBinding search
-    if (splitField != null) {
+    if (!isHeaderInput) {
       targetFieldsList =
           targetFieldsList.stream()
-              .filter(
-                  it -> it.contains(splitField[0] + ".") && StringUtils.countMatches(it, ".") == 1)
               .map(it -> it.substring(it.indexOf(".") + 1))
-              .filter(it -> !it.contains("."))
               .collect(Collectors.toList());
-    } else {
-      List<String> tempTargetFieldsList =
-          targetFieldsList.stream().filter(it -> !it.contains(".")).collect(Collectors.toList());
-      if (tempTargetFieldsList.isEmpty() && !targetFieldsList.isEmpty()) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get("Please export some non-related fields to generate config"));
-      }
-      targetFieldsList = tempTargetFieldsList;
     }
 
     // return if no field to include in search
-    if (targetFieldsList.isEmpty()) return;
+    if (targetFieldsList.isEmpty()) return targetFieldsList;
     StringBuilder searchBuilder = new StringBuilder();
 
     // Search Begins
-    searchBuilder.append("search=\"");
+    searchBuilder.append(" search=\"");
     for (String field : targetFieldsList) {
-      if (splitField != null && splitField.length != 0)
-        searchBuilder.append("self." + field + " = :" + splitField[0] + "." + field);
-      else searchBuilder.append("self." + field + " = :" + field);
 
+      if (isHeaderInput) {
+        searchBuilder.append("self." + field + " = :" + field);
+      } else {
+        searchBuilder.append("self." + field + " = :_" + field);
+      }
       searchBuilder.append(" AND ");
     }
+
+    // Remove last 'AND'
     if (searchBuilder.lastIndexOf("AND ") > -1) {
       searchBuilder.delete(searchBuilder.lastIndexOf("AND "), searchBuilder.length());
     }
 
     // Search ends
-    searchBuilder.append("\"");
+    searchBuilder.append(ConfigGeneratorText.QUOTE);
     configBuilder.append(searchBuilder);
+
+    return targetFieldsList;
   }
 
-  protected boolean checkSearch(String[] splitField, Mapper mapper) {
-    Property property = mapper.getProperty(splitField[0]);
-    if (property.getType() == null) return false;
-    // System.err.println(property.getType());
-    /*
-     * if (property.getType().toString().equals("MANY_TO_ONE") ||
-     * property.getType().toString().equals("MANY_TO_MANY")) { return true; }
-     */
-    return false;
-  }
-
-  protected void setBind() {
-
-    configBuilder.append("\n\t<bind to=\"");
-    configBuilder.append("");
-  }
-
+  /**
+   * This method Close the root config tag. And write the config into the configFile.
+   *
+   * @return
+   */
   protected void endConfig() throws AxelorException {
     configBuilder.append(ConfigGeneratorText.CONFIG_END);
 

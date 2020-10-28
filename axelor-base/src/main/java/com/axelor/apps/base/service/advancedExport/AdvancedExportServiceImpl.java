@@ -635,10 +635,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
         StringBuilder recordsListQuery = new StringBuilder();
         recordsListQuery.append(
             "SELECT id FROM " + advancedExport.getMetaModel().getName() + " self WHERE (");
-        recordsListQuery.append(
-            StringUtils.isBlank(advancedExport.getFilterCondition())
-                ? ""
-                : advancedExport.getFilterCondition());
+        recordsListQuery.append(advancedExport.getFilterCondition());
         recordsListQuery.append(")");
 
         Query query = JPA.em().createQuery(recordsListQuery.toString(), Long.class);

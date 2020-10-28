@@ -26,4 +26,8 @@ public interface ConfigGeneratorText {
           + "  xsi:schemaLocation=\"http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.3.xsd\">\n\n" /*)*/;
 
   public static final String CONFIG_END = /*$$(*/ "</csv-inputs>" /*)*/;
+
+  public static final String BIND_START = /*$$(*/ "\n\t<bind to=" /*)*/;
+
+  public static final String QUOTE = /*$$(*/ "\"" /*)*/;
 }
