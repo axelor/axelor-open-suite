@@ -126,8 +126,8 @@
 	</chart>
 			  
 	<action-record model="com.axelor.apps.quality.db.ControlPoint" name="action.quality.chart.set.date">
-	  <field name="toDateT" expr="eval: __date__"/>
-	  <field name="fromDateT" expr="eval:__date__.withDayOfMonth(1).withMonth(1)"/>
+	  <field name="toDateT" expr="eval: __config__.date"/>
+	  <field name="fromDateT" expr="eval:__config__.date.withDayOfMonth(1).withMonth(1)"/>
 	</action-record>
 	 	
 </object-views>

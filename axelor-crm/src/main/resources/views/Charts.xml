@@ -1156,7 +1156,7 @@
 		
 		<action-record name="action.chart.crm.chart.set.active.team" model="com.axelor.apps.crm.db.Event">
 		    <field name="activeTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()" />
-		    <field name="date" expr="eval: __date__"/>
+		    <field name="date" expr="eval: __config__.date"/>
 		</action-record>
 		
 		<chart name="chart.team.meeting.target.gauge" title="Meetings number target completed (%)" onInit="action.chart.crm.chart.set.active.team">

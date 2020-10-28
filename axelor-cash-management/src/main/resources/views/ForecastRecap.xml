@@ -120,7 +120,7 @@
 	 	<field name="company" expr="eval: __user__.activeCompany"/>
 	 	<field name="currency" expr="eval: __user__.activeCompany?.currency"/>
 	 	<field name="isReport" expr="eval: false"/>
-	 	<field name="fromDate" expr="eval: __date__"/>
+	 	<field name="fromDate" expr="eval: __config__.date"/>
 	 </action-record>
 	 
 	 <action-record name="action-forecast-report-record-default-on-new" model="com.axelor.apps.cash.management.db.ForecastRecap">
@@ -130,7 +130,7 @@
 	 </action-record>
 	 
 	 <action-validate name="action-forecast-recap-validate-dates">
-	    <error message="Starting date should not be in the past" if="fromDate != null &amp;&amp; fromDate &lt; __date__" action="action-forecast-recap-null-fromDate"/>
+	    <error message="Starting date should not be in the past" if="fromDate != null &amp;&amp; fromDate &lt; __config__.date" action="action-forecast-recap-null-fromDate"/>
 		<error message="Invalid dates" if="toDate != null &amp;&amp; fromDate != null &amp;&amp; toDate &lt; fromDate" action="action-forecast-recap-null-toDate"/>
 	</action-validate>
 	

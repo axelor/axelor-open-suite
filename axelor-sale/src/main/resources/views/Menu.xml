@@ -309,7 +309,7 @@
 		<view type="dashboard" name="sale.saleman.dashboard.sample" />
     	<context name="_user" expr="eval:__user__"/>
     	<context name="_user_id" expr="eval:__user__.id"/>
-    	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>
+    	<context name="_past_month" expr="eval: __config__.date.minusMonths(1)"/>
 	</action-view>
 		
 	<menuitem name="menu-sale-manager-dashboard-sample" parent="sc-root-sale-report" order="-200"
@@ -317,7 +317,7 @@
 
 	<action-view name="sale.manager.dashboard.view.sample" title="Sales Manager Details">
 		<view type="dashboard" name="sale.manager.dashboard.sample" />
-    	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>
+    	<context name="_past_month" expr="eval: __config__.date.minusMonths(1)"/>
 	</action-view>	
 	
 	<menuitem name="menu-sale-dashboard-1" parent="sc-root-sale-report"  
@@ -327,7 +327,7 @@
 		<view type="dashboard" name="sale.dashboard.view.1" />	 
 		<context name="_user" expr="eval:__user__"/>
     	<context name="_user_id" expr="eval:__user__.id"/>
-    	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>  
+    	<context name="_past_month" expr="eval: __config__.date.minusMonths(1)"/>
 	</action-view>
 	
 	<menuitem name="menu-sale-dashboard-2" parent="sc-root-sale-report"  
@@ -335,7 +335,7 @@
 		
 	<action-view name="sale.dashboard.2" title="Turnover Study">
 		<view type="dashboard" name="sale.dashboard.view.2" />	 
-		<context name="_past_month" expr="eval: __date__.minusMonths(1)"/> 
+		<context name="_past_month" expr="eval: __config__.date.minusMonths(1)"/>
 	</action-view>
 
 	<menuitem name="menu-dashboards-customers"  parent="sc-root-sale-report"

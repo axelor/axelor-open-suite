@@ -37,7 +37,7 @@
 		model="com.axelor.apps.account.db.Notification">
 		<field name="company" expr="eval: __user__.activeCompany" />
 		<field name="factorPartner" expr="eval: __user__.activeCompany?.accountConfig?.factorPartner" />
-		<field name="paymentDate" expr="eval: __date__" />
+		<field name="paymentDate" expr="eval: __config__.date" />
 	</action-record>
 	
 	<action-record name="action-account-record-notification-company-onchange" model="com.axelor.apps.account.db.Notification">

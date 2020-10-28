@@ -41,7 +41,7 @@
 	<action-record id="business-project-action-project-default" name="action-project-default" model="com.axelor.apps.project.db.Project">
 		<field name="typeSelect" expr="eval:'task'" />
 		<field name="company" expr="eval:__user__.activeCompany"/>
-		<field name="fromDate" expr="eval: __date__"/>
+		<field name="fromDate" expr="eval: __config__.date"/>
 		<field name="assignedTo" expr="eval: __user__"/>
 	</action-record>
 	
