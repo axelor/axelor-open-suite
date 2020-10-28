@@ -234,6 +234,8 @@ public class AccountingReportServiceImpl implements AccountingReportService {
             + MoveRepository.STATUS_DAYBOOK
             + " OR self.move.statusSelect = "
             + MoveRepository.STATUS_VALIDATED
+            + " OR self.move.statusSelect = "
+            + MoveRepository.STATUS_SIMULATED
             + ")");
 
     // FOR EXPORT ONLY :

@@ -74,6 +74,7 @@
 				<field name="displayNameAccountColumnOnPrinting" showIf="reportType?.typeSelect == 1"/>
 				<field name="displayMoveLineSequenceOnPrinting" showIf="reportType?.typeSelect == 1"/>
 				<field name="displayCumulativeBalance" showIf="reportType?.typeSelect==7 || reportType?.typeSelect==1"/>
+				<field name="showSimulatedMove" />
 			</panel>
 		</panel-tabs>
 		
