@@ -47,6 +47,8 @@ public interface MoveLineService {
 
   public void generateAnalyticMoveLines(MoveLine moveLine);
 
+  public MoveLine balanceCreditDebit(MoveLine moveLine, Move move);
+
   public MoveLine createMoveLine(
       Move move,
       Partner partner,

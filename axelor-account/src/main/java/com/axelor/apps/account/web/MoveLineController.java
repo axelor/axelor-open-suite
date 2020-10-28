@@ -58,27 +58,15 @@ public class MoveLineController {
   }
 
   public void balanceCreditDebit(ActionRequest request, ActionResponse response) {
+
     MoveLine moveLine = request.getContext().asType(MoveLine.class);
     Move move = request.getContext().getParent().asType(Move.class);
-
-    if (move.getMoveLineList() != null) {
-      BigDecimal totalCredit =
-          move.getMoveLineList().stream()
-              .map(it -> it.getCredit())
-              .reduce((a, b) -> a.add(b))
-              .orElse(BigDecimal.ZERO);
-      BigDecimal totalDebit =
-          move.getMoveLineList().stream()
-              .map(it -> it.getDebit())
-              .reduce((a, b) -> a.add(b))
-              .orElse(BigDecimal.ZERO);
-      if (totalCredit.compareTo(totalDebit) < 0) {
-        moveLine.setCredit(totalDebit.subtract(totalCredit));
-      } else if (totalCredit.compareTo(totalDebit) > 0) {
-        moveLine.setDebit(totalCredit.subtract(totalDebit));
-      }
+    try {
+      moveLine = Beans.get(MoveLineService.class).balanceCreditDebit(moveLine, move);
+      response.setValues(moveLine);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    response.setValues(moveLine);
   }
 
   public void createAnalyticDistributionWithTemplate(ActionRequest request, ActionResponse response)

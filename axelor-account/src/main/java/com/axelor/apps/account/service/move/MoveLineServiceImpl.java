@@ -132,6 +132,28 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   @Override
+  public MoveLine balanceCreditDebit(MoveLine moveLine, Move move) {
+    if (move.getMoveLineList() != null) {
+      BigDecimal totalCredit =
+          move.getMoveLineList().stream()
+              .map(it -> it.getCredit())
+              .reduce((a, b) -> a.add(b))
+              .orElse(BigDecimal.ZERO);
+      BigDecimal totalDebit =
+          move.getMoveLineList().stream()
+              .map(it -> it.getDebit())
+              .reduce((a, b) -> a.add(b))
+              .orElse(BigDecimal.ZERO);
+      if (totalCredit.compareTo(totalDebit) < 0) {
+        moveLine.setCredit(totalDebit.subtract(totalCredit));
+      } else if (totalCredit.compareTo(totalDebit) > 0) {
+        moveLine.setDebit(totalCredit.subtract(totalDebit));
+      }
+    }
+    return moveLine;
+  }
+
+  @Override
   public MoveLine createAnalyticDistributionWithTemplate(MoveLine moveLine) {
 
     List<AnalyticMoveLine> analyticMoveLineList =
