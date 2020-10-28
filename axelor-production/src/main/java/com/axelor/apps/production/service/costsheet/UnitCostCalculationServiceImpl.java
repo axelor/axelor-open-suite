@@ -33,6 +33,7 @@ import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.tool.file.CsvTool;
+import com.axelor.auth.AuthUtils;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.db.JPA;
 import com.axelor.dms.db.DMSFile;
@@ -217,7 +218,8 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   @Transactional
   protected void updateStatusToComputed(UnitCostCalculation unitCostCalculation) {
 
-    unitCostCalculation.setCalculationDate(appProductionService.getTodayDate());
+    unitCostCalculation.setCalculationDate(
+        appProductionService.getTodayDate(AuthUtils.getUser().getActiveCompany()));
 
     unitCostCalculation.setStatusSelect(UnitCostCalculationRepository.STATUS_COSTS_COMPUTED);
 
@@ -473,7 +475,8 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   @Transactional
   protected void updateStatusProductCostPriceUpdated(UnitCostCalculation unitCostCalculation) {
 
-    unitCostCalculation.setUpdateCostDate(appProductionService.getTodayDate());
+    unitCostCalculation.setUpdateCostDate(
+        appProductionService.getTodayDate(AuthUtils.getUser().getActiveCompany()));
 
     unitCostCalculation.setStatusSelect(UnitCostCalculationRepository.STATUS_COSTS_UPDATED);
 

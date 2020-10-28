@@ -23,6 +23,8 @@ import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.FixedAssetLineService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -34,12 +36,15 @@ import java.util.List;
 public class BatchRealizeFixedAssetLine extends AbstractBatch {
 
   private FixedAssetLineService fixedAssetLineService;
+  private AppBaseService appBaseService;
 
   @Inject FixedAssetLineRepository fixedAssetLineRepo;
 
   @Inject
-  public BatchRealizeFixedAssetLine(FixedAssetLineService fixedAssetLineService) {
+  public BatchRealizeFixedAssetLine(
+      FixedAssetLineService fixedAssetLineService, AppBaseService appBaseService) {
     this.fixedAssetLineService = fixedAssetLineService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -62,7 +67,12 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
             .bind("statusSelect", FixedAssetLineRepository.STATUS_PLANNED)
             .bind("startDate", startDate)
             .bind("endDate", endDate)
-            .bind("dateNow", LocalDate.now())
+            .bind(
+                "dateNow",
+                appBaseService.getTodayDate(
+                    batch.getAccountingBatch() != null
+                        ? batch.getAccountingBatch().getCompany()
+                        : AuthUtils.getUser().getActiveCompany()))
             .fetch();
 
     for (FixedAssetLine fixedAssetLine : fixedAssetLineList) {

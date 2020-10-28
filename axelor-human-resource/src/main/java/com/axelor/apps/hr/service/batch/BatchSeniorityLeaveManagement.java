@@ -40,6 +40,7 @@ import com.axelor.apps.hr.db.HrBatch;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveManagement;
 import com.axelor.apps.hr.db.LeaveManagementBatchRule;
+import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.HRConfigRepository;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveManagementRepository;
@@ -61,6 +62,8 @@ import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 
@@ -105,7 +108,12 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
     total = 0;
     noValueAnomaly = 0;
     confAnomaly = 0;
-    this.maker = new TemplateMaker(AppFilter.getLocale(), TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
+    this.maker =
+        new TemplateMaker(
+            batch.getHrBatch().getCompany().getTimezone(),
+            AppFilter.getLocale(),
+            TEMPLATE_DELIMITER,
+            TEMPLATE_DELIMITER);
     hrConfig =
         Beans.get(HRConfigRepository.class)
             .all()
@@ -138,7 +146,8 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 
   public void generateLeaveManagementLines(List<Employee> employeeList) {
 
-    for (Employee employee : employeeList) {
+    for (Employee employee :
+        employeeList.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
       try {
         createLeaveManagement(employeeRepository.find(employee.getId()));
       } catch (AxelorException e) {
@@ -159,7 +168,9 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
 
   @Transactional(rollbackOn = {Exception.class})
   public void createLeaveManagement(Employee employee) throws AxelorException {
-
+    if (employee == null || EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+      return;
+    }
     batch = batchRepo.find(batch.getId());
     int count = 0;
     String eval = null;
@@ -182,7 +193,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(IExceptionMessage.EMPLOYEE_NO_LEAVE_MANAGEMENT),
           employee.getName(),
-          batch.getHrBatch().getLeaveReason().getLeaveReason());
+          batch.getHrBatch().getLeaveReason().getName());
     }
     if (count > 1) {
       throw new AxelorException(
@@ -190,7 +201,7 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.EMPLOYEE_DOUBLE_LEAVE_MANAGEMENT),
           employee.getName(),
-          batch.getHrBatch().getLeaveReason().getLeaveReason());
+          batch.getHrBatch().getLeaveReason().getName());
     }
     if (count == 1) {
 

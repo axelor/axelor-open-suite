@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
+import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.message.db.Message;
@@ -108,9 +109,12 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
     String tag = template.getMetaModel().getName();
     for (Timesheet timesheet : timesheetList) {
       try {
+        Employee employee = timesheet.getUser().getEmployee();
+        if (employee == null || EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+          continue;
+        }
         Message message =
-            templateMessageService.generateMessage(
-                timesheet.getUser().getEmployee().getId(), model, tag, template);
+            templateMessageService.generateMessage(employee.getId(), model, tag, template);
         messageService.sendByEmail(message);
         incrementDone();
       } catch (Exception e) {
@@ -136,7 +140,11 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
 
     for (Timesheet timesheet : timesheetList) {
       try {
-        generateAndSendMessage(timesheet.getUser().getEmployee());
+        Employee employee = timesheet.getUser().getEmployee();
+        if (employee == null || EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+          continue;
+        }
+        generateAndSendMessage(employee);
         incrementDone();
       } catch (Exception e) {
         incrementAnomaly();
@@ -155,6 +163,9 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
         Beans.get(EmployeeRepository.class).all().filter("self.timesheetReminder = true").fetch();
 
     for (Employee employee : employeeList) {
+      if (employee == null || EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+        continue;
+      }
       try {
         Message message =
             templateMessageService.generateMessage(employee.getId(), model, tag, template);
@@ -172,6 +183,9 @@ public class BatchTimesheetValidationReminder extends AbstractBatch {
         Beans.get(EmployeeRepository.class).all().filter("self.timesheetReminder = true").fetch();
 
     for (Employee employee : employeeList) {
+      if (employee == null || EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+        continue;
+      }
       try {
         generateAndSendMessage(employee);
         incrementDone();

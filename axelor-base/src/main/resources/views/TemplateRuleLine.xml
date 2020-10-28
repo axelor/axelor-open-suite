@@ -20,7 +20,7 @@
     </form>
     
     <action-attrs name="action-template-rule-line-attrs-template-domain">
-    	<attribute name="domain" for="template" expr="eval: (_parent?.metaModel) ? &quot;self.metaModel.name = \'${_parent?.metaModel?.name}\'&quot; : null"/>
+    	<attribute name="domain" for="template" expr="eval: (__parent__?.metaModel) ? &quot;self.metaModel.name = \'${__parent__?.metaModel?.name}\'&quot; : null"/>
     </action-attrs>
     
 </object-views>

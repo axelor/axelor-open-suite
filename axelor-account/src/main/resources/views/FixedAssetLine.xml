@@ -38,7 +38,7 @@
     </action-record>
     
     <action-attrs name="action-fixed-asset-line-attrs-onnew-onload">
-    	<attribute name="readonly" for="realizeBtn" expr="eval: _parent?.statusSelect &lt; 2"/>
+    	<attribute name="readonly" for="realizeBtn" expr="eval: __parent__?.statusSelect &lt; 2"/>
     </action-attrs>
     
     <action-method name="action-fixed-asset-line-method-realize">

@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -49,7 +50,7 @@ public class CurrencyService {
   public CurrencyService(AppBaseService appBaseService) {
 
     this.appBaseService = appBaseService;
-    this.today = appBaseService.getTodayDate();
+    this.today = appBaseService.getTodayDate(AuthUtils.getUser().getActiveCompany());
   }
 
   public CurrencyService(LocalDate today) {

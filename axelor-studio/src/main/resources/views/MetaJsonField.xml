@@ -74,23 +74,23 @@
     </action-record>
 
     <action-attrs name="action-studio-attrs-set-meta-json-field-defaults">
-      <attribute name="value" for="model" expr="eval:_parent.model"
+      <attribute name="value" for="model" expr="eval:__parent__.model"
         if="parentModel == 'com.axelor.studio.db.Wkf'" />
       <attribute name="value" for="model" expr="eval:'com.axelor.meta.db.MetaJsonRecord'"
-        if="parentModel == 'com.axelor.studio.db.Wkf' &amp;&amp; _parent.isJson" />
-      <attribute name="value" for="jsonModel" expr="eval:__repo__(MetaJsonModel).all().filter('self.name = ?', _parent.model).fetchOne()"
-        if="parentModel == 'com.axelor.studio.db.Wkf' &amp;&amp; _parent.isJson" />
+        if="parentModel == 'com.axelor.studio.db.Wkf' &amp;&amp; __parent__.isJson" />
+      <attribute name="value" for="jsonModel" expr="eval:__repo__(MetaJsonModel).all().filter('self.name = ?', __parent__.model).fetchOne()"
+        if="parentModel == 'com.axelor.studio.db.Wkf' &amp;&amp; __parent__.isJson" />
         
-      <attribute name="value" for="modelField" expr="eval:_parent.jsonField"
+      <attribute name="value" for="modelField" expr="eval:__parent__.jsonField"
         if="parentModel == 'com.axelor.studio.db.Wkf'" />
       <attribute name="value" for="modelField" expr="eval:'attrs'"
-        if="parentModel == 'com.axelor.studio.db.Wkf' &amp;&amp; !_parent.jsonField &amp;&amp; _parent.isJson" />
+        if="parentModel == 'com.axelor.studio.db.Wkf' &amp;&amp; !__parent__.jsonField &amp;&amp; __parent__.isJson" />
         
       <attribute name="readonly" for="appBuilder" expr="eval: parentModel == 'com.axelor.studio.db.Wkf'" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
     </action-attrs>
     
     <action-attrs name="action-studio-meta-json-field-attrs-on-load">
-    	<attribute name="readonly" for="appBuilder" expr="eval: _parent?._model == 'com.axelor.studio.db.Wkf'" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
+    	<attribute name="readonly" for="appBuilder" expr="eval: __parent__?._model == 'com.axelor.studio.db.Wkf'" if="__config__.app.getApp('bpm').getEnableAppBuilder()"/>
     </action-attrs>
     
     <action-method name="action-studio-json-field-method-json-field-tracking">

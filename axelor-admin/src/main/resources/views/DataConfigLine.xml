@@ -36,13 +36,13 @@
 	</form>
 	
 	<action-record name="action-data-config-line-record-set-record-model" model="com.axelor.apps.base.db.DataConfigLine">
-		<field name="record" expr="eval: _parent?.modelSelect" if="resetPathSelect == 1 &amp;&amp; typeSelect == 0"/>
+		<field name="record" expr="eval: __parent__?.modelSelect" if="resetPathSelect == 1 &amp;&amp; typeSelect == 0"/>
 		<field name="recordSelectId" expr="0" if="resetPathSelect == 1 &amp;&amp; typeSelect == 0"/>
 		<field name="record" expr="eval: null" if="resetPathSelect != 1 || typeSelect != 0"/>
 	</action-record>
   
   	<action-attrs name="action-object-attrs-metaFieldPath-onselect">
-  		<attribute name="domain" expr="eval:&quot; self.metaModel = :metaModel AND CONCAT(self.packageName ,'.',self.typeName) = '${_parent?.modelSelect}'&quot;" for="metaFieldPath"/>
+  		<attribute name="domain" expr="eval:&quot; self.metaModel = :metaModel AND CONCAT(self.packageName ,'.',self.typeName) = '${__parent__?.modelSelect}'&quot;" for="metaFieldPath"/>
 	</action-attrs>
 
 </object-views>

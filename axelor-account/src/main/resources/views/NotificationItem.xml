@@ -30,8 +30,8 @@
 	</action-record>
 	
 	<action-attrs name="action-account-attrs-notification-item-invoice-domain">
-		<attribute if="_parent?.subrogationRelease != null" name="domain" expr="eval: &quot; self.id in (select inv.id from SubrogationRelease sr inner join sr.invoiceSet inv WHERE sr.id = ${__parent__?.subrogationRelease?.id}) &quot;" for="invoice"/>
-		<attribute if="_parent?.subrogationRelease == null" name="domain" expr="eval: &quot; self.id in (select inv.id from SubrogationRelease sr inner join sr.invoiceSet inv WHERE sr.statusSelect = 3 AND sr.company.id =  ${__parent__?.company?.id}) &quot;" for="invoice"/>
+		<attribute if="__parent__?.subrogationRelease != null" name="domain" expr="eval: &quot; self.id in (select inv.id from SubrogationRelease sr inner join sr.invoiceSet inv WHERE sr.id = ${__parent__?.subrogationRelease?.id}) &quot;" for="invoice"/>
+		<attribute if="__parent__?.subrogationRelease == null" name="domain" expr="eval: &quot; self.id in (select inv.id from SubrogationRelease sr inner join sr.invoiceSet inv WHERE sr.statusSelect = 3 AND sr.company.id =  ${__parent__?.company?.id}) &quot;" for="invoice"/>
 	</action-attrs>
 
 </object-views>

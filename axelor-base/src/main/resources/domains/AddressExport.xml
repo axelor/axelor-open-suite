@@ -8,7 +8,7 @@
 	<entity name="AddressExport" lang="java">
 	
 		<datetime name="date" column="date_val" title="Export Date" tz="true" />
-		<string name="path" title="Path to export file" default="/tmp/adresses.csv" namecolumn="true" />
+		<string name="path" title="Path to export file" namecolumn="true" />
 		<string name="log" multiline="true" title="Log" />
 		
 	</entity>

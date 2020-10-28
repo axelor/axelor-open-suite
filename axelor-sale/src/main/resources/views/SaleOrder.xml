@@ -314,7 +314,8 @@
 	    <panel if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" name="deliveryInformationPanel" title="Delivery" colSpan="12">
 	      <field name="specificPackage" colSpan="12"/>
 	      <field name="stockLocation" canEdit="false" onSelect="action-sale-order-attrs-set-stock-location-domain" form-view="stock-location-form" grid-view="stock-location-grid"/>
-	      <field name="deliveryDate" onChange="action-sale-order-method-fill-sale-order-lines-estimated-date"/>
+				<field name="toStockLocation" canEdit="false" domain="self.company = :company and self.typeSelect != 1 and self.usableOnSaleOrder = true" form-view="stock-location-form" grid-view="stock-location-grid"/>
+				<field name="deliveryDate" onChange="action-sale-order-method-fill-sale-order-lines-estimated-date"/>
 	      <field name="deliveryCondition" colSpan="12"/>
 	      <field name="shipmentMode" canEdit="false" form-view="shipment-mode-grid" grid-view="shipment-mode-grid"/>
 	      <field name="freightCarrierMode" canEdit="false" onChange="action-sale-order-record-freight-carrier" domain="self.shipmentMode = :shipmentMode" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid"/>
@@ -413,15 +414,15 @@
 
 	                  <dl class="dl-horizontal">
 	                      <dt x-translate>Total W.T.</dt>
-	                      <dd>{{record.exTaxTotal}}  {{record.currency.symbol}}</dd>
+	                      <dd>{{$fmt('exTaxTotal') | currency: record.currency.symbol}}</dd>
 	                      <dt x-translate>Total tax</dt>
-	                      <dd>{{record.taxTotal}}  {{record.currency.symbol}}</dd>
+	                      <dd>{{$fmt('taxTotal') | currency: record.currency.symbol}}</dd>
 	                      <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
-	                      <dd class="order-subtotal-total">{{record.inTaxTotal}}  {{record.currency.symbol}}</dd>
+	                      <dd class="order-subtotal-total">{{$fmt('inTaxTotal') | currency: record.currency.symbol}}</dd>
 	                      <dt ng-show="record.statusSelect >= 3" x-translate>Amount invoiced W.T.</dt>
-	                      <dd ng-show="record.statusSelect >= 3">{{record.amountInvoiced}}  {{record.currency.symbol}}</dd>
+	                      <dd ng-show="record.statusSelect >= 3">{{$fmt('amountInvoiced') | currency: record.currency.symbol}}</dd>
 	                      <dt ng-show="record.statusSelect >= 2" x-translate>Advance payment total</dt>
-	                      <dd ng-show="record.statusSelect >= 2">{{record.advanceTotal}}  {{record.currency.symbol}}</dd>
+	                      <dd ng-show="record.statusSelect >= 2">{{$fmt('advanceTotal') | currency: record.currency.symbol}}</dd>
 	                  </dl>
 
 	              ]]></viewer>
@@ -469,11 +470,11 @@
 	  </panel>
 	  <panel name="datesPanel" title="Dates" hideIf="clientPartner == null" sidebar="true" canCollapse="true" collapseIf="true">
 	    <field name="creationDate" readonlyIf="statusSelect != 1" colSpan="6" onChange="action-sale-order-record-compute-end-of-validity-date"/>
-	    <field name="confirmedByUser" readonly="true" showIf="statusSelect == 3" colSpan="6" canNew="false" canView="false" canEdit="false" form-view="user-form" grid-view="user-grid"/>
-	    <field name="confirmationDateTime" readonly="true" showIf="statusSelect == 3" colSpan="6"/>
-	    <field name="orderDate" showIf="statusSelect == 3" colSpan="6"/>
-	    <field name="orderNumber" showIf="statusSelect == 3" colSpan="6"/>
-	    <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" name="shipmentDate" showIf="statusSelect == 3" colSpan="6"/>
+	    <field name="confirmedByUser" readonly="true" showIf="statusSelect == 3 || statusSelect == 4" colSpan="6" canNew="false" canView="false" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+	    <field name="confirmationDateTime" readonly="true" showIf="statusSelect == 3 || statusSelect == 4" colSpan="6"/>
+	    <field name="orderDate" showIf="statusSelect == 3 || statusSelect == 4" colSpan="6"/>
+	    <field name="orderNumber" showIf="statusSelect == 3 || statusSelect == 4" colSpan="6"/>
+	    <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" name="shipmentDate" showIf="statusSelect == 3 || statusSelect == 4" colSpan="6"/>
 	    <field name="duration" domain="self.applicationTypeSelect = 1" canEdit="false" readonlyIf="statusSelect >= 2" colSpan="6" widget="SuggestBox" canNew="true" onChange="action-sale-order-record-compute-end-of-validity-date"/>
 	    <field name="endOfValidityDate" readonly="true" colSpan="6">
 	      <hilite color="danger" if="$moment().diff(endOfValidityDate, 'days') > 0 &amp;&amp; statusSelect != 3"/>
@@ -601,15 +602,15 @@
                     <![CDATA[
                     <dl class="dl-horizontal">
                         <dt x-translate>Total W.T.</dt>
-                        <dd>{{record.exTaxTotal}}</dd>
+                        <dd>{{$fmt('exTaxTotal') | currency: record.currency.symbol}}</dd>
                         <dt x-translate>Total tax</dt>
-                        <dd>{{record.taxTotal}}</dd>
+                        <dd>{{$fmt('taxTotal') | currency: record.currency.symbol}}</dd>
                         <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
-                        <dd class="order-subtotal-total">{{record.inTaxTotal}}</dd>
+                        <dd class="order-subtotal-total">{{$fmt('inTaxTotal') | currency: record.currency.symbol}}</dd>
                         <dt ng-show="record.statusSelect >= 3" x-translate>Amount invoiced W.T.</dt>
-                        <dd ng-show="record.statusSelect >= 3">{{record.amountInvoiced}}  {{record.currency.symbol}}</dd>
+                        <dd ng-show="record.statusSelect >= 3">{{$fmt('amountInvoiced') | currency: record.currency.symbol}}</dd>
                         <dt ng-show="record.statusSelect >= 2" x-translate>Advance payment total</dt>
-                        <dd ng-show="record.statusSelect >= 2">{{record.advanceTotal}}  {{record.currency.symbol}}</dd>
+                        <dd ng-show="record.statusSelect >= 2">{{$fmt('advanceTotal') | currency: record.currency.symbol}}</dd>
                     </dl>
                     ]]>
                 </viewer>
@@ -689,15 +690,15 @@
                         <![CDATA[
                         <dl class="dl-horizontal">
                             <dt x-translate>Total W.T.</dt>
-                            <dd>{{record.exTaxTotal}} {{record.currency.symbol}}</dd>
+                            <dd>{{$fmt('exTaxTotal') | currency: record.currency.symbol}}</dd>
                             <dt x-translate>Total V.A.T.</dt>
-                            <dd>{{record.taxTotal}} {{record.currency.symbol}}</dd>
+                            <dd>{{$fmt('taxTotal') | currency: record.currency.symbol}}</dd>
                             <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
-                            <dd class="order-subtotal-total">{{record.inTaxTotal}} {{record.currency.symbol}}</dd>
+                            <dd class="order-subtotal-total">{{$fmt('inTaxTotal') | currency: record.currency.symbol}}</dd>
                             <dt ng-show="record.statusSelect >= 3" x-translate>Amount invoiced W.T.</dt>
-                            <dd ng-show="record.statusSelect >= 3">{{record.amountInvoiced}}  {{record.currency.symbol}}</dd>
+                            <dd ng-show="record.statusSelect >= 3">{{$fmt('amountInvoiced') | currency: record.currency.symbol}}</dd>
                             <dt ng-show="record.statusSelect >= 2" x-translate>Advance payment total</dt>
-                            <dd ng-show="record.statusSelect >= 2">{{record.advanceTotal}}  {{record.currency.symbol}}</dd>
+                            <dd ng-show="record.statusSelect >= 2">{{$fmt('advanceTotal') | currency: record.currency.symbol}}</dd>
                         </dl>
                         ]]>
                     </viewer>
@@ -739,8 +740,7 @@
 	<cards name="sale-order-cards" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" width="300px"  css="rect-image" orderBy="-orderDate">
 		<menubar>
 			<menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
-				<item name="mergeQuotationsItem" title="Merge quotations" action="action-open-sale-quotation-merge-form"/>
-				<item name="seeQuotationLinesItem" title="See quotation lines" action="action-view-open-quotation-lines"/>
+				<item name="seeSaleOrderLinesItem" title="See sale orders lines" action="action-view-open-sale-order-lines"/>
 			</menu>
 		</menubar>
 		<field name="saleOrderSeq"/>
@@ -794,8 +794,8 @@
                     </h5>
 				  </div>
 				  <div class="span6">
-				    <span><strong><span x-translate>WT</span> : {{ $fmt('exTaxTotal') }} {{ currency.symbol }}</strong><br/>
-				    <strong><span x-translate>ATI</span> : {{ $fmt('inTaxTotal') }} {{ currency.symbol }}</strong></span>
+				    <span><strong><span x-translate>WT</span> : {{$fmt('exTaxTotal') | currency: currency.symbol}}</strong><br/>
+				    <strong><span x-translate>ATI</span> : {{$fmt('inTaxTotal') | currency: currency.symbol}}</strong></span>
 				  </div>
 			  </div>
 			</div>
@@ -865,8 +865,8 @@
 					</h5>
 				  </div>
 				  <div class="span6">
-				    <span><strong><span x-translate>WT</span> : {{ $fmt('exTaxTotal') }} {{ currency.symbol }}</strong><br/>
-				    <strong><span x-translate>ATI</span> : {{ $fmt('inTaxTotal') }} {{ currency.symbol }}</strong></span>
+				    <span><strong><span x-translate>WT</span> : {{$fmt('exTaxTotal') | currency: currency.symbol}}</strong><br/>
+				    <strong><span x-translate>ATI</span> : {{$fmt('inTaxTotal') | currency: currency.symbol}}</strong></span>
 				  </div>
 			  </div>
 			</div>
@@ -934,7 +934,7 @@
         <action name="action-sale-order-method-fill-company-bank-details"/>
         <action name="action-sale-order-attrs-external-reference"/>
         <action name="action-sale-order-attrs-availability"/>
-        <action name="action-sale-order-group-set-defualts-from-opportunity" if="_parent != null &amp;&amp; _parent?._model=='com.axelor.apps.crm.db.Opportunity'"/>
+        <action name="action-sale-order-group-set-defualts-from-opportunity" if="__parent__ != null &amp;&amp; __parent__?._model=='com.axelor.apps.crm.db.Opportunity'"/>
     </action-group>
 
 	<action-group name="action-sale-order-group-set-defualts-from-opportunity">
@@ -944,11 +944,11 @@
 	</action-group>
 
     <action-record name="action-sale-order-record-set-clientPartner-from-opportunity" model="com.axelor.apps.sale.db.SaleOrder">
-    	<field name="clientPartner" expr="eval: _parent?.partner ? __repo__(Partner).find(_parent?.partner?.id) : null"/>
+    	<field name="clientPartner" expr="eval: __parent__?.partner ? __repo__(Partner).find(__parent__?.partner?.id) : null"/>
     </action-record>
 
    <action-record name="action-sale-order-record-set-salemanuser-from-opportunity" model="com.axelor.apps.sale.db.SaleOrder">
-      <field name="salespersonUser" expr="eval: _parent?.user"/>
+      <field name="salespersonUser" expr="eval: __parent__?.user"/>
    </action-record>
 
     <action-group name="action-group-sale-saleorder-onload">
@@ -1152,7 +1152,7 @@
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
     	<field name="salespersonUser" expr="eval:__user__" if="__config__.app.getApp('sale').getSalemanSelect() == 1"/>
     	<field name="salespersonUser" expr="eval: clientPartner?.getUser()" if="__config__.app.getApp('sale').getSalemanSelect() == 2"/>
-    	<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+    	<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()" if="__config__.app.getApp('sale').getSalemanSelect() == 1"/>
     	<field name="template" expr="eval:_template" />
 		<field name="printingSettings" expr="eval: __user__.activeCompany?.printingSettings" if="__user__.activeCompany != null"/>
     </action-record>
@@ -1179,6 +1179,8 @@
 		<field name="description" expr="eval: clientPartner?.saleOrderComments"/>
 		<field name="pickingOrderComments" expr="eval: clientPartner?.pickingOrderComments"/>
 		<field name="proformaComments" expr="eval: clientPartner?.proformaComments"/>
+		<field name="team" expr="eval: clientPartner?.team" if="__config__.app.getApp('sale').getSalemanSelect() == 2"/>
+		<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()" if="__config__.app.getApp('sale').getSalemanSelect() == 1"/>
     </action-record>
 
     <action-record name="action-sale-order-record-hide-discount" model="com.axelor.apps.sale.db.SaleOrder">
@@ -1247,6 +1249,7 @@
 	    <field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
 	    <field name="expectedRealisationDate" hidden="true" if="!__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
 	    <field name="stockLocation" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="toStockLocation" hidden="true" if="!__config__.app.isApp('supplychain')"/>
 		<field name="amountInvoiced" hidden="true" if="!__config__.app.isApp('supplychain')"/>
 		<field name="deliveryState" hidden="true" if="!__config__.app.isApp('supplychain')" />
 		<field name="directOrderLocation" hidden="true" if="!__config__.app.isApp('supplychain')" />

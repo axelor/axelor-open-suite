@@ -153,7 +153,7 @@
 	</action-attrs>
 
 	<action-record name="action-expense-line-default" model="com.axelor.apps.hr.db.ExpenseLine">
-		<field name="user" expr="eval: _parent?.user"/>
+		<field name="user" expr="eval: __parent__?.user"/>
 	</action-record>
 	
 	<action-record name="action-expense-on-change-tax-untaxt-amount" model="com.axelor.apps.hr.db.ExpenseLine">

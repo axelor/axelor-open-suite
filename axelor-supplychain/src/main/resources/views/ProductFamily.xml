@@ -5,7 +5,7 @@
 
 	<action-view title="Accounting Family sale turnover (Excl. Tax) per month" model="com.axelor.apps.base.db.Product" name="dashlet.family.sales.turnover.per.month">
 		  <view type="chart" name="chart.family.sale.turnover.per.month"/>
-		  <context name="todayDate" expr="eval:__config__.app.getTodayDate()"/>
+		  <context name="todayDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
 		  <context name="activeCompany" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
 	</action-view>
 	

@@ -21,15 +21,22 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.repo.ManufOrderRepository;
+import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.supplychain.db.MrpLine;
+import com.axelor.apps.supplychain.db.MrpLineOrigin;
+import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
+import com.axelor.apps.supplychain.db.repo.MrpLineOriginRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
@@ -45,6 +52,8 @@ import org.apache.commons.lang3.tuple.Pair;
 public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
 
   protected ManufOrderService manufOrderService;
+  protected ManufOrderRepository manufOrderRepository;
+  protected OperationOrderRepository operationOrderRepository;
 
   @Inject
   public MrpLineServiceProductionImpl(
@@ -54,15 +63,25 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
       PurchaseOrderRepository purchaseOrderRepo,
       ManufOrderService manufOrderService,
       ProductionOrderRepository productionOrderRepo,
-      StockRulesService stockRulesService) {
+      StockRulesService stockRulesService,
+      SaleOrderLineRepository saleOrderLineRepo,
+      PurchaseOrderLineRepository purchaseOrderLineRepo,
+      MrpForecastRepository mrpForecastRepo,
+      ManufOrderRepository manufOrderRepository,
+      OperationOrderRepository operationOrderRepository) {
 
     super(
         appProductionService,
         purchaseOrderServiceSupplychainImpl,
         purchaseOrderLineService,
         purchaseOrderRepo,
-        stockRulesService);
+        stockRulesService,
+        saleOrderLineRepo,
+        purchaseOrderLineRepo,
+        mrpForecastRepo);
     this.manufOrderService = manufOrderService;
+    this.manufOrderRepository = manufOrderRepository;
+    this.operationOrderRepository = operationOrderRepository;
   }
 
   @Override
@@ -103,6 +122,24 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
     // correct day
 
     linkToOrder(mrpLine, manufOrder);
+  }
+
+  @Override
+  protected String getMrpLineOriginStr(MrpLineOrigin mrpLineOrigin) {
+    if (mrpLineOrigin
+        .getRelatedToSelect()
+        .equals(MrpLineOriginRepository.RELATED_TO_MANUFACTURING_ORDER)) {
+      ManufOrder manufOrder = manufOrderRepository.find(mrpLineOrigin.getRelatedToSelectId());
+      return manufOrder.getManufOrderSeq();
+    }
+    if (mrpLineOrigin
+        .getRelatedToSelect()
+        .equals(MrpLineOriginRepository.RELATED_TO_OPERATION_ORDER)) {
+      OperationOrder operationOrder =
+          operationOrderRepository.find(mrpLineOrigin.getRelatedToSelectId());
+      return operationOrder.getName();
+    }
+    return super.getMrpLineOriginStr(mrpLineOrigin);
   }
 
   @Override

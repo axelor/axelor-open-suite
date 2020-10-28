@@ -13,6 +13,7 @@
 			</panel>
 			<panel name="configuratorPanel" title="Configurator">
 				<field name="enableConfigurator" widget="boolean-switch"/>
+				<field name="enableToolManagement"/>
 			</panel>
 			<panel name="billOfMaterialPanel" title="Bill of materials">
 				<field name="manageBillOfMaterialVersion" widget="boolean-switch"/>
@@ -44,10 +45,16 @@
 				<field name="manageWorkshop" widget="boolean-switch"/>
                 <field name="mOFilterOnStockDetailStatusSelect" widget="MultiSelect" colSpan="4" selection="production.manuf.order.status.select"/>
 			</panel>
-		</panel>
-		<panel name="actionsPanel">
-			<button name="generateProductionConfigurationsBtn" colSpan="4" title="Generate production configurations" onClick="save,com.axelor.apps.production.web.AppProductionController:generateProductionConfigurations"/>
-			<panel-dashlet name="confProductionConfigDashletPanel" action="admin.root.conf.production.config" colSpan="12"/>
+			<panel name="outsourcingPanel" title="Outsourcing">
+				<field name="manageOutsourcing"/>
+			</panel>
+			<panel name="mpsPanel" title="MPS">
+				<field name="manageMpsCharge"/>
+			</panel>
+			<panel name="actionsPanel">
+				<button name="generateProductionConfigurationsBtn" colSpan="4" title="Generate production configurations" onClick="save,com.axelor.apps.production.web.AppProductionController:generateProductionConfigurations"/>
+				<panel-dashlet name="confProductionConfigDashletPanel" action="admin.root.conf.production.config" colSpan="12"/>
+			</panel>
 		</panel>
 		
 		<panel-mail name="mailPanel">

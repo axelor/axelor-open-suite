@@ -17,6 +17,7 @@
  	
  	<input file="base_template.csv" separator=";" type="com.axelor.apps.message.db.Template" search="self.name = :name" >
 		<bind to="language" search="self.code = :languageCode"/>
+		<bind column="birtTemplateSet_importId" to="birtTemplateSet" search="self.importId in :birtTemplateSet_importId" eval="birtTemplateSet_importId.split('\\|') as List" update="true"/>
 	</input>
  	
 </csv-inputs>

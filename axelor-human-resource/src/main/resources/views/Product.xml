@@ -164,7 +164,7 @@
 				<img ng-show="!picture" src="img/product-default.png" />
 			  </div>
 			  <div class="span8" style="width: 60%;">
-				<span>{{$fmt('salePrice')}} {{saleCurrency.symbol}}<br/>
+				<span>{{$fmt('salePrice') | currency: saleCurrency.symbol}}<br/>
 				{{unit.name}}<br/>
 				{{productFamily.name}}<br/>
 				{{productCategory.name}}</span>
@@ -190,7 +190,7 @@
     <action-record name="action-product-record-default-new-expense" model="com.axelor.apps.base.db.Product">
     	<field name="productTypeSelect" expr="storable"/>
     	<field name="procurementMethodSelect" expr="buy"/>
-    	<field name="startDate" expr="eval:__config__.app.getTodayDate()" if="startDate == null"/>
+    	<field name="startDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" if="startDate == null"/>
     	<field name="salePrice" expr="1"/>
     	<field name="purchasePrice" expr="1"/>
     	<field name="saleCurrency" expr="eval: _activeCompany?.currency"/>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.0.xsd">
+	
+	<grid model="com.axelor.apps.production.db.MpsWeeklySchedule" title="MPS Weekly schedules" name="mps-weekly-schedule-grid">
+		<field name="code"/>
+		<field name="label"/>
+		<field name="totalHours"/>
+	</grid>
+    
+    <form name="mps-weekly-schedule-form" model="com.axelor.apps.production.db.MpsWeeklySchedule" title="MPS Weekly schedules">
+    	<panel name="mainPanel">
+    		<field name="code"/>
+    		<field name="label"/>
+    	</panel>
+    	<panel name="hoursPanel" itemSpan="12">    	
+	  		<field name="hoursMonday"  onChange="action-mps-weekly-schedule-method-count-total-hours"/>	  		
+	  		<field name="hoursTuesday"  onChange="action-mps-weekly-schedule-method-count-total-hours"/>
+	  		<field name="hoursWednesday"  onChange="action-mps-weekly-schedule-method-count-total-hours"/>
+	  		<field name="hoursThursday"  onChange="action-mps-weekly-schedule-method-count-total-hours"/>
+	  		<field name="hoursFriday" onChange="action-mps-weekly-schedule-method-count-total-hours"/>
+	  		<field name="hoursSaturday"  onChange="action-mps-weekly-schedule-method-count-total-hours"/>
+	  		<field name="hoursSunday"  onChange="action-mps-weekly-schedule-method-count-total-hours"/>
+			<field name="totalHours"/>
+    	</panel>
+    </form>
+    
+    <action-method name="action-mps-weekly-schedule-method-count-total-hours">
+    	<call class="com.axelor.apps.production.web.MpsWeeklyScheduleController" method="countTotalHours"/>
+    </action-method>
+	    
+</object-views>
+

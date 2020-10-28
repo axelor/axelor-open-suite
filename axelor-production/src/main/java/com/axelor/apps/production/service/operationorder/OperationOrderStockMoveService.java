@@ -99,7 +99,8 @@ public class OperationOrderStockMoveService {
     StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
     StockConfig stockConfig = stockConfigService.getStockConfig(company);
     StockLocation virtualStockLocation =
-        stockConfigService.getProductionVirtualStockLocation(stockConfig);
+        stockConfigService.getProductionVirtualStockLocation(
+            stockConfig, operationOrder.getManufOrder().getProdProcess().getOutsourcing());
 
     StockLocation fromStockLocation;
 
@@ -191,7 +192,9 @@ public class OperationOrderStockMoveService {
     fromStockLocation =
         manufOrderStockMoveService.getDefaultStockLocation(
             manufOrder, company, ManufOrderStockMoveService.STOCK_LOCATION_IN);
-    toStockLocation = stockConfigService.getProductionVirtualStockLocation(stockConfig);
+    toStockLocation =
+        stockConfigService.getProductionVirtualStockLocation(
+            stockConfig, operationOrder.getManufOrder().getProdProcess().getOutsourcing());
 
     // realize current stock move
     Optional<StockMove> stockMoveToRealize =

@@ -41,8 +41,8 @@
 	</action-record>
    
    	<action-record name="action-price-list-line-record-product" model="com.axelor.apps.base.db.PriceListLine">
- 		<field name="amount" expr="eval: product?.salePrice" if="product &amp;&amp; _parent?.typeSelect == 1 &amp;&amp; typeSelect == 3"/>
- 		<field name="amount" expr="eval: product?.purchasePrice" if="product &amp;&amp; _parent?.typeSelect == 2 &amp;&amp; typeSelect == 3"/>
+ 		<field name="amount" expr="eval: product?.salePrice" if="product &amp;&amp; __parent__?.typeSelect == 1 &amp;&amp; typeSelect == 3"/>
+ 		<field name="amount" expr="eval: product?.purchasePrice" if="product &amp;&amp; __parent__?.typeSelect == 2 &amp;&amp; typeSelect == 3"/>
     </action-record>
     
     <action-record name="action-price-list-line-record-type-select" model="com.axelor.apps.base.db.PriceListLine">

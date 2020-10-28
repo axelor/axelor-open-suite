@@ -44,25 +44,25 @@
     </form>
     
      <action-attrs name="action-batch-attrs">
-        <attribute name="hidden" for="showInvoiceBtn" expr="eval: _parent?.invoiceTypeSelect != 1" if="_parent?._model == 'com.axelor.apps.invoice.db.InvoiceBatch'"/>
+        <attribute name="hidden" for="showInvoiceBtn" expr="eval: __parent__?.invoiceTypeSelect != 1" if="__parent__?._model == 'com.axelor.apps.invoice.db.InvoiceBatch'"/>
 
-    	<attribute name="hidden" for="showInvoiceBtn" expr="eval: !(_parent?.actionSelect in [12,15,16])" if="_parent?._model == 'com.axelor.apps.account.db.AccountingBatch'" />
-    	<attribute name="hidden" for="showReimbursementBtn" expr="eval: !(_parent?.actionSelect in [11])" if="_parent?._model == 'com.axelor.apps.account.db.AccountingBatch'" />
-    	<attribute name="hidden" for="showPaymentScheduleLineBtn" expr="eval: !(_parent?.actionSelect in [12])" if="_parent?._model == 'com.axelor.apps.account.db.AccountingBatch'" />
-    	<attribute name="hidden" for="showPaymentVoucherBtn" expr="eval: !(_parent?.actionSelect in [13,15])" if="_parent?._model == 'com.axelor.apps.account.db.AccountingBatch'" />
+    	<attribute name="hidden" for="showInvoiceBtn" expr="eval: !(__parent__?.actionSelect in [12,15,16])" if="__parent__?._model == 'com.axelor.apps.account.db.AccountingBatch'" />
+    	<attribute name="hidden" for="showReimbursementBtn" expr="eval: !(__parent__?.actionSelect in [11])" if="__parent__?._model == 'com.axelor.apps.account.db.AccountingBatch'" />
+    	<attribute name="hidden" for="showPaymentScheduleLineBtn" expr="eval: !(__parent__?.actionSelect in [12])" if="__parent__?._model == 'com.axelor.apps.account.db.AccountingBatch'" />
+    	<attribute name="hidden" for="showPaymentVoucherBtn" expr="eval: !(__parent__?.actionSelect in [13,15])" if="__parent__?._model == 'com.axelor.apps.account.db.AccountingBatch'" />
     	
-    	<attribute name="hidden" for="showPartnerBtn" expr="eval: !(_parent?.actionSelect in [14])" if="_parent?._model == 'com.axelor.apps.account.db.AccountingBatch'" />
-    	<attribute name="hidden" for="showAccountingSituationBtn" expr="eval: !(_parent?.actionSelect in [17])" if="_parent?._model == 'com.axelor.apps.account.db.AccountingBatch'" />
+    	<attribute name="hidden" for="showPartnerBtn" expr="eval: !(__parent__?.actionSelect in [14])" if="__parent__?._model == 'com.axelor.apps.account.db.AccountingBatch'" />
+    	<attribute name="hidden" for="showAccountingSituationBtn" expr="eval: !(__parent__?.actionSelect in [17])" if="__parent__?._model == 'com.axelor.apps.account.db.AccountingBatch'" />
     	
-    	<attribute name="hidden" for="showAccountingReportBtn" expr="eval: !(_parent?.actionSelect == 18)" if="_parent?._model == 'com.axelor.apps.account.db.AccountingBatch'" />
+    	<attribute name="hidden" for="showAccountingReportBtn" expr="eval: !(__parent__?.actionSelect == 18)" if="__parent__?._model == 'com.axelor.apps.account.db.AccountingBatch'" />
 
         <attribute name="hidden" for="showBankOrderBtn" expr="eval: !bankOrder" if="__parent__?._model == 'com.axelor.apps.account.db.AccountingBatch'" />
         <attribute name="hidden" for="createBankOrderBtn" expr="eval: !(__parent__?.actionSelect == 12 &amp;&amp; !bankOrder &amp;&amp; done)" if="__parent__?._model == 'com.axelor.apps.account.db.AccountingBatch'" />
-    	<attribute name="hidden" for="showEbicsCertificatesBtn" expr="eval: false" if="_parent?._model == 'com.axelor.apps.bankpayment.db.BankPaymentBatch'"/>
+    	<attribute name="hidden" for="showEbicsCertificatesBtn" expr="eval: false" if="__parent__?._model == 'com.axelor.apps.bankpayment.db.BankPaymentBatch'"/>
 
-    	<attribute name="hidden" for="showStockMoveBtn" expr="eval: _parent?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || _parent?.actionSelect == __repo__(SupplychainBatch).ACTION_INVOICE_ORDERS"/>
-    	<attribute name="hidden" for="showStockMoveLinesBtn" expr="eval: _parent?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || _parent?.actionSelect == __repo__(SupplychainBatch).ACTION_INVOICE_ORDERS" />
-    	<attribute name="hidden" for="showAccountMoveBtn" expr="(_parent?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || _parent?.actionSelect != __repo__(SupplychainBatch).ACTION_ACCOUNTING_CUT_OFF) &amp;&amp; _parent?._model != 'com.axelor.apps.account.db.AccountingBatch'"/>
+    	<attribute name="hidden" for="showStockMoveBtn" expr="eval: __parent__?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || __parent__?.actionSelect == __repo__(SupplychainBatch).ACTION_INVOICE_ORDERS"/>
+    	<attribute name="hidden" for="showStockMoveLinesBtn" expr="eval: __parent__?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || __parent__?.actionSelect == __repo__(SupplychainBatch).ACTION_INVOICE_ORDERS" />
+    	<attribute name="hidden" for="showAccountMoveBtn" expr="(__parent__?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || __parent__?.actionSelect != __repo__(SupplychainBatch).ACTION_ACCOUNTING_CUT_OFF) &amp;&amp; __parent__?._model != 'com.axelor.apps.account.db.AccountingBatch'"/>
 
     </action-attrs>
 

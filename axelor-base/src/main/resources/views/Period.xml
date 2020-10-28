@@ -21,8 +21,8 @@
 			<field name="year.company" form-view="company-form" readonly="true" colSpan="3"/>
 			<field name="year.statusSelect"/>
 			<field name="year.typeSelect"/>
-			<field name="fromDate" colSpan="3"/>
-	    	<field name="toDate" colSpan="3"/>
+			<field name="fromDate" colSpan="3" required="true"/>
+	    	<field name="toDate" colSpan="3" required="true"/>
 	    	<field name="allowExpenseCreation" if-module="axelor-human-resource" if="__config__.app.isApp('expense')" />
     	</panel>
 		<panel-dashlet  action="action-view-period-linked-adjusting-moves-dashlet" name="linkedAdjustingMovesPanel"/>

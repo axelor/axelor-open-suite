@@ -20,6 +20,8 @@ package com.axelor.apps.production.service.operationorder;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
+import com.axelor.apps.production.db.Machine;
+import com.axelor.apps.production.db.MachineTool;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdHumanResource;
@@ -84,7 +86,8 @@ public class OperationOrderServiceImpl implements OperationOrderService {
             manufOrder,
             prodProcessLine.getPriority(),
             prodProcessLine.getWorkCenter(),
-            prodProcessLine.getWorkCenter(),
+            prodProcessLine.getWorkCenter().getMachine(),
+            prodProcessLine.getMachineTool(),
             prodProcessLine);
 
     return Beans.get(OperationOrderRepository.class).save(operationOrder);
@@ -95,7 +98,8 @@ public class OperationOrderServiceImpl implements OperationOrderService {
       ManufOrder manufOrder,
       int priority,
       WorkCenter workCenter,
-      WorkCenter machineWorkCenter,
+      Machine machineWorkCenter,
+      MachineTool machineTool,
       ProdProcessLine prodProcessLine)
       throws AxelorException {
 
@@ -113,9 +117,13 @@ public class OperationOrderServiceImpl implements OperationOrderService {
             workCenter,
             machineWorkCenter,
             OperationOrderRepository.STATUS_DRAFT,
-            prodProcessLine);
+            prodProcessLine,
+            machineTool);
 
-    this._createHumanResourceList(operationOrder, machineWorkCenter);
+    this._createHumanResourceList(operationOrder, workCenter);
+
+    operationOrder.setUseLineInGeneratedPurchaseOrder(
+        prodProcessLine.getUseLineInGeneratedPurchaseOrder());
 
     return Beans.get(OperationOrderRepository.class).save(operationOrder);
   }

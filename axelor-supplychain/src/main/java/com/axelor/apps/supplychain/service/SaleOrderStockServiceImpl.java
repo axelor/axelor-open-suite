@@ -73,6 +73,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   protected AppBaseService appBaseService;
   protected SaleOrderRepository saleOrderRepository;
   protected ProductCompanyService productCompanyService;
+  protected PartnerStockSettingsService partnerStockSettingsService;
 
   @Inject
   public SaleOrderStockServiceImpl(
@@ -85,7 +86,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       StockMoveLineRepository stockMoveLineRepository,
       AppBaseService appBaseService,
       SaleOrderRepository saleOrderRepository,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      PartnerStockSettingsService partnerStockSettingsService) {
 
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
@@ -97,6 +99,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     this.appBaseService = appBaseService;
     this.saleOrderRepository = saleOrderRepository;
     this.productCompanyService = productCompanyService;
+    this.partnerStockSettingsService = partnerStockSettingsService;
   }
 
   @Override
@@ -188,12 +191,14 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     if (supplychainConfig.getDefaultEstimatedDate() != null
         && supplychainConfig.getDefaultEstimatedDate() == SupplyChainConfigRepository.CURRENT_DATE
         && stockMove.getEstimatedDate() == null) {
-      stockMove.setEstimatedDate(appBaseService.getTodayDate());
+      stockMove.setEstimatedDate(appBaseService.getTodayDate(saleOrder.getCompany()));
     } else if (supplychainConfig.getDefaultEstimatedDate()
             == SupplyChainConfigRepository.CURRENT_DATE_PLUS_DAYS
         && stockMove.getEstimatedDate() == null) {
       stockMove.setEstimatedDate(
-          appBaseService.getTodayDate().plusDays(supplychainConfig.getNumberOfDays().longValue()));
+          appBaseService
+              .getTodayDate(saleOrder.getCompany())
+              .plusDays(supplychainConfig.getNumberOfDays().longValue()));
     }
 
     setReservationDateTime(stockMove, saleOrder);
@@ -254,9 +259,17 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   public StockMove createStockMove(
       SaleOrder saleOrder, Company company, LocalDate estimatedDeliveryDate)
       throws AxelorException {
-    StockLocation toStockLocation =
-        stockConfigService.getCustomerVirtualStockLocation(
-            stockConfigService.getStockConfig(company));
+    StockLocation toStockLocation = saleOrder.getToStockLocation();
+    if (toStockLocation == null) {
+      toStockLocation =
+          partnerStockSettingsService.getDefaultExternalStockLocation(
+              saleOrder.getClientPartner(), company);
+    }
+    if (toStockLocation == null) {
+      toStockLocation =
+          stockConfigService.getCustomerVirtualStockLocation(
+              stockConfigService.getStockConfig(company));
+    }
 
     StockMove stockMove =
         stockMoveService.createStockMove(
@@ -502,6 +515,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     return deliveryState;
   }
 
+  @Override
   public Optional<SaleOrder> findSaleOrder(StockMove stockMove) {
     if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())
         && stockMove.getOriginId() != null) {

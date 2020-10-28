@@ -3,11 +3,21 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
-  <module name="admin" package="com.axelor.apps.admin.db"/>
+  <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="GlobalTrackingConfigurationLine" cacheable="true">
   
-	<many-to-one name="appBase" ref="com.axelor.apps.base.db.AppBase" required="true" />
+	<many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" required="true" />
+	<many-to-one name="metaField" ref="com.axelor.meta.db.MetaField" required="true" />
+	<boolean name="trackCreation" required="true" default="true" />
+	<boolean name="trackDeletion" required="true" default="true" />
+	<boolean name="trackUpdate" required="true" default="true" />
+	<boolean name="trackExport" required="true" default="true" />
+	<boolean name="trackReading" required="true" default="true" />
+    <string name="trackingCondition" large="true" />
+    <many-to-one name="appBase" ref="com.axelor.apps.base.db.AppBase" required="true" />
+    
+    <unique-constraint columns="metaModel,metaField" />
     
   </entity>
 

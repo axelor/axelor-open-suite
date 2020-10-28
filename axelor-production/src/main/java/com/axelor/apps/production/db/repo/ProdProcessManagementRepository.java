@@ -18,6 +18,7 @@
 package com.axelor.apps.production.db.repo;
 
 import com.axelor.apps.production.db.ProdProcess;
+import com.axelor.apps.production.db.ProdProcessLine;
 
 public class ProdProcessManagementRepository extends ProdProcessRepository {
 
@@ -29,6 +30,11 @@ public class ProdProcessManagementRepository extends ProdProcessRepository {
           prodProcess.getName() + " - v" + String.valueOf(prodProcess.getVersionNumber()));
     else prodProcess.setFullName(prodProcess.getName());
 
+    if (prodProcess.getOutsourcing()) {
+      for (ProdProcessLine prodProcessLine : prodProcess.getProdProcessLineList()) {
+        prodProcessLine.setOutsourcing(true);
+      }
+    }
     return super.save(prodProcess);
   }
 

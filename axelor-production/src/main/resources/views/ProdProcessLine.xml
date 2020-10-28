@@ -7,7 +7,7 @@
 		<field name="priority" width="75"/>
 		<field name="name"/>
 		<field name="workCenter" grid-view="work-center-grid" form-view="work-center-form"/>
-		<field name="outsourcing" width="115"/>
+		<field name="outsourcing" width="115" if="__config__.app.getApp('production').getManageOutsourcing()"/>
 		<field name="optional"/>
 		<field name="description"/>
 	</grid>
@@ -21,6 +21,8 @@
 			<field name="workCenter" grid-view="work-center-grid" form-view="work-center-form" canNew="true" onChange="action-prod-process-line-group-work-center-onchange"/>
 			<field name="outsourcing"/>
 			<field name="optional"/>
+			<field name="useLineInGeneratedPurchaseOrder"/>
+			<field name="machineTool" onSelect="action-prod-process-line-attrs-machine-tool-domain" if="__config__.app.getApp('production').getEnableToolManagement()"/>
 			<field name="stockLocation"/>
 			<panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12">
 				<field name="minCapacityPerCycle" colSpan="3"/>
@@ -70,9 +72,15 @@
     </action-record>
     
     <action-attrs name="action-prod-process-line-attrs-default">
-    	<attribute name="hidden" for="toConsumeProdProductList" expr="eval: _parent != null ? !_parent.isConsProOnOperation : !prodProcess.isConsProOnOperation"/>
+    	<attribute name="hidden" for="toConsumeProdProductList" expr="eval: __parent__ != null ? !__parent__.isConsProOnOperation : !prodProcess.isConsProOnOperation"/>
 		<attribute name="hidden" for="stockLocation" expr="eval: !__parent__.isConsProOnOperation"/>
+		<attribute name="hidden" for="outsourcing" expr="eval: !__parent__.outsourcing" if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.production.db.ProdProcess'"/>
+		<attribute name="hidden" for="useLineInGeneratedPurchaseOrder" expr="eval: !((__parent__.outsourcing || outsourcing) &amp;&amp; __parent__.generatePurchaseOrderOnMoPlanning)" if="__parent__ != null"/>
     </action-attrs>
     
+   <action-attrs name="action-prod-process-line-attrs-machine-tool-domain">
+		<attribute name="domain" expr="eval: &quot; self.machine.id in (SELECT machine.id FROM WorkCenter where id = ${workCenter?.id}) &quot;" for="machineTool"/>
+   </action-attrs>
+
 </object-views>
 

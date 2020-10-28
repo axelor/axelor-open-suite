@@ -118,9 +118,6 @@ public interface IExceptionMessage {
   static final String MRP_LINE_1 = /*$$(*/
       "No default supplier is defined for the product %s" /*)*/;
 
-  static final String MRP_MISSING_MRP_LINE_TYPE = /*$$(*/
-      "No move type found for element : %s" /*)*/;
-
   static final String MRP_MISSING_STOCK_LOCATION_VALID = /*$$(*/
       "No stock location valid. Please uncheck the chosen stock location 'is not in MRP'." /*)*/;
 
@@ -248,7 +245,7 @@ public interface IExceptionMessage {
       "The invoice's unit is different and inconvertible into the stock move's unit." /*)*/;
 
   static final String STOCK_MOVE_PARTIAL_INVOICE_ERROR = /*$$(*/
-      "Stock move has already been invoiced." /*)*/;
+      "Stock move %s has already been invoiced." /*)*/;
 
   static final String STOCK_MOVE_INVOICE_QTY_MAX = /*$$(*/
       "The quantity to invoice is greater than the quantity in the stock move" /*)*/;

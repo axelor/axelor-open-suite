@@ -37,7 +37,6 @@
     
     <action-view name="action-partner-view-schedule-event" title="Schedule Event (${ fullName })" model="com.axelor.apps.crm.db.Event">
     	<view type="form" name="event-form"/>
-    	<context name="_parentPartner" expr="eval: parentPartner"/>
     	<context name="_partner" expr="eval: __this__"/>
     </action-view>
     

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+			  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+	<form id="sale-partner-form" model="com.axelor.apps.base.db.Partner" title="Partner" name="partner-form" extension="true">
+	
+		<extend target="//panel[@name='saleOrderCommentsPanel']">
+				<insert position="after">
+					<panel-related field="$saleDetailsByProduct"
+						type="one-to-many"
+						target="com.axelor.apps.base.db.Wizard"
+						title="Sale details by product"
+						grid-view="sale-details-by-product-per-customer-grid"
+						form-view="none"
+						readonly="true"
+						hidden="true"
+						colSpan="12">
+					</panel-related>
+				</insert>
+		</extend>
+		
+	</form>
+
+
+	<form name="partner-customer-form" title="Customer" model="com.axelor.apps.base.db.Partner"
+	extension="true"
+	onLoad="" id="partner-customer-sales-form">
+	
+		<extend target="/">
+			<attribute name="onLoad" value="action-group-partner-onload, action-partner-attrs-hide-customer-recovery, action-wizard-method-display-sales-details-by-product-per-customer"/>
+		</extend>
+	
+	</form>
+	
+	<grid model="com.axelor.apps.base.db.Wizard"
+		title="Sale details by product"
+		name="sale-details-by-product-per-customer-grid"
+		edit-icon="false">
+			<field name="name" title="Product" />
+			<field name="$quantitySold" title="Total quantity sold" type="decimal"/>
+			<field name="$averagePrice" title="Average price" type="decimal" />
+			<field name="$totalPrice" title="Total price" type="decimal"/>
+	</grid>
+	
+	<action-method name="action-wizard-method-display-sales-details-by-product-per-customer">
+		<call class="com.axelor.apps.sale.web.PartnerSaleController" method="displayValues"/>
+	</action-method>
+	
+</object-views>
