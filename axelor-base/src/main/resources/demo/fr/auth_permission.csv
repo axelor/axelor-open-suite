@@ -30,8 +30,8 @@
 "perm.cash.management.rwc";"com.axelor.apps.cash.management.db.*";"true";"true";"true";"false";"true";;
 "perm.businessproject.rwc";"com.axelor.apps.businessproject.db.*";"true";"true";"true";"false";"true";;
 "perm.base.company.r";"com.axelor.apps.base.db.Company";"true";"false";"false";"false";"false";;
-"perm.base.calendar.shared.readonly";"com.axelor.apps.base.db.Icalendar";"true";"false";"false";"false";"false";"(?1) in (SELECT setting.sharedWith FROM self.sharingSettingList setting WHERE setting.visible = true AND setting.rights = 1) OR self.user = (?1)";"__user__"
-"perm.base.calendar.shared.modification";"com.axelor.apps.base.db.Icalendar";"true";"true";"true";"true";"true";"(?1) in (SELECT setting.sharedWith FROM self.sharingSettingList setting WHERE setting.visible = true AND setting.rights = 2) OR self.user = (?1)";"__user__"
+"perm.base.calendar.shared.readonly";"com.axelor.apps.base.db.ICalendar";"true";"false";"false";"false";"false";"(?) in (SELECT setting.sharedWith FROM self.sharingSettingList setting WHERE setting.rightsSelect = 1) OR self.user = (?)";"__user__, __user__"
+"perm.base.calendar.shared.modification";"com.axelor.apps.base.db.ICalendar";"true";"true";"true";"true";"true";"(?) in (SELECT setting.sharedWith FROM self.sharingSettingList setting WHERE setting.rightsSelect = 2) OR self.user = (?)";"__user__, __user__"
 "perm.helpdesk.Ticket.rwc";"com.axelor.apps.helpdesk.db.Ticket";"true";"true";"true";"false";"false";;
 "perm.helpdesk.TicketType.rwc";"com.axelor.apps.helpdesk.db.TicketType";"true";"true";"true";"false";"false";;
 "perm.helpdesk.Sla.rwc";"com.axelor.apps.helpdesk.db.Sla";"true";"true";"true";"false";"false";;

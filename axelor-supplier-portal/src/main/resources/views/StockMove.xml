@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.1.xsd">
+	
+	
+	<grid name="stock-move-supplier-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate"  canNew="false" canDelete="false">
+	  <field name="stockMoveSeq"/>
+	  <field name="estimatedDate"/>
+	  <field name="realDate"/>
+	  <field name="toAddress"/>
+	  <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+	  <field name="partner"/>
+	  <field name="statusSelect"/>
+  </grid>
+    
+	<form name="stock-move-supplier-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove" canNew="false" canDelete="false" canCopy="false">
+	  <panel name="statusPanel" >
+	    <field name="statusSelect" readonly="true" widget="NavSelect" colSpan="12"/>
+	  </panel>
+	  <panel name="generalInfoPanel" readonly="true">
+	    <panel name="detailsPanel" title="Stock move reference">
+	      <field name="stockMoveSeq" colSpan="12"/>
+	      <field name="name" colSpan="12"/>
+	      <field name="company" widget="SuggestBox" form-view="company-form" colSpan="12"/>
+	      <field name="partner" domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid" colSpan="12"/>
+	    </panel>
+	    <panel name="stockMoveInformationsPanel" title="Stock move information">
+	      <field name="estimatedDate" colSpan="12"/>
+	      <field name="realDate" title="Receipt date" colSpan="12"/>
+	      <field name="fromAddress" showIf="typeSelect == 3" colSpan="12"/>
+	    </panel>
+	  </panel>
+	  <panel-related name="stockMoveLineListPanel" field="stockMoveLineList" readonlyIf="company == null || fromStockLocation == null" colSpan="12" canNew="false" canRemove="false" form-view="stock-move-line-supplier-form" grid-view="stock-move-line-supplier-grid"/>
+	</form>
+	
+</object-views>

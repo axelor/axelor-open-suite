@@ -29,6 +29,7 @@ import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.alarm.AlarmEngineService;
 import com.axelor.apps.businessproject.report.IReport;
@@ -56,7 +57,8 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
       InvoiceLineService invoiceLineService,
       AccountConfigService accountConfigService,
       PartnerTurnoverService partnerTurnoverService,
-      YearServiceAccount yearServiceAccount) {
+      YearServiceAccount yearServiceAccount,
+      MoveToolService moveToolService) {
     super(
         validateFactory,
         ventilateFactory,
@@ -68,7 +70,8 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
         invoiceLineService,
         accountConfigService,
         partnerTurnoverService,
-        yearServiceAccount);
+        yearServiceAccount,
+        moveToolService);
   }
 
   public List<String> editInvoiceAnnex(Invoice invoice, String invoiceIds, boolean toAttach)
@@ -83,7 +86,11 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
           invoice);
     }
 
-    if (!AuthUtils.getUser().getActiveCompany().getAccountConfig().getDisplayTimesheetOnPrinting()
+    if (AuthUtils.getUser().getActiveCompany() != null
+        && !AuthUtils.getUser()
+            .getActiveCompany()
+            .getAccountConfig()
+            .getDisplayTimesheetOnPrinting()
         && !AuthUtils.getUser()
             .getActiveCompany()
             .getAccountConfig()
@@ -110,6 +117,9 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
     String fileLink =
         rS.addParam("InvoiceId", invoiceIds)
             .addParam("Locale", language)
+            .addParam(
+                "Timezone",
+                invoice.getCompany() != null ? invoice.getCompany().getTimezone() : null)
             .addParam("InvoicesCopy", invoicesCopy)
             .addParam("HeaderHeight", invoice.getPrintingSettings().getPdfHeaderHeight())
             .addParam("FooterHeight", invoice.getPrintingSettings().getPdfFooterHeight())

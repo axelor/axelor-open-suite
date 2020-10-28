@@ -169,6 +169,7 @@ public class ConvertLeadWizardController {
             .model(Partner.class.getName())
             .add("form", form)
             .add("grid", grid)
+            .param("search-filters", "partner-filters")
             .context("_showRecord", partner.getId())
             .map());
   }
@@ -209,9 +210,22 @@ public class ConvertLeadWizardController {
     response.setAttr("department", "value", lead.getDepartment());
     response.setAttr("team", "value", lead.getTeam());
     response.setAttr("user", "value", lead.getUser());
-    response.setAttr("isProspect", "value", true);
+    if (lead.getUser() != null) {
+      if (lead.getUser().getActiveCompany().getDefaultPartnerCategorySelect()
+          == CompanyRepository.CATEGORY_CUSTOMER) {
+        response.setAttr("isCustomer", "value", true);
+      } else if (lead.getUser().getActiveCompany().getDefaultPartnerCategorySelect()
+          == CompanyRepository.CATEGORY_SUPPLIER) {
+        response.setAttr("isSupplier", "value", true);
+      } else {
+        response.setAttr("isProspect", "value", true);
+      }
+    } else {
+      response.setAttr("isProspect", "value", true);
+    }
     response.setAttr("partnerTypeSelect", "value", "1");
     response.setAttr("language", "value", appBase.getDefaultPartnerLanguage());
+    response.setAttr("nbrEmployees", "value", 0);
   }
 
   public void setIndividualPartner(ActionRequest request, ActionResponse response)
@@ -219,8 +233,13 @@ public class ConvertLeadWizardController {
 
     Lead lead = findLead(request);
 
-    response.setAttr("firstName", "value", lead.getFirstName());
-    response.setAttr("name", "value", lead.getName());
+    if (request.getContext().get("partnerTypeSelect").toString().equals("2")) {
+      response.setAttr("firstName", "value", lead.getFirstName());
+      response.setAttr("name", "value", lead.getName());
+
+    } else {
+      response.setAttr("name", "value", lead.getEnterpriseName());
+    }
   }
 
   public void setContactDefaults(ActionRequest request, ActionResponse response)

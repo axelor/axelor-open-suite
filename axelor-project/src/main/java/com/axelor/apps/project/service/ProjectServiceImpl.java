@@ -25,11 +25,9 @@ import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.Wiki;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.WikiRepository;
-import com.axelor.apps.project.exception.IExceptionMessage;
 import com.axelor.apps.project.translation.ITranslation;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -44,7 +42,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import javax.persistence.TypedQuery;
 
 public class ProjectServiceImpl implements ProjectService {
 
@@ -121,42 +118,6 @@ public class ProjectServiceImpl implements ProjectService {
     } while (projectRepository.findByName(name) != null);
 
     return name;
-  }
-
-  @Override
-  public Partner getClientPartnerFromProject(Project project) throws AxelorException {
-    return this.getClientPartnerFromProject(project, 0);
-  }
-
-  private Partner getClientPartnerFromProject(Project project, int counter) throws AxelorException {
-    if (project.getParentProject() == null) {
-      // it is a root project, can get the client partner
-      if (project.getClientPartner() == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.PROJECT_CUSTOMER_PARTNER));
-      } else {
-        return project.getClientPartner();
-      }
-    } else {
-      if (counter > MAX_LEVEL_OF_PROJECT) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.PROJECT_DEEP_LIMIT_REACH));
-      } else {
-        return this.getClientPartnerFromProject(project.getParentProject(), counter + 1);
-      }
-    }
-  }
-
-  @Override
-  public BigDecimal computeDurationFromChildren(Long projectId) {
-    String query =
-        "SELECT SUM(pt.duration)" + " FROM Project as pt" + " WHERE pt.project.id = :projectId";
-
-    TypedQuery<BigDecimal> q = JPA.em().createQuery(query, BigDecimal.class);
-    q.setParameter("projectId", projectId);
-    return q.getSingleResult();
   }
 
   @Override

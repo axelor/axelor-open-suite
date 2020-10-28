@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public final class StringTool {
@@ -268,7 +269,7 @@ public final class StringTool {
   public static String getIdListString(Collection<? extends Model> collection) {
     List<Long> idList = new ArrayList<>();
     String idString;
-    if (collection.isEmpty()) {
+    if (CollectionUtils.isEmpty(collection)) {
       idString = "0";
     } else {
       for (Model item : collection) {

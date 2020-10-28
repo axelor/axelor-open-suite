@@ -69,6 +69,13 @@ public class MoveCancelService {
           I18n.get(IExceptionMessage.MOVE_CANCEL_2));
     }
 
+    if (move.getStatusSelect().equals(MoveRepository.STATUS_VALIDATED)) {
+      throw new AxelorException(
+          move,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.MOVE_CANCEL_4));
+    }
+
     try {
 
       if (move.getStatusSelect() == MoveRepository.STATUS_NEW

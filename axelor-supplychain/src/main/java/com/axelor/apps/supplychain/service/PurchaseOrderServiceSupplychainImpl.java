@@ -195,7 +195,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
             numSeq,
             externalRef,
             stockLocation,
-            LocalDate.now(),
+            appBaseService.getTodayDate(company),
             priceList,
             supplierPartner,
             tradingName);
@@ -324,7 +324,9 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     BudgetLine bl = null;
     for (BudgetLine budgetLine : budget.getBudgetLineList()) {
       if (DateTool.isBetween(
-          budgetLine.getFromDate(), budgetLine.getToDate(), appAccountService.getTodayDate())) {
+          budgetLine.getFromDate(),
+          budgetLine.getToDate(),
+          appAccountService.getTodayDate(budget.getCompany()))) {
         bl = budgetLine;
         break;
       }

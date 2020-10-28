@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
      <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
@@ -11,6 +11,7 @@
         <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee" />
         <many-to-one name="year" ref="com.axelor.apps.base.db.Year" title="Year" />
         <one-to-many name="expenseLineList" ref="com.axelor.apps.hr.db.ExpenseLine" title="Kilometric allowance list"/>
-        
+
+        <unique-constraint columns="employee,year"/>
     </entity>
 </domain-models>

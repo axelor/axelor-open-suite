@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
-
-	<grid name="prod-process-line-grid" title="Phases"
-		model="com.axelor.apps.production.db.ProdProcessLine" orderBy="priority">
-		<field name="priority" width="75" />
-		<field name="name" />
-		<field name="workCenter" grid-view="work-center-grid" form-view="work-center-form" />
-		<field name="outsourcing" width="115"
-			if="__config__.app.getApp('production').getManageOutsourcing()" />
-		<field name="optional" />
-		<field name="description" />
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+    
+	<grid name="prod-process-line-grid" title="Phases" model="com.axelor.apps.production.db.ProdProcessLine" orderBy="priority">
+		<field name="priority" width="75"/>
+		<field name="name"/>
+		<field name="workCenter" grid-view="work-center-grid" form-view="work-center-form"/>
+		<field name="outsourcing" width="115" if="__config__.app.getApp('production').getManageOutsourcing()"/>
+		<field name="optional"/>
+		<field name="description"/>
 	</grid>
 
 	<form name="prod-process-line-form" title="Phase"
@@ -136,6 +134,35 @@
 	<action-attrs name="action-attrs-production-set-work-center-group-domain" model="com.axelor.apps.production.db.ProdProcessLine">
 		<attribute name="domain" for="workCenterGroup" expr="self.template IS TRUE and self.workCenterTypeSelect = :workCenterTypeSelect"/>
 	</action-attrs>
+	
+	<action-group name="action-prod-process-line-group-work-center-onchange">
+		<action name="action-prod-process-line-method-duration"/>
+		<action name="action-prod-process-line-method-capacity-settings"/>
+	</action-group>
+    
+    <action-method name="action-prod-process-line-method-duration">
+    	<call class="com.axelor.apps.production.web.ProdProcessLineController" method="updateDuration"/>
+    </action-method>
+    
+    <action-method name="action-prod-process-line-method-capacity-settings">
+    	<call class="com.axelor.apps.production.web.ProdProcessLineController" method="updateCapacitySettings"/>
+    </action-method>
+    
+    <action-record name="action-prod-process-line-record-default" model="com.axelor.apps.production.db.ProdProcessLine">
+    	<field name="priority" expr="eval:__parent__?.prodProcessLineList?.max{ it.getPriority() }?.getPriority() + 10"/>
+    	<field name="stockLocation" expr="eval:__parent__?.company?.getStockConfig().getProductionVirtualStockLocation()"/>
+    </action-record>
+    
+    <action-attrs name="action-prod-process-line-attrs-default">
+    	<attribute name="hidden" for="toConsumeProdProductList" expr="eval: __parent__ != null ? !__parent__.isConsProOnOperation : !prodProcess.isConsProOnOperation"/>
+		<attribute name="hidden" for="stockLocation" expr="eval: !__parent__.isConsProOnOperation"/>
+		<attribute name="hidden" for="outsourcing" expr="eval: !__parent__.outsourcing" if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.production.db.ProdProcess'"/>
+		<attribute name="hidden" for="useLineInGeneratedPurchaseOrder" expr="eval: !((__parent__.outsourcing || outsourcing) &amp;&amp; __parent__.generatePurchaseOrderOnMoPlanning)" if="__parent__ != null"/>
+    </action-attrs>
+    
+   <action-attrs name="action-prod-process-line-attrs-machine-tool-domain">
+		<attribute name="domain" expr="eval: &quot; self.machine.id in (SELECT machine.id FROM WorkCenter where id = ${workCenter?.id}) &quot;" for="machineTool"/>
+   </action-attrs>
 
 </object-views>
 

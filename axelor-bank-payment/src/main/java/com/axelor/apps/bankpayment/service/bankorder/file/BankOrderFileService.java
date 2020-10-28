@@ -26,11 +26,13 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.service.app.AppService;
 import com.axelor.apps.tool.file.FileTool;
 import com.axelor.apps.tool.xml.Marschaller;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import java.io.File;
 import java.io.IOException;
@@ -113,8 +115,7 @@ public class BankOrderFileService {
           I18n.get(IExceptionMessage.BANK_ORDER_FILE_NO_FOLDER_PATH),
           paymentMode.getName());
     }
-
-    return folderPath;
+    return Beans.get(AppService.class).getDataExportDir() + folderPath;
   }
 
   /**

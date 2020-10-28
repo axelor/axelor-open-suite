@@ -198,7 +198,8 @@ public interface IExceptionMessage {
   String TRACK_NUMBER_WIZARD_TITLE = /*$$(*/ "Enter tracking numbers" /*)*/;
   String TRACK_NUMBER_WIZARD_NO_RECORD_ADDED_ERROR = /*$$(*/ "No Tracking Numbers Added" /*)*/;
 
-  String TRACK_NUMBER_DATE_MISSING = /*$$(*/ "Please filled estimated delivery date" /*)*/;
+  String TRACK_NUMBER_DATE_MISSING = /*$$(*/
+      "Please fill estimated delivery date for product %s from %s" /*)*/;
 
   /** Stock correction service and controller */
   public static final String STOCK_CORRECTION_1 = /*$$(*/
@@ -206,4 +207,7 @@ public interface IExceptionMessage {
 
   public static final String STOCK_CORRECTION_2 = /*$$(*/
       "No stock correction needed, current quantity in stock equals real quantity." /*)*/;
+
+  public static final String INVENTORY_PRODUCT_TRACKING_NUMBER_ERROR = /*$$(*/
+      "There is more than one line for same product with same tracking number." /*)*/;
 }

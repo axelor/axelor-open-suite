@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -145,6 +146,7 @@ public class PurchaseOrderLineController {
       Product product = purchaseOrderLine.getProduct();
       String productName = null;
       String productCode = null;
+      ProductCompanyService productCompanyService = Beans.get(ProductCompanyService.class);
       if (catalogInfo != null) {
         if (catalogInfo.get("price") != null) {
           price = (BigDecimal) catalogInfo.get("price");
@@ -152,15 +154,19 @@ public class PurchaseOrderLineController {
         productName =
             catalogInfo.get("productName") != null
                 ? (String) catalogInfo.get("productName")
-                : product.getName();
+                : (String) productCompanyService.get(product, "name", purchaseOrder.getCompany());
         productCode =
             catalogInfo.get("productCode") != null
                 ? (String) catalogInfo.get("productCode")
-                : product.getCode();
+                : (String) productCompanyService.get(product, "code", purchaseOrder.getCompany());
       } else {
-        price = product.getPurchasePrice();
-        productName = product.getName();
-        productCode = product.getCode();
+        price =
+            (BigDecimal)
+                productCompanyService.get(product, "purchasePrice", purchaseOrder.getCompany());
+        productName =
+            (String) productCompanyService.get(product, "name", purchaseOrder.getCompany());
+        productCode =
+            (String) productCompanyService.get(product, "code", purchaseOrder.getCompany());
       }
       if (purchaseOrderLine.getProductName() == null) {
         response.setValue("productName", productName);

@@ -116,6 +116,9 @@ public class ProductController {
             .addParam("CurrYear", Integer.toString(currentYear))
             .addParam("ProductIds", productIds)
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
+            .addParam(
+                "Timezone",
+                user.getActiveCompany() != null ? user.getActiveCompany().getTimezone() : null)
             .generate()
             .getFileLink();
 
@@ -143,6 +146,9 @@ public class ProductController {
               .addParam("ProductId", product.getId())
               .addParam("CompanyId", user.getActiveCompany().getId())
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
+              .addParam(
+                  "Timezone",
+                  user.getActiveCompany() != null ? user.getActiveCompany().getTimezone() : null)
               .generate()
               .getFileLink();
 

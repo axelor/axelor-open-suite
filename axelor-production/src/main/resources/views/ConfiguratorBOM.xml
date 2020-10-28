@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
     <form name="configurator-bom-form" title="Configurator BOM"
     		onNew="action-configurator-bom-record-set-parent"
@@ -124,9 +124,9 @@
     
     <action-attrs name="action-configurator-bom-attrs-product-domain">
         <attribute name="domain" for="product"
-                   expr="eval: &quot; self.productTypeSelect = 'storable' &quot;"/>
-    	<attribute name="domain" for="product" if="parentConfiguratorBOM == null"
-                   expr="eval: &quot; self.productTypeSelect = 'storable' AND self.productSubTypeSelect != 3 &quot;" />
+                   expr="eval: &quot; self.productTypeSelect = 'storable' AND dtype = 'Product'&quot;"/>
+    	<attribute name="domain" for="product" if="parentConfiguratorBOM == null" 
+                   expr="eval: &quot; self.productTypeSelect = 'storable' AND self.productSubTypeSelect != 3 AND dtype = 'Product'&quot;" />
     </action-attrs>
 
     <tree name="configurator-bom-tree" title="Configurators BOMs tree">

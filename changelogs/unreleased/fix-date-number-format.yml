@@ -1,0 +1,7 @@
+title: Date and number formatting according to user locale in viewers with $fmt()
+type: change
+description: |
+  Replace all hard coded formatting in viewers by $fmt() usage.
+  For example :
+  - {{record.paymentDate | date : 'dd/MM/yyyy'}} become {{$fmt('paymentDate')}}
+  - {{record.amount}} {{record.currency.symbol}} become {{$fmt('amount') | currency: record.currency.symbol}}

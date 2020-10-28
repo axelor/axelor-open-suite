@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
     <grid name="blocking-grid" title="Blockings" model="com.axelor.apps.base.db.Blocking" orderBy="-blockingToDate">
         <hilite if="$moment(blockingToDate) &gt; $moment(__date__)" background="danger"/>
@@ -28,12 +28,12 @@
     </action-record>
     
     <action-record name="action-blocking-record-default-companies" model="com.axelor.apps.base.db.Blocking">
-    	<field name="companySet" expr="eval: __repo__(Company).all().filter('self.id IN (?)', _parent?.companySet?.collect{ it.id }).fetch().toSet()" if="_parent?.companySet &amp;&amp; !_parent.companySet.isEmpty()"/>
+    	<field name="companySet" expr="eval: __repo__(Company).all().filter('self.id IN (?)', __parent__?.companySet?.collect{ it.id }).fetch().toSet()" if="__parent__?.companySet &amp;&amp; !__parent__.companySet.isEmpty()"/>
     </action-record>
 
     <action-attrs name="action-blocking-attrs-domain-companySet">
         <attribute name="domain" for="companySet" expr="eval: null"/>
-        <attribute name="domain" for="companySet" expr="eval: 'self.id IN (' + _parent?.companySet?.collect{ it.id }.join(',') + ')'" if="_parent?.companySet &amp;&amp; !_parent.companySet.isEmpty()"/>
+        <attribute name="domain" for="companySet" expr="eval: 'self.id IN (' + __parent__?.companySet?.collect{ it.id }.join(',') + ')'" if="__parent__?.companySet &amp;&amp; !__parent__.companySet.isEmpty()"/>
     </action-attrs>
 
 </object-views>

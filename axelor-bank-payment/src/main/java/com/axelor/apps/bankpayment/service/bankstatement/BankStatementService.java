@@ -110,10 +110,32 @@ public class BankStatementService {
     return ReportFactory.createReport(reportName, bankStatement.getName() + "-${date}")
         .addParam("BankStatementId", bankStatement.getId())
         .addParam("Locale", ReportSettings.getPrintingLocale(null))
+        .addParam("Timezone", getTimezone(bankStatement))
         .addFormat("pdf")
         .toAttach(bankStatement)
         .generate()
         .getFileLink();
+  }
+
+  private String getTimezone(BankStatement bankStatement) {
+    if (bankStatement.getEbicsPartner() == null
+        || bankStatement.getEbicsPartner().getDefaultSignatoryEbicsUser() == null
+        || bankStatement.getEbicsPartner().getDefaultSignatoryEbicsUser().getAssociatedUser()
+            == null
+        || bankStatement
+                .getEbicsPartner()
+                .getDefaultSignatoryEbicsUser()
+                .getAssociatedUser()
+                .getActiveCompany()
+            == null) {
+      return null;
+    }
+    return bankStatement
+        .getEbicsPartner()
+        .getDefaultSignatoryEbicsUser()
+        .getAssociatedUser()
+        .getActiveCompany()
+        .getTimezone();
   }
 
   /**

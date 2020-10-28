@@ -1,2 +1,2 @@
-"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
-"Portal";"portal";27;"Portal configuration";"app-portal.png";"axelor-client-portal";"base";31
+name;code;installOrder;description;imagePath;modules;dependsOn;sequence
+Portal;portal;27;Portal configuration;app-portal.png;axelor-client-portal;supplychain,project,helpdesk;31

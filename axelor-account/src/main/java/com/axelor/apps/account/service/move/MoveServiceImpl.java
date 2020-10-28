@@ -332,7 +332,7 @@ public class MoveServiceImpl implements MoveService {
                   account,
                   amount,
                   false,
-                  appAccountService.getTodayDate(),
+                  appAccountService.getTodayDate(company),
                   1,
                   invoice.getInvoiceId(),
                   null);
@@ -407,7 +407,7 @@ public class MoveServiceImpl implements MoveService {
               account,
               amount,
               true,
-              appAccountService.getTodayDate(),
+              appAccountService.getTodayDate(company),
               1,
               invoice.getInvoiceId(),
               null);
@@ -423,7 +423,7 @@ public class MoveServiceImpl implements MoveService {
           company,
           null,
           account,
-          appAccountService.getTodayDate());
+          appAccountService.getTodayDate(company));
 
       moveValidateService.validate(oDmove);
 

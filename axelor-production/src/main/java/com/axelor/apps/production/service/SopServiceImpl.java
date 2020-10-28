@@ -58,7 +58,7 @@ public class SopServiceImpl implements SopService {
 
   @Override
   public void generateSOPLines(Sop sop) throws AxelorException {
-    today = appBaseService.getTodayDate();
+    today = appBaseService.getTodayDate(sop.getCompany());
     List<Period> yearPeriods =
         periodRepo
             .all()
@@ -97,7 +97,7 @@ public class SopServiceImpl implements SopService {
     for (SopLine sopLine : sop.getSopLineList()) {
       sop = sopRepo.find(sop.getId());
       if (sop.getIsForecastOnHistoric()) {
-        this.setSalesForecast(sopLine, sop.getCategoryFamily(), sop.getCompany());
+        this.setSalesForecast(sopLine, sop.getProductCategory(), sop.getCompany());
       }
     }
   }

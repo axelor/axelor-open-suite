@@ -105,8 +105,23 @@ public class ManufOrderController {
       Long manufOrderId = (Long) request.getContext().get("id");
       ManufOrder manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrderId);
 
+      // we have to inject TraceBackService to use non static methods
+      TraceBackService traceBackService = Beans.get(TraceBackService.class);
+      long tracebackCount = traceBackService.countMessageTraceBack(manufOrder);
+
       if (!Beans.get(ManufOrderWorkflowService.class).finish(manufOrder)) {
         response.setNotify(I18n.get(IExceptionMessage.MANUF_ORDER_EMAIL_NOT_SENT));
+      } else if (traceBackService.countMessageTraceBack(manufOrder) > tracebackCount) {
+        traceBackService
+            .findLastMessageTraceBack(manufOrder)
+            .ifPresent(
+                traceback ->
+                    response.setNotify(
+                        String.format(
+                            I18n.get(
+                                com.axelor.apps.message.exception.IExceptionMessage
+                                    .SEND_EMAIL_EXCEPTION),
+                            traceback.getMessage())));
       }
 
       response.setReload(true);
@@ -120,8 +135,23 @@ public class ManufOrderController {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
       manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
 
+      // we have to inject TraceBackService to use non static methods
+      TraceBackService traceBackService = Beans.get(TraceBackService.class);
+      long tracebackCount = traceBackService.countMessageTraceBack(manufOrder);
+
       if (!Beans.get(ManufOrderWorkflowService.class).partialFinish(manufOrder)) {
         response.setNotify(I18n.get(IExceptionMessage.MANUF_ORDER_EMAIL_NOT_SENT));
+      } else if (traceBackService.countMessageTraceBack(manufOrder) > tracebackCount) {
+        traceBackService
+            .findLastMessageTraceBack(manufOrder)
+            .ifPresent(
+                traceback ->
+                    response.setNotify(
+                        String.format(
+                            I18n.get(
+                                com.axelor.apps.message.exception.IExceptionMessage
+                                    .SEND_EMAIL_EXCEPTION),
+                            traceback.getMessage())));
       }
       response.setReload(true);
     } catch (Exception e) {
@@ -317,6 +347,9 @@ public class ManufOrderController {
       String fileLink =
           ReportFactory.createReport(IReport.PROD_PROCESS, prodProcessLable + "-${date}")
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
+              .addParam(
+                  "Timezone",
+                  manufOrder.getCompany() != null ? manufOrder.getCompany().getTimezone() : null)
               .addParam("ProdProcessId", prodProcessId)
               .generate()
               .getFileLink();
@@ -441,7 +474,7 @@ public class ManufOrderController {
               .computeCostPrice(
                   manufOrder,
                   CostSheetRepository.CALCULATION_WORK_IN_PROGRESS,
-                  Beans.get(AppBaseService.class).getTodayDate());
+                  Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()));
 
       response.setView(
           ActionView.define(I18n.get("Cost sheet"))

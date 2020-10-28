@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -12,6 +12,7 @@
         //SEQUENCE SELECT
 		public static final String ACCOUNT_CLEARANCE = "accountClearance";
 		public static final String ACCOUNTING_REPORT = "accountingReport";
+		public static final String CUSTOM_ACCOUNTING_REPORT = "customAccountingReport";
 		public static final String ANALYTIC_REPORT = "analyticReport";
 		public static final String CHEQUE_REJECT = "chequeReject";
 		public static final String DEPOSIT_SLIP = "depositSlip";

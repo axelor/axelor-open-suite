@@ -28,6 +28,7 @@ import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -60,13 +61,27 @@ public class PayerQualityService {
   }
 
   public List<DebtRecoveryHistory> getDebtRecoveryHistoryList(Partner partner) {
-    return debtRecoveryHistoryRepo
-        .all()
-        .filter(
-            "(self.debtRecovery.accountingSituation.partner = ?1 OR self.debtRecovery.tradingNameAccountingSituation.partner = ?1) AND self.debtRecoveryDate > ?2",
-            partner,
-            appAccountService.getTodayDate().minusYears(1))
-        .fetch();
+    List<DebtRecoveryHistory> debtRecoveryHistoryList = new ArrayList<DebtRecoveryHistory>();
+    if (partner.getAccountingSituationList() != null) {
+      for (AccountingSituation accountingSituation : partner.getAccountingSituationList()) {
+        DebtRecovery debtRecovery = accountingSituation.getDebtRecovery();
+        if (debtRecovery != null
+            && debtRecovery.getDebtRecoveryHistoryList() != null
+            && !debtRecovery.getDebtRecoveryHistoryList().isEmpty()) {
+          for (DebtRecoveryHistory debtRecoveryHistory :
+              debtRecovery.getDebtRecoveryHistoryList()) {
+            if ((debtRecoveryHistory.getDebtRecoveryDate() != null
+                && debtRecoveryHistory
+                    .getDebtRecoveryDate()
+                    .isAfter(
+                        appAccountService.getTodayDate(debtRecovery.getCompany()).minusYears(1)))) {
+              debtRecoveryHistoryList.add(debtRecoveryHistory);
+            }
+          }
+        }
+      }
+    }
+    return debtRecoveryHistoryList;
   }
 
   public List<MoveLine> getMoveLineRejectList(Partner partner) {
@@ -78,7 +93,7 @@ public class PayerQualityService {
         .filter(
             "self.partner = ?1 AND self.date > ?2 AND self.interbankCodeLine IS NOT NULL",
             partner,
-            appAccountService.getTodayDate().minusYears(1))
+            appAccountService.getTodayDate(AuthUtils.getUser().getActiveCompany()).minusYears(1))
         .fetch();
   }
 

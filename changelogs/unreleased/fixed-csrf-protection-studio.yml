@@ -1,3 +1,0 @@
----
-title: "Studio:  Fixed CSRF protection for every request header"
-type: fix

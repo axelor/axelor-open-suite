@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
   <grid name="raw-material-requirement-grid" title="Raw material requirement" model="com.axelor.apps.production.db.RawMaterialRequirement">
     <field name="code" width="120"/>
@@ -37,5 +37,9 @@
   <action-method name="action-product-need-report-method-print">
     <call class="com.axelor.apps.production.web.RawMaterialRequirementController" method="print"/>
   </action-method>
+  
+  <search-filters name="raw-material-requirement-filters" model="com.axelor.apps.production.db.RawMaterialRequirement" title="Raw material requirement filters">
+  	<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+  </search-filters>
 
 </object-views>

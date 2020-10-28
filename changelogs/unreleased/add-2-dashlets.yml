@@ -2,5 +2,5 @@
 title: "Move line & Bank statement:  add 2 new dashlet in form views"
 type: feature
 description: |
-	In move line form view add a dashlet to display associated bank reconciliation lines
-	In bank statement form view add a dashlet to display associated move lines
+  In move line form view add a dashlet to display associated bank reconciliation lines
+  In bank statement form view add a dashlet to display associated move lines

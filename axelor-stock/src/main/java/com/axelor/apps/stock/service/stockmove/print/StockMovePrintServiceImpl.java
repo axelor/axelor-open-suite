@@ -27,6 +27,7 @@ import com.axelor.apps.stock.report.IReport;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.ThrowConsumer;
 import com.axelor.apps.tool.file.PdfTool;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -63,7 +64,7 @@ public class StockMovePrintServiceImpl implements StockMovePrintService {
         I18n.get("Stock moves")
             + " - "
             + Beans.get(AppBaseService.class)
-                .getTodayDate()
+                .getTodayDate(AuthUtils.getUser().getActiveCompany())
                 .format(DateTimeFormatter.BASIC_ISO_DATE)
             + "."
             + ReportSettings.FORMAT_PDF;
@@ -90,6 +91,9 @@ public class StockMovePrintServiceImpl implements StockMovePrintService {
         ReportFactory.createReport(IReport.STOCK_MOVE, title + " - ${date}");
     return reportSetting
         .addParam("StockMoveId", stockMove.getId())
+        .addParam(
+            "Timezone",
+            stockMove.getCompany() != null ? stockMove.getCompany().getTimezone() : null)
         .addParam("Locale", locale)
         .addParam(
             "GroupProducts",

@@ -111,29 +111,58 @@ public class InvoiceController {
     invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
 
     try {
+      // we have to inject TraceBackService to use non static methods
+      TraceBackService traceBackService = Beans.get(TraceBackService.class);
+      long tracebackCount = traceBackService.countMessageTraceBack(invoice);
       Beans.get(InvoiceService.class).validate(invoice);
       response.setReload(true);
+      if (traceBackService.countMessageTraceBack(invoice) > tracebackCount) {
+        traceBackService
+            .findLastMessageTraceBack(invoice)
+            .ifPresent(
+                traceback ->
+                    response.setNotify(
+                        String.format(
+                            I18n.get(
+                                com.axelor.apps.message.exception.IExceptionMessage
+                                    .SEND_EMAIL_EXCEPTION),
+                            traceback.getMessage())));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
 
   /**
-   * Fonction appeler par le bouton ventiler
+   * Called from invoice form view, on clicking ventilate button. Call {@link
+   * InvoiceService#ventilate(Invoice)}.
    *
    * @param request
    * @param response
-   * @return
-   * @throws AxelorException
    */
-  public void ventilate(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void ventilate(ActionRequest request, ActionResponse response) {
 
     Invoice invoice = request.getContext().asType(Invoice.class);
     invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
 
     try {
+      // we have to inject TraceBackService to use non static methods
+      TraceBackService traceBackService = Beans.get(TraceBackService.class);
+      long tracebackCount = traceBackService.countMessageTraceBack(invoice);
       Beans.get(InvoiceService.class).ventilate(invoice);
       response.setReload(true);
+      if (traceBackService.countMessageTraceBack(invoice) > tracebackCount) {
+        traceBackService
+            .findLastMessageTraceBack(invoice)
+            .ifPresent(
+                traceback ->
+                    response.setNotify(
+                        String.format(
+                            I18n.get(
+                                com.axelor.apps.message.exception.IExceptionMessage
+                                    .SEND_EMAIL_EXCEPTION),
+                            traceback.getMessage())));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -144,18 +173,30 @@ public class InvoiceController {
    *
    * @param request
    * @param response
-   * @return
-   * @throws AxelorException
    */
-  public void validateAndVentilate(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void validateAndVentilate(ActionRequest request, ActionResponse response) {
 
     Invoice invoice = request.getContext().asType(Invoice.class);
     invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
 
     try {
+      // we have to inject TraceBackService to use non static methods
+      TraceBackService traceBackService = Beans.get(TraceBackService.class);
+      long tracebackCount = traceBackService.countMessageTraceBack(invoice);
       Beans.get(InvoiceService.class).validateAndVentilate(invoice);
       response.setReload(true);
+      if (traceBackService.countMessageTraceBack(invoice) > tracebackCount) {
+        traceBackService
+            .findLastMessageTraceBack(invoice)
+            .ifPresent(
+                traceback ->
+                    response.setNotify(
+                        String.format(
+                            I18n.get(
+                                com.axelor.apps.message.exception.IExceptionMessage
+                                    .SEND_EMAIL_EXCEPTION),
+                            traceback.getMessage())));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -176,6 +217,10 @@ public class InvoiceController {
     if (invoice.getStatusSelect() == InvoiceRepository.STATUS_VENTILATED
         && invoice.getCompany().getAccountConfig() != null
         && !invoice.getCompany().getAccountConfig().getAllowCancelVentilatedInvoice()) {
+      response.setError(
+          I18n.get(
+              IExceptionMessage
+                  .INVOICE_CAN_NOT_GO_BACK_TO_VALIDATE_STATUS_OR_CANCEL_VENTILATED_INVOICE));
       return;
     }
 
@@ -257,6 +302,7 @@ public class InvoiceController {
               .model(Invoice.class.getName())
               .add("form", "invoice-form")
               .add("grid", "invoice-grid")
+              .param("search-filters", "customer-invoices-filters")
               .param("forceTitle", "true")
               .context("_showRecord", refund.getId().toString())
               .domain("self.originalInvoice.id = " + invoice.getId())
@@ -650,6 +696,7 @@ public class InvoiceController {
                 .model(Invoice.class.getName())
                 .add("grid", "invoice-grid")
                 .add("form", "invoice-form")
+                .param("search-filters", "customer-invoices-filters")
                 .param("forceEdit", "true")
                 .context("_showRecord", String.valueOf(invoice.getId()))
                 .map());
@@ -665,6 +712,14 @@ public class InvoiceController {
     response.setValue(
         "addressStr", Beans.get(AddressService.class).computeAddressStr(invoice.getAddress()));
   }
+
+  public void computeDeliveryAddressStr(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    response.setValue(
+        "deliveryAddressStr",
+        Beans.get(AddressService.class).computeAddressStr(invoice.getDeliveryAddress()));
+  }
+
   /**
    * Called on load and in partner, company or payment mode change. Fill the bank details with a
    * default value.

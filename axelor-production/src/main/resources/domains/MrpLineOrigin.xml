@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+ 
+  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
+ 
+  <entity name="MrpLineOrigin" lang="java">
+      <extra-code>
+            <![CDATA[
+        
+	        //RELATED TO SELECT TYPE PRODUCTION
+	  		public static final String RELATED_TO_MANUFACTURING_ORDER = "com.axelor.apps.production.db.ManufOrder";
+	  		public static final String RELATED_TO_OPERATION_ORDER = "com.axelor.apps.production.db.OperationOrder";
+	  		
+      	 ]]>
+      </extra-code>
+  </entity>
+
+</domain-models>

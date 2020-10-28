@@ -18,7 +18,7 @@
 package com.axelor.apps.report.engine;
 
 import com.axelor.app.AppSettings;
-import com.axelor.app.internal.AppFilter;
+import com.axelor.apps.base.service.ReportingTool;
 import com.axelor.apps.tool.net.URLService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -37,13 +37,14 @@ public class ExternalReportSettings extends ReportSettings {
 
   protected static String BIRT_PATH = "birt";
   protected String url = "";
-  protected String birtViewerUrl = null;;
+  protected String birtViewerUrl = null;
 
   public ExternalReportSettings(String rptdesign, String outputName) {
 
     super(rptdesign, outputName);
 
-    this.addAxelorReportPath(rptdesign).addParam("__locale", AppFilter.getLocale().toString());
+    this.addAxelorReportPath(rptdesign)
+        .addParam("__locale", ReportingTool.getCompanyLocale().toString());
   }
 
   @Override

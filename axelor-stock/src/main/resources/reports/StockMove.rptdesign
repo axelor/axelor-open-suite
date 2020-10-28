@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -41,7 +41,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">8</value>
+                <value type="constant">1</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -58,7 +58,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">en</value>
+                <value type="constant">fr</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -74,7 +74,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -2229,6 +2229,13 @@ group by productType, grouped_title, unit_code, currencyCode, currency
                     <expression name="expression" type="javascript">dataSetRow["display_product_code_on_printing"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
+                <structure>
+                    <property name="name">Column Binding</property>
+                    <text-property name="displayName">TodayDate</text-property>
+                    <expression name="expression" type="javascript">new Date()</expression>
+                    <property name="dataType">date</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <structure name="toc"/>
             <column id="5232"/>
@@ -2381,6 +2388,7 @@ group by productType, grouped_title, unit_code, currencyCode, currency
                                 <text id="3425">
                                     <property name="marginLeft">0pt</property>
                                     <property name="textAlign">left</property>
+                                    <property name="display">inline</property>
                                     <property name="dataSet">TranslateDS</property>
                                     <list-property name="paramBindings">
                                         <structure>
@@ -2407,8 +2415,16 @@ group by productType, grouped_title, unit_code, currencyCode, currency
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B>: <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF format="dd/MM/yyyy">row._outer["picking_edit_date"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B>:&amp;nbsp;]]></text-property>
                                 </text>
+                                <data id="5408">
+                                    <structure name="dateTimeFormat">
+                                        <property name="category">Short Date</property>
+                                        <property name="pattern">Short Date</property>
+                                    </structure>
+                                    <property name="display">inline</property>
+                                    <property name="resultSetColumn">picking_edit_date</property>
+                                </data>
                             </cell>
                         </row>
                         <row id="5316">
@@ -2427,6 +2443,7 @@ group by productType, grouped_title, unit_code, currencyCode, currency
                                 <text id="5318">
                                     <property name="marginLeft">0pt</property>
                                     <property name="textAlign">left</property>
+                                    <property name="display">inline</property>
                                     <property name="dataSet">TranslateDS</property>
                                     <list-property name="paramBindings">
                                         <structure>
@@ -2453,8 +2470,16 @@ group by productType, grouped_title, unit_code, currencyCode, currency
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B>: <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF format="dd/MM/yyyy">BirtDateTime.now()</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B>:&amp;nbsp;]]></text-property>
                                 </text>
+                                <data id="5409">
+                                    <structure name="dateTimeFormat">
+                                        <property name="category">Short Date</property>
+                                        <property name="pattern">Short Date</property>
+                                    </structure>
+                                    <property name="display">inline</property>
+                                    <property name="resultSetColumn">Column Binding</property>
+                                </data>
                             </cell>
                         </row>
                         <row id="5405">
@@ -2469,6 +2494,7 @@ group by productType, grouped_title, unit_code, currencyCode, currency
                                 <text id="5407">
                                     <property name="marginLeft">0pt</property>
                                     <property name="textAlign">left</property>
+                                    <property name="display">inline</property>
                                     <property name="dataSet">TranslateDS</property>
                                     <list-property name="paramBindings">
                                         <structure>
@@ -2495,8 +2521,16 @@ group by productType, grouped_title, unit_code, currencyCode, currency
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B>: <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF format="dd/MM/yyyy">row._outer["orderDate"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> </B>:&amp;nbsp;]]></text-property>
                                 </text>
+                                <data id="5410">
+                                    <structure name="dateTimeFormat">
+                                        <property name="category">Short Date</property>
+                                        <property name="pattern">Short Date</property>
+                                    </structure>
+                                    <property name="display">inline</property>
+                                    <property name="resultSetColumn">orderDate</property>
+                                </data>
                             </cell>
                         </row>
                         <row id="3654">

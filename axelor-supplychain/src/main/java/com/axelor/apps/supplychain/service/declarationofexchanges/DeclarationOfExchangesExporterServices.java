@@ -143,6 +143,11 @@ public class DeclarationOfExchangesExporterServices extends DeclarationOfExchang
         .addParam("DeclarationOfExchangesId", declarationOfExchanges.getId())
         .addParam("UserId", AuthUtils.getUser().getId())
         .addParam("Locale", ReportSettings.getPrintingLocale())
+        .addParam(
+            "Timezone",
+            declarationOfExchanges.getCompany() != null
+                ? declarationOfExchanges.getCompany().getTimezone()
+                : null)
         .addFormat(declarationOfExchanges.getFormatSelect())
         .toAttach(declarationOfExchanges)
         .generate()

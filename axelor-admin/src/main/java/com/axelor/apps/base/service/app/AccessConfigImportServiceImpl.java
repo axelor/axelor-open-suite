@@ -69,7 +69,7 @@ public class AccessConfigImportServiceImpl implements AccessConfigImportService 
       processWorkbook(workBook);
     } catch (InvalidFormatException | IOException e) {
       TraceBackService.trace(e);
-      throw new AxelorException(TraceBackRepository.TYPE_TECHNICAL, e.getMessage());
+      throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
     }
   }
 

@@ -57,7 +57,11 @@ public interface IExceptionMessage {
   static final String UNIT_CONVERSION_1 = /*$$(*/
       "Please configure unit conversion from '%s' to '%s'." /*)*/;
 
-  static final String UNIT_CONVERSION_2 = /*$$(*/ "Please configure units." /*)*/;
+  static final String UNIT_CONVERSION_2 = /*$$(*/ "Start unit cannot be void." /*)*/;
+
+  static final String UNIT_CONVERSION_3 = /*$$(*/ "Conversion impossible because of no unit." /*)*/;
+
+  static final String UNIT_CONVERSION_4 = /*$$(*/ "End unit cannot be void." /*)*/;
 
   static final String CURRENCY_CONVERSION_1 = /*$$(*/
       "WARNING : Please close the current conversion period before creating new one" /*)*/;
@@ -235,6 +239,12 @@ public interface IExceptionMessage {
   static final String PRODUCT_NO_ACTIVE_COMPANY = /*$$(*/
       "No active company for this user, please define an active company." /*)*/;
 
+  public static final String PRODUCT_COMPANY_NO_PRODUCT = /*$$(*/
+      "Attempted to get field '%s' for unspecified product." /*)*/;
+
+  public static final String PRODUCT_COMPANY_NO_FIELD = /*$$(*/
+      "Attempted to get a field from product '%s' but forgot to specify which field." /*)*/;
+
   /** Calendar */
   static final String CALENDAR_NOT_VALID = /*$$(*/ "Calendar configuration not valid" /*)*/;
 
@@ -403,4 +413,13 @@ public interface IExceptionMessage {
       "Configuration error: the product category %s is an ancestor of himself." /*)*/;
   public static final String PRODUCT_CATEGORY_CHILDREN_CIRCULAR_DEPENDENCY = /*$$(*/
       "Configuration error: the product category %s is among its descendants." /*)*/;
+  /* Print template */
+  public static final String PRINT_TEMPLATE_CONDITION_MUST_BE_BOOLEAN = /*$$(*/
+      "The groovy condition result must be a boolean" /*)*/;
+  public static final String PRINT_ERROR = /*$$(*/
+      "Error in print. Please check report configuration and print settings." /*)*/;
+  public static final String PRINT_TEMPLATE_ERROR_ON_LINE_WITH_SEQUENCE_AND_TITLE = /*$$(*/
+      "Error in print template line with sequence %s and title %s." /*)*/;
+  public static final String PRINT_TEMPLATE_LINE_TEST_REFRESH = /*$$(*/
+      "Refresh page to reflect changes in selection" /*)*/;
 }

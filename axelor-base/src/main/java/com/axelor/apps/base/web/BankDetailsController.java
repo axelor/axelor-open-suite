@@ -50,6 +50,12 @@ public class BankDetailsController {
         && bank.getBankDetailsTypeSelect() == BankRepository.BANK_IDENTIFIER_TYPE_IBAN) {
       try {
         Beans.get(BankDetailsService.class).validateIban(bankDetails.getIban());
+      } catch (IbanFormatException | InvalidCheckDigitException | UnsupportedCountryException e) {
+        if (request.getAction().endsWith("onchange")) {
+          response.setFlash(I18n.get(IExceptionMessage.BANK_DETAILS_1));
+        }
+        response.setAttr("invalidIbanText", "hidden", false);
+      } finally {
         bankDetails = Beans.get(BankDetailsServiceImpl.class).detailsIban(bankDetails);
         if (bank.getCountry() != null && bank.getCountry().getAlpha2Code().equals("FR")) {
           response.setValue("bankCode", bankDetails.getBankCode());
@@ -57,11 +63,6 @@ public class BankDetailsController {
           response.setValue("accountNbr", bankDetails.getAccountNbr());
           response.setValue("bbanKey", bankDetails.getBbanKey());
         }
-      } catch (IbanFormatException | InvalidCheckDigitException | UnsupportedCountryException e) {
-        if (request.getAction().endsWith("onchange")) {
-          response.setFlash(I18n.get(IExceptionMessage.BANK_DETAILS_1));
-        }
-        response.setAttr("invalidIbanText", "hidden", false);
       }
     }
   }
