@@ -58,7 +58,7 @@ public class STTest {
           + "<p>&nbsp;</p>"
           + "<p><em>Contact me:</em>&nbsp;<a href='mailto:$contact.email$' target='_blank'>$contact.fullName$</a></p>"
           + "<hr />$__time__;format=\"HH\"$"
-          + "<ul>$__config__.date$"
+          + "<ul>$__date__$"
           + "<li>Java</li>"
           + "<li>JavaScript</li>"
           + "<li>Groovy</li>"
