@@ -88,7 +88,7 @@ public class MoveDueService {
                         + " AND self.partner = ?5 AND self NOT IN (?6) ORDER BY self.date ASC ",
                     company,
                     MoveRepository.STATUS_VALIDATED,
-                    MoveRepository.STATUS_DAYBOOK,
+                    MoveRepository.STATUS_ACCOUNTED,
                     true,
                     partner,
                     debitMoveLines)
@@ -103,7 +103,7 @@ public class MoveDueService {
                         + " AND self.partner = ?5 ORDER BY self.date ASC ",
                     company,
                     MoveRepository.STATUS_VALIDATED,
-                    MoveRepository.STATUS_DAYBOOK,
+                    MoveRepository.STATUS_ACCOUNTED,
                     true,
                     partner)
                 .fetch();

@@ -462,7 +462,7 @@ public class MoveServiceImpl implements MoveService {
     move.setPaymentVoucher(move.getPaymentVoucher());
 
     boolean validatedMove =
-        move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
+        move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
             || move.getStatusSelect() == MoveRepository.STATUS_VALIDATED;
 
     for (MoveLine moveLine : move.getMoveLineList()) {

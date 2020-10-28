@@ -86,7 +86,7 @@ public class ImportMove {
           move.setStatusSelect(MoveRepository.STATUS_VALIDATED);
           move.setValidationDate(LocalDate.parse(values.get("ValidDate").toString()));
         } else {
-          move.setStatusSelect(MoveRepository.STATUS_DAYBOOK);
+          move.setStatusSelect(MoveRepository.STATUS_ACCOUNTED);
         }
 
         move.setCompany(getCompany(values));
@@ -156,7 +156,7 @@ public class ImportMove {
     assert bean instanceof Move;
     Move move = (Move) bean;
     try {
-      if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
+      if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
           || move.getStatusSelect() == MoveRepository.STATUS_VALIDATED) {
         moveValidateService.validate(move);
       }
