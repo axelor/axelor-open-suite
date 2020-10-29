@@ -24,7 +24,7 @@
 		name="partner-supplychain-link-partner-2-grid">
 		<field name="partner1" form-view="partner-form" grid-view="partner-grid" domain="self.isContact = false AND (self.isCustomer = true OR self.isProspect = true)"/>
     <field name="partnerSupplychainLinkType" form-view="partner-supplychain-link-type-form"
-           grid-view="partner-supplychain-link-type-grid" target-name="link2Name"/>
+           grid-view="partner-supplychain-link-type-grid" target-name="link1Name"/>
 	</grid>
 
 	<form model="com.axelor.apps.base.db.PartnerSupplychainLink"
