@@ -273,7 +273,6 @@ public interface IExceptionMessage {
   /*
    * MRP Service
    */
-  String MRP_BEING_COMPUTED = /*$$(*/ "Computation in progress..." /*)*/;
 
   String MRP_ERROR_WHILE_COMPUTATION = /*$$(*/ "Error during the computation of MRP %s" /*)*/;
 

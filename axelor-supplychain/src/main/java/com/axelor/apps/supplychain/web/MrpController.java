@@ -18,11 +18,10 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.ReportFactory;
-import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.callable.ControllerCallableTool;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.report.IReport;
 import com.axelor.apps.supplychain.service.MrpService;
 import com.axelor.exception.AxelorException;
@@ -33,10 +32,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 @Singleton
 public class MrpController {
@@ -62,34 +57,11 @@ public class MrpController {
     MrpRepository mrpRepository = Beans.get(MrpRepository.class);
     try {
       mrpService.setMrp(Beans.get(MrpRepository.class).find(mrp.getId()));
-      boolean isDone = false;
-      ExecutorService executor = Executors.newSingleThreadExecutor();
 
-      // Start thread
-      Future<Boolean> future = executor.submit(mrpService);
+      // Tool class that does not need to be injected
+      ControllerCallableTool<Mrp> mrpControllerCallableTool = new ControllerCallableTool<>();
 
-      int processTimeout = Beans.get(AppBaseService.class).getProcessTimeout();
-      // Wait processTimeout seconds
-      int count = 0;
-      while (count++ < processTimeout) {
-        Thread.sleep(1000);
-
-        if (future.isDone()) {
-          try {
-            isDone = future.get();
-          } catch (ExecutionException e) {
-            // cause already traced in traceback
-            response.setError(e.getCause().getMessage());
-            isDone = true;
-            break;
-          }
-          break;
-        }
-      }
-
-      if (!isDone) {
-        response.setNotify(I18n.get(IExceptionMessage.MRP_BEING_COMPUTED));
-      }
+      mrpControllerCallableTool.runInSeparateThread(mrpService, response);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
       mrpService.saveErrorInMrp(mrpRepository.find(mrp.getId()), e);

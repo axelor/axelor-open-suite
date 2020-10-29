@@ -68,10 +68,13 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoper;
+import com.google.inject.servlet.ServletScopes;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -246,12 +249,6 @@ public class MrpServiceImpl implements MrpService {
     mrp.setStatusSelect(MrpRepository.STATUS_CALCULATION_ENDED);
     mrp.setEndDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
     mrpRepository.save(mrp);
-    mailMessageService.sendNotification(
-        AuthUtils.getUser(),
-        String.format(I18n.get(IExceptionMessage.MRP_FINISHED_MESSAGE_SUBJECT), mrp.getMrpSeq()),
-        String.format(I18n.get(IExceptionMessage.MRP_FINISHED_MESSAGE_BODY), mrp.getMrpSeq()),
-        mrp.getId(),
-        mrp.getClass());
   }
 
   protected void checkInsufficientCumulativeQty() throws AxelorException {
@@ -1198,14 +1195,21 @@ public class MrpServiceImpl implements MrpService {
   }
 
   @Override
-  public Boolean call() throws AxelorException {
-    try {
+  public Mrp call() throws AxelorException {
+    final RequestScoper scope = ServletScopes.scopeRequest(Collections.emptyMap());
+    try (RequestScoper.CloseableScope ignored = scope.open()) {
       this.runCalculation(mrp);
+      mailMessageService.sendNotification(
+          AuthUtils.getUser(),
+          String.format(I18n.get(IExceptionMessage.MRP_FINISHED_MESSAGE_SUBJECT), mrp.getMrpSeq()),
+          String.format(I18n.get(IExceptionMessage.MRP_FINISHED_MESSAGE_BODY), mrp.getMrpSeq()),
+          mrp.getId(),
+          mrp.getClass());
     } catch (Exception e) {
       onRunnerException(e);
       throw e;
     }
-    return true;
+    return mrp;
   }
 
   @Transactional

@@ -25,7 +25,7 @@ import com.axelor.exception.AxelorException;
 import java.time.LocalDate;
 import java.util.concurrent.Callable;
 
-public interface MrpService extends Callable<Boolean> {
+public interface MrpService extends Callable<Mrp> {
 
   /**
    * To call before using it as a callable.

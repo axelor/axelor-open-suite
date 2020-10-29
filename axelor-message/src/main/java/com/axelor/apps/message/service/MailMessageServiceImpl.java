@@ -10,6 +10,7 @@ import com.axelor.mail.db.MailMessage;
 import com.axelor.mail.db.repo.MailFollowerRepository;
 import com.axelor.mail.db.repo.MailMessageRepository;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 
 public class MailMessageServiceImpl implements MailMessageService {
 
@@ -24,11 +25,13 @@ public class MailMessageServiceImpl implements MailMessageService {
   }
 
   @Override
+  @Transactional
   public void sendNotification(User user, String subject, String body) {
     this.sendNotification(user, subject, body, null, null);
   }
 
   @Override
+  @Transactional
   public void sendNotification(
       User user, String subject, String body, Long relatedId, Class<? extends Model> relatedModel) {
     MailMessage message = new MailMessage();
