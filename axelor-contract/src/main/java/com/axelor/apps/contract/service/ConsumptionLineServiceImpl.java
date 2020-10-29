@@ -25,6 +25,7 @@ import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.exception.IExceptionMessage;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
@@ -48,7 +49,10 @@ public class ConsumptionLineServiceImpl implements ConsumptionLineService {
                 .map(ContractLine::getContractVersion)
                 .map(ContractVersion::getContract)
                 .map(Contract::getCompany)
-                .orElse(AuthUtils.getUser().getActiveCompany())));
+                .orElse(
+                    Optional.ofNullable(AuthUtils.getUser())
+                        .map(User::getActiveCompany)
+                        .orElse(null))));
     line.setProduct(product);
     line.setReference(product.getName());
     line.setUnit(product.getUnit());

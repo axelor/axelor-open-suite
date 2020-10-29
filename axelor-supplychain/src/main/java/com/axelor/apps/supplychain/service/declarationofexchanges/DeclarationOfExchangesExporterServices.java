@@ -29,6 +29,7 @@ import com.axelor.apps.supplychain.db.DeclarationOfExchanges;
 import com.axelor.apps.supplychain.report.IReport;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -43,6 +44,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class DeclarationOfExchangesExporterServices extends DeclarationOfExchangesExporter {
@@ -141,7 +143,7 @@ public class DeclarationOfExchangesExporterServices extends DeclarationOfExchang
   protected String exportToPDF() throws AxelorException {
     return ReportFactory.createReport(IReport.DECLARATION_OF_SERVICES, getTitle())
         .addParam("DeclarationOfExchangesId", declarationOfExchanges.getId())
-        .addParam("UserId", AuthUtils.getUser().getId())
+        .addParam("UserId", Optional.ofNullable(AuthUtils.getUser()).map(User::getId).orElse(null))
         .addParam("Locale", ReportSettings.getPrintingLocale())
         .addParam(
             "Timezone",

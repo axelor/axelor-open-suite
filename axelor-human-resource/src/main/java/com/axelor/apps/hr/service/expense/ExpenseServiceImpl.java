@@ -92,6 +92,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import javax.mail.MessagingException;
 import org.apache.commons.collections.CollectionUtils;
@@ -176,7 +177,9 @@ public class ExpenseServiceImpl implements ExpenseService {
           appAccountService.getTodayDate(
               expenseLine.getExpense() != null
                   ? expenseLine.getExpense().getCompany()
-                  : AuthUtils.getUser().getActiveCompany());
+                  : Optional.ofNullable(AuthUtils.getUser())
+                      .map(User::getActiveCompany)
+                      .orElse(null));
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
         analyticMoveLineService.updateAnalyticMoveLine(
             analyticMoveLine, expenseLine.getUntaxedAmount(), date);
@@ -195,7 +198,9 @@ public class ExpenseServiceImpl implements ExpenseService {
             appAccountService.getTodayDate(
                 expenseLine.getExpense() != null
                     ? expenseLine.getExpense().getCompany()
-                    : AuthUtils.getUser().getActiveCompany()));
+                    : Optional.ofNullable(AuthUtils.getUser())
+                        .map(User::getActiveCompany)
+                        .orElse(null)));
 
     expenseLine.setAnalyticMoveLineList(analyticMoveLineList);
     return expenseLine;
