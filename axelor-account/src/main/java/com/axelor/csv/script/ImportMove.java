@@ -31,6 +31,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -40,6 +41,7 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import java.util.Optional;
 import javax.transaction.Transactional;
 
 public class ImportMove {
@@ -146,8 +148,9 @@ public class ImportMove {
 
     if (company != null) {
       return company;
-    } else if (AuthUtils.getUser().getActiveCompany() != null) {
-      return AuthUtils.getUser().getActiveCompany();
+    } else if (Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null)
+        != null) {
+      return Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
     } else {
       return Beans.get(CompanyRepository.class).all().fetchOne();
     }

@@ -30,11 +30,13 @@ import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.util.Map;
+import java.util.Optional;
 
 public class ConvertLeadWizardService {
 
@@ -75,7 +77,8 @@ public class ConvertLeadWizardService {
 
     this.setAddress(partner, primaryAddress);
 
-    Company activeCompany = AuthUtils.getUser().getActiveCompany();
+    Company activeCompany =
+        Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
     if (activeCompany != null) {
       partner.addCompanySetItem(activeCompany);
       if (partner.getCurrency() == null) {

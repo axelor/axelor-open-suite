@@ -45,6 +45,7 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.common.base.MoreObjects;
@@ -56,6 +57,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class InvoiceLineServiceImpl implements InvoiceLineService {
 
@@ -116,7 +118,9 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
           appAccountService.getTodayDate(
               invoiceLine.getInvoice() != null
                   ? invoiceLine.getInvoice().getCompany()
-                  : AuthUtils.getUser().getActiveCompany());
+                  : Optional.ofNullable(AuthUtils.getUser())
+                      .map(User::getActiveCompany)
+                      .orElse(null));
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
         analyticMoveLineService.updateAnalyticMoveLine(
             analyticMoveLine, invoiceLine.getCompanyExTaxTotal(), date);
@@ -135,7 +139,9 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
             appAccountService.getTodayDate(
                 invoiceLine.getInvoice() != null
                     ? invoiceLine.getInvoice().getCompany()
-                    : AuthUtils.getUser().getActiveCompany()));
+                    : Optional.ofNullable(AuthUtils.getUser())
+                        .map(User::getActiveCompany)
+                        .orElse(null)));
 
     return analyticMoveLineList;
   }

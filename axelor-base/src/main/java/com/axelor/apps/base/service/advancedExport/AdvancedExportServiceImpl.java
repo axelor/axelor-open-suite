@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.AdvancedExportLine;
 import com.axelor.apps.tool.NamingTool;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.JpaSecurity;
@@ -49,6 +50,7 @@ import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -101,7 +103,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
     msi = 0;
     mt = 0;
     int col = 0;
-    language = AuthUtils.getUser().getLanguage();
+    language = Optional.ofNullable(AuthUtils.getUser()).map(User::getLanguage).orElse(null);
 
     try {
       for (AdvancedExportLine advancedExportLine : advancedExport.getAdvancedExportLineList()) {

@@ -36,6 +36,7 @@ import com.axelor.apps.stock.db.repo.WapHistoryRepository;
 import com.axelor.apps.stock.exception.IExceptionMessage;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -49,6 +50,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -756,7 +758,9 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
             appBaseService.getTodayDate(
                 stockLocationLine.getStockLocation() != null
                     ? stockLocationLine.getStockLocation().getCompany()
-                    : AuthUtils.getUser().getActiveCompany()),
+                    : Optional.ofNullable(AuthUtils.getUser())
+                        .map(User::getActiveCompany)
+                        .orElse(null)),
             wap,
             stockLocationLine.getCurrentQty(),
             stockLocationLine.getUnit(),
