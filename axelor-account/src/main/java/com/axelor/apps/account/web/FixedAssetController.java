@@ -74,7 +74,9 @@ public class FixedAssetController {
   }
 
   public void validate(ActionRequest request, ActionResponse response) {
-    FixedAsset fixedAsset = request.getContext().asType(FixedAsset.class);
+    FixedAsset fixedAsset =
+        Beans.get(FixedAssetRepository.class)
+            .find(request.getContext().asType(FixedAsset.class).getId());
     if (fixedAsset.getStatusSelect() == FixedAssetRepository.STATUS_DRAFT) {
       try {
         Beans.get(FixedAssetService.class).validate(fixedAsset);
