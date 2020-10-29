@@ -61,27 +61,13 @@ public class PayerQualityService {
   }
 
   public List<DebtRecoveryHistory> getDebtRecoveryHistoryList(Partner partner) {
-    List<DebtRecoveryHistory> debtRecoveryHistoryList = new ArrayList<DebtRecoveryHistory>();
-    if (partner.getAccountingSituationList() != null) {
-      for (AccountingSituation accountingSituation : partner.getAccountingSituationList()) {
-        DebtRecovery debtRecovery = accountingSituation.getDebtRecovery();
-        if (debtRecovery != null
-            && debtRecovery.getDebtRecoveryHistoryList() != null
-            && !debtRecovery.getDebtRecoveryHistoryList().isEmpty()) {
-          for (DebtRecoveryHistory debtRecoveryHistory :
-              debtRecovery.getDebtRecoveryHistoryList()) {
-            if ((debtRecoveryHistory.getDebtRecoveryDate() != null
-                && debtRecoveryHistory
-                    .getDebtRecoveryDate()
-                    .isAfter(
-                        appAccountService.getTodayDate(debtRecovery.getCompany()).minusYears(1)))) {
-              debtRecoveryHistoryList.add(debtRecoveryHistory);
-            }
-          }
-        }
-      }
-    }
-    return debtRecoveryHistoryList;
+    return debtRecoveryHistoryRepo
+        .all()
+        .filter(
+            "(self.debtRecovery.accountingSituation.partner = ?1 OR self.debtRecovery.tradingNameAccountingSituation.partner = ?1) AND self.debtRecoveryDate > ?2",
+            partner,
+            appAccountService.getTodayDate().minusYears(1))
+        .fetch();
   }
 
   public List<MoveLine> getMoveLineRejectList(Partner partner) {

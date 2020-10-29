@@ -123,7 +123,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       InvoiceLineService invoiceLineService,
       AccountConfigService accountConfigService,
       PartnerTurnoverService partnerTurnoverService,
-      YearServiceAccount yearServiceAccount) {
+      YearServiceAccount yearServiceAccount,
       MoveToolService moveToolService) {
 
     this.validateFactory = validateFactory;
