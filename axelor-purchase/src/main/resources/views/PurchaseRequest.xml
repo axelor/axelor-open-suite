@@ -77,9 +77,9 @@
 
 		<panel name="detailPanel" sidebar="true">
 			<button name="requestBtn" title="Request" icon="fa-bullhorn"
-				showIf="statusSelect == 1" onClick="save,action-purchase-request-set-status-requested,save" />
+				showIf="statusSelect == 1" onClick="save,action-purchase-request-set-status-requested,action-purchase-request-record-set-requester-user,save" />
 			<button name="acceptBtn" title="Accept" icon="fa-check" showIf="statusSelect == 2"
-				onClick="save,action-purchase-request-set-status-accepted,save" />
+				onClick="save,action-purchase-request-set-status-accepted,action-purchase-request-record-set-validator-user,save" />
 			<button name="purchaseBtn" title="Purchase" icon="fa-shopping-cart"
 				showIf="statusSelect == 3" onClick="action-purchase-request-group-update-status" />
 			<button name="deliverPartiallyBtn" title="Deliver Partially"
@@ -101,6 +101,8 @@
 			<field name="stockLocation"  canEdit="false" domain="self.company = :company and self.typeSelect in (1,2) and self.usableOnPurchaseOrder = true" 
 				if-module="axelor-supplychain" colSpan="12" form-view="stock-location-form" grid-view="stock-location-grid" if="__config__.app.isApp('supplychain')" />
 			<field name="supplierUser" domain="self.isSupplier = true" colSpan="12" canEdit="false" form-view="partner-form" grid-view="partner-grid"/>
+            <field name="requesterUser"/>
+            <field name="validatorUser"/>
 		</panel>
 		<panel sidebar="true" name="follow-upPanel" title="Follow-up"
 			canCollapse="true" showIf="purchaseOrder">
@@ -134,6 +136,14 @@
 		<field name="company" expr="eval:__user__.activeCompany"/>
 		<field name="supplierUser" expr="eval:__repo__(Product).find(_product?.id)?.getDefaultSupplierPartner()" if="_product"/>
 	</action-record>
+  
+    <action-record name="action-purchase-request-record-set-requester-user" model="com.axelor.apps.purchase.db.PurchaseRequest">
+        <field name="requesterUser" expr="eval:__user__"/>
+    </action-record>
+    
+    <action-record name="action-purchase-request-record-set-validator-user" model="com.axelor.apps.purchase.db.PurchaseRequest">
+        <field name="validatorUser" expr="eval:__user__"/>
+    </action-record>
 
 	<!-- update status -->
 	<action-record name="action-purchase-request-set-status-requested" model="com.axelor.apps.purchase.db.PurchaseRequest">
