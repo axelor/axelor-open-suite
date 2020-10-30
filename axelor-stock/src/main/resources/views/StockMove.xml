@@ -151,22 +151,22 @@
 
 
    <form name="stock-move-form" title="Stock move" model="com.axelor.apps.stock.db.StockMove" width="large"
-               onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew" onSave="save,action-stock-move-method-update-stocks">
+               onLoad="action-group-stock-stockmove-onload" onNew="action-group-stock-stockmove-onnew" onSave="action-stock-move-group-save-and-update-stocks">
 		<menubar>
 			 <menu name="stockMoveReportsMenu" title="Reports" icon="fa-files-o">
-                <item name="printInternalMoveItem" title="Print Internal Move" action="save,action-print-stock-move" readonlyIf="statusSelect == 1" showIf="typeSelect == 1"/>
-                <item name="printOutgoingMoveItem" title="Print Outgoing Move" action="save,action-print-stock-move" readonlyIf="statusSelect == 1" showIf="typeSelect == 2"/>
-                <item name="printIncomingMoveItem" title="Print Incoming Move" action="save,action-print-stock-move" readonlyIf="statusSelect == 1" showIf="typeSelect == 3"/>
-                <item name="printPickingOrderItem" title="Print picking order" action="save,action-print-picking-stock-move" showIf="statusSelect != 1 &amp;&amp; typeSelect == 2"/>
-				<item name="printCertificateOfConformityItem" title="Print certificate of conformity" action="save,action-method-print-conformity-certificate" showIf="statusSelect != 1 &amp;&amp; isNeedingConformityCertificate"/>
+                <item name="printInternalMoveItem" title="Print Internal Move" action="action-stock-move-group-save-and-update-stocks,action-print-stock-move" readonlyIf="statusSelect == 1" showIf="typeSelect == 1"/>
+                <item name="printOutgoingMoveItem" title="Print Outgoing Move" action="action-stock-move-group-save-and-update-stocks,action-print-stock-move" readonlyIf="statusSelect == 1" showIf="typeSelect == 2"/>
+                <item name="printIncomingMoveItem" title="Print Incoming Move" action="action-stock-move-group-save-and-update-stocks,action-print-stock-move" readonlyIf="statusSelect == 1" showIf="typeSelect == 3"/>
+                <item name="printPickingOrderItem" title="Print picking order" action="action-stock-move-group-save-and-update-stocks,action-print-picking-stock-move" showIf="statusSelect != 1 &amp;&amp; typeSelect == 2"/>
+				<item name="printCertificateOfConformityItem" title="Print certificate of conformity" action="action-stock-move-group-save-and-update-stocks,action-method-print-conformity-certificate" showIf="statusSelect != 1 &amp;&amp; isNeedingConformityCertificate"/>
             </menu>
 
 			<menu name="stockMoveToolsMenu" title="Tools" icon="fa-wrench">
                 <item name="viewDirectionItem" title="View Direction" showIf="typeSelect == 2 &amp;&amp; statusSelect!=4" action="action-stock-move-validate-address,action-stock-move-method-view-direction"/>
-                <item name="splitIntoItem" title="Split into 2" action="save,action-stock-move-split-into-2" showIf="statusSelect &lt;= 2"/>
-                <item name="splitByUnitItem" title="Split by unit" action="save,action-stock-move-method-split-stock-move-lines-unit" showIf="statusSelect &lt;= 2"/>
-                <item name="specialSplitItem" title="Special split" action="save,action-stock-move-wizard-special-split" showIf="statusSelect &lt;= 2"/>
-                <item name="shipReceiveAllProductsItem" title="Ship/Receive all products" action="save,action-stock-move-ship-recieve-all-products"/>
+                <item name="splitIntoItem" title="Split into 2" action="action-stock-move-group-save-and-update-stocks,action-stock-move-split-into-2" showIf="statusSelect &lt;= 2"/>
+                <item name="splitByUnitItem" title="Split by unit" action="action-stock-move-group-save-and-update-stocks,action-stock-move-method-split-stock-move-lines-unit" showIf="statusSelect &lt;= 2"/>
+                <item name="specialSplitItem" title="Special split" action="action-stock-move-group-save-and-update-stocks,action-stock-move-wizard-special-split" showIf="statusSelect &lt;= 2"/>
+                <item name="shipReceiveAllProductsItem" title="Ship/Receive all products" action="action-stock-move-group-save-and-update-stocks,action-stock-move-ship-recieve-all-products"/>
                 <item name="refreshProductNetMassItem" showIf="typeSelect == 2 &amp;&amp; !isReversion" title="Refresh the products net mass" action="action-stock-move-method-refresh-net-mass" />
             </menu>
 		</menubar>
@@ -262,8 +262,8 @@
 			</panel>
 			<panel name="actionPanel" colSpan="3" itemSpan="12">
 				<button name="planBtn" title="Plan" icon="fa-calendar" showIf="statusSelect == 1" onClick="action-group-stock-stockmove-plan-click"/>
-				<button name="passedForPaymentAuthorizedBtn" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; ( typeSelect == 3 &amp;&amp; !isReversion) &amp;&amp; pfpValidateStatusSelect != 2" title="PFP authorized" onClick="save,action-stock-move-record-pfp-validate,save" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()"/>
-				<button name="refusalToPayLitigationBtn" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; ( typeSelect == 3 &amp;&amp; !isReversion) &amp;&amp; pfpValidateStatusSelect != 3" title="PFP litigation" onClick="save,action-stock-move-record-pfp-refusal-to-pay,save" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()"/>
+				<button name="passedForPaymentAuthorizedBtn" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; ( typeSelect == 3 &amp;&amp; !isReversion) &amp;&amp; pfpValidateStatusSelect != 2" title="PFP authorized" onClick="action-stock-move-group-save-and-update-stocks,action-stock-move-record-pfp-validate,save" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()"/>
+				<button name="refusalToPayLitigationBtn" showIf="company.accountConfig.isManagePassedForPayment &amp;&amp; ( typeSelect == 3 &amp;&amp; !isReversion) &amp;&amp; pfpValidateStatusSelect != 3" title="PFP litigation" onClick="action-stock-move-group-save-and-update-stocks,action-stock-move-record-pfp-refusal-to-pay,save" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()"/>
 				<button name="realizeBtn" title="Realize" icon="fa-check" showIf="statusSelect == 2" prompt="Are you sure you want to realize this stock move?" onClick="action-group-stock-stockmove-realize-click"/>
 				<button name="generateInvoiceBtn" title="Generate invoice" icon="fa-file-o" onClick="save,action-supplychain-stock-move-method-invoicing-wizard" if-module="axelor-supplychain" showIf="statusSelect == 3 &amp;&amp; typeSelect &gt; 1" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
 				<button name="generateReversionBtn" title="Generate reversion" icon="fa-undo" onClick="save,action-stock-move-method-generate-reversion" showIf="statusSelect == 3 &amp;&amp; !isReversion"/>
@@ -314,7 +314,7 @@
                 <field name="availabilityRequest" hidden="true"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || _userType == 'Sender' || ( pickingIsEdited &amp;&amp; availabilityRequest)" onChange="action-stock-move-group-available-qty-onchange"/>
 			</panel>
             <field name="pickingIsNotEditedSpacer" hidden="true" if="!__config__.app.getApp('stock').isSeparateShipmentOperations"/>
-            <field name="pickingIsEdited" hidden="true"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || _userType == 'Salesperson'" onChange="action-stock-move-picking-is-edited-onchange, save"/>
+            <field name="pickingIsEdited" hidden="true"  widget="boolean-switch" if="__config__.app.getApp('stock').isSeparateShipmentOperations" showIf="!isReversion &amp;&amp; typeSelect==2  &amp;&amp; statusSelect == 2" readonlyIf="_userType == null || _userType == 'Salesperson'" onChange="action-stock-move-picking-is-edited-onchange, action-stock-move-group-save-and-update-stocks"/>
 
             <panel name="addressStringPanel" stacked="true" itemSpan="12">
 				<field name="toAddressStr" height="3" hideIf="statusSelect &gt; 2" >
@@ -640,7 +640,7 @@
     <action-group name="action-stock-move-group-available-qty-onchange">
         <action name="action-stock-move-method-verify-product-stock"/>
         <action name="action-stock-move-validate-check-reservation"/>
-				<action name="save"/>
+				<action name="action-stock-move-group-save-and-update-stocks"/>
         <action name="action-stock-move-method-allocate-all"/>
     </action-group>
 
@@ -1030,6 +1030,11 @@
 		<action name="save"/>
 		<action name="action-validate-stock-move-validate-cancel"/>
 		<action name="action.stock.move.view.cancel"/>
+	</action-group>
+
+	<action-group name="action-stock-move-group-save-and-update-stocks">
+    <action name="save"/>
+		<action name="action-stock-move-method-update-stocks"/>
 	</action-group>
 	
 	<action-validate name="action-validate-stock-move-validate-cancel">
