@@ -34,6 +34,7 @@ import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -235,7 +236,8 @@ public class AddressController {
         key = mapService.getGoogleMapsApiKey();
       }
 
-      Company company = AuthUtils.getUser().getActiveCompany();
+      Company company =
+          Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
       if (company == null) {
         response.setFlash(I18n.get(IExceptionMessage.PRODUCT_NO_ACTIVE_COMPANY));
         return;

@@ -87,8 +87,6 @@ public class ExportDbObjectService {
 
   @Transactional
   public MetaFile exportObject() {
-
-    //		group = AuthUtils.getUser().getGroup();
     group = Beans.get(GroupRepository.class).all().filter("self.code = 'admins'").fetchOne();
     try {
       log.debug("Attachment dir: {}", AppSettings.get().get("file.upload.dir"));

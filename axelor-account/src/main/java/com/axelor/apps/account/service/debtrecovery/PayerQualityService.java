@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -40,6 +41,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,7 +94,12 @@ public class PayerQualityService {
         .filter(
             "self.partner = ?1 AND self.date > ?2 AND self.interbankCodeLine IS NOT NULL",
             partner,
-            appAccountService.getTodayDate(AuthUtils.getUser().getActiveCompany()).minusYears(1))
+            appAccountService
+                .getTodayDate(
+                    Optional.ofNullable(AuthUtils.getUser())
+                        .map(User::getActiveCompany)
+                        .orElse(null))
+                .minusYears(1))
         .fetch();
   }
 
