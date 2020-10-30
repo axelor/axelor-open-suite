@@ -200,7 +200,7 @@
 		<field name="user" expr="eval:__user__"/>
 		<field name="company" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
 		<field name="companyCbSelect" expr="eval: __user__.employee?.companyCbSelect"/>
-		<field name="period" expr="eval: __repo__(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1 AND self.allowExpenseCreation = true AND self.year.company = ?2 AND self.year.typeSelect = 1', __date__, _payCompany).fetchOne()"/>
+		<field name="period" expr="eval: __repo__(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1 AND self.allowExpenseCreation = true AND self.year.company = ?2 AND self.year.typeSelect = 1', __config__.date, _payCompany).fetchOne()"/>
 		<field name="exTaxTotal" expr="eval: 0"/>
 		<field name="taxTotal" expr="eval: 0"/>
 		<field name="inTaxTotal" expr="eval: 0"/>
@@ -215,7 +215,7 @@
   </action-record>
 
 	<action-record name="action-expense-record-company-onchange" model="com.axelor.apps.hr.db.Expense">
-		<field name="period" expr="eval: __repo__(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1 AND self.allowExpenseCreation = true AND self.year.company = ?2 AND self.year.typeSelect = 1', __date__, company).fetchOne()"/>
+		<field name="period" expr="eval: __repo__(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1 AND self.allowExpenseCreation = true AND self.year.company = ?2 AND self.year.typeSelect = 1', __config__.date, company).fetchOne()"/>
 		<field name="bankDetails" expr="eval: null"/>
 		<field name="user" expr="eval: null"/>
 	</action-record>
@@ -268,7 +268,7 @@
 		<attribute name="hidden" for="ventilateBtn" expr="eval: !__user__.employee?.hrManager || statusSelect != 3 || ventilated"/>
 		<attribute name="hidden" for="validateBtn" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__ == user?.employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
 		<attribute name="hidden" for="refuseBtn" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__ == user?.employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
-		<attribute name="hidden" for="cancelBtn" expr="eval: period?.toDate?.isAfter(__date__) || statusSelect == 6 || move"/>
+		<attribute name="hidden" for="cancelBtn" expr="eval: period?.toDate?.isAfter(__config__.date) || statusSelect == 6 || move"/>
 		<attribute name="readonly" for="period" expr="eval: true" if="!__user__.employee?.hrManager"/>
 		<attribute name="readonly" for="period" expr="eval: ventilated" if="__user__.employee?.hrManager"/>
 		<attribute name="readonly" for="bankDetails" expr="eval: true" if="!__user__.employee?.hrManager"/>

@@ -285,7 +285,7 @@
 	</action-validate>
 	
 	<action-validate name="action-timesheet-validate-fromDate">
-		<error message="Invalid date, it can't be in the future" if="fromDate.isAfter(__date__)" action="action-timesheet-null-fromDate"/>
+		<error message="Invalid date, it can't be in the future" if="fromDate.isAfter(__config__.date)" action="action-timesheet-null-fromDate"/>
 	</action-validate>
 	
 	<action-attrs name="action-hr-timesheet-attrs-domain-project">

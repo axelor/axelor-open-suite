@@ -165,11 +165,11 @@
 	</action-record>
 	
 	<action-validate name="action-expense-line-validate-expenseDate" model="com.axelor.apps.hr.db.ExpenseLine">
-		<error message="Date can't be in the future" if="expenseDate?.isAfter(__date__)" action="action-expense-line-record-expenseDate-invalide"/>
+		<error message="Date can't be in the future" if="expenseDate?.isAfter(__config__.date)" action="action-expense-line-record-expenseDate-invalide"/>
 	</action-validate>
 	
 	<action-record name="action-expense-line-record-expenseDate-invalide" model="com.axelor.apps.hr.db.ExpenseLine">
-		<field name="expenseDate" expr="eval :__date__"/>
+		<field name="expenseDate" expr="eval :__config__.date"/>
 	</action-record>
 
 	<action-attrs name="action-expense-line-attrs-company" model="com.axelor.apps.hr.db.ExpenseLine">

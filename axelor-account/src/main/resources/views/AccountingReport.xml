@@ -292,7 +292,7 @@
    </action-method>
 
    <action-validate name="action-accounting-report-date-change-validate">
-   		<info message="The closing date is earlier than the current date: moves recorded after that date will not be taken into account in the report." if="date &lt; __date__"/>
+   		<info message="The closing date is earlier than the current date: moves recorded after that date will not be taken into account in the report." if="date &lt; __config__.date"/>
    </action-validate>
 
     <action-validate name="action-account-report-alert-typeselect">

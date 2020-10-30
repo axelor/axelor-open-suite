@@ -245,7 +245,7 @@
 
     <action-view name="manufacturing.dashboard.view" title="Manufacturing Dashboard">
         <view type="dashboard" name="manufacturing.dashboard.sample" />
-        <context name="_today" expr="eval: __date__"/>
+        <context name="_today" expr="eval: __config__.date"/>
     </action-view>
 
     <menuitem name="menu-manufacturing-user-dashboard" parent="manufacturing-root-report" title="User" action="manufacturing.user.dashboard.view" />

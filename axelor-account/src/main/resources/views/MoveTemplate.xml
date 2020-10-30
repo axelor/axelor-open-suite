@@ -123,7 +123,7 @@
     </action-record>
     
     <action-record model="com.axelor.apps.base.db.Wizard" name="action-move-template-wizard-reset-value">
-    	<field if="date != null &amp;&amp; LocalDate.parse(date).isAfter(__date__)" name="date" expr="eval:null"/>
+    	<field if="date != null &amp;&amp; LocalDate.parse(date).isAfter(__config__.date)" name="date" expr="eval:null"/>
     	<field name="moveBalance" expr="eval:0" if="moveBalance != null &amp;&amp; (moveBalance as BigDecimal) &lt; 0" />
     </action-record>
     

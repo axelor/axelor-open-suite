@@ -87,7 +87,7 @@
 	
 	<action-record name="action-invoice-payment-record-new" model="com.axelor.apps.account.db.InvoicePayment">
     	<field name="currency" expr="eval: _invoice?.currency"/>
-    	<field name="paymentDate" expr="eval: __date__"/>
+    	<field name="paymentDate" expr="eval: __config__.date"/>
   		<field name="amount" expr="eval: _invoice?.amountRemaining"/>
 		<field name="paymentMode" expr="eval: __repo__(PaymentMode).find(_invoice?.paymentMode.id)" if="_invoice?.paymentMode != null"/>
 		<field name="companyBankDetails" expr="eval: _invoice?.companyBankDetails"/>
@@ -97,7 +97,7 @@
     
 	<action-record name="action-invoice-payment-record-mass-payment-new" model="com.axelor.apps.account.db.InvoicePayment">
 	  <field name="currency" expr="eval: __repo__(Invoice).find(_invoices[0])?.currency"/>
-	  <field name="paymentDate" expr="eval: __date__"/>
+	  <field name="paymentDate" expr="eval: __config__.date"/>
 	  <field name="amount" expr="eval: __repo__(Invoice).all().filter(&quot;self.id in (?1) &quot;,_invoices).fetch()?.sum{it.amountRemaining}"/>
 	  <field name="paymentMode" expr="eval: __repo__(Invoice).find(_invoices[0])?.paymentMode"/>
 	  <field name="companyBankDetails" expr="eval: __repo__(Invoice).find(_invoices[0])?.companyBankDetails"/>

@@ -379,7 +379,7 @@
     <action-validate name="action-contract-validate-on-going">
         <alert message="Attention the contract will have as starting date the provisional activation
         date ${currentContractVersion.supposedActivationDate}, Are you sure?"
-          if="currentContractVersion.supposedActivationDate &amp;&amp; currentContractVersion.supposedActivationDate &lt; __date__"/>
+          if="currentContractVersion.supposedActivationDate &amp;&amp; currentContractVersion.supposedActivationDate &lt; __config__.date"/>
     </action-validate>
 
     <action-attrs name="action-contract-readonly-if-unchangable" model="com.axelor.apps.contract.db.Contract">

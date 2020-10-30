@@ -34,7 +34,7 @@
     
     <action-record name="action-fixed-asset-line-record-default" model="com.axelor.apps.account.db.FixedAssetLine">
     	<field name="statusSelect" expr="1"/>
-    	<field name="depreciationDate" expr="eval: __date__"/>
+    	<field name="depreciationDate" expr="eval: __config__.date"/>
     </action-record>
     
     <action-attrs name="action-fixed-asset-line-attrs-onnew-onload">

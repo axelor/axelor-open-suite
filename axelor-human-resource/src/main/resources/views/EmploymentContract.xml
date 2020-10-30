@@ -107,7 +107,7 @@
 <!--     </action-record> -->
 
     <action-record name="action-employment-contract-record-on-new" model="com.axelor.apps.hr.db.EmploymentContract">
-        <field name="signatureDate" expr="eval: __date__"/>
+        <field name="signatureDate" expr="eval: __config__.date"/>
         <field name="payCompany" expr="eval: __user__.activeCompany"/>
     </action-record>
     

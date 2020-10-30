@@ -92,8 +92,8 @@
 	<!-- ACTION RECORD -->
 	<action-record name="default-payment-schedule-record"
 		model="com.axelor.apps.account.db.PaymentSchedule">
-		<field name="creationDate" expr="eval:__date__" />
-		<field name="startDate" expr="eval:__date__" />
+		<field name="creationDate" expr="eval:__config__.date" />
+		<field name="startDate" expr="eval:__config__.date" />
 		<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
 		<field name="statusSelect" expr="eval: 1" />

@@ -203,7 +203,7 @@
 	</action-group>
 	
 	<action-attrs name="action-team-task-attrs-default-timesheet-line">
-		<attribute name="value" expr="#{__date__}" for="date"/>
+		<attribute name="value" expr="#{__config__.date}" for="date"/>
 		<attribute name="value" for="teamTask" expr="eval: _teamTask" if="_teamTask != null"/>
 		<attribute name="value" for="project" expr="eval: _project" if="_project != null"/>
 		<attribute name="value" for="user" expr="eval: _user" if="_user != null"/>
