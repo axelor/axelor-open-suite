@@ -67,13 +67,12 @@ public class MrpController {
   public void generateAllProposals(ActionRequest request, ActionResponse response) {
 
     try {
-
-      long id = (long) request.getContext().get("id");
+      Mrp mrp = request.getContext().asType(Mrp.class);
       Boolean isProposalsPerSupplier =
           (Boolean) request.getContext().get("consolidateProposalsPerSupplier");
       Beans.get(MrpService.class)
           .generateProposals(
-              Beans.get(MrpRepository.class).find(id),
+              Beans.get(MrpRepository.class).find(mrp.getId()),
               isProposalsPerSupplier == null ? false : isProposalsPerSupplier);
       response.setFlash(I18n.get("Proposals have been generated successfully."));
     } catch (AxelorException e) {
@@ -98,6 +97,7 @@ public class MrpController {
       String fileLink =
           ReportFactory.createReport(IReport.MRP_WEEKS, name)
               .addParam("mrpId", mrp.getId())
+              .addParam("Timezone", getTimezone(mrp))
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
               .addParam(
                   "endDate",
@@ -111,6 +111,13 @@ public class MrpController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  private String getTimezone(Mrp mrp) {
+    if (mrp.getStockLocation() == null || mrp.getStockLocation().getCompany() == null) {
+      return null;
+    }
+    return mrp.getStockLocation().getCompany().getTimezone();
   }
 
   /**
@@ -127,6 +134,7 @@ public class MrpController {
       String fileLink =
           ReportFactory.createReport(IReport.MRP_LIST, name)
               .addParam("mrpId", mrp.getId())
+              .addParam("Timezone", getTimezone(mrp))
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
               .addFormat(ReportSettings.FORMAT_PDF)
               .generate()

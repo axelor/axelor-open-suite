@@ -154,7 +154,7 @@ public class AccountCustomerService {
                 "todayDate",
                 Date.from(
                     appBaseService
-                        .getTodayDate()
+                        .getTodayDate(company)
                         .atStartOfDay()
                         .atZone(ZoneOffset.UTC)
                         .toInstant()),
@@ -240,7 +240,7 @@ public class AccountCustomerService {
                 "todayDate",
                 Date.from(
                     appBaseService
-                        .getTodayDate()
+                        .getTodayDate(company)
                         .atStartOfDay()
                         .atZone(ZoneOffset.UTC)
                         .toInstant()),

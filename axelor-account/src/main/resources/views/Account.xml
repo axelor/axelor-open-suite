@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
 	<grid name="account-grid" title="Accounting.Accounts" model="com.axelor.apps.account.db.Account">
 	  <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
@@ -43,15 +43,16 @@
 				<field name="name" colSpan="9" css="bold"/>
 			</panel>
 			<panel name="balancePanel" colSpan="4" showIf="id">
-				<button name="$balanceBtn" title="Total balance" icon="fa-money" widget="info-button" onClick="action-account-view-show-move-lines" x-currency="company.currency.symbol"/>
+				<button name="$balanceBtn" title="Total balance" icon="fa-money" widget="info-button"
+                onClick="action-account-view-show-move-lines" x-currency="company.currency.symbol"/>
 			</panel>
 			<panel name="settingsPanel" title="Settings" colSpan="12">
-				<field name="accountType" form-view="account-type-form" grid-view="account-type-grid"/>
-				<field name="company" canEdit="false" widget="SuggestBox" onChange="action-account-validate" readonlyIf="parentAccount != null" form-view="company-form" grid-view="company-grid"/>
+				<field name="accountType" required="true" form-view="account-type-form" grid-view="account-type-grid"/>
+				<field name="company" required="true" canEdit="false" widget="SuggestBox" onChange="action-account-validate" readonlyIf="parentAccount != null" form-view="company-form" grid-view="company-grid"/>
 				<field name="parentAccount" onChange="action-account-validate" domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
 				<spacer name="parentAccountSpacer" colSpan="6"/>
-				<field name="useForPartnerBalance" colSpan="3"/>
-				<field name="reconcileOk" colSpan="3"/>
+				<field name="useForPartnerBalance" widget="boolean-switch" colSpan="3"/>
+				<field name="reconcileOk" widget="boolean-switch" colSpan="3"/>
 				<field name="compatibleAccountSet" widget="TagSelect" showIf="reconcileOk"/>
 				<field name="analyticDistributionAuthorized" widget="boolean-switch" colSpan="4" onChange="action-account-record-uncheck-analytic-distribution-required"/>
 				<field name="analyticDistributionRequiredOnInvoiceLines" widget="boolean-switch" colSpan="4" showIf="analyticDistributionAuthorized"/>
@@ -60,8 +61,8 @@
 				<field name="isTaxRequiredOnMoveLine" showIf="isTaxAuthorizedOnMoveLine" widget="boolean-switch" colSpan="4"/>
 			</panel>
 			<panel name="showMoveLinesPanel" colSpan="12" showIf="id">
-				<button name="showMoveLineBtn" title="Show move lines" colSpan="3" onClick="action-account-view-show-move-lines"/>      
-      		</panel>
+				<button name="showMoveLineBtn" title="Show move lines" colSpan="3" onClick="action-account-view-show-move-lines"/>
+      </panel>
 		</panel>
 		<panel-mail name="mailPanel">
 			<mail-messages limit="4"/>
@@ -168,5 +169,9 @@
     <action-method name="action-account-method-check-if-code-already-exist-for-company">
     	<call class="com.axelor.apps.account.web.AccountController" method="checkIfCodeAccountAlreadyExistForCompany"/>
     </action-method>
+    
+    <search-filters name="account-filters" model="com.axelor.apps.account.db.Account" title="Account filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
     
 </object-views>

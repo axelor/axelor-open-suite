@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -1089,7 +1089,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <text id="4826">
                                 <property name="textAlign">right</property>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF format="d MMM y kk:mm">BirtDateTime.now()</VALUE-OF>]]></text-property>
+                                <text-property name="content"><![CDATA[<VALUE-OF format="Short Date">BirtDateTime.now()</VALUE-OF> <VALUE-OF format="Short Time">BirtDateTime.now()</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
                         <cell id="4817">
@@ -1406,8 +1406,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="paddingLeft">20pt</property>
                                         <property name="paddingRight">20pt</property>
                                         <structure name="dateTimeFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">dd MMM yy</property>
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
                                         </structure>
                                         <property name="resultSetColumn">invoice_date</property>
                                     </data>
@@ -1417,8 +1417,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                                         <property name="paddingLeft">20pt</property>
                                         <property name="paddingRight">20pt</property>
                                         <structure name="dateTimeFormat">
-                                            <property name="category">Custom</property>
-                                            <property name="pattern">dd MMM yy</property>
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
                                         </structure>
                                         <property name="resultSetColumn">due_date</property>
                                     </data>

@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -75,7 +76,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       TrackingNumberRepository trackingNumberRepo,
       ShippingCoefService shippingCoefService,
       AccountManagementService accountManagementService,
-      PriceListService priceListService) {
+      PriceListService priceListService,
+      ProductCompanyService productCompanyService) {
     super(
         trackingNumberService,
         appBaseService,
@@ -86,6 +88,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         unitConversionService,
         weightedAveragePriceService,
         trackingNumberRepo,
+        productCompanyService,
         shippingCoefService);
     this.accountManagementService = accountManagementService;
     this.priceListService = priceListService;
@@ -182,7 +185,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         // log the exception
         TraceBackService.trace(
             new AxelorException(
-                TraceBackRepository.TYPE_TECHNICAL,
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
                 IExceptionMessage.STOCK_MOVE_MISSING_SALE_ORDER,
                 stockMove.getOriginId(),
                 stockMove.getName()));
@@ -197,7 +200,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         // log the exception
         TraceBackService.trace(
             new AxelorException(
-                TraceBackRepository.TYPE_TECHNICAL,
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
                 IExceptionMessage.STOCK_MOVE_MISSING_PURCHASE_ORDER,
                 stockMove.getOriginId(),
                 stockMove.getName()));

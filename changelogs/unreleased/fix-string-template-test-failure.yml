@@ -1,0 +1,5 @@
+---
+title: "Fix string template tests failure"
+type: fix
+description: |
+  Fixing string template tests failure.

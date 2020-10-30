@@ -33,6 +33,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.exception.AxelorMessageException;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.FreightCarrierMode;
@@ -53,6 +54,7 @@ import com.axelor.apps.stock.report.IReport;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.MoreObjects;
@@ -410,7 +412,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     stockMoveLineService.storeCustomsCodes(stockMove.getStockMoveLineList());
 
-    stockMove.setRealDate(appBaseService.getTodayDate());
+    stockMove.setRealDate(appBaseService.getTodayDate(stockMove.getCompany()));
     resetMasses(stockMove);
 
     if (stockMove.getIsWithBackorder() && mustBeSplit(stockMove.getStockMoveLineList())) {
@@ -469,9 +471,9 @@ public class StockMoveServiceImpl implements StockMoveService {
     try {
       Beans.get(TemplateMessageService.class).generateAndSendMessage(stockMove, template);
     } catch (Exception e) {
-      //      throw new AxelorException(
-      //          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage(), stockMove);
-      LOG.error(e.getMessage());
+      TraceBackService.trace(
+          new AxelorMessageException(
+              e, stockMove, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR));
     }
   }
 
@@ -801,7 +803,7 @@ public class StockMoveServiceImpl implements StockMoveService {
           stockMove.getEstimatedDate(),
           true);
 
-      stockMove.setRealDate(appBaseService.getTodayDate());
+      stockMove.setRealDate(appBaseService.getTodayDate(stockMove.getCompany()));
     }
 
     stockMove.clearPlannedStockMoveLineList();
@@ -1174,6 +1176,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     ReportSettings reportSettings =
         ReportFactory.createReport(reportType, title + "-${date}")
             .addParam("StockMoveId", stockMoveIds)
+            .addParam("Timezone", null)
             .addParam("Locale", locale);
 
     if (reportType.equals(IReport.CONFORMITY_CERTIFICATE)) {
@@ -1239,7 +1242,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     if ((!stockMove.getPickingIsEdited() || stockMove.getPickingEditDate() == null)
         && stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED
         && StockMoveRepository.USER_TYPE_SENDER.equals(userType)) {
-      stockMove.setPickingEditDate(LocalDate.now());
+      stockMove.setPickingEditDate(appBaseService.getTodayDate(stockMove.getCompany()));
       stockMove.setPickingIsEdited(true);
     }
   }

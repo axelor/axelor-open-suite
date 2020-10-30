@@ -174,7 +174,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
         I18n.get("Invoices")
             + " - "
             + Beans.get(AppBaseService.class)
-                .getTodayDate()
+                .getTodayDate(AuthUtils.getUser().getActiveCompany())
                 .format(DateTimeFormatter.BASIC_ISO_DATE)
             + ".pdf";
     return PdfTool.mergePdfToFileLink(printedInvoices, fileName);
@@ -196,7 +196,6 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
   @Override
   public ReportSettings prepareReportSettings(
       Invoice invoice, Integer reportType, String format, String locale) throws AxelorException {
-
     if (invoice.getPrintingSettings() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
@@ -231,12 +230,21 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
               ? companyLanguageCode
               : partnerLanguageCode;
     }
+    String watermark = null;
+    if (accountConfigRepo.findByCompany(invoice.getCompany()).getInvoiceWatermark() != null) {
+      watermark =
+          MetaFiles.getPath(
+                  accountConfigRepo.findByCompany(invoice.getCompany()).getInvoiceWatermark())
+              .toString();
+    }
 
     AppBase appBase = appBaseService.getAppBase();
 
     return reportSetting
         .addParam("InvoiceId", invoice.getId())
         .addParam("Locale", locale)
+        .addParam(
+            "Timezone", invoice.getCompany() != null ? invoice.getCompany().getTimezone() : null)
         .addParam("ReportType", reportType == null ? 0 : reportType)
         .addParam(
             "GroupProducts",
@@ -246,6 +254,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
         .addParam("GroupProductProductTitle", appBase.getRegroupProductsLabelProducts())
         .addParam("GroupProductServiceTitle", appBase.getRegroupProductsLabelServices())
         .addParam("HeaderHeight", invoice.getPrintingSettings().getPdfHeaderHeight())
+        .addParam("Watermark", watermark)
         .addParam("FooterHeight", invoice.getPrintingSettings().getPdfFooterHeight())
         .addFormat(format);
   }

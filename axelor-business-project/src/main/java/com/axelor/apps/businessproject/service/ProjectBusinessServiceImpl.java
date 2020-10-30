@@ -24,7 +24,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.AddressService;
-import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
@@ -123,12 +122,6 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       if (company != null && company.getAccountConfig() != null) {
         order.setPaymentMode(company.getAccountConfig().getInPaymentMode());
       }
-    }
-
-    if (order.getDuration() != null && order.getCreationDate() != null) {
-      order.setEndOfValidityDate(
-          Beans.get(DurationService.class)
-              .computeDuration(order.getDuration(), order.getCreationDate()));
     }
 
     AppSupplychain appSupplychain = Beans.get(AppSupplychainService.class).getAppSupplychain();

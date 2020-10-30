@@ -53,9 +53,10 @@ public class ProjectController {
       Project project = request.getContext().asType(Project.class);
       SaleOrder order = Beans.get(ProjectBusinessService.class).generateQuotation(project);
       response.setView(
-          ActionView.define("Sale Order")
+          ActionView.define(I18n.get("Sale quotation"))
               .model(SaleOrder.class.getName())
               .add("form", "sale-order-form")
+              .param("forceTitle", "true")
               .context("_showRecord", String.valueOf(order.getId()))
               .map());
     } catch (Exception e) {
@@ -71,6 +72,7 @@ public class ProjectController {
               .model(PurchaseOrder.class.getName())
               .add("form", "purchase-order-form")
               .add("grid", "purchase-order-quotation-grid")
+              .param("search-filters", "purchase-order-filters")
               .context("_project", Beans.get(ProjectRepository.class).find(project.getId()))
               .map());
     }
@@ -84,6 +86,9 @@ public class ProjectController {
     String fileLink =
         ReportFactory.createReport(IReport.PROJECT, name + "-${date}")
             .addParam("ProjectId", project.getId())
+            .addParam(
+                "Timezone",
+                project.getCompany() != null ? project.getCompany().getTimezone() : null)
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
             .toAttach(project)
             .generate()
@@ -157,6 +162,9 @@ public class ProjectController {
     String fileLink =
         ReportFactory.createReport(IReport.PLANNIF_AND_COST, name)
             .addParam("ProjectId", project.getId())
+            .addParam(
+                "Timezone",
+                project.getCompany() != null ? project.getCompany().getTimezone() : null)
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
             .toAttach(project)
             .generate()

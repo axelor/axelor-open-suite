@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
 	<grid name="year-grid" title="Year" model="com.axelor.apps.base.db.Year">
 		<field name="name"/>
@@ -66,4 +66,7 @@
     	<call class="com.axelor.apps.base.web.YearController" method="generatePeriods"/>
     </action-method>
     
+    <search-filters name="year-filters" model="com.axelor.apps.base.db.Year" title="Year filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+    </search-filters>
 </object-views>

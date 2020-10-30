@@ -60,6 +60,8 @@ import com.axelor.apps.account.service.AccountingCloseAnnualService;
 import com.axelor.apps.account.service.AccountingCloseAnnualServiceImpl;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.AccountingReportServiceImpl;
+import com.axelor.apps.account.service.AccountingReportTypeService;
+import com.axelor.apps.account.service.AccountingReportTypeServiceImpl;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.AccountingSituationServiceImpl;
 import com.axelor.apps.account.service.AddressServiceAccountImpl;
@@ -168,6 +170,8 @@ public class AccountModule extends AxelorModule {
     bind(AccountingReportRepository.class).to(AccountingReportManagementRepository.class);
 
     bind(AccountingReportService.class).to(AccountingReportServiceImpl.class);
+
+    bind(AccountingReportTypeService.class).to(AccountingReportTypeServiceImpl.class);
 
     bind(JournalRepository.class).to(JournalManagementRepository.class);
 

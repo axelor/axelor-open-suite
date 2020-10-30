@@ -71,6 +71,7 @@ public class ClientViewController {
                   .model(SaleOrder.class.getName())
                   .add("grid", "sale-order-grid")
                   .add("form", "sale-order-form")
+                  .param("search-filters", "sale-order-filters")
                   .domain(filter.getQuery())
                   .map());
         }
@@ -94,6 +95,7 @@ public class ClientViewController {
                   .model(SaleOrder.class.getName())
                   .add("grid", "sale-order-grid")
                   .add("form", "sale-order-form")
+                  .param("search-filters", "sale-order-filters")
                   .domain(filter.getQuery())
                   .map());
         }
@@ -145,6 +147,7 @@ public class ClientViewController {
                   .model(Project.class.getName())
                   .add("grid", "project-grid")
                   .add("form", "project-form")
+                  .param("search-filters", "project-filters")
                   .domain(filter.getQuery())
                   .map());
         }
@@ -168,6 +171,7 @@ public class ClientViewController {
                   .model(TeamTask.class.getName())
                   .add("grid", "team-task-grid")
                   .add("form", "team-task-form")
+                  .param("search-filters", "team-task-filters")
                   .domain(filter.getQuery())
                   .map());
         }
@@ -191,6 +195,7 @@ public class ClientViewController {
                   .model(TeamTask.class.getName())
                   .add("grid", "team-task-grid")
                   .add("form", "team-task-form")
+                  .param("search-filters", "team-task-filters")
                   .domain(filter.getQuery())
                   .map());
         }
@@ -214,6 +219,7 @@ public class ClientViewController {
                   .model(TeamTask.class.getName())
                   .add("grid", "team-task-grid")
                   .add("form", "team-task-form")
+                  .param("search-filters", "team-task-filters")
                   .domain(filter.getQuery())
                   .map());
         }
@@ -292,6 +298,7 @@ public class ClientViewController {
                   .model(StockMove.class.getName())
                   .add("grid", "stock-move-grid")
                   .add("form", "stock-move-form")
+                  .param("search-filters", "internal-stock-move-filters")
                   .domain(filter.getQuery())
                   .map());
         }
@@ -315,6 +322,7 @@ public class ClientViewController {
                   .model(StockMove.class.getName())
                   .add("grid", "stock-move-grid")
                   .add("form", "stock-move-form")
+                  .param("search-filters", "internal-stock-move-filters")
                   .domain(filter.getQuery())
                   .map());
         }
@@ -339,6 +347,7 @@ public class ClientViewController {
                   .model(Invoice.class.getName())
                   .add("grid", "invoice-grid")
                   .add("form", "invoice-form")
+                  .param("search-filters", "customer-invoices-filters")
                   .domain(filter.getQuery())
                   .map());
         }
@@ -362,6 +371,7 @@ public class ClientViewController {
                   .model(Invoice.class.getName())
                   .add("grid", "invoice-grid")
                   .add("form", "invoice-form")
+                  .param("search-filters", "customer-invoices-filters")
                   .domain(filter.getQuery())
                   .map());
         }
@@ -385,6 +395,7 @@ public class ClientViewController {
                   .model(Invoice.class.getName())
                   .add("grid", "invoice-grid")
                   .add("form", "invoice-form")
+                  .param("search-filters", "customer-invoices-filters")
                   .domain(filter.getQuery())
                   .map());
         }
@@ -408,6 +419,7 @@ public class ClientViewController {
                   .model(Invoice.class.getName())
                   .add("grid", "invoice-refund-grid")
                   .add("form", "invoice-form")
+                  .param("search-filters", "customer-refunds-filters")
                   .domain(filter.getQuery())
                   .map());
         }
@@ -433,6 +445,7 @@ public class ClientViewController {
                   .model(Ticket.class.getName())
                   .add("grid", "ticket-grid")
                   .add("form", "ticket-form")
+                  .param("search-filters", "ticket-filters")
                   .domain(filter.getQuery())
                   .map());
         }
@@ -456,6 +469,7 @@ public class ClientViewController {
                   .model(Ticket.class.getName())
                   .add("grid", "ticket-grid")
                   .add("form", "ticket-form")
+                  .param("search-filters", "ticket-filters")
                   .domain(filter.getQuery())
                   .map());
         }
@@ -479,6 +493,7 @@ public class ClientViewController {
                   .model(Ticket.class.getName())
                   .add("grid", "ticket-grid")
                   .add("form", "ticket-form")
+                  .param("search-filters", "ticket-filters")
                   .domain(filter.getQuery())
                   .map());
         }
@@ -502,6 +517,7 @@ public class ClientViewController {
                   .model(Ticket.class.getName())
                   .add("grid", "ticket-grid")
                   .add("form", "ticket-form")
+                  .param("search-filters", "ticket-filters")
                   .domain(filter.getQuery())
                   .map());
         }

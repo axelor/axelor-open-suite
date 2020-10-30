@@ -114,7 +114,7 @@ public class VentilateState extends WorkflowInvoice {
   }
 
   protected void setVentilatedLog() {
-    invoice.setVentilatedDate(appAccountService.getTodayDate());
+    invoice.setVentilatedDate(appAccountService.getTodayDate(invoice.getCompany()));
     invoice.setVentilatedByUser(userService.getUser());
   }
 
@@ -154,14 +154,16 @@ public class VentilateState extends WorkflowInvoice {
 
   protected void setDate() throws AxelorException {
 
-    LocalDate todayDate = appAccountService.getTodayDate();
+    LocalDate todayDate = appAccountService.getTodayDate(invoice.getCompany());
 
     if (invoice.getInvoiceDate() == null) {
       invoice.setInvoiceDate(todayDate);
     } else if (invoice.getInvoiceDate().isAfter(todayDate)) {
       throw new AxelorException(
+          invoice,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.VENTILATE_STATE_FUTURE_DATE));
+          I18n.get(IExceptionMessage.VENTILATE_STATE_FUTURE_DATE),
+          invoice.getInvoiceId());
     }
 
     boolean isPurchase = InvoiceToolService.isPurchase(invoice);
@@ -226,9 +228,10 @@ public class VentilateState extends WorkflowInvoice {
             I18n.get(IExceptionMessage.VENTILATE_STATE_3));
       }
       throw new AxelorException(
-          sequence,
+          invoice,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.VENTILATE_STATE_1));
+          I18n.get(IExceptionMessage.VENTILATE_STATE_1),
+          invoice.getInvoiceId());
     }
   }
 

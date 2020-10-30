@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
@@ -39,6 +39,7 @@
       <string name="emergencyContactRelationship" title="Emergency contact relationship"/>
       <date name="hireDate" title="Date of hire" />
       <date name="seniorityDate" title="Seniority date" />
+      <date name="leavingDate" title="Leaving date" />
       <many-to-one name="mainEmploymentContract" ref="com.axelor.apps.hr.db.EmploymentContract" title="Main employment contract" />
       <boolean name="profitSharingBeneficiary" title="Profit-sharing beneficiary" default="false" massUpdate="true"/>
       <many-to-one name="imposedDayEventsPlanning" ref="com.axelor.apps.base.db.EventsPlanning" title="Imposed day Planning" massUpdate="true"/>
@@ -81,7 +82,22 @@
    			public static final String SEX_M = "M";
    		]]>
    	</extra-code>
-      
+   	
+   	<track>
+		<field name="fixedProPhone" on="UPDATE"/>
+		<field name="mobileProPhone" on="UPDATE"/>
+		<field name="phoneAtCustomer" on="UPDATE"/>
+		<field name="managerUser" on="UPDATE"/>
+		<field name="exportCode" on="UPDATE"/>
+		<field name="weeklyPlanning" on="UPDATE"/>
+		<field name="hrManager" on="UPDATE"/>
+		<field name="external" on="UPDATE"/>
+		<field name="bonusCoef" on="UPDATE"/>
+		<field name="negativeValueLeave" on="UPDATE"/>
+		<field name="lunchVoucherFormatSelect" on="UPDATE"/>
+		<field name="companyCbSelect" on="UPDATE"/>
+	</track>
+   	
   </entity>
   
 </domain-models>

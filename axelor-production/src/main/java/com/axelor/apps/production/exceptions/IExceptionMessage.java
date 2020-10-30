@@ -47,6 +47,9 @@ public interface IExceptionMessage {
   /** Bill of Materials Service */
   static final String BOM_1 = /*$$(*/ "Personalized" /*)*/;
 
+  static final String BOM_MISSING_UNIT_ON_PRODUCT = /*$$(*/
+      "Please fill unit for product %s." /*)*/;
+
   /** Production Order Wizard and controller */
   static final String PRODUCTION_ORDER_1 = /*$$(*/ "Production's order created" /*)*/;
 
@@ -179,4 +182,9 @@ public interface IExceptionMessage {
   // Production Order Sale Order Service
   static final String CHILD_BOM_TOO_MANY_ITERATION = /*$$(*/
       "Too many iterations when searching for children bills of materials. Please check for bill of materials being in its own component list." /*)*/;
+  //  Mrp service
+  String MRP_BOM_LEVEL_TOO_HIGH = /*$$(*/
+      "Configuration issue: the MRP execution was canceled because a loop was detected when searching for components in BOM." /*)*/;
+  String MRP_BOM_LEVEL_TOO_HIGH_PRODUCT = /*$$(*/
+      "Configuration issue in product %s: the MRP execution was canceled because a loop was detected when searching for components in BOM." /*)*/;
 }

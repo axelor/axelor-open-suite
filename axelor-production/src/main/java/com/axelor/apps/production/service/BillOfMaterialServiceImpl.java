@@ -20,6 +20,7 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
@@ -60,6 +61,8 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
   @Inject private ProductRepository productRepo;
 
+  @Inject protected ProductCompanyService productCompanyService;
+
   private List<Long> processedBom;
 
   @Override
@@ -74,21 +77,28 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
     Product product = billOfMaterial.getProduct();
 
-    if (product.getCostTypeSelect() != ProductRepository.COST_TYPE_STANDARD) {
+    if ((Integer) productCompanyService.get(product, "costTypeSelect", billOfMaterial.getCompany())
+        != ProductRepository.COST_TYPE_STANDARD) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.COST_TYPE_CANNOT_BE_CHANGED));
     }
 
-    product.setCostPrice(
+    productCompanyService.set(
+        product,
+        "costPrice",
         billOfMaterial
             .getCostPrice()
             .divide(
                 billOfMaterial.getQty(),
                 Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice(),
-                BigDecimal.ROUND_HALF_UP));
+                BigDecimal.ROUND_HALF_UP),
+        billOfMaterial.getCompany());
 
-    Beans.get(ProductService.class).updateSalePrice(product);
+    if ((Boolean)
+        productCompanyService.get(product, "autoUpdateSalePrice", billOfMaterial.getCompany())) {
+      Beans.get(ProductService.class).updateSalePrice(product, billOfMaterial.getCompany());
+    }
 
     billOfMaterialRepo.save(billOfMaterial);
   }
@@ -208,6 +218,9 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
     return ReportFactory.createReport(IReport.BILL_OF_MATERIAL, name + "-${date}")
         .addParam("Locale", language)
+        .addParam(
+            "Timezone",
+            billOfMaterial.getCompany() != null ? billOfMaterial.getCompany().getTimezone() : null)
         .addParam("BillOfMaterialId", billOfMaterial.getId())
         .addFormat(format)
         .generate()
@@ -324,7 +337,8 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   @Override
   @Transactional
   public void addRawMaterials(
-      long billOfMaterialId, ArrayList<LinkedHashMap<String, Object>> rawMaterials) {
+      long billOfMaterialId, ArrayList<LinkedHashMap<String, Object>> rawMaterials)
+      throws AxelorException {
     if (rawMaterials != null && !rawMaterials.isEmpty()) {
       BillOfMaterial billOfMaterial = billOfMaterialRepo.find(billOfMaterialId);
       int priority = 0;
@@ -349,13 +363,20 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
   }
 
   @Transactional
-  protected BillOfMaterial createBomFromRawMaterial(long productId, int priority) {
+  protected BillOfMaterial createBomFromRawMaterial(long productId, int priority)
+      throws AxelorException {
     BillOfMaterial newBom = new BillOfMaterial();
     Product rawMaterial = productRepo.find(productId);
     newBom.setDefineSubBillOfMaterial(false);
     newBom.setPriority(priority);
     newBom.setProduct(rawMaterial);
     newBom.setQty(new BigDecimal(1));
+    if (rawMaterial.getUnit() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.BOM_MISSING_UNIT_ON_PRODUCT),
+          rawMaterial.getFullName());
+    }
     newBom.setUnit(rawMaterial.getUnit());
     newBom.setWasteRate(BigDecimal.ZERO);
     newBom.setHasNoManageStock(false);

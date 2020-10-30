@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 	<grid name="accounting-batch-grid" title="Accounting batches" model="com.axelor.apps.account.db.AccountingBatch">
 		<field name="actionSelect" />
@@ -96,6 +96,7 @@
 		    <button name="creditTransferBatchBtn" title="Credit Transfer Batch" showIf="actionSelect == 19" onClick="save,action-accounting-batch-method-action-credit-transfer" colSpan="12"/>
 		    <button name="realizeFixedAssetLinesBatchBtn" title="Realize Fixed asset lines Batch" showIf="actionSelect == 20" onClick="save,action-accounting-batch-group-realize-fixed-asset-lines" colSpan="12"/>
 		    <button name="closeAnnualAccountsBatchBtn" title="Start" showIf="actionSelect == 21" onClick="save,action-accounting-batch-group-close-annual-accounts" colSpan="12"/>
+		
 		</panel>
 	</form>
 
@@ -118,7 +119,9 @@
     
     <!-- ACTION RECORD -->
     <action-record name="action-accounting-batch-record-on-new" model="com.axelor.apps.account.db.AccountingBatch">
-		<field name="createdOn" expr="eval: __config__.app.getTodayDate()"/>
+		<field name="createdOn" expr="__config__.app.getTodayDate(null)"/>
+		<field name="createdOn" expr="eval: __config__.app.getTodayDate(__user__.activeCompany)" if="__user__.activeCompany != null"/>
+		<field name="createdOn" expr="eval: __config__.app.getTodayDate(__repo__(Company).all().fetchOne())" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
 		<field name="createdBy" expr="eval:__user__"/>
 		<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
@@ -195,5 +198,10 @@
     <action-attrs name="action-accounting-batch-attrs-display-trading-name-set">
     	<attribute name="hidden" for="tradingNameSet" expr="!(__config__.app.getApp('base').enableTradingNamesManagement &amp;&amp; isDebtRecoveryByTradingName)"/>
     </action-attrs>
+
+    <search-filters name="accounting-batch-filters" model="com.axelor.apps.account.db.AccountingBatch" title="Accounting batch filters">
+    	<field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+        <field name="includeOtherBankAccounts" hidden="true" if="!__config__.app.getApp('base').getManageMultiBanks()"/>
+    </search-filters>
 
 </object-views>

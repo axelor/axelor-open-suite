@@ -45,6 +45,7 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 import javax.activation.DataSource;
 import javax.mail.AuthenticationFailedException;
@@ -208,6 +209,13 @@ public class MailAccountServiceImpl implements MailAccountService {
               getSecurity(mailAccount));
     }
 
+    Properties props = account.getSession().getProperties();
+    if (mailAccount.getFromAddress() != null && !"".equals(mailAccount.getFromAddress())) {
+      props.setProperty("mail.smtp.from", mailAccount.getFromAddress());
+    }
+    if (mailAccount.getFromName() != null && !"".equals(mailAccount.getFromName())) {
+      props.setProperty("mail.smtp.from.personal", mailAccount.getFromName());
+    }
     account.setConnectionTimeout(CHECK_CONF_TIMEOUT);
 
     return account;

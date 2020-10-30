@@ -31,6 +31,7 @@ import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.EmployeeVehicleRepository;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
@@ -122,7 +123,7 @@ public class HumanResourceMobileController {
       expenseLine.setExpenseProduct(expenseProduct);
 
       Employee employee = user.getEmployee();
-      if (employee != null) {
+      if (employee != null && !EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
         KilometricAllowParamRepository kilometricAllowParamRepo =
             Beans.get(KilometricAllowParamRepository.class);
 
@@ -330,7 +331,10 @@ public class HumanResourceMobileController {
     List<Map<String, String>> dataList = new ArrayList<>();
     try {
       List<Product> productList =
-          Beans.get(ProductRepository.class).all().filter("self.isActivity = true").fetch();
+          Beans.get(ProductRepository.class)
+              .all()
+              .filter("self.isActivity = true AND dtype = 'Product'")
+              .fetch();
       for (Product product : productList) {
         Map<String, String> map = new HashMap<>();
         map.put("name", product.getName());
@@ -498,7 +502,7 @@ public class HumanResourceMobileController {
             leaveReason.getName());
       }
       leave.setLeaveLine(leaveLine);
-      leave.setRequestDate(appBaseService.getTodayDate());
+      leave.setRequestDate(appBaseService.getTodayDate(company));
       if (requestData.get("fromDateT") != null) {
         leave.setFromDateT(
             LocalDateTime.parse(
@@ -612,7 +616,7 @@ public class HumanResourceMobileController {
           Beans.get(ProductRepository.class)
               .all()
               .filter(
-                  "self.expense = true AND coalesce(self.unavailableToUsers, false) = false AND coalesce(self.personalExpense, false) = false")
+                  "self.expense = true AND coalesce(self.unavailableToUsers, false) = false AND coalesce(self.personalExpense, false) = false AND dtype = 'Product'")
               .fetch();
       for (Product product : productList) {
         Map<String, String> map = new HashMap<>();

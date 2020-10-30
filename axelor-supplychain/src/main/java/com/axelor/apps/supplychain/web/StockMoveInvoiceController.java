@@ -32,6 +32,7 @@ import com.axelor.apps.supplychain.service.StockMoveMultiInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.translation.ITranslation;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -79,10 +80,13 @@ public class StockMoveInvoiceController {
                   .model(Invoice.class.getName())
                   .add("grid", "invoice-grid")
                   .add("form", "invoice-form")
+                  .param("search-filters", "customer-invoices-filters")
                   .param("forceEdit", "true")
                   .context("_showRecord", String.valueOf(invoice.getId()))
                   .context("_operationTypeSelect", invoice.getOperationTypeSelect())
-                  .context("todayDate", Beans.get(AppSupplychainService.class).getTodayDate())
+                  .context(
+                      "todayDate",
+                      Beans.get(AppSupplychainService.class).getTodayDate(stockMove.getCompany()))
                   .map());
           response.setCanClose(true);
         } else {
@@ -170,9 +174,13 @@ public class StockMoveInvoiceController {
                         .model(Invoice.class.getName())
                         .add("grid", "invoice-grid")
                         .add("form", "invoice-form")
+                        .param("search-filters", "customer-invoices-filters")
                         .param("forceEdit", "true")
                         .context("_operationTypeSelect", inv.getOperationTypeSelect())
-                        .context("todayDate", Beans.get(AppSupplychainService.class).getTodayDate())
+                        .context(
+                            "todayDate",
+                            Beans.get(AppSupplychainService.class)
+                                .getTodayDate(stockMove.getCompany()))
                         .context("_showRecord", String.valueOf(inv.getId()))
                         .map()));
       }
@@ -241,10 +249,13 @@ public class StockMoveInvoiceController {
                       .model(Invoice.class.getName())
                       .add("grid", "invoice-grid")
                       .add("form", "invoice-form")
+                      .param("search-filters", "customer-invoices-filters")
                       .param("forceEdit", "true")
                       .context("_showRecord", String.valueOf(inv.getId()))
                       .context("_operationTypeSelect", inv.getOperationTypeSelect())
-                      .context("todayDate", Beans.get(AppSupplychainService.class).getTodayDate())
+                      .context(
+                          "todayDate",
+                          Beans.get(AppSupplychainService.class).getTodayDate(inv.getCompany()))
                       .map()));
       response.setCanClose(true);
     } catch (Exception e) {
@@ -326,10 +337,13 @@ public class StockMoveInvoiceController {
                         .model(Invoice.class.getName())
                         .add("grid", "invoice-grid")
                         .add("form", "invoice-form")
+                        .param("search-filters", "customer-invoices-filters")
                         .param("forceEdit", "true")
                         .context("_showRecord", String.valueOf(inv.getId()))
                         .context("_operationTypeSelect", inv.getOperationTypeSelect())
-                        .context("todayDate", Beans.get(AppSupplychainService.class).getTodayDate())
+                        .context(
+                            "todayDate",
+                            Beans.get(AppSupplychainService.class).getTodayDate(inv.getCompany()))
                         .map()));
       }
     } catch (Exception e) {
@@ -393,10 +407,13 @@ public class StockMoveInvoiceController {
                       .model(Invoice.class.getName())
                       .add("grid", "invoice-grid")
                       .add("form", "invoice-form")
+                      .param("search-filters", "customer-invoices-filters")
                       .param("forceEdit", "true")
                       .context("_showRecord", String.valueOf(inv.getId()))
                       .context("_operationTypeSelect", inv.getOperationTypeSelect())
-                      .context("todayDate", Beans.get(AppSupplychainService.class).getTodayDate())
+                      .context(
+                          "todayDate",
+                          Beans.get(AppSupplychainService.class).getTodayDate(inv.getCompany()))
                       .map()));
       response.setCanClose(true);
     } catch (Exception e) {
@@ -433,9 +450,13 @@ public class StockMoveInvoiceController {
             .model(Invoice.class.getName())
             .add("grid", "invoice-grid")
             .add("form", "invoice-form")
+            .param("search-filters", "customer-invoices-filters")
             .domain("self.id IN (" + Joiner.on(",").join(invoiceIdList) + ")")
             .context("_operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
-            .context("todayDate", Beans.get(AppSupplychainService.class).getTodayDate());
+            .context(
+                "todayDate",
+                Beans.get(AppSupplychainService.class)
+                    .getTodayDate(AuthUtils.getUser().getActiveCompany()));
 
         response.setView(viewBuilder.map());
       }
@@ -476,9 +497,13 @@ public class StockMoveInvoiceController {
             .model(Invoice.class.getName())
             .add("grid", "invoice-grid")
             .add("form", "invoice-form")
+            .param("search-filters", "customer-invoices-filters")
             .domain("self.id IN (" + Joiner.on(",").join(invoiceIdList) + ")")
             .context("_operationTypeSelect", InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)
-            .context("todayDate", Beans.get(AppSupplychainService.class).getTodayDate());
+            .context(
+                "todayDate",
+                Beans.get(AppSupplychainService.class)
+                    .getTodayDate(AuthUtils.getUser().getActiveCompany()));
 
         response.setView(viewBuilder.map());
       }
@@ -551,10 +576,12 @@ public class StockMoveInvoiceController {
                   .model(Invoice.class.getName())
                   .add("grid", "invoice-grid")
                   .add("form", "invoice-form")
+                  .param("search-filters", "customer-invoices-filters")
                   .param("forceEdit", "true")
                   .context("_showRecord", String.valueOf(invoice.getId()))
                   .context("_operationTypeSelect", invoice.getOperationTypeSelect())
-                  .context("todayDate", Beans.get(AppSupplychainService.class).getTodayDate())
+                  .context(
+                      "todayDate", Beans.get(AppSupplychainService.class).getTodayDate(company))
                   .map());
         }
       } else {

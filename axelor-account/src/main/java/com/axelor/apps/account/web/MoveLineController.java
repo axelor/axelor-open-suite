@@ -148,9 +148,13 @@ public class MoveLineController {
         for (Integer id : idList) {
           if (id != null) {
             MoveLine moveLine = moveLineRepository.find(id.longValue());
-            if (moveLine != null) {
-              totalCredit = totalCredit.add(moveLine.getCredit());
-              totalDebit = totalDebit.add(moveLine.getDebit());
+            if (moveLine != null && moveLine.getMove() != null) {
+              Integer statusSelect = moveLine.getMove().getStatusSelect();
+              if (statusSelect.equals(MoveRepository.STATUS_VALIDATED)
+                  || statusSelect.equals(MoveRepository.STATUS_DAYBOOK)) {
+                totalCredit = totalCredit.add(moveLine.getCredit());
+                totalDebit = totalDebit.add(moveLine.getDebit());
+              }
             } else {
               throw new AxelorException(
                   TraceBackRepository.CATEGORY_NO_VALUE,

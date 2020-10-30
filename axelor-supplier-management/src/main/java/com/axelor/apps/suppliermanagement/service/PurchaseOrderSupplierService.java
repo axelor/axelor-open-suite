@@ -186,7 +186,7 @@ public class PurchaseOrderSupplierService {
             parentPurchaseOrder.getExternalReference(),
             Beans.get(StockLocationService.class)
                 .getDefaultReceiptStockLocation(parentPurchaseOrder.getCompany()),
-            Beans.get(AppBaseService.class).getTodayDate(),
+            Beans.get(AppBaseService.class).getTodayDate(parentPurchaseOrder.getCompany()),
             Beans.get(PartnerPriceListService.class)
                 .getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
             supplierPartner,

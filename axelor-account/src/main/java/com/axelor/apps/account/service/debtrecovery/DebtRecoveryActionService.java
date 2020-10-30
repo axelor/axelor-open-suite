@@ -122,7 +122,7 @@ public class DebtRecoveryActionService {
     } else {
 
       // On enregistre la date de la relance
-      debtRecovery.setDebtRecoveryDate(appAccountService.getTodayDate());
+      debtRecovery.setDebtRecoveryDate(appAccountService.getTodayDate(debtRecovery.getCompany()));
 
       this.saveDebtRecovery(debtRecovery);
     }
@@ -219,7 +219,7 @@ public class DebtRecoveryActionService {
     } else {
 
       // On enregistre la date de la relance
-      debtRecovery.setDebtRecoveryDate(appAccountService.getTodayDate());
+      debtRecovery.setDebtRecoveryDate(appAccountService.getTodayDate(debtRecovery.getCompany()));
       this.debtRecoveryLevelValidate(debtRecovery);
 
       this.saveDebtRecovery(debtRecovery);

@@ -19,6 +19,8 @@ package com.axelor.apps.businesssupport.service;
 
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.service.TeamTaskBusinessProjectServiceImpl;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.TaskTemplate;
@@ -35,8 +37,15 @@ public class TeamTaskBusinessSupportServiceImpl extends TeamTaskBusinessProjectS
   public TeamTaskBusinessSupportServiceImpl(
       TeamTaskRepository teamTaskRepo,
       PriceListLineRepository priceListLineRepository,
-      PriceListService priceListService) {
-    super(teamTaskRepo, priceListLineRepository, priceListService);
+      PriceListService priceListService,
+      ProductCompanyService productCompanyService,
+      AppBaseService appBaseService) {
+    super(
+        teamTaskRepo,
+        priceListLineRepository,
+        priceListService,
+        productCompanyService,
+        appBaseService);
   }
 
   @Override

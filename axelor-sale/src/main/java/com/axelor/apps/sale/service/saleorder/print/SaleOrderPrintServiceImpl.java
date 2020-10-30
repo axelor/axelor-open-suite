@@ -30,6 +30,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.ThrowConsumer;
 import com.axelor.apps.tool.file.PdfTool;
+import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -43,7 +44,7 @@ import java.util.List;
 
 public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
 
-  @Inject SaleOrderService saleOrderService;
+  @Inject protected SaleOrderService saleOrderService;
 
   protected AppSaleService appSaleService;
   protected AppBaseService appBaseService;
@@ -111,6 +112,9 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
 
     return reportSetting
         .addParam("SaleOrderId", saleOrder.getId())
+        .addParam(
+            "Timezone",
+            saleOrder.getCompany() != null ? saleOrder.getCompany().getTimezone() : null)
         .addParam("Locale", locale)
         .addParam("ProformaInvoice", proforma)
         .addParam(
@@ -135,7 +139,9 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
 
     return prefixFileName
         + " - "
-        + Beans.get(AppBaseService.class).getTodayDate().format(DateTimeFormatter.BASIC_ISO_DATE)
+        + Beans.get(AppBaseService.class)
+            .getTodayDate(AuthUtils.getUser().getActiveCompany())
+            .format(DateTimeFormatter.BASIC_ISO_DATE)
         + "."
         + ReportSettings.FORMAT_PDF;
   }

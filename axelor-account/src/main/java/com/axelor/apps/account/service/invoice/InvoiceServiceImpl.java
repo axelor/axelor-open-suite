@@ -46,6 +46,7 @@ import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.base.db.Alarm;
 import com.axelor.apps.base.db.BankDetails;
@@ -108,6 +109,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   protected AccountConfigService accountConfigService;
   protected PartnerTurnoverService partnerTurnoverService;
   protected YearServiceAccount yearServiceAccount;
+  protected MoveToolService moveToolService;
 
   @Inject
   public InvoiceServiceImpl(
@@ -121,7 +123,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       InvoiceLineService invoiceLineService,
       AccountConfigService accountConfigService,
       PartnerTurnoverService partnerTurnoverService,
-      YearServiceAccount yearServiceAccount) {
+      YearServiceAccount yearServiceAccount,
+      MoveToolService moveToolService) {
 
     this.validateFactory = validateFactory;
     this.ventilateFactory = ventilateFactory;
@@ -134,6 +137,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     this.accountConfigService = accountConfigService;
     this.partnerTurnoverService = partnerTurnoverService;
     this.yearServiceAccount = yearServiceAccount;
+    this.moveToolService = moveToolService;
   }
 
   // WKF
@@ -296,7 +300,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
           I18n.get(IExceptionMessage.INVOICE_GENERATOR_4),
           I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
     }
-
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
       Account account = invoiceLine.getAccount();
 
@@ -437,7 +440,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Transactional(rollbackOn = {Exception.class})
   public Invoice createRefund(Invoice invoice) throws AxelorException {
 
-    log.debug("Créer un avoir pour la facture {}", new Object[] {invoice.getInvoiceId()});
     Invoice refund = new RefundInvoice(invoice).generate();
     invoice.addRefundInvoiceListItem(refund);
     invoiceRepo.save(invoice);
@@ -873,7 +875,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   public void refusalToPay(
       Invoice invoice, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr) {
     invoice.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_LITIGATION);
-    invoice.setDecisionPfpTakenDate(Beans.get(AppBaseService.class).getTodayDate());
+    invoice.setDecisionPfpTakenDate(
+        Beans.get(AppBaseService.class).getTodayDate(invoice.getCompany()));
     invoice.setReasonOfRefusalToPay(reasonOfRefusalToPay);
     invoice.setReasonOfRefusalToPayStr(
         reasonOfRefusalToPayStr != null ? reasonOfRefusalToPayStr : reasonOfRefusalToPay.getName());
@@ -904,7 +907,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         pfpValidatorUser.getSubstitutePfpValidatorList();
     List<User> validPfpValidatorUserList = new ArrayList<>();
     StringBuilder pfpValidatorUserDomain = new StringBuilder("self.id in ");
-    LocalDate todayDate = Beans.get(AppBaseService.class).getTodayDate();
+    LocalDate todayDate = Beans.get(AppBaseService.class).getTodayDate(invoice.getCompany());
 
     validPfpValidatorUserList.add(pfpValidatorUser);
 

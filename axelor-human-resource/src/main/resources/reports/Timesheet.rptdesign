@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -1286,17 +1286,18 @@ where Timesheet.id = ?]]></xml-property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF>  :</B>]]></text-property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF>  :</B>&amp;nbsp;]]></text-property>
                     </text>
                 </cell>
                 <cell id="3934">
-                    <text id="3930">
-                        <property name="marginTop">1pt</property>
-                        <property name="marginLeft">2pt</property>
+                    <data id="5497">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="textAlign">left</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["from_date"]</VALUE-OF>]]></text-property>
-                    </text>
+                        <property name="resultSetColumn">from_date</property>
+                    </data>
                 </cell>
             </row>
             <row id="3377">
@@ -1377,17 +1378,18 @@ where Timesheet.id = ?]]></xml-property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF>  :</B>]]></text-property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF>  :</B>&amp;nbsp;]]></text-property>
                     </text>
                 </cell>
                 <cell id="3936">
-                    <text id="4037">
-                        <property name="marginTop">1pt</property>
-                        <property name="marginLeft">2pt</property>
+                    <data id="5498">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="textAlign">left</property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["to_date"]</VALUE-OF>]]></text-property>
-                    </text>
+                        <property name="resultSetColumn">to_date</property>
+                    </data>
                 </cell>
             </row>
         </grid>
@@ -1803,13 +1805,15 @@ where Timesheet.id = ?]]></xml-property>
                         <property name="borderTopColor">#606062</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <text id="3982">
+                        <data id="5499">
                             <property name="fontSize">8pt</property>
-                            <property name="marginLeft">2pt</property>
+                            <structure name="dateTimeFormat">
+                                <property name="category">Short Date</property>
+                                <property name="pattern">Short Date</property>
+                            </structure>
                             <property name="textAlign">center</property>
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["timesheet_line_date"]</VALUE-OF>]]></text-property>
-                        </text>
+                            <property name="resultSetColumn">timesheet_line_date</property>
+                        </data>
                     </cell>
                     <cell id="3848">
                         <property name="borderBottomColor">#606062</property>

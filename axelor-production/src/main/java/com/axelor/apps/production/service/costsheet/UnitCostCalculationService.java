@@ -32,5 +32,5 @@ public interface UnitCostCalculationService {
 
   public void runUnitCostCalc(UnitCostCalculation unitCostCalculation) throws AxelorException;
 
-  public void updateUnitCosts(UnitCostCalculation unitCostCalculation);
+  public void updateUnitCosts(UnitCostCalculation unitCostCalculation) throws AxelorException;
 }

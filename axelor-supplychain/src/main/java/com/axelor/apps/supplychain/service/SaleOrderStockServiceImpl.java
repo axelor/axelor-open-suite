@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -74,6 +75,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   protected SaleOrderRepository saleOrderRepository;
   protected AppSupplychainService appSupplychainService;
   protected SupplyChainConfigService supplyChainConfigService;
+  protected ProductCompanyService productCompanyService;
+  protected PartnerStockSettingsService partnerStockSettingsService;
 
   @Inject
   public SaleOrderStockServiceImpl(
@@ -87,7 +90,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       AppBaseService appBaseService,
       SaleOrderRepository saleOrderRepository,
       AppSupplychainService appSupplychainService,
-      SupplyChainConfigService supplyChainConfigService) {
+      SupplyChainConfigService supplyChainConfigService,
+      ProductCompanyService productCompanyService,
+      PartnerStockSettingsService partnerStockSettingsService) {
 
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
@@ -100,6 +105,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     this.saleOrderRepository = saleOrderRepository;
     this.appSupplychainService = appSupplychainService;
     this.supplyChainConfigService = supplyChainConfigService;
+    this.productCompanyService = productCompanyService;
+    this.partnerStockSettingsService = partnerStockSettingsService;
   }
 
   @Override
@@ -191,12 +198,14 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     if (supplychainConfig.getDefaultEstimatedDate() != null
         && supplychainConfig.getDefaultEstimatedDate() == SupplyChainConfigRepository.CURRENT_DATE
         && stockMove.getEstimatedDate() == null) {
-      stockMove.setEstimatedDate(appBaseService.getTodayDate());
+      stockMove.setEstimatedDate(appBaseService.getTodayDate(saleOrder.getCompany()));
     } else if (supplychainConfig.getDefaultEstimatedDate()
             == SupplyChainConfigRepository.CURRENT_DATE_PLUS_DAYS
         && stockMove.getEstimatedDate() == null) {
       stockMove.setEstimatedDate(
-          appBaseService.getTodayDate().plusDays(supplychainConfig.getNumberOfDays().longValue()));
+          appBaseService
+              .getTodayDate(saleOrder.getCompany())
+              .plusDays(supplychainConfig.getNumberOfDays().longValue()));
     }
 
     setReservationDateTime(stockMove, saleOrder);
@@ -257,9 +266,17 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   public StockMove createStockMove(
       SaleOrder saleOrder, Company company, LocalDate estimatedDeliveryDate)
       throws AxelorException {
-    StockLocation toStockLocation =
-        stockConfigService.getCustomerVirtualStockLocation(
-            stockConfigService.getStockConfig(company));
+    StockLocation toStockLocation = saleOrder.getToStockLocation();
+    if (toStockLocation == null) {
+      toStockLocation =
+          partnerStockSettingsService.getDefaultExternalStockLocation(
+              saleOrder.getClientPartner(), company);
+    }
+    if (toStockLocation == null) {
+      toStockLocation =
+          stockConfigService.getCustomerVirtualStockLocation(
+              stockConfigService.getStockConfig(company));
+    }
 
     Partner partner = computePartnerToUseForStockMove(saleOrder);
 
@@ -380,7 +397,14 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       BigDecimal requestedReservedQty =
           saleOrderLine.getRequestedReservedQty().subtract(saleOrderLine.getDeliveredQty());
 
-      BigDecimal companyUnitPriceUntaxed = saleOrderLine.getProduct().getCostPrice();
+      BigDecimal companyUnitPriceUntaxed =
+          (BigDecimal)
+              productCompanyService.get(
+                  saleOrderLine.getProduct(),
+                  "costPrice",
+                  saleOrderLine.getSaleOrder() != null
+                      ? saleOrderLine.getSaleOrder().getCompany()
+                      : null);
       if (unit != null && !unit.equals(saleOrderLine.getUnit())) {
         qty =
             unitConversionService.convert(

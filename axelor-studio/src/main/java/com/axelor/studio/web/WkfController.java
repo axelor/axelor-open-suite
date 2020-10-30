@@ -42,6 +42,7 @@ import com.axelor.studio.exception.IExceptionMessage;
 import com.axelor.studio.service.wkf.WkfDesignerService;
 import com.axelor.studio.service.wkf.WkfService;
 import com.axelor.studio.translation.ITranslation;
+import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import java.util.Collections;
 import java.util.List;
@@ -59,7 +60,7 @@ public class WkfController {
       Beans.get(WkfDesignerService.class).processXml(workflow);
 
     } catch (Exception e) {
-      if (e.getMessage().equals(IExceptionMessage.CANNOT_ALTER_NODES)) {
+      if (Objects.equal(e.getMessage(), IExceptionMessage.CANNOT_ALTER_NODES)) {
         this.setDefaultNodes(request, response);
         response.setValue("$isError", true);
       }

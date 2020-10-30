@@ -99,7 +99,8 @@ public class InvoicingProjectController {
           ActionView.define(I18n.get("Invoice"))
               .model(Invoice.class.getName())
               .add("grid", "invoice-grid")
-              .add("form", "invoice-form");
+              .add("form", "invoice-form")
+              .param("search-filters", "customer-invoices-filters");
       response.setReload(true);
       response.setView(
           (ids.contains(","))

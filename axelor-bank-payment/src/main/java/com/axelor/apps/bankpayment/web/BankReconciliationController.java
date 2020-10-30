@@ -145,6 +145,11 @@ public class BankReconciliationController {
                   IReport.BANK_RECONCILIATION, "Bank Reconciliation" + "-${date}")
               .addParam("BankReconciliationId", bankReconciliation.getId())
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
+              .addParam(
+                  "Timezone",
+                  bankReconciliation.getCompany() != null
+                      ? bankReconciliation.getCompany().getTimezone()
+                      : null)
               .addFormat("pdf")
               .toAttach(bankReconciliation)
               .generate()

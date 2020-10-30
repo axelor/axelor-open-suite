@@ -53,6 +53,7 @@ public class ProductionOrderSaleOrderController {
                 .model(ProductionOrder.class.getName())
                 .add("form", "production-order-form")
                 .add("grid", "production-order-grid")
+                .param("search-filters", "production-order-filters")
                 .param("forceEdit", "true")
                 .context("_showRecord", String.valueOf(productionOrderIdList.get(0)))
                 .map());
@@ -62,6 +63,7 @@ public class ProductionOrderSaleOrderController {
                 .model(ProductionOrder.class.getName())
                 .add("grid", "production-order-grid")
                 .add("form", "production-order-form")
+                .param("search-filters", "production-order-filters")
                 .domain("self.id in (" + Joiner.on(",").join(productionOrderIdList) + ")")
                 .map());
       } else {

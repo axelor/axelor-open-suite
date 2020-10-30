@@ -19,11 +19,13 @@ package com.axelor.apps.tool.date;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
+import com.axelor.common.StringUtils;
 import java.lang.invoke.MethodHandles;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -315,5 +317,15 @@ public class DateTool {
     if (d1 == null) return d2;
     if (d2 == null) return d1;
     return (d1.isAfter(d2)) ? d1 : d2;
+  }
+
+  public static ZonedDateTime getTodayDateTime(String timeZone) {
+    return StringUtils.notBlank(timeZone)
+        ? ZonedDateTime.now(ZoneId.of(timeZone))
+        : ZonedDateTime.now();
+  }
+
+  public static LocalDate getTodayDate(String timeZone) {
+    return getTodayDateTime(timeZone).toLocalDate();
   }
 }
