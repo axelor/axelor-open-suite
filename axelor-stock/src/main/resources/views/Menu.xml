@@ -51,7 +51,7 @@
 		<view-param name="search-filters" value="supplier-arrivals-filters"/>
         <domain>self.typeSelect = :_typeSelect AND self.isReversion = FALSE</domain>
 		<context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_INCOMING"/>
-		<context name="_newDate" expr="eval: __date__.plusWeeks(1)"/>
+		<context name="_newDate" expr="eval: __config__.date.plusWeeks(1)"/>
 		<context name="_isReversion" expr="eval: false"/>
 	</action-view>
 
@@ -67,7 +67,7 @@
         <view-param name="search-filters" value="customer-deliveries-filters"/>
         <domain>self.typeSelect = :_typeSelect AND self.isReversion = TRUE</domain>
         <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
-        <context name="_newDate" expr="eval: __date__.plusWeeks(1)"/>
+        <context name="_newDate" expr="eval: __config__.date.plusWeeks(1)"/>
         <context name="_isReversion" expr="eval: true"/>
     </action-view>
 
@@ -297,7 +297,7 @@
 		model="com.axelor.apps.stock.db.TrackingNumber" >
 		<view type="grid" name="tracking-number-grid" />
 		<view type="form" name="tracking-number-form"/>
-		<context name="_datePlusTwoMonths" expr="eval: __date__.plusMonths(2)"/>
+		<context name="_datePlusTwoMonths" expr="eval: __config__.date.plusMonths(2)"/>
 	</action-view>
 	
 	<menuitem name="stock-root-conf-freight-carrier" parent="stock-root-conf"
@@ -369,7 +369,7 @@
 
 	<action-view name="stock.dashboard.one.view" title="General Stock Details">
 		<view type="dashboard" name="stock.dashboard.one" />
-	    <context name="_newDate" expr="eval: __date__.plusDays(5)"/>
+	    <context name="_newDate" expr="eval: __config__.date.plusDays(5)"/>
 	</action-view>
 	
 	<menuitem name="menu-stock-dashboard-2" parent="stock-root-report" 

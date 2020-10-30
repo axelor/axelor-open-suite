@@ -69,7 +69,7 @@
 		<view type="form" name="event-form"/>
 		<view type="calendar" name="event-calendar-color-by-calendar"/>
 		<view-param name="search-filters" value="event-filters"/>
-		<context name="_currentDate" expr="eval:  __date__"/>
+		<context name="_currentDate" expr="eval:  __config__.date"/>
 		<context name="_internalUserId" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
@@ -291,7 +291,7 @@
 	
 	<action-view name="crm.target.user.dashboard.view" title="Objectives user Dashboard">
 		<view type="dashboard" name="crm.target.user.dashboard" />
-		<context name="date" expr="eval: __date__"/>
+		<context name="date" expr="eval: __config__.date"/>
 		<context name="user" expr="eval:__user__"/>
 	</action-view>
 	

@@ -1020,12 +1020,12 @@ InvoiceSet.length > 0))"
 
 	<action-record name="action-invoice-record-pfp-validate" model="com.axelor.apps.account.db.Invoice">
 		<field name="pfpValidateStatusSelect" expr="eval: 2"/>
-		<field name="decisionPfpTakenDate" expr="eval: __date__"/>
+		<field name="decisionPfpTakenDate" expr="eval: __config__.date"/>
 	</action-record>
 
 	<action-record name="action-invoice-record-refusal-to-pay" model="com.axelor.apps.account.db.Invoice">
 		<field name="pfpValidateStatusSelect" expr="eval: 3"/>
-		<field name="decisionPfpTakenDate" expr="eval: __date__"/>
+		<field name="decisionPfpTakenDate" expr="eval: __config__.date"/>
 		<field name="reasonOfRefusalToPayStr" expr="eval: reasonOfRefusalToPay?.name"/>
 	</action-record>
 

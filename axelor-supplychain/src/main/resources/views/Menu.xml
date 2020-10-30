@@ -94,7 +94,7 @@
 		<view-param name="search-filters" value="supplier-arrivals-filters"/>
 		<domain>self.fromStockLocation.typeSelect = 2</domain>
 		<context name="_typeSelect" expr="3"/>
-		<context name="_newDate" expr="eval: __date__.plusWeeks(1)"/>
+		<context name="_newDate" expr="eval: __config__.date.plusWeeks(1)"/>
 	</action-view>
 	
 	<menuitem name="top-menu-sales-custdeliveries" parent="top-menu-sales"  if="__config__.app.isApp('stock')"

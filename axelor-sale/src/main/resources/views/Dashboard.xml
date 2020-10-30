@@ -30,8 +30,8 @@
 		<view type="grid" name="my-event-grid"/>
 		<view type="form" name="event-form"/>
 	    <domain>self.startDateTime between :_today and :_tomorrow and self.user =:__user__</domain>
-	    <context name="_tomorrow" expr="eval: __date__.plusDays(1).atStartOfDay()"/>
-	    <context name="_today" expr="eval: __date__.atStartOfDay()"/>
+	    <context name="_tomorrow" expr="eval: __config__.date.plusDays(1).atStartOfDay()"/>
+	    <context name="_today" expr="eval: __config__.date.atStartOfDay()"/>
 	</action-view>
 	
 	<action-view name="dashlet.salesman.dashboard.opportunities" title="My Opportunities" model="com.axelor.apps.crm.db.Opportunity">

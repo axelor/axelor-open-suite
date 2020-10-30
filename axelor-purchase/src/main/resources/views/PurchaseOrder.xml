@@ -479,7 +479,7 @@
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
     	<field name="buyerUser" expr="eval:__user__"/>
-    	<field name="orderDate" expr="eval: __date__"/>
+    	<field name="orderDate" expr="eval: __config__.date"/>
     	<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<field name="printingSettings" expr="eval: __user__.activeCompany?.printingSettings" if="__user__.activeCompany != null"/>
 		<field name="project" expr="eval:_project" />
@@ -510,7 +510,7 @@
 
     <action-record name="action-purchase-order-record-validate" model="com.axelor.apps.purchase.db.PurchaseOrder">
     	<field name="statusSelect" expr="3"/>
-    	<field name="validationDate" expr="eval: __date__"/>
+    	<field name="validationDate" expr="eval: __config__.date"/>
     	<field name="validatedByUser" expr="eval:__user__"/>
     </action-record>
 

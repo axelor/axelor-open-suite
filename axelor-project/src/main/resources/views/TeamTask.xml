@@ -383,7 +383,7 @@
 		<field name="assignedTo" expr="eval:__user__" />
 		<field name="priority" expr="normal" />
     	<field name="status" expr="new" />
-    	<field name="taskDate" expr="#{__date__}" />
+    	<field name="taskDate" expr="#{__config__.date}" />
     	<field name="project" expr="eval:_project" />
     	<field name="customerReferral" expr="eval: __user__" if="__user__?.roles.contains(__repo__(Role).all().filter('self.name=?','role.customer').fetchOne())"/>
     	<field name="assignment" expr="eval:2"/>

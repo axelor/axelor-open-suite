@@ -27,7 +27,7 @@
 	</form>
 	
 	<action-record name="action-leave-management-record-default" model="com.axelor.apps.hr.db.LeaveManagement">
-		<field name="date" expr="eval: __date__"/>
+		<field name="date" expr="eval: __config__.date"/>
 		<field name="user" expr="eval: __user__"/>
 	</action-record>
 	

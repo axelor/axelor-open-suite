@@ -72,7 +72,7 @@
 	</action-record>
 	
 	<action-record name="action-hr-employee-advance-record-on-new" model="com.axelor.apps.hr.db.EmployeeAdvance">
-		<field name="date" expr="eval: __date__"/>
+		<field name="date" expr="eval: __config__.date"/>
 	</action-record>
 	
 </object-views>

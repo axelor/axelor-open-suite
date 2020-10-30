@@ -58,7 +58,7 @@
 					<field name="companySet" colSpan="3" widget="TagSelect"/>
 					<field name="blockingSelect" colSpan="2" selection="base.blocking.select"/>
 					<field name="blockingToDate" colSpan="2">
-						<hilite if="$moment(blockingToDate) &gt; $moment(__date__)" color="danger" strong="true"/>
+						<hilite if="$moment(blockingToDate) &gt; $moment(__config__.date)" color="danger" strong="true"/>
 					</field>
 					<field name="blockingReason" colSpan="3" form-view="stop-reason-form" grid-view="stop-reason-grid"/>
 					<field name="blockingByUser" colSpan="2" form-view="user-form" grid-view="user-grid"/>

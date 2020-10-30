@@ -231,8 +231,8 @@
 		<view type="grid" name="cheque-rejection-grid"/>
 		<view type="form" name="cheque-rejection-form"/>
 		<view-param name="search-filters" value="cheque-rejection-filters"/>
-		<context name="_newDate1" expr="eval: __date__.minusDays(5)"/>
-		<context name="_newDate2" expr="eval: __date__.minusDays(30)"/>
+		<context name="_newDate1" expr="eval: __config__.date.minusDays(5)"/>
+		<context name="_newDate2" expr="eval: __config__.date.minusDays(30)"/>
 	</action-view>
 	
 	<menuitem name="account-root-debt-recovery" parent="account-root"

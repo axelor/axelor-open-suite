@@ -511,7 +511,7 @@
 		<view type="grid" name="user-grid" />
 		<view type="form" name="user-form" />
 		<view-param name="search-filters" value="user-filters"/>
-		<context name="_today" expr="eval: __date__"/>
+		<context name="_today" expr="eval: __config__.date"/>
 	</action-view>
 
 	<menuitem name="admin-root-user-company" parent="admin-root-user"
