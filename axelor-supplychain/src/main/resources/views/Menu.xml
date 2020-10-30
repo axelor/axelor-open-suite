@@ -195,15 +195,10 @@
 		<view type="form" name="sale-batch-form"/>
 		<view-param name="search-filters" value="sale-batch-filters"/>
 	</action-view>
-	
-</object-views>
-
 
 	<menuitem name="referential-conf-partner" parent="referential-conf"
 		if="__config__.app.isApp('supplychain')" title="Partner relations type"
 		action="supplychain.referential.conf.partner" />
-
-
 
 	<action-view name="supplychain.referential.conf.partner"
 		title="Partner relations types" model="com.axelor.apps.base.db.PartnerSupplychainLinkType">
