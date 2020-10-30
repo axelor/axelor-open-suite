@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+	<grid model="com.axelor.mail.db.MailMessage" title="Tasks activities"
+		name="daily-timesheet-activity-grid" orderBy="-relatedId">
+
+		<field name="subject" />
+		<field name="relatedName" />
+		<field name="body" width="700%" />
+		<field name="relatedId" hidden="true" />
+
+	</grid>
+
+	<form model="com.axelor.mail.db.MailMessage" title="Task activity"
+		name="daily-timesheet-activity-form" width="large">
+
+		<panel name="mainPanel" readonly="true">
+			<field name="subject" />
+			<field name="relatedName" colSpan="12" />
+			<field name="body" colSpan="12" />
+		</panel>
+
+	</form>
+
+</object-views>

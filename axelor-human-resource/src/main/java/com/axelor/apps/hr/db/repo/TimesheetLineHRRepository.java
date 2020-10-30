@@ -36,8 +36,9 @@ public class TimesheetLineHRRepository extends TimesheetLineRepository {
   public void computeFullName(TimesheetLine timesheetLine) {
 
     timesheetLine.setFullName(
-        timesheetLine.getTimesheet().getFullName()
-            + " "
+        (timesheetLine.getTimesheet() != null
+                ? timesheetLine.getTimesheet().getFullName() + " "
+                : "")
             + timesheetLine.getDate()
             + " "
             + timesheetLine.getId());

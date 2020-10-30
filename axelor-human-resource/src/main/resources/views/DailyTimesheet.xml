@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+	<grid name="daily-timesheet-grid" title="Daily timesheets"
+		model="com.axelor.apps.hr.db.DailyTimesheet" orderBy="-dailyTimesheetDate,dailyTimesheetUser">
+
+		<field name="dailyTimesheetDate" />
+		<field name="dailyTimesheetUser" />
+		<field name="statusSelect" />
+
+	</grid>
+
+	<form name="daily-timesheet-form" title="Daily timesheet"
+		model="com.axelor.apps.hr.db.DailyTimesheet" onNew="action-daily-timesheet-attrs-default-values"
+		onLoad="action-daily-timesheet-method-update-from-timesheets,save"
+		width="large">
+
+		<panel name="mainPanel">
+			<field name="statusSelect" readonly="true" widget="NavSelect"
+				showTitle="false" colSpan="12" />
+			<field name="dailyTimesheetDate" readonly="true" />
+			<field name="dailyTimesheetUser" readonly="true" />
+			<panel-dashlet action="action-daily-timesheet-dashlet-tasks-activities"
+				name="activityPanel" title="Tasks activities" colSpan="12" />
+			<panel-related field="dailyTimesheetLineList" name="dailyTimesheetLineListPanel"
+				grid-view="timesheet-line-daily-timesheet-grid" form-view="timesheet-line-timesheet-form"
+				editable="true" colSpan="12" readonlyIf="statusSelect == 1" />
+		</panel>
+		<panel name="actionPanel" sidebar="true">
+			<button name="confirmBtn" title="Confirm" showIf="statusSelect == 0"
+				onClick="save,action-daily-timesheet-attrs-status-complete,save" />
+			<button name="resetBtn" title="Reset" showIf="statusSelect == 1"
+				onClick="save,action-daily-timesheet-attrs-status-draft,save" if="eval: __user__.employee?.hrManager" />
+			<button name="createLinesFromActivitiesBtn" title="Create lines from activities"
+				onClick="save,action-daily-timesheet-method-update-from-activities"
+				showIf="statusSelect == 0" />
+			<button name="createLinesFromEventsBtn" title="Create lines from events"
+				onClick="save,action-daily-timesheet-method-update-from-events"
+				showIf="statusSelect == 0" />
+		</panel>
+
+	</form>
+
+	<action-attrs name="action-daily-timesheet-attrs-default-values">
+		<attribute name="value" for="dailyTimesheetDate" expr="eval: __date__" />
+		<attribute name="value" for="dailyTimesheetUser" expr="eval: __user__" />
+	</action-attrs>
+
+	<action-method name="action-daily-timesheet-method-update-from-timesheets">
+		<call class="com.axelor.apps.hr.web.timesheet.DailyTimesheetController"
+			method="updateFromTimesheets" />
+	</action-method>
+
+	<action-method name="action-daily-timesheet-method-update-from-activities">
+		<call class="com.axelor.apps.hr.web.timesheet.DailyTimesheetController"
+			method="updateFromActivities" />
+	</action-method>
+
+	<action-method name="action-daily-timesheet-method-update-from-events">
+		<call class="com.axelor.apps.hr.web.timesheet.DailyTimesheetController"
+			method="updateFromEvents" />
+	</action-method>
+
+	<action-attrs name="action-daily-timesheet-attrs-status-complete">
+		<attribute name="value" for="statusSelect"
+			expr="eval: __repo__(DailyTimesheet).STATUS_COMPLETED" />
+	</action-attrs>
+
+	<action-attrs name="action-daily-timesheet-attrs-status-draft">
+		<attribute name="value" for="statusSelect"
+			expr="eval: __repo__(DailyTimesheet).STATUS_DRAFT" />
+	</action-attrs>
+
+	<action-view name="action-daily-timesheet-dashlet-tasks-activities"
+		title="Tasks activities" model="com.axelor.mail.db.MailMessage">
+		<view type="grid" name="daily-timesheet-activity-grid" />
+		<view type="form" name="daily-timesheet-activity-form" />
+		<domain>self.author = :dailyTimesheetUser and self.relatedModel = 'com.axelor.team.db.TeamTask' and (date(self.createdOn) >= :dailyTimesheetDate or date(self.updatedOn) >= :dailyTimesheetDate)</domain>
+	</action-view>
+
+</object-views>

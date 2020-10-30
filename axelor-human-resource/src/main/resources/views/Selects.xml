@@ -96,6 +96,7 @@
 		<option value="5">Leave Management Reset</option>
 		<option value="6">Export des salariés</option>
         <option value="7">Email reminder for timesheets</option>
+        <option value="8">Create daily timesheets</option>
 	</selection>
 	
 	<selection name="hr.batch.employment.contract.export.type.select">
@@ -202,6 +203,11 @@
     <selection name='trace.back.origin.select' id="trace.back.origin.select.hr">
 		<option value='reminder'>Reminder</option>
 		<option value="leaveManagement">Leave management</option>
+	</selection>
+
+	<selection name="daily.timesheet.status.select">
+		<option value="0">Draft</option>
+		<option value="1">Completed</option>
 	</selection>
 
 </object-views>

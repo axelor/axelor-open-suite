@@ -64,6 +64,9 @@ public class HrBatchService extends AbstractBatchService {
       case HrBatchHRRepository.ACTION_TIMESHEET_REMINDER:
         batch = runTimesheetReminderBatch(hrBatch);
         break;
+      case HrBatchHRRepository.ACTION_CREATE_DAILY_TIMESHEETS:
+        batch = createDailyTimesheets(hrBatch);
+        break;
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -107,5 +110,9 @@ public class HrBatchService extends AbstractBatchService {
     }
 
     return Beans.get(BatchTimesheetReminder.class).run(hrBatch);
+  }
+
+  public Batch createDailyTimesheets(HrBatch hrBatch) {
+    return Beans.get(BatchCreateDailyTimesheets.class).run(hrBatch);
   }
 }

@@ -182,7 +182,10 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
       log.error(e.getLocalizedMessage());
       TraceBackService.trace(e);
     }
-    timesheet.addTimesheetLineListItem(timesheetLine);
+
+    if (timesheet != null) {
+      timesheet.addTimesheetLineListItem(timesheetLine);
+    }
 
     return timesheetLine;
   }

@@ -8,6 +8,10 @@
   <entity name="User" sequential="true" lang="java">
 
      <one-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee"/>
+		<many-to-many name="favouriteTaskSet" ref="com.axelor.team.db.TeamTask"
+			title="Favourite tasks" />
+		<many-to-many name="favouriteProjectSet" ref="com.axelor.apps.project.db.Project"
+			title="Favourite projects" />
 
 	   <track>
 	     <field name="employee"/>
