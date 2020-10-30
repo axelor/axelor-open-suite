@@ -55,7 +55,7 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
   @Inject protected ProductCompanyService productCompanyService;
 
   @Override
-  protected void processPurchaseOrderLine(
+  public void processPurchaseOrderLine(
       Invoice invoice, List<InvoiceLine> invoiceLineList, PurchaseOrderLine purchaseOrderLine)
       throws AxelorException {
     super.processPurchaseOrderLine(invoice, invoiceLineList, purchaseOrderLine);

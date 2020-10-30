@@ -126,12 +126,12 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
 
-      processPurchaseOrderLine(invoice, invoiceLineList, purchaseOrderLine);
+      Beans.get(PurchaseOrderInvoiceService.class).processPurchaseOrderLine(invoice, invoiceLineList, purchaseOrderLine);
     }
     return invoiceLineList;
   }
 
-  protected void processPurchaseOrderLine(
+  public void processPurchaseOrderLine(
       Invoice invoice, List<InvoiceLine> invoiceLineList, PurchaseOrderLine purchaseOrderLine)
       throws AxelorException {
     invoiceLineList.addAll(this.createInvoiceLine(invoice, purchaseOrderLine));
