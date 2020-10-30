@@ -126,7 +126,8 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
 
-      Beans.get(PurchaseOrderInvoiceService.class).processPurchaseOrderLine(invoice, invoiceLineList, purchaseOrderLine);
+      Beans.get(PurchaseOrderInvoiceService.class)
+          .processPurchaseOrderLine(invoice, invoiceLineList, purchaseOrderLine);
     }
     return invoiceLineList;
   }

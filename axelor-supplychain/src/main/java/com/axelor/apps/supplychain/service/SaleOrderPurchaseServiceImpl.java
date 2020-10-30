@@ -150,8 +150,8 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
 
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
       purchaseOrder.addPurchaseOrderLineListItem(
-          Beans.get(PurchaseOrderLineServiceSupplyChain.class).createPurchaseOrderLine(
-              purchaseOrder, saleOrderLine));
+          Beans.get(PurchaseOrderLineServiceSupplyChain.class)
+              .createPurchaseOrderLine(purchaseOrder, saleOrderLine));
     }
 
     purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);

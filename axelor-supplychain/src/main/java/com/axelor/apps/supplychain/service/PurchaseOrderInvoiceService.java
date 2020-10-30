@@ -50,7 +50,7 @@ public interface PurchaseOrderInvoiceService {
 
   public BigDecimal getInvoicedAmount(
       PurchaseOrder purchaseOrder, Long currentInvoiceId, boolean excludeCurrentInvoice);
-  
+
   public void processPurchaseOrderLine(
       Invoice invoice, List<InvoiceLine> invoiceLineList, PurchaseOrderLine purchaseOrderLine)
       throws AxelorException;

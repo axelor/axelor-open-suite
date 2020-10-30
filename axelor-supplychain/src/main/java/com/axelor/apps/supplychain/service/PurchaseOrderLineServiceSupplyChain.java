@@ -7,6 +7,6 @@ import com.axelor.exception.AxelorException;
 
 public interface PurchaseOrderLineServiceSupplyChain {
 
-  public PurchaseOrderLine createPurchaseOrderLine(PurchaseOrder purchaseOrder,
-      SaleOrderLine saleOrderLine) throws AxelorException;
+  public PurchaseOrderLine createPurchaseOrderLine(
+      PurchaseOrder purchaseOrder, SaleOrderLine saleOrderLine) throws AxelorException;
 }

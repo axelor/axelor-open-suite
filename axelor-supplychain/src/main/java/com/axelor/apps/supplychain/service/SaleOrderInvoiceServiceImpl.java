@@ -612,8 +612,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
       if (qtyToInvoiceMap.containsKey(saleOrderLine.getId())) {
         List<InvoiceLine> invoiceLines =
-            Beans.get(SaleOrderInvoiceService.class).createInvoiceLine(
-                invoice, saleOrderLine, qtyToInvoiceMap.get(saleOrderLine.getId()));
+            Beans.get(SaleOrderInvoiceService.class)
+                .createInvoiceLine(
+                    invoice, saleOrderLine, qtyToInvoiceMap.get(saleOrderLine.getId()));
         invoiceLineList.addAll(invoiceLines);
         saleOrderLine.setInvoiced(true);
       }
