@@ -1327,7 +1327,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="height">0.5104166666666666in</property>
                     <property name="width">11.052083333333334in</property>
                     <column id="4643">
-                        <property name="width">70%</property>
+                        <property name="width">40%</property>
+                    </column>
+                    <column id="5399">
+                        <property name="width">30%</property>
                     </column>
                     <column id="3799">
                         <property name="verticalAlign">middle</property>
@@ -1445,6 +1448,27 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 	</TR>
 </TABLE>]]></text-property>
                             </text>
+                        </cell>
+                        <cell id="5398">
+                            <property name="paddingTop">1pt</property>
+                            <property name="paddingLeft">1pt</property>
+                            <property name="paddingBottom">0pt</property>
+                            <property name="paddingRight">1pt</property>
+                            <property name="textAlign">left</property>
+                            <data id="5401">
+                                <property name="marginTop">5%</property>
+                                <property name="textAlign">center</property>
+                                <property name="dataSet">InventoryDS</property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">inventoryName</property>
+                                        <text-property name="displayName">inventoryName</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["inventoryName"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="resultSetColumn">inventoryName</property>
+                            </data>
                         </cell>
                         <cell id="3798">
                             <property name="fontSize">8.5pt</property>
@@ -1588,28 +1612,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="dataType">string</property>
                 </structure>
             </list-property>
-            <column id="5065">
-                <property name="width">25%</property>
-            </column>
-            <column id="5066">
-                <property name="width">25%</property>
-            </column>
-            <column id="5383">
-                <property name="width">25%</property>
-            </column>
-            <column id="5067">
-                <property name="width">25%</property>
-            </column>
-            <column id="5267">
-                <property name="width">25%</property>
-            </column>
-            <column id="5394">
-                <property name="width">25%</property>
-            </column>
+            <column id="5066"/>
+            <column id="5383"/>
+            <column id="5067"/>
             <row id="5068">
                 <property name="height">0.3in</property>
                 <cell id="5069">
-                    <property name="colSpan">6</property>
+                    <property name="colSpan">3</property>
                     <property name="rowSpan">1</property>
                     <text id="5085">
                         <property name="fontSize">15pt</property>
@@ -1645,136 +1654,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             </row>
             <row id="5118">
                 <property name="height">0.34375in</property>
-                <cell id="5119"/>
                 <cell id="5120"/>
                 <cell id="5379"/>
                 <cell id="5121"/>
-                <cell id="5265"/>
-                <cell id="5390"/>
             </row>
             <row id="5256">
-                <property name="height">0.84375in</property>
-                <cell id="5257">
-                    <text id="5268">
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'Inventory.name'</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["inventoryName"]</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
                 <cell id="5258">
-                    <text id="5269">
-                        <property name="display">inline</property>
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'Inventory.plannedStartDateT'</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> :&amp;nbsp;]]></text-property>
-                    </text>
-                    <data id="5395">
-                        <structure name="dateTimeFormat">
-                            <property name="category">Short Date</property>
-                            <property name="pattern">Short Date</property>
-                        </structure>
-                        <property name="display">block</property>
-                        <property name="resultSetColumn">inventoryPlannedStartDate</property>
-                    </data>
-                </cell>
-                <cell id="5380">
-                    <text id="5386">
-                        <property name="display">inline</property>
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'Inventory.plannedEndDateT'</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> :&amp;nbsp;]]></text-property>
-                    </text>
-                    <data id="5396">
-                        <structure name="dateTimeFormat">
-                            <property name="category">Short Date</property>
-                            <property name="pattern">Short Date</property>
-                        </structure>
-                        <property name="display">block</property>
-                        <property name="resultSetColumn">inventoryPlannedEndDate</property>
-                    </data>
-                </cell>
-                <cell id="5259">
-                    <text id="5388">
-                        <property name="display">inline</property>
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'Inventory.createdOn'</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> :&amp;nbsp;
-]]></text-property>
-                    </text>
-                    <data id="5397">
-                        <structure name="dateTimeFormat">
-                            <property name="category">Short Date</property>
-                            <property name="pattern">Short Date</property>
-                        </structure>
-                        <property name="display">block</property>
-                        <property name="resultSetColumn">inventoryCreatedOn</property>
-                    </data>
-                </cell>
-                <cell id="5266">
                     <text id="5270">
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
@@ -1797,7 +1682,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["companyName"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
-                <cell id="5391">
+                <cell id="5380">
                     <text id="5271">
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
@@ -1820,17 +1705,85 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["inventoryLocation"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
+                <cell id="5259"/>
             </row>
-            <row id="5272">
-                <property name="height">0.25in</property>
-                <list-property name="visibility">
-                    <structure>
-                        <property name="format">all</property>
-                        <expression name="valueExpr" type="javascript">row["product_family"]==null &amp;&amp; row["product_category"]==null &amp;&amp; row["product"]==null &amp;&amp; row["from_rack"]==null &amp;&amp; row["to_rack"]==null</expression>
-                    </structure>
-                </list-property>
-                <cell id="5273"/>
-                <cell id="5274">
+            <row id="5408">
+                <cell id="5409">
+                    <text id="5388">
+                        <property name="display">block</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'Inventory.createdOn'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["inventoryCreatedOn"]</VALUE-OF>
+]]></text-property>
+                    </text>
+                </cell>
+                <cell id="5410">
+                    <text id="5269">
+                        <property name="display">block</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'Inventory.plannedStartDateT'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["inventoryPlannedStartDate"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="5411">
+                    <text id="5386">
+                        <property name="display">block</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'Inventory.plannedEndDateT'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["inventoryPlannedEndDate"]</VALUE-OF>]]></text-property>
+                    </text>
+                </cell>
+            </row>
+            <row id="5402">
+                <cell id="5403">
                     <text id="5277">
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="visibility">
@@ -1859,7 +1812,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["product_family"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
-                <cell id="5381">
+                <cell id="5404">
                     <text id="5279">
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="visibility">
@@ -1888,7 +1841,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["product_category"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
-                <cell id="5275">
+                <cell id="5405">
                     <text id="5278">
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="visibility">
@@ -1917,7 +1870,15 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["product"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
-                <cell id="5276">
+            </row>
+            <row id="5272">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">row["product_family"]==null &amp;&amp; row["product_category"]==null &amp;&amp; row["product"]==null &amp;&amp; row["from_rack"]==null &amp;&amp; row["to_rack"]==null</expression>
+                    </structure>
+                </list-property>
+                <cell id="5274">
                     <text id="5344">
                         <property name="marginLeft">0pt</property>
                         <property name="marginRight">0.15cm</property>
@@ -2007,16 +1968,14 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>&amp;nbsp;<VALUE-OF>row._outer["to_rack"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
-                <cell id="5392"/>
+                <cell id="5381"/>
+                <cell id="5275"/>
             </row>
             <row id="5372">
                 <property name="height">0.25in</property>
-                <cell id="5373"/>
                 <cell id="5374"/>
                 <cell id="5382"/>
                 <cell id="5375"/>
-                <cell id="5376"/>
-                <cell id="5393"/>
             </row>
         </grid>
         <table id="4599">
