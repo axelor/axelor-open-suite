@@ -34,6 +34,7 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.EmailAddress;
+import com.axelor.apps.service.administration.sequence.SequenceProvider;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
@@ -123,6 +124,8 @@ public class PartnerServiceImpl implements PartnerService {
 
     if (partner.getPartnerSeq() == null
         && appBaseService.getAppBase().getGeneratePartnerSequence()) {
+      partner.setPartnerSeq(SequenceProvider.get(SequenceRepository.PARTNER).next());
+
       String seq = Beans.get(SequenceService.class).getSequenceNumber(SequenceRepository.PARTNER);
       if (seq == null) {
         throw new AxelorException(
