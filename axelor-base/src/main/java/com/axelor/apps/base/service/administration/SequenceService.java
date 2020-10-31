@@ -54,42 +54,39 @@ public class SequenceService {
 
   private static final String DRAFT_PREFIX = "#";
 
-  private static final String PATTERN_FULL_YEAR = "%YYYY",
-      PATTERN_YEAR = "%YY",
-      PATTERN_MONTH = "%M",
-      PATTERN_FULL_MONTH = "%FM",
-      PATTERN_DAY = "%D",
-      PATTERN_WEEK = "%WY",
-      PADDING_STRING = "0";
+  private static final String PATTERN_FULL_YEAR = "%YYYY";
+  private static final String PATTERN_YEAR = "%YY";
+  private static final String PATTERN_MONTH = "%M";
+  private static final String PATTERN_FULL_MONTH = "%FM";
+  private static final String PATTERN_DAY = "%D";
+  private static final String PATTERN_WEEK = "%WY";
+  private static final String PADDING_STRING = "0";
 
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private SequenceVersionRepository sequenceVersionRepository;
-
   private AppBaseService appBaseService;
-
   @Inject private SequenceRepository sequenceRepo;
 
   @Inject
   public SequenceService(
       SequenceVersionRepository sequenceVersionRepository, AppBaseService appBaseService) {
-
     this.sequenceVersionRepository = sequenceVersionRepository;
     this.appBaseService = appBaseService;
   }
 
   public static boolean isYearValid(Sequence sequence) {
-
     boolean yearlyResetOk = sequence.getYearlyResetOk();
 
     if (!yearlyResetOk) {
       return true;
     }
 
-    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), ""),
-        seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""),
-        seq = seqPrefixe + seqSuffixe;
+    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), "");
+    String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "");
+    String seq = seqPrefixe + seqSuffixe;
 
+    // FIXME
     if (yearlyResetOk && !seq.contains(PATTERN_YEAR) && !seq.contains(PATTERN_FULL_YEAR)) {
       return false;
     }
@@ -98,17 +95,17 @@ public class SequenceService {
   }
 
   public static boolean isMonthValid(Sequence sequence) {
-
     boolean monthlyResetOk = sequence.getMonthlyResetOk();
 
     if (!monthlyResetOk) {
       return true;
     }
 
-    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), ""),
-        seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""),
-        seq = seqPrefixe + seqSuffixe;
+    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), "");
+    String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "");
+    String seq = seqPrefixe + seqSuffixe;
 
+    // FIXME
     if (monthlyResetOk
         && ((!seq.contains(PATTERN_MONTH) && !seq.contains(PATTERN_FULL_MONTH))
             || (!seq.contains(PATTERN_YEAR) && !seq.contains(PATTERN_FULL_YEAR)))) {
@@ -119,22 +116,17 @@ public class SequenceService {
   }
 
   public static boolean isSequenceLengthValid(Sequence sequence) {
-    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), "").replaceAll("%", "");
-    String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "").replaceAll("%", "");
+    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), "").replace("%", "");
+    String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "").replace("%", "");
 
     return (seqPrefixe.length() + seqSuffixe.length() + sequence.getPadding()) <= 14;
   }
 
-  /**
-   * Retourne une sequence en fonction du code, de la sté
-   *
-   * @return
-   */
   public Sequence getSequence(String code, Company company) {
-
     if (code == null) {
       return null;
     }
+
     if (company == null) {
       return sequenceRepo.findByCodeSelect(code);
     }
@@ -142,23 +134,11 @@ public class SequenceService {
     return sequenceRepo.find(code, company);
   }
 
-  /**
-   * Retourne une sequence en fonction du code, de la sté
-   *
-   * @return
-   */
   public String getSequenceNumber(String code) {
-
     return this.getSequenceNumber(code, null);
   }
 
-  /**
-   * Retourne une sequence en fonction du code, de la sté
-   *
-   * @return
-   */
   public String getSequenceNumber(String code, Company company) {
-
     Sequence sequence = getSequence(code, company);
 
     if (sequence == null) {
@@ -168,13 +148,7 @@ public class SequenceService {
     return this.getSequenceNumber(sequence, appBaseService.getTodayDate(company));
   }
 
-  /**
-   * Retourne une sequence en fonction du code, de la sté
-   *
-   * @return
-   */
   public boolean hasSequence(String code, Company company) {
-
     return getSequence(code, company) != null;
   }
 
@@ -182,40 +156,35 @@ public class SequenceService {
     return getSequenceNumber(sequence, appBaseService.getTodayDate(sequence.getCompany()));
   }
 
-  /**
-   * Fonction retournant une numéro de séquence depuis une séquence générique, et une date
-   *
-   * @param sequence
-   * @return
-   */
   @Transactional
   public String getSequenceNumber(Sequence sequence, LocalDate refDate) {
-
     SequenceVersion sequenceVersion = getVersion(sequence, refDate);
 
-    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), ""),
-        seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), ""),
-        sequenceValue;
+    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), "");
+    String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "");
+    String sequenceValue;
 
     if (sequence.getSequenceTypeSelect() == SequenceTypeSelect.NUMBERS) {
       sequenceValue =
           StringUtils.leftPad(
               sequenceVersion.getNextNum().toString(), sequence.getPadding(), PADDING_STRING);
+
     } else {
       sequenceValue = findNextLetterSequence(sequenceVersion);
     }
+
     sequenceVersion.setNextNum(sequenceVersion.getNextNum() + sequence.getToBeAdded());
     String nextSeq =
         (seqPrefixe + sequenceValue + seqSuffixe)
-            .replaceAll(PATTERN_FULL_YEAR, Integer.toString(refDate.get(ChronoField.YEAR_OF_ERA)))
-            .replaceAll(PATTERN_YEAR, refDate.format(DateTimeFormatter.ofPattern("yy")))
-            .replaceAll(PATTERN_MONTH, Integer.toString(refDate.getMonthValue()))
-            .replaceAll(PATTERN_FULL_MONTH, refDate.format(DateTimeFormatter.ofPattern("MM")))
-            .replaceAll(PATTERN_DAY, Integer.toString(refDate.getDayOfMonth()))
-            .replaceAll(
+            .replace(PATTERN_FULL_YEAR, Integer.toString(refDate.get(ChronoField.YEAR_OF_ERA)))
+            .replace(PATTERN_YEAR, refDate.format(DateTimeFormatter.ofPattern("yy")))
+            .replace(PATTERN_MONTH, Integer.toString(refDate.getMonthValue()))
+            .replace(PATTERN_FULL_MONTH, refDate.format(DateTimeFormatter.ofPattern("MM")))
+            .replace(PATTERN_DAY, Integer.toString(refDate.getDayOfMonth()))
+            .replace(
                 PATTERN_WEEK, Integer.toString(refDate.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR)));
 
-    log.debug("nextSeq : : : : {}", nextSeq);
+    LOG.debug("nextSeq : : : : {}", nextSeq);
 
     sequenceVersionRepository.save(sequenceVersion);
     return nextSeq;
@@ -229,29 +198,32 @@ public class SequenceService {
       buf[i] = (char) ('A' + n % 26);
       n /= 26;
     }
+
     if (sequenceVersion.getSequence().getSequenceLettersTypeSelect()
         == SequenceLettersTypeSelect.UPPERCASE) {
       return new String(buf);
     }
+
     return new String(buf).toLowerCase();
   }
 
   public SequenceVersion getVersion(Sequence sequence, LocalDate refDate) {
+    LOG.debug("Reference date : : : : {}", refDate);
 
-    log.debug("Reference date : : : : {}", refDate);
-
-    if (sequence.getMonthlyResetOk()) {
+    if (Boolean.TRUE.equals(sequence.getMonthlyResetOk())) {
       return getVersionByMonth(sequence, refDate);
     }
-    if (sequence.getYearlyResetOk()) {
+
+    if (Boolean.TRUE.equals(sequence.getYearlyResetOk())) {
       return getVersionByYear(sequence, refDate);
     }
+
     return getVersionByDate(sequence, refDate);
   }
 
   protected SequenceVersion getVersionByDate(Sequence sequence, LocalDate refDate) {
-
     SequenceVersion sequenceVersion = sequenceVersionRepository.findByDate(sequence, refDate);
+
     if (sequenceVersion == null) {
       sequenceVersion = new SequenceVersion(sequence, refDate, null, 1L);
     }
@@ -260,9 +232,9 @@ public class SequenceService {
   }
 
   protected SequenceVersion getVersionByMonth(Sequence sequence, LocalDate refDate) {
-
     SequenceVersion sequenceVersion =
         sequenceVersionRepository.findByMonth(sequence, refDate.getMonthValue(), refDate.getYear());
+
     if (sequenceVersion == null) {
       sequenceVersion =
           new SequenceVersion(
@@ -276,9 +248,9 @@ public class SequenceService {
   }
 
   protected SequenceVersion getVersionByYear(Sequence sequence, LocalDate refDate) {
-
     SequenceVersion sequenceVersion =
         sequenceVersionRepository.findByYear(sequence, refDate.getYear());
+
     if (sequenceVersion == null) {
       sequenceVersion =
           new SequenceVersion(
@@ -304,13 +276,6 @@ public class SequenceService {
     return item.getTitle();
   }
 
-  /**
-   * Get draft sequence number.
-   *
-   * @param model
-   * @return
-   * @throws AxelorException
-   */
   public String getDraftSequenceNumber(Model model) throws AxelorException {
     if (model.getId() == null) {
       throw new AxelorException(
@@ -318,15 +283,17 @@ public class SequenceService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.SEQUENCE_NOT_SAVED_RECORD));
     }
+
     return String.format("%s%d", DRAFT_PREFIX, model.getId());
   }
 
   /**
-   * Get draft sequence number with leading zeros.
+   * Gets draft sequence number with leading zeros.
    *
    * @param model
-   * @param padding
+   * @param zeroPadding
    * @return
+   * @throws AxelorException
    */
   public String getDraftSequenceNumber(Model model, int zeroPadding) throws AxelorException {
     if (model.getId() == null) {
@@ -335,13 +302,14 @@ public class SequenceService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.SEQUENCE_NOT_SAVED_RECORD));
     }
+
     return String.format(
         "%s%s",
         DRAFT_PREFIX, StringTool.fillStringLeft(String.valueOf(model.getId()), '0', zeroPadding));
   }
 
   /**
-   * Check whether a sequence number is empty or draft.
+   * Checks whether a sequence number is empty or draft.
    *
    * <p>Also consider '*' as draft character for backward compatibility.
    *
@@ -353,11 +321,6 @@ public class SequenceService {
         || sequenceNumber.matches(String.format("[\\%s\\*]\\d+", DRAFT_PREFIX));
   }
 
-  /**
-   * Computes sequence full name
-   *
-   * @param sequence Sequence to compute full name
-   */
   public String computeFullName(Sequence sequence) {
     StringBuilder fn = new StringBuilder();
 
