@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,10 +42,11 @@ public class GroupExportConfigGenerator {
   private static final String CONFIG_FILE_NAME = "input-config.xml";
   private static final String ONE_TO_ONE = "ONE_TO_ONE";
   private static final String ONE_TO_MANY = "ONE_TO_MANY";
+  private static final String MANY_TO_MANY = "MANY_TO_MANY";
+  private static final String MANY_TO_ONE = "MANY_TO_ONE";
 
   private File config;
   private StringBuilder configBuilder;
-  private AdvancedExport advancedExport;
 
   protected void initialize() throws AxelorException {
     try {
@@ -65,12 +65,19 @@ public class GroupExportConfigGenerator {
   protected boolean addFileConfig(File file, AdvancedExport advancedExport) throws AxelorException {
 
     MetaModel metaModel = advancedExport.getMetaModel();
-    this.advancedExport = advancedExport;
+
+    List<String> targetFieldsList =
+        advancedExport.getAdvancedExportLineList().stream()
+            .map(AdvancedExportLine::getTargetField)
+            .collect(Collectors.toList());
 
     try {
 
-      this.addHeaderInput(file.getName(), metaModel);
-      this.addInnerBinding(metaModel);
+      this.addHeaderInput(file.getName(), metaModel, targetFieldsList);
+      this.addInnerBinding(
+          1,
+          metaModel,
+          targetFieldsList.stream().filter(it -> it.contains(".")).collect(Collectors.toList()));
       configBuilder.append("\n</input>\n\n");
 
     } catch (Exception e) {
@@ -82,75 +89,102 @@ public class GroupExportConfigGenerator {
     return true;
   }
 
-  private void addHeaderInput(String fileName, MetaModel metaModel) throws AxelorException {
-    List<AdvancedExportLine> exportLines = advancedExport.getAdvancedExportLineList();
+  protected void addHeaderInput(String fileName, MetaModel metaModel, List<String> targetFieldsList)
+      throws AxelorException {
 
     configBuilder.append("<input ");
     configBuilder.append("file=\"" + fileName + ConfigGeneratorText.QUOTE);
     configBuilder.append(" separator=\";\"");
     configBuilder.append(" type=\"" + metaModel.getFullName() + "\" ");
 
-    if (exportLines != null && !exportLines.isEmpty()) {
+    targetFieldsList =
+        targetFieldsList.stream().filter(it -> !it.contains(".")).collect(Collectors.toList());
 
-      // Allowing all the non related fields for search.
-      List<String> targetFieldNamesList =
-          exportLines.stream()
-              .map(AdvancedExportLine::getTargetField)
-              .filter(it -> !it.contains("."))
-              .collect(Collectors.toList());
-
-      if (targetFieldNamesList != null && targetFieldNamesList.isEmpty()) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get("Please export some non-related fields to generate config"));
-      }
-
-      this.addSearch(true, targetFieldNamesList);
+    if (targetFieldsList != null && targetFieldsList.isEmpty()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get("Please export some non-related fields to generate config"));
     }
+
+    this.addSearch(true, targetFieldsList);
     configBuilder.append(">");
   }
 
-  private void addInnerBinding(MetaModel metaModel) throws AxelorException {
+  protected void addInnerBinding(
+      Integer levelIndex, MetaModel metaModel, List<String> targetFieldsList)
+      throws AxelorException {
 
-    // Removing all the non related fields
-    List<String> targetFieldsList =
-        CollectionUtils.emptyIfNull(advancedExport.getAdvancedExportLineList()).stream()
-            .map(it -> it.getTargetField())
-            .filter(it -> it.contains("."))
-            .collect(Collectors.toList());
+    addInnerBinding(levelIndex, metaModel.getFullName(), targetFieldsList);
+  }
+
+  protected void addInnerBinding(int levelIndex, String targetName, List<String> targetFieldsList)
+      throws AxelorException {
 
     if (targetFieldsList.isEmpty()) return;
 
     try {
-      Mapper mapper = Mapper.of(Class.forName(metaModel.getFullName()));
+      Mapper mapper = Mapper.of(Class.forName(targetName));
 
       // Sort all the mapped targetFields.
       Collections.sort(targetFieldsList);
 
       /*
-       * This variable is used to check the last bind added object and avoid repeated binding of
-       * same object.
+       * This variable is used to check the last added bind's object and avoid repeated binding of
+       * that object.
        */
       String lastBind = "";
 
       for (String field : targetFieldsList) {
+        String[] splitFields = field.split("\\.");
 
-        String mainRelatedField = field.substring(0, field.indexOf("."));
+        String mainRelatedField = splitFields[levelIndex - 1];
 
         // Only allow new object's bind.
         if (!lastBind.equals(mainRelatedField)) {
-
+          lastBind = mainRelatedField;
           Property property = mapper.getProperty(mainRelatedField);
-          if (property.getType().toString().equals(ONE_TO_MANY)
-              || property.getType().toString().equals(ONE_TO_ONE)) {
 
-            this.setBind(
-                mainRelatedField,
-                targetFieldsList.stream()
-                    .filter(it -> it.contains(mainRelatedField + "."))
-                    .collect(Collectors.toList()),
-                property.getType().toString());
-            lastBind = mainRelatedField;
+          switch (property.getType().toString()) {
+            case ONE_TO_ONE:
+              this.addDummyBindsAndSearch(mainRelatedField, levelIndex, targetFieldsList);
+              addInnerBinding(
+                  levelIndex + 1,
+                  property.getTarget().getName(),
+                  targetFieldsList.stream()
+                      .filter(it -> it.contains(mainRelatedField + "."))
+                      .collect(Collectors.toList()));
+              configBuilder.append(ConfigGeneratorText.BIND_END);
+              break;
+            case ONE_TO_MANY:
+              this.addDummyBindsAndSearch(mainRelatedField, levelIndex, targetFieldsList);
+              addInnerBinding(
+                  levelIndex + 1,
+                  property.getTarget().getName(),
+                  targetFieldsList.stream()
+                      .filter(it -> it.contains(mainRelatedField + "."))
+                      .collect(Collectors.toList()));
+              configBuilder.append(ConfigGeneratorText.BIND_END);
+              break;
+            case MANY_TO_ONE:
+              this.addDummyBindsAndSearch(mainRelatedField, levelIndex, targetFieldsList, true);
+              configBuilder.append(ConfigGeneratorText.BIND_END);
+              break;
+            case MANY_TO_MANY:
+              this.addDummyBindsAndSearch(mainRelatedField, levelIndex, targetFieldsList, true);
+              configBuilder.append(ConfigGeneratorText.BIND_END);
+              break;
+            default:
+              configBuilder.append(
+                  ConfigGeneratorText.BIND_START
+                      + ConfigGeneratorText.QUOTE
+                      + lastWord(field)
+                      + ConfigGeneratorText.QUOTE
+                      + " eval="
+                      + ConfigGeneratorText.QUOTE
+                      + getDummyName(field)
+                      + ConfigGeneratorText.QUOTE
+                      + "/>");
+              break;
           }
         }
       }
@@ -160,92 +194,80 @@ public class GroupExportConfigGenerator {
     }
   }
 
-  protected void setBind(
-      String relatedField, List<String> targetFieldsList, String relationshipType)
+  protected void addDummyBindsAndSearch(
+      String relatedField, Integer levelIndex, List<String> targetFieldsList)
+      throws AxelorException {
+    addDummyBindsAndSearch(relatedField, levelIndex, targetFieldsList, false);
+  }
+
+  protected void addDummyBindsAndSearch(
+      String relatedField, Integer levelIndex, List<String> targetFieldsList, boolean isUpdate)
       throws AxelorException {
 
     targetFieldsList =
         targetFieldsList.stream()
-            .filter(it -> StringUtils.countMatches(it, ".") == 1)
+            .filter(
+                it ->
+                    it.contains(relatedField + ".")
+                        && StringUtils.countMatches(it, ".") == levelIndex)
             .collect(Collectors.toList());
 
-    if (relationshipType.equals(ONE_TO_ONE)) {
+    addDummyBindings(targetFieldsList);
 
-      this.addDummyBindings(targetFieldsList);
+    configBuilder.append(
+        ConfigGeneratorText.BIND_START
+            + ConfigGeneratorText.QUOTE
+            + relatedField
+            + ConfigGeneratorText.QUOTE);
 
-      configBuilder.append(
-          ConfigGeneratorText.BIND_START + ConfigGeneratorText.QUOTE + relatedField + "\" ");
+    addSearch(false, targetFieldsList);
 
-      targetFieldsList = this.addSearch(false, targetFieldsList);
-      configBuilder.append(">");
-
-      for (String field : targetFieldsList) {
-
-        configBuilder.append(ConfigGeneratorText.BIND_START);
-
-        configBuilder.append(ConfigGeneratorText.QUOTE + field + ConfigGeneratorText.QUOTE);
-        configBuilder.append(" eval=");
-        configBuilder.append(ConfigGeneratorText.QUOTE + "_" + field + ConfigGeneratorText.QUOTE);
-        configBuilder.append("/>");
-      }
-
-    } else {
-      configBuilder.append(
-          ConfigGeneratorText.BIND_START + ConfigGeneratorText.QUOTE + relatedField + "\">");
-
-      for (String field : targetFieldsList) {
-        String[] splitField = field.split("\\.");
-
-        configBuilder.append(ConfigGeneratorText.BIND_START);
-        configBuilder.append(ConfigGeneratorText.QUOTE + splitField[1] + ConfigGeneratorText.QUOTE);
-        configBuilder.append(" column=");
-        configBuilder.append(ConfigGeneratorText.QUOTE + field + ConfigGeneratorText.QUOTE);
-        configBuilder.append("/>");
-      }
+    if (isUpdate) {
+      configBuilder.append(" update=\"" + isUpdate + ConfigGeneratorText.QUOTE);
     }
 
-    configBuilder.append("\n\t</bind>");
+    configBuilder.append(">");
   }
 
   protected void addDummyBindings(List<String> targetFieldsList) {
+
+    StringBuilder dummyBindingBuilder = new StringBuilder();
+
     for (String field : targetFieldsList) {
 
-      configBuilder.append(ConfigGeneratorText.BIND_START);
-      configBuilder.append(
-          ConfigGeneratorText.QUOTE
-              + "_"
-              + field.substring(field.indexOf(".") + 1)
-              + ConfigGeneratorText.QUOTE);
-      configBuilder.append(" column=\"" + field + ConfigGeneratorText.QUOTE);
-      configBuilder.append("/>");
+      dummyBindingBuilder.append(ConfigGeneratorText.BIND_START);
+      dummyBindingBuilder.append(
+          ConfigGeneratorText.QUOTE + getDummyName(field) + ConfigGeneratorText.QUOTE);
+      dummyBindingBuilder.append(" column=\"" + field + ConfigGeneratorText.QUOTE);
+      dummyBindingBuilder.append("/>");
     }
+    configBuilder.append(dummyBindingBuilder);
   }
 
-  protected List<String> addSearch(boolean isHeaderInput, List<String> targetFieldsList)
+  /**
+   * This method add search to binds.
+   *
+   * @return
+   */
+  protected void addSearch(boolean isHeaderInput, List<String> targetFieldsList)
       throws AxelorException {
 
-    // For distinguishing between parentInput search and innerBinding search
-    if (!isHeaderInput) {
-      targetFieldsList =
-          targetFieldsList.stream()
-              .map(it -> it.substring(it.indexOf(".") + 1))
-              .collect(Collectors.toList());
-    }
-
     // return if no field to include in search
-    if (targetFieldsList.isEmpty()) return targetFieldsList;
+    if (targetFieldsList.isEmpty()) return;
     StringBuilder searchBuilder = new StringBuilder();
 
     // Search Begins
     searchBuilder.append(" search=\"");
-    for (String field : targetFieldsList) {
 
-      if (isHeaderInput) {
-        searchBuilder.append("self." + field + " = :" + field);
-      } else {
-        searchBuilder.append("self." + field + " = :_" + field);
+    if (isHeaderInput) {
+      for (String field : targetFieldsList) {
+        searchBuilder.append("self." + field + " = :" + field + " AND ");
       }
-      searchBuilder.append(" AND ");
+
+    } else {
+      for (String field : targetFieldsList) {
+        searchBuilder.append("self." + lastWord(field) + " = :" + getDummyName(field) + " AND ");
+      }
     }
 
     // Remove last 'AND'
@@ -256,8 +278,6 @@ public class GroupExportConfigGenerator {
     // Search ends
     searchBuilder.append(ConfigGeneratorText.QUOTE);
     configBuilder.append(searchBuilder);
-
-    return targetFieldsList;
   }
 
   /**
@@ -282,10 +302,17 @@ public class GroupExportConfigGenerator {
             I18n.get("Config file is not found."));
       }
     }
-    advancedExport = null;
   }
 
   public File getConfigFile() {
     return config;
+  }
+
+  private String lastWord(String field) {
+    return field.substring(field.lastIndexOf(".") + 1);
+  }
+
+  private String getDummyName(String field) {
+    return field.replace(".", "_");
   }
 }

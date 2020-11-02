@@ -29,5 +29,7 @@ public interface ConfigGeneratorText {
 
   public static final String BIND_START = /*$$(*/ "\n\t<bind to=" /*)*/;
 
+  public static final String BIND_END = /*$$(*/ "\n\t</bind>\n" /*)*/;
+
   public static final String QUOTE = /*$$(*/ "\"" /*)*/;
 }
