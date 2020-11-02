@@ -25,10 +25,8 @@
 		<option value="2">Requested</option>
 		<option value="3">Accepted</option>
 		<option value="4">Purchased</option>
-		<option value="5">Partial delivery</option>
-		<option value="6">Received</option>
-		<option value="7">Refused</option>
-		<option value="8">Canceled</option>
+		<option value="5">Refused</option>
+		<option value="6">Canceled</option>
 	</selection>
 
 	<selection name="base.blocking.select" id="purchase.blocking.select">
