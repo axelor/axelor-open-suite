@@ -9,11 +9,10 @@
     </grid>
     <form name="unit-form" title="Unit" model="com.axelor.apps.base.db.Unit">
     	<panel name="mainPanel" >
-        	<field name="name" onChange="action-unit-record-label-to-printing"/>
-        	<field name="labelToPrinting"/>
-        	<field name="unitTypeSelect"/>
-        	
-        </panel>
+        <field name="name" onChange="action-unit-record-label-to-printing"/>
+        <field name="labelToPrinting"/>
+        <field name="unitTypeSelect"/>
+      </panel>
     </form>
     
     <action-record name="action-unit-record-label-to-printing" model="com.axelor.apps.base.db.Unit">
