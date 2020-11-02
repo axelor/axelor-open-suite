@@ -61,6 +61,8 @@ import com.axelor.apps.supplychain.db.repo.AnalyticMoveLineSupplychainRepository
 import com.axelor.apps.supplychain.db.repo.InvoiceSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.MrpForecastManagementRepository;
 import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
+import com.axelor.apps.supplychain.db.repo.MrpLineManagementRepository;
+import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpManagementRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
@@ -216,6 +218,7 @@ public class SupplychainModule extends AxelorModule {
     bind(StockCorrectionServiceImpl.class).to(StockCorrectionServiceSupplychainImpl.class);
     bind(StockMoveMultiInvoiceService.class).to(StockMoveMultiInvoiceServiceImpl.class);
     bind(MrpRepository.class).to(MrpManagementRepository.class);
+    bind(MrpLineRepository.class).to(MrpLineManagementRepository.class);
     bind(SaleOrderReservedQtyService.class).to(SaleOrderReservedQtyServiceImpl.class);
     bind(StockLocationLineReservationService.class)
         .to(StockLocationLineReservationServiceImpl.class);

@@ -7,13 +7,15 @@
 		<field name="code" />
 		<field name="name" />
 		<field name="dayNb" />
+		<field name="dayNbBetweenPurchaseAndProposal" />
 	</grid>
 
 	<form name="mrp-family-form" title="MRP family" model="com.axelor.apps.supplychain.db.MrpFamily">
-		<panel title="mainPanel">
+		<panel title="mainPanel" showTitle="false">
 			<field name="code" />
 			<field name="name" required="true"/>
 			<field name="dayNb" />
+			<field name="dayNbBetweenPurchaseAndProposal" />
 		</panel>
 	</form>
 
