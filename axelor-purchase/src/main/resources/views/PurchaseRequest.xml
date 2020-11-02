@@ -29,7 +29,7 @@
     
     <grid name="purchase-request-grid" title="Purchase request" model="com.axelor.apps.purchase.db.PurchaseRequest">
     	<toolbar>
-    		<button name="generatePoBtn" title="Generate PO" onClick="action-purchase-request-open-generate-po-wizard" readonlyIf="!_ids"/>
+    		<button name="generatePoBtn" title="Generate PO" onClick="action-purchase-request-open-generate-po-wizard"/>
     	</toolbar>
     	<hilite if="statusSelect == 2" color="info"/>
     	<hilite if="statusSelect == 3" color="primary"/>
@@ -70,9 +70,6 @@
 				<field name="description" colSpan="12" widget="html"
 					showTitle="false" />
 			</panel>
-			<panel name="purchaseOrderPanel" title="Purchase orders" showIf="statusSelect == 4">
-				<panel-related field="purchaseOrderSet" canEdit="false" canNew="false" colSpan="12"/>	
-			</panel>
 		</panel-tabs>
 
 		<panel name="detailPanel" sidebar="true">
@@ -100,7 +97,9 @@
 		</panel>
 		<panel sidebar="true" name="follow-upPanel" title="Follow-up"
 			canCollapse="true" showIf="purchaseOrder">
-			<field name="purchaseOrder" showIf="purchaseOrder" colSpan="6" />
+			<field name="purchaseOrder" colSpan="6" readonly="true"/>
+			<field name="purchaseOrder.statusSelect" colSpan="6" readonly="true"/>
+			<field name="purchaseOrder.receiptState" colSpan="6" readonly="true"/>
 		</panel>
 		<panel name="attrsPanel">
 			<field name="attrs" colSpan="12" />
