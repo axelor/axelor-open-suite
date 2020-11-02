@@ -398,7 +398,7 @@
 "Purchases orders",,,
 "Qty",,,
 "Qty to invoice",,,
-"Quantity cannot be lower than already delivered quantity on detail line %s.","La quantité ne peut pas être inférieure à la quantité déjà livrée sur la ligne de détail %s.",,
+"Quantity cannot be lower than already delivered quantity on detail line %s.",,,
 "Quantity requested",,,
 "Real Qty",,,
 "Real quantity",,,
