@@ -40,7 +40,10 @@
 				]]></viewer>
 			</field>
 	    </panel>
-	    <panel name="filtersPanel" title="Filters" collapseIf="statusSelect != 0" colSpan="12">
+		<panel colSpan="12" name="errorLogPanel" showIf="errorLog" title="Error that happened during the computation">
+			<field colSpan="12" name="errorLog" showTitle="false"/>
+		</panel>
+		<panel name="filtersPanel" title="Filters" collapseIf="statusSelect != 0" colSpan="12">
 			<field name="id"/><spacer/>
 	        <field name="createdOn" colSpan="4"/>
 	        <field name="startDateTime" colSpan="4" readonly="true"/>

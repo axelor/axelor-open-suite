@@ -51,11 +51,12 @@ public class MrpController {
   public void runCalculation(ActionRequest request, ActionResponse response) {
 
     Mrp mrp = request.getContext().asType(Mrp.class);
+    MrpService mrpService = Beans.get(MrpService.class);
     try {
-      Beans.get(MrpService.class).runCalculation(Beans.get(MrpRepository.class).find(mrp.getId()));
+      mrpService.runCalculation(Beans.get(MrpRepository.class).find(mrp.getId()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-      Beans.get(MrpService.class).reset(Beans.get(MrpRepository.class).find(mrp.getId()));
+      mrpService.onError(Beans.get(MrpRepository.class).find(mrp.getId()), e);
     } finally {
       response.setReload(true);
     }

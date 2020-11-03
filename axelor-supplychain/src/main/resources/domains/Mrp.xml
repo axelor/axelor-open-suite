@@ -17,13 +17,16 @@
       <datetime name="endDateTime" title="Calculation End Date"/>
       <string name="mrpSeq" title="MRP number" readonly="true"/>
       <boolean name="displayProductWithoutProposal" title="Display product without proposal" default="false"/>
+      <integer name="mrpTypeSelect" title="MRP Type" selection="supplychain.mrp.mrp.type.select"/>
+      <string name="errorLog" title="Error that happened during the computation" readonly="true" large="true"/>
+
       <extra-code><![CDATA[
 	
 	   	// STATUS SELECT
 		public static final int STATUS_DRAFT = 0;
 		public static final int STATUS_CALCULATION_STARTED = 1;
 		public static final int STATUS_CALCULATION_ENDED = 2;
-	
+
 	]]></extra-code>
       
   </entity>
