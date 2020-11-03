@@ -32,6 +32,7 @@ import com.axelor.db.mapper.Property;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaModel;
@@ -106,6 +107,12 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
     language = Optional.ofNullable(AuthUtils.getUser()).map(User::getLanguage).orElse(null);
 
     try {
+      if (language == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get("Please select a language on user form."));
+      }
+
       for (AdvancedExportLine advancedExportLine : advancedExport.getAdvancedExportLineList()) {
         String[] splitField = advancedExportLine.getTargetField().split("\\.");
         String alias = "Col_" + col;
