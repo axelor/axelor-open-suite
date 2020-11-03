@@ -124,7 +124,7 @@
     </action-validate>
     
     <action-export output="/home/employment_contracts" download="true" name="action-employment-contract-export-word">
-  		<export template="eval: com.axelor.meta.MetaFiles.getPath(EmploymentContractTemplate.metaFile).toString()" name="${fullName}.xml" engine="groovy"/>
+  		<export template="eval: com.axelor.meta.MetaFiles.getPath(employmentContractTemplate.metaFile).toString()" name="${fullName}.xml" engine="groovy"/>
 	</action-export>
 	
 	<action-view name="action-employment-contract-generate-payroll-prepa" title="Payroll Preparation" model="com.axelor.apps.hr.db.PayrollPreparation">
