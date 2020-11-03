@@ -18,7 +18,7 @@
 					<h5>
 						<span class='label label-info' ng-show="record.statusSelect == 1 &amp;&amp; record.sentDateT == null" x-translate>Not sent</span>
 						<span class='label label-success' ng-show="record.statusSelect == 3 &amp;&amp; record.sentDateT != null" x-translate>Successful send</span>
-						<span class='label label-important' ng-show="record.statusSelect == 2 &amp;&amp; record.sentDateT == null" x-translate>Failure send</span>
+						<span class='label label-important' ng-show="record.statusSelect == 2 &amp;&amp; record.sentDateT == null" x-translate>In progress</span>
 					</h5>
 				]]></viewer>
 			</field>
