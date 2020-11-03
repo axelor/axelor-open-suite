@@ -58,7 +58,7 @@ public class MrpController {
       mrpService.runCalculation(mrpRepository.find(mrp.getId()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-      mrpService.reset(mrpRepository.find(mrp.getId()));
+      mrpService.onError(mrpRepository.find(mrp.getId()), e);
     } finally {
       response.setReload(true);
     }
