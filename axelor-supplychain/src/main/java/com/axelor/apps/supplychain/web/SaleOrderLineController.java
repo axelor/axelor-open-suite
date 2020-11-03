@@ -67,7 +67,7 @@ public class SaleOrderLineController {
       throws AxelorException {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
     saleOrderLine =
-        Beans.get(SaleOrderLineServiceSupplyChainImpl.class)
+        Beans.get(SaleOrderLineServiceSupplyChain.class)
             .createAnalyticDistributionWithTemplate(saleOrderLine);
     response.setValue("analyticMoveLineList", saleOrderLine.getAnalyticMoveLineList());
   }

@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.businessproject.web;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -43,9 +45,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 @Singleton
 public class InvoiceController {
@@ -322,10 +321,7 @@ public class InvoiceController {
   public void updateLines(ActionRequest request, ActionResponse response) throws AxelorException {
     Invoice invoice = request.getContext().asType(Invoice.class);
     invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
-
-    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-      invoiceLine.setProject(invoice.getProject());
-    }
+    invoice = Beans.get(InvoiceServiceProjectImpl.class).updateLines(invoice);
     response.setValue("invoiceLineList", invoice.getInvoiceLineList());
   }
 }

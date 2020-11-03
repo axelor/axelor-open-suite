@@ -23,6 +23,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -112,5 +113,17 @@ public class PurchaseOrderLineProjectController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void updateAnalyticDistributionWithProject(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+    if (purchaseOrderLine.getAnalyticMoveLineList() == null) {
+      return;
+    }
+    purchaseOrderLine =
+        Beans.get(PurchaseOrderLineProjectService.class)
+            .updateAnalyticDistributionWithProject(purchaseOrderLine);
+    response.setValue("analyticMoveLineList", purchaseOrderLine.getAnalyticMoveLineList());
   }
 }

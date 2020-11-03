@@ -3,7 +3,18 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 	
+	<form model="com.axelor.apps.sale.db.SaleOrderLine" title="SO line" name="sale-order-line-form" extension="true" id="project-sale-order-line-form">
+		<extend target="//field[@name='project']">
+			<attribute name="onChange" value="action-sale-order-line-record-progress,action-sale-order-line-method-update-distribution"/>
+		</extend>
+	</form>
 	
+	<form model="com.axelor.apps.sale.db.SaleOrderLine" title="SO line" name="sale-order-line-template-form" extension="true" id="project-sale-order-line-template-form">
+		<extend target="//field[@name='project']">
+			<attribute name="onChange" value="action-sale-order-line-record-progress,action-sale-order-line-method-update-distribution"/>
+		</extend>
+	</form>
+
 	<grid name="sale-order-line-project-grid" title="Sale order lines" model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="-saleOrder.orderDate">
         <hilite if="$get('saleOrder.statusSelect') &lt; 3 &amp;&amp; toInvoice &amp;&amp; !invoiced" color="info"/>
         <hilite if="invoiced" color="success"/>
@@ -37,5 +48,13 @@
 	<action-record name="action-sale-order-line-record-update-to-invoice" model="com.axelor.apps.sale.db.SaleOrderLine">
 		<field name="toInvoice" expr="eval:!toInvoice" if="!invoiced"/>
 	</action-record>
+	
+	<action-method name="action-sale-order-line-method-create-distribution" id="project-action-sale-order-line-method-create-distribution">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="createAnalyticDistributionWithTemplate"/>
+	</action-method>
+	
+   	<action-method name="action-sale-order-line-method-update-distribution">
+		<call class="com.axelor.apps.businessproject.web.SaleOrderLineProjectController" method="updateAnalyticDistributionWithProject"/>
+	</action-method>
 
 </object-views>
