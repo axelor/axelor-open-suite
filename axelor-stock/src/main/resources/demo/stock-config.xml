@@ -12,12 +12,13 @@
 	<input file="stock_trackingNumberConfig.csv" separator=";" type="com.axelor.apps.stock.db.TrackingNumberConfiguration" search="self.importId = :importId" call="com.axelor.csv.script.ImportTrackingNumberConfig:computeFullName"/>
 
 	<input file="base_product.csv" separator=";" type="com.axelor.apps.base.db.Product" update="true" search="self.importId = :importId"/>
-	
+
 	<input file="stock_inventory.csv" separator=";" type="com.axelor.apps.stock.db.Inventory" call="com.axelor.csv.script.ImportInventory:importInventory">
 		<bind to="inventorySeq" eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.repo.SequenceRepository.INVENTORY)" />
-	    <bind to="statusSelect" eval="3" />
-	    <bind to="company" search="self.id = 1" update="false" />
 		<bind column="plannedStartDateT" to="plannedStartDateT" eval="call:com.axelor.csv.script.ImportDateTime:importDate(plannedStartDateT)"/>
+		<bind column="plannedEndDateT" to="plannedEndDateT" eval="call:com.axelor.csv.script.ImportDateTime:importDate(plannedEndDateT)"/>
+		<bind to="stockLocation" column="stockLocation_importId" search="self.importId = :stockLocation_importId"/>
+		<bind to="company" column="company_importId" search="self.importId = :company_importId"/>
 	</input>
 	
 	<input file="stock_stockConfig.csv" separator=";" type="com.axelor.apps.stock.db.StockConfig" search="self.importId = :importId" />
@@ -25,6 +26,7 @@
 	<input file="stock_inventoryLine.csv" separator=";" type="com.axelor.apps.stock.db.InventoryLine" call="com.axelor.csv.script.ImportInventoryLine:importInventoryLine"/>
 	
 	<input file="stock_inventory.csv" separator=";" type="com.axelor.apps.stock.db.Inventory" search="self.importId = :importId" call="com.axelor.csv.script.ImportInventory:validateInventory">
+		<bind column="plannedEndDateT" to="plannedEndDateT" eval="call:com.axelor.csv.script.ImportDateTime:importDate(plannedEndDateT)"/>
 		<bind column="plannedStartDateT" to="plannedStartDateT" eval="call:com.axelor.csv.script.ImportDateTime:importDate(plannedStartDateT)"/>
 	</input>
 

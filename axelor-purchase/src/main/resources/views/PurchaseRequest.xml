@@ -29,13 +29,13 @@
     
     <grid name="purchase-request-grid" title="Purchase request" model="com.axelor.apps.purchase.db.PurchaseRequest">
     	<toolbar>
-    		<button name="generatePoBtn" title="Generate PO" onClick="action-purchase-request-open-generate-po-wizard" readonlyIf="!_ids"/>
+    		<button name="generatePoBtn" title="Generate PO" onClick="action-purchase-request-open-generate-po-wizard"/>
     	</toolbar>
     	<hilite if="statusSelect == 2" color="info"/>
     	<hilite if="statusSelect == 3" color="primary"/>
-    	<hilite if="statusSelect == 4 || statusSelect == 5 || statusSelect == 6" color="success"/>
-    	<hilite if="statusSelect == 7" color="warning"  />
-    	<hilite if="statusSelect == 8" color="danger"/>
+    	<hilite if="statusSelect == 4" color="success"/>
+    	<hilite if="statusSelect == 5" color="warning"  />
+    	<hilite if="statusSelect == 6" color="danger"/>
         <field name="company"/>
     	<field name="purchaseRequestSeq"/>
         <field name="supplierUser"/>
@@ -70,9 +70,6 @@
 				<field name="description" colSpan="12" widget="html"
 					showTitle="false" />
 			</panel>
-			<panel name="purchaseOrderPanel" title="Purchase orders" showIf="statusSelect >= 4">
-				<panel-related field="purchaseOrderSet" canEdit="false" canNew="false" colSpan="12"/>	
-			</panel>
 		</panel-tabs>
 
 		<panel name="detailPanel" sidebar="true">
@@ -82,18 +79,12 @@
 				onClick="save,action-purchase-request-set-status-accepted,action-purchase-request-record-set-validator-user,save" />
 			<button name="purchaseBtn" title="Purchase" icon="fa-shopping-cart"
 				showIf="statusSelect == 3" onClick="action-purchase-request-group-update-status" />
-			<button name="deliverPartiallyBtn" title="Deliver Partially"
-				icon="fa-truck" showIf="statusSelect == 4"
-				onClick="save,action-purchase-request-set-status-delivered-partially,save" />
-			<button name="deliveredBtn" title="Deliver"
-				showIf="statusSelect == 5 || statusSelect == 4" icon="fa-truck"
-				onClick="save,action-purchase-request-set-status-delivered,save" />
 			<button name="refuseBtn" title="Refuse" icon="fa-times" css="btn-danger"
 				showIf="statusSelect == 2" onClick="save,action-purchase-request-set-status-refused,save" />
 			<button name="cancelBtn" title="Cancel" icon="fa-times-circle"
 				css="btn-danger"
-				onClick="save,action-purchase-request-set-status-cancel,save" hideIf="statusSelect == 8"/>
-			<button name="draftBtn" title="Draft" icon="fa-edit" showIf="statusSelect == 8"
+				onClick="save,action-purchase-request-set-status-cancel,save" hideIf="statusSelect == 6"/>
+			<button name="draftBtn" title="Draft" icon="fa-edit" showIf="statusSelect == 6"
 				onClick="save,action-purchase-request-set-status-draft, save" />
 		</panel>
 		<panel sidebar="true" name="characteristicsPanel" title="Characteristics"
@@ -106,7 +97,9 @@
 		</panel>
 		<panel sidebar="true" name="follow-upPanel" title="Follow-up"
 			canCollapse="true" showIf="purchaseOrder">
-			<field name="purchaseOrder" showIf="purchaseOrder" colSpan="6" />
+			<field name="purchaseOrder" colSpan="6" readonly="true"/>
+			<field name="purchaseOrder.statusSelect" colSpan="6" readonly="true"/>
+			<field name="purchaseOrder.receiptState" colSpan="6" readonly="true"/>
 		</panel>
 		<panel name="attrsPanel">
 			<field name="attrs" colSpan="12" />
@@ -157,21 +150,13 @@
   	<action-record name="action-purchase-request-set-status-purchased" model="com.axelor.apps.purchase.db.PurchaseRequest">
     	<field name="statusSelect" expr="eval:4"/>
   	</action-record>
-  	
-  	<action-record name="action-purchase-request-set-status-delivered-partially" model="com.axelor.apps.purchase.db.PurchaseRequest">
-    	<field name="statusSelect" expr="eval:5"/>
-  	</action-record>
-	
-	<action-record name="action-purchase-request-set-status-delivered" model="com.axelor.apps.purchase.db.PurchaseRequest">
-    	<field name="statusSelect" expr="eval:6"/>
-  	</action-record>
-  	
+  	  	
   	<action-record name="action-purchase-request-set-status-refused" model="com.axelor.apps.purchase.db.PurchaseRequest">
-    	<field name="statusSelect" expr="eval:7"/>
+    	<field name="statusSelect" expr="eval:5"/>
   	</action-record>
   	
   	<action-record name="action-purchase-request-set-status-cancel" model="com.axelor.apps.purchase.db.PurchaseRequest">
-    	<field name="statusSelect" expr="eval:8"/>
+    	<field name="statusSelect" expr="eval:6"/>
   	</action-record>
 
   	<action-record name="action-purchase-request-set-status-draft" model="com.axelor.apps.purchase.db.PurchaseRequest">

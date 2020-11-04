@@ -46,7 +46,8 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineServiceImpl {
+public class PurchaseOrderLineServiceSupplychainImpl extends PurchaseOrderLineServiceImpl
+    implements PurchaseOrderLineServiceSupplyChain {
 
   @Inject protected AnalyticMoveLineService analyticMoveLineService;
 
