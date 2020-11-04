@@ -169,7 +169,7 @@
 
 	<action-record name="action-leave-request-record-to-justify" model="com.axelor.apps.hr.db.LeaveRequest">
 		<field name="toJustifyLeaveReason" expr="eval: to_justify_leave_reason"/>
-		<field name="fromDateT" expr="eval:__date__" if="to_justify_leave_reason"/>
+		<field name="fromDateT" expr="eval:__config__.date" if="to_justify_leave_reason"/>
 	</action-record>
 	
 	<action-attrs name="action-leave-request-attrs-domain-leave-request-select">

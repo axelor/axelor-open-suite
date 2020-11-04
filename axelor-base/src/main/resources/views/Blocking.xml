@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
     <grid name="blocking-grid" title="Blockings" model="com.axelor.apps.base.db.Blocking" orderBy="-blockingToDate">
-        <hilite if="$moment(blockingToDate) &gt; $moment(__date__)" background="danger"/>
+        <hilite if="$moment(blockingToDate) &gt; $moment(__config__.date)" background="danger"/>
         <field name="companySet" form-view="company-form" grid-view="company-grid"/>
         <field name="blockingSelect" selection="base.blocking.select"/>
         <field name="blockingToDate"/>

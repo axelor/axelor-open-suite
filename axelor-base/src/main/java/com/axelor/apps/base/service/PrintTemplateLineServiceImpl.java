@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.repo.PrintTemplateLineRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.message.service.TemplateContextService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
@@ -140,7 +141,8 @@ public class PrintTemplateLineServiceImpl implements PrintTemplateLineService {
   protected TemplateMaker initMaker(Long objectId, String model, String simpleModel, Locale locale)
       throws ClassNotFoundException {
     String timezone = null;
-    Company activeCompany = AuthUtils.getUser().getActiveCompany();
+    Company activeCompany =
+        Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
     if (activeCompany != null) {
       timezone = activeCompany.getTimezone();
     }

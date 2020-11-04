@@ -34,12 +34,14 @@ import com.axelor.apps.businessproject.report.IReport;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
 
@@ -80,7 +82,7 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
           invoice);
     }
 
-    if (AuthUtils.getUser().getActiveCompany() != null
+    if (Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null) != null
         && !AuthUtils.getUser()
             .getActiveCompany()
             .getAccountConfig()

@@ -4,13 +4,13 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
     <calendar name="operation-order-planned-calendar" model="com.axelor.apps.production.db.OperationOrder" 
-    eventStart="plannedStartDateT" eventStop="plannedEndDateT" title="Planned operations" colorBy="machineWorkCenter.machine" mode="week"
+    eventStart="plannedStartDateT" eventStop="plannedEndDateT" title="Planned operations" colorBy="machine" mode="week"
     onChange="action-operation-order-method-set-planned-dates">
     	<field name="name"/>
     </calendar>
     
     <calendar name="operation-order-real-calendar" model="com.axelor.apps.production.db.OperationOrder" 
-    eventStart="realStartDateT" eventStop="realEndDateT" title="Real operations" colorBy="machineWorkCenter.machine" mode="week"
+    eventStart="realStartDateT" eventStop="realEndDateT" title="Real operations" colorBy="machine" mode="week"
     onChange="action-operation-order-method-set-real-dates">
     	<field name="name"/>
     </calendar>
@@ -24,7 +24,7 @@
         <field name="priority"/>
         <field name="operationName" readonlyIf="statusSelect == 6"/>
         <field name="prodProcessLine.outsourcing"/>
-        <field name="machineWorkCenter" grid-view="prod-process-grid" form-view="prod-process-form"/>
+        <field name="machine" grid-view="machine-grid" form-view="machine-form"/>
         <field name="plannedStartDateT"/>
         <field name="plannedEndDateT"/>
         <field name="realStartDateT"/>
@@ -47,7 +47,7 @@
     <grid name="operation-order-grid" title="Operations" model="com.axelor.apps.production.db.OperationOrder" orderBy="priority" canNew="false">
         <field name="priority" width="80"/>
         <field name="operationName" readonlyIf="statusSelect == 6"/>
-        <field name="machineWorkCenter" grid-view="prod-process-grid" form-view="prod-process-form"/>
+        <field name="machine" grid-view="machine-grid" form-view="machine-form"/>
         <field name="plannedStartDateT"/>
         <field name="plannedEndDateT"/>
         <field name="realStartDateT"/>
@@ -106,8 +106,8 @@
 		</panel>
 		<panel name="resourcesPanel" title="Resources" colSpan="12" readonlyIf="statusSelect == 6">
 			<field name="workCenter" readonly="true" grid-view="work-center-grid" form-view="work-center-form" colSpan="4"/>
-			<field name="machineWorkCenter" hidden="true" readonlyIf="statusSelect &gt; 3" onSelect="action-operation-order-attrs-domain-machine" onChange="save,action-operation-order-method-machine-change" grid-view="work-center-machine-grid" form-view="work-center-machine-form" colSpan="4"/>
-			<field name="machineTool" domain="self.machine = :machineWorkCenter" form-view="machine-tool-form" grid-view="machine-tool-grid" readonlyIf="statusSelect &gt; 3" colSpan="4" if="__config__.app.getApp('production').getEnableToolManagement()"/>
+			<field name="machine" hidden="true" readonlyIf="statusSelect &gt; 3" onSelect="action-operation-order-attrs-domain-machine" onChange="save,action-operation-order-method-machine-change" grid-view="work-center-machine-grid" form-view="work-center-machine-form" colSpan="4"/>
+			<field name="machineTool" domain="self.machine = machine" form-view="machine-tool-form" grid-view="machine-tool-grid" readonlyIf="statusSelect &gt; 3" colSpan="4" if="__config__.app.getApp('production').getEnableToolManagement()"/>
 			<panel-related name="prodHumanResourceListPanel" field="prodHumanResourceList" readonlyIf="statusSelect == 6" colSpan="12" grid-view="prod-human-resource-grid" form-view="prod-human-resource-form"/>
 		</panel>
 
@@ -139,7 +139,7 @@
 	</form>
 	
 	<action-attrs name="action-operation-order-attrs-domain-machine">
-		<attribute name="domain" for="machineWorkCenter" expr="eval: &quot; self.id IN (${workCenter?.workCenterList?.collect{it.id}.join(',').isEmpty() ?
+		<attribute name="domain" for="machine" expr="eval: &quot; self.id IN (${workCenter?.workCenterList?.collect{it.id}.join(',').isEmpty() ?
 		 workCenter.id : workCenter.id + ',' + workCenter?.workCenterList?.collect{it.id}.join(',')}) &quot;"/>
 	</action-attrs>
 
@@ -239,7 +239,7 @@
     	<attribute name="hidden" for="stockMovesPanel" expr="eval: !manufOrder?.isConsProOnOperation"/>
     	<attribute name="hidden" for="consumedProductPanel" expr="eval: !__parent__?.isConsProOnOperation"/>
     	<attribute name="hidden" for="stockMovesPanel" expr="eval: !__parent__?.isConsProOnOperation"/>
-    	<attribute name="hidden" for="machineWorkCenter" expr="eval: workCenter?.workCenterTypeSelect == 1"/>
+    	<attribute name="hidden" for="machine" expr="eval: workCenter?.workCenterTypeSelect == 1"/>
     </action-attrs>
     
     <search-filters name="operation-order-filters" model="com.axelor.apps.production.db.OperationOrder" title="Operation order filters">

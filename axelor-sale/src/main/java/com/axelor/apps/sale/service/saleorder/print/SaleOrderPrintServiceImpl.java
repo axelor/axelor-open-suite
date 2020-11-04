@@ -30,6 +30,7 @@ import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.ThrowConsumer;
 import com.axelor.apps.tool.file.PdfTool;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -40,6 +41,7 @@ import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
 
@@ -128,7 +130,8 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
     return prefixFileName
         + " - "
         + Beans.get(AppBaseService.class)
-            .getTodayDate(AuthUtils.getUser().getActiveCompany())
+            .getTodayDate(
+                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
             .format(DateTimeFormatter.BASIC_ISO_DATE)
         + "."
         + ReportSettings.FORMAT_PDF;

@@ -18,6 +18,7 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.app.internal.AppFilter;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UnitConversion;
@@ -25,6 +26,7 @@ import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -39,6 +41,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Optional;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
@@ -130,8 +133,12 @@ public class UnitConversionService {
     if (product != null) {
       this.maker =
           new TemplateMaker(
-              AuthUtils.getUser().getActiveCompany() != null
-                  ? AuthUtils.getUser().getActiveCompany().getTimezone()
+              Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null)
+                      != null
+                  ? Optional.ofNullable(AuthUtils.getUser())
+                      .map(User::getActiveCompany)
+                      .map(Company::getTimezone)
+                      .orElse(null)
                   : "",
               AppFilter.getLocale(),
               TEMPLATE_DELIMITER,

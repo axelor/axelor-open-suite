@@ -308,8 +308,8 @@
 	</chart>
 	
 	<action-record model="com.axelor.apps.helpdesk.db.Ticket" name="action.ticket.chart.set.date.1m">
-	  <field name="toDate" expr="eval:__date__" />
-	  <field name="fromDate" expr="eval:__date__.minusMonths(1)" />	  
+	  <field name="toDate" expr="eval:__config__.date" />
+	  <field name="fromDate" expr="eval:__config__.date.minusMonths(1)" />
 	</action-record>
 
 

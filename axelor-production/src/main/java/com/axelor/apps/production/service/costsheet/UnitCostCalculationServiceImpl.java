@@ -34,6 +34,7 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.apps.tool.file.CsvTool;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.db.JPA;
 import com.axelor.dms.db.DMSFile;
@@ -65,6 +66,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import javax.validation.ValidationException;
 import org.apache.commons.io.IOUtils;
@@ -219,7 +221,8 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   protected void updateStatusToComputed(UnitCostCalculation unitCostCalculation) {
 
     unitCostCalculation.setCalculationDate(
-        appProductionService.getTodayDate(AuthUtils.getUser().getActiveCompany()));
+        appProductionService.getTodayDate(
+            Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null)));
 
     unitCostCalculation.setStatusSelect(UnitCostCalculationRepository.STATUS_COSTS_COMPUTED);
 
@@ -476,7 +479,8 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   protected void updateStatusProductCostPriceUpdated(UnitCostCalculation unitCostCalculation) {
 
     unitCostCalculation.setUpdateCostDate(
-        appProductionService.getTodayDate(AuthUtils.getUser().getActiveCompany()));
+        appProductionService.getTodayDate(
+            Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null)));
 
     unitCostCalculation.setStatusSelect(UnitCostCalculationRepository.STATUS_COSTS_UPDATED);
 

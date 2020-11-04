@@ -1146,7 +1146,7 @@
     	<field name="inTaxTotal" expr="eval: 0"/>
     	<field name="amountInvoiced" expr="eval: 0"/>
         <field name="advanceTotal" expr="eval: 0"/>
-    	<field name="creationDate" expr="eval: __date__"/>
+    	<field name="creationDate" expr="eval: __config__.date"/>
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>

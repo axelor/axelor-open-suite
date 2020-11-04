@@ -21,7 +21,7 @@
 	</form>
 
 	<action-record name="action-quality-picture-record-on-new" model="com.axelor.apps.quality.db.QualityPictures">
-		<field name="createDate" expr="eval: __date__"/>
+		<field name="createDate" expr="eval: __config__.date"/>
 	</action-record>
 
 </object-views>

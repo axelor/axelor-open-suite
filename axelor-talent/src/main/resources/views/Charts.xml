@@ -112,13 +112,13 @@
 	</chart>
 	
 	<action-attrs name="action-training-chart-set-default-from-to-dates">
-		<attribute name="value" for="fromDate" expr="eval:__date__.withDayOfMonth(1)"/>
-		<attribute name="value" for="toDate" expr="eval:__date__"/>
+		<attribute name="value" for="fromDate" expr="eval:__config__.date.withDayOfMonth(1)"/>
+		<attribute name="value" for="toDate" expr="eval:__config__.date"/>
 	</action-attrs>
 	
 	<action-attrs name="action-training-chart-set-3-month-from-to-dates">
-		<attribute name="value" for="fromDate" expr="eval:__date__.minusMonths(3)"/>
-		<attribute name="value" for="toDate" expr="eval:__date__"/>
+		<attribute name="value" for="fromDate" expr="eval:__config__.date.minusMonths(3)"/>
+		<attribute name="value" for="toDate" expr="eval:__config__.date"/>
 	</action-attrs>
 	
 </object-views>

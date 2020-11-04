@@ -56,8 +56,8 @@
     <attribute name="value" for="$product" expr="eval: _product"/>
     <attribute name="value" for="$company" expr="eval: _company"/>
     <attribute name="value" for="$stockLocation" expr="eval: _stockLocation"/>
-    <attribute name="value" for="$beginDate" expr="eval: __date__.minusMonths(6)"/>
-    <attribute name="value" for="$endDate" expr="eval: __date__"/>
+    <attribute name="value" for="$beginDate" expr="eval: __config__.date.minusMonths(6)"/>
+    <attribute name="value" for="$endDate" expr="eval: __config__.date"/>
     <attribute name="value" for="$nbOfPeriod" expr="eval: 7"/>
   </action-attrs>
 

@@ -33,11 +33,11 @@ public class FilterCommonService {
     if (value != null) {
       if (addColon) {
         value = value.replace("$user", ":__user__");
-        value = value.replace("$date", ":__date__");
+        value = value.replace("$date", ":__config__.date");
         value = value.replace("$time", ":__datetime__");
       } else {
         value = value.replace("$user", "__user__");
-        value = value.replace("$date", "__date__");
+        value = value.replace("$date", "__config__.date");
         value = value.replace("$time", "__datetime__");
       }
     }

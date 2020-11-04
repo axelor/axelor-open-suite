@@ -75,7 +75,7 @@
 	<action-record model="com.axelor.apps.hr.db.Expense"
 				   name="action.hr.chart.set.period.last.month">
 		<field name="period"
-			   expr="eval: __repo__(Period).all().filter('fromDate &lt;= ?1 and toDate &gt;= ?1', __date__.minusMonths(1)).fetchOne()"/>
+			   expr="eval: __repo__(Period).all().filter('fromDate &lt;= ?1 and toDate &gt;= ?1', __config__.date.minusMonths(1)).fetchOne()"/>
 	</action-record>
 
 </object-views>

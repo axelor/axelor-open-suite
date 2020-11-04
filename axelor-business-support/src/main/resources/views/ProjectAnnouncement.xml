@@ -25,7 +25,7 @@
   </action-attrs>
   
   <action-record name="action-project-record-project-announcement-onnew" model="com.axelor.apps.businesssupport.db.ProjectAnnouncement">
-    <field name="date" expr="eval: __date__"/>
+    <field name="date" expr="eval: __config__.date"/>
   </action-record>
   
 </object-views>

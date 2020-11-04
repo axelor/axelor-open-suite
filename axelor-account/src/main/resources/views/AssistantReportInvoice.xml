@@ -59,15 +59,15 @@
     
     
     <action-record name="action-print-invoices-details-record-on-new-sales" model="com.axelor.apps.account.db.AssistantReportInvoice">
-    	<field name="fromDate" expr="eval: __date__"/>
-    	<field name="toDate" expr="eval: __date__"/>
+    	<field name="fromDate" expr="eval: __config__.date"/>
+    	<field name="toDate" expr="eval: __config__.date"/>
     	<field name="company" expr="eval: __user__.activeCompany"/>
     	<field name="type" expr="1"/>
     </action-record>
     
     <action-record name="action-print-invoices-details-record-on-new-purchases" model="com.axelor.apps.account.db.AssistantReportInvoice">
-    	<field name="fromDate" expr="eval: __date__"/>
-    	<field name="toDate" expr="eval: __date__"/>
+    	<field name="fromDate" expr="eval: __config__.date"/>
+    	<field name="toDate" expr="eval: __config__.date"/>
     	<field name="company" expr="eval: __user__.activeCompany"/>
     	<field name="type" expr="2"/>
     </action-record>
