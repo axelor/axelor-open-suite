@@ -139,7 +139,7 @@
 					onClick="action-project-view-show-related-tasks" />
 				<panel-dashlet name="projectTaskTreeDashletPanel" title="Task Tree" colSpan="12"
 					action="action-view-show-project-task-tree" />
-				<panel-dashlet name="taskInvoicingDashletPanel" title="Task Invoicing" colSpan="12" 
+				<panel-dashlet name="taskInvoicingDashletPanel" title="Task Invoicing" colSpan="12" showIf="isBusinessProject"
 					action="action-dashlet-project-show-all-invoicing-task" if="__config__.app.isApp('business-project')" canSearch="true"/>
 			</panel>
 			<panel title="Members" name="membersPanel">
