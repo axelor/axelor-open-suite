@@ -34,12 +34,14 @@ import com.axelor.apps.businessproject.report.IReport;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
 
@@ -80,7 +82,11 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
           invoice);
     }
 
-    if (!AuthUtils.getUser().getActiveCompany().getAccountConfig().getDisplayTimesheetOnPrinting()
+    if (Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null) != null
+        && !AuthUtils.getUser()
+            .getActiveCompany()
+            .getAccountConfig()
+            .getDisplayTimesheetOnPrinting()
         && !AuthUtils.getUser()
             .getActiveCompany()
             .getAccountConfig()
@@ -107,6 +113,9 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
     String fileLink =
         rS.addParam("InvoiceId", invoiceIds)
             .addParam("Locale", language)
+            .addParam(
+                "Timezone",
+                invoice.getCompany() != null ? invoice.getCompany().getTimezone() : null)
             .addParam("InvoicesCopy", invoicesCopy)
             .addParam("HeaderHeight", invoice.getPrintingSettings().getPdfHeaderHeight())
             .addParam("FooterHeight", invoice.getPrintingSettings().getPdfFooterHeight())

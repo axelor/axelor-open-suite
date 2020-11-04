@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
@@ -12,10 +12,12 @@
 			 selection="production.manuf.order.stock.move.realize.order.select"/>
 		<many-to-one name="manufOrderSequence" title="Default sequence" ref="com.axelor.apps.base.db.Sequence"/>
 		<one-to-many name="workshopSequenceConfigLineList" title="Sequence by workshop" mappedBy="productionConfig" ref="com.axelor.apps.production.db.WorkshopSequenceConfigLine"/>
+
 		<boolean name="finishMoAutomaticEmail" title="Send email when manufacturing order finished" default="false"/>
 		<many-to-one name="finishMoMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
 		<boolean name="partFinishMoAutomaticEmail" title="Send email when manufacturing order partially finished" default="false"/>
 		<many-to-one name="partFinishMoMessageTemplate" title="Message template" ref="com.axelor.apps.message.db.Template"/>
+
 
 	  <finder-method name="findByCompany" using="company"/>
 
@@ -34,6 +36,7 @@
 			<field name="finishMoMessageTemplate" on="UPDATE"/>
 			<field name="partFinishMoAutomaticEmail" on="UPDATE"/>
 			<field name="partFinishMoMessageTemplate" on="UPDATE"/>
+	
 		</track>
 
   </entity>

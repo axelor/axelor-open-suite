@@ -74,6 +74,9 @@ public class InventoryController {
       String fileLink =
           ReportFactory.createReport(IReport.INVENTORY, name + "-${date}")
               .addParam("InventoryId", inventory.getId())
+              .addParam(
+                  "Timezone",
+                  inventory.getCompany() != null ? inventory.getCompany().getTimezone() : null)
               .addParam("Locale", ReportSettings.getPrintingLocale(null))
               .addParam(
                   "activateBarCodeGeneration",

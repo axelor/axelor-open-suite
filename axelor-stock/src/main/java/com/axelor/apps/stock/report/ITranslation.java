@@ -48,7 +48,6 @@ public interface ITranslation {
       "StockLocation.detailsByStockLocation"; /*)*/
 
   public static final String INVENTORY_TITLE = /*$$(*/ "Inventory.title"; /*)*/
-  public static final String INVENTORY_NAME = /*$$(*/ "Inventory.name"; /*)*/
   public static final String INVENTORY_BARCODE = /*$$(*/ "Inventory.barcode"; /*)*/
   public static final String INVENTORY_DATE = /*$$(*/ "Inventory.date"; /*)*/
   public static final String INVENTORY_STOCK_LOCATION = /*$$(*/ "Inventory.stockLocation"; /*)*/

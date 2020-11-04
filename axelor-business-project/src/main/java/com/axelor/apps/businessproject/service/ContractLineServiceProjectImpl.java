@@ -19,6 +19,7 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.contract.db.Contract;
@@ -34,8 +35,9 @@ public class ContractLineServiceProjectImpl extends ContractLineServiceImpl {
   public ContractLineServiceProjectImpl(
       AppBaseService appBaseService,
       AccountManagementService accountManagementService,
-      CurrencyService currencyService) {
-    super(appBaseService, accountManagementService, currencyService);
+      CurrencyService currencyService,
+      ProductCompanyService productCompanyService) {
+    super(appBaseService, accountManagementService, currencyService, productCompanyService);
   }
 
   @Override

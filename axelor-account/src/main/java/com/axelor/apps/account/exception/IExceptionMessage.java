@@ -633,12 +633,12 @@ public interface IExceptionMessage {
 
   /** Ventilate state */
   static final String VENTILATE_STATE_1 = /*$$(*/
-      "%s - Invoice's or credit note's date can't be previous last invoice ventilated's date" /*)*/;
+      "Invoice's or credit note's date can't be previous last invoice ventilated's date : %s" /*)*/;
 
   static final String VENTILATE_STATE_2 = /*$$(*/
-      "Invoice's or credit note's date can't be previous last invoice ventilated on month's date" /*)*/;
+      "Invoice's or credit note's date can't be previous last invoice ventilated on month's date : %s" /*)*/;
   static final String VENTILATE_STATE_3 = /*$$(*/
-      "Invoice's or credit note's date can't be previous last invoice ventilated on year's date" /*)*/;
+      "Invoice's or credit note's date can't be previous last invoice ventilated on year's date : %s" /*)*/;
   static final String VENTILATE_STATE_4 = /*$$(*/
       "Company %s does not have any invoice's nor credit note's sequence" /*)*/;
   static final String VENTILATE_STATE_5 = /*$$(*/

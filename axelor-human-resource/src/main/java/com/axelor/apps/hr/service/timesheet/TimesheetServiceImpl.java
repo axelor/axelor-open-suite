@@ -27,12 +27,14 @@ import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
@@ -89,6 +91,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.mail.MessagingException;
@@ -110,6 +113,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   protected TimesheetLineService timesheetLineService;
   protected ProjectPlanningTimeRepository projectPlanningTimeRepository;
   protected TeamTaskRepository teamTaskRepository;
+  protected ProductCompanyService productCompanyService;
   protected TimesheetLineRepository timesheetlineRepo;
   protected TimesheetRepository timeSheetRepository;
   private ExecutorService executor = Executors.newCachedThreadPool();
@@ -128,6 +132,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       TimesheetLineService timesheetLineService,
       ProjectPlanningTimeRepository projectPlanningTimeRepository,
       TeamTaskRepository teamTaskRepository,
+      ProductCompanyService productCompanyService,
       TimesheetLineRepository timesheetlineRepo,
       TimesheetRepository timeSheetRepository) {
     this.priceListService = priceListService;
@@ -140,6 +145,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     this.timesheetLineService = timesheetLineService;
     this.projectPlanningTimeRepository = projectPlanningTimeRepository;
     this.teamTaskRepository = teamTaskRepository;
+    this.productCompanyService = productCompanyService;
     this.timesheetlineRepo = timesheetlineRepo;
     this.timeSheetRepository = timeSheetRepository;
   }
@@ -151,7 +157,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     this.validateDates(timesheet);
 
     timesheet.setStatusSelect(TimesheetRepository.STATUS_CONFIRMED);
-    timesheet.setSentDate(appHumanResourceService.getTodayDate());
+    timesheet.setSentDate(appHumanResourceService.getTodayDate(timesheet.getCompany()));
   }
 
   @Override
@@ -237,7 +243,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
 
     timesheet.setStatusSelect(TimesheetRepository.STATUS_VALIDATED);
     timesheet.setValidatedBy(AuthUtils.getUser());
-    timesheet.setValidationDate(appHumanResourceService.getTodayDate());
+    timesheet.setValidationDate(appHumanResourceService.getTodayDate(timesheet.getCompany()));
   }
 
   @Override
@@ -272,7 +278,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
 
     timesheet.setStatusSelect(TimesheetRepository.STATUS_REFUSED);
     timesheet.setRefusedBy(AuthUtils.getUser());
-    timesheet.setRefusalDate(appHumanResourceService.getTodayDate());
+    timesheet.setRefusalDate(appHumanResourceService.getTodayDate(timesheet.getCompany()));
   }
 
   @Override
@@ -474,7 +480,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
             .filter(
                 "self.statusSelect = ?1 AND self.user.id = ?2",
                 TimesheetRepository.STATUS_DRAFT,
-                AuthUtils.getUser().getId())
+                Optional.ofNullable(AuthUtils.getUser()).map(User::getId).orElse(null))
             .order("-id")
             .fetchOne();
     if (timesheet != null) {
@@ -611,7 +617,8 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.TIMESHEET_PRODUCT));
     }
-    BigDecimal price = product.getSalePrice();
+    BigDecimal price =
+        (BigDecimal) productCompanyService.get(product, "salePrice", invoice.getCompany());
     BigDecimal discountAmount = BigDecimal.ZERO;
     BigDecimal priceDiscounted = price;
 
@@ -619,7 +626,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
         Beans.get(UnitConversionService.class)
             .convert(
                 appHumanResourceService.getAppBase().getUnitHours(),
-                product.getUnit(),
+                (Unit) productCompanyService.get(product, "unit", invoice.getCompany()),
                 hoursDuration,
                 AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
                 product);
@@ -652,7 +659,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     }
 
     String description = user.getFullName();
-    String productName = product.getName();
+    String productName = (String) productCompanyService.get(product, "name", invoice.getCompany());
     if (date != null) {
       productName += " " + "(" + date + ")";
     }
@@ -667,7 +674,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
             priceDiscounted,
             description,
             qtyConverted,
-            product.getUnit(),
+            (Unit) productCompanyService.get(product, "unit", invoice.getCompany()),
             null,
             priority,
             discountAmount,

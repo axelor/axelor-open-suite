@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
 	<menuitem id="abs-menu-mail" name="menu-mail" if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base').getEnterpriseCommunication()" hidden="false" order="-110"
     title="Messaging" icon="fa-users" icon-background="#84429f" />
@@ -189,7 +189,7 @@
 		<view type="form" name="product-form" />
 	  	<view-param name="limit" value="39"/>
 		<view-param name="search-filters" value="products-filters"/>
-		<domain>self.isModel = :_isModel AND self.productTypeSelect = :_productTypeSelect </domain>
+		<domain>self.isModel = :_isModel AND self.productTypeSelect = :_productTypeSelect AND dtype = 'Product'</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_isModel" expr="false"/>
 		<context name="_productTypeSelect" expr="storable"/>
@@ -206,7 +206,7 @@
 		<view type="form" name="product-form" />
 	  	<view-param name="limit" value="39"/>
 		<view-param name="search-filters" value="products-filters"/>
-		<domain>self.isModel = :_isModel AND self.productTypeSelect = :_productTypeSelect </domain>
+		<domain>self.isModel = :_isModel AND self.productTypeSelect = :_productTypeSelect AND dtype = 'Product'</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_isModel" expr="false"/>
 		<context name="_productTypeSelect" expr="service"/>
@@ -222,7 +222,7 @@
 		<view type="form" name="product-form" />
 	  	<view-param name="limit" value="39"/>
 		<view-param name="search-filters" value="products-filters"/>
-		<domain>self.isModel = :_isModel</domain>
+		<domain>self.isModel = :_isModel AND dtype = 'Product'</domain>
 		<context name="_activeCompany" expr="eval:__user__.activeCompany"/>
 		<context name="_isModel" expr="true"/>
 	</action-view>
@@ -826,5 +826,22 @@
     <view-param name="details-view" value="true"/>
     <domain>self.typeSelect = :_typeSelect</domain>
     <context name="_typeSelect" expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TASK"/>
+  </action-view>
+
+	<menuitem name="admin-global-tracking-log-show" title="Global tracking logs" parent="admin-root-maintenance" action="admin.global.tracking.log.show"/>
+
+	<action-view name="admin.global.tracking.log.show" title="Global tracking logs" model="com.axelor.apps.base.db.Wizard" >
+		<view type="form" name="global-tracking-log-view-wizard-form"/>
+	</action-view>
+
+
+  <!-- Print -->
+  <menuitem name="print-conf" parent="admin-root" if="__config__.app.isApp('base')" title="Printing"  order="41" />
+
+  <menuitem name="print-conf-print-templates" parent="print-conf" title="Print templates" action="action.print.template.view.all"/>
+
+  <action-view name="action.print.template.view.all" title="Print templates" model="com.axelor.apps.base.db.PrintTemplate">
+     <view type="grid" name="print-template-grid"/>
+     <view type="form" name="print-template-form"/>
   </action-view>
 </object-views>

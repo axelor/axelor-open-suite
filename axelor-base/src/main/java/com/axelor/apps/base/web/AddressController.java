@@ -33,8 +33,11 @@ import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.app.AppService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -191,11 +194,18 @@ public class AddressController {
     } else response.setFlash(I18n.get(IExceptionMessage.ADDRESS_4));
   }
 
-  public void export(ActionRequest request, ActionResponse response) throws IOException {
+  public void export(ActionRequest request, ActionResponse response)
+      throws IOException, AxelorException {
 
     AddressExport addressExport = request.getContext().asType(AddressExport.class);
+    String dataExportDir = Beans.get(AppService.class).getDataExportDir();
 
-    int size = Beans.get(AddressService.class).export(addressExport.getPath());
+    String addressExportPath = addressExport.getPath();
+    if (addressExportPath == null) {
+      addressExportPath = "adresses.csv";
+    }
+
+    int size = Beans.get(AddressService.class).export(dataExportDir + addressExportPath);
 
     response.setValue("log", size + " adresses exportées");
   }
@@ -235,7 +245,8 @@ public class AddressController {
         key = mapService.getGoogleMapsApiKey();
       }
 
-      Company company = AuthUtils.getUser().getActiveCompany();
+      Company company =
+          Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
       if (company == null) {
         response.setFlash(I18n.get(IExceptionMessage.PRODUCT_NO_ACTIVE_COMPANY));
         return;

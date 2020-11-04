@@ -42,9 +42,8 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(
-  name = "QAConfigType",
-  propOrder = {"iniFile", "iniSection"}
-)
+    name = "QAConfigType",
+    propOrder = {"iniFile", "iniSection"})
 public class QAConfigType {
 
   @XmlElement(name = "IniFile")

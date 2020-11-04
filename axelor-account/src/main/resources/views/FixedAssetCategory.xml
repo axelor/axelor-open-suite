@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
     
 	<grid name="fixed-asset-category-grid" title="Fixed asset categories" model="com.axelor.apps.account.db.FixedAssetCategory" orderBy="company,fixedAssetType,name">
 		<field name="name"/>
@@ -29,13 +29,13 @@
         		<field name="depreciationAccount" domain="self.company = :company AND self.accountType.technicalTypeSelect = 'immobilisation'" form-view="account-form" grid-view="account-grid"/>
         	</panel>
         	<panel name="periodicityPanel" title="Periodicity">
-	        	<field name="numberOfDepreciation" onChange="action-fixed-asset-attrs-set-degressive-coef,action-fixed-asset-category-record-compute-duration"/>
+	        	<field name="numberOfDepreciation" onChange="action-fixed-asset-attrs-set-degressive-coef,action-fixed-asset-category-record-compute-duration" min="1"/>
 	        	<field name="periodicityInMonth" onChange="action-fixed-asset-category-record-compute-duration"/>
 	        	<field name="durationInMonth" readonly="true"/>
         	</panel>
         	<panel name="depreciationPanel" title="Depreciation method">
-        		<field name="computationMethodSelect" onChange="action-fixed-asset-attrs-set-degressive-coef"/>
-	        	<field name="degressiveCoef" showIf="computationMethodSelect == 'degressive'"/>
+        		<field name="computationMethodSelect" onChange="action-fixed-asset-attrs-set-degressive-coef" required="true"/>
+	        	<field name="degressiveCoef" showIf="computationMethodSelect == 'degressive'" validIf="computationMethodSelect == 'linear' || (computationMethodSelect == 'degressive' &amp;&amp; degressiveCoef != 0.00)"/>
 	        	<field name="isProrataTemporis"/>
 	        	<field name="isUSProrataTemporis" showIf="isProrataTemporis"/>
         	</panel>

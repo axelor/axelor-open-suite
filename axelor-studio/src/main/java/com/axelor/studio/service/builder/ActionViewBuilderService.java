@@ -26,7 +26,7 @@ import com.axelor.studio.db.ActionBuilderView;
 import com.axelor.studio.service.StudioMetaService;
 import com.google.inject.Inject;
 import java.util.List;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 
 public class ActionViewBuilderService {
 

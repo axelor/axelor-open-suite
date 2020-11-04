@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
@@ -15,7 +15,7 @@
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     <many-to-one name="prodProcess" ref="com.axelor.apps.production.db.ProdProcess" title="Production process"/>
   	<many-to-many name="billOfMaterialSet" ref="com.axelor.apps.production.db.BillOfMaterial" title="BOMs" orderBy="priority"/>
-  	<one-to-many name="prodResidualProductList" ref="com.axelor.apps.production.db.ProdResidualProduct" title="Residual products"/>
+  	<one-to-many name="prodResidualProductList" ref="com.axelor.apps.production.db.ProdResidualProduct" title="Residual products" mappedBy="billOfMaterial"/>
   	<decimal name="costPrice" title="Cost price" precision="20" scale="10"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <boolean name="hasNoManageStock" title="Not manage stock"/>

@@ -124,7 +124,8 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
 
     subrogationRelease.setSequenceNumber(sequenceNumber);
     subrogationRelease.setStatusSelect(SubrogationReleaseRepository.STATUS_TRANSMITTED);
-    subrogationRelease.setTransmissionDate(appBaseService.getTodayDate());
+    subrogationRelease.setTransmissionDate(
+        appBaseService.getTodayDate(subrogationRelease.getCompany()));
   }
 
   protected void checkIfAnOtherSubrogationAlreadyExist(SubrogationRelease subrogationRelease)
@@ -160,6 +161,11 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
     ReportSettings reportSettings = ReportFactory.createReport(IReport.SUBROGATION_RELEASE, name);
     reportSettings.addParam("SubrogationReleaseId", subrogationRelease.getId());
     reportSettings.addParam("Locale", ReportSettings.getPrintingLocale(null));
+    reportSettings.addParam(
+        "Timezone",
+        subrogationRelease.getCompany() != null
+            ? subrogationRelease.getCompany().getTimezone()
+            : null);
     reportSettings.addFormat("pdf");
     reportSettings.toAttach(subrogationRelease);
     reportSettings.generate();
@@ -169,6 +175,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
   @Override
   public String exportToCSV(SubrogationRelease subrogationRelease)
       throws AxelorException, IOException {
+    String dataExportDir = appBaseService.getDataExportDir();
     List<String[]> allMoveLineData = new ArrayList<>();
 
     Comparator<Invoice> byInvoiceDate =
@@ -177,9 +184,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
     Comparator<Invoice> byInvoiceId = (i1, i2) -> i1.getInvoiceId().compareTo(i2.getInvoiceId());
 
     List<Invoice> releaseDetails =
-        subrogationRelease
-            .getInvoiceSet()
-            .stream()
+        subrogationRelease.getInvoiceSet().stream()
             .sorted(byInvoiceDate.thenComparing(byDueDate).thenComparing(byInvoiceId))
             .collect(Collectors.toList());
 
@@ -203,11 +208,9 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
     AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
     String filePath =
         accountConfigService.getAccountConfig(subrogationRelease.getCompany()).getExportPath();
-    if (filePath == null) {
-      filePath = com.google.common.io.Files.createTempDir().getAbsolutePath();
-    } else {
-      new File(filePath).mkdirs();
-    }
+    filePath = filePath == null ? dataExportDir : dataExportDir + filePath;
+    new File(filePath).mkdirs();
+
     String fileName =
         String.format(
             "%s %s.csv", I18n.get("Subrogation release"), subrogationRelease.getSequenceNumber());
@@ -238,7 +241,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
     Account factorDebitAccount = accountConfigService.getFactorDebitAccount(accountConfig);
 
     if (subrogationRelease.getAccountingDate() == null) {
-      subrogationRelease.setAccountingDate(appBaseService.getTodayDate());
+      subrogationRelease.setAccountingDate(appBaseService.getTodayDate(company));
     }
 
     this.checkIfAnOtherSubrogationAlreadyExist(subrogationRelease);
@@ -322,9 +325,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
   @Override
   public boolean isSubrogationReleaseCompletelyPaid(SubrogationRelease subrogationRelease) {
 
-    return subrogationRelease
-            .getInvoiceSet()
-            .stream()
+    return subrogationRelease.getInvoiceSet().stream()
             .filter(p -> p.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1)
             .count()
         == 0;

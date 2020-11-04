@@ -24,3 +24,15 @@ $SaleOrder.saleOrderLineList:{ line | <li>$line.productName$ x$line.qty$ for $li
 <p>Best regards<br/>
 $SaleOrder.user.partner.firstName$ $SaleOrder.user.partner.name$</p>
 ";"$SaleOrder.clientPartner.emailAddress.address$";;;2
+"Sale order update template";"SaleOrder";1;;;;"true";"companyLogo";"$SaleOrder.company.name$ - $SaleOrder.saleOrderSeq$ has been updated";"
+<table width=""100%""><tbody><tr><td width=""60%"">$if(companyLogo)$<img src=""data:image/png;base64,$companyLogo$"" height=""67px"" width=""215px"">$endif$</td>
+<td width=""40%""><b><font size=""5"">$SaleOrder.company.name$<br></font></b>$SaleOrder.company.address.fullName$</td></tr></tbody></table>
+<p>Hello $username$,</p> 
+<p>$SaleOrder.saleOrderSeq$ has been recently updated, please find below the changes done.</p>
+<p>Status : </p>
+<ul>
+$tracks:{ line | <li> <strong>$line.title$</strong> : $if(line.displayValue)$ <span>$line.oldDisplayValue$</span> &raquo; <span>$line.displayValue$</span> 
+$else$ <span>$line.oldValue$</span> &raquo; <span>$line.value$</span> $endif$ </li>}$
+</ul>
+<p>Comment : $SaleOrder.description$</p>
+";;;;2

@@ -33,6 +33,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.message.db.Template;
+import com.axelor.apps.message.exception.AxelorMessageException;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.FreightCarrierMode;
@@ -53,6 +54,7 @@ import com.axelor.apps.stock.report.IReport;
 import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.MoreObjects;
@@ -410,7 +412,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     stockMoveLineService.storeCustomsCodes(stockMove.getStockMoveLineList());
 
-    stockMove.setRealDate(appBaseService.getTodayDate());
+    stockMove.setRealDate(appBaseService.getTodayDate(stockMove.getCompany()));
     resetMasses(stockMove);
 
     if (stockMove.getIsWithBackorder() && mustBeSplit(stockMove.getStockMoveLineList())) {
@@ -469,9 +471,9 @@ public class StockMoveServiceImpl implements StockMoveService {
     try {
       Beans.get(TemplateMessageService.class).generateAndSendMessage(stockMove, template);
     } catch (Exception e) {
-      //      throw new AxelorException(
-      //          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage(), stockMove);
-      LOG.error(e.getMessage());
+      TraceBackService.trace(
+          new AxelorMessageException(
+              e, stockMove, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR));
     }
   }
 
@@ -497,9 +499,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     }
 
     List<Product> productList =
-        stockMove
-            .getStockMoveLineList()
-            .stream()
+        stockMove.getStockMoveLineList().stream()
             .map(StockMoveLine::getProduct)
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
@@ -802,7 +802,7 @@ public class StockMoveServiceImpl implements StockMoveService {
           stockMove.getEstimatedDate(),
           true);
 
-      stockMove.setRealDate(appBaseService.getTodayDate());
+      stockMove.setRealDate(appBaseService.getTodayDate(stockMove.getCompany()));
     }
 
     stockMove.clearPlannedStockMoveLineList();
@@ -897,8 +897,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     newStockMove.setStockMoveLineList(new ArrayList<>());
 
     modifiedStockMoveLines =
-        modifiedStockMoveLines
-            .stream()
+        modifiedStockMoveLines.stream()
             .filter(stockMoveLine -> stockMoveLine.getQty().compareTo(BigDecimal.ZERO) != 0)
             .collect(Collectors.toList());
     for (StockMoveLine moveLine : modifiedStockMoveLines) {
@@ -914,9 +913,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
       // find the original move line to update it
       Optional<StockMoveLine> correspondingMoveLine =
-          originalStockMove
-              .getStockMoveLineList()
-              .stream()
+          originalStockMove.getStockMoveLineList().stream()
               .filter(stockMoveLine -> stockMoveLine.getId().equals(moveLine.getId()))
               .findFirst();
       if (BigDecimal.ZERO.compareTo(moveLine.getQty()) > 0
@@ -1123,8 +1120,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     List<Long> selectedStockMoveListId;
     if (lstSelectedMove != null && !lstSelectedMove.isEmpty()) {
       selectedStockMoveListId =
-          lstSelectedMove
-              .stream()
+          lstSelectedMove.stream()
               .map(integer -> Long.parseLong(integer.toString()))
               .collect(Collectors.toList());
       stockMove = stockMoveRepo.find(selectedStockMoveListId.get(0));
@@ -1143,8 +1139,7 @@ public class StockMoveServiceImpl implements StockMoveService {
             .all()
             .filter(
                 "self.id IN ("
-                    + selectedStockMoveListId
-                        .stream()
+                    + selectedStockMoveListId.stream()
                         .map(Object::toString)
                         .collect(Collectors.joining(","))
                     + ") AND self.printingSettings IS NULL")
@@ -1154,8 +1149,7 @@ public class StockMoveServiceImpl implements StockMoveService {
           String.format(
               I18n.get(IExceptionMessage.STOCK_MOVES_MISSING_PRINTING_SETTINGS),
               "<ul>"
-                  + stockMoveList
-                      .stream()
+                  + stockMoveList.stream()
                       .map(StockMove::getStockMoveSeq)
                       .collect(Collectors.joining("</li><li>", "<li>", "</li>"))
                   + "<ul>");
@@ -1181,6 +1175,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     ReportSettings reportSettings =
         ReportFactory.createReport(reportType, title + "-${date}")
             .addParam("StockMoveId", stockMoveIds)
+            .addParam("Timezone", null)
             .addParam("Locale", locale);
 
     if (reportType.equals(IReport.CONFORMITY_CERTIFICATE)) {
@@ -1199,9 +1194,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
   protected boolean computeFullySpreadOverLogisticalFormsFlag(StockMove stockMove) {
     return stockMove.getStockMoveLineList() != null
-        ? stockMove
-            .getStockMoveLineList()
-            .stream()
+        ? stockMove.getStockMoveLineList().stream()
             .allMatch(
                 stockMoveLine ->
                     stockMoveLineService.computeFullySpreadOverLogisticalFormLinesFlag(
@@ -1248,7 +1241,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     if ((!stockMove.getPickingIsEdited() || stockMove.getPickingEditDate() == null)
         && stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED
         && StockMoveRepository.USER_TYPE_SENDER.equals(userType)) {
-      stockMove.setPickingEditDate(LocalDate.now());
+      stockMove.setPickingEditDate(appBaseService.getTodayDate(stockMove.getCompany()));
       stockMove.setPickingIsEdited(true);
     }
   }

@@ -640,7 +640,7 @@ this.queryText = this.queryText.replace('@INJECTID', params["OperationOrderId"])
 		OperationOrder.planned_end_datet, OperationOrder.real_start_datet, OperationOrder.real_end_datet,OperationOrder.bar_code as operation_barcode, BarCodeFile.file_path as operation_barcode_picture,
 		Machine.serial_number as machine_serial_num, Machine.name as machine_name,
 		ProdProcessLine.description, OperationOrder.status_select,
-		TO_CHAR((MachineWorkCenter.duration_per_cycle || ' seconds')::interval, 'HH24:MI:SS') as duration_per_cycle,
+		TO_CHAR((WorkCenter.duration_per_cycle || ' seconds')::interval, 'HH24:MI:SS') as duration_per_cycle,
 		TO_CHAR((Machine.starting_duration || ' seconds')::interval, 'HH24:MI:SS') as starting_duration,
 		TO_CHAR((Machine.setup_duration || ' seconds')::interval, 'HH24:MI:SS') as setup_duration,
 		TO_CHAR((Machine.ending_duration || ' seconds')::interval, 'HH24:MI:SS') as ending_duration
@@ -663,9 +663,9 @@ LEFT JOIN
 LEFT JOIN
 	base_unit AS Unit ON (Unit.id = BOM.unit)
 LEFT JOIN 
-	production_work_center AS MachineWorkCenter ON (MachineWorkCenter.id = OperationOrder.machine_work_center)
+	production_work_center AS WorkCenter ON (WorkCenter.id = OperationOrder.work_center)
 LEFT JOIN 
-	production_machine AS Machine ON (Machine.id = MachineWorkCenter.machine)
+	production_machine AS Machine ON (Machine.id = OperationOrder.machine)
 LEFT JOIN 
 	production_prod_process AS ProdProcess ON (ProdProcess.id = BOM.prod_process)
 LEFT JOIN 
@@ -1814,36 +1814,13 @@ LEFT JOIN
                                 <cell id="4381">
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
-                                    <text id="4384">
-                                        <property name="marginTop">1pt</property>
-                                        <property name="marginLeft">2pt</property>
-                                        <property name="textAlign">left</property>
-                                        <property name="dataSet">TranslateDS</property>
-                                        <list-property name="paramBindings">
-                                            <structure>
-                                                <property name="paramName">param_1</property>
-                                                <simple-property-list name="expression">
-                                                    <value type="javascript">'OperationOrder.plannedStartDate'</value>
-                                                </simple-property-list>
-                                            </structure>
-                                        </list-property>
-                                        <list-property name="boundDataColumns">
-                                            <structure>
-                                                <property name="name">key</property>
-                                                <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">translation</property>
-                                                <text-property name="displayName">translation</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                        </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF  format="dd/MM/yyy HH:mm">row._outer["planned_start_datet"]</VALUE-OF>]]></text-property>
-                                    </text>
+                                    <data id="4586">
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
+                                        </structure>
+                                        <property name="resultSetColumn">planned_start_datet</property>
+                                    </data>
                                 </cell>
                                 <cell id="4398"/>
                                 <cell id="4239">
@@ -1881,36 +1858,13 @@ LEFT JOIN
                                     </text>
                                 </cell>
                                 <cell id="4389">
-                                    <text id="4390">
-                                        <property name="marginTop">1pt</property>
-                                        <property name="marginLeft">2pt</property>
-                                        <property name="textAlign">left</property>
-                                        <property name="dataSet">TranslateDS</property>
-                                        <list-property name="paramBindings">
-                                            <structure>
-                                                <property name="paramName">param_1</property>
-                                                <simple-property-list name="expression">
-                                                    <value type="javascript">'OperationOrder.plannedEndDate'</value>
-                                                </simple-property-list>
-                                            </structure>
-                                        </list-property>
-                                        <list-property name="boundDataColumns">
-                                            <structure>
-                                                <property name="name">key</property>
-                                                <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">translation</property>
-                                                <text-property name="displayName">translation</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                        </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyy HH:mm">row._outer["planned_end_datet"]</VALUE-OF>]]></text-property>
-                                    </text>
+                                    <data id="4588">
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
+                                        </structure>
+                                        <property name="resultSetColumn">planned_end_datet</property>
+                                    </data>
                                 </cell>
                             </row>
                             <row id="4242">
@@ -1952,36 +1906,13 @@ LEFT JOIN
                                 <cell id="4385">
                                     <property name="colSpan">2</property>
                                     <property name="rowSpan">1</property>
-                                    <text id="4388">
-                                        <property name="marginTop">1pt</property>
-                                        <property name="marginLeft">2pt</property>
-                                        <property name="textAlign">left</property>
-                                        <property name="dataSet">TranslateDS</property>
-                                        <list-property name="paramBindings">
-                                            <structure>
-                                                <property name="paramName">param_1</property>
-                                                <simple-property-list name="expression">
-                                                    <value type="javascript">'OperationOrder.realStartDate'</value>
-                                                </simple-property-list>
-                                            </structure>
-                                        </list-property>
-                                        <list-property name="boundDataColumns">
-                                            <structure>
-                                                <property name="name">key</property>
-                                                <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">translation</property>
-                                                <text-property name="displayName">translation</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                        </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyy HH:mm">row._outer["planned_start_datet"]</VALUE-OF>]]></text-property>
-                                    </text>
+                                    <data id="4587">
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
+                                        </structure>
+                                        <property name="resultSetColumn">real_start_datet</property>
+                                    </data>
                                 </cell>
                                 <cell id="4396"/>
                                 <cell id="4247">
@@ -2019,36 +1950,13 @@ LEFT JOIN
                                     </text>
                                 </cell>
                                 <cell id="4391">
-                                    <text id="4392">
-                                        <property name="marginTop">1pt</property>
-                                        <property name="marginLeft">2pt</property>
-                                        <property name="textAlign">left</property>
-                                        <property name="dataSet">TranslateDS</property>
-                                        <list-property name="paramBindings">
-                                            <structure>
-                                                <property name="paramName">param_1</property>
-                                                <simple-property-list name="expression">
-                                                    <value type="javascript">'OperationOrder.realEndDate'</value>
-                                                </simple-property-list>
-                                            </structure>
-                                        </list-property>
-                                        <list-property name="boundDataColumns">
-                                            <structure>
-                                                <property name="name">key</property>
-                                                <text-property name="displayName">key</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">translation</property>
-                                                <text-property name="displayName">translation</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                        </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyy HH:mm">row._outer["planned_end_datet"]</VALUE-OF>]]></text-property>
-                                    </text>
+                                    <data id="4589">
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
+                                        </structure>
+                                        <property name="resultSetColumn">real_end_datet</property>
+                                    </data>
                                 </cell>
                             </row>
                             <row id="4360">

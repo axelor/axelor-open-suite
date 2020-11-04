@@ -49,6 +49,9 @@ public class AssistantReportInvoiceController {
     String fileLink =
         ReportFactory.createReport(IReport.SALE_INVOICES_DETAILS, name + "-${date}")
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
+            .addParam(
+                "Timezone",
+                assistant.getCompany() != null ? assistant.getCompany().getTimezone() : null)
             .addParam("assistantId", assistant.getId())
             .addParam("companyId", assistant.getCompany().getId())
             .addParam("graphType", assistant.getGraphTypeSelect().toString())
@@ -76,6 +79,9 @@ public class AssistantReportInvoiceController {
     String fileLink =
         ReportFactory.createReport(IReport.PURCHASE_INVOICES_DETAILS, name + "-${date}")
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
+            .addParam(
+                "Timezone",
+                assistant.getCompany() != null ? assistant.getCompany().getTimezone() : null)
             .addParam("assistantId", assistant.getId())
             .addParam("companyId", assistant.getCompany().getId())
             .addParam("partnersIds", Joiner.on(",").join(assistant.getPartnerSet()))

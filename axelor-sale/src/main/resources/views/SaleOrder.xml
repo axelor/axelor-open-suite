@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
   <grid name="sale-order-quotation-grid" title="Sale quotations" model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
 		<menubar>
@@ -314,7 +314,8 @@
 	    <panel if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" name="deliveryInformationPanel" title="Delivery" colSpan="12">
 	      <field name="specificPackage" colSpan="12"/>
 	      <field name="stockLocation" canEdit="false" onSelect="action-sale-order-attrs-set-stock-location-domain" form-view="stock-location-form" grid-view="stock-location-grid"/>
-	      <field name="deliveryDate" onChange="action-sale-order-method-fill-sale-order-lines-estimated-date"/>
+				<field name="toStockLocation" canEdit="false" domain="self.company = :company and self.typeSelect != 1 and self.usableOnSaleOrder = true" form-view="stock-location-form" grid-view="stock-location-grid"/>
+				<field name="deliveryDate" onChange="action-sale-order-method-fill-sale-order-lines-estimated-date"/>
 	      <field name="deliveryCondition" colSpan="12"/>
 	      <field name="shipmentMode" canEdit="false" form-view="shipment-mode-grid" grid-view="shipment-mode-grid"/>
 	      <field name="freightCarrierMode" canEdit="false" onChange="action-sale-order-record-freight-carrier" domain="self.shipmentMode = :shipmentMode" form-view="freight-carrier-mode-form" grid-view="freight-carrier-mode-grid"/>
@@ -469,12 +470,12 @@
 	  </panel>
 	  <panel name="datesPanel" title="Dates" hideIf="clientPartner == null" sidebar="true" canCollapse="true" collapseIf="true">
 	    <field name="creationDate" readonlyIf="statusSelect != 1" colSpan="6" onChange="action-sale-order-record-compute-end-of-validity-date"/>
-	    <field name="confirmedByUser" readonly="true" showIf="statusSelect == 3" colSpan="6" canNew="false" canView="false" canEdit="false" form-view="user-form" grid-view="user-grid"/>
-	    <field name="confirmationDateTime" readonly="true" showIf="statusSelect == 3" colSpan="6"/>
-	    <field name="orderDate" showIf="statusSelect == 3" colSpan="6"/>
-	    <field name="orderNumber" showIf="statusSelect == 3" colSpan="6"/>
-	    <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" name="shipmentDate" showIf="statusSelect == 3" colSpan="6"/>
-	    <field name="duration" canEdit="false" readonlyIf="statusSelect >= 2" colSpan="6" widget="SuggestBox" canNew="true" onChange="action-sale-order-record-compute-end-of-validity-date"/>
+	    <field name="confirmedByUser" readonly="true" showIf="statusSelect == 3 || statusSelect == 4" colSpan="6" canNew="false" canView="false" canEdit="false" form-view="user-form" grid-view="user-grid"/>
+	    <field name="confirmationDateTime" readonly="true" showIf="statusSelect == 3 || statusSelect == 4" colSpan="6"/>
+	    <field name="orderDate" showIf="statusSelect == 3 || statusSelect == 4" colSpan="6"/>
+	    <field name="orderNumber" showIf="statusSelect == 3 || statusSelect == 4" colSpan="6"/>
+	    <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain" name="shipmentDate" showIf="statusSelect == 3 || statusSelect == 4" colSpan="6"/>
+	    <field name="duration" domain="self.applicationTypeSelect = 1" canEdit="false" readonlyIf="statusSelect >= 2" colSpan="6" widget="SuggestBox" canNew="true" onChange="action-sale-order-record-compute-end-of-validity-date"/>
 	    <field name="endOfValidityDate" readonly="true" colSpan="6">
 	      <hilite color="danger" if="$moment().diff(endOfValidityDate, 'days') > 0 &amp;&amp; statusSelect != 3"/>
 	    </field>
@@ -933,7 +934,7 @@
         <action name="action-sale-order-method-fill-company-bank-details"/>
         <action name="action-sale-order-attrs-external-reference"/>
         <action name="action-sale-order-attrs-availability"/>
-        <action name="action-sale-order-group-set-defualts-from-opportunity" if="_parent != null &amp;&amp; _parent?._model=='com.axelor.apps.crm.db.Opportunity'"/>
+        <action name="action-sale-order-group-set-defualts-from-opportunity" if="__parent__ != null &amp;&amp; __parent__?._model=='com.axelor.apps.crm.db.Opportunity'"/>
     </action-group>
 
 	<action-group name="action-sale-order-group-set-defualts-from-opportunity">
@@ -943,11 +944,11 @@
 	</action-group>
 
     <action-record name="action-sale-order-record-set-clientPartner-from-opportunity" model="com.axelor.apps.sale.db.SaleOrder">
-    	<field name="clientPartner" expr="eval: _parent?.partner ? __repo__(Partner).find(_parent?.partner?.id) : null"/>
+    	<field name="clientPartner" expr="eval: __parent__?.partner ? __repo__(Partner).find(__parent__?.partner?.id) : null"/>
     </action-record>
 
    <action-record name="action-sale-order-record-set-salemanuser-from-opportunity" model="com.axelor.apps.sale.db.SaleOrder">
-      <field name="salespersonUser" expr="eval: _parent?.user"/>
+      <field name="salespersonUser" expr="eval: __parent__?.user"/>
    </action-record>
 
     <action-group name="action-group-sale-saleorder-onload">
@@ -1179,6 +1180,7 @@
 		<field name="pickingOrderComments" expr="eval: clientPartner?.pickingOrderComments"/>
 		<field name="proformaComments" expr="eval: clientPartner?.proformaComments"/>
 		<field name="team" expr="eval: clientPartner?.team" if="__config__.app.getApp('sale').getSalemanSelect() == 2"/>
+		<field name="team" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()" if="__config__.app.getApp('sale').getSalemanSelect() == 1"/>
     </action-record>
 
     <action-record name="action-sale-order-record-hide-discount" model="com.axelor.apps.sale.db.SaleOrder">
@@ -1247,6 +1249,7 @@
 	    <field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
 	    <field name="expectedRealisationDate" hidden="true" if="!__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getAllowTimetableInvoicing()"/>
 	    <field name="stockLocation" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+		<field name="toStockLocation" hidden="true" if="!__config__.app.isApp('supplychain')"/>
 		<field name="amountInvoiced" hidden="true" if="!__config__.app.isApp('supplychain')"/>
 		<field name="deliveryState" hidden="true" if="!__config__.app.isApp('supplychain')" />
 		<field name="directOrderLocation" hidden="true" if="!__config__.app.isApp('supplychain')" />

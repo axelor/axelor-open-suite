@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+  
+	<module name="account" package="com.axelor.apps.account.db"/>
+  
+  <entity name="FECImport" lang="java">
+  
+  	<string name="name" namecolumn="true"/>
+    <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" required="true" column="user_id"/>
+    <many-to-one name="bindMetaFile" ref="com.axelor.meta.db.MetaFile" title="Binding file" required="true" />
+    <many-to-one name="dataMetaFile" ref="com.axelor.meta.db.MetaFile" title="Data file" required="true" />
+    <string name="description" large="true" title="Description" />
+    
+  </entity>
+
+</domain-models>

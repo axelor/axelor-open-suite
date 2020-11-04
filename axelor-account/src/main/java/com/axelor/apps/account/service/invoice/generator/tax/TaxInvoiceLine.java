@@ -69,8 +69,7 @@ public class TaxInvoiceLine extends TaxGenerator {
         || !invoice.getPartner().getFiscalPosition().getCustomerSpecificNote()) {
       if (invoiceLines != null) {
         invoice.setSpecificNotes(
-            invoiceLines
-                .stream()
+            invoiceLines.stream()
                 .map(InvoiceLine::getTaxEquiv)
                 .filter(Objects::nonNull)
                 .map(TaxEquiv::getSpecificNote)

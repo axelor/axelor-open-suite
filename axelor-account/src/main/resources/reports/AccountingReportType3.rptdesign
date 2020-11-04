@@ -862,6 +862,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </column>
                     <row id="3120">
                         <cell id="3121">
+                            <property name="fontSize">9pt</property>
                             <text id="6253">
                                 <property name="fontSize">9pt</property>
                                 <property name="fontWeight">normal</property>
@@ -895,11 +896,14 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             </text>
                         </cell>
                         <cell id="3122">
-                            <text id="3128">
+                            <data id="4224">
                                 <property name="fontSize">9pt</property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF>row["ReportDateEdition"]</VALUE-OF>]]></text-property>
-                            </text>
+                                <structure name="dateTimeFormat">
+                                    <property name="category">Short Date</property>
+                                    <property name="pattern">Short Date</property>
+                                </structure>
+                                <property name="resultSetColumn">ReportDateEdition</property>
+                            </data>
                         </cell>
                     </row>
                 </grid>
@@ -1006,15 +1010,17 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="name">date_to</property>
-                    <text-property name="displayName">date_to</text-property>
+                    <text-property name="displayName">DateTo</text-property>
                     <expression name="expression" type="javascript">dataSetRow["date_to"]</expression>
                     <property name="dataType">date</property>
+                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">date_from</property>
-                    <text-property name="displayName">date_from</text-property>
+                    <text-property name="displayName">FromDate</text-property>
                     <expression name="expression" type="javascript">dataSetRow["date_from"]</expression>
                     <property name="dataType">date</property>
+                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">ReportDate</property>
@@ -1111,10 +1117,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </label>
                 </cell>
                 <cell id="514">
-                    <text id="3078">
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["ReportDate"]</VALUE-OF>]]></text-property>
-                    </text>
+                    <data id="4220">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
+                        <property name="resultSetColumn">ReportDate</property>
+                    </data>
                 </cell>
             </row>
             <row id="502">
@@ -1235,10 +1244,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </text>
                 </cell>
                 <cell id="516">
-                    <text id="1048">
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["date_from"]</VALUE-OF>]]></text-property>
-                    </text>
+                    <data id="4221">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
+                        <property name="resultSetColumn">date_from</property>
+                    </data>
                 </cell>
             </row>
             <row id="2699">
@@ -1279,10 +1291,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </text>
                 </cell>
                 <cell id="2705">
-                    <text id="1050">
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["date_to"]</VALUE-OF>]]></text-property>
-                    </text>
+                    <data id="4222">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
+                        <property name="resultSetColumn">date_to</property>
+                    </data>
                 </cell>
             </row>
             <row id="542">
@@ -1797,6 +1812,13 @@ row["ReportedBalanceAmount"]
                                 <expression name="expression" type="javascript">dataSetRow["partner_seq"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
+                            <structure>
+                                <property name="name">date_to</property>
+                                <text-property name="displayName">date_to</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["date_to"]</expression>
+                                <property name="dataType">string</property>
+                                <property name="allowExport">true</property>
+                            </structure>
                         </list-property>
                         <property name="pageBreakInterval">0</property>
                         <column id="1168">
@@ -1823,7 +1845,6 @@ row["ReportedBalanceAmount"]
                                     <property name="colSpan">1</property>
                                     <property name="rowSpan">1</property>
                                     <property name="backgroundColor">#E6E6FA</property>
-                                    <property name="fontWeight">bold</property>
                                     <property name="borderBottomColor">#000000</property>
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
@@ -1912,45 +1933,26 @@ row["ReportedBalanceAmount"]
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> ]]></text-property>
                                     </text>
-                                    <text id="2687">
+                                    <data id="4229">
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
+                                        </structure>
+                                        <property name="display">inline</property>
                                         <property name="dataSet">AccountingReportDS</property>
                                         <list-property name="boundDataColumns">
                                             <structure>
-                                                <property name="name">company_name</property>
-                                                <text-property name="displayName">company_name</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["company_name"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">period_name</property>
-                                                <text-property name="displayName">period_name</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["period_name"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">global_by_partner</property>
-                                                <text-property name="displayName">global_by_partner</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["global_by_partner"]</expression>
-                                                <property name="dataType">integer</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">date_to</property>
-                                                <text-property name="displayName">date_to</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["date_to"]</expression>
-                                                <property name="dataType">date</property>
-                                            </structure>
-                                            <structure>
                                                 <property name="name">date_from</property>
-                                                <text-property name="displayName">date_from</text-property>
+                                                <text-property name="displayName">dateFrom</text-property>
                                                 <expression name="expression" type="javascript">dataSetRow["date_from"]</expression>
-                                                <property name="dataType">date</property>
+                                                <property name="dataType">string</property>
+                                                <property name="allowExport">true</property>
                                             </structure>
                                         </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[ <VALUE-OF format="dd/MM/yyyy">row["date_from"]</VALUE-OF>]]></text-property>
-                                    </text>
+                                        <property name="resultSetColumn">date_from</property>
+                                    </data>
                                 </cell>
                                 <cell id="1148">
                                     <property name="colSpan">2</property>
@@ -2043,45 +2045,16 @@ row["ReportedBalanceAmount"]
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> ]]></text-property>
                                     </text>
-                                    <text id="1544">
-                                        <property name="dataSet">AccountingReportDS</property>
-                                        <list-property name="boundDataColumns">
-                                            <structure>
-                                                <property name="name">company_name</property>
-                                                <text-property name="displayName">company_name</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["company_name"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">period_name</property>
-                                                <text-property name="displayName">period_name</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["period_name"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">global_by_partner</property>
-                                                <text-property name="displayName">global_by_partner</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["global_by_partner"]</expression>
-                                                <property name="dataType">integer</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">date_to</property>
-                                                <text-property name="displayName">date_to</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["date_to"]</expression>
-                                                <property name="dataType">date</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">date_from</property>
-                                                <text-property name="displayName">date_from</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["date_from"]</expression>
-                                                <property name="dataType">date</property>
-                                            </structure>
-                                        </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[ <VALUE-OF format="dd/MM/yyyy">row["date_to"]</VALUE-OF>]]></text-property>
-                                    </text>
+                                    <data id="4226">
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
+                                        </structure>
+                                        <property name="display">inline</property>
+                                        <property name="resultSetColumn">date_to</property>
+                                    </data>
                                 </cell>
                             </row>
                             <row id="1210">
@@ -2233,7 +2206,7 @@ row["ReportedBalanceAmount"]
                                     <property name="borderTopColor">#000000</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <text id="6235">
+                                    <text id="6258">
                                         <property name="fontWeight">normal</property>
                                         <property name="marginLeft">2pt</property>
                                         <property name="textAlign">center</property>
@@ -2278,7 +2251,7 @@ row["ReportedBalanceAmount"]
                                     <property name="borderTopColor">#000000</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <text id="6236">
+                                    <text id="6259">
                                         <property name="fontWeight">normal</property>
                                         <property name="marginLeft">2pt</property>
                                         <property name="textAlign">center</property>
@@ -3271,6 +3244,13 @@ dataSetRow["invoice_reconciled_name"]
                                 <expression name="expression" type="javascript">dataSetRow["partner_seq"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
+                            <structure>
+                                <property name="name">date_to</property>
+                                <text-property name="displayName">date_to</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["date_to"]</expression>
+                                <property name="dataType">date</property>
+                                <property name="allowExport">true</property>
+                            </structure>
                         </list-property>
                         <property name="pageBreakInterval">0</property>
                         <column id="1446">
@@ -3316,7 +3296,7 @@ dataSetRow["invoice_reconciled_name"]
                                     <property name="borderTopColor">#000000</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <text id="6243">
+                                    <text id="6260">
                                         <property name="fontWeight">normal</property>
                                         <property name="marginLeft">2pt</property>
                                         <property name="textAlign">center</property>
@@ -3364,7 +3344,7 @@ dataSetRow["invoice_reconciled_name"]
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                     <property name="verticalAlign">bottom</property>
-                                    <text id="6257">
+                                    <text id="6262">
                                         <property name="fontWeight">normal</property>
                                         <property name="marginLeft">2pt</property>
                                         <property name="textAlign">center</property>
@@ -3392,45 +3372,26 @@ dataSetRow["invoice_reconciled_name"]
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> ]]></text-property>
                                     </text>
-                                    <text id="2690">
+                                    <data id="4230">
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
+                                        </structure>
+                                        <property name="display">inline</property>
                                         <property name="dataSet">AccountingReportDS</property>
                                         <list-property name="boundDataColumns">
                                             <structure>
-                                                <property name="name">company_name</property>
-                                                <text-property name="displayName">company_name</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["company_name"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">period_name</property>
-                                                <text-property name="displayName">period_name</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["period_name"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">global_by_partner</property>
-                                                <text-property name="displayName">global_by_partner</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["global_by_partner"]</expression>
-                                                <property name="dataType">integer</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">date_to</property>
-                                                <text-property name="displayName">date_to</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["date_to"]</expression>
-                                                <property name="dataType">date</property>
-                                            </structure>
-                                            <structure>
                                                 <property name="name">date_from</property>
-                                                <text-property name="displayName">date_from</text-property>
+                                                <text-property name="displayName">dateFrom</text-property>
                                                 <expression name="expression" type="javascript">dataSetRow["date_from"]</expression>
                                                 <property name="dataType">date</property>
+                                                <property name="allowExport">true</property>
                                             </structure>
                                         </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[ <VALUE-OF format="dd/MM/yyyy">row["date_from"]</VALUE-OF>]]></text-property>
-                                    </text>
+                                        <property name="resultSetColumn">date_from</property>
+                                    </data>
                                 </cell>
                                 <cell id="1453">
                                     <property name="colSpan">1</property>
@@ -3496,7 +3457,7 @@ dataSetRow["invoice_reconciled_name"]
                                     <property name="borderTopColor">#000000</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <text id="6255">
+                                    <text id="6263">
                                         <property name="fontWeight">normal</property>
                                         <property name="marginLeft">2pt</property>
                                         <property name="textAlign">center</property>
@@ -3543,7 +3504,7 @@ dataSetRow["invoice_reconciled_name"]
                                     <property name="borderTopColor">#000000</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <text id="6252">
+                                    <text id="6264">
                                         <property name="fontWeight">normal</property>
                                         <property name="marginLeft">2pt</property>
                                         <property name="textAlign">center</property>
@@ -3571,45 +3532,16 @@ dataSetRow["invoice_reconciled_name"]
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> ]]></text-property>
                                     </text>
-                                    <text id="1545">
-                                        <property name="dataSet">AccountingReportDS</property>
-                                        <list-property name="boundDataColumns">
-                                            <structure>
-                                                <property name="name">company_name</property>
-                                                <text-property name="displayName">company_name</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["company_name"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">period_name</property>
-                                                <text-property name="displayName">period_name</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["period_name"]</expression>
-                                                <property name="dataType">string</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">global_by_partner</property>
-                                                <text-property name="displayName">global_by_partner</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["global_by_partner"]</expression>
-                                                <property name="dataType">integer</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">date_to</property>
-                                                <text-property name="displayName">date_to</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["date_to"]</expression>
-                                                <property name="dataType">date</property>
-                                            </structure>
-                                            <structure>
-                                                <property name="name">date_from</property>
-                                                <text-property name="displayName">date_from</text-property>
-                                                <expression name="expression" type="javascript">dataSetRow["date_from"]</expression>
-                                                <property name="dataType">date</property>
-                                            </structure>
-                                        </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[ <VALUE-OF format="dd/MM/yyyy">row["date_to"]</VALUE-OF>]]></text-property>
-                                    </text>
+                                    <data id="4225">
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
+                                        </structure>
+                                        <property name="display">inline</property>
+                                        <property name="resultSetColumn">date_to</property>
+                                    </data>
                                 </cell>
                             </row>
                             <row id="1384">
@@ -3627,7 +3559,7 @@ dataSetRow["invoice_reconciled_name"]
                                     <property name="borderTopColor">#000000</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <text id="6244">
+                                    <text id="6261">
                                         <property name="fontWeight">normal</property>
                                         <property name="marginLeft">2pt</property>
                                         <property name="textAlign">left</property>
@@ -3717,7 +3649,7 @@ dataSetRow["invoice_reconciled_name"]
                                     <property name="borderTopColor">#000000</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <text id="6239">
+                                    <text id="6265">
                                         <property name="fontWeight">normal</property>
                                         <property name="marginLeft">2pt</property>
                                         <property name="textAlign">center</property>
@@ -3762,7 +3694,7 @@ dataSetRow["invoice_reconciled_name"]
                                     <property name="borderTopColor">#000000</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <text id="6237">
+                                    <text id="6267">
                                         <property name="fontWeight">normal</property>
                                         <property name="marginLeft">2pt</property>
                                         <property name="textAlign">center</property>
@@ -3807,7 +3739,7 @@ dataSetRow["invoice_reconciled_name"]
                                     <property name="borderTopColor">#000000</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <text id="6240">
+                                    <text id="6266">
                                         <property name="fontWeight">normal</property>
                                         <property name="marginLeft">2pt</property>
                                         <property name="textAlign">center</property>
@@ -3852,7 +3784,7 @@ dataSetRow["invoice_reconciled_name"]
                                     <property name="borderTopColor">#000000</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <text id="6238">
+                                    <text id="6268">
                                         <property name="fontWeight">normal</property>
                                         <property name="marginLeft">2pt</property>
                                         <property name="textAlign">center</property>
@@ -4488,7 +4420,7 @@ true
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                     <property name="textAlign">center</property>
-                                    <text id="6247">
+                                    <text id="6269">
                                         <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="marginLeft">2pt</property>
@@ -4677,7 +4609,7 @@ true
                                     <property name="borderTopColor">#000000</property>
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
-                                    <text id="6249">
+                                    <text id="6270">
                                         <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="marginLeft">2pt</property>

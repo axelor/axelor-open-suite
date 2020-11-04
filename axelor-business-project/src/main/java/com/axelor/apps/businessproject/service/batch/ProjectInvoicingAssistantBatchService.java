@@ -106,16 +106,16 @@ public class ProjectInvoicingAssistantBatchService extends AbstractBatchService 
       dataList =
           ((List<Object>) jsonContext.get(field))
               .stream()
-              .map(
-                  obj -> {
-                    if (Mapper.toMap(EntityHelper.getEntity(obj)).get("id") != null) {
-                      Map<String, Object> idMap = new HashMap<String, Object>();
-                      idMap.put("id", Mapper.toMap(EntityHelper.getEntity(obj)).get("id"));
-                      return idMap;
-                    }
-                    return obj;
-                  })
-              .collect(Collectors.toList());
+                  .map(
+                      obj -> {
+                        if (Mapper.toMap(EntityHelper.getEntity(obj)).get("id") != null) {
+                          Map<String, Object> idMap = new HashMap<String, Object>();
+                          idMap.put("id", Mapper.toMap(EntityHelper.getEntity(obj)).get("id"));
+                          return idMap;
+                        }
+                        return obj;
+                      })
+                  .collect(Collectors.toList());
 
       dataList.addAll(recordList);
     }
@@ -139,8 +139,7 @@ public class ProjectInvoicingAssistantBatchService extends AbstractBatchService 
 
     String ids =
         !CollectionUtils.isEmpty(recordList)
-            ? recordList
-                .stream()
+            ? recordList.stream()
                 .map(_map -> _map.get("id").toString())
                 .collect(Collectors.joining(","))
             : null;

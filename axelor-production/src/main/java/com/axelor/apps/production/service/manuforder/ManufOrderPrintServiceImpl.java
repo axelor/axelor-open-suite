@@ -25,6 +25,8 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.ThrowConsumer;
 import com.axelor.apps.tool.file.PdfTool;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -33,6 +35,7 @@ import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ManufOrderPrintServiceImpl implements ManufOrderPrintService {
 
@@ -69,6 +72,9 @@ public class ManufOrderPrintServiceImpl implements ManufOrderPrintService {
     ReportSettings reportSetting = ReportFactory.createReport(IReport.MANUF_ORDER, title);
     return reportSetting
         .addParam("Locale", ReportSettings.getPrintingLocale(null))
+        .addParam(
+            "Timezone",
+            manufOrder.getCompany() != null ? manufOrder.getCompany().getTimezone() : null)
         .addParam("ManufOrderId", manufOrder.getId().toString())
         .addParam(
             "activateBarCodeGeneration",
@@ -80,7 +86,10 @@ public class ManufOrderPrintServiceImpl implements ManufOrderPrintService {
   public String getManufOrdersFilename() {
     return I18n.get("Manufacturing orders")
         + " - "
-        + Beans.get(AppBaseService.class).getTodayDate().format(DateTimeFormatter.BASIC_ISO_DATE)
+        + Beans.get(AppBaseService.class)
+            .getTodayDate(
+                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
+            .format(DateTimeFormatter.BASIC_ISO_DATE)
         + "."
         + ReportSettings.FORMAT_PDF;
   }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -17,6 +17,9 @@
     <many-to-one name="supplierVirtualStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Supplier virtual stock location"/>
     <many-to-one name="inventoryVirtualStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Inventory virtual stock location"/>
 
+    <many-to-one name="virtualOutsourcingStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Virtual outsourcing stock location"/>
+    <many-to-one name="outsourcingReceiptStockLocation" ref="com.axelor.apps.stock.db.StockLocation" title="Outsourcing receipt stock location"/>
+    
 	<many-to-one name="customsMassUnit" ref="com.axelor.apps.base.db.Unit" title="Unit of mass"/>
 
     <boolean name="realizeStockMovesUponParcelPalletCollection" title="Realize stock moves upon parcel/pallet collection" />
@@ -35,29 +38,29 @@
     <string name="conformityCertificateDescription" title="Text in certificate of conformity" large="true" translatable="true"/>
     <many-to-one name="signatoryUser" ref="com.axelor.auth.db.User" title="Default signatory user"/>
     
-    <boolean name="displayTrackNbrOnPickingPrinting" title="Display tracking number details on Picking printing"/>
-	<boolean name="displayBarcodeOnPickingPrinting" title="Display barcode on Picking printing"/>
-    <boolean name="displayCustomerCodeOnPickingPrinting" title="Display customer code on picking printing"/>
+    <boolean name="displayTrackNbrOnPickingPrinting" title="Display tracking number details on Picking printing" default="true"/>
+	<boolean name="displayBarcodeOnPickingPrinting" title="Display barcode on Picking printing" default="true"/>
+    <boolean name="displayCustomerCodeOnPickingPrinting" title="Display customer code on picking printing" default="true"/>
 
-	<boolean name="displayPartnerSeqOnPrinting" title="Display partner sequence on printing"/>
+	<boolean name="displayPartnerSeqOnPrinting" title="Display partner sequence on printing" default="true"/>
 	
-	<boolean name="displayLineDetailsOnPrinting" title="Display line details on printing"/>
+	<boolean name="displayLineDetailsOnPrinting" title="Display line details on printing" default="true"/>
 	<boolean name="isWithReturnSurplus" title="Return Surplus"/>
 	<boolean name="isWithBackorder" title="Manage backorder"/>
 	
-	<boolean name="pickingOrderPrintingDetailed" title="Picking order printing detailed"/>
-	<boolean name="isDisplaySaleValueInPrinting" title="Display sale value in location financial data printing"/>
-	<boolean name="isDisplayAccountingValueInPrinting" title="Display accounting value in location financial data printing"/>
-	<boolean name="isDisplayAgPriceInPrinting" title="Display average price in printing"/>
+	<boolean name="pickingOrderPrintingDetailed" title="Picking order printing detailed" default="true"/>
+	<boolean name="isDisplaySaleValueInPrinting" title="Display sale value in location financial data printing" default="true"/>
+	<boolean name="isDisplayAccountingValueInPrinting" title="Display accounting value in location financial data printing" default="true"/>
+	<boolean name="isDisplayAgPriceInPrinting" title="Display average price in printing" default="true"/>
 	<integer name="stockValuationTypeSelect" title="Stock location value on form view" selection="stock.stock.location.value.type"/>
 	<integer name="inventoryValuationTypeSelect" title="Inventory valuation type" selection="stock.stock.location.value.type"/>
 
-	<boolean name="displayTrackNbrOnCertificateOfConformityPrinting" title="Display tracking number details on certificate of conformity printing"/>
-	<boolean name="displayExtRefOnCertificateOfConformityPrinting" title="Display external ref. on certificate of conformity printing"/>
+	<boolean name="displayTrackNbrOnCertificateOfConformityPrinting" title="Display tracking number details on certificate of conformity printing" default="true"/>
+	<boolean name="displayExtRefOnCertificateOfConformityPrinting" title="Display external ref. on certificate of conformity printing" default="true"/>
 	<many-to-one name="stockRuleMessageTemplate" ref="com.axelor.apps.message.db.Template" title="Message template for stock rules"/>
-	<boolean name="displayProductCodeOnPrinting" title="Display product code on printing" default="false"/>
-	<boolean name="displayPriceOnPrinting" title="Display price on printing" default="false"/>
-	<boolean name="displayOrderReferenceAndOrderDate" title="Display order reference and order date" default="false"/>
+	<boolean name="displayProductCodeOnPrinting" title="Display product code on printing" default="true"/>
+	<boolean name="displayPriceOnPrinting" title="Display price on printing" default="true"/>
+	<boolean name="displayOrderReferenceAndOrderDate" title="Display order reference and order date" default="true"/>
 
 	<extra-code><![CDATA[
 		public static final int VALUATION_TYPE_WAP_VALUE = 1;

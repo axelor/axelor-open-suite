@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.base.service.message;
 
-import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.PrintingSettings;
@@ -30,21 +29,26 @@ import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageServiceImpl;
 import com.axelor.apps.message.service.SendMailQueueService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.db.JPA;
+import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaAttachmentRepository;
-import com.axelor.tool.template.TemplateMaker;
+import com.axelor.text.StringTemplates;
+import com.axelor.text.Templates;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.mail.MessagingException;
 import org.slf4j.Logger;
@@ -55,15 +59,18 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected UserService userService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public MessageServiceBaseImpl(
       MetaAttachmentRepository metaAttachmentRepository,
       MessageRepository messageRepository,
       SendMailQueueService sendMailQueueService,
-      UserService userService) {
+      UserService userService,
+      AppBaseService appBaseService) {
     super(metaAttachmentRepository, messageRepository, sendMailQueueService);
     this.userService = userService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -107,6 +114,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
     return messageRepository.save(message);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public String printMessage(Message message) throws AxelorException {
 
@@ -124,18 +132,26 @@ public class MessageServiceBaseImpl extends MessageServiceImpl {
 
     logger.debug("Default BirtTemplate : {}", birtTemplate);
 
-    TemplateMaker maker = new TemplateMaker(AppFilter.getLocale(), '$', '$');
-    maker.setContext(messageRepository.find(message.getId()), Message.class.getSimpleName());
+    Templates templates = new StringTemplates('$', '$');
+    Map<String, Object> templatesContext = Maps.newHashMap();
+    try {
+      Class<? extends Model> className =
+          (Class<? extends Model>) Class.forName(message.getClass().getName());
+      templatesContext.put("Message", JPA.find(className, message.getId()));
+    } catch (ClassNotFoundException e) {
+      TraceBackService.trace(e);
+    }
 
     String fileName =
         "Message "
             + message.getSubject()
             + "-"
-            + LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE);
+            + appBaseService.getTodayDate(company).format(DateTimeFormatter.BASIC_ISO_DATE);
 
     return Beans.get(TemplateMessageServiceBaseImpl.class)
         .generateBirtTemplateLink(
-            maker,
+            templates,
+            templatesContext,
             fileName,
             birtTemplate.getTemplateLink(),
             birtTemplate.getFormat(),

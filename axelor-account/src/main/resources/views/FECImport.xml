@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	
+	<grid name="fec-import-grid" title="FEC import" model="com.axelor.apps.account.db.FECImport">
+		<field name="name"/>
+        <field name="dataMetaFile" form-view="meta-files-form" grid-view="meta-files-grid"/>
+        <field name="user" form-view="user-form" grid-view="user-grid"/>
+        <field name="createdOn" />
+	</grid>
+	
+	<form name="fec-import-form" title="FEC import" model="com.axelor.apps.account.db.FECImport" onNew="action-fec-import-method-onnew" width="large">
+        <panel name="mainPanel" >
+        	<field name="name"/>
+			<field name="dataMetaFile" widget="binary-link" onSelect="action-fec-import-attr-set-data-meta-file-domain" canNew="true" form-view="meta-files-form" grid-view="meta-files-grid"/>
+			<field name="bindMetaFile" widget="binary-link" hidden="true"/>
+        </panel>
+        <panel name="actionPanel" sidebar="true">
+			<button name="importBtn" title="Import" onClick="save,action-fec-import-validate-import,action-fec-import-method-run" />
+        </panel>
+        <panel-tabs name="mainPanelTab">
+        	<panel name="descriptionPanel" title="Description"> 
+        		<field name="description" colSpan="12" showTitle="false" widget="html" />
+        	</panel>
+        </panel-tabs>
+	</form>
+	
+    <action-method name="action-fec-import-method-run">
+      <call class="com.axelor.apps.account.web.FECImportController" method="runImport"/>
+    </action-method>
+    
+    <action-method name="action-fec-import-method-onnew">
+    	<call class="com.axelor.apps.account.web.FECImportController" method="setDefault"/>
+    </action-method>
+	
+   <action-attrs model="com.axelor.apps.account.db.FECImport" name="action-fec-import-attr-set-data-meta-file-domain">
+     <attribute name="domain" for="dataMetaFile" expr="eval: &quot;self.fileType='text/csv'&quot;"/>
+   </action-attrs>
+   
+   <action-validate name="action-fec-import-validate-import">
+	 <alert message="Warning : This will import move lines even if they have already been imported through this feature. Be careful not to import the same elements several times."/>
+   </action-validate>
+   
+</object-views>

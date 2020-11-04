@@ -181,11 +181,11 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
   }
 
   protected String getProductCategoryQuery() {
-    return "self.productCategory in (?1) AND self.productTypeSelect = ?2";
+    return "self.productCategory in (?1) AND self.productTypeSelect = ?2 AND dtype = 'Product'";
   }
 
   protected String getProductFamilyQuery() {
-    return "self.productFamily in (?1) AND self.productTypeSelect = ?2";
+    return "self.productFamily in (?1) AND self.productTypeSelect = ?2 AND dtype = 'Product'";
   }
 
   protected void createAllABCAnalysisLine(ABCAnalysis abcAnalysis) throws AxelorException {
@@ -373,6 +373,9 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     return ReportFactory.createReport(IReport.ABC_ANALYSIS, name)
         .addParam("abcAnalysisId", abcAnalysis.getId())
         .addParam("Locale", ReportSettings.getPrintingLocale(null))
+        .addParam(
+            "Timezone",
+            abcAnalysis.getCompany() != null ? abcAnalysis.getCompany().getTimezone() : null)
         .addFormat(reportType)
         .toAttach(abcAnalysis)
         .generate()

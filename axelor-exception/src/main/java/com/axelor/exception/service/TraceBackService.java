@@ -19,6 +19,8 @@ package com.axelor.exception.service;
 
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
+import com.axelor.db.Model;
+import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.db.TraceBack;
@@ -29,6 +31,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.invoke.MethodHandles;
 import java.time.ZonedDateTime;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -237,5 +240,35 @@ public class TraceBackService {
   /** @return "Axelor Exception" */
   public String toString() {
     return "Axelor Exception";
+  }
+
+  /**
+   * Count the number of tracebacks of AxelorMessageException caused by the linked model.
+   *
+   * @param model any model with a id
+   * @return the tracebacks count
+   */
+  public long countMessageTraceBack(Model model) {
+    return createTraceBackQuery(model).count();
+  }
+
+  /**
+   * Find the traceback of the AxelorMessageException caused by the linked model.
+   *
+   * @param model any model with an id
+   * @return empty if no tracebacks were found, else the found traceback
+   */
+  public Optional<TraceBack> findLastMessageTraceBack(Model model) {
+    return Optional.ofNullable(createTraceBackQuery(model).order("-date").fetchOne());
+  }
+
+  protected Query<TraceBack> createTraceBackQuery(Model model) {
+    return Beans.get(TraceBackRepository.class)
+        .all()
+        .filter(
+            "self.ref = :modelClass AND self.refId = :modelId "
+                + "AND self.exception LIKE 'com.axelor.apps.message.exception.AxelorMessageException%'")
+        .bind("modelClass", model.getClass().getCanonicalName())
+        .bind("modelId", model.getId());
   }
 }

@@ -122,9 +122,8 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 
   @Override
   @Transactional(
-    rollbackOn = {Exception.class},
-    ignore = {BlockedSaleOrderException.class}
-  )
+      rollbackOn = {Exception.class},
+      ignore = {BlockedSaleOrderException.class})
   public void finalizeQuotation(SaleOrder saleOrder) throws AxelorException {
     Partner partner = saleOrder.getClientPartner();
 
@@ -201,6 +200,9 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 
     ReportFactory.createReport(IReport.SALES_ORDER, this.getFileName(saleOrder) + "-${date}")
         .addParam("Locale", ReportSettings.getPrintingLocale(saleOrder.getClientPartner()))
+        .addParam(
+            "Timezone",
+            saleOrder.getCompany() != null ? saleOrder.getCompany().getTimezone() : null)
         .addParam("SaleOrderId", saleOrder.getId())
         .addParam("HeaderHeight", saleOrder.getPrintingSettings().getPdfHeaderHeight())
         .addParam("FooterHeight", saleOrder.getPrintingSettings().getPdfFooterHeight())

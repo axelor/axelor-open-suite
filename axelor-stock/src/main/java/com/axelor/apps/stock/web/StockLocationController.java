@@ -116,6 +116,7 @@ public class StockLocationController {
       String fileLink =
           ReportFactory.createReport(IReport.STOCK_LOCATION, title + "-${date}")
               .addParam("StockLocationId", locationIds)
+              .addParam("Timezone", null)
               .addParam("Locale", language)
               .addFormat(exportType)
               .addParam("PrintType", printType)
@@ -135,10 +136,11 @@ public class StockLocationController {
   public void setStocklocationValue(ActionRequest request, ActionResponse response) {
 
     StockLocation stockLocation = request.getContext().asType(StockLocation.class);
-
-    response.setValue(
-        "stockLocationValue",
-        Beans.get(StockLocationService.class).getStockLocationValue(stockLocation));
+    if (stockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
+      response.setValue(
+          "stockLocationValue",
+          Beans.get(StockLocationService.class).getStockLocationValue(stockLocation));
+    }
   }
 
   public void openPrintWizard(ActionRequest request, ActionResponse response) {

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+
+  <grid name="meta-model-grid" title="Models" model="com.axelor.meta.db.MetaModel" id="meta-model-extended-grid" extension="true"
+        canNew="false" canEdit="false" canDelete="false" edit-icon="false">
+    <extend target="//field[@name='packageName']">
+      <insert position="before">
+        <toolbar>
+          <button name="detailsBtn" title="METAMODEL.DETAILS" onClick="action-meta-model-view-details"/>
+        </toolbar>
+      </insert>
+    </extend>
+  </grid>
+
+  <action-view name="action-meta-model-view-details" title="METAMODEL.DETAILS" model="com.axelor.meta.db.MetaField">
+    <view type="grid" name="meta-field-details-grid"/>
+    <view type="form" name="meta-field-form"/>
+  </action-view>
+
+</object-views>

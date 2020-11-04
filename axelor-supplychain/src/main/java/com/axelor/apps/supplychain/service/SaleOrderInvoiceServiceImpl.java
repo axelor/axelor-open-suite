@@ -536,7 +536,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   @Override
   public SaleOrder fillSaleOrder(SaleOrder saleOrder, Invoice invoice) {
 
-    saleOrder.setOrderDate(appSupplychainService.getTodayDate());
+    saleOrder.setOrderDate(appSupplychainService.getTodayDate(invoice.getCompany()));
 
     return saleOrder;
   }
@@ -612,8 +612,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
       if (qtyToInvoiceMap.containsKey(saleOrderLine.getId())) {
         List<InvoiceLine> invoiceLines =
-            this.createInvoiceLine(
-                invoice, saleOrderLine, qtyToInvoiceMap.get(saleOrderLine.getId()));
+            createInvoiceLine(invoice, saleOrderLine, qtyToInvoiceMap.get(saleOrderLine.getId()));
         invoiceLineList.addAll(invoiceLines);
         saleOrderLine.setInvoiced(true);
       }
@@ -701,7 +700,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
    *     isn't modify in database but it will be integrated in calculation For ventilation, the
    *     invoice should be integrated in calculation For cancellation, the invoice shouldn't be
    *     integrated in calculation
-   * @param includeInvoice To know if the invoice should be or not integrated in calculation
+   * @param excludeCurrentInvoice To know if the invoice should be or not integrated in calculation
    */
   @Override
   public BigDecimal getInvoicedAmount(
@@ -751,9 +750,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
         .filter(
             "self.saleOrder.id = ? OR (self.saleOrder.id IS NULL AND EXISTS(SELECT 1 FROM self.invoiceLineList inli WHERE inli.saleOrderLine.id IN (?)))",
             saleOrder.getId(),
-            saleOrder
-                .getSaleOrderLineList()
-                .stream()
+            saleOrder.getSaleOrderLineList().stream()
                 .map(SaleOrderLine::getId)
                 .collect(Collectors.toList()))
         .fetch();

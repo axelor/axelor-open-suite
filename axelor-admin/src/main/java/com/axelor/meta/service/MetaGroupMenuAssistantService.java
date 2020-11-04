@@ -17,6 +17,7 @@
  */
 package com.axelor.meta.service;
 
+import com.axelor.app.internal.AppFilter;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.IMessage;
 import com.axelor.auth.db.Role;
@@ -100,7 +101,7 @@ public class MetaGroupMenuAssistantService {
 
   private ResourceBundle getBundle() {
     if (bundle == null) {
-      bundle = I18n.getBundle(new Locale("en"));
+      bundle = I18n.getBundle(AppFilter.getLocale());
     }
     return bundle;
   }

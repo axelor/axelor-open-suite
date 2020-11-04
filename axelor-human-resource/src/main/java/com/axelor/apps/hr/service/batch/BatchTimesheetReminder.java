@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.hr.service.batch;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
@@ -27,6 +28,8 @@ import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.apps.message.service.TemplateMessageService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -36,6 +39,7 @@ import com.google.inject.Inject;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import javax.mail.MessagingException;
 
 public class BatchTimesheetReminder extends BatchStrategy {
@@ -90,8 +94,8 @@ public class BatchTimesheetReminder extends BatchStrategy {
     super.stop();
   }
 
-  private List<Employee> getEmployeesWithoutRecentTimesheet() {
-    LocalDate now = LocalDate.now();
+  private List<Employee> getEmployeesWithoutRecentTimesheet(Company company) {
+    LocalDate now = appBaseService.getTodayDate(company);
     long daysBeforeReminder = batch.getHrBatch().getDaysBeforeReminder().longValue();
 
     List<Employee> employees =
@@ -129,7 +133,9 @@ public class BatchTimesheetReminder extends BatchStrategy {
   protected void sendReminderUsingEmployees(Template template)
       throws AxelorException, MessagingException, IOException, ClassNotFoundException,
           InstantiationException, IllegalAccessException {
-    for (Employee employee : getEmployeesWithoutRecentTimesheet()) {
+    for (Employee employee :
+        getEmployeesWithoutRecentTimesheet(
+            Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))) {
       Message message = templateMessageService.generateMessage(employee, template);
       messageService.sendByEmail(message);
       incrementDone();
@@ -139,7 +145,9 @@ public class BatchTimesheetReminder extends BatchStrategy {
   protected void sendReminderUsingTimesheets(Template template)
       throws AxelorException, MessagingException, IOException, ClassNotFoundException,
           InstantiationException, IllegalAccessException {
-    for (Employee employee : getEmployeesWithoutRecentTimesheet()) {
+    for (Employee employee :
+        getEmployeesWithoutRecentTimesheet(
+            Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))) {
       Timesheet timeSheet = getRecentEmployeeTimesheet(employee);
       if (timeSheet != null) {
         Message message = templateMessageService.generateMessage(timeSheet, template);

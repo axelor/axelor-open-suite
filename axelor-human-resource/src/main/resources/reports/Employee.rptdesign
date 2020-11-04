@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaDriverClass</property>
@@ -48,19 +48,21 @@
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
     <parameters>
-        <scalar-parameter name="EmployeeId" id="399">
+        <scalar-parameter name="EmployeeId" id="3265">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
+            <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
+            <property name="concealValue">false</property>
             <property name="controlType">text-box</property>
             <structure name="format">
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
-        <scalar-parameter name="DBName" id="400">
+        <scalar-parameter name="DBName" id="3946">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
@@ -72,7 +74,7 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
-        <scalar-parameter name="UserName" id="401">
+        <scalar-parameter name="UserName" id="3947">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
@@ -84,7 +86,7 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
-        <scalar-parameter name="Password" id="402">
+        <scalar-parameter name="Password" id="4030">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
@@ -96,9 +98,10 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
-        <scalar-parameter name="DefaultDriver" id="403">
+        <scalar-parameter name="DefaultDriver" id="3819">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
+            <property name="isRequired">true</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
@@ -295,26 +298,17 @@
                     <text-property name="heading">ContractType</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">Country</property>
-                    <property name="alias">Country</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">Country</text-property>
-                    <text-property name="heading">Country</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">CompanyName</property>
-                    <property name="alias">CompanyName</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">Company</text-property>
-                    <text-property name="heading">Company</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">MaritalStatus</property>
                     <property name="alias">MaritalStatus</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">MaritalStatus</text-property>
                     <property name="onColumnLayout">false</property>
                     <text-property name="heading">MaritalStatus</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">Country</property>
+                    <property name="alias">Country</property>
+                    <property name="analysis">dimension</property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -323,7 +317,7 @@
                     <property name="paramName">EmployeeId</property>
                     <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">0</property>
+                    <property name="nativeDataType">-5</property>
                     <property name="position">1</property>
                     <property name="isOptional">false</property>
                     <property name="isInput">true</property>
@@ -618,7 +612,7 @@ Employee.weekly_work_hours as "WeeklyWorkHours",
 Employee.daily_work_hours as "DailyWorkHours",
 CompanyDept.name as "Department",
 Employee.birth_date as "BirthDate",
-Employee.date_of_hire as "DateOfHire",
+Employee.hire_date as "DateOfHire",
 Employee.hourly_rate as "HourlyRate",
 Employee.fixed_pro_phone as "FixedProPhone",
 Employee.mobile_pro_phone as "MobileProPhone",
@@ -1190,13 +1184,17 @@ where Employee.id = ? ]]></xml-property>
             <page-footer>
                 <text id="3">
                     <property name="contentType">html</property>
-                    <text-property name="content"><![CDATA[<value-of>new Date()</value-of>]]></text-property>
+                    <text-property name="content"><![CDATA[<VALUE-OF format="Short Date">BirtDateTime.now()</VALUE-OF>]]></text-property>
                 </text>
             </page-footer>
         </simple-master-page>
     </page-setup>
     <body>
         <data id="374">
+            <structure name="dateTimeFormat">
+                <property name="category">Short Date</property>
+                <property name="pattern">Short Date</property>
+            </structure>
             <property name="dataSet">EmployeeDS</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -1331,6 +1329,10 @@ EMPLOYEE RESUME
                             </cell>
                             <cell id="223">
                                 <data id="225">
+                                    <structure name="dateTimeFormat">
+                                        <property name="category">Short Date</property>
+                                        <property name="pattern">Short Date</property>
+                                    </structure>
                                     <property name="dataSet">EmployeeDS</property>
                                     <list-property name="boundDataColumns">
                                         <structure>
@@ -1355,6 +1357,10 @@ EMPLOYEE RESUME
                             </cell>
                             <cell id="219">
                                 <data id="126">
+                                    <structure name="dateTimeFormat">
+                                        <property name="category">Short Date</property>
+                                        <property name="pattern">Short Date</property>
+                                    </structure>
                                     <property name="display">inline</property>
                                     <property name="dataSet">EmployeeDS</property>
                                     <list-property name="boundDataColumns">
@@ -1387,6 +1393,7 @@ EMPLOYEE RESUME
                                             <text-property name="displayName">Department</text-property>
                                             <expression name="expression" type="javascript">dataSetRow["Department"]</expression>
                                             <property name="dataType">string</property>
+                                            <property name="allowExport">true</property>
                                         </structure>
                                     </list-property>
                                     <property name="resultSetColumn">Department</property>
@@ -1412,6 +1419,10 @@ EMPLOYEE RESUME
                             </cell>
                             <cell id="195">
                                 <data id="125">
+                                    <structure name="dateTimeFormat">
+                                        <property name="category">Short Date</property>
+                                        <property name="pattern">Short Date</property>
+                                    </structure>
                                     <property name="display">inline</property>
                                     <property name="dataSet">EmployeeDS</property>
                                     <list-property name="boundDataColumns">
@@ -1438,7 +1449,11 @@ EMPLOYEE RESUME
                                 </text>
                             </cell>
                             <cell id="199">
-                                <data id="404">
+                                <data id="3800">
+                                    <structure name="dateTimeFormat">
+                                        <property name="category">Short Date</property>
+                                        <property name="pattern">Short Date</property>
+                                    </structure>
                                     <property name="display">inline</property>
                                     <property name="dataSet">EmployeeDS</property>
                                     <list-property name="boundDataColumns">
@@ -1550,6 +1565,10 @@ EMPLOYEE RESUME
                             </cell>
                             <cell id="287">
                                 <data id="306">
+                                    <structure name="dateTimeFormat">
+                                        <property name="category">Short Date</property>
+                                        <property name="pattern">Short Date</property>
+                                    </structure>
                                     <property name="dataSet">EmployeeDS</property>
                                     <list-property name="boundDataColumns">
                                         <structure>
@@ -1573,17 +1592,18 @@ EMPLOYEE RESUME
                                 </text>
                             </cell>
                             <cell id="291">
-                                <data id="407">
+                                <data id="3801">
                                     <property name="dataSet">EmployeeDS</property>
                                     <list-property name="boundDataColumns">
                                         <structure>
-                                            <property name="name">Column Binding</property>
+                                            <property name="name">Department</property>
                                             <text-property name="displayName">Country</text-property>
                                             <expression name="expression" type="javascript">dataSetRow["Country"]</expression>
                                             <property name="dataType">string</property>
+                                            <property name="allowExport">true</property>
                                         </structure>
                                     </list-property>
-                                    <property name="resultSetColumn">Column Binding</property>
+                                    <property name="resultSetColumn">Department</property>
                                 </data>
                             </cell>
                             <cell id="292"/>
@@ -1794,12 +1814,20 @@ EMPLOYEE RESUME
                             <row id="363">
                                 <cell id="364">
                                     <data id="376">
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
+                                        </structure>
                                         <property name="textAlign">center</property>
                                         <property name="resultSetColumn">StartDate</property>
                                     </data>
                                 </cell>
                                 <cell id="365">
                                     <data id="378">
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
+                                        </structure>
                                         <property name="textAlign">center</property>
                                         <property name="resultSetColumn">EndDate</property>
                                     </data>

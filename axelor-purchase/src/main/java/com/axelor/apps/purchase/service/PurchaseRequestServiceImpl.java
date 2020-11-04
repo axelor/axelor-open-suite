@@ -18,6 +18,7 @@
 package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.PurchaseRequest;
@@ -29,7 +30,6 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,6 +43,7 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
   @Inject private PurchaseOrderLineService purchaseOrderLineService;
   @Inject private PurchaseOrderRepository purchaseOrderRepo;
   @Inject private PurchaseOrderLineRepository purchaseOrderLineRepo;
+  @Inject private AppBaseService appBaseService;
 
   @Transactional
   @Override
@@ -121,6 +122,8 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
       purchaseOrder.getPurchaseOrderLineList().addAll(purchaseOrderLineList);
       purchaseOrderService.computePurchaseOrder(purchaseOrder);
       purchaseOrderRepo.save(purchaseOrder);
+      purchaseRequest.setPurchaseOrder(purchaseOrder);
+      purchaseRequestRepo.save(purchaseRequest);
     }
     List<PurchaseOrder> purchaseOrders =
         purchaseOrderMap.values().stream().collect(Collectors.toList());
@@ -132,9 +135,7 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
     PurchaseOrderLine purchaseOrderLine =
         purchaseOrder.getPurchaseOrderLineList() != null
                 && !purchaseOrder.getPurchaseOrderLineList().isEmpty()
-            ? purchaseOrder
-                .getPurchaseOrderLineList()
-                .stream()
+            ? purchaseOrder.getPurchaseOrderLineList().stream()
                 .filter(poLine -> poLine.getProduct().equals(product))
                 .findFirst()
                 .orElse(null)
@@ -153,7 +154,7 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
             null,
             null,
             null,
-            LocalDate.now(),
+            appBaseService.getTodayDate(purchaseRequest.getCompany()),
             null,
             purchaseRequest.getSupplierUser(),
             null));

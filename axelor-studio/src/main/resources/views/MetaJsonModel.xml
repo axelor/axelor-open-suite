@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
   
 	<grid id="studio-json-model-grid" name="json-model-grid" title="Custom models" model="com.axelor.meta.db.MetaJsonModel" groupBy="appBuilder">
 		<field name="title"/>
 		<field name="name"/>
 		<field name="appBuilder" hidden="true"/>
   	</grid>
-  
+
+	<grid name="json-model-disable-appbuilder-grid" title="Custom models" model="com.axelor.meta.db.MetaJsonModel">
+		<field name="title"/>
+		<field name="name"/>
+  	</grid>
+
   <form id="studio-json-model-form" name="json-model-form" title="Custom model" model="com.axelor.meta.db.MetaJsonModel" onSave="action-studio-json-model-onsave-group">
     <!-- Studio changes -->
     <toolbar>
     	<button name="openWorkflowBtn" title="Open workflow" onClick="save,action-studio-json-model-method-open-workflow"/>
     </toolbar>
-    <panel name="appBuilderPanel">
+    <panel name="appBuilderPanel" if="__config__.app.getApp('bpm').getEnableAppBuilder()">
       <field name="appBuilder" grid-view="app-builder-grid" form-view="app-builder-form"/>
     </panel>
     <!-- /Studio changes -->
@@ -26,6 +31,15 @@
       <field name="onSave" />
       <field name="formWidth" />
       <field name="orderBy" />
+    </panel>
+    <panel name="menuPanel">
+    	<field name="isGenerateMenu" onChange="action-studio-json-model-group-isgeneratemenu-onchange"/>
+    	<field name="menuBuilder" showIf="isGenerateMenu" colSpan="12" showTitle="false" requiredIf="isGenerateMenu">
+	    	<editor>
+		    	<field name="title" title="Menu title"/>
+		    	<field name="parentMenu" domain="self.action IS NULL"/>
+	    	</editor>
+    	</field>
     </panel>
 
     <!-- Menu panel removed -->
@@ -60,9 +74,17 @@
     <call class="com.axelor.studio.web.MetaJsonModelController" method="setJsonFieldTracking"/>
   </action-method>
 
+  <action-method name="action-studio-json-model-method-isgeneratemenu-onchange">
+  	<call class="com.axelor.studio.web.MetaJsonModelController" method="removeMenuBuilder"/>
+  </action-method>
+
   <action-group name="action-studio-json-model-onsave-group">
      <action name="save" if="!id"/>
      <action name="action-studio-json-model-method-json-field-tracking"/>
   </action-group>
 
+  <action-group name="action-studio-json-model-group-isgeneratemenu-onchange">
+    <action if="id != null &amp;&amp; !isGenerateMenu" name="save"/>
+  	<action if="id != null &amp;&amp; menuBuilder != null" name="action-studio-json-model-method-isgeneratemenu-onchange"/>
+  </action-group>
 </object-views>

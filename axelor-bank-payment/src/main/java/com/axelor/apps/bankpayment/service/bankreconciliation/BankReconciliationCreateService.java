@@ -38,14 +38,17 @@ public class BankReconciliationCreateService {
 
   protected BankReconciliationRepository bankReconciliationRepository;
   protected CompanyRepository companyRepository;
+  protected BankReconciliationService bankReconciliationService;
 
   @Inject
   public BankReconciliationCreateService(
       BankReconciliationRepository bankReconciliationRepository,
-      CompanyRepository companyRepository) {
+      CompanyRepository companyRepository,
+      BankReconciliationService bankReconciliationService) {
 
     this.bankReconciliationRepository = bankReconciliationRepository;
     this.companyRepository = companyRepository;
+    this.bankReconciliationService = bankReconciliationService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -120,6 +123,8 @@ public class BankReconciliationCreateService {
     bankReconciliation.setBankDetails(bankDetails);
     bankReconciliation.setBankStatement(bankStatement);
     bankReconciliation.setName(this.computeName(bankReconciliation));
+    bankReconciliation.setJournal(bankReconciliationService.getJournal(bankReconciliation));
+    bankReconciliation.setCashAccount(bankReconciliationService.getCashAccount(bankReconciliation));
 
     return bankReconciliation;
   }

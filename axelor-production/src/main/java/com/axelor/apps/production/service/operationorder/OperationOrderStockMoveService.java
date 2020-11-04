@@ -18,6 +18,7 @@
 package com.axelor.apps.production.service.operationorder;
 
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcessLine;
@@ -47,15 +48,18 @@ public class OperationOrderStockMoveService {
   protected StockMoveService stockMoveService;
   protected StockMoveLineService stockMoveLineService;
   protected StockLocationRepository stockLocationRepo;
+  protected ProductCompanyService productCompanyService;
 
   @Inject
   public OperationOrderStockMoveService(
       StockMoveService stockMoveService,
       StockMoveLineService stockMoveLineService,
-      StockLocationRepository stockLocationRepo) {
+      StockLocationRepository stockLocationRepo,
+      ProductCompanyService productCompanyService) {
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
     this.stockLocationRepo = stockLocationRepo;
+    this.productCompanyService = productCompanyService;
   }
 
   public void createToConsumeStockMove(OperationOrder operationOrder) throws AxelorException {
@@ -95,7 +99,8 @@ public class OperationOrderStockMoveService {
     StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
     StockConfig stockConfig = stockConfigService.getStockConfig(company);
     StockLocation virtualStockLocation =
-        stockConfigService.getProductionVirtualStockLocation(stockConfig);
+        stockConfigService.getProductionVirtualStockLocation(
+            stockConfig, operationOrder.getManufOrder().getProdProcess().getOutsourcing());
 
     StockLocation fromStockLocation;
 
@@ -130,11 +135,17 @@ public class OperationOrderStockMoveService {
 
     return stockMoveLineService.createStockMoveLine(
         prodProduct.getProduct(),
-        prodProduct.getProduct().getName(),
-        prodProduct.getProduct().getDescription(),
+        (String)
+            productCompanyService.get(prodProduct.getProduct(), "name", stockMove.getCompany()),
+        (String)
+            productCompanyService.get(prodProduct.getProduct(), "name", stockMove.getCompany()),
         prodProduct.getQty(),
-        prodProduct.getProduct().getCostPrice(),
-        prodProduct.getProduct().getCostPrice(),
+        (BigDecimal)
+            productCompanyService.get(
+                prodProduct.getProduct(), "costPrice", stockMove.getCompany()),
+        (BigDecimal)
+            productCompanyService.get(
+                prodProduct.getProduct(), "costPrice", stockMove.getCompany()),
         prodProduct.getUnit(),
         stockMove,
         StockMoveLineService.TYPE_IN_PRODUCTIONS,
@@ -181,12 +192,13 @@ public class OperationOrderStockMoveService {
     fromStockLocation =
         manufOrderStockMoveService.getDefaultStockLocation(
             manufOrder, company, ManufOrderStockMoveService.STOCK_LOCATION_IN);
-    toStockLocation = stockConfigService.getProductionVirtualStockLocation(stockConfig);
+    toStockLocation =
+        stockConfigService.getProductionVirtualStockLocation(
+            stockConfig, operationOrder.getManufOrder().getProdProcess().getOutsourcing());
 
     // realize current stock move
     Optional<StockMove> stockMoveToRealize =
-        stockMoveList
-            .stream()
+        stockMoveList.stream()
             .filter(
                 stockMove ->
                     stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED
@@ -252,8 +264,7 @@ public class OperationOrderStockMoveService {
         stockMoveService.cancel(stockMove);
       }
 
-      stockMoveList
-          .stream()
+      stockMoveList.stream()
           .filter(stockMove -> stockMove.getStockMoveLineList() != null)
           .flatMap(stockMove -> stockMove.getStockMoveLineList().stream())
           .forEach(stockMoveLine -> stockMoveLine.setConsumedOperationOrder(null));
@@ -299,9 +310,7 @@ public class OperationOrderStockMoveService {
       manufOrderStockMoveService._createStockMoveLine(
           prodProduct, stockMove, StockMoveLineService.TYPE_IN_PRODUCTIONS, qty);
       // Update consumed StockMoveLineList with created stock move lines
-      stockMove
-          .getStockMoveLineList()
-          .stream()
+      stockMove.getStockMoveLineList().stream()
           .filter(
               stockMoveLine1 ->
                   !operationOrder.getConsumedStockMoveLineList().contains(stockMoveLine1))
