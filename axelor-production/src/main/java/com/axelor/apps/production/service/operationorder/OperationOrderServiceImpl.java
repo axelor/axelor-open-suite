@@ -20,7 +20,6 @@ package com.axelor.apps.production.service.operationorder;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
-import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdHumanResource;
@@ -85,7 +84,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
             manufOrder,
             prodProcessLine.getPriority(),
             prodProcessLine.getWorkCenter(),
-            prodProcessLine.getWorkCenter().getMachine(),
+            prodProcessLine.getWorkCenter(),
             prodProcessLine);
 
     return Beans.get(OperationOrderRepository.class).save(operationOrder);
@@ -96,7 +95,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
       ManufOrder manufOrder,
       int priority,
       WorkCenter workCenter,
-      Machine machine,
+      WorkCenter machineWorkCenter,
       ProdProcessLine prodProcessLine)
       throws AxelorException {
 
@@ -112,11 +111,11 @@ public class OperationOrderServiceImpl implements OperationOrderService {
             operationName,
             manufOrder,
             workCenter,
-            machine,
+            machineWorkCenter,
             OperationOrderRepository.STATUS_DRAFT,
             prodProcessLine);
 
-    this._createHumanResourceList(operationOrder, workCenter);
+    this._createHumanResourceList(operationOrder, machineWorkCenter);
 
     return Beans.get(OperationOrderRepository.class).save(operationOrder);
   }

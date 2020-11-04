@@ -17,7 +17,6 @@
  */
 package com.axelor.apps.businessproduction.service;
 
-import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdHumanResource;
@@ -53,7 +52,7 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
             prodProcessLine.getPriority(),
             manufOrder.getIsToInvoice(),
             prodProcessLine.getWorkCenter(),
-            prodProcessLine.getWorkCenter().getMachine(),
+            prodProcessLine.getWorkCenter(),
             prodProcessLine);
 
     return Beans.get(OperationOrderRepository.class).save(operationOrder);
@@ -65,7 +64,7 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
       int priority,
       boolean isToInvoice,
       WorkCenter workCenter,
-      Machine machine,
+      WorkCenter machineWorkCenter,
       ProdProcessLine prodProcessLine) {
 
     logger.debug(
@@ -80,13 +79,13 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
             operationName,
             manufOrder,
             workCenter,
-            machine,
+            machineWorkCenter,
             OperationOrderRepository.STATUS_DRAFT,
             prodProcessLine);
 
     operationOrder.setIsToInvoice(isToInvoice);
 
-    this._createHumanResourceList(operationOrder, workCenter);
+    this._createHumanResourceList(operationOrder, machineWorkCenter);
 
     return Beans.get(OperationOrderRepository.class).save(operationOrder);
   }
