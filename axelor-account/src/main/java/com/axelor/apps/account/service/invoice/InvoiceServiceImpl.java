@@ -967,7 +967,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
                 + "AND move.statusSelect in (?2,?3) "
                 + "AND partner.id = ?4")
         .setParameter(1, AccountTypeRepository.TYPE_PAYABLE)
-        .setParameter(2, MoveRepository.STATUS_DAYBOOK)
+        .setParameter(2, MoveRepository.STATUS_ACCOUNTED)
         .setParameter(3, MoveRepository.STATUS_VALIDATED)
         .setParameter(4, partner.getId())
         .getResultList()

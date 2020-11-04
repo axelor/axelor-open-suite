@@ -92,7 +92,7 @@ public class ImportMove {
               LocalDate.parse(
                   values.get("ValidDate").toString(), DateTimeFormatter.BASIC_ISO_DATE));
         } else {
-          move.setStatusSelect(MoveRepository.STATUS_NEW);
+          move.setStatusSelect(MoveRepository.STATUS_ACCOUNTED);
         }
 
         move.setCompany(getCompany(values));
@@ -163,7 +163,7 @@ public class ImportMove {
     assert bean instanceof Move;
     Move move = (Move) bean;
     try {
-      if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
+      if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
           || move.getStatusSelect() == MoveRepository.STATUS_VALIDATED) {
         moveValidateService.validate(move);
       }

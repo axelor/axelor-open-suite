@@ -43,7 +43,7 @@
 	
 	   	// STATUS SELECT
 		public static final int STATUS_NEW = 1;
-		public static final int STATUS_DAYBOOK = 2;
+		public static final int STATUS_ACCOUNTED = 2;
 		public static final int STATUS_VALIDATED = 3;
 		public static final int STATUS_CANCELED = 4;
 		
@@ -75,7 +75,7 @@
     	<field name="ignoreInDebtRecoveryOk"/>
     	<message if="true" on="CREATE">Move created</message>
     	<message if="statusSelect == 1" tag="important">New move</message>
-	    <message if="statusSelect == 2" tag="info">Daybook move</message>
+	    <message if="statusSelect == 2" tag="info">Accounted move</message>
 	    <message if="statusSelect == 3" tag="success">Move validated</message>
 	    <message if="statusSelect == 4" tag="warning">Move canceled</message>
     </track>

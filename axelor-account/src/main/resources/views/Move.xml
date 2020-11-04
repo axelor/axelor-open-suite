@@ -270,8 +270,8 @@
 	</action-attrs>
 	
 	<action-attrs name="action-move-attrs-validate-button-title">
-		<attribute name="title" for="validateBtn" expr="eval: com.axelor.i18n.I18n.get('Validate')" if="eval: !company?.accountConfig?.accountingDaybook || statusSelect == MoveRepository.STATUS_DAYBOOK"/>
-		<attribute name="title" for="validateBtn" expr="eval: com.axelor.i18n.I18n.get('Accounting.toAccount')" if="eval: company?.accountConfig?.accountingDaybook &amp;&amp; statusSelect != MoveRepository.STATUS_DAYBOOK"/>
+		<attribute name="title" for="validateBtn" expr="eval: com.axelor.i18n.I18n.get('Validate')" if="eval: !company?.accountConfig?.accountingDaybook || statusSelect == MoveRepository.STATUS_ACCOUNTED"/>
+		<attribute name="title" for="validateBtn" expr="eval: com.axelor.i18n.I18n.get('Accounting.toAccount')" if="eval: company?.accountConfig?.accountingDaybook &amp;&amp; statusSelect != MoveRepository.STATUS_ACCOUNTED"/>
 	</action-attrs>
 	
 	<action-attrs name="action-move-attrs-hide-move-line-reconcile-group-in-draft-cancel-status">
