@@ -52,7 +52,8 @@
 	<boolean name="isDisplaySaleValueInPrinting" title="Display sale value in location financial data printing" default="true"/>
 	<boolean name="isDisplayAccountingValueInPrinting" title="Display accounting value in location financial data printing" default="true"/>
 	<boolean name="isDisplayAgPriceInPrinting" title="Display average price in printing" default="true"/>
-	<integer name="stockValuationTypeSelect" title="Stock location value on form view" selection="stock.stock.location.value.type" />
+	<integer name="stockValuationTypeSelect" title="Stock location value on form view" selection="stock.stock.location.value.type"/>
+	<integer name="inventoryValuationTypeSelect" title="Inventory valuation type" selection="stock.stock.location.value.type"/>
 
 	<boolean name="displayTrackNbrOnCertificateOfConformityPrinting" title="Display tracking number details on certificate of conformity printing" default="true"/>
 	<boolean name="displayExtRefOnCertificateOfConformityPrinting" title="Display external ref. on certificate of conformity printing" default="true"/>
@@ -60,6 +61,12 @@
 	<boolean name="displayProductCodeOnPrinting" title="Display product code on printing" default="true"/>
 	<boolean name="displayPriceOnPrinting" title="Display price on printing" default="true"/>
 	<boolean name="displayOrderReferenceAndOrderDate" title="Display order reference and order date" default="true"/>
+
+	<extra-code><![CDATA[
+		public static final int VALUATION_TYPE_WAP_VALUE = 1;
+		public static final int VALUATION_TYPE_ACCOUNTING_VALUE = 2;
+		public static final int VALUATION_TYPE_SALE_VALUE = 3;
+	]]></extra-code>
 
 	<track>
 		<field name="company" on="UPDATE"/>
@@ -100,7 +107,8 @@
 		<field name="isDisplayAccountingValueInPrinting" on="UPDATE"/>
 		<field name="isDisplayAgPriceInPrinting" on="UPDATE"/>
 		<field name="stockValuationTypeSelect" on="UPDATE"/>
-		
+		<field name="inventoryValuationTypeSelect" on="UPDATE"/>
+
 		<field name="displayTrackNbrOnCertificateOfConformityPrinting" on="UPDATE"/>
 		<field name="displayExtRefOnCertificateOfConformityPrinting" on="UPDATE"/>
 	</track>
