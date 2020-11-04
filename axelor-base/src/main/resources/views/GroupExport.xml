@@ -14,7 +14,7 @@
 		   <panel-related field="groupAdvancedExportList" editable="true" colSpan="12" grid-view="group-advanced-export-grid" form-view="group-advanced-export-form"/>
 		</panel>
 		<panel name="actionPanel" sidebar="true">
-			<button onClick="action-group-export-method-export-btn-onclick" name="exportBtn" title="Export"/>
+			<button onClick="save,action-group-export-method-export-btn-onclick" name="exportBtn" title="Export"/>
 		</panel>
 	</form>
 	

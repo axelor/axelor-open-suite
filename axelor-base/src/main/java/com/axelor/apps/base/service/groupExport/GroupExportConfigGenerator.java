@@ -73,8 +73,8 @@ public class GroupExportConfigGenerator {
 
     try {
 
-      this.addHeaderInput(file.getName(), metaModel, targetFieldsList);
-      this.addInnerBinding(
+      addHeaderInput(file.getName(), metaModel, targetFieldsList);
+      addInnerBinding(
           1,
           metaModel,
           targetFieldsList.stream().filter(it -> it.contains(".")).collect(Collectors.toList()));
@@ -106,7 +106,7 @@ public class GroupExportConfigGenerator {
           I18n.get("Please export some non-related fields to generate config"));
     }
 
-    this.addSearch(true, targetFieldsList);
+    addSearch(true, targetFieldsList);
     configBuilder.append(">");
   }
 
@@ -144,9 +144,10 @@ public class GroupExportConfigGenerator {
           lastBind = mainRelatedField;
           Property property = mapper.getProperty(mainRelatedField);
 
+          configBuilder.append("\n");
           switch (property.getType().toString()) {
             case ONE_TO_ONE:
-              this.addDummyBindsAndSearch(mainRelatedField, levelIndex, targetFieldsList);
+              addDummyBindsAndSearch(mainRelatedField, levelIndex, targetFieldsList);
               addInnerBinding(
                   levelIndex + 1,
                   property.getTarget().getName(),
@@ -156,7 +157,7 @@ public class GroupExportConfigGenerator {
               configBuilder.append(ConfigGeneratorText.BIND_END);
               break;
             case ONE_TO_MANY:
-              this.addDummyBindsAndSearch(mainRelatedField, levelIndex, targetFieldsList);
+              addDummyBindsAndSearch(mainRelatedField, levelIndex, targetFieldsList);
               addInnerBinding(
                   levelIndex + 1,
                   property.getTarget().getName(),
@@ -166,12 +167,12 @@ public class GroupExportConfigGenerator {
               configBuilder.append(ConfigGeneratorText.BIND_END);
               break;
             case MANY_TO_ONE:
-              this.addDummyBindsAndSearch(mainRelatedField, levelIndex, targetFieldsList, true);
-              configBuilder.append(ConfigGeneratorText.BIND_END);
+              addDummyBindsAndSearch(mainRelatedField, levelIndex, targetFieldsList, true);
+
               break;
             case MANY_TO_MANY:
-              this.addDummyBindsAndSearch(mainRelatedField, levelIndex, targetFieldsList, true);
-              configBuilder.append(ConfigGeneratorText.BIND_END);
+              addDummyBindsAndSearch(mainRelatedField, levelIndex, targetFieldsList, true);
+
               break;
             default:
               configBuilder.append(
@@ -222,8 +223,14 @@ public class GroupExportConfigGenerator {
 
     addSearch(false, targetFieldsList);
 
+    // UPDATE is for M2M and M2O but IF is for O2O and O2M
     if (isUpdate) {
       configBuilder.append(" update=\"" + isUpdate + ConfigGeneratorText.QUOTE);
+
+      // To make short bind for M2M and M2O
+      configBuilder.append("/");
+    } else {
+      addIf(targetFieldsList);
     }
 
     configBuilder.append(">");
@@ -271,13 +278,34 @@ public class GroupExportConfigGenerator {
     }
 
     // Remove last 'AND'
-    if (searchBuilder.lastIndexOf("AND ") > -1) {
-      searchBuilder.delete(searchBuilder.lastIndexOf("AND "), searchBuilder.length());
+    if (searchBuilder.lastIndexOf(" AND ") > -1) {
+      searchBuilder.delete(searchBuilder.lastIndexOf(" AND "), searchBuilder.length());
     }
 
     // Search ends
     searchBuilder.append(ConfigGeneratorText.QUOTE);
     configBuilder.append(searchBuilder);
+  }
+
+  protected void addIf(List<String> targetFieldsList) {
+
+    if (targetFieldsList.isEmpty()) return;
+
+    StringBuilder ifBuilder = new StringBuilder();
+    ifBuilder.append(" if=\"");
+
+    for (String field : targetFieldsList) {
+      ifBuilder.append(getDummyName(field) + " || ");
+    }
+
+    // Remove last '||'
+    if (ifBuilder.lastIndexOf(" || ") > -1) {
+      ifBuilder.delete(ifBuilder.lastIndexOf(" || "), ifBuilder.length());
+    }
+
+    // Search ends
+    ifBuilder.append(ConfigGeneratorText.QUOTE);
+    configBuilder.append(ifBuilder);
   }
 
   /**
