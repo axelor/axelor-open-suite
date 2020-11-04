@@ -17,9 +17,6 @@
  */
 package com.axelor.apps.businessproject.web;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
@@ -45,6 +42,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Singleton
 public class InvoiceController {

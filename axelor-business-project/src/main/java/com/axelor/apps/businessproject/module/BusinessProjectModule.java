@@ -50,6 +50,7 @@ import com.axelor.apps.businessproject.service.PurchaseOrderServiceProjectImpl;
 import com.axelor.apps.businessproject.service.SaleOrderInvoiceProjectServiceImpl;
 import com.axelor.apps.businessproject.service.SaleOrderLineProjectService;
 import com.axelor.apps.businessproject.service.SaleOrderLineProjectServiceImpl;
+import com.axelor.apps.businessproject.service.SaleOrderServiceProjectImpl;
 import com.axelor.apps.businessproject.service.TeamTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.TeamTaskBusinessProjectServiceImpl;
 import com.axelor.apps.businessproject.service.TimesheetLineBusinessService;
@@ -78,6 +79,7 @@ import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseServiceImpl;
+import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowCancelServiceSupplychainImpl;
@@ -128,5 +130,6 @@ public class BusinessProjectModule extends AxelorModule {
         .to(InvoicePaymentValidateProjectServiceImpl.class);
     bind(ProjectFolderService.class).to(ProjectFolderServiceImpl.class);
     bind(PurchaseOrderServiceSupplychainImpl.class).to(PurchaseOrderServiceProjectImpl.class);
+    bind(SaleOrderServiceSupplychainImpl.class).to(SaleOrderServiceProjectImpl.class);
   }
 }

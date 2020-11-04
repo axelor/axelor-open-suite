@@ -17,6 +17,8 @@ import com.google.inject.persist.Transactional;
 
 public class PurchaseOrderServiceProjectImpl extends PurchaseOrderServiceSupplychainImpl {
 
+  private AnalyticMoveLineRepository analyticMoveLineRepository;
+
   @Inject
   public PurchaseOrderServiceProjectImpl(
       AppSupplychainService appSupplychainService,
@@ -24,7 +26,8 @@ public class PurchaseOrderServiceProjectImpl extends PurchaseOrderServiceSupplyc
       AppAccountService appAccountService,
       AppBaseService appBaseService,
       PurchaseOrderStockService purchaseOrderStockService,
-      BudgetSupplychainService budgetSupplychainService) {
+      BudgetSupplychainService budgetSupplychainService,
+      AnalyticMoveLineRepository analyticMoveLineRepository) {
     super(
         appSupplychainService,
         accountConfigService,
@@ -32,6 +35,7 @@ public class PurchaseOrderServiceProjectImpl extends PurchaseOrderServiceSupplyc
         appBaseService,
         purchaseOrderStockService,
         budgetSupplychainService);
+    this.analyticMoveLineRepository = analyticMoveLineRepository;
   }
 
   @Override
@@ -44,5 +48,17 @@ public class PurchaseOrderServiceProjectImpl extends PurchaseOrderServiceSupplyc
         Beans.get(AnalyticMoveLineRepository.class).save(analyticMoveLine);
       }
     }
+  }
+
+  @Transactional(rollbackOn = Exception.class)
+  public PurchaseOrder updateLines(PurchaseOrder purchaseOrder) {
+    for (PurchaseOrderLine orderLine : purchaseOrder.getPurchaseOrderLineList()) {
+      orderLine.setProject(purchaseOrder.getProject());
+      for (AnalyticMoveLine analyticMoveLine : orderLine.getAnalyticMoveLineList()) {
+        analyticMoveLine.setProject(purchaseOrder.getProject());
+        analyticMoveLineRepository.save(analyticMoveLine);
+      }
+    }
+    return purchaseOrder;
   }
 }
