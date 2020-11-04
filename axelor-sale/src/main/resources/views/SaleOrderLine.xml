@@ -159,7 +159,7 @@
 				</panel>
 
 				<panel name="taxPanel" colSpan="12">
-					<field name="taxLine" canEdit="false" colSpan="6" readonlyIf="$isReadOnly !== false || deliveryState == 2 || deliveryState == 3 || amountInvoiced &gt; 0" onChange="action-group-sale-saleorderline-tax-line-onchange" domain="self.endDate = null or self.endDate &gt; :__config__.date" grid-view="tax-line-grid" form-view="tax-line-form"/>
+					<field name="taxLine" canEdit="false" colSpan="6" readonlyIf="$isReadOnly !== false || deliveryState == 2 || deliveryState == 3 || amountInvoiced &gt; 0" onChange="action-group-sale-saleorderline-tax-line-onchange" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
 					<field name="exTaxTotal" readonly="true" colSpan="3"/>
 					<field name="inTaxTotal" readonly="true" colSpan="3"/>
 				</panel>
@@ -268,7 +268,7 @@
 					<field name="priceDiscounted" colSpan="4" hidden="true"/>
 				</panel>
 			</panel>
-			<field name="taxLine" canEdit="false"  colSpan="4" onChange="action-group-sale-saleorderline-tax-line-onchange" domain="self.endDate = null or self.endDate &gt; :__config__.date" grid-view="tax-line-grid" form-view="tax-line-form"/>
+			<field name="taxLine" canEdit="false"  colSpan="4" onChange="action-group-sale-saleorderline-tax-line-onchange" domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid" form-view="tax-line-form"/>
 			<field name="exTaxTotal" readonly="true"/>
 			<field name="inTaxTotal" readonly="true"/>
 			<field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
@@ -587,7 +587,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-sale-order-line-attrs-domain-product">
-		<attribute name="domain" for="product" expr="self.isModel = false and (self.endDate = null or self.endDate &gt; :__config__.date) and self.sellable = true and dtype = 'Product'"/>
+		<attribute name="domain" for="product" expr="self.isModel = false and (self.endDate = null or self.endDate &gt; :__date__) and self.sellable = true and dtype = 'Product'"/>
 	</action-attrs>
 	
   	<action-attrs name="action-sale-order-line-attrs-scale-and-precision">
