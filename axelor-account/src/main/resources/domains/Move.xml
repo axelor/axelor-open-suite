@@ -61,6 +61,10 @@
 		// FUNCTIONAL ORIGIN SELECT
 		public static final int FUNCTIONAL_ORIGIN_OPENING = 1;
 		public static final int FUNCTIONAL_ORIGIN_CLOSURE = 2;
+		public static final int FUNCTIONAL_ORIGIN_SALE = 3;
+		public static final int FUNCTIONAL_ORIGIN_PURCHASE = 4;
+		public static final int FUNCTIONAL_ORIGIN_PAYMENT = 5;
+		public static final int FUNCTIONAL_ORIGIN_CUT_OFF = 6;
 	]]></extra-code>
     
     <track>
