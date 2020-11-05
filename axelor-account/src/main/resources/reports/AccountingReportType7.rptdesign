@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806261756</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -1717,10 +1717,28 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <structure>
                                 <property name="name">balance</property>
                                 <expression name="expression" type="javascript">if(row._outer["display_cumulative_balance"] == 1){
-	vars["PreviousBalance"]+(dataSetRow["debit"]-dataSetRow["credit"])
+	if(row._outer["display_only_not_completely_lettered_move_lines"] == 1){
+		if(dataSetRow["debit"]-dataSetRow["credit"]>0){
+			vars["PreviousBalance"]+(dataSetRow["debit"]-row["amount_remaining"])
+		}
+		else{
+			vars["PreviousBalance"]+(row["amount_remaining"]-dataSetRow["credit"])
+		}
+	}else{
+		vars["PreviousBalance"]+(dataSetRow["debit"]-dataSetRow["credit"])
+	}
 }
 else{
-	dataSetRow["debit"]-dataSetRow["credit"]
+	if(row._outer["display_only_not_completely_lettered_move_lines"] == 1){
+		if(dataSetRow["debit"]-dataSetRow["credit"]>0){
+			dataSetRow["debit"]-row["amount_remaining"]
+		}
+		else{
+			row["amount_remaining"]-dataSetRow["credit"]
+		}
+	}else{
+		dataSetRow["debit"]-dataSetRow["credit"]
+	}
 }</expression>
                                 <property name="dataType">float</property>
                                 <property name="allowExport">true</property>
