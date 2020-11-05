@@ -1210,9 +1210,9 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                     <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
-                    <property name="position">31</property>
-                    <property name="name">in_tax_total</property>
-                    <property name="nativeName">in_tax_total</property>
+                    <property name="name">param_1</property>
+                    <property name="paramName">SaleOrderId</property>
+                    <property name="nativeName"></property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
@@ -1448,6 +1448,9 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                     <property name="nativeDataType">4</property>
                 </structure>
             </list-property>
+            <structure name="cachedMetaData"/>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet"/>
             <xml-property name="queryText"><![CDATA[select SaleOrder.id, SaleOrder.sale_order_seq as "saleOrderSeq", SaleOrder.creation_date as "CreationDate", 
 CONCAT(SalemanPartner.name, ' ', SalemanPartner.first_name) as "SalemanName", SalemanPartner.fixed_phone as "SalemanPhone", 
 SalemanEmailAddress.address as "SalemanEmail", SaleConfig.display_saleman_on_printing as "DisplaySaleman", 
@@ -1484,6 +1487,7 @@ SaleConfig.display_customer_code_on_printing as "displayCustomerCodeOnPrinting",
 SaleConfig.display_product_picture_on_printing as "displayProductPictureOnPrinting",
 SaleOrder.proforma_comments as "ProformaComments",
 AppSale.enable_pack_management as "enablePackMangement",
+SalespersonUser.use_signature_for_sales_quotations as "useSignature"
 ContactPartner.title_select as "contactPartnerTitleSelect"
 from sale_sale_order as SaleOrder
 left outer join base_company as Company on (SaleOrder.company = Company.id)
@@ -2840,6 +2844,13 @@ from base_app_base]]></xml-property>
                     <text-property name="displayName">enablePackMangement</text-property>
                     <expression name="expression" type="javascript">dataSetRow["enablePackMangement"]</expression>
                     <property name="dataType">boolean</property>
+                </structure>
+                <structure>
+                    <property name="name">useSignature</property>
+                    <text-property name="displayName">useSignature</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["useSignature"]</expression>
+                    <property name="dataType">boolean</property>
+                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">contactPartnerTitleSelect</property>
@@ -7499,6 +7510,12 @@ vars["is_pack_hide_unit_amounts"] = false;]]></method>
                     <property name="textAlign">right</property>
                     <image id="4328">
                         <property name="height">50px</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">!row["useSignature"]</expression>
+                            </structure>
+                        </list-property>
                         <property name="source">file</property>
                         <expression name="uri" type="javascript">params["AttachmentPath"].value+row["salesperson_signature_path"]</expression>
                         <expression name="altText">""</expression>

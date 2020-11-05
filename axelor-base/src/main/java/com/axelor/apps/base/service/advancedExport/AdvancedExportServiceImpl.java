@@ -20,6 +20,7 @@ package com.axelor.apps.base.service.advancedExport;
 import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.AdvancedExportLine;
 import com.axelor.apps.tool.NamingTool;
+import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
@@ -55,6 +56,7 @@ import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.persistence.Query;
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -198,10 +200,13 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
 
     Class<?> klass = Class.forName(metaModel.getFullName());
     Mapper mapper = Mapper.of(klass);
-    MetaSelect metaSelect =
-        metaSelectRepo.findByName(mapper.getProperty(fieldName[index]).getSelection());
+    List<MetaSelect> metaSelectList =
+        metaSelectRepo
+            .all()
+            .filter("self.name = ?", mapper.getProperty(fieldName[index]).getSelection())
+            .fetch();
 
-    if (metaSelect != null) {
+    if (CollectionUtils.isNotEmpty(metaSelectList)) {
       isSelectionField = true;
       String alias = "self";
       msi++;
@@ -209,11 +214,11 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
       if (!isNormalField && index != 0) {
         alias = aliasName;
       }
-      addSelectionField(fieldName[index], alias, metaSelect.getId());
+      addSelectionField(fieldName[index], alias, StringTool.getIdListString(metaSelectList));
     }
   }
 
-  private void addSelectionField(String fieldName, String alias, Long metaSelectId) {
+  private void addSelectionField(String fieldName, String alias, String metaSelectIds) {
     String selectionJoin =
         "LEFT JOIN "
             + "MetaSelectItem "
@@ -226,8 +231,9 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
             + ("msi_" + (msi))
             + ".value AND "
             + ("msi_" + (msi))
-            + ".select = "
-            + metaSelectId;
+            + ".select IN ("
+            + metaSelectIds
+            + ")";
 
     if (language.equals(LANGUAGE_FR)) {
       selectionJoin +=
