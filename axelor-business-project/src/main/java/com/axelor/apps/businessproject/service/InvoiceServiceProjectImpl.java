@@ -48,7 +48,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl {
+public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
+    implements InvoiceServiceProject {
 
   @Inject
   public InvoiceServiceProjectImpl(

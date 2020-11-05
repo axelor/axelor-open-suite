@@ -17,12 +17,13 @@ import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class SaleOrderWorkflowServiceBusinessProductionImpl
     extends SaleOrderWorkflowServiceProductionImpl {
+
+  private AnalyticMoveLineRepository analyticMoveLineRepository;
 
   @Inject
   public SaleOrderWorkflowServiceBusinessProductionImpl(
@@ -36,7 +37,8 @@ public class SaleOrderWorkflowServiceBusinessProductionImpl
       AppSupplychainService appSupplychainService,
       AccountingSituationSupplychainService accountingSituationSupplychainService,
       ProductionOrderSaleOrderService productionOrderSaleOrderService,
-      AppProductionService appProductionService) {
+      AppProductionService appProductionService,
+      AnalyticMoveLineRepository analyticMoveLineRepository) {
     super(
         sequenceService,
         partnerRepo,
@@ -49,6 +51,7 @@ public class SaleOrderWorkflowServiceBusinessProductionImpl
         accountingSituationSupplychainService,
         productionOrderSaleOrderService,
         appProductionService);
+    this.analyticMoveLineRepository = analyticMoveLineRepository;
   }
 
   @Override
@@ -59,7 +62,7 @@ public class SaleOrderWorkflowServiceBusinessProductionImpl
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
       for (AnalyticMoveLine analyticMoveLine : saleOrderLine.getAnalyticMoveLineList()) {
         analyticMoveLine.setProject(null);
-        Beans.get(AnalyticMoveLineRepository.class).save(analyticMoveLine);
+        analyticMoveLineRepository.save(analyticMoveLine);
       }
     }
   }

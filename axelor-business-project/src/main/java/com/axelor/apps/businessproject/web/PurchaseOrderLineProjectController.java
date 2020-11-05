@@ -117,13 +117,17 @@ public class PurchaseOrderLineProjectController {
 
   public void updateAnalyticDistributionWithProject(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
-    if (purchaseOrderLine.getAnalyticMoveLineList() == null) {
-      return;
+    try {
+      PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+      if (purchaseOrderLine.getAnalyticMoveLineList() == null) {
+        return;
+      }
+      purchaseOrderLine =
+          Beans.get(PurchaseOrderLineProjectService.class)
+              .updateAnalyticDistributionWithProject(purchaseOrderLine);
+      response.setValue("analyticMoveLineList", purchaseOrderLine.getAnalyticMoveLineList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    purchaseOrderLine =
-        Beans.get(PurchaseOrderLineProjectService.class)
-            .updateAnalyticDistributionWithProject(purchaseOrderLine);
-    response.setValue("analyticMoveLineList", purchaseOrderLine.getAnalyticMoveLineList());
   }
 }
