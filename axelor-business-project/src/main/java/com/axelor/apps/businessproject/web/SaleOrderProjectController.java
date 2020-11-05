@@ -19,11 +19,11 @@ package com.axelor.apps.businessproject.web;
 
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
+import com.axelor.apps.businessproject.service.SaleOrderServiceProjectImpl;
 import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectGeneratorType;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -113,13 +113,14 @@ public class SaleOrderProjectController {
   }
 
   public void updateLines(ActionRequest request, ActionResponse response) throws AxelorException {
-    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
-
-    for (SaleOrderLine orderLine : saleOrder.getSaleOrderLineList()) {
-      orderLine.setProject(saleOrder.getProject());
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+      saleOrder = Beans.get(SaleOrderServiceProjectImpl.class).updateLines(saleOrder);
+      response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
   }
 
   private LocalDateTime getElementStartDate(Context context) {

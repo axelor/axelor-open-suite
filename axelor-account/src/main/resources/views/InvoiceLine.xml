@@ -106,8 +106,8 @@
 				<field name="$currencySymbol" hidden="true"/>
 			</panel>
 			<panel name="projectPanel" if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectInvoiceLines()" title="Business Project" if-module="axelor-business-project" >
-				<field name="project" canEdit="false" onSelect="action-invoice-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
-				<panel-dashlet name="teamTaskListPanel" title="Related tasks" action="action-invoice-line-view-team-tasks" colSpan="12"/>
+			<field name="project" canEdit="false" onSelect="action-invoice-line-attrs-domain-project" form-view="project-form" grid-view="project-grid"/>
+			<panel-dashlet name="teamTaskListPanel" title="Related tasks" action="action-invoice-line-view-team-tasks" colSpan="12"/>
 			</panel>
 			<panel name="analyticDistributionPanel" title="Analytics" if-module="axelor-supplychain" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-invoice-line-attrs-read-only-distribution-lines">
 				<field name="analyticDistributionTemplate" readonlyIf="!account.analyticDistributionAuthorized" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" canEdit="false" onChange="action-invoice-line-method-create-distribution" onSelect="action-invoice-line-attrs-set-domain-analytic-distribution-template"/>
@@ -276,7 +276,7 @@
     </action-record>
 
 	<!-- ACTION METHOD -->
-	
+
 	<action-method name="action-invoice-line-method-get-and-compute-analytic-distribution">
  		<call class="com.axelor.apps.account.web.InvoiceLineController" method="getAndComputeAnalyticDistribution"/>
 	</action-method>
