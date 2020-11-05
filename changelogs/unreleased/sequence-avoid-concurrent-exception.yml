@@ -1,0 +1,3 @@
+---
+title: "Sequence: avoid errors when two users call a service that updates the same sequence at the same time."
+type: fix
