@@ -25,6 +25,8 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.script.ImportPurchaseOrder;
+import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.apps.purchase.service.PurchaseOrderWorkflowService;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -36,7 +38,6 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
-import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockServiceImpl;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
@@ -52,7 +53,9 @@ import java.util.Map;
 
 public class ImportSupplyChain {
 
-  @Inject protected PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
+  @Inject protected PurchaseOrderService purchaseOrderService;
+
+  @Inject protected PurchaseOrderWorkflowService purchaseOrderWorkflowService;
 
   @Inject protected PurchaseOrderStockServiceImpl purchaseOrderStockServiceImpl;
 
@@ -104,7 +107,7 @@ public class ImportSupplyChain {
 
       if (status == PurchaseOrderRepository.STATUS_VALIDATED
           || status == PurchaseOrderRepository.STATUS_FINISHED) {
-        purchaseOrderServiceSupplychainImpl.validatePurchaseOrder(purchaseOrder);
+        purchaseOrderWorkflowService.validatePurchaseOrder(purchaseOrder);
       }
 
       if (status == PurchaseOrderRepository.STATUS_FINISHED) {
@@ -118,8 +121,7 @@ public class ImportSupplyChain {
         }
         purchaseOrder.setValidationDate(purchaseOrder.getOrderDate());
         purchaseOrder.setValidatedByUser(AuthUtils.getUser());
-        purchaseOrder.setSupplierPartner(
-            purchaseOrderServiceSupplychainImpl.validateSupplier(purchaseOrder));
+        purchaseOrder.setSupplierPartner(purchaseOrderService.validateSupplier(purchaseOrder));
         Invoice invoice =
             Beans.get(PurchaseOrderInvoiceService.class).generateInvoice(purchaseOrder);
 
@@ -138,7 +140,7 @@ public class ImportSupplyChain {
         invoice.setOriginDate(date.minusDays(15));
 
         invoiceService.validateAndVentilate(invoice);
-        purchaseOrderServiceSupplychainImpl.finishPurchaseOrder(purchaseOrder);
+        purchaseOrderWorkflowService.finishPurchaseOrder(purchaseOrder);
       }
 
     } catch (Exception e) {
