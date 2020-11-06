@@ -671,6 +671,8 @@ public interface IExceptionMessage {
       "%s : Error : You must configure a sequence for the company %s and a payment mode %s" /*)*/;
   static final String PAYMENT_MODE_3 = /*$$(*/
       "%s : Error : You must configure a journal for the company %s and a payment mode %s" /*)*/;
+  static final String PAYMENT_MODE_4 = /*$$(*/
+      "%s : Error : You must configure a bank details for the company %s and a payment mode %s" /*)*/;
 
   /** Payment voucher control service */
   static final String PAYMENT_VOUCHER_CONTROL_PAID_AMOUNT = /*$$(*/
