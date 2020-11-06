@@ -39,7 +39,10 @@
 				]]></viewer>
 			</field>
 	    </panel>
-	    <panel name="filtersPanel" title="Filters" collapseIf="statusSelect != 0" colSpan="12">
+		<panel colSpan="12" name="errorLogPanel" showIf="errorLog" title="Error that happened during the computation">
+			<field colSpan="12" name="errorLog" showTitle="false"/>
+		</panel>
+		<panel name="filtersPanel" title="Filters" collapseIf="statusSelect != 0" colSpan="12">
 			<field name="id"/><spacer/>
 	        <field name="createdOn" colSpan="4"/>
 	        <field name="startDateTime" colSpan="4" readonly="true"/>
@@ -49,15 +52,14 @@
 	        <field name="stockLocation" form-view="stock-location-form" grid-view="stock-location-grid" colSpan="6" domain="self.typeSelect != 3 AND (self.isNotInMrp = false OR self.isNotInMrp = null)" canEdit="false"/>
 	        <field name="stockLocation.company"/>
 	        <field name="displayProductWithoutProposal" widget="boolean-switch"/>
-	        <panel-related name="productSetPanel" field="productSet" canEdit="false" form-view="product-form" grid-view="product-grid" canNew="false" colSpan="12" domain="self.productTypeSelect = 'storable' AND self.excludeFromMrp = false AND self.stockManaged = true AND dtype = 'Product'"/>
 	        <field name="mrpTypeSelect" hidden="true"/>
 	        <field name="year" showIf="mrpTypeSelect == 2" domain="self.typeSelect = 3" onChange="action-mrp-manuf-order-record-reset-period" form-view="year-manuf-order-form" grid-view="year-account-grid"/>
 	        <field name="period" showIf="mrpTypeSelect == 2" domain="self.year = :year" form-view="period-form" grid-view="period-grid"/>
-	        <panel-related name="productSetPanel" field="productSet" canEdit="false" form-view="product-form" grid-view="product-grid" canNew="false" colSpan="12" domain="self.productTypeSelect = 'storable' AND self.excludeFromMrp = false AND self.stockManaged = true AND (:mrpTypeSelect = 1 OR self.productSubTypeSelect = 1)"/>
+	        <panel-related name="productSetPanel" field="productSet" canEdit="false" form-view="product-form" grid-view="product-grid" canNew="false" colSpan="12" domain="self.productTypeSelect = 'storable' AND self.excludeFromMrp = false AND self.stockManaged = true AND (:mrpTypeSelect = 1 OR self.productSubTypeSelect = 1) AND dtype = 'Product'"/>
 	        <panel-related name="productCategorySetPanel" field="productCategorySet" canEdit="false" form-view="product-category-form" grid-view="product-category-grid" canNew="false" colSpan="12"/>
 	        <panel-related name="productFamilySetPanel" field="productFamilySet" canEdit="false" form-view="product-family-form" grid-view="product-family-grid" canNew="false" colSpan="12"/>
 	        <panel-related name="saleOrderLineSetPanel" field="saleOrderLineSet" canEdit="false" form-view="sale-order-line-menu-form" grid-view="sale-order-line-menu-grid" canNew="false" colSpan="12" onSelect="action-mrp-attrs-sale-order-domain"/>
-	        <panel-related name="mrpForecastSetPanel" field="mrpForecastSet" form-view="mrp-forecast-form" grid-view="mrp-forecast-grid" colSpan="12" domain="self.statusSelect = 2 AND self.product.productTypeSelect = 'storable' AND self.product.excludeFromMrp = false AND self.forecastDate &gt;= :__config__.date  AND self.product.stockManaged = true AND (:mrpTypeSelect = 1 OR self.product.productSubTypeSelect = 1)"/>
+	        <panel-related name="mrpForecastSetPanel" field="mrpForecastSet" form-view="mrp-forecast-form" grid-view="mrp-forecast-grid" colSpan="12" domain="self.statusSelect = 2 AND self.product.productTypeSelect = 'storable' AND self.product.excludeFromMrp = false AND self.forecastDate &gt;= :__date__  AND self.product.stockManaged = true AND (:mrpTypeSelect = 1 OR self.product.productSubTypeSelect = 1)"/>
 	    </panel>
 	    <panel name="statusPanel" showIf="statusSelect == 1" colSpan="12">
 	        <field name="statusSelect" hidden="true"/>

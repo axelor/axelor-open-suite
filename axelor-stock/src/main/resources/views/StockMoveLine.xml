@@ -38,10 +38,11 @@
 		<button name="allocateAll" if="__config__.app.getApp('supplychain')?.manageStockReservation" hidden="true" title="Allocate" icon="fa-plus-square" readonlyIf="$get('stockMove.statusSelect') != 2 || $number(reservedQty) == $number(qty) || $get('product.productTypeSelect') == 'service'" onClick="save,action-supplychain-stock-move-line-allocate-all"/>
 		<button name="deallocate"  if="__config__.app.getApp('supplychain')?.manageStockReservation" hidden="true" title="Deallocate" icon="fa-minus-square" readonlyIf="$get('stockMove.statusSelect') != 2 || $number(reservedQty) == 0" onClick="save,action-supplychain-stock-move-line-deallocate-all"/>
 		<field name="qtyInvoiced" readonly="true" x-scale="2"/>
-        <field name="unitPriceUntaxed" x-scale="2" width="120px"
-            readonlyIf="lineTypeSelect == 1 || (($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3)"/>
+        <field name="unitPriceUntaxed" x-scale="2" width="120px" onChange="action-stock-move-line-record-price-onchange"
+            readonlyIf="lineTypeSelect == 1 || $get('stockMove.pickingIsEdited') || saleOrderLine || purchaseOrderLine"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
-        <field name="unit" form-view="unit-form" grid-view="unit-grid"
+			<field name="companyUnitPriceUntaxed" hidden="true"/>
+			<field name="unit" form-view="unit-form" grid-view="unit-grid"
             width="70px"
             readonlyIf="lineTypeSelect == 1 || (($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3)"/>
         <field name="netMass"
@@ -70,6 +71,8 @@
         <field name="stockMove.pickingIsEdited" hidden="true"/>
         <field name="stockMove.statusSelect" hidden="true"/>
         <field name="product.productTypeSelect" hidden="true"/>
+			<field name="saleOrderLine" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+			<field name="purchaseOrderLine" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
         <button name="trackNumberWizardBtn" title="Split by tracking numbers"
 			icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard"
 			readonlyIf="lineTypeSelect == 1 || ($get('stockMove.statusSelect') > 1 || !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; (!$get('product.trackingNumberConfiguration.isSaleTrackingManaged') || $get('stockMove.typeSelect') != 2))" />
@@ -127,7 +130,9 @@
 			<field name="$availableQtyForProduct" type="decimal" title="Available qty for product" readonly="true" hidden="true" />
 			<field name="product.trackingNumberConfiguration" hidden="true"/>
 	        <field name="oldQty"/>
-	        <field name="unitPriceUntaxed"/>
+	        <field name="unitPriceUntaxed" onChange="action-stock-move-line-record-price-onchange" readonly="true"/>
+					<field name="unitPriceTaxed" hidden="true"/>
+					<field name="companyUnitPriceUntaxed" hidden="true"/>
 					<field name="companyPurchasePrice" hidden="true"/>
 			<field name="reservedQty" showIf="product &amp;&amp; product.productTypeSelect != 'service'" readonly="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
 		    <field name="requestedReservedQty" hidden="true" readonly="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
@@ -316,9 +321,10 @@
 				</viewer>
 			</field>
 			<field name="product.trackingNumberConfiguration" hidden="true"/>
-	        <field name="unitPriceUntaxed" readonlyIf="$get('stockMove.statusSelect') > 1"/>
+	        <field name="unitPriceUntaxed" onChange="action-stock-move-line-record-price-onchange" readonly="true"/>
        		<field name="unitPriceTaxed" hidden="true"/>
-	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid" readonlyIf="$get('stockMove.statusSelect') > 1"/>
+					<field name="companyUnitPriceUntaxed" hidden="true"/>
+					<field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid" readonlyIf="$get('stockMove.statusSelect') > 1"/>
     	    <field name="netMass" x-scale="5" onChange="action-stock-move-line-group-net-mass-onchange" colSpan="3"/>
 	        <field name="totalNetMass" readonly="true" showIf="totalNetMass" colSpan="3"/>
 	        <field name="stockMove.company.stockConfig.customsMassUnit" colSpan="3"/>
@@ -424,7 +430,7 @@
 		<action name="action-stock-move-line-qty-attrs"/>
 		<action name="action-stock-move-line-attrs-hide-avg-price"/>
 		<action name="action-stock-move-line-method-compute-available-qty" if="__parent__?.statusSelect &lt; 3"/>
-        <action name="action-stock-move-picking-is-edit-attrs"/>
+        <action name="action-stock-move-line-attrs-set-readonly"/>
         <action name="action-stock-move-line-hide-reserved-qty-attrs"/>
         <action name="action-supplychain-stock-move-line-attrs-hide-button"/>
 	</action-group>
@@ -436,6 +442,7 @@
 	<action-group name="action-stock-move-line-group-all-onload">
 		<action name="action-stock-move-line-attrs"/>
 		<action name="action-stock-move-line-attrs-scale-and-precision"/>
+		<action name="action-stock-move-line-attrs-set-readonly"/>
 		<action name="action-stock-move-line-method-compute-available-qty" if="stockMove &amp;&amp; stockMove.statusSelect &lt; 3"/>
 	</action-group>
 
@@ -521,7 +528,12 @@
 		<field name="realQty" expr="eval: qty" if="__parent__?.statusSelect &lt;= 2"/>
 		<field name="realQty" expr="eval: qty" if="stockMove?.statusSelect &lt;= 2"/>
 	</action-record>
-	
+
+  <action-record name="action-stock-move-line-record-price-onchange" model="com.axelor.apps.stock.db.StockMoveLine">
+		<field name="unitPriceTaxed" expr="eval: unitPriceUntaxed"/>
+    <field name="companyUnitPriceUntaxed" expr="eval: unitPriceUntaxed"/>
+	</action-record>
+
     <action-method name="action-stock-move-line-set-product-info">
         <call class="com.axelor.apps.stock.web.StockMoveLineController" method="setProductInfo"/>
     </action-method>
@@ -610,15 +622,22 @@
 		<call class="com.axelor.apps.stock.web.StockMoveLineController" method="computeAvailableQty"/>
 	</action-method>
 
-  <action-attrs name="action-stock-move-picking-is-edit-attrs">
-    <attribute name="readonly" expr="__parent__?.pickingIsEdited" for="unitPriceUntaxed"/>
-		<attribute name="readonly" expr="__parent__?.pickingIsEdited" for="companyPurchasePrice"/>
-		<attribute name="readonly" expr="__parent__?.pickingIsEdited" for="productName"/>
-    <attribute name="readonly" expr="__parent__?.pickingIsEdited" for="lineTypeSelect"/>
-    <attribute name="readonly" expr="__parent__?.pickingIsEdited" for="unit"/>
-    <attribute name="readonly" expr="__parent__?.pickingIsEdited" for="realQty"/>
-    <attribute name="readonly" expr="__parent__?.pickingIsEdited" for="productModel"/>
-  </action-attrs>
+  <action-attrs name="action-stock-move-line-attrs-set-readonly">
+    <attribute name="readonly" expr="__parent__?.pickingIsEdited || __parent__.statusSelect == 3" for="unitPriceUntaxed"/>
+		<attribute name="readonly" expr="__parent__?.pickingIsEdited || __parent__.statusSelect == 3" for="companyPurchasePrice"/>
+		<attribute name="readonly" expr="__parent__?.pickingIsEdited || __parent__.statusSelect == 3" for="productName"/>
+    <attribute name="readonly" expr="__parent__?.pickingIsEdited || __parent__.statusSelect == 3" for="lineTypeSelect"/>
+    <attribute name="readonly" expr="__parent__?.pickingIsEdited || __parent__.statusSelect == 3" for="unit"/>
+    <attribute name="readonly" expr="__parent__?.pickingIsEdited || __parent__.statusSelect == 3" for="realQty"/>
+    <attribute name="readonly" expr="__parent__?.pickingIsEdited || __parent__.statusSelect == 3" for="productModel"/>
+		<attribute name="readonly" expr="stockMove?.pickingIsEdited || stockMove.statusSelect == 3" if="stockMove" for="unitPriceUntaxed"/>
+		<attribute name="readonly" expr="stockMove?.pickingIsEdited || stockMove.statusSelect == 3" if="stockMove" for="companyPurchasePrice"/>
+		<attribute name="readonly" expr="stockMove?.pickingIsEdited || stockMove.statusSelect == 3" if="stockMove" for="productName"/>
+		<attribute name="readonly" expr="stockMove?.pickingIsEdited || stockMove.statusSelect == 3" if="stockMove" for="lineTypeSelect"/>
+		<attribute name="readonly" expr="stockMove?.pickingIsEdited || stockMove.statusSelect == 3" if="stockMove" for="unit"/>
+		<attribute name="readonly" expr="stockMove?.pickingIsEdited || stockMove.statusSelect == 3" if="stockMove" for="realQty"/>
+		<attribute name="readonly" expr="stockMove?.pickingIsEdited || stockMove.statusSelect == 3" if="stockMove" for="productModel"/>
+	</action-attrs>
 
 	<action-attrs name="action-stock-move-line-attrs-hide-avg-price">
 		<attribute name="hidden" for="wapPrice" expr="eval: stockMove.typeSelect != 3 || !stockMove.isReversion || !stockMove.reversionOriginStockMove" if="stockMove"/>

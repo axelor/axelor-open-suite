@@ -122,6 +122,8 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
       purchaseOrder.getPurchaseOrderLineList().addAll(purchaseOrderLineList);
       purchaseOrderService.computePurchaseOrder(purchaseOrder);
       purchaseOrderRepo.save(purchaseOrder);
+      purchaseRequest.setPurchaseOrder(purchaseOrder);
+      purchaseRequestRepo.save(purchaseRequest);
     }
     List<PurchaseOrder> purchaseOrders =
         purchaseOrderMap.values().stream().collect(Collectors.toList());
