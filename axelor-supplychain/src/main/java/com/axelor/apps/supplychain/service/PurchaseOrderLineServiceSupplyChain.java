@@ -9,7 +9,4 @@ public interface PurchaseOrderLineServiceSupplyChain {
 
   public PurchaseOrderLine createPurchaseOrderLine(
       PurchaseOrder purchaseOrder, SaleOrderLine saleOrderLine) throws AxelorException;
-
-  public PurchaseOrderLine createAnalyticDistributionWithTemplate(
-      PurchaseOrderLine purchaseOrderLine);
 }
