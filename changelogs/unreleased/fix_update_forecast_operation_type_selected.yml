@@ -1,0 +1,3 @@
+---
+title: "FORECAST RECAP LINE TYPE : when the type is changed, the operation type field become empty.  Also, the title Operaton Type is replaced by Operation type and its french translation has been added"
+type: fix
