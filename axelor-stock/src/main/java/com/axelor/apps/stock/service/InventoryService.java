@@ -209,10 +209,16 @@ public class InventoryService {
       String description = line[6].replace("\"", "");
 
       int qtyScale = Beans.get(AppBaseService.class).getAppBase().getNbDecimalDigitForQty();
+      String key = code + trackingNumberSeq;
 
-      if (inventoryLineMap.containsKey(code)) {
-        inventoryLineMap.get(code).setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_EVEN));
-        inventoryLineMap.get(code).setDescription(description);
+      if (inventoryLineMap.containsKey(key)) {
+        InventoryLine inventoryLine = inventoryLineMap.get(key);
+        inventoryLine.setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_EVEN));
+        inventoryLine.setDescription(description);
+
+        if (inventoryLine.getTrackingNumber() != null) {
+          inventoryLine.getTrackingNumber().setCounter(realQty);
+        }
       } else {
         BigDecimal currentQty;
         try {
@@ -253,7 +259,8 @@ public class InventoryService {
         inventoryLine.setCurrentQty(currentQty.setScale(qtyScale, RoundingMode.HALF_EVEN));
         inventoryLine.setRealQty(realQty.setScale(qtyScale, RoundingMode.HALF_EVEN));
         inventoryLine.setDescription(description);
-        inventoryLine.setTrackingNumber(this.getTrackingNumber(trackingNumberSeq));
+        inventoryLine.setTrackingNumber(
+            this.getTrackingNumber(trackingNumberSeq, product, realQty));
         inventoryLineList.add(inventoryLine);
       }
     }
@@ -305,12 +312,26 @@ public class InventoryService {
     return inventoryLineMap;
   }
 
-  public TrackingNumber getTrackingNumber(String sequence) {
+  public TrackingNumber getTrackingNumber(String sequence, Product product, BigDecimal realQty) {
 
-    if (sequence != null && !sequence.isEmpty()) {
-      return trackingNumberRepository.findBySeq(sequence);
+    TrackingNumber trackingNumber = null;
+
+    if (!StringUtils.isEmpty(sequence)) {
+      trackingNumber =
+          trackingNumberRepository
+              .all()
+              .filter("self.trackingNumberSeq = ?1 and self.product = ?2", sequence, product)
+              .fetchOne();
+
+      if (trackingNumber == null) {
+        trackingNumber = new TrackingNumber();
+        trackingNumber.setTrackingNumberSeq(sequence);
+        trackingNumber.setProduct(product);
+        trackingNumber.setCounter(realQty);
+      }
     }
-    return null;
+
+    return trackingNumber;
   }
 
   @Transactional(rollbackOn = {Exception.class})
