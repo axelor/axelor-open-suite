@@ -38,8 +38,10 @@ import org.slf4j.LoggerFactory;
 
 public class GroupExportConfigGenerator {
 
+  // Public: To give file name's access to group importer
+  public static final String CONFIG_FILE_NAME = "input-config.xml";
+
   private final Logger log = LoggerFactory.getLogger(GroupExportConfigGenerator.class);
-  private static final String CONFIG_FILE_NAME = "input-config.xml";
   private static final String ONE_TO_ONE = "ONE_TO_ONE";
   private static final String ONE_TO_MANY = "ONE_TO_MANY";
   private static final String MANY_TO_MANY = "MANY_TO_MANY";

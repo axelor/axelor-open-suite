@@ -20,6 +20,7 @@ package com.axelor.apps.base.service.imports.importer;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.service.groupExport.GroupExportConfigGenerator;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
@@ -61,6 +62,7 @@ public abstract class Importer {
 
   private ImportConfiguration configuration;
   private File workspace;
+  private String bindFilePath;
 
   @Inject ExcelToCSV excelToCSV;
 
@@ -96,21 +98,27 @@ public abstract class Importer {
 
   public ImportHistory run(Map<String, Object> importContext) throws AxelorException, IOException {
 
-    File bind = MetaFiles.getPath(configuration.getBindMetaFile()).toFile(),
-        data = MetaFiles.getPath(configuration.getDataMetaFile()).toFile();
+    File bind = null, data = MetaFiles.getPath(configuration.getDataMetaFile()).toFile();
 
-    if (!bind.exists()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.IMPORTER_1));
-    }
     if (!data.exists()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.IMPORTER_2));
     }
 
     File fileWorkspace = createFinalWorkspace(configuration.getDataMetaFile());
+
+    if (!configuration.getIsGroupImport()) {
+      bind = MetaFiles.getPath(configuration.getBindMetaFile()).toFile();
+      bindFilePath = bind.exists() ? bind.getAbsolutePath() : bindFilePath;
+    }
+
+    if (bindFilePath == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, I18n.get(IExceptionMessage.IMPORTER_1));
+    }
+
     ImportHistory importHistory =
-        process(bind.getAbsolutePath(), fileWorkspace.getAbsolutePath(), importContext);
+        process(bindFilePath, fileWorkspace.getAbsolutePath(), importContext);
     deleteFinalWorkspace(fileWorkspace);
 
     return importHistory;
@@ -166,6 +174,7 @@ public abstract class Importer {
   protected void unZip(File file, File directory) throws IOException {
 
     File extractFile = null;
+
     try (ZipFile zipFile = new ZipFile(file); ) {
       Enumeration<? extends ZipEntry> entries = zipFile.entries();
 
@@ -189,6 +198,12 @@ public abstract class Importer {
               fileOutputStream.write(buffer, 0, bytesRead);
             }
           }
+
+          if (configuration.getIsGroupImport()
+              && extractFile.getName().equals(GroupExportConfigGenerator.CONFIG_FILE_NAME)) {
+            bindFilePath = extractFile.exists() ? extractFile.getAbsolutePath() : bindFilePath;
+          }
+
           if (Files.getFileExtension(extractFile.getName()).equals("xlsx")) {
             importExcel(extractFile);
           }

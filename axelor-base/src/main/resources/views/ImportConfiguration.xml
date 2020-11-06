@@ -12,15 +12,41 @@
         <field name="createdOn" />
 	</grid>
 	
-	<form name="import-configuration-form" title="Import" model="com.axelor.apps.base.db.ImportConfiguration" onNew="action-import-record-default" width="large">
+	<grid name="group-import-grid" title="Group Imports" model="com.axelor.apps.base.db.ImportConfiguration">
+		<field name="name"/>
+        <field name="dataMetaFile" form-view="meta-files-form" grid-view="meta-files-grid"/>
+        <field name="user" form-view="user-form" grid-view="user-grid"/>
+        <field name="createdOn" />
+	</grid>
+	
+	<form name="import-configuration-form" title="Import" model="com.axelor.apps.base.db.ImportConfiguration" onNew="action-import-record-default"  width="large">
         <panel name="mainPanel" >
         	<field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"/>
         	<field name="name"/>
 	        <field name="typeSelect"/>
-	        <field name="bindMetaFile" widget="binary-link" domain="self.fileType = 'text/xml'" canNew="true" form-view="meta-files-form" grid-view="meta-files-grid"/>
+	        <field name="bindMetaFile" widget="binary-link" domain="self.fileType = 'text/xml'" canNew="true" 
+	        	form-view="meta-files-form" grid-view="meta-files-grid" required="true"/>
 			<field name="dataMetaFile" widget="binary-link" onSelect="action-attar-set-data-meta-file-domain" canNew="true" form-view="meta-files-form" grid-view="meta-files-grid"/>
 			<field name="startDateTime" readonly="true"/>
 			<field name="endDateTime" readonly="true"/>
+			<button name="importBtn" title="Importer" colSpan="4" onClick="save,action-attrs-import-configuration-set-status-date,save,action-import-configuration-method-run,save" prompt="Are you sure you want to start the import?" />
+        </panel>
+        <panel-tabs name="mainPanelTab">
+        	<panel name="descriptionPanel" title="Description"> 
+        		<field name="description" colSpan="12" showTitle="false" widget="html" />
+        	</panel>
+        	<panel-related name="importHistoryListPanel" field="importHistoryList" title="Historical" form-view="import-history-form" grid-view="import-history-grid" readonly="true"/>
+        </panel-tabs>
+	</form>
+	
+	<form name="group-import-form" title="Group import" model="com.axelor.apps.base.db.ImportConfiguration" onNew="action-import-record-default" width="large">
+        <panel name="mainPanel" >
+        	<field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"/>
+        	<field name="name"/>
+			<field name="dataMetaFile" widget="binary-link" onSelect="action-attar-set-data-meta-file-domain" canNew="true" form-view="meta-files-form" grid-view="meta-files-grid"/>
+			<field name="startDateTime" readonly="true"/>
+			<field name="endDateTime" readonly="true"/>
+			<field name="isGroupImport" readonly="true"/>
 			<button name="importBtn" title="Importer" colSpan="4" onClick="save,action-attrs-import-configuration-set-status-date,save,action-import-configuration-method-run,save" prompt="Are you sure you want to start the import?" />
         </panel>
         <panel-tabs name="mainPanelTab">
@@ -51,6 +77,7 @@
 	
     <action-record name="action-import-record-default" model="com.axelor.apps.base.db.ImportConfiguration">
       <field name="user" expr="eval: __user__"/>
+      <field name="isGroupImport" expr="eval: _isGroupImport"/>
     </action-record>
     
    <action-attrs model="com.axelor.apps.base.db.ImportConfiguration" name="action-attar-set-data-meta-file-domain">
@@ -67,5 +94,4 @@
    	<attribute name="value" for="statusSelect" expr="eval: __repo__(ImportConfiguration).STATUS_IN_PROGRESS"/>
    	<attribute name="value" for="endDateTime" expr="eval: null" if="endDateTime"/>
    </action-attrs>
-   
 </object-views>

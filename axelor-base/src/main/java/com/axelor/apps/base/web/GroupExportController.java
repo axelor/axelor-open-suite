@@ -46,6 +46,7 @@ public class GroupExportController {
       if (metaFile != null) {
         Beans.get(AdvancedExportController.class).downloadExportFile(response, metaFile);
       }
+      response.setReload(true);
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);

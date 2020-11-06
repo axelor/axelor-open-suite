@@ -862,5 +862,12 @@
       <view type="form" name="group-export-form"/>
   </action-view>
   
-  <menuitem title="Group import" name="admin-root-group-export-import-advance-import" parent="admin-root-group-export-import"/>
+  <menuitem title="Group import" name="admin-root-group-export-import-advance-import" parent="admin-root-group-export-import" action="action-group-import-view-all"/>
+  <action-view name="action-group-import-view-all" title="Group Imports" model="com.axelor.apps.base.db.ImportConfiguration">
+      <view type="grid" name="group-import-grid"/>
+      <view type="form" name="group-import-form"/>
+      <domain>self.isGroupImport = true</domain>
+      <context name="_isGroupImport" expr="eval: true"/>
+  </action-view>
+  
 </object-views>
