@@ -1,0 +1,3 @@
+---
+title: "FORECAST GENERATOR : Copying a forecast generator keeps only the values of fields filled at its creation and resets the other fields"
+type: fix
