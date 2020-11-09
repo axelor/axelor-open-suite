@@ -211,9 +211,7 @@ public class MoveCreateService {
     move.setPartner(partner);
     move.setPaymentMode(paymentMode);
     move.setTechnicalOriginSelect(technicalOriginSelect);
-    if (functionalOriginSelect != -1) {
-      move.setFunctionalOriginSelect(functionalOriginSelect);
-    }
+    move.setFunctionalOriginSelect(functionalOriginSelect);
     moveRepository.save(move);
     move.setReference(Beans.get(SequenceService.class).getDraftSequenceNumber(move));
 
