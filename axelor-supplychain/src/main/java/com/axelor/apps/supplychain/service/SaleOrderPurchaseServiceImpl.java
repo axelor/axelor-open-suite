@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -49,15 +50,18 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
+  protected PurchaseOrderSupplychainService purchaseOrderSupplychainService;
   protected PurchaseOrderLineServiceSupplyChain purchaseOrderLineServiceSupplychain;
+  protected PurchaseOrderService purchaseOrderService;
 
   @Inject
   public SaleOrderPurchaseServiceImpl(
-      PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl,
-      PurchaseOrderLineServiceSupplychainImpl purchaseOrderLineServiceSupplychain) {
-    this.purchaseOrderServiceSupplychainImpl = purchaseOrderServiceSupplychainImpl;
+      PurchaseOrderSupplychainService purchaseOrderSupplychainService,
+      PurchaseOrderLineServiceSupplyChain purchaseOrderLineServiceSupplychain,
+      PurchaseOrderService purchaseOrderService) {
+    this.purchaseOrderSupplychainService = purchaseOrderSupplychainService;
     this.purchaseOrderLineServiceSupplychain = purchaseOrderLineServiceSupplychain;
+    this.purchaseOrderService = purchaseOrderService;
   }
 
   @Override
@@ -115,7 +119,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
         saleOrder.getSaleOrderSeq());
 
     PurchaseOrder purchaseOrder =
-        purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
+        purchaseOrderSupplychainService.createPurchaseOrder(
             AuthUtils.getUser(),
             saleOrder.getCompany(),
             supplierPartner.getContactPartnerSet().size() == 1
@@ -154,7 +158,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
               purchaseOrder, saleOrderLine));
     }
 
-    purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
+    purchaseOrderService.computePurchaseOrder(purchaseOrder);
 
     purchaseOrder.setNotes(supplierPartner.getPurchaseOrderComments());
 
