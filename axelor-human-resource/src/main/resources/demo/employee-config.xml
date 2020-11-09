@@ -32,6 +32,8 @@
 	
 	<input file="hr_employee.csv" separator=";" type="com.axelor.apps.hr.db.Employee" search="self.importId  = :importId" update="true">
 		<bind to="mainEmploymentContract" search="self.importId = :importId"/>
+		<bind to="hireDate" column="hireDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(hireDate)" />
+		<bind to="leavingDate" column="leavingDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(leavingDate)" />
 	</input>
  	
  	<input file="auth_user.csv" separator=";" search="self.importId = :importId" type="com.axelor.auth.db.User" update="true" />
