@@ -15,15 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.businessproject.service;
+package com.axelor.apps.cash.management.service;
 
-import com.axelor.apps.project.db.Project;
-import com.axelor.apps.sale.db.SaleOrderLine;
-import java.util.List;
+import com.axelor.apps.cash.management.db.ForecastGenerator;
 
-public interface SaleOrderLineProjectService {
+public class ForecastGeneratorToolService {
 
-  public void setProject(List<Long> saleOrderLineIds, Project project);
-
-  public SaleOrderLine updateAnalyticDistributionWithProject(SaleOrderLine saleOrderLine);
+  public static void resetForecastGeneratorStatusOnCopy(ForecastGenerator copy) {
+    copy.setTypeSelect(null);
+    copy.setAmount(null);
+    copy.setFromDate(null);
+    copy.setToDate(null);
+    copy.setForecastReason(null);
+    copy.setComments(null);
+  }
 }

@@ -4662,6 +4662,52 @@ else dataSetRow["planned_end_datet"]</expression>
                             </group>
                         </table>
                         <grid id="4871">
+                            <property name="dataSet">ResidualProductDS</property>
+                            <list-property name="visibility">
+                                <structure>
+                                    <property name="format">all</property>
+                                    <expression name="valueExpr" type="javascript">row["count"] == 0</expression>
+                                </structure>
+                            </list-property>
+                            <list-property name="paramBindings">
+                                <structure>
+                                    <property name="paramName">param_1</property>
+                                    <simple-property-list name="expression">
+                                        <value type="javascript">row["id"]</value>
+                                    </simple-property-list>
+                                </structure>
+                            </list-property>
+                            <list-property name="boundDataColumns">
+                                <structure>
+                                    <property name="name">product_name</property>
+                                    <text-property name="displayName">product_name</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["product_name"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">qty</property>
+                                    <text-property name="displayName">qty</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["qty"]</expression>
+                                    <property name="dataType">decimal</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">unit_name</property>
+                                    <text-property name="displayName">unit_name</text-property>
+                                    <expression name="expression" type="javascript">dataSetRow["unit_name"]</expression>
+                                    <property name="dataType">string</property>
+                                </structure>
+                                <structure>
+                                    <property name="name">count</property>
+                                    <property name="dataType">integer</property>
+                                    <property name="aggregateFunction">COUNT</property>
+                                    <list-property name="arguments">
+                                        <structure>
+                                            <property name="name">Expression</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="allowExport">true</property>
+                                </structure>
+                            </list-property>
                             <column id="4872"/>
                             <column id="4873"/>
                             <column id="4874"/>
@@ -4745,7 +4791,7 @@ else dataSetRow["planned_end_datet"]</expression>
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">row['id']</value>
+                                                    <value type="javascript">row._outer["id"]</value>
                                                 </simple-property-list>
                                             </structure>
                                         </list-property>

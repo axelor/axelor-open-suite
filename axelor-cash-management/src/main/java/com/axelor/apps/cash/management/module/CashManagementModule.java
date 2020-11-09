@@ -20,7 +20,9 @@ package com.axelor.apps.cash.management.module;
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.bankpayment.service.move.MoveServiceBankPaymentImpl;
 import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
+import com.axelor.apps.cash.management.db.repo.CashManagementForecastGeneratorRepository;
 import com.axelor.apps.cash.management.db.repo.CashManagementForecastRecapRepository;
+import com.axelor.apps.cash.management.db.repo.ForecastGeneratorRepository;
 import com.axelor.apps.cash.management.db.repo.ForecastRecapRepository;
 import com.axelor.apps.cash.management.service.InvoiceServiceManagementImpl;
 import com.axelor.apps.cash.management.service.move.MoveServiceCashManagementImpl;
@@ -32,5 +34,6 @@ public class CashManagementModule extends AxelorModule {
     bind(ForecastRecapRepository.class).to(CashManagementForecastRecapRepository.class);
     bind(InvoiceServiceProjectImpl.class).to(InvoiceServiceManagementImpl.class);
     bind(MoveServiceBankPaymentImpl.class).to(MoveServiceCashManagementImpl.class);
+    bind(ForecastGeneratorRepository.class).to(CashManagementForecastGeneratorRepository.class);
   }
 }
