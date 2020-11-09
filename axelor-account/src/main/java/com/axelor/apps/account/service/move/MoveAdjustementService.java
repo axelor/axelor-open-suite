@@ -209,7 +209,13 @@ public class MoveAdjustementService {
     // Move
     Move move =
         moveCreateService.createMove(
-            journal, company, null, partnerDebit, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,debitMoveLineToReconcile.getMove().getFunctionalOriginSelect());
+            journal,
+            company,
+            null,
+            partnerDebit,
+            null,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            debitMoveLineToReconcile.getMove().getFunctionalOriginSelect());
 
     MoveLine debitMoveLine =
         moveLineService.createMoveLine(

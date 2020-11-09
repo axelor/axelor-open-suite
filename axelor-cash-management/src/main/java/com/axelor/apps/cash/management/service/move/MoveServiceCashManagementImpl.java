@@ -54,9 +54,9 @@ public class MoveServiceCashManagementImpl extends MoveServiceBankPaymentImpl {
   @Transactional(rollbackOn = Exception.class)
   public Move createMove(Invoice invoice) throws AxelorException {
     Move move = super.createMove(invoice);
-    if(invoice.getSaleOrder() != null) {
+    if (invoice.getSaleOrder() != null) {
       move.setFunctionalOriginSelect(MoveRepository.FUNCTIONAL_ORIGIN_SALE);
-    }else if (invoice.getPurchaseOrder() != null) {
+    } else if (invoice.getPurchaseOrder() != null) {
       move.setFunctionalOriginSelect(MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE);
     }
     return move;

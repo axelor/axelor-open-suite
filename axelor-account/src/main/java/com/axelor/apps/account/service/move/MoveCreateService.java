@@ -211,7 +211,7 @@ public class MoveCreateService {
     move.setPartner(partner);
     move.setPaymentMode(paymentMode);
     move.setTechnicalOriginSelect(technicalOriginSelect);
-    if(functionalOriginSelect != -1) {
+    if (functionalOriginSelect != -1) {
       move.setFunctionalOriginSelect(functionalOriginSelect);
     }
     moveRepository.save(move);
