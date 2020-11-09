@@ -163,7 +163,8 @@ public class MoveServiceImpl implements MoveService {
               partner,
               invoice.getInvoiceDate(),
               invoice.getPaymentMode(),
-              MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+              MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+              0);
 
       if (move != null) {
 
@@ -316,7 +317,8 @@ public class MoveServiceImpl implements MoveService {
                 partner,
                 invoice.getInvoiceDate(),
                 null,
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
 
         if (move != null) {
           BigDecimal totalCreditAmount = moveToolService.getTotalCreditAmount(creditMoveLineList);
@@ -391,7 +393,8 @@ public class MoveServiceImpl implements MoveService {
             partner,
             invoice.getInvoiceDate(),
             null,
-            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
 
     if (oDmove != null) {
       BigDecimal totalDebitAmount = moveToolService.getTotalDebitAmount(debitMoveLines);
@@ -454,6 +457,7 @@ public class MoveServiceImpl implements MoveService {
             dateOfReversion,
             move.getPaymentMode(),
             MoveRepository.TECHNICAL_ORIGIN_ENTRY,
+            move.getFunctionalOriginSelect(),
             move.getIgnoreInDebtRecoveryOk(),
             move.getIgnoreInAccountingOk(),
             move.getAutoYearClosureMove());

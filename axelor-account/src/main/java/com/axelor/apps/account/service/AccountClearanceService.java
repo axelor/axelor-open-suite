@@ -177,7 +177,7 @@ public class AccountClearanceService {
         moveService
             .getMoveCreateService()
             .createMove(
-                journal, company, null, partner, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+                journal, company, null, partner, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC, moveLine.getMove().getFunctionalOriginSelect());
 
     // Debit MoveLine 411
     BigDecimal amount = moveLine.getAmountRemaining();

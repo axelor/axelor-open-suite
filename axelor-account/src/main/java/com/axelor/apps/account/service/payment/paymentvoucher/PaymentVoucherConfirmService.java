@@ -213,7 +213,8 @@ public class PaymentVoucherConfirmService {
                   payerPartner,
                   paymentDate,
                   paymentMode,
-                  MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+                  MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+                  MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
 
       move.setPaymentVoucher(paymentVoucher);
 

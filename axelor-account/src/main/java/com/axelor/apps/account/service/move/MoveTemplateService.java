@@ -144,7 +144,9 @@ public class MoveTemplateService {
                     partner,
                     moveDate,
                     null,
-                    MoveRepository.TECHNICAL_ORIGIN_TEMPLATE);
+                    MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
+                    -1
+                    );
         int counter = 1;
 
         for (MoveTemplateLine moveTemplateLine : moveTemplate.getMoveTemplateLineList()) {
@@ -232,7 +234,8 @@ public class MoveTemplateService {
                     null,
                     moveDate,
                     null,
-                    MoveRepository.TECHNICAL_ORIGIN_TEMPLATE);
+                    MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
+                    -1);
         int counter = 1;
 
         for (MoveTemplateLine moveTemplateLine : moveTemplate.getMoveTemplateLineList()) {

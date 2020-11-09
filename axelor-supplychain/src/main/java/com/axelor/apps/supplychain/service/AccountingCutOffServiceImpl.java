@@ -295,7 +295,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             partner,
             moveDate,
             null,
-            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_CUT_OFF);
 
     counter = 0;
 

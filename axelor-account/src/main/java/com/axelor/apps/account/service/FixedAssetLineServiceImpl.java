@@ -107,7 +107,8 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
             partner,
             date,
             null,
-            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE);
 
     if (move != null) {
       List<MoveLine> moveLines = new ArrayList<MoveLine>();
@@ -184,7 +185,8 @@ public class FixedAssetLineServiceImpl implements FixedAssetLineService {
             partner,
             date,
             null,
-            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE);
 
     if (move != null) {
       List<MoveLine> moveLines = new ArrayList<MoveLine>();

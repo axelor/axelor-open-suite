@@ -833,7 +833,6 @@ public class IrrecoverableService {
     Partner payerPartner = invoice.getPartner();
 
     AccountConfig accountConfig = company.getAccountConfig();
-
     // Move
     Move move =
         moveService
@@ -844,7 +843,8 @@ public class IrrecoverableService {
                 null,
                 payerPartner,
                 null,
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+                MoveRepository.FUNCTIONAL_ORIGIN_SALE);
 
     int seq = 1;
 
@@ -960,7 +960,8 @@ public class IrrecoverableService {
                 null,
                 payerPartner,
                 null,
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
+                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+                moveLine.getMove().getFunctionalOriginSelect());
 
     int seq = 1;
 
