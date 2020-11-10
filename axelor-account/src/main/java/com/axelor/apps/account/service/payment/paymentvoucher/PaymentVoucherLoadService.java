@@ -326,7 +326,7 @@ public class PaymentVoucherLoadService {
       BigDecimal maxAmountToPayRemaining = amountToPay;
       for (MoveLine moveLine : moveLineInvoiceToPay) {
         if (maxAmountToPayRemaining.compareTo(BigDecimal.ZERO) > 0) {
-          BigDecimal amountPay = maxAmountToPayRemaining.min(moveLine.getAmountRemaining());
+          BigDecimal amountPay = maxAmountToPayRemaining.min(moveLine.getAmountRemaining().abs());
           moveLine.setMaxAmountToReconcile(amountPay);
           debitMoveLines.add(moveLine);
           maxAmountToPayRemaining = maxAmountToPayRemaining.subtract(amountPay);

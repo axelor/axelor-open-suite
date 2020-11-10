@@ -180,7 +180,7 @@ public class AccountClearanceService {
                 journal, company, null, partner, null, MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC);
 
     // Debit MoveLine 411
-    BigDecimal amount = moveLine.getAmountRemaining();
+    BigDecimal amount = moveLine.getAmountRemaining().abs();
     MoveLine debitMoveLine =
         moveLineService.createMoveLine(
             move,

@@ -117,7 +117,7 @@ public class DebtRecoveryService {
     BigDecimal balanceSubstract = this.getSubstractBalanceDue(partner);
     BigDecimal balanceDueDebtRecovery = BigDecimal.ZERO;
     for (MoveLine moveLine : moveLineList) {
-      balanceDueDebtRecovery = balanceDueDebtRecovery.add(moveLine.getAmountRemaining());
+      balanceDueDebtRecovery = balanceDueDebtRecovery.add(moveLine.getAmountRemaining().abs());
     }
     balanceDueDebtRecovery = balanceDueDebtRecovery.add(balanceSubstract);
     return balanceDueDebtRecovery;
@@ -130,7 +130,7 @@ public class DebtRecoveryService {
     for (MoveLine moveLine : moveLineQuery) {
       if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
         if (moveLine.getAccount() != null && moveLine.getAccount().getUseForPartnerBalance()) {
-          balance = balance.subtract(moveLine.getAmountRemaining());
+          balance = balance.subtract(moveLine.getAmountRemaining().abs());
         }
       }
     }
@@ -258,7 +258,7 @@ public class DebtRecoveryService {
               && (appAccountService.getTodayDate(company).isAfter(moveLine.getDueDate())
                   || appAccountService.getTodayDate(company).isEqual(moveLine.getDueDate()))) {
             if (moveLine.getAccount() != null && moveLine.getAccount().getUseForPartnerBalance()) {
-              if (moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+              if (moveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0) {
                 moveLineList.add(moveLine);
               }
             }
@@ -272,7 +272,7 @@ public class DebtRecoveryService {
               && (appAccountService.getTodayDate(company).isAfter(moveLine.getDueDate())
                   || appAccountService.getTodayDate(company).isEqual(moveLine.getDueDate()))) {
             if (moveLine.getAccount() != null && moveLine.getAccount().getUseForPartnerBalance()) {
-              if (moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+              if (moveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0) {
                 moveLineList.add(moveLine);
               }
             }
@@ -303,7 +303,7 @@ public class DebtRecoveryService {
         PaymentScheduleLine paymentScheduleLine = getPaymentScheduleFromMoveLine(partner, moveLine);
         if (paymentScheduleLine != null) {
           // Si un montant reste à payer, c'est à dire une échéance rejeté
-          if (moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
+          if (moveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0) {
             paymentScheduleLineList.add(paymentScheduleLine);
           }
         }

@@ -191,7 +191,7 @@ public class NotificationServiceImpl implements NotificationService {
     MoveLine invoiceMoveLine = findInvoiceAccountMoveLine(invoice);
     MoveLine subrogationReleaseMoveLine = findSubrogationReleaseAccountMoveLine(invoice);
 
-    if (invoiceMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) == 1) {
+    if (invoiceMoveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) == 1) {
       reconcileService.reconcile(invoiceMoveLine, creditMoveLine, true, true);
       if (subrogationReleaseMoveLine != null
           && notificationItem.getTypeSelect()

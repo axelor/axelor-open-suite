@@ -88,14 +88,14 @@ public class AccountCustomerService {
                     + "FROM public.account_move_line AS moveline "
                     + "WHERE moveline.debit > 0  GROUP BY moveline.id, moveline.amount_remaining) AS m1 ON (m1.moveline_id = ml.id) "
                     + "LEFT OUTER JOIN ( "
-                    + "SELECT moveline.amount_remaining AS sum_remaining, moveline.id AS moveline_id "
+                    + "SELECT ABS(moveline.amount_remaining) AS sum_remaining, moveline.id AS moveline_id "
                     + "FROM public.account_move_line AS moveline "
-                    + "WHERE moveline.credit > 0  GROUP BY moveline.id, moveline.amount_remaining) AS m2 ON (m2.moveline_id = ml.id) "
+                    + "WHERE moveline.credit > 0  GROUP BY moveline.id, ABS(moveline.amount_remaining)) AS m2 ON (m2.moveline_id = ml.id) "
                     + "LEFT OUTER JOIN public.account_account AS account ON (ml.account = account.id) "
                     + "LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "
                     + "WHERE ml.partner = ?1 AND move.company = ?2 AND move.ignore_in_accounting_ok IN ('false', null)"
                     + "AND account.use_for_partner_balance = 'true'"
-                    + "AND (move.status_select = ?3 or move.status_select = ?4) AND ml.amount_remaining > 0 ")
+                    + "AND (move.status_select = ?3 or move.status_select = ?4) AND ABS(ml.amount_remaining) > 0 ")
             .setParameter(1, partner)
             .setParameter(2, company)
             .setParameter(3, MoveRepository.STATUS_VALIDATED)
@@ -138,15 +138,15 @@ public class AccountCustomerService {
                     + "AND ((moveline.due_date IS NULL AND moveline.date_val <= ?1) OR (moveline.due_date IS NOT NULL AND moveline.due_date <= ?1)) "
                     + "GROUP BY moveline.id, moveline.amount_remaining) AS m1 on (m1.moveline_id = ml.id) "
                     + "LEFT OUTER JOIN ( "
-                    + "SELECT moveline.amount_remaining AS sum_remaining, moveline.id AS moveline_id "
+                    + "SELECT ABS(moveline.amount_remaining) AS sum_remaining, moveline.id AS moveline_id "
                     + "FROM public.account_move_line AS moveline "
                     + "WHERE moveline.credit > 0 "
-                    + "GROUP BY moveline.id, moveline.amount_remaining) AS m2 ON (m2.moveline_id = ml.id) "
+                    + "GROUP BY moveline.id, ABS(moveline.amount_remaining)) AS m2 ON (m2.moveline_id = ml.id) "
                     + "LEFT OUTER JOIN public.account_account AS account ON (ml.account = account.id) "
                     + "LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "
                     + "WHERE ml.partner = ?2 AND move.company = ?3 AND move.ignore_in_debt_recovery_ok IN ('false', null) "
                     + "AND move.ignore_in_accounting_ok IN ('false', null) AND account.use_for_partner_balance = 'true'"
-                    + "AND (move.status_select = ?4 OR move.status_select = ?5) AND ml.amount_remaining > 0 ")
+                    + "AND (move.status_select = ?4 OR move.status_select = ?5) AND ABS(ml.amount_remaining) > 0 ")
             .setParameter(
                 1,
                 Date.from(
@@ -213,16 +213,16 @@ public class AccountCustomerService {
                     + "OR (moveline.due_date IS NULL AND moveline.date_val < ?2)) "
                     + "GROUP BY moveline.id, moveline.amount_remaining) AS m1 ON (m1.moveline_id = ml.id) "
                     + "LEFT OUTER JOIN ( "
-                    + "SELECT moveline.amount_remaining AS sum_remaining, moveline.id AS moveline_id "
+                    + "SELECT ABS(moveline.amount_remaining) AS sum_remaining, moveline.id AS moveline_id "
                     + "FROM public.account_move_line AS moveline "
                     + "WHERE moveline.credit > 0 "
-                    + "GROUP BY moveline.id, moveline.amount_remaining) AS m2 ON (m2.moveline_id = ml.id) "
+                    + "GROUP BY moveline.id, ABS(moveline.amount_remaining)) AS m2 ON (m2.moveline_id = ml.id) "
                     + "LEFT OUTER JOIN public.account_account AS account ON (ml.account = account.id) "
                     + "LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "
                     + "LEFT JOIN public.account_invoice AS invoice ON (move.invoice = invoice.id) "
                     + "WHERE ml.partner = ?3 AND move.company = ?4 AND move.ignore_in_debt_recovery_ok in ('false', null) "
                     + "AND move.ignore_in_accounting_ok IN ('false', null) AND account.use_for_partner_balance = 'true'"
-                    + "AND (move.status_select = ?5 OR move.status_select = ?6) AND ml.amount_remaining > 0 "
+                    + "AND (move.status_select = ?5 OR move.status_select = ?6) AND ABS(ml.amount_remaining) > 0 "
                     + "AND (invoice IS NULL OR invoice.debt_recovery_blocking_ok = FALSE) ")
             .setParameter(1, mailTransitTime)
             .setParameter(
