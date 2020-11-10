@@ -1,0 +1,7 @@
+---
+title: "Configurator: fix issues in import/export"
+type: fix
+description: |
+  Add missing product family formula in demo data.
+  Fix imported attributes of meta json field missing updated configurator
+  creator id.
