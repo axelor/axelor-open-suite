@@ -1257,7 +1257,11 @@ public class IrrecoverableService {
 
     for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList()) {
       if (paymentScheduleLine.getRejectMoveLine() != null
-          && paymentScheduleLine.getRejectMoveLine().getAmountRemaining().abs().compareTo(BigDecimal.ZERO)
+          && paymentScheduleLine
+                  .getRejectMoveLine()
+                  .getAmountRemaining()
+                  .abs()
+                  .compareTo(BigDecimal.ZERO)
               > 0) {
         paymentScheduleLineRejectMoveLineList.add(paymentScheduleLine.getRejectMoveLine());
       }
@@ -1296,7 +1300,11 @@ public class IrrecoverableService {
 
     for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList()) {
       if (paymentScheduleLine.getRejectMoveLine() != null
-          && paymentScheduleLine.getRejectMoveLine().getAmountRemaining().abs().compareTo(BigDecimal.ZERO)
+          && paymentScheduleLine
+                  .getRejectMoveLine()
+                  .getAmountRemaining()
+                  .abs()
+                  .compareTo(BigDecimal.ZERO)
               > 0) {
         paymentScheduleLineRejectMoveLineList.add(paymentScheduleLine.getRejectMoveLine());
       }

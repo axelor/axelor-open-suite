@@ -380,7 +380,8 @@ public class ReconcileServiceImpl implements ReconcileService {
       boolean canBeZeroBalanceOk,
       boolean updateInvoicePayments)
       throws AxelorException {
-    BigDecimal amount = debitMoveLine.getAmountRemaining().min(creditMoveLine.getAmountRemaining().abs());
+    BigDecimal amount =
+        debitMoveLine.getAmountRemaining().min(creditMoveLine.getAmountRemaining().abs());
     Reconcile reconcile =
         this.createReconcile(debitMoveLine, creditMoveLine, amount, canBeZeroBalanceOk);
     if (reconcile != null) {
