@@ -184,13 +184,14 @@
 
 	<menuitem name="manufacturing-mps" parent="manufacturing-root" title="MPS" order="43" if="__config__.app.isApp('supplychain')"/>
 
-	<menuitem name="manufacturing-mps-master-production-scheduling" parent="manufacturing-mps" title="Master Production Scheduling"
+	<menuitem name="manufacturing-mps-master-production-scheduling" parent="manufacturing-mps" title="MPS"
 		action="manufacturing.mps.master.production.scheduling" order="1"/>
 
-	<action-view name="manufacturing.mps.master.production.scheduling" title="Master Production Scheduling"
+	<action-view name="manufacturing.mps.master.production.scheduling" title="MPS"
 		model="com.axelor.apps.supplychain.db.Mrp">
 		<view type="grid" name="mrp-grid"/>
 		<view type="form" name="mrp-manuf-order-form"/>
+		<view-param name="forceTitle" value="true"/>
 		<domain>self.mrpTypeSelect = 2</domain>
 	</action-view>
 
