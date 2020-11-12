@@ -131,6 +131,7 @@ public class EmployeeController {
     String fileLink =
         ReportFactory.createReport(IReport.EMPLOYEE, name + "-${date}")
             .addParam("EmployeeId", Long.valueOf(employee.getId()))
+            .addParam("Locale", ReportSettings.getPrintingLocale(null))
             .generate()
             .getFileLink();
 
