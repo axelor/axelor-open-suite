@@ -51,7 +51,9 @@ public class ForecastService {
               forecastGenerator.getCompany(),
               forecastGenerator.getBankDetails(),
               forecastGenerator.getTypeSelect(),
-              forecastGenerator.getAmount(),
+              forecastGenerator.getTypeSelect() == 1
+                  ? forecastGenerator.getAmount().abs()
+                  : forecastGenerator.getAmount().negate(),
               itDate,
               forecastGenerator.getForecastReason(),
               forecastGenerator.getComments());
