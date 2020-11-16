@@ -1,3 +1,0 @@
----
-title: "Use Optional mapping for all AuthUtils.getUser() usage to prevent npe thrown when it returns null"
-type: fix

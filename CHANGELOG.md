@@ -1,3 +1,57 @@
+## [6.0.2] (2020-11-16)
+
+#### Changes
+
+* MRP: add error log panel.
+* Stock Config: Add inventory valuation type configuration.
+* Project: When generating sale order from project changed name of the generated tab from 'Sale order' to 'Sale quotation'.
+* PURCHASE REQUEST: Show purchase order with its status and receipt state in follow-up panel and remove purchase orders.
+* Add exclude task filter in demo data for job costing app.
+* OperationOrder: Modify the machineWorkCenter field name to machine & Resolve calendar color issue.
+* USER: Add boolean to display the electronic signature on quotations.
+* Refund: the file name now indicates 'Refund' instead of 'Invoice' if we print a refund.
+* PURCHASE REQUEST: Two new fields requester and validator added.
+
+#### Fixed
+
+* Invoice and Purchase Order: Set project to invoice and purchase order lines when generated from sale order.
+* Stock Move Line: unit price becomes readonly if the stock move is generated from orders.
+* PurchaseOrder: Fix error on requesting due to missing production module field in report.
+* PROJECT: Add filter for project field in project planning time line editor.
+* LEAVE REQUEST: Show validation and refusal fields only if filled.
+* App: prevent user from deleting or adding an app from interface.
+* Invoice: changed error message when ventilating an invoice anterior to the last ventilated invoice.
+* Invoice : Date of the last ventilated invoice is now displayed
+* FORECAST RECAP LINE TYPE: when the type is changed, the operation type field become empty.
+* FORECAST RECAP LINE TYPE: the title Operaton Type is replaced by Operation type and its french translation has been added.
+* CONVERT LEAD WIZARD FORM: Add partner information translation.
+* PURCHASE REQUEST: Delete value from status select.
+* Project: show task invoicing dashlet only on business projects.
+* ADVANCED EXPORT: Extended selections are not exported.
+* Bank Statement Lines: line color is now accurate when importing a bank statement.
+* Configurator: fix issues in import/export
+
+Add missing product family formula in demo data.
+Fix imported attributes of meta json field missing updated configurator creator id.
+
+* Inventory: Add missing fields in demo data.
+* PAYMENT: Fix error message when multi bank details is enabled.
+* FORECAST GENERATOR: Copying a forecast generator keeps only the values of fields filled at its creation and resets the other fields.
+* Opportunity: Fix sequence on demo data.
+* MRP form: remove duplicate product panel in filter.
+* PURCHASE REQUEST CREATOR: Delete purchase request creator object.
+* Partner: Hide the generate project button in partner contact form view.
+* Inventory: Add missing translations, fix header display and add inventory sequence on each report page.
+* Stock Move Line: fixed conversion issue when changing values in editable-grid and form view.
+* Stock Move: fix location planned quantity not updating on some cases on real quantity change in planned stock moves.
+* Prevent NPE on current user when some services were called from a scheduler.
+* Analytic Move Line: Change project depending on the state of the parent Order or Invoice
+* EMPLOYMENT CONTRACT: fixed EmploymentContractTemplate doesn't exist error when printing
+* Manufacturing order: Display residual products in report printing only if products exist.
+* ADVANCED EXPORT: Add error message when user language is null.
+* AppCrm: Change french translation of the configuration to display customer description in opportunity.
+* Product: fix bill of materials generated from product form view not appearing in bill of materials list.
+
 ## [6.0.1] (2020-10-22)
 
 #### Features
@@ -130,5 +184,6 @@ be set in SMTP account configuration.
 * LeaveReason: rename `leaveReason` field into `name`.
 * JobPosition: Remove character limit on Profile Wanted field.
 
+[6.0.2]: https://github.com/axelor/axelor-open-suite/compare/v6.0.1...v6.0.2
 [6.0.1]: https://github.com/axelor/axelor-open-suite/compare/v6.0.0...v6.0.1
 [6.0.0]: https://github.com/axelor/axelor-open-suite/compare/v5.4.1...v6.0.0
