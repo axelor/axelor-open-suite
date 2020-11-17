@@ -1,5 +1,0 @@
----
-title: "Invoice : changed error message when ventilating an invoice antorior to the last ventilated invoice"
-type: fix
-description : |
-   Invoice : Date of the last ventilated invoice is now displayed

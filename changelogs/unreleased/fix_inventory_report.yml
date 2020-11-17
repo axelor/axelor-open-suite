@@ -1,5 +1,0 @@
----
-title: "Inventory : Fix report"
-type: fix
-description: |
-  Add missing translations, fix header display and add inventory sequence on each report page.
