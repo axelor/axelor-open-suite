@@ -1,5 +1,0 @@
----
-title: "Manufacturing order : Manage visibility of residual products in report printing"
-type: fix
-description : |
-   Manufacturing order : Display residual products only if products exist.
