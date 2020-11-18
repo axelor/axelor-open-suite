@@ -1,0 +1,3 @@
+---
+title: "Configurator: link the generated bill of materials to the generated sale order line even if we do not generate a product."
+type: fix

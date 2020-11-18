@@ -65,12 +65,17 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
       JsonContext jsonIndicators,
       SaleOrder saleOrder)
       throws AxelorException {
+
+    SaleOrderLine saleOrderLine =
+        super.generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
     ConfiguratorBOM configuratorBOM = configurator.getConfiguratorCreator().getConfiguratorBom();
     if (configuratorBOM != null && checkConditions(configuratorBOM, jsonAttributes)) {
-      Beans.get(ConfiguratorBomService.class)
-          .generateBillOfMaterial(configuratorBOM, jsonAttributes, 0, null);
+      BillOfMaterial billOfMaterial =
+          Beans.get(ConfiguratorBomService.class)
+              .generateBillOfMaterial(configuratorBOM, jsonAttributes, 0, null);
+      saleOrderLine.setBillOfMaterial(billOfMaterial);
     }
-    return super.generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
+    return saleOrderLine;
   }
 
   protected boolean checkConditions(ConfiguratorBOM configuratorBOM, JsonContext jsonAttributes)
