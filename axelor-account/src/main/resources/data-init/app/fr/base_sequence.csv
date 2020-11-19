@@ -1,4 +1,4 @@
-"importId";"code";"name";"sequenceTypeSelect";"sequenceLettersTypeSelect";"nextNum";"padding";"prefixe";"suffixe";"toBeAdded";"yearlyResetOk"
+"importId";"codeSelect";"name";"sequenceTypeSelect";"sequenceLettersTypeSelect";"nextNum";"padding";"prefixe";"suffixe";"toBeAdded";"yearlyResetOk"
 100;"accountClearance";"Apurement des trop-perçus";"NUMBERS";"UPPERCASE";1;4;"APURMT%YY";;1;1
 101;"chequeReject";"Rejet chèques";"NUMBERS";"UPPERCASE";1;4;"REJCHQ%YY";;1;1
 102;"invoice";"Facture de vente";"NUMBERS";"UPPERCASE";1;4;"FC%YY";;1;1

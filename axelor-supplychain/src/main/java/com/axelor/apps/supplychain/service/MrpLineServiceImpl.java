@@ -27,9 +27,13 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
+import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
@@ -39,6 +43,8 @@ import com.axelor.apps.supplychain.db.MrpForecast;
 import com.axelor.apps.supplychain.db.MrpLine;
 import com.axelor.apps.supplychain.db.MrpLineOrigin;
 import com.axelor.apps.supplychain.db.MrpLineType;
+import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
+import com.axelor.apps.supplychain.db.repo.MrpLineOriginRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.auth.AuthUtils;
@@ -64,24 +70,36 @@ public class MrpLineServiceImpl implements MrpLineService {
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected AppBaseService appBaseService;
-  protected PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
+  protected PurchaseOrderSupplychainService purchaseOrderSupplychainService;
+  protected PurchaseOrderService purchaseOrderService;
   protected PurchaseOrderLineService purchaseOrderLineService;
   protected PurchaseOrderRepository purchaseOrderRepo;
   protected StockRulesService stockRulesService;
+  protected SaleOrderLineRepository saleOrderLineRepo;
+  protected PurchaseOrderLineRepository purchaseOrderLineRepo;
+  protected MrpForecastRepository mrpForecastRepo;
 
   @Inject
   public MrpLineServiceImpl(
       AppBaseService appBaseService,
-      PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl,
+      PurchaseOrderSupplychainService purchaseOrderSupplychainService,
+      PurchaseOrderService purchaseOrderService,
       PurchaseOrderLineService purchaseOrderLineService,
       PurchaseOrderRepository purchaseOrderRepo,
-      StockRulesService stockRulesService) {
+      StockRulesService stockRulesService,
+      SaleOrderLineRepository saleOrderLineRepo,
+      PurchaseOrderLineRepository purchaseOrderLineRepo,
+      MrpForecastRepository mrpForecastRepo) {
 
     this.appBaseService = appBaseService;
-    this.purchaseOrderServiceSupplychainImpl = purchaseOrderServiceSupplychainImpl;
+    this.purchaseOrderSupplychainService = purchaseOrderSupplychainService;
+    this.purchaseOrderService = purchaseOrderService;
     this.purchaseOrderLineService = purchaseOrderLineService;
     this.purchaseOrderRepo = purchaseOrderRepo;
     this.stockRulesService = stockRulesService;
+    this.saleOrderLineRepo = saleOrderLineRepo;
+    this.purchaseOrderLineRepo = purchaseOrderLineRepo;
+    this.mrpForecastRepo = mrpForecastRepo;
   }
 
   @Override
@@ -146,16 +164,16 @@ public class MrpLineServiceImpl implements MrpLineService {
     if (purchaseOrder == null) {
       purchaseOrder =
           purchaseOrderRepo.save(
-              purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
+              purchaseOrderSupplychainService.createPurchaseOrder(
                   AuthUtils.getUser(),
                   company,
                   null,
                   supplierPartner.getCurrency(),
                   maturityDate,
-                  "MRP-" + appBaseService.getTodayDate().toString(), // TODO sequence on mrp
+                  this.getPurchaseOrderOrigin(mrpLine),
                   null,
                   stockLocation,
-                  appBaseService.getTodayDate(),
+                  appBaseService.getTodayDate(company),
                   Beans.get(PartnerPriceListService.class)
                       .getDefaultPriceList(supplierPartner, PriceListRepository.TYPE_PURCHASE),
                   supplierPartner,
@@ -167,6 +185,19 @@ public class MrpLineServiceImpl implements MrpLineService {
       } else {
         if (purchaseOrders != null) {
           purchaseOrders.put(key, purchaseOrder);
+        }
+      }
+      if (mrpLine.getMrpLineOriginList().size() == 1) {
+        if (mrpLine
+            .getMrpLineOriginList()
+            .get(0)
+            .getRelatedToSelect()
+            .equals(MrpLineOriginRepository.RELATED_TO_SALE_ORDER_LINE)) {
+          purchaseOrder.setGeneratedSaleOrderId(
+              saleOrderLineRepo
+                  .find(mrpLine.getMrpLineOriginList().get(0).getRelatedToSelectId())
+                  .getSaleOrder()
+                  .getId());
         }
       }
     }
@@ -185,9 +216,45 @@ public class MrpLineServiceImpl implements MrpLineService {
     poLine.setDesiredDelivDate(maturityDate);
     purchaseOrder.addPurchaseOrderLineListItem(poLine);
 
-    purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
+    purchaseOrderService.computePurchaseOrder(purchaseOrder);
 
     linkToOrder(mrpLine, purchaseOrder);
+  }
+
+  protected String getPurchaseOrderOrigin(MrpLine mrpLine) {
+    String origin = "";
+    int count = 0;
+    for (MrpLineOrigin mrpLineOrigin : mrpLine.getMrpLineOriginList()) {
+      count++;
+      origin += getMrpLineOriginStr(mrpLineOrigin);
+      if (count < mrpLine.getMrpLineOriginList().size()) {
+        origin += " & ";
+      }
+    }
+    return origin;
+  }
+
+  protected String getMrpLineOriginStr(MrpLineOrigin mrpLineOrigin) {
+    if (mrpLineOrigin
+        .getRelatedToSelect()
+        .equals(MrpLineOriginRepository.RELATED_TO_SALE_ORDER_LINE)) {
+      SaleOrder saleOrder =
+          saleOrderLineRepo.find(mrpLineOrigin.getRelatedToSelectId()).getSaleOrder();
+      return saleOrder.getSaleOrderSeq();
+    }
+    if (mrpLineOrigin
+        .getRelatedToSelect()
+        .equals(MrpLineOriginRepository.RELATED_TO_PURCHASE_ORDER_LINE)) {
+      PurchaseOrder purchaseOrder =
+          purchaseOrderLineRepo.find(mrpLineOrigin.getRelatedToSelectId()).getPurchaseOrder();
+      return purchaseOrder.getPurchaseOrderSeq();
+    }
+    if (mrpLineOrigin
+        .getRelatedToSelect()
+        .equals(MrpLineOriginRepository.RELATED_TO_MRP_FORECAST)) {
+      return mrpLineOrigin.getMrpLine().getMrp().getMrpSeq() + "-" + I18n.get("MRP forecast");
+    }
+    return "";
   }
 
   protected void linkToOrder(MrpLine mrpLine, AuditableModel order) {

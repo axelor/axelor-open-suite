@@ -54,8 +54,7 @@ public class ForecastService {
               forecastGenerator.getAmount(),
               itDate,
               forecastGenerator.getForecastReason(),
-              forecastGenerator.getComments(),
-              forecastGenerator.getRealizedSelect());
+              forecastGenerator.getComments());
       forecastRepo.save(forecast);
       itDate = fromDate.plusMonths(++count * forecastGenerator.getPeriodicitySelect());
     }
@@ -69,8 +68,7 @@ public class ForecastService {
       BigDecimal amount,
       LocalDate estimatedDate,
       ForecastReason reason,
-      String comments,
-      int realizedSelect) {
+      String comments) {
 
     Forecast forecast = new Forecast();
     forecast.setForecastGenerator(forecastGenerator);
@@ -80,7 +78,6 @@ public class ForecastService {
     forecast.setEstimatedDate(estimatedDate);
     forecast.setForecastReason(reason);
     forecast.setComments(comments);
-    forecast.setRealizedSelect(realizedSelect);
 
     return forecast;
   }
@@ -89,12 +86,7 @@ public class ForecastService {
   public void reset(ForecastGenerator forecastGenerator) {
     forecastRepo
         .all()
-        .filter(
-            "self.forecastGenerator = ? AND (self.realizedSelect = ? OR (self.realizedSelect = ? AND self.estimatedDate > ?))",
-            forecastGenerator,
-            ForecastRepository.REALISED_SELECT_NO,
-            ForecastRepository.REALISED_SELECT_AUTO,
-            appBaseService.getTodayDate())
+        .filter("self.forecastGenerator = ? AND self.realizationDate IS NULL", forecastGenerator)
         .remove();
   }
 }

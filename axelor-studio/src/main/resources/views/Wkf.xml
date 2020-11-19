@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
   
   <grid name="wkf-grid" title="Process studio" model="com.axelor.studio.db.Wkf">
 	  <field name="code" x-bind="{{code|unaccent|uppercase}}" x-pattern="[a-zA-Z][a-zA-Z0-9_\\$]+"/>
@@ -143,11 +143,11 @@
   </action-attrs>
   
   <action-attrs name="action-wkf-filter-meta-json-field-domain">
-  	<attribute for="metaJsonField" name="domain" expr="eval:&quot;(self.jsonModel.name = '${_parent.model}' OR self.model = '${_parent.model}') AND self.targetModel IS NULL AND self.targetJsonModel IS NULL&quot;"/>
+  	<attribute for="metaJsonField" name="domain" expr="eval:&quot;(self.jsonModel.name = '${__parent__.model}' OR self.model = '${__parent__.model}') AND self.targetModel IS NULL AND self.targetJsonModel IS NULL&quot;"/>
   </action-attrs>
   
   <action-attrs name="action-wkf-filter-meta-field-domain">
-      <attribute for="metaField" name="domain" expr="eval:&quot;self.metaModel.fullName = '${_parent.model}' AND self.relationship IS NULL&quot;"/>
+      <attribute for="metaField" name="domain" expr="eval:&quot;self.metaModel.fullName = '${__parent__.model}' AND self.relationship IS NULL&quot;"/>
   </action-attrs>
   
   <action-view name="open.wkf.dashboard" title="Workflow dashboard">

@@ -58,4 +58,12 @@ public class SaleOrderLineProjectServiceImpl extends SaleOrderLineServiceSupplyC
     }
     return soLine;
   }
+
+  @Override
+  public SaleOrderLine updateAnalyticDistributionWithProject(SaleOrderLine saleOrderLine) {
+    for (AnalyticMoveLine analyticMoveLine : saleOrderLine.getAnalyticMoveLineList()) {
+      analyticMoveLine.setProject(saleOrderLine.getProject());
+    }
+    return saleOrderLine;
+  }
 }

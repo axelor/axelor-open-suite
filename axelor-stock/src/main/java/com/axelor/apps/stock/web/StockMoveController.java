@@ -67,9 +67,24 @@ public class StockMoveController {
 
     StockMove stockMove = request.getContext().asType(StockMove.class);
     try {
+      // we have to inject TraceBackService to use non static methods
+      TraceBackService traceBackService = Beans.get(TraceBackService.class);
+      long tracebackCount = traceBackService.countMessageTraceBack(stockMove);
       Beans.get(StockMoveService.class)
           .plan(Beans.get(StockMoveRepository.class).find(stockMove.getId()));
       response.setReload(true);
+      if (traceBackService.countMessageTraceBack(stockMove) > tracebackCount) {
+        traceBackService
+            .findLastMessageTraceBack(stockMove)
+            .ifPresent(
+                traceback ->
+                    response.setNotify(
+                        String.format(
+                            I18n.get(
+                                com.axelor.apps.message.exception.IExceptionMessage
+                                    .SEND_EMAIL_EXCEPTION),
+                            traceback.getMessage())));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -95,6 +110,9 @@ public class StockMoveController {
 
     try {
       StockMove stockMove = Beans.get(StockMoveRepository.class).find(stockMoveFromRequest.getId());
+      // we have to inject TraceBackService to use non static methods
+      TraceBackService traceBackService = Beans.get(TraceBackService.class);
+      long tracebackCount = traceBackService.countMessageTraceBack(stockMove);
       String newSeq = Beans.get(StockMoveService.class).realize(stockMove);
 
       response.setReload(true);
@@ -111,6 +129,18 @@ public class StockMoveController {
         } else {
           response.setFlash(String.format(I18n.get(IExceptionMessage.STOCK_MOVE_9), newSeq));
         }
+      }
+      if (traceBackService.countMessageTraceBack(stockMove) > tracebackCount) {
+        traceBackService
+            .findLastMessageTraceBack(stockMove)
+            .ifPresent(
+                traceback ->
+                    response.setNotify(
+                        String.format(
+                            I18n.get(
+                                com.axelor.apps.message.exception.IExceptionMessage
+                                    .SEND_EMAIL_EXCEPTION),
+                            traceback.getMessage())));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -19,13 +19,14 @@ package com.axelor.apps.businessproject.web;
 
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.exception.IExceptionMessage;
+import com.axelor.apps.businessproject.service.ProjectAnalyticMoveLineService;
 import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectGeneratorType;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.exception.AxelorException;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.ResponseMessageType;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -40,6 +41,7 @@ import com.google.inject.Singleton;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Optional;
 
 @Singleton
 public class SaleOrderProjectController {
@@ -109,14 +111,15 @@ public class SaleOrderProjectController {
     }
   }
 
-  public void updateLines(ActionRequest request, ActionResponse response) throws AxelorException {
-    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
-
-    for (SaleOrderLine orderLine : saleOrder.getSaleOrderLineList()) {
-      orderLine.setProject(saleOrder.getProject());
+  public void updateLines(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+      saleOrder = Beans.get(ProjectAnalyticMoveLineService.class).updateLines(saleOrder);
+      response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
   }
 
   private LocalDateTime getElementStartDate(Context context) {
@@ -125,7 +128,11 @@ public class SaleOrderProjectController {
     if (!Strings.isNullOrEmpty(stringStartDate)) {
       date = LocalDateTime.ofInstant(Instant.parse(stringStartDate), ZoneId.systemDefault());
     } else {
-      date = Beans.get(AppBaseService.class).getTodayDate().atStartOfDay();
+      date =
+          Beans.get(AppBaseService.class)
+              .getTodayDate(
+                  Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
+              .atStartOfDay();
     }
     return date;
   }

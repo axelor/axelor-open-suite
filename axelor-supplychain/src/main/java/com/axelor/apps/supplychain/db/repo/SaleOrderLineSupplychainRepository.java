@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.supplychain.db.repo;
 
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -40,7 +41,12 @@ public class SaleOrderLineSupplychainRepository extends SaleOrderLineRepository 
         || saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE
         || saleOrder.getStatusSelect() != SaleOrderRepository.STATUS_ORDER_CONFIRMED
         || saleOrder.getStockLocation() == null
-        || saleOrderLine.getDeliveryState() == SaleOrderLineRepository.DELIVERY_STATE_DELIVERED) {
+        || saleOrderLine.getDeliveryState() == SaleOrderLineRepository.DELIVERY_STATE_DELIVERED
+        || (saleOrderLine.getProduct() != null
+            && saleOrderLine
+                .getProduct()
+                .getProductTypeSelect()
+                .equals(ProductRepository.PRODUCT_TYPE_SERVICE))) {
       return super.populate(json, context);
     }
 

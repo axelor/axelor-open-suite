@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 	
 	
 	<menuitem name="sc-root-sale" title="Sales" order="-106"  if="__config__.app.isApp('sale')"
@@ -79,7 +79,7 @@
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="_template" expr="eval:false" />
-        <context name="todayDate" expr="eval: __config__.app.getTodayDate()"/>
+        <context name="todayDate" expr="eval: __config__.app.getTodayDate(__user__.activeCompany)"/>
 	</action-view>	
 	
 	<menuitem name="sc-root-sale-orders" parent="sc-root-sale" order="25"
@@ -97,7 +97,7 @@
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="_template" expr="eval:false" />
 		<context name="status" expr="3"/>
-        <context name="todayDate" expr="eval: __config__.app.getTodayDate()"/>
+        <context name="todayDate" expr="eval: __config__.app.getTodayDate(__user__.activeCompany)"/>
 	</action-view>
 	
 	<search-filters name="sc.root.sale.templates.filter" model="com.axelor.apps.sale.db.SaleOrder" title="My Templates">
@@ -131,6 +131,7 @@
 		<context name="_internalUser" expr="eval: __user__.id"/>
 		<context name="_myActiveTeam" expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
 		<context name="_template" expr="eval:false" />
+		<context name="status" expr="eval: [1,2,3,4,5]"/>
 	</action-view>
 	
 	<menuitem name="sc-root-sale-report" parent="sc-root-sale" title="Reportings"  order="40" icon="fa-bar-chart"/>
@@ -308,7 +309,7 @@
 		<view type="dashboard" name="sale.saleman.dashboard.sample" />
     	<context name="_user" expr="eval:__user__"/>
     	<context name="_user_id" expr="eval:__user__.id"/>
-    	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>
+    	<context name="_past_month" expr="eval: __config__.date.minusMonths(1)"/>
 	</action-view>
 		
 	<menuitem name="menu-sale-manager-dashboard-sample" parent="sc-root-sale-report" order="-200"
@@ -316,7 +317,7 @@
 
 	<action-view name="sale.manager.dashboard.view.sample" title="Sales Manager Details">
 		<view type="dashboard" name="sale.manager.dashboard.sample" />
-    	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>
+    	<context name="_past_month" expr="eval: __config__.date.minusMonths(1)"/>
 	</action-view>	
 	
 	<menuitem name="menu-sale-dashboard-1" parent="sc-root-sale-report"  
@@ -326,7 +327,7 @@
 		<view type="dashboard" name="sale.dashboard.view.1" />	 
 		<context name="_user" expr="eval:__user__"/>
     	<context name="_user_id" expr="eval:__user__.id"/>
-    	<context name="_past_month" expr="eval: __date__.minusMonths(1)"/>  
+    	<context name="_past_month" expr="eval: __config__.date.minusMonths(1)"/>
 	</action-view>
 	
 	<menuitem name="menu-sale-dashboard-2" parent="sc-root-sale-report"  
@@ -334,7 +335,7 @@
 		
 	<action-view name="sale.dashboard.2" title="Turnover Study">
 		<view type="dashboard" name="sale.dashboard.view.2" />	 
-		<context name="_past_month" expr="eval: __date__.minusMonths(1)"/> 
+		<context name="_past_month" expr="eval: __config__.date.minusMonths(1)"/>
 	</action-view>
 
 	<menuitem name="menu-dashboards-customers"  parent="sc-root-sale-report"

@@ -19,6 +19,7 @@ package com.axelor.apps.supplychain.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
+import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationServiceImpl;
 import com.axelor.apps.account.service.BudgetService;
@@ -32,6 +33,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToo
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
+import com.axelor.apps.purchase.service.PurchaseOrderWorkflowServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.apps.purchase.service.PurchaseProductServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseRequestServiceImpl;
@@ -57,6 +59,7 @@ import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
 import com.axelor.apps.supplychain.db.repo.AdvancePaymentSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.AnalyticMoveLineSupplychainRepository;
+import com.axelor.apps.supplychain.db.repo.InvoiceSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.MrpForecastManagementRepository;
 import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
 import com.axelor.apps.supplychain.db.repo.MrpManagementRepository;
@@ -92,11 +95,13 @@ import com.axelor.apps.supplychain.service.ProjectedStockService;
 import com.axelor.apps.supplychain.service.ProjectedStockServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
+import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
+import com.axelor.apps.supplychain.service.PurchaseOrderWorkflowServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseRequestServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.ReservedQtyServiceImpl;
@@ -127,6 +132,8 @@ import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveMultiInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveMultiInvoiceServiceImpl;
+import com.axelor.apps.supplychain.service.StockMoveReservedQtyService;
+import com.axelor.apps.supplychain.service.StockMoveReservedQtyServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychain;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockRulesServiceSupplychainImpl;
@@ -223,5 +230,11 @@ public class SupplychainModule extends AxelorModule {
     bind(PurchaseOrderSupplychainService.class).to(PurchaseOrderServiceSupplychainImpl.class);
     bind(SaleOrderSupplychainService.class).to(SaleOrderServiceSupplychainImpl.class);
     bind(StockMoveServiceSupplychain.class).to(StockMoveServiceSupplychainImpl.class);
+    bind(InvoiceManagementRepository.class).to(InvoiceSupplychainRepository.class);
+    bind(StockMoveReservedQtyService.class).to(StockMoveReservedQtyServiceImpl.class);
+    bind(PurchaseOrderLineServiceSupplyChain.class)
+        .to(PurchaseOrderLineServiceSupplychainImpl.class);
+    bind(PurchaseOrderWorkflowServiceImpl.class)
+        .to(PurchaseOrderWorkflowServiceSupplychainImpl.class);
   }
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
  
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
  
@@ -25,7 +25,7 @@
         <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" transient="true"/>
         <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit" transient="true"/>
     
-	<boolean name="isEditedByUser" title="Edited by user"/>
+		<boolean name="isEditedByUser" title="Edited by user"/>
 		
   </entity>
 

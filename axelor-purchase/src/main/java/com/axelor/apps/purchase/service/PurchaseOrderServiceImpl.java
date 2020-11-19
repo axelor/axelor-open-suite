@@ -45,6 +45,7 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.report.IReport;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
+import com.axelor.apps.purchase.service.print.PurchaseOrderPrintService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -276,6 +277,10 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
     ReportFactory.createReport(IReport.PURCHASE_ORDER, title + "-${date}")
         .addParam("PurchaseOrderId", purchaseOrder.getId())
+        .addParam(
+            "PurchaseOrderLineQuery",
+            Beans.get(PurchaseOrderPrintService.class)
+                .getPurchaseOrderLineDataSetQuery(purchaseOrder.getId()))
         .addParam("Locale", language)
         .addParam(
             "Timezone",
@@ -301,7 +306,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
       String reason =
           blocking.getBlockingReason() != null ? blocking.getBlockingReason().getName() : "";
       throw new AxelorException(
-          TraceBackRepository.TYPE_FUNCTIONNAL,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(IExceptionMessage.SUPPLIER_BLOCKED) + " " + reason,
           partner);
     }
@@ -352,7 +357,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             null,
             numSeq,
             externalRef,
-            LocalDate.now(),
+            appPurchaseService.getTodayDate(company),
             priceList,
             supplierPartner,
             tradingName);
@@ -405,7 +410,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
         Product product = purchaseOrderLine.getProduct();
         if (product != null) {
-          Currency lastPurchaseCurrency = purchaseOrder.getCurrency();
           BigDecimal lastPurchasePrice =
               (Boolean) productCompanyService.get(product, "inAti", purchaseOrder.getCompany())
                   ? purchaseOrderLine.getInTaxPrice()
@@ -419,8 +423,6 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
           productCompanyService.set(
               product, "lastPurchasePrice", lastPurchasePrice, purchaseOrder.getCompany());
-          productCompanyService.set(
-              product, "lastPurchaseCurrency", lastPurchaseCurrency, purchaseOrder.getCompany());
           if ((Boolean)
               productCompanyService.get(
                   product, "defShipCoefByPartner", purchaseOrder.getCompany())) {
@@ -466,41 +468,5 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
       }
       purchaseOrderRepo.save(purchaseOrder);
     }
-  }
-
-  @Override
-  @Transactional
-  public void draftPurchaseOrder(PurchaseOrder purchaseOrder) {
-
-    purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_DRAFT);
-    purchaseOrderRepo.save(purchaseOrder);
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void validatePurchaseOrder(PurchaseOrder purchaseOrder) throws AxelorException {
-    computePurchaseOrder(purchaseOrder);
-
-    purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_VALIDATED);
-    purchaseOrder.setValidationDate(appPurchaseService.getTodayDate());
-    purchaseOrder.setValidatedByUser(AuthUtils.getUser());
-
-    purchaseOrder.setSupplierPartner(validateSupplier(purchaseOrder));
-
-    updateCostPrice(purchaseOrder);
-  }
-
-  @Override
-  @Transactional
-  public void finishPurchaseOrder(PurchaseOrder purchaseOrder) {
-    purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_FINISHED);
-    purchaseOrderRepo.save(purchaseOrder);
-  }
-
-  @Override
-  @Transactional
-  public void cancelPurchaseOrder(PurchaseOrder purchaseOrder) {
-    purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_CANCELED);
-    purchaseOrderRepo.save(purchaseOrder);
   }
 }

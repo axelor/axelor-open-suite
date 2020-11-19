@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
     
     <grid name="production-order-grid" title="Production orders" model="com.axelor.apps.production.db.ProductionOrder" orderBy="-productionOrderSeq">
     <hilite color="danger" if="prioritySelect == 3"/>
@@ -22,6 +22,7 @@
             <button name="showManufOrderWizardBtn" title="Add Manuf. Order" onClick="save,action-production-order-view-add-manuf-order-wizard"/>
         </toolbar>
         <panel name="mainPanel">
+        	<field name="statusSelect" showTitle="false" readonly="true" colSpan="12" widget="NavSelect"/>
             <field name="productionOrderSeq"/>
             <field name="prioritySelect">
                 <viewer>
@@ -69,6 +70,8 @@
     
     <action-attrs name="action-add-manuf-order-wizard-attrs-scale">
     	<attribute name="scale" for="$qty" expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    	<attribute name="domain" for="$product" expr="eval:&quot;self.expense = false and self.productTypeSelect = 'storable' and self.procurementMethodSelect = 'produce'&quot;" if=" __config__.app.isApp('expense')" />
+    	<attribute name="domain" for="$product" expr="eval:&quot;self.productTypeSelect = 'storable' and self.procurementMethodSelect = 'produce'&quot;" if="!__config__.app.isApp('expense')" />
     </action-attrs>
 
     <action-attrs if-module="axelor-business-production" name="action-production-order-attrs-title-project">

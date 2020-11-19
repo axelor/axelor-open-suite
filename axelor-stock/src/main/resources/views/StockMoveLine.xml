@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
     <grid name="stock-move-line-grid" title="Stock move lines"
       model="com.axelor.apps.stock.db.StockMoveLine" onNew="action-stock-move-line-attrs-sub-line" editable="true">
@@ -35,13 +35,14 @@
 		<field name="reservedQty" if-module="axelor-supplychain"
 			if="__config__.app.getApp('supplychain').getManageStockReservation()"
 			aggregate="sum" readonly="true" x-scale="2"/>
-		<button name="allocateAll" if="__config__.app.getApp('supplychain')?.manageStockReservation" hidden="true" title="Allocate" icon="fa-plus-square" readonlyIf="$get('stockMove.statusSelect') != 2 || $number(reservedQty) == $number(qty)" onClick="save,action-supplychain-stock-move-line-allocate-all"/>
+		<button name="allocateAll" if="__config__.app.getApp('supplychain')?.manageStockReservation" hidden="true" title="Allocate" icon="fa-plus-square" readonlyIf="$get('stockMove.statusSelect') != 2 || $number(reservedQty) == $number(qty) || $get('product.productTypeSelect') == 'service'" onClick="save,action-supplychain-stock-move-line-allocate-all"/>
 		<button name="deallocate"  if="__config__.app.getApp('supplychain')?.manageStockReservation" hidden="true" title="Deallocate" icon="fa-minus-square" readonlyIf="$get('stockMove.statusSelect') != 2 || $number(reservedQty) == 0" onClick="save,action-supplychain-stock-move-line-deallocate-all"/>
 		<field name="qtyInvoiced" readonly="true" x-scale="2"/>
-        <field name="unitPriceUntaxed" x-scale="2" width="120px"
-            readonlyIf="lineTypeSelect == 1 || (($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3)"/>
+        <field name="unitPriceUntaxed" x-scale="2" width="120px" onChange="action-stock-move-line-record-price-onchange"
+            readonlyIf="lineTypeSelect == 1 || $get('stockMove.pickingIsEdited') || saleOrderLine || purchaseOrderLine"/>
         <field name="unitPriceTaxed" x-scale="2" hidden="true"/>
-        <field name="unit" form-view="unit-form" grid-view="unit-grid"
+			<field name="companyUnitPriceUntaxed" hidden="true"/>
+			<field name="unit" form-view="unit-form" grid-view="unit-grid"
             width="70px"
             readonlyIf="lineTypeSelect == 1 || (($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3)"/>
         <field name="netMass"
@@ -69,6 +70,9 @@
         <field name="stockMove" width="120" hidden="true" />
         <field name="stockMove.pickingIsEdited" hidden="true"/>
         <field name="stockMove.statusSelect" hidden="true"/>
+        <field name="product.productTypeSelect" hidden="true"/>
+			<field name="saleOrderLine" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+			<field name="purchaseOrderLine" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
         <button name="trackNumberWizardBtn" title="Split by tracking numbers"
 			icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard"
 			readonlyIf="lineTypeSelect == 1 || ($get('stockMove.statusSelect') > 1 || !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; (!$get('product.trackingNumberConfiguration.isSaleTrackingManaged') || $get('stockMove.typeSelect') != 2))" />
@@ -108,7 +112,7 @@
                 ]]>
 				</viewer>
 			</field>
-			<field name="isQtyRequested" showTitle="false" colSpan="2" readonly="true" showIf="isQtyRequested" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+			<field name="isQtyRequested" showTitle="false" colSpan="2" readonly="true" showIf="isQtyRequested &amp;&amp; product &amp;&amp; product.productTypeSelect != 'service'" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 				<viewer><![CDATA[
 						<h4>
 							<span class="label label-success" ng-show="record.isQtyRequested" x-translate>Reservation requested</span>
@@ -122,13 +126,15 @@
 	        <field name="qty" onChange="action-stock-move-line-group-qty-onchange" colSpan="3" readonlyIf="$get('stockMove.statusSelect') > 1"/>
 	        <field name="realQty" colSpan="3" onChange="action-stock-move-line-group-real-qty-onchange"/>
 	        <field name="qtyInvoiced" colSpan="6" readonly="true"/>
-			<field name="$availableQty" type="decimal" title="Available qty" readonly="true" hidden="true" />
+			<field name="$availableQty" showIf="product &amp;&amp; productTypeSelect != 'service'" type="decimal" title="Available qty" readonly="true" hidden="true" />
 			<field name="$availableQtyForProduct" type="decimal" title="Available qty for product" readonly="true" hidden="true" />
 			<field name="product.trackingNumberConfiguration" hidden="true"/>
 	        <field name="oldQty"/>
-	        <field name="unitPriceUntaxed"/>
+	        <field name="unitPriceUntaxed" onChange="action-stock-move-line-record-price-onchange" readonly="true"/>
+					<field name="unitPriceTaxed" hidden="true"/>
+					<field name="companyUnitPriceUntaxed" hidden="true"/>
 					<field name="companyPurchasePrice" hidden="true"/>
-			<field name="reservedQty" readonly="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
+			<field name="reservedQty" showIf="product &amp;&amp; product.productTypeSelect != 'service'" readonly="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
 		    <field name="requestedReservedQty" hidden="true" readonly="true" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()" colSpan="3"/>
 			<panel name="reservedQtyBtnsPanel" colSpan="12" if-module="axelor-supplychain" if="__config__.app.getApp('supplychain').getManageStockReservation()">
 				<button name="updateAllocatedQtyBtn" colSpan="6" hidden="true" title="Change allocated qty" onClick="action-view-stock-move-line-allocated-qty-wizard"/>
@@ -315,9 +321,10 @@
 				</viewer>
 			</field>
 			<field name="product.trackingNumberConfiguration" hidden="true"/>
-	        <field name="unitPriceUntaxed" readonlyIf="$get('stockMove.statusSelect') > 1"/>
+	        <field name="unitPriceUntaxed" onChange="action-stock-move-line-record-price-onchange" readonly="true"/>
        		<field name="unitPriceTaxed" hidden="true"/>
-	        <field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid" readonlyIf="$get('stockMove.statusSelect') > 1"/>
+					<field name="companyUnitPriceUntaxed" hidden="true"/>
+					<field name="unit" canEdit="false" colSpan="3" form-view="unit-form" grid-view="unit-grid" readonlyIf="$get('stockMove.statusSelect') > 1"/>
     	    <field name="netMass" x-scale="5" onChange="action-stock-move-line-group-net-mass-onchange" colSpan="3"/>
 	        <field name="totalNetMass" readonly="true" showIf="totalNetMass" colSpan="3"/>
 	        <field name="stockMove.company.stockConfig.customsMassUnit" colSpan="3"/>
@@ -398,11 +405,11 @@
     
     <action-attrs name="action-track-number-atts-readonly-dates">
 		<attribute name="readonly" for="warrantyExpirationDate"
-			expr="eval: __repo__(TrackingNumber).all().filter('self.product.id = ?1 and self.trackingNumberSeq = ?2', _parent._stockMoveLine.product.id, trackingNumberSeq).count() &gt; 0"
-			if="_parent != null &amp;&amp; _parent._hasWarranty" />
+			expr="eval: __repo__(TrackingNumber).all().filter('self.product.id = ?1 and self.trackingNumberSeq = ?2', __parent__._stockMoveLine.product.id, trackingNumberSeq).count() &gt; 0"
+			if="__parent__ != null &amp;&amp; __parent__._hasWarranty" />
 		<attribute name="readonly" for="perishableExpirationDate"
-			expr="__repo__(TrackingNumber).all().filter('self.product.id = ?1 and self.trackingNumberSeq = ?2', _parent._stockMoveLine.product.id, trackingNumberSeq).count() &gt; 0"
-			if="_parent != null &amp;&amp; _parent._isPerishable" />
+			expr="__repo__(TrackingNumber).all().filter('self.product.id = ?1 and self.trackingNumberSeq = ?2', __parent__._stockMoveLine.product.id, trackingNumberSeq).count() &gt; 0"
+			if="__parent__ != null &amp;&amp; __parent__._isPerishable" />
 	</action-attrs>
 
     <action-attrs name="action-stock-move-attrs-change-conformity">
@@ -422,19 +429,20 @@
 		<action name="action-stock-move-line-tracking-number-attrs"/>
 		<action name="action-stock-move-line-qty-attrs"/>
 		<action name="action-stock-move-line-attrs-hide-avg-price"/>
-		<action name="action-stock-move-line-method-compute-available-qty" if="_parent?.statusSelect &lt; 3"/>
-        <action name="action-stock-move-picking-is-edit-attrs"/>
+		<action name="action-stock-move-line-method-compute-available-qty" if="__parent__?.statusSelect &lt; 3"/>
+        <action name="action-stock-move-line-attrs-set-readonly"/>
         <action name="action-stock-move-line-hide-reserved-qty-attrs"/>
         <action name="action-supplychain-stock-move-line-attrs-hide-button"/>
 	</action-group>
 	
 	<action-attrs name="action-stock-move-line-hide-reserved-qty-attrs">
-	    <attribute name="hidden" for="reservedQty,requestedReservedQty" expr="eval: __parent__?.typeSelect == 3 || stockMove?.typeSelect == 3"/>
+	    <attribute name="hidden" for="reservedQty,requestedReservedQty" expr="eval: __parent__?.typeSelect == 3 || stockMove?.typeSelect == 3 || product?.productTypeSelect == 'service'"/>
 	</action-attrs>
 
 	<action-group name="action-stock-move-line-group-all-onload">
 		<action name="action-stock-move-line-attrs"/>
 		<action name="action-stock-move-line-attrs-scale-and-precision"/>
+		<action name="action-stock-move-line-attrs-set-readonly"/>
 		<action name="action-stock-move-line-method-compute-available-qty" if="stockMove &amp;&amp; stockMove.statusSelect &lt; 3"/>
 	</action-group>
 
@@ -442,8 +450,9 @@
     	<action name="action-stock-move-line-set-product-info"/>
     	<action name="action-stock-move-line-compute-price"/>
     	<action name="action-stock-move-line-store-product-type"/>
-    	<action name="action-stock-move-line-method-compute-available-qty" if="_parent?.statusSelect &lt; 3"/>
+    	<action name="action-stock-move-line-method-compute-available-qty" if="__parent__?.statusSelect &lt; 3"/>
     	<action name="action-stock-move-line-method-set-available-status"/>
+    	<action name="action-supplychain-stock-move-line-attrs-hide-button"/>
     </action-group>
     
     <action-group name="action-group-stock-stockmoveline-production-onnew">
@@ -453,12 +462,12 @@
 
     <action-attrs name="action-stock-move-line-attrs">
       <attribute name="hidden" for="countryOfOrigin"
-        expr="eval: __parent__?.typeSelect != com.axelor.apps.stock.db.repo.StockMoveRepository.TYPE_INCOMING" if="_parent !=null &amp;&amp; _parent?._model == 'com.axelor.apps.stock.db.StockMove'"/>
-      <attribute name="hidden" expr="eval: stockMove?.typeSelect != com.axelor.apps.stock.db.repo.StockMoveRepository.TYPE_INCOMING" for="countryOfOrigin" if="_parent == null || _parent?._model != 'com.axelor.apps.stock.db.StockMove'"/>
-	  <attribute name="hidden" for="$availableQty,$availableQtyForProduct" expr="_parent?.statusSelect > 2 || __parent__?.fromStockLocation?.typeSelect == 3" if="_parent"/>
-	  <attribute name="hidden" for="availableStatus" expr="(_parent?.statusSelect > 2 || __parent__?.fromStockLocation?.typeSelect == 3) || !product?.stockManaged" if="_parent"/>
-	  <attribute name="hidden" for="filterOnAvailableProducts" expr="eval: __parent__?.fromStockLocation?.typeSelect==3 || __parent__?.statusSelect &gt; 1" if="_parent !=null &amp;&amp; _parent?._model == 'com.axelor.apps.stock.db.StockMove'"/>
-	  <attribute name="hidden" for="filterOnAvailableProducts" expr="eval: stockMove?.fromStockLocation?.typeSelect==3 || __parent__?.statusSelect &gt; 1" if="_parent ==null || _parent?._model != 'com.axelor.apps.stock.db.StockMove'"/>
+        expr="eval: __parent__?.typeSelect != com.axelor.apps.stock.db.repo.StockMoveRepository.TYPE_INCOMING" if="__parent__ !=null &amp;&amp; __parent__?._model == 'com.axelor.apps.stock.db.StockMove'"/>
+      <attribute name="hidden" expr="eval: stockMove?.typeSelect != com.axelor.apps.stock.db.repo.StockMoveRepository.TYPE_INCOMING" for="countryOfOrigin" if="__parent__ == null || __parent__?._model != 'com.axelor.apps.stock.db.StockMove'"/>
+	  <attribute name="hidden" for="$availableQty,$availableQtyForProduct" expr="__parent__?.statusSelect > 2 || __parent__?.fromStockLocation?.typeSelect == 3" if="__parent__"/>
+	  <attribute name="hidden" for="availableStatus" expr="(__parent__?.statusSelect > 2 || __parent__?.fromStockLocation?.typeSelect == 3) || !product?.stockManaged || product?.productTypeSelect == 'service'" if="__parent__"/>
+	  <attribute name="hidden" for="filterOnAvailableProducts" expr="eval: __parent__?.fromStockLocation?.typeSelect==3 || __parent__?.statusSelect &gt; 1" if="__parent__ !=null &amp;&amp; __parent__?._model == 'com.axelor.apps.stock.db.StockMove'"/>
+	  <attribute name="hidden" for="filterOnAvailableProducts" expr="eval: stockMove?.fromStockLocation?.typeSelect==3 || __parent__?.statusSelect &gt; 1" if="__parent__ ==null || __parent__?._model != 'com.axelor.apps.stock.db.StockMove'"/>
 			<attribute name="hidden" for="companyPurchasePrice" expr="eval: __parent__.typeSelect != 3" if="__parent__"/>
 			<attribute name="hidden" for="companyPurchasePrice" expr="eval: stockMove.typeSelect != 3" if="stockMove"/>
       
@@ -476,24 +485,24 @@
 	</action-attrs>
 	
 	<action-attrs name="action-stock-move-line-qty-attrs">
-		<attribute name="readonly" for="qty" expr="eval: _parent?.statusSelect == 2" />
+		<attribute name="readonly" for="qty" expr="eval: __parent__?.statusSelect == 2" />
 	</action-attrs>
 	
 	<action-record name="action-stock-move-line-wizard-record-set-tracking-number-seq" model="com.axelor.apps.stock.db.TrackingNumber">
 		<field name="trackingNumberSeq" expr="eval: trackingNumber?.trackingNumberSeq"/>
-		<field name="warrantyExpirationDate" expr="eval:  __repo__(TrackingNumber).find(trackingNumber?.id).warrantyExpirationDate" if="_parent != null &amp;&amp; _parent._hasWarranty"/>
-		<field name="perishableExpirationDate" expr="eval: __repo__(TrackingNumber).find(trackingNumber?.id).perishableExpirationDate" if="_parent != null &amp;&amp; _parent._isPerishable"/>
+		<field name="warrantyExpirationDate" expr="eval:  __repo__(TrackingNumber).find(trackingNumber?.id).warrantyExpirationDate" if="__parent__ != null &amp;&amp; __parent__._hasWarranty"/>
+		<field name="perishableExpirationDate" expr="eval: __repo__(TrackingNumber).find(trackingNumber?.id).perishableExpirationDate" if="__parent__ != null &amp;&amp; __parent__._isPerishable"/>
 	</action-record>
 	
 	<action-record name="action-stock-move-line-wizard-record-set-dates" model="com.axelor.apps.stock.db.TrackingNumber">
 		<field name="warrantyExpirationDate"
-			expr="eval: __repo__(TrackingNumber).all().filter('self.product.id = ?1 and self.trackingNumberSeq = ?2', _parent._stockMoveLine.product.id, trackingNumberSeq).count() &gt; 0 ? 
-	            __repo__(TrackingNumber).all().filter('self.product.id = ?1 and self.trackingNumberSeq = ?2', _parent?._stockMoveLine?.product?.id, trackingNumberSeq).fetchOne()?.warrantyExpirationDate : null"
-			if="_parent != null &amp;&amp; _parent._hasWarranty" />
+			expr="eval: __repo__(TrackingNumber).all().filter('self.product.id = ?1 and self.trackingNumberSeq = ?2', __parent__._stockMoveLine.product.id, trackingNumberSeq).count() &gt; 0 ? 
+	            __repo__(TrackingNumber).all().filter('self.product.id = ?1 and self.trackingNumberSeq = ?2', __parent__?._stockMoveLine?.product?.id, trackingNumberSeq).fetchOne()?.warrantyExpirationDate : null"
+			if="__parent__ != null &amp;&amp; __parent__._hasWarranty" />
 		<field name="perishableExpirationDate"
-			expr="eval: __repo__(TrackingNumber).all().filter('self.product.id = ?1 and self.trackingNumberSeq = ?2', _parent._stockMoveLine.product.id, trackingNumberSeq).count() &gt; 0 ? 
-	            __repo__(TrackingNumber).all().filter('self.product.id = ?1 and self.trackingNumberSeq = ?2', _parent?._stockMoveLine?.product?.id, trackingNumberSeq).fetchOne()?.perishableExpirationDate : null"
-			if="_parent != null &amp;&amp; _parent._isPerishable" />
+			expr="eval: __repo__(TrackingNumber).all().filter('self.product.id = ?1 and self.trackingNumberSeq = ?2', __parent__._stockMoveLine.product.id, trackingNumberSeq).count() &gt; 0 ? 
+	            __repo__(TrackingNumber).all().filter('self.product.id = ?1 and self.trackingNumberSeq = ?2', __parent__?._stockMoveLine?.product?.id, trackingNumberSeq).fetchOne()?.perishableExpirationDate : null"
+			if="__parent__ != null &amp;&amp; __parent__._isPerishable" />
 	</action-record>
     
     <action-record name="action-stock-move-line-record-new" model="com.axelor.apps.stock.db.StockMoveLine">
@@ -516,10 +525,15 @@
     </action-group>
 
 	<action-record name="action-stock-move-line-record-qty" model="com.axelor.apps.stock.db.StockMoveLine">
-		<field name="realQty" expr="eval: qty" if="_parent?.statusSelect &lt;= 2"/>
+		<field name="realQty" expr="eval: qty" if="__parent__?.statusSelect &lt;= 2"/>
 		<field name="realQty" expr="eval: qty" if="stockMove?.statusSelect &lt;= 2"/>
 	</action-record>
-	
+
+  <action-record name="action-stock-move-line-record-price-onchange" model="com.axelor.apps.stock.db.StockMoveLine">
+		<field name="unitPriceTaxed" expr="eval: unitPriceUntaxed"/>
+    <field name="companyUnitPriceUntaxed" expr="eval: unitPriceUntaxed"/>
+	</action-record>
+
     <action-method name="action-stock-move-line-set-product-info">
         <call class="com.axelor.apps.stock.web.StockMoveLineController" method="setProductInfo"/>
     </action-method>
@@ -608,15 +622,22 @@
 		<call class="com.axelor.apps.stock.web.StockMoveLineController" method="computeAvailableQty"/>
 	</action-method>
 
-  <action-attrs name="action-stock-move-picking-is-edit-attrs">
-    <attribute name="readonly" expr="__parent__?.pickingIsEdited" for="unitPriceUntaxed"/>
-		<attribute name="readonly" expr="__parent__?.pickingIsEdited" for="companyPurchasePrice"/>
-		<attribute name="readonly" expr="__parent__?.pickingIsEdited" for="productName"/>
-    <attribute name="readonly" expr="__parent__?.pickingIsEdited" for="lineTypeSelect"/>
-    <attribute name="readonly" expr="__parent__?.pickingIsEdited" for="unit"/>
-    <attribute name="readonly" expr="__parent__?.pickingIsEdited" for="realQty"/>
-    <attribute name="readonly" expr="__parent__?.pickingIsEdited" for="productModel"/>
-  </action-attrs>
+  <action-attrs name="action-stock-move-line-attrs-set-readonly">
+    <attribute name="readonly" expr="__parent__?.pickingIsEdited || __parent__.statusSelect == 3" for="unitPriceUntaxed"/>
+		<attribute name="readonly" expr="__parent__?.pickingIsEdited || __parent__.statusSelect == 3" for="companyPurchasePrice"/>
+		<attribute name="readonly" expr="__parent__?.pickingIsEdited || __parent__.statusSelect == 3" for="productName"/>
+    <attribute name="readonly" expr="__parent__?.pickingIsEdited || __parent__.statusSelect == 3" for="lineTypeSelect"/>
+    <attribute name="readonly" expr="__parent__?.pickingIsEdited || __parent__.statusSelect == 3" for="unit"/>
+    <attribute name="readonly" expr="__parent__?.pickingIsEdited || __parent__.statusSelect == 3" for="realQty"/>
+    <attribute name="readonly" expr="__parent__?.pickingIsEdited || __parent__.statusSelect == 3" for="productModel"/>
+		<attribute name="readonly" expr="stockMove?.pickingIsEdited || stockMove.statusSelect == 3" if="stockMove" for="unitPriceUntaxed"/>
+		<attribute name="readonly" expr="stockMove?.pickingIsEdited || stockMove.statusSelect == 3" if="stockMove" for="companyPurchasePrice"/>
+		<attribute name="readonly" expr="stockMove?.pickingIsEdited || stockMove.statusSelect == 3" if="stockMove" for="productName"/>
+		<attribute name="readonly" expr="stockMove?.pickingIsEdited || stockMove.statusSelect == 3" if="stockMove" for="lineTypeSelect"/>
+		<attribute name="readonly" expr="stockMove?.pickingIsEdited || stockMove.statusSelect == 3" if="stockMove" for="unit"/>
+		<attribute name="readonly" expr="stockMove?.pickingIsEdited || stockMove.statusSelect == 3" if="stockMove" for="realQty"/>
+		<attribute name="readonly" expr="stockMove?.pickingIsEdited || stockMove.statusSelect == 3" if="stockMove" for="productModel"/>
+	</action-attrs>
 
 	<action-attrs name="action-stock-move-line-attrs-hide-avg-price">
 		<attribute name="hidden" for="wapPrice" expr="eval: stockMove.typeSelect != 3 || !stockMove.isReversion || !stockMove.reversionOriginStockMove" if="stockMove"/>

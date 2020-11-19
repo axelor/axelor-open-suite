@@ -396,6 +396,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                 </structure>
                 <structure>
                     <property name="columnName">specific_note_on_invoice</property>
+                    <property name="alias">specific_note_on_invoice</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">specific_note_on_invoice</text-property>
                     <text-property name="heading">specific_note_on_invoice</text-property>
@@ -549,30 +550,35 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                 </structure>
                 <structure>
                     <property name="columnName">proforma_comments</property>
+                    <property name="alias">proforma_comments</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">proforma_comments</text-property>
                     <text-property name="heading">proforma_comments</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">head_office_address</property>
+                    <property name="alias">head_office_address</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">head_office_address</text-property>
                     <text-property name="heading">head_office_address</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">displayHeadOfficeAddress</property>
+                    <property name="alias">displayHeadOfficeAddress</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">displayHeadOfficeAddress</text-property>
                     <text-property name="heading">displayHeadOfficeAddress</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">enablePackMangement</property>
+                    <property name="alias">enablePackMangement</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">enablePackMangement</text-property>
                     <text-property name="heading">enablePackMangement</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">contactPartnerTitleSelect</property>
+                    <property name="alias">contactPartnerTitleSelect</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">contactPartnerTitleSelect</text-property>
                     <text-property name="heading">contactPartnerTitleSelect</text-property>
@@ -840,16 +846,21 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     </structure>
                     <structure>
                         <property name="position">50</property>
+                        <property name="name">delivery_address_str</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">51</property>
                         <property name="name">displayHeadOfficeAddress</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">51</property>
+                        <property name="position">52</property>
                         <property name="name">enablePackMangement</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">52</property>
+                        <property name="position">53</property>
                         <property name="name">contactPartnerTitleSelect</property>
                         <property name="dataType">integer</property>
                     </structure>
@@ -862,364 +873,318 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     <property name="name">inv_id</property>
                     <property name="nativeName">inv_id</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">invoice_id</property>
                     <property name="nativeName">invoice_id</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">operation_type_select</property>
                     <property name="nativeName">operation_type_select</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">status_select</property>
                     <property name="nativeName">status_select</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">invoice_date</property>
                     <property name="nativeName">invoice_date</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">operation_sub_type_select</property>
                     <property name="nativeName">operation_sub_type_select</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">partner_type_select</property>
                     <property name="nativeName">partner_type_select</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">partnerName</property>
                     <property name="nativeName">partnerName</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">partnerFirstName</property>
                     <property name="nativeName">partnerFirstName</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">partnerSeq</property>
                     <property name="nativeName">partnerSeq</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
                     <property name="name">title_select</property>
                     <property name="nativeName">title_select</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
                     <property name="name">contactName</property>
                     <property name="nativeName">contactName</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">14</property>
                     <property name="name">contactFirstName</property>
                     <property name="nativeName">contactFirstName</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">15</property>
                     <property name="name">address_str</property>
                     <property name="nativeName">address_str</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">16</property>
                     <property name="name">paymentConditionName</property>
                     <property name="nativeName">paymentConditionName</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">17</property>
                     <property name="name">due_date</property>
                     <property name="nativeName">due_date</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">18</property>
                     <property name="name">currencyCode</property>
                     <property name="nativeName">currencyCode</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">19</property>
                     <property name="name">invoice_in_tax_total</property>
                     <property name="nativeName">invoice_in_tax_total</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">20</property>
                     <property name="name">invoice_ex_tax_total</property>
                     <property name="nativeName">invoice_ex_tax_total</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">21</property>
                     <property name="name">invoice_tax_total</property>
                     <property name="nativeName">invoice_tax_total</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">22</property>
                     <property name="name">companyName</property>
                     <property name="nativeName">companyName</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">23</property>
                     <property name="name">logo_height</property>
                     <property name="nativeName">logo_height</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">24</property>
                     <property name="name">logo_width</property>
                     <property name="nativeName">logo_width</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">25</property>
                     <property name="name">iban</property>
                     <property name="nativeName">iban</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">26</property>
                     <property name="name">specific_note_on_invoice</property>
                     <property name="nativeName">specific_note_on_invoice</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">27</property>
                     <property name="name">bic</property>
                     <property name="nativeName">bic</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">28</property>
                     <property name="name">bank_address</property>
                     <property name="nativeName">bank_address</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">29</property>
                     <property name="name">note</property>
                     <property name="nativeName">note</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">30</property>
                     <property name="name">specific_notes</property>
                     <property name="nativeName">specific_notes</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">31</property>
                     <property name="name">internal_reference</property>
                     <property name="nativeName">internal_reference</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">32</property>
                     <property name="name">partner_tax_nbr</property>
                     <property name="nativeName">partner_tax_nbr</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">33</property>
                     <property name="name">external_reference</property>
                     <property name="nativeName">external_reference</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">34</property>
                     <property name="name">header</property>
                     <property name="nativeName">header</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">35</property>
                     <property name="name">footer</property>
                     <property name="nativeName">footer</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">36</property>
                     <property name="name">logoPosition</property>
                     <property name="nativeName">logoPosition</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">37</property>
                     <property name="name">ClientBox</property>
                     <property name="nativeName">ClientBox</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">38</property>
                     <property name="name">SaleLegalNote</property>
                     <property name="nativeName">SaleLegalNote</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">39</property>
                     <property name="name">DisplayDelAddr</property>
                     <property name="nativeName">DisplayDelAddr</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">40</property>
                     <property name="name">displayTaxDetailOnPrinting</property>
                     <property name="nativeName">displayTaxDetailOnPrinting</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">41</property>
                     <property name="name">termsAndConditions</property>
                     <property name="nativeName">termsAndConditions</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">42</property>
                     <property name="name">displayPartnerSeqOnPrinting</property>
                     <property name="nativeName">displayPartnerSeqOnPrinting</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">43</property>
                     <property name="name">hideDiscount</property>
                     <property name="nativeName">hideDiscount</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">44</property>
                     <property name="name">displayProductCodeOnPrinting</property>
                     <property name="nativeName">displayProductCodeOnPrinting</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">45</property>
                     <property name="name">subscription_from_date</property>
                     <property name="nativeName">subscription_from_date</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">46</property>
                     <property name="name">subscription_to_date</property>
                     <property name="nativeName">subscription_to_date</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">47</property>
                     <property name="name">amount_remaining</property>
                     <property name="nativeName">amount_remaining</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">48</property>
                     <property name="name">proforma_comments</property>
                     <property name="nativeName">proforma_comments</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">49</property>
                     <property name="name">head_office_address</property>
                     <property name="nativeName">head_office_address</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">50</property>
-                    <property name="name">displayHeadOfficeAddress</property>
-                    <property name="nativeName">displayHeadOfficeAddress</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
+                    <property name="name">delivery_address_str</property>
+                    <property name="nativeName">delivery_address_str</property>
+                    <property name="dataType">string</property>
                 </structure>
                 <structure>
                     <property name="position">51</property>
-                    <property name="name">enablePackMangement</property>
-                    <property name="nativeName">enablePackMangement</property>
+                    <property name="name">displayHeadOfficeAddress</property>
+                    <property name="nativeName">displayHeadOfficeAddress</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">52</property>
+                    <property name="name">enablePackMangement</property>
+                    <property name="nativeName">enablePackMangement</property>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="position">53</property>
                     <property name="name">contactPartnerTitleSelect</property>
                     <property name="nativeName">contactPartnerTitleSelect</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Invoice.id as inv_id, 
@@ -1271,6 +1236,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
 	Invoice.amount_remaining,
 	Invoice.proforma_comments,
 	Invoice.head_office_address,
+	Invoice.delivery_address_str,
 	AccountConfig.display_head_office_addr_on_invoice_printing as "displayHeadOfficeAddress",
     AppSale.enable_pack_management as "enablePackMangement",
     ContactPartner.title_select as "contactPartnerTitleSelect"
@@ -3577,6 +3543,18 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                     <expression name="expression" type="javascript">dataSetRow["contactPartnerTitleSelect"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
+                <structure>
+                    <property name="name">invoice_date_1</property>
+                    <text-property name="displayName">invoice_date</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["invoice_date"]</expression>
+                    <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="name">delivery_address_str</property>
+                    <text-property name="displayName">delivery_address_str</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["delivery_address_str"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <method name="onPrepare"><![CDATA[String.prototype.repeat = String.prototype.repeat ||
   function(n) {
@@ -4163,15 +4141,40 @@ row["partnerFirstName"]
                     <text id="4263">
                         <property name="fontSize">12pt</property>
                         <property name="fontWeight">bold</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">if(row["contactPartnerTitleSelect"] == "1"){'M.'}
+else if(row["contactPartnerTitleSelect"] == "2"){'Ms.'}
+else if(row["contactPartnerTitleSelect"] == "3"){'Dr'}
+else if(row["contactPartnerTitleSelect"] == "4"){'Prof.'}</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["contactPartnerTitleSelect"] != null){
-if(row["contactPartnerTitleSelect"] == "1"){"M."}
-else if(row["contactPartnerTitleSelect"] == "2"){"Ms."}
-else if(row["contactPartnerTitleSelect"] == "3"){"Dr"}
-else if(row["contactPartnerTitleSelect"] == "4"){"Prof."}
+                        <text-property name="content"><![CDATA[<VALUE-OF>if(params["Locale"].value != 'en') {
+row["translation"]
+} else {
+row["message_key"]
 }</VALUE-OF> 
 <VALUE-OF format="^">"  "</VALUE-OF>
-<VALUE-OF>row["contactName"]</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row["contactFirstName"]</VALUE-OF>]]></text-property>
+<VALUE-OF>row._outer["contactName"]</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["contactFirstName"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="4467">
@@ -4281,14 +4284,50 @@ else if(row["contactPartnerTitleSelect"] == "4"){"Prof."}
                 <cell id="4516"/>
             </row>
             <row id="3637">
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">all</property>
+                        <expression name="valueExpr" type="javascript">row["DisplayDelAddr"] == false || row["operation_type_select"] != 3</expression>
+                    </structure>
+                </list-property>
                 <cell id="3638">
-                    <property name="colSpan">3</property>
+                    <property name="colSpan">1</property>
                     <property name="rowSpan">1</property>
+                    <text id="5660">
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">"Invoice.deliveryAddress"</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                    </text>
                 </cell>
-                <cell id="3640"/>
-                <cell id="3642">
-                    <property name="colSpan">4</property>
+                <cell id="3640">
+                    <property name="colSpan">7</property>
                     <property name="rowSpan">1</property>
+                    <text id="5661">
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["delivery_address_str"].replace(/\n/g, "<br>")</VALUE-OF>]]></text-property>
+                    </text>
                 </cell>
                 <cell id="4469"/>
             </row>
@@ -4559,7 +4598,7 @@ else if(row["contactPartnerTitleSelect"] == "4"){"Prof."}
                             <list-property name="visibility">
                                 <structure>
                                     <property name="format">all</property>
-                                    <expression name="valueExpr" type="javascript">row._outer["hideDiscount"] == 1 || row["total_discount_amount"] == null || row["total_discount_amount"] == 0</expression>
+                                    <expression name="valueExpr" type="javascript">row._outer["hideDiscount"] == 1 || row["invoice_total_discount"] == null || row["invoice_total_discount"] == 0</expression>
                                 </structure>
                             </list-property>
                             <property name="width">0.6in</property>
@@ -5234,7 +5273,8 @@ vars["in_total"] = vars["temp_in_total"];
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["price"], "#,##0." + "0".repeat(row["nb_decimal_digit_for_unit_price"]))</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>if( row._outer._outer["hideDiscount"]) {Formatter.format(row._outer["price"] + row._outer["totaldiscountamount"]/row._outer["qty"], "#,##0." + "0".repeat(row["nb_decimal_digit_for_unit_price"]))}</VALUE-OF>
+<VALUE-OF>if( !row._outer._outer["hideDiscount"]) {Formatter.format(row._outer["price"], "#,##0." + "0".repeat(row["nb_decimal_digit_for_unit_price"]))}</VALUE-OF>]]></text-property>
                                     </text>
                                     <text id="5432">
                                         <property name="fontSize">8pt</property>
@@ -5271,11 +5311,11 @@ vars["in_total"] = vars["temp_in_total"];
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">row["is_title_line"] || row["discount"] >= -0.1</expression>
+                                                <expression name="valueExpr" type="javascript">row["is_title_line"] || row["totaldiscountamount"] >= 0</expression>
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["discount"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,###.00">row["totaldiscountamount"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="5397">
@@ -6699,18 +6739,32 @@ vars["in_total"] = vars["temp_in_total"];
                                     <property name="rowSpan">1</property>
                                     <property name="fontSize">10px</property>
                                     <property name="textAlign">right</property>
-                                    <grid id="3512">
+                                    <grid id="5666">
+                                        <property name="borderBottomStyle">solid</property>
+                                        <property name="borderBottomWidth">thin</property>
+                                        <property name="borderLeftStyle">solid</property>
+                                        <property name="borderLeftWidth">thin</property>
+                                        <property name="borderRightStyle">solid</property>
+                                        <property name="borderRightWidth">thin</property>
+                                        <property name="borderTopStyle">solid</property>
+                                        <property name="borderTopWidth">thin</property>
                                         <property name="height">10.186458333333334cm</property>
                                         <property name="width">8.228541666666667cm</property>
                                         <property name="dataBindingRef">InvoiceLineTable1</property>
                                         <structure name="toc"/>
-                                        <column id="3513"/>
-                                        <column id="3514"/>
-                                        <column id="5314">
+                                        <column id="5667"/>
+                                        <column id="5668"/>
+                                        <column id="5669">
                                             <property name="width">0.4in</property>
                                         </column>
-                                        <row id="4435">
-                                            <cell id="4436">
+                                        <row id="5670">
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row._outer["hideDiscount"]</expression>
+                                                </structure>
+                                            </list-property>
+                                            <cell id="5671">
                                                 <property name="fontSize">9pt</property>
                                                 <property name="borderLeftStyle">solid</property>
                                                 <property name="borderLeftWidth">thin</property>
@@ -6718,7 +6772,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                 <property name="borderRightWidth">thin</property>
                                                 <property name="borderTopStyle">solid</property>
                                                 <property name="borderTopWidth">thin</property>
-                                                <text id="4438">
+                                                <text id="5672">
                                                     <property name="fontSize">10pt</property>
                                                     <property name="fontWeight">normal</property>
                                                     <property name="textAlign">left</property>
@@ -6755,7 +6809,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                     <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
-                                            <cell id="4437">
+                                            <cell id="5673">
                                                 <property name="fontSize">9pt</property>
                                                 <property name="borderLeftStyle">solid</property>
                                                 <property name="borderLeftWidth">thin</property>
@@ -6763,7 +6817,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                 <property name="borderTopWidth">thin</property>
                                                 <property name="paddingRight">5pt</property>
                                                 <property name="textAlign">right</property>
-                                                <text id="4442">
+                                                <text id="5674">
                                                     <property name="fontSize">10pt</property>
                                                     <property name="fontWeight">normal</property>
                                                     <property name="textAlign">right</property>
@@ -6778,7 +6832,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                     <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["invoice_ex_tax_total_before_discount"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
-                                            <cell id="5307">
+                                            <cell id="5675">
                                                 <property name="fontSize">9pt</property>
                                                 <property name="borderRightStyle">solid</property>
                                                 <property name="borderRightWidth">thin</property>
@@ -6786,7 +6840,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                 <property name="borderTopWidth">thin</property>
                                                 <property name="paddingRight">5pt</property>
                                                 <property name="textAlign">right</property>
-                                                <text id="5319">
+                                                <text id="5676">
                                                     <property name="fontSize">10pt</property>
                                                     <property name="fontWeight">normal</property>
                                                     <property name="textAlign">left</property>
@@ -6801,20 +6855,20 @@ vars["in_total"] = vars["temp_in_total"];
                                                 </text>
                                             </cell>
                                         </row>
-                                        <row id="4432">
+                                        <row id="5677">
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">row["invoice_sum_discount_line"] == 0 || row["in_ati"]</expression>
+                                                    <expression name="valueExpr" type="javascript">row["invoice_sum_discount_line"] == 0 || row["in_ati"] || row._outer["hideDiscount"] == 1</expression>
                                                 </structure>
                                             </list-property>
-                                            <cell id="4433">
+                                            <cell id="5678">
                                                 <property name="fontSize">9pt</property>
                                                 <property name="borderLeftStyle">solid</property>
                                                 <property name="borderLeftWidth">thin</property>
                                                 <property name="borderRightStyle">solid</property>
                                                 <property name="borderRightWidth">thin</property>
-                                                <text id="4175">
+                                                <text id="5679">
                                                     <property name="fontSize">10pt</property>
                                                     <property name="fontWeight">normal</property>
                                                     <property name="textAlign">left</property>
@@ -6845,13 +6899,13 @@ vars["in_total"] = vars["temp_in_total"];
                                                     <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
-                                            <cell id="4434">
+                                            <cell id="5680">
                                                 <property name="fontSize">9pt</property>
                                                 <property name="borderLeftStyle">solid</property>
                                                 <property name="borderLeftWidth">thin</property>
                                                 <property name="paddingRight">5pt</property>
                                                 <property name="textAlign">right</property>
-                                                <text id="5286">
+                                                <text id="5681">
                                                     <property name="fontSize">10pt</property>
                                                     <property name="fontWeight">normal</property>
                                                     <property name="textAlign">right</property>
@@ -6860,13 +6914,13 @@ vars["in_total"] = vars["temp_in_total"];
                                                     <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["invoice_total_discount"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
-                                            <cell id="5308">
+                                            <cell id="5682">
                                                 <property name="fontSize">9pt</property>
                                                 <property name="borderRightStyle">solid</property>
                                                 <property name="borderRightWidth">thin</property>
                                                 <property name="paddingRight">5pt</property>
                                                 <property name="textAlign">right</property>
-                                                <text id="5318">
+                                                <text id="5683">
                                                     <property name="fontSize">10pt</property>
                                                     <property name="fontWeight">normal</property>
                                                     <property name="textAlign">left</property>
@@ -6875,14 +6929,14 @@ vars["in_total"] = vars["temp_in_total"];
                                                 </text>
                                             </cell>
                                         </row>
-                                        <row id="3516">
-                                            <cell id="3517">
+                                        <row id="5684">
+                                            <cell id="5685">
                                                 <property name="fontSize">9pt</property>
                                                 <property name="borderLeftStyle">solid</property>
                                                 <property name="borderLeftWidth">thin</property>
                                                 <property name="borderRightStyle">solid</property>
                                                 <property name="borderRightWidth">thin</property>
-                                                <text id="5292">
+                                                <text id="5686">
                                                     <property name="fontSize">10pt</property>
                                                     <property name="fontWeight">normal</property>
                                                     <property name="textAlign">left</property>
@@ -6913,13 +6967,13 @@ vars["in_total"] = vars["temp_in_total"];
                                                     <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
-                                            <cell id="3518">
+                                            <cell id="5687">
                                                 <property name="fontSize">9pt</property>
                                                 <property name="borderLeftStyle">solid</property>
                                                 <property name="borderLeftWidth">thin</property>
                                                 <property name="paddingRight">5pt</property>
                                                 <property name="textAlign">right</property>
-                                                <text id="5293">
+                                                <text id="5688">
                                                     <property name="fontSize">10pt</property>
                                                     <property name="fontWeight">normal</property>
                                                     <property name="textAlign">right</property>
@@ -6927,13 +6981,13 @@ vars["in_total"] = vars["temp_in_total"];
                                                     <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row._outer["invoice_ex_tax_total"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
-                                            <cell id="5309">
+                                            <cell id="5689">
                                                 <property name="fontSize">9pt</property>
                                                 <property name="borderRightStyle">solid</property>
                                                 <property name="borderRightWidth">thin</property>
                                                 <property name="paddingRight">5pt</property>
                                                 <property name="textAlign">right</property>
-                                                <text id="5294">
+                                                <text id="5690">
                                                     <property name="fontSize">10pt</property>
                                                     <property name="fontWeight">normal</property>
                                                     <property name="textAlign">left</property>
@@ -6942,8 +6996,8 @@ vars["in_total"] = vars["temp_in_total"];
                                                 </text>
                                             </cell>
                                         </row>
-                                        <row id="3520">
-                                            <cell id="3521">
+                                        <row id="5691">
+                                            <cell id="5692">
                                                 <property name="backgroundAttachment">scroll</property>
                                                 <property name="backgroundImageType">url</property>
                                                 <property name="backgroundPositionX">0%</property>
@@ -6992,7 +7046,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                 <property name="showIfBlank">false</property>
                                                 <property name="canShrink">false</property>
                                                 <property name="overflow">hidden</property>
-                                                <text id="5295">
+                                                <text id="5693">
                                                     <property name="fontSize">10pt</property>
                                                     <property name="fontWeight">normal</property>
                                                     <property name="textAlign">left</property>
@@ -7023,7 +7077,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                     <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
-                                            <cell id="3522">
+                                            <cell id="5694">
                                                 <property name="fontSize">9pt</property>
                                                 <property name="borderBottomStyle">solid</property>
                                                 <property name="borderBottomWidth">thin</property>
@@ -7031,7 +7085,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                 <property name="borderLeftWidth">thin</property>
                                                 <property name="paddingRight">5pt</property>
                                                 <property name="textAlign">right</property>
-                                                <text id="5296">
+                                                <text id="5695">
                                                     <property name="fontSize">10pt</property>
                                                     <property name="fontWeight">normal</property>
                                                     <property name="textAlign">right</property>
@@ -7039,7 +7093,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                     <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row._outer["invoice_tax_total"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
-                                            <cell id="5310">
+                                            <cell id="5696">
                                                 <property name="fontSize">9pt</property>
                                                 <property name="borderBottomStyle">solid</property>
                                                 <property name="borderBottomWidth">thin</property>
@@ -7047,7 +7101,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                 <property name="borderRightWidth">thin</property>
                                                 <property name="paddingRight">5pt</property>
                                                 <property name="textAlign">right</property>
-                                                <text id="5297">
+                                                <text id="5697">
                                                     <property name="fontSize">10pt</property>
                                                     <property name="fontWeight">normal</property>
                                                     <property name="textAlign">left</property>
@@ -7056,11 +7110,11 @@ vars["in_total"] = vars["temp_in_total"];
                                                 </text>
                                             </cell>
                                         </row>
-                                        <row id="3524">
+                                        <row id="5698">
                                             <property name="borderBottomStyle">solid</property>
                                             <property name="borderBottomWidth">thin</property>
                                             <property name="verticalAlign">middle</property>
-                                            <cell id="3525">
+                                            <cell id="5699">
                                                 <property name="backgroundAttachment">scroll</property>
                                                 <property name="backgroundImageType">url</property>
                                                 <property name="backgroundPositionX">0%</property>
@@ -7106,7 +7160,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                 <property name="showIfBlank">false</property>
                                                 <property name="canShrink">false</property>
                                                 <property name="overflow">hidden</property>
-                                                <text id="5298">
+                                                <text id="5700">
                                                     <property name="fontSize">10pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="borderBottomStyle">none</property>
@@ -7141,7 +7195,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                     <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
-                                            <cell id="3526">
+                                            <cell id="5701">
                                                 <property name="fontSize">9pt</property>
                                                 <property name="borderLeftStyle">solid</property>
                                                 <property name="borderLeftWidth">thin</property>
@@ -7149,7 +7203,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                 <property name="borderTopWidth">thin</property>
                                                 <property name="paddingRight">5pt</property>
                                                 <property name="textAlign">right</property>
-                                                <text id="5299">
+                                                <text id="5702">
                                                     <property name="fontSize">10pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="textAlign">right</property>
@@ -7157,7 +7211,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                     <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row._outer["invoice_in_tax_total"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
-                                            <cell id="5311">
+                                            <cell id="5703">
                                                 <property name="fontSize">9pt</property>
                                                 <property name="borderRightStyle">solid</property>
                                                 <property name="borderRightWidth">thin</property>
@@ -7174,7 +7228,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                 </text>
                                             </cell>
                                         </row>
-                                        <row id="4443">
+                                        <row id="5705">
                                             <property name="borderBottomStyle">solid</property>
                                             <property name="borderBottomWidth">thin</property>
                                             <property name="verticalAlign">middle</property>
@@ -7184,7 +7238,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                     <expression name="valueExpr" type="javascript">row["invoice_sum_discount_line"] == 0 || !row["in_ati"]</expression>
                                                 </structure>
                                             </list-property>
-                                            <cell id="4444">
+                                            <cell id="5706">
                                                 <property name="backgroundAttachment">scroll</property>
                                                 <property name="backgroundImageType">url</property>
                                                 <property name="backgroundPositionX">0%</property>
@@ -7233,7 +7287,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                 <property name="showIfBlank">false</property>
                                                 <property name="canShrink">false</property>
                                                 <property name="overflow">hidden</property>
-                                                <text id="5288">
+                                                <text id="5707">
                                                     <property name="fontSize">10pt</property>
                                                     <property name="fontWeight">normal</property>
                                                     <property name="textAlign">left</property>
@@ -7270,7 +7324,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                     <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
-                                            <cell id="4445">
+                                            <cell id="5708">
                                                 <property name="fontSize">9pt</property>
                                                 <property name="borderBottomStyle">solid</property>
                                                 <property name="borderBottomWidth">thin</property>
@@ -7278,7 +7332,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                 <property name="borderLeftWidth">thin</property>
                                                 <property name="paddingRight">5pt</property>
                                                 <property name="textAlign">right</property>
-                                                <text id="5289">
+                                                <text id="5709">
                                                     <property name="fontSize">10pt</property>
                                                     <property name="fontWeight">normal</property>
                                                     <property name="textAlign">right</property>
@@ -7293,7 +7347,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                     <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["invoice_total_discount"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
-                                            <cell id="5312">
+                                            <cell id="5710">
                                                 <property name="fontSize">9pt</property>
                                                 <property name="borderBottomStyle">solid</property>
                                                 <property name="borderBottomWidth">thin</property>
@@ -7301,7 +7355,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                 <property name="borderRightWidth">thin</property>
                                                 <property name="paddingRight">5pt</property>
                                                 <property name="textAlign">right</property>
-                                                <text id="5320">
+                                                <text id="5711">
                                                     <property name="fontSize">10pt</property>
                                                     <property name="fontWeight">normal</property>
                                                     <property name="textAlign">left</property>
@@ -7310,7 +7364,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                 </text>
                                             </cell>
                                         </row>
-                                        <row id="5301">
+                                        <row id="5712">
                                             <property name="verticalAlign">middle</property>
                                             <list-property name="visibility">
                                                 <structure>
@@ -7318,7 +7372,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                     <expression name="valueExpr" type="javascript">params["ReportType"].value == 1</expression>
                                                 </structure>
                                             </list-property>
-                                            <cell id="5302">
+                                            <cell id="5713">
                                                 <property name="backgroundAttachment">scroll</property>
                                                 <property name="backgroundImageType">url</property>
                                                 <property name="backgroundPositionX">0%</property>
@@ -7371,7 +7425,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                 <property name="showIfBlank">false</property>
                                                 <property name="canShrink">false</property>
                                                 <property name="overflow">hidden</property>
-                                                <data id="5304">
+                                                <data id="5714">
                                                     <property name="fontWeight">bold</property>
                                                     <property name="dataSet">TranslateDS</property>
                                                     <list-property name="paramBindings">
@@ -7400,7 +7454,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                     <property name="resultSetColumn">TotalToPay</property>
                                                 </data>
                                             </cell>
-                                            <cell id="5303">
+                                            <cell id="5715">
                                                 <property name="fontSize">9pt</property>
                                                 <property name="borderBottomStyle">solid</property>
                                                 <property name="borderBottomWidth">thin</property>
@@ -7411,7 +7465,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                 <property name="borderTopWidth">thin</property>
                                                 <property name="paddingRight">5pt</property>
                                                 <property name="textAlign">right</property>
-                                                <text id="5305">
+                                                <text id="5716">
                                                     <property name="fontSize">10pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="textAlign">right</property>
@@ -7437,7 +7491,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                     <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row._outer._outer["invoice_in_tax_total"] - row["totalImputedAmount"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
-                                            <cell id="5313">
+                                            <cell id="5717">
                                                 <property name="fontSize">9pt</property>
                                                 <property name="borderBottomStyle">solid</property>
                                                 <property name="borderBottomWidth">thin</property>
@@ -7457,7 +7511,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                 </text>
                                             </cell>
                                         </row>
-                                        <row id="5589">
+                                        <row id="5719">
                                             <property name="verticalAlign">middle</property>
                                             <list-property name="visibility">
                                                 <structure>
@@ -7465,7 +7519,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                     <expression name="valueExpr" type="javascript">params["ReportType"].value != 3</expression>
                                                 </structure>
                                             </list-property>
-                                            <cell id="5590">
+                                            <cell id="5720">
                                                 <property name="backgroundAttachment">scroll</property>
                                                 <property name="backgroundImageType">url</property>
                                                 <property name="backgroundPositionX">0%</property>
@@ -7518,7 +7572,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                 <property name="showIfBlank">false</property>
                                                 <property name="canShrink">false</property>
                                                 <property name="overflow">hidden</property>
-                                                <text id="5594">
+                                                <text id="5721">
                                                     <property name="fontSize">9pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="borderBottomStyle">none</property>
@@ -7553,7 +7607,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                     <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
-                                            <cell id="5591">
+                                            <cell id="5722">
                                                 <property name="fontSize">9pt</property>
                                                 <property name="borderBottomStyle">solid</property>
                                                 <property name="borderBottomWidth">thin</property>
@@ -7564,7 +7618,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                 <property name="borderTopWidth">thin</property>
                                                 <property name="paddingRight">5pt</property>
                                                 <property name="textAlign">right</property>
-                                                <text id="5595">
+                                                <text id="5723">
                                                     <property name="fontSize">10pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="textAlign">right</property>
@@ -7581,7 +7635,7 @@ vars["in_total"] = vars["temp_in_total"];
                                                     <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["amount_remaining"]</VALUE-OF>]]></text-property>
                                                 </text>
                                             </cell>
-                                            <cell id="5592">
+                                            <cell id="5724">
                                                 <property name="fontSize">9pt</property>
                                                 <property name="borderBottomStyle">solid</property>
                                                 <property name="borderBottomWidth">thin</property>

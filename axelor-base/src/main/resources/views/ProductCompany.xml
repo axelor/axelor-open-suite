@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
     
     <grid name="product-company-grid" title="Product per company" model="com.axelor.apps.base.db.ProductCompany">
 	    <field name="company"/>
-		<field name="lastPurchasePrice" x-scale="2" title="Last purchase price (in company currency)"/>
+		<field name="lastPurchasePrice" x-scale="2" width="250px"/>
 		<field name="costPrice" x-scale="2"/>
 		<field name="avgPrice" x-scale="2"/>
 		<field name="company.currency" title="Company currency"/>
@@ -34,7 +34,6 @@
 			<field name="company.currency" title="Company currency" readonly="true"/>
 			<field name="autoUpdateSalePrice"/>
 			<field name="lastPurchasePrice" readonly="true" colSpan="3"/>
-			<field name="lastPurchaseCurrency" readonly="true" colSpan="3"/>
 		</panel>
 	</form> 
 	

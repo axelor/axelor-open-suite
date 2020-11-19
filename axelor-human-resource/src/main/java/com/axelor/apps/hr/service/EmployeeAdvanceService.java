@@ -23,6 +23,7 @@ import com.axelor.apps.hr.db.EmployeeAdvanceUsage;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.EmployeeAdvanceRepository;
 import com.axelor.apps.hr.db.repo.EmployeeAdvanceUsageRepository;
+import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -41,6 +42,10 @@ public class EmployeeAdvanceService {
 
     Employee employee =
         Beans.get(EmployeeRepository.class).find(expense.getUser().getEmployee().getId());
+
+    if (EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
+      return;
+    }
 
     List<EmployeeAdvance> advanceList =
         employeeAdvanceRepository

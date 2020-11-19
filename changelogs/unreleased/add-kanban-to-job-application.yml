@@ -1,0 +1,7 @@
+---
+title: "Job Application: Improve job application grid and kanban view"
+type: change
+description : |
+  Addition of resume MetaFile m2o field to job application
+  Addition of button in grid view to show resume
+  Addition of kanban view to job application with link to resume

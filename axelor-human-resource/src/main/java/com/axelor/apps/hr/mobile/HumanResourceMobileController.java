@@ -31,6 +31,7 @@ import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.EmployeeVehicleRepository;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
@@ -122,7 +123,7 @@ public class HumanResourceMobileController {
       expenseLine.setExpenseProduct(expenseProduct);
 
       Employee employee = user.getEmployee();
-      if (employee != null) {
+      if (employee != null && !EmployeeHRRepository.isEmployeeFormerOrNew(employee)) {
         KilometricAllowParamRepository kilometricAllowParamRepo =
             Beans.get(KilometricAllowParamRepository.class);
 
@@ -498,10 +499,10 @@ public class HumanResourceMobileController {
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(IExceptionMessage.LEAVE_LINE),
             employee.getName(),
-            leaveReason.getLeaveReason());
+            leaveReason.getName());
       }
       leave.setLeaveLine(leaveLine);
-      leave.setRequestDate(appBaseService.getTodayDate());
+      leave.setRequestDate(appBaseService.getTodayDate(company));
       if (requestData.get("fromDateT") != null) {
         leave.setFromDateT(
             LocalDateTime.parse(
@@ -555,7 +556,7 @@ public class HumanResourceMobileController {
         for (LeaveReason leaveReason : leaveReasonList) {
           if (leaveReason.getUnitSelect() == LeaveReasonRepository.UNIT_SELECT_DAYS) {
             Map<String, String> map = new HashMap<>();
-            map.put("name", leaveReason.getLeaveReason());
+            map.put("name", leaveReason.getName());
             map.put("id", leaveReason.getId().toString());
             dataList.add(map);
           }

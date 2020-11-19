@@ -34,6 +34,8 @@ import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.EmailAddress;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -52,6 +54,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 import javax.inject.Singleton;
@@ -550,7 +553,10 @@ public class PartnerServiceImpl implements PartnerService {
     if (priceListSet == null) {
       return null;
     }
-    LocalDate today = Beans.get(AppBaseService.class).getTodayDate();
+    LocalDate today =
+        Beans.get(AppBaseService.class)
+            .getTodayDate(
+                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
     List<PriceList> candidatePriceListList = new ArrayList<>();
     for (PriceList priceList : priceListSet) {
       LocalDate beginDate =
@@ -669,6 +675,25 @@ public class PartnerServiceImpl implements PartnerService {
     }
 
     return domain;
+  }
+
+  @Override
+  public String getTaxNbrFromRegistrationCode(Partner partner) {
+    String regCode = partner.getRegistrationCode();
+    String taxNbr = "";
+
+    if (regCode != null) {
+      regCode = regCode.replaceAll(" ", "");
+
+      if (regCode.length() == 14) {
+        int siren = Integer.parseInt(regCode.substring(0, 9));
+        siren = Math.floorMod(siren, 97);
+        siren = Math.floorMod(12 + 3 * siren, 97);
+        taxNbr = Integer.toString(siren);
+      }
+    }
+
+    return taxNbr;
   }
 
   public Partner isThereDuplicatePartnerInArchive(Partner partner) {

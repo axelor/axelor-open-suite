@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.message.service;
 
+import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.exception.IExceptionMessage;
 import com.axelor.db.Model;
@@ -31,7 +32,6 @@ import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.Map;
 
 @Singleton
@@ -73,8 +73,12 @@ public class TemplateService {
   }
 
   public String processSubject(
-      Template template, Model bean, String beanName, Map<String, Object> context) {
-    TemplateMaker maker = new TemplateMaker(new Locale("fr"), '$', '$');
+      String timeZone,
+      Template template,
+      Model bean,
+      String beanName,
+      Map<String, Object> context) {
+    TemplateMaker maker = new TemplateMaker(timeZone, AppFilter.getLocale(), '$', '$');
 
     maker.setTemplate(template.getSubject());
     maker.setContext(bean, context, beanName);
@@ -82,8 +86,12 @@ public class TemplateService {
   }
 
   public String processContent(
-      Template template, Model bean, String beanName, Map<String, Object> context) {
-    TemplateMaker maker = new TemplateMaker(new Locale("fr"), '$', '$');
+      String timeZone,
+      Template template,
+      Model bean,
+      String beanName,
+      Map<String, Object> context) {
+    TemplateMaker maker = new TemplateMaker(timeZone, AppFilter.getLocale(), '$', '$');
 
     maker.setTemplate(template.getContent());
     maker.setContext(bean, context, beanName);

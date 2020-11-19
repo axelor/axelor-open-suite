@@ -125,13 +125,13 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
 
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
-
       processPurchaseOrderLine(invoice, invoiceLineList, purchaseOrderLine);
     }
     return invoiceLineList;
   }
 
-  protected void processPurchaseOrderLine(
+  @Override
+  public void processPurchaseOrderLine(
       Invoice invoice, List<InvoiceLine> invoiceLineList, PurchaseOrderLine purchaseOrderLine)
       throws AxelorException {
     invoiceLineList.addAll(this.createInvoiceLine(invoice, purchaseOrderLine));
@@ -421,7 +421,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 
   public PurchaseOrder fillPurchaseOrder(PurchaseOrder purchaseOrder, Invoice invoice) {
 
-    purchaseOrder.setOrderDate(appSupplychainService.getTodayDate());
+    purchaseOrder.setOrderDate(appSupplychainService.getTodayDate(purchaseOrder.getCompany()));
 
     return purchaseOrder;
   }

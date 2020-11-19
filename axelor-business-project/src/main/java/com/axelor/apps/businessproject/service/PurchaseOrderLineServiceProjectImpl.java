@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -64,5 +65,26 @@ public class PurchaseOrderLineServiceProjectImpl extends PurchaseOrderLineServic
         purchaseOrderLineRepo.save(line);
       }
     }
+  }
+
+  @Override
+  public PurchaseOrderLine createAnalyticDistributionWithTemplate(
+      PurchaseOrderLine purchaseOrderLine) {
+    PurchaseOrderLine poLine = super.createAnalyticDistributionWithTemplate(purchaseOrderLine);
+    List<AnalyticMoveLine> analyticMoveLineList = poLine.getAnalyticMoveLineList();
+
+    if (poLine.getProject() != null && analyticMoveLineList != null) {
+      analyticMoveLineList.forEach(analyticLine -> analyticLine.setProject(poLine.getProject()));
+    }
+    return poLine;
+  }
+
+  @Override
+  public PurchaseOrderLine updateAnalyticDistributionWithProject(
+      PurchaseOrderLine purchaseOrderLine) {
+    for (AnalyticMoveLine analyticMoveLine : purchaseOrderLine.getAnalyticMoveLineList()) {
+      analyticMoveLine.setProject(purchaseOrderLine.getProject());
+    }
+    return purchaseOrderLine;
   }
 }

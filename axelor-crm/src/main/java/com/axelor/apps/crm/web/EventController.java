@@ -18,6 +18,7 @@
 package com.axelor.apps.crm.web;
 
 import com.axelor.apps.base.service.MapService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.Event;
 import com.axelor.apps.crm.db.EventReminder;
 import com.axelor.apps.crm.db.Lead;
@@ -53,6 +54,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -410,7 +412,14 @@ public class EventController {
             IExceptionMessage.RECURRENCE_REPETITION_NUMBER);
       }
     }
-    LocalDate endDate = LocalDate.now();
+    LocalDate endDate =
+        Beans.get(AppBaseService.class)
+            .getTodayDate(
+                event.getUser() != null
+                    ? event.getUser().getActiveCompany()
+                    : Optional.ofNullable(AuthUtils.getUser())
+                        .map(User::getActiveCompany)
+                        .orElse(null));
     if (endType == 2) {
       if (conf.getEndDate() == null) {
         throw new AxelorException(

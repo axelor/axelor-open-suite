@@ -77,4 +77,6 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
    * @param saleOrderLine
    */
   public SaleOrderLine computeAnalyticDistribution(SaleOrderLine saleOrderLine);
+
+  public SaleOrderLine createAnalyticDistributionWithTemplate(SaleOrderLine saleOrderLine);
 }

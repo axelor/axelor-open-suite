@@ -1,0 +1,148 @@
+"importId";"type";"ruleType";"label";"code";"result";"rule";"accountType";"accountCode"
+1;1;1;"ACTIFS";;;;;
+2;3;1;;;;;;
+3;2;2;"Capital souscrit non appelé";"csna";1;;;109000
+4;3;1;;;;;;
+5;2;2;"Frais d'établissement";"frdet";1;;;201000
+6;2;2;"Frais de recherche et de développement";"fdredd";1;;;203000
+7;2;2;"Frais de concessions, brevets, licences";"fdcbl";1;;;205000
+8;2;2;"Fonds commercial";"fondc";1;;;"206000|207000"
+9;2;2;"Autres";"iiaut";1;;;208000
+10;2;2;"Immobilisations incorporelles en cours";"iiec";1;;;232000
+11;2;2;"Avances et acomptes";"aveac";1;;;237000
+12;1;3;"Immobilisations incorporelles";"immoi";;"rules['frdet'] + rules['fdredd'] + rules['fdcbl'] + rules['fondc'] + rules['iiaut'] + rules['iiec'] + rules['aveac']";;
+13;3;1;;;;;;
+14;2;2;"Terrain";"terrain";1;;;"211000|212000"
+15;2;2;"Consutructions";"constr";1;;;"213000|214000"
+16;2;2;"Installations techniques, matériel et outillage";"itmo";1;;;215000
+17;2;2;"Autres";"icaut";1;;;218000
+18;2;2;"Immobilisations corporelles en cours";"icec";1;;;231000
+19;2;2;"Avances et acomptes";"avetac";1;;;238000
+20;1;3;"Immobilisation corporelles";"immoc";;"rules['terrain'] + rules['constr'] + rules['itmo'] + rules['icaut'] + rules['icec'] + rules['avetac']";;
+21;3;1;;;;;;
+22;2;2;"Participations";"parti";1;;;"261000|266000"
+23;2;2;"Créances rattachées à des participations";"cradp";1;;;"267000|268000"
+24;2;2;"Titres immobilisés de l'activité de portefeuille";"tidladp";1;;;273000
+25;2;2;"Autres titres immobilisés";"autti";1;;;"271000|272000"
+26;2;2;"Prêts";"prets";1;;;"274000"
+27;2;2;"Autres";"ifaut";1;;;"275000|276100"
+28;1;3;"Immobilisations financières";"immof";;"rules['parti'] + rules['cradp'] + rules ['tidladp'] + rules['autti'] + rules['prets'] + rules['ifaut']";;
+29;3;1;;;;;;
+30;2;2;"Matières premières";"matpre";1;;;"310000|320000"
+31;2;2;"En-cours de production";"encdep";1;;;"330000|340000"
+32;2;2;"Produit intermédiaires et finis";"pief";1;;;350000
+33;2;2;"Marchandises";"march";1;;;370000
+34;2;2;"Avances et acomptes versés sur commandes";"aeavsc";1;;;409100
+35;1;3;"Stocks et en-cours";"seec";;"rules['matpre'] + rules['encdep'] + rules['pief'] + rules['march'] + rules['aeavsc']";;
+36;3;1;;;;;;
+37;2;2;"Créances clients et comptes rattachés";"ccecr";1;;;"411000|413000|416000|418000"
+38;2;2;"Autres créans";"autcr";1;;;"409600|109700|409800|425000|428700|438700|441000|443000|444000|445200|445600|445810|445820|458300|445860|448700|451000|455000|456000|458000|462000|465000|467000|468700|478000"
+39;1;3;"Créances";"creances";;"rules['ccecr'] + rules['autcr']";;
+40;3;1;;;;;;
+41;2;2;"Capital souscrit non versé";"csnv";1;;;456200
+42;3;1;;;;;;
+43;2;2;"Action propres";"actpro";1;;;502000
+44;2;2;"Actions titres";"acttit";1;;;500000
+45;1;3;"VMP";"vmp";;"rules['actpro'] + rules['acttit']";;
+46;3;1;;;;;;
+47;2;2;"Instruments de trésorerie";"insdt";1;;;520000
+48;3;1;;;;;;
+49;2;2;"Disponibilités";"dispo";1;;;"510000|530000|540000"
+50;3;1;;;;;;
+51;2;2;"Charges constatées d'avance";"chcda";1;;;486000
+52;3;1;;;;;;
+53;1;3;"TOTAL ACTIFS";"totact";;"rules['csna'] + rules ['immoi'] + rules['immoc'] + rules['immof'] + rules['seec'] + rules['creances'] + rules['csnv'] + rules['vmp'] + rules['insdt'] + rules['dispo'] + rules['chcda']";;
+54;3;1;;;;;;
+55;3;1;;;;;;
+93;1;1;"PASSIFS";;;;;
+94;3;1;;;;;;
+56;2;2;"Capital";"capital";1;;;"101000|108000"
+57;2;2;"Primes d'émission, de fusion, d'apport";"pdedfda";1;;;104000
+58;2;2;"Ecart de réévaluation";"ecdere";1;;;105000
+59;2;2;"Ecart d'équivalence";"ecdeq";1;;;"107000|105700"
+60;2;2;"Réserve légale";"resleg";1;;;106100
+61;2;2;"Réserve statuaire";"ressta";1;;;106300
+62;2;2;"Réserve réglementée";"resreg";1;;;"106200|106400"
+63;2;2;"Autres réserves";"autres";1;;;106800
+64;1;3;"Réserve";"reserve";;"rules['resleg'] + rules['ressta'] + rules['resreg'] + rules['autres']";;
+65;2;2;"Report à nouveau";"repan";1;;;110000
+66;2;2;"Résultat de l'exercice";"rdle";1;;;120000
+67;2;2;"Subventions d'investissement";"subdi";1;;;130000
+68;2;2;"Provisions réglementées";"proreg";1;;;140000
+69;1;3;"Capitaux propres";"cappro";;"rules['capital'] + rules['pdedfda'] + rules['ecdere'] + rules['ecdeq'] + rules['reserve'] + rules['repan'] + rules['rdle'] + rules['subdi'] + rules['proreg']";;
+70;3;1;;;;;;
+71;2;2;"Produit des émissions de titres participatifs";"pdedtp";1;;;167100
+72;2;2;"Avances conditionnées de l'Etat";"acdle";1;;;167400
+73;2;2;"Autres emprunts participatifs";"aep";1;;;167500
+74;2;2;"Provisions pour risques";"ppr";1;;;151000
+75;2;2;"Provisions pour charges";"ppc";1;;;"151100|151200|151300|151400|151500|151600|151800|153000|154000|155000|156000|157000|157200|158000|158100"
+76;1;3;"Provisions pour risques et charges";"pprec";;"rules['ppr'] + rules['ppc']";;
+77;1;3;"Autres fonds propres";"autfp";;"rules['pdedtp'] + rules['acdle'] + rules['aep'] + rules['pprec']";;
+78;3;1;;;;;;
+79;2;2;"Emprunts obligataires convertibles";"emobc";1;;;"161000|168810"
+80;2;2;"Autres emprunts obligataires";"auteo";1;;;"163000|16883"
+81;2;2;"Emprunts et dettes auprès des établissements de crédits";"eedadedc";1;;;"164000|168840|512000|514000|517000|518600|519000"
+82;2;2;"Emprunts et dettes financières";"eedf";1;;;"162000|165000|166000|167500|168000|170000|426000|450000"
+83;2;2;"Avances et acomptes sur commandes en cours";"aeascec";1;;;419100
+84;2;2;"Dettes fournisseurs et comptes rattachés";"dfecr";1;;;"401000|403000|408100|408800"
+85;2;2;"Dettes fiscales et sociales";"dfes";1;;;"421000;422000;424000;427000|428200|428400|428600|430000|442000|443000|444000|445500|445700|445840|445870|446000|447000|448200|448600|449000|457000"
+86;2;2;"Dettes sur immobilisations et comptes rattachés";"dsiecr";1;;;"168500|269000|279000|404000|405000|408400|408800"
+87;2;2;"Autres dettes";"autde";1;;;"419600|419700|419800|464000|467000|468600|478000|509000"
+88;2;2;"Produits constatés d'avance";"pcda";1;;;487000
+89;2;2;"Ecarts de convertion passif";"edcp";1;;;477000
+90;1;3;"Dettes";"dettes";;"rules['emobc'] + rules['auteo'] + rules['eedadedc'] + rules['eedf'] + rules['aeascec'] + rules['dfecr'] + rules['dfes'] + rules['dsiecr'] + rules['autde'] + rules['pcda'] + rules['edcp']";;
+91;3;1;;;;;;
+92;1;3;"TOTAL PASSIFS";"totpas";;"rules['cappro'] + rules['autfp'] + rules['dettes']";;
+95;2;2;"Vente de marchandises";"vdem";1;;;"707000|708700|709700"
+96;2;2;"Production vendue";"proven";1;;;"700|701000|701200|702000|703000|704000|704100|704200|705000|706000|707100|707200|707210|707300|708000|708100|708200|708300|708400|708500|708600|708800|709000|709100|709200|709400|709500|709600|709700|709800"
+97;2;2;"Production stockée";"prosto";1;;;"713000"
+98;2;2;"Production immobilisée";"proimo";1;;;"720000"
+99;2;2;"Subventions d'exploitation";"subdex";1;;;"740000"
+100;2;2;"Reprises sur dépréciations, provisions et amortissements, transferts de charges";"rdpatc";1;;;"781000|791000"
+101;2;2;"Autres produits";"autpro";1;;;"750|751000|751100|751600|751800|752000|753000|754000|758000"
+102;1;3;"Produits d'explotation";"prodex";;"rules['vdem'] + rules['proven'] + rules['prosto'] + rules['proimo'] + rules['subdex'] + rules['rdpatc'] + rules['autpro']";;
+103;3;1;;;;;;
+104;2;2;"Achats de marchandises";"acdem";1;;;"607000|608700|609700"
+105;2;2;"Variation de stocks de marchandises";"vdsdm";1;;;"603700"
+106;2;2;"Achats de matières premières";"acdemp";1;;;"601000|602000|608100|608200|609100|609200"
+107;2;2;"Variations de stocks";"vadest";1;;;"603100|603200"
+108;2;2;"Autres charges externes";"auchex";1;;;"604000|605000|606000|610000|620000|608400|608500|608600|609400|609500|609600"
+109;2;2;"Impôts taxes et versements assimilés";"iteva";1;;;630000
+110;2;2;"Salaires et traitements";"saetr";1;;;"641000|644000"
+111;2;2;"Charges sociales";"chasoc";1;;;"645000|646000|647000|648000|649000"
+112;2;2;"Dotations aux amortissements, dépréciations";"doaad";1;;;"681100|681200|681600|681700"
+113;2;2;"Dotations aux provisions";"doaupr";1;;;681500
+114;2;2;"Autres charges";"autcha";1;;;"650|651000|651100|651600|651800|653000|654000|654100|654400|658000"
+115;1;3;"Charges d'exploitation";"chadex";;"rules['acdem'] + rules['vdsdm'] + rules['acdemp'] + rules['vadest'] + rules['auchex'] + rules['iteva'] + rules['saetr'] + rules['chasoc'] + rules['doaad'] + rules['doaupr'] + rules['autcha']";;
+116;3;1;;;;;;
+117;2;2;"Bénéfice attribué ou perte transférée";"baopt";1;;;755000
+118;2;2;"Perte supportée ou bénéfice transféré";"psobt";1;;;655000
+119;1;3;"Quote-part de résultat sur opérations faites en commun";"qprofc";;"rules['baopt'] + rules['psobt']";;
+120;3;1;;;;;;
+121;2;2;"Produits financiers de participation";"prfidp";1;;;761000
+122;2;2;"Produits financiers d'autres valeurs mobilières et créances de l'actif immobilisé";"pfdvmcai";1;;;762000
+123;2;2;"Autres intérêts et produits assimilés";"aiepa";1;;;"763000|764000|765000|768000"
+124;2;2;"Reprises sur dépréciations, provisions et amortissements, transferts de charges";"rdpatc2";1;;;"786000|796000"
+125;2;2;"Différences positives de change";"dipodc";1;;;766000
+126;2;2;"Produits nets de cessions de VMP";"pndcdv";1;;;767000
+127;1;3;"Produits financiers";"profin";;"rules['prdidp'] + rules['psobt'] + rules['qprofc'] + rules['prfidp'] + rules['pfdvmcai'] + rules['aiepa'] + rules['rdpatc2'] + rules['dipodc'] + rules['pndcdv']";;
+128;3;1;;;;;;
+129;2;2;"Dotations aux amortissements, dépréciations, provisions";"daadp";1;;;686000
+130;2;2;"Intérêts et charges assimilées";"inecha";1;;;"661000|664000|665000|668000"
+131;2;2;"Différence négative de change";"dinedc";1;;;666000
+132;2;2;"Charges nettes sur cessions de VMP";"cnscdv";1;;;667000
+133;1;3;"Charges financières";"chafin";;"rules['daadp'] + rules['inecha'] + rules['dinedc'] + rules['cnscdv']";;
+134;3;1;;;;;;
+135;2;2;"Produits exceptionnels sur opérations de gestion";"pesodg";1;;;771000
+136;2;2;"Produits exceptionnels sur opérations de capital";"pesodc";1;;;"775000|777000|778000"
+137;2;2;"Reprises sur dépréciations, provisions et amortissements, transferts de charges";"rdpatc3";1;;;"787000|797000"
+138;1;3;"Produits exceptionnels";'proexc';;"rules['pesodg'] + rules['pesodc'] + rules['rdpatc3']";;
+139;3;1;;;;;;
+140;2;2;"Charges exceptionnelles sur opérations de gestion";"cesodg";1;;;"671000|672000"
+141;2;2;"Charges exceptionneles sur opérations de capital";"cesodc";1;;;"675000|678000"
+142;2;2;"Dotations aux amortissements, dépréciations, provisions";"daadp2";1;;;687000
+143;1;3;"Charges exceptionneles";"chaexc";;"rules['cesodg'] + rules['cesodc'] + rules['daadp2']";;
+144;3;1;;;;;;
+145;2;2;"Participation des salariés";"padesa";1;;;691000
+146;3;1;;;;;;
+147;2;2;"Impôts sur les bénéfices";"imslbe";1;;;"690|691000|695000|695100|695200|695400|696000|697000|698000|698100|698900|699000"
