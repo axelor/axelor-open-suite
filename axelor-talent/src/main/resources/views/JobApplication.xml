@@ -99,7 +99,7 @@
 				<field name="reasonNotHired" colSpan="12" showTitle="false"/>
 			</panel>
 			<panel name="resumePanel" title="JobApplication.resume" colSpan="12">
-				<field name="resume" widget="binary-link" onChange="action-job-application-method-set-dms-file"/>
+				<field name="resume" widget="binary-link" onChange="save,action-job-application-method-set-dms-file"/>
 			</panel>
 		</panel-tabs>
 

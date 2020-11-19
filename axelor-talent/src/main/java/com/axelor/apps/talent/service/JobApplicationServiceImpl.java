@@ -152,7 +152,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
       MetaFile resume = jobApplication.getResume();
       DMSFile resumeFile = metaFiles.attach(resume, resume.getFileName(), jobApplication);
       jobApplication.setResumeId(resumeFile.getId());
-      jobApplicationRepo.save(jobApplication);
     }
+    jobApplicationRepo.save(jobApplication);
   }
 }
