@@ -18,6 +18,11 @@
     </grid>
     
 	<form name="debt-recovery-history-form" title="Debt recovery history" model="com.axelor.apps.account.db.DebtRecoveryHistory" width="large">
+		<menubar>
+			<menu name="debtRecovryHistoryReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+				<item name="printReminderItem" action="save,action-debit-recovery-history-print-payment-reminder-method" title="Print payment reminder"/>
+			</menu>
+		</menubar>
 		<panel name="debtRecoverySettingsPanel" title="Debt recovery settings">
         	<field name="debtRecovery" form-view="debt-recovery-form" grid-view="debt-recovery-grid"/>
         	<field name="debtRecoveryMethod" widget="SuggestBox" grid-view="debt-recovery-method-grid" form-view="debt-recovery-method-form"/>
@@ -64,5 +69,10 @@
 	    </panel>
 	    
     </form>
+    
+    <action-method name="action-debit-recovery-history-print-payment-reminder-method">
+        <call class="com.axelor.apps.account.web.DebtRecoveryHistoryController"
+              method="printPaymentReminder"/>
+    </action-method>
     
 </object-views>
