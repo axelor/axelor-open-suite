@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 	
     <grid name="user-grid" title="Users list" model="com.axelor.auth.db.User" id="user-grid-base">
     	<toolbar>
@@ -113,6 +113,7 @@
 	          <field name="activateOn" validIf="!activateOn || (activateOn &amp;&amp; !expiresOn) || (activateOn &amp;&amp; expiresOn &amp;&amp; $moment(expiresOn) >= $moment(activateOn))"/>
 	          <field name="expiresOn" validIf="!expiresOn || (!activateOn &amp;&amp; expiresOn) || (activateOn &amp;&amp; expiresOn &amp;&amp; $moment(expiresOn) >= $moment(activateOn))"/>
 	          <field name="blocked"/>
+						<field name="forcePasswordChange" showIf="id &amp;&amp; !$readonly()" widget="boolean"/>
 	          <field name="change" title="Change password?" showIf="id &amp;&amp; !$readonly()" widget="boolean"/>
 	          <panel showIf="change || !id" colSpan="12" itemSpan="12" name="allPasswordsPanel">
 	            <field name="oldPassword" title="Your password" placeholder="your password" widget="password" requiredIf="change || !id"/>
@@ -121,10 +122,9 @@
 	              <field name="chkPassword" title="Confirm password" placeholder="confirm password" widget="password" requiredIf="change || !id" validIf="chkPassword === newPassword"/>
 	              <label name="passwordPatternDescriptionLabel" css="label-danger"/>
 	            </panel>
-	            <panel name="passwordOptionsPanel" showIf="code != $user">
+	            <panel name="passwordOptionsPanel" showIf="code != $user" itemSpan="4">
 	              <field name="$generateRandomPassword" title="Generate random password" widget="boolean" onChange="action-user-generate-random-password"/>
 	              <field name="sendEmailUponPasswordChange"/>
-	              <field name="forcePasswordChange"/>
 	            </panel>
 	          </panel>
 	        </panel>
@@ -137,7 +137,7 @@
 	        <panel-related name="permissionsPanel" field="permissions" grid-view="simple-permission-grid" form-view="permission-form" colSpan="12"/>
     	  </panel>
           <panel-related name="metaPermissionsPanel" field="metaPermissions" showIf="[1,5].indexOf(stepStatusSelect) > -1"/>
-          <panel-dashlet name="userPermissionPanel" title="All permissions" action="action-user-view-show-all-permissions" showIf="id"/>
+          <panel-dashlet name="userPermissionPanel" title="All permissions" action="action-user-view-show-all-permissions" showIf="id" canSearch="true"/>
           <panel-related name="projectSetPanel" field="projectSet" canEdit="false" showIf="stepStatusSelect == 1" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('project')" colSpan="12"/>
         </panel-tabs>
         <!-- /from axelor-core -->
@@ -166,9 +166,10 @@
         	</panel>
 		    <panel name="electronicSignaturePanel" title="Electronic signature" if="__config__.app.isApp('sale') || __config__.app.isApp('purchase') || __config__.app.isApp('stock')"  showIf="[2,5].indexOf(stepStatusSelect) > -1">
 		    	<field name="electronicSignature" widget="Image" />
-					<field name="useSignatureForQuotations" if="__config__.app.isApp('sale') || __config__.app.isApp('purchase')"/>
 					<field name="useSignatureForStock" if="__config__.app.isApp('stock')"/>
-		    </panel>
+					<field name="useSignatureForSalesQuotations" if="__config__.app.isApp('sale')"/>
+					<field name="useSignatureForPurchaseQuotations" if="__config__.app.isApp('purchase')"/>
+				</panel>
 		    <panel-related name="emailAccountListPanel" field="emailAccountList" if="__config__.app.getApp('base').getEmailAccountByUser()" colSpan="12" form-view="mail-account-form" grid-view="mail-account-grid" showIf="[2,5].indexOf(stepStatusSelect) > -1"/>
 		    <panel-related name="projectSetPanel" field="projectSet" canEdit="false" form-view="project-form" grid-view="project-grid" if="__config__.app.isApp('project')" colSpan="12"/>
         	<panel name="substitutePfpValidatorTabPanel" title="PFP Validator" if-module="axelor-account" if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getActivatePassedForPayment()" showIf="activeCompany.accountConfig.isManagePassedForPayment">
@@ -336,7 +337,7 @@
     <action-method name="action-user-method-generate-random-passwords">
     	<call class="com.axelor.apps.base.web.UserController" method="generateRandomPasswords"/>
     </action-method>
-    
+
     <action-view name="action-user-view-show-all-permissions" title="All permissions" model="com.axelor.auth.db.Permission">
    		<view name="permission-grid" type="grid"/>
    		<view name="permission-form" type="form"/>

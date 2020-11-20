@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
     <!-- VUE GENERALE -->
 
@@ -224,6 +224,7 @@
 	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 4 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Contract invoice</span>
 	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 5 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Contract closing invoice</span>
 	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 6 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Subscription</span>
+	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="record.operationSubTypeSelect == 7 && (record.operationTypeSelect == 1 || record.operationTypeSelect == 3)">Periodic contract</span>
 
 	                            <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" x-translate ng-show="(record.operationTypeSelect == 3 || record.operationTypeSelect == 4) && record.partner.factorizedCustomer">Factorized customer</span>
 
@@ -476,11 +477,11 @@ InvoiceSet.length > 0))"
 				<viewer depends="exTaxTotal,currency.symbol,taxTotal"><![CDATA[
 		         <dl class="dl-horizontal">
 		           <dt x-translate>Total W.T.</dt>
-		           <dd>{{record.exTaxTotal}} {{record.currency.symbol}}</dd>
+		           <dd>{{$fmt('exTaxTotal') | currency: record.currency.symbol}}</dd>
 		           <dt x-translate>Total tax</dt>
-		           <dd>{{record.taxTotal}} {{record.currency.symbol}}</dd>
+		           <dd>{{$fmt('taxTotal') | currency: record.currency.symbol}}</dd>
 		           <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
-		           <dd class="order-subtotal-total">{{record.inTaxTotal}} {{record.currency.symbol}}</dd>
+		           <dd class="order-subtotal-total">{{$fmt('inTaxTotal') | currency: record.currency.symbol}}</dd>
 		         </dl>]]>
 				</viewer>
 			</field>
@@ -501,8 +502,8 @@ InvoiceSet.length > 0))"
                         <font x-translate ng-if="record.typeSelect == 4">Inv. on</font>
                         <font x-translate ng-if="record.typeSelect == 5">Other on</font>
                         <font x-translate ng-if="record.typeSelect == 6">Imputed on</font>
-                        <font> {{record.paymentDate | date : 'dd/MM/yyyy'}}</font>
-                        <dd>-{{record.amount}} {{record.currency.symbol}}</dd>
+                        <font> {{$fmt('paymentDate')}}</font>
+                        <dd>-{{$fmt('amount') | currency: record.currency.symbol}}</dd>
                       </dt>
                    	</dl>
                   </span>
@@ -514,7 +515,7 @@ InvoiceSet.length > 0))"
 				<viewer depends="amountRemaining,currency.symbol"><![CDATA[
 		         <dl class="dl-horizontal">
 		           <dt class="order-subtotal-total" x-translate>Amount due</dt>
-		           <dd class="order-subtotal-total">{{record.amountRemaining}} {{record.currency.symbol}}</dd>
+		           <dd class="order-subtotal-total">{{$fmt('amountRemaining') | currency: record.currency.symbol}}</dd>
 		         </dl>]]>
 				</viewer>
 			</field>
@@ -528,13 +529,13 @@ InvoiceSet.length > 0))"
 				<viewer depends="companyExTaxTotal,company.currency.symbol,companyTaxTotal,companyInTaxTotal,companyInTaxTotalRemaining"><![CDATA[
 		         <dl class="dl-horizontal">
 		           <dt x-translate>Total W.T.</dt>
-		           <dd>{{record.companyExTaxTotal}} {{record.company.currency.symbol}}</dd>
+		           <dd>{{$fmt('companyExTaxTotal') | currency: record.company.currency.symbol}}</dd>
 		           <dt x-translate>Total tax</dt>
-		           <dd>{{record.companyTaxTotal}} {{record.company.currency.symbol}}</dd>
+		           <dd>{{$fmt('companyTaxTotal') | currency: record.company.currency.symbol}}</dd>
 		           <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
-		           <dd class="order-subtotal-total">{{record.companyInTaxTotal}} {{record.company.currency.symbol}}</dd>
+		           <dd class="order-subtotal-total">{{$fmt('companyInTaxTotal') | currency: record.company.currency.symbol}}</dd>
 					<dt x-translate>Total Amount Remaining</dt>
-		           <dd class="order-subtotal-total">{{record.companyInTaxTotalRemaining}} {{record.company.currency.symbol}}</dd>
+		           <dd class="order-subtotal-total">{{$fmt('companyInTaxTotalRemaining') | currency: record.company.currency.symbol}}</dd>
 		         </dl>
 		       ]]></viewer>
 			</field>
@@ -680,11 +681,11 @@ InvoiceSet.length > 0))"
 				<viewer depends="exTaxTotal,currency.symbol,taxTotal,inTaxTotal"><![CDATA[
 		         <dl class="dl-horizontal">
 		           <dt x-translate>Total W.T.</dt>
-		           <dd>{{record.exTaxTotal}} {{record.currency.symbol}}</dd>
+		           <dd>{{$fmt('exTaxTotal') | currency: record.currency.symbol}}</dd>
 		           <dt x-translate>Total tax</dt>
-		           <dd>{{record.taxTotal}} {{record.currency.symbol}}</dd>
+		           <dd>{{$fmt('taxTotal') | currency: record.currency.symbol}}</dd>
 		           <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
-		           <dd class="order-subtotal-total">{{record.inTaxTotal}} {{record.currency.symbol}}</dd>
+		           <dd class="order-subtotal-total">{{$fmt('inTaxTotal') | currency: record.currency.symbol}}</dd>
 		         </dl>]]>
 				</viewer>
 			</field>
@@ -705,8 +706,8 @@ InvoiceSet.length > 0))"
                         <font x-translate ng-if="record.typeSelect == 4">Inv. on</font>
                         <font x-translate ng-if="record.typeSelect == 5">Other on</font>
                         <font x-translate ng-if="record.typeSelect == 6">Imputed on</font>
-                        <font> {{record.paymentDate | date : 'dd/MM/yyyy'}}</font>
-                        <dd>-{{record.amount}} {{record.currency.symbol}}</dd>
+                        <font> {{$fmt('paymentDate')}}</font>
+                        <dd>-{{$fmt('amount') | currency: record.currency.symbol}}</dd>
                       </dt>
                    	</dl>
                   </span>
@@ -717,7 +718,7 @@ InvoiceSet.length > 0))"
 				<viewer depends="amountRemaining,currency.symbol"><![CDATA[
 		         <dl class="dl-horizontal">
 		           <dt class="order-subtotal-total" x-translate>Amount due</dt>
-		           <dd class="order-subtotal-total">{{record.amountRemaining}} {{record.currency.symbol}}</dd>
+		           <dd class="order-subtotal-total">{{$fmt('amountRemaining') | currency: record.currency.symbol}}</dd>
 		         </dl>]]>
 				</viewer>
 			</field>
@@ -1019,12 +1020,12 @@ InvoiceSet.length > 0))"
 
 	<action-record name="action-invoice-record-pfp-validate" model="com.axelor.apps.account.db.Invoice">
 		<field name="pfpValidateStatusSelect" expr="eval: 2"/>
-		<field name="decisionPfpTakenDate" expr="eval: __date__"/>
+		<field name="decisionPfpTakenDate" expr="eval: __config__.date"/>
 	</action-record>
 
 	<action-record name="action-invoice-record-refusal-to-pay" model="com.axelor.apps.account.db.Invoice">
 		<field name="pfpValidateStatusSelect" expr="eval: 3"/>
-		<field name="decisionPfpTakenDate" expr="eval: __date__"/>
+		<field name="decisionPfpTakenDate" expr="eval: __config__.date"/>
 		<field name="reasonOfRefusalToPayStr" expr="eval: reasonOfRefusalToPay?.name"/>
 	</action-record>
 

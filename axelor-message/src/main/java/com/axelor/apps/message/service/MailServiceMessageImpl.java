@@ -75,7 +75,7 @@ public class MailServiceMessageImpl extends MailServiceImpl {
 
   private EmailAccount readerAccount = null;
 
-  @Inject private MailAccountService mailAccountService;
+  @Inject protected MailAccountService mailAccountService;
 
   @Override
   public Model resolve(String email) {
@@ -204,7 +204,7 @@ public class MailServiceMessageImpl extends MailServiceImpl {
         });
   }
 
-  private MailSender getMailSender(EmailAccount emailAccount) {
+  protected MailSender getMailSender(EmailAccount emailAccount) {
 
     if (senderAccount == null
         || !senderAccount.getId().equals(emailAccount.getId())

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
 		<toolbar>
@@ -61,7 +61,7 @@
 						depends="isBusinessProject,isProject,projectTypeSelect,$toInvoiceCounter,id">
 							<![CDATA[
 								<h4 style="text-align: right;">
-									<span class="label label-default" style="background-color: #FD6217; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.4em;" ng-show="record.isBusinessProject" x-translate>To Invoice</span><span class="label label-default" style="background-color: #FFAA00; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0;" ng-show="record.isBusinessProject &amp;&amp; record.id">{{record.$toInvoiceCounter}}</span>
+									<span class="label label-default" style="background-color: #FD6217; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.4em;" ng-show="record.isBusinessProject" x-translate>To Invoice</span><span class="label label-default" style="background-color: #FFAA00; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0;" ng-show="record.isBusinessProject &amp;&amp; record.id">{{$fmt('$toInvoiceCounter')}}</span>
 									<span class="label label-default" style="background-color: #86BC25; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProject &amp;&amp; record.projectTypeSelect == 1" x-translate>Project</span>
 									<span class="label label-default" style="background-color: #86BC25; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProject &amp;&amp; record.projectTypeSelect == 2" x-translate>Project phase</span>
 									<span class="label label-default" style="background-color: #2185D0; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isBusinessProject" x-translate>Business</span>
@@ -139,7 +139,7 @@
 					onClick="action-project-view-show-related-tasks" />
 				<panel-dashlet name="projectTaskTreeDashletPanel" title="Task Tree" colSpan="12"
 					action="action-view-show-project-task-tree" />
-				<panel-dashlet name="taskInvoicingDashletPanel" title="Task Invoicing" colSpan="12" 
+				<panel-dashlet name="taskInvoicingDashletPanel" title="Task Invoicing" colSpan="12" showIf="isBusinessProject"
 					action="action-dashlet-project-show-all-invoicing-task" if="__config__.app.isApp('business-project')" canSearch="true"/>
 			</panel>
 			<panel title="Members" name="membersPanel">
@@ -159,7 +159,7 @@
 					 if="__config__.app.isApp('employee')" if-module="axelor-human-resource">
 					<field name="totalPlannedHrs" readonly="true">
 						<viewer><![CDATA[
-		                   	<span>{{record.totalPlannedHrs}} </span><span x-translate>hours</span>
+		                   	<span>{{$fmt('totalPlannedHrs')}} </span><span x-translate>hours</span>
 		       			]]></viewer>
 					</field>
 					<spacer name="totalPlannedHrsSpacer" colSpan="6" />
@@ -375,7 +375,7 @@
 					name="isBusinessProject" colSpan="6" widget="boolean-switch" />
 				<field name="isShowPhasesElements" hideIf="projectTypeSelect == 2" colSpan="12" widget="boolean-switch" />
 				<field if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
-          name="$toInvoiceCounter" showTitle="false" hidden="true" colSpan="6" />
+          name="$toInvoiceCounter" showTitle="false" type="integer" hidden="true" colSpan="6" />
 			</panel>
 			<panel name="projectPanel" showIf="isProject" colSpan="12">
 				<field name="projectTypeSelect" onChange="action-project-record-empty-parent-project"
@@ -434,7 +434,7 @@
 		&lt;h4&gt;{{fullName}}&lt;/h4&gt;
 		&lt;div class="card-body"&gt;{{description}}&lt;/div&gt;
 		&lt;div class="card-footer"&gt;
-		  &lt;i class='fa fa-clock-o'&gt;&lt;/i&gt; &lt;span&gt;{{dueDate|date:'dd/MM/yyyy'}}&lt;/span&gt;
+		  &lt;i class='fa fa-clock-o'&gt;&lt;/i&gt; &lt;span&gt;{{$fmt('dueDate')}}&lt;/span&gt;
 		&lt;/div&gt;
 		</template>
 	</kanban>
@@ -454,7 +454,7 @@
 		&lt;h4&gt;{{fullName}}&lt;/h4&gt;
 		&lt;div class="card-body"&gt;{{description}}&lt;/div&gt;
 		&lt;div class="card-footer"&gt;
-		  &lt;i class='fa fa-clock-o'&gt;&lt;/i&gt; &lt;span&gt;{{dueDate|date:'dd/MM/yyyy'}}&lt;/span&gt;
+		  &lt;i class='fa fa-clock-o'&gt;&lt;/i&gt; &lt;span&gt;{{$fmt('dueDate')}}&lt;/span&gt;
 		&lt;/div&gt;
 		</template>
 	</kanban>
@@ -733,7 +733,7 @@
 	</action-record>
 	
 	<action-record name="action-project-record-bind-customer-parent" model="com.axelor.apps.project.db.Project">
-		<field name="clientPartner" expr="eval: _parent?.clientPartner"/>
+		<field name="clientPartner" expr="eval: __parent__?.clientPartner"/>
 	</action-record>
 
 	<action-method name="action-method-project-compute-progress">
@@ -795,7 +795,7 @@
 	</action-view>
 
 	<action-attrs name="action-business-support-attrs-project-default">
-		<attribute name="hidden" for="project" expr="eval:true" if="_parent &amp;&amp; (_parent?._model == 'com.axelor.apps.project.db.Project' || _parent?._model == 'com.axelor.apps.project.db.ProjectTemplate')"/>
+		<attribute name="hidden" for="project" expr="eval:true" if="__parent__ &amp;&amp; (__parent__?._model == 'com.axelor.apps.project.db.Project' || __parent__?._model == 'com.axelor.apps.project.db.ProjectTemplate')"/>
 	</action-attrs>
 
 	<action-view name="action-project-view-create-new-customer-contract" title="Create new customer contract" model="com.axelor.apps.contract.db.Contract">

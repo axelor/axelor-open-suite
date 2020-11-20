@@ -37,6 +37,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.IExceptionMessage;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.apps.purchase.service.PurchaseOrderWorkflowService;
 import com.axelor.apps.purchase.service.print.PurchaseOrderPrintService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.tool.StringTool;
@@ -387,7 +388,7 @@ public class PurchaseOrderController {
     try {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-      Beans.get(PurchaseOrderService.class).validatePurchaseOrder(purchaseOrder);
+      Beans.get(PurchaseOrderWorkflowService.class).validatePurchaseOrder(purchaseOrder);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -398,7 +399,7 @@ public class PurchaseOrderController {
     try {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-      Beans.get(PurchaseOrderService.class).cancelPurchaseOrder(purchaseOrder);
+      Beans.get(PurchaseOrderWorkflowService.class).cancelPurchaseOrder(purchaseOrder);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -488,7 +489,7 @@ public class PurchaseOrderController {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
 
-      Beans.get(PurchaseOrderService.class).finishPurchaseOrder(purchaseOrder);
+      Beans.get(PurchaseOrderWorkflowService.class).finishPurchaseOrder(purchaseOrder);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -53,9 +53,6 @@ public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderServ
     }
 
     SaleOrder saleOrder = createSaleOrder(opportunity, currency);
-    if (company != null && company.getSaleConfig() != null) {
-      saleOrder.setDuration(company.getSaleConfig().getDefaultValidityDuration());
-    }
 
     opportunity.addSaleOrderListItem(saleOrder);
 
@@ -80,7 +77,7 @@ public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderServ
         null,
         opportunity.getName(),
         null,
-        appBaseService.getTodayDate(),
+        appBaseService.getTodayDate(opportunity.getCompany()),
         Beans.get(PartnerPriceListService.class)
             .getDefaultPriceList(opportunity.getPartner(), PriceListRepository.TYPE_SALE),
         opportunity.getPartner(),

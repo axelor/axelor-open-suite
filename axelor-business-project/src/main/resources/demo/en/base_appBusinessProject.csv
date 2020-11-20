@@ -1,2 +1,2 @@
-"code";"generateProjectOrder";"projectSaleOrderLines";"projectPurchaseOrderLines";"projectInvoiceLines";"productInvoicingProject.importId";"showPurchaseOrderLineRelatedToProject";"showSaleOrderLineRelatedToProject";"showExpenseLineRelatedToProject"
-"business-project";"true";"true";"true";"true";400;"true";"true";"true"
+"code";"generateProjectOrder";"projectSaleOrderLines";"projectPurchaseOrderLines";"projectInvoiceLines";"productInvoicingProject.importId";"showPurchaseOrderLineRelatedToProject";"showSaleOrderLineRelatedToProject";"showExpenseLineRelatedToProject";"exculdeTaskInvoicing"
+"business-project";"true";"true";"true";"true";400;"true";"true";"true";"self.isTaskRefused = true"

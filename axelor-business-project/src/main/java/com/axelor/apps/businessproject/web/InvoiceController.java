@@ -18,7 +18,6 @@
 package com.axelor.apps.businessproject.web;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -28,6 +27,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.businessproject.service.InvoiceServiceProject;
 import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
 import com.axelor.apps.businessproject.service.SaleOrderInvoiceProjectServiceImpl;
 import com.axelor.apps.project.db.Project;
@@ -320,12 +320,13 @@ public class InvoiceController {
   }
 
   public void updateLines(ActionRequest request, ActionResponse response) throws AxelorException {
-    Invoice invoice = request.getContext().asType(Invoice.class);
-    invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
-
-    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-      invoiceLine.setProject(invoice.getProject());
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+      invoice = Beans.get(InvoiceServiceProject.class).updateLines(invoice);
+      response.setValue("invoiceLineList", invoice.getInvoiceLineList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
-    response.setValue("invoiceLineList", invoice.getInvoiceLineList());
   }
 }

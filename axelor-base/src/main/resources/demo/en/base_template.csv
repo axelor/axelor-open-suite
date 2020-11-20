@@ -1,4 +1,4 @@
-"name";"metaModel.name";"language.importId";"target";"birtTemplate.name";"filePath";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect"
+"name";"metaModel.name";"language.importId";"target";"birtTemplateSet_importId";"filePath";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect"
 "Confirmation coordonnées";"Partner";2;;;;"true";;"Mise à jour de vos coordonnées";"<p>Madame, Monsieur,<br/>
 Nous sommes actuellement en phase de mise à jour de notre répertoire de contacts.<br/> 
 A ce jour voici les informations dont nous disposons : </p>

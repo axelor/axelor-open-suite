@@ -57,7 +57,11 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
       Period period =
           Period.between(
               employee.getSeniorityDate(),
-              refDate == null ? Beans.get(AppBaseService.class).getTodayDate() : refDate);
+              refDate == null
+                  ? Beans.get(AppBaseService.class)
+                      .getTodayDate(
+                          employee.getUser() != null ? employee.getUser().getActiveCompany() : null)
+                  : refDate);
       return period.getYears();
     } catch (IllegalArgumentException e) {
       throw new AxelorException(
@@ -75,7 +79,11 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
       Period period =
           Period.between(
               employee.getBirthDate(),
-              refDate == null ? Beans.get(AppBaseService.class).getTodayDate() : refDate);
+              refDate == null
+                  ? Beans.get(AppBaseService.class)
+                      .getTodayDate(
+                          employee.getUser() != null ? employee.getUser().getActiveCompany() : null)
+                  : refDate);
       return period.getYears();
     } catch (IllegalArgumentException e) {
       throw new AxelorException(

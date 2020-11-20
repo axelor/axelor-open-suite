@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
  
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
  
@@ -18,11 +18,13 @@
       help="Purchase order or sale order without estimated delivery date and manufacturing order without planned date. In this case, we use the MRP start date (today)"/>
       <boolean name="ignoreEndDate" title="Ignore end date" help="Include elements with a date later than MRP end date."/>
 
+	  <string name="applicationFieldSelect" title="Field of application" selection="supplychain.mrp.line.type.application.field.select"/>
+
 	  <integer name="setElementToSelect" title="Set elements to" selection="supplychain.mrplinetype.set.element.to.select" default="1"/>
       <decimal name="numberOfDays" title="Number of days" min="0" />
 
 
-    
+
       <extra-code><![CDATA[
 	
 	
@@ -44,12 +46,17 @@
 		// TYPE SELECT
 		public static final int TYPE_IN = 1;  // Entry of stock
 		public static final int TYPE_OUT = 2;  // Out of stock
-		
+
+		// APPLICATION FIELD SELECT
+		public static final int APPLICATION_FIELD_MRP = 1;
+		public static final int APPLICATION_FIELD_MPS = 2;
+
 		// Default estimated Date
      	public static final int CURRENT_DATE = 1;
      	public static final int CURRENT_DATE_PLUS_DAYS = 2;
-		
-	
+
+
+
 	]]></extra-code>
       
   </entity>

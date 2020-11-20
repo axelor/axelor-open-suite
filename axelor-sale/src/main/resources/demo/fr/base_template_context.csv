@@ -1,0 +1,2 @@
+"name";"value"
+"companyLogo";"com.axelor.inject.Beans.get(com.axelor.apps.sale.db.repo.SaleOrderRepository.class).find(id).getCompany().getLogo() != null ?com.axelor.meta.MetaFiles.getPath(com.axelor.inject.Beans.get(com.axelor.apps.sale.db.repo.SaleOrderRepository.class).find(id).getCompany().getLogo()).toFile().getBytes().encodeBase64() : null"

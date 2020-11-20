@@ -18,6 +18,7 @@
 package com.axelor.apps.production.service.manuforder;
 
 import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.exception.AxelorException;
 import java.io.IOException;
 import java.util.List;
@@ -29,7 +30,6 @@ public interface ManufOrderPrintService {
    *
    * @return ReportSettings
    * @throws IOException
-   * @throws AxelorException
    */
   String printManufOrders(List<Long> ids) throws IOException;
 
@@ -41,6 +41,8 @@ public interface ManufOrderPrintService {
    * @throws AxelorException
    */
   String printManufOrder(ManufOrder manufOrder) throws AxelorException;
+
+  ReportSettings prepareReportSettings(ManufOrder manufOrder);
 
   /** Returns the filename of a printing with multiple manuf orders. */
   String getManufOrdersFilename();

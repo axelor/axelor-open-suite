@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views
-              http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+              http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 	<grid name="contract-grid" title="Contracts" model="com.axelor.apps.contract.db.Contract">
 		<field name="contractId" width="120"/>
@@ -236,7 +236,7 @@
     </form>
 
   <action-attrs name="action-contract-attrs-show-close-btn">
-    <attribute for="closeContractBtn" name="hidden" expr="terminatedDate == null || statusSelect != 2 || __config__.app.getTodayDate() &lt; terminatedDate"/>
+    <attribute for="closeContractBtn" name="hidden" expr="terminatedDate == null || statusSelect != 2 || __config__.app.getTodayDate(__user__.activeCompany) &lt; terminatedDate"/>
   </action-attrs>
 
   <action-method name="action-contract-method-close">
@@ -259,7 +259,7 @@
         <field name="targetTypeSelect" expr="eval: _xTargetType" if="_xTargetType != null"/>
         <field name="currentContractVersion" expr="action:action-record-contract-version-default-record"/>
         <field name="partner" expr="eval: _partner"/>
-        <field name="currency" expr="eval: __user__.activeCompany.currency"/>
+        <field name="currency" expr="eval: __user__.activeCompany?.currency"/>
         <field name="project" expr="eval:_project" if="_project != null"/>
     </action-record>
 
@@ -379,7 +379,7 @@
     <action-validate name="action-contract-validate-on-going">
         <alert message="Attention the contract will have as starting date the provisional activation
         date ${currentContractVersion.supposedActivationDate}, Are you sure?"
-          if="currentContractVersion.supposedActivationDate &amp;&amp; currentContractVersion.supposedActivationDate &lt; __date__"/>
+          if="currentContractVersion.supposedActivationDate &amp;&amp; currentContractVersion.supposedActivationDate &lt; __config__.date"/>
     </action-validate>
 
     <action-attrs name="action-contract-readonly-if-unchangable" model="com.axelor.apps.contract.db.Contract">
