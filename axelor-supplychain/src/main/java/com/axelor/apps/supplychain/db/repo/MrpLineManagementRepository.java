@@ -21,14 +21,11 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.supplychain.db.MrpLine;
 import com.axelor.inject.Beans;
-
 import java.util.Map;
 
 public class MrpLineManagementRepository extends MrpLineRepository {
-  
-  /**
-   * set alert if purchase delivery date is to far from proposal
-   */
+
+  /** set alert if purchase delivery date is to far from proposal */
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
     Long mrpLineId = (Long) json.get("id");
@@ -38,10 +35,13 @@ public class MrpLineManagementRepository extends MrpLineRepository {
     if (PurchaseOrder.class.getName().equals(mrpLine.getProposalSelect())) {
       PurchaseOrder purchaseOrder =
           Beans.get(PurchaseOrderRepository.class).find(mrpLine.getProposalSelectId());
-      if (purchaseOrder.getDeliveryDate() == null || mrpLine.getProduct().getMrpFamily() == null ||
-          Math.abs(mrpLine.getMaturityDate().toEpochDay() - purchaseOrder.getDeliveryDate().toEpochDay())
-          > mrpLine.getProduct().getMrpFamily().getDayNbBetweenPurchaseAndProposal()) {
-        
+      if (purchaseOrder.getDeliveryDate() == null
+          || mrpLine.getProduct().getMrpFamily() == null
+          || Math.abs(
+                  mrpLine.getMaturityDate().toEpochDay()
+                      - purchaseOrder.getDeliveryDate().toEpochDay())
+              > mrpLine.getProduct().getMrpFamily().getDayNbBetweenPurchaseAndProposal()) {
+
         mrpLine.setIsOutDayNbBetweenPurchaseAndProposal(true);
       } else {
         mrpLine.setIsOutDayNbBetweenPurchaseAndProposal(false);
