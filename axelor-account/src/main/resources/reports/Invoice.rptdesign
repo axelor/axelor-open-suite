@@ -4272,14 +4272,6 @@ row["message_key"]
 .replace('%s',Formatter.format(row._outer["subscription_from_date"],'dd/MM/yyyy'))
 .replace('%s',Formatter.format(row._outer["subscription_to_date"],'dd/MM/yyyy'))</VALUE-OF>]]></text-property>
                     </text>
-                    <data id="5647">
-                        <property name="display">inline</property>
-                        <property name="resultSetColumn">subscription_from_date</property>
-                    </data>
-                    <data id="5648">
-                        <property name="display">inline</property>
-                        <property name="resultSetColumn">subscription_to_date</property>
-                    </data>
                 </cell>
                 <cell id="4516"/>
             </row>
