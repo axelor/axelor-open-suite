@@ -18,7 +18,7 @@
     	<panel name="mainPanel"> 
 			<field name="name"/>
 			<field name="priority" colSpan="3"/>
-			<field name="workCenter" grid-view="work-center-grid" form-view="work-center-form" canNew="true" onChange="action-prod-process-line-group-work-center-onchange"/>
+			<field name="workCenter" grid-view="work-center-grid" form-view="work-center-form" canEdit="true" canNew="true" onChange="action-prod-process-line-group-work-center-onchange"/>
 			<field name="outsourcing"/>
 			<field name="optional"/>
 			<field name="useLineInGeneratedPurchaseOrder"/>
