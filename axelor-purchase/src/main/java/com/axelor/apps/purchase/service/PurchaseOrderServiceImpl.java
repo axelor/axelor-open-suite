@@ -38,6 +38,7 @@ import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
@@ -61,6 +62,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -423,6 +425,16 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
           productCompanyService.set(
               product, "lastPurchasePrice", lastPurchasePrice, purchaseOrder.getCompany());
+
+          LocalDate lastPurchaseDate =
+              Beans.get(AppBaseService.class)
+                  .getTodayDate(
+                      Optional.ofNullable(AuthUtils.getUser())
+                          .map(User::getActiveCompany)
+                          .orElse(null));
+          productCompanyService.set(
+              product, "lastPurchaseDate", lastPurchaseDate, purchaseOrder.getCompany());
+
           if ((Boolean)
               productCompanyService.get(
                   product, "defShipCoefByPartner", purchaseOrder.getCompany())) {
