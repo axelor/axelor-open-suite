@@ -58,7 +58,7 @@
 				<field name="generatePurchaseOrderOnMoPlanning" colSpan="3" if="__config__.app.getApp('production').getManageOutsourcing()" showIf="outsourcing"/>
 				<field name="isEnabledForAllProducts" colSpan="4" readonlyIf="isConsProOnOperation"/>
 				<spacer colSpan="2"/>
-				<field name="subcontractors" domain="self.isSubcontractor = true" colSpan="3" onChange="action-production-record-subcontractors-on-change" if="__config__.app.getApp('production').getManageOutsourcing()" showIf="outsourcing" requiredIf="true" form-view="partner-form"/>
+				<field name="subcontractors" domain="self.isSubcontractor = true" colSpan="3" onChange="action-production-record-subcontractors-on-change" if="__config__.app.getApp('production').getManageOutsourcing()" showIf="outsourcing" requiredIf="outsourcing" form-view="partner-form"/>
 				<field name="outsourcingStockLocation" domain="self.isOutsourcingLocation = true" colSpan="3" if="__config__.app.getApp('production').getManageOutsourcing()" showIf="outsourcing"/>
 			</panel>
 			
