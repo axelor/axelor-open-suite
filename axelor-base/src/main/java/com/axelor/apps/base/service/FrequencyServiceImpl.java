@@ -407,8 +407,7 @@ public class FrequencyServiceImpl implements FrequencyService {
     ArrayList<Integer> years = new ArrayList<>();
 
     int startYear = startDate.getYear();
-    years.add(startYear);
-    for (long i = 0; i < ChronoUnit.YEARS.between(startDate, endDate); i++) {
+    for (long i = 0; i <= ChronoUnit.YEARS.between(startDate, endDate); i++) {
       years.add(startYear++);
     }
 
