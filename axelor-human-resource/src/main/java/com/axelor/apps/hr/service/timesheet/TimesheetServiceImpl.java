@@ -1178,8 +1178,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
         LeaveRequest leave = leaveService.getLeave(user, date);
         if (leave != null) {
           BigDecimal hours = leaveService.computeDuration(leave, date, date);
-          if (leave.getLeaveLine().getLeaveReason().getUnitSelect()
-              == LeaveReasonRepository.UNIT_SELECT_DAYS) {
+          if (leave.getLeaveReason().getUnitSelect() == LeaveReasonRepository.UNIT_SELECT_DAYS) {
             hours = hours.multiply(dayValueInHours);
           }
           timesheetLineService.createTimesheetLine(

@@ -500,7 +500,7 @@ public class HumanResourceMobileController {
             employee.getName(),
             leaveReason.getName());
       }
-      leave.setLeaveLine(leaveLine);
+      leave.setLeaveReason(leaveReason);
       leave.setRequestDate(appBaseService.getTodayDate(company));
       if (requestData.get("fromDateT") != null) {
         leave.setFromDateT(
