@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 	<grid name="expense-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense" orderBy="-sentDate">
 		<hilite color="danger" if="statusSelect == 5"/>
@@ -99,21 +99,21 @@
 		                    <![CDATA[
 		                    <dl class="dl-horizontal">
 		                        <dt x-translate>Total W.T.</dt>
-		                        <dd>{{record.exTaxTotal}}</dd>
+		                        <dd>{{$fmt('exTaxTotal')}}</dd>
 		                        <dt x-translate>Total tax</dt>
-		                        <dd>{{record.taxTotal}}</dd>
+		                        <dd>{{$fmt('taxTotal')}}</dd>
 		                        <dt class="order-subtotal-total" x-translate>Total A.T.I.</dt>
-		                        <dd class="order-subtotal-total">{{record.inTaxTotal}}</dd>
+		                        <dd class="order-subtotal-total">{{$fmt('inTaxTotal')}}</dd>
 		                        <dt ng-show="record.personalExpenseAmount != 0" x-translate>Personal expense</dt>
-		                        <dd ng-show="record.personalExpenseAmount != 0"> -{{record.personalExpenseAmount | number:2}}</dd>
+		                        <dd ng-show="record.personalExpenseAmount != 0"> -{{$fmt('personalExpenseAmount')}}</dd>
 		                        <dt ng-show="record.withdrawnCash != 0" x-translate>Withdrawn cash</dt>
-		                        <dd ng-show="record.withdrawnCash != 0">-{{record.withdrawnCash | number:2}}</dd>
+		                        <dd ng-show="record.withdrawnCash != 0">-{{$fmt('withdrawnCash')}}</dd>
 		                        <dt ng-show="record.advanceAmount != 0" x-translate>Advance</dt>
-		                        <dd ng-show="record.advanceAmount != 0">-{{record.advanceAmount | number:2}}</dd>
+		                        <dd ng-show="record.advanceAmount != 0">-{{$fmt('advanceAmount')}}</dd>
 		                        <dt ng-show="(record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0) &amp;&amp; (record.paymentStatusSelect == 1 || record.paymentStatusSelect == 3)"  ng-style="{'color' : 'blue'}" x-translate>Payment</dt>
-		                        <dd ng-show="(record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0) &amp;&amp; (record.paymentStatusSelect == 1 || record.paymentStatusSelect == 3)"  ng-style="{'color' : 'blue'}">-{{record.paymentAmount  | number:2}}</dd>
+		                        <dd ng-show="(record.statusSelect == 3 || record.statusSelect == 4 &amp;&amp; record.paymentAmount != 0) &amp;&amp; (record.paymentStatusSelect == 1 || record.paymentStatusSelect == 3)"  ng-style="{'color' : 'blue'}">-{{$fmt('paymentAmount')}}</dd>
 		                        <dt class="order-subtotal-total" x-translate>TotalToRefund</dt>
-		                        <dd class="order-subtotal-total">{{record.inTaxTotal - record.advanceAmount - record.withdrawnCash - record.personalExpenseAmount - record.paymentAmount | number:2}}</dd>
+		                        <dd class="order-subtotal-total">{{$fmt('inTaxTotal - advanceAmount - withdrawnCash - personalExpenseAmount - paymentAmount')}}</dd>
 		                    </dl>
 		                    ]]>
 		                </viewer>
@@ -200,13 +200,13 @@
 		<field name="user" expr="eval:__user__"/>
 		<field name="company" expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
 		<field name="companyCbSelect" expr="eval: __user__.employee?.companyCbSelect"/>
-		<field name="period" expr="eval: __repo__(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1 AND self.allowExpenseCreation = true AND self.year.company = ?2 AND self.year.typeSelect = 1', __date__, _payCompany).fetchOne()"/>
+		<field name="period" expr="eval: __repo__(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1 AND self.allowExpenseCreation = true AND self.year.company = ?2 AND self.year.typeSelect = 1', __config__.date, _payCompany).fetchOne()"/>
 		<field name="exTaxTotal" expr="eval: 0"/>
 		<field name="taxTotal" expr="eval: 0"/>
 		<field name="inTaxTotal" expr="eval: 0"/>
 		<field name="multipleUsers" expr="eval: setMultipleUsers" if="setMultipleUsers"/>
 		<field name="bankDetails"
-		  expr="eval: __user__?.employee?.mainEmploymentContract?.payCompany ? __user__.employee.mainEmploymentContract.payCompany.defaultBankDetails : __user__.activeCompany.defaultBankDetails"/>
+		  expr="eval: __user__?.employee?.mainEmploymentContract?.payCompany ? __user__.employee.mainEmploymentContract.payCompany.defaultBankDetails : __user__.activeCompany?.defaultBankDetails"/>
 	</action-record>
 
   <action-record name="action-expense-record-user-onchange" model="com.axelor.apps.hr.db.Expense">
@@ -215,7 +215,7 @@
   </action-record>
 
 	<action-record name="action-expense-record-company-onchange" model="com.axelor.apps.hr.db.Expense">
-		<field name="period" expr="eval: __repo__(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1 AND self.allowExpenseCreation = true AND self.year.company = ?2 AND self.year.typeSelect = 1', __date__, company).fetchOne()"/>
+		<field name="period" expr="eval: __repo__(Period).all().filter('self.fromDate &lt;= ?1 AND self.toDate &gt;= ?1 AND self.allowExpenseCreation = true AND self.year.company = ?2 AND self.year.typeSelect = 1', __config__.date, company).fetchOne()"/>
 		<field name="bankDetails" expr="eval: null"/>
 		<field name="user" expr="eval: null"/>
 	</action-record>
@@ -268,7 +268,7 @@
 		<attribute name="hidden" for="ventilateBtn" expr="eval: !__user__.employee?.hrManager || statusSelect != 3 || ventilated"/>
 		<attribute name="hidden" for="validateBtn" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__ == user?.employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
 		<attribute name="hidden" for="refuseBtn" expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__ == user?.employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
-		<attribute name="hidden" for="cancelBtn" expr="eval: period?.toDate?.isAfter(__date__) || statusSelect == 6 || move"/>
+		<attribute name="hidden" for="cancelBtn" expr="eval: period?.toDate?.isAfter(__config__.date) || statusSelect == 6 || move"/>
 		<attribute name="readonly" for="period" expr="eval: true" if="!__user__.employee?.hrManager"/>
 		<attribute name="readonly" for="period" expr="eval: ventilated" if="__user__.employee?.hrManager"/>
 		<attribute name="readonly" for="bankDetails" expr="eval: true" if="!__user__.employee?.hrManager"/>
@@ -319,5 +319,10 @@
     <action-method name="action-expense-method-update-moveDate-and-period">
 		<call class="com.axelor.apps.hr.web.expense.ExpenseController" method="updateMoveDateAndPeriod"/>
     </action-method>
+    
+    <search-filters name="expense-filters" model="com.axelor.apps.hr.db.Expense" title="Expense filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+        <field name="bankDetails" hidden="true" if="!__config__.app.getApp('base').getManageMultiBanks()" />
+    </search-filters>
 
 </object-views>

@@ -24,8 +24,9 @@ public class TeamTaskBusinessProjectRepository extends TeamTaskHRRepository {
 
   @Override
   public TeamTask copy(TeamTask entity, boolean deep) {
-    entity.setSaleOrderLine(null);
-    entity.setInvoiceLine(null);
-    return super.copy(entity, deep);
+    TeamTask task = super.copy(entity, deep);
+    task.setSaleOrderLine(null);
+    task.setInvoiceLine(null);
+    return task;
   }
 }

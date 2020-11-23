@@ -17,9 +17,57 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.Budget;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.auth.db.User;
+import com.axelor.exception.AxelorException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
 
 public interface PurchaseOrderSupplychainService {
 
-  public void updateToValidatedStatus(PurchaseOrder purchaseOrder);
+  void updateToValidatedStatus(PurchaseOrder purchaseOrder);
+
+  void generateBudgetDistribution(PurchaseOrder purchaseOrder);
+
+  PurchaseOrder createPurchaseOrder(
+      User buyerUser,
+      Company company,
+      Partner contactPartner,
+      Currency currency,
+      LocalDate deliveryDate,
+      String internalReference,
+      String externalReference,
+      StockLocation stockLocation,
+      LocalDate orderDate,
+      PriceList priceList,
+      Partner supplierPartner,
+      TradingName tradingName)
+      throws AxelorException;
+
+  PurchaseOrder mergePurchaseOrders(
+      List<PurchaseOrder> purchaseOrderList,
+      Currency currency,
+      Partner supplierPartner,
+      Company company,
+      StockLocation stockLocation,
+      Partner contactPartner,
+      PriceList priceList,
+      TradingName tradingName)
+      throws AxelorException;
+
+  void updateAmountToBeSpreadOverTheTimetable(PurchaseOrder purchaseOrder);
+
+  void applyToallBudgetDistribution(PurchaseOrder purchaseOrder);
+
+  void isBudgetExceeded(Budget budget, BigDecimal amount) throws AxelorException;
+
+  void setPurchaseOrderLineBudget(PurchaseOrder purchaseOrder);
 }

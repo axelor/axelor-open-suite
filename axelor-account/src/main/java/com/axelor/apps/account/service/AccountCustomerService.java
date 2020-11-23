@@ -99,7 +99,7 @@ public class AccountCustomerService {
             .setParameter(1, partner)
             .setParameter(2, company)
             .setParameter(3, MoveRepository.STATUS_VALIDATED)
-            .setParameter(4, MoveRepository.STATUS_DAYBOOK);
+            .setParameter(4, MoveRepository.STATUS_ACCOUNTED);
 
     BigDecimal balance = (BigDecimal) query.getSingleResult();
 
@@ -151,7 +151,7 @@ public class AccountCustomerService {
                 1,
                 Date.from(
                     appBaseService
-                        .getTodayDate()
+                        .getTodayDate(company)
                         .atStartOfDay()
                         .atZone(ZoneOffset.UTC)
                         .toInstant()),
@@ -159,7 +159,7 @@ public class AccountCustomerService {
             .setParameter(2, partner)
             .setParameter(3, company)
             .setParameter(4, MoveRepository.STATUS_VALIDATED)
-            .setParameter(5, MoveRepository.STATUS_DAYBOOK);
+            .setParameter(5, MoveRepository.STATUS_ACCOUNTED);
 
     BigDecimal balance = (BigDecimal) query.getSingleResult();
 
@@ -229,7 +229,7 @@ public class AccountCustomerService {
                 2,
                 Date.from(
                     appBaseService
-                        .getTodayDate()
+                        .getTodayDate(company)
                         .atStartOfDay()
                         .atZone(ZoneOffset.UTC)
                         .toInstant()),
@@ -237,7 +237,7 @@ public class AccountCustomerService {
             .setParameter(3, partner)
             .setParameter(4, company)
             .setParameter(5, MoveRepository.STATUS_VALIDATED)
-            .setParameter(6, MoveRepository.STATUS_DAYBOOK);
+            .setParameter(6, MoveRepository.STATUS_ACCOUNTED);
 
     BigDecimal balance = (BigDecimal) query.getSingleResult();
 

@@ -23,6 +23,9 @@ import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.FixedAssetLineService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -30,28 +33,52 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public class BatchRealizeFixedAssetLine extends AbstractBatch {
 
   private FixedAssetLineService fixedAssetLineService;
+  private AppBaseService appBaseService;
 
   @Inject FixedAssetLineRepository fixedAssetLineRepo;
 
   @Inject
-  public BatchRealizeFixedAssetLine(FixedAssetLineService fixedAssetLineService) {
+  public BatchRealizeFixedAssetLine(
+      FixedAssetLineService fixedAssetLineService, AppBaseService appBaseService) {
     this.fixedAssetLineService = fixedAssetLineService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
   protected void process() {
+    String query = "self.statusSelect = :statusSelect";
+    LocalDate startDate = batch.getAccountingBatch().getStartDate();
+    LocalDate endDate = batch.getAccountingBatch().getEndDate();
+    if (!batch.getAccountingBatch().getUpdateAllRealizedFixedAssetLines()
+        && startDate != null
+        && endDate != null
+        && startDate.isBefore(endDate)) {
+      query += " AND self.depreciationDate < :endDate AND self.depreciationDate > :startDate";
+    } else {
+      query += " AND self.depreciationDate < :dateNow";
+    }
     List<FixedAssetLine> fixedAssetLineList =
         Beans.get(FixedAssetLineRepository.class)
             .all()
-            .filter(
-                "self.statusSelect = ?1 and self.depreciationDate < ?2",
-                FixedAssetLineRepository.STATUS_PLANNED,
-                LocalDate.now())
+            .filter(query)
+            .bind("statusSelect", FixedAssetLineRepository.STATUS_PLANNED)
+            .bind("startDate", startDate)
+            .bind("endDate", endDate)
+            .bind(
+                "dateNow",
+                appBaseService.getTodayDate(
+                    batch.getAccountingBatch() != null
+                        ? batch.getAccountingBatch().getCompany()
+                        : Optional.ofNullable(AuthUtils.getUser())
+                            .map(User::getActiveCompany)
+                            .orElse(null)))
             .fetch();
+
     for (FixedAssetLine fixedAssetLine : fixedAssetLineList) {
       try {
         fixedAssetLine = fixedAssetLineRepo.find(fixedAssetLine.getId());

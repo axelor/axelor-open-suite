@@ -27,6 +27,8 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.ThrowConsumer;
 import com.axelor.apps.tool.file.PdfTool;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -37,6 +39,7 @@ import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class PickingStockMovePrintServiceimpl implements PickingStockMovePrintService {
 
@@ -78,6 +81,9 @@ public class PickingStockMovePrintServiceimpl implements PickingStockMovePrintSe
         ReportFactory.createReport(IReport.PICKING_STOCK_MOVE, title + " - ${date}");
     return reportSetting
         .addParam("StockMoveId", stockMove.getId())
+        .addParam(
+            "Timezone",
+            stockMove.getCompany() != null ? stockMove.getCompany().getTimezone() : null)
         .addParam("Locale", locale)
         .addParam("HeaderHeight", stockMove.getPrintingSettings().getPdfHeaderHeight())
         .addParam("FooterHeight", stockMove.getPrintingSettings().getPdfFooterHeight())
@@ -107,7 +113,10 @@ public class PickingStockMovePrintServiceimpl implements PickingStockMovePrintSe
 
     return I18n.get(plural ? "Stock moves" : "Stock move")
         + " - "
-        + Beans.get(AppBaseService.class).getTodayDate().format(DateTimeFormatter.BASIC_ISO_DATE)
+        + Beans.get(AppBaseService.class)
+            .getTodayDate(
+                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
+            .format(DateTimeFormatter.BASIC_ISO_DATE)
         + "."
         + format;
   }

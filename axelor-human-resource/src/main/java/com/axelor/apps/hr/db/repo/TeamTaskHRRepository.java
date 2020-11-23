@@ -33,7 +33,8 @@ public class TeamTaskHRRepository extends TeamTaskProjectRepository {
   public TeamTask save(TeamTask teamTask) {
     teamTask = super.save(teamTask);
 
-    if (!Beans.get(AppHumanResourceService.class).isApp("employee")) {
+    if (!Beans.get(AppHumanResourceService.class).isApp("employee")
+        || teamTask.getProject() == null) {
       return teamTask;
     }
 
@@ -57,14 +58,17 @@ public class TeamTaskHRRepository extends TeamTaskProjectRepository {
     Project project = teamTask.getProject();
     super.remove(teamTask);
 
-    project.setTotalPlannedHrs(projectPlanningTimeService.getProjectPlannedHrs(project));
+    if (project != null) {
+      project.setTotalPlannedHrs(projectPlanningTimeService.getProjectPlannedHrs(project));
+    }
   }
 
   @Override
   public TeamTask copy(TeamTask entity, boolean deep) {
-    entity.setTotalPlannedHrs(null);
-    entity.setTotalRealHrs(null);
-    entity.clearProjectPlanningTimeList();
-    return super.copy(entity, deep);
+    TeamTask task = super.copy(entity, deep);
+    task.setTotalPlannedHrs(null);
+    task.setTotalRealHrs(null);
+    task.clearProjectPlanningTimeList();
+    return task;
   }
 }

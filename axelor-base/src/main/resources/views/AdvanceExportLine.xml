@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
   
   	<grid name="advanced-export-line-grid" title="Advanced export lines" model="com.axelor.apps.base.db.AdvancedExportLine">
   		<field name="metaField" title="Select target field"/>
@@ -17,7 +17,7 @@
      		<field name="title" required="true"/>
      		<field name="targetField"/>
 	        <field name="orderBy" colSpan="2"/>
-	         <field name="orderByType" hideIf="!orderBy" colSpan="4"/>
+	         <field name="orderByType" requiredIf="orderBy" hideIf="!orderBy" colSpan="4"/>
 	        <field name="$isValidate" type="boolean" title="Validate" hidden="true" required="true" readonly="true" colSpan="2"/>
 	        <field name="currentDomain" hidden="true"/>
 	        <field name="$viewerMessage" showTitle="false" readonly="true" hidden="true">
@@ -35,7 +35,7 @@
   	</form>
   	
   	<action-record name="action-advanced-export-line-record-set-current-domain" model="com.axelor.apps.base.db.AdvancedExportLine">
-  		<field name="currentDomain" expr="eval: _parent?.metaModel.name" if="_parent?.metaModel" />
+  		<field name="currentDomain" expr="eval: __parent__?.metaModel.name" if="__parent__?.metaModel" />
   	</action-record>
   	
   	<action-method name="action-advanced-export-line-method-validate-field">
@@ -55,7 +55,7 @@
   		<attribute name="value" for="title" expr="eval: null"/>
   		<attribute name="value" for="targetField" expr="eval: null"/>
   		<attribute name="value" for="orderBy" expr="eval: false"/>
-  		<attribute name="value" for="currentDomain" expr="eval: _parent?.metaModel.name" if="_parent?.metaModel"/>
+  		<attribute name="value" for="currentDomain" expr="eval: __parent__?.metaModel.name" if="__parent__?.metaModel"/>
   		<attribute name="hidden" for="$viewerMessage" expr="eval: true"/>
   		<attribute name="value" for="$isValidate" expr="eval: null"/>
   		<attribute name="readonly" for="validateFieldSelectionBtn" expr="eval: false"/>

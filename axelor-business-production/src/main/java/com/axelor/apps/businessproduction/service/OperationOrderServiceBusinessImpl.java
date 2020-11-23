@@ -67,7 +67,7 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
       int priority,
       boolean isToInvoice,
       WorkCenter workCenter,
-      Machine machineWorkCenter,
+      Machine machine,
       MachineTool machineTool,
       ProdProcessLine prodProcessLine)
       throws AxelorException {
@@ -84,7 +84,7 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
             operationName,
             manufOrder,
             workCenter,
-            machineWorkCenter,
+            machine,
             OperationOrderRepository.STATUS_DRAFT,
             prodProcessLine,
             machineTool);

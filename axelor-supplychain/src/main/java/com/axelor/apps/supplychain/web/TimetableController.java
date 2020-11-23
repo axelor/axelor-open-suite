@@ -18,6 +18,8 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.db.Timetable;
@@ -58,18 +60,28 @@ public class TimetableController {
       }
     }
 
+    if (parentContext != null && parentContext.getContextClass().equals(PurchaseOrder.class)) {
+      PurchaseOrder purchaseOrder = parentContext.asType(PurchaseOrder.class);
+      if (purchaseOrder.getStatusSelect() < PurchaseOrderRepository.STATUS_VALIDATED) {
+        response.setAlert(I18n.get(IExceptionMessage.TIMETABLE_PURCHASE_OREDR_NOT_VALIDATED));
+        return;
+      }
+    }
+
     if (timetable.getInvoice() != null) {
       response.setAlert(I18n.get(IExceptionMessage.TIMETABLE_INVOICE_ALREADY_GENERATED));
       return;
     }
 
     Invoice invoice = timetableService.generateInvoice(timetable);
+
     response.setReload(true);
     response.setView(
         ActionView.define(I18n.get("Invoice generated"))
             .model("com.axelor.apps.account.db.Invoice")
             .add("form", "invoice-form")
             .add("grid", "invoice-grid")
+            .param("search-filters", "customer-invoices-filters")
             .param("forceEdit", "true")
             .context("_showRecord", invoice.getId().toString())
             .map());

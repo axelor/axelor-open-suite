@@ -81,4 +81,21 @@ public class PartnerStockSettingsServiceImpl implements PartnerStockSettingsServ
 
     return null;
   }
+
+  @Override
+  public StockLocation getDefaultExternalStockLocation(Partner partner, Company company) {
+
+    if (partner != null && company != null) {
+      PartnerStockSettings partnerStockSettings =
+          Beans.get(PartnerStockSettingsRepository.class)
+              .all()
+              .filter("self.partner = ? AND self.company = ?", partner, company)
+              .fetchOne();
+
+      if (partnerStockSettings != null) {
+        return partnerStockSettings.getDefaultExternalStockLocation();
+      }
+    }
+    return null;
+  }
 }

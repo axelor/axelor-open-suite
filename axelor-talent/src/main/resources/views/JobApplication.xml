@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 	
 	<grid name="job-application-grid" title="Job applications" model="com.axelor.apps.talent.db.JobApplication">
-		<field name="lastName" />
-		<field name="firstName" />
-		<field name="emailAddress" />
-		<field name="fixedPhone" />
-		<field name="mobilePhone" />
-		<field name="jobPosition" />
-		<field name="statusSelect" />
+		<field name="lastName"/>
+		<field name="firstName"/>
+		<field name="emailAddress"/>
+		<field name="fixedPhone"/>
+		<field name="mobilePhone"/>
+		<field name="jobPosition"/>
+		<field name="statusSelect"/>
+		<button name="resume" onClick="action-job-application-method-show-resume" icon="fa-file-text-o"/>
 	</grid>
 	
 	<form name="job-application-form" title="Job application" model="com.axelor.apps.talent.db.JobApplication" width="large"
@@ -97,6 +98,9 @@
 			<panel name="reasonNotHiredPanel" title="Reason not hired">
 				<field name="reasonNotHired" colSpan="12" showTitle="false"/>
 			</panel>
+			<panel name="resumePanel" title="JobApplication.resume" colSpan="12">
+				<field name="resume" widget="binary-link" onChange="save,action-job-application-method-set-dms-file"/>
+			</panel>
 		</panel-tabs>
 
 		<panel-mail name="mailPanel">
@@ -104,6 +108,28 @@
 		  <mail-followers />
 	    </panel-mail>
 	</form>
+
+	<kanban title="Job applications" name="job-application-kanban" model="com.axelor.apps.talent.db.JobApplication"
+					columnBy="hiringStage" sequenceBy="statusSelect">
+		<field name="fullName"/>
+		<field name="emailAddress.address"/>
+		<field name="fixedPhone"/>
+		<field name="mobilePhone"/>
+		<field name="jobPosition"/>
+		<field name="statusSelect"/>
+		<field name="resumeId"/>
+		<template><![CDATA[
+			<h4>{{ fullName }}</h4>
+			<br>
+			<div class="card-body">
+				<span x-translate>Email</span><span> : {{ emailAddress.address }}<br></span>
+				<span x-translate>Fixed phone</span><span> : {{ fixedPhone }}<br></span>
+				<span x-translate>Mobile phone</span><span> : {{ mobilePhone }}<br></span>
+				<br>
+				<a ng-href="#/ds/dms.file/edit/{{ resumeId }}" ng-show="resumeId != null" x-translate>JobApplication.resume</a>
+			</div>
+		]]></template>
+	</kanban>
 	
     <action-view name="action-job-application-schedule-event" title="Schedule Event" model="com.axelor.apps.crm.db.Event">
     	<view type="form" name="event-form"/>
@@ -145,6 +171,14 @@
     <action-method name="action-talent-method-set-social-network-url">
     	<call class="com.axelor.apps.talent.web.JobApplicationController" method="setSocialNetworkUrl"/>
     </action-method>
+
+	<action-method name="action-job-application-method-show-resume">
+		<call class="com.axelor.apps.talent.web.JobApplicationController" method="showResume"/>
+	</action-method>
+
+	<action-method name="action-job-application-method-set-dms-file">
+		<call class="com.axelor.apps.talent.web.JobApplicationController" method="setDMSFile"/>
+	</action-method>
     
     <search-filters name="job-application-filters" model="com.axelor.apps.talent.db.JobApplication" title="Job Application Filters">
 		<filter title="Current applications">

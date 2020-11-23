@@ -47,7 +47,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.google.common.io.Files;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
@@ -340,7 +339,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     dateQueryStr +=
         String.format(
             " AND (self.statusSelect = %s OR self.statusSelect = %s) ",
-            MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_DAYBOOK);
+            MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_ACCOUNTED);
     Query dateQuery =
         JPA.em()
             .createQuery(
@@ -462,7 +461,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     writeMoveLineToCsvFile(
         company,
         fileName,
-        this.createHeaderForHeaderFile(accountingReport.getTypeSelect()),
+        this.createHeaderForHeaderFile(accountingReport.getReportType().getTypeSelect()),
         allMoveData,
         accountingReport);
   }
@@ -530,7 +529,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     dateQueryStr +=
         String.format(
             " AND (self.statusSelect = %s OR self.statusSelect = %s) ",
-            MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_DAYBOOK);
+            MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_ACCOUNTED);
     Query dateQuery =
         JPA.em()
             .createQuery(
@@ -653,7 +652,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     writeMoveLineToCsvFile(
         company,
         fileName,
-        this.createHeaderForHeaderFile(accountingReport.getTypeSelect()),
+        this.createHeaderForHeaderFile(accountingReport.getReportType().getTypeSelect()),
         allMoveData,
         accountingReport);
   }
@@ -721,7 +720,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     dateQueryStr +=
         String.format(
             " AND (self.statusSelect = %s OR self.statusSelect = %s) ",
-            MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_DAYBOOK);
+            MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_ACCOUNTED);
     Query dateQuery =
         JPA.em()
             .createQuery(
@@ -845,7 +844,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     writeMoveLineToCsvFile(
         company,
         fileName,
-        this.createHeaderForHeaderFile(accountingReport.getTypeSelect()),
+        this.createHeaderForHeaderFile(accountingReport.getReportType().getTypeSelect()),
         allMoveData,
         accountingReport);
   }
@@ -911,7 +910,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     dateQueryStr +=
         String.format(
             " AND (self.statusSelect = %s OR self.statusSelect = %s) ",
-            MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_DAYBOOK);
+            MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_ACCOUNTED);
     Query dateQuery =
         JPA.em()
             .createQuery(
@@ -1061,7 +1060,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     writeMoveLineToCsvFile(
         company,
         fileName,
-        this.createHeaderForHeaderFile(accountingReport.getTypeSelect()),
+        this.createHeaderForHeaderFile(accountingReport.getReportType().getTypeSelect()),
         allMoveData,
         accountingReport);
   }
@@ -1132,7 +1131,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         String.format("(self.move.statusSelect = %s", MoveRepository.STATUS_VALIDATED);
     if (!administration) {
       moveLineQueryStr +=
-          String.format(" OR self.move.statusSelect = %s", MoveRepository.STATUS_DAYBOOK);
+          String.format(" OR self.move.statusSelect = %s", MoveRepository.STATUS_ACCOUNTED);
     }
     moveLineQueryStr += ")";
 
@@ -1280,7 +1279,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     String companyCode = "";
     String moveLineQueryStr = "";
 
-    int typeSelect = accountingReport.getTypeSelect();
+    int typeSelect = accountingReport.getReportType().getTypeSelect();
 
     if (company != null) {
       companyCode = company.getCode();
@@ -1323,7 +1322,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     moveLineQueryStr +=
         String.format(
             " AND (self.move.statusSelect = %s OR self.move.statusSelect = %s) ",
-            MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_DAYBOOK);
+            MoveRepository.STATUS_VALIDATED, MoveRepository.STATUS_ACCOUNTED);
 
     Query queryDate =
         JPA.em()
@@ -1478,6 +1477,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       throws AxelorException, IOException {
 
     String filePath = accountConfigService.getAccountConfig(company).getExportPath();
+    String dataExportDir = appAccountService.getDataExportDir();
 
     for (String[] iteams : allMoveData) {
       for (String iteam : iteams) {
@@ -1487,11 +1487,9 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       }
     }
 
-    if (filePath == null) {
-      filePath = Files.createTempDir().getAbsolutePath();
-    } else {
-      new File(filePath).mkdirs();
-    }
+    filePath = filePath == null ? dataExportDir : dataExportDir + filePath;
+    new File(filePath).mkdirs();
+
     log.debug("Full path to export : {}{}", filePath, fileName);
     CsvTool.csvWriter(filePath, fileName, '|', columnHeader, allMoveData);
     Path path = Paths.get(filePath, fileName);
@@ -1644,7 +1642,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     accountingReportService.setStatus(accountingReport);
 
-    switch (accountingReport.getTypeSelect()) {
+    switch (accountingReport.getReportType().getTypeSelect()) {
       case AccountingReportRepository.EXPORT_SALES:
         this.exportMoveLineTypeSelect1006(accountingReport, false);
         break;
@@ -1680,7 +1678,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
   public void replayExportMoveLine(AccountingReport accountingReport)
       throws AxelorException, IOException {
-    switch (accountingReport.getTypeSelect()) {
+    switch (accountingReport.getReportType().getTypeSelect()) {
       case AccountingReportRepository.EXPORT_SALES:
         this.exportMoveLineTypeSelect1006(accountingReport, true);
         break;
@@ -1708,7 +1706,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     AccountingReport accountingReport = new AccountingReport();
     accountingReport.setCompany(company);
-    accountingReport.setTypeSelect(exportTypeSelect);
+    accountingReport.getReportType().setTypeSelect(exportTypeSelect);
     accountingReport.setDateFrom(startDate);
     accountingReport.setDateTo(endDate);
     accountingReport.setStatusSelect(AccountingReportRepository.STATUS_DRAFT);

@@ -44,13 +44,17 @@ public class BatchContractFactoryCurrentActivation extends BatchContractFactory 
             "self.currentContractVersion.supposedActivationDate <= :date "
                 + "AND self.currentContractVersion.statusSelect = :status "
                 + "AND :batch NOT MEMBER of self.batchSet")
-        .bind("date", baseService.getTodayDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+        .bind(
+            "date",
+            baseService
+                .getTodayDate(batch.getContractBatch().getCompany())
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
         .bind("status", ContractVersionRepository.WAITING_VERSION)
         .bind("batch", batch);
   }
 
   @Override
   void process(Contract contract) throws AxelorException {
-    service.ongoingCurrentVersion(contract, baseService.getTodayDate());
+    service.ongoingCurrentVersion(contract, baseService.getTodayDate(contract.getCompany()));
   }
 }

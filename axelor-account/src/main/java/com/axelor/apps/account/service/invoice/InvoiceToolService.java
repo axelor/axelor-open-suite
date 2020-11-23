@@ -197,4 +197,51 @@ public class InvoiceToolService {
         .getAccountConfig(invoice.getCompany())
         .getDefPaymentCondition();
   }
+
+  /**
+   * Method to call after copying an invoice to reset the status. Can be used after JPA.copy to
+   * reset invoice status without losing references to other objets.<br>
+   * <b>Most of the time you do not want to use this method directly but call {@link
+   * InvoiceRepository#save(Invoice)} instead.</b>
+   *
+   * @param copy a copy of an invoice
+   */
+  public static void resetInvoiceStatusOnCopy(Invoice copy) {
+    copy.setStatusSelect(InvoiceRepository.STATUS_DRAFT);
+    copy.setInvoiceId(null);
+    copy.setInvoiceDate(null);
+    copy.setDueDate(null);
+    copy.setValidatedByUser(null);
+    copy.setMove(null);
+    copy.setOriginalInvoice(null);
+    copy.setCompanyInTaxTotalRemaining(BigDecimal.ZERO);
+    copy.setAmountPaid(BigDecimal.ZERO);
+    copy.setIrrecoverableStatusSelect(InvoiceRepository.IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE);
+    copy.setAmountRejected(BigDecimal.ZERO);
+    copy.clearBatchSet();
+    copy.setDebitNumber(null);
+    copy.setDoubtfulCustomerOk(false);
+    copy.setMove(null);
+    copy.setInterbankCodeLine(null);
+    copy.setPaymentMove(null);
+    copy.clearRefundInvoiceList();
+    copy.setRejectDate(null);
+    copy.setOriginalInvoice(null);
+    copy.setUsherPassageOk(false);
+    copy.setAlreadyPrintedOk(false);
+    copy.setCanceledPaymentSchedule(null);
+    copy.setDirectDebitAmount(BigDecimal.ZERO);
+    copy.setImportId(null);
+    copy.setPartnerAccount(null);
+    copy.setJournal(null);
+    copy.clearInvoicePaymentList();
+    copy.setPrintedPDF(null);
+    copy.setValidatedDate(null);
+    copy.setVentilatedByUser(null);
+    copy.setVentilatedDate(null);
+    copy.setPfpValidateStatusSelect(InvoiceRepository.PFP_STATUS_AWAITING);
+    copy.setDecisionPfpTakenDate(null);
+    copy.setInternalReference(null);
+    copy.setExternalReference(null);
+  }
 }

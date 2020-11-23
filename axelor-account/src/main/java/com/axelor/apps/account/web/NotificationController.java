@@ -71,6 +71,7 @@ public class NotificationController {
               .model(MoveLine.class.getName())
               .add("grid", "move-line-grid")
               .add("form", "move-line-form")
+              .param("search-filters", "move-line-filters")
               .domain("self.id in (" + Joiner.on(",").join(moveLineIdList) + ")")
               .map());
 

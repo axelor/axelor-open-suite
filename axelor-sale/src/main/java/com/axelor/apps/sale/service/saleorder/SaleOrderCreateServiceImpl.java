@@ -21,6 +21,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
@@ -71,7 +72,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
   @Override
   public SaleOrder createSaleOrder(Company company) throws AxelorException {
     SaleOrder saleOrder = new SaleOrder();
-    saleOrder.setCreationDate(appSaleService.getTodayDate());
+    saleOrder.setCreationDate(appSaleService.getTodayDate(company));
     if (company != null) {
       saleOrder.setCompany(company);
       saleOrder.setCurrency(company.getCurrency());
@@ -95,16 +96,19 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       LocalDate orderDate,
       PriceList priceList,
       Partner clientPartner,
-      Team team)
+      Team team,
+      TradingName tradingName)
       throws AxelorException {
 
     logger.debug(
         "Création d'un devis client : Société = {},  Reference externe = {}, Client = {}",
-        new Object[] {company, externalReference, clientPartner.getFullName()});
+        company,
+        externalReference,
+        clientPartner.getFullName());
 
     SaleOrder saleOrder = new SaleOrder();
     saleOrder.setClientPartner(clientPartner);
-    saleOrder.setCreationDate(appSaleService.getTodayDate());
+    saleOrder.setCreationDate(appSaleService.getTodayDate(company));
     saleOrder.setContactPartner(contactPartner);
     saleOrder.setCurrency(currency);
     saleOrder.setExternalReference(externalReference);
@@ -112,7 +116,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
     saleOrder.setOrderDate(orderDate);
 
     saleOrder.setPrintingSettings(
-        Beans.get(TradingNameService.class).getDefaultPrintingSettings(null, company));
+        Beans.get(TradingNameService.class).getDefaultPrintingSettings(tradingName, company));
 
     if (salespersonUser == null) {
       salespersonUser = AuthUtils.getUser();
@@ -187,7 +191,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
             null,
             numSeq,
             externalRef,
-            LocalDate.now(),
+            appSaleService.getTodayDate(company),
             priceList,
             clientPartner,
             team);
@@ -228,7 +232,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       SaleOrder context, Currency wizardCurrency, PriceList wizardPriceList)
       throws AxelorException {
     SaleOrder copy = saleOrderRepo.copy(context, true);
-    copy.setCreationDate(appSaleService.getTodayDate());
+    copy.setCreationDate(appSaleService.getTodayDate(context.getCompany()));
     copy.setCurrency(wizardCurrency);
     copy.setPriceList(wizardPriceList);
 

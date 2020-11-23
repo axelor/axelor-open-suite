@@ -95,7 +95,9 @@ public class DataBackupServiceImpl implements DataBackupService {
             Logger LOG = LoggerFactory.getLogger(getClass());
             DataBackup obj = Beans.get(DataBackupRepository.class).find(dataBackup.getId());
             File backupFile = createService.create(obj);
+            MetaFile logFile = obj.getLogMetaFile();
             dataBackupRepository.refresh(obj);
+            obj.setLogMetaFile(logFile);
             obj.setBackupMetaFile(metaFiles.upload(backupFile));
             obj.setStatusSelect(DataBackupRepository.DATA_BACKUP_STATUS_CREATED);
             Beans.get(DataBackupRepository.class).save(obj);
@@ -161,8 +163,8 @@ public class DataBackupServiceImpl implements DataBackupService {
     runner.run(job);
   }
 
-  public boolean SeuencesExist() {
-    return restoreService.SeuencesExist();
+  public boolean sequencesOrMrpLineTypesExist() {
+    return restoreService.sequencesOrMrpLineTypesExist();
   }
 
   @Transactional

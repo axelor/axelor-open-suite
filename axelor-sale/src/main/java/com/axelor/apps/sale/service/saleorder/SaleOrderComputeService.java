@@ -70,4 +70,11 @@ public interface SaleOrderComputeService {
    * @param saleOrder
    */
   public void computePackTotal(SaleOrder saleOrder);
+
+  /**
+   * Reset pack total in sale order lines
+   *
+   * @param saleOrder
+   */
+  public void resetPackTotal(SaleOrder saleOrder);
 }

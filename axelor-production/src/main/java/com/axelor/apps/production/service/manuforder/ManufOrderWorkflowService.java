@@ -18,6 +18,7 @@
 package com.axelor.apps.production.service.manuforder;
 
 import com.axelor.apps.base.db.CancelReason;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
@@ -27,12 +28,14 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.message.db.Template;
 import com.axelor.apps.message.db.repo.EmailAccountRepository;
+import com.axelor.apps.message.exception.AxelorMessageException;
 import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
@@ -48,6 +51,7 @@ import com.axelor.apps.production.exceptions.IExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
+import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
@@ -56,6 +60,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.MoreObjects;
@@ -77,19 +82,23 @@ public class ManufOrderWorkflowService {
   protected OperationOrderRepository operationOrderRepo;
   protected ManufOrderStockMoveService manufOrderStockMoveService;
   protected ManufOrderRepository manufOrderRepo;
-
-  @Inject ProductionConfigRepository productionConfigRepo;
+  protected ProductCompanyService productCompanyService;
+  protected ProductionConfigRepository productionConfigRepo;
 
   @Inject
   public ManufOrderWorkflowService(
       OperationOrderWorkflowService operationOrderWorkflowService,
       OperationOrderRepository operationOrderRepo,
       ManufOrderStockMoveService manufOrderStockMoveService,
-      ManufOrderRepository manufOrderRepo) {
+      ManufOrderRepository manufOrderRepo,
+      ProductCompanyService productCompanyService,
+      ProductionConfigRepository productionConfigRepo) {
     this.operationOrderWorkflowService = operationOrderWorkflowService;
     this.operationOrderRepo = operationOrderRepo;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
     this.manufOrderRepo = manufOrderRepo;
+    this.productCompanyService = productCompanyService;
+    this.productionConfigRepo = productionConfigRepo;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -180,6 +189,7 @@ public class ManufOrderWorkflowService {
       manufOrder.setCancelReasonStr(null);
 
       manufOrderRepo.save(manufOrder);
+      Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrder());
     }
     return manufOrderList;
   }
@@ -198,6 +208,7 @@ public class ManufOrderWorkflowService {
     }
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_IN_PROGRESS);
     manufOrderRepo.save(manufOrder);
+    Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrder());
   }
 
   @Transactional
@@ -248,28 +259,39 @@ public class ManufOrderWorkflowService {
         .computeCostPrice(
             manufOrder,
             CostSheetRepository.CALCULATION_END_OF_PRODUCTION,
-            Beans.get(AppBaseService.class).getTodayDate());
+            Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()));
 
     // update price in product
     Product product = manufOrder.getProduct();
-    if (product.getRealOrEstimatedPriceSelect() == ProductRepository.PRICE_METHOD_FORECAST) {
-      product.setLastProductionPrice(manufOrder.getBillOfMaterial().getCostPrice());
-    } else if (product.getRealOrEstimatedPriceSelect() == ProductRepository.PRICE_METHOD_REAL) {
+    Company company = manufOrder.getCompany();
+    if (((Integer) productCompanyService.get(product, "realOrEstimatedPriceSelect", company))
+        == ProductRepository.PRICE_METHOD_FORECAST) {
+      productCompanyService.set(
+          product, "lastProductionPrice", manufOrder.getBillOfMaterial().getCostPrice(), company);
+    } else if (((Integer) productCompanyService.get(product, "realOrEstimatedPriceSelect", company))
+        == ProductRepository.PRICE_METHOD_REAL) {
       BigDecimal costPrice = computeOneUnitProductionPrice(manufOrder);
       if (costPrice.signum() != 0) {
-        product.setLastProductionPrice(costPrice);
+        productCompanyService.set(product, "lastProductionPrice", costPrice, company);
       }
     } else {
       // default value is forecast
-      product.setRealOrEstimatedPriceSelect(ProductRepository.PRICE_METHOD_FORECAST);
-      product.setLastProductionPrice(manufOrder.getBillOfMaterial().getCostPrice());
+      productCompanyService.set(
+          product, "realOrEstimatedPriceSelect", ProductRepository.PRICE_METHOD_FORECAST, company);
+      productCompanyService.set(
+          product, "lastProductionPrice", manufOrder.getBillOfMaterial().getCostPrice(), company);
     }
 
     // update costprice in product
-    if (product.getCostTypeSelect() == ProductRepository.COST_TYPE_LAST_PRODUCTION_PRICE) {
-      product.setCostPrice(product.getLastProductionPrice());
-      if (product.getAutoUpdateSalePrice()) {
-        Beans.get(ProductService.class).updateSalePrice(product);
+    if (((Integer) productCompanyService.get(product, "costTypeSelect", company))
+        == ProductRepository.COST_TYPE_LAST_PRODUCTION_PRICE) {
+      productCompanyService.set(
+          product,
+          "costPrice",
+          (BigDecimal) productCompanyService.get(product, "lastProductionPrice", company),
+          company);
+      if ((Boolean) productCompanyService.get(product, "autoUpdateSalePrice", company)) {
+        Beans.get(ProductService.class).updateSalePrice(product, company);
       }
     }
 
@@ -282,6 +304,7 @@ public class ManufOrderWorkflowService {
             ChronoUnit.MINUTES.between(
                 manufOrder.getPlannedEndDateT(), manufOrder.getRealEndDateT())));
     manufOrderRepo.save(manufOrder);
+    Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrder());
     ProductionConfig productionConfig =
         manufOrder.getCompany() != null
             ? productionConfigRepo.findByCompany(manufOrder.getCompany())
@@ -323,7 +346,7 @@ public class ManufOrderWorkflowService {
         .computeCostPrice(
             manufOrder,
             CostSheetRepository.CALCULATION_PARTIAL_END_OF_PRODUCTION,
-            Beans.get(AppBaseService.class).getTodayDate());
+            Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()));
     Beans.get(ManufOrderStockMoveService.class).partialFinish(manufOrder);
     ProductionConfig productionConfig =
         manufOrder.getCompany() != null
@@ -379,6 +402,7 @@ public class ManufOrderWorkflowService {
       }
     }
     manufOrderRepo.save(manufOrder);
+    Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrder());
   }
 
   public LocalDateTime computePlannedStartDateT(ManufOrder manufOrder) {
@@ -493,11 +517,12 @@ public class ManufOrderWorkflowService {
         .collect(Collectors.toList());
   }
 
-  protected boolean sendMail(ManufOrder manufOrder, Template template) throws AxelorException {
+  protected boolean sendMail(ManufOrder manufOrder, Template template) {
     if (template == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.MANUF_ORDER_MISSING_TEMPLATE));
+      TraceBackService.trace(
+          new AxelorMessageException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(IExceptionMessage.MANUF_ORDER_MISSING_TEMPLATE)));
     }
     if (Beans.get(EmailAccountRepository.class)
             .all()
@@ -509,8 +534,9 @@ public class ManufOrderWorkflowService {
     try {
       Beans.get(TemplateMessageService.class).generateAndSendMessage(manufOrder, template);
     } catch (Exception e) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage(), manufOrder);
+      TraceBackService.trace(
+          new AxelorMessageException(
+              e, manufOrder, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR));
     }
     return true;
   }

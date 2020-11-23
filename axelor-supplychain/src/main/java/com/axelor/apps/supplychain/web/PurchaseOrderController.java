@@ -34,7 +34,6 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
-import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.db.JPA;
@@ -77,6 +76,7 @@ public class PurchaseOrderController {
                   .model(StockMove.class.getName())
                   .add("grid", "stock-move-grid")
                   .add("form", "stock-move-form")
+                  .param("search-filters", "internal-stock-move-filters")
                   .param("forceEdit", "true")
                   .domain("self.id = " + stockMoveList.get(0))
                   .context("_showRecord", String.valueOf(stockMoveList.get(0)))
@@ -87,6 +87,7 @@ public class PurchaseOrderController {
                   .model(StockMove.class.getName())
                   .add("grid", "stock-move-grid")
                   .add("form", "stock-move-form")
+                  .param("search-filters", "internal-stock-move-filters")
                   .domain("self.id in (" + Joiner.on(",").join(stockMoveList) + ")")
                   .map());
         } else {
@@ -126,8 +127,7 @@ public class PurchaseOrderController {
     if (appAccountService.isApp("budget")
         && !appAccountService.getAppBudget().getManageMultiBudget()) {
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-      Beans.get(PurchaseOrderServiceSupplychainImpl.class)
-          .generateBudgetDistribution(purchaseOrder);
+      Beans.get(PurchaseOrderSupplychainService.class).generateBudgetDistribution(purchaseOrder);
       response.setValues(purchaseOrder);
     }
   }
@@ -318,7 +318,7 @@ public class PurchaseOrderController {
 
     try {
       PurchaseOrder purchaseOrder =
-          Beans.get(PurchaseOrderServiceSupplychainImpl.class)
+          Beans.get(PurchaseOrderSupplychainService.class)
               .mergePurchaseOrders(
                   purchaseOrderList,
                   commonCurrency,
@@ -335,6 +335,7 @@ public class PurchaseOrderController {
                 .model(PurchaseOrder.class.getName())
                 .add("grid", "purchase-order-grid")
                 .add("form", "purchase-order-form")
+                .param("search-filters", "purchase-order-filters")
                 .param("forceEdit", "true")
                 .context("_showRecord", String.valueOf(purchaseOrder.getId()))
                 .map());
@@ -347,27 +348,36 @@ public class PurchaseOrderController {
 
   public void updateAmountToBeSpreadOverTheTimetable(
       ActionRequest request, ActionResponse response) {
-    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-    Beans.get(PurchaseOrderServiceSupplychainImpl.class)
-        .updateAmountToBeSpreadOverTheTimetable(purchaseOrder);
-    response.setValue(
-        "amountToBeSpreadOverTheTimetable", purchaseOrder.getAmountToBeSpreadOverTheTimetable());
+    try {
+
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      Beans.get(PurchaseOrderSupplychainService.class)
+          .updateAmountToBeSpreadOverTheTimetable(purchaseOrder);
+      response.setValue(
+          "amountToBeSpreadOverTheTimetable", purchaseOrder.getAmountToBeSpreadOverTheTimetable());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void applyToAllBudgetDistribution(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrderSupplychainService purchaseOrderSupplychainService =
+          Beans.get(PurchaseOrderSupplychainService.class);
+      PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+      purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
+      AppBudget appBudget = Beans.get(AppBudgetRepository.class).all().fetchOne();
 
-    PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl =
-        Beans.get(PurchaseOrderServiceSupplychainImpl.class);
-    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
-    purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-    AppBudget AppBudget = Beans.get(AppBudgetRepository.class).all().fetchOne();
+      if (appBudget.getManageMultiBudget()) {
+        purchaseOrderSupplychainService.applyToallBudgetDistribution(purchaseOrder);
+      } else {
+        purchaseOrderSupplychainService.setPurchaseOrderLineBudget(purchaseOrder);
 
-    if (AppBudget.getManageMultiBudget() == true) {
-      purchaseOrderServiceSupplychainImpl.applyToallBudgetDistribution(purchaseOrder);
-    } else {
-      purchaseOrderServiceSupplychainImpl.setPurchaseOrderLineBudget(purchaseOrder);
+        response.setValue("purchaseOrderLineList", purchaseOrder.getPurchaseOrderLineList());
+      }
 
-      response.setValue("purchaseOrderLineList", purchaseOrder.getPurchaseOrderLineList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 

@@ -53,5 +53,6 @@ public class InventoryLineController {
     response.setValue("unit", inventoryLine.getUnit());
     response.setValue("gap", inventoryLine.getGap());
     response.setValue("gapValue", inventoryLine.getGapValue());
+    response.setValue("realValue", inventoryLine.getRealValue());
   }
 }

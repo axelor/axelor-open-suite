@@ -15,6 +15,8 @@ libs.commons_validator = 'commons-validator:commons-validator:1.4.0'
 
 libs.pdfbox = 'org.apache.pdfbox:pdfbox:2.0.9'
 libs.itextpdf = 'com.itextpdf:itextpdf:5.5.13.1'
+libs.itext7_core = 'com.itextpdf:itext7-core:7.0.4'
+libs.html2pdf = 'com.itextpdf:html2pdf:2.0.0'
 libs.flying_saucer_pdf = 'org.xhtmlrenderer:flying-saucer-pdf:9.1.4'
 
 libs.iban4j = 'org.iban4j:iban4j:3.2.1'
@@ -44,3 +46,10 @@ libs.jaxws_api = 'javax.xml.ws:jaxws-api:2.3.1'
 libs.jaxb_api = 'javax.xml.bind:jaxb-api:2.2.2'
 libs.jaxb_impl = 'com.sun.xml.bind:jaxb-impl:2.2.2'
 libs.jaxb_xjc = 'com.sun.xml.bind:jaxb-xjc:2.2.2'
+
+libs.google_oauth_client_jetty = 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
+libs.google_api_services_people = dependencies.create('com.google.apis:google-api-services-people:v1-rev537-1.25.0') {
+  exclude group: 'com.google.guava', module: 'guava-jdk5'
+}
+
+libs.mockito = 'org.mockito:mockito-core:3.3.3'

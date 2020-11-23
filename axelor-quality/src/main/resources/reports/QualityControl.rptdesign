@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -1579,11 +1579,14 @@ ORDER BY control_point_name;]]></xml-property>
                                 <property name="borderTopColor">#7F7F7F</property>
                                 <property name="borderTopStyle">solid</property>
                                 <property name="borderTopWidth">thin</property>
-                                <text id="5368">
+                                <data id="6451">
                                     <property name="fontWeight">bold</property>
-                                    <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["end_date"]</VALUE-OF>]]></text-property>
-                                </text>
+                                    <structure name="dateTimeFormat">
+                                        <property name="category">Short Date</property>
+                                        <property name="pattern">Short Date</property>
+                                    </structure>
+                                    <property name="resultSetColumn">end_date</property>
+                                </data>
                             </cell>
                             <cell id="5354">
                                 <property name="borderBottomColor">#7F7F7F</property>
@@ -2435,7 +2438,6 @@ ORDER BY control_point_name;]]></xml-property>
                                     <property name="marginBottom">5pt</property>
                                     <property name="height">2.169583333333333cm</property>
                                     <property name="width">248px</property>
-                                    <expression name="altText">""</expression>
                                     <list-property name="visibility">
                                         <structure>
                                             <property name="format">all</property>
@@ -2445,6 +2447,7 @@ ORDER BY control_point_name;]]></xml-property>
                                     <property name="source">file</property>
                                     <property name="proportionalScale">true</property>
                                     <expression name="uri" type="javascript">params["AttachmentPath"].value + row["inspector_signature_path"]</expression>
+                                    <expression name="altText">""</expression>
                                 </image>
                             </cell>
                             <cell id="5852">
@@ -2466,7 +2469,6 @@ ORDER BY control_point_name;]]></xml-property>
                                     <property name="marginBottom">5pt</property>
                                     <property name="height">2.169583333333333cm</property>
                                     <property name="width">248px</property>
-                                    <expression name="altText">""</expression>
                                     <list-property name="visibility">
                                         <structure>
                                             <property name="format">all</property>
@@ -2476,6 +2478,7 @@ ORDER BY control_point_name;]]></xml-property>
                                     <property name="source">file</property>
                                     <property name="proportionalScale">true</property>
                                     <expression name="uri" type="javascript">params["AttachmentPath"].value + row["customer_signature_path"]</expression>
+                                    <expression name="altText">""</expression>
                                 </image>
                             </cell>
                         </row>

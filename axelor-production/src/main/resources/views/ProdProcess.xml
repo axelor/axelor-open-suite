@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
     
   <grid name="prod-process-grid" title="Production process" model="com.axelor.apps.production.db.ProdProcess">
 		<field name="name"/>
 		<field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-    <field name="workshopStockLocation"/>
+    <field name="workshopStockLocation" if="__config__.app.getApp('production').getManageWorkshop()"/>
 		<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="stockLocation" grid-view="stock-location-grid" form-view="stock-location-form"/>
     <field name="product"/>
@@ -29,17 +29,17 @@
                 <field name="fullName" hidden="true" showIf="$readonly()" showTitle="false" css="label-bold bold large"/>
                 <field name="name" hidden="true" showIf="!$readonly()" css="label-bold bold large"/>
             </panel>
-            <field name="$numberOfPhases" showTitle="false" readonly="true" showIf="$numberOfPhases > 0" colSpan="4">
+            <field name="$numberOfPhases" showTitle="false" type="integer" readonly="true" showIf="$numberOfPhases > 0" colSpan="4">
                 <viewer depends="$numberOfPhases">
                     <![CDATA[
                         <h4 class="text-right">
-                            <span class="label label-default" style="background-color: #2185D0; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.4em;" x-translate>Number of phases</span><span class="label label-default" style="background-color: #23C6C8; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0;">{{record.$numberOfPhases}}</span>
+                            <span class="label label-default" style="background-color: #2185D0; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.4em;" x-translate>Number of phases</span><span class="label label-default" style="background-color: #23C6C8; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0;">{{fmt('$numberOfPhases')}}</span>
                         </h4>
 					]]>
                 </viewer>
             </field>
 	    	<field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-            <field name="product" requiredIf="!isEnabledForAllProducts" canEdit="false" grid-view="product-grid" form-view="product-form" domain="self.productTypeSelect = 'storable'"/>
+            <field name="product" requiredIf="!isEnabledForAllProducts" canEdit="false" grid-view="product-grid" form-view="product-form" domain="self.productTypeSelect = 'storable' AND dtype = 'Product'"/>
             <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
             <field name="workshopStockLocation" canEdit="false" domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect = 1 and self.isWorkshop = true" if="__config__.app.getApp('production').getManageWorkshop()"/>
         </panel>
@@ -157,4 +157,8 @@
 		<context name="prodProcessId" expr="eval: id"/>
     </action-view>
 
+	<search-filters name="prod-process-filters" model="com.axelor.apps.production.db.ProdProcess" title="Prod process filters">
+        <field name="company" hidden="true" if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+        <field name="workshopStockLocation" hidden="true" if="!__config__.app.getApp('production').getManageWorkshop()"/>
+    </search-filters>
 </object-views>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
     <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -19,7 +19,11 @@
         <many-to-one name="company" ref="com.axelor.apps.base.db.Company"
                      required="true"/>
         <many-to-one name="defaultStockLocation" title="Default stock location"
-                     ref="com.axelor.apps.stock.db.StockLocation"/>
+            help="Default from stock location for sales and to stock location for purchases"
+            ref="com.axelor.apps.stock.db.StockLocation"/>
+        <many-to-one name="defaultExternalStockLocation" title="Default external stock location"
+            help="Default to stock location for sales and from stock location for purchases"
+            ref="com.axelor.apps.stock.db.StockLocation"/>
         <many-to-one name="incoterm" title="Incoterm" ref="com.axelor.apps.stock.db.Incoterm"/>
     </entity>
 

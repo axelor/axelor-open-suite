@@ -67,11 +67,11 @@ public class PurchaseRequestController {
   public void generatePo(ActionRequest request, ActionResponse response) {
     @SuppressWarnings("unchecked")
     List<Long> requestIds = (List<Long>) request.getContext().get("_ids");
-    Boolean groupBySupplier = (Boolean) request.getContext().get("groupBySupplier");
-    groupBySupplier = groupBySupplier == null ? false : groupBySupplier;
-    Boolean groupByProduct = (Boolean) request.getContext().get("groupByProduct");
-    groupByProduct = groupByProduct == null ? false : groupByProduct;
     if (requestIds != null && !requestIds.isEmpty()) {
+      Boolean groupBySupplier = (Boolean) request.getContext().get("groupBySupplier");
+      groupBySupplier = groupBySupplier == null ? false : groupBySupplier;
+      Boolean groupByProduct = (Boolean) request.getContext().get("groupByProduct");
+      groupByProduct = groupByProduct == null ? false : groupByProduct;
       try {
         List<PurchaseRequest> purchaseRequests =
             Beans.get(PurchaseRequestRepository.class)
@@ -100,6 +100,7 @@ public class PurchaseRequestController {
                 .model(PurchaseOrder.class.getName())
                 .add("grid", "purchase-order-quotation-grid")
                 .add("form", "purchase-order-form")
+                .param("search-filters", "purchase-order-filters")
                 .context("_showSingle", true)
                 .domain(
                     String.format(

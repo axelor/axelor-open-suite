@@ -21,6 +21,7 @@ import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.report.IReport;
 import com.axelor.apps.sale.service.app.AppSaleService;
@@ -28,6 +29,8 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.tool.ModelTool;
 import com.axelor.apps.tool.ThrowConsumer;
 import com.axelor.apps.tool.file.PdfTool;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -38,10 +41,11 @@ import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
 
-  @Inject SaleOrderService saleOrderService;
+  @Inject protected SaleOrderService saleOrderService;
 
   protected AppSaleService appSaleService;
 
@@ -53,15 +57,7 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
   @Override
   public String printSaleOrder(SaleOrder saleOrder, boolean proforma, String format)
       throws AxelorException, IOException {
-    String fileName =
-        I18n.get("Sale order")
-            + "-"
-            + saleOrder.getSaleOrderSeq()
-            + (appSaleService.getAppSale().getManageSaleOrderVersion()
-                ? "-" + saleOrder.getVersionNumber()
-                : "")
-            + "."
-            + format;
+    String fileName = saleOrderService.getFileName(saleOrder) + "." + format;
 
     return PdfTool.getFileLinkFromPdfFile(print(saleOrder, proforma, format), fileName);
   }
@@ -78,14 +74,8 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
             printedSaleOrders.add(print(saleOrder, false, ReportSettings.FORMAT_PDF));
           }
         });
-    String fileName =
-        I18n.get("Sale orders")
-            + " - "
-            + Beans.get(AppBaseService.class)
-                .getTodayDate()
-                .format(DateTimeFormatter.BASIC_ISO_DATE)
-            + "."
-            + ReportSettings.FORMAT_PDF;
+    Integer status = Beans.get(SaleOrderRepository.class).find(ids.get(0)).getStatusSelect();
+    String fileName = getSaleOrderFilesName(status);
     return PdfTool.mergePdfToFileLink(printedSaleOrders, fileName);
   }
 
@@ -119,10 +109,31 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
 
     return reportSetting
         .addParam("SaleOrderId", saleOrder.getId())
+        .addParam(
+            "Timezone",
+            saleOrder.getCompany() != null ? saleOrder.getCompany().getTimezone() : null)
         .addParam("Locale", locale)
         .addParam("ProformaInvoice", proforma)
         .addParam("HeaderHeight", saleOrder.getPrintingSettings().getPdfHeaderHeight())
         .addParam("FooterHeight", saleOrder.getPrintingSettings().getPdfFooterHeight())
         .addFormat(format);
+  }
+
+  /** Return the name for the printed sale orders. */
+  protected String getSaleOrderFilesName(Integer status) {
+    String prefixFileName = I18n.get("Sale orders");
+    if (status == SaleOrderRepository.STATUS_DRAFT_QUOTATION
+        || status == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
+      prefixFileName = I18n.get("Sale quotations");
+    }
+
+    return prefixFileName
+        + " - "
+        + Beans.get(AppBaseService.class)
+            .getTodayDate(
+                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
+            .format(DateTimeFormatter.BASIC_ISO_DATE)
+        + "."
+        + ReportSettings.FORMAT_PDF;
   }
 }

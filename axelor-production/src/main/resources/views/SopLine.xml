@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 	<grid name="sop-line-grid" title="Sales and Operations Planning Line" model="com.axelor.apps.production.db.SopLine">
 		<hilite if="status == 1" color="primary" />
@@ -67,7 +67,7 @@
 		<view-param name="popup" value="true" />
 		<view-param name="popup-save" value="false" />
 		<view-param name="show-confirm" value="false" />
-		<context name="_productFamily" expr="eval: _parent?.productFamily" />
+		<context name="_productCategory" expr="eval: _parent?.productCategory" />
 		<context name="_sopLine" expr="eval: __this__" />
 	</action-view>
 

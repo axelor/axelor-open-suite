@@ -26,6 +26,11 @@ dependencies {
 
 	implementation libs.iban4j
 	implementation libs.itextpdf
+	implementation libs.itext7_core
+	implementation libs.html2pdf
 	implementation libs.jackrabbit_webdav
 	implementation libs.zxing_core
+
+	implementation libs.google_oauth_client_jetty
+	implementation libs.google_api_services_people
 }

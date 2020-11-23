@@ -19,10 +19,15 @@ package com.axelor.apps.hr.db.repo;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
+import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmploymentContract;
+import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
+import java.time.LocalDate;
+import java.util.Objects;
 
 public class EmployeeHRRepository extends EmployeeRepository {
 
@@ -33,6 +38,8 @@ public class EmployeeHRRepository extends EmployeeRepository {
       partner.setIsContact(true);
       partner.setIsEmployee(true);
       Beans.get(PartnerHRRepository.class).save(partner);
+    } else {
+      Beans.get(PartnerService.class).setPartnerFullName(partner);
     }
 
     EmploymentContract employmentContract = entity.getMainEmploymentContract();
@@ -79,6 +86,9 @@ public class EmployeeHRRepository extends EmployeeRepository {
         userRepo.save(user);
       }
     }
+
+    super.remove(employee);
+
     if (employee.getContactPartner() != null) {
       PartnerBaseRepository partnerRepo = Beans.get(PartnerBaseRepository.class);
       Partner partner = partnerRepo.find(employee.getContactPartner().getId());
@@ -87,6 +97,24 @@ public class EmployeeHRRepository extends EmployeeRepository {
         partnerRepo.save(partner);
       }
     }
-    super.remove(employee);
+  }
+
+  /**
+   * Return true if given employee is a New employee or a Former employee according to hire date and
+   * leaving date.
+   *
+   * @param employee
+   * @return
+   */
+  public static boolean isEmployeeFormerOrNew(Employee employee) {
+    Objects.requireNonNull(employee);
+    AppBaseService appBaseService = Beans.get(AppBaseService.class);
+    LocalDate today =
+        appBaseService.getTodayDate(
+            employee.getUser() != null
+                ? employee.getUser().getActiveCompany()
+                : AuthUtils.getUser().getActiveCompany());
+    return (employee.getLeavingDate() != null && employee.getLeavingDate().compareTo(today) < 0)
+        || (employee.getHireDate() != null && employee.getHireDate().compareTo(today) > 0);
   }
 }

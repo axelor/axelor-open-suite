@@ -56,6 +56,7 @@ public class ProjectTemplateController {
                 .model(Project.class.getName())
                 .add("form", "project-form")
                 .add("grid", "project-grid")
+                .param("search-filters", "project-filters")
                 .context("_showRecord", project.getId())
                 .map());
 
@@ -112,6 +113,7 @@ public class ProjectTemplateController {
               .model(Project.class.getName())
               .add("form", "project-form")
               .add("grid", "project-grid")
+              .param("search-filters", "project-filters")
               .context("_showRecord", project.getId())
               .map());
     } catch (AxelorException e) {

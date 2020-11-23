@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
   
   <module name="exception" package="com.axelor.exception.db"/>
   
@@ -26,22 +26,6 @@
     </string>
     
      <extra-code><![CDATA[
-	
-	// TYPE SELECT
-	/**
-	 * @deprecated With current implementation of TraceBackService, all exceptions of type
-	 *     AxelorException are flagged as functional exceptions. However there are many cases of
-	 *     misuses of AxelorException due to confusion between TYPE and CATEGORY.
-	 */
-	@Deprecated
-	public static final int TYPE_TECHNICAL = 0;
-	/**
-	 * @deprecated With current implementation of TraceBackService, all exceptions of type
-	 *     AxelorException are flagged as functional exceptions. However there are many cases of
-	 *     misuses of AxelorException due to confusion between TYPE and CATEGORY.
-	 */
-	@Deprecated
-	public static final int TYPE_FUNCTIONNAL = 1;
 	
 	// CATEGORY SELECT
 	public static final int CATEGORY_MISSING_FIELD = 1;

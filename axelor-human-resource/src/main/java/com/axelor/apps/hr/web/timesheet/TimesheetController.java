@@ -48,6 +48,7 @@ import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.CallMethod;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
@@ -60,6 +61,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -133,7 +135,7 @@ public class TimesheetController {
             .filter(
                 "self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1",
                 AuthUtils.getUser(),
-                AuthUtils.getUser().getActiveCompany())
+                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
             .fetch();
     if (timesheetList.isEmpty()) {
       response.setView(
@@ -173,7 +175,8 @@ public class TimesheetController {
         ActionView.define(I18n.get("Timesheets"))
             .model(Timesheet.class.getName())
             .add("grid", "all-timesheet-grid")
-            .add("form", "timesheet-form");
+            .add("form", "timesheet-form")
+            .param("search-filters", "timesheet-filters");
 
     if (employee == null || !employee.getHrManager()) {
       if (employee == null || employee.getManagerUser() == null) {
@@ -214,7 +217,9 @@ public class TimesheetController {
             .model(Timesheet.class.getName())
             .add("grid", "timesheet-validate-grid")
             .add("form", "timesheet-form")
-            .context("todayDate", Beans.get(AppBaseService.class).getTodayDate());
+            .param("search-filters", "timesheet-filters")
+            .context(
+                "todayDate", Beans.get(AppBaseService.class).getTodayDate(user.getActiveCompany()));
 
     Beans.get(HRMenuValidateService.class).createValidateDomain(user, employee, actionView);
 
@@ -231,7 +236,8 @@ public class TimesheetController {
             .model(TimesheetLine.class.getName())
             .add("grid", "timesheet-line-grid")
             .add("form", "timesheet-line-form")
-            .context("todayDate", Beans.get(AppBaseService.class).getTodayDate());
+            .context(
+                "todayDate", Beans.get(AppBaseService.class).getTodayDate(user.getActiveCompany()));
 
     Beans.get(TimesheetService.class).createValidateDomainTimesheetLine(user, employee, actionView);
 
@@ -261,7 +267,8 @@ public class TimesheetController {
         ActionView.define(I18n.get("Historic colleague Timesheets"))
             .model(Timesheet.class.getName())
             .add("grid", "timesheet-grid")
-            .add("form", "timesheet-form");
+            .add("form", "timesheet-form")
+            .param("search-filters", "timesheet-filters");
 
     actionView.domain("(self.statusSelect = 3 OR self.statusSelect = 4)");
 
@@ -310,7 +317,8 @@ public class TimesheetController {
         ActionView.define(I18n.get("Timesheets to be Validated by your subordinates"))
             .model(Timesheet.class.getName())
             .add("grid", "timesheet-grid")
-            .add("form", "timesheet-form");
+            .add("form", "timesheet-form")
+            .param("search-filters", "timesheet-filters");
 
     String domain =
         "self.user.employee.managerUser.employee.managerUser = :_user AND self.company = :_activeCompany AND self.statusSelect = 2";
@@ -409,6 +417,7 @@ public class TimesheetController {
             .model(Timesheet.class.getName())
             .add("form", "timesheet-form")
             .add("grid", "timesheet-grid")
+            .param("search-filters", "timesheet-filters")
             .domain("self.user = :_user")
             .context("_user", AuthUtils.getUser())
             .map());
@@ -485,6 +494,7 @@ public class TimesheetController {
   }
 
   /* Count Tags displayed on the menu items */
+  @CallMethod
   public String timesheetValidateMenuTag() {
 
     return Beans.get(HRMenuTagService.class)
@@ -501,6 +511,9 @@ public class TimesheetController {
     String fileLink =
         ReportFactory.createReport(IReport.TIMESHEET, name)
             .addParam("TimesheetId", timesheet.getId())
+            .addParam(
+                "Timezone",
+                timesheet.getCompany() != null ? timesheet.getCompany().getTimezone() : null)
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
             .toAttach(timesheet)
             .generate()

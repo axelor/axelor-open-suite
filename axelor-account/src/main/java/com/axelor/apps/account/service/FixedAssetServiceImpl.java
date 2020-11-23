@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.tool.date.DateTool;
+import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -51,17 +52,20 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class FixedAssetServiceImpl implements FixedAssetService {
 
-  @Inject FixedAssetRepository fixedAssetRepo;
-
-  @Inject FixedAssetLineService fixedAssetLineService;
-
   protected MoveLineService moveLineService;
+  protected FixedAssetRepository fixedAssetRepo;
+  protected FixedAssetLineService fixedAssetLineService;
 
   protected static int calculationScale = 6;
 
   @Inject
-  public FixedAssetServiceImpl(MoveLineService moveLineService) {
+  public FixedAssetServiceImpl(
+      MoveLineService moveLineService,
+      FixedAssetRepository fixedAssetRepo,
+      FixedAssetLineService fixedAssetLineService) {
     this.moveLineService = moveLineService;
+    this.fixedAssetRepo = fixedAssetRepo;
+    this.fixedAssetLineService = fixedAssetLineService;
   }
 
   @Override
@@ -256,10 +260,11 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     BigDecimal depreciationRate =
         numberOfDepreciation == 0
             ? BigDecimal.ZERO
-            : BigDecimal.ONE
-                .divide(BigDecimal.valueOf(numberOfDepreciation), BigDecimal.ROUND_HALF_EVEN)
-                .multiply(BigDecimal.valueOf(100))
-                .setScale(calculationScale);
+            : BigDecimal.valueOf(100)
+                .divide(
+                    BigDecimal.valueOf(numberOfDepreciation),
+                    calculationScale,
+                    BigDecimal.ROUND_HALF_EVEN);
     BigDecimal ddRate = BigDecimal.ONE;
     BigDecimal prorataTemporis = this.computeProrataTemporis(fixedAsset, isFirstYear);
     if (fixedAsset
@@ -420,8 +425,11 @@ public class FixedAssetServiceImpl implements FixedAssetService {
             ? fixedAsset.getNumberOfDepreciation() - 1
             : fixedAsset.getNumberOfDepreciation();
     BigDecimal depreciationRate =
-        BigDecimal.ONE.divide(
-            BigDecimal.valueOf(numberOfDepreciation * 100), BigDecimal.ROUND_HALF_EVEN);
+        BigDecimal.valueOf(100)
+            .divide(
+                BigDecimal.valueOf(numberOfDepreciation),
+                calculationScale,
+                BigDecimal.ROUND_HALF_EVEN);
     BigDecimal ddRate = BigDecimal.ONE;
     if (fixedAsset
         .getComputationMethodSelect()
@@ -479,6 +487,37 @@ public class FixedAssetServiceImpl implements FixedAssetService {
         }
       }
     }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void validate(FixedAsset fixedAsset) {
+    if (fixedAsset.getGrossValue().compareTo(BigDecimal.ZERO) > 0) {
+
+      if (!fixedAsset.getFixedAssetLineList().isEmpty()) {
+        fixedAsset.getFixedAssetLineList().clear();
+      }
+      fixedAsset = generateAndcomputeLines(fixedAsset);
+
+    } else {
+      fixedAsset.getFixedAssetLineList().clear();
+    }
+    fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_VALIDATED);
+    fixedAssetRepo.save(fixedAsset);
+  }
+
+  @Override
+  public int massValidation(List<Long> fixedAssetIds) {
+    int count = 0;
+    for (Long id : fixedAssetIds) {
+      FixedAsset fixedAsset = fixedAssetRepo.find(id);
+      if (fixedAsset.getStatusSelect() == FixedAssetRepository.STATUS_DRAFT) {
+        validate(fixedAsset);
+        JPA.clear();
+        count++;
+      }
+    }
+    return count;
   }
 
   protected boolean isLastDayOfFebruary(int year, int day) {

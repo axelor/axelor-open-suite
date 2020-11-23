@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -71,6 +72,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   protected StockMoveLineRepository stockMoveLineRepository;
   protected AppBaseService appBaseService;
   protected SaleOrderRepository saleOrderRepository;
+  protected ProductCompanyService productCompanyService;
+  protected PartnerStockSettingsService partnerStockSettingsService;
 
   @Inject
   public SaleOrderStockServiceImpl(
@@ -82,7 +85,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       StockMoveLineServiceSupplychain stockMoveLineSupplychainService,
       StockMoveLineRepository stockMoveLineRepository,
       AppBaseService appBaseService,
-      SaleOrderRepository saleOrderRepository) {
+      SaleOrderRepository saleOrderRepository,
+      ProductCompanyService productCompanyService,
+      PartnerStockSettingsService partnerStockSettingsService) {
 
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
@@ -93,6 +98,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.appBaseService = appBaseService;
     this.saleOrderRepository = saleOrderRepository;
+    this.productCompanyService = productCompanyService;
+    this.partnerStockSettingsService = partnerStockSettingsService;
   }
 
   @Override
@@ -184,12 +191,14 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     if (supplychainConfig.getDefaultEstimatedDate() != null
         && supplychainConfig.getDefaultEstimatedDate() == SupplyChainConfigRepository.CURRENT_DATE
         && stockMove.getEstimatedDate() == null) {
-      stockMove.setEstimatedDate(appBaseService.getTodayDate());
+      stockMove.setEstimatedDate(appBaseService.getTodayDate(saleOrder.getCompany()));
     } else if (supplychainConfig.getDefaultEstimatedDate()
             == SupplyChainConfigRepository.CURRENT_DATE_PLUS_DAYS
         && stockMove.getEstimatedDate() == null) {
       stockMove.setEstimatedDate(
-          appBaseService.getTodayDate().plusDays(supplychainConfig.getNumberOfDays().longValue()));
+          appBaseService
+              .getTodayDate(saleOrder.getCompany())
+              .plusDays(supplychainConfig.getNumberOfDays().longValue()));
     }
 
     setReservationDateTime(stockMove, saleOrder);
@@ -250,9 +259,17 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   public StockMove createStockMove(
       SaleOrder saleOrder, Company company, LocalDate estimatedDeliveryDate)
       throws AxelorException {
-    StockLocation toStockLocation =
-        stockConfigService.getCustomerVirtualStockLocation(
-            stockConfigService.getStockConfig(company));
+    StockLocation toStockLocation = saleOrder.getToStockLocation();
+    if (toStockLocation == null) {
+      toStockLocation =
+          partnerStockSettingsService.getDefaultExternalStockLocation(
+              saleOrder.getClientPartner(), company);
+    }
+    if (toStockLocation == null) {
+      toStockLocation =
+          stockConfigService.getCustomerVirtualStockLocation(
+              stockConfigService.getStockConfig(company));
+    }
 
     StockMove stockMove =
         stockMoveService.createStockMove(
@@ -344,7 +361,14 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       BigDecimal requestedReservedQty =
           saleOrderLine.getRequestedReservedQty().subtract(saleOrderLine.getDeliveredQty());
 
-      BigDecimal companyUnitPriceUntaxed = saleOrderLine.getProduct().getCostPrice();
+      BigDecimal companyUnitPriceUntaxed =
+          (BigDecimal)
+              productCompanyService.get(
+                  saleOrderLine.getProduct(),
+                  "costPrice",
+                  saleOrderLine.getSaleOrder() != null
+                      ? saleOrderLine.getSaleOrder().getCompany()
+                      : null);
       if (unit != null && !unit.equals(saleOrderLine.getUnit())) {
         qty =
             unitConversionService.convert(
@@ -470,16 +494,14 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       if (this.isStockMoveProduct(saleOrderLine, saleOrder)) {
 
         if (saleOrderLine.getDeliveryState() == SaleOrderLineRepository.DELIVERY_STATE_DELIVERED) {
-          if (deliveryState == SaleOrderRepository.DELIVERY_STATE_NOT_DELIVERED
-              || deliveryState == SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED) {
+          if (deliveryState == SaleOrderRepository.DELIVERY_STATE_NOT_DELIVERED) {
             return SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED;
           } else {
             deliveryState = SaleOrderRepository.DELIVERY_STATE_DELIVERED;
           }
         } else if (saleOrderLine.getDeliveryState()
             == SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED) {
-          if (deliveryState == SaleOrderRepository.DELIVERY_STATE_DELIVERED
-              || deliveryState == SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED) {
+          if (deliveryState == SaleOrderRepository.DELIVERY_STATE_DELIVERED) {
             return SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED;
           } else {
             deliveryState = SaleOrderRepository.DELIVERY_STATE_NOT_DELIVERED;
@@ -493,6 +515,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     return deliveryState;
   }
 
+  @Override
   public Optional<SaleOrder> findSaleOrder(StockMove stockMove) {
     if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())
         && stockMove.getOriginId() != null) {

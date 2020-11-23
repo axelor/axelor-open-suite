@@ -18,6 +18,9 @@
 package com.axelor.apps.crm.db.repo;
 
 import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.crm.service.OpportunityService;
+import com.axelor.inject.Beans;
+import javax.persistence.PersistenceException;
 
 public class OpportunityManagementRepository extends OpportunityRepository {
   @Override
@@ -26,5 +29,17 @@ public class OpportunityManagementRepository extends OpportunityRepository {
     copy.setSalesStageSelect(OpportunityRepository.SALES_STAGE_NEW);
     copy.setLostReason(null);
     return copy;
+  }
+
+  @Override
+  public Opportunity save(Opportunity opportunity) {
+    try {
+      if (opportunity.getOpportunitySeq() == null) {
+        Beans.get(OpportunityService.class).setSequence(opportunity);
+      }
+      return super.save(opportunity);
+    } catch (Exception e) {
+      throw new PersistenceException(e);
+    }
   }
 }

@@ -43,6 +43,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections4.ListUtils;
 
 @Singleton
 public class MoveController {
@@ -56,6 +57,17 @@ public class MoveController {
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void updateLines(ActionRequest request, ActionResponse response) {
+    Move move = request.getContext().asType(Move.class);
+    try {
+      ListUtils.emptyIfNull(move.getMoveLineList())
+          .forEach(moveLine -> moveLine.setDate(move.getDate()));
+      response.setValues(move);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
@@ -146,6 +158,7 @@ public class MoveController {
                 .model(Move.class.getName())
                 .add("grid", "move-grid")
                 .add("form", "move-form")
+                .param("search-filters", "move-filters")
                 .map());
         response.setCanClose(true);
       }
@@ -161,7 +174,7 @@ public class MoveController {
     if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)) {
       moveService.getMoveRemoveService().deleteMove(move);
       response.setFlash(I18n.get(IExceptionMessage.MOVE_REMOVED_OK));
-    } else if (move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)) {
+    } else if (move.getStatusSelect().equals(MoveRepository.STATUS_ACCOUNTED)) {
       moveService.getMoveRemoveService().archiveDaybookMove(move);
       response.setFlash(I18n.get(IExceptionMessage.MOVE_ARCHIVE_OK));
     } else if (move.getStatusSelect().equals(MoveRepository.STATUS_CANCELED)) {
@@ -182,7 +195,7 @@ public class MoveController {
                     "self.id in ?1 AND self.statusSelect in (?2,?3,?4) AND (self.archived = false or self.archived = null)",
                     moveIds,
                     MoveRepository.STATUS_NEW,
-                    MoveRepository.STATUS_DAYBOOK,
+                    MoveRepository.STATUS_ACCOUNTED,
                     MoveRepository.STATUS_CANCELED)
                 .fetch();
         if (!moveList.isEmpty()) {
@@ -218,6 +231,8 @@ public class MoveController {
     String fileLink =
         ReportFactory.createReport(IReport.ACCOUNT_MOVE, moveName + "-${date}")
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
+            .addParam(
+                "Timezone", move.getCompany() != null ? move.getCompany().getTimezone() : null)
             .addParam("moveId", move.getId())
             .generate()
             .getFileLink();
@@ -248,7 +263,7 @@ public class MoveController {
     move = Beans.get(MoveRepository.class).find(move.getId());
 
     try {
-      if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
+      if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
         Beans.get(MoveService.class).getMoveValidateService().updateInDayBookMode(move);
         response.setReload(true);
       }
@@ -259,8 +274,13 @@ public class MoveController {
 
   public void computeTotals(ActionRequest request, ActionResponse response) {
     Move move = request.getContext().asType(Move.class);
-    Map<String, Object> values = Beans.get(MoveService.class).computeTotals(move);
-    response.setValues(values);
+
+    try {
+      Map<String, Object> values = Beans.get(MoveService.class).computeTotals(move);
+      response.setValues(values);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void autoTaxLineGenerate(ActionRequest request, ActionResponse response)

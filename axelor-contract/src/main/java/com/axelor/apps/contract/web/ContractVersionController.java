@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.contract.web;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
@@ -85,12 +86,15 @@ public class ContractVersionController {
       Long id = request.getContext().asType(ContractVersion.class).getId();
       ContractVersion contractVersion = Beans.get(ContractVersionRepository.class).find(id);
       Beans.get(ContractService.class)
-          .activeNextVersion(contractVersion.getNextContract(), getTodayDate());
+          .activeNextVersion(
+              contractVersion.getNextContract(),
+              getTodayDate(contractVersion.getContract().getCompany()));
       response.setView(
           ActionView.define("Contract")
               .model(Contract.class.getName())
               .add("form", "contract-form")
               .add("grid", "contract-grid")
+              .param("search-filters", "contract-filters")
               .context("_showRecord", contractVersion.getContract().getId())
               .map());
     } catch (Exception e) {
@@ -103,7 +107,9 @@ public class ContractVersionController {
       Long id = request.getContext().asType(ContractVersion.class).getId();
       ContractVersion contractVersion = Beans.get(ContractVersionRepository.class).find(id);
       Beans.get(ContractService.class)
-          .waitingNextVersion(contractVersion.getNextContract(), getTodayDate());
+          .waitingNextVersion(
+              contractVersion.getNextContract(),
+              getTodayDate(contractVersion.getContract().getCompany()));
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -132,7 +138,7 @@ public class ContractVersionController {
     }
   }
 
-  private LocalDate getTodayDate() {
-    return Beans.get(AppBaseService.class).getTodayDate();
+  private LocalDate getTodayDate(Company company) {
+    return Beans.get(AppBaseService.class).getTodayDate(company);
   }
 }

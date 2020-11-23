@@ -23,6 +23,8 @@ import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -41,6 +43,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +66,9 @@ public class CurrencyConversionService {
 
   public void updateCurrencyConverion() throws AxelorException {
     AppBase appBase = appBaseService.getAppBase();
-    LocalDate today = appBaseService.getTodayDate();
+    LocalDate today =
+        appBaseService.getTodayDate(
+            Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
 
     Map<Long, Set<Long>> currencyMap = new HashMap<Long, Set<Long>>();
 
@@ -135,7 +140,14 @@ public class CurrencyConversionService {
     if (currencyFrom != null && currencyTo != null) {
       Float rt =
           this.validateAndGetRate(
-              1, wsUrl, currencyFrom, currencyTo, appBaseService.getTodayDate());
+              1,
+              wsUrl,
+              currencyFrom,
+              currencyTo,
+              appBaseService.getTodayDate(
+                  Optional.ofNullable(AuthUtils.getUser())
+                      .map(User::getActiveCompany)
+                      .orElse(null)));
       rate = BigDecimal.valueOf(rt).setScale(8, RoundingMode.HALF_EVEN);
       //	        Float rt =
       // Float.parseFloat(json.getJSONObject("rates").get(currencyTo.getCode()).toString());
@@ -184,7 +196,10 @@ public class CurrencyConversionService {
           String.format(
               I18n.get(IExceptionMessage.CURRENCY_7),
               date.plus(Period.ofDays(1)),
-              appBaseService.getTodayDate()));
+              appBaseService.getTodayDate(
+                  Optional.ofNullable(AuthUtils.getUser())
+                      .map(User::getActiveCompany)
+                      .orElse(null))));
     }
 
     if (response.getContentAsString().isEmpty()) {

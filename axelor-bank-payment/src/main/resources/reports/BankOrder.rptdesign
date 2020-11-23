@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -1030,7 +1030,7 @@ LEFT JOIN bankpayment_bank_order bankOrder ON bankOrder.id = bankOrderLine.bank_
 LEFT JOIN base_currency currency ON currency.id = bankOrder.bank_order_currency
 LEFT JOIN base_bank Bank ON bankDetails.bank = Bank.id
 WHERE bankOrderLine.bank_order = ?
-ORDER BY NULLIF(regexp_replace(bankOrderLine.sequence, '\D', '', 'g'), '')::int]]></xml-property>
+ORDER BY NULLIF(regexp_replace(bankOrderLine.sequence, '\D', '', 'g'), '')::bigint]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -1206,9 +1206,10 @@ ORDER BY NULLIF(regexp_replace(bankOrderLine.sequence, '\D', '', 'g'), '')::int]
                 </structure>
                 <structure>
                     <property name="name">bank_order_date</property>
-                    <text-property name="displayName">bank_order_date</text-property>
+                    <text-property name="displayName">BankOrderDate</text-property>
                     <expression name="expression" type="javascript">dataSetRow["bank_order_date"]</expression>
                     <property name="dataType">date</property>
+                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">bankordertype</property>
@@ -1285,9 +1286,10 @@ ORDER BY NULLIF(regexp_replace(bankOrderLine.sequence, '\D', '', 'g'), '')::int]
                 </structure>
                 <structure>
                     <property name="name">sending_date_time</property>
-                    <text-property name="displayName">sending_date_time</text-property>
+                    <text-property name="displayName">SendingDateTime</text-property>
                     <expression name="expression" type="javascript">dataSetRow["sending_date_time"]</expression>
                     <property name="dataType">date-time</property>
+                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">signatoryebicsuser</property>
@@ -1401,14 +1403,14 @@ ORDER BY NULLIF(regexp_replace(bankOrderLine.sequence, '\D', '', 'g'), '')::int]
                     <property name="rowSpan">1</property>
                     <property name="borderTopStyle">solid</property>
                     <property name="borderTopWidth">medium</property>
-                    <text id="4046">
-                        <property name="marginTop">1pt</property>
-                        <property name="marginLeft">2pt</property>
+                    <data id="4278">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
                         <property name="textAlign">left</property>
-                        <structure name="toc"/>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">row["bank_order_date"]</VALUE-OF>]]></text-property>
-                    </text>
+                        <property name="resultSetColumn">bank_order_date</property>
+                    </data>
                 </cell>
                 <cell id="4043">
                     <property name="borderTopStyle">solid</property>
@@ -1735,36 +1737,13 @@ ORDER BY NULLIF(regexp_replace(bankOrderLine.sequence, '\D', '', 'g'), '')::int]
                     <property name="borderBottomWidth">medium</property>
                     <property name="borderRightStyle">solid</property>
                     <property name="borderRightWidth">medium</property>
-                    <text id="4277">
-                        <property name="marginTop">1pt</property>
-                        <property name="marginLeft">2pt</property>
-                        <property name="textAlign">left</property>
-                        <property name="dataSet">TranslateDS</property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'value:'+row["sending_date_time"]</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">message_key</property>
-                                <text-property name="displayName">message_key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy HH:mm">row._outer["sending_date_time"]</VALUE-OF>]]></text-property>
-                    </text>
+                    <data id="4279">
+                        <structure name="dateTimeFormat">
+                            <property name="category">Short Date</property>
+                            <property name="pattern">Short Date</property>
+                        </structure>
+                        <property name="resultSetColumn">sending_date_time</property>
+                    </data>
                 </cell>
             </row>
             <row id="4050">
