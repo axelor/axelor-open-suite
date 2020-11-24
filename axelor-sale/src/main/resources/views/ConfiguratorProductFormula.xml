@@ -16,9 +16,10 @@
       <panel name="editorPanel" title="Editor" itemSpan="12">
         <panel name="mainPanel">
           <field name="metaField" title="Product meta field"
-            domain="self.metaModel.name = 'Product' AND (self.relationship != 'OneToMany' OR self.relationship IS NULL) AND self.name != 'configurator'"/>
+            domain="self.metaModel.name = 'Product' AND self.name != 'configurator'"/>
           <field name="formula" colSpan="12" widget="CodeEditor" x-code-syntax="groovy"/>
-          <field name="showOnConfigurator"/>
+          <field name="showOnConfigurator" readonlyIf="metaField.relationship == 'OneToMany'"/>
+      <field name="metaField.relationship" hidden="true"/>
         </panel>
         <panel name="actionPanel">
           <button name="checkScriptsBtn" title="Check the script"
