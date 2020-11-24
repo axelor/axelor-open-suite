@@ -832,19 +832,42 @@ public class ManufOrderServiceImpl implements ManufOrderService {
    * @param billOfMaterialList
    * @param manufOrder
    * @throws AxelorException
+   * @return
    */
-  public void generateAllSubManufOrder(
+  public List<ManufOrder> generateAllSubManufOrder(
       List<BillOfMaterial> billOfMaterialList, ManufOrder manufOrder) throws AxelorException {
-    for (BillOfMaterial billOfMaterial : billOfMaterialList) {
-      generateManufOrder(
-          billOfMaterial.getProduct(),
-          billOfMaterial.getQty(),
-          billOfMaterial.getPriority(),
-          IS_TO_INVOICE,
-          billOfMaterial,
-          null,
-          manufOrder.getPlannedStartDateT(),
-          ORIGIN_TYPE_OTHER);
+    List<ManufOrder> moList = new ArrayList<>();
+    List<BillOfMaterial> childBomList = new ArrayList<>(billOfMaterialList);
+    // prevent infinite loop
+    int depth = 0;
+    while (!childBomList.isEmpty()) {
+      if (depth >= 100) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(IExceptionMessage.CHILD_BOM_TOO_MANY_ITERATION));
+      }
+      List<BillOfMaterial> tempChildBomList = new ArrayList<>();
+      for (BillOfMaterial childBom : childBomList) {
+        moList.add(
+            generateManufOrder(
+                childBom.getProduct(),
+                childBom.getQty(),
+                childBom.getPriority(),
+                IS_TO_INVOICE,
+                childBom,
+                null,
+                manufOrder.getPlannedStartDateT(),
+                ORIGIN_TYPE_OTHER));
+        tempChildBomList.addAll(
+            childBom.getBillOfMaterialSet().stream()
+                .filter(BillOfMaterial::getDefineSubBillOfMaterial)
+                .collect(Collectors.toList()));
+      }
+      childBomList.clear();
+      childBomList.addAll(tempChildBomList);
+      tempChildBomList.clear();
+      depth++;
     }
+    return moList;
   }
 }

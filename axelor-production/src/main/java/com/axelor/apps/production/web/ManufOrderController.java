@@ -557,7 +557,7 @@ public class ManufOrderController {
                   .filter(map -> (boolean) map.get("selected"))
                   .map(map -> prodProductRepository.find(Long.valueOf(map.get("id").toString())))
                   .collect(Collectors.toList());
-      if (prodProductList.size() == 0) {
+      if (prodProductList.isEmpty()) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(IExceptionMessage.NO_PRODUCT_SELECTED));
@@ -568,9 +568,9 @@ public class ManufOrderController {
           mo.getBillOfMaterial().getBillOfMaterialSet().stream()
               .filter(billOfMaterial -> productList.contains(billOfMaterial.getProduct()))
               .collect(Collectors.toList());
-      Beans.get(ManufOrderService.class).generateAllSubManufOrder(billOfMaterialList, mo);
-      response.setNotify(
-          String.format(I18n.get(IExceptionMessage.MO_CREATED), billOfMaterialList.size()));
+      List<ManufOrder> moList =
+          Beans.get(ManufOrderService.class).generateAllSubManufOrder(billOfMaterialList, mo);
+      response.setNotify(String.format(I18n.get(IExceptionMessage.MO_CREATED), moList.size()));
       response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
