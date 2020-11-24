@@ -32,7 +32,8 @@
     		<button name="configureBtn" title="Configure" showIf="id == null" onClick="save, action-configurator-creator-method-configure"/>
     		<panel-related name="attributesPanel" field="attributes" hideIf="id == null" onChange="action-configurator-creator-record-desactivate,save"
     				colSpan="12" readonlyIf="id == null" form-view="sale-json-field-form" grid-view="sale-json-field-grid" canMove="true" orderBy="sequence"/>
-    	</panel>
+				<field name="qtyFormula" showIf="generateProduct" height="60" widget="CodeEditor" colSpan="12" x-code-syntax="groovy"/>
+			</panel>
 
 		<panel name="actionsPanel" sidebar="true" title="Actions" hideIf="id == null">
 			<button name="activateBtn" title="Activate" onClick="action-configurator-creator-group-activate"

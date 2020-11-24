@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
-	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
+	<grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project" orderBy="statusSelect, name">
 		<toolbar>
 			<button name="projectPlanningBtn" title="Project planning" onClick="action-project-view-project-planning-wizard" if="__config__.app.isApp('employee')" if-module="axelor-human-resource"/>
 		</toolbar>
@@ -12,10 +12,11 @@
 				<item name="ganttWithProjectItem"  title="Gantt with project" action="action-project-open-popup-select-projects"/>
 			</menu>
 		</menubar>
-		<hilite background="primary" if="isProject &amp;&amp; projectTypeSelect == 1"/>
-		<hilite background="info" if="isProject &amp;&amp; projectTypeSelect == 2"/>
+		<field name="name">
+		<hilite color="primary" if="isProject &amp;&amp; projectTypeSelect == 1"/>
+		<hilite color="info" if="isProject &amp;&amp; projectTypeSelect == 2"/>
+		</field>
 		<field name="code"/>
-		<field name="name"/>
     <field name="parentProject"/>
 		<field name="clientPartner"/>
 		<field name="assignedTo"/>
@@ -26,6 +27,8 @@
 		<button name="openGanttBtn" title="Gantt" icon="fa-tasks" onClick="action-project-open-gantt"/>
 		<field name="isProject" hidden="true"/>
 		<field name="projectTypeSelect" hidden="true"/>
+		<field name="progress"></field>
+		<field name="statusSelect"></field>
 	</grid>
 
 	<grid name="folder-project-grid" title="Projects" model="com.axelor.apps.project.db.Project">

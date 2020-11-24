@@ -24,7 +24,7 @@
       <date name="refusalDate" title="Refusal Date" readonly="true"  />
       <string name="groundForRefusal" title="Ground For Refusal" large="true"/>
       <many-to-one name="icalendarEvent" ref="com.axelor.apps.base.db.ICalendarEvent" title="Event" />
-      <many-to-one name="leaveLine" ref="com.axelor.apps.hr.db.LeaveLine" title="Leave line" />
+      <many-to-one name="leaveReason" ref="com.axelor.apps.hr.db.LeaveReason" title="Leave reason" />
       <decimal name="quantityBeforeValidation" title="Available quantity (before validation)" scale="4" precision="8" />
       <boolean name="toJustifyLeaveReason" title="Leave to justify"/>
 	

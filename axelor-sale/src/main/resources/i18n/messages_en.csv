@@ -327,6 +327,8 @@
 "Prospects",,,
 "Prototype",,,
 "Qty",,,
+"Quantity",,,
+"Quantity in generated sale order line, 1 if left empty.",,,
 "Quarterly",,,
 "Quotation",,,
 "Quotation lines",,,

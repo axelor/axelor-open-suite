@@ -327,6 +327,8 @@
 "Prospects",,,
 "Prototype",,,
 "Qty","Qté",,
+"Quantity",,,
+"Quantity in generated sale order line, 1 if left empty.","Quantité dans la ligne de commande générée, 1 si laissé vide.",,
 "Quarterly","Trimestriel",,
 "Quotation","Devis",,
 "Quotation lines","Lignes de devis clients",,

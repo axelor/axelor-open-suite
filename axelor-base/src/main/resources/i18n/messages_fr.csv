@@ -1645,6 +1645,7 @@
 "The line cannot be imported (import : %s)","La ligne ne peut être importée (import : %s)",,
 "The price list %s will still be active when the price list %s will become active.","La liste de prix %s sera encore active quand la liste de prix %s deviendra active.",,
 "The product pulled-off date must be greater than the launch date.","La date de retrait doit être supérieure à la date de lancement.",,
+"The same bank details are already active.","Un RIB identique est déjà actif.",,
 "The tags below can be used as a prefix or a suffix","Les variables ci-dessous peuvent être utilisées en tant que préfixe ou suffixe",,
 "The to date is incorrect","La date d'arrivée est incorrecte",,
 "The worth and quantity value of each class must be greater than 0.","La valeur et la quantité de chaque classe doivent être supérieures à 0.",,

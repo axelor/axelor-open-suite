@@ -28,6 +28,7 @@ import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
+import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.exception.IExceptionMessage;
@@ -263,18 +264,26 @@ public class LeaveController {
                 leaveRequest.getUser().getEmployee().getName()));
         return;
       }
-      if (leaveRequest.getLeaveLine().getQuantity().subtract(leaveRequest.getDuration()).signum()
-          < 0) {
-        if (!leaveRequest.getLeaveLine().getLeaveReason().getAllowNegativeValue()
+
+      LeaveLine leaveLine =
+          Beans.get(LeaveLineRepository.class)
+              .all()
+              .filter("self.leaveReason = :leaveReason AND self.employee = :employee")
+              .bind("leaveReason", leaveRequest.getLeaveReason())
+              .bind("employee", leaveRequest.getUser().getEmployee())
+              .fetchOne();
+      if (leaveLine != null
+          && leaveLine.getQuantity().subtract(leaveRequest.getDuration()).signum() < 0) {
+        if (!leaveRequest.getLeaveReason().getAllowNegativeValue()
             && !leaveService.willHaveEnoughDays(leaveRequest)) {
-          String instruction = leaveRequest.getLeaveLine().getLeaveReason().getInstruction();
+          String instruction = leaveRequest.getLeaveReason().getInstruction();
           if (instruction == null) {
             instruction = "";
           }
           response.setAlert(
               String.format(
                       I18n.get(IExceptionMessage.LEAVE_ALLOW_NEGATIVE_VALUE_REASON),
-                      leaveRequest.getLeaveLine().getLeaveReason().getName())
+                      leaveRequest.getLeaveReason().getName())
                   + " "
                   + instruction);
           return;
@@ -282,7 +291,7 @@ public class LeaveController {
           response.setNotify(
               String.format(
                   I18n.get(IExceptionMessage.LEAVE_ALLOW_NEGATIVE_ALERT),
-                  leaveRequest.getLeaveLine().getLeaveReason().getName()));
+                  leaveRequest.getLeaveReason().getName()));
         }
       }
 

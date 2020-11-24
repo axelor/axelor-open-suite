@@ -48,6 +48,7 @@ import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
 import com.google.inject.persist.Transactional;
 import groovy.lang.MissingPropertyException;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -199,6 +200,16 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       this.fillSaleOrderWithProduct(saleOrderLine);
       Beans.get(SaleOrderLineService.class)
           .computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
+
+      String qtyFormula = configurator.getConfiguratorCreator().getQtyFormula();
+      BigDecimal qty = BigDecimal.ONE;
+      if (qtyFormula != null && !"".equals(qtyFormula)) {
+        Object result = computeFormula(qtyFormula, jsonAttributes);
+        if (result != null) {
+          qty = new BigDecimal(result.toString());
+        }
+      }
+      saleOrderLine.setQty(qty);
       Beans.get(SaleOrderLineRepository.class).save(saleOrderLine);
     } else {
       generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
