@@ -330,7 +330,7 @@ public class MoveServiceImpl implements MoveService {
                   account,
                   amount,
                   false,
-                  appAccountService.getTodayDate(),
+                  appAccountService.getTodayDate(company),
                   1,
                   invoice.getInvoiceId(),
                   null);
@@ -405,7 +405,7 @@ public class MoveServiceImpl implements MoveService {
               account,
               amount,
               true,
-              appAccountService.getTodayDate(),
+              appAccountService.getTodayDate(company),
               1,
               invoice.getInvoiceId(),
               null);
@@ -421,7 +421,7 @@ public class MoveServiceImpl implements MoveService {
           company,
           null,
           account,
-          appAccountService.getTodayDate());
+          appAccountService.getTodayDate(company));
 
       moveValidateService.validate(oDmove);
 
@@ -462,7 +462,7 @@ public class MoveServiceImpl implements MoveService {
     move.setPaymentVoucher(move.getPaymentVoucher());
 
     boolean validatedMove =
-        move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
+        move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
             || move.getStatusSelect() == MoveRepository.STATUS_VALIDATED;
 
     for (MoveLine moveLine : move.getMoveLineList()) {

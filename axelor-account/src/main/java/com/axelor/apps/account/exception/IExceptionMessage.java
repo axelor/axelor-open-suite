@@ -46,7 +46,7 @@ public interface IExceptionMessage {
   static final String MOVE_REMOVED_OK = /*$$(*/ "Move(s) has been removed successfully" /*)*/;
   static final String MOVE_ARCHIVE_OK = /*$$(*/ "Move(s) has been archived successfully" /*)*/;
   static final String NO_MOVE_TO_REMOVE_OR_ARCHIVE = /*$$(*/
-      "Please select 'Draft' or 'Daybook' or 'Canceled' moves" /*)*/;
+      "Please select 'Draft' or 'Accounted' or 'Canceled' moves" /*)*/;
   static final String MOVE_ARCHIVE_OR_REMOVE_OK = /*$$(*/
       "Move(s) has been removed or archived successfully" /*)*/;
   static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK = /*$$(*/
@@ -150,8 +150,11 @@ public interface IExceptionMessage {
   static final String ACCOUNTING_REPORT_3 = /*$$(*/ "Move lines recovered" /*)*/;
   static final String ACCOUNTING_REPORT_4 = /*$$(*/ "You must select an export type" /*)*/;
   static final String ACCOUNTING_REPORT_6 = /*$$(*/ "Moves exported" /*)*/;
+  static final String ACCOUNTING_REPORT_7 = /*$$(*/
+      "%s : Error : You must configure a custom account reporting sequence for the company %s" /*)*/;
   static final String ACCOUNTING_REPORT_UNKNOWN_ACCOUNTING_REPORT_TYPE = /*$$(*/
       "Unknown accounting report type: %d" /*)*/;
+  static final String ACCOUNTING_REPORT_NO_REPORT_TYPE = /*$$(*/ "No report type selected" /*)*/;
   static final String ACCOUNTING_REPORT_ANALYTIC_REPORT = /*$$(*/
       "%s : Error : You must configure an analytic report sequence for the company %s" /*)*/;
 
@@ -619,6 +622,9 @@ public interface IExceptionMessage {
   static final String MOVE_CANCEL_3 = /*$$(*/
       "So many accounting operations are used on this move, so move can't be canceled" /*)*/;
 
+  static final String MOVE_CANCEL_4 = /*$$(*/
+      "The move is validated and so can not be canceled." /*)*/;
+
   static final String INVOICE_CANCEL_1 = /*$$(*/
       "Invoice is passed in doubfult debit, and can't be canceled" /*)*/;
 
@@ -630,12 +636,12 @@ public interface IExceptionMessage {
 
   /** Ventilate state */
   static final String VENTILATE_STATE_1 = /*$$(*/
-      "Invoice's or credit note's date can't be previous last invoice ventilated's date" /*)*/;
+      "Invoice's or credit note's date can't be previous last invoice ventilated's date : %s" /*)*/;
 
   static final String VENTILATE_STATE_2 = /*$$(*/
-      "Invoice's or credit note's date can't be previous last invoice ventilated on month's date" /*)*/;
+      "Invoice's or credit note's date can't be previous last invoice ventilated on month's date : %s" /*)*/;
   static final String VENTILATE_STATE_3 = /*$$(*/
-      "Invoice's or credit note's date can't be previous last invoice ventilated on year's date" /*)*/;
+      "Invoice's or credit note's date can't be previous last invoice ventilated on year's date : %s" /*)*/;
   static final String VENTILATE_STATE_4 = /*$$(*/
       "Company %s does not have any invoice's nor credit note's sequence" /*)*/;
   static final String VENTILATE_STATE_5 = /*$$(*/
@@ -646,7 +652,7 @@ public interface IExceptionMessage {
       "An analytic distribution is set in product but the account used do not allow analytic distribution" /*)*/;
 
   static final String VENTILATE_STATE_FUTURE_DATE = /*$$(*/
-      "Invoice date can't be in the future." /*)*/;
+      "%s - Invoice date can't be in the future." /*)*/;
 
   static final String VENTILATE_STATE_FUTURE_ORIGIN_DATE = /*$$(*/
       "Invoice date of origin can't be in the future." /*)*/;
@@ -668,6 +674,8 @@ public interface IExceptionMessage {
       "%s : Error : You must configure a sequence for the company %s and a payment mode %s" /*)*/;
   static final String PAYMENT_MODE_3 = /*$$(*/
       "%s : Error : You must configure a journal for the company %s and a payment mode %s" /*)*/;
+  static final String PAYMENT_MODE_4 = /*$$(*/
+      "%s : Error : You must configure a bank details for the company %s and a payment mode %s" /*)*/;
 
   /** Payment voucher control service */
   static final String PAYMENT_VOUCHER_CONTROL_PAID_AMOUNT = /*$$(*/
@@ -716,6 +724,9 @@ public interface IExceptionMessage {
   static final String INVOICE_4 = /*$$(*/ "Refunds from invoice %s" /*)*/;
 
   static final String INVOICE_NO_INVOICE_TO_PAY = /*$$(*/ "No invoice to pay" /*)*/;
+  static final String
+      INVOICE_CAN_NOT_GO_BACK_TO_VALIDATE_STATUS_OR_CANCEL_VENTILATED_INVOICE = /*$$(*/
+          "It is not possible to go back to validate status or cancel a ventilated invoice." /*)*/;
 
   /** Move template controller */
   static final String MOVE_TEMPLATE_1 = /*$$(*/ "Template move is not balanced" /*)*/;
@@ -812,4 +823,11 @@ public interface IExceptionMessage {
 
   static final String INVALID_ANALYTIC_MOVE_LINE = /*$$(*/
       "Invalid Analytic moveLines, some axes percentage values are higher than 100%." /*)*/;
+
+  /*Close annual account batch */
+  static final String BATCH_CLOSE_ANNUAL_ACCOUNT_1 = /*$$(*/
+      "%s : Error : You must configure accounts for the batch configurator %s" /*)*/;
+
+  static final String BATCH_CLOSE_ANNUAL_ACCOUNT_2 = /*$$(*/
+      "%s : Error : You must configure a year for the batch configurator %s" /*)*/;
 }

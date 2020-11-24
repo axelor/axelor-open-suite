@@ -31,7 +31,7 @@ public class SequenceController {
 
   public void getDefaultTitle(ActionRequest request, ActionResponse response) {
     Sequence sequence = request.getContext().asType(Sequence.class);
-    if (!Strings.isNullOrEmpty(sequence.getCode())) {
+    if (!Strings.isNullOrEmpty(sequence.getCodeSelect())) {
       String defautlTitle = Beans.get(SequenceService.class).getDefaultTitle(sequence);
       response.setValue("name", I18n.get(defautlTitle));
     }

@@ -16,30 +16,3 @@ dependencies {
 	api project(":modules:axelor-exception")
 	api project(":modules:axelor-tool")
 }
-
-def updateJsp(jspFile, check, lines) {
-	def jsp = file("${rootProject.buildDir}/webapp/${jspFile}")
-	def text = lines.join("\n");
-	if (jsp.exists()) {
-		def jspText = jsp.getText('UTF-8')
-		if (jspText.indexOf(check) == -1) {
-			text = jspText + text
-		}
-	}
-	file(jsp).write(text, 'UTF-8')
-}
-
-//XXX: this task should be removed when we introduce per module webapp support in axelor open platform
-task copyWebapp(type: Copy) {
-	destinationDir = file(rootProject.buildDir)
-	into("webapp/admin") {
-		from "src/main/webapp"
-	}
-	doLast {
-		// update index-head.jsp
-		updateJsp("index-head.jsp", "diagram-js.css", [
-			'<link href="admin/css/custom-width.css" rel="stylesheet">'])
-	}
-}
-
-rootProject.tasks.war.dependsOn copyWebapp

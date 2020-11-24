@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
     
     <grid name="product-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="code,name" x-row-height="80">
    		<toolbar>
         	<button name="catalogBtn" title="Catalog" onClick="action-print-product-catalog" icon="fa-book"/>
 			<button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
 	    </toolbar>
+	    <field name="picture" widget="Image"/>
 	    <field name="code" x-bind="{{code|unaccent|uppercase}}" width="120"/>
 	    <field name="name" width="300"/>
 	    <field name="productCategory" form-view="product-category-form" grid-view="product-category-grid"/>
@@ -18,8 +19,40 @@
 	    <field name="internalDescription" widget="html" width="400" />
 	    <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
 	</grid>
+	
+	<grid name="product-purchase-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="code,name" x-row-height="80">
+   		<toolbar>
+        	<button name="catalogBtn" title="Catalog" onClick="action-print-product-catalog" icon="fa-book"/>
+			<button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
+	    </toolbar>
+	    <field name="code" x-bind="{{code|unaccent|uppercase}}" width="120"/>
+	    <field name="name" width="300"/>
+	    <field name="productCategory" form-view="product-category-form" grid-view="product-category-grid"/>
+	    <field name="productFamily" form-view="product-family-form" grid-view="product-family-grid"/>
+	    <field name="productTypeSelect" width="100"/>
+	   	<field name="purchasePrice" x-scale="2" />
+	    <field name="unit" width="70" form-view="unit-form" grid-view="unit-grid"/>
+	    <field name="internalDescription" widget="html" width="400" />
+	    <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+	</grid>
+	
+	<grid name="product-production-stock-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="code,name" x-row-height="80">
+   		<toolbar>
+        	<button name="catalogBtn" title="Catalog" onClick="action-print-product-catalog" icon="fa-book"/>
+			<button name="checkDuplicateBtn" title="Check Duplicate" onClick="action-general-check-duplicate-records"/>
+	    </toolbar>
+	    <field name="code" x-bind="{{code|unaccent|uppercase}}" width="120"/>
+	    <field name="name" width="300"/>
+	    <field name="productCategory" form-view="product-category-form" grid-view="product-category-grid"/>
+	    <field name="productFamily" form-view="product-family-form" grid-view="product-family-grid"/>
+	    <field name="productTypeSelect" width="100"/>
+	    <field name="unit" width="70" form-view="unit-form" grid-view="unit-grid"/>
+	    <field name="internalDescription" widget="html" width="400" />
+	    <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+	</grid>
     
     <grid name="product-product-variant-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="code,name">
+	    <field name="picture" widget="Image"/>
 	    <field name="code" x-bind="{{code|unaccent|uppercase}}" width="120"/>
 	    <field name="name"/>
 	    <field name="productVariant" width="200"/>
@@ -162,8 +195,8 @@
 			        <field name="purchasePrice" showIf="purchasable" colSpan="3"/>
 			        <field name="purchaseCurrency" canEdit="false" showIf="purchasable" colSpan="6" form-view="currency-form" grid-view="currency-grid"/>
 			        <spacer colSpan="3"/>
+			        <field name="lastPurchaseDate" showIf="purchasable" colSpan="3" readonly="true"/>
 			        <field name="lastPurchasePrice" showIf="purchasable" colSpan="3" readonly="true"/>
-			        <field name="lastPurchaseCurrency" showIf="purchasable" colSpan="6" readonly="true"/>
 			        <field name="defaultSupplierPartner" canEdit="false" showIf="purchasable" colSpan="6" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
 			        <field name="supplierDeliveryTime" showIf="purchasable" colSpan="6"/>
                     <panel name="purchaseMultipleQtyPanel" title="Multiple quantities" colSpan="12" if="__config__.app.getApp('purchase')?.getManageMultiplePurchaseQuantity()">
@@ -240,13 +273,13 @@
 	        			<field name="productVariantConfig" colSpan="12" canSelect="false" canNew="true">
 				        	<editor x-show-titles="false">
 					            <field name="productVariantAttr1" canNew="true" onChange="action-product-variant-config-attrs-domain,action-product-variant-config-record-reset-variant-value1" form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
-					            <field name="productVariantValue1Set" showIf="productVariantAttr1" colSpan="6" widget="TagSelect" canNew="false" onSelect="action-product-nested-product-variant-config-attrs-domain" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+					            <field name="productVariantValue1Set" showIf="productVariantAttr1" colSpan="6" widget="TagSelect" x-color-field="colorSelect" canNew="false" onSelect="action-product-nested-product-variant-config-attrs-domain" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
 					            <field name="productVariantAttr2" showIf="productVariantAttr1" canNew="true" onChange="action-product-variant-config-attrs-domain,action-product-variant-config-record-reset-variant-value2" form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
-					            <field name="productVariantValue2Set" showIf="productVariantAttr2" colSpan="6" widget="TagSelect" canNew="false" onSelect="action-product-nested-product-variant-config-attrs-domain" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+					            <field name="productVariantValue2Set" showIf="productVariantAttr2" colSpan="6" widget="TagSelect" x-color-field="colorSelect" canNew="false" onSelect="action-product-nested-product-variant-config-attrs-domain" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
 					            <field name="productVariantAttr3" showIf="productVariantAttr2" canNew="true" onChange="action-product-variant-config-attrs-domain,action-product-variant-config-record-reset-variant-value3" form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
-					            <field name="productVariantValue3Set" showIf="productVariantAttr3" colSpan="6" widget="TagSelect" canNew="false" onSelect="action-product-nested-product-variant-config-attrs-domain" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+					            <field name="productVariantValue3Set" showIf="productVariantAttr3" colSpan="6" widget="TagSelect" x-color-field="colorSelect" canNew="false" onSelect="action-product-nested-product-variant-config-attrs-domain" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
 					            <field name="productVariantAttr4" showIf="productVariantAttr3" canNew="true" onChange="action-product-variant-config-attrs-domain,action-product-variant-config-record-reset-variant-value4" form-view="product-variant-attr-form" grid-view="product-variant-attr-grid"/>
-					            <field name="productVariantValue4Set" showIf="productVariantAttr4" colSpan="6" widget="TagSelect" canNew="false" onSelect="action-product-nested-product-variant-config-attrs-domain" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
+					            <field name="productVariantValue4Set" showIf="productVariantAttr4" colSpan="6" widget="TagSelect" x-color-field="colorSelect" canNew="false" onSelect="action-product-nested-product-variant-config-attrs-domain" form-view="product-variant-value-form" grid-view="product-variant-value-grid"/>
 				          	</editor>
 	        			</field>
 	        			<button name="generateProductVariantBtn" title="Generate product variants" onClick="save,action-product-method-generate-product-variant"/>
@@ -307,6 +340,7 @@
   		</panel-tabs>
   		<panel name="attrsPanel">
   			<field name="attrs" colSpan="12" />
+            <field name="productAttrs" colSpan="12" />
   		</panel>
 
   		<panel-mail name="mailsPanel">
@@ -335,7 +369,7 @@
 			    <img ng-show="!picture" src="img/product-default.png" />
 			  </div>
 			  <div class="span8" style="width: 60%;">
-			    <span>{{$fmt('salePrice')}} {{saleCurrency.symbol}}<br/>
+			    <span>{{$fmt('salePrice') | currency: saleCurrency.symbol}}<br/>
 			    {{productFamily.name}}<br/>
 			    {{productCategory.name}}</span>
 			  </div>
@@ -486,7 +520,7 @@
     <action-record name="action-product-record-default-new" model="com.axelor.apps.base.db.Product">
     	<field name="productTypeSelect" expr="eval: _productTypeSelect"/>
     	<field name="procurementMethodSelect" expr="buy"/>
-    	<field name="startDate" expr="eval:__config__.app.getTodayDate()" if="startDate == null"/>
+    	<field name="startDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" if="startDate == null"/>
     	<field name="salePrice" expr="0"/>
     	<field name="purchasePrice" expr="0"/>
     	<field name="lastPurchasePrice" expr="0"/>
@@ -548,7 +582,7 @@
     </action-validate>
     
     <action-record name="action-product-record-reset-end-date" model="com.axelor.apps.base.db.Product">
-    	<field name="endDate" expr="eval:__config__.app.getTodayDate()" if="endDate &lt; startDate"/>
+    	<field name="endDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" if="endDate &lt; startDate"/>
     </action-record>
     
     <action-view name="action-product-view-product-variant" title="Products variants"

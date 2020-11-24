@@ -122,7 +122,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.unit = unit;
     this.sequence = sequence;
     this.isTaxInvoice = isTaxInvoice;
-    this.today = Beans.get(AppAccountService.class).getTodayDate();
+    this.today = Beans.get(AppAccountService.class).getTodayDate(invoice.getCompany());
     this.currencyService = new CurrencyService(this.today);
   }
 

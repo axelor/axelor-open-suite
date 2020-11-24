@@ -42,7 +42,7 @@ public class MoveManagementRepository extends MoveRepository {
 
     Move copy = super.copy(entity, deep);
 
-    copy.setDate(Beans.get(AppBaseService.class).getTodayDate());
+    copy.setDate(Beans.get(AppBaseService.class).getTodayDate(copy.getCompany()));
 
     Period period = null;
     try {
@@ -90,7 +90,7 @@ public class MoveManagementRepository extends MoveRepository {
   @Override
   public Move save(Move move) {
     try {
-      if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
+      if (move.getStatusSelect() == MoveRepository.STATUS_ACCOUNTED) {
         Beans.get(MoveValidateService.class).checkPreconditions(move);
       }
 

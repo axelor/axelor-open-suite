@@ -35,6 +35,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCan
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -45,7 +46,6 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +63,7 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected InvoicePaymentCreateService invoicePaymentCreateService;
   protected InvoicePaymentCancelService invoicePaymentCancelService;
   protected MoveLineService moveLineService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public ReconcileServiceImpl(
@@ -74,7 +75,8 @@ public class ReconcileServiceImpl implements ReconcileService {
       ReconcileSequenceService reconcileSequenceService,
       InvoicePaymentCancelService invoicePaymentCancelService,
       InvoicePaymentCreateService invoicePaymentCreateService,
-      MoveLineService moveLineService) {
+      MoveLineService moveLineService,
+      AppBaseService appBaseService) {
 
     this.moveToolService = moveToolService;
     this.accountCustomerService = accountCustomerService;
@@ -85,6 +87,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.invoicePaymentCancelService = invoicePaymentCancelService;
     this.invoicePaymentCreateService = invoicePaymentCreateService;
     this.moveLineService = moveLineService;
+    this.appBaseService = appBaseService;
   }
 
   /**
@@ -164,7 +167,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       canBeZeroBalance(reconcile);
     }
 
-    reconcile.setReconciliationDate(LocalDate.now());
+    reconcile.setReconciliationDate(appBaseService.getTodayDate(reconcile.getCompany()));
 
     reconcileSequenceService.setSequence(reconcile);
 

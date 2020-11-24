@@ -19,6 +19,7 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingSituation;
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentMode;
@@ -251,6 +252,11 @@ public class IntercoServiceImpl implements IntercoService {
     // tax
     purchaseOrderLine.setTaxLine(saleOrderLine.getTaxLine());
 
+    // analyticalDistribution
+    purchaseOrderLine =
+        Beans.get(PurchaseOrderLineServiceSupplychainImpl.class)
+            .getAndComputeAnalyticDistribution(purchaseOrderLine, purchaseOrder);
+
     purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
     return purchaseOrderLine;
   }
@@ -289,6 +295,14 @@ public class IntercoServiceImpl implements IntercoService {
 
     // tax
     saleOrderLine.setTaxLine(purchaseOrderLine.getTaxLine());
+
+    // analyticDistribution
+    saleOrderLine =
+        Beans.get(SaleOrderLineServiceSupplyChainImpl.class)
+            .getAndComputeAnalyticDistribution(saleOrderLine, saleOrder);
+    for (AnalyticMoveLine obj : saleOrderLine.getAnalyticMoveLineList()) {
+      obj.setSaleOrderLine(saleOrderLine);
+    }
 
     saleOrder.addSaleOrderLineListItem(saleOrderLine);
     return saleOrderLine;

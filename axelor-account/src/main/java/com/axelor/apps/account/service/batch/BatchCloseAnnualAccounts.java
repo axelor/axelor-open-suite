@@ -31,12 +31,14 @@ import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.ExceptionOriginRepository;
+import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +69,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
     try {
       Beans.get(AccountingReportService.class)
           .testReportedDateField(batch.getAccountingBatch().getYear().getReportedBalanceDate());
+      this.testCloseAnnualBatchFields();
     } catch (AxelorException e) {
       TraceBackService.trace(
           new AxelorException(e, e.getCategory(), ""),
@@ -74,6 +77,24 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
           batch.getId());
       incrementAnomaly();
       stop = true;
+    }
+  }
+
+  protected void testCloseAnnualBatchFields() throws AxelorException {
+    AccountingBatch accountingBatch = batch.getAccountingBatch();
+    if (CollectionUtils.isEmpty(accountingBatch.getAccountSet())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.BATCH_CLOSE_ANNUAL_ACCOUNT_1),
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          accountingBatch.getCode());
+    }
+    if (accountingBatch.getYear() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.BATCH_CLOSE_ANNUAL_ACCOUNT_2),
+          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          accountingBatch.getCode());
     }
   }
 

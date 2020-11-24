@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
     
     <grid name="budget-distribution-grid" title="Budget distributions" model="com.axelor.apps.account.db.BudgetDistribution">
         <field name="budget" domain="self.statusSelect = 2"/>
@@ -92,14 +92,14 @@
     </form>
 
     <action-attrs name="action-budget-distribution-attrs-budget-amount-available">
-		<attribute name="title" for="budgetAmountAvailable" expr="eval:com.axelor.i18n.I18n.get('Remaining to be incurred')" if="_parent?._model == 'com.axelor.apps.purchase.db.PurchaseOrderLine'"/>
-		<attribute name="title" for="budgetAmountAvailable" expr="eval:com.axelor.i18n.I18n.get('Remaining open amount')" if="_parent?._model == 'com.axelor.apps.account.db.InvoiceLine'"/>
+		<attribute name="title" for="budgetAmountAvailable" expr="eval:com.axelor.i18n.I18n.get('Remaining to be incurred')" if="__parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrderLine'"/>
+		<attribute name="title" for="budgetAmountAvailable" expr="eval:com.axelor.i18n.I18n.get('Remaining open amount')" if="__parent__?._model == 'com.axelor.apps.account.db.InvoiceLine'"/>
 
-		<attribute name="title" for="budgetDistributionList.budgetAmountAvailable" expr="eval:com.axelor.i18n.I18n.get('Remaining to be incurred')" if="_parent?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
-		<attribute name="title" for="budgetDistributionList.budgetAmountAvailable" expr="eval:com.axelor.i18n.I18n.get('Remaining open amount')" if="_parent?._model == 'com.axelor.apps.account.db.Invoice'"/>
-		<attribute name="hidden" for="budgetDistributionList.budgetAmountAvailable" expr="eval:_parent?.statusSelect &gt; 2" if="_parent?._model == 'com.axelor.apps.purchase.db.PurchaseOrder' || _parent?._model == 'com.axelor.apps.account.db.Invoice'"/>
+		<attribute name="title" for="budgetDistributionList.budgetAmountAvailable" expr="eval:com.axelor.i18n.I18n.get('Remaining to be incurred')" if="__parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
+		<attribute name="title" for="budgetDistributionList.budgetAmountAvailable" expr="eval:com.axelor.i18n.I18n.get('Remaining open amount')" if="__parent__?._model == 'com.axelor.apps.account.db.Invoice'"/>
+		<attribute name="hidden" for="budgetDistributionList.budgetAmountAvailable" expr="eval:__parent__?.statusSelect &gt; 2" if="__parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrder' || __parent__?._model == 'com.axelor.apps.account.db.Invoice'"/>
 
-		<attribute name="value" for="$currencySymbol" expr="eval:__parent__?.company?.currency?.symbol" if="_parent?._model == 'com.axelor.apps.purchase.db.PurchaseOrder' || _parent?._model == 'com.axelor.apps.account.db.Invoice'"/>
+		<attribute name="value" for="$currencySymbol" expr="eval:__parent__?.company?.currency?.symbol" if="__parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrder' || __parent__?._model == 'com.axelor.apps.account.db.Invoice'"/>
 	</action-attrs>
 
 	<action-view name="action-budget-distribution-view-budget-distribution" title="Budget distribution"

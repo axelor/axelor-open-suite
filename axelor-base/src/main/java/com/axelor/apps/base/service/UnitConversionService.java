@@ -17,14 +17,19 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.app.internal.AppFilter;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UnitConversion;
 import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.exceptions.IExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.tool.template.TemplateMaker;
 import com.google.inject.Inject;
@@ -36,7 +41,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
-import java.util.Locale;
+import java.util.Optional;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
@@ -63,7 +68,7 @@ public class UnitConversionService {
    * @param endUnit The end unit
    * @param value The value to convert
    * @param scale The wanted scale of the result
-   * @param product Optionnal, a product used for complex conversions. Input null if needless.
+   * @param product Optional, a product used for complex conversions. Input null if needless.
    * @return The converted value with the specified scale
    * @throws AxelorException
    */
@@ -71,10 +76,23 @@ public class UnitConversionService {
       Unit startUnit, Unit endUnit, BigDecimal value, int scale, Product product)
       throws AxelorException {
 
-    if (startUnit == null || endUnit == null)
+    if ((startUnit == null && endUnit == null)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.UNIT_CONVERSION_3));
+    }
+
+    if (startUnit == null && endUnit != null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(IExceptionMessage.UNIT_CONVERSION_2));
+    }
+
+    if (endUnit == null && startUnit != null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(IExceptionMessage.UNIT_CONVERSION_4));
+    }
 
     if (startUnit.equals(endUnit)) return value;
     else {
@@ -84,7 +102,7 @@ public class UnitConversionService {
 
         return value.multiply(coefficient).setScale(scale, RoundingMode.HALF_EVEN);
       } catch (IOException | ClassNotFoundException e) {
-        e.printStackTrace();
+        TraceBackService.trace(e);
       }
     }
     return value;
@@ -98,7 +116,7 @@ public class UnitConversionService {
    * @param unitConversionList A list of conversions between units
    * @param startUnit The start unit
    * @param endUnit The end unit
-   * @param product Optionnal, a product used for complex conversions. INput null if needless.
+   * @param product Optional, a product used for complex conversions. INput null if needless.
    * @return A conversion coefficient to convert from startUnit to endUnit.
    * @throws AxelorException The required units are not found in the conversion list.
    * @throws CompilationFailedException
@@ -113,7 +131,18 @@ public class UnitConversionService {
       throws AxelorException, CompilationFailedException, ClassNotFoundException, IOException {
     /* Looking for the start unit and the end unit in the unitConversionList to get the coefficient */
     if (product != null) {
-      this.maker = new TemplateMaker(Locale.FRENCH, TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
+      this.maker =
+          new TemplateMaker(
+              Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null)
+                      != null
+                  ? Optional.ofNullable(AuthUtils.getUser())
+                      .map(User::getActiveCompany)
+                      .map(Company::getTimezone)
+                      .orElse(null)
+                  : "",
+              AppFilter.getLocale(),
+              TEMPLATE_DELIMITER,
+              TEMPLATE_DELIMITER);
       this.maker.setContext(product, "Product");
     }
     String eval = null;

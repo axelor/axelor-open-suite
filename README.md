@@ -16,12 +16,10 @@ Axelor Open Suite includes the following modules :
 
 Axelor Open Suite is built on top of [Axelor Open Platform](https://github.com/axelor/axelor-open-platform)
 
-Code Format
+Installation
 ================================
 
-Axelor follows Google Code Format. 
-Tools:
-* Gradle Task: ./gradlew spotlessApply
-* IDE plugin
-	* [Eclipse](https://github.com/google/google-java-format#eclipse)
-	* [IntelliJ](https://github.com/google/google-java-format#intellij)
+To compile and run from source, you will need to clone [Open Suite webapp](https://github.com/axelor/open-suite-webapp)
+which is including this repository as a submodule.
+
+You can find more detailed [installation instructions](https://docs.axelor.com/abs/5.0/install/index.html) on our documentation.

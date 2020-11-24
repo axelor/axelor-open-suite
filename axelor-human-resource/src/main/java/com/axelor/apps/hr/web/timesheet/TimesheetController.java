@@ -61,6 +61,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -134,7 +135,7 @@ public class TimesheetController {
             .filter(
                 "self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1",
                 AuthUtils.getUser(),
-                AuthUtils.getUser().getActiveCompany())
+                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null))
             .fetch();
     if (timesheetList.isEmpty()) {
       response.setView(
@@ -217,7 +218,8 @@ public class TimesheetController {
             .add("grid", "timesheet-validate-grid")
             .add("form", "timesheet-form")
             .param("search-filters", "timesheet-filters")
-            .context("todayDate", Beans.get(AppBaseService.class).getTodayDate());
+            .context(
+                "todayDate", Beans.get(AppBaseService.class).getTodayDate(user.getActiveCompany()));
 
     Beans.get(HRMenuValidateService.class).createValidateDomain(user, employee, actionView);
 
@@ -234,7 +236,8 @@ public class TimesheetController {
             .model(TimesheetLine.class.getName())
             .add("grid", "timesheet-line-grid")
             .add("form", "timesheet-line-form")
-            .context("todayDate", Beans.get(AppBaseService.class).getTodayDate());
+            .context(
+                "todayDate", Beans.get(AppBaseService.class).getTodayDate(user.getActiveCompany()));
 
     Beans.get(TimesheetService.class).createValidateDomainTimesheetLine(user, employee, actionView);
 

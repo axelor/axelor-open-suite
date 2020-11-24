@@ -91,6 +91,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.mail.MessagingException;
@@ -156,7 +157,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     this.validateDates(timesheet);
 
     timesheet.setStatusSelect(TimesheetRepository.STATUS_CONFIRMED);
-    timesheet.setSentDate(appHumanResourceService.getTodayDate());
+    timesheet.setSentDate(appHumanResourceService.getTodayDate(timesheet.getCompany()));
   }
 
   @Override
@@ -242,7 +243,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
 
     timesheet.setStatusSelect(TimesheetRepository.STATUS_VALIDATED);
     timesheet.setValidatedBy(AuthUtils.getUser());
-    timesheet.setValidationDate(appHumanResourceService.getTodayDate());
+    timesheet.setValidationDate(appHumanResourceService.getTodayDate(timesheet.getCompany()));
   }
 
   @Override
@@ -277,7 +278,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
 
     timesheet.setStatusSelect(TimesheetRepository.STATUS_REFUSED);
     timesheet.setRefusedBy(AuthUtils.getUser());
-    timesheet.setRefusalDate(appHumanResourceService.getTodayDate());
+    timesheet.setRefusalDate(appHumanResourceService.getTodayDate(timesheet.getCompany()));
   }
 
   @Override
@@ -479,7 +480,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
             .filter(
                 "self.statusSelect = ?1 AND self.user.id = ?2",
                 TimesheetRepository.STATUS_DRAFT,
-                AuthUtils.getUser().getId())
+                Optional.ofNullable(AuthUtils.getUser()).map(User::getId).orElse(null))
             .order("-id")
             .fetchOne();
     if (timesheet != null) {

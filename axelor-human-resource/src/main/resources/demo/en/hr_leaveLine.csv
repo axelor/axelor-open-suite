@@ -1,4 +1,4 @@
-"importId";"leaveReason.leaveReason";"employee.importId";"quantity";"daysToValidate";"daysValidated";"totalQuantity"
+"importId";"leaveReason.name";"employee.importId";"quantity";"daysToValidate";"daysValidated";"totalQuantity"
 1;"Paid leave and seniority";1;12;0;0;12
 2;"Paid leave and seniority";2;52;0;0;52
 3;"Paid leave and seniority";3;45;0;0;45

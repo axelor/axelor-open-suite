@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2020 Axelor (<http://axelor.com>).
+ * Copyright (C) 2020 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or  modify
  * it under the terms of the GNU Affero General Public License, version 3,
@@ -17,7 +17,9 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.exception.service.TraceBackService;
@@ -37,6 +39,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
@@ -78,8 +81,13 @@ public class BaseReportGenerator extends ReportGenerator {
   protected TimeZone getTimezone(String tz) {
     TimeZone timeZone = TimeZone.getDefault();
     if (ObjectUtils.isEmpty(tz) && AuthUtils.getUser() != null) {
-      if (AuthUtils.getUser().getActiveCompany() != null) {
-        tz = AuthUtils.getUser().getActiveCompany().getTimezone();
+      if (Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null)
+          != null) {
+        tz =
+            Optional.ofNullable(AuthUtils.getUser())
+                .map(User::getActiveCompany)
+                .map(Company::getTimezone)
+                .orElse(null);
       }
     }
     if (!ObjectUtils.isEmpty(tz)) {

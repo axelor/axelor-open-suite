@@ -18,9 +18,13 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import java.util.List;
 
 public interface PurchaseOrderLineProjectService {
 
   public void setProject(List<Long> purchaseOrderLineIds, Project project);
+
+  public PurchaseOrderLine updateAnalyticDistributionWithProject(
+      PurchaseOrderLine purchaseOrderLine);
 }

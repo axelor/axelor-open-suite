@@ -51,4 +51,15 @@ public interface PartnerStockSettingsService {
    */
   @CallMethod
   public StockLocation getDefaultStockLocation(Partner partner, Company company);
+
+  /**
+   * Search for partner stock settings and returns default external default location for given
+   * partner and company
+   *
+   * @param partner
+   * @param company
+   * @return null if the config is empty, else the found stock location.
+   */
+  @CallMethod
+  StockLocation getDefaultExternalStockLocation(Partner partner, Company company);
 }

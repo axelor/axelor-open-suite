@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
   <menuitem name="menu-auth-permission-assistant" parent="menu-auth" title="Permission Assistant"
     action="action-auth-permission-assistant"/>
@@ -76,12 +76,5 @@
 	<view type="form" name="data-restore-backup-form"/>
 	<domain>self.restoreDate != null</domain>
   </action-view>
-  
-  <menuitem name="admin-global-traking-log-show" title="Global tracking logs" parent="admin-root-maintenance" action="admin.global.tracking.log.show"/>
-  
-  <action-view name="admin.global.tracking.log.show" title="Global tracking logs" model="com.axelor.apps.base.db.Wizard" >
-	<view type="form" name="global-tracking-log-view-wizard-form"/>
-  </action-view>
-  
   
 </object-views>

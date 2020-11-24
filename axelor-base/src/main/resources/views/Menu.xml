@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 	<menuitem id="abs-menu-mail" name="menu-mail" if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base').getEnterpriseCommunication()" hidden="false" order="-110"
     title="Messaging" icon="fa-users" icon-background="#84429f" />
@@ -143,6 +143,15 @@
         <view type="grid" name="language-grid"/>
         <view type="form" name="language-form"/>
     </action-view>
+
+	<menuitem name="admin-root-general-import-export-interface" parent="admin-root-general"
+						title="Import/Export interfaces" action="admin.root.general.import.export.interface"/>
+
+	<action-view name="admin.root.general.import.export.interface" title="Import/Export interfaces"
+							 model="com.axelor.apps.base.db.ImportExportInterface">
+		<view type="grid" name="import-export-interface-grid"/>
+		<view type="form" name="import-export-interface-form"/>
+	</action-view>
 
 	<menuitem name="referential-root" title="Referential" order="15" parent="admin-root" if="__config__.app.isApp('base')"/>
 		
@@ -511,7 +520,7 @@
 		<view type="grid" name="user-grid" />
 		<view type="form" name="user-form" />
 		<view-param name="search-filters" value="user-filters"/>
-		<context name="_today" expr="eval: __date__"/>
+		<context name="_today" expr="eval: __config__.date"/>
 	</action-view>
 
 	<menuitem name="admin-root-user-company" parent="admin-root-user"
@@ -826,5 +835,22 @@
     <view-param name="details-view" value="true"/>
     <domain>self.typeSelect = :_typeSelect</domain>
     <context name="_typeSelect" expr="eval: com.axelor.team.db.repo.TeamTaskRepository.TYPE_TASK"/>
+  </action-view>
+
+	<menuitem name="admin-global-tracking-log-show" title="Global tracking logs" parent="admin-root-maintenance" action="admin.global.tracking.log.show"/>
+
+	<action-view name="admin.global.tracking.log.show" title="Global tracking logs" model="com.axelor.apps.base.db.Wizard" >
+		<view type="form" name="global-tracking-log-view-wizard-form"/>
+	</action-view>
+
+
+  <!-- Print -->
+  <menuitem name="print-conf" parent="admin-root" if="__config__.app.isApp('base')" title="Printing"  order="41" />
+
+  <menuitem name="print-conf-print-templates" parent="print-conf" title="Print templates" action="action.print.template.view.all"/>
+
+  <action-view name="action.print.template.view.all" title="Print templates" model="com.axelor.apps.base.db.PrintTemplate">
+     <view type="grid" name="print-template-grid"/>
+     <view type="form" name="print-template-form"/>
   </action-view>
 </object-views>

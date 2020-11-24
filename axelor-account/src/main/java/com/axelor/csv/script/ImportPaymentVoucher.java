@@ -27,6 +27,7 @@ import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConf
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherLoadService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherToolService;
 import com.axelor.exception.AxelorException;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -64,7 +65,7 @@ public class ImportPaymentVoucher {
       }
       return paymentVoucher;
     } catch (Exception e) {
-      e.printStackTrace();
+      TraceBackService.trace(e);
     }
     return bean;
   }

@@ -1439,6 +1439,13 @@ return cp*nbOrdi_1</formula>
 				<showOnConfigurator>true</showOnConfigurator>
 				<configuratorCreatorImportId>2</configuratorCreatorImportId>
 			</configuratorProductFormula>
+
+			<configuratorProductFormula>
+				<metaField>productFamily</metaField>
+				<formula>__repo__(ProductFamily).all().filter(&quot;self.code = &apos;SERV&apos;&quot;).fetchOne()</formula>
+				<showOnConfigurator>true</showOnConfigurator>
+				<configuratorCreatorImportId>2</configuratorCreatorImportId>
+			</configuratorProductFormula>
 		</configuratorProductFormulaList>
 
 		<configuratorSOLineFormulaList></configuratorSOLineFormulaList>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db"/>
 
@@ -76,9 +76,12 @@
 		<boolean name="isSharedAddress" title="Shared address" default="false"/>
 
 		<many-to-many name="companySpecificProductFieldsList" ref="com.axelor.meta.db.MetaField" title="Company-specific product fields"/>
-	   	
-	   	<one-to-many name="globalTrackingConfigurationLines" ref="com.axelor.apps.admin.db.GlobalTrackingConfigurationLine" mappedBy="appBase" orphanRemoval="true"/>
 
+	   	<one-to-many name="globalTrackingConfigurationLines" ref="com.axelor.apps.base.db.GlobalTrackingConfigurationLine" mappedBy="appBase" orphanRemoval="true"/>
+
+	   	<many-to-one name="defaultMailMessageTemplate" title="Default mail message template" ref="com.axelor.apps.message.db.Template"/>
+
+	   	<one-to-many name="mailTemplateAssociationList" title="Email template list for notifications" ref="com.axelor.apps.base.db.MailTemplateAssociation"/>
 		<extra-code>
 	   		<![CDATA[
 	   			public static final int DISCOUNT_SEPARATE = 1;
@@ -90,6 +93,8 @@
 	   			
 	   			public static final int ROUTING_API_YOURS = 1;
 	   			public static final int ROUTING_API_OSRM = 2;
+
+	   			public static final int IMPORT_EXPORT_INTERFACE_EDIFACT = 1;
 	   		]]>
 	   	</extra-code>
 	   	

@@ -23,6 +23,7 @@ import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaJsonFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.studio.db.AppBuilder;
+import com.axelor.studio.service.JsonFieldService;
 import com.axelor.studio.service.StudioMetaService;
 import com.google.inject.Inject;
 
@@ -31,28 +32,32 @@ public class MetaJsonFieldRepo extends MetaJsonFieldRepository {
   @Inject MetaModelRepository metaModelRepo;
 
   @Override
-  public MetaJsonField save(MetaJsonField metajsonField) {
+  public MetaJsonField save(MetaJsonField metaJsonField) {
 
-    AppBuilder appBuilder = metajsonField.getAppBuilder();
+    AppBuilder appBuilder = metaJsonField.getAppBuilder();
     if (appBuilder != null) {
-      metajsonField.setIncludeIf("__config__.app.isApp('" + appBuilder.getCode() + "')");
+      metaJsonField.setIncludeIf("__config__.app.isApp('" + appBuilder.getCode() + "')");
     }
 
-    return super.save(metajsonField);
+    Beans.get(JsonFieldService.class).updateSelection(metaJsonField);
+
+    return super.save(metaJsonField);
   }
 
   @Override
-  public void remove(MetaJsonField metajsonField) {
+  public void remove(MetaJsonField metaJsonField) {
 
-    if (metajsonField.getJsonModel() == null) {
+    if (metaJsonField.getJsonModel() == null) {
 
       MetaModel metaModel =
-          metaModelRepo.all().filter("self.fullName = ?1", metajsonField.getModel()).fetchOne();
+          metaModelRepo.all().filter("self.fullName = ?1", metaJsonField.getModel()).fetchOne();
 
       Beans.get(StudioMetaService.class)
-          .trackingFields(metaModel, metajsonField.getName(), "Field removed");
+          .trackingFields(metaModel, metaJsonField.getName(), "Field removed");
     }
 
-    super.remove(metajsonField);
+    Beans.get(JsonFieldService.class).removeSelection(metaJsonField);
+
+    super.remove(metaJsonField);
   }
 }
