@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -5163,7 +5163,7 @@ vars["in_total"] = vars["temp_in_total"];
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">row._outer["is_title_line"]</expression>
+                                                <expression name="valueExpr" type="javascript">row["is_title_line"]</expression>
                                             </structure>
                                         </list-property>
                                         <column id="4624"/>
@@ -5226,7 +5226,7 @@ vars["in_total"] = vars["temp_in_total"];
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">!row._outer["is_title_line"] || !vars["is_first_title_line"] || row._outer["qty"] == 0</expression>
+                                                <expression name="valueExpr" type="javascript">!row["is_title_line"] || (row["enablePackMangement"]  &amp;&amp; !vars["is_first_title_line"]) || row["qty"] == 0</expression>
                                             </structure>
                                         </list-property>
                                         <column id="5653"/>
