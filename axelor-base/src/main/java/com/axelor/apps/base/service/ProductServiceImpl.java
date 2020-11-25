@@ -437,5 +437,6 @@ public class ProductServiceImpl implements ProductService {
     copy.setCostPrice(BigDecimal.ZERO);
     copy.setPurchasePrice(BigDecimal.ZERO);
     copy.setProductCompanyList(null);
+    copy.setLastPurchaseDate(null);
   }
 }
