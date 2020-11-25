@@ -26,5 +26,6 @@
 
         <boolean name="isActive" title="Is Active" default="false"/>
 
+        <entity-listener class="com.axelor.apps.sale.db.repo.ConfiguratorCreatorListener"/>
     </entity>
 </domain-models>

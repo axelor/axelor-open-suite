@@ -8,4 +8,37 @@
       method="checkGroovyFormula"/>
   </action-method>
 
+  <form name="incl-help-configurator-formula" model="com.axelor.apps.sale.db.ConfiguratorFormula" title="Help" >
+    <panel name="helpPanel" title="Help">
+      <field name="$helpViewer" showTitle="false" readonly="true" colSpan="12">
+        <viewer><![CDATA[
+<h3 id="the-script-must-be-written-in-groovy"><span x-translate>The script must be written in</span> <a href="http://docs.groovy-lang.org/latest/html/documentation/">Groovy</a></h3>
+<h4 id="string">String</h4>
+<p><code>+</code> <span x-translate>is used for concatenation</span>:</p>
+<pre><code>v = &quot;def&quot;
+&quot;abc&quot; + v // returns &quot;abcdef&quot;</code></pre>
+<p><span x-translate>String interpolation can also be used</span>:</p>
+<pre><code>v = &quot;def&quot;
+&quot;abc${v}&quot; // also returns &quot;abcdef&quot;</code></pre>
+<h4 id="decimal">Decimal</h4>
+<p><span x-translate>Standard operation like +, -, *, / can be used and will work correctly with BigDecimal.</span></p>
+<h4 id="current-user" x-translate>Current User</h4>
+<p><code>__user__</code> <span x-translate>gives access to connected user.</span> <br>
+<span x-translate>Example: accessing the name of the user</span>: <code>__user__.name</code>.</p>
+<h4 id="date">Date</h2>
+<p><code>__date__</code> <span x-translate>gives access to today date and</span> <code>__datetime__</code> <span x-translate>to current date time.</span></p>
+<h4 id="query-to-database" x-translate>Query to database</h4>
+<p><code>__repo__</code> <span x-translate>gives access to a repository with the same syntax as the repositories in java</span>.<br>
+<span x-translate>Examples</span>:
+<ul>
+<li> <span x-translate>searching for Product with id = 1:</span> <code>__repo__(Product).find(1)</code>
+<li> <span x-translate>searching for ProductFamily with the code ‘SERV’</span>: <code>__repo__(ProductFamily).all().filter("self.code = 'SERV'").fetchOne()</code>
+<li> <span x-translate>searching Partners that are suppliers and with a name starting with “A”</span>: <code>__repo__(Partner).all().filter("self.isSupplier IS TRUE AND self.name LIKE 'A%'").fetchOne()</code>
+</ul>
+</p>]]>
+        </viewer>
+      </field>
+    </panel>
+  </form>
+
 </object-views>
