@@ -46,7 +46,7 @@
 		<decimal name="purchasePrice" title="Purchase price W.T."
 			precision="20" scale="10" massUpdate="true" min="0" />
 		<decimal name="lastPurchasePrice" title="Last purchase price W.T."
-			precision="20" scale="10"/>
+			precision="20" scale="10" copy="false"/>
 		<many-to-one name="purchaseCurrency" ref="com.axelor.apps.base.db.Currency"
 			title="Purchase / Cost currency" initParam="true" />
 		<boolean name="autoUpdateSalePrice" default="false"
