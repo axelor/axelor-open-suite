@@ -91,6 +91,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.mail.MessagingException;
@@ -479,7 +480,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
             .filter(
                 "self.statusSelect = ?1 AND self.user.id = ?2",
                 TimesheetRepository.STATUS_DRAFT,
-                AuthUtils.getUser().getId())
+                Optional.ofNullable(AuthUtils.getUser()).map(User::getId).orElse(null))
             .order("-id")
             .fetchOne();
     if (timesheet != null) {
@@ -1177,8 +1178,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
         LeaveRequest leave = leaveService.getLeave(user, date);
         if (leave != null) {
           BigDecimal hours = leaveService.computeDuration(leave, date, date);
-          if (leave.getLeaveLine().getLeaveReason().getUnitSelect()
-              == LeaveReasonRepository.UNIT_SELECT_DAYS) {
+          if (leave.getLeaveReason().getUnitSelect() == LeaveReasonRepository.UNIT_SELECT_DAYS) {
             hours = hours.multiply(dayValueInHours);
           }
           timesheetLineService.createTimesheetLine(

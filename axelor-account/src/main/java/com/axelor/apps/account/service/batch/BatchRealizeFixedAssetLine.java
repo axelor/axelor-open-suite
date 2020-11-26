@@ -25,6 +25,7 @@ import com.axelor.apps.account.service.FixedAssetLineService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -32,6 +33,7 @@ import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public class BatchRealizeFixedAssetLine extends AbstractBatch {
 
@@ -72,7 +74,9 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
                 appBaseService.getTodayDate(
                     batch.getAccountingBatch() != null
                         ? batch.getAccountingBatch().getCompany()
-                        : AuthUtils.getUser().getActiveCompany()))
+                        : Optional.ofNullable(AuthUtils.getUser())
+                            .map(User::getActiveCompany)
+                            .orElse(null)))
             .fetch();
 
     for (FixedAssetLine fixedAssetLine : fixedAssetLineList) {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
     
   <grid name="bill-of-material-grid" title="Bills of material" model="com.axelor.apps.production.db.BillOfMaterial">
 		<field name="fullName"/>
@@ -176,7 +176,6 @@
 		<action name="action-bill-of-material-default-record"/>
 		<action name="action-bill-of-material-attrs-price-and-qty-digits"/>
 		<action name="action-bill-of-material-record-count-number-of-components"/>
-		<action name="action-bill-of-material-group-product" if="_product"/>
 	</action-group>
     
     <action-record name="action-bill-of-material-default-record" model="com.axelor.apps.production.db.BillOfMaterial">
@@ -187,6 +186,7 @@
     	<field name="workshopStockLocation" expr="eval:__user__.workshopStockLocation" if="__config__.app.getApp('production').getManageWorkshop() &amp;&amp; __user__.workshopStockLocation != null"/>
     	<field name="product" expr="eval:_product"/>
     	<field name="name" expr="eval:_product?.name"/>
+      <field name="unit" expr="eval: _product?.unit"/>
     </action-record>
     
      <action-record name="action-bill-of-material-line-default-record" model="com.axelor.apps.production.db.BillOfMaterial">

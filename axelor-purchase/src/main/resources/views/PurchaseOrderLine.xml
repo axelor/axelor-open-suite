@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
     <grid name="purchase-order-line-purchase-order-grid" title="PO lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
     	<hilite color="default" strong="true" if="isTitleLine == true"/>
@@ -87,7 +87,7 @@
 
 		<panel-tabs name="mainPanelTab" hideIf="isTitleLine">
 			<panel name="informationsPanel" title="Information">
-				
+
 				<label name="differentSupplierLabel" hidden="true" colSpan="12"/>
 				<field name="receiptState" showTitle="false" colSpan="3" showIf="receiptState > 0" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
 					<viewer><![CDATA[
@@ -391,7 +391,7 @@
 	<action-method name="action-purchase-order-method-compute-budget-distribution-sum-amount">
 		<call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController" method="computeBudgetDistributionSumAmount"/>
 	</action-method>
-	
+
 	<action-method name="action-purchase-order-line-method-check-different-supplier">
 		<call class="com.axelor.apps.purchase.web.PurchaseOrderLineController" method="checkDifferentSupplier"/>
 	</action-method>
@@ -401,12 +401,12 @@
 	<action-attrs name="action-purchase-order-line-attrs-product-domain">
 		<attribute name="domain" for="product" if="!__config__.app.getApp('purchase')?.enablePurchasesProductByTradName || _parent?.company?.tradingNameSet == null || _parent?.company?.tradingNameSet.isEmpty()"
 		expr="eval: isFilterOnSupplier &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog()
-		? &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true and self.id IN (SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = ${_parent?.supplierPartner?.id}) and dtype = 'Product'&quot; 
+		? &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true and self.id IN (SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = ${__parent__?.supplierPartner?.id}) and dtype = 'Product'&quot;
 		: &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true and dtype = 'Product'&quot;" />
-	
+
 		<attribute name="domain" for="product" if="__config__.app.getApp('purchase')?.enablePurchasesProductByTradName &amp;&amp; _parent?.company?.tradingNameSet != null &amp;&amp; !_parent?.company?.tradingNameSet.isEmpty()"
 		expr="eval: isFilterOnSupplier &amp;&amp; __config__.app.getApp('purchase').getManageSupplierCatalog()
-		? &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true AND ${_parent?.tradingName?.id} member of self.tradingNameBuyerSet and self.id IN (SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = ${_parent?.supplierPartner?.id}) and dtype = 'Product'&quot; 
+		? &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true AND ${_parent?.tradingName?.id} member of self.tradingNameBuyerSet and self.id IN (SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = ${_parent?.supplierPartner?.id}) and dtype = 'Product'&quot;
 		: &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true AND ${_parent?.tradingName?.id} member of self.tradingNameBuyerSet and dtype = 'Product'&quot;" />
 	</action-attrs>
 	
@@ -438,18 +438,18 @@
 	<action-attrs name="action-purchase-order-line-attrs-set-isFilterOnSupplier">
 		<attribute name="value" for="$isFilterOnSupplier" expr="eval: true"/>
 	</action-attrs>
-	
+
 	<action-attrs name="action-purchase-order-line-attrs-hide-different-supplier-warning-label">
 		<attribute name="hidden" for="differentSupplierLabel" expr="true"/>
-	</action-attrs>	
-    
+	</action-attrs>
+
 <!--     ACTION VIEW -->
     <action-view name="action-purchase-order-line-view-stock-move-line" title="" model="com.axelor.apps.stock.db.StockMoveLine">
   		<view type="grid" name="stock-move-line-all-grid"/>
 		<view type="form" name="stock-move-line-all-form"/>
   		<domain>self.purchaseOrderLine.id = :id</domain>
   		<context name="id" expr="eval: id"/>
-  	</action-view>  	
+  	</action-view>
 	
-	
+
 </object-views>

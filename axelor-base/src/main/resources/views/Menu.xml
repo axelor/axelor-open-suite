@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 	<menuitem id="abs-menu-mail" name="menu-mail"
 		if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base').getEnterpriseCommunication()"
@@ -172,9 +172,17 @@
 		<view type="form" name="language-form" />
 	</action-view>
 
+	<menuitem name="admin-root-general-import-export-interface" parent="admin-root-general"
+						title="Import/Export interfaces" action="admin.root.general.import.export.interface"/>
+
+	<action-view name="admin.root.general.import.export.interface" title="Import/Export interfaces"
+							 model="com.axelor.apps.base.db.ImportExportInterface">
+		<view type="grid" name="import-export-interface-grid"/>
+		<view type="form" name="import-export-interface-form"/>
+	</action-view>
+
 	<menuitem name="referential-root" title="Referential" order="15"
 		parent="admin-root" if="__config__.app.isApp('base')" />
-
 	<menuitem name="referential-root-partners" parent="referential-root"
 		title="Partners" action="referential.root.partners" order="10" />
 
@@ -420,14 +428,14 @@
 	<menuitem name="referential-report-partner-prospects" parent="referential-report-maps"
 		title="Prospects" action="action-show-prospects-on-map-page" />
 
-	<!-- <action-method name="action-show-customers-on-map-page"> <call method="showCustomersOnMap" 
+	<!-- <action-method name="action-show-customers-on-map-page"> <call method="showCustomersOnMap"
 		class="com.axelor.apps.base.web.GeneralController"/> </action-method> -->
 
 	<action-method name="action-show-customers-on-map-page">
 		<call method="showCustomersOnMap" class="com.axelor.apps.base.web.AppBaseController" />
 	</action-method>
 
-	<!-- <action-method name="action-show-prospects-on-map-page"> <call method="showProspectsOnMap" 
+	<!-- <action-method name="action-show-prospects-on-map-page"> <call method="showProspectsOnMap"
 		class="com.axelor.apps.base.web.GeneralController"/> </action-method> -->
 
 	<action-method name="action-show-prospects-on-map-page">
@@ -437,7 +445,7 @@
 	<menuitem name="referential-report-partner-suppliers" parent="referential-report-maps"
 		title="Suppliers" action="action-show-suppliers-on-map-page" />
 
-	<!-- <action-method name="action-show-suppliers-on-map-page"> <call method="showSuppliersOnMap" 
+	<!-- <action-method name="action-show-suppliers-on-map-page"> <call method="showSuppliersOnMap"
 		class="com.axelor.apps.base.web.GeneralController"/> </action-method> -->
 
 	<action-method name="action-show-suppliers-on-map-page">
@@ -546,7 +554,7 @@
 		<view type="grid" name="user-grid" />
 		<view type="form" name="user-form" />
 		<view-param name="search-filters" value="user-filters" />
-		<context name="_today" expr="eval: __date__" />
+		<context name="_today" expr="eval: __config__.date" />
 	</action-view>
 
 	<menuitem name="admin-root-user-company" parent="admin-root-user"
@@ -886,7 +894,7 @@
 		<view type="grid" name="partner-role-grid" />
 		<view type="form" name="partner-role-form" />
 	</action-view>
-	
+
 	<action-view id="base.team.tasks.open" name="team.tasks.open" model="com.axelor.team.db.TeamTask" title="My open tasks">
 	  <view name="team-task-grid" type="grid"/>
 	  <view name="team-task-calendar" type="calendar"/>

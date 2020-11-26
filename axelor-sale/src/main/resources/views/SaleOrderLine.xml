@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
     <grid name="sale-order-line-grid" title="SO lines" model="com.axelor.apps.sale.db.SaleOrderLine">
    		<hilite strong="true" color="default" if="typeSelect != 0"/>
@@ -303,8 +303,8 @@
 				<field name="$companyCurrency" readonly="true" title="Currency" type="many-to-one" target="com.axelor.apps.base.db.Currency"/>
 			</panel>
 			<panel name="projectPanel"  if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()" title="Project/Task" if-module="axelor-business-project">
-				<field name="project" onSelect="action-sale-order-line-attrs-domain-project" onChange="action-sale-order-line-record-progress" form-view="project-form" grid-view="project-grid"/>
-				<field name="progress" readonly="true" widget="SelectProgress"/>
+			<field name="project" title="Business Project" canEdit="false" onSelect="action-sale-order-line-attrs-domain-project" onChange="action-sale-order-line-record-progress" form-view="project-form" grid-view="project-grid"/>
+			<field name="progress" readonly="true" widget="SelectProgress"/>
 			</panel>
 			<panel name="analyticDistributionPanel" readonlyIf="$isReadOnly !== false" title="Analytics" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()" onTabSelect="action-sale-order-line-attrs-read-only-distribution-lines">
 				<field name="analyticDistributionTemplate" grid-view="analytic-distribution-template-grid" form-view="analytic-distribution-template-form" canEdit="false" onChange="action-sale-order-line-method-create-distribution" onSelect="action-sale-order-line-attrs-set-domain-analytic-distribution-template"/>
@@ -574,6 +574,7 @@
 	</action-record>
     
    	<!-- ACTION METHOD -->
+	
 	<action-method name="action-sale-order-line-method-compute">
 		<call class="com.axelor.apps.sale.web.SaleOrderLineController" method="compute"/>
 	</action-method>

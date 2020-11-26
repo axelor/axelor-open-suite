@@ -37,6 +37,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
@@ -80,6 +81,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -157,7 +159,8 @@ public class DocuSignEnvelopeServiceImpl implements DocuSignEnvelopeService {
         Model model = JPA.find(modelClass, objectId);
         if (ObjectUtils.notEmpty(model)) {
           String timezone = null;
-          Company activeCompany = AuthUtils.getUser().getActiveCompany();
+          Company activeCompany =
+              Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
           if (activeCompany != null) {
             timezone = activeCompany.getTimezone();
           }

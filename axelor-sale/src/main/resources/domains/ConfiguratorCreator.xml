@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
     <module name="sale" package="com.axelor.apps.sale.db"/>
 
@@ -22,7 +22,10 @@
                      ref="com.axelor.auth.db.Group"/>
         <boolean name="generateProduct" title="Generate product" default="true"/>
 
+        <string name="qtyFormula" title="Quantity" large="true" help="Quantity in generated sale order line, 1 if left empty."/>
+
         <boolean name="isActive" title="Is Active" default="false"/>
 
+        <entity-listener class="com.axelor.apps.sale.db.repo.ConfiguratorCreatorListener"/>
     </entity>
 </domain-models>

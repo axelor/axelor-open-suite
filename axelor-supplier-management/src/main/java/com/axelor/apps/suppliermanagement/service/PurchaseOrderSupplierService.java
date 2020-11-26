@@ -32,10 +32,11 @@ import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
+import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
-import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -57,7 +58,9 @@ public class PurchaseOrderSupplierService {
 
   @Inject private PurchaseOrderSupplierLineService purchaseOrderSupplierLineService;
 
-  @Inject private PurchaseOrderServiceSupplychainImpl purchaseOrderServiceSupplychainImpl;
+  @Inject private PurchaseOrderSupplychainService purchaseOrderSupplychainService;
+
+  @Inject private PurchaseOrderService purchaseOrderService;
 
   @Inject private PurchaseOrderLineService purchaseOrderLineService;
 
@@ -176,7 +179,7 @@ public class PurchaseOrderSupplierService {
         supplierPartner.getFullName());
 
     PurchaseOrder purchaseOrder =
-        purchaseOrderServiceSupplychainImpl.createPurchaseOrder(
+        purchaseOrderSupplychainService.createPurchaseOrder(
             AuthUtils.getUser(),
             parentPurchaseOrder.getCompany(),
             null,
@@ -200,7 +203,7 @@ public class PurchaseOrderSupplierService {
           this.createPurchaseOrderLine(purchaseOrder, purchaseOrderLine));
     }
 
-    purchaseOrderServiceSupplychainImpl.computePurchaseOrder(purchaseOrder);
+    purchaseOrderService.computePurchaseOrder(purchaseOrder);
 
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_REQUESTED);
     purchaseOrder.setReceiptState(PurchaseOrderRepository.STATE_NOT_RECEIVED);

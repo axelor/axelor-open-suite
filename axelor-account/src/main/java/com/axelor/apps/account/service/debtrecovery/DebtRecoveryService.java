@@ -43,6 +43,7 @@ import com.axelor.apps.base.db.repo.TradingNameRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
@@ -58,6 +59,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -158,7 +160,9 @@ public class DebtRecoveryService {
           appAccountService.getTodayDate(
               moveLineList.get(0).getMove() != null
                   ? moveLineList.get(0).getMove().getCompany()
-                  : AuthUtils.getUser().getActiveCompany());
+                  : Optional.ofNullable(AuthUtils.getUser())
+                      .map(User::getActiveCompany)
+                      .orElse(null));
       for (MoveLine moveLine : moveLineList) {
         if (minMoveLineDate.isAfter(moveLine.getDueDate())) {
           minMoveLineDate = moveLine.getDueDate();

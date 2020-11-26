@@ -18,9 +18,12 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import java.util.List;
 
 public interface SaleOrderLineProjectService {
 
   public void setProject(List<Long> saleOrderLineIds, Project project);
+
+  public SaleOrderLine updateAnalyticDistributionWithProject(SaleOrderLine saleOrderLine);
 }

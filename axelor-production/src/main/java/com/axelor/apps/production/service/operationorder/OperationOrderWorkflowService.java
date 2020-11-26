@@ -233,7 +233,7 @@ public class OperationOrderWorkflowService {
     LocalDateTime maxDate = DateTool.max(plannedStartDate, lastOPerationDate);
     operationOrder.setPlannedStartDateT(maxDate);
 
-    Machine machine = operationOrder.getMachineWorkCenter();
+    Machine machine = operationOrder.getMachine();
     WeeklyPlanning weeklyPlanning = null;
     if (machine != null) {
       weeklyPlanning = machine.getWeeklyPlanning();
@@ -373,9 +373,7 @@ public class OperationOrderWorkflowService {
             && lastOperationOrder
                 .getPlannedStartDateT()
                 .isAfter(operationOrder.getManufOrder().getPlannedStartDateT())) {
-          if (lastOperationOrder
-              .getMachineWorkCenter()
-              .equals(operationOrder.getMachineWorkCenter())) {
+          if (lastOperationOrder.getMachine().equals(operationOrder.getMachine())) {
             return lastOperationOrder.getPlannedEndDateT();
           }
           return lastOperationOrder.getPlannedStartDateT();
@@ -543,7 +541,7 @@ public class OperationOrderWorkflowService {
     if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_FINISHED) {
       long durationLong = DurationTool.getSecondsDuration(computeRealDuration(operationOrder));
       operationOrder.setRealDuration(durationLong);
-      Machine machine = operationOrder.getMachineWorkCenter();
+      Machine machine = operationOrder.getMachine();
       if (machine != null) {
         machine.setOperatingDuration(machine.getOperatingDuration() + durationLong);
       }

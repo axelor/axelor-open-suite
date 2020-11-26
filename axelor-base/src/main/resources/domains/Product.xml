@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
 
 	<module name="base" package="com.axelor.apps.base.db" />
 
@@ -45,6 +45,7 @@
 			title="Sale currency" initParam="true" />
 		<decimal name="purchasePrice" title="Purchase price W.T."
 			precision="20" scale="10" massUpdate="true" min="0" />
+		<date name="lastPurchaseDate" title="Last purchase date" />
 		<decimal name="lastPurchasePrice" title="Last purchase price W.T."
 			precision="20" scale="10"/>
 		<many-to-one name="purchaseCurrency" ref="com.axelor.apps.base.db.Currency"

@@ -231,7 +231,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     this.addParams(
         "(self.move.statusSelect = "
-            + MoveRepository.STATUS_DAYBOOK
+            + MoveRepository.STATUS_ACCOUNTED
             + " OR self.move.statusSelect = "
             + MoveRepository.STATUS_VALIDATED
             + ")");
@@ -645,7 +645,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     this.addParams(
         "(self.moveLine.move.statusSelect = "
-            + MoveRepository.STATUS_DAYBOOK
+            + MoveRepository.STATUS_ACCOUNTED
             + " OR self.moveLine.move.statusSelect = "
             + MoveRepository.STATUS_VALIDATED
             + ")");
@@ -720,7 +720,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     this.addParams(
         "(self.moveLine.move.statusSelect = "
-            + MoveRepository.STATUS_DAYBOOK
+            + MoveRepository.STATUS_ACCOUNTED
             + " OR self.moveLine.move.statusSelect = "
             + MoveRepository.STATUS_VALIDATED
             + ")");

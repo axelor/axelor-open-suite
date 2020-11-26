@@ -33,6 +33,7 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToo
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
+import com.axelor.apps.purchase.service.PurchaseOrderWorkflowServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.apps.purchase.service.PurchaseProductServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseRequestServiceImpl;
@@ -98,11 +99,13 @@ import com.axelor.apps.supplychain.service.ProjectedStockService;
 import com.axelor.apps.supplychain.service.ProjectedStockServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
+import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
+import com.axelor.apps.supplychain.service.PurchaseOrderWorkflowServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseRequestServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.ReservedQtyServiceImpl;
@@ -235,5 +238,9 @@ public class SupplychainModule extends AxelorModule {
     bind(PartnerSupplychainLinkService.class).to(PartnerSupplychainLinkServiceImpl.class);
     bind(InvoiceManagementRepository.class).to(InvoiceSupplychainRepository.class);
     bind(StockMoveReservedQtyService.class).to(StockMoveReservedQtyServiceImpl.class);
+    bind(PurchaseOrderLineServiceSupplyChain.class)
+        .to(PurchaseOrderLineServiceSupplychainImpl.class);
+    bind(PurchaseOrderWorkflowServiceImpl.class)
+        .to(PurchaseOrderWorkflowServiceSupplychainImpl.class);
   }
 }

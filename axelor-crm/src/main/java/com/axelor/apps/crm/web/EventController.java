@@ -54,6 +54,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -416,7 +417,9 @@ public class EventController {
             .getTodayDate(
                 event.getUser() != null
                     ? event.getUser().getActiveCompany()
-                    : AuthUtils.getUser().getActiveCompany());
+                    : Optional.ofNullable(AuthUtils.getUser())
+                        .map(User::getActiveCompany)
+                        .orElse(null));
     if (endType == 2) {
       if (conf.getEndDate() == null) {
         throw new AxelorException(

@@ -105,7 +105,7 @@ public class PaymentVoucherLoadService {
                 paymentVoucher.getPartner(),
                 paymentVoucher.getCompany(),
                 MoveRepository.STATUS_VALIDATED,
-                MoveRepository.STATUS_DAYBOOK,
+                MoveRepository.STATUS_ACCOUNTED,
                 InvoiceRepository.PFP_STATUS_LITIGATION,
                 paymentVoucher.getTradingName())
             .fetch();

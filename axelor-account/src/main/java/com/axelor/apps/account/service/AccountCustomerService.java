@@ -100,7 +100,7 @@ public class AccountCustomerService {
             .setParameter(1, partner)
             .setParameter(2, company)
             .setParameter(3, MoveRepository.STATUS_VALIDATED)
-            .setParameter(4, MoveRepository.STATUS_DAYBOOK);
+            .setParameter(4, MoveRepository.STATUS_ACCOUNTED);
 
     BigDecimal balance = (BigDecimal) query.getSingleResult();
 
@@ -162,7 +162,7 @@ public class AccountCustomerService {
             .setParameter("partner", partner)
             .setParameter("company", company)
             .setParameter("statusValidated", MoveRepository.STATUS_VALIDATED)
-            .setParameter("statusDaybook", MoveRepository.STATUS_DAYBOOK);
+            .setParameter("statusDaybook", MoveRepository.STATUS_ACCOUNTED);
 
     if (tradingName != null) {
       query = query.setParameter("tradingName", tradingName);
@@ -248,7 +248,7 @@ public class AccountCustomerService {
             .setParameter("partner", partner)
             .setParameter("company", company)
             .setParameter("statusValidated", MoveRepository.STATUS_VALIDATED)
-            .setParameter("statusDaybook", MoveRepository.STATUS_DAYBOOK);
+            .setParameter("statusDaybook", MoveRepository.STATUS_ACCOUNTED);
 
     if (tradingName != null) {
       query = query.setParameter("tradingName", tradingName);

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
     
 	<grid name="prod-process-line-grid" title="Phases" model="com.axelor.apps.production.db.ProdProcessLine" orderBy="priority">
 		<field name="priority" width="75"/>
@@ -27,7 +27,7 @@
 					<panel colSpan="12" itemSpan="12">
 						<field name="name" readonly="true"></field>
 						<field name="workCenterSet" readonly="true" grid-view="work-center-grid"
-							form-view="work-center-form" canNew="true" showIf="workCenterTypeSelect == 3"  />
+							form-view="work-center-form" canEdit="true" canNew="true" showIf="workCenterTypeSelect == 3"  />
 						<field name="workCenterSet" readonly="true" grid-view="work-center-grid-small"
 							form-view="work-center-form" canNew="true" showIf="workCenterTypeSelect != 3" />
 					</panel>
@@ -130,11 +130,11 @@
 		<call class="com.axelor.apps.production.web.ProdProcessLineController"
 			method="copyWorkCenterGroup" />
 	</action-method>
-	
+
 	<action-attrs name="action-attrs-production-set-work-center-group-domain" model="com.axelor.apps.production.db.ProdProcessLine">
 		<attribute name="domain" for="workCenterGroup" expr="self.template IS TRUE and self.workCenterTypeSelect = :workCenterTypeSelect"/>
 	</action-attrs>
-	
+
 	<action-group name="action-prod-process-line-group-work-center-onchange">
 		<action name="action-prod-process-line-method-duration"/>
 		<action name="action-prod-process-line-method-capacity-settings"/>

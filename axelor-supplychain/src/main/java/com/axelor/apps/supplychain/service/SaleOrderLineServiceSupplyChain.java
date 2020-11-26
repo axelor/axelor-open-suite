@@ -87,4 +87,6 @@ public interface SaleOrderLineServiceSupplyChain extends SaleOrderLineService {
    * @param saleOrderLine a sale order line managed by hibernate
    */
   void updateStockMoveReservationDateTime(SaleOrderLine saleOrderLine) throws AxelorException;
+
+  public SaleOrderLine createAnalyticDistributionWithTemplate(SaleOrderLine saleOrderLine);
 }

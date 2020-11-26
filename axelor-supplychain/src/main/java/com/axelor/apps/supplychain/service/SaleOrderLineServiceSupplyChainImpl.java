@@ -45,6 +45,7 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
@@ -58,6 +59,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
 
@@ -117,7 +119,9 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
           appAccountService.getTodayDate(
               saleOrderLine.getSaleOrder() != null
                   ? saleOrderLine.getSaleOrder().getCompany()
-                  : AuthUtils.getUser().getActiveCompany());
+                  : Optional.ofNullable(AuthUtils.getUser())
+                      .map(User::getActiveCompany)
+                      .orElse(null));
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
         analyticMoveLineService.updateAnalyticMoveLine(
             analyticMoveLine, saleOrderLine.getCompanyExTaxTotal(), date);
@@ -135,7 +139,9 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
             appAccountService.getTodayDate(
                 saleOrderLine.getSaleOrder() != null
                     ? saleOrderLine.getSaleOrder().getCompany()
-                    : AuthUtils.getUser().getActiveCompany()));
+                    : Optional.ofNullable(AuthUtils.getUser())
+                        .map(User::getActiveCompany)
+                        .orElse(null)));
 
     saleOrderLine.setAnalyticMoveLineList(analyticMoveLineList);
     return saleOrderLine;

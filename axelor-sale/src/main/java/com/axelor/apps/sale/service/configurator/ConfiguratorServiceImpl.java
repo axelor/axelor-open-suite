@@ -17,8 +17,10 @@
  */
 package com.axelor.apps.sale.service.configurator;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.ConfiguratorFormula;
@@ -31,6 +33,8 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.IExceptionMessage;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
@@ -46,13 +50,24 @@ import com.axelor.meta.db.repo.MetaSelectItemRepository;
 import com.axelor.rpc.JsonContext;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import groovy.lang.MissingPropertyException;
+import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ConfiguratorServiceImpl implements ConfiguratorService {
+
+  protected AppBaseService appBaseService;
+
+  @Inject
+  public ConfiguratorServiceImpl(AppBaseService appBaseService) {
+    this.appBaseService = appBaseService;
+  }
 
   @Override
   public void updateIndicators(
@@ -62,6 +77,10 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       return;
     }
     List<MetaJsonField> indicators = configurator.getConfiguratorCreator().getIndicators();
+    indicators =
+        indicators.stream()
+            .filter(metaJsonField -> !"one-to-many".equals(metaJsonField.getType()))
+            .collect(Collectors.toList());
     for (MetaJsonField indicator : indicators) {
       try {
         Object calculatedValue =
@@ -83,14 +102,17 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
 
     String wantedClassName;
     String wantedType = jsonTypeToType(indicator.getType());
-    String calculatedValueClassName =
-        Beans.get(ConfiguratorFormulaService.class).getCalculatedClassName(calculatedValue);
-    if (wantedType.equals("ManyToOne")
-        || wantedType.equals("ManyToMany")
+
+    // do not check one-to-many or many-to-many
+    if (wantedType.equals("ManyToMany")
         || wantedType.equals("OneToMany")
-        || wantedType.equals("Custom-ManyToOne")
         || wantedType.equals("Custom-ManyToMany")
         || wantedType.equals("Custom-OneToMany")) {
+      return;
+    }
+    String calculatedValueClassName =
+        Beans.get(ConfiguratorFormulaService.class).getCalculatedClassName(calculatedValue);
+    if (wantedType.equals("ManyToOne") || wantedType.equals("Custom-ManyToOne")) {
       // it is a relational field so we get the target model class
       String targetName = indicator.getTargetModel();
       // get only the class without the package
@@ -157,6 +179,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       mapper.set(product, key, jsonIndicators.get(key));
     }
     fixRelationalFields(product);
+    fillOneToManyFields(configurator, product, jsonAttributes);
     if (product.getProductTypeSelect() == null) {
       product.setProductTypeSelect(ProductRepository.PRODUCT_TYPE_STORABLE);
     }
@@ -199,6 +222,16 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       this.fillSaleOrderWithProduct(saleOrderLine);
       Beans.get(SaleOrderLineService.class)
           .computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
+
+      String qtyFormula = configurator.getConfiguratorCreator().getQtyFormula();
+      BigDecimal qty = BigDecimal.ONE;
+      if (qtyFormula != null && !"".equals(qtyFormula)) {
+        Object result = computeFormula(qtyFormula, jsonAttributes);
+        if (result != null) {
+          qty = new BigDecimal(result.toString());
+        }
+      }
+      saleOrderLine.setQty(qty);
       Beans.get(SaleOrderLineRepository.class).save(saleOrderLine);
     } else {
       generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
@@ -283,7 +316,12 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
 
   @Override
   public Object computeFormula(String groovyFormula, JsonContext values) {
+    User currentUser = AuthUtils.getUser();
+    Company company = currentUser != null ? currentUser.getActiveCompany() : null;
 
+    values.put("__user__", currentUser);
+    values.put("__date__", appBaseService.getTodayDate(company));
+    values.put("__datetime__", appBaseService.getTodayDateTime(company));
     ScriptHelper scriptHelper = new GroovyScriptHelper(values);
 
     return scriptHelper.eval(groovyFormula);
@@ -292,7 +330,8 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
   public boolean areCompatible(String targetClassName, String fromClassName) {
     return targetClassName.equals(fromClassName)
         || (targetClassName.equals("BigDecimal") && fromClassName.equals("Integer"))
-        || (targetClassName.equals("BigDecimal") && fromClassName.equals("String"));
+        || (targetClassName.equals("BigDecimal") && fromClassName.equals("String"))
+        || "ArrayList".equals(fromClassName);
   }
 
   /**
@@ -314,6 +353,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     SaleOrderLine saleOrderLine = Mapper.toBean(SaleOrderLine.class, jsonIndicators);
     saleOrderLine.setSaleOrder(saleOrder);
     fixRelationalFields(saleOrderLine);
+    fillOneToManyFields(configurator, saleOrderLine, jsonAttributes);
     this.fillSaleOrderWithProduct(saleOrderLine);
     this.overwriteFieldToUpdate(configurator, saleOrderLine, jsonAttributes);
     if (saleOrderLine.getProductName() == null) {
@@ -342,6 +382,42 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     }
     jsonIndicators.clear();
     jsonIndicators.putAll(newKeyMap);
+  }
+
+  protected void fillOneToManyFields(
+      Configurator configurator, Model model, JsonContext jsonAttributes) throws AxelorException {
+    try {
+
+      ConfiguratorCreator creator = configurator.getConfiguratorCreator();
+      List<? extends ConfiguratorFormula> configuratorFormulaList;
+      String setMappedByMethod;
+      Class[] methodArg = new Class[1];
+      if (creator.getGenerateProduct()) {
+        configuratorFormulaList = creator.getConfiguratorProductFormulaList();
+        setMappedByMethod = "setProduct";
+        methodArg[0] = Product.class;
+      } else {
+        configuratorFormulaList = creator.getConfiguratorSOLineFormulaList();
+        setMappedByMethod = "setSaleOrderLine";
+        methodArg[0] = SaleOrderLine.class;
+      }
+      configuratorFormulaList =
+          configuratorFormulaList.stream()
+              .filter(
+                  configuratorFormula ->
+                      "OneToMany".equals(configuratorFormula.getMetaField().getRelationship()))
+              .collect(Collectors.toList());
+      for (ConfiguratorFormula formula : configuratorFormulaList) {
+        List<? extends Model> computedValue =
+            (List<? extends Model>) computeFormula(formula.getFormula(), jsonAttributes);
+        for (Model listElement : computedValue) {
+          listElement.getClass().getMethod(setMappedByMethod, methodArg).invoke(listElement, model);
+          JPA.save(listElement);
+        }
+      }
+    } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+      throw new AxelorException(e, TraceBackRepository.CATEGORY_INCONSISTENCY);
+    }
   }
 
   /**

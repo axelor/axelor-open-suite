@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 	
 	
 	<menuitem name="sc-root-purchase" title="Purchases" order="-105"  if="__config__.app.isApp('purchase')"
@@ -212,16 +212,6 @@
 		<view type="form" name="purchase-price-list-form" />
 		<domain>self.typeSelect = 2 and self.id not in (select priceList.id from PriceList priceList join PartnerPriceList partnerPriceList on priceList member of partnerPriceList.priceListSet where priceList.typeSelect = 2 and partnerPriceList.isExclusive IS TRUE )</domain>
 	</action-view>
-	
-	<menuitem name="sc-root-purchase-conf-purchase-request-creator" parent="sc-root-purchase-conf" if="__config__.app.isApp('purchase-request')"
-		title="Purchase request creator" action="sc.root.purchase.conf.purchase.request.creator" />
-
-	<action-view name="sc.root.purchase.conf.purchase.request.creator" title="Purchase request creator"
-		model="com.axelor.apps.purchase.db.PurchaseRequestCreator" >
-		<view type="grid" name="purchase-request-creator-grid" />
-		<view type="form" name="purchase-request-creator-form" />
-	</action-view>
-
 
 <!-- TOP MENU -->
 

@@ -115,7 +115,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
       ManufOrder manufOrder,
       int priority,
       WorkCenter workCenter,
-      Machine machineWorkCenter,
+      Machine machine,
       MachineTool machineTool,
       ProdProcessLine prodProcessLine)
       throws AxelorException {
@@ -132,7 +132,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
             operationName,
             manufOrder,
             workCenter,
-            machineWorkCenter,
+            machine,
             OperationOrderRepository.STATUS_DRAFT,
             prodProcessLine,
             machineTool);

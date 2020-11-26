@@ -19,6 +19,7 @@ package com.axelor.csv.script;
 
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
 import com.google.common.base.Strings;
@@ -27,6 +28,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -139,7 +141,10 @@ public class ImportDateTime {
         inputDate =
             dates.get(0).equals("TODAY")
                 ? Beans.get(AppBaseService.class)
-                    .getTodayDate(AuthUtils.getUser().getActiveCompany())
+                    .getTodayDate(
+                        Optional.ofNullable(AuthUtils.getUser())
+                            .map(User::getActiveCompany)
+                            .orElse(null))
                     .toString()
                 : dates.get(0);
         if (dates.size() > 1) {

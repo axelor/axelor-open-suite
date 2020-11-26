@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
     
     <grid name="product-grid" title="Products" model="com.axelor.apps.base.db.Product" orderBy="code,name" x-row-height="80">
    		<toolbar>
@@ -198,6 +198,7 @@
 			        <field name="purchasePrice" showIf="purchasable" colSpan="6"/>
 			        <field name="purchaseCurrency" canEdit="false" showIf="purchasable" colSpan="6" form-view="currency-form" grid-view="currency-grid"/>
 			        <spacer colSpan="3"/>
+			        <field name="lastPurchaseDate" showIf="purchasable" colSpan="3" readonly="true"/>
 			        <field name="lastPurchasePrice" showIf="purchasable" colSpan="3" readonly="true"/>
 			        <field name="defaultSupplierPartner" canEdit="false" showIf="purchasable" colSpan="6" domain="self.isContact = false AND self.isSupplier = true" form-view="partner-form" grid-view="partner-grid"/>
 			        <field name="supplierDeliveryTime" showIf="purchasable" colSpan="6"/>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
+	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 	<grid name="employment-contract-grid" title="Employment contracts" model="com.axelor.apps.hr.db.EmploymentContract">
         <hilite color="warning" if="$moment(endDate).diff(todayDate) &gt;= 0 &amp;&amp; $moment(todayDate).diff(startDate) &gt;= 0"/>
@@ -107,7 +107,7 @@
 <!--     </action-record> -->
 
     <action-record name="action-employment-contract-record-on-new" model="com.axelor.apps.hr.db.EmploymentContract">
-        <field name="signatureDate" expr="eval: __date__"/>
+        <field name="signatureDate" expr="eval: __config__.date"/>
         <field name="payCompany" expr="eval: __user__.activeCompany"/>
     </action-record>
     
@@ -124,7 +124,7 @@
     </action-validate>
     
     <action-export output="/home/employment_contracts" download="true" name="action-employment-contract-export-word">
-  		<export template="eval: com.axelor.meta.MetaFiles.getPath(EmploymentContractTemplate.metaFile).toString()" name="${fullName}.xml" engine="groovy"/>
+  		<export template="eval: com.axelor.meta.MetaFiles.getPath(employmentContractTemplate.metaFile).toString()" name="${fullName}.xml" engine="groovy"/>
 	</action-export>
 	
 	<action-view name="action-employment-contract-generate-payroll-prepa" title="Payroll Preparation" model="com.axelor.apps.hr.db.PayrollPreparation">
