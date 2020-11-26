@@ -318,7 +318,7 @@
 				<panel-related name="wikiListPanel" field="wikiList" colSpan="12" form-view="wiki-form" grid-view="wiki-grid-incl-project"/>
 			</panel>
 			<panel title="Roadmap" name="roadmapPanel" if-module="axelor-business-support" if="__config__.app.isApp('business-support')">
-				<panel-related name="roadmapListPanel" field="roadmapList" colSpan="12" form-view="project-version-form">
+				<panel-related name="roadmapSetPanel" field="roadmapSet" colSpan="12" form-view="project-version-form">
 					<field name="title"/>
 					<field name="statusSelect"/>
 					<field name="testingServerDate"/>
@@ -855,7 +855,7 @@
 		<field name="consolidatePhaseWhenInvoicing" hidden="true" if="!__config__.app.isApp('business-project')"/>
 		<field name="invoicingComment" hidden="true" if="!__config__.app.isApp('business-project')"/>
 		<field name="manualElementList" hidden="true" if="!__config__.app.isApp('business-project')"/>
-		<field name="roadmapList" hidden="true" if="!__config__.app.isApp('business-support')"/>
+		<field name="roadmapSet" hidden="true" if="!__config__.app.isApp('business-support')"/>
 		<field name="announcementList" hidden="true" if="!__config__.app.isApp('business-support')"/>
 		<field name="productSet" hidden="true" if="!__config__.app.isApp('employee')"/>
 		<field name="imputable" hidden="true" if="!__config__.app.isApp('employee')"/>

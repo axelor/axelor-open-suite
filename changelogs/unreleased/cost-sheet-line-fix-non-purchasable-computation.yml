@@ -1,0 +1,3 @@
+---
+title: "Cost Sheet Line: fix error if the product has no prices configured and is not purchasable"
+type: fix

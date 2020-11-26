@@ -3,7 +3,8 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.3.xsd">
 
-    <grid title="Debt Recoveries" name="debt-recovery-grid" model="com.axelor.apps.account.db.DebtRecovery" canNew="false">
+    <grid title="Debt Recoveries" name="debt-recovery-grid" model="com.axelor.apps.account.db.DebtRecovery" canNew="false" 
+		orderBy="-debtRecoveryDate,company,accountingSituation.partner">
 		<hilite if="waitDebtRecoveryMethodLine" color="warning"/>
 		<hilite if="!waitDebtRecoveryMethodLine" color="success"/>
     	<field name="company"/>
@@ -12,8 +13,8 @@
         <field name="debtRecoveryDate"/>
         <field name="debtRecoveryMethod"/>
         <field name="debtRecoveryMethodLine"/>
-        <field name="balanceDue"/>
-        <field name="balanceDueDebtRecovery"/>
+        <field name="balanceDue" aggregate="sum"/>
+        <field name="balanceDueDebtRecovery" aggregate="sum"/>
 		<field name="waitDebtRecoveryMethodLine" hidden="true"/>
         <field name="currency"/>
     </grid>

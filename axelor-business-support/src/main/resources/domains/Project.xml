@@ -7,7 +7,7 @@
 
 	<entity name="Project">
 		   <one-to-many name="announcementList" ref="com.axelor.apps.businesssupport.db.ProjectAnnouncement" title="Announcement" mappedBy="project"/>
-		   <one-to-many name="roadmapList" ref="com.axelor.apps.businesssupport.db.ProjectVersion" title="Project.version" mappedBy="project"/>
+		   <many-to-many name="roadmapSet" ref="com.axelor.apps.businesssupport.db.ProjectVersion" title="Project.version" mappedBy="projectSet"/>
 	</entity>
 
 </domain-models>

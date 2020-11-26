@@ -42,8 +42,10 @@ public class ImportBillOfMaterial {
     assert bean instanceof BillOfMaterial;
     BillOfMaterial bom = (BillOfMaterial) bean;
     bom = bomRepo.save(bom);
-    costSheetService.computeCostPrice(bom, CostSheetService.ORIGIN_BILL_OF_MATERIAL, null);
-    billOfMaterialService.updateProductCostPrice(bom);
+    if (bom.getDefineSubBillOfMaterial()) {
+      costSheetService.computeCostPrice(bom, CostSheetService.ORIGIN_BILL_OF_MATERIAL, null);
+      billOfMaterialService.updateProductCostPrice(bom);
+    }
     return bom;
   }
 }
