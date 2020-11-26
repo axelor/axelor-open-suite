@@ -22,7 +22,6 @@ import com.axelor.apps.base.db.repo.FrequencyRepository;
 import com.axelor.apps.tool.date.DateTool;
 import com.axelor.i18n.I18n;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
@@ -407,7 +406,7 @@ public class FrequencyServiceImpl implements FrequencyService {
     ArrayList<Integer> years = new ArrayList<>();
 
     for (int i = startDate.getYear(); i <= endDate.getYear(); i++) {
-        years.add(i);
+      years.add(i);
     }
 
     return years;
