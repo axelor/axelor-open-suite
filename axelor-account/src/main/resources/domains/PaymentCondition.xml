@@ -9,14 +9,12 @@
   	
    	<string name="name" title="Name" required="true" translatable="true"/>
     <string name="code" title="Code" required="true" unique="true"/>
-		<integer name="typeSelect" title="Type" selection="account.payment.condition.type.select"/>
-		<integer name="periodTypeSelect" title="Period type" selection="account.payment.condition.period.type.select" default="1"/>
-		<integer name="paymentTime" title="Payment period (N days / Month)"/>
-		<integer name="daySelect" title="Day (end of month)" selection="day.month.select"/>
-		<boolean name="isFree" title="Free"/>
-		<decimal name="advancePaymentNeeded" default="0" title="Percentage of advance payment"/>
-		<one-to-many name="importExportInterfaceList" ref="com.axelor.apps.base.db.ImportExportInterface"
-								 title="Import/Export interfaces" mappedBy="paymentCondition"/>
+	<integer name="typeSelect" title="Type" selection="account.payment.condition.type.select"/>
+	<integer name="periodTypeSelect" title="Period type" selection="account.payment.condition.period.type.select" default="1"/>
+	<integer name="paymentTime" title="Payment period (N days / Month)"/>
+	<integer name="daySelect" title="Day (end of month)" selection="day.month.select"/>
+	<boolean name="isFree" title="Free"/>
+	<decimal name="advancePaymentNeeded" default="0" title="Percentage of advance payment"/>
 
 		<extra-code><![CDATA[
 
