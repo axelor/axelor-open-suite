@@ -5043,14 +5043,37 @@ vars["in_total"] = vars["temp_in_total"];
                                     <property name="borderRightWidth">thin</property>
                                     <text id="5383">
                                         <property name="fontSize">8pt</property>
+                                        <property name="dataSet">TranslateDS</property>
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
                                                 <expression name="valueExpr" type="javascript">row["is_title_line"]</expression>
                                             </structure>
                                         </list-property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'value:'+ row["product_name"]</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">message_key</property>
+                                                <text-property name="displayName">message_key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["product_name"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF> row["translation"] != null ? row["translation"] : row._outer["product_name"]</VALUE-OF>]]></text-property>
                                     </text>
                                     <data id="5384">
                                         <property name="fontSize">8pt</property>
@@ -5078,14 +5101,37 @@ vars["in_total"] = vars["temp_in_total"];
                                     <text id="5386">
                                         <property name="fontSize">8pt</property>
                                         <property name="fontWeight">bold</property>
+                                        <property name="dataSet">TranslateDS</property>
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
                                                 <expression name="valueExpr" type="javascript">!row["is_title_line"]</expression>
                                             </structure>
                                         </list-property>
+                                        <list-property name="paramBindings">
+                                            <structure>
+                                                <property name="paramName">param_1</property>
+                                                <simple-property-list name="expression">
+                                                    <value type="javascript">'value:'+ row["product_name"]</value>
+                                                </simple-property-list>
+                                            </structure>
+                                        </list-property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">message_key</property>
+                                                <text-property name="displayName">message_key</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">translation</property>
+                                                <text-property name="displayName">translation</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                        </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>row["product_name"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF> row["translation"] != null ? row["translation"] : row._outer["product_name"]</VALUE-OF>]]></text-property>
                                     </text>
                                     <text id="5328">
                                         <property name="fontSize">8pt</property>
