@@ -108,8 +108,7 @@ public class DepositSlipServiceImpl implements DepositSlipService {
     if (depositSlip.getPaymentVoucherList() != null) {
       List<PaymentVoucher> paymentVoucherList = depositSlip.getPaymentVoucherList();
       BigDecimal totalAmount =
-          paymentVoucherList
-              .stream()
+          paymentVoucherList.stream()
               .map(PaymentVoucher::getPaidAmount)
               .reduce(BigDecimal.ZERO, BigDecimal::add);
       depositSlip.setTotalAmount(totalAmount);

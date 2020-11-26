@@ -333,9 +333,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
           && !billOfMaterial.getBillOfMaterialSet().isEmpty()) {
         priority =
             Collections.max(
-                billOfMaterial
-                    .getBillOfMaterialSet()
-                    .stream()
+                billOfMaterial.getBillOfMaterialSet().stream()
                     .map(it -> it.getPriority())
                     .collect(Collectors.toSet()));
       }

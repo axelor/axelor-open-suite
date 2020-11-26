@@ -185,8 +185,7 @@ public class OperationOrderStockMoveService {
 
     // realize current stock move
     Optional<StockMove> stockMoveToRealize =
-        stockMoveList
-            .stream()
+        stockMoveList.stream()
             .filter(
                 stockMove ->
                     stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED
@@ -252,8 +251,7 @@ public class OperationOrderStockMoveService {
         stockMoveService.cancel(stockMove);
       }
 
-      stockMoveList
-          .stream()
+      stockMoveList.stream()
           .filter(stockMove -> stockMove.getStockMoveLineList() != null)
           .flatMap(stockMove -> stockMove.getStockMoveLineList().stream())
           .forEach(stockMoveLine -> stockMoveLine.setConsumedOperationOrder(null));
@@ -299,9 +297,7 @@ public class OperationOrderStockMoveService {
       manufOrderStockMoveService._createStockMoveLine(
           prodProduct, stockMove, StockMoveLineService.TYPE_IN_PRODUCTIONS, qty);
       // Update consumed StockMoveLineList with created stock move lines
-      stockMove
-          .getStockMoveLineList()
-          .stream()
+      stockMove.getStockMoveLineList().stream()
           .filter(
               stockMoveLine1 ->
                   !operationOrder.getConsumedStockMoveLineList().contains(stockMoveLine1))

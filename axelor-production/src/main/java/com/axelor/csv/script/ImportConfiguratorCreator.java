@@ -38,8 +38,7 @@ public class ImportConfiguratorCreator {
     String path = String.valueOf(values.get("path"));
     File dataFile = new File(path);
     URL url =
-        MetaScanner.findAll("axelor-production", dataFile.getParent(), dataFile.getName())
-            .stream()
+        MetaScanner.findAll("axelor-production", dataFile.getParent(), dataFile.getName()).stream()
             .findAny()
             .orElseThrow(
                 () ->

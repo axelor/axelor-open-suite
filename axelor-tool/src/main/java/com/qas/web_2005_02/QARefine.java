@@ -47,9 +47,8 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(
-  name = "",
-  propOrder = {"moniker", "refinement", "qaConfig"}
-)
+    name = "",
+    propOrder = {"moniker", "refinement", "qaConfig"})
 @XmlRootElement(name = "QARefine")
 public class QARefine {
 

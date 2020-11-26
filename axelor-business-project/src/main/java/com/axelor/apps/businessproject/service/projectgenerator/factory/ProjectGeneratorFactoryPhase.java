@@ -83,9 +83,7 @@ public class ProjectGeneratorFactoryPhase implements ProjectGeneratorFactory {
 
         if (!CollectionUtils.isEmpty(product.getTaskTemplateSet())) {
           productTaskTemplateService.convert(
-              product
-                  .getTaskTemplateSet()
-                  .stream()
+              product.getTaskTemplateSet().stream()
                   .filter(template -> Objects.isNull(template.getParentTaskTemplate()))
                   .collect(Collectors.toList()),
               phase,

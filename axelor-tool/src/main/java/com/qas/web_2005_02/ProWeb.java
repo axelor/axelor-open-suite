@@ -30,10 +30,9 @@ import javax.xml.ws.WebServiceFeature;
  * version: 2.6.2
  */
 @WebServiceClient(
-  name = "ProWeb",
-  wsdlLocation = "http://ip.axelor.com:2021/proweb.wsdl",
-  targetNamespace = "http://www.qas.com/web-2005-02"
-)
+    name = "ProWeb",
+    wsdlLocation = "http://ip.axelor.com:2021/proweb.wsdl",
+    targetNamespace = "http://www.qas.com/web-2005-02")
 public class ProWeb extends Service {
 
   public static final URL WSDL_LOCATION;

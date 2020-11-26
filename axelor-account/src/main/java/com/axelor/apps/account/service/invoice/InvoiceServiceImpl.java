@@ -635,8 +635,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
       return false;
     }
     BigDecimal totalAmount =
-        invoicePayments
-            .stream()
+        invoicePayments.stream()
             .map(InvoicePayment::getAmount)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
@@ -917,8 +916,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     pfpValidatorUserDomain
         .append("(")
         .append(
-            validPfpValidatorUserList
-                .stream()
+            validPfpValidatorUserList.stream()
                 .map(pfpValidator -> pfpValidator.getId().toString())
                 .collect(Collectors.joining(",")))
         .append(")");

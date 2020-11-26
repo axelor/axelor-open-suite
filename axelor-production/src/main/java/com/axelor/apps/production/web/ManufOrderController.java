@@ -216,8 +216,7 @@ public class ManufOrderController {
         String name = manufOrderPrintService.getManufOrdersFilename();
         String fileLink =
             manufOrderPrintService.printManufOrders(
-                selectedManufOrderList
-                    .stream()
+                selectedManufOrderList.stream()
                     .map(Integer::longValue)
                     .collect(Collectors.toList()));
         LOG.debug("Printing {}", name);
