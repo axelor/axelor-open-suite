@@ -29,10 +29,10 @@ $SaleOrder.user.partner.firstName$ $SaleOrder.user.partner.name$</p>
 <td width=""40%""><b><font size=""5"">$SaleOrder.company.name$<br></font></b>$SaleOrder.company.address.fullName$</td></tr></tbody></table>
 <p>Bonjour $username$,</p> 
 <p>$SaleOrder.saleOrderSeq$ a été récemment actualisé, veuillez trouver ci-dessous les modifications effectuées.</p>
-<p>Status : </p>
+$if(tracks)$<p>Status : </p>
 <ul>
 $tracks:{ line | <li> <strong>$line.title$</strong> : $if(line.displayValue)$ <span>$line.oldDisplayValue$</span> &raquo; <span>$line.displayValue$</span> 
 $else$ <span>$line.oldValue$</span> &raquo; <span>$line.value$</span> $endif$ </li>}$
-</ul>
-<p>Commentaire : $SaleOrder.description$</p>
+</ul>$endif$
+<p>$if(comment)$Commentaire : $comment$ $endif$</p>
 ";;;;2
