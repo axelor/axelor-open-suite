@@ -9,6 +9,13 @@
       <attribute name="onLoad" value="action-group-supplychain-saleorder-onload"/>
       <attribute name="onSave" value="action-supplychain-saleorder-onsave"/>
 		</extend>
+			<extend target="//field[@name='shipmentMode']">
+			<attribute name="onChange" value="supplychain-action-create-shipment-cost-line"/>
+			<attribute name="readOnlyIf" value="statusSelect &gt; 1"/>
+		</extend>
+		<extend target="//panel-related[@name='detailLinesPanel']">
+			<attribute name="onChange" value="action-sale-order-line-change-group,supplychain-action-create-shipment-cost-line"/>
+		</extend>
 	</form>
 
 	<form name="sale-order-form-partner" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-form-partner"
@@ -234,5 +241,9 @@
 	<action-method name="action-sale-order-method-apply-timetable-template">
 		<call class="com.axelor.apps.supplychain.web.TimetableController" method="applyTemplate"/>
 	</action-method>
+	
+	<action-method name="supplychain-action-create-shipment-cost-line">
+     <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="createShipmentCostLine"/>
+    </action-method>
 
 </object-views>

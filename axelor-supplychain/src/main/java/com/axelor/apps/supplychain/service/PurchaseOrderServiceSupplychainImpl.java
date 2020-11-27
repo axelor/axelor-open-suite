@@ -27,15 +27,20 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.purchase.service.PurchaseOrderLineService;
+import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.supplychain.db.CustomerShippingCarriagePaid;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -364,5 +369,69 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   public void updateToValidatedStatus(PurchaseOrder purchaseOrder) {
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_VALIDATED);
     purchaseOrderRepo.save(purchaseOrder);
+  }
+
+  @Override
+  public void createShipmentCostLine(PurchaseOrder purchaseOrder) throws AxelorException {
+    PurchaseOrderService purchaseOrderService = Beans.get(PurchaseOrderService.class);
+    List<PurchaseOrderLine> purchaseOrderLines = purchaseOrder.getPurchaseOrderLineList();
+    Partner supplier = purchaseOrder.getSupplierPartner();
+    ShipmentMode shipmentMode = purchaseOrder.getShipmentMode();
+
+    if (shipmentMode == null) {
+      removeShipmentCostLine(purchaseOrder);
+      purchaseOrderService.computePurchaseOrder(purchaseOrder);
+      return;
+    }
+    if (shipmentMode.getHasCarriagePaidPossibility()) {
+      BigDecimal carriagePaidThreshold = shipmentMode.getCarriagePaidThreshold();
+      Product shippingCostProduct = shipmentMode.getShippingCostsProduct();
+      List<CustomerShippingCarriagePaid> carriagePaids =
+          supplier.getCustomerShippingCarriagePaidList();
+      for (CustomerShippingCarriagePaid customerShippingCarriagePaid : carriagePaids) {
+        if (shipmentMode.getId() == customerShippingCarriagePaid.getShipmentMode().getId()) {
+          carriagePaidThreshold = customerShippingCarriagePaid.getCarriagePaidThreshold();
+          shippingCostProduct = customerShippingCarriagePaid.getShippingCostsProduct();
+          break;
+        }
+      }
+      if (purchaseOrder.getInTaxTotal().compareTo(carriagePaidThreshold) > 0) {
+        removeShipmentCostLine(purchaseOrder);
+        purchaseOrderService.computePurchaseOrder(purchaseOrder);
+        return;
+      }
+      PurchaseOrderLine shippingCostLine =
+          createShippingCostLine(purchaseOrder, shippingCostProduct);
+      purchaseOrderLines.add(shippingCostLine);
+      purchaseOrderService.computePurchaseOrder(purchaseOrder);
+    } else {
+      removeShipmentCostLine(purchaseOrder);
+    }
+  }
+
+  private PurchaseOrderLine createShippingCostLine(
+      PurchaseOrder purchaseOrder, Product shippingCostProduct) throws AxelorException {
+    PurchaseOrderLine shippingCostLine = new PurchaseOrderLine();
+    shippingCostLine.setPurchaseOrder(purchaseOrder);
+    shippingCostLine.setProduct(shippingCostProduct);
+    PurchaseOrderLineService purchaseOrderLineService = Beans.get(PurchaseOrderLineService.class);
+    purchaseOrderLineService.fill(shippingCostLine, purchaseOrder);
+    purchaseOrderLineService.compute(shippingCostLine, purchaseOrder);
+    return shippingCostLine;
+  }
+
+  private void removeShipmentCostLine(PurchaseOrder purchaseOrder) {
+    List<PurchaseOrderLine> purchaseOrderLines = purchaseOrder.getPurchaseOrderLineList();
+    PurchaseOrderLine lineToRemove = null;
+    for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLines) {
+      if (purchaseOrderLine.getProduct().getIsShippingCostsProduct()) {
+        lineToRemove = purchaseOrderLine;
+        break;
+      }
+    }
+    if (lineToRemove != null) {
+      purchaseOrderLines.remove(lineToRemove);
+      purchaseOrder.setPurchaseOrderLineList(purchaseOrderLines);
+    }
   }
 }
