@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.base.db.AppSupplychain;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
@@ -32,10 +33,12 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
+import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.supplychain.db.CustomerShippingCarriagePaid;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -233,5 +236,72 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   public void updateToConfirmedStatus(SaleOrder saleOrder) {
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
     saleOrderRepo.save(saleOrder);
+  }
+
+  @Override
+  public void createShipmentCostLine(SaleOrder saleOrder) throws AxelorException {
+    SaleOrderComputeService saleOrderComputeService = Beans.get(SaleOrderComputeService.class);
+    SaleOrderMarginService saleOrderMarginService = Beans.get(SaleOrderMarginService.class);
+    List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
+    Partner client = saleOrder.getClientPartner();
+    ShipmentMode shipmentMode = saleOrder.getShipmentMode();
+
+    if (shipmentMode == null) {
+      removeShipmentCostLine(saleOrder);
+      saleOrderComputeService.computeSaleOrder(saleOrder);
+      saleOrderMarginService.computeMarginSaleOrder(saleOrder);
+      return;
+    }
+    if (shipmentMode.getHasCarriagePaidPossibility()) {
+      BigDecimal carriagePaidThreshold = shipmentMode.getCarriagePaidThreshold();
+      Product shippingCostProduct = shipmentMode.getShippingCostsProduct();
+      List<CustomerShippingCarriagePaid> carriagePaids =
+          client.getCustomerShippingCarriagePaidList();
+      for (CustomerShippingCarriagePaid customerShippingCarriagePaid : carriagePaids) {
+        if (shipmentMode.getId() == customerShippingCarriagePaid.getShipmentMode().getId()) {
+          carriagePaidThreshold = customerShippingCarriagePaid.getCarriagePaidThreshold();
+          shippingCostProduct = customerShippingCarriagePaid.getShippingCostsProduct();
+          break;
+        }
+      }
+      if (saleOrder.getInTaxTotal().compareTo(carriagePaidThreshold) > 0) {
+        removeShipmentCostLine(saleOrder);
+        saleOrderComputeService.computeSaleOrder(saleOrder);
+        saleOrderMarginService.computeMarginSaleOrder(saleOrder);
+        return;
+      }
+      SaleOrderLine shippingCostLine = createShippingCostLine(saleOrder, shippingCostProduct);
+      saleOrderLines.add(shippingCostLine);
+      saleOrderComputeService.computeSaleOrder(saleOrder);
+      saleOrderMarginService.computeMarginSaleOrder(saleOrder);
+    } else {
+      removeShipmentCostLine(saleOrder);
+    }
+  }
+
+  private SaleOrderLine createShippingCostLine(SaleOrder saleOrder, Product shippingCostProduct)
+      throws AxelorException {
+    SaleOrderLine shippingCostLine = new SaleOrderLine();
+    shippingCostLine.setSaleOrder(saleOrder);
+    shippingCostLine.setProduct(shippingCostProduct);
+    SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+    saleOrderLineService.computeProductInformation(shippingCostLine, saleOrder);
+    saleOrderLineService.computeValues(saleOrder, shippingCostLine);
+    return shippingCostLine;
+  }
+
+  private void removeShipmentCostLine(SaleOrder saleOrder) {
+    List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
+    SaleOrderLine lineToRemove = null;
+    for (SaleOrderLine saleOrderLine : saleOrderLines) {
+      if (saleOrderLine.getProduct().getIsShippingCostsProduct()) {
+        lineToRemove = saleOrderLine;
+        break;
+      }
+    }
+    if (lineToRemove != null) {
+      saleOrderLines.remove(lineToRemove);
+      saleOrder.setSaleOrderLineList(saleOrderLines);
+    }
   }
 }

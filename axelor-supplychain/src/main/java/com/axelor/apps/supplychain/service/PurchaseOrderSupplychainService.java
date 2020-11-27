@@ -70,4 +70,6 @@ public interface PurchaseOrderSupplychainService {
   void isBudgetExceeded(Budget budget, BigDecimal amount) throws AxelorException;
 
   void setPurchaseOrderLineBudget(PurchaseOrder purchaseOrder);
+
+  void createShipmentCostLine(PurchaseOrder purchaseOrder) throws AxelorException;
 }

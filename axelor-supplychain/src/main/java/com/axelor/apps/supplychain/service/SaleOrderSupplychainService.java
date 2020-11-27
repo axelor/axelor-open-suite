@@ -18,8 +18,11 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.exception.AxelorException;
 
 public interface SaleOrderSupplychainService {
 
   public void updateToConfirmedStatus(SaleOrder saleOrder);
+
+  public void createShipmentCostLine(SaleOrder saleOrder) throws AxelorException;
 }
