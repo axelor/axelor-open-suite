@@ -4,6 +4,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.ProductCategory;
+import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.CurrencyService;
@@ -90,7 +91,7 @@ public class SopServiceImpl implements SopService {
     sopLine.setPeriod(period);
     sopLine.setYear(period.getYear());
     sopLine.setCurrency(sop.getCompany().getCurrency());
-    sopLine.setYearBasedLineForecast(sop.getYearbasedHistoric());
+    sop.addSopLineListItem(sopLine);
     return sopLine;
   }
 
@@ -109,9 +110,10 @@ public class SopServiceImpl implements SopService {
     sopLine = sopLineRepo.find(sopLine.getId());
     LocalDate fromDate = sopLine.getPeriod().getFromDate();
     LocalDate toDate = sopLine.getPeriod().getToDate();
-    if (sopLine.getYearBasedLineForecast() != null) {
-      fromDate = fromDate.withYear(sopLine.getYearBasedLineForecast().getFromDate().getYear());
-      toDate = toDate.withYear(sopLine.getYearBasedLineForecast().getFromDate().getYear());
+    Year year = sopLine.getSop().getYearbasedHistoric();
+    if (year != null) {
+      fromDate = fromDate.withYear(year.getFromDate().getYear());
+      toDate = toDate.withYear(year.getToDate().getYear());
     }
     Currency actualCurrency = company.getCurrency();
     ArrayList<Integer> statusList = new ArrayList<Integer>();
@@ -144,7 +146,10 @@ public class SopServiceImpl implements SopService {
 
         if (usedDate.isAfter(fromDate) && usedDate.isBefore(toDate)) {
           if (saleOrderLine.getSaleOrder().getCurrency().equals(actualCurrency)) {
-            exTaxSum = exTaxSum.add(saleOrderLine.getExTaxTotal());
+            exTaxSum =
+                exTaxSum
+                    .add(saleOrderLine.getExTaxTotal().multiply(sopLine.getSop().getGrowthCoef()))
+                    .setScale(2, RoundingMode.HALF_UP);
           } else {
             exTaxSum =
                 exTaxSum.add(
@@ -154,6 +159,7 @@ public class SopServiceImpl implements SopService {
                             actualCurrency,
                             saleOrderLine.getExTaxTotal(),
                             today)
+                        .multiply(sopLine.getSop().getGrowthCoef())
                         .setScale(2, RoundingMode.HALF_UP));
           }
         }
