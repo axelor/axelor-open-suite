@@ -1,0 +1,8 @@
+---
+title: "ORDER AND PARTNER : Free shipping is available in shipment mode"
+type: feature
+description : |
+  Add possibility to use free shipping with shipment mode
+  Orders that use shipment mode with free shipping add automatically an order line with the shipping cost
+  If the order amount is greater than the free shipping threshold, the order line of the shipping cost is removed
+  Partners that are not suppliers can override the shipment mode shipping cost and free shipping threshold
