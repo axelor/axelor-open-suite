@@ -32,7 +32,7 @@
 	
 	<action-view name="action-product-view-show-used-bill-of-material" title="Where-used list" 
 		model="com.axelor.apps.production.db.BillOfMaterial">
-		<view type="grid" name="bill-of-material-grid"/>
+		<view type="grid" name="product-bill-of-material-grid"/>
 		<view type="form" name="bill-of-material-form"/>
 		<domain>self.billOfMaterialSet.product.id = :id</domain>
 	</action-view>

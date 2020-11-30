@@ -191,8 +191,9 @@ public class CampaignServiceImpl implements CampaignService {
   public void generateEvents(Campaign campaign) {
 
     LocalDateTime eventStartDateTime = campaign.getEventStartDateTime();
+    LocalDateTime eventEndDateTime = campaign.getEventEndDateTime();
+
     Long duration = campaign.getDuration();
-    LocalDateTime eventEndDateTime = eventStartDateTime.plusSeconds(duration);
 
     for (Partner partner : campaign.getPartnerSet()) {
       Event event = new Event();

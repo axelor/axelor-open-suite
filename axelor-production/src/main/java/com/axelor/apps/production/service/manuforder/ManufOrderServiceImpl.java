@@ -279,7 +279,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             prodProcess,
             plannedStartDateT,
             plannedEndDateT,
-            ManufOrderRepository.STATUS_DRAFT);
+            ManufOrderRepository.STATUS_DRAFT,
+            prodProcess.getOutsourcing());
 
     if (appProductionService.getAppProduction().getManageWorkshop()) {
       manufOrder.setWorkshopStockLocation(billOfMaterial.getWorkshopStockLocation());

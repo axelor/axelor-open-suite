@@ -30,7 +30,7 @@ public class ConfiguratorProdProcessLineServiceImpl implements ConfiguratorProdP
   protected ConfiguratorService configuratorService;
 
   @Inject
-  ConfiguratorProdProcessLineServiceImpl(ConfiguratorService configuratorService) {
+  public ConfiguratorProdProcessLineServiceImpl(ConfiguratorService configuratorService) {
     this.configuratorService = configuratorService;
   }
 
