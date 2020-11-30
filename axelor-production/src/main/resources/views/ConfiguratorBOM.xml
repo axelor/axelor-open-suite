@@ -118,15 +118,12 @@
     </action-view>
     
     <action-record name="action-configurator-bom-record-set-parent" model="com.axelor.apps.production.db.ConfiguratorBOM">
-    	<field name="parentConfiguratorBOM" expr="eval: __parent__"/>
       <field name="defineSubBillOfMaterial" expr="eval: !__parent__"/>
     </action-record>
     
     <action-attrs name="action-configurator-bom-attrs-product-domain">
         <attribute name="domain" for="product"
                    expr="eval: &quot; self.productTypeSelect = 'storable' AND dtype = 'Product'&quot;"/>
-    	<attribute name="domain" for="product" if="parentConfiguratorBOM == null" 
-                   expr="eval: &quot; self.productTypeSelect = 'storable' AND self.productSubTypeSelect != 3 AND dtype = 'Product'&quot;" />
     </action-attrs>
 
     <tree name="configurator-bom-tree" title="Configurators BOMs tree">

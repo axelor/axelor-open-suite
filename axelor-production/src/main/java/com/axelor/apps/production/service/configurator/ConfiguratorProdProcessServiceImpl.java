@@ -36,7 +36,7 @@ public class ConfiguratorProdProcessServiceImpl implements ConfiguratorProdProce
   protected ProdProcessRepository prodProcessRepository;
 
   @Inject
-  ConfiguratorProdProcessServiceImpl(
+  public ConfiguratorProdProcessServiceImpl(
       ConfiguratorProdProcessLineService confProdProcessLineService,
       ConfiguratorService configuratorService,
       ProdProcessRepository prodProcessRepository) {
