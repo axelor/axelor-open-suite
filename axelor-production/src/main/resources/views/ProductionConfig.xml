@@ -24,7 +24,8 @@
 		</panel>
 		<panel name="manufOrderSeqPanel" title="Manufacturing order sequence">
         	<field name="manufOrderSequence" canEdit="true" canNew="true" domain="self.codeSelect = 'manufOrder' and self.company = :company"  form-view="sequence-form" grid-view="sequence-grid"/>
-			<field name="workshopSequenceConfigLineList" form-view="workshop-sequence-config-line-form" colSpan="12" grid-view="workshop-sequence-config-line-grid"/>
+			<panel-related field="workshopSequenceConfigLineList" form-view="workshop-sequence-config-line-form" colSpan="12" grid-view="workshop-sequence-config-line-grid"
+				if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageWorkshop()"/>
 		</panel>
 				
 		<panel-mail name="mailPanel">
