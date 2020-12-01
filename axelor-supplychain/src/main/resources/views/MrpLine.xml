@@ -13,8 +13,6 @@
         <field name="cumulativeQty" css="bold" x-scale="2"/>
         <field name="product.unit"/>
         <field name="minQty" x-scale="2"/>
-        <field name="idealQty" x-scale="2"/>
-   		<field name="reOrderQty" x-scale="2"/>
         <field name="stockLocation"/>
         <field name="maxLevel"/>
         <field name="relatedToSelectName"/>
