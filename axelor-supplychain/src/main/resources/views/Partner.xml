@@ -22,7 +22,7 @@
     <form name="partner-form" id="supplychain-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner" extension="true">
     	<extend target="//field[@name='customerCatalogList']">
     		<insert position="after">
-    			<field name="customerShippingCarriagePaidList" grid-view="customer-shipping-carriage-paid-grid" form-view="customer-shipping-carriage-paid-form" readonlyIf="isSupplier" colSpan="12"/>
+    			<field name="customerShippingCarriagePaidList" grid-view="customer-shipping-carriage-paid-grid" form-view="customer-shipping-carriage-paid-form" colSpan="12"/>
     		</insert>
     	</extend>
     </form>
