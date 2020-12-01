@@ -13,6 +13,8 @@
         <field name="cumulativeQty" css="bold" x-scale="2"/>
         <field name="product.unit"/>
         <field name="minQty" x-scale="2"/>
+        <field name="idealQty" x-scale="2"/>
+   		<field name="reOrderQty" x-scale="2"/>
         <field name="stockLocation"/>
         <field name="maxLevel"/>
         <field name="relatedToSelectName"/>
@@ -34,6 +36,8 @@
         	<field name="cumulativeQty" css="bold" readonly="true"/>
         	<field name="product.unit" readonly="true"/>
    	        <field name="minQty" readonly="true"/>
+   	        <field name="idealQty" readonly="true"/>
+   	        <field name="reOrderQty" readonly="true"/>
         	<field name="stockLocation" readonly="true"/>
         	<field name="maxLevel" readonly="true"/>
         	<field name="partner" showIf="partner"/>

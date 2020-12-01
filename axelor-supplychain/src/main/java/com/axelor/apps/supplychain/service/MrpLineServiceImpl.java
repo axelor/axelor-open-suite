@@ -289,7 +289,7 @@ public class MrpLineServiceImpl implements MrpLineService {
     mrpLine.setCumulativeQty(cumulativeQty);
     mrpLine.setStockLocation(stockLocation);
 
-    mrpLine.setMinQty(this.getMinQty(product, stockLocation));
+    mrpLine = this.setMrpLineQty(mrpLine, product, stockLocation);
 
     this.updatePartner(mrpLine, model);
 
@@ -309,7 +309,7 @@ public class MrpLineServiceImpl implements MrpLineService {
     return mrpLine;
   }
 
-  protected BigDecimal getMinQty(Product product, StockLocation stockLocation) {
+  protected MrpLine setMrpLineQty(MrpLine mrpLine, Product product, StockLocation stockLocation) {
 
     StockRules stockRules =
         stockRulesService.getStockRules(
@@ -319,9 +319,11 @@ public class MrpLineServiceImpl implements MrpLineService {
             StockRulesRepository.USE_CASE_USED_FOR_MRP);
 
     if (stockRules != null) {
-      return stockRules.getMinQty();
+      mrpLine.setMinQty(stockRules.getMinQty());
+      mrpLine.setIdealQty(stockRules.getIdealQty());
+      mrpLine.setReOrderQty(stockRules.getReOrderQty());
     }
-    return BigDecimal.ZERO;
+    return mrpLine;
   }
 
   protected void createMrpLineOrigins(MrpLine mrpLine, Model model) {
