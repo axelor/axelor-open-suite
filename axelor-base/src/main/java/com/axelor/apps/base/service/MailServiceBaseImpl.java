@@ -327,44 +327,46 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
       template = Beans.get(AppBaseService.class).getAppBase().getDefaultMailMessageTemplate();
       isDefaultTemplate = true;
     }
-    if (template != null) {
-      final String text = message.getBody().trim();
-      if (text == null
-          || !MESSAGE_TYPE_NOTIFICATION.equals(message.getType())
-          || !(text.startsWith("{") || text.startsWith("}"))) {
-        return text;
-      }
+    if (template == null) {
+      return super.template(message, entity);
+    }
+
+    final String text = message.getBody().trim();
+    Map<String, Object> data = new HashMap<>();
+    Map<String, Object> templatesContext = Maps.newHashMap();
+    Class<?> klass = EntityHelper.getEntityClass(entity);
+    data.put("username", userName);
+
+    if (MESSAGE_TYPE_NOTIFICATION.equals(message.getType())) {
       final MailMessageRepository messages = Beans.get(MailMessageRepository.class);
       final Map<String, Object> details = messages.details(message);
       final String jsonBody = details.containsKey("body") ? (String) details.get("body") : text;
       final ObjectMapper mapper = Beans.get(ObjectMapper.class);
-      final Map<String, Object> data =
-          mapper.readValue(jsonBody, new TypeReference<Map<String, Object>>() {});
-      Class<?> klass = EntityHelper.getEntityClass(entity);
-      if (isDefaultTemplate) {
-        data.put("entity", entity);
-      } else {
-        data.put(klass.getSimpleName(), entity);
-      }
-      data.put("username", userName);
-      Map<String, Object> templatesContext = Maps.newHashMap();
-      try {
-        Beans.get(TemplateMessageService.class)
-            .computeTemplateContexts(
-                template.getTemplateContextList(),
-                entity.getId(),
-                klass.getCanonicalName(),
-                template.getIsJson(),
-                templatesContext);
-      } catch (ClassNotFoundException e) {
-        TraceBackService.trace(e);
-      }
-      data.putAll(templatesContext);
-      Templates templates = createTemplates(template);
-      return templates.fromText(template.getContent()).make(data).render();
+      data = mapper.readValue(jsonBody, new TypeReference<Map<String, Object>>() {});
     } else {
-      return super.template(message, entity);
+      data.put("comment", text);
     }
+
+    if (isDefaultTemplate) {
+      data.put("entity", entity);
+    } else {
+      data.put(klass.getSimpleName(), entity);
+    }
+
+    try {
+      Beans.get(TemplateMessageService.class)
+          .computeTemplateContexts(
+              template.getTemplateContextList(),
+              entity.getId(),
+              klass.getCanonicalName(),
+              template.getIsJson(),
+              templatesContext);
+    } catch (ClassNotFoundException e) {
+      TraceBackService.trace(e);
+    }
+    data.putAll(templatesContext);
+    Templates templates = createTemplates(template);
+    return templates.fromText(template.getContent()).make(data).render();
   }
 
   @Override
@@ -378,7 +380,7 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
       template = Beans.get(AppBaseService.class).getAppBase().getDefaultMailMessageTemplate();
       isDefaultTemplate = true;
     }
-    if (template != null && MESSAGE_TYPE_NOTIFICATION.equals(message.getType())) {
+    if (template != null) {
       Map<String, Object> data = Maps.newHashMap();
       if (isDefaultTemplate) {
         data.put("entity", entity);
