@@ -50,7 +50,7 @@
                 <field name="companySpecificProductFieldsList" domain="self.metaModel.fullName = 'com.axelor.apps.base.db.Product'" canNew="false" canEdit="false"/>
                 <panel itemSpan="12" colSpan="6">
                 	<field name="defaultMailMessageTemplate"/>
-                	<field name="mailTemplateAssociationList"/>
+                	<panel-related field="mailTemplateAssociationList" grid-view="mail-template-association-grid" form-view="mail-template-association-form"/>
                 </panel>
 			</panel>
 		    <panel name="interfacesPanel" title="Interfaces"  colSpan="12">
