@@ -59,7 +59,7 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
 
     Boolean avgPriceHandledByCompany = false;
     Set<MetaField> companySpecificFields =
-        appBaseService.getAppBase().getCompanySpecificProductFieldsList();
+        appBaseService.getAppBase().getCompanySpecificProductFieldsSet();
     for (MetaField field : companySpecificFields) {
       if (field.getName().equals("avgPrice")) {
         avgPriceHandledByCompany = true;

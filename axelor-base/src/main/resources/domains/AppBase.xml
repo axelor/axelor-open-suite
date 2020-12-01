@@ -75,7 +75,7 @@
     
 		<boolean name="isSharedAddress" title="Shared address" default="false"/>
 
-		<many-to-many name="companySpecificProductFieldsList" ref="com.axelor.meta.db.MetaField" title="Company-specific product fields"/>
+		<many-to-many name="companySpecificProductFieldsSet" ref="com.axelor.meta.db.MetaField" title="Company-specific product fields"/>
 
 	   	<one-to-many name="globalTrackingConfigurationLines" ref="com.axelor.apps.base.db.GlobalTrackingConfigurationLine" mappedBy="appBase" orphanRemoval="true"/>
 

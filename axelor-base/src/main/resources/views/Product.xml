@@ -95,7 +95,7 @@
                     <field name="isShippingCostsProduct" colSpan="4" hideIf="productTypeSelect != 'storable' || productSubTypeSelect || _fromProduction || _fromStock || _fromSale || _fromPurchase"/>
 			        <field name="isActivity" showIf="productTypeSelect == 'service' &amp;&amp; !isShippingCostsProduct" if-module="axelor-human-resource" if="__config__.app.isApp('employee')" />
                     <field name="procurementMethodSelect" colSpan="6"
-                        requiredIf="productTypeSelect == 'storable' &amp;&amp; __config__.app.getApp('base').getCompanySpecificProductFieldsList().isEmpty()"
+                        requiredIf="productTypeSelect == 'storable' &amp;&amp; __config__.app.getApp('base').getCompanySpecificProductFieldsSet().isEmpty()"
                         onChange="action-product-record-tick-checkbox-purchasable" hideIf="isShippingCostsProduct" readonlyIf="productSubTypeSelect == 3"/>
 			        <field name="standardDelay" colSpan="12" showIf="saleSupplySelect == 2 || saleSupplySelect == 3" hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
       			</panel>
@@ -477,7 +477,7 @@
 	</action-attrs>
 	
 	<action-attrs name="action-product-attrs-enable-product-company-list">
-		<attribute name="hidden" for="productCompanyList" expr="eval: __config__.app.getApp('base').getCompanySpecificProductFieldsList().isEmpty()"/>
+		<attribute name="hidden" for="productCompanyList" expr="eval: __config__.app.getApp('base').getCompanySpecificProductFieldsSet().isEmpty()"/>
 	</action-attrs>
 
 	<action-group name="action-product-group-default-new">

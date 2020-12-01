@@ -85,7 +85,7 @@ public class ProductCompanyServiceImpl implements ProductCompanyService {
       for (ProductCompany productCompany : originalProduct.getProductCompanyList()) {
         if (productCompany.getCompany().getId() == company.getId()) {
           Set<MetaField> companySpecificFields =
-              appBaseService.getAppBase().getCompanySpecificProductFieldsList();
+              appBaseService.getAppBase().getCompanySpecificProductFieldsSet();
           for (MetaField field : companySpecificFields) {
             if (field.getName().equals(fieldName)) {
               product = productCompany;
