@@ -32,6 +32,7 @@ import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
@@ -40,7 +41,6 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockLocation;
-import com.axelor.apps.supplychain.db.CustomerShippingCarriagePaid;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.IExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -56,6 +56,7 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +74,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   protected AppBaseService appBaseService;
   protected PurchaseOrderStockService purchaseOrderStockService;
   protected BudgetSupplychainService budgetSupplychainService;
+  protected PurchaseOrderLineRepository purchaseOrderLineRepository;
 
   @Inject
   public PurchaseOrderServiceSupplychainImpl(
@@ -81,7 +83,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       AppAccountService appAccountService,
       AppBaseService appBaseService,
       PurchaseOrderStockService purchaseOrderStockService,
-      BudgetSupplychainService budgetSupplychainService) {
+      BudgetSupplychainService budgetSupplychainService,
+      PurchaseOrderLineRepository purchaseOrderLineRepository) {
 
     this.appSupplychainService = appSupplychainService;
     this.accountConfigService = accountConfigService;
@@ -89,6 +92,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     this.appBaseService = appBaseService;
     this.purchaseOrderStockService = purchaseOrderStockService;
     this.budgetSupplychainService = budgetSupplychainService;
+    this.purchaseOrderLineRepository = purchaseOrderLineRepository;
   }
 
   @Override
@@ -375,38 +379,27 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   public void createShipmentCostLine(PurchaseOrder purchaseOrder) throws AxelorException {
     PurchaseOrderService purchaseOrderService = Beans.get(PurchaseOrderService.class);
     List<PurchaseOrderLine> purchaseOrderLines = purchaseOrder.getPurchaseOrderLineList();
-    Partner supplier = purchaseOrder.getSupplierPartner();
     ShipmentMode shipmentMode = purchaseOrder.getShipmentMode();
-
     if (shipmentMode == null) {
       removeShipmentCostLine(purchaseOrder);
-      purchaseOrderService.computePurchaseOrder(purchaseOrder);
+      if (purchaseOrder.getPurchaseOrderLineList() != null) {
+        purchaseOrderService.computePurchaseOrder(purchaseOrder);
+      }
       return;
     }
+    Product shippingCostProduct = shipmentMode.getShippingCostsProduct();
     if (shipmentMode.getHasCarriagePaidPossibility()) {
       BigDecimal carriagePaidThreshold = shipmentMode.getCarriagePaidThreshold();
-      Product shippingCostProduct = shipmentMode.getShippingCostsProduct();
-      List<CustomerShippingCarriagePaid> carriagePaids =
-          supplier.getCustomerShippingCarriagePaidList();
-      for (CustomerShippingCarriagePaid customerShippingCarriagePaid : carriagePaids) {
-        if (shipmentMode.getId() == customerShippingCarriagePaid.getShipmentMode().getId()) {
-          carriagePaidThreshold = customerShippingCarriagePaid.getCarriagePaidThreshold();
-          shippingCostProduct = customerShippingCarriagePaid.getShippingCostsProduct();
-          break;
-        }
-      }
-      if (purchaseOrder.getInTaxTotal().compareTo(carriagePaidThreshold) > 0) {
+      if (purchaseOrder.getExTaxTotal().compareTo(carriagePaidThreshold) > 0) {
         removeShipmentCostLine(purchaseOrder);
         purchaseOrderService.computePurchaseOrder(purchaseOrder);
         return;
       }
-      PurchaseOrderLine shippingCostLine =
-          createShippingCostLine(purchaseOrder, shippingCostProduct);
-      purchaseOrderLines.add(shippingCostLine);
-      purchaseOrderService.computePurchaseOrder(purchaseOrder);
-    } else {
-      removeShipmentCostLine(purchaseOrder);
     }
+    removeShipmentCostLine(purchaseOrder);
+    PurchaseOrderLine shippingCostLine = createShippingCostLine(purchaseOrder, shippingCostProduct);
+    purchaseOrderLines.add(shippingCostLine);
+    purchaseOrderService.computePurchaseOrder(purchaseOrder);
   }
 
   private PurchaseOrderLine createShippingCostLine(
@@ -420,18 +413,24 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     return shippingCostLine;
   }
 
+  @Transactional(rollbackOn = Exception.class)
   private void removeShipmentCostLine(PurchaseOrder purchaseOrder) {
     List<PurchaseOrderLine> purchaseOrderLines = purchaseOrder.getPurchaseOrderLineList();
-    PurchaseOrderLine lineToRemove = null;
+    if (purchaseOrderLines == null) {
+      return;
+    }
+    List<PurchaseOrderLine> linesToRemove = new ArrayList<PurchaseOrderLine>();
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLines) {
       if (purchaseOrderLine.getProduct().getIsShippingCostsProduct()) {
-        lineToRemove = purchaseOrderLine;
-        break;
+        linesToRemove.add(purchaseOrderLine);
       }
     }
-    if (lineToRemove != null) {
+    for (PurchaseOrderLine lineToRemove : linesToRemove) {
       purchaseOrderLines.remove(lineToRemove);
-      purchaseOrder.setPurchaseOrderLineList(purchaseOrderLines);
+      if (lineToRemove.getId() != null) {
+        purchaseOrderLineRepository.remove(lineToRemove);
+      }
     }
+    purchaseOrder.setPurchaseOrderLineList(purchaseOrderLines);
   }
 }

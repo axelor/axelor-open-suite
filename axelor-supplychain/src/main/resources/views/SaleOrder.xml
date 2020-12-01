@@ -5,7 +5,7 @@
 	
 	<form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" id="supplychain-sale-order-form" extension="true">
 		<extend target="/">
-			<attribute name="onNew" value="action-group-supplychain-saleorder-onnew"/>
+	  <attribute name="onNew" value="action-group-supplychain-saleorder-onnew"/>
       <attribute name="onLoad" value="action-group-supplychain-saleorder-onload"/>
       <attribute name="onSave" value="action-supplychain-saleorder-onsave"/>
 		</extend>
@@ -77,7 +77,7 @@
     <action name="action-supplychain-saleorder-onsave"/>
     <action name="save"/>
     <action name="action-method-sale-order-validate-changes"/>
-		<action name="action-sale-order-method-notify-stock-move-created" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').customerStockMoveGenerationAuto "/>
+	<action name="action-sale-order-method-notify-stock-move-created" if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').customerStockMoveGenerationAuto "/>
   </action-group>
 
 	<action-group name="action-group-supplychain-saleorder-onnew">
@@ -86,6 +86,7 @@
 		<action name="action-supplychain-sale-order-method-get-stock-location"/>
         <action name="action-sale-order-attrs-interco"/>
 		<action name="action-sale-order-record-interco"/>
+		<action name="supplychain-action-create-shipment-cost-line"/>
 	</action-group>
 	
 	<action-group name="action-group-supplychain-saleorder-onload">

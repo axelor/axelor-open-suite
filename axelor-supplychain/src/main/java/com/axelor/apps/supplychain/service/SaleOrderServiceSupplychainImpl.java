@@ -17,6 +17,15 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.axelor.apps.base.db.AppSupplychain;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Partner;
@@ -49,14 +58,6 @@ import com.axelor.inject.Beans;
 import com.google.common.base.MoreObjects;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     implements SaleOrderSupplychainService {
@@ -65,6 +66,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
 
   protected AppSupplychain appSupplychain;
   protected SaleOrderStockService saleOrderStockService;
+  protected SaleOrderRepository saleOrderRepository;
+  protected SaleOrderLineRepository saleOrderLineRepository;
 
   @Inject
   public SaleOrderServiceSupplychainImpl(
@@ -75,7 +78,9 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       SaleOrderComputeService saleOrderComputeService,
       SaleOrderMarginService saleOrderMarginService,
       AppSupplychainService appSupplychainService,
-      SaleOrderStockService saleOrderStockService) {
+      SaleOrderStockService saleOrderStockService,
+      SaleOrderLineRepository saleOrderLineRepository,
+      SaleOrderRepository saleOrderRepository) {
     super(
         saleOrderLineService,
         appBaseService,
@@ -85,6 +90,10 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
         saleOrderMarginService);
     this.appSupplychain = appSupplychainService.getAppSupplychain();
     this.saleOrderStockService = saleOrderStockService;
+    this.appSupplychain = appSupplychainService.getAppSupplychain();
+    this.saleOrderStockService = saleOrderStockService;
+    this.saleOrderRepository = saleOrderRepository;
+    this.saleOrderLineRepository = saleOrderLineRepository;
   }
 
   public SaleOrder getClientInformations(SaleOrder saleOrder) {
@@ -252,31 +261,40 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       saleOrderMarginService.computeMarginSaleOrder(saleOrder);
       return;
     }
-    if (shipmentMode.getHasCarriagePaidPossibility()) {
-      BigDecimal carriagePaidThreshold = shipmentMode.getCarriagePaidThreshold();
-      Product shippingCostProduct = shipmentMode.getShippingCostsProduct();
+    Product shippingCostProduct = shipmentMode.getShippingCostsProduct();
+    if (shippingCostProduct == null) {
+      removeShipmentCostLine(saleOrder);
+      saleOrderComputeService.computeSaleOrder(saleOrder);
+      saleOrderMarginService.computeMarginSaleOrder(saleOrder);
+      return;
+    }
+    BigDecimal carriagePaidThreshold = shipmentMode.getCarriagePaidThreshold();
+    if (client != null) {
       List<CustomerShippingCarriagePaid> carriagePaids =
           client.getCustomerShippingCarriagePaidList();
       for (CustomerShippingCarriagePaid customerShippingCarriagePaid : carriagePaids) {
         if (shipmentMode.getId() == customerShippingCarriagePaid.getShipmentMode().getId()) {
+          if (customerShippingCarriagePaid.getShippingCostsProduct() != null) {
+            shippingCostProduct = customerShippingCarriagePaid.getShippingCostsProduct();
+          }
           carriagePaidThreshold = customerShippingCarriagePaid.getCarriagePaidThreshold();
-          shippingCostProduct = customerShippingCarriagePaid.getShippingCostsProduct();
           break;
         }
       }
-      if (saleOrder.getInTaxTotal().compareTo(carriagePaidThreshold) > 0) {
+    }
+    if (carriagePaidThreshold != null && shipmentMode.getHasCarriagePaidPossibility()) {
+      if (saleOrder.getExTaxTotal().compareTo(carriagePaidThreshold) > 0) {
         removeShipmentCostLine(saleOrder);
         saleOrderComputeService.computeSaleOrder(saleOrder);
         saleOrderMarginService.computeMarginSaleOrder(saleOrder);
         return;
       }
-      SaleOrderLine shippingCostLine = createShippingCostLine(saleOrder, shippingCostProduct);
-      saleOrderLines.add(shippingCostLine);
-      saleOrderComputeService.computeSaleOrder(saleOrder);
-      saleOrderMarginService.computeMarginSaleOrder(saleOrder);
-    } else {
-      removeShipmentCostLine(saleOrder);
     }
+    removeShipmentCostLine(saleOrder);
+    SaleOrderLine shippingCostLine = createShippingCostLine(saleOrder, shippingCostProduct);
+    saleOrderLines.add(shippingCostLine);
+    saleOrderComputeService.computeSaleOrder(saleOrder);
+    saleOrderMarginService.computeMarginSaleOrder(saleOrder);
   }
 
   private SaleOrderLine createShippingCostLine(SaleOrder saleOrder, Product shippingCostProduct)
@@ -290,18 +308,27 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     return shippingCostLine;
   }
 
+  @Transactional(rollbackOn = Exception.class)
   private void removeShipmentCostLine(SaleOrder saleOrder) {
     List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
-    SaleOrderLine lineToRemove = null;
+    if (saleOrderLines == null) {
+      return;
+    }
+    List<SaleOrderLine> linesToRemove = new ArrayList<SaleOrderLine>();
     for (SaleOrderLine saleOrderLine : saleOrderLines) {
       if (saleOrderLine.getProduct().getIsShippingCostsProduct()) {
-        lineToRemove = saleOrderLine;
-        break;
+        linesToRemove.add(saleOrderLine);
       }
     }
-    if (lineToRemove != null) {
-      saleOrderLines.remove(lineToRemove);
-      saleOrder.setSaleOrderLineList(saleOrderLines);
+    if (linesToRemove.size() == 0) {
+      return;
     }
+    for (SaleOrderLine lineToRemove : linesToRemove) {
+      saleOrderLines.remove(lineToRemove);
+      if (lineToRemove.getId() != null) {
+        saleOrderLineRepository.remove(lineToRemove);
+      }
+    }
+    saleOrder.setSaleOrderLineList(saleOrderLines);
   }
 }

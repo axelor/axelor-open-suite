@@ -13,7 +13,7 @@
     	<panel name="mainPanel">
   			<field name="shippingCostsProduct" domain="self.isShippingCostsProduct = true"/>
     		<field name="carriagePaidThreshold"/>
-    		<field name="shipmentMode" domain="self.hasCarriagePaidPossibility = true"/>
+    		<field name="shipmentMode"/>
     	</panel>
     </form>
     
