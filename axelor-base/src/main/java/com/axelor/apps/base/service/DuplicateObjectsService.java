@@ -33,7 +33,6 @@ import com.axelor.rpc.filter.Filter;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
-import java.lang.invoke.MethodHandles;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -44,7 +43,6 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class DuplicateObjectsService {
 
-  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final Logger log = LoggerFactory.getLogger(DuplicateObjectsService.class);
   @Inject private MetaFieldRepository metaFieldRepo;
 
