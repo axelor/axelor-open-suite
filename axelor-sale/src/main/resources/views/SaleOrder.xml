@@ -913,6 +913,7 @@
     	<action name="action-supplychain-sale-order-method-get-stock-location" />
         <action name="action-sale-order-method-fill-company-bank-details"/>
 		<action name="action-sale-record-update-info-company"/>
+        <action name="action-sale-order-record-compute-end-of-validity-date"/>
     </action-group>
 
 	<action-group name="action-sale-group-onchange-client-partner">
@@ -1146,7 +1147,7 @@
     	<field name="inTaxTotal" expr="eval: 0"/>
     	<field name="amountInvoiced" expr="eval: 0"/>
         <field name="advanceTotal" expr="eval: 0"/>
-    	<field name="creationDate" expr="eval: __date__"/>
+    	<field name="creationDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)" if="__user__.activeCompany != null"/>
     	<field name="statusSelect" expr="eval: 1"/>
     	<field name="company"  expr="eval:__user__.activeCompany" if="__user__.activeCompany != null"/>
     	<field name="company"  expr="eval:__repo__(Company).all().fetchOne()" if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().fetch().size == 1"/>
@@ -1428,6 +1429,7 @@
 		<field name="tradingName" expr="eval: null" if="__config__.app.getApp('base').enableTradingNamesManagement"/>
 		<field name="printingSettings" expr="eval: company?.printingSettings"/>
 		<field name="incoterm" expr="eval: __repo__(PartnerStockSettings).all().filter('self.company = ? AND self.partner = ?', company, clientPartner).fetchOne()?.incoterm" if="company != null &amp;&amp; clientPartner != null"/>
+        <field name="creationDate" expr="eval:__config__.app.getTodayDate(company)" if="company"/>
 	</action-record>
 
 	<action-record name="action-sale-order-manual-unblock" model="com.axelor.apps.sale.db.SaleOrder">
