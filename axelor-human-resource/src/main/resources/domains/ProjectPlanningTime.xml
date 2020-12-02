@@ -12,7 +12,8 @@
       
       <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" column="user_id" required="true"/>
       <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"  required="true"/>
-      <many-to-one name="task" ref="com.axelor.team.db.TeamTask" title="Team task" />
+      <many-to-one name="projectTask" ref="com.axelor.apps.project.db.ProjectTask" title="Project task"/>
+      
       <integer name="timepercent" title="Time %" selection="project.task.progress.select"/>
       <string name="description" title="Description" large="true" />
       <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Activity"/>

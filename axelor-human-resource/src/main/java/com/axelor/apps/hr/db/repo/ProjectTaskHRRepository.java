@@ -20,27 +20,27 @@ package com.axelor.apps.hr.db.repo;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.repo.TeamTaskProjectRepository;
+import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.repo.ProjectTaskProjectRepository;
 import com.axelor.inject.Beans;
-import com.axelor.team.db.TeamTask;
 import com.google.inject.Inject;
 
-public class TeamTaskHRRepository extends TeamTaskProjectRepository {
+public class ProjectTaskHRRepository extends ProjectTaskProjectRepository {
 
   @Inject private ProjectPlanningTimeService projectPlanningTimeService;
 
   @Override
-  public TeamTask save(TeamTask teamTask) {
-    teamTask = super.save(teamTask);
+  public ProjectTask save(ProjectTask projectTask) {
+    projectTask = super.save(projectTask);
 
     if (!Beans.get(AppHumanResourceService.class).isApp("employee")
-        || teamTask.getProject() == null) {
-      return teamTask;
+        || projectTask.getProject() == null) {
+      return projectTask;
     }
 
-    teamTask.setTotalPlannedHrs(projectPlanningTimeService.getTaskPlannedHrs(teamTask));
+    projectTask.setTotalPlannedHrs(projectPlanningTimeService.getTaskPlannedHrs(projectTask));
 
-    Project project = teamTask.getProject();
+    Project project = projectTask.getProject();
     project.setTotalPlannedHrs(projectPlanningTimeService.getProjectPlannedHrs(project));
 
     Project parentProject = project.getParentProject();
@@ -49,14 +49,14 @@ public class TeamTaskHRRepository extends TeamTaskProjectRepository {
           projectPlanningTimeService.getProjectPlannedHrs(parentProject));
     }
 
-    return teamTask;
+    return projectTask;
   }
 
   @Override
-  public void remove(TeamTask teamTask) {
+  public void remove(ProjectTask projectTask) {
 
-    Project project = teamTask.getProject();
-    super.remove(teamTask);
+    Project project = projectTask.getProject();
+    super.remove(projectTask);
 
     if (project != null) {
       project.setTotalPlannedHrs(projectPlanningTimeService.getProjectPlannedHrs(project));
@@ -64,8 +64,8 @@ public class TeamTaskHRRepository extends TeamTaskProjectRepository {
   }
 
   @Override
-  public TeamTask copy(TeamTask entity, boolean deep) {
-    TeamTask task = super.copy(entity, deep);
+  public ProjectTask copy(ProjectTask entity, boolean deep) {
+    ProjectTask task = super.copy(entity, deep);
     task.setTotalPlannedHrs(null);
     task.setTotalRealHrs(null);
     task.clearProjectPlanningTimeList();

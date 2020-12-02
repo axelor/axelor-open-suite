@@ -21,39 +21,39 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.db.AppBusinessProject;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
-import com.axelor.apps.project.service.TeamTaskProjectService;
+import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
-import com.axelor.team.db.TeamTask;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface TeamTaskBusinessProjectService extends TeamTaskProjectService {
+public interface ProjectTaskBusinessProjectService extends ProjectTaskService {
 
-  TeamTask create(SaleOrderLine saleOrderLine, Project project, User assignedTo)
+  ProjectTask create(SaleOrderLine saleOrderLine, Project project, User assignedTo)
       throws AxelorException;
 
-  TeamTask create(TaskTemplate template, Project project, LocalDateTime date, BigDecimal qty);
+  ProjectTask create(TaskTemplate template, Project project, LocalDateTime date, BigDecimal qty);
 
-  TeamTask updateDiscount(TeamTask teamTask);
+  ProjectTask updateDiscount(ProjectTask projectTask);
 
-  TeamTask compute(TeamTask teamTask);
+  ProjectTask compute(ProjectTask projectTask);
 
-  List<InvoiceLine> createInvoiceLines(Invoice invoice, List<TeamTask> teamTaskList, int priority)
+  List<InvoiceLine> createInvoiceLines(
+      Invoice invoice, List<ProjectTask> projectTaskList, int priority) throws AxelorException;
+
+  List<InvoiceLine> createInvoiceLine(Invoice invoice, ProjectTask projectTask, int priority)
       throws AxelorException;
 
-  List<InvoiceLine> createInvoiceLine(Invoice invoice, TeamTask teamTask, int priority)
-      throws AxelorException;
-
-  TeamTask computeDefaultInformation(TeamTask teamTask) throws AxelorException;
+  ProjectTask computeDefaultInformation(ProjectTask projectTask) throws AxelorException;
 
   @Transactional(rollbackOn = {AxelorException.class, Exception.class})
-  TeamTask updateTask(TeamTask teamTask, AppBusinessProject appBusinessProject)
+  ProjectTask updateTask(ProjectTask projectTask, AppBusinessProject appBusinessProject)
       throws AxelorException;
 
-  TeamTask resetTeamTaskValues(TeamTask teamTask);
+  ProjectTask resetProjectTaskValues(ProjectTask projectTask);
 }

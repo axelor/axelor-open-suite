@@ -1170,7 +1170,7 @@ WHERE invproj.id =?]]></xml-property>
 FROM  hr_timesheet_line line 
 
 LEFT JOIN auth_user ts_user ON (ts_user.id = line.user_id)
-LEFT JOIN team_task task ON(task.id=line.team_task)
+LEFT JOIN project_project_task task ON(task.id=line.project_task)
 LEFT JOIN base_product product ON (product.id = line.product)
 LEFT JOIN businessproject_invoicing_project_log_times_set logset ON (logset.log_times_set = line.id)
 LEFT JOIN businessproject_invoicing_project invproj ON (logset.businessproject_invoicing_project = invproj.id)
@@ -2232,10 +2232,10 @@ WHERE invproj.id =?]]></xml-property>
 	task.to_invoice as to_invoice,
 	task.invoiced as invoiced
 
-FROM team_task as task 
+FROM project_project_task as task 
 
 LEFT JOIN project_project proj ON(proj.id = task.project)
-LEFT JOIN businessproject_invoicing_project_team_task_set taskset ON (taskset.team_task_set = task.id)
+LEFT JOIN businessproject_invoicing_project_project_task_set taskset ON (taskset.project_task_set = task.id)
 LEFT JOIN businessproject_invoicing_project invproj ON (taskset.businessproject_invoicing_project = invproj.id)
 WHERE invproj.id =?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -2850,7 +2850,7 @@ where invproj.id=?]]></xml-property>
         <design:resultColumnDefinitions>
           <design:attributes>
             <design:identifier>
-              <design:name>team_task_set_priority_select</design:name>
+              <design:name>project_task_set_priority_select</design:name>
               <design:position>16</design:position>
             </design:identifier>
             <design:nativeDataTypeCode>4</design:nativeDataTypeCode>
@@ -2858,11 +2858,11 @@ where invproj.id=?]]></xml-property>
             <design:scale>0</design:scale>
             <design:nullability>Nullable</design:nullability>
             <design:uiHints>
-              <design:displayName>team_task_set_priority_select</design:displayName>
+              <design:displayName>project_task_set_priority_select</design:displayName>
             </design:uiHints>
           </design:attributes>
           <design:usageHints>
-            <design:label>team_task_set_priority_select</design:label>
+            <design:label>project_task_set_priority_select</design:label>
             <design:formattingHints>
               <design:displaySize>11</design:displaySize>
             </design:formattingHints>

@@ -17,47 +17,47 @@
  */
 package com.axelor.apps.businessproject.web;
 
-import com.axelor.apps.businessproject.service.TeamTaskBusinessProjectService;
-import com.axelor.apps.project.db.TeamTaskCategory;
+import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService;
+import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.ProjectTaskCategory;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.team.db.TeamTask;
-import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
-public class TeamTaskController {
+public class ProjectTaskController {
 
-  @Inject private TeamTaskBusinessProjectService businessProjectService;
+  @Inject private ProjectTaskBusinessProjectService businessProjectService;
 
   public void updateDiscount(ActionRequest request, ActionResponse response) {
 
-    TeamTask teamTask = request.getContext().asType(TeamTask.class);
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
 
-    if (teamTask.getProduct() == null || teamTask.getProject() == null) {
+    if (projectTask.getProduct() == null || projectTask.getProject() == null) {
       return;
     }
 
     try {
-      teamTask = Beans.get(TeamTaskBusinessProjectService.class).updateDiscount(teamTask);
+      projectTask = Beans.get(ProjectTaskBusinessProjectService.class).updateDiscount(projectTask);
 
-      response.setValue("discountTypeSelect", teamTask.getDiscountTypeSelect());
-      response.setValue("discountAmount", teamTask.getDiscountAmount());
-      response.setValue("priceDiscounted", teamTask.getPriceDiscounted());
+      response.setValue("discountTypeSelect", projectTask.getDiscountTypeSelect());
+      response.setValue("discountAmount", projectTask.getDiscountAmount());
+      response.setValue("priceDiscounted", projectTask.getPriceDiscounted());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
 
   public void compute(ActionRequest request, ActionResponse response) {
-    TeamTask teamTask = request.getContext().asType(TeamTask.class);
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
 
     try {
-      teamTask = Beans.get(TeamTaskBusinessProjectService.class).compute(teamTask);
-      response.setValue("priceDiscounted", teamTask.getPriceDiscounted());
-      response.setValue("exTaxTotal", teamTask.getExTaxTotal());
+      projectTask = Beans.get(ProjectTaskBusinessProjectService.class).compute(projectTask);
+      response.setValue("priceDiscounted", projectTask.getPriceDiscounted());
+      response.setValue("exTaxTotal", projectTask.getExTaxTotal());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -71,28 +71,28 @@ public class TeamTaskController {
    */
   @Transactional
   public void updateToInvoice(ActionRequest request, ActionResponse response) {
-    TeamTaskRepository teamTaskRepository = Beans.get(TeamTaskRepository.class);
+    ProjectTaskRepository projectTaskRepository = Beans.get(ProjectTaskRepository.class);
     try {
-      TeamTask teamTask = request.getContext().asType(TeamTask.class);
-      teamTask = teamTaskRepository.find(teamTask.getId());
-      teamTask.setToInvoice(!teamTask.getToInvoice());
-      teamTaskRepository.save(teamTask);
-      response.setValue("toInvoice", teamTask.getToInvoice());
+      ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+      projectTask = projectTaskRepository.find(projectTask.getId());
+      projectTask.setToInvoice(!projectTask.getToInvoice());
+      projectTaskRepository.save(projectTask);
+      response.setValue("toInvoice", projectTask.getToInvoice());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
 
   public void onChangeCategory(ActionRequest request, ActionResponse response) {
-    TeamTask task = request.getContext().asType(TeamTask.class);
-    TeamTaskCategory teamTaskCategory = task.getTeamTaskCategory();
+    ProjectTask task = request.getContext().asType(ProjectTask.class);
+    ProjectTaskCategory projectTaskCategory = task.getProjectTaskCategory();
     try {
-      task = businessProjectService.resetTeamTaskValues(task);
-      if (teamTaskCategory != null) {
+      task = businessProjectService.resetProjectTaskValues(task);
+      if (projectTaskCategory != null) {
         task = businessProjectService.computeDefaultInformation(task);
       }
 
-      if (task.getInvoicingType() == TeamTaskRepository.INVOICING_TYPE_TIME_SPENT) {
+      if (task.getInvoicingType() == ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT) {
         task.setToInvoice(true);
       }
       response.setValues(task);

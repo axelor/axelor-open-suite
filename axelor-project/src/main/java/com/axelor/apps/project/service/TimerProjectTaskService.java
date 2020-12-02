@@ -15,18 +15,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.csv.script;
+package com.axelor.apps.project.service;
 
-import com.axelor.inject.Beans;
-import com.axelor.team.db.TeamTask;
-import com.axelor.team.db.repo.TeamTaskRepository;
-import java.util.Map;
+import com.axelor.apps.base.db.Timer;
+import com.axelor.apps.base.db.TimerHistory;
+import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.exception.AxelorException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
-public class TeamTaskScript {
+public interface TimerProjectTaskService {
 
-  public Object computeFullname(Object bean, Map<String, Object> values) {
-    TeamTask task = ((TeamTask) bean);
-    Beans.get(TeamTaskRepository.class).save(task);
-    return task;
-  }
+  Timer find(ProjectTask task);
+
+  TimerHistory start(ProjectTask task, LocalDateTime dateTime) throws AxelorException;
+
+  TimerHistory stop(ProjectTask task, LocalDateTime dateTime) throws AxelorException;
+
+  void cancel(ProjectTask task) throws AxelorException;
+
+  Duration compute(ProjectTask task);
 }

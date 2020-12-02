@@ -45,5 +45,24 @@
 	<selection name="sequence.generic.code.select" id="project.sequence.generic.code.select">
 		<option value="project">Project</option>
 	</selection>
+  
+    <selection name="project.task.type.select">
+        <option value="0">Task</option>
+        <option value="1">Ticket</option>
+    </selection>
+    
+    <selection name="project.task.status">
+         <option value="1">New</option>
+         <option value="2">In Progress</option>
+         <option value="3">Closed</option>
+         <option value="4">Canceled</option>
+    </selection>
+    
+    <selection name="project.task.priority">
+         <option value="1">Low</option>
+         <option value="2">Normal</option>
+         <option value="3">High</option>
+         <option value="4">Urgent</option>
+    </selection>
 
 </object-views>

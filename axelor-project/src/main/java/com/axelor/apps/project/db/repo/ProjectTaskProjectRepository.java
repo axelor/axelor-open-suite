@@ -17,36 +17,77 @@
  */
 package com.axelor.apps.project.db.repo;
 
-import com.axelor.apps.base.db.repo.TeamTaskBaseRepository;
-import com.axelor.team.db.TeamTask;
+import com.axelor.apps.base.db.Frequency;
+import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.exception.IExceptionMessage;
+import com.axelor.apps.project.service.ProjectTaskService;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javax.persistence.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TeamTaskProjectRepository extends TeamTaskBaseRepository {
+public class ProjectTaskProjectRepository extends ProjectTaskRepository {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Override
-  public TeamTask save(TeamTask teamTask) {
+  public ProjectTask save(ProjectTask projectTask) {
     List<String> composedNames = new ArrayList<>();
-    if (teamTask.getId() != null) {
-      composedNames.add("#" + teamTask.getId());
+    if (projectTask.getId() != null) {
+      composedNames.add("#" + projectTask.getId());
     }
-    composedNames.add(teamTask.getName());
-    teamTask.setFullName(String.join(" ", composedNames));
-    return super.save(teamTask);
+
+    composedNames.add(projectTask.getName());
+    projectTask.setFullName(String.join(" ", composedNames));
+
+    ProjectTaskService projectTaskService = Beans.get(ProjectTaskService.class);
+
+    if (projectTask.getDoApplyToAllNextTasks()
+        && projectTask.getNextProjectTask() != null
+        && projectTask.getHasDateOrFrequencyChanged()) {
+      // remove next tasks
+      projectTaskService.removeNextTasks(projectTask);
+
+      // regenerate new tasks
+      projectTask.setIsFirst(true);
+    }
+
+    Frequency frequency = projectTask.getFrequency();
+    if (frequency != null && projectTask.getIsFirst() && projectTask.getNextProjectTask() == null) {
+      if (projectTask.getTaskDate() != null) {
+        if (frequency.getEndDate().isBefore(projectTask.getTaskDate())) {
+          throw new PersistenceException(
+              I18n.get(
+                  IExceptionMessage.PROJECT_TASK_FREQUENCY_END_DATE_CAN_NOT_BE_BEFORE_TASK_DATE));
+        }
+      } else {
+        throw new PersistenceException(I18n.get(IExceptionMessage.PROJECT_TASK_FILL_TASK_DATE));
+      }
+
+      projectTaskService.generateTasks(projectTask, frequency);
+    }
+
+    if (projectTask.getDoApplyToAllNextTasks()) {
+      projectTaskService.updateNextTask(projectTask);
+    }
+
+    projectTask.setDoApplyToAllNextTasks(false);
+    projectTask.setHasDateOrFrequencyChanged(false);
+
+    return super.save(projectTask);
   }
 
   @Override
   public Map<String, Object> validate(Map<String, Object> json, Map<String, Object> context) {
 
-    logger.debug("Validate team task:{}", json);
+    logger.debug("Validate project task:{}", json);
 
     logger.debug(
         "Planned progress:{}, ProgressSelect: {}, DurationHours: {}, TaskDuration: {}",
@@ -57,7 +98,7 @@ public class TeamTaskProjectRepository extends TeamTaskBaseRepository {
 
     if (json.get("id") != null) {
 
-      TeamTask savedTask = find(Long.parseLong(json.get("id").toString()));
+      ProjectTask savedTask = find(Long.parseLong(json.get("id").toString()));
       if (json.get("plannedProgress") != null) {
         BigDecimal plannedProgress = new BigDecimal(json.get("plannedProgress").toString());
         if (plannedProgress != null
@@ -102,8 +143,11 @@ public class TeamTaskProjectRepository extends TeamTaskBaseRepository {
   }
 
   @Override
-  public TeamTask copy(TeamTask entity, boolean deep) {
-    TeamTask task = super.copy(entity, deep);
+  public ProjectTask copy(ProjectTask entity, boolean deep) {
+    ProjectTask task = super.copy(entity, deep);
+    task.setAssignedTo(null);
+    task.setTaskDate(null);
+    task.setPriority(null);
     task.setProgressSelect(null);
     task.setTaskEndDate(null);
     task.setMetaFile(null);
