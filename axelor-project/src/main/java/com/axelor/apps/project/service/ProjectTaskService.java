@@ -17,11 +17,25 @@
  */
 package com.axelor.apps.project.service;
 
-import com.axelor.apps.base.service.TeamTaskService;
+import com.axelor.apps.base.db.Frequency;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.auth.db.User;
-import com.axelor.team.db.TeamTask;
 
-public interface TeamTaskProjectService extends TeamTaskService {
-  TeamTask create(String subject, Project project, User assignedTo);
+public interface ProjectTaskService {
+
+  /** Generates reccurent tasks from given {@link ProjectTask} and {@link Frequency} */
+  void generateTasks(ProjectTask projectTask, Frequency frequency);
+
+  /**
+   * Updates fields of next task of given {@link ProjectTask}, recursively.
+   *
+   * <p>This method DOES NOT update potential parent.
+   */
+  void updateNextTask(ProjectTask projectTask);
+
+  /** Removes all next tasks of given {@link ProjectTask}. */
+  void removeNextTasks(ProjectTask projectTask);
+
+  public ProjectTask create(String subject, Project project, User assignedTo);
 }

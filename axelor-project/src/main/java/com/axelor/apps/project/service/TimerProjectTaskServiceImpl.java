@@ -23,19 +23,20 @@ import com.axelor.apps.base.db.repo.TimerHistoryRepository;
 import com.axelor.apps.base.db.repo.TimerRepository;
 import com.axelor.apps.base.service.timer.AbstractTimerService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.auth.db.User;
 import com.axelor.db.Model;
 import com.axelor.exception.AxelorException;
-import com.axelor.team.db.TeamTask;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-public class TimerTeamTaskServiceImpl extends AbstractTimerService implements TimerTeamTaskService {
+public class TimerProjectTaskServiceImpl extends AbstractTimerService
+    implements TimerProjectTaskService {
 
   @Inject
-  public TimerTeamTaskServiceImpl(
+  public TimerProjectTaskServiceImpl(
       TimerRepository timerRepository,
       TimerHistoryRepository timerHistoryRepository,
       UserService userService) {
@@ -45,7 +46,7 @@ public class TimerTeamTaskServiceImpl extends AbstractTimerService implements Ti
   @Override
   public Timer find(Model model) {
     User user = userService.getUser();
-    TeamTask task = (TeamTask) model;
+    ProjectTask task = (ProjectTask) model;
 
     return task.getTimerList().stream()
         .filter(t -> t.getAssignedToUser() == user)
@@ -57,7 +58,7 @@ public class TimerTeamTaskServiceImpl extends AbstractTimerService implements Ti
   @Transactional(rollbackOn = {Exception.class})
   public TimerHistory start(Model model, Timer timer, LocalDateTime dateTime)
       throws AxelorException {
-    TeamTask task = (TeamTask) model;
+    ProjectTask task = (ProjectTask) model;
 
     boolean isNewTimer = timer == null;
     timer = tryStartOrCreate(timer);
@@ -74,30 +75,30 @@ public class TimerTeamTaskServiceImpl extends AbstractTimerService implements Ti
   }
 
   @Override
-  public Timer find(TeamTask task) {
+  public Timer find(ProjectTask task) {
     return find((Model) task);
   }
 
   @Override
-  public TimerHistory start(TeamTask task, LocalDateTime dateTime) throws AxelorException {
+  public TimerHistory start(ProjectTask task, LocalDateTime dateTime) throws AxelorException {
     Timer timer = find(task);
     return start(task, timer, dateTime);
   }
 
   @Override
-  public TimerHistory stop(TeamTask task, LocalDateTime dateTime) throws AxelorException {
+  public TimerHistory stop(ProjectTask task, LocalDateTime dateTime) throws AxelorException {
     Timer timer = find(task);
     return stop(task, timer, dateTime);
   }
 
   @Override
-  public void cancel(TeamTask task) {
+  public void cancel(ProjectTask task) {
     Timer timer = find(task);
     cancel(timer);
   }
 
   @Override
-  public Duration compute(TeamTask task) {
+  public Duration compute(ProjectTask task) {
     Duration total = Duration.ZERO;
     for (Timer timer : task.getTimerList()) {
       total = total.plus(compute(timer));

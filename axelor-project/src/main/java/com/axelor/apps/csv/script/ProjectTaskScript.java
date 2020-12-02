@@ -15,18 +15,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.businessproject.db.repo;
+package com.axelor.apps.csv.script;
 
-import com.axelor.apps.hr.db.repo.TeamTaskHRRepository;
-import com.axelor.team.db.TeamTask;
+import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.inject.Beans;
+import java.util.Map;
 
-public class TeamTaskBusinessProjectRepository extends TeamTaskHRRepository {
+public class ProjectTaskScript {
 
-  @Override
-  public TeamTask copy(TeamTask entity, boolean deep) {
-    TeamTask task = super.copy(entity, deep);
-    task.setSaleOrderLine(null);
-    task.setInvoiceLine(null);
+  public Object computeFullname(Object bean, Map<String, Object> values) {
+    ProjectTask task = ((ProjectTask) bean);
+    Beans.get(ProjectTaskRepository.class).save(task);
     return task;
   }
 }

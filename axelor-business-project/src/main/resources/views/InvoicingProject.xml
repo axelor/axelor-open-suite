@@ -86,12 +86,12 @@
 							   if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getManageBusinessProduction()"
 							   name="manufOrderSetPanel"/>
 				
-				<panel-related field="teamTaskSet" colSpan="12" canNew="false"
+				<panel-related field="projectTaskSet" colSpan="12" canNew="false"
 							   canEdit="false" canSelect="false"
-							   form-view="team-task-form" grid-view="business-project-team-task-grid"
-							   showIf="teamTaskSet &amp;&amp; teamTaskSet.length &gt; 0"
+							   form-view="project-task-form" grid-view="business-project-project-task-grid"
+							   showIf="projectTaskSet &amp;&amp; projectTaskSet.length &gt; 0"
 							   readonlyIf="invoice" 
-							   name="teamTaskSetPanel"/>
+							   name="ProjectTaskSetPanel"/>
 			</panel>
 
 			<panel name="configurationsPanel" title="Configurations" readonlyIf="invoice">
@@ -100,7 +100,7 @@
                 <field name="logTimesSetPrioritySelect"/>
                 <field name="expenseLineSetPrioritySelect"/>
                 <field name="projectSetPrioritySelect"/>
-                <field name="teamTaskSetPrioritySelect"/>
+                <field name="projectTaskSetPrioritySelect"/>
             </panel>
         </panel-tabs>
 

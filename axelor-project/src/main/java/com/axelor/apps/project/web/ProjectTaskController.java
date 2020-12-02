@@ -20,22 +20,22 @@ package com.axelor.apps.project.web;
 import com.axelor.apps.base.db.Timer;
 import com.axelor.apps.base.db.repo.TimerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.project.service.TimerTeamTaskService;
+import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.service.TimerProjectTaskService;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.team.db.TeamTask;
 import java.time.Duration;
 
-public class TeamTaskController {
+public class ProjectTaskController {
 
   private static final String HIDDEN_ATTR = "hidden";
 
   public void manageTimerButtons(ActionRequest request, ActionResponse response) {
     try {
-      TeamTask task = request.getContext().asType(TeamTask.class);
-      TimerTeamTaskService service = Beans.get(TimerTeamTaskService.class);
+      ProjectTask task = request.getContext().asType(ProjectTask.class);
+      TimerProjectTaskService service = Beans.get(TimerProjectTaskService.class);
       if (task.getId() == null) {
         return;
       }
@@ -58,11 +58,11 @@ public class TeamTaskController {
 
   public void computeTotalTimerDuration(ActionRequest request, ActionResponse response) {
     try {
-      TeamTask task = request.getContext().asType(TeamTask.class);
+      ProjectTask task = request.getContext().asType(ProjectTask.class);
       if (task.getId() == null) {
         return;
       }
-      Duration duration = Beans.get(TimerTeamTaskService.class).compute(task);
+      Duration duration = Beans.get(TimerProjectTaskService.class).compute(task);
       response.setValue("$_totalTimerDuration", duration.toMinutes() / 60F);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -71,8 +71,8 @@ public class TeamTaskController {
 
   public void startTimer(ActionRequest request, ActionResponse response) {
     try {
-      TeamTask task = request.getContext().asType(TeamTask.class);
-      Beans.get(TimerTeamTaskService.class)
+      ProjectTask task = request.getContext().asType(ProjectTask.class);
+      Beans.get(TimerProjectTaskService.class)
           .start(task, Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
       response.setReload(true);
     } catch (Exception e) {
@@ -82,8 +82,8 @@ public class TeamTaskController {
 
   public void stopTimer(ActionRequest request, ActionResponse response) {
     try {
-      TeamTask task = request.getContext().asType(TeamTask.class);
-      Beans.get(TimerTeamTaskService.class)
+      ProjectTask task = request.getContext().asType(ProjectTask.class);
+      Beans.get(TimerProjectTaskService.class)
           .stop(task, Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
       response.setReload(true);
     } catch (Exception e) {
@@ -93,8 +93,8 @@ public class TeamTaskController {
 
   public void cancelTimer(ActionRequest request, ActionResponse response) {
     try {
-      TeamTask task = request.getContext().asType(TeamTask.class);
-      Beans.get(TimerTeamTaskService.class).cancel(task);
+      ProjectTask task = request.getContext().asType(ProjectTask.class);
+      Beans.get(TimerProjectTaskService.class).cancel(task);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

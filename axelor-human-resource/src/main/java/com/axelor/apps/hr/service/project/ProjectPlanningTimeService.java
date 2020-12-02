@@ -18,15 +18,15 @@
 package com.axelor.apps.hr.service.project;
 
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.exception.AxelorException;
-import com.axelor.team.db.TeamTask;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
 public interface ProjectPlanningTimeService {
 
-  public BigDecimal getTaskPlannedHrs(TeamTask teamTask);
+  public BigDecimal getTaskPlannedHrs(ProjectTask projectTask);
 
   public BigDecimal getProjectPlannedHrs(Project project);
 

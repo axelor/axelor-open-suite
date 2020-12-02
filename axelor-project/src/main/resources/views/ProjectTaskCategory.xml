@@ -3,12 +3,12 @@
 	xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
 
 	
-	<grid name="team-task-category-grid" title="Category" model="com.axelor.apps.project.db.TeamTaskCategory">
+	<grid name="project-task-category-grid" title="Category" model="com.axelor.apps.project.db.ProjectTaskCategory">
 		<field name="name"/>
 		<field name="defaultInvoicingType" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
 	</grid>
 	
-	<form title="Category" name="team-task-category-form" model="com.axelor.apps.project.db.TeamTaskCategory">
+	<form title="Category" name="project-task-category-form" model="com.axelor.apps.project.db.ProjectTaskCategory">
 		<panel name="mainPanel">
 			<field name="name"/>
 			<field name="defaultProduct" domain="self.unit.unitTypeSelect=3 AND dtype = 'Product'" form-view="product-form" grid-view="product-grid" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>			
@@ -16,7 +16,7 @@
 		</panel>
 	</form>
 	
-	<search-filters name="team-task-category-filters" model="com.axelor.apps.project.db.TeamTaskCategory" title="Team task category filters">
+	<search-filters name="project-task-category-filters" model="com.axelor.apps.project.db.ProjectTaskCategory" title="Project task category filters">
 		<field name="defaultInvoicingType" hidden="true" if="!__config__.app.isApp('business-project')"/>
 	</search-filters>
 
