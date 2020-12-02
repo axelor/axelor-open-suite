@@ -847,6 +847,7 @@ public class StockMoveServiceImpl implements StockMoveService {
           StockMoveLine newLine = stockMoveLineRepo.copy(line, false);
           newLine.setQty(totalQty);
           newLine.setRealQty(totalQty);
+          newLine.setStockMove(line.getStockMove());
           stockMoveLineRepo.save(newLine);
           LOG.debug("New line created: {}", newLine);
         }

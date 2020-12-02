@@ -1,0 +1,4 @@
+---
+title: "Purchase Qty by tracking"
+type: fix
+description: "Generate line for each 'Purchase Qty by tracking' without considering boolean 'Generate new purchase auto tracking Nbr' and Fix number of lines getting generated in 'Split By Qty'."
