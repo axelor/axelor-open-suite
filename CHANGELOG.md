@@ -1,4 +1,49 @@
 # Changelog
+## [5.3.14] - 2020-12-02
+
+#### Changes
+
+- EMPLOYEE: add french translations for employee resume printing.
+- ACCOUNTING MOVE: change the debit and credit field positions in total calculation form view.
+- USER: Add boolean to display the electronic signature on quotations.
+
+#### Fixed
+
+- SALE ORDER: Display fields in date panel on a finished sale order.
+- PurchaseOrder: Fix error on requesting due to missing production module field in report.
+- Timesheet, Expense: Fix filter after clicking "Show timesheets to be validated by my subordinates".
+- Company: Prevent having twice the same active bank details.
+- Fix Employees and expenses issues:
+  - On kilometric log, the total distance travelled is now updated only if the expense line is added.
+  - The kilometric log now has an unique constraint on employee and year.
+  - Error message when missing year has been improved to display the year's type.
+- Reconcile Group: add missing translation.
+- Fix opportunity in demo data missing sequence value.
+- INVOICE: Add product name translation in printing.
+- Demo data: fix ICalendar permission that were not working.
+- Invoice: display the date of the last ventilated invoice in the error message when ventilating an invoice anterior to the last ventilated invoice.
+- FORECAST RECAP LINE TYPE: when the type is changed, the operation type field becomes empty.
+- FORECAST RECAP LINE TYPE: title "Operaton Type" is replaced by "Operation type" and its french translation has been added.
+- CONVERT LEAD WIZARD FORM: Add partner information translation.
+- Team Task: Cannot select a closed project anymore.
+- ADVANCED EXPORT: Extended selections are now correctly exported.
+- Bank Statement Lines: line color is now accurate when importing a bank statement.
+- Inventory: Add missing fields in demo data.
+- PARTNER: Fix "employee field doesn't exist" after loading a partner if human-resource module is not intalled.
+- FORECAST GENERATOR: Copying a forecast generator keeps only the values of fields filled at its creation and resets the other fields.
+- Sale Order Report: fix warning appearing when launching the report.
+- Frequency: fix the years of a frequency.
+- Partner: Hide the generate project button in partner contact form view.
+- YEAR: Fix sql error and hibernate error when closing a fiscal year.
+- Copy analytic move lines when generating invoice from sale order and purchase order.
+- Inventory: Add missing translations, fix header display and add inventory sequence on each report page.
+- Stock Move Line: fixed conversion issue when changing values in editable-grid and form view.
+- Cost Sheet Line: fix error if the product has no prices configured and is not purchasable.
+- Stock Move: fix location planned quantity not updating on some cases on real quantity change in planned stock moves.
+- EMPLOYMENT CONTRACT: fix "EmploymentContractTemplate doesn't exist" error when printing.
+- AppCrm: Change the french translation of the field "Display customer description in opportunity".
+- LogisticalFormLine: Fix stock move line domain.
+
 ## [5.3.13] - 2020-10-08
 ## Improvements
 - USER FORM: Add search feature on user permission panel.
@@ -498,6 +543,7 @@ When printing multiple manufacturing orders, operations from all orders were pri
 - PRODUCT: Fix economicManufOrderQty displayed twice.
 
 
+[5.3.14]: https://github.com/axelor/axelor-open-suite/compare/v5.3.13...v5.3.14
 [5.3.13]: https://github.com/axelor/axelor-open-suite/compare/v5.3.12...v5.3.13
 [5.3.12]: https://github.com/axelor/axelor-open-suite/compare/v5.3.11...v5.3.12
 [5.3.11]: https://github.com/axelor/axelor-open-suite/compare/v5.3.10...v5.3.11
