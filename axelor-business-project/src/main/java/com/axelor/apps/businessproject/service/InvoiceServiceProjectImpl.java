@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.IExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -62,7 +63,8 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
       PartnerService partnerService,
       InvoiceLineService invoiceLineService,
       AccountConfigService accountConfigService,
-      MoveToolService moveToolService) {
+      MoveToolService moveToolService,
+      InvoiceLineRepository invoiceLineRepo) {
     super(
         validateFactory,
         ventilateFactory,
@@ -73,7 +75,8 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
         partnerService,
         invoiceLineService,
         accountConfigService,
-        moveToolService);
+        moveToolService,
+        invoiceLineRepo);
   }
 
   public List<String> editInvoiceAnnex(Invoice invoice, String invoiceIds, boolean toAttach)

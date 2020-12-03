@@ -507,7 +507,9 @@
     <selection name="line.type.select">
         <option value="0">Standard</option>
         <option value="1">Title</option>
-    </selection>    
+        <option value="2">Start of pack</option>
+        <option value="3">End of pack</option>
+    </selection>
     
     <selection name='trace.back.origin.select' id="trace.back.origin.select.base" >
     	<option value="import">Importing</option>
