@@ -1,3 +1,0 @@
----
-title: "Demo data: do not set products cost price to 0 when importing bill of materials components"
-type: fix
