@@ -20,8 +20,16 @@ package com.axelor.apps.supplychain.db.repo;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
+import com.axelor.inject.Beans;
+import com.google.inject.Inject;
+import javax.persistence.PersistenceException;
 
 public class InvoiceSupplychainRepository extends InvoiceManagementRepository {
+
+  @Inject InvoiceServiceSupplychain invoiceServiceSupplychain;
+
   @Override
   public Invoice copy(Invoice entity, boolean deep) {
     Invoice copy = super.copy(entity, deep);
@@ -39,5 +47,20 @@ public class InvoiceSupplychainRepository extends InvoiceManagementRepository {
     }
 
     return copy;
+  }
+
+  @Override
+  public Invoice save(Invoice invoice) {
+    try {
+      if (Boolean.TRUE.equals(
+          Beans.get(AppSaleService.class).getAppSale().getEnablePackManagement())) {
+        invoiceServiceSupplychain.computePackTotal(invoice);
+      } else {
+        invoiceServiceSupplychain.resetPackTotal(invoice);
+      }
+      return super.save(invoice);
+    } catch (Exception e) {
+      throw new PersistenceException(e.getLocalizedMessage());
+    }
   }
 }

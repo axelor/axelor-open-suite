@@ -1233,6 +1233,8 @@
 "Invoice.totalTax","Total Tax",,
 "Invoice.totalToPay","Total to pay",,
 "Invoice.unitPrice","Unit price",,
+"InvoiceLine.endOfPack","End of Pack",,
+"InvoiceLine.total","Total",,
 "InvoicePayment.amount","Amount",,
 "InvoicePayment.date","Date",,
 "InvoicePayment.payment_mode","Payment mode",,

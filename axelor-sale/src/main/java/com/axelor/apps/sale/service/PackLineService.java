@@ -15,14 +15,29 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.translation;
+package com.axelor.apps.sale.service;
 
-public interface ITranslation {
+import com.axelor.apps.sale.db.Pack;
+import com.axelor.apps.sale.db.PackLine;
+import com.axelor.exception.AxelorException;
 
-  public static final String SALE_APP_NAME = /*$$(*/ "value:Sale"; /*)*/
+public interface PackLineService {
 
-  public static final String ABC_ANALYSIS_START_DATE = /*$$(*/ "AbcAnalysis.startDate"; /*)*/
-  public static final String ABC_ANALYSIS_END_DATE = /*$$(*/ "AbcAnalysis.endDate"; /*)*/
-  public static final String SALE_ORDER_LINE_END_OF_PACK = /*$$(*/ "SaleOrderLine.endOfPack"; /*)*/
-  public static final String SALE_ORDER_LINE_TOTAL = /*$$(*/ "SaleOrderLine.total"; /*)*/
+  /**
+   * Reset product information when product is null.
+   *
+   * @param packLine
+   * @return {@link PackLine}
+   */
+  public PackLine resetProductInformation(PackLine packLine);
+
+  /**
+   * Compute product information when product is not null.
+   *
+   * @param pack
+   * @param packLine
+   * @return {@link PackLine}
+   * @throws AxelorException
+   */
+  public PackLine computeProductInformation(Pack pack, PackLine packLine) throws AxelorException;
 }

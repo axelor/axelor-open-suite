@@ -26,6 +26,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
@@ -36,8 +37,6 @@ import java.util.List;
 public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
     implements InvoiceLineProjectService {
 
-  @Inject private InvoiceLineRepository invoiceLineRepo;
-
   @Inject
   public InvoiceLineProjectServiceImpl(
       CurrencyService currencyService,
@@ -46,7 +45,9 @@ public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
       AnalyticMoveLineService analyticMoveLineService,
       AccountManagementAccountService accountManagementAccountService,
       PurchaseProductService purchaseProductService,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      InvoiceLineRepository invoiceLineRepo,
+      AppBaseService appBaseService) {
     super(
         currencyService,
         priceListService,
@@ -54,7 +55,9 @@ public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService
         analyticMoveLineService,
         accountManagementAccountService,
         purchaseProductService,
-        productCompanyService);
+        productCompanyService,
+        invoiceLineRepo,
+        appBaseService);
   }
 
   @Transactional
