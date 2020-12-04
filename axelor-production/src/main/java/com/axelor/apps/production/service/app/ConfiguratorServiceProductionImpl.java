@@ -19,13 +19,11 @@ package com.axelor.apps.production.service.app;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ConfiguratorBOM;
 import com.axelor.apps.production.service.configurator.ConfiguratorBomService;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
@@ -55,12 +53,11 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
       throws AxelorException {
     super.generate(configurator, jsonAttributes, jsonIndicators);
     ConfiguratorBOM configuratorBOM = configurator.getConfiguratorCreator().getConfiguratorBom();
-    if (configuratorBOM != null && checkConditions(configuratorBOM, jsonAttributes)) {
+    if (configuratorBOM != null) {
       Product generatedProduct = configurator.getProduct();
-      BillOfMaterial generatedBom =
-          Beans.get(ConfiguratorBomService.class)
-              .generateBillOfMaterial(configuratorBOM, jsonAttributes, 0, generatedProduct);
-      generatedProduct.setDefaultBillOfMaterial(generatedBom);
+      Beans.get(ConfiguratorBomService.class)
+          .generateBillOfMaterial(configuratorBOM, jsonAttributes, 0, generatedProduct)
+          .ifPresent(generatedProduct::setDefaultBillOfMaterial);
     }
   }
 
@@ -76,22 +73,11 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
     SaleOrderLine saleOrderLine =
         super.generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
     ConfiguratorBOM configuratorBOM = configurator.getConfiguratorCreator().getConfiguratorBom();
-    if (configuratorBOM != null && checkConditions(configuratorBOM, jsonAttributes)) {
-      BillOfMaterial billOfMaterial =
-          Beans.get(ConfiguratorBomService.class)
-              .generateBillOfMaterial(configuratorBOM, jsonAttributes, 0, null);
-      saleOrderLine.setBillOfMaterial(billOfMaterial);
+    if (configuratorBOM != null) {
+      Beans.get(ConfiguratorBomService.class)
+          .generateBillOfMaterial(configuratorBOM, jsonAttributes, 0, null)
+          .ifPresent(saleOrderLine::setBillOfMaterial);
     }
     return saleOrderLine;
-  }
-
-  protected boolean checkConditions(ConfiguratorBOM configuratorBOM, JsonContext jsonAttributes)
-      throws AxelorException {
-    String condition = configuratorBOM.getUseCondition();
-    // no condition = we always generate the bill of materials
-    if (condition == null) {
-      return true;
-    }
-    return (boolean) Beans.get(ConfiguratorService.class).computeFormula(condition, jsonAttributes);
   }
 }
