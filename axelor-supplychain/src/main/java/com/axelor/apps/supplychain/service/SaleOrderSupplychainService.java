@@ -23,5 +23,5 @@ public interface SaleOrderSupplychainService {
 
   public void updateToConfirmedStatus(SaleOrder saleOrder);
 
-  public void setDefaultInvoicedAndDeliveredPartners(SaleOrder saleOrder);
+  public void setDefaultInvoicedAndDeliveredPartnersAndAddresses(SaleOrder saleOrder);
 }

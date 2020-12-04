@@ -36,6 +36,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
+import com.axelor.apps.supplychain.service.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.auth.db.User;
 import com.axelor.exception.AxelorException;
@@ -141,6 +142,12 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
                       .fetchOne()
                   != null;
       order.setInterco(interco);
+
+      // Automatic invoiced and delivered partners set in case of partner delegations
+      if (appSupplychain.getActivatePartnerRelations()) {
+        Beans.get(SaleOrderSupplychainService.class)
+            .setDefaultInvoicedAndDeliveredPartnersAndAddresses(order);
+      }
     }
     return Beans.get(SaleOrderRepository.class).save(order);
   }

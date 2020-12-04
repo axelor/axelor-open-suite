@@ -91,12 +91,6 @@
 		<action name="action-sale-order-method-address-str"/>
 	</action-group>
 	
-	<action-group name="action-group-sale-order-supplychain-set-default-invoiced-delivered-partners-and-addresses">
-		<action name="action-sale-order-supplychain-method-set-default-invoiced-delivered-partners"/>
-		<action name="action-group-sale-order-supplychain-set-main-invoicing-address"/>
-		<action name="action-group-sale-order-supplychain-set-delivery-address"/>
-	</action-group>
-	
 	<action-group name="action-group-supplychain-saleorder-onload">
         <action name="action-group-sale-saleorder-onload"/>
 		<action name="action-sale-order-attrs-interco"/>
@@ -271,8 +265,8 @@
 		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="updateStockReservationDate"/>
 	</action-method>
 
-	<action-method name="action-sale-order-supplychain-method-set-default-invoiced-delivered-partners">
-		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="setDefaultInvoicedAndDeliveredPartners"/>
+	<action-method name="action-sale-order-supplychain-method-set-default-invoiced-delivered-partners-and-addresses">
+		<call class="com.axelor.apps.supplychain.web.SaleOrderController" method="setDefaultInvoicedAndDeliveredPartnersAndAddresses"/>
 	</action-method>
 	
 </object-views>

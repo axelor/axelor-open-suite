@@ -979,12 +979,12 @@ public class SaleOrderController {
     }
   }
 
-  public void setDefaultInvoicedAndDeliveredPartners(
+  public void setDefaultInvoicedAndDeliveredPartnersAndAddresses(
       ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       Beans.get(SaleOrderSupplychainService.class)
-          .setDefaultInvoicedAndDeliveredPartners(saleOrder);
+          .setDefaultInvoicedAndDeliveredPartnersAndAddresses(saleOrder);
       response.setValues(saleOrder);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

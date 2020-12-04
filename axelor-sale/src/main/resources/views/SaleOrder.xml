@@ -962,6 +962,8 @@
 		<action name="action-sale-order-method-fill-price-list"/>
 		<action name="action-sale-order-record-compute-end-of-validity-date"/>
         <action name="action-sale-order-method-fill-company-bank-details"/>
+        <action name="action-sale-order-supplychain-method-set-default-invoiced-delivered-partners-and-addresses"
+				if="__config__.app.getApp('supplychain')?.activatePartnerRelations"/>
 	</action-group>
 
 	<action-group name="action-group-sale-order-merge-action">
@@ -1069,8 +1071,8 @@
 		<action name="action-sale-order-attrs-set-is-ispm-required"
 				if="__config__.app.isApp('supplychain')"/>
 		<action name="action-sale-order-record-set-group-product-on-printing"/>
-		<action name="action-group-sale-order-supplychain-set-default-invoiced-delivered-partners-and-addresses"
-				if="__config__.app.isApp('supplychain')"/>
+		<action name="action-sale-order-supplychain-method-set-default-invoiced-delivered-partners-and-addresses"
+				if="__config__.app.getApp('supplychain')?.activatePartnerRelations"/>
 	</action-group>
 
   <action-group name="action-group-sale-order-validate-changes">
