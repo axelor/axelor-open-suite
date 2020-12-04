@@ -141,11 +141,12 @@ public class BatchUpdateTaskService extends AbstractBatch {
         timesheetLineRepo
             .all()
             .filter(
-                "(self.projectTask.parentTask.invoicingType = :_invoicingType "
+                "((self.projectTask.parentTask.invoicingType = :_invoicingType "
+                    + "AND self.projectTask.parentTask.toInvoice = :_teamTaskToInvoice) "
                     + " OR (self.projectTask.parentTask IS NULL "
-                    + "AND self.projectTask.invoicingType = :_invoicingType)) "
+                    + "AND self.projectTask.invoicingType = :_invoicingType "
+                    + "AND self.projectTask.toInvoice = :_projectTaskToInvoice)) "
                     + "AND self.projectTask.project.isBusinessProject = :_isBusinessProject "
-                    + "AND self.projectTask.toInvoice = :_projectTaskToInvoice "
                     + "AND self.toInvoice = :_toInvoice")
             .bind("_invoicingType", ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT)
             .bind("_isBusinessProject", true)

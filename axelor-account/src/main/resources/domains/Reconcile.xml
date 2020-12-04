@@ -9,7 +9,7 @@
   	
   	<string name="reconcileSeq" title="Reference" namecolumn="true"/>
   	<many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company" required="true" initParam="true"/>
-    <decimal name="amount" title="Amount reconciled" default="0.0" initParam="true"/>
+    <decimal name="amount" title="Amount charged" default="0.0" initParam="true"/>
     <many-to-one name="debitMoveLine" ref="MoveLine" title="Debit line" required="true" initParam="true"/>
     <many-to-one name="creditMoveLine" ref="MoveLine" title="Credit line" required="true" initParam="true"/>
     <integer name="statusSelect" title="Status" default="1" readonly="true" selection="account.reconcile.status.select" initParam="true"/>

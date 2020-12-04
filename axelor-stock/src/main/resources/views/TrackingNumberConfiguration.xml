@@ -27,7 +27,7 @@
 	        <field name="isPurchaseTrackingManaged" onChange="action-tracking-number-set-default-purchase-qty"/>
 		    <panel name="purchaseTrackingManagementPanel" title="Purchase tracking management" showIf="isPurchaseTrackingManaged" colSpan="12">
 		        <field name="generatePurchaseAutoTrackingNbr"/>
-				<field name="sequence" onChange="action-tracking-number-config-record-compute-fullname" requiredIf="generatePurchaseAutoTrackingNbr" showIf="generatePurchaseAutoTrackingNbr || generateProductionAutoTrackingNbr || generateSaleAutoTrackingNbr" domain="self.codeSelect = 'productTrackingNumber'" form-view="sequence-form" grid-view="sequence-grid"/>
+				<field name="sequence" onChange="action-tracking-number-config-record-compute-fullname" requiredIf="isPurchaseTrackingManaged" showIf="isPurchaseTrackingManaged || generateProductionAutoTrackingNbr || generateSaleAutoTrackingNbr" domain="self.codeSelect = 'productTrackingNumber'" form-view="sequence-form" grid-view="sequence-grid"/>
 				<field name="purchaseQtyByTracking" colSpan="12"/>
 		    </panel>
 	   </panel>
