@@ -42,7 +42,6 @@ import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
-import com.axelor.db.JPA;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -53,6 +52,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import javax.mail.MessagingException;
 
@@ -890,12 +890,14 @@ public class LeaveServiceImpl implements LeaveService {
   }
 
   public boolean isLeaveDay(User user, LocalDate date) {
-    return getLeave(user, date) != null;
+    return ObjectUtils.notEmpty(getLeaves(user, date));
   }
 
-  public LeaveRequest getLeave(User user, LocalDate date) {
+  public List<LeaveRequest> getLeaves(User user, LocalDate date) {
+    List<LeaveRequest> leavesList = new ArrayList<>();
     List<LeaveRequest> leaves =
-        JPA.all(LeaveRequest.class)
+        leaveRequestRepo
+            .all()
             .filter("self.user = :userId AND self.statusSelect IN (:awaitingValidation,:validated)")
             .bind("userId", user)
             .bind("awaitingValidation", LeaveRequestRepository.STATUS_AWAITING_VALIDATION)
@@ -907,10 +909,10 @@ public class LeaveServiceImpl implements LeaveService {
         LocalDate from = leave.getFromDateT().toLocalDate();
         LocalDate to = leave.getToDateT().toLocalDate();
         if ((from.isBefore(date) && to.isAfter(date)) || from.isEqual(date) || to.isEqual(date)) {
-          return leave;
+          leavesList.add(leave);
         }
       }
     }
-    return null;
+    return leavesList;
   }
 }
