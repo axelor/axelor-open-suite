@@ -1168,15 +1168,23 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
             user, date, timesheet, dayValueInHours, I18n.get(IExceptionMessage.TIMESHEET_HOLIDAY));
 
       } else if (appTimesheet.getCreateLinesForLeaves()) {
-        LeaveRequest leave = leaveService.getLeave(user, date);
-        if (leave != null) {
-          BigDecimal hours = leaveService.computeDuration(leave, date, date);
-          if (leave.getLeaveLine().getLeaveReason().getUnitSelect()
-              == LeaveReasonRepository.UNIT_SELECT_DAYS) {
-            hours = hours.multiply(dayValueInHours);
+        List<LeaveRequest> leaveList = leaveService.getLeaves(user, date);
+        BigDecimal totalLeaveHours = BigDecimal.ZERO;
+        if (ObjectUtils.notEmpty(leaveList)) {
+          for (LeaveRequest leave : leaveList) {
+            BigDecimal leaveHours = leaveService.computeDuration(leave, date, date);
+            if (leave.getLeaveLine().getLeaveReason().getUnitSelect()
+                == LeaveReasonRepository.UNIT_SELECT_DAYS) {
+              leaveHours = leaveHours.multiply(dayValueInHours);
+            }
+            totalLeaveHours = totalLeaveHours.add(leaveHours);
           }
           timesheetLineService.createTimesheetLine(
-              user, date, timesheet, hours, I18n.get(IExceptionMessage.TIMESHEET_DAY_LEAVE));
+              user,
+              date,
+              timesheet,
+              totalLeaveHours,
+              I18n.get(IExceptionMessage.TIMESHEET_DAY_LEAVE));
         }
       }
     }
